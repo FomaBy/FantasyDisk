@@ -454,19 +454,26 @@ with pivot `[256,470]`, idle at 7fps and walk/move at 9fps. Previous live frames
 are backed up under `docs/design/backups/scrum461_berserk_cartoon_pre_anim/`.
 Attack animation remains intentionally absent for this cartoon/anime anchor.
 
-2026-06-29 PixelLab Berserk integration replaces the live Berserk runtime
-SpriteFrames with explicit 8-direction pixel-art movement. PixelLab source
-frames and metadata are stored under `assets/sprites/characters/pixellab/berserk/`
-(`112x112` source), normalized runtime frames under
-`assets/sprites/characters/full_frame/berserk_pixellab/` (`512x512`
-nearest-neighbor canvas), and
-`assets/sprites/characters/berserk_spriteframes.tres` now exposes
-`idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
-for south/east/north/west and diagonals. `scripts/player.gd` resolves velocity
-into the matching row instead of horizontally flipping one generic walk row.
-Hero Select v4 keeps `HS4Portrait`, but for Berserk it cycles the same
-directional walk rows clockwise in the portrait safe zone. Body attack animation
-remains disabled/absent by current weapon-owned combat visual scope.
+2026-07-01 SCRUM-703 PixelLab Berserk redraw replaces the previous tiny
+PixelLab live pack with a new unarmed v3 character
+`8486ce45-f749-4c63-9a6d-f0477d619c2d`. PixelLab `252x252` source rotations,
+movement frames, `manifest.json`, `pixellab_metadata.json`, and
+`alpha_bbox_report.json` are stored under
+`assets/sprites/characters/pixellab/berserk/`; normalized runtime frames are
+transparent `512x512` PNGs under
+`assets/sprites/characters/full_frame/berserk_pixellab/`. The runtime alpha-bbox
+height is fixed at `245 px` for all 8 idle poses and all 48 movement frames
+(primary south idle bbox `217x245`), satisfying the `240..250 px` contract with
+no frame below `230 px` or above `260 px`. `assets/sprites/characters/berserk_spriteframes.tres`
+continues to expose `idle_<direction>` plus 6-frame looping `move_<direction>` /
+`walk_<direction>` for south/east/north/west and diagonals; Hero Select v4 keeps
+cycling the same directional rows clockwise in the portrait safe zone. The
+north-west move direction uses a PixelLab v3 custom replacement after the first
+template pass produced hammer-like props; the final accepted pack is
+empty-handed. Previous live frames are backed up under
+`docs/design/backups/scrum703_berserk_pixellab_pre_redraw_2026-06-30/`. Body
+attack animation remains disabled/absent by current weapon-owned combat visual
+scope.
 
 2026-06-30 SCRUM-425 PixelLab Doctor integration replaces the legacy Doctor
 full-frame art with an 8-direction PixelLab plague-doctor pack (hooded cream/teal

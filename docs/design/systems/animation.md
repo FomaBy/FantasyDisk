@@ -167,19 +167,22 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
   scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
   separate wiring task.
-- 2026-06-29 PixelLab Berserk wiring replaces the live Berserk runtime
-  `assets/sprites/characters/berserk_spriteframes.tres` with 8-direction
-  pixel-art movement. Source downloads are stored under
-  `assets/sprites/characters/pixellab/berserk/` (`112x112` source frames plus
-  `manifest.json`), while runtime frames are nearest-neighbor padded to a
-  `512x512` canvas under `assets/sprites/characters/full_frame/berserk_pixellab/`.
-  The SpriteFrames resource exposes `idle_<direction>` one-frame fallbacks and
-  `move_<direction>` / `walk_<direction>` 6-frame looping rows for `south`,
-  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
-  `south_west`, plus generic `idle` / `move` / `walk` fallbacks. `Player`
-  resolves the movement vector into the matching 8-way row and disables
-  horizontal `flip_h` for directional rows. Body attack rows remain absent by
-  current combat-visual scope.
+- 2026-07-01 SCRUM-703 PixelLab Berserk redraw replaces the previous tiny live
+  pack with new unarmed v3 source character
+  `8486ce45-f749-4c63-9a6d-f0477d619c2d`. Source downloads are stored under
+  `assets/sprites/characters/pixellab/berserk/` (`252x252` source frames plus
+  `manifest.json`, `pixellab_metadata.json`, and `alpha_bbox_report.json`),
+  while runtime frames are transparent `512x512` canvases under
+  `assets/sprites/characters/full_frame/berserk_pixellab/` with every idle/move
+  alpha bbox normalized to `245 px` high. The SpriteFrames resource exposes
+  `idle_<direction>` one-frame fallbacks and `move_<direction>` /
+  `walk_<direction>` 6-frame looping rows for `south`, `south_east`, `east`,
+  `north_east`, `north`, `north_west`, `west`, and `south_west`, plus generic
+  `idle` / `move` / `walk` fallbacks. `Player` resolves the movement vector into
+  the matching 8-way row and disables horizontal `flip_h` for directional rows.
+  The final north-west move row uses a PixelLab v3 custom empty-hands replacement
+  after QA rejected a first template row with hammer-like props. Body attack rows
+  remain absent by current combat-visual scope.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512

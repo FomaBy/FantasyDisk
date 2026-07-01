@@ -36,6 +36,16 @@
   `priest_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
   `move_<direction>` / `walk_<direction>` for all 8 directions. Priest now moves
   with directional walk in-game and rotates clockwise in Hero Select.
+- SCRUM-703: PixelLab Berserk full redraw at the readable 240-250 px runtime
+  scale. Generated new unarmed v3 PixelLab character
+  (`8486ce45-f749-4c63-9a6d-f0477d619c2d`), stored `252x252` source rotations
+  and 8-direction movement under `assets/sprites/characters/pixellab/berserk/`,
+  normalized transparent `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/berserk_pixellab/` with every idle/move
+  alpha bbox at `245 px` high, and rebuilt `berserk_spriteframes.tres` with
+  `idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
+  for all 8 directions. The old live pack is backed up under
+  `docs/design/backups/scrum703_berserk_pixellab_pre_redraw_2026-06-30/`.
 - SCRUM-425: PixelLab Doctor 8-direction character with directional movement.
   Generated v3 PixelLab plague-doctor character
   (`c3d5ea3d-3b70-4154-b3c4-420d386f550a`), stored source rotations + walk frames

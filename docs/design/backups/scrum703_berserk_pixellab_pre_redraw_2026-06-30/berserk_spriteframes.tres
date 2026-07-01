@@ -1,0 +1,575 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png" id="1_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_00.png" id="2_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_01.png" id="3_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_02.png" id="4_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_03.png" id="5_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_04.png" id="6_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_05.png" id="7_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south-east.png" id="8_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_00.png" id="9_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_01.png" id="10_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_02.png" id="11_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_03.png" id="12_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_04.png" id="13_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_05.png" id="14_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_east.png" id="15_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_00.png" id="16_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_01.png" id="17_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_02.png" id="18_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_03.png" id="19_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_04.png" id="20_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_05.png" id="21_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north-east.png" id="22_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_00.png" id="23_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_01.png" id="24_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_02.png" id="25_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_03.png" id="26_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_04.png" id="27_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_05.png" id="28_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north.png" id="29_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_00.png" id="30_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_01.png" id="31_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_02.png" id="32_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_03.png" id="33_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_04.png" id="34_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_05.png" id="35_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north-west.png" id="36_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_00.png" id="37_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_01.png" id="38_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_02.png" id="39_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_03.png" id="40_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_04.png" id="41_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_05.png" id="42_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_west.png" id="43_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_00.png" id="44_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_01.png" id="45_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_02.png" id="46_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_03.png" id="47_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_04.png" id="48_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_05.png" id="49_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south-west.png" id="50_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_00.png" id="51_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_01.png" id="52_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_02.png" id="53_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_03.png" id="54_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_04.png" id="55_pixellab"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_05.png" id="56_pixellab"]
+
+[resource]
+animations = [
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pixellab")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
+}],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pixellab")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_pixellab")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_pixellab")
+}],
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_pixellab")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29_pixellab")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("36_pixellab")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("43_pixellab")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("50_pixellab")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_pixellab")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_pixellab")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_pixellab")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_pixellab")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_pixellab")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_pixellab")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_pixellab")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
+}],
+"loop": true,
+"name": &"walk_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_pixellab")
+}],
+"loop": true,
+"name": &"walk_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_pixellab")
+}],
+"loop": true,
+"name": &"walk_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_pixellab")
+}],
+"loop": true,
+"name": &"walk_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_pixellab")
+}],
+"loop": true,
+"name": &"walk_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("38_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("42_pixellab")
+}],
+"loop": true,
+"name": &"walk_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("45_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("46_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("47_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("48_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("49_pixellab")
+}],
+"loop": true,
+"name": &"walk_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("52_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("53_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("54_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("55_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("56_pixellab")
+}],
+"loop": true,
+"name": &"walk_south_west",
+"speed": 10.0
+}
+]

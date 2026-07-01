@@ -1,0 +1,118 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
+        "name": "FantasyDisk Berserk SCRUM-703 240px unarmed",
+        "prompt": "Unarmed Berserk barbarian hero for FantasyDisk, dark fantasy Dungeons and Dragons pixel art, empty hands clearly visible, no sword, no axe, no hammer, no shield, no weapon, no held prop. Powerful melee brawler stance, broad shoulders, bear-fur mantle, dark leather straps, blackened metal bracers, rugged boots, skull belt, spiked shoulder armor, red war paint, braided dark hair and beard, scarred face, aggressive grounded silhouette. Low top-down 3/4 RPG view, full body visible, readable from above, centered, transparent background, no text, no UI frame, no shadow baked into background. Brutal but not oversized, clean silhouette, high contrast, 8-direction character source suitable for 240 to 250 pixel runtime visible alpha height after normalization.",
+        "size": {
+          "width": 252,
+          "height": 252
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-06-30T14:45:46.260411+00:00"
+      },
+      "folder": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/south.png",
+          "south-east": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/south-east.png",
+          "east": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/east.png",
+          "north-east": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/north-east.png",
+          "north": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/north.png",
+          "north-west": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/north-west.png",
+          "west": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/west.png",
+          "south-west": "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/rotations/south-west.png"
+        },
+        "animations": {
+          "animating": {
+            "north-east": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating/north-east/frame_005.png"
+            ]
+          },
+          "animating-2e3af665": {
+            "east": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-2e3af665/east/frame_005.png"
+            ]
+          },
+          "walking_northwest_with_heavy_barbarian_steps_empty": {
+            "north-west": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_005.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/walking_northwest_with_heavy_barbarian_steps_empty/north-west/frame_006.png"
+            ]
+          },
+          "animating-add4ca77": {
+            "west": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-add4ca77/west/frame_005.png"
+            ]
+          },
+          "animating-ae9ad004": {
+            "south-east": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ae9ad004/south-east/frame_005.png"
+            ]
+          },
+          "animating-c2f804d2": {
+            "north": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-c2f804d2/north/frame_005.png"
+            ]
+          },
+          "animating-ca1305c7": {
+            "south": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-ca1305c7/south/frame_005.png"
+            ]
+          },
+          "animating-fa1cd2ef": {
+            "south-west": [
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_000.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_001.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_002.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_003.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_004.png",
+              "FantasyDisk_Berserk_SCRUM-703_240px_unarmed/animations/animating-fa1cd2ef/south-west/frame_005.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-07-01T06:05:45.941975"
+}

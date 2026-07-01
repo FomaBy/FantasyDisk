@@ -1,0 +1,101 @@
+{
+  "source": "PixelLab MCP",
+  "character_id": "aa6e37fc-d79f-4c7c-a449-38f703a78955",
+  "tag": "Berserk",
+  "source_size": [
+    112,
+    112
+  ],
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "upscale": 4,
+  "runtime_bottom_padding": 32,
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "animations": {
+    "south": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_05.png"
+    ],
+    "south-east": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_05.png"
+    ],
+    "east": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_05.png"
+    ],
+    "north-east": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_05.png"
+    ],
+    "north": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_05.png"
+    ],
+    "north-west": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_05.png"
+    ],
+    "west": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_05.png"
+    ],
+    "south-west": [
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_00.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_01.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_02.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_03.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_04.png",
+      "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_05.png"
+    ]
+  }
+}
