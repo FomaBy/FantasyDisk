@@ -99,8 +99,8 @@ Acceptance notes:
   cell for idle/move rows; Animator must produce real idle and move/walk frames
   before SpriteFrames/runtime integration.
 
-## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: priest v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+## Исторический Design-Source QA Verdict (2026-06-15)
+Historical status: PASSED (Design-source: priest v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **priest v2 source прозрачный**: `priest_v2_source_clean` (1024²), `_idle_cell_512`
