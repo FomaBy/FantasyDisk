@@ -1302,7 +1302,7 @@ func _initialize() -> void:
 	await _test_elite_phase2_escalation()
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
-	await _test_boss_hud_omits_timer(main_scene)
+	await _test_boss_hud_shows_timer(main_scene)
 	await _test_weapon_select_clean_layout(main_scene)
 	await _test_parchment_button_seal_sizes(main_scene)
 	await _test_skill_tree_progression_kit(main_scene)
@@ -7970,7 +7970,10 @@ func _fail(message: String, evidence_path := "") -> void:
 	quit(1)
 
 
-func _test_boss_hud_omits_timer(main_scene: PackedScene) -> void:
+func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:
+	# SCRUM-799: босс/элит-бои теперь ПОКАЗЫВАЮТ обратный отсчёт (5-мин kill-timer из
+	# SCRUM-785). Панель CombatTimerPanel и timer_label создаются как в обычном бою, а
+	# текст форматируется M:SS (300с → «5:00»), иначе игрок внезапно проигрывает на 5:00.
 	var boss_main := main_scene.instantiate()
 	root.add_child(boss_main)
 	await process_frame
@@ -7978,13 +7981,16 @@ func _test_boss_hud_omits_timer(main_scene: PackedScene) -> void:
 	boss_main.set("selected_weapon_id", "axe")
 	boss_main.call("_start_combat", true)
 	await process_frame
-	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
-		_fail("Expected boss combat HUD to omit CombatTimerPanel and timer_label.")
+	if boss_main.find_child("CombatTimerPanel", true, false) == null or boss_main.get("timer_label") == null:
+		_fail("Expected boss combat HUD to create CombatTimerPanel and timer_label (SCRUM-799).")
 		return
+	# 300с должны форматироваться как «5:00» (M:SS), не только секунды.
+	var boss_label := boss_main.get("timer_label") as Label
+	boss_main.set("round_time_left", 300.0)
 	boss_main.set("_last_hud_snapshot", {})
 	boss_main.ui._update_hud()
-	if boss_main.find_child("CombatTimerPanel", true, false) != null or boss_main.get("timer_label") != null:
-		_fail("Expected boss combat HUD update not to recreate CombatTimerPanel.")
+	if boss_label.text != "5:00":
+		_fail("Expected boss combat timer to show M:SS ('5:00' at 300s), got '%s'." % boss_label.text)
 		return
 	boss_main.queue_free()
 	await process_frame

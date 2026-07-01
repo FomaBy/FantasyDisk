@@ -9116,10 +9116,10 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
 		asc_badge.add_child(asc_text)
 
-	# На босс-файтах таймера нет — панель не создается вовсе.
-	if game.boss_combat_active:
-		game.timer_label = null
-		return
+	# SCRUM-799: таймер показываем во всех боях, включая боссовый/элитный
+	# (5-минутный kill-timer из SCRUM-785). Ранний выход по boss_combat_active снят —
+	# панель и timer_label создаются одинаково для обычного, элитного и боссового боя,
+	# иначе игрок не видит обратный отсчёт и внезапно проигрывает на 5:00.
 	var panel := PanelContainer.new()
 	panel.name = "CombatTimerPanel"
 	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
