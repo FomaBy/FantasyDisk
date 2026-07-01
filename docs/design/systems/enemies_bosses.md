@@ -133,9 +133,23 @@ Current scene: `scenes/BossSecretAscension.tscn`. SCRUM-539 delivered the
 Design source pack and static/VFX candidates in
 `docs/design/references/bosses/secret_ascension_boss/`,
 `assets/sprites/bosses/secret_ascension_boss.png`, and
-`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`. Animator should
-prefer a full-frame path; Back-end can use the static plus VFX candidate only as
-an interim. Mechanics are implemented in `scripts/boss.gd` under
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`. SCRUM-540 then
+delivered the full-frame Animator pack, and SCRUM-701 verified it (source and
+animation READY): runtime frames live under
+`assets/sprites/bosses/full_frame/secret_ascension_boss/` (60 transparent RGBA
+512x512 frames, no matte, bottom-center pivot `(256,480)`), the safe-gutter
+sheet is `assets/sprites/bosses/full_frame/secret_ascension_boss_full_frame_sheet.png`,
+and the final SpriteFrames resource is
+`assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`,
+exposing 16 states: 6f looping `idle`/`move`, 6f `attack_primary` plus
+`attack_primary_windup`/`attack_primary_release`, four cast pairs
+(`skill_ring`/`attack_ring`, `skill_cone`/`attack_cone`,
+`skill_beam`/`attack_beam`, `skill_rupture`/`attack_rupture`), `hit`, and
+`death`. Back-end runtime wiring is a separate task: register
+`secret_ascension_boss` in `FullFrameAnimationRegistry` (recommended
+`scale Vector2(0.86, 0.86)`, `position Vector2(0.0, -104.0)`, source faces
+left). The static plus VFX candidate remains an interim only until that wiring
+lands. Mechanics are implemented in `scripts/boss.gd` under
 `boss_behavior = "secret_ascension_boss"`:
 
 - `SecretBossSectorRing`: large telegraphed ring/sector pressure with safe gaps.
