@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Рыцарь» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
