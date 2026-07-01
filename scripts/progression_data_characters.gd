@@ -235,7 +235,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Дальние линии и ловушки.",
 		"strengths": "дальность, пробивание.",
 		"weaknesses": "плох вблизи.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
