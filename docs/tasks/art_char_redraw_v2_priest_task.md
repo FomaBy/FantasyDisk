@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Священник» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -179,3 +179,78 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-431 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## Codex Design/Animation Source Result — 2026-06-30
+
+Статус: review / ready for QA. Claimed as Design/Codex worker
+`codex-scrum-431-priest-pixellab` in separate worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-431-priest-pixellab`
+on branch `codex/scrum-431-priest-pixellab`.
+
+PixelLab MCP was used through the config-backed bridge; `get_balance` smoke
+PASS (`isError=false`), no secrets printed. Direct PixelLab tools were not
+exposed in this stale thread, so the bridge path from the skills was used.
+
+PixelLab source:
+- Character ID: `ed7db59e-0845-4218-b178-a56f948254b5`
+- Name: `FantasyDisk priest SCRUM-431`
+- Mode: v3 humanoid, 8 directions, low top-down
+- Animation: `walking-6-frames`, 6 frames per direction; one `north-east`
+  attempt failed under heavy load and the retried direction completed.
+- Note: PixelLab bundle endpoint stayed HTTP 423 because stale failed job
+  records remained; completed rotation/frame URLs from `get_character` were
+  downloaded directly.
+
+Delivered paths:
+- Source frames + manifest:
+  `assets/sprites/characters/pixellab/priest/`
+- Normalized runtime frames:
+  `assets/sprites/characters/full_frame/priest_pixellab/`
+- Godot SpriteFrames:
+  `assets/sprites/characters/priest_spriteframes.tres`
+- Hero Select / portrait source path:
+  `scripts/progression_data_characters.gd` →
+  `res://assets/sprites/characters/full_frame/priest_pixellab/priest_idle_south.png`
+- Contact preview:
+  `docs/design/previews/scrum431_priest_pixellab_contact.png`
+- QA report:
+  `build/qa/scrum431_priest_pixellab/scrum431_priest_pixellab_alpha_size_report.json`
+
+Normalization:
+- Source PNGs: 8 idle rotations + 48 move frames (`252x252`, RGBA).
+- Runtime PNGs: 8 idle rotations + 48 move frames (`512x512`, RGBA).
+- Transparent padding only was trimmed before nearest-neighbor x2 scale; no
+  character pixels cropped. Runtime frames are centered X and bottom-aligned
+  with 32px bottom padding.
+- Attack rows remain absent; weapon visuals still own combat actions.
+
+Checks:
+- PixelLab MCP config smoke `get_balance`: PASS.
+- `list_characters(tags="priest")`: PASS, no existing Priest found.
+- Asset count/alpha/manifest/SpriteFrames static check: PASS
+  (`56` source PNG, `56` runtime PNG, all 8 dirs, all directional rows).
+- Import sidecar UID check for new Priest PNGs: PASS (`113` unique UIDs).
+- `git diff --check` on task-owned text files: PASS.
+- Direct Godot:
+  `character_sprite_registry_alignment_test.gd`: PASS.
+- Direct Godot:
+  `animation_smoke_test.gd`: PASS / exit 0 after adding explicit
+  `ProgressionData` preload; the clean worktree lacks a full imported `.godot`
+  texture cache, so Godot printed unrelated missing `.ctex` resource errors
+  while still reaching `Animation smoke test passed.`
+- `tools/godot_gate.py ... animation_smoke_test.gd`: BLOCKED by fresh-worktree
+  `--import --quit` timeout after 360s, after pre-existing Dark Mage/Knight
+  skeleton duplicate-UID warnings. Orphaned headless import processes were
+  terminated. This appears to be import/cache setup debt, not a Priest
+  SpriteFrames assertion failure.
+
+Docs updated:
+- `CHANGELOG.md`
+- `docs/design/content_registry.md`
+- `docs/design/current_game_state.md`
+- `docs/design/systems/animation.md`
+- `docs/design/systems/visual_style_assets.md`
+
+Disk cleanup:
+- Removed/kept out of commit: transient `.godot/` cache at completion.
+- No PixelLab tokens or auth headers stored.

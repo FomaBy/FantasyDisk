@@ -312,6 +312,17 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `move/walk` frames before SpriteFrames/runtime integration. White/neutral
   matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
   and `0` edge-visible pixels in source/cell/sheet outputs.
+- 2026-06-30 SCRUM-431 PixelLab pass promotes Priest to live directional
+  runtime/Hero Select art. PixelLab character
+  `ed7db59e-0845-4218-b178-a56f948254b5` provides 8 static idle rotations and
+  `walking-6-frames` movement for all 8 directions. Source PNGs and
+  `manifest.json` live under `assets/sprites/characters/pixellab/priest/`;
+  normalized transparent `512x512` runtime frames live under
+  `assets/sprites/characters/full_frame/priest_pixellab/`. The runtime resource
+  `assets/sprites/characters/priest_spriteframes.tres` exposes fallback
+  `idle`/`move`/`walk`, plus `idle_<direction>`, `move_<direction>` and
+  `walk_<direction>` rows. Attack rows remain absent because weapon visuals own
+  combat actions.
 - SCRUM-421 adds the Biologist v2 Design-source handoff under
   `docs/design/references/characters_v2/biologist/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet,

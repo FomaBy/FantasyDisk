@@ -481,6 +481,23 @@ Select clockwise rotation pick up the directional rows automatically. Legacy
 `assets/sprites/characters/full_frame/doctor/` and `doctor.png` remain
 history/fallback.
 
+2026-06-30 SCRUM-431 PixelLab Priest integration replaces the legacy Priest
+full-frame art with an 8-direction PixelLab holy support-caster pack (white-gold
+robes, halo, empty hands, no baked weapon/tool). PixelLab character
+`ed7db59e-0845-4218-b178-a56f948254b5` (v3, `252x252` source with transparent
+padding) source frames and `manifest.json` are stored under
+`assets/sprites/characters/pixellab/priest/`, normalized transparent `512x512`
+runtime frames under `assets/sprites/characters/full_frame/priest_pixellab/`,
+and `assets/sprites/characters/priest_spriteframes.tres` now exposes
+`idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
+for all 8 directions (`walking-6-frames` template). Normalization trims only
+transparent padding, scales nearest-neighbor x2, centers X and bottom-aligns
+with 32px padding. `scripts/progression_data_characters.gd` priest `sprite_path`
+points at `full_frame/priest_pixellab/priest_idle_south.png`; the generic
+directional resolver and Hero Select clockwise rotation pick up the directional
+rows automatically. Legacy `assets/sprites/characters/full_frame/priest/`,
+`priest.png` and cutout pieces remain history/fallback.
+
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
 source в `docs/design/references/characters_v3/berserk/`, normalized game
@@ -630,8 +647,10 @@ SCRUM-431 подготовил per-class Priest v2 Design-source handoff:
 staff/mace/reliquary/censer/chime/book/weapon/tool или held object в руках,
 прозрачный RGBA, visible height `376 px` в `512x512` cell и pivot `[256,470]`.
 White/neutral matte pixels и edge-visible pixels в source/cell/sheet равны
-`0`. Это не live runtime replacement; current Priest runtime assets остаются
-активными до Animator/Back-end integration.
+`0`. SCRUM-431 later replaced the live Priest runtime with a PixelLab
+8-direction idle + 6-frame walk pack under `assets/sprites/characters/pixellab/priest/`
+and `assets/sprites/characters/full_frame/priest_pixellab/`; the older v2
+handoff remains source history.
 
 SCRUM-421 подготовил per-class Biologist v2 Design-source handoff:
 `docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,

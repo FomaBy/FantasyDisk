@@ -156,6 +156,15 @@ visible height `376 px` and pivot `(256,470)`. White/neutral matte pixels are
 edge-connected checker/white cleanup. It is a source handoff only until
 Animator/Back-end builds real idle/move SpriteFrames.
 
+SCRUM-431 later promotes Priest to a live PixelLab runtime pack:
+`assets/sprites/characters/pixellab/priest/` stores the v3 source rotations,
+6-frame `walking-6-frames` directional source frames and `manifest.json`;
+`assets/sprites/characters/full_frame/priest_pixellab/` stores transparent
+`512x512` runtime PNGs; `assets/sprites/characters/priest_spriteframes.tres`
+stores the Godot SpriteFrames rows. Contact preview:
+`docs/design/previews/scrum431_priest_pixellab_contact.png`; QA report:
+`build/qa/scrum431_priest_pixellab/scrum431_priest_pixellab_alpha_size_report.json`.
+
 SCRUM-421 adds the Biologist v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
 `biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,

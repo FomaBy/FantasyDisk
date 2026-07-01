@@ -5,6 +5,15 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-431: PixelLab Priest 8-direction character with directional movement.
+  Generated v3 PixelLab holy Priest character
+  (`ed7db59e-0845-4218-b178-a56f948254b5`), stored source rotations + walk frames
+  under `assets/sprites/characters/pixellab/priest/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/priest_pixellab/`, and rebuilt
+  `priest_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
+  `move_<direction>` / `walk_<direction>` for all 8 directions. Priest now moves
+  with directional walk in-game and rotates clockwise in Hero Select.
 - SCRUM-425: PixelLab Doctor 8-direction character with directional movement.
   Generated v3 PixelLab plague-doctor character
   (`c3d5ea3d-3b70-4154-b3c4-420d386f550a`), stored source rotations + walk frames
