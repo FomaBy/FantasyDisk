@@ -1,0 +1,48 @@
+{
+  "task": "SCRUM-742",
+  "weapon_id": "elementalist_orb_ring",
+  "weapon_name": "Кольцо Трех Стихий",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "pipeline_override": "Direct user directive 2026-07-01 superseded stale OpenAI Images mirror text; no OpenAI Images, image_gen, or manual drawing fallback used.",
+  "pixellab": {
+    "tool": "create_map_object",
+    "object_id": "0deb7121-dd70-4040-a79a-6dce484b20c2",
+    "view": "high top-down",
+    "source_size": [256, 256],
+    "source_background_reported": "transparent",
+    "source_background_actual": "opaque dark matte removed by deterministic alpha cleanup"
+  },
+  "source_files": [
+    "elementalist_orb_ring_pixellab_source.png",
+    "elementalist_orb_ring_pixellab_alpha_clean.png"
+  ],
+  "runtime_files": [
+    "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png"
+  ],
+  "reference_files": [
+    "assets/sprites/weapons/elementalist_orb_ring.png"
+  ],
+  "preview_files": [
+    "docs/design/previews/weapon_attack_animations/elementalist_orb_ring_contact.png",
+    "docs/design/references/weapon_attack_animations/elementalist_orb_ring/alpha_report.json"
+  ],
+  "postprocess": {
+    "canvas": [256, 256],
+    "mode": "RGBA",
+    "steps": [
+      "keyed out PixelLab dark matte from the completed source",
+      "kept three elemental orbit strokes and transparent center",
+      "composited low-opacity canonical weapon PNG as the background ghost silhouette",
+      "masked the baked lower-left PixelLab mark from cleaned/runtime outputs",
+      "capped final runtime alpha at 190 for calm combat readability"
+    ]
+  },
+  "qa_summary": {
+    "runtime_size": [256, 256],
+    "runtime_mode": "RGBA",
+    "max_alpha": 190,
+    "center_mean_alpha": 0.04,
+    "nonzero_alpha_percent": 40.93,
+    "corner_alpha": 0
+  }
+}
