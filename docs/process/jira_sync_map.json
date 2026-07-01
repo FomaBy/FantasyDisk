@@ -3255,8 +3255,8 @@
  },
  "animation_weapon_attack_elementalist_orb_ring_codex_task.md": {
   "key": "SCRUM-742",
-  "status": "В работе",
-  "desc_hash": "6d5f2a2ab7d7900b279f63f71cc8a437"
+  "status": "Контроль качества",
+  "desc_hash": "61c7082d90c9cd4366ca14cae6acb9fd"
  },
  "animation_weapon_attack_elementalist_prism_focus_codex_task.md": {
   "key": "SCRUM-743",

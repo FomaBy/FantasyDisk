@@ -1,6 +1,6 @@
 # Animation: Кольцо Трех Стихий (elementalist_orb_ring) attack VFX redraw
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
