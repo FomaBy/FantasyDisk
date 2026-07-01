@@ -43,7 +43,7 @@ func _test_run_start_application() -> void:
 	main.set("selected_ascension_level", 0)
 	main.set("route_stage", 0)
 	var state: Dictionary = main.get("meta_state")
-	state["skill_nodes"] = ["wealth_start_1", "wealth_start_2", "might_dmg_1"]
+	state["skill_nodes"] = ["core_guild_ties", "strength_flow_1", "strength_flow_2", "strength_notable"]
 	main.set("meta_state", state)
 
 	var player := PLAYER_SCENE.instantiate()
@@ -56,9 +56,9 @@ func _test_run_start_application() -> void:
 	main.call("apply_ascension_bonuses", player)
 	await process_frame
 
-	# Старт-золото v2: два малых узла по +15.
-	if int(player.get("money")) < 30:
-		_fail("Expected start-gold nodes to grant +30 gold at run start (got %d)." % int(player.get("money")))
+	# Старт-золото финального дерева: нейтральный guild keystone даёт +15.
+	if int(player.get("money")) < 15:
+		_fail("Expected guild keystone to grant +15 gold at run start (got %d)." % int(player.get("money")))
 		return
 	# Боевой модификатор урона применён.
 	if float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0)) <= dmg_before:
@@ -124,7 +124,7 @@ func _test_death_save_capstone() -> void:
 		player.configure_character("berserk", "sword")
 	# Применяем дерево с death_save -> флаг в run_modifiers.
 	var state: Dictionary = Meta.default_state()
-	state["skill_nodes"] = ["endure_capstone"]
+	state["skill_nodes"] = ["core_second_life"]
 	player.call("apply_meta_skill_modifiers", Meta.skill_modifiers(state))
 	# Гарантируем смертельный удар: убираем уклонение/защиту/поглощение.
 	var derived: Dictionary = player.get("derived_parameters")
@@ -168,7 +168,7 @@ func _test_guaranteed_rare_shop_capstone() -> void:
 	if main.has_method("reset_run_ascension"):
 		main.call("reset_run_ascension")
 	var state: Dictionary = main.get("meta_state")
-	state["skill_nodes"] = ["wealth_capstone"]
+	state["skill_nodes"] = ["core_guild_ties"]
 	main.set("meta_state", state)
 
 	# Несколько прогонов: с capstone в каждом наборе должен быть tier-3.
@@ -203,7 +203,7 @@ func _test_first_levelup_rare_capstone() -> void:
 	main.set("current_player", player)
 
 	var state: Dictionary = main.get("meta_state")
-	state["skill_nodes"] = ["lore_capstone"]
+	state["skill_nodes"] = ["core_insight"]
 	main.set("meta_state", state)
 
 	# С узлом + level<=2: гарантированно есть основная характеристика (rare).
@@ -248,10 +248,10 @@ func _test_attribute_extra_options() -> void:
 		_fail("Expected default attribute offer to be 2 options.")
 		return
 	var more_state: Dictionary = main.get("meta_state")
-	more_state["skill_nodes"] = ["lore_attr_1", "lore_attr_2"]
+	more_state["skill_nodes"] = ["knowledge_notable"]
 	main.set("meta_state", more_state)
-	if main.ui._random_attribute_pair().size() != 4:
-		_fail("Expected lore extra-option nodes to raise attribute offer to 4.")
+	if main.ui._random_attribute_pair().size() != 3:
+		_fail("Expected knowledge notable to raise attribute offer to 3.")
 		return
 	main.queue_free()
 	await process_frame
@@ -273,7 +273,7 @@ func _test_attribute_discount() -> void:
 	var full_cost: int = main.ui._attribute_buy_cost()
 
 	var disc_state: Dictionary = main.get("meta_state")
-	disc_state["skill_nodes"] = ["wealth_attr_1", "wealth_attr_2"]
+	disc_state["skill_nodes"] = ["core_craft"]
 	main.set("meta_state", disc_state)
 	var disc_cost: int = main.ui._attribute_buy_cost()
 
@@ -304,7 +304,7 @@ func _test_shop_discount() -> void:
 		full_total += int((item as Dictionary).get("cost", 0))
 
 	var disc_state: Dictionary = main.get("meta_state")
-	disc_state["skill_nodes"] = ["wealth_shop_1", "wealth_shop_2"]
+	disc_state["skill_nodes"] = ["core_craft"]
 	main.set("meta_state", disc_state)
 	(main.get("rng") as RandomNumberGenerator).seed = 4242
 	var disc_items: Array = main.ui._random_shop_items(4)
@@ -348,14 +348,19 @@ func _fail(msg: String) -> void:
 
 func _test_tree_data_integrity() -> void:
 	var total := Meta.skill_tree_total_cost()
-	if total < 90 or total > Meta.META_POINTS_CAP:
-		_fail("Expected skill tree budget near cap 100, got %d." % total)
+	if total <= Meta.META_POINTS_CAP or total > 190:
+		_fail("Expected final skill tree budget to exceed cap 100 but stay compact, got %d." % total)
 		return
-	if Meta.SKILL_TREE.size() < 60 or Meta.SKILL_TREE.size() > 90:
-		_fail("Expected compact PoE-like graph to have 60-90 nodes, got %d." % Meta.SKILL_TREE.size())
+	if Meta.skill_tree_total_cost_capped() != Meta.META_POINTS_CAP:
+		_fail("Expected capped total cost facade to equal meta cap.")
+		return
+	if Meta.SKILL_TREE.size() < 95 or Meta.SKILL_TREE.size() > 120:
+		_fail("Expected final PoE-like graph to have 95-120 nodes, got %d." % Meta.SKILL_TREE.size())
 		return
 	var ids := {}
 	var keystones := 0
+	var class_keystones := {}
+	var attribute_flat_keys := {}
 	for node in Meta.SKILL_TREE:
 		var node_data: Dictionary = node
 		var node_id := str(node_data.get("id", ""))
@@ -371,6 +376,12 @@ func _test_tree_data_integrity() -> void:
 			return
 		if str(node_data.get("kind", "")) == "keystone":
 			keystones += 1
+			var affinity := str(node_data.get("class_affinity", ""))
+			if affinity != "":
+				class_keystones[affinity] = int(class_keystones.get(affinity, 0)) + 1
+		for effect_key in (node_data.get("effects", {}) as Dictionary).keys():
+			if str(effect_key).ends_with("_flat") and str(effect_key).replace("_flat", "") in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+				attribute_flat_keys[str(effect_key)] = true
 		if str(node_data.get("desc", "")) == "" or str(node_data.get("title", "")) == "":
 			_fail("Node '%s' missing RU title/desc." % node_id)
 			return
@@ -388,9 +399,13 @@ func _test_tree_data_integrity() -> void:
 			if not (neighbor.get("adj", []) as Array).has(from_id):
 				_fail("Edge '%s' -> '%s' is not symmetric." % [from_id, str(neighbor_id)])
 				return
-	if keystones < 3 or keystones > 6:
-		_fail("Expected 3-6 keystones, got %d." % keystones)
+	if keystones < 20 or keystones > 24:
+		_fail("Expected 17 class keystones plus 3-6 neutral keystones, got %d." % keystones)
 		return
+	for attr in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		if not attribute_flat_keys.has("%s_flat" % attr):
+			_fail("Expected attribute flat node for '%s'." % attr)
+			return
 	var entry_ids := {}
 	for class_id in CharacterData.CHARACTER_CONFIGS.keys():
 		var cid := str(class_id)
@@ -404,6 +419,9 @@ func _test_tree_data_integrity() -> void:
 		entry_ids[entry_id] = true
 		if Meta.node_by_id(entry_id).is_empty():
 			_fail("Class entry node '%s' is not in SKILL_TREE." % entry_id)
+			return
+		if int(class_keystones.get(cid, 0)) != 1:
+			_fail("Expected exactly one class-affinity keystone for '%s'." % cid)
 			return
 
 
@@ -505,6 +523,7 @@ func _test_save_migration_from_linear_tree() -> void:
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "meta_points", 999)
 	cfg.set_value("meta", "skill_points", 999)
+	cfg.set_value("meta", "skill_tree_schema", 2)
 	cfg.set_value("meta", "ascension_levels", {"berserk": 3, "dark_mage": 5})
 	cfg.set_value("meta", "skill_nodes", ["wealth_gold_1", "endure_capstone", "old_missing_node"])
 	cfg.save(path)
@@ -551,7 +570,7 @@ func _test_skill_tree_screen() -> void:
 		return
 
 	# Купить узел-точку входа класса (всегда доступен) — очки тратятся, узел куплен.
-	var first_id: String = str(Meta.branch_nodes("might")[0]["id"])
+	var first_id: String = str(Meta.CLASS_ENTRY_NODES["berserk"])
 	var first_btn := main.find_child("SkillNode_%s" % first_id, true, false) as BaseButton
 	if first_btn == null or first_btn.disabled:
 		_fail("Expected tier-1 node '%s' to be enabled/available." % first_id)
@@ -586,7 +605,8 @@ func _test_player_application() -> void:
 	var state: Dictionary = Meta.default_state()
 	var all_nodes := []
 	for node in Meta.SKILL_TREE:
-		all_nodes.append(str(node["id"]))
+		if str((node as Dictionary).get("class_affinity", "")) == "":
+			all_nodes.append(str(node["id"]))
 	state["skill_nodes"] = all_nodes
 	var mods: Dictionary = Meta.skill_modifiers(state)
 
@@ -605,8 +625,9 @@ func _test_player_application() -> void:
 	if float(player.get("max_health")) <= hp_before:
 		_fail("Expected meta skill max_health_mult to raise max HP.")
 		return
-	if float(run_mods.get("defense_flat", 0.0)) <= 0.0 or float(run_mods.get("regeneration_flat", 0.0)) <= 0.0:
-		_fail("Expected meta skill flats (defense/regen) to apply.")
+	var player_stats: Dictionary = player.get("stats")
+	if float(player_stats.get("strength", 0.0)) <= 10.0 or float(player_stats.get("knowledge", 0.0)) <= 4.0:
+		_fail("Expected meta skill attribute flats to apply to player base stats.")
 		return
 	if float(run_mods.get("xp_gain_multiplier", 1.0)) <= 1.0:
 		_fail("Expected meta skill xp_gain_mult to apply.")
@@ -624,18 +645,14 @@ func _test_player_application() -> void:
 
 
 func _test_full_tree_power_cap() -> void:
-	# Полная прокачка всех узлов -> эффективная сила не выше ~+30%.
+	# Полная прокачка всех узлов дороже мета-капа: игрок выбирает путь, а не всё дерево.
 	var state: Dictionary = Meta.default_state()
 	var all_nodes := []
 	for node in Meta.SKILL_TREE:
 		all_nodes.append(str(node["id"]))
 	state["skill_nodes"] = all_nodes
-	var power := Meta.estimated_power_multiplier(state)
-	if power > 1.30:
-		_fail("Full skill tree exceeds +30%% power cap: %.3f." % power)
-		return
-	if power < 1.10:
-		_fail("Full skill tree suspiciously weak (%.3f) — check effects." % power)
+	if Meta.allocated_meta_points(state) <= Meta.META_POINTS_CAP:
+		_fail("Expected full final tree to cost more than cap 100.")
 		return
 	var mods: Dictionary = Meta.skill_modifiers(state)
 	# Capstone-флаги присутствуют.

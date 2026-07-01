@@ -362,12 +362,14 @@ event-множители) + `post_combat`.
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.
 
-### Древо умений (мета, SCRUM-150)
+### Древо умений (мета, SCRUM-726)
 
-- 4 ветки (`Богатство`/`Знания`/`Мощь`/`Стойкость`), ~10 узлов каждая; покупка по тирам с пререквизитами.
-- Очки умений (`skill_points`) начисляются за победу над боссом; бюджет полного древа ≈ +29% силы (кап ≤ ~+30%).
-- Боевое подмножество модификаторов уходит в `run_modifiers` на старте забега (`player.apply_meta_skill_modifiers`); экономические узлы дают стартовое золото/скидки. Capstone «Вторая жизнь» (Стойкость) — раз за забег смертельный удар оставляет 1 HP.
-- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`.
+- Канон: `docs/design/systems/skill_tree.md`.
+- Schema 3: общее PoE-like дерево на 107 узлов: центральное ядро, 8 атрибутных лепестков и 17 class pods. Полная стоимость 183 метаочка при неизменном `META_POINTS_CAP = 100`, поэтому полный выкуп невозможен.
+- Атрибутные узлы (`strength_flat`, `agility_flat`, `intelligence_flat`, `perception_flat`, `energy_flat`, `knowledge_flat`, `endurance_flat`, `leadership_flat`) добавляются к базовым stats героя до `ProgressionData.derived_parameters()`.
+- `class_affinity` узлы можно купить в общем графе, но их эффекты применяются только выбранному герою через `MetaProgression.skill_modifiers_for_class(meta_state, selected_character_id)`. `skill_modifiers(state)` оставлен для account-wide UI preview.
+- Нейтральные capstone ядра: «Боевой раж», «Вторая жизнь», «Связи в гильдии», «Озарение». У каждого из 17 героев есть ровно один сигнатурный keystone.
+- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`. Фокусные проверки: `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
 
 ### Прогрессия По Классам (SCRUM-360)
 
