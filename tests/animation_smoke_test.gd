@@ -320,11 +320,12 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
+			if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
+			if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
 			var v2_label := "SCRUM-420"
-			if sheet_character_id == "berserk":
+			if sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "druid" or sheet_character_id == "guitarist":
 				v2_label = "PixelLab directional"
-			if sheet_character_id == "assassin":
+			elif sheet_character_id == "assassin":
 				v2_label = "SCRUM-419"
 			elif sheet_character_id == "chemist":
 				v2_label = "PixelLab directional"
@@ -336,8 +337,6 @@ func _test_player_animation() -> void:
 				v2_label = "PixelLab directional"
 			elif sheet_character_id == "elementalist":
 				v2_label = "SCRUM-427"
-			elif sheet_character_id == "guitarist":
-				v2_label = "PixelLab directional"
 			elif sheet_character_id == "knight":
 				v2_label = "PixelLab directional"
 			elif sheet_character_id == "thief":
@@ -346,13 +345,13 @@ func _test_player_animation() -> void:
 				_fail("Expected %s %s v2 SpriteFrames to expose idle/walk/move frames." % [sheet_character_id, v2_label])
 			if body.sprite_frames.has_animation("attack") or body.sprite_frames.has_animation("attack_primary"):
 				_fail("Expected %s %s v2 accepted SpriteFrames to omit attack animations." % [sheet_character_id, v2_label])
-			if sheet_character_id == "berserk":
+			if sheet_character_id == "berserk" or sheet_character_id == "druid":
 				for direction_name in ["south", "south_east", "east", "north_east", "north", "north_west", "west", "south_west"]:
 					if not body.sprite_frames.has_animation("walk_%s" % direction_name) or body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 6:
-						_fail("Expected Berserk PixelLab directional SpriteFrames to expose 6-frame walk_%s." % direction_name)
+						_fail("Expected %s PixelLab directional SpriteFrames to expose 6-frame walk_%s." % [sheet_character_id, direction_name])
 						return
 				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 6 or body.sprite_frames.get_frame_count("move") != 6:
-					_fail("Expected Berserk PixelLab fallback idle/walk/move frame counts to be 1/6/6.")
+					_fail("Expected %s PixelLab fallback idle/walk/move frame counts to be 1/6/6." % sheet_character_id)
 					return
 				continue
 			if sheet_character_id == "doctor":

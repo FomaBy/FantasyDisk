@@ -263,7 +263,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Стая, тернии и тотемы.",
 		"strengths": "призывы, зоны.",
 		"weaknesses": "слаб один.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/druid/druid_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png",
 	},
 }
 

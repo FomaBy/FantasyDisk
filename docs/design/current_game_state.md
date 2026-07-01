@@ -270,6 +270,8 @@ SCRUM-261 обновил enemy/boss skill VFX под runtime mechanics SCRUM-259
 
 SCRUM-258 добавил per-weapon visual signature layer для всех 51 оружий ростера 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png`. `ClassWeapon` перед исполнением текущего attack mode вызывает `AttackVfx.weapon_signature()` и размещает короткую полупрозрачную D&D/painterly пластину по `weapon_id` в зоне атаки/цели/ауры. SCRUM-335 расширил это покрытие на `BerserkWeapon`, поэтому `sword`, `axe`, `hammer`, `long_spear`, `tower_shield` и `holy_flail` тоже показывают dedicated `vfx_weapon_*` signature поверх своих slash/slam/strip VFX. Это только визуальный слой: урон, радиусы, формулы, targeting, cooldowns, delay и status mechanics остаются из Back-end SCRUM-256/251/254/245. Preview-листы: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
+SCRUM-730 перерисовал `vfx_weapon_biologist_sample_injector.png` для Инъектора Образцов через OpenAI Images override: эффект теперь читается как точная sample-dart injection line с двумя biochemical analysis echoes у ткани цели и полупрозрачным ghost-силуэтом самого инъектора. Runtime path/API не менялись; mechanics, damage, cooldowns, targeting и attack shapes остаются прежними. Evidence: `docs/design/references/weapon_attack_animations/biologist_sample_injector/manifest.json`, preview `docs/design/previews/weapon_attack_animations/biologist_sample_injector_contact.png`.
+
 SCRUM-335 добавил runtime feedback в `scripts/enemy_projectile.gd`: обычный magic projectile врагов/боссов сохраняет свой canonical sprite, но получает textured `beam_strip.png` trail во время полета и `impact_flash.png` + `impact_ring.png` при попадании по игроку. Это не меняет lifetime, collision mask, one-hit guard, damage или speed.
 
 SCRUM-337 заменил весь активный raster art pack для attack VFX без изменения runtime API: 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png` пересобраны через `fantasydisk-asset-generator` source sheets, очищены под alpha и экспортированы с теми же именами/размерами. В бою это выглядит как более объёмные D&D/dark-fantasy магические вспышки, слэши, зоны, порталы, лужи и weapon signature plates; mechanics, damage, delays, targeting и balance не менялись. Preview-листы: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`.
@@ -541,6 +543,17 @@ for all 8 directions (`walking-6-frames` template).
 directional resolver and Hero Select clockwise rotation pick up the directional
 rows automatically. Legacy `assets/sprites/characters/chemist.png` remains
 history/fallback.
+
+SCRUM-426 promotes Druid to the same PixelLab directional runtime path. PixelLab
+character `4078113b-fece-4087-a035-9ed3714a6514` provides 8 static idle
+rotations plus `walking-6-frames` movement rows for all directions under
+`assets/sprites/characters/pixellab/druid/`; normalized runtime frames live under
+`assets/sprites/characters/full_frame/druid_pixellab/` on a transparent
+`512x512` canvas. `assets/sprites/characters/druid_spriteframes.tres` exposes
+`idle_<direction>`, 6-frame `move_<direction>` / `walk_<direction>`, and generic
+south-facing fallbacks, while `sprite_path` now points to
+`druid_idle_south.png` for Hero Select, Codex, carousel and level-up portraits.
+Attack/body weapon rows remain absent by scope.
 
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
@@ -899,7 +912,7 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 
 Foundation новых классов уже включен в выбор персонажа, выбор оружия, кодекс, формулы характеристик, ascension и smoke tests. Design visual set для первых 9 персонажей и полного набора оружия 9 классов готов: новые герои art-approved, все 27 weapon PNG существуют по каноническим путям; gameplay/backend-сцены подключают matching weapon PNG без documented visual fallback. SCRUM-168 добавил 10-й Back-end-класс `soldier` и довел набор до 30 weapon variants; canonical Soldier character/weapon PNG и cutout rig/motion подключены. SCRUM-169 добавил 11-й Back-end-класс `thief` и довел набор до 33 weapon variants; canonical Thief character/weapon PNG и cutout rig/motion подключены. SCRUM-163 добавил 12-й Back-end-класс `elementalist` и довел набор до 36 weapon variants; canonical Elementalist character/weapon PNG и cutout rig/motion подключены. SCRUM-167 добавил 13-й Back-end-класс `sniper` и довел набор до 39 weapon variants; canonical Sniper character/weapon PNG и cutout rig/motion подключены. SCRUM-165 добавил 14-й Back-end-класс `priest` и довел набор до 42 weapon variants; canonical Priest character/weapon PNG и cutout rig/motion подключены. SCRUM-162 добавил 15-й Back-end-класс `biologist` и довел набор до 45 weapon variants; canonical Biologist character/weapon PNG и cutout rig/motion подключены. SCRUM-166 добавил 16-й Back-end-класс `robot` и довел набор до 48 weapon variants; canonical Robot character/weapon PNG и cutout rig/motion подключены. SCRUM-164 добавил финальный 17-й Back-end-класс `engineer` и довел набор до 51 weapon variant; canonical Engineer character/weapon PNG и cutout rig/motion подключены. Weapon art v2 pass 2026-06-12 дополнительно перерисовал оружие Рыцаря, заменил базовый `knight.png` на unarmed sprite без встроенного копья/щита, пересобрал `knight_*` cutouts и уменьшил `WeaponVisual.scale` у крупных оружий.
 
-SCRUM-416 перевел runtime `sprite_path` большинства классов с legacy static PNG на принятые SCRUM-412-cleaned full-frame idle кадры `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab-направленные классы (`berserk`, `dark_mage`, `guitarist`) use `<class>_pixellab/<class>_idle_south.png` as their canonical portrait source. Hero Select large portrait, carousel thumbnails, Codex character portrait and level-up portrait now share this canonical source instead of old `assets/sprites/characters/<class>.png` art; focused registry/runtime smokes assert the actual texture paths and write QA dumps under `build/qa/scrum416/`.
+SCRUM-416 перевел runtime `sprite_path` большинства классов с legacy static PNG на принятые SCRUM-412-cleaned full-frame idle кадры `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab-направленные классы (`berserk`, `dark_mage`, `guitarist`, `druid`) use `<class>_pixellab/<class>_idle_south.png` as their canonical portrait source. Hero Select large portrait, carousel thumbnails, Codex character portrait and level-up portrait now share this canonical source instead of old `assets/sprites/characters/<class>.png` art; focused registry/runtime smokes assert the actual texture paths and write QA dumps under `build/qa/scrum416/`.
 
 SCRUM-297 добавил принятый unarmed animation source sheet для `thief`: `assets/sprites/characters/thief_sheet.png` (`384x384`, 5 idle / 5 walk / 5 attack_primary) с alpha-clean и 32px-gutter references под `docs/design/references/characters/thief/`, contact preview `docs/design/previews/scrum297_thief_sheet_contact.png` и Design QA artifacts under `build/qa/scrum297_thief/`. Параллельный Animator pass уже подключил `assets/sprites/characters/thief_spriteframes.tres` и per-frame PNGs under `assets/sprites/characters/full_frame/thief/`; Designer 2 не менял SpriteFrames/runtime wiring.
 
@@ -1071,6 +1084,8 @@ SCRUM-279/280 оживили базового волка Друида: `druid_be
 Правила: эффекты самоочищаются tween-ами, классовое оружие дополнительно регистрирует их в `player_weapon_effects` (мертвые ссылки фильтруются в `_register_effect`/`cleanup_effects`). Runtime smoke проверяет экипировку всех 51 weapon variants; VFX smoke остается профильным тестом основных хелперов. Скриншоты для ручной проверки: `tools/capture_vfx_preview.gd` (windowed) -> `build/vfx_preview/`.
 
 SCRUM-337 production art refresh: все перечисленные texture paths плюс 51 `vfx_weapon_<weapon_id>.png`, elite/boss helper VFX и `assets/sprites/projectiles/*.png` пересобраны из generated source sheets `docs/design/references/attack_vfx_realistic_dark_fantasy/`. Deterministic cut/alpha pipeline: `tools/build_scrum337_attack_vfx_from_sources.py`; QA/readability artifacts: `build/qa/scrum337/`.
+
+SCRUM-728 (2026-07-01) заменил только `assets/sprites/effects/vfx_weapon_axe.png`: weapon signature топора теперь читается как широкая 140-градусная cleave-дуга с полупрозрачным ghost-силуэтом двуручного топора. OpenAI Images override зафиксирован в `docs/design/references/weapon_attack_animations/axe/`, preview/readability sheet: `docs/design/previews/weapon_attack_animations/axe_contact.png`. Runtime API, damage, cooldowns, targeting, радиус/угол удара и shared gameplay hooks не менялись.
 
 ## Характеристики
 

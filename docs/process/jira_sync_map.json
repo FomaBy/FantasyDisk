@@ -2280,8 +2280,8 @@
  },
  "art_char_redraw_v2_druid_task.md": {
   "key": "SCRUM-426",
-  "status": "К выполнению",
-  "desc_hash": "3516b10234d27c17221f6fcbee82b00b"
+  "status": "Контроль качества",
+  "desc_hash": "e989ce57cfe43adf141389a592509b1f"
  },
  "art_char_redraw_v2_elementalist_task.md": {
   "key": "SCRUM-427",
@@ -3090,8 +3090,8 @@
  },
  "qa_ui_1080_scale_visual_task.md": {
   "key": "SCRUM-700",
-  "status": "К выполнению",
-  "desc_hash": "892cd6067db0294210edbb5835ef800c"
+  "status": "Готово",
+  "desc_hash": "3dbf5b793910d06788b3b4a24b7a4294"
  },
  "SCRUM-678_codex_glossary_ui_design.md": {
   "key": "SCRUM-678",
@@ -3185,8 +3185,8 @@
  },
  "animation_weapon_attack_axe_codex_task.md": {
   "key": "SCRUM-728",
-  "status": "К выполнению",
-  "desc_hash": "2c2202d282b1892683fc8a566efcc8dd"
+  "status": "Контроль качества",
+  "desc_hash": "4a47ac5b534cb20573a4003302f54f88"
  },
  "animation_weapon_attack_bass_guitar_claude_task.md": {
   "key": "SCRUM-729",
@@ -3195,8 +3195,8 @@
  },
  "animation_weapon_attack_biologist_sample_injector_codex_task.md": {
   "key": "SCRUM-730",
-  "status": "К выполнению",
-  "desc_hash": "88698195f7cd410b7aba84c73fd1283c"
+  "status": "Контроль качества",
+  "desc_hash": "61a674ea4d5bdd29500e54c8226b9035"
  },
  "animation_weapon_attack_biologist_spore_lens_codex_task.md": {
   "key": "SCRUM-731",
@@ -3550,8 +3550,8 @@
  },
  "bug_combat_hud_1080_oversized_empty_frames_task.md": {
   "key": "SCRUM-778",
-  "status": "Контроль качества",
-  "desc_hash": "55c738a11fb984aeb8aafbe5ec3cacaf"
+  "status": "К выполнению",
+  "desc_hash": "9ea3287dd26681677ece41886f6bf302"
  },
  "animation_scrum779_boss_pixellab_promotion_handoff_task.md": {
   "key": "SCRUM-793",
