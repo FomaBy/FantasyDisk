@@ -26,8 +26,8 @@ const HERO_SELECT_V4_DOSSIER := Rect2(0.288, 0.138, 0.362, 0.555)
 const HERO_SELECT_V4_RADAR := Rect2(0.715, 0.175, 0.230, 0.320)
 const HERO_SELECT_V4_CAROUSEL := Rect2(0.020, 0.735, 0.960, 0.215)
 const HERO_SELECT_V4_VISIBLE_SLOTS := 9
-const HERO_SELECT_MINIMAL_PREVIEW_SIZE := 250.0
-const HERO_SELECT_MINIMAL_SLOT_SIZE := 150.0
+const HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE := 320.0
+const HERO_SELECT_MINIMAL_SLOT_MIN_SIZE := 180.0
 const HERO_SELECT_MINIMAL_MIN_SLOTS := 3
 const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
@@ -348,8 +348,8 @@ func _initialize() -> void:
 		_fail("Expected hero select v4 to show the selected hero portrait.")
 		return
 	var portrait_rect := v4_portrait.get_global_rect()
-	if absf(portrait_rect.size.x - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0 or absf(portrait_rect.size.y - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0:
-		_fail("Expected hero select portrait to stay 250x250, got %s." % str(portrait_rect))
+	if portrait_rect.size.x < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE or portrait_rect.size.y < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE:
+		_fail("Expected hero select portrait to use the enlarged SCRUM-798 footprint, got %s." % str(portrait_rect))
 		return
 	if main.find_child("HS4Radar", true, false) != null:
 		_fail("Expected minimal hero select to remove the old stat radar.")
@@ -362,8 +362,23 @@ func _initialize() -> void:
 	var v4_carousel := main.find_child("HS4Carousel", true, false) as Control
 	var v4_slots: Array = _visible_hero_carousel_slot_buttons(v4_carousel) if v4_carousel != null else []
 	if v4_carousel == null or v4_slots.size() < HERO_SELECT_MINIMAL_MIN_SLOTS:
-		_fail("Expected hero select to expose a scrollable carousel with visible 150px slots.")
+		_fail("Expected hero select to expose a scrollable carousel with enlarged visible slots.")
 		return
+	var first_v4_slot := v4_slots[0] as Control
+	if first_v4_slot.get_global_rect().size.x < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE or first_v4_slot.get_global_rect().size.y < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE:
+		_fail("Expected enlarged SCRUM-798 hero carousel slots, got %s." % str(first_v4_slot.get_global_rect()))
+		return
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
+		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
+		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
+			_fail("Expected SCRUM-798 line bar + rich tooltip for stat %s." % stat_id)
+			return
+	for relevance in ["primary", "secondary", "optional"]:
+		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
+		if guidance == null or guidance.text.strip_edges() == "" or not guidance.text.contains(":"):
+			_fail("Expected SCRUM-798 build guidance section %s." % relevance)
+			return
 	var v4_choose := main.find_child("HS4ChooseButton", true, false) as Button
 	if v4_choose == null:
 		_fail("Expected hero select v4 to expose a choose button.")
@@ -7571,13 +7586,24 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 			if a.get_global_rect().grow(-2.0).intersects(b.get_global_rect().grow(-2.0)):
 				_fail("Expected native hero select v4 controls not to overlap at %s: %s %s intersects %s %s." % [context, a.name, a.get_global_rect(), b.name, b.get_global_rect()])
 				return
-	if absf(portrait_image_rect.size.x - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0 or absf(portrait_image_rect.size.y - HERO_SELECT_MINIMAL_PREVIEW_SIZE) > 1.0:
-		_fail("Expected selected hero portrait to stay 250x250 at %s, got %s." % [context, portrait_image_rect])
+	if portrait_image_rect.size.x < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE or portrait_image_rect.size.y < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE:
+		_fail("Expected selected hero portrait to use enlarged SCRUM-798 footprint at %s, got %s." % [context, portrait_image_rect])
 		return
-	if absf(first_thumb_rect.size.x - HERO_SELECT_MINIMAL_SLOT_SIZE) > 1.0 or absf(first_thumb_rect.size.y - HERO_SELECT_MINIMAL_SLOT_SIZE) > 1.0:
-		_fail("Expected hero carousel slots to stay 150x150 at %s, got %s." % [context, first_thumb_rect])
+	if first_thumb_rect.size.x < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE or first_thumb_rect.size.y < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE:
+		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
-	var min_expected_thumb_width := 110.0
+	for relevance in ["primary", "secondary", "optional"]:
+		var guidance := hero_main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
+		if guidance == null or guidance.text.strip_edges() == "":
+			_fail("Expected data-driven Hero Select build guidance %s at %s." % [relevance, context])
+			return
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		var stat_button := hero_main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
+		var stat_fill := hero_main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
+		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
+			_fail("Expected Hero Select stat line bar with rich tooltip for %s at %s." % [stat_id, context])
+			return
+	var min_expected_thumb_width := HERO_SELECT_MINIMAL_SLOT_MIN_SIZE - 12.0
 	var first_thumb_visual := first_thumb.find_child("HS4CarouselPortrait_*", false, false) as Control
 	var first_thumb_visual_rect := first_thumb_visual.get_global_rect() if first_thumb_visual != null else first_thumb_rect
 	var thumb_square_tolerance := maxf(8.0, maxf(first_thumb_visual_rect.size.x, first_thumb_visual_rect.size.y) * 0.10)
