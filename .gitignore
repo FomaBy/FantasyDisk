@@ -42,3 +42,9 @@ desktop.ini
 # Локальные секреты-окружения (OpenAI key и пр.)
 .env
 *.env
+
+# Локальные токены/API secrets, включая PixelLab bearer token
+*.token
+*.secret
+auth_header.txt
+pixellab_auth_header.txt

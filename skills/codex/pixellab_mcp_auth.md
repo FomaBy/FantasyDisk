@@ -42,6 +42,15 @@ the MCP server environment.
 
 ## Safe Smoke Check
 
+Preferred repo helper:
+
+```bash
+python3 tools/pixellab_auth_smoke.py
+```
+
+The helper reads `AUTH_HEADER`, `PIXELLAB_BEARER_TOKEN`, or the local
+`~/.codex/config.toml`, calls `get_balance`, and never prints the token.
+
 From the FantasyDisk repo or any shell, run without printing the token:
 
 ```bash
