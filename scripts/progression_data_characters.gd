@@ -173,7 +173,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Точные выстрелы, метки и зоны поражения.",
 		"strengths": "дальность, одиночные цели, фокус элиток.",
 		"weaknesses": "слабее против плотной толпы рядом.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/sniper/sniper_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_idle_south.png",
 	},
 	"priest": {
 		"id": "priest",

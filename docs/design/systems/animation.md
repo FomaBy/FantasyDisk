@@ -214,6 +214,17 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
   fallbacks use the south row, Hero Select rotates through the same directional
   frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-433 (2026-07-01) applies the PixelLab directional runtime path to
+  Sniper using existing source character
+  `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/sniper/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/sniper_pixellab/`, and
+  `assets/sprites/characters/sniper_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
@@ -388,13 +399,15 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   pass. The bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-427 explicitly
   excludes attack animation.
-- SCRUM-433 adds the Sniper v2 Design-source handoff under
+- Historical Sniper v2 Design-source handoff: SCRUM-433 originally added source
+  assets under
   `docs/design/references/characters_v2/sniper/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
   accepted source sheet copy and QA report. Asset-side handoff copies live in
   `assets/sprites/characters/v2/sniper/`. The sheet repeats the accepted source
-  for idle/move placeholders only; Animator must create real `idle` and
-  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  for idle/move placeholders only; live Sniper runtime has since moved to the
+  PixelLab directional pack under `assets/sprites/characters/full_frame/sniper_pixellab/`.
+  White/neutral
   matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
   and `0` edge-visible pixels in source/cell/sheet outputs.
 - SCRUM-431 adds the Priest v2 Design-source handoff under

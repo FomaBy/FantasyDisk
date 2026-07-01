@@ -2290,7 +2290,7 @@
  },
  "art_char_redraw_v2_engineer_task.md": {
   "key": "SCRUM-428",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f42ca3a8ecbb7e3de8726310002b1b75"
  },
  "art_char_redraw_v2_guitarist_task.md": {
@@ -2315,8 +2315,8 @@
  },
  "art_char_redraw_v2_sniper_task.md": {
   "key": "SCRUM-433",
-  "status": "К выполнению",
-  "desc_hash": "dd2cc96429a8e25d6ff2a9a8760da2c0"
+  "status": "В работе",
+  "desc_hash": "8ed9d43b471666247f64a74e8d3fbada"
  },
  "art_char_redraw_v2_soldier_task.md": {
   "key": "SCRUM-434",
@@ -3300,17 +3300,17 @@
  },
  "animation_weapon_attack_long_spear_claude_task.md": {
   "key": "SCRUM-751",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "dea96825e9281e99706fde630d02096e"
  },
  "animation_weapon_attack_moon_crossbow_claude_task.md": {
   "key": "SCRUM-752",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "29623d33836a40ba9b077b43bd6c5b09"
  },
  "animation_weapon_attack_plague_syringe_claude_task.md": {
   "key": "SCRUM-753",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f34252666000f34cae50abaf509f4fdc"
  },
  "animation_weapon_attack_priest_censer_codex_task.md": {
@@ -3330,12 +3330,12 @@
  },
  "animation_weapon_attack_raven_totem_claude_task.md": {
   "key": "SCRUM-757",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "039c5392e3bb64d6e320d402d3f0ad9a"
  },
  "animation_weapon_attack_restore_potion_claude_task.md": {
   "key": "SCRUM-758",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "10c9808c50d5356549f3da9609d02828"
  },
  "animation_weapon_attack_robot_hydraulic_press_codex_task.md": {
@@ -3355,7 +3355,7 @@
  },
  "animation_weapon_attack_shadow_daggers_claude_task.md": {
   "key": "SCRUM-762",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5ba5af717dd939d9e2c163cf4600c352"
  },
  "animation_weapon_attack_sniper_deadeye_rifle_codex_task.md": {
@@ -3390,17 +3390,17 @@
  },
  "animation_weapon_attack_sound_amp_claude_task.md": {
   "key": "SCRUM-769",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c37cc271bd46fc064bdc297ff83da3dc"
  },
  "animation_weapon_attack_storm_longbow_claude_task.md": {
   "key": "SCRUM-770",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "167f3eadccc9a684251deb10f99f857d"
  },
  "animation_weapon_attack_summon_amulet_claude_task.md": {
   "key": "SCRUM-771",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "d3d0955a7279ebbe86c30d174b6e88a0"
  },
  "animation_weapon_attack_sword_codex_task.md": {
@@ -3425,12 +3425,12 @@
  },
  "animation_weapon_attack_tower_shield_claude_task.md": {
   "key": "SCRUM-776",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "6078f2dc3cacbe7370671532baf9cd18"
  },
  "animation_weapon_attack_venom_wire_claude_task.md": {
   "key": "SCRUM-777",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "15d7eadc47599cea9431b06bcf53f13c"
  },
  "codex_design_boss_pixellab_redraw_new_bosses_task.md": {

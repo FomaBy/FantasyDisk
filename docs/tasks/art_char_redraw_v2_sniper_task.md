@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Снайпер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -8,10 +8,10 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-433
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex Animator worker
+Thread/Worker: codex-animator-auto
 Locked paths: `assets/sprites/characters/pixellab/sniper/`, `assets/sprites/characters/full_frame/sniper_pixellab/`, `assets/sprites/characters/sniper_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
-QA: in_progress (2026-06-15)
+QA: ready for QA after Codex Animator integration on 2026-07-01
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## PM/Codex Reactivation — PixelLab Final Runtime Pass (2026-07-01)
@@ -28,6 +28,52 @@ PixelLab-графике. SCRUM-433 переиспользуется как ак�
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Codex Animator Claim — 2026-07-01
+
+SCRUM-433 взят `codex-animator-auto` через Jira-pull для серийной Animator/runtime
+интеграции после QA-возврата. Scope этого pass: влить уже созданный PixelLab
+Sniper pack из `origin/codex/scrum-433-sniper-pixellab` в dev-based worktree,
+подключить live `sprite_path`, обновить docs/tests/evidence, прогнать focused
+animation/Hero Select smokes, закоммитить и запушить в `origin/dev`.
+
+Locked paths:
+- `assets/sprites/characters/pixellab/sniper/`
+- `assets/sprites/characters/full_frame/sniper_pixellab/`
+- `assets/sprites/characters/sniper_spriteframes.tres`
+- `scripts/progression_data_characters.gd`
+- character docs/tests/evidence for SCRUM-433
+
+Next verification step: import existing PixelLab pack, wire Sniper portrait/runtime
+to `sniper_pixellab/sniper_idle_south.png`, then run focused animation and Hero
+Select registry checks.
+
+## Codex Animator Result — 2026-07-01
+
+SCRUM-433 Animator/runtime integration completed and ready for QA. The previously
+created PixelLab Sniper pack from `origin/codex/scrum-433-sniper-pixellab`
+(`PixelLab character_id: 74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) is now present
+in the dev-based worktree and wired as the live Sniper runtime.
+
+Implemented:
+- Source pack: `assets/sprites/characters/pixellab/sniper/` (56 PNG frames + manifest/import metadata).
+- Runtime pack: `assets/sprites/characters/full_frame/sniper_pixellab/` (56 transparent normalized PNG frames).
+- SpriteFrames: `assets/sprites/characters/sniper_spriteframes.tres` with 8-direction idle plus 6-frame move/walk rows.
+- Runtime portrait/path: `scripts/progression_data_characters.gd` now uses `res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_idle_south.png`.
+- Hero Select and registry tests include Sniper in PixelLab directional coverage.
+- Docs updated in `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, and `docs/design/systems/animation.md`.
+
+Verification passed:
+- `python3 tools/godot_gate.py --headless --path . --script res://build/qa/scrum433_sniper_pixellab/sniper_spriteframes_validate.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Disk cleanup: generated Godot `.godot/` import cache removed before final report;
+unrelated generated `.import` sidecars from test import were discarded; no
+disposable external checkout created.
 
 ## PM Unhold / Current Queue State (2026-06-30)
 

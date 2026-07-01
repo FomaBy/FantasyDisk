@@ -67,7 +67,7 @@
 | `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
 | `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-435 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-427 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
-| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/sniper_sheet.png`, `assets/sprites/characters/sniper_spriteframes.tres`, `assets/sprites/characters/full_frame/sniper/`, `assets/sprites/characters/cutout/sniper_*.png`, v2 source handoff `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png` | Реализовано; SCRUM-296 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-433 v2 source handoff ready, not live runtime |
+| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper_spriteframes.tres`, `assets/sprites/characters/full_frame/sniper_pixellab/`, `assets/sprites/characters/pixellab/sniper/`, legacy `assets/sprites/characters/full_frame/sniper/`, `assets/sprites/characters/sniper.png`, `assets/sprites/characters/sniper_sheet.png`, `assets/sprites/characters/cutout/sniper_*.png`, v2 source handoff `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png` | Реализовано; SCRUM-433 live runtime uses PixelLab character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c` with 8-direction idle rotations and 6-frame directional move/walk rows, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-296 full-frame art remains fallback/history |
 | `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest_spriteframes.tres`, `assets/sprites/characters/full_frame/priest_pixellab/`, `assets/sprites/characters/pixellab/priest/`, legacy `assets/sprites/characters/full_frame/priest/`, `assets/sprites/characters/priest.png`, `assets/sprites/characters/cutout/priest_*.png`, v2 source handoff `assets/sprites/characters/v2/priest/priest_v2_idle_source.png` | Реализовано; SCRUM-431 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy full-frame art remains history/fallback |
 | `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-421 v2 source handoff ready, not live runtime |
 | `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
@@ -86,7 +86,7 @@ SCRUM-416 runtime portrait rule: for most playable classes,
 idle frame as the canonical static UI portrait path:
 `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab
 directional classes (`berserk`, `dark_mage`, `guitarist`, `doctor`, `chemist`,
-`engineer`, `knight`, `priest`, `druid`) use
+`engineer`, `knight`, `priest`, `druid`, `sniper`) use
 `assets/sprites/characters/full_frame/<class>_pixellab/<class>_idle_south.png`
 instead.
 Hero Select, hero thumbnails, Codex and level-up portrait surfaces read this
@@ -112,6 +112,16 @@ PNGs, manifest and PixelLab evidence live under
 `assets/sprites/characters/pixellab/engineer/`; normalized runtime frames live
 under `assets/sprites/characters/full_frame/engineer_pixellab/`, and
 `assets/sprites/characters/engineer_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract.
+
+SCRUM-433 promotes Sniper to the same PixelLab directional runtime contract:
+PixelLab character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c` provides 8 static
+idle rotations and `walking-6-frames` movement rows for all directions. Source
+PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/sniper/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/sniper_pixellab/`, and
+`assets/sprites/characters/sniper_spriteframes.tres` exposes generic
 idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
 `walk_<direction>` rows for the 8-direction runtime/preview contract.
 
@@ -286,16 +296,16 @@ previous live frames are backed up under
 under `build/qa/scrum427_elementalist_v2_anim/`; animation and runtime smokes
 PASS.
 
-SCRUM-433 adds the Sniper v2 Design-source handoff under
+Historical Sniper v2 Design-source handoff: SCRUM-433 originally added
 `docs/design/references/characters_v2/sniper/`: raw OpenAI source,
 alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
 source-sheet layout, accepted source sheet copy, handoff note and QA report.
 Asset-side handoff copies live in
 `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png`,
 `assets/sprites/characters/v2/sniper/sniper_v2_sheet_source_handoff.png` and
-`assets/sprites/characters/v2/sniper/sniper_v2_sheet.png`. These are source
-handoff assets only; they do not replace current runtime `sniper_sheet.png` or
-`sniper_spriteframes.tres` until Animator/Back-end integration is accepted.
+`assets/sprites/characters/v2/sniper/sniper_v2_sheet.png`. These source-handoff
+assets are historical now; live Sniper runtime/portrait uses the PixelLab
+directional pack under `assets/sprites/characters/full_frame/sniper_pixellab/`.
 
 SCRUM-431 adds the Priest v2 Design-source handoff under
 `docs/design/references/characters_v2/priest/`: raw OpenAI source, alpha-clean

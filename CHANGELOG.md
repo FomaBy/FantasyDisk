@@ -5,6 +5,13 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-433: PixelLab Sniper runtime pack is now live on dev. Reused PixelLab
+  character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`, stored source rotations
+  and six-frame movement rows under `assets/sprites/characters/pixellab/sniper/`,
+  normalized transparent `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/sniper_pixellab/`, rebuilt
+  `sniper_spriteframes.tres` with directional idle/move/walk rows, and routed
+  Sniper portraits/Hero Select preview to `sniper_idle_south.png`.
 - SCRUM-428: PixelLab Engineer runtime pack is now live. Reused existing
   PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621`, stored source
   rotations and 6-frame `walking-6-frames` rows under
