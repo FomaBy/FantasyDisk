@@ -69,3 +69,27 @@ Gameplay/shared runtime: no damage, cooldown, targeting, attack range, AoE radiu
 Docs scope: per dispatcher correction 2026-07-01, broad shared docs were left unchanged because the runtime path/API contract did not change; evidence is task-specific.
 
 Disk cleanup: temporary `.godot` symlink to the main checkout import cache removed; no disposable clone created.
+
+## QA-Вердикт 2026-07-01
+
+Статус: PASSED
+
+QA owner: `QA/Codex`, worker `codex-qa-scrum742-vfx-20260701`.
+
+Проверено:
+- Jira SCRUM-742 was in `Контроль качества`; implementation result points to branch `codex/SCRUM-742-attack-vfx-orb`, commits `5f7ba589` and `7bc23381`.
+- Submitted scope is task-local: runtime PNG, task-specific source/manifest/preview, task mirror, and Jira sync map only. No `.import`, `.uid`, `.godot`, caches, secrets, token-looking files, shared scripts, scenes, or unrelated assets are in the result diff.
+- Runtime visual inspected: `assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png` reads as a three-element orbit with transparent center and canonical weapon ghost silhouette.
+- Independent PNG alpha/readability check PASS: `256x256` RGBA, nonzero alpha `40.93%`, max alpha `190`, center mean alpha `1.106/255`, transparent corners, lower-left watermark cleanup region alpha `0`, readable on dark/light/green backgrounds.
+- `FSD_GODOT_SLOTS=8 python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` PASS: `Unique weapon VFX assets smoke passed: 51 plates.`
+- `FSD_GODOT_SLOTS=8 python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` PASS: `Attack VFX smoke test passed.`
+- Broader `animation_smoke_test.gd` / `runtime_smoke_test.gd` not required: branch diff contains no `.gd`, `.tscn`, scene, script, balance, or runtime-hook changes.
+
+Краевые случаи:
+- Transparent-center readability over checker/dark arena/light sand/meadow green preview checked.
+- Static scope audit confirmed no Godot import sidecars or cache files in the committed result.
+- Repeated VFX spawning path covered by the 51-plate unique weapon VFX smoke and AttackVfx helper smoke.
+
+Баги: нет.
+
+Disk cleanup: temporary `.godot` symlink and generated `build/qa/scrum457/attack_vfx_calmness_dump.md` test scratch removed before final report; no disposable clone created.
