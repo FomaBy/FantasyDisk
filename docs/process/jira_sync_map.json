@@ -3251,12 +3251,12 @@
  "animation_weapon_attack_elementalist_meteor_core_codex_task.md": {
   "key": "SCRUM-741",
   "status": "К выполнению",
-  "desc_hash": "1494a11bd8d3539ac691c5f1d43d7991"
+  "desc_hash": "c4cc1712de4dc55d9b5d01135ac820dc"
  },
  "animation_weapon_attack_elementalist_orb_ring_codex_task.md": {
   "key": "SCRUM-742",
-  "status": "К выполнению",
-  "desc_hash": "c179f2560f6055d9b62556edc26b4bff"
+  "status": "Готово",
+  "desc_hash": "61c7082d90c9cd4366ca14cae6acb9fd"
  },
  "animation_weapon_attack_elementalist_prism_focus_codex_task.md": {
   "key": "SCRUM-743",
@@ -3320,7 +3320,7 @@
  },
  "animation_weapon_attack_priest_chime_codex_task.md": {
   "key": "SCRUM-755",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c106025d04f8cd12248b1834cf85ce30"
  },
  "animation_weapon_attack_priest_reliquary_codex_task.md": {
@@ -3370,7 +3370,7 @@
  },
  "animation_weapon_attack_sniper_spotter_scope_codex_task.md": {
   "key": "SCRUM-765",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "74f3a28d75895da83d3ddabedcbc3960"
  },
  "animation_weapon_attack_soldier_bayonet_codex_task.md": {
@@ -3555,8 +3555,8 @@
  },
  "animation_scrum779_boss_pixellab_promotion_handoff_task.md": {
   "key": "SCRUM-793",
-  "status": "К выполнению",
-  "desc_hash": "2f8609e41e060d0191efb504d72c8bee"
+  "status": "Контроль качества",
+  "desc_hash": "2f0ee54985c68f5a4a10a405d1aeae24"
  },
  "backend_scrum779_new_bosses_runtime_handoff_task.md": {
   "key": "SCRUM-794",

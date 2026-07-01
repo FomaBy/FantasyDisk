@@ -1,6 +1,6 @@
 # Animation Task: SCRUM-779 Boss PixelLab Candidate Promotion
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Animator / codex-animator-auto
 Thread: fantasydisk-codex-animator-agent
