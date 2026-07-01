@@ -5,6 +5,16 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-803: PixelLab Assassin runtime pack is now live on dev. Generated
+  accepted empty-open-hands source character
+  `ec73da27-b704-4336-9275-74c8e3e578df`, rejected/deleted candidate
+  `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` for baking a held blade, stored source
+  rotations and six-frame movement rows under
+  `assets/sprites/characters/pixellab/assassin/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/assassin_pixellab/`, rebuilt
+  `assassin_spriteframes.tres` with directional idle/move/walk rows, and routed
+  Assassin portraits/Hero Select preview to `assassin_idle_south.png`.
 - SCRUM-433: PixelLab Sniper runtime pack is now live on dev. Reused PixelLab
   character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`, stored source rotations
   and six-frame movement rows under `assets/sprites/characters/pixellab/sniper/`,

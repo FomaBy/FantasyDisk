@@ -1,15 +1,17 @@
 # ART/ANIM PixelLab: «Ассасин» (assassin) — final 8-direction runtime redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Design main (Codex) -> Animator/Back-end integration
 Версия: 0.1.8
 Создано: 2026-07-01
 Jira: SCRUM-803
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Animator/Codex
+Thread/Worker: codex-animator-auto
 Locked paths: `assets/sprites/characters/pixellab/assassin/`, `assets/sprites/characters/full_frame/assassin_pixellab/`, `assets/sprites/characters/assassin_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
+
+Dispatch: Jira-pull claimed by Animator/Codex (`codex-animator-auto`) 2026-07-01.
 
 ## Context / Problem
 
@@ -36,3 +38,44 @@ References:
 - `scripts/progression_data_characters.gd` points `assassin.sprite_path` to `res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png`.
 - Hero Select preview rotates with live directional frames.
 - Docs and focused animation/Hero Select smokes are updated/run; Jira result records the PixelLab source id.
+
+## Result / 2026-07-01 Codex Animator
+
+Status: implementation complete on branch; blocked from QA handoff by stale
+external Godot/godot_gate processes occupying the required test gate.
+
+- Accepted PixelLab source: `ec73da27-b704-4336-9275-74c8e3e578df`
+  (`FantasyDisk Assassin SCRUM-803 empty open hands retry`).
+- Rejected/deleted PixelLab source: `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8`;
+  rejected before import because the preview baked a held blade, violating the
+  empty-hands requirement.
+- Source pack: `assets/sprites/characters/pixellab/assassin/` with
+  `manifest.json`, 8 idle rotations and 48 movement frames.
+- Runtime pack: `assets/sprites/characters/full_frame/assassin_pixellab/` with
+  56 transparent `512x512` PNGs normalized to 245 px visible height.
+- Runtime wiring: `assassin_spriteframes.tres` now exposes generic
+  idle/move/walk fallbacks plus 8-direction `idle_`, `move_` and `walk_` rows;
+  `scripts/progression_data_characters.gd` points Assassin portraits to
+  `assassin_idle_south.png`.
+- Evidence: `docs/design/previews/scrum803_assassin_pixellab_contact.png`,
+  `docs/design/previews/scrum803_assassin_pixellab_bbox_report.json`, and
+  `docs/design/previews/scrum803_assassin_pixellab_bbox_report.md`.
+
+Local validation:
+
+- PASS: Python/Pillow asset shape check confirmed 56 source PNGs, 56 runtime
+  PNGs, and every runtime frame is transparent RGBA `512x512`.
+- BLOCKED: `python3 tools/godot_gate.py --headless --path . --script
+  res://tests/character_sprite_registry_alignment_test.gd` did not reach Godot
+  because the gate was occupied by unrelated long-running Godot imports/tests
+  (examples observed: `unique_weapon_vfx_assets_test.gd`,
+  `attack_vfx_smoke_test.gd`, `animation_smoke_test.gd`, multiple
+  `--import --quit` processes aged 5-22 minutes). This worker stopped only its
+  own waiting gate process and did not kill other workers' processes.
+
+Next worker/dispatcher action: free or wait out stale Godot gate processes, then
+run the required focused smokes:
+
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`

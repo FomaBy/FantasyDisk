@@ -544,6 +544,23 @@ fallbacks plus all 8 directional `idle_*`, 6-frame `move_*`, and 6-frame
 Codex, level-up portraits and runtime movement use the same live directional
 pack. Legacy full-frame/cutout/v2 assets remain fallback/history only.
 
+2026-07-01 SCRUM-803 promotes Assassin to the live PixelLab directional runtime
+contract using accepted empty-open-hands source character
+`ec73da27-b704-4336-9275-74c8e3e578df` (`252x252`, low top-down). Source idle
+rotations, movement frames and `manifest.json` are stored under
+`assets/sprites/characters/pixellab/assassin/`, then normalized into transparent
+`512x512` runtime frames under
+`assets/sprites/characters/full_frame/assassin_pixellab/`. The rebuilt
+`assets/sprites/characters/assassin_spriteframes.tres` exposes 8 static
+`idle_<direction>` rows and 6-frame `move_<direction>` / `walk_<direction>` rows;
+the generic fallbacks use the south row, `sprite_path` points at
+`assassin_idle_south.png`, and Hero Select rotates the same directional frames.
+Chakrams, shadow daggers and venom wire remain weapon-owned visuals. PixelLab
+candidate `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` was rejected/deleted before
+import because it baked a held blade. Legacy
+`assets/sprites/characters/full_frame/assassin/`, `assassin.png`,
+`assassin_sheet.png` and cutout pieces remain fallback/history.
+
 2026-06-30 SCRUM-431 PixelLab Priest integration replaces the legacy Priest
 full-frame art with an 8-direction PixelLab holy support-caster pack (white-gold
 robes, halo, empty hands, no baked weapon/tool). PixelLab character
