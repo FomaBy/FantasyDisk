@@ -154,5 +154,5 @@ Verification blocker:
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/codex_data_smoke_test.gd` also blocked at the gate's automatic import-cache step for the same reason.
 - Required Godot gates (`--import`, `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`, `codex_data_smoke_test.gd`) are therefore **not claimed green** in this run.
 
-Disk cleanup: pending final cleanup of `.godot` after commit/push bookkeeping.
+Disk cleanup: removed partial `.godot` import cache and ignored `build/qa/codex_redesign_asset_audit.md` duplicate; no disposable clone/worktree created.
 Thread cleanup: pending archive at worker finish.
