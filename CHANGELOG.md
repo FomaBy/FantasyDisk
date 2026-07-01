@@ -5,6 +5,26 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-803: PixelLab Assassin runtime pack is now live on dev. Generated
+  accepted empty-open-hands source character
+  `ec73da27-b704-4336-9275-74c8e3e578df`, rejected/deleted candidate
+  `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` for baking a held blade, stored source
+  rotations and six-frame movement rows under
+  `assets/sprites/characters/pixellab/assassin/`, normalized transparent
+  `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/assassin_pixellab/`, rebuilt
+  `assassin_spriteframes.tres` with directional idle/move/walk rows, and routed
+  Assassin portraits/Hero Select preview to `assassin_idle_south.png`.
+- SCRUM-804: PixelLab Ranger runtime redraw is now live. Generated new
+  empty-handed PixelLab character `1646d83c-f570-4bdd-9065-cb1b46bf13f7`,
+  stored 8-direction idle rotations and six-frame `walking-6-frames` movement
+  rows under `assets/sprites/characters/pixellab/ranger/`, normalized all 56
+  frames into transparent `512x512` runtime PNGs under
+  `assets/sprites/characters/full_frame/ranger_pixellab/` with a `245 px`
+  visible alpha height, rebuilt `ranger_spriteframes.tres` with directional
+  idle/move/walk rows, and routed Ranger portraits/Hero Select preview to
+  `ranger_idle_south.png`. Bow, crossbow, trap and projectile visuals remain
+  weapon-owned assets.
 - SCRUM-433: PixelLab Sniper runtime pack is now live on dev. Reused PixelLab
   character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`, stored source rotations
   and six-frame movement rows under `assets/sprites/characters/pixellab/sniper/`,

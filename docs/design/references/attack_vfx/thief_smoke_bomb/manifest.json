@@ -1,0 +1,62 @@
+{
+  "issue": "SCRUM-775",
+  "asset": "thief_smoke_bomb attack VFX",
+  "weapon_id": "thief_smoke_bomb",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+  "source_files": [
+    "thief_smoke_bomb_pixellab_source_raw_candidate1.png",
+    "thief_smoke_bomb_pixellab_source_raw.png",
+    "thief_smoke_bomb_pixellab_source.png",
+    "static_alpha_readability_report.json",
+    "prompt_notes.md"
+  ],
+  "preview": "docs/design/previews/attack_vfx/thief_smoke_bomb_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "08edb666-7ad1-4675-a39a-d2190b042900",
+    "unused_candidate_id": "5a68f6da-9a6a-46db-bb9e-e89de4ae4e4a",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/08edb666-7ad1-4675-a39a-d2190b042900/download",
+    "unused_candidate_download_url": "https://api.pixellab.ai/mcp/map-objects/5a68f6da-9a6a-46db-bb9e-e89de4ae4e4a/download",
+    "size": "256x256px",
+    "view": "low top-down",
+    "mode": "basic",
+    "background_note": "PixelLab metadata said transparent; downloaded PNG used opaque flat corner background, removed by corner-color alpha cleanup."
+  },
+  "postprocess": {
+    "steps": [
+      "Downloaded raw PixelLab candidate 2 as selected source; candidate 1 kept as unused evidence.",
+      "Removed opaque flat preview background using corner-color alpha cleanup.",
+      "Recolored the PixelLab source from icy blue toward calm grey-blue smoke while preserving violet motes.",
+      "Reduced center alpha for combat readability and capped final alpha.",
+      "Composited canonical assets/sprites/weapons/thief_smoke_bomb.png as a low-opacity ghost silhouette behind the smoke plate.",
+      "Exported runtime as 256x256 RGBA transparent PNG at the existing vfx_weapon_thief_smoke_bomb path."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        19,
+        19,
+        237,
+        238
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.4918,
+      "visible_pixel_ratio_alpha_gt_32": 0.4866,
+      "max_alpha": 172,
+      "mean_alpha_all_pixels": 55.86,
+      "mean_alpha_visible_pixels": 113.52,
+      "center_64_mean_alpha": 81.5,
+      "center_64_max_alpha": 130,
+      "outer_ring_mean_alpha": 51.26,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}

@@ -149,7 +149,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тактика, залпы и контроль позиции.",
 		"strengths": "дальность, стабильность, контроль.",
 		"weaknesses": "нужна линия огня.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/soldier/soldier_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
 	},
 	"thief": {
 		"id": "thief",
@@ -157,7 +157,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Уловки, рывки и карманная экономика.",
 		"strengths": "мобильность, крит, золото.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/thief/thief_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
@@ -165,7 +165,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Смена стихий, орбиты и разломы.",
 		"strengths": "области поражения, контроль зон, взрывной урон.",
 		"weaknesses": "хрупкий, требует позицию.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
 	},
 	"sniper": {
 		"id": "sniper",
@@ -197,7 +197,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
 		"strengths": "выживаемость, контроль, стабильный урон.",
 		"weaknesses": "медленный, зависит от позиционирования.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/robot/robot_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/robot_pixellab/robot_idle_south.png",
 	},
 	"engineer": {
 		"id": "engineer",
@@ -228,14 +228,14 @@ const CHARACTER_CONFIGS := {
 		"description": "Криты, скорость и яд.",
 		"strengths": "криты, уворот, темп.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
 		"description": "Дальние линии и ловушки.",
 		"strengths": "дальность, пробивание.",
 		"weaknesses": "плох вблизи.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",

@@ -1,0 +1,57 @@
+{
+  "issue": "SCRUM-774",
+  "asset": "thief_shadow_cloak attack VFX",
+  "weapon_id": "thief_shadow_cloak",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+  "source_files": [
+    "docs/design/references/attack_vfx/thief_shadow_cloak/thief_shadow_cloak_pixellab_source_raw.png",
+    "docs/design/references/attack_vfx/thief_shadow_cloak/thief_shadow_cloak_pixellab_source.png",
+    "docs/design/references/attack_vfx/thief_shadow_cloak/thief_shadow_cloak_runtime_candidate_256.png",
+    "docs/design/references/attack_vfx/thief_shadow_cloak/previous_runtime_before_scrum774.png"
+  ],
+  "mirror_reference_dir": "docs/design/references/weapon_attack_animations/thief_shadow_cloak",
+  "preview": "docs/design/previews/weapon_attack_animations/thief_shadow_cloak_contact.png",
+  "pixel_lab": {
+    "tool": "create_1_direction_object",
+    "object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9",
+    "download_url": "https://api.pixellab.ai/mcp/objects/35360c9c-d67b-4f84-8fc5-6041c87db9e9/download",
+    "size": "256x256px",
+    "view": "top-down",
+    "background": "transparent RGBA with baked checkerboard pixels requiring alpha cleanup",
+    "cost": "20 generations"
+  },
+  "postprocess": {
+    "steps": [
+      "Saved previous runtime VFX as task-local evidence.",
+      "Saved raw PixelLab source PNG to the task reference folder.",
+      "Removed baked neutral checkerboard pixels from the PixelLab output.",
+      "Shifted remaining shadow mass toward violet thief magic.",
+      "Composited canonical weapon PNG as a low-opacity cloak ghost silhouette.",
+      "Reinforced the backstab path and target splash with calm semi-transparent deterministic marks.",
+      "Capped final alpha and softened center/corners for combat readability.",
+      "Exported runtime PNG to the existing AttackVfx weapon-signature path."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        21,
+        12,
+        239,
+        237
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.3864,
+      "max_alpha": 174,
+      "mean_alpha_all_pixels": 36.98,
+      "mean_alpha_visible_pixels": 95.23,
+      "center_64_mean_alpha": 68.51,
+      "center_64_max_alpha": 174,
+      "outer_ring_mean_alpha": 94.83
+    }
+  },
+  "runtime_api_changed": false,
+  "override_rationale": "Direct 2026-07-01 user/delegation directive requires PixelLab-first after the stale OpenAI Images billing blocker; no OpenAI Images or image_gen fallback was used."
+}

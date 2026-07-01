@@ -1,0 +1,737 @@
+{
+  "ok": true,
+  "errors": [],
+  "summary": {
+    "source_dir": "assets/sprites/characters/pixellab/soldier",
+    "runtime_dir": "assets/sprites/characters/full_frame/soldier_pixellab",
+    "spriteframes": "assets/sprites/characters/soldier_spriteframes.tres",
+    "expected_directions": [
+      "south",
+      "south-east",
+      "east",
+      "north-east",
+      "north",
+      "north-west",
+      "west",
+      "south-west"
+    ],
+    "source_png_count": 56,
+    "runtime_png_count": 56,
+    "pixellab_character_id": "72b487d3-feea-4012-b39f-b59ba24f7f11",
+    "runtime_alpha_height_values": [
+      245
+    ],
+    "runtime_bottom_y2_values": [
+      480
+    ],
+    "runtime_width_range": [
+      82,
+      160
+    ],
+    "spriteframes_ext_resource_count": 56,
+    "spriteframes_animation_names": [
+      "idle",
+      "idle_east",
+      "idle_north",
+      "idle_north_east",
+      "idle_north_west",
+      "idle_south",
+      "idle_south_east",
+      "idle_south_west",
+      "idle_west",
+      "move",
+      "move_east",
+      "move_north",
+      "move_north_east",
+      "move_north_west",
+      "move_south",
+      "move_south_east",
+      "move_south_west",
+      "move_west",
+      "walk",
+      "walk_east",
+      "walk_north",
+      "walk_north_east",
+      "walk_north_west",
+      "walk_south",
+      "walk_south_east",
+      "walk_south_west",
+      "walk_west"
+    ],
+    "spriteframes_referenced_runtime_pngs": 56
+  },
+  "runtime_bboxes": [
+    {
+      "file": "soldier_idle_east.png",
+      "bbox": [
+        196,
+        235,
+        316,
+        480
+      ],
+      "width": 120,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_idle_north-east.png",
+      "bbox": [
+        201,
+        235,
+        310,
+        480
+      ],
+      "width": 109,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_idle_north-west.png",
+      "bbox": [
+        176,
+        235,
+        336,
+        480
+      ],
+      "width": 160,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_idle_north.png",
+      "bbox": [
+        178,
+        235,
+        333,
+        480
+      ],
+      "width": 155,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_idle_south-east.png",
+      "bbox": [
+        185,
+        235,
+        327,
+        480
+      ],
+      "width": 142,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_idle_south-west.png",
+      "bbox": [
+        192,
+        235,
+        320,
+        480
+      ],
+      "width": 128,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_idle_south.png",
+      "bbox": [
+        179,
+        235,
+        332,
+        480
+      ],
+      "width": 153,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_idle_west.png",
+      "bbox": [
+        199,
+        235,
+        313,
+        480
+      ],
+      "width": 114,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_east_00.png",
+      "bbox": [
+        204,
+        235,
+        307,
+        480
+      ],
+      "width": 103,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_east_01.png",
+      "bbox": [
+        191,
+        235,
+        321,
+        480
+      ],
+      "width": 130,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_east_02.png",
+      "bbox": [
+        197,
+        235,
+        315,
+        480
+      ],
+      "width": 118,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_east_03.png",
+      "bbox": [
+        204,
+        235,
+        307,
+        480
+      ],
+      "width": 103,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_east_04.png",
+      "bbox": [
+        194,
+        235,
+        318,
+        480
+      ],
+      "width": 124,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_east_05.png",
+      "bbox": [
+        199,
+        235,
+        312,
+        480
+      ],
+      "width": 113,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_north-east_00.png",
+      "bbox": [
+        196,
+        235,
+        316,
+        480
+      ],
+      "width": 120,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-east_01.png",
+      "bbox": [
+        188,
+        235,
+        323,
+        480
+      ],
+      "width": 135,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_north-east_02.png",
+      "bbox": [
+        192,
+        235,
+        320,
+        480
+      ],
+      "width": 128,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-east_03.png",
+      "bbox": [
+        198,
+        235,
+        313,
+        480
+      ],
+      "width": 115,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_north-east_04.png",
+      "bbox": [
+        189,
+        235,
+        323,
+        480
+      ],
+      "width": 134,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-east_05.png",
+      "bbox": [
+        193,
+        235,
+        319,
+        480
+      ],
+      "width": 126,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-west_00.png",
+      "bbox": [
+        195,
+        235,
+        316,
+        480
+      ],
+      "width": 121,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_north-west_01.png",
+      "bbox": [
+        190,
+        235,
+        322,
+        480
+      ],
+      "width": 132,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-west_02.png",
+      "bbox": [
+        189,
+        235,
+        322,
+        480
+      ],
+      "width": 133,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_north-west_03.png",
+      "bbox": [
+        198,
+        235,
+        314,
+        480
+      ],
+      "width": 116,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-west_04.png",
+      "bbox": [
+        180,
+        235,
+        332,
+        480
+      ],
+      "width": 152,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north-west_05.png",
+      "bbox": [
+        183,
+        235,
+        329,
+        480
+      ],
+      "width": 146,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_00.png",
+      "bbox": [
+        181,
+        235,
+        331,
+        480
+      ],
+      "width": 150,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_01.png",
+      "bbox": [
+        181,
+        235,
+        331,
+        480
+      ],
+      "width": 150,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_02.png",
+      "bbox": [
+        180,
+        235,
+        332,
+        480
+      ],
+      "width": 152,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_03.png",
+      "bbox": [
+        182,
+        235,
+        330,
+        480
+      ],
+      "width": 148,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_04.png",
+      "bbox": [
+        184,
+        235,
+        328,
+        480
+      ],
+      "width": 144,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_north_05.png",
+      "bbox": [
+        182,
+        235,
+        330,
+        480
+      ],
+      "width": 148,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-east_00.png",
+      "bbox": [
+        198,
+        235,
+        314,
+        480
+      ],
+      "width": 116,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-east_01.png",
+      "bbox": [
+        196,
+        235,
+        315,
+        480
+      ],
+      "width": 119,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south-east_02.png",
+      "bbox": [
+        190,
+        235,
+        322,
+        480
+      ],
+      "width": 132,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-east_03.png",
+      "bbox": [
+        189,
+        235,
+        323,
+        480
+      ],
+      "width": 134,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-east_04.png",
+      "bbox": [
+        183,
+        235,
+        329,
+        480
+      ],
+      "width": 146,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-east_05.png",
+      "bbox": [
+        188,
+        235,
+        324,
+        480
+      ],
+      "width": 136,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-west_00.png",
+      "bbox": [
+        198,
+        235,
+        314,
+        480
+      ],
+      "width": 116,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-west_01.png",
+      "bbox": [
+        188,
+        235,
+        323,
+        480
+      ],
+      "width": 135,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south-west_02.png",
+      "bbox": [
+        191,
+        235,
+        320,
+        480
+      ],
+      "width": 129,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south-west_03.png",
+      "bbox": [
+        194,
+        235,
+        318,
+        480
+      ],
+      "width": 124,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south-west_04.png",
+      "bbox": [
+        194,
+        235,
+        317,
+        480
+      ],
+      "width": 123,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south-west_05.png",
+      "bbox": [
+        193,
+        235,
+        318,
+        480
+      ],
+      "width": 125,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south_00.png",
+      "bbox": [
+        199,
+        235,
+        312,
+        480
+      ],
+      "width": 113,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_south_01.png",
+      "bbox": [
+        199,
+        235,
+        313,
+        480
+      ],
+      "width": 114,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south_02.png",
+      "bbox": [
+        200,
+        235,
+        312,
+        480
+      ],
+      "width": 112,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south_03.png",
+      "bbox": [
+        199,
+        235,
+        313,
+        480
+      ],
+      "width": 114,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south_04.png",
+      "bbox": [
+        201,
+        235,
+        311,
+        480
+      ],
+      "width": 110,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_south_05.png",
+      "bbox": [
+        200,
+        235,
+        311,
+        480
+      ],
+      "width": 111,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_west_00.png",
+      "bbox": [
+        213,
+        235,
+        298,
+        480
+      ],
+      "width": 85,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_west_01.png",
+      "bbox": [
+        188,
+        235,
+        324,
+        480
+      ],
+      "width": 136,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_west_02.png",
+      "bbox": [
+        191,
+        235,
+        320,
+        480
+      ],
+      "width": 129,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_west_03.png",
+      "bbox": [
+        215,
+        235,
+        297,
+        480
+      ],
+      "width": 82,
+      "height": 245,
+      "center_x": 256.0
+    },
+    {
+      "file": "soldier_move_west_04.png",
+      "bbox": [
+        209,
+        235,
+        302,
+        480
+      ],
+      "width": 93,
+      "height": 245,
+      "center_x": 255.5
+    },
+    {
+      "file": "soldier_move_west_05.png",
+      "bbox": [
+        210,
+        235,
+        301,
+        480
+      ],
+      "width": 91,
+      "height": 245,
+      "center_x": 255.5
+    }
+  ]
+}

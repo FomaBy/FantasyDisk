@@ -1,0 +1,105 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "1646d83c-f570-4bdd-9065-cb1b46bf13f7",
+        "name": "FantasyDisk Ranger SCRUM-804 empty hands",
+        "prompt": "FantasyDisk playable Ranger, dark fantasy woodland scout and moon hunter, low top-down RPG sprite, full body, empty open hands, no held items, no weapon, no bow, no crossbow, no quiver, no arrows, no trap, no projectile, no UI frame. Identity from current FantasyDisk Ranger reference: young agile human ranger with brown tousled hair, emerald green hooded cloak and torn leaf-edged cape, layered tan and olive leather armor, belts and pouches, crescent moon and leaf ornaments, teal-blue moon gemstone accents, brown boots and bracers. Readable distant-control archer fantasy without any baked weapon props; weapons stay separate runtime assets. D&D dark fantasy pixel art, transparent background, clean strong silhouette, centered neutral stance, visible arms and legs for walking animation, not chibi, no text, no watermark.",
+        "size": {
+          "width": 240,
+          "height": 240
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-01T18:04:03.928852+00:00"
+      },
+      "folder": "FantasyDisk_Ranger_SCRUM-804_empty_hands",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/south.png",
+          "south-east": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/south-east.png",
+          "east": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/east.png",
+          "north-east": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/north-east.png",
+          "north": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/north.png",
+          "north-west": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/north-west.png",
+          "west": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/west.png",
+          "south-west": "FantasyDisk_Ranger_SCRUM-804_empty_hands/rotations/south-west.png"
+        },
+        "animations": {
+          "animating": {
+            "south-east": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south-east/frame_005.png"
+            ],
+            "south": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/south/frame_005.png"
+            ],
+            "north-east": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/north-east/frame_005.png"
+            ],
+            "east": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating/east/frame_005.png"
+            ]
+          },
+          "animating-ef8097a7": {
+            "south-west": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/south-west/frame_005.png"
+            ],
+            "west": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/west/frame_005.png"
+            ],
+            "north-west": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north-west/frame_005.png"
+            ],
+            "north": [
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_000.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_001.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_002.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_003.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_004.png",
+              "FantasyDisk_Ranger_SCRUM-804_empty_hands/animations/animating-ef8097a7/north/frame_005.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-07-01T18:24:16.672688"
+}

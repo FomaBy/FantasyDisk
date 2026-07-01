@@ -1,6 +1,6 @@
 # Animation: Семя Симбионта (biologist_symbiote_seed) attack VFX redraw
 
-Статус: blocked
+Статус: new
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
@@ -89,3 +89,12 @@ Generated/runtime files: none.
 Tests: not run; blocked before asset generation.
 Disk cleanup: removed the empty retry-only evidence directory; no other transient
 artifacts created.
+
+## Dispatcher Unblock — PixelLab path (2026-07-01)
+
+Direct user directive 2026-07-01: remove blockers and continue autonomously.
+The previous OpenAI Images-only path remains blocked by `billing_hard_limit_reached`,
+so Jira was unblocked by switching this attack-VFX task to the mandatory
+PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
+record the PixelLab object/job id, source/runtime paths, static alpha/readability
+evidence, Godot smoke results, and `Disk cleanup:` in the final result.

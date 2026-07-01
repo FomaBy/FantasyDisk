@@ -1,0 +1,65 @@
+{
+  "issue": "SCRUM-763",
+  "weapon_id": "sniper_deadeye_rifle",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle.png",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/sniper_deadeye_rifle/sniper_deadeye_rifle_pixellab_source_raw.png",
+  "pixel_lab_unused_candidate_path": "docs/design/references/weapon_attack_animations/sniper_deadeye_rifle/sniper_deadeye_rifle_pixellab_candidate_a_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/sniper_deadeye_rifle/sniper_deadeye_rifle_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/sniper_deadeye_rifle.png",
+  "pixel_lab_selected_object_id": "574b078d-d81f-4ccd-aa7c-c7edda19d5ba",
+  "pixel_lab_unused_candidate_id": "7c6e6f3e-11f1-4919-b81b-8f15b6711f03",
+  "raw_download_corner_rgb_used_for_alpha_cleanup": [
+    115,
+    95,
+    111
+  ],
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      6,
+      100,
+      256,
+      158
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.0862,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 18.18,
+    "mean_alpha_visible_pixels": 210.77,
+    "center_64_mean_alpha": 73.02,
+    "center_64_max_alpha": 255,
+    "outer_ring_mean_alpha": 201.67
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      8,
+      78,
+      248,
+      156
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.1286,
+    "max_alpha": 176,
+    "mean_alpha_all_pixels": 14.35,
+    "mean_alpha_visible_pixels": 111.33,
+    "center_64_mean_alpha": 56.49,
+    "center_64_max_alpha": 154,
+    "outer_ring_mean_alpha": 119.12
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA with transparent background.",
+    "PixelLab raw download is preserved separately; accepted source PNG is alpha-cleaned from the PixelLab output.",
+    "Small bottom-right PixelLab preview/noise island was removed during alpha cleanup.",
+    "Canonical weapon PNG is composited as a low-opacity ghost silhouette under the PixelLab-generated lockshot beam.",
+    "Final alpha is capped for combat readability; no gameplay, cooldown, damage, targeting, shared runtime logic, or scene files were changed."
+  ],
+  "postprocess_padding_note": "Final visible runtime layer fit inside the 256px canvas to avoid clipped right-edge muzzle flare after rotation/scale."
+}

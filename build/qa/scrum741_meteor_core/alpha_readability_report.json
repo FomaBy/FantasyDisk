@@ -1,0 +1,28 @@
+{
+  "weapon_id": "elementalist_meteor_core",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+  "accepted_source_path": "docs/design/references/weapon_attack_animations/elementalist_meteor_core/pixellab_object_65fde13a_source.png",
+  "pixellab_object_id": "65fde13a-773c-421e-a7e5-06f4b2606001",
+  "alternate_map_object_id": "fcffda75-dde7-4d59-907e-9744ae2bbec1",
+  "weapon_reference_path": "assets/sprites/weapons/elementalist_meteor_core.png",
+  "size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    165
+  ],
+  "alpha_bbox": [
+    16,
+    8,
+    242,
+    242
+  ],
+  "nonzero_alpha_pixels": 39805,
+  "high_alpha_pixels_gte_160": 4119,
+  "coverage_percent": 60.74,
+  "readability": "checked on dark, light, and arena-like backgrounds in contact sheet; true transparent PixelLab source with opacity capped for combat readability",
+  "runtime_logic_changed": false
+}

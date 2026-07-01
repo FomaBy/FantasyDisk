@@ -1,0 +1,8 @@
+ok=True
+source_png_count=56 runtime_png_count=56
+pixellab_character_id=72b487d3-feea-4012-b39f-b59ba24f7f11
+runtime_alpha_height_values=[245]
+runtime_bottom_y2_values=[480]
+spriteframes_ext_resource_count=56
+spriteframes_referenced_runtime_pngs=56
+spriteframes_animation_count=27

@@ -1,0 +1,78 @@
+{
+  "source": "PixelLab MCP",
+  "task": "SCRUM-804",
+  "character_id": "ranger",
+  "pixellab_character_id": "1646d83c-f570-4bdd-9065-cb1b46bf13f7",
+  "pixellab_name": "FantasyDisk Ranger SCRUM-804 empty hands",
+  "generated_at": "2026-07-01",
+  "mode": "v3 create_character + walking-6-frames template animation",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "pixel_lab_source_canvas": [
+    240,
+    240
+  ],
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "runtime_normalization": "alpha bbox crop from PixelLab source, nearest-neighbor scale to 245 px visible height, centered X, bottom-aligned with 32 px bottom padding",
+  "runtime_visible_height_target": 245,
+  "runtime_bottom_padding": 32,
+  "move_frame_count": 6,
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "animations": {
+    "idle": "8-direction PixelLab v3 static rotation frames",
+    "move": "PixelLab walking-6-frames template, 6 frames per direction, all 8 directions",
+    "walk": "runtime alias of move rows"
+  },
+  "pixellab_animation_ids": {
+    "south": "68e219b4-1f2c-4686-b882-81ca1af5e662",
+    "south-east": "22f6ce29-1bfc-4dd4-b171-740f80e93ed5",
+    "east": "ca43aea2-4c8e-4501-b54f-235de9a9975a",
+    "north-east": "7cfbf3fa-2c3d-459c-b5bf-47d64c013ed8",
+    "north": "db6a8ff0-fa95-42a0-aae6-b1501ef67602",
+    "north-west": "8f86b276-709f-4487-8e99-283b4b998740",
+    "west": "33cb5504-3979-4951-8ff7-c98b06d31f42",
+    "south-west": "1b4970d2-49b9-4c84-a401-a12181e798f8"
+  },
+  "prompt": "FantasyDisk playable Ranger, dark fantasy woodland scout and moon hunter, low top-down RPG sprite, full body, empty open hands, no held items, no weapon, no bow, no crossbow, no quiver, no arrows, no trap, no projectile, no UI frame. Identity from current FantasyDisk Ranger reference: young agile human ranger with brown tousled hair, emerald green hooded cloak and torn leaf-edged cape, layered tan and olive leather armor, belts and pouches, crescent moon and leaf ornaments, teal-blue moon gemstone accents, brown boots and bracers. Readable distant-control archer fantasy without any baked weapon props; weapons stay separate runtime assets. D&D dark fantasy pixel art, transparent background, clean strong silhouette, centered neutral stance, visible arms and legs for walking animation, not chibi, no text, no watermark.",
+  "forbidden_props": [
+    "held bow",
+    "held crossbow",
+    "quiver",
+    "arrows",
+    "trap",
+    "projectile",
+    "weapon",
+    "UI frame"
+  ],
+  "source_files": {
+    "idle": "assets/sprites/characters/pixellab/ranger/ranger_idle_<dir>.png",
+    "move": "assets/sprites/characters/pixellab/ranger/ranger_move_<dir>_<00-05>.png"
+  },
+  "runtime_dir": "assets/sprites/characters/full_frame/ranger_pixellab/",
+  "spriteframes": "assets/sprites/characters/ranger_spriteframes.tres",
+  "qa_report": "docs/design/previews/scrum804_ranger_pixellab_bbox_report.json",
+  "preview_contact_sheet": "docs/design/previews/scrum804_ranger_pixellab_contact.png",
+  "notes": "New PixelLab-only Ranger redraw for SCRUM-804. Base body is empty-handed; bow/crossbow/trap/projectile visuals remain weapon-owned runtime assets."
+}

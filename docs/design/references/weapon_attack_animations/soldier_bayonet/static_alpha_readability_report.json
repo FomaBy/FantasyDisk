@@ -1,0 +1,121 @@
+{
+  "issue": "SCRUM-766",
+  "weapon_id": "soldier_bayonet",
+  "pixel_lab_object_id": "0c10ba57-becc-4a2e-bfcd-9d6f6e8e7a71",
+  "raw_source_path": "docs/design/references/weapon_attack_animations/soldier_bayonet/soldier_bayonet_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/soldier_bayonet/soldier_bayonet_pixellab_source.png",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_soldier_bayonet.png",
+  "runtime_copy_path": "docs/design/references/weapon_attack_animations/soldier_bayonet/vfx_weapon_soldier_bayonet_runtime_256.png",
+  "preview_path": "docs/design/previews/weapon_attack_animations/soldier_bayonet_contact.png",
+  "old_runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      13,
+      66,
+      233,
+      188
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.107,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 23.54,
+    "mean_alpha_visible_pixels": 219.63,
+    "center_64_mean_alpha": 124.91,
+    "center_64_max_alpha": 255,
+    "corridor_192x40_mean_alpha": 88.42
+  },
+  "raw_source_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      85,
+      13,
+      169,
+      237
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.0833,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 21.24,
+    "mean_alpha_visible_pixels": 255.0,
+    "center_64_mean_alpha": 110.75,
+    "center_64_max_alpha": 255,
+    "corridor_192x40_mean_alpha": 35.26
+  },
+  "clean_source_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      85,
+      13,
+      169,
+      237
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.0833,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 21.24,
+    "mean_alpha_visible_pixels": 255.0,
+    "center_64_mean_alpha": 110.75,
+    "center_64_max_alpha": 255,
+    "corridor_192x40_mean_alpha": 35.26
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      16,
+      86,
+      240,
+      170
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.1282,
+    "max_alpha": 170,
+    "mean_alpha_all_pixels": 15.22,
+    "mean_alpha_visible_pixels": 117.24,
+    "center_64_mean_alpha": 81.49,
+    "center_64_max_alpha": 170,
+    "corridor_192x40_mean_alpha": 66.79
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "PixelLab source is preserved raw and alpha-cleaned; no OpenAI Images, image_gen, or manual VFX drawing was used.",
+    "The generated vertical brace was orientation-normalized to +X so AttackVfx.weapon_signature rotation follows attack direction.",
+    "Canonical soldier_bayonet weapon PNG was composited at low opacity as a ghost silhouette under the PixelLab-generated brace corridor.",
+    "Final alpha is capped at 170 for calm combat readability; gameplay, balance, targeting, cooldowns, scenes and shared runtime scripts are unchanged."
+  ]
+}

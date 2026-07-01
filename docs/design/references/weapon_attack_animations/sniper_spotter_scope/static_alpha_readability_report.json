@@ -1,0 +1,112 @@
+{
+  "issue": "SCRUM-765",
+  "weapon_id": "sniper_spotter_scope",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope.png",
+  "source_path": "docs/design/references/weapon_attack_animations/sniper_spotter_scope/sniper_spotter_scope_pixellab_source.png",
+  "raw_sources": [
+    "docs/design/references/weapon_attack_animations/sniper_spotter_scope/sniper_spotter_scope_pixellab_source_raw.png",
+    "docs/design/references/weapon_attack_animations/sniper_spotter_scope/sniper_spotter_scope_pixellab_candidate_beams_raw.png"
+  ],
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      8,
+      12,
+      248,
+      243
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.4367,
+    "max_alpha": 172,
+    "mean_alpha_all_pixels": 47.37,
+    "mean_alpha_visible_pixels": 107.32,
+    "center_64_mean_alpha": 114.6,
+    "center_64_max_alpha": 137,
+    "outer_ring_mean_alpha": 48.72,
+    "corner_pixels": [
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "accepted_source_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      8,
+      12,
+      248,
+      243
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.3713,
+    "max_alpha": 232,
+    "mean_alpha_all_pixels": 53.32,
+    "mean_alpha_visible_pixels": 141.46,
+    "center_64_mean_alpha": 186.93,
+    "center_64_max_alpha": 232,
+    "outer_ring_mean_alpha": 46.51,
+    "corner_pixels": [
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "readability_decision": "pass",
+  "checks": [
+    "PNG is 256x256 RGBA.",
+    "All four runtime corners are fully transparent.",
+    "Runtime alpha is capped below opaque to preserve combat readability.",
+    "Center alpha is softened after review so enemies/player remain readable under the beam impacts.",
+    "PixelLab terrain/background pixels from candidate_beams were alpha-removed; only luminous cyan/white VFX pixels remain.",
+    "Canonical weapon PNG is included only as a low-opacity ghost silhouette behind PixelLab VFX."
+  ],
+  "postprocess_revision": "center alpha softened after contact-sheet review; max alpha capped at 172."
+}

@@ -1,0 +1,67 @@
+{
+  "issue": "SCRUM-768",
+  "asset": "soldier_rifle attack VFX",
+  "weapon_id": "soldier_rifle",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_soldier_rifle.png",
+  "source_files": [
+    "soldier_rifle_pixellab_source_raw.png",
+    "soldier_rifle_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/soldier_rifle_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "e259ff57-39e2-42d5-992b-fab02387b59b",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/e259ff57-39e2-42d5-992b-fab02387b59b/download",
+    "created": "2026-07-01 18:19",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG contained opaque gray preview matte and was alpha-cleaned",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive and SCRUM-768 dispatcher unblock on 2026-07-01 require PixelLab MCP through fantasydisk-asset-generator instead of the stale OpenAI-only helper; no OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab source PNG to task reference folder.",
+      "Removed opaque gray preview matte using corner-color alpha cleanup.",
+      "Faded the generated modern firearm silhouette while preserving the PixelLab three-shot firing lane.",
+      "Composited canonical assets/sprites/weapons/soldier_rifle.png as a low-opacity arquebus ghost silhouette.",
+      "Capped final alpha for combat readability and exported 256x256 RGBA runtime PNG.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "issue": "SCRUM-768",
+      "weapon_id": "soldier_rifle",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_soldier_rifle.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "background_matte_rgb_median": [
+        120,
+        117,
+        118
+      ],
+      "bbox": [
+        4,
+        5,
+        250,
+        253
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.1578,
+      "max_alpha": 178,
+      "mean_alpha_all_pixels": 12.63,
+      "mean_alpha_visible_pixels": 79.88,
+      "center_64_mean_alpha": 56.51,
+      "center_64_max_alpha": 178,
+      "corner_alphas": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "readability_decision": "pass",
+      "readability_notes": "Transparent corners, no opaque disk; final alpha capped at 178; canonical weapon ghost stays low opacity under a three-shot firing lane."
+    }
+  }
+}

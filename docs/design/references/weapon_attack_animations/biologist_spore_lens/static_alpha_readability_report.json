@@ -1,0 +1,63 @@
+{
+  "issue": "SCRUM-731",
+  "weapon_id": "biologist_spore_lens",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/biologist_spore_lens/biologist_spore_lens_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/biologist_spore_lens.png",
+  "pixel_lab_selected_object_id": "3e336a3b-d5cf-4bf6-b0f5-ab8ee64392ea",
+  "pixel_lab_unused_candidate_id": "8cbe4e4e-5b08-4ee1-8e23-0b588f5201cd",
+  "raw_download_corner_rgb_used_for_alpha_cleanup": [
+    61,
+    66,
+    79
+  ],
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      13,
+      16,
+      244,
+      242
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.514,
+    "max_alpha": 205,
+    "mean_alpha_all_pixels": 95.68,
+    "mean_alpha_visible_pixels": 186.13,
+    "center_64_mean_alpha": 93.07,
+    "center_64_max_alpha": 174,
+    "outer_ring_mean_alpha": 136.93
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      13,
+      16,
+      244,
+      242
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.5542,
+    "max_alpha": 170,
+    "mean_alpha_all_pixels": 78.75,
+    "mean_alpha_visible_pixels": 142.07,
+    "center_64_mean_alpha": 88.99,
+    "center_64_max_alpha": 149,
+    "outer_ring_mean_alpha": 110.76
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA with transparent background.",
+    "PixelLab raw download is preserved separately; accepted source PNG is alpha-cleaned from the PixelLab output.",
+    "Center alpha is softened so the effect reads as rings instead of an opaque disk.",
+    "Canonical weapon PNG is used only as a low-opacity ghost silhouette under the PixelLab-generated ring VFX.",
+    "No gameplay, cooldown, damage, targeting, shared runtime logic, or scene files were changed."
+  ]
+}

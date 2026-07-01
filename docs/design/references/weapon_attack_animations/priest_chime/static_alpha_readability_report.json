@@ -1,0 +1,62 @@
+{
+  "issue": "SCRUM-755",
+  "weapon_id": "priest_chime",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_priest_chime.png",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/priest_chime/priest_chime_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/priest_chime/priest_chime_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/priest_chime.png",
+  "pixel_lab_selected_object_id": "b5ef3873-53d2-4f45-bb1a-3f274c6186a7",
+  "raw_download_corner_rgb_used_for_alpha_cleanup": [
+    95,
+    93,
+    90
+  ],
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      24,
+      27,
+      233,
+      234
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.1459,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 36.51,
+    "mean_alpha_visible_pixels": 250.24,
+    "center_64_mean_alpha": 116.16,
+    "center_64_max_alpha": 255,
+    "outer_ring_mean_alpha": 54.83
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      24,
+      27,
+      233,
+      234
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.2687,
+    "max_alpha": 172,
+    "mean_alpha_all_pixels": 31.28,
+    "mean_alpha_visible_pixels": 116.34,
+    "center_64_mean_alpha": 85.17,
+    "center_64_max_alpha": 172,
+    "outer_ring_mean_alpha": 38.34
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA with transparent background.",
+    "PixelLab raw download is preserved separately; accepted source PNG is alpha-cleaned from the PixelLab output.",
+    "Center alpha is softened so the effect reads as a prayer-chain ring and chime ghost rather than an opaque disk.",
+    "Canonical weapon PNG is used only as a low-opacity ghost silhouette under the PixelLab-generated prayer beads/ring VFX.",
+    "No gameplay, cooldown, damage, targeting, shared runtime logic, scene files, broad docs, or other weapon VFX files were changed."
+  ]
+}

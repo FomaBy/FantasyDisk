@@ -1,0 +1,33 @@
+{
+  "task": "SCRUM-743",
+  "weapon_id": "elementalist_prism_focus",
+  "display_name": "Prismatic Focus",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "unblock_rationale": "The older OpenAI Images-only task wording was superseded by the 2026-07-01 dispatcher PixelLab path because the OpenAI Images route remained blocked by billing_hard_limit_reached.",
+  "selected_pixellab_object_id": "d5ef1e3e-12d7-4f67-9ac0-7ba6a2b4c579",
+  "selected_pixellab_object_type": "map_object / 1-direction object",
+  "selected_pixellab_rotation_url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/d5ef1e3e-12d7-4f67-9ac0-7ba6a2b4c579/rotations/unknown.png",
+  "prompt": "Transparent top-down game attack VFX plate for FantasyDisk weapon elementalist_prism_focus, a dark fantasy Dungeons and Dragons prism rift: two crossing violet-cyan crystalline beams slash diagonally through a quiet transparent center, short telegraph ring shards, soft arcane cracks, readable X-shaped area of effect, subtle ghost silhouette of a small prism focus weapon in the background, semi-transparent painterly magic, no text, no UI frame, no watermark, no solid background, no character, combat-readable at small scale.",
+  "source_files": [
+    "pixellab_d5ef1e3e_prism_rift_source.png",
+    "pixellab_d5ef1e3e_prism_rift_alpha_clean.png"
+  ],
+  "runtime_file": "assets/sprites/effects/vfx_weapon_elementalist_prism_focus.png",
+  "preview_files": [
+    "docs/design/previews/weapon_attack_animations/elementalist_prism_focus_contact.png",
+    "docs/design/previews/weapon_attack_animations/elementalist_prism_focus_readability.png"
+  ],
+  "postprocess": {
+    "canvas": "256x256",
+    "mode": "RGBA",
+    "alpha_cleanup": "Removed opaque PixelLab floor plate and lower-right generated mark by retaining luminous/saturated VFX strokes only.",
+    "weapon_ghost": "Composited a subtle deterministic ghost silhouette from assets/sprites/weapons/elementalist_prism_focus.png without changing the source weapon asset.",
+    "runtime_alpha_cap": 216
+  },
+  "runtime_contract": {
+    "path_unchanged": true,
+    "dimensions": "256x256",
+    "shared_runtime_logic_changed": false,
+    "gameplay_parameters_changed": false
+  }
+}
