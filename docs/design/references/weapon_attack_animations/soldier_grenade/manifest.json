@@ -1,0 +1,71 @@
+{
+  "issue": "SCRUM-767",
+  "weapon_id": "soldier_grenade",
+  "weapon_name": "Граната с фитилем",
+  "role": "Animator / VFX",
+  "pipeline": "PixelLab MCP create_map_object -> flat background alpha removal -> calm alpha clamp -> canonical soldier_grenade weapon ghost composite",
+  "pixellab": {
+    "tool": "create_map_object",
+    "object_id": "6adea276-bd23-49ed-ba8e-893e1c820ca8",
+    "download": "https://api.pixellab.ai/mcp/map-objects/6adea276-bd23-49ed-ba8e-893e1c820ca8/download",
+    "size": "256x256",
+    "view": "high top-down",
+    "created": "2026-07-01 18:20",
+    "background_requested": "transparent",
+    "note": "Downloaded source contained an opaque neutral preview background; postprocess removed the corner RGB background and restored transparent runtime alpha."
+  },
+  "prompt": "Transparent high top-down dark fantasy D&D attack VFX plate for a soldier grenade with a lit fuse. Square 256x256 PNG, no background, no text. Calm semi-transparent tactical ground telegraph: circular ember warning ring with subtle rune-free scorch marks, a small black iron grenade ghost silhouette near center with a glowing fuse spark, warm orange blast core, smoke wisps and dust fragments fading outward to show radial falloff. Readable center, soft alpha edges, not neon, not opaque, suitable as a short weapon signature overlay in a 2D top-down roguelite.",
+  "mechanical_contract": {
+    "attack_mode": "grenade_cook",
+    "visual_role": "delayed ground explosion telegraph with falloff",
+    "runtime_api_changed": false,
+    "gameplay_changed": false
+  },
+  "source_files": [
+    "docs/design/references/weapon_attack_animations/soldier_grenade/pixellab_source_256.png",
+    "docs/design/references/weapon_attack_animations/soldier_grenade/soldier_grenade_vfx_runtime_candidate_256.png",
+    "docs/design/references/weapon_attack_animations/soldier_grenade/soldier_grenade_vfx_alpha_debug.png",
+    "docs/design/references/weapon_attack_animations/soldier_grenade/manifest.json"
+  ],
+  "runtime_files": [
+    "assets/sprites/effects/vfx_weapon_soldier_grenade.png"
+  ],
+  "preview_files": [
+    "docs/design/previews/weapon_attack_animations/soldier_grenade_contact.png"
+  ],
+  "reference_weapon": "assets/sprites/weapons/soldier_grenade.png",
+  "visual_acceptance_notes": [
+    "Circular ember telegraph communicates grenade_cook delayed AoE radius.",
+    "Warm blast core and outward smoke/dust fragments communicate radial falloff without changing damage geometry.",
+    "Canonical soldier_grenade weapon sprite is composited as a subtle centered ghost silhouette.",
+    "Final runtime PNG has transparent corners and no fully opaque pixels; no text, logo, UI, gameplay, cooldown, targeting, range, balance, or shared runtime change."
+  ],
+  "alpha_stats": {
+    "source_background_rgb": [
+      55,
+      55,
+      58
+    ],
+    "runtime_size": [
+      256,
+      256
+    ],
+    "runtime_alpha_min": 0,
+    "runtime_alpha_max": 188,
+    "runtime_alpha_mean": 84.25,
+    "runtime_alpha_nonzero_percent": 60.6,
+    "runtime_alpha_opaque_percent": 0.0,
+    "runtime_bbox": [
+      18,
+      18,
+      241,
+      244
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
