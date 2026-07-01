@@ -104,6 +104,12 @@
   portrait path points to the PixelLab south idle frame.
 
 ### Changed
+- SCRUM-797: replaced the live Guitarist PixelLab body with the stronger held-guitar
+  instrument variant (`d278e753-9885-4550-82ff-81ee3bef297d`) by direct user
+  override. The pack keeps the same 8-direction `walking-6-frames` runtime
+  contract, transparent `512x512` frames, `245 px` visible alpha height,
+  `guitarist_spriteframes.tres` directional rows, and Hero Select preview
+  rotation; evidence lives under `docs/design/previews/scrum797_*`.
 - SCRUM-726: finalized the PoE-like meta skill tree schema 3 with 8 attribute
   petals and 17 class signature pods. Skill tree effects now split
   account-wide bonuses from `class_affinity` bonuses through

@@ -882,18 +882,21 @@ SCRUM-156 Design pass 2026-06-13 подготовил финальные painter
 - Базовое здоровье: 60.
 - Базовая скорость: 268.
 - Спрайт: live `assets/sprites/characters/guitarist_spriteframes.tres` now uses
-  SCRUM-706 PixelLab source `704fd67b-da81-4804-acd2-07e75fefd9de` under
+  SCRUM-797 PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` under
   `assets/sprites/characters/pixellab/guitarist/` and normalized runtime frames
-  under `assets/sprites/characters/full_frame/guitarist_pixellab/`. The new
-  empty-hands base body has 8 idle directions and 6-frame directional
-  `move_*` / `walk_*` loops; every runtime frame remains `512x512` transparent
-  and normalizes the visible alpha bbox to `245 px` height. Rejected source
-  attempts are recorded in
-  `docs/design/previews/scrum706_guitarist_pixellab_bbox_report.json`.
+  under `assets/sprites/characters/full_frame/guitarist_pixellab/`. By direct
+  user override this live body keeps a held guitar because it reads as a stronger
+  Guitarist silhouette than the SCRUM-706 empty-hands pack. The pack has 8 idle
+  directions and 6-frame directional `move_*` / `walk_*` loops; every runtime
+  frame remains `512x512` transparent and normalizes the visible alpha bbox to
+  `245 px` height. BBox/contact evidence is recorded in
+  `docs/design/previews/scrum797_guitarist_instrument_pack_bbox_report.json`.
   Legacy `assets/sprites/characters/guitarist.png`, runtime sheet
   `assets/sprites/characters/guitarist_sheet.png`,
   `assets/sprites/characters/full_frame/guitarist/`, and cutout-части
-  `assets/sprites/characters/cutout/guitarist_*.png` remain history/fallback.
+  `assets/sprites/characters/cutout/guitarist_*.png` remain history/fallback;
+  the previous SCRUM-706 live pack is backed up under
+  `docs/design/backups/scrum797_guitarist_instrument_pack_pre_swap/`.
 
 Базовые характеристики:
 
