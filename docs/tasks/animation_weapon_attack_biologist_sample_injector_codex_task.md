@@ -99,3 +99,10 @@ Disk cleanup:
 - Verification on the integration worktree:
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01
+QA: claude-qa
+
+Проверено на origin/dev. Redraw влит коммитом b57a5eee (vfx_weapon_biologist_sample_injector.png, .import в индексе). PNG 256x256 RGBA, alpha 0..220 (0% непрозрачных, 85.5% прозрачных) — уникальный VFX инъектора: ghost-силуэт шприца + зелёный впрыск в фиолетовое кольцо-зону. Полупрозрачно, геймплей/shared runtime не менялись. Тесты PASS: unique_weapon_vfx_assets_test.gd (51 plates), attack_vfx_smoke_test.gd.
