@@ -48,3 +48,8 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `bone_saw` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01 (claude-qa)
+Проверено на origin/dev (asset-коммит 0c4dc75e). Уникальная серповидная saw-tooth дуга bone_saw: bone-white + crimson (lifesteal) + зелёные rot-wisps (DoT), полупрозрачный ghost пилы, центр И углы PNG alpha=0 (нет запечённого фона, игрок читается), ~8.6% fully-opaque. Читаемость dark/light/grey OK. Тесты зелёные: unique_weapon_vfx_assets_test (51 plates), attack_vfx_smoke_test. Shared scripts не тронуты. Переведено в «Готово».
