@@ -1,0 +1,71 @@
+{
+  "task": "SCRUM-772",
+  "weapon_id": "sword",
+  "weapon_name": "Двуручный меч",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator skill; runtime PNG is a transparent postprocessed composite from selected PixelLab source plus calm 90-degree frustum alpha/support layer.",
+  "selected_pixellab_source": {
+    "object_id": "35b2c714-97cc-4e65-978d-dbb8b0b8241e",
+    "raw_source_file": "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714.png",
+    "alpha_cutout_file": "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714_alpha_cutout.png",
+    "prompt": "FantasyDisk attack VFX plate for the Berserk two-handed sword weapon. Transparent PNG on a square canvas. A restrained dark fantasy D&D style forward cleave: long steel greatsword ghost silhouette diagonally through the center, surrounded by a broad 90 degree truncated cone slash arc showing direction and reach. Calm translucent smoky silver, warm gold, faint ember red accents, readable at small combat scale. No text, no UI frame, no background, no watermark, no hard opaque center, no neon magenta. Keep corners fully transparent and make the effect semi-transparent so characters and enemies remain readable underneath.",
+    "dimensions": "256x256",
+    "postprocess_note": "PixelLab download had opaque gray preview fill even though the object metadata said transparent; flat corner background was alpha-cut before runtime compositing."
+  },
+  "rejected_pixellab_source": {
+    "object_id": "ede25074-3e87-4e18-b535-740d2e0b4d3a",
+    "source_file": "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_ede25074_rejected.png",
+    "reason": "rejected for square/border field that would read as a baked background instead of a clean transparent combat plate"
+  },
+  "runtime_files": [
+    "assets/sprites/effects/vfx_weapon_sword.png"
+  ],
+  "reference_files": [
+    "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714.png",
+    "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_35b2c714_alpha_cutout.png",
+    "docs/design/references/weapon_attack_animations/sword/vfx_weapon_sword_pixellab_composite_256.png",
+    "docs/design/references/weapon_attack_animations/sword/pixellab_source_object_ede25074_rejected.png"
+  ],
+  "preview_files": [
+    "docs/design/previews/weapon_attack_animations/sword_contact.png"
+  ],
+  "contract": {
+    "canvas": "256x256",
+    "format": "RGBA PNG",
+    "background": "transparent after alpha-cut postprocess",
+    "mechanics_changed": false,
+    "runtime_api_changed": false,
+    "gameplay_identity": "Berserk sword 90-degree frustum, 600px range, 150px base width"
+  },
+  "alpha_stats": {
+    "width": 256,
+    "height": 256,
+    "mode": "RGBA",
+    "transparent_pixels_percent": 63.53,
+    "visible_coverage_percent_alpha_gt_12": 24.22,
+    "max_alpha": 170,
+    "fully_opaque_pixels_alpha_ge_250": 0,
+    "corner_alpha_values": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "median_visible_saturation_0_255": 55
+  },
+  "source_cutout_stats": {
+    "width": 256,
+    "height": 256,
+    "mode": "RGBA",
+    "transparent_pixels_percent": 91.23,
+    "visible_coverage_percent_alpha_gt_12": 8.75,
+    "max_alpha": 255,
+    "fully_opaque_pixels_alpha_ge_250": 5453,
+    "corner_alpha_values": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "median_visible_saturation_0_255": 129
+  }
+}
