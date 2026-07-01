@@ -1,6 +1,6 @@
 # BUG: Combat HUD is oversized and mostly empty at 1920x1080
 
-Статус: new
+Статус: done (QA PASSED -> Готово)
 Приоритет: P1
 Роль: Back-end (UI runtime)
 Контур: Codex
@@ -71,3 +71,42 @@ mostly empty box relative to its single roman numeral.
 
 Disk cleanup: none created by bug filing; evidence lives in the ignored
 SCRUM-700 QA folder.
+
+## QA-Вердикт (2026-07-01)
+
+Статус: PASSED
+
+Проверено on `origin/dev` after integration:
+
+- Branch/worktree: `codex/qa-scrum-778-verify` at `/Users/sergeyfomin/Documents/FantasyDisk-QA-SCRUM-778`.
+- Source of truth: `origin/dev` base `75d9b444`; integration commit `245dcdaf` is an ancestor.
+- 1920x1080 combat HUD rects from the live no-overlap matrix:
+  - `RunResourceHud`: `[P: (30.0, 45.0), S: (938.0, 111.0)]`
+  - `CombatTimerPanel`: `[P: (1031.0, 44.0), S: (233.0, 108.0)]`
+  - `AscensionHudBadge`: `[P: (1710.0, 39.0), S: (123.0, 123.0)]`
+  - `LevelUpPlusButton`: `[P: (1778.0, 936.0), S: (66.0, 78.0)]`
+- Visual screenshot: `build/qa/scrum778_dev_verify/combat_hud_1920x1080.png`.
+- Evidence report: `build/qa/scrum778_dev_verify/qa_verdict.md`.
+
+Проверки:
+
+- PASS: `git merge-base --is-ancestor 245dcdaf origin/dev`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS: `python3 tools/godot_gate.py --path . --script res://tests/design_review_screenshot_capture_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_progression_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/melee_weapon_targeting_test.gd`
+- PASS after rebase on `origin/dev` base `d0dc04e4`: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS after rebase on `origin/dev` base `d0dc04e4`: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS final-base rerun on `origin/dev` base `75d9b444`: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- PASS final-base rerun on `origin/dev` base `75d9b444`: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+
+Краевые случаи:
+
+- 1280x720, 1920x1080, and 2560x1440 combat HUD screenshots captured.
+- UI no-overlap matrix covered supported sizes from 1152x648 through 3840x2160.
+- Runtime UI smoke covered normal/boss HUD no-overlap at 1152x648, 1280x720, and 2560x1440.
+
+Баги: нет.
