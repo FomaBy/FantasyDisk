@@ -48,3 +48,8 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `briar_staff` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01 (claude-qa)
+Проверено на origin/dev (asset-коммит c1b64156). Уникальная bramble-ring thorn zone briar_staff: emerald-энергия по лозам, зелёная DoT-дымка, полупрозрачный ghost посоха. Углы alpha=0 (нет запечённого фона), истинный центр mean alpha ~47% (translucent, игрок читается). Читаемость dark/light/grey OK. Тесты зелёные: unique_weapon_vfx_assets_test (51 plates), attack_vfx_smoke_test. Shared scripts не тронуты. Переведено в «Готово».
