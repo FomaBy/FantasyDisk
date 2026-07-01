@@ -1,0 +1,1397 @@
+{
+  "summary": {
+    "task": "SCRUM-801",
+    "character_id": "elementalist",
+    "pixellab_character_id": "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f",
+    "rejected_predecessor_pixellab_character_id": "3068581d-2ff2-4203-ba5e-37c56edefdc6",
+    "pixellab_group_id": "af7f3eee-e126-424c-b4ab-1c6d2f28596b",
+    "generated_at": "2026-07-01T16:27:27.216091+00:00",
+    "source_created_at": "2026-07-01T15:53:13.585258+00:00",
+    "directions": [
+      "south",
+      "south-east",
+      "east",
+      "north-east",
+      "north",
+      "north-west",
+      "west",
+      "south-west"
+    ],
+    "clockwise_preview_order": [
+      "south",
+      "south-west",
+      "west",
+      "north-west",
+      "north",
+      "north-east",
+      "east",
+      "south-east"
+    ],
+    "animation_template": "walking-6-frames",
+    "move_frame_count": 6,
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "normalization": {
+      "method": "alpha-bbox fit from PixelLab source, nearest-neighbor, centered X, bottom aligned",
+      "target_visible_height": 246,
+      "bottom_padding": 32,
+      "crop_margin": 4,
+      "alpha_threshold": 8
+    },
+    "source_bbox_summary": {
+      "height_min": 107,
+      "height_max": 124,
+      "width_min": 56,
+      "width_max": 119
+    },
+    "runtime_bbox_summary": {
+      "height_min": 245,
+      "height_max": 247,
+      "width_min": 119,
+      "width_max": 243
+    },
+    "primary_south_idle": {
+      "source": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+      "runtime": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
+      "source_image_size": [
+        240,
+        240
+      ],
+      "source_bbox": [
+        63,
+        61,
+        171,
+        179
+      ],
+      "source_bbox_size": [
+        108,
+        118
+      ],
+      "crop_box": [
+        59,
+        57,
+        175,
+        183
+      ],
+      "target_visible_height": 246,
+      "scale": 2.084746,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        143,
+        225,
+        369,
+        472
+      ],
+      "runtime_bbox_size": [
+        226,
+        247
+      ],
+      "sha256": "10f05eee0af3e533d2f532765ad952295a3e50a7f8ce8a852311aabff92db3da",
+      "kind": "idle",
+      "direction": "south"
+    },
+    "qa_contract": {
+      "primary_south_idle_visible_height_px": "240..250",
+      "all_runtime_visible_height_px": "240..250",
+      "runtime_size_px": "512x512 transparent RGBA",
+      "no_baked_held_props": "Accepted state visually removes initial fire/orb props; base body keeps empty open hands. South-east template animation with baked orb was deleted and replaced by v3 custom plain walk; staff/orb/prism/meteor/focus/weapon props remain separate assets."
+    },
+    "source_files": {
+      "idle": {
+        "south": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+        "south-east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-east.png",
+        "east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_east.png",
+        "north-east": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-east.png",
+        "north": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north.png",
+        "north-west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-west.png",
+        "west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_west.png",
+        "south-west": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-west.png"
+      },
+      "move": {
+        "south": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_05.png"
+        ],
+        "south-east": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_05.png"
+        ],
+        "east": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_05.png"
+        ],
+        "north-east": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_05.png"
+        ],
+        "north": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_05.png"
+        ],
+        "north-west": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_05.png"
+        ],
+        "west": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_05.png"
+        ],
+        "south-west": [
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_00.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_01.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_02.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_03.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_04.png",
+          "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_05.png"
+        ]
+      }
+    },
+    "runtime_files": {
+      "idle": {
+        "south": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
+        "south-east": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-east.png",
+        "east": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_east.png",
+        "north-east": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-east.png",
+        "north": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north.png",
+        "north-west": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_north-west.png",
+        "west": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_west.png",
+        "south-west": "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south-west.png"
+      },
+      "move": {
+        "south": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south_05.png"
+        ],
+        "south-east": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-east_05.png"
+        ],
+        "east": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_east_05.png"
+        ],
+        "north-east": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-east_05.png"
+        ],
+        "north": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north_05.png"
+        ],
+        "north-west": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_north-west_05.png"
+        ],
+        "west": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_west_05.png"
+        ],
+        "south-west": [
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_00.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_01.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_02.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_03.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_04.png",
+          "assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_move_south-west_05.png"
+        ]
+      }
+    },
+    "spriteframes": "assets/sprites/characters/elementalist_spriteframes.tres",
+    "animation_source_groups": {
+      "south": "animating-ed57392e",
+      "south-east": "Plain_top-down_RPG_walking_cycle_to_the_south-east",
+      "east": "animating-ed57392e",
+      "north-east": "animating",
+      "north": "animating-9d19648f",
+      "north-west": "animating-f4a128f5",
+      "west": "animating-9d19648f",
+      "south-west": "animating-603af38e"
+    },
+    "frame_selection_notes": {
+      "south-east": "PixelLab v3 custom returned 7 frames (reference + 6 animated); used frames 1..6 for runtime move row."
+    },
+    "reference_files": [
+      "docs/design/references/characters_v2/elementalist/elementalist_v2_source_clean.png",
+      "docs/design/references/characters/elementalist/elementalist_sheet_source.png",
+      "assets/sprites/characters/elementalist.png"
+    ],
+    "prompt": "FantasyDisk elementalist playable hero, dark fantasy D&D elemental caster, bright multi-element unarmed mage with readable fire, ice, lightning and stone motifs integrated into robe trim, shoulder mantle and color accents only. Empty open hands, no staff, no wand, no orb, no prism, no crystal focus, no meteor, no floating elemental spheres, no held prop, no weapon, no UI frame, no text. Transparent background. Full body visible, centered sprite, strong clean human silhouette, visible arms and legs for walking animation, heroic but readable top-down RPG character, saturated elemental palette with crimson ember, icy cyan, storm gold and earth stone accents, not sci-fi, not cute, no baked spell effects around hands.",
+    "accepted_source_notes": "Initial PixelLab character 3068581d-2ff2-4203-ba5e-37c56edefdc6 was rejected because the south preview baked fire/orb props into the hands. Accepted state 7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f removes those props. A first south-east template walk row was rejected for a baked cyan orb and replaced by v3 custom plain walk; no non-PixelLab fallback was used.",
+    "source_url_note": "Downloaded from PixelLab MCP character zip endpoint after all eight directions completed; south-east v3 custom yielded 7 frames, using frames 1..6."
+  },
+  "source_frames": [
+    {
+      "kind": "idle",
+      "direction": "south",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        63,
+        61,
+        171,
+        179
+      ],
+      "bbox_size": [
+        108,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        70,
+        62,
+        168,
+        180
+      ],
+      "bbox_size": [
+        98,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        60,
+        170,
+        180
+      ],
+      "bbox_size": [
+        102,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        69,
+        60,
+        169,
+        180
+      ],
+      "bbox_size": [
+        100,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        59,
+        61,
+        177,
+        182
+      ],
+      "bbox_size": [
+        118,
+        121
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        59,
+        60,
+        177,
+        181
+      ],
+      "bbox_size": [
+        118,
+        121
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        59,
+        60,
+        177,
+        181
+      ],
+      "bbox_size": [
+        118,
+        121
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "south-east",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-east.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        66,
+        61,
+        171,
+        181
+      ],
+      "bbox_size": [
+        105,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        63,
+        61,
+        171,
+        177
+      ],
+      "bbox_size": [
+        108,
+        116
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        60,
+        59,
+        173,
+        177
+      ],
+      "bbox_size": [
+        113,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        58,
+        59,
+        176,
+        179
+      ],
+      "bbox_size": [
+        118,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        58,
+        61,
+        177,
+        182
+      ],
+      "bbox_size": [
+        119,
+        121
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        61,
+        61,
+        177,
+        183
+      ],
+      "bbox_size": [
+        116,
+        122
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-east",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-east_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        67,
+        59,
+        175,
+        183
+      ],
+      "bbox_size": [
+        108,
+        124
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "east",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_east.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        66,
+        61,
+        154,
+        181
+      ],
+      "bbox_size": [
+        88,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        74,
+        62,
+        147,
+        182
+      ],
+      "bbox_size": [
+        73,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        69,
+        62,
+        163,
+        179
+      ],
+      "bbox_size": [
+        94,
+        117
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        69,
+        62,
+        150,
+        179
+      ],
+      "bbox_size": [
+        81,
+        117
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        90,
+        62,
+        147,
+        179
+      ],
+      "bbox_size": [
+        57,
+        117
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        77,
+        62,
+        155,
+        177
+      ],
+      "bbox_size": [
+        78,
+        115
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "east",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_east_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        81,
+        62,
+        145,
+        179
+      ],
+      "bbox_size": [
+        64,
+        117
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "north-east",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-east.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        70,
+        61,
+        149,
+        181
+      ],
+      "bbox_size": [
+        79,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        89,
+        63,
+        146,
+        181
+      ],
+      "bbox_size": [
+        57,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        90,
+        63,
+        152,
+        182
+      ],
+      "bbox_size": [
+        62,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        91,
+        63,
+        150,
+        179
+      ],
+      "bbox_size": [
+        59,
+        116
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        69,
+        60,
+        145,
+        179
+      ],
+      "bbox_size": [
+        76,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        61,
+        158,
+        176
+      ],
+      "bbox_size": [
+        90,
+        115
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-east",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-east_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        67,
+        61,
+        152,
+        176
+      ],
+      "bbox_size": [
+        85,
+        115
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "north",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        66,
+        61,
+        173,
+        179
+      ],
+      "bbox_size": [
+        107,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        95,
+        63,
+        152,
+        179
+      ],
+      "bbox_size": [
+        57,
+        116
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        95,
+        64,
+        151,
+        179
+      ],
+      "bbox_size": [
+        56,
+        115
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        96,
+        65,
+        152,
+        178
+      ],
+      "bbox_size": [
+        56,
+        113
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        91,
+        64,
+        153,
+        172
+      ],
+      "bbox_size": [
+        62,
+        108
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        90,
+        63,
+        154,
+        175
+      ],
+      "bbox_size": [
+        64,
+        112
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        91,
+        63,
+        153,
+        170
+      ],
+      "bbox_size": [
+        62,
+        107
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "north-west",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_north-west.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        61,
+        171,
+        179
+      ],
+      "bbox_size": [
+        103,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        60,
+        169,
+        179
+      ],
+      "bbox_size": [
+        101,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        73,
+        58,
+        174,
+        176
+      ],
+      "bbox_size": [
+        101,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        62,
+        173,
+        176
+      ],
+      "bbox_size": [
+        105,
+        114
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        64,
+        181,
+        178
+      ],
+      "bbox_size": [
+        113,
+        114
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        64,
+        180,
+        179
+      ],
+      "bbox_size": [
+        112,
+        115
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "north-west",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_north-west_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        68,
+        65,
+        181,
+        179
+      ],
+      "bbox_size": [
+        113,
+        114
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "west",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_west.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        85,
+        61,
+        170,
+        181
+      ],
+      "bbox_size": [
+        85,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        89,
+        62,
+        168,
+        181
+      ],
+      "bbox_size": [
+        79,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        71,
+        62,
+        153,
+        180
+      ],
+      "bbox_size": [
+        82,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        83,
+        62,
+        164,
+        180
+      ],
+      "bbox_size": [
+        81,
+        118
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        101,
+        63,
+        166,
+        180
+      ],
+      "bbox_size": [
+        65,
+        117
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        82,
+        64,
+        166,
+        178
+      ],
+      "bbox_size": [
+        84,
+        114
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "west",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_west_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        92,
+        65,
+        165,
+        177
+      ],
+      "bbox_size": [
+        73,
+        112
+      ]
+    },
+    {
+      "kind": "idle",
+      "direction": "south-west",
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_idle_south-west.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        80,
+        61,
+        169,
+        181
+      ],
+      "bbox_size": [
+        89,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 0,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_00.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        81,
+        61,
+        160,
+        181
+      ],
+      "bbox_size": [
+        79,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 1,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_01.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        81,
+        61,
+        162,
+        180
+      ],
+      "bbox_size": [
+        81,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 2,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_02.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        81,
+        61,
+        167,
+        181
+      ],
+      "bbox_size": [
+        86,
+        120
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 3,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_03.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        79,
+        62,
+        167,
+        181
+      ],
+      "bbox_size": [
+        88,
+        119
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 4,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_04.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        80,
+        62,
+        168,
+        176
+      ],
+      "bbox_size": [
+        88,
+        114
+      ]
+    },
+    {
+      "kind": "move",
+      "direction": "south-west",
+      "frame": 5,
+      "path": "assets/sprites/characters/pixellab/elementalist/elementalist_move_south-west_05.png",
+      "image_size": [
+        240,
+        240
+      ],
+      "bbox": [
+        81,
+        62,
+        169,
+        176
+      ],
+      "bbox_size": [
+        88,
+        114
+      ]
+    }
+  ]
+}

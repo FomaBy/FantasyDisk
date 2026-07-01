@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Солдат» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -12,6 +12,64 @@ Owner: unassigned
 Thread/Worker: n/a
 Locked paths: `assets/sprites/characters/pixellab/soldier/`, `assets/sprites/characters/full_frame/soldier_pixellab/`, `assets/sprites/characters/soldier_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## Result / Serial Integration — 2026-07-01
+
+Combined integration branch: `codex/character-pixellab-serial-integration-20260701`.
+Integration commit: `d97b8f84` (first functional integration commit on this branch).
+
+Source branch/commit: preferred clean Soldier source
+`origin/codex/SCRUM-434-soldier-pixellab` @ `74d82284`; task-owned pack paths
+were verified identical to alternate
+`origin/codex/SCRUM-434-soldier-pixellab-dev` @ `44821f82`, which avoided stale
+non-task branch diff while preserving the same Soldier assets.
+
+Integrated:
+- PixelLab source/manifest under `assets/sprites/characters/pixellab/soldier/`.
+- Normalized runtime `512x512` frames under `assets/sprites/characters/full_frame/soldier_pixellab/`.
+- `assets/sprites/characters/soldier_spriteframes.tres` with generic `idle`/`move`/`walk` plus 8-direction `idle_*`, 6-frame `move_*`, and 6-frame `walk_*` rows.
+- `scripts/progression_data_characters.gd` now points `soldier.sprite_path` to `res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png`.
+- `docs/design/current_game_state.md`, `docs/design/content_registry.md`, `tests/animation_smoke_test.gd`, `tests/character_sprite_registry_alignment_test.gd`, and `tests/hero_select_pixellab_layout_test.gd` updated for the live PixelLab contract.
+
+PixelLab source id: `72b487d3-feea-4012-b39f-b59ba24f7f11`.
+
+Tests/evidence:
+- PASS: static integration validator checked 56 source PNGs, 56 runtime PNGs, `512x512` RGBA runtime frames, manifest, SpriteFrames directional names, canonical sprite path, and no `.import`/`.uid` sidecars for Soldier/Thief/Elementalist/Robot.
+- BLOCKED: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` waited for the shared semaphore but did not launch Godot because all default slots were held by unrelated `unique_weapon_vfx_assets_test.gd` import processes. The queued gate was interrupted with exit 130 to avoid an indefinite wait; after fast-forwarding to `origin/dev` (`39fca93c`), static validation still passed and a process recheck still showed multiple unrelated `unique_weapon_vfx_assets_test.gd` Godot/gate jobs occupying or waiting on the shared gate. No Soldier test failure was observed.
+- Restored source-branch QA evidence under `build/qa/scrum434_soldier_pixellab/`.
+
+Disk cleanup: none created by this integration run; no `.godot/`, Python cache, or temp download directory was created here. Imported QA evidence is intentionally kept.
+
+## Gate Rerun / Environment Blocker — 2026-07-01
+
+Thread/Worker: `codex-character-gate-rerun-20260701`.
+Branch: `codex/character-pixellab-serial-integration-20260701` @ `a97e3eb9`.
+
+Static validation PASS for the combined Soldier/Thief/Elementalist/Robot scope:
+56 source PNGs, 56 runtime PNGs, manifests, 56 SpriteFrames texture refs,
+canonical `*_idle_south.png` `sprite_path` values, and no task-owned
+`.import`/`.uid` sidecars. Evidence:
+`build/qa/character_gate_rerun_20260701/static_pack_validation.json`.
+
+Godot gates are still environment-blocked, not product-failed. The worker
+queued `res://tests/animation_smoke_test.gd` through `tools/godot_gate.py` twice:
+first with default slots, then with `FSD_GODOT_SLOTS=6`, both with
+`FSD_GODOT_MAXWAIT=86400` so the command would not fall through and bypass the
+semaphore. Both attempts stayed queued and were interrupted before Godot
+launched; `animation_smoke_test.log` remained empty. Final snapshot
+`build/qa/character_gate_rerun_20260701/semaphore_blocker_snapshot.txt` shows all
+six observed semaphore slots held by unrelated Godot/gate jobs
+(`unique_weapon_vfx_assets_test.gd`, attack VFX, ranger pack/import). Required
+gates still not completed: `animation_smoke_test.gd`,
+`hero_select_pixellab_layout_test.gd`,
+`character_sprite_registry_alignment_test.gd`, and `runtime_smoke_test.gd`.
+
+No real Soldier/Thief/Elementalist/Robot defect was observed. Do not regenerate
+art or re-integrate unless a future gate reports a concrete product failure.
+Jira is released from active ownership until the semaphore clears.
+Disk cleanup: no `.godot/` or user-data cache was created by this worker; only
+the committed `build/qa/character_gate_rerun_20260701/` evidence files were
+created.
 
 ## PM/Codex Reactivation — PixelLab Final Runtime Pass (2026-07-01)
 

@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "characters": {
+    "soldier": {
+      "source_png_count": 56,
+      "runtime_png_count": 56,
+      "manifest_exists": true,
+      "spriteframes_exists": true,
+      "spriteframes_runtime_ext_resource_count": 56,
+      "missing_spriteframes_ext_files": [],
+      "missing_required_animations": [],
+      "canonical_sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
+      "canonical_sprite_path_in_progression": true,
+      "canonical_runtime_png_exists": true,
+      "source_sidecars": [],
+      "runtime_sidecars": [],
+      "ok": true
+    },
+    "thief": {
+      "source_png_count": 56,
+      "runtime_png_count": 56,
+      "manifest_exists": true,
+      "spriteframes_exists": true,
+      "spriteframes_runtime_ext_resource_count": 56,
+      "missing_spriteframes_ext_files": [],
+      "missing_required_animations": [],
+      "canonical_sprite_path": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
+      "canonical_sprite_path_in_progression": true,
+      "canonical_runtime_png_exists": true,
+      "source_sidecars": [],
+      "runtime_sidecars": [],
+      "ok": true
+    },
+    "elementalist": {
+      "source_png_count": 56,
+      "runtime_png_count": 56,
+      "manifest_exists": true,
+      "spriteframes_exists": true,
+      "spriteframes_runtime_ext_resource_count": 56,
+      "missing_spriteframes_ext_files": [],
+      "missing_required_animations": [],
+      "canonical_sprite_path": "res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
+      "canonical_sprite_path_in_progression": true,
+      "canonical_runtime_png_exists": true,
+      "source_sidecars": [],
+      "runtime_sidecars": [],
+      "ok": true
+    },
+    "robot": {
+      "source_png_count": 56,
+      "runtime_png_count": 56,
+      "manifest_exists": true,
+      "spriteframes_exists": true,
+      "spriteframes_runtime_ext_resource_count": 56,
+      "missing_spriteframes_ext_files": [],
+      "missing_required_animations": [],
+      "canonical_sprite_path": "res://assets/sprites/characters/full_frame/robot_pixellab/robot_idle_south.png",
+      "canonical_sprite_path_in_progression": true,
+      "canonical_runtime_png_exists": true,
+      "source_sidecars": [],
+      "runtime_sidecars": [],
+      "ok": true
+    }
+  }
+}

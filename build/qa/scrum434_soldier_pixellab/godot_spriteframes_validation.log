@@ -1,0 +1,5 @@
+Command: python3 tools/godot_gate.py --headless --path . --script res://build/qa/scrum434_soldier_pixellab/validate_soldier_spriteframes.gd
+Godot: 4.7.stable.official.5b4e0cb0f
+Exit code: 0
+Result: SCRUM-434 Soldier SpriteFrames validation passed: 27 animations.
+Note: first-run asset import emitted existing project UID/import warnings before the validation script; generated .godot/.import/.uid sidecars were cleaned after the run.

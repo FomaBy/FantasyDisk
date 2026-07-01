@@ -1,0 +1,1742 @@
+{
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "frames": [
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_south.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 84,
+        "y": 63,
+        "w": 82,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 80,
+        "y": 59,
+        "w": 90,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 172,
+        "y": 235,
+        "w": 169,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 96,
+        "y": 65,
+        "w": 63,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 92,
+        "y": 61,
+        "w": 71,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 189,
+        "y": 236,
+        "w": 135,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 89,
+        "y": 66,
+        "w": 61,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 85,
+        "y": 62,
+        "w": 69,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 191,
+        "y": 236,
+        "w": 130,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 91,
+        "y": 65,
+        "w": 66,
+        "h": 111
+      },
+      "crop_box": {
+        "x": 87,
+        "y": 61,
+        "w": 74,
+        "h": 119
+      },
+      "scale": 2.2072072072072073,
+      "runtime_bbox": {
+        "x": 183,
+        "y": 235,
+        "w": 145,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 86,
+        "y": 61,
+        "w": 79,
+        "h": 120
+      },
+      "crop_box": {
+        "x": 82,
+        "y": 57,
+        "w": 87,
+        "h": 128
+      },
+      "scale": 2.0416666666666665,
+      "runtime_bbox": {
+        "x": 175,
+        "y": 235,
+        "w": 162,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 86,
+        "y": 61,
+        "w": 77,
+        "h": 120
+      },
+      "crop_box": {
+        "x": 82,
+        "y": 57,
+        "w": 85,
+        "h": 128
+      },
+      "scale": 2.0416666666666665,
+      "runtime_bbox": {
+        "x": 177,
+        "y": 235,
+        "w": 158,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 86,
+        "y": 61,
+        "w": 78,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 82,
+        "y": 57,
+        "w": 86,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 174,
+        "y": 234,
+        "w": 163,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_south-east.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south-east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 83,
+        "y": 65,
+        "w": 80,
+        "h": 116
+      },
+      "crop_box": {
+        "x": 79,
+        "y": 61,
+        "w": 88,
+        "h": 124
+      },
+      "scale": 2.1120689655172415,
+      "runtime_bbox": {
+        "x": 171,
+        "y": 234,
+        "w": 170,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 85,
+        "y": 65,
+        "w": 69,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 81,
+        "y": 61,
+        "w": 77,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 184,
+        "y": 234,
+        "w": 144,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 86,
+        "y": 63,
+        "w": 75,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 82,
+        "y": 59,
+        "w": 83,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 178,
+        "y": 235,
+        "w": 155,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 87,
+        "y": 63,
+        "w": 69,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 83,
+        "y": 59,
+        "w": 77,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 183,
+        "y": 236,
+        "w": 147,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 83,
+        "y": 63,
+        "w": 73,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 79,
+        "y": 59,
+        "w": 81,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 180,
+        "y": 235,
+        "w": 151,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 82,
+        "y": 64,
+        "w": 75,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 78,
+        "y": 60,
+        "w": 83,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 178,
+        "y": 234,
+        "w": 156,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 82,
+        "y": 64,
+        "w": 74,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 78,
+        "y": 60,
+        "w": 82,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 179,
+        "y": 234,
+        "w": 154,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_east.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 84,
+        "y": 67,
+        "w": 72,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 80,
+        "y": 63,
+        "w": 80,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 182,
+        "y": 235,
+        "w": 149,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 92,
+        "y": 67,
+        "w": 51,
+        "h": 117
+      },
+      "crop_box": {
+        "x": 88,
+        "y": 63,
+        "w": 59,
+        "h": 125
+      },
+      "scale": 2.094017094017094,
+      "runtime_bbox": {
+        "x": 202,
+        "y": 234,
+        "w": 108,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 88,
+        "y": 67,
+        "w": 69,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 84,
+        "y": 63,
+        "w": 77,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 183,
+        "y": 236,
+        "w": 146,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 92,
+        "y": 67,
+        "w": 59,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 88,
+        "y": 63,
+        "w": 67,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 193,
+        "y": 236,
+        "w": 125,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 94,
+        "y": 68,
+        "w": 49,
+        "h": 116
+      },
+      "crop_box": {
+        "x": 90,
+        "y": 64,
+        "w": 57,
+        "h": 124
+      },
+      "scale": 2.1120689655172415,
+      "runtime_bbox": {
+        "x": 204,
+        "y": 234,
+        "w": 104,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 92,
+        "y": 68,
+        "w": 56,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 88,
+        "y": 64,
+        "w": 64,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 196,
+        "y": 236,
+        "w": 120,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 95,
+        "y": 68,
+        "w": 53,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 91,
+        "y": 64,
+        "w": 61,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 200,
+        "y": 236,
+        "w": 112,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_north-east.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north-east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 83,
+        "y": 67,
+        "w": 62,
+        "h": 117
+      },
+      "crop_box": {
+        "x": 79,
+        "y": 63,
+        "w": 70,
+        "h": 125
+      },
+      "scale": 2.094017094017094,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 234,
+        "w": 131,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 101,
+        "y": 65,
+        "w": 50,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 97,
+        "y": 61,
+        "w": 58,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 204,
+        "y": 234,
+        "w": 104,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 97,
+        "y": 65,
+        "w": 61,
+        "h": 123
+      },
+      "crop_box": {
+        "x": 93,
+        "y": 61,
+        "w": 69,
+        "h": 131
+      },
+      "scale": 1.991869918699187,
+      "runtime_bbox": {
+        "x": 196,
+        "y": 235,
+        "w": 121,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 97,
+        "y": 64,
+        "w": 57,
+        "h": 122
+      },
+      "crop_box": {
+        "x": 93,
+        "y": 60,
+        "w": 65,
+        "h": 130
+      },
+      "scale": 2.0081967213114753,
+      "runtime_bbox": {
+        "x": 198,
+        "y": 235,
+        "w": 115,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 92,
+        "y": 68,
+        "w": 53,
+        "h": 116
+      },
+      "crop_box": {
+        "x": 88,
+        "y": 64,
+        "w": 61,
+        "h": 124
+      },
+      "scale": 2.1120689655172415,
+      "runtime_bbox": {
+        "x": 200,
+        "y": 234,
+        "w": 113,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 91,
+        "y": 68,
+        "w": 58,
+        "h": 110
+      },
+      "crop_box": {
+        "x": 87,
+        "y": 64,
+        "w": 66,
+        "h": 118
+      },
+      "scale": 2.227272727272727,
+      "runtime_bbox": {
+        "x": 191,
+        "y": 235,
+        "w": 129,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 91,
+        "y": 68,
+        "w": 52,
+        "h": 110
+      },
+      "crop_box": {
+        "x": 87,
+        "y": 64,
+        "w": 60,
+        "h": 118
+      },
+      "scale": 2.227272727272727,
+      "runtime_bbox": {
+        "x": 198,
+        "y": 235,
+        "w": 116,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_north.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 86,
+        "y": 66,
+        "w": 78,
+        "h": 117
+      },
+      "crop_box": {
+        "x": 82,
+        "y": 62,
+        "w": 86,
+        "h": 125
+      },
+      "scale": 2.094017094017094,
+      "runtime_bbox": {
+        "x": 174,
+        "y": 234,
+        "w": 164,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 88,
+        "y": 66,
+        "w": 75,
+        "h": 116
+      },
+      "crop_box": {
+        "x": 84,
+        "y": 62,
+        "w": 83,
+        "h": 124
+      },
+      "scale": 2.1120689655172415,
+      "runtime_bbox": {
+        "x": 176,
+        "y": 234,
+        "w": 159,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 88,
+        "y": 66,
+        "w": 68,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 84,
+        "y": 62,
+        "w": 76,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 183,
+        "y": 236,
+        "w": 145,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 89,
+        "y": 67,
+        "w": 72,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 85,
+        "y": 63,
+        "w": 80,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 179,
+        "y": 236,
+        "w": 154,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 96,
+        "y": 70,
+        "w": 58,
+        "h": 108
+      },
+      "crop_box": {
+        "x": 92,
+        "y": 66,
+        "w": 66,
+        "h": 116
+      },
+      "scale": 2.2685185185185186,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 235,
+        "w": 132,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 97,
+        "y": 70,
+        "w": 57,
+        "h": 106
+      },
+      "crop_box": {
+        "x": 93,
+        "y": 66,
+        "w": 65,
+        "h": 114
+      },
+      "scale": 2.311320754716981,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 235,
+        "w": 132,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 97,
+        "y": 70,
+        "w": 57,
+        "h": 107
+      },
+      "crop_box": {
+        "x": 93,
+        "y": 66,
+        "w": 65,
+        "h": 115
+      },
+      "scale": 2.289719626168224,
+      "runtime_bbox": {
+        "x": 191,
+        "y": 235,
+        "w": 131,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_north-west.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north-west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 85,
+        "y": 63,
+        "w": 78,
+        "h": 117
+      },
+      "crop_box": {
+        "x": 81,
+        "y": 59,
+        "w": 86,
+        "h": 125
+      },
+      "scale": 2.094017094017094,
+      "runtime_bbox": {
+        "x": 174,
+        "y": 234,
+        "w": 164,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 99,
+        "y": 68,
+        "w": 47,
+        "h": 108
+      },
+      "crop_box": {
+        "x": 95,
+        "y": 64,
+        "w": 55,
+        "h": 116
+      },
+      "scale": 2.2685185185185186,
+      "runtime_bbox": {
+        "x": 203,
+        "y": 235,
+        "w": 107,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 95,
+        "y": 68,
+        "w": 58,
+        "h": 108
+      },
+      "crop_box": {
+        "x": 91,
+        "y": 64,
+        "w": 66,
+        "h": 116
+      },
+      "scale": 2.2685185185185186,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 235,
+        "w": 132,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 102,
+        "y": 68,
+        "w": 54,
+        "h": 106
+      },
+      "crop_box": {
+        "x": 98,
+        "y": 64,
+        "w": 62,
+        "h": 114
+      },
+      "scale": 2.311320754716981,
+      "runtime_bbox": {
+        "x": 193,
+        "y": 235,
+        "w": 125,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 90,
+        "y": 66,
+        "w": 63,
+        "h": 111
+      },
+      "crop_box": {
+        "x": 86,
+        "y": 62,
+        "w": 71,
+        "h": 119
+      },
+      "scale": 2.2072072072072073,
+      "runtime_bbox": {
+        "x": 187,
+        "y": 235,
+        "w": 139,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 89,
+        "y": 67,
+        "w": 67,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 85,
+        "y": 63,
+        "w": 75,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 185,
+        "y": 236,
+        "w": 142,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_north-west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 91,
+        "y": 68,
+        "w": 63,
+        "h": 111
+      },
+      "crop_box": {
+        "x": 87,
+        "y": 64,
+        "w": 71,
+        "h": 119
+      },
+      "scale": 2.2072072072072073,
+      "runtime_bbox": {
+        "x": 187,
+        "y": 235,
+        "w": 139,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_west.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 95,
+        "y": 67,
+        "w": 70,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 91,
+        "y": 63,
+        "w": 78,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 183,
+        "y": 234,
+        "w": 146,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 103,
+        "y": 67,
+        "w": 47,
+        "h": 114
+      },
+      "crop_box": {
+        "x": 99,
+        "y": 63,
+        "w": 55,
+        "h": 122
+      },
+      "scale": 2.1491228070175437,
+      "runtime_bbox": {
+        "x": 206,
+        "y": 236,
+        "w": 100,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 89,
+        "y": 67,
+        "w": 61,
+        "h": 113
+      },
+      "crop_box": {
+        "x": 85,
+        "y": 63,
+        "w": 69,
+        "h": 121
+      },
+      "scale": 2.168141592920354,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 236,
+        "w": 132,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 97,
+        "y": 67,
+        "w": 57,
+        "h": 113
+      },
+      "crop_box": {
+        "x": 93,
+        "y": 63,
+        "w": 65,
+        "h": 121
+      },
+      "scale": 2.168141592920354,
+      "runtime_bbox": {
+        "x": 195,
+        "y": 236,
+        "w": 123,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 105,
+        "y": 67,
+        "w": 47,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 101,
+        "y": 63,
+        "w": 55,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 207,
+        "y": 236,
+        "w": 99,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 99,
+        "y": 67,
+        "w": 49,
+        "h": 116
+      },
+      "crop_box": {
+        "x": 95,
+        "y": 63,
+        "w": 57,
+        "h": 124
+      },
+      "scale": 2.1120689655172415,
+      "runtime_bbox": {
+        "x": 204,
+        "y": 234,
+        "w": 104,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 101,
+        "y": 67,
+        "w": 46,
+        "h": 113
+      },
+      "crop_box": {
+        "x": 97,
+        "y": 63,
+        "w": 54,
+        "h": 121
+      },
+      "scale": 2.168141592920354,
+      "runtime_bbox": {
+        "x": 207,
+        "y": 236,
+        "w": 99,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_idle_south-west.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south-west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 92,
+        "y": 67,
+        "w": 71,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 88,
+        "y": 63,
+        "w": 79,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 182,
+        "y": 235,
+        "w": 147,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 98,
+        "y": 66,
+        "w": 66,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 94,
+        "y": 62,
+        "w": 74,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 188,
+        "y": 235,
+        "w": 136,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 94,
+        "y": 67,
+        "w": 68,
+        "h": 119
+      },
+      "crop_box": {
+        "x": 90,
+        "y": 63,
+        "w": 76,
+        "h": 127
+      },
+      "scale": 2.0588235294117645,
+      "runtime_bbox": {
+        "x": 186,
+        "y": 235,
+        "w": 140,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 96,
+        "y": 66,
+        "w": 68,
+        "h": 120
+      },
+      "crop_box": {
+        "x": 92,
+        "y": 62,
+        "w": 76,
+        "h": 128
+      },
+      "scale": 2.0416666666666665,
+      "runtime_bbox": {
+        "x": 186,
+        "y": 235,
+        "w": 139,
+        "h": 245
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 104,
+        "y": 66,
+        "w": 60,
+        "h": 118
+      },
+      "crop_box": {
+        "x": 100,
+        "y": 62,
+        "w": 68,
+        "h": 126
+      },
+      "scale": 2.0762711864406778,
+      "runtime_bbox": {
+        "x": 194,
+        "y": 234,
+        "w": 125,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 101,
+        "y": 67,
+        "w": 62,
+        "h": 117
+      },
+      "crop_box": {
+        "x": 97,
+        "y": 63,
+        "w": 70,
+        "h": 125
+      },
+      "scale": 2.094017094017094,
+      "runtime_bbox": {
+        "x": 190,
+        "y": 234,
+        "w": 131,
+        "h": 246
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/thief/thief_move_south-west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_bbox": {
+        "x": 105,
+        "y": 67,
+        "w": 59,
+        "h": 115
+      },
+      "crop_box": {
+        "x": 101,
+        "y": 63,
+        "w": 67,
+        "h": 123
+      },
+      "scale": 2.130434782608696,
+      "runtime_bbox": {
+        "x": 193,
+        "y": 236,
+        "w": 125,
+        "h": 244
+      },
+      "runtime_size": [
+        512,
+        512
+      ]
+    }
+  ]
+}
