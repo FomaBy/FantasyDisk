@@ -93,3 +93,11 @@ Tests:
 Disk cleanup: removed `.godot/` import cache (~1.3 GB) and
 `build/tmp_scrum704_pixellab_download/`; kept committed QA evidence under
 `build/qa/scrum704_dark_mage_pixellab/`. Worktree kept for pushed branch/QA.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+Проверено claude-qa на HEAD origin/dev (арт-коммит 6fa2b5c8 = ancestor origin/dev).
+- Контракт размера ВЫПОЛНЕН: dark_mage_pixellab idle_south alpha bbox = 230×246 px (высота 246 ∈ 240-250), PNG 512×512, bottom-aligned. Старый legacy 174px пак заменён.
+- `dark_mage_spriteframes.tres`: 56 refs на dark_mage_pixellab, 0 stale. Старый масштаб в игре не виден (acceptance выполнен).
+- runtime_smoke_test: PASS (exit 0, 12641 файлов, duplicate-guard OK) — dark_mage refs резолвятся после локального Godot --import (PNG+.import committed на origin/dev).
+Блок добавлен в .md, чтобы board_sync не реверт-ил PASSED-тикет обратно в QC.
