@@ -151,6 +151,29 @@ claim-first, если они не заблокированы, не ждут PM/Q
 результате, Back-end соблюдает их при layout, QA считает наложение на рамку
 дефектом.
 
+## PixelLab-first Redraw Intake (SCRUM-689)
+
+Будущие redraw-задачи PM/dispatcher формулирует как PixelLab-first по умолчанию.
+Это касается перерисовки персонажей, врагов, элиток, боссов, animation/source
+packs, UI/frame source kits и похожих source assets, где цель — заменить или
+серьёзно обновить визуал. Jira issue и локальный task mirror должны прямо
+указывать PixelLab как источник, expected source/runtime paths, transparent PNG,
+runtime-safe sizing/readability evidence, pivots and 8-direction/animation
+contract when relevant.
+
+`fantasydisk-ui-director` и `content-zone-image-compositor` остаются
+обязательными для UI planning, safe margins, text/content zones and compositing
+checks. PixelLab-first означает источник redraw art, а не разрешение класть текст,
+иконки, кнопки или портреты поверх орнамента. Hard frame/content-zone rule
+остаётся acceptance gate.
+
+Старый generic OpenAI/`fantasydisk-asset-generator` путь для redraw не является
+fallback. Его можно использовать только если Jira/task заранее или в blocker
+comment явно записывает исключение и причину: например `OpenAI Images override`,
+reuse of an accepted existing source, or PixelLab unavailable. Такое исключение
+должно попасть в result/evidence, чтобы QA и следующие агенты не считали его
+молчаливым обходом процесса.
+
 ## Jira Sync (с 2026-06-12, обязательный)
 
 Все задачи ведутся в Jira проекте `SCRUM`; локальные task-файлы дополнительно

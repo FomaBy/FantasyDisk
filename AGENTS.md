@@ -196,14 +196,23 @@ Project practices:
   Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
   отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
   макетов не использовать как fallback.
-- **Генерация графики/ассетов — ТОЛЬКО скиллом `fantasydisk-asset-generator`**
+- **PixelLab-first для будущих redraw-задач (SCRUM-689).** Перерисовки
+  персонажей, монстров, элиток, боссов, animation/source packs, UI frame/source
+  kits и других redraw source assets по умолчанию идут через PixelLab MCP /
+  PixelLab-ориентированные skills. Старый generic OpenAI/asset-generator путь
+  нельзя использовать как fallback для redraw, если Jira/task прямо не записывает
+  исключение с причиной (`OpenAI Images override`, `existing source reuse`,
+  `PixelLab unavailable`, и т.п.). Исключение должно быть видно в Jira comment,
+  task mirror/result и evidence.
+- **Генерация графики/ассетов — через `fantasydisk-asset-generator` только для
+  задач вне PixelLab-redraw scope или при явном Jira override**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
   `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
-  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
-  лучше прежнего пайплайна — старый способ не использовать. Все ассеты — на
-  ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
-  единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
-  Fantasy Dragon (см. UI Overhaul SCRUM-327).
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Для разрешённых
+  non-redraw/override задач все ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется
+  в `docs/design/references/<тема>/` (для единообразия на будущее), затем
+  внедряется в `assets/`. Стиль — D&D + Dark Fantasy Dragon (см. UI Overhaul
+  SCRUM-327).
 - **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
   `content-zone-image-compositor`** (Codex skill,
   `~/.codex/skills/content-zone-image-compositor/`, repo mirror:

@@ -245,6 +245,16 @@ Design отвечает за:
 - исправление visual artifacts: лишние куски текстуры, dirty pixels, halos, crop issues;
 - content registry для asset paths и visual entities.
 
+PixelLab-first redraw rule (SCRUM-689): future Design redraw tasks for
+characters, enemies, bosses, UI/frame source kits and comparable redraw source
+assets must use PixelLab as the default source pipeline. Older generic
+OpenAI/asset-generator redraw paths are allowed only when Jira/task explicitly
+records an exception and reason. Design results must still include transparent
+source/runtime PNGs, source/evidence under `docs/design/references` or previews,
+runtime-safe sizing/readability evidence, and content-zone/safe-area notes for
+UI/frame work. This rule does not weaken the hard frame rule: content remains
+only inside the empty frame zone.
+
 Design не должен самостоятельно делать:
 
 - gameplay logic;
@@ -320,6 +330,11 @@ Animator отвечает за:
   preview для playable characters. Минимум `move/walk` 5+ кадров; дополнительные
   attack/phase анимации подключать только когда они есть в PixelLab pack или
   явно указаны в задаче.
+- соблюдение PixelLab-first redraw rule: если Animator-задача требует новых или
+  перерисованных character/enemy/boss/source frames, источник по умолчанию
+  PixelLab. Non-PixelLab source допустим только как явный Jira/task override.
+  Animation delivery должна сохранять transparent background, pivots,
+  8-direction/required animation contract и runtime-safe sizing evidence.
 
 Animator не должен самостоятельно делать:
 
