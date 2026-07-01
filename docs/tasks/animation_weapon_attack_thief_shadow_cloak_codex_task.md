@@ -1,17 +1,17 @@
 # Animation: Плащ Захода (thief_shadow_cloak) attack VFX redraw
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/VFX Codex disposable worker
+Thread: current Codex worker (delegated from 019f1eac-35c3-7323-9067-8b7c2b88ab33)
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-774
-Locked paths: assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png, docs/design/references/weapon_attack_animations/thief_shadow_cloak/, docs/design/previews/weapon_attack_animations/thief_shadow_cloak_contact.png, scenes/ThiefShadowCloak.tscn, assets/sprites/weapons/thief_shadow_cloak.png
+Locked paths: assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png, docs/design/references/attack_vfx/thief_shadow_cloak/, docs/design/references/weapon_attack_animations/thief_shadow_cloak/, docs/design/previews/weapon_attack_animations/thief_shadow_cloak_contact.png, assets/vfx/attacks/thief_shadow_cloak/, scenes/ThiefShadowCloak.tscn only if runtime rewiring is required
 
 ## Контекст
 
@@ -22,9 +22,16 @@ Locked paths: assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png, docs/des
 
 ## Обязательный пайплайн генерации
 
-User override 2026-06-30: для этой задачи использовать OpenAI image generation, а не PixelLab. Генерировать через репозиторный helper `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py` / `gpt-image-2` с `--quality high`, фиксируя override в result/evidence.
+Initial 2026-06-30 OpenAI-only generation path was blocked by
+`billing_hard_limit_reached`. Direct dispatcher/user unblock 2026-07-01 switched
+this issue back to the mandatory PixelLab-first redraw path. Do not use OpenAI
+Images unless a new Jira comment explicitly records a fresh override.
 
-Source PNG и prompt notes сохранить в `docs/design/references/weapon_attack_animations/thief_shadow_cloak/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png`, если не создан отдельный backend/runtime handoff.
+Source PNG, prompt notes, manifest, and alpha/readability evidence are saved in
+`docs/design/references/attack_vfx/thief_shadow_cloak/` with a mirror under
+`docs/design/references/weapon_attack_animations/thief_shadow_cloak/`. Accepted
+runtime PNG updates only `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png`;
+no backend/runtime handoff was needed.
 
 ## Требования
 
@@ -37,17 +44,17 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 
 ## Acceptance Criteria
 
-- [ ] `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png` обновлен или подтверждён как accepted с новым OpenAI source/evidence.
-- [ ] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
-- [ ] Attack VFX уникально отражает **Плащ Захода**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
-- [ ] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
-- [ ] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
-- [ ] Обновлены `docs/design/content_registry.md` или `docs/design/current_game_state.md`, если runtime path/contract/evidence изменились.
+- [x] `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png` обновлен с новым PixelLab source/evidence.
+- [x] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
+- [x] Attack VFX уникально отражает **Плащ Захода**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
+- [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
+- [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
+- [x] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; animation/runtime hooks не менялись.
+- [x] `docs/design/content_registry.md` и `docs/design/current_game_state.md` не требовали обновления: runtime path/contract не изменились.
 
 ## QA Notes
 
-QA проверяет именно `thief_shadow_cloak` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+QA проверяет именно `thief_shadow_cloak` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные PixelLab/Godot/source scratch caches, оставить только committed source/evidence/runtime files.
 
 ## Dispatcher Unblock — PixelLab path (2026-07-01)
 
@@ -57,3 +64,19 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Codex Claim — 2026-07-01
+
+- Owner: Animator/VFX Codex disposable worker.
+- Lane: Codex.
+- Worktree: `/Users/sergeyfomin/.codex/worktrees/fcf1/AI Agent`, detached HEAD synced to `origin/dev` `42faa829d2f2ef4956ebdf90e2769ba70209d0e8`.
+- Scope decision: keep the existing runtime contract `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png`; add task-specific PixelLab/source evidence under `docs/design/references/attack_vfx/thief_shadow_cloak/` and mirror notes under `docs/design/references/weapon_attack_animations/thief_shadow_cloak/`.
+
+## Result — 2026-07-01
+
+- PixelLab object: `35360c9c-d67b-4f84-8fc5-6041c87db9e9`; source download archived as `thief_shadow_cloak_pixellab_source_raw.png`, cleaned source archived as `thief_shadow_cloak_pixellab_source.png`.
+- Runtime integration: replaced only `assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png`; `scripts/attack_vfx.gd`, `scenes/ThiefShadowCloak.tscn`, damage/cooldown/targeting/range/AoE/balance values unchanged.
+- Visual decision: semi-transparent violet-black cloak/backstab crescent with a ghost cloak silhouette, small splash/target ring, and open center readability for world elements.
+- Static alpha/readability: runtime `256x256` RGBA, `max_alpha=174`, `mean_alpha=36.98`, `visible_ratio_alpha_gt_8=0.3864`, `center64_mean_alpha=68.51`, `center64_max_alpha=174`; report saved in both evidence folders.
+- Tests: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` passed (`Unique weapon VFX assets smoke passed: 51 plates.`); `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` passed, then passed again cleanly after import cache settled.
+- Disk cleanup: removed `.godot`, restored 119 tracked Godot-generated `.import/.uid` sidecar changes, removed 215 untracked generated `.import/.uid` sidecars; no SCRUM-774 task sidecar cache remains.
