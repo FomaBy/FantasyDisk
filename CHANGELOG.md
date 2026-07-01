@@ -82,6 +82,13 @@
   `dark_mage_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
   `move_<direction>` / `walk_<direction>` for all 8 directions. Dark Mage hands
   stay empty; book/skull/wand/orb remain separate weapon assets.
+- SCRUM-423: PixelLab Chemist 8-direction character pack with static idle
+  rotations and six-frame `walking-6-frames` movement rows for all directions.
+  Source PNGs, manifest and PixelLab evidence live under
+  `assets/sprites/characters/pixellab/chemist/`, normalized `512x512` runtime
+  frames under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
+  `chemist_spriteframes.tres` now exposes directional idle/move/walk rows for
+  combat and Hero Select preview rotation.
 
 ### Changed
 - SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class

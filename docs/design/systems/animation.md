@@ -183,6 +183,16 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   The final north-west move row uses a PixelLab v3 custom empty-hands replacement
   after QA rejected a first template row with hammer-like props. Body attack rows
   remain absent by current combat-visual scope.
+- SCRUM-423 (2026-06-30) applies the PixelLab directional runtime path to
+  Chemist. Source downloads and manifest live under
+  `assets/sprites/characters/pixellab/chemist/` (`252x252` source frames),
+  runtime frames are nearest-neighbor normalized to a transparent `512x512`
+  canvas under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
+  `assets/sprites/characters/chemist_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame looping `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512

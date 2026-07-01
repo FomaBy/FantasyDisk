@@ -527,6 +527,21 @@ Dark Mage through the full-frame PixelLab SpriteFrames path instead of the
 historical skeleton rig priority; the skeleton source package remains
 documentation/regression history.
 
+2026-06-30 SCRUM-423 PixelLab Chemist integration replaces the legacy Chemist
+static portrait/runtime source with an 8-direction PixelLab pack. PixelLab
+character `c7fe44d3-1f15-45a1-b762-b2862833b151` (v3, `252x252` source) source
+frames and `manifest.json` are stored under
+`assets/sprites/characters/pixellab/chemist/`, normalized transparent `512x512`
+runtime frames under `assets/sprites/characters/full_frame/chemist_pixellab/`,
+and `assets/sprites/characters/chemist_spriteframes.tres` now exposes
+`idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
+for all 8 directions (`walking-6-frames` template).
+`scripts/progression_data_characters.gd` Chemist `sprite_path` points at
+`full_frame/chemist_pixellab/chemist_idle_south.png`; the generic player
+directional resolver and Hero Select clockwise rotation pick up the directional
+rows automatically. Legacy `assets/sprites/characters/chemist.png` remains
+history/fallback.
+
 SCRUM-442 подготовил узкий Berserk v3 single-sprite candidate после отмены
 широкого character v2 подхода: новый чуть более мультяшный unarmed barbarian
 source в `docs/design/references/characters_v3/berserk/`, normalized game

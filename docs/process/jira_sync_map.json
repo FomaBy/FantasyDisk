@@ -2265,8 +2265,8 @@
  },
  "art_char_redraw_v2_chemist_task.md": {
   "key": "SCRUM-423",
-  "status": "К выполнению",
-  "desc_hash": "da5d2be5ca3be68282c43feacadd3702"
+  "status": "Контроль качества",
+  "desc_hash": "bab696a462378abf08f7e16fcf435095"
  },
  "art_char_redraw_v2_dark_mage_task.md": {
   "key": "SCRUM-424",

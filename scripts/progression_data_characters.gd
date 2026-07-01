@@ -249,7 +249,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Взрывы и ядовитые зоны.",
 		"strengths": "зоны, периодический урон, области поражения.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
 	},
 	"knight": {
 		"id": "knight", "title": "Рыцарь",
