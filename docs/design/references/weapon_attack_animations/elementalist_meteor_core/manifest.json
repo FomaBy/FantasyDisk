@@ -1,0 +1,44 @@
+{
+  "task": "SCRUM-741",
+  "weapon_id": "elementalist_meteor_core",
+  "weapon_name": "Ядро Метеора",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "active_directive": "2026-07-01 PixelLab-only attack-VFX override; older OpenAI mirror text superseded",
+  "pixellab": {
+    "accepted_source_type": "1_direction_object",
+    "accepted_source_id": "65fde13a-773c-421e-a7e5-06f4b2606001",
+    "alternate_map_object_id": "fcffda75-dde7-4d59-907e-9744ae2bbec1",
+    "view": "top-down",
+    "size": [256, 256],
+    "detail": "n/a",
+    "outline": "n/a",
+    "shading": "n/a"
+  },
+  "paths": {
+    "pixellab_source": "docs/design/references/weapon_attack_animations/elementalist_meteor_core/pixellab_object_65fde13a_source.png",
+    "alternate_pixellab_source": "docs/design/references/weapon_attack_animations/elementalist_meteor_core/pixellab_map_object_fcffda75_source.png",
+    "runtime_candidate": "docs/design/references/weapon_attack_animations/elementalist_meteor_core/elementalist_meteor_core_pixellab_runtime_candidate_256.png",
+    "alpha_debug": "docs/design/references/weapon_attack_animations/elementalist_meteor_core/elementalist_meteor_core_alpha_debug.png",
+    "runtime": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+    "weapon_reference": "assets/sprites/weapons/elementalist_meteor_core.png",
+    "preview_contact": "docs/design/previews/weapon_attack_animations/elementalist_meteor_core_contact.png",
+    "qa_report": "build/qa/scrum741_meteor_core/alpha_readability_report.json"
+  },
+  "runtime_png": {
+    "dimensions": [256, 256],
+    "mode": "RGBA",
+    "alpha_extrema": [0, 165],
+    "alpha_bbox": [16, 8, 242, 242],
+    "coverage_percent": 60.74,
+    "high_alpha_pixels_gte_160": 4119
+  },
+  "visual_contract": {
+    "mechanic_read": "delayed meteor impact at target plus nearby secondary shard bursts",
+    "weapon_ghost": "accepted weapon PNG composited as a faint translucent meteor-core silhouette",
+    "readability": "checked on dark, light, and arena-like backgrounds; opacity capped and center calmed",
+    "no_text": true,
+    "transparent_background": true
+  },
+  "runtime_logic_changed": false,
+  "gameplay_balance_changed": false
+}

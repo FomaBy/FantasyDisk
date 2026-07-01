@@ -1,0 +1,9 @@
+SCRUM-741 static PNG/readability validation: PASS
+runtime=assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png
+sha256=a00dd9cdacb58d92c1264ac74137eae74c0579326cc3ae2c11890229662bd581
+size=256x256 mode=RGBA alpha_min=0 alpha_max=165 alpha>=220=0 alpha==255=0
+nonzero_alpha=39805 coverage=60.7376% bbox=(16, 8, 242, 242)
+preview=docs/design/previews/weapon_attack_animations/elementalist_meteor_core_contact.png size=768x584 mode=RGBA
+manifest=docs/design/references/weapon_attack_animations/elementalist_meteor_core/manifest.json weapon_id=elementalist_meteor_core task=SCRUM-741
+readability_report=build/qa/scrum741_meteor_core/alpha_readability_report.json keys=['accepted_source_path', 'alpha_bbox', 'alpha_extrema', 'alternate_map_object_id', 'coverage_percent', 'high_alpha_pixels_gte_160', 'mode', 'nonzero_alpha_pixels', 'pixellab_object_id', 'readability', 'runtime_logic_changed', 'runtime_path', 'size', 'weapon_id', 'weapon_reference_path']
+No runtime PNG or source asset was modified by this QA check.
