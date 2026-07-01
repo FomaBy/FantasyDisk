@@ -1,12 +1,15 @@
 # Animation: Реакторное Ядро (robot_reactor_core) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/Codex `codex-vfx-auto-18-20260701`
+Thread: one-off Codex worker
+Branch/worktree: `codex/scrum-761-robot-reactor-core-vfx` at `/Users/sergeyfomin/.codex/worktrees/ebc1/AI Agent`
+Blocked: none for asset production; Godot smoke rerun needs an import-ready `.godot` cache/environment.
+Next verification: QA rerun of `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` after Godot import cache is available.
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -22,7 +25,10 @@ Locked paths: assets/sprites/effects/vfx_weapon_robot_reactor_core.png, docs/des
 
 ## Обязательный пайплайн генерации
 
-User override 2026-06-30: для этой задачи использовать OpenAI image generation, а не PixelLab. Генерировать через репозиторный helper `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py` / `gpt-image-2` с `--quality high`, фиксируя override в result/evidence.
+Superseding override 2026-07-01: старый OpenAI-only путь больше не является
+блокером. Direct user directive in dispatcher chat сняла blockers и задала
+production path через PixelLab MCP / `fantasydisk-asset-generator`; OpenAI Images,
+`image_gen` и manual drawing pipeline не используются.
 
 Source PNG и prompt notes сохранить в `docs/design/references/weapon_attack_animations/robot_reactor_core/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_robot_reactor_core.png`, если не создан отдельный backend/runtime handoff.
 
@@ -37,13 +43,13 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 
 ## Acceptance Criteria
 
-- [ ] `assets/sprites/effects/vfx_weapon_robot_reactor_core.png` обновлен или подтверждён как accepted с новым OpenAI source/evidence.
-- [ ] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
-- [ ] Attack VFX уникально отражает **Реакторное Ядро**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
-- [ ] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
-- [ ] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
-- [ ] Пройдены `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`; если менялись animation/runtime hooks — также `animation_smoke_test.gd` и `runtime_smoke_test.gd` через `tools/godot_gate.py`.
-- [ ] Обновлены `docs/design/content_registry.md` или `docs/design/current_game_state.md`, если runtime path/contract/evidence изменились.
+- [x] `assets/sprites/effects/vfx_weapon_robot_reactor_core.png` обновлен с новым PixelLab source/evidence.
+- [x] Source, prompt notes/manifest и preview/contact sheet сохранены в task-specific paths.
+- [x] Attack VFX уникально отражает **Реакторное Ядро**, показывает зону действия и содержит полупрозрачный фоновой силуэт оружия.
+- [x] Визуал не перекрывает HUD/важные world elements на боевом масштабе; alpha/readability проверены на тёмном и светлом фоне.
+- [x] Геймплейные параметры и shared runtime logic не изменены без отдельного handoff.
+- [ ] `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`: attempted / needs QA rerun. Gate import exited `143` with no output and direct Godot failed before assertions because `.godot/imported/*.ctex` cache was absent in this disposable worktree.
+- [x] Обновлены task evidence/manifest; `docs/design/content_registry.md` и `docs/design/current_game_state.md` не менялись, потому что runtime path/contract не изменились.
 
 ## QA Notes
 
@@ -57,3 +63,49 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Result / 2026-07-01 PixelLab Override
+
+Result: asset production complete; ready for QA rerun of Godot smokes in an
+import-ready environment.
+
+Direct user directive on 2026-07-01 superseded the stale OpenAI Images-only
+mirror text. This run used PixelLab MCP through `fantasydisk-asset-generator`.
+No OpenAI Images, `image_gen`, or manual drawing pipeline was used.
+
+PixelLab evidence:
+- PixelLab object ID/job: `a5e165f2-6609-45f7-b099-71361a68a0d0`.
+- Tool: `create_map_object`, `256x256`, high top-down, medium detail/shading,
+  lineless, transparent metadata.
+- Raw PixelLab download: `docs/design/references/weapon_attack_animations/robot_reactor_core/robot_reactor_core_pixellab_source_raw.png`.
+- Alpha-clean accepted source: `docs/design/references/weapon_attack_animations/robot_reactor_core/robot_reactor_core_pixellab_source.png`.
+- Manifest/prompt notes/static report: `docs/design/references/weapon_attack_animations/robot_reactor_core/manifest.json`, `prompt_notes.md`, `static_alpha_readability_report.json`.
+
+Runtime/preview:
+- Runtime PNG: `assets/sprites/effects/vfx_weapon_robot_reactor_core.png`.
+- Preview/contact sheet: `docs/design/previews/weapon_attack_animations/robot_reactor_core_contact.png`.
+- Runtime visual: four teal reactor exhaust arms, a close-range cross-shaped
+  knockback read, softened transparent center, and low-opacity ghost silhouette
+  from `assets/sprites/weapons/robot_reactor_core.png`.
+- No damage, cooldown, targeting, balance, scene, shared runtime logic, or other
+  weapon VFX files changed.
+
+Static validation:
+- PASS — `python3 -m json.tool docs/design/references/weapon_attack_animations/robot_reactor_core/manifest.json`.
+- PASS — `python3 -m json.tool docs/design/references/weapon_attack_animations/robot_reactor_core/static_alpha_readability_report.json`.
+- PASS — `file assets/sprites/effects/vfx_weapon_robot_reactor_core.png` reports
+  PNG image data, `256 x 256`, `8-bit/color RGBA`, non-interlaced.
+- PASS — `sips` reports runtime/source PNGs are `256x256` with alpha and the
+  contact sheet is `1280x284` with alpha.
+- PASS — static alpha/readability metrics: `max_alpha=172`,
+  `center_64_mean_alpha=118.27`, `visible_pixel_ratio_alpha_gt_8=0.3309`,
+  transparent corners `[0, 0, 0, 0]`.
+
+Godot verification:
+- Attempted — `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`; gate/import path exited `143` with no test output while `.godot` import cache was absent.
+- Attempted — direct `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`; failed before the asset assertion because required `.godot/imported/*.ctex` resources were absent, then was interrupted after hanging post-diagnostic.
+- Not rerun — `attack_vfx_smoke_test.gd`, because it preloads the same texture set through `scripts/attack_vfx.gd` and would hit the same import-cache failure in this worktree.
+
+Disk cleanup: no disposable clones or task caches created; direct hung Godot
+process from this worker was interrupted; no `.godot/`, generated `.import`,
+`.uid`, or `__pycache__` files are part of the task result.
