@@ -1,0 +1,15 @@
+{
+  "issue": "SCRUM-765",
+  "check": "static weapon VFX asset matrix",
+  "source": "scripts/progression_data_weapons.gd",
+  "weapon_ids": 51,
+  "checked_pngs": 51,
+  "sniper_spotter_scope_checked": true,
+  "sniper_spotter_scope_path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope.png",
+  "requirements": {
+    "all_weapon_vfx_pngs_exist": true,
+    "all_weapon_vfx_pngs_are_256x256_rgba": true,
+    "sniper_spotter_scope_corners_transparent": true
+  },
+  "problems": []
+}
