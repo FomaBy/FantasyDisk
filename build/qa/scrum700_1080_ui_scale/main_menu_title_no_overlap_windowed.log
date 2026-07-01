@@ -1,0 +1,24 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://scripts/ui_screens.gd".
+          at: GDScript::reload (res://scripts/main.gd:445)
+          GDScript backtrace (most recent call first):
+              [0] _initialize (res://tests/main_menu_title_no_overlap_test.gd:9)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://scripts/ui_screens.gd".
+          at: GDScript::reload (res://scripts/main.gd:445)
+          GDScript backtrace (most recent call first):
+              [0] _initialize (res://tests/main_menu_title_no_overlap_test.gd:9)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "UI_SCREENS_SCRIPT" constant because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/main.gd:445)
+          GDScript backtrace (most recent call first):
+              [0] _initialize (res://tests/main_menu_title_no_overlap_test.gd:9)
+ERROR: Failed to load script "res://scripts/main.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/main_menu_title_no_overlap_test.gd:9)
+ERROR: MainMenuTitleLabel node not found in main menu.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (res://tests/runtime_smoke_test.gd:8275)
+       [1] _initialize (res://tests/main_menu_title_no_overlap_test.gd:22)

@@ -31,3 +31,23 @@ Actual:
 Executor commit observed: `13451fb7`.
 Targeted gates still pass: `ui_no_overlap_matrix_test.gd`, `runtime_smoke_ui_test.gd`.
 Disk cleanup: none created.
+
+## SCRUM-700 Reproduction Evidence — 2026-06-30
+
+Fresh 1080p QA pass confirms the issue still reproduces on the SCRUM-700
+workspace capture:
+
+- Screenshot:
+  `build/qa/scrum700_1080_ui_scale/screenshots/main_menu_1920x1080.png`
+- Rect dump:
+  `build/qa/scrum700_1080_ui_scale/priority_rects_1920x1080.md`
+
+Measured rects at 1920x1080:
+
+- `MainMenuTitleLabel`: `[P: (72, 56), S: (640, 267)]`, bottom `y=323`.
+- `MainMenuStartButton`: top `y=203`.
+- `MainMenuSettingsButton`: top `y=317`.
+- Nearest vertical gap: `-120 px`.
+
+SCRUM-700 links this finding to existing Jira `SCRUM-680` instead of creating a
+duplicate main-menu bug.

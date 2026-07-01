@@ -3090,8 +3090,8 @@
  },
  "qa_ui_1080_scale_visual_task.md": {
   "key": "SCRUM-700",
-  "status": "К выполнению",
-  "desc_hash": "892cd6067db0294210edbb5835ef800c"
+  "status": "Готово",
+  "desc_hash": "3dbf5b793910d06788b3b4a24b7a4294"
  },
  "SCRUM-678_codex_glossary_ui_design.md": {
   "key": "SCRUM-678",
@@ -3550,8 +3550,8 @@
  },
  "bug_combat_hud_1080_oversized_empty_frames_task.md": {
   "key": "SCRUM-778",
-  "status": "Контроль качества",
-  "desc_hash": "55c738a11fb984aeb8aafbe5ec3cacaf"
+  "status": "К выполнению",
+  "desc_hash": "9ea3287dd26681677ece41886f6bf302"
  },
  "animation_scrum779_boss_pixellab_promotion_handoff_task.md": {
   "key": "SCRUM-793",
