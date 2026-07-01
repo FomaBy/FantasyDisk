@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Священник» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done (готово к QA — SCRUM-431 PixelLab Priest source/runtime pack pushed)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
