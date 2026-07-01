@@ -1,6 +1,6 @@
 # Animation: Ядро Метеора (elementalist_meteor_core) attack VFX redraw
 
-Статус: done
+Статус: blocked
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
@@ -54,6 +54,8 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 
 QA проверяет именно `elementalist_meteor_core` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
 
+QA gate rerun ownership 2026-07-01: Owner=Codex QA; Thread/Worker=`codex-qa-scrum741-gate-rerun-20260701`; Lane=Codex; branch/worktree=`codex/SCRUM-741-attack-vfx-meteor-core` at `2b4850ab` in `/Users/sergeyfomin/.codex/worktrees/57a9/AI Agent`. Locked evidence paths: `assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png`, `docs/design/references/weapon_attack_animations/elementalist_meteor_core/`, `docs/design/previews/weapon_attack_animations/elementalist_meteor_core_contact.png`, `build/qa/scrum741_meteor_core/alpha_readability_report.json`, `docs/tasks/animation_weapon_attack_elementalist_meteor_core_codex_task.md`, `build/qa/scrum741_meteor_core/gate_rerun_20260701_*.log`. Next verification: static PNG/readability validation, then `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` through `tools/godot_gate.py`.
+
 ## Результат 2026-07-01
 
 - PixelLab-only override выполнен: старый OpenAI mirror text superseded активной директивой 2026-07-01.
@@ -94,3 +96,24 @@ QA worker: `codex-qa-scrum741-vfx-20260701`.
 Баги: no product defect confirmed. Acceptance is not passed because the mandatory Godot gates did not produce green results; Jira returned to `К выполнению` for a clean rerun with a healthy Godot import/cache environment.
 
 Disk cleanup: removed QA-created `.godot/` cache; no disposable clone/worktree was created.
+
+## QA Gate Rerun (2026-07-01)
+
+Статус: BLOCKED by shared Godot gate environment; no product defect confirmed.
+
+QA worker: `codex-qa-scrum741-gate-rerun-20260701`.
+Branch/worktree: `codex/SCRUM-741-attack-vfx-meteor-core` at `2b4850ab` in `/Users/sergeyfomin/.codex/worktrees/57a9/AI Agent`; `origin/dev` inspected at `a83fb7a5`.
+
+Проверено:
+- PASS: static PNG/readability validation rerun in `build/qa/scrum741_meteor_core/gate_rerun_20260701_static_png_check.log`.
+- PASS: runtime PNG `assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png` remains unchanged by QA, `256x256` RGBA, SHA-256 `a00dd9cdacb58d92c1264ac74137eae74c0579326cc3ae2c11890229662bd581`, alpha `0..165`, `alpha>=220` count `0`, coverage `60.7376%`, bbox `(16, 8, 242, 242)`.
+- PASS: task manifest/readability JSON parse and preview/contact sheet exists.
+- BLOCKED: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` was queued from `2026-07-01T18:30:41Z` until `2026-07-01T18:43:34Z` but never acquired a configured semaphore slot; the test body did not start. Evidence: `build/qa/scrum741_meteor_core/gate_rerun_20260701_unique_weapon_vfx_assets_test.log`.
+- BLOCKED: semaphore evidence `build/qa/scrum741_meteor_core/gate_rerun_20260701_semaphore_state.log` captured `slot0`, `slot1`, and `slot2` locked with multiple active Godot import/gate processes in other worktrees.
+- NOT RUN: `attack_vfx_smoke_test.gd`; starting a second queue while the first required gate could not enter would worsen shared semaphore saturation.
+
+Баги: no SCRUM-741 product defect confirmed; no redraw or runtime/source asset change made.
+
+Next: rerun `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` later in a quiet/healthy Godot import-cache window before moving SCRUM-741 to `Готово`.
+
+Disk cleanup: no `.godot` cache, user-data cache, or disposable worktree was created by this rerun.

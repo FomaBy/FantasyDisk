@@ -1,0 +1,43 @@
+Semaphore evidence captured: 2026-07-01T18:41:34Z
+CWD: /Users/sergeyfomin/.codex/worktrees/57a9/AI Agent
+
+Slot lock probe:
+2026-07-01T18:41:34Z
+slot0: locked
+slot1: locked
+slot2: locked
+
+Active Godot/gate processes:
+  PID  PPID ELAPSED  %CPU %MEM STAT COMMAND
+45986 68809   20:11   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+50509 68809   18:07   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+50542 45986   18:05  57.3  0.6 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+54756 68809   16:35   0.0  0.0 Ss   /bin/zsh -c set -o pipefail\012python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd 2>&1 | tee build/qa/scrum731_spore_lens_vfx/attack_vfx_smoke_test.log
+54758 54756   16:35   0.0  0.0 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd
+55016 50509   16:23  76.7  0.8 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+64034 68809   13:33   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+64035 68809   13:33   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd
+69550 68809   11:14   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --user-data-dir /tmp/fantasydisk-godot-scrum768-unique --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+69582 69550   11:14  51.2  0.9 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+70250 68809   10:53   0.0  0.0 Ss   zsh -c log=build/qa/scrum741_meteor_core/gate_rerun_20260701_unique_weapon_vfx_assets_test.log; { printf "Command: python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd\n"; printf "Started: %s\n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"; printf "CWD: %s\n\n" "$PWD"; } > "$log"; python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd >> "$log" 2>&1; code=$?; { printf "\nFinished: %s\n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"; printf "Exit code: %s\n" "$code"; } >> "$log"; exit "$code"
+70262 70250   10:53   0.0  0.0 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+70561 68809   10:46   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+70825 68809   10:38   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+80603 46295   07:16   0.0  0.0 Ss   /bin/zsh -c source /Users/sergeyfomin/.claude/shell-snapshots/snapshot-zsh-1782888522243-2cp6p2.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && eval 'cd "/Users/sergeyfomin/Documents/AI Agent/.claude/worktrees/agent-a546e1dba4d9906c8" && GODOT_BIN=/private/tmp/fsd_godot_sem/bin/fdengine FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --import --quit 2>&1 | tail -25 ; echo "=== IMPORT EXIT ${PIPESTATUS[0]} ==="' < /dev/null && pwd -P >| /tmp/claude-7a85-cwd
+80606 80603   07:16   0.0  0.0 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --import --quit
+82176 68809   06:44   0.0  0.0 Ss   /bin/zsh -c mkdir -p build/qa/character_gate_rerun_20260701\012set -o pipefail\012FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd 2>&1 | tee build/qa/character_gate_rerun_20260701/animation_smoke_test.log
+82178 82176   06:44   0.6  0.0 S    /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd
+84432 68809   05:30   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/ranger_pixellab_pack_test.gd
+84443 84432   05:30  51.4  0.5 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+86315 70561   04:42  39.6  0.4 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+89899 68809   03:05   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+89900 89899   03:05  65.5  0.5 R    /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --import --quit
+90545 68809   02:42   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+91704 68809   02:20   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd
+95482 68809   00:39   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --user-data-dir /tmp/fantasydisk-godot-scrum773-unique --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+95713 68809   00:34   0.0  0.0 Ss   /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+
+SCRUM-741 gate log tail:
+Command: python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+Started: 2026-07-01T18:30:41Z
+CWD: /Users/sergeyfomin/.codex/worktrees/57a9/AI Agent
