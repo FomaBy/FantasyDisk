@@ -3160,7 +3160,7 @@
  },
  "codex_skill_tree_final_per_hero_enhancements_task.md": {
   "key": "SCRUM-726",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "25e59130cd872ee6c95073b2be2f1078"
  },
  "design_fantasydisk_item_icon_generator_skill_task.md": {
@@ -3180,8 +3180,8 @@
  },
  "animation_weapon_attack_acid_flask_claude_task.md": {
   "key": "SCRUM-727",
-  "status": "Контроль качества",
-  "desc_hash": "e3afb10fab0154b25af70137e5aeb36d"
+  "status": "Готово",
+  "desc_hash": "ad83d0f193e54703ed9471be461405ee"
  },
  "animation_weapon_attack_axe_codex_task.md": {
   "key": "SCRUM-728",
@@ -3190,12 +3190,12 @@
  },
  "animation_weapon_attack_bass_guitar_claude_task.md": {
   "key": "SCRUM-729",
-  "status": "К выполнению",
-  "desc_hash": "d9865268f4e5b8241753b5f6479da574"
+  "status": "Готово",
+  "desc_hash": "eca1e7b2e7c45b70db12b5ac1f9fea0c"
  },
  "animation_weapon_attack_biologist_sample_injector_codex_task.md": {
   "key": "SCRUM-730",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "61a674ea4d5bdd29500e54c8226b9035"
  },
  "animation_weapon_attack_biologist_spore_lens_codex_task.md": {
@@ -3210,33 +3210,33 @@
  },
  "animation_weapon_attack_blast_powder_claude_task.md": {
   "key": "SCRUM-733",
-  "status": "К выполнению",
-  "desc_hash": "4fe18d60439c0823eb8730e64ca4faae"
+  "status": "Готово",
+  "desc_hash": "5c0aa5281b36ad9d075a9640127492cb"
  },
  "animation_weapon_attack_bone_saw_claude_task.md": {
   "key": "SCRUM-734",
-  "status": "К выполнению",
-  "desc_hash": "44c19eb5970942e2434a95746523d4b6"
+  "status": "Готово",
+  "desc_hash": "62b535b226003909963eb40b54f4e913"
  },
  "animation_weapon_attack_briar_staff_claude_task.md": {
   "key": "SCRUM-735",
-  "status": "К выполнению",
-  "desc_hash": "f7338a557427e96db4c9a8c286e5d8dc"
+  "status": "Готово",
+  "desc_hash": "6742da47d7a0dcd748124a569d88efa5"
  },
  "animation_weapon_attack_chakrams_claude_task.md": {
   "key": "SCRUM-736",
-  "status": "К выполнению",
-  "desc_hash": "a35d86fc38a7ed78c9756fca0bf284b3"
+  "status": "Готово",
+  "desc_hash": "2a33ab039f5723dfba5636d40f276891"
  },
  "animation_weapon_attack_cursed_skull_claude_task.md": {
   "key": "SCRUM-737",
-  "status": "К выполнению",
-  "desc_hash": "e8dd8940076ff4f3374139f5a924e98b"
+  "status": "Готово",
+  "desc_hash": "9eb21db55293b03e7cbc7224b3c78349"
  },
  "animation_weapon_attack_dark_book_claude_task.md": {
   "key": "SCRUM-738",
-  "status": "К выполнению",
-  "desc_hash": "7ce4053f6aa431d930c10e3fb3edc1bb"
+  "status": "Готово",
+  "desc_hash": "b3ca951c701140a2b5e5387996f207e1"
  },
  "animation_weapon_attack_dark_wand_claude_task.md": {
   "key": "SCRUM-739",
@@ -3582,5 +3582,15 @@
   "key": "SCRUM-787",
   "status": "Готово",
   "desc_hash": "bef39e180ec1699d886eabbf89b7e2ae"
+ },
+ "animation_guitarist_replace_with_pixellab_instrument_pack_task.md": {
+  "key": "SCRUM-797",
+  "status": "В работе",
+  "desc_hash": "d41065bd0cc776c3862055b8e833f3ec"
+ },
+ "bug_boss_combat_timer_hud_not_shown_task.md": {
+  "key": "SCRUM-799",
+  "status": "К выполнению",
+  "desc_hash": "083aee28b48c25566bff9f39d3a9a434"
  }
 }
