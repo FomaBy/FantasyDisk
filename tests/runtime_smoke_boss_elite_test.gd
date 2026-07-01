@@ -22,6 +22,7 @@ func _initialize() -> void:
 	await _test_boss_hud_omits_timer(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
+	await _test_bloodthorn_lion_boss(main_scene)
 	await _test_secret_boss_after_act3_flow(main_scene)
 	await _test_secret_boss_uses_full_frame()
 	_test_hazard_telegraph_texture_param()
@@ -98,3 +99,101 @@ func _test_hazard_telegraph_texture_param() -> void:
 		host_default.queue_free()
 		return
 	host_default.queue_free()
+
+
+# SCRUM-794: новый босс bloodthorn_lion из design-пакета SCRUM-779 — сцена/поведение/
+# уникальная механика/паттерн-мета/кодекс готовы к рантайму. Босс ПОКА НЕ в случайном
+# route-пуле (route_map_screen._random_boss_route_node) — ротация подключается отдельной
+# задачей после QA; здесь гейтим, что он корректно резолвится и дерётся при прямом спавне.
+func _test_bloodthorn_lion_boss(main_scene: PackedScene) -> void:
+	var boss_id := "bloodthorn_lion"
+	var m := main_scene.instantiate()
+	root.add_child(m)
+	await process_frame
+	# 1. Сцена резолвится через combat-директор.
+	var scene: PackedScene = m.combat.call("_boss_scene_for_id", boss_id)
+	if scene == null:
+		_fail("Expected boss scene for '%s'." % boss_id)
+		m.queue_free()
+		return
+	# Регресс-инвариант: новый босс НЕ должен протечь в случайную ротацию маршрута
+	# (пул остаётся детерминированным набором из 5 боссов до отдельной QA-задачи).
+	var seen_bosses := {}
+	for _roll in range(120):
+		var node: Dictionary = m.route.call("_random_boss_route_node")
+		seen_bosses[str(node.get("boss_id", ""))] = true
+	if seen_bosses.has(boss_id):
+		_fail("Bloodthorn Lion must stay OUT of the random boss route pool until QA-gated rotation task.")
+		m.queue_free()
+		return
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	var boss := scene.instantiate() as Node2D
+	holder.add_child(boss)
+	await process_frame
+	# 2. Поведение/титул/эпик-скейл.
+	if str(boss.get("boss_behavior")) != boss_id:
+		_fail("Expected boss behavior '%s', got '%s'." % [boss_id, str(boss.get("boss_behavior"))])
+		holder.queue_free()
+		m.queue_free()
+		return
+	if str(boss.get("boss_display_name")) != "Кровавый Шипастый Лев":
+		_fail("Expected Russian display name for '%s'." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	# 3. Паттерн-мета из UNIQUE_ENCOUNTER_PATTERNS (>=3 механики).
+	if str(boss.get_meta("unique_pattern_id", "")) != boss_id:
+		_fail("Expected boss '%s' to expose its unique encounter pattern meta." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	var boss_mechanics: Array = boss.get_meta("unique_mechanics", []) as Array
+	if boss_mechanics.size() < 3:
+		_fail("Expected boss '%s' to expose at least 3 unique mechanics." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	var expected_boss_scale: float = float(ProgressionData.enemy_size_profile("boss").get("scale", 1.9))
+	if absf(boss.scale.x - expected_boss_scale) > 0.01:
+		_fail("Expected epic boss scale %.2f for '%s'." % [expected_boss_scale, boss_id])
+		holder.queue_free()
+		m.queue_free()
+		return
+	# 4. Уникальная механика создаёт опознаваемый узел BloodthornSpikeRing.
+	var player := (load("res://scenes/Player.tscn") as PackedScene).instantiate() as Node2D
+	holder.add_child(player)
+	player.add_to_group("player")
+	player.global_position = boss.global_position + Vector2(280, 0)
+	await process_frame
+	boss.set("_boss_unique_cooldown", 0.0)
+	boss.call("_update_boss_attacks", 0.1)
+	await process_frame
+	if holder.find_child("BloodthornSpikeRing", true, false) == null:
+		_fail("Expected boss '%s' unique mechanic to spawn BloodthornSpikeRing." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	# 5. Ротация атак создаёт хазарды/зоны без ошибок.
+	var hazards_before := holder.find_children("*", "Node2D", true, false).size()
+	for _tick in range(220):
+		boss.call("_update_boss_attacks", 0.05)
+	await process_frame
+	if holder.find_children("*", "Node2D", true, false).size() <= hazards_before:
+		_fail("Expected boss '%s' attack rotation to spawn hazards/summons." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	# 6. Фаза 3 при 30% HP (обычный боссовый порог).
+	boss.set("health", float(boss.get("max_health")) * 0.30)
+	boss.call("_update_boss_phase")
+	if int(boss.get("boss_phase")) < 3:
+		_fail("Expected boss '%s' to reach phase 3 at 30%% HP." % boss_id)
+		holder.queue_free()
+		m.queue_free()
+		return
+	holder.queue_free()
+	current_scene = null
+	m.queue_free()
+	await process_frame

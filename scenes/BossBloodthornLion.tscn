@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_boss_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/boss_bloodthorn_lion.png" id="2_boss_texture"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="3_enemy_projectile"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boss"]
+radius = 72.0
+
+[node name="BossBloodthornLion" type="CharacterBody2D" groups=["enemies", "bosses"]]
+script = ExtResource("1_boss_script")
+enemy_type_name = "Bloodthorn Lion"
+boss_behavior = "bloodthorn_lion"
+boss_display_name = "Кровавый Шипастый Лев"
+max_health = 320.0
+move_speed = 96.0
+projectile_scene = ExtResource("3_enemy_projectile")
+projectile_damage = 3.0
+contact_damage = 3.4
+contact_range = 74.0
+burst_projectile_count = 14
+burst_interval = 4.4
+dash_interval = 4.0
+dash_speed = 460.0
+dash_duration = 0.5
+rift_zone_interval = 4.6
+zone_wave_interval = 10.0
+slam_interval = 999.0
+shield_interval = 999.0
+enrage_health_ratio = 0.35
+dodge_chance = 0.10
+reward_xp = 13
+reward_money = 9
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_boss_texture")
+scale = Vector2(0.52, 0.52)
+modulate = Color(1.0, 0.86, 0.86, 1.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_boss")

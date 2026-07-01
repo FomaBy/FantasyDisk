@@ -122,6 +122,14 @@ const UNIQUE_ENCOUNTER_PATTERNS := {
 		"mechanics": ["hazard_pool", "reflect_thorns", "weakpoint_shell", "rift_wave"],
 		"summary": "slam-волны, тлеющие зоны, раскаленный панцирь и энрейдж",
 	},
+	# SCRUM-794: новый босс из design-пакета SCRUM-779. Пока НЕ в ротации маршрута
+	# (route-пул подключается отдельной задачей после QA) — сцена/механики/кодекс
+	# готовы к рантайму и покрыты boss/elite-смоуком.
+	"bloodthorn_lion": {
+		"title": "Кровавый шипастый лев", "kind": "boss",
+		"mechanics": ["charge_telegraph", "hazard_pool", "rift_wave", "split_spawn"],
+		"summary": "хищник-прыгун: частые рывки, радиальные шипы и кольцо кровавых шипов с проходом",
+	},
 	"secret_ascension_boss": {
 		"title": "Secret Ascension Boss", "kind": "boss",
 		"mechanics": ["rift_wave", "hazard_pool", "summon_retinue", "split_spawn"],

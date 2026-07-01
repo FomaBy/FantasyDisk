@@ -197,6 +197,17 @@ const MONSTERS := [
 		],
 	},
 	{
+		"id": "bloodthorn_lion", "title": "Кровавый Шипастый Лев", "kind": "boss",
+		"sprite": "res://assets/sprites/bosses/boss_bloodthorn_lion.png",
+		"behavior": "Хищник-охотник, поросший кровавыми шипами. Не даёт передышки: прыгает, рвёт и сеет колючие раны.",
+		"abilities": [
+			{"id": "thorn_pounce", "title": "Прыжок Хищника", "description": "Частые стремительные рывки-прыжки прямо на героя — держи дистанцию и уходи вбок."},
+			{"id": "spike_burst", "title": "Веер Шипов", "description": "Радиальный залп кровавых шипов во все стороны разом."},
+			{"id": "bleed_bramble", "title": "Колючий Терн", "description": "Оставляет под ногами героя ранящую зону кровотечения — не стой в ней."},
+			{"id": "bloodthorn_ring", "title": "Кольцо Кровавых Шипов", "description": "Пояс шипастых зон вокруг героя с одним проходом — найди коридор и выйди до взрыва."},
+		],
+	},
+	{
 		"id": "mini_scavenger_reaper", "title": "Жнец-Падальщик", "kind": "mini_elite",
 		"sprite": "res://assets/sprites/elites/night_stalker.png",
 		"behavior": "Свита Возвышения. Быстрый падальщик: рывками косит по дуге, добивая раненых первыми.",

@@ -6905,11 +6905,13 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var monsters: Array = codex_data.monsters()
 	# SCRUM-719: число мини-элиток в кодексе ПРИВЯЗАНО к геймплейному ростеру
 	# ProgressionData.mini_elite_kinds() — иначе добавленный вид (как четвёрка SCRUM-607)
-	# молча не открывается в кодексе. 11 обычных + 4 элитки + N мини + 5 боссов.
+	# молча не открывается в кодексе. 11 обычных + 4 элитки + N мини + 6 боссов.
+	# SCRUM-794: боссов стало 6 — добавлен bloodthorn_lion (design-пакет SCRUM-779),
+	# кодекс-запись готова к рантайму (босс пока вне случайной route-ротации).
 	var expected_mini := ProgressionData.mini_elite_kinds().size()
-	var expected_monster_total := 11 + 4 + expected_mini + 5
+	var expected_monster_total := 11 + 4 + expected_mini + 6
 	if monsters.size() != expected_monster_total:
-		_fail("Expected codex to list all %d monsters (11 standard + 4 elites + %d mini-elites + 5 bosses), got %d." % [expected_monster_total, expected_mini, monsters.size()])
+		_fail("Expected codex to list all %d monsters (11 standard + 4 elites + %d mini-elites + 6 bosses), got %d." % [expected_monster_total, expected_mini, monsters.size()])
 		return
 	var codex_mini_count := 0
 	for monster_entry in monsters:

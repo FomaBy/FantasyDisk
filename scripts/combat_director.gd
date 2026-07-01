@@ -571,6 +571,10 @@ const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
 const BROOD_MOTHER_BOSS_SCENE := preload("res://scenes/BossBroodMother.tscn")
 const ASHEN_COLOSSUS_BOSS_SCENE := preload("res://scenes/BossAshenColossus.tscn")
 const SECRET_ASCENSION_BOSS_SCENE := preload("res://scenes/BossSecretAscension.tscn")
+# SCRUM-794: новый босс из design-пакета SCRUM-779. Сцена резолвится здесь и готова
+# к спавну; в случайный route-пул (route_map_screen._random_boss_route_node) НЕ добавлен —
+# ротация подключается отдельной задачей после QA.
+const BLOODTHORN_LION_BOSS_SCENE := preload("res://scenes/BossBloodthornLion.tscn")
 
 
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
@@ -585,6 +589,8 @@ func _boss_scene_for_id(boss_id: String) -> PackedScene:
 			return ASHEN_COLOSSUS_BOSS_SCENE
 		"secret_ascension_boss":
 			return SECRET_ASCENSION_BOSS_SCENE
+		"bloodthorn_lion":
+			return BLOODTHORN_LION_BOSS_SCENE
 		_:
 			return game.boss_scene
 

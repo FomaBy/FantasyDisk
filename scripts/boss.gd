@@ -185,6 +185,21 @@ func _update_boss_attacks(delta: float) -> void:
 			if boss_phase >= 2 and _boss_summon_cooldown <= 0.0:
 				_summon_riftlings()
 				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier(0.82)
+		"bloodthorn_lion":
+			# SCRUM-794: Кровавый Шипастый Лев — агрессивный хищник. Частые прыжки-рывки,
+			# радиальный залп шипов и колючие зоны кровотечения под ногами героя;
+			# уникальная механика — кольцо кровавых шипов (см. _spawn_bloodthorn_spike_ring).
+			_dash_cooldown -= delta
+			_rift_zone_cooldown -= delta
+			if _dash_cooldown <= 0.0:
+				_start_dash_toward(player)
+				_dash_cooldown = dash_interval * _phase_interval_multiplier(0.78 if _enraged else 1.0)
+			if _burst_cooldown <= 0.0:
+				_fire_radial_burst()
+				_burst_cooldown = burst_interval * _phase_interval_multiplier(0.88 if _enraged else 1.0)
+			if _rift_zone_cooldown <= 0.0:
+				_spawn_rift_zone(player.global_position)
+				_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier(0.9 if boss_phase >= 2 else 1.0)
 		_:
 			_boss_summon_cooldown -= delta
 			_rift_zone_cooldown -= delta
@@ -236,6 +251,9 @@ func _update_boss_unique_mechanic(delta: float, player: Node2D) -> void:
 			if boss_phase >= 2:
 				_spawn_secret_eruption_cluster(player.global_position)
 			_boss_unique_cooldown = 6.8 * _phase_interval_multiplier(0.78 if boss_phase >= 2 else 1.0)
+		"bloodthorn_lion":
+			_spawn_bloodthorn_spike_ring(player.global_position)
+			_boss_unique_cooldown = 8.2 * _phase_interval_multiplier(0.8 if _enraged else 1.0)
 		_:
 			_boss_unique_cooldown = 6.0
 
@@ -515,6 +533,50 @@ func _spawn_molten_armor_pulse() -> void:
 	)
 	tween.tween_interval(0.55)
 	tween.tween_callback(pulse.queue_free)
+
+
+func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
+	# SCRUM-794: уникальная механика Кровавого Льва — телеграф-нова кровавых шипов
+	# у позиции героя + пояс шипастых зон по кольцу с гарантированным проходом
+	# (safe corridor). Fairness: та же геометрия, что телеграфится, и наносит урон.
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_boss_skill_visual("", "cast", center - global_position)
+	var ring := Node2D.new()
+	ring.name = "BloodthornSpikeRing"
+	ring.add_to_group("enemy_hazards")
+	ring.set_meta("boss_behavior", boss_behavior)
+	ring.global_position = _clamp_to_arena(center, 120.0)
+	ring.z_index = 9
+	parent.add_child(ring)
+	var radius := _safe_radius(150.0 + float(boss_phase - 1) * 16.0)
+	var thorn_color := Color(0.78, 0.10, 0.16, 1.0)
+	var windup := _ascension_telegraph(0.55)
+	HazardVfx.telegraph(ring, radius, thorn_color, windup)
+	var thorn_damage := contact_damage * 0.7
+	var ring_ref: WeakRef = weakref(ring)
+	var tween := ring.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var r: Node2D = ring_ref.get_ref()
+		if r == null:
+			return
+		HazardVfx.detonate(r, radius, thorn_color)
+		var current_player := get_tree().get_first_node_in_group("player") as Node2D
+		if current_player != null and current_player.global_position.distance_to(r.global_position) <= radius and current_player.has_method("take_damage"):
+			current_player.take_damage(thorn_damage, "bloodthorn_spike")
+	)
+	tween.tween_interval(0.5)
+	tween.tween_callback(ring.queue_free)
+	# Пояс кровавых шипов по кольцу с двумя смежными пропущенными секторами.
+	var count := 8
+	var gap_index := randi() % count
+	for i in range(count):
+		if i == gap_index or i == (gap_index + 1) % count:
+			continue
+		var angle := TAU * float(i) / float(count)
+		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * 340.0, 92.0), false)
 
 
 func _start_dash_toward(player: Node2D) -> void:
