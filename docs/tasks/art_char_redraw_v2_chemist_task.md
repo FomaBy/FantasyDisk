@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Химик» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -13,6 +13,7 @@ Owner: Design/Codex worker
 Thread: codex-design-scrum-423-chemist-pixellab
 Branch: codex/scrum-423-chemist-pixellab
 Worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/design-board-watcher
+Clean publish worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/SCRUM-423-clean
 Locked paths: assets/sprites/characters/pixellab/chemist/, assets/sprites/characters/full_frame/chemist_pixellab/, assets/sprites/characters/chemist_spriteframes.tres, scripts/progression_data_characters.gd, tests focused PixelLab/animation checks, docs/design/content_registry.md, docs/design/current_game_state.md, docs/design/systems/animation.md, CHANGELOG.md
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
@@ -126,7 +127,7 @@ expose PixelLab tools. Disk cleanup: none created.
 
 ## Result — Codex Design 2026-06-30
 
-Статус: ready_for_QA
+Статус: done / ready_for_QA
 
 PixelLab MCP config smoke PASS (`get_balance`, no secrets printed). Created and
 integrated Chemist PixelLab character
@@ -151,16 +152,14 @@ Verification:
   animations checked, `56` runtime PNGs checked, no errors).
 - PASS: Visual contact sheet inspected at
   `build/qa/scrum423_chemist_pixellab/scrum423_chemist_pixellab_contact.png`.
-- ATTEMPTED/BLOCKED: Godot gate for
-  `tests/character_sprite_registry_alignment_test.gd` repeatedly hung during
-  import after pre-existing Dark Mage/Knight skeleton UID duplicate warnings;
-  unrelated Godot gates and unrelated SCRUM-421 Biologist dirty files were also
-  present in this shared worktree. No Chemist-specific Godot assertion failure
-  was reached.
-- ATTEMPTED/BLOCKED: `python3 tools/jira_board_sync.py` was started after the
-  Jira status-changing run, skipped inaccessible `SCRUM-327`, then hung for
-  several minutes and was stopped; SCRUM-423 was updated directly in Jira
-  instead.
+- PASS: Godot gate
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+  completed in the clean publish worktree; registry alignment passed for all 17
+  characters. Import produced only pre-existing Dark Mage/Knight skeleton UID
+  duplicate warnings.
+- PASS: `python3 tools/jira_board_sync.py` completed after Jira transition,
+  skipped inaccessible SCRUM-327 and synced SCRUM-423 to `Контроль качества`.
 
-Disk cleanup: removed `.godot/`; no disposable clone/worktree was created by
-SCRUM-423.
+Disk cleanup: removed `.godot/`, generated `.import` sidecars and `__pycache__`
+from the clean publish worktree; final temporary worktree removal happens after
+the pushed sync commit.
