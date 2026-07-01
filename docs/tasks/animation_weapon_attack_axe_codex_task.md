@@ -81,3 +81,10 @@ QA проверяет именно `axe` в игре: эффект виден п
 - Verification on the integration worktree:
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01
+QA: claude-qa
+
+Проверено на origin/dev @ d0dc04e4. Интеграция подтверждена (vfx_weapon_axe.png влит коммитом 3120aaaf, .import в индексе). PNG 256x256 RGBA полупрозрачный (alpha 0..188, нет запечённого фона). Тесты PASS: unique_weapon_vfx_assets_test.gd, attack_vfx_smoke_test.gd, runtime_smoke_test.gd. Геймплей/shared runtime не менялись.
