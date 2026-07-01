@@ -161,7 +161,7 @@ Acceptance notes:
   before SpriteFrames/runtime integration.
 
 ## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: sniper v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+Статус: Design-source accepted (sniper v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **sniper v2 source прозрачный**: `sniper_v2_source_clean` (1024²), `_idle_cell_512`
