@@ -48,3 +48,16 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `dark_wand` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit 735838d0 влит в dev; `git merge-base --is-ancestor 735838d0 origin/dev` = OK).
+
+- `assets/sprites/effects/vfx_weapon_dark_wand.png`: 256x256, углы прозрачны, 85.5% полностью прозрачно, видимое покрытие 12.9%, median saturation 65 (не запечённый neutral фон) → полупрозрачный эффект, HUD/world не перекрывает.
+- Визуал: два прямых пронзающих луча веером (shallow V, «<»-форма), cyan-white ядро + violet glow, arrowhead pierce-tips + after-streak, cyan origin-flash + ghost палочки с кристаллом. Уникально читается как Тёмная палочка, зона «два pierce-луча» видна, alpha/readability ок на тёмном и светлом фоне.
+- Тесты через `tools/godot_gate.py` (семафор, live-editor рядом): `runtime_smoke_test.gd` PASS, `unique_weapon_vfx_assets_test.gd` PASS (51 plates), `attack_vfx_smoke_test.gd` PASS.
+- Геймплейные параметры/shared runtime не изменены.
+
+Тикет повторно принят после board_sync-реверта (в .md не было QA-блока) — блок добавлен, чтобы синк не откатывал в «Контроль качества».
