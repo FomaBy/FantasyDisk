@@ -223,6 +223,14 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   all 8 directions so Hero Select rotates clockwise like Berserk. This pass did
   not request PixelLab movement animations; true multi-frame walk/move remains a
   future Animator/PixelLab follow-up.
+- SCRUM-430 promotes Knight to a PixelLab no-shield directional pack. Source
+  downloads live under `assets/sprites/characters/pixellab/knight/`; normalized
+  512x512 runtime frames live under
+  `assets/sprites/characters/full_frame/knight_pixellab/`.
+  `assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
+  `idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>`
+  rows for all 8 directions. Weapons and shield remain separate weapon visuals;
+  the base Knight source has empty hands and no baked equipment.
 - SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
   Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
   skeleton-source packages under

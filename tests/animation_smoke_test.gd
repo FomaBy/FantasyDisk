@@ -334,7 +334,7 @@ func _test_player_animation() -> void:
 			elif sheet_character_id == "guitarist":
 				v2_label = "PixelLab directional"
 			elif sheet_character_id == "knight":
-				v2_label = "SCRUM-473"
+				v2_label = "PixelLab directional"
 			elif sheet_character_id == "thief":
 				v2_label = "SCRUM-435"
 			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):
@@ -375,6 +375,15 @@ func _test_player_animation() -> void:
 						return
 				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 1 or body.sprite_frames.get_frame_count("move") != 1:
 					_fail("Expected Guitarist PixelLab fallback idle/walk/move frame counts to be 1/1/1.")
+					return
+				continue
+			if sheet_character_id == "knight":
+				for direction_name in ["south", "south_east", "east", "north_east", "north", "north_west", "west", "south_west"]:
+					if not body.sprite_frames.has_animation("walk_%s" % direction_name) or body.sprite_frames.get_frame_count("walk_%s" % direction_name) != 6:
+						_fail("Expected Knight PixelLab directional SpriteFrames to expose 6-frame walk_%s." % direction_name)
+						return
+				if body.sprite_frames.get_frame_count("idle") != 1 or body.sprite_frames.get_frame_count("walk") != 6 or body.sprite_frames.get_frame_count("move") != 6:
+					_fail("Expected Knight PixelLab fallback idle/walk/move frame counts to be 1/6/6.")
 					return
 				continue
 			if body.sprite_frames.get_frame_count("idle") != 5 or body.sprite_frames.get_frame_count("walk") != 5 or body.sprite_frames.get_frame_count("move") != 5:

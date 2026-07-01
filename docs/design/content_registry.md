@@ -78,7 +78,7 @@
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor_spriteframes.tres`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/pixellab/doctor/`, legacy `assets/sprites/characters/full_frame/doctor/`, `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано; SCRUM-425 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy full-frame art remains history/fallback |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight_pixellab/`, `assets/sprites/characters/pixellab/knight/`, legacy `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/knight.png`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-430 live SpriteFrames/portrait use PixelLab no-shield 8-direction idle rotations plus 6-frame directional walk/move rows; legacy SCRUM-473 cartoon2 frames remain history/fallback; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
 SCRUM-416 runtime portrait rule: for most playable classes,
@@ -173,6 +173,15 @@ looping `idle`, `walk`, and `move` only, with runtime PNGs under
 `assets/sprites/characters/cartoon2/{dark_mage,knight}/`; QA artifacts live
 under `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. Attack animation
 remains absent by SCRUM-473 scope because weapon visuals own attacks.
+
+SCRUM-430 replaces the live Knight SpriteFrames/portrait source with PixelLab.
+Source downloads live under `assets/sprites/characters/pixellab/knight/`,
+normalized 512x512 runtime frames under
+`assets/sprites/characters/full_frame/knight_pixellab/`, and
+`assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
+`idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>` rows
+for all 8 directions. The accepted PixelLab pass is explicitly no-shield/no-weapon;
+Knight weapons and shield visuals remain separate weapon assets.
 
 SCRUM-475 adds Design-source skeleton packages for Dark Mage and Knight under
 `docs/design/references/chars_cartoon/skeleton_parts/`. Each character has a

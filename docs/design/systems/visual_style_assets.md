@@ -130,6 +130,13 @@ and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
 is a source handoff only until Animator/Back-end builds real idle/move
 SpriteFrames.
 
+SCRUM-430 replaces Knight's live base character source with a PixelLab
+no-shield/no-weapon directional pack. Source PNGs and manifest live under
+`assets/sprites/characters/pixellab/knight/`, normalized runtime frames under
+`assets/sprites/characters/full_frame/knight_pixellab/`, and QA contact/alpha
+evidence under `build/qa/scrum430_knight_pixellab/`. The accepted source keeps
+hands empty; spear, tower shield and flail remain separate weapon assets.
+
 SCRUM-433 adds the Sniper v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
 `sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,

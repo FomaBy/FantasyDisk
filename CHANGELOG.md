@@ -140,6 +140,12 @@
   contact/GIF/manifest artifacts under
   `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. The temporary
   `CARTOON_TRIAL_CLASSES` legacy rig path is now empty; animation smoke passes.
+- Knight PixelLab directional pack (SCRUM-430): `knight_spriteframes.tres` now
+  uses a no-shield/no-weapon PixelLab source with 8-direction idle poses and
+  6-frame directional `walk`/`move` rows. Source/manifest lives under
+  `assets/sprites/characters/pixellab/knight/`, normalized runtime frames under
+  `assets/sprites/characters/full_frame/knight_pixellab/`, and the character
+  portrait path points to the PixelLab south idle frame.
 - Final UI design review evidence (SCRUM-458): added the
   `tests/design_review_screenshot_capture_test.gd` harness and captured 23 UI
   states at 1280x720, 1920x1080 and 2560x1440 under

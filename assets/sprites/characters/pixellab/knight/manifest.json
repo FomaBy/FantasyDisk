@@ -1,0 +1,143 @@
+{
+  "source": "PixelLab MCP",
+  "character_id": "knight",
+  "pixellab_character_id": "c1a7d633-7353-4861-aea3-8d937b601cba",
+  "supersedes_pixellab_character_id": "7441d877-05f4-46da-9768-6b6be6f3b8dd",
+  "pixellab_name": "FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30",
+  "generated_at": "2026-06-30",
+  "task": "SCRUM-430",
+  "mode": "v3",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "source_size": [
+    248,
+    248
+  ],
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "runtime_scale": 2,
+  "runtime_bottom_padding": 8,
+  "move_frame_count": 6,
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "animations": {
+    "idle": "8-direction static PixelLab rotation frames",
+    "walk": "walking-6-frames template, 6 frames per direction, all 8 directions"
+  },
+  "pixellab_animation_ids": {
+    "south": "1535e257-0d53-4d26-93f2-b6234049cf7a",
+    "south-east": "97c1164d-522e-4252-bc8e-335850efe077",
+    "east": "3e183d95-7f6f-47f4-bff4-80774d5faaea",
+    "north-east": "eb2149ab-3b35-489c-a952-e22c9fb2663a",
+    "north": "9b71e613-2f5b-4c57-86e3-10e2d1a2ac6b",
+    "north-west": "e03dcf11-6cde-49f9-89fb-f7cb1c6133cc",
+    "west": "99b52cea-53c7-43c9-bf6c-88bb058bb277",
+    "south-west": "924bbc54-c6bb-4b25-816d-79ad4d6c5607"
+  },
+  "source_files": {
+    "idle": "assets/sprites/characters/pixellab/knight/knight_idle_<dir>.png",
+    "move": "assets/sprites/characters/pixellab/knight/knight_move_<dir>_<00-05>.png"
+  },
+  "runtime_dir": "assets/sprites/characters/full_frame/knight_pixellab/",
+  "spriteframes": "assets/sprites/characters/knight_spriteframes.tres",
+  "prompt_summary": "Unarmed noble tank knight, polished light steel armor, crimson/gold heraldry, bright epic D&D dark fantasy PixelLab 8-direction character, strict no shield/no weapon/no handheld object, transparent background.",
+  "notes": "Second PixelLab pass rejected the first-pass shield-like silhouette. This accepted source keeps Knight unarmed; equipment remains separate weapon visuals. Runtime PNGs are transparent 512x512, centered X, bottom-aligned, no crop/matte. Knight combat still has a live skeleton-rig path; this pack updates SpriteFrames and portrait resources without backend balance changes.",
+  "files": {
+    "idle": {
+      "south": "assets/sprites/characters/pixellab/knight/knight_idle_south.png",
+      "south-east": "assets/sprites/characters/pixellab/knight/knight_idle_south-east.png",
+      "east": "assets/sprites/characters/pixellab/knight/knight_idle_east.png",
+      "north-east": "assets/sprites/characters/pixellab/knight/knight_idle_north-east.png",
+      "north": "assets/sprites/characters/pixellab/knight/knight_idle_north.png",
+      "north-west": "assets/sprites/characters/pixellab/knight/knight_idle_north-west.png",
+      "west": "assets/sprites/characters/pixellab/knight/knight_idle_west.png",
+      "south-west": "assets/sprites/characters/pixellab/knight/knight_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assets/sprites/characters/pixellab/knight/knight_move_south_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south_05.png"
+      ],
+      "south-east": [
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-east_05.png"
+      ],
+      "east": [
+        "assets/sprites/characters/pixellab/knight/knight_move_east_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_east_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_east_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_east_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_east_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_east_05.png"
+      ],
+      "north-east": [
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-east_05.png"
+      ],
+      "north": [
+        "assets/sprites/characters/pixellab/knight/knight_move_north_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north_05.png"
+      ],
+      "north-west": [
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_north-west_05.png"
+      ],
+      "west": [
+        "assets/sprites/characters/pixellab/knight/knight_move_west_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_west_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_west_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_west_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_west_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_west_05.png"
+      ],
+      "south-west": [
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_00.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_01.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_02.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_03.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_04.png",
+        "assets/sprites/characters/pixellab/knight/knight_move_south-west_05.png"
+      ]
+    }
+  }
+}

@@ -530,6 +530,14 @@ visuals continue to own attacks (`USE_ATTACK_ANIMATION=false`). Animation smoke
 passes; full runtime smoke is currently blocked by an unrelated Hero Select v3
 back-button UI assertion.
 
+SCRUM-430 updates Knight's live SpriteFrames/portrait source to a PixelLab
+no-shield directional pack. Source frames live under
+`assets/sprites/characters/pixellab/knight/`, runtime frames under
+`assets/sprites/characters/full_frame/knight_pixellab/`, and
+`knight_spriteframes.tres` exposes 8-direction idle poses plus 6-frame
+directional `walk`/`move` rows. The accepted source keeps weapons and shield
+separate from the base hero.
+
 SCRUM-419 подготовил per-class Assassin v2 Design-source handoff:
 `docs/design/references/characters_v2/assassin/assassin_v2_source_clean.png`,
 `assassin_v2_idle_cell_512.png`, `assassin_v2_sheet_source_handoff.png`,
@@ -867,12 +875,12 @@ SCRUM-251 усилил ближние классы через data-driven melee 
 | `knight` | Рыцарь | Танк и тяжелый melee-control | Str 8, Agi 3, Int 2, Per 4, Energy 3, Know 4, End 10, Lead 6 |
 | `druid` | Друид | Призыв, тернии, тотемы | Str 3, Agi 4, Int 4, Per 7, Energy 6, Know 5, End 5, Lead 9 |
 
-SCRUM-473 adds live cartoon2 Knight animation resources at
+SCRUM-430 makes Knight's live portrait/SpriteFrames PixelLab-based:
 `assets/sprites/characters/knight_spriteframes.tres`,
-`assets/sprites/characters/full_frame/knight/` and
-`assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`.
-The body animation contract is `idle` / `walk` / `move` only; weapon visuals own
-Knight attacks.
+`assets/sprites/characters/pixellab/knight/` and
+`assets/sprites/characters/full_frame/knight_pixellab/`. The body animation
+contract remains `idle` / `walk` / `move` only; weapon visuals own Knight
+attacks, and the base hero source has no baked weapon or shield.
 
 ## Оружие Берсерка
 
