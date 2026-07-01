@@ -524,6 +524,9 @@ instead of keeping stale rects from the previous resolution. Source/provenance:
 `docs/design/references/codex_redesign_2026_06/`; previews:
 `docs/design/previews/codex_redesign_2026_06_pixellab_contact.png` and
 `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
+SCRUM-725 verification retry on 2026-07-02 tightened the live list-panel
+content margins to `Vector4(64, 72, 64, 64)`, keeping list content outside the
+48px `codex_pl_grid_panel` ornament band with horizontal reserve.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.

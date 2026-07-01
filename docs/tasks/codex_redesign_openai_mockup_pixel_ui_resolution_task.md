@@ -5,8 +5,8 @@
 Создано: 2026-06-30
 Роль: Design
 Контур: Codex
-Owner: Design/Codex UI worker
-Thread/Worker: 019f1f94-dfea-7b81-bfb6-dadae9eba266 / codex-scrum-725-ui-worker
+Owner: unassigned
+Thread/Worker: n/a (released by 019f1fbb-ac80-7013-90c6-5b8003afad49 / codex-scrum-725-verification-worker after blocker)
 Locked paths: `docs/design/mockups/codex_redesign_2026_06/`, `assets/sprites/ui/frames/codex_pl/`, Codex-only section of `scripts/ui_screens.gd`, `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`, `build/qa/codex_redesign*`
 Приоритет: P1
 Метки: foma
@@ -155,4 +155,42 @@ Verification blocker:
 - Required Godot gates (`--import`, `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`, `codex_data_smoke_test.gd`) are therefore **not claimed green** in this run.
 
 Disk cleanup: removed partial `.godot` import cache and ignored `build/qa/codex_redesign_asset_audit.md` duplicate; no disposable clone/worktree created.
+Thread cleanup: pending archive at worker finish.
+
+## Verification Retry — Codex SCRUM-725 verification worker 2026-07-02
+
+Статус: blocked
+Thread/Worker: 019f1fbb-ac80-7013-90c6-5b8003afad49 / codex-scrum-725-verification-worker
+
+Scope: verify/unblock the implementation already pushed to `origin/dev` at
+`90b77eb2` (`fc2dd5e8` implementation, `28c4ead9` sync, `90b77eb2` cleanup note).
+
+Result:
+- Small SCRUM-725 defect fixed in `scripts/ui_screens.gd`: `CODEX_PL_LIST_CONTENT`
+  and matching `CODEX_V2_LIST_PANEL_CONTENT` are now `Vector4(64, 72, 64, 64)`,
+  so the Codex list panel content stays outside the 48px 9-slice ornament band.
+- Non-Godot checks PASS: `git diff --check`; deterministic
+  `docs/design/references/codex_redesign_2026_06/build_scrum725_codex_assets.py`
+  rerun with no runtime asset diffs; Patch Notes still uses generic
+  `_add_screen_background(root, "codex")`; Codex uses `_add_codex_pl_background`
+  with `STRETCH_KEEP_ASPECT_COVERED`; Codex content-margin audit confirms every
+  `CODEX_PL_*_CONTENT >= CODEX_PL_*_TEX`.
+- Godot verification BLOCKED again: `python3 tools/godot_gate.py --headless
+  --path . --import --quit` reached `[ DONE ] first_scan_filesystem` and then
+  stayed silent for ~4 minutes. During the hang `.godot/` contained only
+  `.godot/.gdignore` and `.godot/global_script_class_cache.cfg`,
+  `.godot/imported` had `0` files, and `.godot` size was `8.0K`. The worker
+  interrupted only its own gated import; no SCRUM-725 Godot smoke is claimed
+  green.
+- Not run/Not green because import cache never materialized:
+  `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `codex_data_smoke_test.gd`, and 1280x720 / 1920x1080 / 2560x1440 screenshot
+  evidence.
+
+Next status: release back to Jira `К выполнению` / blocked evidence for a fresh
+environment verification pass after Godot import unblocks. Do not move to
+`Контроль качества` from this run.
+
+Disk cleanup: pending removal of this worker's `.godot` cache and ignored
+`build/qa/codex_redesign_asset_audit.md` after sync/commit.
 Thread cleanup: pending archive at worker finish.
