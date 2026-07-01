@@ -460,29 +460,29 @@ const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
 const CODEX_TAB_CONTENT := Vector4(24.0, 14.0, 24.0, 14.0)
 const CODEX_V2_BASE_SIZE := Vector2(1920.0, 1080.0)
 # SCRUM-684: поля вокруг всей кодекс-композиции, чтобы рамка не клипалась краем экрана.
-const CODEX_V2_SCREEN_INSET := Vector2(28.0, 30.0)
-const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 20.0, 1872.0, 1040.0)
-# SCRUM-684: заголовок и кнопку «назад» опускаем в тёмно-багровую безопасную
-# зону main_shell, ниже верхней руной-полосы и угловых золотых кронштейнов.
-const CODEX_V2_HEADER_TITLE_SAFE := Rect2(196.0, 116.0, 1040.0, 60.0)
-# SCRUM-684 fix: компактная кнопка «Назад» поднята/ужата так, чтобы её нижняя
-# кромка (base y 100→166) не залезала на верх CodexDetailPanel (base y 170) ни на
-# одном разрешении (ui_no_overlap_matrix). top=100 ещё внутри safe-зоны главной
-# рамки (content-top = frame 20 + margin 78 ≈ 98).
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1636.0, 100.0, 168.0, 66.0)
-const CODEX_V2_NAV_PANEL_RECT := Rect2(72.0, 170.0, 304.0, 872.0)
-const CODEX_V2_NAV_SAFE := Rect2(88.0, 198.0, 258.0, 720.0)
-const CODEX_V2_LIST_PANEL_RECT := Rect2(388.0, 170.0, 835.0, 872.0)
-const CODEX_V2_DETAIL_PANEL_RECT := Rect2(1242.0, 170.0, 606.0, 872.0)
-const CODEX_V2_PORTRAIT_SAFE := Rect2(1396.0, 226.0, 320.0, 300.0)
-const CODEX_V2_CHIP_ROW_SAFE := Rect2(1298.0, 548.0, 486.0, 80.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(722.0, 132.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(48.0, 26.0, 52.0, 24.0)
-const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 44.0, 72.0, 38.0)
-const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 64.0, 72.0, 36.0)
-const CODEX_V2_NAV_PANEL_CONTENT := Vector4(16.0, 28.0, 30.0, 124.0)
-const CODEX_V2_LIST_PANEL_CONTENT := Vector4(36.0, 34.0, 63.0, 42.0)
-const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(48.0, 44.0, 44.0, 48.0)
+const CODEX_V2_SCREEN_INSET := Vector2.ZERO
+# SCRUM-725: layout_map.md geometry from the accepted Codex redesign mockup.
+# The composition scales uniformly from 1920x1080 and centers in letterbox space;
+# the backdrop cover-crops separately, so no UI frame is one-axis stretched.
+const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 24.0, 1872.0, 1032.0)
+const CODEX_V2_HEADER_TITLE_SAFE := Rect2(190.0, 32.0, 557.0, 130.0)
+const CODEX_V2_HEADER_SUBTITLE_SAFE := Rect2(720.0, 54.0, 520.0, 90.0)
+const CODEX_V2_BACK_BUTTON_SAFE := Rect2(24.0, 24.0, 96.0, 120.0)
+const CODEX_V2_NAV_PANEL_RECT := Rect2(24.0, 192.0, 384.0, 864.0)
+const CODEX_V2_NAV_SAFE := Rect2(64.0, 284.0, 304.0, 724.0)
+const CODEX_V2_LIST_PANEL_RECT := Rect2(426.0, 192.0, 517.0, 864.0)
+const CODEX_V2_DETAIL_PANEL_RECT := Rect2(964.0, 192.0, 932.0, 864.0)
+const CODEX_V2_PORTRAIT_SAFE := Rect2(1070.0, 274.0, 720.0, 300.0)
+const CODEX_V2_CHIP_ROW_SAFE := Rect2(1048.0, 602.0, 760.0, 72.0)
+const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 132.0)
+const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 22.0, 28.0, 20.0)
+const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(68.0, 68.0)
+const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(304.0, 102.0)
+const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
+const CODEX_V2_NAV_PANEL_CONTENT := Vector4(56.0, 72.0, 56.0, 64.0)
+const CODEX_V2_LIST_PANEL_CONTENT := Vector4(42.0, 72.0, 42.0, 48.0)
+const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
 const CODEX_V2_TOOLTIP_CONTENT := Vector4(20.0, 28.0, 18.0, 34.0)
 # SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab). Рамки нарисованы в
 # малом нативном размере, поэтому НЕ масштабируем texture-margins по display
@@ -500,29 +500,35 @@ const CODEX_PL_DETAIL_PATH := CODEX_PL_FIT_DIR + "codex_pl_detail_panel.png"
 const CODEX_PL_ENTRY_CARD_PATH := CODEX_PL_FIT_DIR + "codex_pl_entry_card.png"
 const CODEX_PL_CATEGORY_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_category_button.png"
 const CODEX_PL_BACK_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_back_button.png"
+const CODEX_PL_BACKDROP_PATH := CODEX_PL_FRAME_DIR + "codex_pl_backdrop.png"
 # texture-margins (9-slice corner zones), измерены в обрезанных fit-PNG
-const CODEX_PL_MAIN_TEX := Vector4(68.0, 50.0, 64.0, 50.0)
-const CODEX_PL_NAV_TEX := Vector4(40.0, 100.0, 40.0, 102.0)
-const CODEX_PL_LIST_TEX := Vector4(52.0, 74.0, 54.0, 50.0)
-const CODEX_PL_DETAIL_TEX := Vector4(58.0, 50.0, 58.0, 50.0)
-const CODEX_PL_ENTRY_CARD_TEX := Vector4(18.0, 14.0, 18.0, 12.0)
-const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(50.0, 18.0, 18.0, 17.0)
-const CODEX_PL_BACK_BUTTON_TEX := Vector4(10.0, 18.0, 20.0, 18.0)
+const CODEX_PL_MAIN_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_NAV_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_LIST_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_DETAIL_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_ENTRY_CARD_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
+const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(24.0, 24.0, 24.0, 24.0)
+const CODEX_PL_BACK_BUTTON_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
 # content-margins (display px) — куда ложится контент, с воздухом от орнамента
-const CODEX_PL_MAIN_CONTENT := Vector4(96.0, 78.0, 96.0, 64.0)
-const CODEX_PL_NAV_CONTENT := Vector4(40.0, 130.0, 40.0, 132.0)
-const CODEX_PL_LIST_CONTENT := Vector4(74.0, 96.0, 76.0, 64.0)
-const CODEX_PL_DETAIL_CONTENT := Vector4(78.0, 70.0, 76.0, 66.0)
-const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(34.0, 26.0, 34.0, 22.0)
-const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(96.0, 30.0, 40.0, 30.0)
-const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(28.0, 30.0, 38.0, 30.0)
-# SCRUM-684: текст карточек-строк сидит на пергаменте → тёмные тона, не свет-на-свет.
-const CODEX_PL_CARD_TITLE_COLOR := Color(0.28, 0.13, 0.06, 1.0)
-const CODEX_PL_CARD_BODY_COLOR := Color(0.34, 0.24, 0.15, 1.0)
-const CODEX_PL_CARD_ACCENT_COLOR := Color(0.20, 0.34, 0.14, 1.0)
-# Текст в detail-панели поверх рунического пергамента → тёмно-коричневый.
-const CODEX_PL_DETAIL_TITLE_COLOR := Color(0.30, 0.12, 0.05, 1.0)
-const CODEX_PL_DETAIL_BODY_COLOR := Color(0.20, 0.13, 0.07, 1.0)
+const CODEX_PL_MAIN_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
+const CODEX_PL_NAV_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
+const CODEX_PL_LIST_CONTENT := Vector4(42.0, 72.0, 42.0, 48.0)
+const CODEX_PL_DETAIL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
+const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(28.0, 22.0, 28.0, 20.0)
+const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(84.0, 24.0, 34.0, 24.0)
+const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(24.0, 24.0, 24.0, 24.0)
+const CODEX_PL_TEXT_CREAM := Color(0.91, 0.84, 0.66, 1.0)
+const CODEX_PL_TEXT_CREAM_MUTED := Color(0.76, 0.70, 0.57, 1.0)
+const CODEX_PL_TEXT_GOLD := Color(0.88, 0.75, 0.43, 1.0)
+const CODEX_PL_PARCHMENT_FILL := Color(0.85, 0.79, 0.63, 0.96)
+const CODEX_PL_PARCHMENT_BORDER := Color(0.46, 0.31, 0.16, 0.92)
+const CODEX_PL_INK_DARK := Color(0.18, 0.125, 0.075, 1.0)
+const CODEX_PL_CHIP_FILL := Color(0.165, 0.133, 0.106, 0.96)
+const CODEX_PL_CARD_TITLE_COLOR := CODEX_PL_TEXT_CREAM
+const CODEX_PL_CARD_BODY_COLOR := CODEX_PL_TEXT_CREAM_MUTED
+const CODEX_PL_CARD_ACCENT_COLOR := CODEX_PL_TEXT_GOLD
+const CODEX_PL_DETAIL_TITLE_COLOR := CODEX_PL_TEXT_GOLD
+const CODEX_PL_DETAIL_BODY_COLOR := CODEX_PL_INK_DARK
 const CODEX_PL_ICONS := {
 	"characters": CODEX_PL_FRAME_DIR + "codex_pl_icon_characters.png",
 	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
@@ -2788,7 +2794,7 @@ func _show_codex_screen() -> void:
 	# карточки/иконки/фон, чтобы апскейл вьюпорта был хрустящим без блюра.
 	root.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
-	_add_screen_background(root, "codex")
+	_add_codex_pl_background(root)
 
 	var main_panel := PanelContainer.new()
 	main_panel.name = "CodexMainPanel"
@@ -2798,11 +2804,20 @@ func _show_codex_screen() -> void:
 
 	var title := Label.new()
 	title.name = "CodexHeaderTitle"
-	title.text = "Кодекс · Персонажи"
+	title.text = "Кодекс"
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(38))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
+	title.add_theme_color_override("font_color", CODEX_PL_TEXT_GOLD)
 	root.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "CodexHeaderSubtitle"
+	subtitle.text = "Записи о героях, тварях, реликвиях и правилах мира."
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
+	subtitle.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
+	root.add_child(subtitle)
 
 	var back_button := _make_compact_button("←")
 	back_button.name = "CodexBackButton"
@@ -2836,11 +2851,14 @@ func _show_codex_screen() -> void:
 
 	content.set_meta("codex_detail_panel", detail_panel)
 	content.set_meta("codex_header_title", title)
+	content.set_meta("codex_header_subtitle", subtitle)
 	content.set_meta("codex_tabs", tabs_row)
+	content.set_meta("codex_active_section", "characters")
 
 	var layout_entries: Array = []
 	_codex_v2_register_rect(layout_entries, main_panel, CODEX_V2_OUTER_FRAME_RECT)
 	_codex_v2_register_rect(layout_entries, title, CODEX_V2_HEADER_TITLE_SAFE)
+	_codex_v2_register_rect(layout_entries, subtitle, CODEX_V2_HEADER_SUBTITLE_SAFE)
 	_codex_v2_register_rect(layout_entries, back_button, CODEX_V2_BACK_BUTTON_SAFE)
 	_codex_v2_register_rect(layout_entries, nav_panel, CODEX_V2_NAV_PANEL_RECT)
 	_codex_v2_register_rect(layout_entries, tabs_row, CODEX_V2_NAV_SAFE)
@@ -2858,12 +2876,15 @@ func _show_codex_screen() -> void:
 		_codex_pl_add_category_emblem(tab_button, section_id)
 
 	_codex_v2_apply_layout(layout_entries)
+	_codex_v2_apply_header_metrics(title, subtitle)
 	_codex_v2_apply_tab_metrics(tabs_row)
 	_codex_v2_apply_back_button_metrics(back_button)
 	root.resized.connect(func() -> void:
 		_codex_v2_apply_layout(layout_entries)
+		_codex_v2_apply_header_metrics(title, subtitle)
 		_codex_v2_apply_tab_metrics(tabs_row)
 		_codex_v2_apply_back_button_metrics(back_button)
+		_codex_rebuild_current_section(content)
 	)
 
 	_show_codex_section(content, "characters")
@@ -2876,9 +2897,13 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 		return
 	var detail_panel := content.get_meta("codex_detail_panel", null) as PanelContainer
 	var header_title := content.get_meta("codex_header_title", null) as Label
+	var header_subtitle := content.get_meta("codex_header_subtitle", null) as Label
 	var tabs_row := content.get_meta("codex_tabs", null) as Control
 	if header_title != null:
-		header_title.text = "Кодекс · %s" % _codex_section_title(section_id)
+		header_title.text = "Кодекс"
+	if header_subtitle != null:
+		header_subtitle.text = "Раздел: %s" % _codex_section_title(section_id)
+	content.set_meta("codex_active_section", section_id)
 	_codex_update_tab_selection(tabs_row, section_id)
 	for child in content.get_children():
 		child.visible = false
@@ -2975,13 +3000,39 @@ func _codex_pl_entry_icon_slot_style() -> StyleBox:
 	return box
 
 
+func _codex_chip_style() -> StyleBox:
+	var box := StyleBoxFlat.new()
+	box.bg_color = CODEX_PL_CHIP_FILL
+	box.border_color = Color(0.72, 0.58, 0.31, 0.86)
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(4)
+	box.content_margin_left = 12.0
+	box.content_margin_right = 12.0
+	box.content_margin_top = 6.0
+	box.content_margin_bottom = 6.0
+	return box
+
+
+func _codex_parchment_style() -> StyleBox:
+	var box := StyleBoxFlat.new()
+	box.bg_color = CODEX_PL_PARCHMENT_FILL
+	box.border_color = CODEX_PL_PARCHMENT_BORDER
+	box.set_border_width_all(3)
+	box.set_corner_radius_all(5)
+	box.content_margin_left = 22.0
+	box.content_margin_right = 22.0
+	box.content_margin_top = 18.0
+	box.content_margin_bottom = 18.0
+	return box
+
+
 func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
 	var slot := PanelContainer.new()
 	slot.name = node_name
 	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Слот в карточке-строке: фикс-квадрат, по вертикали ужимается и центрируется,
 	# чтобы НИКОГДА не превышать высоту пергамента карточки (не торчал сверху/снизу).
-	var slot_padding := Vector2(8.0, 8.0) * _codex_v2_scale()
+	var slot_padding := Vector2(6.0, 6.0) * _codex_v2_scale()
 	slot.custom_minimum_size = size + slot_padding
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -3007,18 +3058,22 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
+	label.add_theme_font_size_override("font_size", _codex_font_size(font_size, 10, 44))
 	label.add_theme_color_override("font_color", color)
 	parent.add_child(label)
 	return label
+
+
+func _codex_font_size(base_size: int, min_size := 10, max_size := 44) -> int:
+	var scale := clampf(_codex_v2_scale(), 0.82, 1.32)
+	return clampi(int(roundf(float(base_size) * scale)), min_size, max_size)
 
 
 func _codex_v2_scale(viewport_size := Vector2.ZERO) -> float:
 	var size := viewport_size
 	if size == Vector2.ZERO:
 		size = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	# SCRUM-684: вписываем 1920×1080-композицию в инсет-область вьюпорта (поля со
-	# всех сторон), чтобы орнамент рамки main_shell не упирался в край экрана.
+	# SCRUM-725: the base rects already include the 24px outer inset from layout_map.md.
 	var avail := size - CODEX_V2_SCREEN_INSET * 2.0
 	return minf(avail.x / CODEX_V2_BASE_SIZE.x, avail.y / CODEX_V2_BASE_SIZE.y)
 
@@ -3065,26 +3120,33 @@ func _codex_v2_apply_layout(entries: Array) -> void:
 		control.custom_minimum_size = rect.size
 
 
+func _codex_v2_apply_header_metrics(title: Label, subtitle: Label) -> void:
+	if title != null:
+		title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
+
+
 func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 	if tabs_row == null:
 		return
 	var scale := _codex_v2_scale()
-	var tab_size := Vector2(258.0, 92.0) * scale
-	var separation: int = maxi(8, int(round(14.0 * scale)))
+	var tab_size := CODEX_V2_CATEGORY_BUTTON_SIZE * scale
+	var separation: int = maxi(7, int(round(14.0 * scale)))
 	tabs_row.add_theme_constant_override("separation", separation)
 	for child in tabs_row.get_children():
 		var button := child as Button
 		if button == null:
 			continue
 		button.custom_minimum_size = tab_size
-		button.add_theme_font_size_override("font_size", _readable_font_size(13 if scale < 0.8 else 15, 0, 16))
+		button.add_theme_font_size_override("font_size", _codex_font_size(18, 12, 23))
 		# Полоса слева под эмблему: ruby-rivet (≈левый tex-margin) + сама эмблема.
 		# content-margins масштабируем под размер плитки (display px); левый margin
 		# уводит подпись правее эмблемы, остальные кладут текст в parchment-зону.
-		var px := tab_size.x / 470.0
+		var px := tab_size.x / 512.0
 		var rivet_end := CODEX_PL_CATEGORY_BUTTON_TEX.x * px
-		var emblem := clampf(tab_size.y * 0.50, 40.0, 52.0)
-		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 26.0 * px, 30.0 * px, 26.0 * px)
+		var emblem := clampf(tab_size.y * 0.50, 30.0, 64.0)
+		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 22.0 * px, 26.0 * px, 22.0 * px)
 		_apply_codex_pl_button_theme(button, CODEX_PL_CATEGORY_BUTTON_PATH, CODEX_PL_CATEGORY_BUTTON_TEX, btn_content)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_codex_pl_layout_category_emblem(button, tab_size, rivet_end, emblem)
@@ -3107,7 +3169,17 @@ func _codex_v2_apply_back_button_metrics(button: Button) -> void:
 		CODEX_PL_BACK_BUTTON_CONTENT.z * scale,
 		v_margin)
 	_apply_codex_pl_button_theme(button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, content)
-	button.add_theme_font_size_override("font_size", _readable_font_size(int(round(clampf(height * 0.34, 11.0, 34.0))), 0, 44))
+	button.add_theme_font_size_override("font_size", _codex_font_size(int(round(clampf(height * 0.34, 16.0, 40.0))), 14, 44))
+
+
+func _codex_rebuild_current_section(content: PanelContainer) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var section_id := str(content.get_meta("codex_active_section", "characters"))
+	for child in content.get_children():
+		content.remove_child(child)
+		child.queue_free()
+	_show_codex_section(content, section_id)
 
 
 # SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
@@ -3175,7 +3247,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		child.queue_free()
 	var box := VBoxContainer.new()
 	box.name = "CodexDetailContent"
-	box.add_theme_constant_override("separation", int(round(14.0 * _codex_v2_scale())))
+	box.add_theme_constant_override("separation", int(round(12.0 * _codex_v2_scale())))
 	detail_panel.add_child(box)
 
 	var title := Label.new()
@@ -3183,7 +3255,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.text = str(detail_data.get("title", ""))
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(22 if _codex_v2_scale() < 0.8 else 28, 0, 36))
+	title.add_theme_font_size_override("font_size", _codex_font_size(34, 22, 44))
 	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
 	box.add_child(title)
 
@@ -3217,12 +3289,17 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		var chip_limit := mini(4, chips.size())
 		for chip_index in range(chip_limit):
 			var chip_text = chips[chip_index]
-			var chip := Label.new()
-			chip.text = str(chip_text)
-			chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			chip.add_theme_font_size_override("font_size", _readable_font_size(12 if _codex_v2_scale() < 0.8 else 14, 0, 20))
-			chip.add_theme_color_override("font_color", Color(0.42, 0.20, 0.10, 1.0))
+			var chip := PanelContainer.new()
+			chip.name = "CodexDetailChip"
+			chip.add_theme_stylebox_override("panel", _codex_chip_style())
 			chip_row.add_child(chip)
+			var chip_label := Label.new()
+			chip_label.text = str(chip_text)
+			chip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			chip_label.add_theme_font_size_override("font_size", _codex_font_size(15, 11, 20))
+			chip_label.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
+			chip.add_child(chip_label)
 
 	var term_id := str(detail_data.get("term_id", ""))
 	if term_id != "":
@@ -3231,11 +3308,17 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		box.add_child(glossary_button)
 
+	var parchment := PanelContainer.new()
+	parchment.name = "CodexDetailParchmentInset"
+	parchment.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parchment.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parchment.add_theme_stylebox_override("panel", _codex_parchment_style())
+	box.add_child(parchment)
 	var text_scroll := ScrollContainer.new()
 	text_scroll.name = "CodexDetailTextScroll"
 	text_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(text_scroll)
+	parchment.add_child(text_scroll)
 	var text_box := VBoxContainer.new()
 	text_box.name = "CodexDetailTextBody"
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -3243,7 +3326,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	text_scroll.add_child(text_box)
 	var lines: Array = detail_data.get("body_lines", [])
 	for line in lines:
-		_codex_label(text_box, str(line), 13 if _codex_v2_scale() < 0.8 else 15, CODEX_PL_DETAIL_BODY_COLOR)
+		_codex_label(text_box, str(line), 18, CODEX_PL_DETAIL_BODY_COLOR)
 
 
 func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
@@ -3381,21 +3464,21 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"chips": ["Герой", str(character.get("id", ""))],
 			"body_lines": body_lines,
 		})
-		_codex_portrait(row, str(character["sprite"]), Vector2(58, 58) * _codex_v2_scale())
+		_codex_portrait(row, str(character["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		text_box.add_theme_constant_override("separation", 4)
 		row.add_child(text_box)
-		_codex_label(text_box, str(character["title"]), 18, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(character["playstyle"]), 13, CODEX_PL_CARD_BODY_COLOR)
-		_codex_label(text_box, "Сильное: %s" % character["strengths"], 12, CODEX_PL_CARD_ACCENT_COLOR)
+		_codex_label(text_box, str(character["title"]), 17, CODEX_PL_CARD_TITLE_COLOR)
+		_codex_label(text_box, str(character["playstyle"]), 12, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "Сильное: %s" % character["strengths"], 11, CODEX_PL_CARD_ACCENT_COLOR)
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
-		_codex_label(list, str(kind_titles[kind]), 26, Color(0.96, 0.90, 0.68, 1.0))
+		_codex_label(list, str(kind_titles[kind]), 24, CODEX_PL_TEXT_GOLD)
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
 				continue
@@ -3412,14 +3495,14 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"chips": [str(kind_titles[kind]), str(monster["id"])],
 				"body_lines": body_lines,
 			})
-			_codex_portrait(row, str(monster["sprite"]), Vector2(58, 58) * _codex_v2_scale())
+			_codex_portrait(row, str(monster["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
-			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 17, CODEX_PL_CARD_TITLE_COLOR)
-			_codex_label(text_box, str(monster["behavior"]), 12, CODEX_PL_CARD_BODY_COLOR)
+			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 16, CODEX_PL_CARD_TITLE_COLOR)
+			_codex_label(text_box, str(monster["behavior"]), 11, CODEX_PL_CARD_BODY_COLOR)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
@@ -3443,7 +3526,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
 			"body_lines": body_lines,
 		})
-		_codex_icon_slot(row, icon_texture, Vector2(52, 52) * _codex_v2_scale(), "CodexArtifactIconSlot")
+		_codex_icon_slot(row, icon_texture, Vector2(62, 62) * _codex_v2_scale(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -3453,8 +3536,8 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
-	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 26, Color(0.96, 0.90, 0.68, 1.0))
-	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 13, Color(0.86, 0.90, 0.95, 1.0))
+	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 24, CODEX_PL_TEXT_GOLD)
+	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for entry in CODEX_DATA.ascensions():
 		var row := _codex_entry_panel(list, {
 			"title": "%d. %s" % [entry["level"], entry["title"]],
@@ -3472,7 +3555,7 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 func _build_codex_stats(list: VBoxContainer) -> void:
 	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
 	for stat_type in ["base", "derived"]:
-		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 26, Color(0.96, 0.90, 0.68, 1.0))
+		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 24, CODEX_PL_TEXT_GOLD)
 		for stat in CODEX_DATA.stats():
 			if str(stat["type"]) != stat_type:
 				continue
@@ -3489,15 +3572,15 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(text_box)
-			_codex_label(text_box, str(stat["title"]), 17, Color(0.96, 0.88, 0.40, 1.0))
-			_codex_label(text_box, str(stat["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
+			_codex_label(text_box, str(stat["title"]), 16, CODEX_PL_CARD_TITLE_COLOR)
+			_codex_label(text_box, str(stat["description"]), 12, CODEX_PL_CARD_BODY_COLOR)
 			if str(stat["influences"]) != "":
-				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
+				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 11, CODEX_PL_CARD_ACCENT_COLOR)
 
 
 func _build_codex_glossary(list: VBoxContainer) -> void:
-	_codex_label(list, "Глоссарий терминов", 26, Color(0.96, 0.90, 0.68, 1.0))
-	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 13, Color(0.86, 0.90, 0.95, 1.0))
+	_codex_label(list, "Глоссарий терминов", 24, CODEX_PL_TEXT_GOLD)
+	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for term_id in GLOSSARY.term_ids():
 		var definition: Dictionary = GLOSSARY.definition(term_id)
 		var row := _codex_entry_panel(list, {
@@ -3511,7 +3594,7 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(box)
 		box.add_child(_make_glossary_term_button(term_id, false))
-		_codex_label(box, str(definition.get("desc", "")), 12, Color(0.90, 0.86, 0.76, 1.0))
+		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
@@ -7643,6 +7726,32 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 	# SCRUM-684: кодекс рисуется поверх детального гримуар-разворота — гасим фон
 	# сильнее, чтобы орнаментные панели читались как передний план.
 	shade.color = Color(0.02, 0.015, 0.03, 0.62) if screen_background_id == "codex" else Color(0.0, 0.0, 0.0, 0.44)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+
+
+func _add_codex_pl_background(root: Control) -> void:
+	var texture: Texture2D = null
+	if ResourceLoader.exists(CODEX_PL_BACKDROP_PATH):
+		texture = game._cached_texture(CODEX_PL_BACKDROP_PATH)
+	if texture != null:
+		var background := TextureRect.new()
+		background.name = "ScreenBackground_codex"
+		background.set_anchors_preset(Control.PRESET_FULL_RECT)
+		background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		background.texture = texture
+		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_codex_pl_make_nearest(background)
+		root.add_child(background)
+	else:
+		_add_screen_background(root, "codex")
+		return
+
+	var shade := ColorRect.new()
+	shade.name = "ScreenBackgroundReadableShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.015, 0.012, 0.018, 0.24)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 

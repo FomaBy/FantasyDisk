@@ -6592,9 +6592,9 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 		_fail("Expected codex v2 back button to exist.")
 		return false
 	var rect := button.get_global_rect()
-	var expected := _codex_v2_expected_rect(Rect2(1636, 100, 168, 66), button.get_viewport_rect().size)
+	var expected := _codex_v2_expected_rect(Rect2(24, 24, 96, 120), button.get_viewport_rect().size)
 	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected codex v2 compact back button to sit inside SCRUM-684 safe rect %s, got %s." % [str(expected), str(rect)])
+		_fail("Expected codex v2 compact back button to sit inside SCRUM-725 safe rect %s, got %s." % [str(expected), str(rect)])
 		return false
 	if button.text != "←":
 		_fail("Expected codex v2 compact back button to use icon text, got `%s`." % button.text)
@@ -6651,9 +6651,8 @@ func _visible_hero_carousel_slot_buttons(parent: Node) -> Array:
 
 func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
 	var base_size := Vector2(1920.0, 1080.0)
-	# SCRUM-684: композиция вписана в инсет-область вьюпорта (поля со всех сторон),
-	# чтобы рамка не клипалась краем экрана — повторяем тот же инсет, что в коде.
-	var screen_inset := Vector2(28.0, 30.0)
+	# SCRUM-725: the base layout map already includes its 24px outer inset.
+	var screen_inset := Vector2.ZERO
 	var avail := viewport_size - screen_inset * 2.0
 	var scale := minf(avail.x / base_size.x, avail.y / base_size.y)
 	var offset := (viewport_size - base_size * scale) * 0.5
@@ -6845,10 +6844,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-574 Codex back button to use the Codex @2K back button frame.")
 		return
 	var expected_layout := {
-		"CodexMainPanel": Rect2(24, 20, 1872, 1040),
-		"CodexTabs": Rect2(88, 198, 258, 720),
-		"CodexContent": Rect2(388, 170, 835, 872),
-		"CodexDetailPanel": Rect2(1242, 170, 606, 872),
+		"CodexMainPanel": Rect2(24, 24, 1872, 1032),
+		"CodexTabs": Rect2(64, 284, 304, 724),
+		"CodexContent": Rect2(426, 192, 517, 864),
+		"CodexDetailPanel": Rect2(964, 192, 932, 864),
 	}
 	var codex_viewport_size := codex_screen.get_viewport_rect().size
 	for node_name in expected_layout.keys():

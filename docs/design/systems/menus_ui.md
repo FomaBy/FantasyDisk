@@ -511,6 +511,20 @@ list, detail, entry card, tab button and back button slots. `CodexMainPanel`,
 and text still stay inside the recorded content margins and never overlap the
 ornamental rails.
 
+SCRUM-725 supersedes the SCRUM-574 frame material and old geometry for the live
+Codex screen. Runtime now follows
+`docs/design/mockups/codex_redesign_2026_06/layout_map.md`: full-screen
+`codex_pl_backdrop` cover-crop, lighter readable shade, 24px base outer inset,
+left nav / center list / right detail columns at the accepted proportions, and
+textless 9-slice assets under `assets/sprites/ui/frames/codex_pl/` plus matching
+`fit/` paths. Entry/list/detail text uses cream/gold on dark frames; dark ink is
+confined to the `CodexDetailParchmentInset`. Active sections rebuild on viewport
+resize so entry-card heights, portrait slots and detail text zones recompute
+instead of keeping stale rects from the previous resolution. Source/provenance:
+`docs/design/references/codex_redesign_2026_06/`; previews:
+`docs/design/previews/codex_redesign_2026_06_pixellab_contact.png` and
+`docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
+
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
 SCRUM-574 is the live Codex 2K frame baseline. Mockup/spec:

@@ -1,10 +1,13 @@
 # Полный редизайн экрана «Кодекс»: OpenAI-мокап → карта layout → новый пиксельный UI без растяжения
 
-Статус: new
+Статус: blocked
 Версия: 0.1.8
 Создано: 2026-06-30
 Роль: Design
 Контур: Codex
+Owner: Design/Codex UI worker
+Thread/Worker: 019f1f94-dfea-7b81-bfb6-dadae9eba266 / codex-scrum-725-ui-worker
+Locked paths: `docs/design/mockups/codex_redesign_2026_06/`, `assets/sprites/ui/frames/codex_pl/`, Codex-only section of `scripts/ui_screens.gd`, `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`, `build/qa/codex_redesign*`
 Приоритет: P1
 Метки: foma
 Jira: SCRUM-725
@@ -136,3 +139,20 @@ border-connected flood-fill alpha-cleanup если генератор запек
 ## Самопроверка
 Визуальный чек-лист по каждой секции в 3 разрешениях + headless-гейты;
 контактный preview мокап↔финал в `docs/design/previews/`.
+
+## Result — Codex UI worker 2026-07-02
+
+Phase 3–4 implementation is present in the worktree:
+- PixelLab MCP phase-3 source jobs completed for main/nav/list/detail/card/category/back/backdrop assets; source IDs and raw contact sheet are recorded in `docs/design/references/codex_redesign_2026_06/pixellab_sources/manifest.md` and `docs/design/previews/codex_redesign_2026_06_pixellab_contact.png`.
+- Runtime PNGs were rebuilt through deterministic cleanup script `docs/design/references/codex_redesign_2026_06/build_scrum725_codex_assets.py` to remove baked labels/checker artifacts and keep textless 9-slice-safe margin bands. Runtime contact sheet: `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`; audit: `docs/design/references/codex_redesign_2026_06/runtime_asset_audit.md`.
+- `scripts/ui_screens.gd` Codex section now uses the SCRUM-725 layout map geometry, `codex_pl_backdrop` cover-crop with light shade, cream/gold dark-panel text, parchment-only dark detail body text, updated category/button metrics, and active-section rebuild on viewport resize.
+- Codex-specific runtime smoke expectations were updated to the SCRUM-725 base rects in `tests/runtime_smoke_test.gd`.
+- Documentation updated: `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `docs/design/systems/visual_style_assets.md`.
+
+Verification blocker:
+- `python3 tools/godot_gate.py --headless --path . --import` was attempted twice from a clean/partial `.godot` cache. Both runs reached `[ DONE ] first_scan_filesystem` and then stayed silent until manually interrupted. After interruption, `.godot/imported/` contained `0` imported files and only `.godot/.gdignore` plus `.godot/global_script_class_cache.cfg` existed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/codex_data_smoke_test.gd` also blocked at the gate's automatic import-cache step for the same reason.
+- Required Godot gates (`--import`, `runtime_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`, `codex_data_smoke_test.gd`) are therefore **not claimed green** in this run.
+
+Disk cleanup: pending final cleanup of `.godot` after commit/push bookkeeping.
+Thread cleanup: pending archive at worker finish.

@@ -254,6 +254,19 @@ The older `assets/sprites/ui/frames/codex/` package remains a historical Codex
 component kit, while runtime `CodexScreen` now uses the slot-exact 2K family for
 its shell, panels, entry cards, tabs and compact back button.
 
+SCRUM-725 replaces the live Codex frame material with the textless
+`assets/sprites/ui/frames/codex_pl/` family: `codex_pl_main_shell`,
+`codex_pl_nav_panel`, `codex_pl_grid_panel`, `codex_pl_detail_panel`,
+`codex_pl_entry_card`, `codex_pl_category_button`, `codex_pl_back_button` and
+`codex_pl_backdrop`, plus matching `fit/` copies for existing runtime imports.
+PixelLab source IDs and raw outputs are recorded in
+`docs/design/references/codex_redesign_2026_06/pixellab_sources/manifest.md`;
+the deterministic cleanup/build script
+`docs/design/references/codex_redesign_2026_06/build_scrum725_codex_assets.py`
+keeps runtime PNGs textless, alpha-clean and confined to the SCRUM-725
+9-slice margin bands. Runtime preview:
+`docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
+
 SCRUM-584 adds the live rebind-conflict 2K frame pair under
 `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and
 `ui_frame_2k_rc_btn.png`. Slots are `rc_panel` and `rc_btn`, registered in
