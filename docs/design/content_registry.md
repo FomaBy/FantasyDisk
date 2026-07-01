@@ -692,6 +692,8 @@ Data-driven ростер `scripts/progression_data_enemies.gd::MINI_ELITE_KINDS`
 | `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
 | `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
 | `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
+| `skeletal_dragon` | Костяной Дракон | TBD | Planned flying skeletal dragon boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/skeletal_dragon_concept_openai.png`; PixelLab candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned: flying skeletal pressure, bone/necromancy hazards, wing-safe telegraphs. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
+| `bloodthorn_lion` | Шипастый Кровавый Лев | TBD | Planned fast predatory blood-thorn boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/bloodthorn_lion_concept_openai.png`; PixelLab candidates `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`, `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion_8dir/bloodthorn_lion_pixellab_south.png` | Planned: leap/pounce pressure, thorn bursts, blood-crystal trail. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
 
 SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
 `assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
@@ -712,6 +714,17 @@ cells, `24px` discard-only gutters and `24px` outer padding; общий мани
 source pack и подключены Animator-owned SpriteFrames integration SCRUM-370.
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
+
+SCRUM-779 (2026-07-01) добавил PixelLab-first Design-source pass для boss
+roster refresh и двух новых candidates. OpenAI image generation использовался
+только для concept references `skeletal_dragon` и `bloodthorn_lion`; production
+sprite candidates созданы через PixelLab MCP и сохранены под
+`assets/sprites/bosses/pixellab_candidates/`, с manifest/QA notes в
+`docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
+Кандидаты не заменяют live boss assets: `disk_devourer`, `brood_mother`,
+`secret_ascension_boss` и single-view `bloodthorn_lion` читаются лучше всего,
+а `rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` и 8-dir
+`bloodthorn_lion` требуют второго art/contrast pass перед runtime promotion.
 
 ## Узлы Маршрутной Карты
 

@@ -5,6 +5,14 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-779: PixelLab-first boss roster redraw source package and two new boss
+  concepts. OpenAI image generation produced reference-only concept art for
+  `skeletal_dragon` and `bloodthorn_lion`; PixelLab MCP produced transparent
+  sprite candidates for current bosses, the secret ascension boss and the two
+  new IDs under `assets/sprites/bosses/pixellab_candidates/`, with manifest and
+  QA notes in
+  `docs/design/references/bosses/pixellab_roster_redraw_2026_06/`. No live boss
+  scenes, balance or route rotation changed in this design-source pass.
 - SCRUM-694: Settings v3 full redraw — Designer pipeline package (inventory →
   geometry → OpenAI mockups → PixelLab final 9-slice family). Live Settings
   inventory + responsive `layout.json` (fit gate `ready_for_image`, geometry

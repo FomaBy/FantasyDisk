@@ -1399,13 +1399,28 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 | --- | --- | --- | --- | --- |
 | Rift Warden | `rift_warden` | `scenes/BossWarden.tscn` | `boss_rift_warden.png` | Залпы, зоны разлома, призыв, щит, увороты, gravity well |
 | Disk Devourer | `disk_devourer` | `scenes/BossDiskDevourer.tscn` | `boss_disk_devourer.png` | Рывок, slam AoE, radial burst, vampiric bite, enrage |
-| Bone Archon | `bone_archon` | `scenes/BossBoneArchon.tscn` | placeholder `boss_rift_warden.png` | Скелеты, веер черепов, bone prison/wall с проходом |
-| Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | placeholder `boss_disk_devourer.png` | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
-| Ashen Colossus | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | placeholder `boss_disk_devourer.png` | Slam-волны, ember fields, molten armor pulse, enrage |
+| Bone Archon | `bone_archon` | `scenes/BossBoneArchon.tscn` | `boss_bone_archon.png` | Скелеты, веер черепов, bone prison/wall с проходом |
+| Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | `boss_brood_mother.png` | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
+| Ashen Colossus | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | `boss_ashen_colossus.png` | Slam-волны, ember fields, molten armor pulse, enrage |
+| Костяной Дракон | `skeletal_dragon` | TBD | Design-source candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned flying skeletal boss; gameplay, scene and balance not implemented |
+| Шипастый Кровавый Лев | `bloodthorn_lion` | TBD | Design-source candidates under `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion*/` | Planned fast blood-thorn predator; gameplay, scene and balance not implemented |
 
 Боссы используют `scripts/boss.gd`, который расширяет логику обычного врага. Обновление 2026-06-12: каждый босс имеет 3 HP-фазы (`100-66%`, `66-33%`, `33-0%`), фазовые метки в meta/HP-bar, ускорение атак на фазах и danger-zone при переходе. Обновление SCRUM-259: boss-specific mechanics создают telegraph nodes (`BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `BossMoltenArmorPulse`) и закреплены в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. HP/урон боссов масштабируются через ту же `stage_scale`, что и экономика.
 
 Обновление SCRUM-135 от 2026-06-12: `boss_rift_warden.png` и `boss_disk_devourer.png` теперь native `512x512`, их boss cutout parts и `scripts/sliced_rig_manifest.gd` обновлены под 512px. `rift_warden` сохраняет отдельный `vortex` part; `disk_devourer` остается single-torso rig по текущему cutout CONFIG.
+
+SCRUM-779 (2026-07-01) подготовил PixelLab-first Design-source package для
+перерисовки текущих боссов и двух новых concepts. OpenAI image generation
+создал concept references для `skeletal_dragon` и `bloodthorn_lion`, а PixelLab
+MCP создал sprite candidates для current roster, `secret_ascension_boss` и двух
+новых IDs. Пакет лежит в
+`docs/design/references/bosses/pixellab_roster_redraw_2026_06/`, candidate
+PNGs — в `assets/sprites/bosses/pixellab_candidates/`, previews — в
+`docs/design/previews/boss_pixellab_roster_redraw_2026_06_*`. Эти ассеты пока
+не подключены к live scenes/SpriteFrames: лучшие first-pass candidates —
+`disk_devourer`, `brood_mother`, `secret_ascension_boss` и single-view
+`bloodthorn_lion`; остальные требуют второго visual pass перед runtime
+promotion.
 
 ## Спавн И Волны
 

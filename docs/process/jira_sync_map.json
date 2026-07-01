@@ -3435,8 +3435,8 @@
  },
  "codex_design_boss_pixellab_redraw_new_bosses_task.md": {
   "key": "SCRUM-779",
-  "status": "В работе",
-  "desc_hash": "05e4c324db98e2bd93d82eff48774a76"
+  "status": "Контроль качества",
+  "desc_hash": "74e5c797aaf2f23ec69b8bf18f7e4447"
  },
  "backend_balance_reeval_audit_survivability_damage_comfort_task.md": {
   "key": "SCRUM-780",
@@ -3552,5 +3552,15 @@
   "key": "SCRUM-778",
   "status": "К выполнению",
   "desc_hash": "9ea3287dd26681677ece41886f6bf302"
+ },
+ "animation_scrum779_boss_pixellab_promotion_handoff_task.md": {
+  "key": "SCRUM-793",
+  "status": "К выполнению",
+  "desc_hash": "2f8609e41e060d0191efb504d72c8bee"
+ },
+ "backend_scrum779_new_bosses_runtime_handoff_task.md": {
+  "key": "SCRUM-794",
+  "status": "К выполнению",
+  "desc_hash": "e9ea9a06751a667f70186bde5cc7c55f"
  }
 }

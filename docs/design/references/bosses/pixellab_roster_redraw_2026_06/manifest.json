@@ -1,0 +1,113 @@
+{
+  "task": "SCRUM-779",
+  "generated_at": "2026-07-01",
+  "tools": {
+    "production_candidates": "PixelLab MCP",
+    "concept_references": "OpenAI image generation built-in image_gen"
+  },
+  "openai_concepts": [
+    {
+      "id": "skeletal_dragon",
+      "path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/skeletal_dragon_concept_openai.png",
+      "status": "reference_only"
+    },
+    {
+      "id": "bloodthorn_lion",
+      "path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/bloodthorn_lion_concept_openai.png",
+      "status": "reference_only"
+    }
+  ],
+  "pixellab_candidates": [
+    {
+      "id": "rift_warden",
+      "kind": "current_boss_redraw",
+      "pixellab_type": "character_8dir",
+      "pixellab_id": "bab59c56-4618-4587-918d-23ca15e66235",
+      "source_dir": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/rift_warden",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/rift_warden/rift_warden_pixellab_south.png",
+      "preview": "docs/design/previews/boss_pixellab_roster_redraw_2026_06_rift_warden_rotations.png",
+      "qa_note": "transparent 8-direction pack; reads too humanoid/compact and loses floating rift-vortex identity; revise before live replacement"
+    },
+    {
+      "id": "disk_devourer",
+      "kind": "current_boss_redraw",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "81b491db-7240-4513-bad5-263b7f81539d",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/disk_devourer/disk_devourer_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/disk_devourer/disk_devourer_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; strong radial maw silhouette; good first-pass candidate"
+    },
+    {
+      "id": "bone_archon",
+      "kind": "current_boss_redraw",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "33f8994e-d041-419f-aa52-d3dff7cee7f6",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/bone_archon/bone_archon_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/bone_archon/bone_archon_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; silhouette readable but too plain/static and has baked shadow remnants; revise before live replacement"
+    },
+    {
+      "id": "brood_mother",
+      "kind": "current_boss_redraw",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "99d1c48c-ab86-4025-80b0-5a0ccb3d2edf",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/brood_mother/brood_mother_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/brood_mother/brood_mother_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; readable spider queen silhouette; good first-pass candidate"
+    },
+    {
+      "id": "ashen_colossus",
+      "kind": "current_boss_redraw",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "1dda1a01-4d05-44a2-a616-e8503685a0c9",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/ashen_colossus/ashen_colossus_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/ashen_colossus/ashen_colossus_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; readable golem but more armored robot than volcanic colossus; revise before live replacement"
+    },
+    {
+      "id": "secret_ascension_boss",
+      "kind": "special_boss_redraw",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "be7c77cc-cb42-49d8-b82b-95f9d5be3e83",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/secret_ascension_boss/secret_ascension_boss_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/secret_ascension_boss/secret_ascension_boss_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; readable ascendant demon candidate; good first pass but not normal boss rotation"
+    },
+    {
+      "id": "skeletal_dragon",
+      "kind": "new_boss_candidate",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "80a9a569-8fe3-4a09-a54e-870e08e0a2a5",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/skeletal_dragon/skeletal_dragon_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; readable flying skeletal dragon first pass; needs more epic boss mass/details before final runtime"
+    },
+    {
+      "id": "bloodthorn_lion",
+      "kind": "new_boss_candidate",
+      "pixellab_type": "map_object_single",
+      "pixellab_id": "0f9829d6-d1c7-44a7-9693-71b1d40b6a88",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/bloodthorn_lion/bloodthorn_lion_pixellab_object_alpha.png",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png",
+      "qa_note": "transparent after alpha cleanup; strong predatory blood-spike silhouette; good single-view first-pass candidate"
+    },
+    {
+      "id": "bloodthorn_lion_8dir",
+      "kind": "new_boss_candidate",
+      "pixellab_type": "character_8dir",
+      "pixellab_id": "1ac09499-e512-4886-bed5-5d43ac29ff9d",
+      "source_dir": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/bloodthorn_lion_8dir",
+      "runtime_candidate": "assets/sprites/bosses/pixellab_candidates/bloodthorn_lion_8dir/bloodthorn_lion_pixellab_south.png",
+      "preview": "docs/design/previews/boss_pixellab_roster_redraw_2026_06_bloodthorn_lion_rotations.png",
+      "qa_note": "transparent 8-direction quadruped pack; too dark and simpler than concept; useful Animator reference, needs brighten/detail pass"
+    }
+  ],
+  "previews": [
+    "docs/design/previews/boss_pixellab_roster_redraw_2026_06_openai_concepts.png",
+    "docs/design/previews/boss_pixellab_roster_redraw_2026_06_candidates_contact.png",
+    "docs/design/previews/boss_pixellab_roster_redraw_2026_06_candidates_partial.png",
+    "docs/design/previews/boss_pixellab_roster_redraw_2026_06_rift_warden_rotations.png",
+    "docs/design/previews/boss_pixellab_roster_redraw_2026_06_bloodthorn_lion_rotations.png"
+  ],
+  "handoff": "Backend/Animator should not replace live boss assets directly from this pass. Promote only after accepted second-pass art/animation or explicit PM acceptance of candidates."
+}

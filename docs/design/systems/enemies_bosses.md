@@ -56,6 +56,17 @@ Boss node выбирает одного из доступных боссов: `r
 | `brood_mother` | `scenes/BossBroodMother.tscn` | выводок, `BroodWebZone`, дополнительный web pressure, рывок в фазе 3 |
 | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | slam-волны, тлеющие зоны, `BossMoltenArmorPulse`, enrage ниже 25% HP |
 
+SCRUM-779 adds a Design-source PixelLab boss redraw package, but does not change
+the live boss node rotation. Current boss redraw candidates, the special
+`secret_ascension_boss` candidate, and two planned new bosses
+(`skeletal_dragon`, `bloodthorn_lion`) live under
+`assets/sprites/bosses/pixellab_candidates/` with source manifest
+`docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
+OpenAI image generation was used only for new-boss concept references; PixelLab
+MCP produced the production sprite candidates. Promotion to runtime scenes,
+full-frame rows, mechanics, route selection, Codex unlocks and balance remains a
+Back-end/Animator follow-up.
+
 SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
 ## Mini-Elites
