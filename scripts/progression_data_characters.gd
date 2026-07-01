@@ -181,7 +181,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Благословения, печати и священное восстановление.",
 		"strengths": "лечение, защита, стабильность.",
 		"weaknesses": "меньше взрывного урона по одиночной цели.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/priest/priest_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/priest_pixellab/priest_idle_south.png",
 	},
 	"biologist": {
 		"id": "biologist",

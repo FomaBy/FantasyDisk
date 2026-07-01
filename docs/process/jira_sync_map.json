@@ -2305,8 +2305,8 @@
  },
  "art_char_redraw_v2_priest_task.md": {
   "key": "SCRUM-431",
-  "status": "К выполнению",
-  "desc_hash": "2e5d9a01e9a096dd8e6fa4529efa1f2e"
+  "status": "Контроль качества",
+  "desc_hash": "b7cdf1f5a613927594cb07f8dd79f0f2"
  },
  "art_char_redraw_v2_robot_task.md": {
   "key": "SCRUM-432",
