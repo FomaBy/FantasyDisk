@@ -1,6 +1,6 @@
 # Animation: Грозовой длинный лук (storm_longbow) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Claude
@@ -48,3 +48,25 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `storm_longbow` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+
+## Result (2026-07-01) — DONE, Claude / OpenAI gpt-image-2
+
+Honored user override 2026-06-30: генерация через **OpenAI gpt-image-2**, не PixelLab.
+
+Пайплайн:
+- OpenAI `gpt-image-2`, quality=high, size=1024x1024; border-connected flood-fill alpha-cleanup (запечённый фон → прозрачный); downscale 256x256 LANCZOS;
+  полупрозрачный эффект (alpha×0.78) поверх приглушённого (alpha 0.30) десатурированного
+  **ghost'а настоящего спрайта оружия** `assets/sprites/weapons/storm_longbow.png`.
+- Runtime: `assets/sprites/effects/vfx_weapon_storm_longbow.png` (256×256 RGBA, размеры сохранены → .import валиден, reimport не требуется).
+- Source + prompt manifest: `docs/design/references/weapon_attack_animations/storm_longbow/vfx_source_1024.png`, `.../prompt_manifest.json`.
+- Preview (тёмный/светлый фон): `docs/design/previews/weapon_attack_animations/storm_longbow_contact.png`.
+
+Требования выполнены: форма/движение/цвет уникальны под роль оружия; читается зона действия;
+полупрозрачно, центр остаётся readable (не перекрывает игрока/врагов/HUD/попапы);
+во время атаки виден полупрозрачный силуэт-ghost самого оружия. Damage/cooldown/targeting/
+range/aoe/knockback/lifesteal/summon-лимиты и shared runtime logic не изменены — обновлена только PNG-плашка.
+
+Тесты (`tools/godot_gate.py`, GODOT_BIN=fdengine, slots=1):
+- `unique_weapon_vfx_assets_test.gd` — passed (51 plates).
+- `attack_vfx_smoke_test.gd` — passed.

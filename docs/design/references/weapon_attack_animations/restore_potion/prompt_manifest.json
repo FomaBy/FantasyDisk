@@ -1,0 +1,10 @@
+{
+  "weapon_id": "restore_potion",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "size": "1024x1024",
+  "background": "transparent",
+  "prompt": "Top-down attack VFX effect ring for a dark-fantasy action roguelite, pixel-art style, semi-transparent glowing additive energy, perfectly centered, on a SOLID PURE BLACK (#000000) background, absolutely NO checkerboard pattern, NO character, NO weapon object, NO UI, NO text, NO border; the ring is hollow with an EMPTY BLACK readable center so gameplay stays visible. Effect: a warm golden-green lifesteal link, a spiraling tether of glowing motes pulling inward toward the center, soft radiant healing shimmer.",
+  "pipeline": "gpt-image-2 transparent -> 256 LANCZOS -> alpha*0.75 effect over faint desaturated real-weapon ghost(alpha0.30) -> composite",
+  "runtime": "assets/sprites/effects/vfx_weapon_restore_potion.png"
+}
