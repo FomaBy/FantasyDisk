@@ -89,6 +89,12 @@
   frames under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
   `chemist_spriteframes.tres` now exposes directional idle/move/walk rows for
   combat and Hero Select preview rotation.
+- SCRUM-430: Knight PixelLab directional pack. `knight_spriteframes.tres` now
+  uses a no-shield/no-weapon PixelLab source with 8-direction idle poses and
+  6-frame directional `walk`/`move` rows. Source/manifest lives under
+  `assets/sprites/characters/pixellab/knight/`, normalized runtime frames under
+  `assets/sprites/characters/full_frame/knight_pixellab/`, and the character
+  portrait path points to the PixelLab south idle frame.
 
 ### Changed
 - SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class

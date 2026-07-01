@@ -256,7 +256,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Танк, копье и щит.",
 		"strengths": "здоровье, защита, контроль.",
 		"weaknesses": "медленный.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/knight/knight_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/knight_pixellab/knight_idle_south.png",
 	},
 	"druid": {
 		"id": "druid", "title": "Друид",

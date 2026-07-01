@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Рыцарь» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -109,3 +109,43 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-430 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## Result — Codex Design 2026-06-30
+
+Status: review / QA-ready after PixelLab generation and runtime resource wiring.
+
+Owner: Design/Codex (`codex-design-scrum-430-knight-pixellab`)
+Branch/worktree: `codex/scrum-430-knight-pixellab` at
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-430-knight-pixellab`
+
+Delivered:
+- PixelLab MCP config/auth smoke PASS (`get_balance` active subscription; no
+  token printed).
+- Created Knight PixelLab source character
+  `c1a7d633-7353-4861-aea3-8d937b601cba`
+  (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`), after
+  superseding first pass `7441d877-05f4-46da-9768-6b6be6f3b8dd` because the
+  contact sheet read as a baked shield silhouette.
+- Downloaded 8-direction idle rotations and 8-direction `walking-6-frames`
+  movement rows (6 frames per direction) into
+  `assets/sprites/characters/pixellab/knight/`.
+- Built normalized 512x512 runtime PNGs under
+  `assets/sprites/characters/full_frame/knight_pixellab/`.
+- Rebuilt `assets/sprites/characters/knight_spriteframes.tres` with generic
+  `idle`/`walk`/`move` plus `idle_<dir>`, `walk_<dir>`, `move_<dir>` rows for
+  all 8 directions.
+- Updated Knight portrait path to
+  `res://assets/sprites/characters/full_frame/knight_pixellab/knight_idle_south.png`.
+- Updated content/current-state/animation/visual-style docs, changelog, and
+  focused tests for the PixelLab Knight pack.
+
+QA evidence:
+- Contact sheet: `build/qa/scrum430_knight_pixellab/knight_pixellab_contact.png`.
+- Alpha report: `build/qa/scrum430_knight_pixellab/alpha_report.json`.
+- Source manifest: `assets/sprites/characters/pixellab/knight/manifest.json`.
+
+Notes:
+- The accepted source has no baked weapon or shield; spear, tower shield and
+  holy flail remain separate weapon visuals.
+- `player.gd` still contains the existing Knight skeleton-rig path from prior
+  work; this Design pass did not refactor backend/skeleton ownership.
