@@ -228,7 +228,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Криты, скорость и яд.",
 		"strengths": "криты, уворот, темп.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
