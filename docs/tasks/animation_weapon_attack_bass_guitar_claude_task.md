@@ -48,3 +48,10 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `bass_guitar` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-01
+QA: claude-qa
+
+Проверено на origin/dev. Redraw влит коммитом 45161c7b (vfx_weapon_bass_guitar.png, .import в индексе). PNG 256x256 RGBA, 73.7% прозрачных: концентрические orange/teal sonic-кольца (AoE + knockback) + ghost электро-баса по центру. Остаточный checkerboard проверен — 2.2% grey px (waveform, не фон). Полупрозрачно, геймплей/shared runtime не менялись. Тесты PASS: unique_weapon_vfx_assets_test.gd (51 plates), attack_vfx_smoke_test.gd.
