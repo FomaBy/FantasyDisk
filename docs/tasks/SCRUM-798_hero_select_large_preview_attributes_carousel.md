@@ -121,3 +121,39 @@ PixelLab-framed Hero Select как есть: текущая цель - сдел�
 - Прогоны через `tools/godot_gate.py`: `hero_select_scrum798_capture_test.gd`,
   `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`,
   `runtime_smoke_test.gd` - PASS.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Re-review после интеграции в origin/dev (389fd151 -> 85019376;
+`git merge-base --is-ancestor 389fd151 origin/dev` = OK). Предыдущий прогон был FAILED
+(strand на codex/scrum-798-hero-select-layout) — исполнитель влил в dev, тикет пересдан.
+
+Render-проверка на committed evidence + локальный прогон на 798-коде (local ui_screens.gd
+== origin/dev):
+- 1280x720 / 1920x1080 / 2560x1440: крупное превью героя слева — доминирующий визуальный
+  объект, не клипается, в safe-зоне; масштабируется с разрешением (портрет 320->640px).
+- Под превью: «Возвышение» с −/значение/+ , clamp, текст модификатора и кнопка «Выбрать»
+  (старт забега) — читаемо/кликабельно на всех разрешениях.
+- Правое досье: имя, описание, Сильные/Слабые стороны, список оружия, ключевой атрибут,
+  «Основные характеристики» c цветными Line Bar (обновляются при смене персонажа),
+  «Подсказки билда» со скроллом. На 720p досье скроллится (scroll-safe), контент не
+  выходит за рамку/экран, оверлапов нет.
+- Секции билда data-driven: «Основные / Второстепенные / Дополнительные атрибуты»
+  формируются per-class из ProgressionData.attribute_relevance (проверено по rects: у
+  berserk/dark_mage/guitarist/priest разные наборы). Маппинг primary/secondary/optional ок.
+- Карусель увеличена (слоты ~187px@720 -> ~374px@1440), крупные < > стрелки, выбранный
+  слот подсвечен золотой рамкой.
+- Изменения UI-only (ui_screens.gd, hero_select_constants.gd, тесты, докиб); gameplay/balance
+  не тронуты.
+
+Тесты через `tools/godot_gate.py` (семафор, live-editor рядом):
+`hero_select_pixellab_layout_test.gd` PASS (no-overlap), `hero_select_scrum798_capture_test.gd`
+PASS, `runtime_smoke_test.gd` PASS.
+
+Замечание (не блокер): hover-tooltip характеристик в статичном capture не проверяется;
+код-путь (`_hs4_stat_tooltip` / StatFormulas / class_interpretation_text) присутствует,
+Line Bar'ы отрисованы, layout-тест зелёный.
+
+QA-блок добавлен, чтобы board_sync не откатывал тикет из «Готово».
