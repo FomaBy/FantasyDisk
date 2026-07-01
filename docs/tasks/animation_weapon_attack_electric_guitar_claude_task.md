@@ -48,3 +48,16 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `electric_guitar` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit d1b51f13 влит; local файл байт-в-байт == origin/dev).
+
+- `assets/sprites/effects/vfx_weapon_electric_guitar.png`: 256x256, углы прозрачны, 65.6% полностью прозрачно, видимое покрытие 31.4% (тонкие дуги с зазорами → world/HUD читаемы сквозь эффект), median saturation 72.
+- Визуал: направленный конус звуковой волны ВПЕРЁД — расширяющийся веер concentric sound-arcs, teal-cyan + hot-pink electric + purple lightning, central audio-waveform ось, вспышка в origin. Явно направленный (не круговой пульс — отличим от bass_guitar), уникально читается как Электрогитара. Alpha/readability ок на тёмном и светлом фоне.
+- Тесты через `tools/godot_gate.py` (семафор): `unique_weapon_vfx_assets_test.gd` PASS (51 plates, включает electric_guitar), `attack_vfx_smoke_test.gd` PASS, `runtime_smoke_test.gd` PASS.
+- Геймплейные параметры/shared runtime не изменены.
+
+Тикет был reverted board_sync (в .md не было QA-блока). QA-блок добавлен, чтобы синк не откатывал повторно.
