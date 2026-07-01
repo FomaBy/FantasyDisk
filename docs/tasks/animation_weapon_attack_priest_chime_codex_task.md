@@ -122,3 +122,12 @@ python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_
 
 Disk cleanup: removed transient `/tmp/fantasydisk_scrum755_unique*` logs and the
 local incomplete `.godot/` import cache. No extra clone/worktree was created.
+
+## QA-Вердикт
+Статус: PASSED
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit 86204fef влит в dev).
+Runtime `assets/sprites/effects/vfx_weapon_priest_chime.png` = 256x256 RGBA + .import сайдкар присутствует.
+Godot смоуки через `tools/godot_gate.py`:
+- `res://tests/unique_weapon_vfx_assets_test.gd` → PASS ("Unique weapon VFX assets smoke passed: 51 plates").
+- `res://tests/attack_vfx_smoke_test.gd` → PASS ("Attack VFX smoke test passed").
+Static alpha/readability отчёт исполнителя валиден (max_alpha=172, transparent center). Приёмка пройдена → Готово.
