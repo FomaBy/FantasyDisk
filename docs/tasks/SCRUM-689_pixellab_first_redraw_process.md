@@ -48,3 +48,13 @@ task only; no gameplay, runtime, asset, or animation file changes.
 Disk cleanup: remove disposable worktree
 `/Users/sergeyfomin/.codex/worktrees/scrum-689-pixellab-process` after final
 push/Jira update; no `.godot`, generated assets or task temp caches were created.
+
+## QA-Вердикт: PASSED
+
+Проверено 2026-07-01 claude-qa на origin/dev @ ef22bf9f.
+- Документация делает будущие redraw-задачи PixelLab-first: AGENTS.md, docs/process/pm_workflow.md (раздел «PixelLab-first Redraw Intake»), docs/process/ai_agent_memorandum.md, docs/process/agent_role_boundaries_and_handoffs.md.
+- Non-PixelLab исключения требуют явной записи в Jira/task (override/blocker) — зафиксировано во всех четырёх документах.
+- Правило видно для PM (pm_workflow), Design+Animator (role_boundaries), Codex (AGENTS.md) и новых агентов (memorandum).
+- UI frame/content-zone hard rule сохранён и явно оговорён (PixelLab — источник арта, не разрешение класть контент на орнамент).
+- Задача документация-only: код/сцены/ассеты/анимации не менялись → smoke-тесты не требуются.
+Статус: PASSED
