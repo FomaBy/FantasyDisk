@@ -21,6 +21,7 @@ func _initialize() -> void:
 	await _assert_directional_preview("druid")
 	await _assert_directional_preview("engineer")
 	await _assert_directional_preview("guitarist")
+	await _assert_directional_preview("ranger")
 	await _assert_directional_preview("sniper")
 	print("Hero Select PixelLab layout smoke test passed.")
 	quit(0)

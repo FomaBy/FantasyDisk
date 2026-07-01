@@ -150,6 +150,16 @@ matte pixels are `0` in source/cell/sheet QA, with `0` edge-visible pixels after
 the edge-alpha fix. It is a source handoff only until Animator/Back-end builds
 real idle/move SpriteFrames.
 
+SCRUM-804 replaces Ranger's live base character runtime with a PixelLab
+empty-handed directional pack. Source PNGs, `manifest.json`, and
+`pixellab_metadata.json` live under `assets/sprites/characters/pixellab/ranger/`;
+normalized runtime frames live under
+`assets/sprites/characters/full_frame/ranger_pixellab/`; QA evidence is
+`docs/design/previews/scrum804_ranger_pixellab_contact.png` and
+`docs/design/previews/scrum804_ranger_pixellab_bbox_report.json`. The accepted
+source keeps hands empty with no baked bow, crossbow, quiver, arrows, trap or
+projectile; Ranger weapon visuals remain separate.
+
 SCRUM-431 adds the Priest v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
 `priest_v2_idle_cell_512.png`, `priest_v2_sheet_source_handoff.png`,
