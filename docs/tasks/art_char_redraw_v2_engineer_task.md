@@ -186,3 +186,14 @@ Implemented:
 
 Attack/body weapon rows remain absent by scope; Engineer weapons stay separate
 runtime visuals. Disk cleanup: none created beyond committed evidence/assets.
+
+## QA-Вердикт (2026-07-01 claude-qa)
+Статус: PASSED
+
+Проверено на origin/dev (commit c2cbea13, HEAD 92f47ed8), изолированный worktree.
+- 56 full-frame PNG engineer_pixellab (8 idle + 8dir×6 move), 512x512, attack отсутствует.
+- Transparency чистая: border alpha=0, каждый кадр amin=0, нет белого/каймы/запечённого фона.
+- engineer_spriteframes.tres: 27 анимаций (idle/move/walk×8+дефолты), 56 ссылок — все pixellab, устаревших нет.
+- Runtime: progression_data_characters.gd sprite_path → engineer_pixellab/engineer_idle_south.png; CHANGELOG + content_registry обновлены.
+- Смоуки (godot_gate/fdengine, slots=1): animation_smoke PASS, hero_select_pixellab_layout PASS, character_sprite_registry_alignment PASS (17 chars), runtime_smoke PASS.
+Все acceptance criteria выполнены → Готово.
