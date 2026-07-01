@@ -1,0 +1,142 @@
+{
+  "task": "SCRUM-764 sniper_shatter_rounds attack VFX redraw",
+  "pixel_lab": {
+    "accepted_object_id": "cfd56c4b-35e0-4dfd-88ef-de0e1f7fc462",
+    "rejected_candidate_object_id": "5f80744f-01e0-47be-a100-68d940669ead",
+    "accepted_source": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_source.png",
+    "note": "PixelLab download reported transparent background but arrived fully opaque; postprocess removed the flat generated background color and preserved the PixelLab VFX strokes."
+  },
+  "postprocess": {
+    "alpha_clean_source": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_alpha_clean.png",
+    "weapon_reference_used_as_ghost": "assets/sprites/weapons/sniper_shatter_rounds.png",
+    "runtime": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds.png",
+    "ghost_alpha_cap": 58,
+    "runtime_alpha_cap": 238,
+    "gameplay_or_shared_runtime_changed": false
+  },
+  "stats": {
+    "previous_runtime_before_overwrite": {
+      "path": "previous runtime snapshot",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        14,
+        20,
+        233,
+        233
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_mean": 71.548,
+      "coverage_alpha_gt_0": 0.3586,
+      "coverage_alpha_ge_64": 0.3009
+    },
+    "pixel_lab_source_raw": {
+      "path": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_source.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_mean": 255.0,
+      "coverage_alpha_gt_0": 1.0,
+      "coverage_alpha_ge_64": 1.0
+    },
+    "alpha_clean_source": {
+      "path": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_alpha_clean.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        3,
+        5,
+        251,
+        251
+      ],
+      "alpha_min": 0,
+      "alpha_max": 232,
+      "alpha_mean": 22.932,
+      "coverage_alpha_gt_0": 0.1253,
+      "coverage_alpha_ge_64": 0.0991
+    },
+    "final_runtime": {
+      "path": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        3,
+        5,
+        251,
+        251
+      ],
+      "alpha_min": 0,
+      "alpha_max": 237,
+      "alpha_mean": 36.006,
+      "coverage_alpha_gt_0": 0.3765,
+      "coverage_alpha_ge_64": 0.1093
+    },
+    "weapon_reference": {
+      "path": "assets/sprites/weapons/sniper_shatter_rounds.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox": [
+        35,
+        26,
+        221,
+        230
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_mean": 71.126,
+      "coverage_alpha_gt_0": 0.3642,
+      "coverage_alpha_ge_64": 0.3226
+    }
+  },
+  "readability": {
+    "dark": {
+      "background_rgb": [
+        16,
+        18,
+        25
+      ],
+      "mean_luminance_delta_on_alpha_ge_24": 69.974,
+      "min_luminance_delta_on_alpha_ge_24": 5.719,
+      "max_luminance_delta_on_alpha_ge_24": 215.924
+    },
+    "light": {
+      "background_rgb": [
+        214,
+        219,
+        224
+      ],
+      "mean_luminance_delta_on_alpha_ge_24": 17.211,
+      "min_luminance_delta_on_alpha_ge_24": 0.018,
+      "max_luminance_delta_on_alpha_ge_24": 77.38
+    }
+  },
+  "acceptance": {
+    "png_256_rgba": true,
+    "has_transparent_pixels": true,
+    "calm_mean_alpha_lte_previous": true,
+    "nonempty_effect": true
+  }
+}

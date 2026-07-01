@@ -1,0 +1,51 @@
+{
+  "task": "SCRUM-764",
+  "weapon_id": "sniper_shatter_rounds",
+  "display_name": "Осколочные Патроны",
+  "source_pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "pixel_lab": {
+    "tool": "mcp__pixellab.create_map_object",
+    "accepted_object_id": "cfd56c4b-35e0-4dfd-88ef-de0e1f7fc462",
+    "accepted_created": "2026-07-01 18:11",
+    "rejected_candidate_object_ids": [
+      "5f80744f-01e0-47be-a100-68d940669ead"
+    ],
+    "download_note": "PixelLab object downloads auto-delete after 8 hours; committed source PNGs are the durable reference."
+  },
+  "accepted_prompt": "Transparent pixel art gameplay attack VFX plate only, no text, no background. Draw a LONG DIAGONAL SNIPER SPLIT ROUND TRAIL from lower left toward upper right: one narrow cyan-white bullet streak through the center that forks into exactly two thinner shard trails near the upper right. Include a faint ghost silhouette of three brass shatter cartridges behind the trail at 25 percent opacity, small icy crystal fragments around the fork, calm soft edges, lots of empty transparent space. FantasyDisk dark fantasy D&D style, steel blue and icy cyan with tiny violet sparks. Do NOT draw a radial explosion, do NOT draw a centered starburst, do NOT draw a circular magic glyph, do NOT fill the whole canvas.",
+  "rejected_candidate_notes": [
+    {
+      "object_id": "5f80744f-01e0-47be-a100-68d940669ead",
+      "reason": "Clean PixelLab generation, but it read as a centered radial burst and did not communicate the sniper split-round corridor strongly enough."
+    }
+  ],
+  "paths": {
+    "raw_source": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_source.png",
+    "rejected_candidate_source": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_source_candidate1.png",
+    "alpha_clean_source": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/sniper_shatter_rounds_pixellab_alpha_clean.png",
+    "runtime": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds.png",
+    "weapon_reference": "assets/sprites/weapons/sniper_shatter_rounds.png",
+    "preview_contact_sheet": "docs/design/previews/weapon_attack_animations/sniper_shatter_rounds_contact.png",
+    "alpha_readability_report": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds/static_alpha_readability_report.json",
+    "qa_report_copy": "build/qa/scrum764/static_alpha_readability_report.json"
+  },
+  "postprocess": {
+    "steps": [
+      "Removed the flat opaque PixelLab background with a border-color distance alpha mask because the download arrived fully opaque despite the transparent-background job metadata.",
+      "Composited the accepted existing weapon art as a low-alpha icy ghost silhouette under the PixelLab shatter trail.",
+      "Kept the final runtime canvas at 256x256 RGBA and capped runtime alpha at 238 for combat readability."
+    ],
+    "gameplay_or_shared_runtime_changed": false
+  },
+  "final_runtime": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha_max": 237,
+    "alpha_mean": 36.006,
+    "coverage_alpha_gt_0": 0.3765,
+    "coverage_alpha_ge_64": 0.1093
+  }
+}
