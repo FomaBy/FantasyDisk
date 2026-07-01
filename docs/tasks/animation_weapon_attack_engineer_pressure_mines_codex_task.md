@@ -1,17 +1,19 @@
 # Animation: Минная Сетка (engineer_pressure_mines) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Animator/VFX Codex worker
+Thread: codex-vfx-auto-4-20260701
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-744
 Locked paths: assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png, docs/design/references/weapon_attack_animations/engineer_pressure_mines/, docs/design/previews/weapon_attack_animations/engineer_pressure_mines_contact.png, scenes/EngineerPressureMines.tscn, assets/sprites/weapons/engineer_pressure_mines.png
+
+Branch/worktree: codex/SCRUM-744-engineer-pressure-mines-vfx @ `/Users/sergeyfomin/.codex/worktrees/5c4c/AI Agent`
 
 ## Контекст
 
@@ -57,3 +59,17 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Результат — 2026-07-01 Codex VFX worker
+
+- Runtime asset updated: `assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png`.
+- PixelLab MCP source/evidence saved under `docs/design/references/weapon_attack_animations/engineer_pressure_mines/`.
+- Accepted PixelLab map object: `a6231ccd-f8ee-435a-a051-cd71da237633`; alternate evidence object: `db79ced0-ab90-4a95-9395-07df17114df7`; alternate 1-direction object: `a32b0e98-8dcc-465e-8556-701be2f0909d`.
+- Preview/readability sheet: `docs/design/previews/weapon_attack_animations/engineer_pressure_mines_contact.png`.
+- Visual result: canonical three-mine weapon ghost composited with PixelLab teal trip-wire/ring energy; PixelLab-generated extra trigger nodes were masked during alpha cleanup so the runtime plate reads as **Минная Сетка** rather than a generic multi-mine disk.
+- Static validation: PASS. Runtime PNG is `256x256` RGBA, alpha range `0..214`, nonzero alpha `42.54%`, no alpha `>=250` opaque pixels; dark/light/reduced-size readability captured in the contact sheet and manifest.
+- Gameplay/shared runtime: unchanged. No damage, cooldown, targeting, radius, deploy limit, scene, balance, or shared script changes.
+- Dispatcher scope correction honored: shared docs were not committed; evidence is kept in this task mirror plus task-specific reference/preview files.
+- Godot smoke tests: attempted `unique_weapon_vfx_assets_test.gd` through `tools/godot_gate.py`, but the run did not reach the test body because headless import hung for 5+ minutes amid concurrent Godot gate/import jobs and pre-existing skeleton UID duplicate warnings. `attack_vfx_smoke_test.gd` was not started to avoid adding another Godot import process. QA should rerun both smokes once the local Godot import queue clears.
+- Next owner/status: QA in `Контроль качества` after commit/push.
+- Disk cleanup: task-owned ignored `build/qa/scrum744_engineer_pressure_mines/` and `/tmp/pixellab_db79ced0.png` removed; `.godot/` cleanup blocked by active Godot import processes in this worktree (approx `8.0K` when checked).
