@@ -320,8 +320,7 @@ func _test_player_animation() -> void:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
-			if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
-			if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
+		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "thief":
 			var v2_label := "SCRUM-420"
 			if sheet_character_id == "berserk" or sheet_character_id == "dark_mage" or sheet_character_id == "druid" or sheet_character_id == "guitarist":
 				v2_label = "PixelLab directional"
