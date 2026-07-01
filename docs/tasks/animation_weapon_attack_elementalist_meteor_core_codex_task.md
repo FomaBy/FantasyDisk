@@ -69,3 +69,28 @@ QA проверяет именно `elementalist_meteor_core` в игре: эф�
   - BLOCKED: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd` hit the same import-cache failure before the test body.
   - Direct Godot script attempt confirmed the focused test cannot compile without `.godot/imported/*.ctex`; failures were missing imported resources such as `slash_arc.png.ctex`, not the SCRUM-741 PNG.
 - Disk cleanup: `.godot/` and generated untracked `.uid` sidecars removed after test attempts; no disposable clone/worktree or task scratch cache left.
+
+## QA-Вердикт (2026-07-01)
+
+Статус: FAILED
+
+QA worker: `codex-qa-scrum741-vfx-20260701`.
+Проверено на branch `codex/SCRUM-741-attack-vfx-meteor-core`, commit `cf21919e`.
+
+Проверено:
+- PASS: Jira inspected; issue was in `Контроль качества`, implementation evidence points to commit `cf21919e`.
+- PASS: branch scope contains only the expected SCRUM-741 runtime/evidence/docs files; no `.import`, `.uid`, `.godot`, cache, secret/token, `.env`, or unrelated file is introduced by the SCRUM-741 diff.
+- PASS: runtime PNG `assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png` is `256x256` RGBA, `alpha 0..165`, no pixels with `alpha >= 220`, nonzero-alpha coverage `60.74%`, bbox `(16, 8, 242, 242)`.
+- PASS: visual inspection of runtime/contact sheet: meteor impact disk, secondary shard marks, faint weapon-ghost silhouette, readable on dark, light, and arena-like backgrounds.
+- PASS: no `scripts/`, `scenes/`, or `tests/` files changed by this task, so gameplay/balance/runtime hooks were not changed.
+- FAILED / incomplete gate: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd` exited `143` during the required import prelude before the test body printed a pass/fail result.
+- BLOCKED by environment: `attack_vfx_smoke_test.gd` was not rerun after the same gate/import failure because the shared Godot semaphore stayed saturated by other active worktree imports for several minutes.
+
+Краевые случаи:
+- transparent runtime/source paths exist and JSON manifest/report parse;
+- static readability checked on dark, light, and arena-like backgrounds through `docs/design/previews/weapon_attack_animations/elementalist_meteor_core_contact.png`;
+- compared SCRUM-741 changed-file list against forbidden sidecars/caches/secrets.
+
+Баги: no product defect confirmed. Acceptance is not passed because the mandatory Godot gates did not produce green results; Jira returned to `К выполнению` for a clean rerun with a healthy Godot import/cache environment.
+
+Disk cleanup: removed QA-created `.godot/` cache; no disposable clone/worktree was created.
