@@ -1,0 +1,35 @@
+{
+  "issue": "SCRUM-768",
+  "weapon_id": "soldier_rifle",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_soldier_rifle.png",
+  "size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "background_matte_rgb_median": [
+    120,
+    117,
+    118
+  ],
+  "bbox": [
+    4,
+    5,
+    250,
+    253
+  ],
+  "visible_pixel_ratio_alpha_gt_8": 0.1578,
+  "max_alpha": 178,
+  "mean_alpha_all_pixels": 12.63,
+  "mean_alpha_visible_pixels": 79.88,
+  "center_64_mean_alpha": 56.51,
+  "center_64_max_alpha": 178,
+  "corner_alphas": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "readability_decision": "pass",
+  "readability_notes": "Transparent corners, no opaque disk; final alpha capped at 178; canonical weapon ghost stays low opacity under a three-shot firing lane."
+}
