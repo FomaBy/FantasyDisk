@@ -77,7 +77,7 @@
 | `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor_spriteframes.tres`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/pixellab/doctor/`, legacy `assets/sprites/characters/full_frame/doctor/`, `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано; SCRUM-425 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy full-frame art remains history/fallback |
-| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
+| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist_spriteframes.tres`, `assets/sprites/characters/full_frame/chemist_pixellab/`, `assets/sprites/characters/pixellab/chemist/`, legacy `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано; SCRUM-423 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy art remains fallback/history |
 | `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
 
@@ -85,7 +85,7 @@ SCRUM-416 runtime portrait rule: for most playable classes,
 `scripts/progression_data_characters.gd` uses the accepted cleaned full-frame
 idle frame as the canonical static UI portrait path:
 `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab
-directional classes (`berserk`, `dark_mage`, `guitarist`) use
+directional classes (`berserk`, `dark_mage`, `guitarist`, `doctor`, `chemist`) use
 `assets/sprites/characters/full_frame/<class>_pixellab/<class>_idle_south.png`
 instead.
 Hero Select, hero thumbnails, Codex and level-up portrait surfaces read this
@@ -93,6 +93,16 @@ single `sprite_path`; legacy `assets/sprites/characters/<class>.png` files remai
 historical/fallback asset references and are not the live static portrait source.
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
+
+SCRUM-423 promotes Chemist to the PixelLab directional runtime contract:
+PixelLab character `c7fe44d3-1f15-45a1-b762-b2862833b151` provides 8 static
+idle rotations and `walking-6-frames` movement rows for all directions. Source
+PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/chemist/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
+`assets/sprites/characters/chemist_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract.
 
 SCRUM-422 adds the first 0.1.6 character redraw v2 Design source anchor. The
 accepted exemplar for the future per-class v2 rows is Berserk, using a bright,

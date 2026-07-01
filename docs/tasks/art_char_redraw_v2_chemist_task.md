@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Химик» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -9,6 +9,11 @@
 Jira: SCRUM-423
 Lane: codex
 Исполнитель: Codex
+Owner: Design/Codex worker
+Thread: codex-design-scrum-423-chemist-pixellab
+Branch: codex/scrum-423-chemist-pixellab
+Worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/design-board-watcher
+Locked paths: assets/sprites/characters/pixellab/chemist/, assets/sprites/characters/full_frame/chemist_pixellab/, assets/sprites/characters/chemist_spriteframes.tres, scripts/progression_data_characters.gd, tests focused PixelLab/animation checks, docs/design/content_registry.md, docs/design/current_game_state.md, docs/design/systems/animation.md, CHANGELOG.md
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## PM Directive (2026-06-30)
@@ -118,3 +123,44 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-423 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## Result — Codex Design 2026-06-30
+
+Статус: ready_for_QA
+
+PixelLab MCP config smoke PASS (`get_balance`, no secrets printed). Created and
+integrated Chemist PixelLab character
+`c7fe44d3-1f15-45a1-b762-b2862833b151`:
+
+- Source/evidence: `assets/sprites/characters/pixellab/chemist/`
+  (`manifest.json`, `pixellab_character_get.txt`, 8 idle rotations, 48 movement
+  source frames).
+- Runtime: `assets/sprites/characters/full_frame/chemist_pixellab/` with
+  transparent `512x512` idle and 6-frame movement rows for all 8 directions.
+- SpriteFrames: `assets/sprites/characters/chemist_spriteframes.tres` exposes
+  `idle`, `move`, `walk`, plus directional `idle/move/walk_<direction>` rows.
+- Runtime portrait path switched to
+  `res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png`.
+- Docs/tests updated: CHANGELOG, content registry, current game state, animation
+  system doc, character sprite registry test, animation smoke expectations and
+  Hero Select PixelLab preview smoke.
+
+Verification:
+
+- PASS: Python alpha/dimension/frame-count validation (`27` SpriteFrames
+  animations checked, `56` runtime PNGs checked, no errors).
+- PASS: Visual contact sheet inspected at
+  `build/qa/scrum423_chemist_pixellab/scrum423_chemist_pixellab_contact.png`.
+- ATTEMPTED/BLOCKED: Godot gate for
+  `tests/character_sprite_registry_alignment_test.gd` repeatedly hung during
+  import after pre-existing Dark Mage/Knight skeleton UID duplicate warnings;
+  unrelated Godot gates and unrelated SCRUM-421 Biologist dirty files were also
+  present in this shared worktree. No Chemist-specific Godot assertion failure
+  was reached.
+- ATTEMPTED/BLOCKED: `python3 tools/jira_board_sync.py` was started after the
+  Jira status-changing run, skipped inaccessible `SCRUM-327`, then hung for
+  several minutes and was stopped; SCRUM-423 was updated directly in Jira
+  instead.
+
+Disk cleanup: removed `.godot/`; no disposable clone/worktree was created by
+SCRUM-423.
