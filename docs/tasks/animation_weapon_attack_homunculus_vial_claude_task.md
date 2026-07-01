@@ -48,3 +48,19 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `homunculus_vial` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+QA claude-qa 2026-07-01. Проверено на HEAD origin/dev (commit 08bddd51 влит; local файл байт-в-байт == origin/dev).
+
+- `assets/sprites/effects/vfx_weapon_homunculus_vial.png`: 256x256, углы прозрачны, 64.9% полностью прозрачно, видимое покрытие 33.4%.
+- Визуал: аркан-круг призыва (spawn zone, роль «temporary minion») внизу + материализующийся зелёный гомункул-фамильяр из зелёной алхимической дымки + фиолетовой магии, парящие глифы, поднимающийся дым, ghost брасс-склянки сверху. Уникально читается как Склянка гомункула, зона призыва видна, отличим от соседних VFX.
+- Проверка на «запечённый фон»: медиана saturation по видимым пикселям низкая (~25), но это ОРГАНИЧЕСКИЙ серо-зелёный дым (31% видимых пикселей low-sat, brightness ~136), а НЕ прямоугольный baked checkerboard/neutral fill — 64.9% кадра полностью прозрачно, углы чисты, форма органическая (круг + плюм дыма), 17.7% видимых пикселей — насыщенное цветное ядро (>60). Дым дизерный/полупрозрачный, world просвечивает. Дефекта прозрачности нет.
+- Тесты через `tools/godot_gate.py` (семафор): `unique_weapon_vfx_assets_test.gd` PASS (51 plates, включает homunculus_vial), `attack_vfx_smoke_test.gd` PASS, `runtime_smoke_test.gd` PASS.
+- Геймплейные параметры/shared runtime не изменены.
+
+Замечание (не блокер): центр зоны занят материализующимся минионом (это суть summon-VFX), поэтому «readable/transparent центр» частично; на боевом масштабе эффект не перекрывает HUD, дым полупрозрачен.
+
+QA-блок добавлен, чтобы board_sync не откатывал тикет из «Готово».
