@@ -1,11 +1,11 @@
 # Animation: Костяная пила (bone_saw) attack VFX redraw
 
-Статус: new
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Claude
 Контур: Claude
-Owner: unassigned
+Owner: claude-animator
 Thread: n/a
 Версия: 0.1.8
 Создано: 2026-06-30
