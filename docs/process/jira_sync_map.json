@@ -3597,5 +3597,10 @@
   "key": "SCRUM-798",
   "status": "Готово",
   "desc_hash": "56a66c4105c8281286d95cc2d61b712b"
+ },
+ "SCRUM-689_pixellab_first_redraw_process.md": {
+  "key": "SCRUM-689",
+  "status": "Контроль качества",
+  "desc_hash": "c8466fc33f08d81da0d144413bb0dc30"
  }
 }
