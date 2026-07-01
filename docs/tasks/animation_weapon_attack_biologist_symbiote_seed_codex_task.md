@@ -1,12 +1,12 @@
 # Animation: Семя Симбионта (biologist_symbiote_seed) attack VFX redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Codex Animator
+Thread: codex-animator-auto
 Версия: 0.1.8
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
@@ -48,3 +48,22 @@ Source PNG и prompt notes сохранить в `docs/design/references/weapon_
 ## QA Notes
 
 QA проверяет именно `biologist_symbiote_seed` в игре: эффект виден при атаке, полупрозрачен, не заслоняет UI и отличим от соседних weapon VFX. Disk cleanup обязателен: удалить временные OpenAI/source scratch caches, оставить только committed source/evidence/runtime files.
+
+## Result 2026-07-01 — Blocked
+
+Worker: `codex-animator-auto`
+Issue: SCRUM-732
+
+Attempted the mandated OpenAI Images override through the repository helper:
+
+```bash
+python3 skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py --no-task --quality high --size 1024x1024 --output docs/design/references/weapon_attack_animations/biologist_symbiote_seed/biologist_symbiote_seed_openai_source.png --prompt "<symbiote web VFX prompt>"
+```
+
+The helper failed before writing a source PNG because OpenAI returned
+`billing_hard_limit_reached` (`Billing hard limit has been reached`). Per the
+helper and active task rules, no hand-drawn or non-OpenAI substitute was created.
+
+Generated/runtime files: none.
+Tests: not run; blocked before asset generation.
+Disk cleanup: none created.
