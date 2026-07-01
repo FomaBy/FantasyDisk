@@ -144,6 +144,15 @@ paths or locked leftovers. Disposable paths include `D:\FantasyDisk_worktrees\*`
 and untracked Godot `.import`/`.uid` sidecars. Do not remove committed evidence,
 runtime assets, the main repository, or unrelated user files.
 
+Codex thread cleanup is mandatory for one-off worker threads. After Jira/GitHub,
+local mirrors, memory, tests/evidence, and disk cleanup are truthful, an
+automation-created Codex worker must archive its own current thread by calling
+`codex_app.set_thread_archived` with `archived: true` and no `threadId`. Treat
+this as the last tool action before the final response. Permanent
+dispatcher/watch chats stay unarchived; do not archive active/running workers or
+threads whose ownership/status is unclear. Final reports should include
+`Thread cleanup:` with the archive result.
+
 ## Codex И Claude Параллельно
 
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной

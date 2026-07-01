@@ -186,6 +186,12 @@ Locked paths: <файлы/папки/ассеты/экраны>
 Jira: SCRUM-<номер>
 ```
 
+Для Codex one-off worker threads действует thread hygiene: после truthful
+Jira/GitHub/local mirror/memory/test/disk cleanup результата worker архивирует
+свой текущий чат через `codex_app.set_thread_archived` (`archived: true`, без
+`threadId`) как последнее tool-действие перед финалом. Постоянные PM,
+dispatcher/watch и user control чаты не архивируются автоматически.
+
 `OtherAI` используется для DeepSeek, Gemini или любого другого AI. Правила те же:
 single owner, locked paths, Jira sync, GitHub sync, QA gate.
 

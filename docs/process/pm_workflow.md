@@ -91,7 +91,7 @@ Dispatcher маршрутизирует существующие Jira issues в 
   задачей и не начинается параллельно в тех же файлах.
 - Правила одни для всех: один owner на задачу, статусы в task-файле, Jira sync,
   коммиты в `dev` там, где роль/среда это разрешает, smoke-тесты, обновление
-  документации, handoff при чужой работе.
+  документации, handoff при чужой работе, cleanup одноразовых worker-чатов.
 
 ## Контур, Owner И Locked Paths
 
@@ -284,6 +284,12 @@ Role heartbeat в этих окнах не является разрешение
 Он не должен self-select'ить `new` rows из общей доски. Ownership появляется
 только после Jira claim/comment/status или явного dispatcher/PM dispatch; затем
 task-файл/board обновляются как зеркало.
+
+Одноразовые Codex worker-чаты, созданные автоматизациями для конкретного run,
+должны архивировать себя после завершения или truthful blocker/no-task отчёта.
+Это делается через `codex_app.set_thread_archived` (`archived: true`, без
+`threadId`) последним tool-действием перед финалом. Постоянные dispatcher/watch
+чаты, такие как Back-end watcher или QA monitor, не архивируются автоматически.
 
 ### Design Collision Rules
 

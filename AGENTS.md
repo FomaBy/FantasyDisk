@@ -141,6 +141,23 @@ done, blocked, or handed off. Disk space is part of task completion.
   A task is process-incomplete if it leaves a disposable FantasyDisk checkout or
   multi-hundred-MB cache without this note.
 
+**CODEX THREAD HYGIENE — MANDATORY (user directive 2026-07-01).**
+Codex chats created as one-off automation/agent worker threads must archive
+themselves after the task run is truthfully finished. Codex currently exposes
+archive/unarchive, not hard deletion, so "delete finished worker chat" means
+archive it from the active thread list.
+- After Jira/GitHub sync, local mirrors, memory updates, test evidence, disk
+  cleanup, and final status are complete, the worker must use `tool_search` if
+  needed to expose `set_thread_archived`, then call `codex_app.set_thread_archived`
+  with `archived: true` and no `threadId` to archive its current thread.
+- This must be the last tool action before the final response for cron-created
+  role workers (`fantasydisk-codex-*-agent`) and other one-task Codex workers.
+- Do not archive permanent dispatcher/watch chats, PM chats, user-facing control
+  chats, active/running workers, or unclear threads. Archive only the current
+  worker thread or another thread that is clearly idle/notLoaded and completed.
+- Final reports should include `Thread cleanup:` with `archived current worker
+  thread`, `not a disposable worker thread`, or `archive unavailable`.
+
 Versioning:
 - `main` is the stable `0.1` line.
 - `dev` is the active working branch for the current `0.1.x` line.

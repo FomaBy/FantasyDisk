@@ -90,6 +90,11 @@ Jira: SCRUM-<номер>
    `К выполнению` with a cleanup comment. Combined multi-issue work is allowed
    only when one dispatcher comment explicitly lists the combined scope and
    shared locked paths.
+8. One-off Codex worker threads archive themselves after truthful completion,
+   no-task, or blocker handling. The worker calls `codex_app.set_thread_archived`
+   with `archived: true` and no `threadId` as the last tool action before the
+   final response. Permanent dispatcher/watch chats and active workers stay
+   visible.
 
 ## Active Claim Health
 
