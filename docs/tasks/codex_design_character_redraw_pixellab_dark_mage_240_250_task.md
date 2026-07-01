@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Темный маг» — full redraw в размере 240-250 px
 
-Статус: done
+Статус: new
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-704
 Контур: Codex
-Owner: Codex worker / Maxwell
-Thread/Worker: 019f18f1-7709-7c63-9743-7bfd6e1e294e
+Owner: unassigned
+Thread/Worker: n/a
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
 Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_dark_mage_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-424, SCRUM-421, SCRUM-423, SCRUM-685
@@ -46,10 +46,3 @@ Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/c
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy.
-
-## Result 2026-07-01
-Готово для QA на branch `codex/scrum-704-dark-mage-pixellab-240`, commit `27eb0cc42a5b5fa60f0b0673198e19b4829852ad`. PixelLab source `9bb0eca8-5afe-49d4-8e56-7115a45efdcc`; собран новый empty-hands Dark Mage pack: 8 idle directions, 8-direction move/walk, transparent `512x512` runtime frames, rebuilt `dark_mage_spriteframes.tres`.
-
-QA evidence: alpha bbox PASS, primary south idle `230x246`, runtime frame heights `245..247 px`; no baked book/skull/wand/staff/orb. PASS via `tools/godot_gate.py`: `dark_mage_pixellab_pack_test`, `hero_select_dark_mage_pixellab_preview_test`, `hero_select_pixellab_layout_test`, `character_sprite_registry_alignment_test`, `animation_smoke_test`, `runtime_smoke_test`.
-
-Jira target status: `Контроль качества`. Disk cleanup: worker removed `.godot/` (~1.3 GB) and `build/tmp_scrum704_pixellab_download/`; unrelated `source_docs/FantasyDisk_GDD.txt` line-ending noise was left uncommitted.

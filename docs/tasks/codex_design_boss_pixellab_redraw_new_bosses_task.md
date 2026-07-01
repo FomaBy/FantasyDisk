@@ -116,3 +116,12 @@ Handoffs:
 
 Disk cleanup: none created outside task/reference/evidence paths; temporary
 PixelLab download zips are under `build/qa/boss_pixellab_redraw/` as evidence.
+
+## QA-Вердикт (2026-07-01, PM/QA-loop)
+
+Статус: PASSED
+
+Проверено:
+- Дизайн-делятся влиты в `origin/dev`: 9 кандидат-PNG под `assets/sprites/bosses/pixellab_candidates/` (rift_warden, disk_devourer, bone_archon, brood_mother, ashen_colossus, secret_ascension_boss, skeletal_dragon, bloodthorn_lion, bloodthorn_lion_8dir), OpenAI-концепты и previews на месте.
+- Устранён единственный пробел комплектности: 9 отсутствовавших `.import`-сайдкаров кандидат-PNG до-коммичены этим QA-проходом (source-only ассеты, в рантайме не референсятся; `asset_reference_integrity_test.gd` — PASS).
+- Один кандидат (`bloodthorn_lion`) промотирован в рантайм в рамках SCRUM-794; остальные остаются source-only.

@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Берсерк» — full redraw в размере 240-250 px
 
-Статус: done
+Статус: new
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-703
 Контур: Codex
-Owner: Codex worker / Ptolemy
-Thread/Worker: 019f18f1-4524-7542-92e8-34ea15de8f55
+Owner: unassigned
+Thread/Worker: n/a
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
 Locked paths: `assets/sprites/characters/pixellab/berserk/`, `assets/sprites/characters/full_frame/berserk_pixellab/`, `assets/sprites/characters/berserk_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_berserk_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-420, SCRUM-421, SCRUM-423, SCRUM-685
@@ -46,10 +46,3 @@ Locked paths: `assets/sprites/characters/pixellab/berserk/`, `assets/sprites/cha
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy.
-
-## Result 2026-07-01
-Готово для QA на branch `codex/scrum-703-berserk-pixellab-240`, head commit `dace0f7512379d768496592090c1065000b93fb3` (`9dd3497a` art commit + `dace0f75` Jira QA sync). PixelLab source `8486ce45-f749-4c63-9a6d-f0477d619c2d`; собран новый unarmed Berserk pack: 8 idle directions, 8-direction move/walk, 56 transparent `512x512` runtime frames, rebuilt `berserk_spriteframes.tres`.
-
-QA evidence: alpha bbox PASS, all frames `245 px` visible height, primary south idle `217x245`; no baked sword/axe/hammer. PASS: `animation_smoke_test.gd`, `hero_select_berserk_preview_test.gd`, `hero_select_pixellab_layout_test.gd`, `character_sprite_registry_alignment_test.gd`, focused alpha-bbox validator.
-
-Jira target status: `Контроль качества`. Disk cleanup: worker removed `.godot/`, `/tmp/scrum703_berserk_pixellab`, Python `__pycache__`, and ran `git worktree prune`; task worktree kept for active QA traceability.

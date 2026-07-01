@@ -16,9 +16,6 @@ extends SceneTree
 
 const SCAN_DIRS := ["res://scripts", "res://scenes", "res://assets"]
 const SCAN_EXTS := ["gd", "tscn", "tres"]
-const OPTIONAL_MISSING_RES_PATHS := {
-	"res://feedback_webhook.cfg": "gitignored release feedback webhook config, loaded with ConfigFile.load() fallback",
-}
 
 
 func _initialize() -> void:
@@ -82,6 +79,4 @@ func _scan_file(file_path: String, errors: Array, checked: Dictionary) -> void:
 		# .uid-литералов в коде нет; .import как res:// тоже не грузят — но если кто-то
 		# сослался, проверим как файл. Существование: ресурс ИЛИ файл на диске.
 		if not (ResourceLoader.exists(res_path) or FileAccess.file_exists(res_path)):
-			if OPTIONAL_MISSING_RES_PATHS.has(res_path):
-				continue
 			errors.append("%s: битая ссылка '%s'" % [file_path, res_path])

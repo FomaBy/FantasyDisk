@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Доктор» — full redraw в размере 240-250 px
 
-Статус: done
+Статус: new
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-705
 Контур: Codex
-Owner: Codex worker / Linnaeus
-Thread/Worker: 019f18f1-b0f7-7462-b4ea-14b9ec12688e
+Owner: unassigned
+Thread/Worker: n/a
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
 Locked paths: `assets/sprites/characters/pixellab/doctor/`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/doctor_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_doctor_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-425, SCRUM-421, SCRUM-423, SCRUM-685
@@ -46,10 +46,3 @@ Locked paths: `assets/sprites/characters/pixellab/doctor/`, `assets/sprites/char
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy.
-
-## Result 2026-07-01
-Готово для QA на branch `codex/scrum-705-doctor-pixellab-240`, head commit `05d90150f044250983a7f5016799a7cfec588cdd` (`3fe71fd9` implementation commit). PixelLab source `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`; собран новый Doctor pack: 8 idle directions, 8-direction move/walk, 56 transparent `512x512` runtime frames, rebuilt `doctor_spriteframes.tres`.
-
-QA evidence: alpha bbox PASS, all visible heights `244 px`, primary south idle `150x244`; no baked potion/syringe/saw/held weapon. PASS: `character_sprite_registry_alignment_test.gd`, `hero_select_pixellab_layout_test.gd`, `animation_smoke_test.gd`, `runtime_smoke_test.gd`. Runtime smoke had pre-existing `settings_v3` warnings from current dev but exited 0.
-
-Jira target status: `Контроль качества`. Disk cleanup: worker removed `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-705-doctor-240` including ~1.3 GB `.godot`, dropped SCRUM-705 temporary stashes, and ran `git worktree prune`.

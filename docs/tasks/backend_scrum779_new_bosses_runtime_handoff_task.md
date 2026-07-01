@@ -86,3 +86,16 @@ scene uses the static sprite, mirroring the pre-animation state of siblings).
 (Godot 4.7, FSD_GODOT_SLOTS=1).
 
 Статус: done
+
+## QA-Вердикт (2026-07-01, PM/QA-loop)
+
+Статус: PASSED
+
+Проверено на `origin/dev` HEAD `8818498a`:
+- Влитость: `git merge-base --is-ancestor HEAD origin/dev` — YES (не стрэнднут).
+- Комплектность коммита: live-спрайт `boss_bloodthorn_lion.png` + `.import` + boss.gd/combat_director/progression/codex_data + сцена + тесты + доки.
+- `res://tests/runtime_smoke_boss_elite_test.gd` — PASS (Runtime boss/elite smoke suite passed).
+- `res://tests/runtime_smoke_test.gd` — PASS (codex-count инвариант 5→6 подтверждён; Duplicate-artifact guard 11775 files PASS).
+- `res://tests/asset_reference_integrity_test.gd` — PASS (185 файлов, 1753 res://-ссылок, висячих ссылок на новый спрайт нет).
+- Альфа live-спрайта: 512x512, углы alpha=0, ~50% прозрачности — настоящая прозрачность, фон не запечён.
+- Ротация детерминирована: `bloodthorn_lion` намеренно вне random route pool до QA-гейтнутого follow-up (регресс-ассерт держит его снаружи).
