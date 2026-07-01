@@ -1,0 +1,1886 @@
+{
+  "task": "SCRUM-802",
+  "pixellab_character_id": "37c6ccf2-ab40-4c89-83a3-db8365f85257",
+  "source_frame_count": 56,
+  "runtime_frame_count": 56,
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "expected_idle_count": 8,
+  "expected_move_frames_per_direction": 6,
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "runtime_alpha_bbox_height_min": 245,
+  "runtime_alpha_bbox_height_max": 245,
+  "runtime_alpha_bbox_height_unique": [
+    245
+  ],
+  "source_frames": {
+    "idle_south": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        65,
+        65,
+        183,
+        182
+      ],
+      "width": 118,
+      "height": 117,
+      "alpha_pixels": 8994
+    },
+    "move_south_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        65,
+        168,
+        182
+      ],
+      "width": 86,
+      "height": 117,
+      "alpha_pixels": 6373
+    },
+    "move_south_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        65,
+        167,
+        180
+      ],
+      "width": 85,
+      "height": 115,
+      "alpha_pixels": 6181
+    },
+    "move_south_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        65,
+        168,
+        180
+      ],
+      "width": 86,
+      "height": 115,
+      "alpha_pixels": 6171
+    },
+    "move_south_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        70,
+        63,
+        179,
+        178
+      ],
+      "width": 109,
+      "height": 115,
+      "alpha_pixels": 8476
+    },
+    "move_south_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        71,
+        62,
+        178,
+        176
+      ],
+      "width": 107,
+      "height": 114,
+      "alpha_pixels": 8264
+    },
+    "move_south_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        70,
+        60,
+        176,
+        174
+      ],
+      "width": 106,
+      "height": 114,
+      "alpha_pixels": 8239
+    },
+    "idle_south-east": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        68,
+        65,
+        177,
+        185
+      ],
+      "width": 109,
+      "height": 120,
+      "alpha_pixels": 8140
+    },
+    "move_south-east_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        67,
+        154,
+        185
+      ],
+      "width": 67,
+      "height": 118,
+      "alpha_pixels": 4934
+    },
+    "move_south-east_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        89,
+        68,
+        151,
+        185
+      ],
+      "width": 62,
+      "height": 117,
+      "alpha_pixels": 4557
+    },
+    "move_south-east_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        89,
+        69,
+        147,
+        186
+      ],
+      "width": 58,
+      "height": 117,
+      "alpha_pixels": 4372
+    },
+    "move_south-east_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        70,
+        68,
+        166,
+        187
+      ],
+      "width": 96,
+      "height": 119,
+      "alpha_pixels": 7646
+    },
+    "move_south-east_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        70,
+        66,
+        168,
+        184
+      ],
+      "width": 98,
+      "height": 118,
+      "alpha_pixels": 7782
+    },
+    "move_south-east_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        68,
+        66,
+        166,
+        184
+      ],
+      "width": 98,
+      "height": 118,
+      "alpha_pixels": 7796
+    },
+    "idle_east": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        65,
+        161,
+        185
+      ],
+      "width": 74,
+      "height": 120,
+      "alpha_pixels": 6360
+    },
+    "move_east_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        66,
+        156,
+        185
+      ],
+      "width": 69,
+      "height": 119,
+      "alpha_pixels": 5049
+    },
+    "move_east_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        93,
+        66,
+        160,
+        185
+      ],
+      "width": 67,
+      "height": 119,
+      "alpha_pixels": 5299
+    },
+    "move_east_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        91,
+        66,
+        159,
+        185
+      ],
+      "width": 68,
+      "height": 119,
+      "alpha_pixels": 5201
+    },
+    "move_east_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        64,
+        157,
+        183
+      ],
+      "width": 70,
+      "height": 119,
+      "alpha_pixels": 5053
+    },
+    "move_east_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        65,
+        156,
+        181
+      ],
+      "width": 69,
+      "height": 116,
+      "alpha_pixels": 5277
+    },
+    "move_east_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        91,
+        65,
+        159,
+        182
+      ],
+      "width": 68,
+      "height": 117,
+      "alpha_pixels": 5194
+    },
+    "idle_north-east": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        81,
+        64,
+        163,
+        184
+      ],
+      "width": 82,
+      "height": 120,
+      "alpha_pixels": 6391
+    },
+    "move_north-east_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        97,
+        69,
+        165,
+        182
+      ],
+      "width": 68,
+      "height": 113,
+      "alpha_pixels": 4564
+    },
+    "move_north-east_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        91,
+        71,
+        166,
+        183
+      ],
+      "width": 75,
+      "height": 112,
+      "alpha_pixels": 4498
+    },
+    "move_north-east_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        91,
+        71,
+        165,
+        187
+      ],
+      "width": 74,
+      "height": 116,
+      "alpha_pixels": 4485
+    },
+    "move_north-east_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        96,
+        69,
+        158,
+        185
+      ],
+      "width": 62,
+      "height": 116,
+      "alpha_pixels": 5059
+    },
+    "move_north-east_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        68,
+        154,
+        180
+      ],
+      "width": 64,
+      "height": 112,
+      "alpha_pixels": 5150
+    },
+    "move_north-east_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        93,
+        69,
+        156,
+        186
+      ],
+      "width": 63,
+      "height": 117,
+      "alpha_pixels": 5225
+    },
+    "idle_north": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        69,
+        64,
+        177,
+        182
+      ],
+      "width": 108,
+      "height": 118,
+      "alpha_pixels": 7506
+    },
+    "move_north_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        73,
+        159,
+        180
+      ],
+      "width": 69,
+      "height": 107,
+      "alpha_pixels": 4381
+    },
+    "move_north_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        73,
+        158,
+        182
+      ],
+      "width": 68,
+      "height": 109,
+      "alpha_pixels": 4362
+    },
+    "move_north_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        74,
+        158,
+        178
+      ],
+      "width": 68,
+      "height": 104,
+      "alpha_pixels": 4353
+    },
+    "move_north_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        84,
+        69,
+        163,
+        180
+      ],
+      "width": 79,
+      "height": 111,
+      "alpha_pixels": 4905
+    },
+    "move_north_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        70,
+        163,
+        181
+      ],
+      "width": 80,
+      "height": 111,
+      "alpha_pixels": 4717
+    },
+    "move_north_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        70,
+        163,
+        179
+      ],
+      "width": 80,
+      "height": 109,
+      "alpha_pixels": 4730
+    },
+    "idle_north-west": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        64,
+        168,
+        184
+      ],
+      "width": 86,
+      "height": 120,
+      "alpha_pixels": 6703
+    },
+    "move_north-west_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        68,
+        158,
+        181
+      ],
+      "width": 72,
+      "height": 113,
+      "alpha_pixels": 4935
+    },
+    "move_north-west_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        69,
+        159,
+        181
+      ],
+      "width": 74,
+      "height": 112,
+      "alpha_pixels": 5036
+    },
+    "move_north-west_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        70,
+        166,
+        182
+      ],
+      "width": 83,
+      "height": 112,
+      "alpha_pixels": 6026
+    },
+    "move_north-west_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        68,
+        155,
+        186
+      ],
+      "width": 69,
+      "height": 118,
+      "alpha_pixels": 5029
+    },
+    "move_north-west_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        67,
+        160,
+        183
+      ],
+      "width": 75,
+      "height": 116,
+      "alpha_pixels": 5045
+    },
+    "move_north-west_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        67,
+        155,
+        183
+      ],
+      "width": 72,
+      "height": 116,
+      "alpha_pixels": 4912
+    },
+    "idle_west": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        96,
+        65,
+        153,
+        185
+      ],
+      "width": 57,
+      "height": 120,
+      "alpha_pixels": 4966
+    },
+    "move_west_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        103,
+        68,
+        154,
+        182
+      ],
+      "width": 51,
+      "height": 114,
+      "alpha_pixels": 3652
+    },
+    "move_west_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        94,
+        68,
+        154,
+        182
+      ],
+      "width": 60,
+      "height": 114,
+      "alpha_pixels": 4151
+    },
+    "move_west_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        103,
+        68,
+        155,
+        182
+      ],
+      "width": 52,
+      "height": 114,
+      "alpha_pixels": 4027
+    },
+    "move_west_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        105,
+        69,
+        153,
+        182
+      ],
+      "width": 48,
+      "height": 113,
+      "alpha_pixels": 3596
+    },
+    "move_west_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        94,
+        69,
+        153,
+        182
+      ],
+      "width": 59,
+      "height": 113,
+      "alpha_pixels": 4184
+    },
+    "move_west_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        96,
+        69,
+        154,
+        183
+      ],
+      "width": 58,
+      "height": 114,
+      "alpha_pixels": 3986
+    },
+    "idle_south-west": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        72,
+        65,
+        174,
+        185
+      ],
+      "width": 102,
+      "height": 120,
+      "alpha_pixels": 7804
+    },
+    "move_south-west_00": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        84,
+        67,
+        161,
+        186
+      ],
+      "width": 77,
+      "height": 119,
+      "alpha_pixels": 5917
+    },
+    "move_south-west_01": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        68,
+        166,
+        184
+      ],
+      "width": 83,
+      "height": 116,
+      "alpha_pixels": 6343
+    },
+    "move_south-west_02": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        69,
+        165,
+        185
+      ],
+      "width": 79,
+      "height": 116,
+      "alpha_pixels": 6077
+    },
+    "move_south-west_03": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        92,
+        69,
+        156,
+        184
+      ],
+      "width": 64,
+      "height": 115,
+      "alpha_pixels": 4906
+    },
+    "move_south-west_04": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        96,
+        69,
+        153,
+        182
+      ],
+      "width": 57,
+      "height": 113,
+      "alpha_pixels": 4305
+    },
+    "move_south-west_05": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        97,
+        69,
+        154,
+        182
+      ],
+      "width": 57,
+      "height": 113,
+      "alpha_pixels": 4315
+    }
+  },
+  "runtime_frames": {
+    "idle_south": {
+      "bbox": [
+        132,
+        235,
+        379,
+        480
+      ],
+      "width": 247,
+      "height": 245,
+      "alpha_pixels": 39352,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_south.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_00": {
+      "bbox": [
+        166,
+        235,
+        346,
+        480
+      ],
+      "width": 180,
+      "height": 245,
+      "alpha_pixels": 27964,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_01": {
+      "bbox": [
+        165,
+        235,
+        346,
+        480
+      ],
+      "width": 181,
+      "height": 245,
+      "alpha_pixels": 27999,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_02": {
+      "bbox": [
+        164,
+        235,
+        347,
+        480
+      ],
+      "width": 183,
+      "height": 245,
+      "alpha_pixels": 27956,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_03": {
+      "bbox": [
+        140,
+        235,
+        372,
+        480
+      ],
+      "width": 232,
+      "height": 245,
+      "alpha_pixels": 38482,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_04": {
+      "bbox": [
+        141,
+        235,
+        371,
+        480
+      ],
+      "width": 230,
+      "height": 245,
+      "alpha_pixels": 38274,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south_05": {
+      "bbox": [
+        142,
+        235,
+        370,
+        480
+      ],
+      "width": 228,
+      "height": 245,
+      "alpha_pixels": 38134,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_south-east": {
+      "bbox": [
+        144,
+        235,
+        367,
+        480
+      ],
+      "width": 223,
+      "height": 245,
+      "alpha_pixels": 34058,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_south-east.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_00": {
+      "bbox": [
+        186,
+        235,
+        325,
+        480
+      ],
+      "width": 139,
+      "height": 245,
+      "alpha_pixels": 21265,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_01": {
+      "bbox": [
+        191,
+        235,
+        321,
+        480
+      ],
+      "width": 130,
+      "height": 245,
+      "alpha_pixels": 20031,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_02": {
+      "bbox": [
+        195,
+        235,
+        316,
+        480
+      ],
+      "width": 121,
+      "height": 245,
+      "alpha_pixels": 19099,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_03": {
+      "bbox": [
+        157,
+        235,
+        355,
+        480
+      ],
+      "width": 198,
+      "height": 245,
+      "alpha_pixels": 32474,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_04": {
+      "bbox": [
+        154,
+        235,
+        357,
+        480
+      ],
+      "width": 203,
+      "height": 245,
+      "alpha_pixels": 33541,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-east_05": {
+      "bbox": [
+        154,
+        235,
+        357,
+        480
+      ],
+      "width": 203,
+      "height": 245,
+      "alpha_pixels": 33602,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-east_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_east": {
+      "bbox": [
+        180,
+        235,
+        331,
+        480
+      ],
+      "width": 151,
+      "height": 245,
+      "alpha_pixels": 26558,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_east.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_00": {
+      "bbox": [
+        185,
+        235,
+        327,
+        480
+      ],
+      "width": 142,
+      "height": 245,
+      "alpha_pixels": 21415,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_01": {
+      "bbox": [
+        187,
+        235,
+        325,
+        480
+      ],
+      "width": 138,
+      "height": 245,
+      "alpha_pixels": 22522,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_02": {
+      "bbox": [
+        186,
+        235,
+        326,
+        480
+      ],
+      "width": 140,
+      "height": 245,
+      "alpha_pixels": 22060,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_03": {
+      "bbox": [
+        184,
+        235,
+        328,
+        480
+      ],
+      "width": 144,
+      "height": 245,
+      "alpha_pixels": 21472,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_04": {
+      "bbox": [
+        183,
+        235,
+        329,
+        480
+      ],
+      "width": 146,
+      "height": 245,
+      "alpha_pixels": 23538,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_east_05": {
+      "bbox": [
+        185,
+        235,
+        327,
+        480
+      ],
+      "width": 142,
+      "height": 245,
+      "alpha_pixels": 22735,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_east_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_north-east": {
+      "bbox": [
+        172,
+        235,
+        339,
+        480
+      ],
+      "width": 167,
+      "height": 245,
+      "alpha_pixels": 26555,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_north-east.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_00": {
+      "bbox": [
+        182,
+        235,
+        329,
+        480
+      ],
+      "width": 147,
+      "height": 245,
+      "alpha_pixels": 21398,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_01": {
+      "bbox": [
+        174,
+        235,
+        338,
+        480
+      ],
+      "width": 164,
+      "height": 245,
+      "alpha_pixels": 21557,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_02": {
+      "bbox": [
+        178,
+        235,
+        334,
+        480
+      ],
+      "width": 156,
+      "height": 245,
+      "alpha_pixels": 19988,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_03": {
+      "bbox": [
+        190,
+        235,
+        321,
+        480
+      ],
+      "width": 131,
+      "height": 245,
+      "alpha_pixels": 22617,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_04": {
+      "bbox": [
+        186,
+        235,
+        326,
+        480
+      ],
+      "width": 140,
+      "height": 245,
+      "alpha_pixels": 24656,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-east_05": {
+      "bbox": [
+        190,
+        235,
+        322,
+        480
+      ],
+      "width": 132,
+      "height": 245,
+      "alpha_pixels": 22970,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-east_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_north": {
+      "bbox": [
+        144,
+        235,
+        368,
+        480
+      ],
+      "width": 224,
+      "height": 245,
+      "alpha_pixels": 32318,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_north.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_00": {
+      "bbox": [
+        177,
+        235,
+        335,
+        480
+      ],
+      "width": 158,
+      "height": 245,
+      "alpha_pixels": 22978,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_01": {
+      "bbox": [
+        179,
+        235,
+        332,
+        480
+      ],
+      "width": 153,
+      "height": 245,
+      "alpha_pixels": 22171,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_02": {
+      "bbox": [
+        176,
+        235,
+        336,
+        480
+      ],
+      "width": 160,
+      "height": 245,
+      "alpha_pixels": 24191,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_03": {
+      "bbox": [
+        169,
+        235,
+        343,
+        480
+      ],
+      "width": 174,
+      "height": 245,
+      "alpha_pixels": 23841,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_04": {
+      "bbox": [
+        167,
+        235,
+        344,
+        480
+      ],
+      "width": 177,
+      "height": 245,
+      "alpha_pixels": 23040,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north_05": {
+      "bbox": [
+        166,
+        235,
+        346,
+        480
+      ],
+      "width": 180,
+      "height": 245,
+      "alpha_pixels": 23980,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_north-west": {
+      "bbox": [
+        168,
+        235,
+        344,
+        480
+      ],
+      "width": 176,
+      "height": 245,
+      "alpha_pixels": 28023,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_north-west.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_00": {
+      "bbox": [
+        178,
+        235,
+        334,
+        480
+      ],
+      "width": 156,
+      "height": 245,
+      "alpha_pixels": 23203,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_01": {
+      "bbox": [
+        175,
+        235,
+        337,
+        480
+      ],
+      "width": 162,
+      "height": 245,
+      "alpha_pixels": 24108,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_02": {
+      "bbox": [
+        165,
+        235,
+        347,
+        480
+      ],
+      "width": 182,
+      "height": 245,
+      "alpha_pixels": 28918,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_03": {
+      "bbox": [
+        184,
+        235,
+        327,
+        480
+      ],
+      "width": 143,
+      "height": 245,
+      "alpha_pixels": 21615,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_04": {
+      "bbox": [
+        177,
+        235,
+        335,
+        480
+      ],
+      "width": 158,
+      "height": 245,
+      "alpha_pixels": 22478,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_north-west_05": {
+      "bbox": [
+        180,
+        235,
+        332,
+        480
+      ],
+      "width": 152,
+      "height": 245,
+      "alpha_pixels": 21934,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_north-west_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_west": {
+      "bbox": [
+        198,
+        235,
+        314,
+        480
+      ],
+      "width": 116,
+      "height": 245,
+      "alpha_pixels": 20705,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_west.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_00": {
+      "bbox": [
+        201,
+        235,
+        311,
+        480
+      ],
+      "width": 110,
+      "height": 245,
+      "alpha_pixels": 16949,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_01": {
+      "bbox": [
+        191,
+        235,
+        320,
+        480
+      ],
+      "width": 129,
+      "height": 245,
+      "alpha_pixels": 19190,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_02": {
+      "bbox": [
+        200,
+        235,
+        312,
+        480
+      ],
+      "width": 112,
+      "height": 245,
+      "alpha_pixels": 18634,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_03": {
+      "bbox": [
+        204,
+        235,
+        308,
+        480
+      ],
+      "width": 104,
+      "height": 245,
+      "alpha_pixels": 16917,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_04": {
+      "bbox": [
+        192,
+        235,
+        320,
+        480
+      ],
+      "width": 128,
+      "height": 245,
+      "alpha_pixels": 19639,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_west_05": {
+      "bbox": [
+        193,
+        235,
+        318,
+        480
+      ],
+      "width": 125,
+      "height": 245,
+      "alpha_pixels": 18488,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_west_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "idle_south-west": {
+      "bbox": [
+        152,
+        235,
+        360,
+        480
+      ],
+      "width": 208,
+      "height": 245,
+      "alpha_pixels": 32560,
+      "source": "assets/sprites/characters/pixellab/robot/robot_idle_south-west.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_00": {
+      "bbox": [
+        176,
+        235,
+        335,
+        480
+      ],
+      "width": 159,
+      "height": 245,
+      "alpha_pixels": 25212,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_00.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_01": {
+      "bbox": [
+        168,
+        235,
+        343,
+        480
+      ],
+      "width": 175,
+      "height": 245,
+      "alpha_pixels": 28258,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_02": {
+      "bbox": [
+        172,
+        235,
+        339,
+        480
+      ],
+      "width": 167,
+      "height": 245,
+      "alpha_pixels": 27163,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_03": {
+      "bbox": [
+        188,
+        235,
+        324,
+        480
+      ],
+      "width": 136,
+      "height": 245,
+      "alpha_pixels": 22243,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_04": {
+      "bbox": [
+        194,
+        235,
+        318,
+        480
+      ],
+      "width": 124,
+      "height": 245,
+      "alpha_pixels": 20279,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    },
+    "move_south-west_05": {
+      "bbox": [
+        194,
+        235,
+        318,
+        480
+      ],
+      "width": 124,
+      "height": 245,
+      "alpha_pixels": 20323,
+      "source": "assets/sprites/characters/pixellab/robot/robot_move_south-west_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "target_height": 245,
+      "bottom_padding": 32
+    }
+  },
+  "checks": {
+    "all_runtime_frames_512": true,
+    "all_runtime_visible_height_245": true,
+    "source_frame_count_56": true,
+    "runtime_frame_count_56": true,
+    "no_empty_runtime_frames": true
+  }
+}

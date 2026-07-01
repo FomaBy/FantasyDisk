@@ -1,14 +1,14 @@
 # ART/ANIM PixelLab: «Элементалист» (elementalist) — final 8-direction runtime redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Design main (Codex) -> Animator/Back-end integration
 Версия: 0.1.8
 Создано: 2026-07-01
 Jira: SCRUM-801
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex character serial integration worker
+Thread/Worker: codex-character-serial-integration-20260701
 Locked paths: `assets/sprites/characters/pixellab/elementalist/`, `assets/sprites/characters/full_frame/elementalist_pixellab/`, `assets/sprites/characters/elementalist_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 
 ## Context / Problem
@@ -36,3 +36,28 @@ References:
 - `scripts/progression_data_characters.gd` points `elementalist.sprite_path` to `res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png`.
 - Hero Select preview rotates with live directional frames.
 - Docs and focused animation/Hero Select smokes are updated/run; Jira result records the PixelLab source id.
+
+## Result / Serial Integration — 2026-07-01
+
+Combined integration branch: `codex/character-pixellab-serial-integration-20260701`.
+Integration commit: `PENDING_FIRST_COMMIT` (first functional integration commit on this branch).
+
+Source branch/commit: `origin/codex/scrum-801-elementalist-pixellab` @ `7c3f45b8`.
+
+Integrated:
+- PixelLab source/manifest under `assets/sprites/characters/pixellab/elementalist/`.
+- Normalized runtime `512x512` frames under `assets/sprites/characters/full_frame/elementalist_pixellab/`.
+- `assets/sprites/characters/elementalist_spriteframes.tres` with generic `idle`/`move`/`walk` plus 8-direction `idle_*`, 6-frame `move_*`, and 6-frame `walk_*` rows.
+- `scripts/progression_data_characters.gd` now points `elementalist.sprite_path` to `res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png`.
+- `docs/design/current_game_state.md`, `docs/design/content_registry.md`, `tests/animation_smoke_test.gd`, `tests/character_sprite_registry_alignment_test.gd`, and `tests/hero_select_pixellab_layout_test.gd` updated for the live PixelLab contract.
+
+PixelLab source id: `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`; group id
+`af7f3eee-e126-424c-b4ab-1c6d2f28596b`; rejected predecessor
+`3068581d-2ff2-4203-ba5e-37c56edefdc6`.
+
+Tests/evidence:
+- PASS: static integration validator checked 56 source PNGs, 56 runtime PNGs, `512x512` RGBA runtime frames, manifest, SpriteFrames directional names, canonical sprite path, and no `.import`/`.uid` sidecars for Soldier/Thief/Elementalist/Robot.
+- BLOCKED: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` waited for the shared semaphore but did not launch Godot because all default slots were held by unrelated `unique_weapon_vfx_assets_test.gd` import processes. The queued gate was interrupted with exit 130 to avoid an indefinite wait; after fast-forwarding to `origin/dev` (`39fca93c`), static validation still passed and a process recheck still showed multiple unrelated `unique_weapon_vfx_assets_test.gd` Godot/gate jobs occupying or waiting on the shared gate. No Elementalist test failure was observed.
+- Restored source-branch QA evidence under `build/qa/scrum801_elementalist_pixellab/`.
+
+Disk cleanup: none created by this integration run; no `.godot/`, Python cache, or temp download directory was created here. Imported QA evidence is intentionally kept.

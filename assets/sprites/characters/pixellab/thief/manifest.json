@@ -1,0 +1,235 @@
+{
+  "source": "PixelLab MCP",
+  "character_id": "thief",
+  "pixellab_character_id": "02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f",
+  "pixellab_base_character_id": "77a21499-0ae6-4600-873e-29cb7ee70630",
+  "pixellab_rejected_character_id": "e35fa768-5708-4d55-a082-a535057654f0",
+  "pixellab_name": "Remove the visible w",
+  "generated_at": "2026-07-01T16:46:03.067728+00:00",
+  "task": "SCRUM-800",
+  "mode": "v3 create_character + create_character_state no-gear revision + template animation",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "pixel_lab_source_canvas": [
+    248,
+    248
+  ],
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "runtime_normalization": "alpha bbox crop from PixelLab source, nearest-neighbor scale to 245 px visible height, centered X by visible bbox, bottom-aligned with 32 px visible bottom padding",
+  "runtime_visible_height_target": 245,
+  "runtime_bottom_padding": 32,
+  "move_frame_count": 6,
+  "template_animation_id": "walking-6-frames",
+  "pixellab_animation_ids": {
+    "south": "35e258e1-f2f4-4708-9b87-b2fd546110b4",
+    "south-east": "4507537b-b040-42b7-8b9c-29d380edfa52",
+    "east": "9a1ad04e-ef85-45c7-a3e5-9d0bcff1630b",
+    "north-east": "ab1ca4fc-fd39-4ba8-bff8-831f759f1f5b",
+    "north": "7ab66f5c-d8b9-4425-b3c5-44af4a20e4f4",
+    "north-west": "f114c6b9-ea8b-43b5-abab-e45eccbc7196",
+    "west": "88efdb73-d5e3-4b32-a18c-86def3e930ea",
+    "south-west": "de4ced24-ff49-4850-ab44-4cc6e7564f19"
+  },
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "animations": {
+    "idle": "8-direction PixelLab revised static rotation frames",
+    "move": "PixelLab walking-6-frames template, 6 frames per direction, all 8 directions",
+    "walk": "runtime alias of move rows"
+  },
+  "prompt": "Revised PixelLab character state removing visible weapons and gear from the Thief base: empty open hands, no blade/dagger/coin/pouch/smoke bomb/backpack/satchel/held object; hooded amber dark-fantasy rogue clothing only.",
+  "forbidden_props": [
+    "held coin",
+    "coin pouch",
+    "dagger",
+    "knife",
+    "smoke bomb",
+    "pouch weapon",
+    "backpack",
+    "satchel",
+    "held tool"
+  ],
+  "source_files": {
+    "idle": {
+      "south": "assets/sprites/characters/pixellab/thief/thief_idle_south.png",
+      "south-east": "assets/sprites/characters/pixellab/thief/thief_idle_south-east.png",
+      "east": "assets/sprites/characters/pixellab/thief/thief_idle_east.png",
+      "north-east": "assets/sprites/characters/pixellab/thief/thief_idle_north-east.png",
+      "north": "assets/sprites/characters/pixellab/thief/thief_idle_north.png",
+      "north-west": "assets/sprites/characters/pixellab/thief/thief_idle_north-west.png",
+      "west": "assets/sprites/characters/pixellab/thief/thief_idle_west.png",
+      "south-west": "assets/sprites/characters/pixellab/thief/thief_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assets/sprites/characters/pixellab/thief/thief_move_south_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south_05.png"
+      ],
+      "south-east": [
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-east_05.png"
+      ],
+      "east": [
+        "assets/sprites/characters/pixellab/thief/thief_move_east_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_east_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_east_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_east_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_east_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_east_05.png"
+      ],
+      "north-east": [
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-east_05.png"
+      ],
+      "north": [
+        "assets/sprites/characters/pixellab/thief/thief_move_north_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north_05.png"
+      ],
+      "north-west": [
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_north-west_05.png"
+      ],
+      "west": [
+        "assets/sprites/characters/pixellab/thief/thief_move_west_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_west_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_west_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_west_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_west_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_west_05.png"
+      ],
+      "south-west": [
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_00.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_01.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_02.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_03.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_04.png",
+        "assets/sprites/characters/pixellab/thief/thief_move_south-west_05.png"
+      ]
+    }
+  },
+  "runtime_files": {
+    "idle": {
+      "south": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
+      "south-east": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south-east.png",
+      "east": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_east.png",
+      "north-east": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north-east.png",
+      "north": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north.png",
+      "north-west": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_north-west.png",
+      "west": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_west.png",
+      "south-west": "assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south_05.png"
+      ],
+      "south-east": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-east_05.png"
+      ],
+      "east": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_east_05.png"
+      ],
+      "north-east": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-east_05.png"
+      ],
+      "north": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north_05.png"
+      ],
+      "north-west": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_north-west_05.png"
+      ],
+      "west": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_west_05.png"
+      ],
+      "south-west": [
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_00.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_01.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_02.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_03.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_04.png",
+        "assets/sprites/characters/full_frame/thief_pixellab/thief_move_south-west_05.png"
+      ]
+    }
+  },
+  "spriteframes": "assets/sprites/characters/thief_spriteframes.tres",
+  "qa_report": "build/qa/scrum800_thief_pixellab/alpha_bbox_report.json",
+  "contact_sheet": "build/qa/scrum800_thief_pixellab/runtime_contact_sheet.png",
+  "rejected_attempt_evidence": "build/qa/scrum800_thief_pixellab/idle_rotations_contact.png",
+  "accepted_idle_evidence": "build/qa/scrum800_thief_pixellab/accepted_idle_rotations_contact.png",
+  "notes": "First PixelLab character attempt and initial stricter base both introduced visible weapon-like props. Accepted source is a PixelLab character_state revision that removed blade/gear and passed idle contact visual QA before movement generation. PixelLab reported two failed load attempts for north-west/south-west before successful retry jobs."
+}
