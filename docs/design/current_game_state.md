@@ -1060,6 +1060,8 @@ SCRUM-279/280 оживили базового волка Друида: `druid_be
 
 SCRUM-337 production art refresh: все перечисленные texture paths плюс 51 `vfx_weapon_<weapon_id>.png`, elite/boss helper VFX и `assets/sprites/projectiles/*.png` пересобраны из generated source sheets `docs/design/references/attack_vfx_realistic_dark_fantasy/`. Deterministic cut/alpha pipeline: `tools/build_scrum337_attack_vfx_from_sources.py`; QA/readability artifacts: `build/qa/scrum337/`.
 
+SCRUM-728 (2026-07-01) заменил только `assets/sprites/effects/vfx_weapon_axe.png`: weapon signature топора теперь читается как широкая 140-градусная cleave-дуга с полупрозрачным ghost-силуэтом двуручного топора. OpenAI Images override зафиксирован в `docs/design/references/weapon_attack_animations/axe/`, preview/readability sheet: `docs/design/previews/weapon_attack_animations/axe_contact.png`. Runtime API, damage, cooldowns, targeting, радиус/угол удара и shared gameplay hooks не менялись.
+
 ## Характеристики
 
 Базовые характеристики:
