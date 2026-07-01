@@ -1,6 +1,6 @@
 # Animation: Кошель Рикошета (thief_coin_pouch) attack VFX redraw
 
-Статус: new
+Статус: blocked
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
@@ -11,7 +11,7 @@ Thread: n/a
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-773
-Locked paths: assets/sprites/effects/vfx_weapon_thief_coin_pouch.png, docs/design/references/weapon_attack_animations/thief_coin_pouch/, docs/design/previews/weapon_attack_animations/thief_coin_pouch_contact.png, scenes/ThiefCoinPouch.tscn, assets/sprites/weapons/thief_coin_pouch.png
+Locked paths: assets/sprites/effects/vfx_weapon_thief_coin_pouch.png, docs/design/references/attack_vfx/thief_coin_pouch/, docs/design/previews/attack_vfx/thief_coin_pouch_contact.png, docs/tasks/animation_weapon_attack_thief_coin_pouch_codex_task.md
 
 ## Контекст
 
@@ -24,7 +24,7 @@ Locked paths: assets/sprites/effects/vfx_weapon_thief_coin_pouch.png, docs/desig
 
 User override 2026-06-30: для этой задачи использовать OpenAI image generation, а не PixelLab. Генерировать через репозиторный helper `skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py` / `gpt-image-2` с `--quality high`, фиксируя override в result/evidence.
 
-Source PNG и prompt notes сохранить в `docs/design/references/weapon_attack_animations/thief_coin_pouch/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_thief_coin_pouch.png`, если не создан отдельный backend/runtime handoff.
+Source PNG и prompt notes сохранить в `docs/design/references/attack_vfx/thief_coin_pouch/`. Accepted runtime PNG обновлять только по пути `assets/sprites/effects/vfx_weapon_thief_coin_pouch.png`, если не создан отдельный backend/runtime handoff.
 
 ## Требования
 
@@ -57,3 +57,45 @@ so Jira was unblocked by switching this attack-VFX task to the mandatory
 PixelLab MCP / `fantasydisk-asset-generator` production path. Future workers must
 record the PixelLab object/job id, source/runtime paths, static alpha/readability
 evidence, Godot smoke results, and `Disk cleanup:` in the final result.
+
+## Claim — Codex Worker (2026-07-01)
+
+Owner: Animator/VFX Codex worker.
+Thread/Worker: current Codex worker in worktree `5b43`, delegated from
+`019f1eac-35c3-7323-9067-8b7c2b88ab33`.
+Lane: Codex.
+Branch/worktree: `codex/SCRUM-773-thief-coin-pouch-vfx` at
+`/Users/sergeyfomin/.codex/worktrees/5b43/AI Agent`.
+Locked paths: `assets/sprites/effects/vfx_weapon_thief_coin_pouch.png`,
+`docs/design/references/attack_vfx/thief_coin_pouch/`,
+`docs/design/previews/attack_vfx/thief_coin_pouch_contact.png`, this mirror.
+Next verification: PixelLab source/fetch, runtime PNG integration, static
+alpha/readability check, `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`.
+
+## Blocked Partial Result — Codex Worker (2026-07-01)
+
+PixelLab/source integration complete on branch
+`codex/SCRUM-773-thief-coin-pouch-vfx`, but the task is not moved to QA because
+required Godot smokes could not start through the shared semaphore.
+
+Completed:
+- PixelLab MCP source generated with object ID
+  `cb77b5fe-3669-4fdf-a269-42f2d999f9d5`.
+- Raw PixelLab source, alpha-cleaned source, runtime candidate, manifest and
+  prompt notes saved under `docs/design/references/attack_vfx/thief_coin_pouch/`.
+- Runtime PNG updated only at
+  `assets/sprites/effects/vfx_weapon_thief_coin_pouch.png`.
+- Preview/contact sheet saved at
+  `docs/design/previews/attack_vfx/thief_coin_pouch_contact.png`.
+- Static PNG validation PASS: `256x256` RGBA, visible alpha `14.15%`,
+  max alpha `218`, no alpha >=250 pixels, corner alpha `0`, bbox
+  `[42, 23, 229, 228]`.
+
+Blocked:
+- `unique_weapon_vfx_assets_test.gd` was queued through `tools/godot_gate.py`
+  but never acquired a semaphore slot; the run was interrupted before Godot
+  launched to avoid adding more pressure to the saturated import queue.
+- `attack_vfx_smoke_test.gd` was not started for the same reason.
+
+No gameplay code, shared runtime API, damage, cooldown, targeting, range, radius
+or balance changed.

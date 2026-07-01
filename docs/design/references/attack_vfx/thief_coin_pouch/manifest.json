@@ -1,0 +1,93 @@
+{
+  "issue": "SCRUM-773",
+  "weapon_id": "thief_coin_pouch",
+  "weapon_name_ru": "Кошель Рикошета",
+  "role": "Animator / VFX",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator skill",
+  "pixellab": {
+    "tool": "create_map_object",
+    "object_id": "cb77b5fe-3669-4fdf-a269-42f2d999f9d5",
+    "status": "completed",
+    "created_at": "2026-07-01 18:20",
+    "source_auto_deletes_after": "8 hours",
+    "download_url_recorded": true
+  },
+  "prompt": "FantasyDisk dark fantasy D&D top-down 2D game attack VFX source plate for the Thief weapon 'thief_coin_pouch' / Ricochet Coin Pouch. Transparent background PNG, no text, no watermark, no UI. A small worn leather coin pouch ghost silhouette sits faintly behind the effect, while bright gold coins ricochet in a chained zig-zag arc between four small target glints. The chain should show diminishing damage by making each successive coin trail smaller and fainter. Calm semi-transparent painterly magical VFX, readable empty center, soft alpha edges, gold and muted violet shadow accents, not a solid explosion, not a full background, suitable as a 256x256 weapon signature attack effect.",
+  "source_files": [
+    {
+      "path": "docs/design/references/attack_vfx/thief_coin_pouch/thief_coin_pouch_pixellab_source.png",
+      "size": [256, 256],
+      "mode": "RGBA",
+      "note": "PixelLab download retained as raw source evidence; it arrived with an opaque gray preview matte despite transparent-background metadata."
+    },
+    {
+      "path": "docs/design/references/attack_vfx/thief_coin_pouch/thief_coin_pouch_pixellab_source_alpha_clean.png",
+      "size": [256, 256],
+      "mode": "RGBA",
+      "alpha_mean": 23.61,
+      "visible_percent": 11.56,
+      "nonzero_alpha_mean": 204.21,
+      "max_alpha": 209,
+      "opaque_pixels_alpha_250_plus": 0,
+      "bbox": [42, 31, 229, 228],
+      "corner_alpha_max": 0,
+      "center_alpha_mean": 30.13
+    },
+    {
+      "path": "docs/design/references/attack_vfx/thief_coin_pouch/thief_coin_pouch_runtime_candidate_256.png",
+      "size": [256, 256],
+      "mode": "RGBA",
+      "alpha_mean": 25.17,
+      "visible_percent": 14.15,
+      "nonzero_alpha_mean": 177.93,
+      "max_alpha": 218,
+      "opaque_pixels_alpha_250_plus": 0,
+      "bbox": [42, 23, 229, 228],
+      "corner_alpha_max": 0,
+      "center_alpha_mean": 30.13
+    }
+  ],
+  "runtime_asset": {
+    "path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+    "size": [256, 256],
+    "mode": "RGBA",
+    "alpha_mean": 25.17,
+    "visible_percent": 14.15,
+    "nonzero_alpha_mean": 177.93,
+    "max_alpha": 218,
+    "opaque_pixels_alpha_250_plus": 0,
+    "bbox": [42, 23, 229, 228],
+    "corner_alpha_max": 0,
+    "center_alpha_mean": 30.13
+  },
+  "preview": {
+    "path": "docs/design/previews/attack_vfx/thief_coin_pouch_contact.png",
+    "size": [900, 668],
+    "checks": [
+      "raw PixelLab source",
+      "alpha-cleaned source on checker background",
+      "runtime texture on dark combat background",
+      "runtime texture on light battlefield background",
+      "runtime reduced to 50% scale",
+      "canonical weapon reference"
+    ]
+  },
+  "reference_weapon": "assets/sprites/weapons/thief_coin_pouch.png",
+  "visual_elements": [
+    "gold coin chain ricochet path",
+    "successive smaller/fainter ricochet marks for damage falloff",
+    "coin impact glints for chained target reads",
+    "semi-transparent thief coin pouch ghost/silhouette",
+    "muted violet shadow accents"
+  ],
+  "mechanical_contract": {
+    "attack_mode": "coin_ricochet",
+    "runtime_api_changed": false,
+    "gameplay_changed": false,
+    "damage_changed": false,
+    "cooldown_changed": false,
+    "targeting_changed": false,
+    "range_or_radius_changed": false
+  },
+  "notes": "PixelLab MCP was used as the source generation path per the 2026-07-01 unblock. Only the thief_coin_pouch runtime weapon VFX plate and task-specific evidence changed."
+}
