@@ -63,18 +63,6 @@ animations = [
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_pixellab")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1_pixellab")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1_pixellab")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1_pixellab")
-}, {
-"duration": 1.0,
-"texture": ExtResource("1_pixellab")
 }],
 "loop": true,
 "name": &"idle",
@@ -96,6 +84,9 @@ animations = [
 }, {
 "duration": 1.0,
 "texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
 }],
 "loop": true,
 "name": &"move",
@@ -117,6 +108,9 @@ animations = [
 }, {
 "duration": 1.0,
 "texture": ExtResource("6_pixellab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_pixellab")
 }],
 "loop": true,
 "name": &"walk",
