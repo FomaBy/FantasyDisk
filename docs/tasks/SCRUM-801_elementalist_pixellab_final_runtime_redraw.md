@@ -40,7 +40,7 @@ References:
 ## Result / Serial Integration — 2026-07-01
 
 Combined integration branch: `codex/character-pixellab-serial-integration-20260701`.
-Integration commit: `PENDING_FIRST_COMMIT` (first functional integration commit on this branch).
+Integration commit: `d97b8f84` (first functional integration commit on this branch).
 
 Source branch/commit: `origin/codex/scrum-801-elementalist-pixellab` @ `7c3f45b8`.
 

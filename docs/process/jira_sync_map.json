@@ -2321,7 +2321,7 @@
  "art_char_redraw_v2_soldier_task.md": {
   "key": "SCRUM-434",
   "status": "К выполнению",
-  "desc_hash": "04b36f8af573f12a63434658c526931e"
+  "desc_hash": "db6e4d9758624cfcc89aabf7b4a90058"
  },
  "art_char_redraw_v2_thief_task.md": {
   "key": "SCRUM-435",
@@ -3606,17 +3606,17 @@
  "SCRUM-802_robot_pixellab_final_runtime_redraw.md": {
   "key": "SCRUM-802",
   "status": "К выполнению",
-  "desc_hash": "0bc2e496c2baecfde8da16b333a9a6e4"
+  "desc_hash": "c8e1ce69a29eb269878f082889346a80"
  },
  "SCRUM-800_thief_pixellab_final_runtime_redraw.md": {
   "key": "SCRUM-800",
   "status": "К выполнению",
-  "desc_hash": "74c91b0b92bcbfacd45a21ac04b1b124"
+  "desc_hash": "58c994bfe8599024c13eeb697ce76b2b"
  },
  "SCRUM-801_elementalist_pixellab_final_runtime_redraw.md": {
   "key": "SCRUM-801",
   "status": "К выполнению",
-  "desc_hash": "204820fdbe19f45673bcb2ed63448d87"
+  "desc_hash": "597c877c2ab0cbcab9015a11a2a6d28c"
  },
  "SCRUM-803_assassin_pixellab_final_runtime_redraw.md": {
   "key": "SCRUM-803",

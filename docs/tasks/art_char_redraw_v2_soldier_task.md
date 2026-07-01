@@ -16,7 +16,7 @@ Locked paths: `assets/sprites/characters/pixellab/soldier/`, `assets/sprites/cha
 ## Result / Serial Integration — 2026-07-01
 
 Combined integration branch: `codex/character-pixellab-serial-integration-20260701`.
-Integration commit: `PENDING_FIRST_COMMIT` (first functional integration commit on this branch).
+Integration commit: `d97b8f84` (first functional integration commit on this branch).
 
 Source branch/commit: preferred clean Soldier source
 `origin/codex/SCRUM-434-soldier-pixellab` @ `74d82284`; task-owned pack paths

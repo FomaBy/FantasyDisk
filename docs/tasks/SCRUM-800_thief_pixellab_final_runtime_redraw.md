@@ -39,7 +39,7 @@ References: `docs/design/references/characters_v2/thief/thief_v2_source_clean.pn
 ## Result / Serial Integration — 2026-07-01
 
 Combined integration branch: `codex/character-pixellab-serial-integration-20260701`.
-Integration commit: `PENDING_FIRST_COMMIT` (first functional integration commit on this branch).
+Integration commit: `d97b8f84` (first functional integration commit on this branch).
 
 Source branch/commit: `origin/codex/scrum-800-thief-pixellab` @ `2542e4dd`.
 
