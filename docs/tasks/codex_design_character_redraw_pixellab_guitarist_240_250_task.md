@@ -1,6 +1,6 @@
 # ART/ANIM PixelLab: «Гитарист» — full redraw в размере 240-250 px
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Design main (Codex) → Animator (Codex)
 Версия: 0.1.8
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-706
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Codex worker / Parfit
+Thread/Worker: 019f18f1-e366-7f52-bafe-e4beba095ad6
 Labels: foma, p1, design-main, pixellab, character-art, redesign, animation-source
 Locked paths: `assets/sprites/characters/pixellab/guitarist/`, `assets/sprites/characters/full_frame/guitarist_pixellab/`, `assets/sprites/characters/guitarist_spriteframes.tres`, `scripts/progression_data_characters.gd`, `docs/design/content_registry.md`, `docs/design/current_game_state.md`, `docs/design/systems/animation.md`, `docs/tasks/codex_design_character_redraw_pixellab_guitarist_240_250_task.md`, `CHANGELOG.md`
 Связано: SCRUM-429, SCRUM-421, SCRUM-423, SCRUM-685
@@ -46,3 +46,10 @@ Locked paths: `assets/sprites/characters/pixellab/guitarist/`, `assets/sprites/c
 
 ## Disk cleanup
 Executor final report must include `Disk cleanup:` per repo policy.
+
+## Result 2026-07-01
+Готово для QA на branch `codex/scrum-706-guitarist-pixellab-240`, head commit `d07d20e905a58dea15cf8b775bcf255725a6fd8d` (`5c6bda39` implementation commit + `d07d20e9` Jira sync). Accepted PixelLab source `704fd67b-da81-4804-acd2-07e75fefd9de`; rejected sources documented: `f41e1d57-f720-4ae1-a739-8873d935163b` (128px/failed generation) and `d278e753-9885-4550-82ff-81ee3bef297d` (baked instrument). Built empty-hands Guitarist pack: 8 idle directions, 8-direction 6-frame walk/move, transparent `512x512` runtime frames, rebuilt `guitarist_spriteframes.tres`.
+
+QA evidence: alpha bbox PASS; no baked guitar/bass/amp/microphone/held prop. PASS: `animation_smoke_test.gd`, `hero_select_pixellab_layout_test.gd`, `character_sprite_registry_alignment_test.gd`, `runtime_smoke_test.gd`.
+
+Jira target status: `Контроль качества`. Disk cleanup: worker removed `.godot/` (~1.3 GB) and `/tmp/fantasydisk_scrum706_guitarist_pixellab_704fd67b*`; unrelated `source_docs/FantasyDisk_GDD.txt` line-ending diff and Godot-touched `assets/sprites/ui/skill_tree/*.import` were left uncommitted.

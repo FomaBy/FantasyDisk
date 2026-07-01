@@ -3135,23 +3135,23 @@
  },
  "codex_design_character_redraw_pixellab_berserk_240_250_task.md": {
   "key": "SCRUM-703",
-  "status": "К выполнению",
-  "desc_hash": "ef2f2a43591dc8aa588c164608f0fa21"
+  "status": "Контроль качества",
+  "desc_hash": "05c8027d4aa687146f3b01d25bac9ca9"
  },
  "codex_design_character_redraw_pixellab_dark_mage_240_250_task.md": {
   "key": "SCRUM-704",
-  "status": "К выполнению",
-  "desc_hash": "df2ad5461fa00c7d9742e6aa7bf16579"
+  "status": "Контроль качества",
+  "desc_hash": "4c1d357a3cf6bd785f2d2ec44d982143"
  },
  "codex_design_character_redraw_pixellab_doctor_240_250_task.md": {
   "key": "SCRUM-705",
-  "status": "К выполнению",
-  "desc_hash": "18392b4b3a471cf459bf732a5a02cac1"
+  "status": "Контроль качества",
+  "desc_hash": "9bb1e66f60dc43f5cefdf2d5f06bc092"
  },
  "codex_design_character_redraw_pixellab_guitarist_240_250_task.md": {
   "key": "SCRUM-706",
-  "status": "К выполнению",
-  "desc_hash": "58d4f39f96d413e41296850f2e2f7ce4"
+  "status": "Контроль качества",
+  "desc_hash": "b101fbce4d479f979f0e58924de2df2c"
  },
  "codex_redesign_openai_mockup_pixel_ui_resolution_task.md": {
   "key": "SCRUM-725",
