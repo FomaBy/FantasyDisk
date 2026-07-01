@@ -99,3 +99,25 @@ Validation:
   `build/qa/scrum793_boss_pixellab_promotion/godot_import_blocker.md`.
 
 Disk cleanup: removed `.godot` and Python `__pycache__` created by this run.
+
+## QA-Вердикт (2026-07-02) — Codex rerun
+
+Статус: PASSED
+
+SCRUM-793 QA rerun verified current `origin/dev` (`8d6ab9af`) after
+`git fetch origin --prune`; Jira was moved to `Готово`.
+
+- Static evidence PASS: alpha/pivot report, SpriteFrames file contract, contact
+  preview and SCRUM-779 manifest/docs confirm only `disk_devourer` and
+  `brood_mother` were promoted; revise-needed candidates remain source-only.
+- Godot gates through `tools/godot_gate.py` with `FSD_GODOT_MAXWAIT=86400`:
+  `res://tests/animation_smoke_test.gd` PASS,
+  `res://tests/full_frame_registry_integrity_test.gd` PASS,
+  `res://tests/runtime_smoke_test.gd` PASS. Optional
+  `res://tests/boss_pixellab_promotion_smoke.gd` was not present on current
+  `origin/dev`.
+- Non-blocking note: optional `res://tests/runtime_smoke_boss_elite_test.gd`
+  still contains a stale boss HUD timer helper call unrelated to SCRUM-793; the
+  required runtime smoke passed.
+- Disk cleanup: removed the task-created `.godot` cache (~798 MB), generated
+  `.import`/`.uid` sidecar churn, and Python caches if present.
