@@ -88,3 +88,14 @@ Disk cleanup:
 - Removed ignored `.import` sidecars generated inside the new injector reference/preview folders.
 - Removed `__pycache__/` directories found in the worktree.
 - Left pre-existing unrelated dirty `source_docs/FantasyDisk_GDD.txt` untouched and unstaged because it is outside SCRUM-730 locked paths.
+
+## Integration Delivery Strand
+
+2026-07-01: delivery-only integration by `codex-strand-vfx-integration-20260701`.
+
+- Source branch content from `origin/codex/SCRUM-730-attack-vfx-biologist-sample` was cherry-picked onto a clean integration worktree branch `codex/strand-vfx-728-730` from current `origin/dev`.
+- Delivery QA failure was addressed as a strand/integration problem only; VFX art was not regenerated.
+- Branch content is ready to fast-forward into `origin/dev` together with SCRUM-728.
+- Verification on the integration worktree:
+  - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd`
+  - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
