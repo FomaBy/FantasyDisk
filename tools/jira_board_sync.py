@@ -226,7 +226,7 @@ def parse_task(path: str) -> dict:
         status = "qa_passed"
     if name.startswith("bug_"):
         role, itype = "bug", "Баг"
-    elif name.startswith(("design_", "codex_design")):
+    elif name.startswith(("design_", "codex_design", "codex_redesign")):
         role, itype = "design", "Задача"
     elif name.startswith("qa_"):
         role, itype = "qa", "Задача"
