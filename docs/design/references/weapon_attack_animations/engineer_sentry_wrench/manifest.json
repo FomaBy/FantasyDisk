@@ -1,0 +1,65 @@
+{
+  "issue": "SCRUM-746",
+  "asset": "engineer_sentry_wrench attack VFX",
+  "weapon_id": "engineer_sentry_wrench",
+  "weapon_name_ru": "Ключ Часового",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+  "source_files": [
+    "engineer_sentry_wrench_pixellab_source_raw.png",
+    "engineer_sentry_wrench_pixellab_source.png",
+    "engineer_sentry_wrench_pixellab_candidate_1_raw.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/engineer_sentry_wrench_contact.png",
+  "qa_report": "build/qa/scrum746/engineer_sentry_wrench_alpha_readability_report.json",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "ac6f457c-7577-417c-9eb7-02aa143bfb2d",
+    "unused_candidate_id": "c7f426c1-ef40-4dc1-bb81-0e0d86456c3c",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/ac6f457c-7577-417c-9eb7-02aa143bfb2d/download",
+    "created": "2026-07-01 18:02",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required corner-color alpha cleanup",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 and the task unblock section supersede the stale OpenAI-only wording. SCRUM-746 production path used PixelLab MCP through fantasydisk-asset-generator; no OpenAI Images, image_gen, or manual drawing fallback was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab selected source PNG and unused first candidate in the task reference folder.",
+      "Created alpha-clean accepted source PNG from PixelLab output by removing the flat preview matte.",
+      "Composited canonical weapon PNG as a low-opacity ghost silhouette over the PixelLab targeting field.",
+      "Softened center alpha and capped runtime alpha for combat readability.",
+      "Exported 256x256 RGBA runtime PNG to the existing weapon-signature path.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox_alpha_gt_8": [
+        0,
+        32,
+        256,
+        226
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.477,
+      "max_alpha": 142,
+      "mean_alpha_all_pixels": 44.14,
+      "mean_alpha_visible_pixels": 92.51,
+      "center_64_mean_alpha": 101.34,
+      "center_64_max_alpha": 111,
+      "outer_ring_mean_alpha": 30.44,
+      "opaque_pixels_alpha_250_plus": 0
+    }
+  },
+  "visual_elements": [
+    "teal clockwork sentry targeting field",
+    "radial dots and reticle for autonomous target selection",
+    "semi-transparent ghost silhouette of the actual engineer_sentry_wrench weapon",
+    "calm transparent combat alpha on dark and light battlefield samples"
+  ],
+  "runtime_api_changed": false,
+  "mechanics_changed": false
+}

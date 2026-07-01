@@ -1,0 +1,81 @@
+{
+  "issue": "SCRUM-746",
+  "weapon_id": "engineer_sentry_wrench",
+  "runtime_asset": "assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+  "source_raw": "docs/design/references/weapon_attack_animations/engineer_sentry_wrench/engineer_sentry_wrench_pixellab_source_raw.png",
+  "source_alpha_clean": "docs/design/references/weapon_attack_animations/engineer_sentry_wrench/engineer_sentry_wrench_pixellab_source.png",
+  "unused_candidate_raw": "docs/design/references/weapon_attack_animations/engineer_sentry_wrench/engineer_sentry_wrench_pixellab_candidate_1_raw.png",
+  "preview": "docs/design/previews/weapon_attack_animations/engineer_sentry_wrench_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "ac6f457c-7577-417c-9eb7-02aa143bfb2d",
+    "unused_candidate_id": "c7f426c1-ef40-4dc1-bb81-0e0d86456c3c",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/ac6f457c-7577-417c-9eb7-02aa143bfb2d/download",
+    "created": "2026-07-01 18:02",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required corner-color alpha cleanup",
+    "mode": "basic"
+  },
+  "background_cleanup": {
+    "corner_rgb_median": [
+      101,
+      101,
+      102
+    ],
+    "raw_alpha_mean": 255.0,
+    "note": "PixelLab reported transparent background but raw download contained a flat opaque preview matte; matte removed by corner-color alpha cleanup."
+  },
+  "metrics": {
+    "clean_source": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox_alpha_gt_8": [
+        30,
+        32,
+        226,
+        226
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.4145,
+      "max_alpha": 255,
+      "mean_alpha_all_pixels": 94.94,
+      "mean_alpha_visible_pixels": 229.02,
+      "center_64_mean_alpha": 215.93,
+      "center_64_max_alpha": 255,
+      "outer_ring_mean_alpha": 44.16,
+      "opaque_pixels_alpha_250_plus": 16977
+    },
+    "runtime": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox_alpha_gt_8": [
+        0,
+        32,
+        256,
+        226
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.477,
+      "max_alpha": 142,
+      "mean_alpha_all_pixels": 44.14,
+      "mean_alpha_visible_pixels": 92.51,
+      "center_64_mean_alpha": 101.34,
+      "center_64_max_alpha": 111,
+      "outer_ring_mean_alpha": 30.44,
+      "opaque_pixels_alpha_250_plus": 0
+    }
+  },
+  "visual_read": [
+    "PixelLab-generated teal clockwork targeting field shows sentry link/target area.",
+    "Radial dots/reticle communicate autonomous target selection without gameplay changes.",
+    "Canonical engineer_sentry_wrench weapon PNG composited as low-opacity ghost silhouette over the field.",
+    "Alpha capped and center softened for combat readability on dark/light battlefield backgrounds."
+  ],
+  "runtime_api_changed": false,
+  "mechanics_changed": false
+}
