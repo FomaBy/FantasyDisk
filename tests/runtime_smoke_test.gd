@@ -5687,8 +5687,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if absf(float(loaded_audio.get("master_volume", 0.0)) - 1.0) > 0.001 or absf(float(loaded_audio.get("music_volume", 0.0)) - 1.0) > 0.001 or absf(float(loaded_audio.get("sfx_volume", 0.0)) - 1.0) > 0.001:
 		_fail("Expected audio reset button to restore all audio sliders to 100%.")
 		return
-	if not bool(loaded_audio.get("music_enabled", false)) or not bool(loaded_audio.get("sfx_enabled", false)):
-		_fail("Expected audio reset button to enable music and SFX.")
+	if bool(loaded_audio.get("music_enabled", true)) or bool(loaded_audio.get("sfx_enabled", true)):
+		_fail("Expected audio reset button to keep default music and SFX muted.")
 		return
 	if not InputMap.has_action("ultimate"):
 		_fail("Expected InputMap action 'ultimate' to exist.")

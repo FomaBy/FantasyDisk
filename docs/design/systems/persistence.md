@@ -9,6 +9,9 @@
   `user://settings.cfg`.
 - Settings are loaded in `Main._ready()` before the main menu is shown and are
   applied immediately when changed in the settings screen.
+- Audio defaults are intentionally silent for new profiles: `music_enabled` and
+  `sfx_enabled` start as `false`, while master/music/SFX slider values stay at
+  `1.0` so the player can restore sound by enabling the category toggles.
 
 ## Meta Progression
 

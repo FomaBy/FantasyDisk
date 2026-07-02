@@ -480,8 +480,8 @@ var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
-	"music_enabled": true,
-	"sfx_enabled": true,
+	"music_enabled": false,
+	"sfx_enabled": false,
 }
 var input_bindings := {}
 var aim_mode := "nearest"

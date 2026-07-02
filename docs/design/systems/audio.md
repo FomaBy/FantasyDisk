@@ -48,6 +48,7 @@
 
 - `apply_volume_settings(settings)` применяется мгновенно к уже играющим стримам (меняет громкость шин).
 - Ключи (см. `scripts/game_settings.gd`): `master_volume`, `music_volume`, `sfx_volume` (линейные 0..1) и флаги `music_enabled`, `sfx_enabled`.
+- По умолчанию новые профили загружаются без звука: `music_enabled=false` и `sfx_enabled=false`; сами слайдеры остаются на 100%, чтобы включение тумблеров сразу вернуло слышимый звук.
 - Линейная громкость переводится в dB через `linear_to_db(max(volume, 0.0001))`; выключенная категория мьютит шину (`set_bus_mute`).
 - Применяется из `main.gd` при старте/смене настроек.
 
