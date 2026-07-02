@@ -2571,7 +2571,7 @@ func _show_atlas_screen() -> void:
 
 	# Контент строго в пустой зоне рамы (safe-area правило проекта): маргины
 	# повторяют texture-margins рамы (band + угловые вырезы).
-	var vp := game.get_viewport().get_visible_rect().size
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
 	var frame_margins := _scaled_frame_margins_xy(
 		ATLAS_FRAME_SOURCE_SIZE, vp,
 		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
