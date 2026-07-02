@@ -128,7 +128,12 @@
 - `tests/gamepad_inrun_ui_test.gd` (SCRUM-812): фокус внутризабеговых экранов + карта маршрута.
 - `tests/gamepad_full_flow_smoke_test.gd` (SCRUM-815): сквозной joypad-only сценарий
   «игра проходима с геймпада» a–g (меню→герой→бой→движение стиком→пауза→level-up→
-  смерть→настройки LB/RB→детект устройства). Гейт приёмки любых UI/ввод-задач.
+  смерть→настройки LB/RB→детект устройства). После SCRUM-824/SCRUM-825 Start→пауза
+  и RB→level-up являются строгими проверками, не soft-дефектами. Гейт приёмки любых
+  UI/ввод-задач.
+- `tests/gamepad_combat_actions_test.gd` (SCRUM-824/SCRUM-825): focused battle
+  regression для synthetic `InputEventJoypadButton` Start/RB и клавиатурной
+  паритетности Escape/Space.
 
 ## Карта управления (клавиатура + геймпад)
 
@@ -157,16 +162,15 @@ UI-навигация (все экраны/попапы):
 Экранная карта фокуса — `docs/design/systems/menus_ui.md` (мета-меню SCRUM-813,
 внутризабеговые SCRUM-812).
 
-## Известные пробелы геймпада (на 2026-07-02, SCRUM-815 smoke)
+## Исправленные gamepad regression bugs (2026-07-02)
 
-Обнаружено сквозным smoke; исправление — вне scope SCRUM-815 (заведены bug-тикеты):
-- **Start не открывает паузу в бою** (bug **SCRUM-824**): `main._input` обрабатывает
-  экшен `pause` только для `InputEventKey` (гейт `event is InputEventKey`), поэтому
-  joypad Start (`JOY_BUTTON_START`) до `pause`-хендлера не доходит. B-закрытие паузы
-  работает (SCRUM-812).
-- **RB не открывает level-up в бою** (bug **SCRUM-825**): аналогичный гейт
-  `open_level_up` на `InputEventKey`; RB (bound to `open_level_up`) в бою не
-  срабатывает. Нижняя UI-кнопка «Повышение уровня» доступна фокусом.
+- **SCRUM-824 / Start→пауза в бою**: `main._input` больше не гейтит `pause` только
+  на `InputEventKey`; общий helper `_is_fresh_action_press()` принимает
+  `InputEventJoypadButton` Start через `InputMap`, сохраняя keyboard guard
+  `pressed && !echo` для Escape.
+- **SCRUM-825 / RB→level-up в бою**: тот же action helper используется для
+  `open_level_up`, поэтому RB (`JOY_BUTTON_RIGHT_SHOULDER`) открывает сохранённый
+  pending level-up в бою. Клавиатурный Space-путь сохранён.
 - **Ребинд геймпада** — реализовано в **SCRUM-816** (см. секцию «Настройки:
   устройство ввода и ребинд геймпада» ниже). Заодно устранён баг с
   `action_erase_events`: клавиатурный ребинд/сброс больше не стирают joypad-часть

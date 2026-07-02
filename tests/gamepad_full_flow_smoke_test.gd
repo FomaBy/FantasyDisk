@@ -7,9 +7,8 @@ extends "res://tests/runtime_smoke_test.gd"
 # Единственное исключение по key-событию — сценарий (g), где по спеке требуется
 # проверить классификацию устройства parse(Key)→keyboard / parse(Joy)→gamepad.
 #
-# Найденные дефекты НЕ чинятся в этой задаче — фиксируются как soft-факты (лог) и
-# заводятся bug-тикетами (см. вывод/спеку SCRUM-815). Smoke остаётся зелёным на
-# работающем ядре: падаем только если ломается уже реализованное.
+# SCRUM-824/SCRUM-825: Start/RB battle actions are now strict regressions here:
+# Start must open pause, and RB must open pending level-up through main._input.
 
 const DEADZONE_VALUE := 0.9
 
@@ -133,8 +132,7 @@ func _scenario_b_hero_to_combat(main) -> bool:
 	return true
 
 
-# (c) В бою: стик двигает игрока; Start→пауза (soft: возможен дефект гейта joypad);
-# B закрывает открытую паузу.
+# (c) В бою: стик двигает игрока; Start→пауза; B закрывает открытую паузу.
 func _scenario_c_combat_move_and_pause(main) -> bool:
 	var player: Node2D = main.get("current_player") as Node2D
 	if player == null:
@@ -150,21 +148,10 @@ func _scenario_c_combat_move_and_pause(main) -> bool:
 	if pos1.distance_to(pos0) < 1.0:
 		_fail("SCRUM-815(c): левый стик должен двигать игрока (Δ=%.2f, было %s стало %s)." % [pos1.distance_to(pos0), pos0, pos1])
 		return false
-	# Start → пауза: soft-факт. Дефект D1 (main._input гейтит 'pause' на InputEventKey) —
-	# joypad Start не открывает паузу. Не валим smoke, фиксируем и заводим bug.
-	var pause_opened_by_start := false
 	await _joy_button(JOY_BUTTON_START)
 	await process_frame
-	if main.ui._is_run_pause_overlay_open():
-		pause_opened_by_start = true
-	if not pause_opened_by_start:
-		print("SCRUM-815(c) SOFT-DEFECT D1: joypad Start НЕ открыл паузу (main._input гейтит 'pause' на InputEventKey). Bug: SCRUM-824.")
-		# Открываем паузу форсом состояния, чтобы проверить закрытие по B.
-		main.ui._show_pause_menu(true)
-		await process_frame
-		await process_frame
 	if not main.ui._is_run_pause_overlay_open():
-		_fail("SCRUM-815(c): пауза-оверлей должен быть открыт для проверки B-закрытия.")
+		_fail("SCRUM-824/SCRUM-815(c): joypad Start должен открыть паузу-оверлей в бою.")
 		return false
 	# B закрывает паузу (joypad ui_cancel — реализовано SCRUM-812).
 	await _joy_button(JOY_BUTTON_B)
@@ -178,12 +165,12 @@ func _scenario_c_combat_move_and_pause(main) -> bool:
 # (d) Level-up: форс доступности; карточка выбирается D-pad и подтверждается A.
 func _scenario_d_level_up(main) -> bool:
 	main.set("pending_level_ups", 1)
-	main.ui._open_pending_level_up()
+	await _joy_button(JOY_BUTTON_RIGHT_SHOULDER)
 	await process_frame
 	await process_frame
 	var f := _focus(main)
 	if f == null or not str(f.name).begins_with("LevelUpRewardButton"):
-		_fail("SCRUM-815(d): стартовый фокус level-up — карточка, получено: %s" % [_focus_name(main)])
+		_fail("SCRUM-825/SCRUM-815(d): RB должен открыть level-up; стартовый фокус — карточка, получено: %s" % [_focus_name(main)])
 		return false
 	var pending_before := int(main.get("pending_level_ups"))
 	# D-pad вправо (сменить карточку) + A (подтвердить выбор).

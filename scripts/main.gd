@@ -1042,6 +1042,19 @@ func apply_ascension_bonuses(player: Node) -> void:
 		player.set("money", int(player.get("money")) + start_gold)
 
 
+func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		return key_event.pressed and not key_event.echo and key_event.is_action_pressed(action)
+	if event is InputEventJoypadButton:
+		var button_event := event as InputEventJoypadButton
+		return button_event.pressed and button_event.is_action_pressed(action)
+	if event is InputEventAction:
+		var action_event := event as InputEventAction
+		return action_event.pressed and action_event.is_action_pressed(action)
+	return false
+
+
 func _input(event: InputEvent) -> void:
 	if pending_rebind_action != "":
 		ui._handle_rebind_input(event)
@@ -1083,7 +1096,7 @@ func _input(event: InputEvent) -> void:
 	if _handle_debug_combat_move_input(event):
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("open_level_up"):
+	if _is_fresh_action_press(event, &"open_level_up"):
 		if pending_level_ups > 0 and not _has_pause_reason("level_up"):
 			ui._open_pending_level_up()
 			get_viewport().set_input_as_handled()
@@ -1114,13 +1127,16 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+	if _is_fresh_action_press(event, &"pause"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
+			get_viewport().set_input_as_handled()
 		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
 			ui._show_pause_menu()
+			get_viewport().set_input_as_handled()
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
 
 
 func _handle_debug_combat_move_input(event: InputEvent) -> bool:
