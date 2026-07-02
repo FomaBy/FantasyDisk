@@ -78,3 +78,50 @@
   `active_kind()` без блокировки физического ввода в InputMap; `binding_text`
   для обоих устройств; кастомные бинды замещают joypad-часть и сбрасываются к
   канону; отключение пада возвращает keyboard; settings-ключи валидны.
+- `tests/gamepad_menu_focus_test.gd` (SCRUM-813): фокус мета-меню + LB/RB вкладки/секции.
+- `tests/gamepad_inrun_ui_test.gd` (SCRUM-812): фокус внутризабеговых экранов + карта маршрута.
+- `tests/gamepad_full_flow_smoke_test.gd` (SCRUM-815): сквозной joypad-only сценарий
+  «игра проходима с геймпада» a–g (меню→герой→бой→движение стиком→пауза→level-up→
+  смерть→настройки LB/RB→детект устройства). Гейт приёмки любых UI/ввод-задач.
+
+## Карта управления (клавиатура + геймпад)
+
+Раскладка задаётся в `InputDeviceManager.INPUT_ACTIONS`/`UI_ACTIONS` (SCRUM-811);
+клавиатурные дефолты — `main.INPUT_ACTIONS`. Все ui_*-экшены имеют joypad-события,
+поэтому фокус-навигация меню/экранов работает с крестовиной/стиком «из коробки».
+
+Игровые экшены (в бою):
+| Экшен | Клавиатура | Геймпад |
+|---|---|---|
+| move_up/down/left/right | WASD / стрелки | крестовина + левый стик (deadzone 0.25) |
+| pause | Esc | Start `JOY_BUTTON_START` |
+| ultimate | (клавиша по биндингу) | Y `JOY_BUTTON_Y` |
+| open_level_up | (клавиша по биндингу) | RB `JOY_BUTTON_RIGHT_SHOULDER` |
+| feedback | (клавиша по биндингу) | Select `JOY_BUTTON_BACK` |
+
+UI-навигация (все экраны/попапы):
+| Действие | Клавиатура | Геймпад |
+|---|---|---|
+| перемещение фокуса | стрелки | крестовина / левый стик (ui_up/down/left/right) |
+| подтвердить (ui_accept) | Enter / Space | A `JOY_BUTTON_A` |
+| отмена/назад (ui_cancel) | Esc | B `JOY_BUTTON_B` |
+| листать вкладки настроек / секции кодекса | клик по вкладке | LB/RB `JOY_BUTTON_LEFT/RIGHT_SHOULDER` |
+| слайдеры (громкость) | стрелки при фокусе | ui_left/right при фокусе (из коробки HSlider) |
+
+Экранная карта фокуса — `docs/design/systems/menus_ui.md` (мета-меню SCRUM-813,
+внутризабеговые SCRUM-812).
+
+## Известные пробелы геймпада (на 2026-07-02, SCRUM-815 smoke)
+
+Обнаружено сквозным smoke; исправление — вне scope SCRUM-815 (заведены bug-тикеты):
+- **Start не открывает паузу в бою** (bug **SCRUM-824**): `main._input` обрабатывает
+  экшен `pause` только для `InputEventKey` (гейт `event is InputEventKey`), поэтому
+  joypad Start (`JOY_BUTTON_START`) до `pause`-хендлера не доходит. B-закрытие паузы
+  работает (SCRUM-812).
+- **RB не открывает level-up в бою** (bug **SCRUM-825**): аналогичный гейт
+  `open_level_up` на `InputEventKey`; RB (bound to `open_level_up`) в бою не
+  срабатывает. Нижняя UI-кнопка «Повышение уровня» доступна фокусом.
+- **Ребинд геймпада**: экран настроек `_handle_rebind_input` принимает только
+  `InputEventKey` — переназначение на кнопку геймпада ещё не реализовано (scope
+  SCRUM-816). Клавиатурный ребинд делает `action_erase_events`, что стирает и
+  joypad-часть экшена — учесть при реализации SCRUM-816.

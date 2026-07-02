@@ -1,6 +1,6 @@
 # Геймпад: сквозной smoke-тест навигации и QA-чеклист геймпада
 
-Статус: new
+Статус: done
 Контур: Claude
 Owner: unassigned
 Thread: n/a
