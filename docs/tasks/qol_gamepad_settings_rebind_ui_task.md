@@ -66,14 +66,21 @@ fallback, глифы подключить ТОЛЬКО если манифест
    - конфликт (кнопка уже занята другим экшеном) → переиспользовать/расширить
      `_show_rebind_conflict()`;
    - назначение заменяет только joypad-события экшена (клавиатурные не трогает);
-   - сохранение в `game_settings.gamepad_bindings` (формат совместим с core-задачей:
-     {action: {"type": "button"|"axis", "index": int, "sign": -1|1}} или принятый
-     в core — свериться с реализацией), восстановление на старте уже делает core;
+   - сохранение в `game_settings.gamepad_bindings`; формат core (SCRUM-811,
+     реализован): {action: {"buttons": [int], "axes": [{"axis": int, "value": -1.0|1.0}]}}
+     — применять через `InputDeviceManager.set_gamepad_bindings()`, восстановление
+     на старте уже делает core;
+   - БАГ-ФИКС (обнаружен в SCRUM-811, обязателен здесь): `_apply_keycodes_to_action`
+     (ui_screens.gd:~7315) делает `action_erase_events` и стирает joypad-события
+     экшена при клавиатурном ребинде/применении сохранённых биндов. Исправить:
+     удалять/заменять только `InputEventKey`-события; после любого ребинда звать
+     `InputDeviceManager.ensure_joypad_bindings()` (get_node_or_null("/root/InputDeviceManager"),
+     null-safe для тестов без автолоада);
    - кнопка «Сбросить геймпад по умолчанию» — восстанавливает дефолтную раскладку
      пакета (стик+D-pad движение, Start пауза, Y ульта, RB level-up, Back фидбек);
    - слайдер «Мёртвая зона стика» (0.05–0.5, шаг 0.05, дефолт 0.25) →
      `gamepad_deadzone`; CheckBox «Вибрация» → `gamepad_vibration` (default true).
-     Если этих ключей нет в DEFAULTS game_settings — добавить с валидацией.
+     Ключи УЖЕ добавлены в game_settings.gd (SCRUM-811) с валидацией — только UI.
 3. Раскладка по умолчанию отображается корректно при первом входе (до любых
    ребиндов) — тексты берутся из фактического InputMap, не хардкод.
 4. Если существует манифест глифов от design-задачи

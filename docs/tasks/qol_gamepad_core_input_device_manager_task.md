@@ -1,10 +1,14 @@
 # Геймпад: ядро — InputDeviceManager, автодетект устройства, joypad-биндинги базовых экшенов
 
-Статус: new
+Статус: done
 Контур: Claude
-Owner: unassigned
-Thread: n/a
-Locked paths: `scripts/input_device_manager.gd` (новый), `project.godot` ([autoload]+[input]), `scripts/main.gd` (INPUT_ACTIONS/setup), `scripts/player.gd` (_ensure_default_input_actions), `scripts/game_settings.gd`, `tests/gamepad_core_input_test.gd`
+Owner: Back-end/pm-chat-fable-gamepad
+Thread: pm-chat (Claude Code, сессия 2026-07-02)
+Locked paths: `scripts/input_device_manager.gd` (новый), `project.godot` ([autoload]), `scripts/game_settings.gd`, `tests/gamepad_core_input_test.gd`
+Scope-фикс (PM, 2026-07-02): `scripts/player.gd` ВЫВЕДЕН из scope — joypad-события
+move_* дает SCRUM-814 (влит codex'ом); `scripts/main.gd` НЕ тронут — канон-раскладка
+реализована единой таблицей в самом менеджере (см. Результат), что снимает
+коллизию с SCRUM-814 и сужает конфликт-поверхность.
 Версия: 0.1.8
 Приоритет: P1
 Создано: 2026-07-02
@@ -80,15 +84,15 @@ Back-end (Claude lane). Только код/тесты/доки. Никаког�
   `tests/runtime_smoke_ui_test.gd` — синтез InputEvent, проверка InputMap).
 
 ## Acceptance Criteria
-- [ ] После старта у всех 8 экшенов есть joypad-события по раскладке из п.2,
+- [x] После старта у всех 8 экшенов есть joypad-события по раскладке из п.2,
       клавиатурные события сохранены; повторная инициализация не создаёт дубли.
-- [ ] ui_accept/ui_cancel/ui_up/down/left/right имеют joypad-события (A/B/D-pad/стик).
-- [ ] Синтетический `InputEventJoypadButton` переводит `active_kind()` в
+- [x] ui_accept/ui_cancel/ui_up/down/left/right имеют joypad-события (A/B/D-pad/стик).
+- [x] Синтетический `InputEventJoypadButton` переводит `active_kind()` в
       "gamepad" и эмитит `device_changed`; `InputEventKey` возвращает "keyboard".
-- [ ] `input_mode`="keyboard"/"gamepad" фиксирует `active_kind()`, но синтетический
+- [x] `input_mode`="keyboard"/"gamepad" фиксирует `active_kind()`, но синтетический
       ввод с обоих устройств продолжает проходить в экшены (Input.is_action_pressed).
-- [ ] settings.cfg сохраняет/восстанавливает input_mode и gamepad_bindings.
-- [ ] Тест `tests/gamepad_core_input_test.gd` зелёный headless; существующие
+- [x] settings.cfg сохраняет/восстанавливает input_mode и gamepad_bindings.
+- [x] Тест `tests/gamepad_core_input_test.gd` зелёный headless; существующие
       smoke-тесты (runtime_smoke_ui_test, aim_mode_settings_test) не сломаны.
 
 ## Документация
@@ -100,3 +104,48 @@ Back-end (Claude lane). Только код/тесты/доки. Никаког�
 Headless: `--import` прогрев, затем свой тест + runtime_smoke_ui_test +
 aim_mode_settings_test через tools/godot_gate.py (один Godot-процесс, память о
 параллельных инстансах). Отчёт: список экшенов с событиями до/после.
+
+## Результат (2026-07-02, pm-chat-fable-gamepad)
+
+Реализовано в изолированном worktree от origin/dev, атомарный push.
+
+- `scripts/input_device_manager.gd` (новый autoload, зарегистрирован в
+  `project.godot` после AudioManager): `DEFAULT_GAMEPAD_BINDINGS` (канон:
+  стик+D-pad — move_*, Start — pause, Y — ultimate, RB — open_level_up,
+  Back — feedback) + `UI_ACTION_BINDINGS` (A — ui_accept, B — ui_cancel,
+  D-pad+стик — ui_up/down/left/right); `ensure_joypad_bindings()` идемпотентно
+  доливает события (клавиатурные не трогает никогда); автодетект устройства по
+  последнему вводу (кнопка пада / стик >0.3 → gamepad; клавиша/клик → keyboard;
+  движение мыши игнорируется); hot-plug через `joy_connection_changed`;
+  `device_changed(kind)`; API: `active_kind()`, `gamepad_connected()`,
+  `gamepad_name()`, `binding_text(action)`, `set_input_mode()`,
+  `set_gamepad_bindings()`, `reset_gamepad_bindings_to_defaults()`.
+- Отклонение от исходной спеки (улучшение): вместо полей в `main.gd
+  INPUT_ACTIONS` канон-раскладка живет одной таблицей в менеджере — main.gd не
+  тронут вообще. Причина и порядок инициализации задокументированы в
+  `docs/design/systems/input_controls.md`: `ui._setup_default_input_actions()`
+  (main.gd:500) стирает события экшена при применении сохраненных клавиатурных
+  ребиндов, поэтому менеджер доливает joypad ПОСЛЕ первого `process_frame` и
+  страхуется при hot-plug/смене raw-устройства.
+- ВАЖНО для SCRUM-816: runtime-ребинд клавиатуры (`_apply_keycodes_to_action`,
+  ui_screens.gd:7315) по-прежнему стирает joypad-события экшена — требование
+  фикса добавлено в спеку 816 (заменять только InputEventKey + звать
+  `InputDeviceManager.ensure_joypad_bindings()` после ребинда).
+- `scripts/game_settings.gd`: ключи `input_mode`/`gamepad_bindings`/
+  `gamepad_deadzone` (0.25, кламп 0.05..0.5)/`gamepad_vibration` с валидацией —
+  сразу все 4, чтобы SCRUM-814/816 не гонялись за файлом.
+- Тест `tests/gamepad_core_input_test.gd` (standalone SceneTree): интеграция с
+  Main.tscn (клавиатура выживает + joypad долит), идемпотентность, классификация
+  устройств и сигнал, режимы (active_kind фиксируется, InputMap не блокируется),
+  binding_text, кастомные бинды/сброс, hot-plug-отключение, settings-ключи.
+
+Прогоны (worktree + `--import`, fdengine-семафор, слоты=1):
+- `gamepad_core_input_test`: PASSED ×2 (флаки-чек);
+- `aim_mode_settings_test`: PASSED (SCRIPT ERROR `on_weapon_hit`/FakeOwner —
+  pre-existing шум стаба, не связан с изменением);
+- `runtime_smoke_ui_test`: PASSED.
+
+Acceptance: все пункты выполнены. Дальше по пакету: 813/812 (фокус-навигация,
+ui_screens.gd), 816 (настройки, разблокирован ядром).
+
+Disk cleanup: worktree wt-scrum811 удален после push.
