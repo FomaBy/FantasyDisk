@@ -10,6 +10,31 @@ Owner: claude-designer (Jira-pull рутина)
 Thread/Worker: fantasydisk-designer
 Locked paths: scripts/ui_screens.gd (settings-блок ~3605–4300), assets/sprites/ui/frames/settings_v4/*, references/settings_v4/*, docs/design/settings_v4_*.md
 
+## Ход выполнения (обновлено 2026-07-02, claude-designer)
+
+**Фазы 1–4 СДЕЛАНЫ и запушены** (commit `df445883` в origin/dev):
+- Ф1 аудит → `docs/design/settings_v4_audit.md` (аналитический замер rect'ов
+  3 вкладок @1920×1080 и @2560×1440; runtime-замер отложен на Ф7).
+- Ф2 референсы → `docs/design/settings_v4_reference_principles.md` (6 веб-
+  источников + 6 игр, 10 принципов).
+- Ф3 мокапы OpenAI → `docs/design/references/settings_v4/` (3 вкладки +
+  лист состояний кнопок). **НЕ РЕГЕНЕРИРОВАТЬ — уже готовы.** Квота OpenAI
+  на 2026-07-02 доступна (probe прошёл).
+- Ф4 концепт → `docs/design/settings_v4_concept.md` (решение гибрид-B,
+  целевая геометрия, список ассетов Ф5, план внедрения Ф6).
+
+**Фазы 5–7 ОСТАЛИСЬ (следующий прогон):** финальные ассеты-элементы
+(`assets/sprites/ui/frames/settings_v4/`), внедрение в `scripts/ui_screens.gd`
+settings-блок, Godot-верификация.
+
+⚠️ **Блокер на момент 2026-07-02 08:xx:** `scripts/ui_screens.gd` был под
+активной live-правкой (открытый редактор Godot, блок `_build_character_select_v4`,
+churn SCRUM-421 biologist). Фазы 5–7 трогают тот же файл → отложены (анти-
+коллизия). **Перед стартом Ф6 проверить:** редактор Godot закрыт И
+`git status` по `scripts/ui_screens.gd` чист. Если ещё live — отложить задачу,
+взять другую. Статус оставлен `new`, чтобы задача осталась в очереди на
+продолжение (НЕ переделывать Ф1–4).
+
 ## Поручение пользователя (суть)
 
 Полный ревью меню настроек. По шагам:
