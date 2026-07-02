@@ -7722,9 +7722,25 @@ func _setup_default_input_actions() -> void:
 		if not InputMap.has_action(action_name):
 			InputMap.add_action(action_name)
 
-		if InputMap.action_get_events(action_name).is_empty():
+		# SCRUM-830: гардим по отсутствию именно КЛАВИАТУРНОГО (InputEventKey) события,
+		# а не по is_empty(). Автолоад InputDeviceManager (SCRUM-811) может предзасеять
+		# joypad-события в глобальный InputMap ДО этого вызова (гонка старта под нагрузкой);
+		# тогда is_empty()=false и клавиатурные дефолты (Escape=pause, R=ultimate и др.)
+		# терялись — Escape не открывал quit-диалог, R не давал ультимейт. Проверка «нет
+		# key-события» доливает клавиатуру идемпотентно, joypad не трогая
+		# (_apply_keycodes_to_action стирает только key-события).
+		if not _action_has_key_event(action_name):
 			_apply_keycodes_to_action(action_name, _default_keycodes_for_action(input_action))
 	_apply_saved_input_bindings()
+
+
+func _action_has_key_event(action_name: String) -> bool:
+	if not InputMap.has_action(action_name):
+		return false
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			return true
+	return false
 
 
 func _apply_saved_input_bindings() -> void:

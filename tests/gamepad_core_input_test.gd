@@ -65,6 +65,34 @@ func _run() -> void:
 	_check(_action_has_axis("move_left", JOY_AXIS_LEFT_X, -1.0), "move_left: нет оси стика")
 	_check(_action_has_axis("ui_down", JOY_AXIS_LEFT_Y, 1.0), "ui_down: нет оси стика")
 
+	# 1b) SCRUM-830 (детерминированная регрессия обратного порядка): под нагрузкой
+	#     автолоад успевал предзасеять joypad в ГЛОБАЛЬНЫЙ InputMap ДО того, как
+	#     ui._setup_default_input_actions() применит клавиатурные дефолты. Старый
+	#     is_empty()-гард видел непустой экшен (joypad уже там) и ПРОПУСКАЛ клавиатуру
+	#     → Escape не открывал quit-диалог, R не давал ультимейт. Фикс: гардить по
+	#     отсутствию именно InputEventKey. Раньше ловилось лишь флаки-red под пиковой
+	#     нагрузкой — здесь воспроизводим детерминированно.
+	main.input_bindings = {}
+	for action in ["pause", "ultimate"]:
+		if not InputMap.has_action(action):
+			InputMap.add_action(action)
+		for stale in InputMap.action_get_events(action):
+			InputMap.action_erase_event(action, stale)
+		var seed_btn := InputEventJoypadButton.new()
+		seed_btn.button_index = (JOY_BUTTON_START if action == "pause" else JOY_BUTTON_Y)
+		InputMap.action_add_event(action, seed_btn)
+		_check(not _action_has_key(action),
+			"%s: прекондиция SCRUM-830 — клавиатуры быть не должно (только joypad)" % action)
+	main.ui._setup_default_input_actions()
+	_check(_action_has_keycode(&"pause", KEY_ESCAPE),
+		"SCRUM-830: pause потерял Escape после joypad-предзасева (is_empty-гард)")
+	_check(_action_has_keycode(&"ultimate", KEY_R),
+		"SCRUM-830: ultimate потерял R после joypad-предзасева (is_empty-гард)")
+	_check(_action_has_button("pause", JOY_BUTTON_START),
+		"SCRUM-830: долив клавиатуры стёр joypad-бинд pause (Start)")
+	_check(_action_has_button("ultimate", JOY_BUTTON_Y),
+		"SCRUM-830: долив клавиатуры стёр joypad-бинд ultimate (Y)")
+
 	# 2) Идемпотентность: повторный ensure не плодит дубли.
 	var counts_before := _event_counts()
 	mgr.ensure_joypad_bindings()
@@ -199,6 +227,15 @@ func _action_has_key(action: StringName) -> bool:
 		return false
 	for event in InputMap.action_get_events(action):
 		if event is InputEventKey:
+			return true
+	return false
+
+
+func _action_has_keycode(action: StringName, keycode: int) -> bool:
+	if not InputMap.has_action(action):
+		return false
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey and int(event.keycode) == keycode:
 			return true
 	return false
 
