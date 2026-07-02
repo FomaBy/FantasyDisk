@@ -52,3 +52,13 @@ Locked paths/screens/assets: `scripts/ui_screens.gd`, Hero Select HS4 runtime la
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — passed.
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — passed.
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_biologist_pixellab_preview_test.gd` — passed.
+
+## QA-Вердикт
+Статус: PASSED (2026-07-02, claude-qa/оркестратор)
+
+- Ancestry: 5d0393e9 (feat) + 898e2e03 (sync) — merge-base ancestor origin/dev OK (strand-чек codex-lane пройден).
+- Изолированный worktree от origin/dev, cold --import (fdengine-семафор, 1 слот):
+  hero_select_pixellab_layout_test PASSED, runtime_smoke_test PASSED,
+  ui_no_overlap_matrix_test PASSED.
+- PNG в коммите нет — png/.import pairing не требуется; правки ui_screens.gd
+  (портреты hero select) покрыты обновлённым layout-тестом воркера.
