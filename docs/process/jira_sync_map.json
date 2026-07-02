@@ -3777,5 +3777,10 @@
   "key": "SCRUM-837",
   "status": "Готово",
   "desc_hash": "6d97a520748ac40fbe11ff4bb79496d2"
+ },
+ "codex_release_v0_2_0_task.md": {
+  "key": "SCRUM-843",
+  "status": "В работе",
+  "desc_hash": "1304fde6f52e2502f41d2662e49bbb0f"
  }
 }

@@ -5,320 +5,46 @@
 ## [Unreleased] — ветка dev
 
 ### Added
-- SCRUM-835: Мета 4.1b — keystone-пары на новых боевых подсистемах вместо
-  generic damage placeholders. Реализованы real PM semantics для
-  `soldier_k0`/`thief_k1`/`elementalist_k0-k1`/`priest_k0-k1`/`robot_k0-k1`/
-  `engineer_k0-k1`/`dark_mage_k0-k1`/`guitarist_k0-k1`/`assassin_k0-k1`/
-  `ranger_k0-k1`/`doctor_k0-k1`/`chemist_k0-k1`/`knight_k0`/`druid_k0-k1`:
-  suppression, gold cap, elemental resonance/orbs, heal→holy chain, ward absorb,
-  reactor heat, magnet radius, device tempo, instant mines/traps, DoT death spread,
-  beam duration, riff streak, crit execute, shadow invisibility, charged pierce,
-  drain extra targets, close surgery, cloud detonation, homunculus/pet/briar buffs
-  and Bastion taunt/defense. Behavioral gate added to `meta_skill_tree_smoke_test`;
-  balance/survivability gates remain green (в dev влито cherry-pick'ом поверх
-  SCRUM-834; SCRUM-836 идёт отдельной поставкой).
-- SCRUM-835 hardening: Bastion taunt now changes live enemy targeting while the
-  `bastion_taunt` status is valid, then falls back to the default player target
-  after expiry/invalid owner. The semantic smoke now also proves taunt
-  movement/fallback, suppression expiry, heal→holy damage, DoT death spread,
-  shadow invisibility damage ignore, and real homunculus/pet summon profiles.
-- SCRUM-837: финализирован behavioral gate для Meta 4.1 keystone-эффектов:
-  новый `tests/meta_keystone_behavioral_smoke_test.gd` строит headless
-  mini-arena на реальных `Player`/`Enemy`/`ClassWeapon`/`SummonerWeapon` nodes
-  и проверяет фактические боевые исходы вместо synthetic modifier dictionaries.
-  Покрытие: HP threshold, stance, post-event/rush window, count-in-radius,
-  on-hit debuff, gold scaling, elemental mark, reactor heat, device tempo,
-  DoT spread, invisibility, pierce, drain, cloud detonation, pet buffs,
-  representative downsides и 3 disabled-wiring self-checks. `meta_skill_tree`
-  получил lightweight anti-flattening contract для semantic SCRUM-835 keys.
-  Финальная приёмка зелёная поверх SCRUM-835 hardening: `meta_keystone_behavioral`,
-  `meta_skill_tree`, `skill_tree_per_hero`, `runtime_smoke`, grep no script/parse
-  errors и `git diff --check`.
-- SCRUM-834a: Мета 4.1 — условные keystone на существующих гейтах с не-урон
-  стат-целью. Инфра `hurt/stance/rush/swarm` расширена за пределы урона: soldier
-  «Шквал» (стойка → +19.1% скорострельности `stance_attack_speed_bonus`, downside
-  −4% урона) и thief «Из тени» (окно после уклонения → +17.2% крит-шанса
-  `rush_crit_bonus`, downside −4% макс. HP) — эффект спит вне условия, budget-
-  нейтрально к прежним `*_damage_bonus` (веса stance×attack_speed=0.45,
-  rush×crit=0.50). Поведенческие смоки теперь проверяют real-node путь
-  `soldier_k1`/`thief_k0` → active meta keystone → player/progression runtime:
-  стат растёт ЛИШЬ при выполнении условия. Немапящиеся пары остаются generic (→ SCRUM-835/
-  836/837 по декомпозиции). Гейты зелёные: `meta_skill_tree_smoke`,
-  `skill_tree_per_hero`, `runtime_smoke`.
-- SCRUM-827: Мета 4.0 — экран «Атлас героев» заменяет дерево навыков. Одна
-  сцена с двумя вкладками (Созвездие/Гильдия): фон-небо + полая рама кита
-  (`meta40/`), лента 17 медальонов-гербов со скроллом, холст созвездия (22 узла)
-  без пан/зума, панель узла (титул/тип/описание с числами/цена/«Вложить
-  эмблему», переключатель keystone), шапка с валютами (эмблемы + звёздная пыль)
-  и низ с «Респек — бесплатно» и легендой. Старый экран дерева (`_show_skill_tree_screen`)
-  заменён на `_show_atlas_screen` без осиротевших вызовов. Смоки: новый
-  `meta40_atlas_screen_smoke_test`, адаптация `ui_no_overlap_matrix`/`runtime`/
-  `gamepad_menu_focus`/`meta_skill_tree` — все зелёные.
-- SCRUM-834: Мета 4.1 — первичный scaffold условных keystone после T1. В
-  `player.gd` разведены четыре generic condition gate (`hurt/stance/rush/swarm`)
-  и budget-веса для переходных `*_damage_bonus` placeholder-эффектов, но после
-  QA/PM-декомпозиции это НЕ считается финальным закрытием PM-таблицы `k0`/`k1`
-  всех 17 классов. Текущий deliverable 834a закрывает только мапящиеся на
-  существующие гейты `soldier_k1` и `thief_k0`; новые боевые подсистемы,
-  строгий hidden-star аудит 17/17 и полный real-effect behavioral smoke вынесены
-  в SCRUM-835/836/837. Минорные звёзды разведены на два номинала (+1/+2, пара
-  сохраняет budget-сумму). Приложения A/B дизайн-дока отражают текущее runtime
-  состояние и отмечают частичный scope 834a.
-- SCRUM-828: Мета 4.0 «Созвездия героев» — ядро (T1 волны meta40, дизайн:
-  `docs/design/systems/meta_constellations.md`). Общий пул метаочков заменён
-  двумя валютами: ЭМБЛЕМЫ КЛАССА (2/2/3/4/5/6 за первые клиры A0..A5 своим
-  классом + 2 за каждый челлендж класса; тратятся только на своё созвездие) и
-  ЗВЁЗДНАЯ ПЫЛЬ (аккаунт: первая победа каждым классом, первый A5, секретный
-  босс 3, 8 вех кодекса, 5 вех достижений; потолок 50). У каждого из 17 классов
-  личное созвездие на 22 узла по силуэту классового символа: ядро-эмблема
-  (0-cost, +1 primary-атрибут), 12 звёзд-атрибутов строго по матрице
-  релевантности, 4 звезды-техники, 3 взаимоисключающих keystone (активен ≤1,
-  переключение купленных бесплатно, числовой downside ≥25% апсайда — полная
-  таблица: приложение A дизайн-дока) и 2 скрытые звезды, открывающиеся
-  подвигами класса (инфраструктура челленджей), с лором и твист-эффектами.
-  «Атлас гильдии» — общий QoL-слой на 25 узлов (валюта — пыль, всё не купить:
-  стоимость 59 при потолке 50; ранний крючок §4 — узел `atlas_m0` за 1 пыль,
-  открывается первой же победой) с 4 наследными keystone v2 (вторая жизнь/редкий
-  товар/озарение/боевой раж) и 2 скрытыми узлами (вехи кодекса, секретный
-  босс). Миграция сейва schema 4→5: полный бесплатный респек, факты первых
-  клиров объединяются с выводом из возвышений (возврат наград, потерянных под
-  v3-капом 100), валюты деривативны — старые сейвы ничего не теряют. Бюджет
-  силы: полный билд класса = +18..25% взвешенной эффективной силы, спред по
-  17 классам ≤1.25, Атлас боевой силы почти не несёт (<1.30) — всё гейтами.
-  Новые ключи эффектов разведены в `player.gd` (реестр: приложение B). Старый
-  экран дерева работает на совместимом API до T3 (SCRUM-827); новые API экрана:
-  `constellation_nodes`/`atlas_nodes`/`class_sigils_*`/`stardust_*`/
-  `active_keystone`/`hidden_star_progress`/`reset_constellation`.
-- SCRUM-826: ART Мета 4.0 «Атлас героев» — продакшн UI-кит созвездий
-  (`assets/sprites/ui/meta40/`, 26 ассетов, прозрачный фон, .import-пары в
-  коммите). 17 гербов классов (круглые бронзово-золотые медальоны, единая
-  палитра, «no text», читаемы на 46px): berserk/sniper/biologist/knight/thief/
-  druid/engineer/guitarist/priest/doctor/chemist/dark_mage/elementalist/robot/
-  soldier/assassin/ranger. UI-элементы: фон-рама `atlas_bg` (688×384, edge
-  flood-fill alpha-cleanup), сокеты minor/notable/keystone/hidden, звезда
-  аллокации `star_alloc`, сапфировое активное кольцо keystone `keystone_ring`,
-  валюты `currency_emblem` (ромб-сигил) и `currency_stardust` (звёздочка).
-  Контакт-лист `docs/design/previews/meta40_asset_contact.png`. Источник дизайна:
-  `docs/design/systems/meta_constellations.md` §7/прил. C. Генерация — PixelLab
-  MCP (create_map_object, high detail). Ассеты ждут разводки в экране «Атлас
-  героев» (T3, SCRUM-828).
-- SCRUM-807: Skill Tree 3.0 — настоящая классовая идентичность мета-древа. Граф
-  вырос до 192 узлов (стоимость 285 при неизменном cap 100): у каждого из 17
-  классов теперь ≥8 классовых нодов (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE`
-  + 2 notable + 1 уникальный keystone) вместо прежних 3 узлов одним вектором.
-  Данные/конструктор вынесены в новый `scripts/meta_progression_tree_data.gd`;
-  `TREE_SCHEMA_VERSION → 4` с авто-миграцией (полный респек без потери очков).
-  Описания нодов авто-генерируются с числами («+3% к урону»). Разведены ключи
-  `pickup_radius_flat`/`projectile_speed_flat`/`absorb_flat`. Экран дерева
-  подсвечивает ветвь выбранного героя, чужие классовые ветви «спят». Экономика
-  возвышений и балансовые гейты не тронуты (дерево — аддитивный слой). Канон:
-  `docs/design/systems/skill_tree.md` (v3). Бюджет силы: ~+12–20% DPS/EHP классу
-  за сфокусированный билд (61/100 очков — потолок классовой силы; добор чужих
-  ветвей affinity-gated). QA-реопен: атрибутные ноды ветви приведены к матрице
-  релевантности (biologist `aoe_radius`→вампиризм, robot `defense`→реген; keystone
-  исключён из правила), per-hero тест ловит optional-атрибуты.
-- SCRUM-793: promoted accepted SCRUM-779 PixelLab boss candidates into live
-  full-frame runtime rows for `disk_devourer`
-  (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`
-  (`99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`). Existing SpriteFrames resources,
-  state names, frame counts, speeds and gameplay callbacks were preserved; the
-  remaining SCRUM-779 boss candidates stay source-only/revise-needed. QA
-  evidence lives under `build/qa/scrum793_boss_pixellab_promotion/`.
-- SCRUM-803: PixelLab Assassin runtime pack is now live on dev. Generated
-  accepted empty-open-hands source character
-  `ec73da27-b704-4336-9275-74c8e3e578df`, rejected/deleted candidate
-  `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` for baking a held blade, stored source
-  rotations and six-frame movement rows under
-  `assets/sprites/characters/pixellab/assassin/`, normalized transparent
-  `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/assassin_pixellab/`, rebuilt
-  `assassin_spriteframes.tres` with directional idle/move/walk rows, and routed
-  Assassin portraits/Hero Select preview to `assassin_idle_south.png`.
-- SCRUM-804: PixelLab Ranger runtime redraw is now live. Generated new
-  empty-handed PixelLab character `1646d83c-f570-4bdd-9065-cb1b46bf13f7`,
-  stored 8-direction idle rotations and six-frame `walking-6-frames` movement
-  rows under `assets/sprites/characters/pixellab/ranger/`, normalized all 56
-  frames into transparent `512x512` runtime PNGs under
-  `assets/sprites/characters/full_frame/ranger_pixellab/` with a `245 px`
-  visible alpha height, rebuilt `ranger_spriteframes.tres` with directional
-  idle/move/walk rows, and routed Ranger portraits/Hero Select preview to
-  `ranger_idle_south.png`. Bow, crossbow, trap and projectile visuals remain
-  weapon-owned assets.
-- SCRUM-433: PixelLab Sniper runtime pack is now live on dev. Reused PixelLab
-  character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`, stored source rotations
-  and six-frame movement rows under `assets/sprites/characters/pixellab/sniper/`,
-  normalized transparent `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/sniper_pixellab/`, rebuilt
-  `sniper_spriteframes.tres` with directional idle/move/walk rows, and routed
-  Sniper portraits/Hero Select preview to `sniper_idle_south.png`.
-- SCRUM-428: PixelLab Engineer runtime pack is now live. Reused existing
-  PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621`, stored source
-  rotations and 6-frame `walking-6-frames` rows under
-  `assets/sprites/characters/pixellab/engineer/`, normalized transparent
-  `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/engineer_pixellab/`, rebuilt
-  `engineer_spriteframes.tres` with directional idle/move/walk rows, and routed
-  Engineer portraits/Hero Select preview to `engineer_idle_south.png`.
-- SCRUM-426: PixelLab Druid 8-direction character pack with static idle
-  rotations and six-frame `walking-6-frames` movement rows for all directions.
-  Source PNGs and manifest live under `assets/sprites/characters/pixellab/druid/`,
-  normalized `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/druid_pixellab/`, and
-  `druid_spriteframes.tres` now exposes directional idle/move/walk rows for
-  combat and Hero Select preview rotation.
-- SCRUM-421: PixelLab Biologist 8-direction runtime pack rescued and finished.
-  Reused the completed PixelLab source character
-  (`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`), regenerated a front-facing south
-  movement row (`south-facing-walk-rescue`), stored source rotations and 6-frame
-  move/walk rows under `assets/sprites/characters/pixellab/biologist/`,
-  normalized transparent `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/biologist_pixellab/` with every visible
-  alpha bbox at `245 px` high, and rebuilt `biologist_spriteframes.tres` with
-  `idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
-  rows for all 8 directions. Biologist now uses the PixelLab south idle portrait
-  and participates in Hero Select directional preview coverage.
-- SCRUM-705: PixelLab Doctor full redraw at the new 240-250 px runtime scale.
-  Generated a fresh PixelLab plague-doctor source character
-  (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`), replaced the live source pack under
-  `assets/sprites/characters/pixellab/doctor/`, normalized all idle and
-  6-frame move/walk directions into transparent `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/doctor_pixellab/`, and kept empty hands
-  so potion/syringe/saw remain weapon-owned visuals. The committed alpha-bbox
-  QA report confirms all 56 runtime frames at 244 px visible height.
-- SCRUM-779: PixelLab-first boss roster redraw source package and two new boss
-  concepts. OpenAI image generation produced reference-only concept art for
-  `skeletal_dragon` and `bloodthorn_lion`; PixelLab MCP produced transparent
-  sprite candidates for current bosses, the secret ascension boss and the two
-  new IDs under `assets/sprites/bosses/pixellab_candidates/`, with manifest and
-  QA notes in
-  `docs/design/references/bosses/pixellab_roster_redraw_2026_06/`. No live boss
-  scenes, balance or route rotation changed in this design-source pass.
-- SCRUM-694: Settings v3 full redraw — Designer pipeline package (inventory →
-  geometry → OpenAI mockups → PixelLab final 9-slice family). Live Settings
-  inventory + responsive `layout.json` (fit gate `ready_for_image`, geometry
-  validated against the 2K runtime constants at 1280×720/1920×1080/2560×1440/
-  3840×2160). Three textless OpenAI reference mockups
-  (`docs/design/mockups/settings_v3_full_redraw/`, reference only). Five PixelLab
-  final 9-slice production frames under `assets/sprites/ui/frames/settings_v3/`
-  (main modal frame with dragon crest + red-gem corners, tab switcher, content
-  panel, inset field/dropdown, action button) — native-size sources, transparent,
-  textless, alpha-clean. Manifest + Back-end integration handoff with exact paths,
-  rects, texture margins, node IDs and tests
-  (`docs/design/references/settings_v3_full_redraw/`). Runtime wiring of the new
-  frames is a tracked Back-end follow-up per the handoff; this drop is the design
-  asset/spec package, no `ui_screens.gd` behaviour change.
-- SCRUM-431: PixelLab Priest 8-direction character with directional movement.
-  Generated v3 PixelLab holy Priest character
-  (`ed7db59e-0845-4218-b178-a56f948254b5`), stored source rotations + walk frames
-  under `assets/sprites/characters/pixellab/priest/`, normalized transparent
-  `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/priest_pixellab/`, and rebuilt
-  `priest_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
-  `move_<direction>` / `walk_<direction>` for all 8 directions. Priest now moves
-  with directional walk in-game and rotates clockwise in Hero Select.
-- SCRUM-703: PixelLab Berserk full redraw at the readable 240-250 px runtime
-  scale. Generated new unarmed v3 PixelLab character
-  (`8486ce45-f749-4c63-9a6d-f0477d619c2d`), stored `252x252` source rotations
-  and 8-direction movement under `assets/sprites/characters/pixellab/berserk/`,
-  normalized transparent `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/berserk_pixellab/` with every idle/move
-  alpha bbox at `245 px` high, and rebuilt `berserk_spriteframes.tres` with
-  `idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
-  for all 8 directions. The old live pack is backed up under
-  `docs/design/backups/scrum703_berserk_pixellab_pre_redraw_2026-06-30/`.
-- SCRUM-425: PixelLab Doctor 8-direction character with directional movement.
-  Generated v3 PixelLab plague-doctor character
-  (`c3d5ea3d-3b70-4154-b3c4-420d386f550a`), stored source rotations + walk frames
-  under `assets/sprites/characters/pixellab/doctor/`, normalized transparent
-  `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/doctor_pixellab/`, and rebuilt
-  `doctor_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
-  `move_<direction>` / `walk_<direction>` for all 8 directions. Doctor now moves
-  with directional walk in-game and rotates clockwise in Hero Select.
-- SCRUM-706: PixelLab Guitarist full redraw at the 240-250 px scale. Generated
-  accepted source `704fd67b-da81-4804-acd2-07e75fefd9de`, rejected one failed
-  128x128 candidate and one 240x240 baked-instrument candidate, stored new
-  empty-hands source rotations + walk frames under
-  `assets/sprites/characters/pixellab/guitarist/`, normalized transparent
-  `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/guitarist_pixellab/` with 245 px
-  visible alpha height on every frame, and rebuilt `guitarist_spriteframes.tres`
-  with `idle_<direction>` plus 6-frame looping `move_<direction>` /
-  `walk_<direction>` rows for all 8 directions.
-- SCRUM-704: PixelLab Dark Mage full redraw at readable 240-250px scale.
-  Generated new v3 PixelLab character
-  (`9bb0eca8-5afe-49d4-8e56-7115a45efdcc`), stored 8-direction idle source and
-  `walking-6-frames` source under `assets/sprites/characters/pixellab/dark_mage/`,
-  normalized transparent `512x512` runtime frames under
-  `assets/sprites/characters/full_frame/dark_mage_pixellab/`, and rebuilt
-  `dark_mage_spriteframes.tres` with `idle_<direction>` plus 6-frame looping
-  `move_<direction>` / `walk_<direction>` for all 8 directions. Dark Mage hands
-  stay empty; book/skull/wand/orb remain separate weapon assets.
-- SCRUM-423: PixelLab Chemist 8-direction character pack with static idle
-  rotations and six-frame `walking-6-frames` movement rows for all directions.
-  Source PNGs, manifest and PixelLab evidence live under
-  `assets/sprites/characters/pixellab/chemist/`, normalized `512x512` runtime
-  frames under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
-  `chemist_spriteframes.tres` now exposes directional idle/move/walk rows for
-  combat and Hero Select preview rotation.
-- SCRUM-430: Knight PixelLab directional pack. `knight_spriteframes.tres` now
-  uses a no-shield/no-weapon PixelLab source with 8-direction idle poses and
-  6-frame directional `walk`/`move` rows. Source/manifest lives under
-  `assets/sprites/characters/pixellab/knight/`, normalized runtime frames under
-  `assets/sprites/characters/full_frame/knight_pixellab/`, and the character
-  portrait path points to the PixelLab south idle frame.
+- Пока пусто.
 
 ### Changed
-- Плановая линия разработки перенесена на `0.2.0`: `project.godot`,
-  export-presets, Jira sprint/release mirrors и process docs теперь считают
-  `0.2.0` текущим target release; `0.1.8` и `0.1.9` больше не используются как
-  плановые версии.
-- SCRUM-832: UI-кит Меты 4.0 перегенерирован через OpenAI gpt-image-2 под
-  целевые размеры слотов окна 2560×1440 (мандат продукта: элемент генерируется
-  под размер/аспект слота, а не «вписываем в готовую картинку»). Структура
-  `assets/sprites/ui/meta40/` (27 ассетов): `atlas_bg` (688×384, запечённая
-  рама+небо) удалён в пользу модульных `bg_sky.png` 2560×1440 (фулскрин) +
-  `frame_border.png` (полая орнаментная рама под 9-slice); сокеты 96/128/168/112,
-  `star_alloc` 80, `keystone_ring` 200 (полый центр), валюты 64, 17 гербов
-  `crest_*` 160 (единый медальон-шаблон). Пайплайн воспроизводим:
-  `tools/generate_meta40_ui_openai.py` (маджента-key → flood-fill → erode 1px →
-  LANCZOS в слот; --only/--dry-run/--sheet-only). Контакт-лист
-  `docs/design/previews/meta40_asset_contact.png`, мокап экрана пересобран в
-  нативном 1440p (`meta40_atlas_mockup.png`). Дизайн-док §7 обновлён.
-- SCRUM-797: replaced the live Guitarist PixelLab body with the stronger held-guitar
-  instrument variant (`d278e753-9885-4550-82ff-81ee3bef297d`) by direct user
-  override. The pack keeps the same 8-direction `walking-6-frames` runtime
-  contract, transparent `512x512` frames, `245 px` visible alpha height,
-  `guitarist_spriteframes.tres` directional rows, and Hero Select preview
-  rotation; evidence lives under `docs/design/previews/scrum797_*`.
-- SCRUM-726: finalized the PoE-like meta skill tree schema 3 with 8 attribute
-  petals and 17 class signature pods. Skill tree effects now split
-  account-wide bonuses from `class_affinity` bonuses through
-  `skill_modifiers_for_class`, attribute nodes add `*_flat` stats before
-  derived class formulas, and every playable hero has a unique class keystone
-  while the 100 meta-point cap stays unchanged.
-- SCRUM-695: rebuilt level-up attribute relevance as a direct attribute×class
-  matrix instead of routing 24 combat attributes through 8 base stats. Added a
-  canonical attribute registry (single source of truth: id/name/icon/value-type)
-  in `progression_data_characters.gd`, and an `ATTRIBUTE_RELEVANCE` matrix with a
-  hard per-attribute invariant of exactly 2 primary / 8 secondary / 7 optional
-  classes (validated by `tests/attribute_relevance_test.gd`). Level-up reward
-  weighting now reads relevance directly (primary > secondary >> optional). The
-  3-option level-up offer enforces a relevance rule: at most 1 attribute that is
-  `optional` for the current class, and always at least 1 primary/secondary (no
-  all-optional offers); the rare main-stat slot and the «Озарение» capstone are
-  unchanged. Reworded the previously abstract reward descriptions/titles
-  («+0.18 силы поддержки», «+4 flat absorption», English titles) into clear
-  Russian numeric units, consistent with the glossary; on-card before→after
-  numbers continue to show the concrete effect for the current build.
+- Пока пусто.
 
 ### Fixed
-- SCRUM-584: fixed the key-rebind conflict modal so Retry/Back use the dedicated
-  `ui_frame_2k_rc_btn.png` runtime frame, and the UI matrix now asserts that
-  asset instead of the generic `continue_240x72` text-button texture.
-- SCRUM-693: in active combat, Escape now opens the character board / pause
-  dossier immediately with the left run controls, pauses gameplay, and resumes
-  via Resume or repeated Escape without showing the old standalone pause menu.
+- Пока пусто.
+
+## [0.2.0] — 2026-07-02
+
+### Release Highlights
+- FantasyDisk 0.2.0: большой переход на новую линию — Атлас героев вместо старого дерева, 17 личных созвездий классов, живая геймпадная поддержка, обновлённый главный экран и крупная волна PixelLab-анимаций.
+- **Главное:** новый «Атлас героев» делает мета-прогрессию понятнее: у каждого класса своё созвездие, эмблемы, скрытые звёзды и переключаемые keystone-умения.
+- **Главное:** классовые keystone теперь дают настоящие боевые эффекты, а не сухие прибавки к урону: таунт, подавление, резонанс стихий, питомцы, облака, цепи исцеления, реакторный жар и другие игровые состояния.
+- **Главное:** геймпад стал полноценным способом игры: движение стиком, D-pad, подсказки активного устройства, переназначение кнопок, deadzone и вибрация.
+- **Главное:** герои и боссы получили большую волну 8-направленных PixelLab-анимаций; выбор героя и бой выглядят живее и цельнее.
+- **Главное:** главный экран обновлён под 0.2.0: новый космический dark-fantasy фон, свежий логотип FantasyDisk и аккуратная посадка кнопок на 1080p/2K/портретных экранах.
+
+### Added
+- Добавлен «Атлас героев»: новая мета-прогрессия с личными созвездиями для всех 17 классов, классовыми эмблемами, звёздной пылью, скрытыми подвигами и бесплатным переключением купленных keystone.
+- Добавлен общий «Атлас гильдии» с QoL-улучшениями аккаунта, наследными keystone и ограниченной экономикой звёздной пыли, чтобы нельзя было купить всё сразу.
+- Добавлены уникальные скрытые подвиги и лорные скрытые звёзды для всех классов; старые однотипные условия заменены на классовые челленджи.
+- Добавлен полноценный gamepad flow: автоопределение активного устройства, hot-plug, движение стиком и крестовиной, подтверждение/назад/пауза/ультимейт с геймпада, отдельные настройки и сохранение геймпадных параметров.
+- Добавлены новые поведенческие проверки для keystone-эффектов: тесты теперь доказывают реальные боевые исходы на игровых узлах, а не только наличие чисел в таблицах.
+- Добавлена новая волна PixelLab runtime packs для героев и части боссов: больше персонажей получили направленные idle/move/walk-анимации и живые превью на экране выбора.
+- Добавлен новый 0.2.0 release-look главного меню: cosmic atlas art, новый логотип, подготовленная release-новость и визуальные материалы для публикации.
+
+### Changed
+- Старое дерево меты заменено на экран «Атлас героев» с вкладками «Созвездие» и «Гильдия», медальонами классов, холстом созвездия, панелью узла и понятными валютами.
+- Классовая мета стала глубже: minor-звёзды, техники, keystone и hidden-звёзды теперь распределены по личному силуэту каждого класса и лучше поддерживают разные стили игры.
+- Награды и экономика меты переведены на эмблемы класса и звёздную пыль; старые сейвы мигрируют с бесплатным респеком и без потери уже заработанного прогресса.
+- Экран Codex, Level Up, HUD, Settings, 2K-элементы и часть всплывающих подсказок получили заметную полировку читаемости, safe zones и no-overlap проверок.
+- Основные релизные настройки уже выставлены на 0.2.0: версия проекта, export presets и внутриигровая версия синхронизированы.
+
+### Fixed
+- Исправлена конфликтная модалка переназначения клавиш: кнопки Retry/Back больше не используют неподходящую текстуру и проходят 2K no-overlap проверку.
+- Исправлена обработка геймпадных настроек: сохранение видео/звука/управления больше не сбрасывает deadzone, вибрацию и joypad-бинды к дефолтам.
+- Исправлен Bastion taunt: враги действительно меняют цель на владельца таунта, пока статус активен, и корректно возвращаются к обычной цели после окончания.
+- Исправлены регрессии в keystone-подключении, подсказках, runtime smoke и UI/no-overlap матрицах, найденные во время стабилизации 0.2.0.
+- Исправлены несколько визуальных пересечений и safe-zone проблем на 1920x1080, 2560x1440 и портретных экранах.
 
 ## [0.1.7] — 2026-06-29
 
