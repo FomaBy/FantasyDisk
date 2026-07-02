@@ -432,6 +432,14 @@ runtime data state. SCRUM-835 закрыл semantic combat-пары на нов�
 Наследные v3-ключи (атрибутные `*_flat`/`*_mult`, `elite_boss_damage_mult`,
 `low_hp_damage_bonus`, `lowhp_regen_bonus` и т.д.) остаются разведёнными как были.
 
+**Behavioral gate 4.1d (SCRUM-837).** Для semantic keystone-ключей после
+SCRUM-835 одного wired-гейта недостаточно: `tests/meta_keystone_behavioral_smoke_test.gd`
+проверяет реальные исходы в headless mini-arena (`Player`/`Enemy`/`ClassWeapon`/
+`SummonerWeapon`) и падает, если k0/k1 снова сведены к generic
+`hurt/stance/rush/swarm`-подписям без класс-специфичных combat effects. QA
+прогоняет его через `python3 tools/godot_gate.py` вместе с `meta_skill_tree`,
+`skill_tree_per_hero` и `runtime_smoke`.
+
 ## Приложение C — силуэты созвездий
 
 Список силуэтов — §7. Нормированные координаты узлов (npos 0..1) зафиксированы

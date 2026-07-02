@@ -22,6 +22,16 @@
   after expiry/invalid owner. The semantic smoke now also proves taunt
   movement/fallback, suppression expiry, heal→holy damage, DoT death spread,
   shadow invisibility damage ignore, and real homunculus/pet summon profiles.
+- SCRUM-837: подготовлен behavioral gate для Meta 4.1 keystone-эффектов:
+  новый `tests/meta_keystone_behavioral_smoke_test.gd` строит headless
+  mini-arena на реальных `Player`/`Enemy`/`ClassWeapon`/`SummonerWeapon` nodes
+  и проверяет фактические боевые исходы вместо synthetic modifier dictionaries.
+  Покрытие: HP threshold, stance, post-event/rush window, count-in-radius,
+  on-hit debuff, gold scaling, elemental mark, reactor heat, device tempo,
+  DoT spread, invisibility, pierce, drain, cloud detonation, pet buffs,
+  representative downsides и 3 disabled-wiring self-checks. `meta_skill_tree`
+  получил lightweight anti-flattening contract для semantic SCRUM-835 keys;
+  финальная зелёная приёмка выполняется поверх SCRUM-835 hardening.
 - SCRUM-834a: Мета 4.1 — условные keystone на существующих гейтах с не-урон
   стат-целью. Инфра `hurt/stance/rush/swarm` расширена за пределы урона: soldier
   «Шквал» (стойка → +19.1% скорострельности `stance_attack_speed_bonus`, downside

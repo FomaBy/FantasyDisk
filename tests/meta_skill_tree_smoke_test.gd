@@ -19,6 +19,7 @@ const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 func _initialize() -> void:
 	_test_tree_data_integrity()
 	_test_effect_keys_are_wired()
+	_test_semantic_keystone_behavioral_gate_contract()
 	_test_graph_connectivity()
 	_test_purchase_and_currencies()
 	_test_save_load_roundtrip()
@@ -144,6 +145,60 @@ func _test_effect_keys_are_wired() -> void:
 		for key in (node_data.get("effects", {}) as Dictionary).keys():
 			if not wired.has(str(key)):
 				_fail("Node '%s' uses unwired effect key '%s' (Appendix B gate)." % [str(node_data["id"]), str(key)])
+				return
+
+
+func _test_semantic_keystone_behavioral_gate_contract() -> void:
+	# SCRUM-837: the data smoke must not be the only guard for Meta 4.1 keystones.
+	# This contract keeps the dedicated mini-arena behavioral smoke registered and
+	# makes generic four-key flattening visible even before QA runs the heavy gate.
+	if not ResourceLoader.exists("res://tests/meta_keystone_behavioral_smoke_test.gd"):
+		_fail("SCRUM-837 behavioral keystone smoke is missing.")
+		return
+	var semantic_keys := [
+		"enemy_hit_damage_down",
+		"gold_damage_per_50",
+		"elemental_resonance_bonus",
+		"reactor_heat_damage_bonus",
+		"device_attack_speed_bonus",
+		"dot_death_spread_duration",
+		"shadow_burst_invisibility_time",
+		"charged_shot_extra_pierce",
+		"drain_extra_targets",
+		"cloud_detonation_radius_mult",
+		"pet_damage_mult",
+		"bastion_defense_bonus",
+	]
+	for key in semantic_keys:
+		if not PlayerScript.META_SKILL_FLAT_MAP.has(str(key)):
+			_fail("Semantic keystone key '%s' is not wired in player.gd; SCRUM-835/837 cannot be accepted." % str(key))
+			return
+	var required_by_class := {
+		"soldier": ["enemy_hit_damage_down"],
+		"thief": ["gold_damage_per_50"],
+		"elementalist": ["elemental_resonance_bonus"],
+		"robot": ["reactor_heat_damage_bonus"],
+		"engineer": ["device_attack_speed_bonus"],
+		"dark_mage": ["dot_death_spread_duration"],
+		"assassin": ["shadow_burst_invisibility_time"],
+		"ranger": ["charged_shot_extra_pierce"],
+		"doctor": ["drain_extra_targets"],
+		"chemist": ["cloud_detonation_radius_mult"],
+		"druid": ["pet_damage_mult"],
+		"knight": ["bastion_defense_bonus"],
+	}
+	for class_id in required_by_class.keys():
+		var key_union := {}
+		for suffix in ["k0", "k1"]:
+			var node := Meta.node_by_id("%s_%s" % [str(class_id), suffix])
+			if node.is_empty():
+				_fail("Missing semantic keystone node '%s_%s'." % [str(class_id), suffix])
+				return
+			for key in (node.get("effects", {}) as Dictionary).keys():
+				key_union[str(key)] = true
+		for required_key in required_by_class[class_id]:
+			if not key_union.has(str(required_key)):
+				_fail("Class '%s' k0/k1 lack semantic key '%s'; still flattened to generic conditional effects." % [str(class_id), str(required_key)])
 				return
 
 
