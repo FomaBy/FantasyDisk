@@ -1,7 +1,7 @@
 # SCRUM-584 Rebind Conflict UI 2K
 
 Jira: SCRUM-584
-Status: done
+Status: new
 Executor: Codex
 Lane: Codex
 Role: Design/UI
@@ -74,3 +74,38 @@ imports Unix-only `fcntl`, so direct Godot console runs are used.
 
 Disk cleanup: remove `.godot/` and Python `__pycache__` before final handoff if
 they were created by verification.
+
+## QA Verdict 2026-07-02 - FAILED
+
+QA takeover by `codex-qa-claude-monitor` on `origin/dev@57877fe3` found a
+blocking runtime/test mismatch. The rebind conflict retry/back buttons pass
+`"rc_btn"` into the 2K button helper, but they do not actually use the dedicated
+`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png` asset at runtime.
+
+Blocking evidence:
+
+- `scripts/ui_screens.gd::_text_button_unique_id()` maps
+  `RebindConflictRetryButton` and `RebindConflictBackButton` to
+  `"continue_240x72"`.
+- `scripts/ui_screens.gd::_apply_overhaul_2k_button_theme()` then short-circuits
+  for that unique text-button id and applies the generic fantasy/text-unique
+  button theme instead of `_overhaul_2k_frame_style("rc_btn", ...)`.
+- `scripts/ui/ui_theme_paths.gd::TEXT_BUTTON_UNIQUE_TEXTURES["continue_240x72"]`
+  resolves to `ui_btn_text_unique_continue_240x72_normal.png`, not the dedicated
+  `ui_frame_2k_rc_btn.png`.
+- `tests/ui_no_overlap_matrix_test.gd` masks the regression by defining
+  `RC_BTN_2K_FRAME_PATH` as the text-unique continue texture and asserting
+  against that wrong path.
+
+QA checks:
+
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/display_resolution_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Verdict: QA FAILED; return SCRUM-584 to implementation. Fix expected behavior so
+the rebind conflict buttons use the dedicated `rc_btn` 2K frame at runtime, and
+update the verifier to assert the actual `ui_frame_2k_rc_btn.png` path.
+
+Disk cleanup: QA worktree `/tmp/FantasyDisk-QA-SCRUM-584` removed after Jira
+sync/commit; transient `.godot`, `qa_logs`, and `.import` artifacts not kept.
