@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Биолог» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-421
 Lane: codex
-Исполнитель: codex-design-biologist-rescue-20260701
-QA: ready (2026-07-01)
+Исполнитель: Codex Animator/UI runtime 2026-07-02
+QA: ready (2026-07-02)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## PM Directive (2026-06-30)
@@ -106,8 +106,8 @@ Acceptance notes:
   cell for idle/move rows; Animator must produce real idle and move/walk frames
   before SpriteFrames/runtime integration.
 
-## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: biologist v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+## Historical Design-Source Check (2026-06-15)
+Статус: design-source accepted (biologist v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **biologist v2 source прозрачный**: `biologist_v2_source_clean` (1024²), `_idle_cell_512`
@@ -210,3 +210,23 @@ Verification:
 - PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
 
 Ready for Jira QA on branch `codex/scrum-421-biologist-rescue`.
+
+## Jira QA Sync Result — Codex 2026-07-02
+
+SCRUM-421 was revalidated and restored into live `dev` after the earlier rescue
+branch was not present in-game. Existing PixelLab source
+`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` was found and applied to the runtime
+Biologist class. The Hero Select carousel was also adjusted to align bottom-row
+portraits by visible alpha baseline and slightly enlarge slots.
+
+Additional verification:
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Pushed to `dev`: `f972cc4c feat(SCRUM-421): restore biologist pixellab pack`.
+Disk cleanup: removed `/tmp/fantasydisk-scrum421-sync`; no disposable checkout remains.

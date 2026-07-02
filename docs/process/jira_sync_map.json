@@ -2255,8 +2255,8 @@
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
-  "status": "К выполнению",
-  "desc_hash": "6fe1b468bfd4830862bfca27125b6146"
+  "status": "Контроль качества",
+  "desc_hash": "c3dc9864f4a715bfcd63bff4ac91a44a"
  },
  "art_char_redraw_v2_bright_epic_anchor_task.md": {
   "key": "SCRUM-422",
@@ -2655,8 +2655,8 @@
  },
  "design_scrum586_stat_tooltip_2k_redesign_task.md": {
   "key": "SCRUM-586",
-  "status": "Контроль качества",
-  "desc_hash": "622db00da2aee56fb39b7f38fa04e913"
+  "status": "Готово",
+  "desc_hash": "99b0d65773ba7aed1e9f2bba2f4914f8"
  },
  "SCRUM-588_levelup_toast_2k_redesign.md": {
   "key": "SCRUM-588",
@@ -3110,8 +3110,8 @@
  },
  "backend_scrum593_integrate_scrum586_stat_tooltip_2k_frame_task.md": {
   "key": "SCRUM-593",
-  "status": "Контроль качества",
-  "desc_hash": "9db6137a341fc3658b1e41fc4ce0a7ea"
+  "status": "Готово",
+  "desc_hash": "e16efbffa3ef9a331d949df4a763ae14"
  },
  "backend_secret_ascension_boss_runtime_handoff_task.md": {
   "key": "SCRUM-702",
@@ -3165,8 +3165,8 @@
  },
  "design_fantasydisk_item_icon_generator_skill_task.md": {
   "key": "SCRUM-514",
-  "status": "Контроль качества",
-  "desc_hash": "41c91b42b00368ca99d0aaae952f23f2"
+  "status": "Готово",
+  "desc_hash": "de7fae170ea7804e82b6f64a967b52f7"
  },
  "design_pixellab_dark_mage_hero_select_task.md": {
   "key": "SCRUM-685",
@@ -3175,8 +3175,8 @@
  },
  "design_secret_ascension_boss_source_pack_task.md": {
   "key": "SCRUM-539",
-  "status": "Контроль качества",
-  "desc_hash": "22a4757d934b196eb6292e32528d372c"
+  "status": "Готово",
+  "desc_hash": "010ddc864394ef9f9758627ca51c5306"
  },
  "animation_weapon_attack_acid_flask_claude_task.md": {
   "key": "SCRUM-727",
@@ -3631,11 +3631,16 @@
  "combat_hud_compact_redesign_task.md": {
   "key": "SCRUM-806",
   "status": "В работе",
-  "desc_hash": "098590756851f0ca819cbec65716c6d6"
+  "desc_hash": "e7b8e8f5e0de29d8687ebb6455697df7"
  },
  "skill_tree_v3_class_identity_task.md": {
   "key": "SCRUM-807",
   "status": "К выполнению",
-  "desc_hash": "d9d7a2e14adcb5bd4263fd2e1448a8af"
+  "desc_hash": "140f4731f9cd41e1118154bcc666a122"
+ },
+ "design_settings_menu_full_review_redesign_task.md": {
+  "key": "SCRUM-805",
+  "status": "К выполнению",
+  "desc_hash": "e4851d2bf4f21f2f3041799079624872"
  }
 }
