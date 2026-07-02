@@ -153,3 +153,18 @@ AC 1-6 выполнены: слим-бары HP/XP/ULT с иконками + ч�
 удалён); компактный таймер с alarm ≤5с (красный + пульс); кластер @2K 122px (дизайн-цель
 ~120, в допуске) с зелёной no-overlap матрицей; 8 ассетов с реальной альфой + png/.import
 парой в origin/dev git-tree; `_update_hud` обновляет значения с READY-логикой.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+- QA 2026-07-02 (claude-qa): merge-check OK — dddb88ee+27a02ab3+27e2b33d+5283cc93 ancestor origin/dev.
+- Гейты в чистом worktree от origin/dev (e1f1522c) после --import: runtime_smoke_test,
+  runtime_smoke_ui_test, ui_no_overlap_matrix_test, runtime_smoke_boss_elite_test — все exit 0,
+  0 SCRIPT ERROR в логах.
+- Все AC: слим-бары HP/XP/ULT с пиксель-иконками, деньги иконка+число, карточные рамки убраны
+  (smoke v2-контракт), арабское возвышение с эмблемой (ROMAN_NUMERALS удалён), alarm-таймер
+  264×92 сохранён, ассеты 8/8 png+.import в паре, прозрачность чистая.
+- Визуал: капча capture_combat_hud_v2 на 1152/1920/2560 — компактно, читаемо, топ-бэнд ~11%.
+- Примечание: кластер 640×122 @2K (+2px к литеральным «≤120», в допуске «~120» дизайн-спеки,
+  лимит матрицы 18% не нарушен) — не блокер.
