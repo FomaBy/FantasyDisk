@@ -1,6 +1,6 @@
 # Полный редизайн экрана «Кодекс»: OpenAI-мокап → карта layout → новый пиксельный UI без растяжения
 
-Статус: review
+Статус: done
 Версия: 0.1.8
 Создано: 2026-06-30
 Роль: Design
@@ -197,7 +197,7 @@ Thread cleanup: pending archive at worker finish.
 
 ## Verification Retry - Codex SCRUM-725 verification worker 2026-07-02c
 
-Статус: review / ready for Jira `Контроль качества`
+Статус: done / ready for Jira `Контроль качества`
 Thread/Worker: 019f1feb-e0c8-7b73-82c3-808b65ff4ad6 / codex-scrum-725-verification-retry-20260702c
 
 Scope: verify/unblock the pushed SCRUM-725 implementation on current
