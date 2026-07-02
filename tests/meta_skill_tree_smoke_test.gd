@@ -24,6 +24,7 @@ func _initialize() -> void:
 	_test_budget_power_corridor()
 	_test_atlas_stays_non_combat()
 	await _test_player_application()
+	await _test_conditional_keystones()
 	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
@@ -469,6 +470,88 @@ func _test_player_application() -> void:
 
 	holder.queue_free()
 	current_scene = null
+	await process_frame
+
+
+# SCRUM-834 (Мета 4.1): каждый из 4 типов условных keystone поднимает урон ЛИШЬ
+# при выполнении условия; гейты ставит player (HP-порог, стойка, окно-после-
+# уклонения, счёт-в-радиусе). Минимум 1 поведенческий сценарий на тип условия.
+func _make_conditional_player(holder: Node2D, mods: Dictionary) -> Node:
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	await process_frame
+	player.call("apply_meta_skill_modifiers", mods)
+	await process_frame
+	return player
+
+
+func _dmg(player: Node) -> float:
+	return float((player.get("derived_parameters") as Dictionary).get("damage", 0.0))
+
+
+func _test_conditional_keystones() -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+
+	# 1) HP-порог «пока ранен» (HP < 50%).
+	var ph := await _make_conditional_player(holder, {"hurt_damage_bonus": 0.3})
+	var base_h := _dmg(ph)
+	ph.set("health", float(ph.get("max_health")) * 0.4)
+	ph.call("_update_conditional_keystones", 0.1)
+	if _dmg(ph) <= base_h:
+		_fail("Условный keystone «пока ранен» должен поднимать урон при HP<50%.")
+		return
+	ph.set("health", float(ph.get("max_health")))
+	ph.call("_update_conditional_keystones", 0.1)
+	if absf(_dmg(ph) - base_h) > 0.01:
+		_fail("Бонус «пока ранен» обязан исчезать при HP≥50%.")
+		return
+	ph.queue_free()
+
+	# 2) Стойка: неподвижность ≥ порога.
+	var ps := await _make_conditional_player(holder, {"stance_damage_bonus": 0.2})
+	var base_s := _dmg(ps)
+	ps.set("velocity", Vector2.ZERO)
+	ps.call("_update_conditional_keystones", 1.0)  # > STANCE_ACTIVATION_TIME
+	if _dmg(ps) <= base_s:
+		_fail("Условный keystone «в стойке» должен поднимать урон при неподвижности.")
+		return
+	ps.set("velocity", Vector2(320.0, 0.0))
+	ps.call("_update_conditional_keystones", 0.1)
+	if absf(_dmg(ps) - base_s) > 0.01:
+		_fail("Бонус «в стойке» обязан исчезать в движении.")
+		return
+	ps.queue_free()
+
+	# 3) Окно после уклонения: «в рывке».
+	var pr := await _make_conditional_player(holder, {"rush_damage_bonus": 0.34})
+	var base_r := _dmg(pr)
+	pr.call("_trigger_rush_window")
+	if _dmg(pr) <= base_r:
+		_fail("Условный keystone «в рывке» должен поднимать урон после уклонения.")
+		return
+	pr.queue_free()
+
+	# 4) Счёт-в-радиусе: «в гуще боя».
+	var pw := await _make_conditional_player(holder, {"swarm_damage_bonus": 0.18})
+	var base_w := _dmg(pw)
+	for _i in range(int(PlayerScript.SWARM_CAP)):
+		var foe := Node2D.new()
+		holder.add_child(foe)
+		foe.global_position = pw.get("global_position")
+		foe.add_to_group("enemies")
+	pw.call("_update_conditional_keystones", PlayerScript.SWARM_SCAN_INTERVAL + 0.1)
+	if _dmg(pw) <= base_w:
+		_fail("Условный keystone «в гуще боя» должен поднимать урон при врагах рядом.")
+		return
+	pw.queue_free()
+
+	current_scene = null
+	holder.queue_free()
 	await process_frame
 
 

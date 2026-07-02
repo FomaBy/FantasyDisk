@@ -322,11 +322,12 @@ func _test_class_affinity_effects_are_filtered() -> void:
 	if float(berserk_mods.get("damage_mult", 0.0)) <= 0.0:
 		_fail("Моды берсерка должны включать его купленные звезды.")
 		return
-	if float(berserk_mods.get("vampiric_chance_flat", 0.0)) <= 0.0:
+	# SCRUM-834: k0 «Кровавый танец» теперь условный (бонус урона, пока HP<50%).
+	if float(berserk_mods.get("hurt_damage_bonus", 0.0)) <= 0.0:
 		_fail("Моды берсерка должны включать активный keystone «Кровавый танец».")
 		return
 	var soldier_mods := Meta.skill_modifiers_for_class(state, "soldier")
-	if soldier_mods.has("damage_mult") or soldier_mods.has("vampiric_chance_flat"):
+	if soldier_mods.has("damage_mult") or soldier_mods.has("hurt_damage_bonus"):
 		_fail("Звезды берсерка не должны протекать солдату.")
 		return
 	# Ядро чужого созвездия тоже спит: у солдата только его собственное ядро.

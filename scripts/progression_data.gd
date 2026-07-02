@@ -1061,6 +1061,14 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
+	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
+	# (*_active 0/1, swarm_fraction 0..1) ставит player._update_conditional_keystones/
+	# _trigger_rush_window; неактивное условие даёт 0 (keystone «спит»).
+	damage_multiplier *= 1.0 \
+		+ float(run_modifiers.get("hurt_damage_bonus", 0.0)) * float(run_modifiers.get("hurt_active", 0.0)) \
+		+ float(run_modifiers.get("stance_damage_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0)) \
+		+ float(run_modifiers.get("rush_damage_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) \
+		+ float(run_modifiers.get("swarm_damage_bonus", 0.0)) * float(run_modifiers.get("swarm_fraction", 0.0))
 	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).

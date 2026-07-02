@@ -64,6 +64,13 @@ const POWER_WEIGHTS := {
 	"kill_explosion_chance": 0.5, "take_hit_pulse_chance": 0.5,
 	"thorn_reflect_multiplier": 0.2, "crit_speed_burst": 0.3, "dodge_rush_bonus": 0.3,
 	"lowhp_guard": 0.02, "death_save": 0.03, "ult_start_charge": 0.02,
+	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Вес =
+	# средняя доля времени активности (аптайм) × вес damage_mult (1.0): «пока ранен»
+	# HP<50% ≈0.30, «в стойке» неподвижность ≥0.8с ≈0.45, «в рывке» окно после
+	# уклонения ≈0.25, «в гуще боя» доля врагов рядом от кэпа ≈0.50. Так крупный
+	# заголовочный процент keystone держит узкий budget-вклад (§6, спред ≤1.25).
+	"hurt_damage_bonus": 0.30, "stance_damage_bonus": 0.45,
+	"rush_damage_bonus": 0.25, "swarm_damage_bonus": 0.50,
 	"strength_flat": 0.008, "agility_flat": 0.008, "intelligence_flat": 0.008,
 	"perception_flat": 0.008, "energy_flat": 0.008, "knowledge_flat": 0.008,
 	"endurance_flat": 0.008, "leadership_flat": 0.008,
@@ -102,6 +109,11 @@ const EFFECT_LABELS := {
 	"thorn_reflect_multiplier": {"ru": "полученного урона отражается шипами", "pct": true},
 	"crit_speed_burst": {"ru": "к скорости движения после крита (короткий рывок)", "pct": true},
 	"dodge_rush_bonus": {"ru": "к скорости движения после уклонения (рывок)", "pct": true},
+	# SCRUM-834 (Мета 4.1): условные keystone-бонусы урона (гейт ставит player.gd).
+	"hurt_damage_bonus": {"ru": "к урону, пока здоровье ниже половины", "pct": true},
+	"stance_damage_bonus": {"ru": "к урону в неподвижной боевой стойке", "pct": true},
+	"rush_damage_bonus": {"ru": "к урону в рывке (окно после уклонения)", "pct": true},
+	"swarm_damage_bonus": {"ru": "к урону в гуще боя (на пике — врагов рядом)", "pct": true},
 	"pickup_radius_flat": {"ru": "к радиусу подбора", "pct": false},
 	"projectile_speed_flat": {"ru": "к скорости снарядов", "pct": false},
 	"absorb_flat": {"ru": "к поглощению", "pct": false},
@@ -166,8 +178,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Второе дыхание", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
 		],
 		"keystones": [
-			{"title": "Кровавый танец", "effects": {"vampiric_chance_flat": 0.04, "vampiric_amount_flat": 0.5, "healing_mult": -0.3}},
-			{"title": "Несущий бурю", "effects": {"damage_mult": 0.09, "max_health_mult": -0.04}},
+			{"title": "Кровавый танец", "effects": {"hurt_damage_bonus": 0.32, "healing_mult": -0.3}},
+			{"title": "Несущий бурю", "effects": {"swarm_damage_bonus": 0.18, "max_health_mult": -0.04}},
 			{"title": "Последний рубеж", "effects": {"low_hp_damage_bonus": 0.29, "lowhp_regen_bonus": 0.4, "defense_flat": -0.022}},
 		],
 		"hidden": [
@@ -185,13 +197,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Полевая смекалка", "effects": {"buff_power_flat": 0.006, "max_health_mult": 0.008}},
 		],
 		"keystones": [
-			{"title": "Подавляющий огонь", "effects": {"attack_speed_mult": 0.06, "range_mult": 0.03, "move_speed_mult": -0.06}},
-			{"title": "Одиночными", "effects": {"damage_mult": 0.05, "crit_chance_flat": 0.018, "attack_speed_mult": -0.04}},
+			{"title": "Подавляющий огонь", "effects": {"hurt_damage_bonus": 0.28, "move_speed_mult": -0.06}},
+			{"title": "Одиночными", "effects": {"stance_damage_bonus": 0.191, "attack_speed_mult": -0.04}},
 			{"title": "Гранатный подсумок", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "range_mult": -0.06}},
 		],
 		"hidden": [
-			{"title": "Окопная выучка", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Тот, кто держал рубеж всем арсеналом, бьёт в ответ без команды.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Ветеран высот", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "Возвышения — та же высота: бери её штурмом.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Окопная выучка", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Тот, кто держал рубеж всем арсеналом, бьёт в ответ без команды.", "metric": "weapon_diversity", "threshold": 3},
+			{"title": "Ветеран высот", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "Возвышения — та же высота: бери её штурмом.", "metric": "class_wins", "threshold": 8},
 		],
 	},
 	"thief": {
@@ -204,13 +216,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Скользкий трюк", "effects": {"dodge_rush_bonus": 0.027, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Большой куш", "effects": {"crit_chance_flat": 0.027, "move_speed_mult": 0.04, "max_health_mult": -0.04}},
-			{"title": "Ночная работа", "effects": {"dodge_flat": 0.018, "crit_damage_flat": 0.1, "damage_mult": -0.04}},
+			{"title": "Большой куш", "effects": {"rush_damage_bonus": 0.344, "max_health_mult": -0.04}},
+			{"title": "Ночная работа", "effects": {"swarm_damage_bonus": 0.183, "damage_mult": -0.04}},
 			{"title": "Азарт канатоходца", "effects": {"crit_damage_flat": 0.17, "dodge_rush_bonus": 0.09, "defense_flat": -0.022}},
 		],
 		"hidden": [
-			{"title": "Отмычка судьбы", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Каждый замок в городе знает эти руки.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Крыши столицы", "effects": {"crit_speed_burst": 0.07}, "lore": "Кто бегал по черепице над стражей, того не догнать и на земле.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Отмычка судьбы", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Каждый замок в городе знает эти руки.", "metric": "no_shop_wins", "threshold": 1},
+			{"title": "Крыши столицы", "effects": {"crit_speed_burst": 0.07}, "lore": "Кто бегал по черепице над стражей, того не догнать и на земле.", "metric": "weapon_diversity", "threshold": 3},
 		],
 	},
 	"elementalist": {
@@ -223,13 +235,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Пепел и искры", "effects": {"kill_explosion_chance": 0.016, "aoe_radius_mult": 0.013}},
 		],
 		"keystones": [
-			{"title": "Сверхновая", "effects": {"aoe_radius_mult": 0.09, "damage_mult": 0.04, "range_mult": -0.06}},
-			{"title": "Канал ульты", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "damage_mult": -0.04}},
+			{"title": "Сверхновая", "effects": {"swarm_damage_bonus": 0.188, "range_mult": -0.06}},
+			{"title": "Канал ульты", "effects": {"stance_damage_bonus": 0.194, "damage_mult": -0.04}},
 			{"title": "Огонь по площади", "effects": {"kill_explosion_chance": 0.11, "dot_damage_flat": 1.0, "move_speed_mult": -0.06}},
 		],
 		"hidden": [
-			{"title": "Резонанс стихий", "effects": {"kill_explosion_chance": 0.04}, "lore": "Три стихии спорят, чья вспышка ярче — выигрывает Диск.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Око бури", "effects": {"lowhp_guard": 1.0}, "lore": "В сердце шторма всегда тихо — стой там.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Резонанс стихий", "effects": {"kill_explosion_chance": 0.04}, "lore": "Три стихии спорят, чья вспышка ярче — выигрывает Диск.", "metric": "weapon_diversity", "threshold": 3},
+			{"title": "Око бури", "effects": {"lowhp_guard": 1.0}, "lore": "В сердце шторма всегда тихо — стой там.", "metric": "best_ascension", "threshold": 3},
 		],
 	},
 	"sniper": {
@@ -242,13 +254,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Отход с позиции", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Один выстрел", "effects": {"crit_damage_flat": 0.16, "damage_mult": 0.03, "attack_speed_mult": -0.04}},
-			{"title": "Свинцовый ветер", "effects": {"attack_speed_mult": 0.05, "projectile_speed_flat": 33.0, "crit_damage_flat": -0.12}},
+			{"title": "Один выстрел", "effects": {"stance_damage_bonus": 0.2, "attack_speed_mult": -0.04}},
+			{"title": "Свинцовый ветер", "effects": {"rush_damage_bonus": 0.345, "crit_damage_flat": -0.12}},
 			{"title": "Гнездо ястреба", "effects": {"range_mult": 0.06, "crit_chance_flat": 0.02, "move_speed_mult": -0.06}},
 		],
 		"hidden": [
-			{"title": "Метка охотника", "effects": {"crit_speed_burst": 0.07}, "lore": "Секунда после идеального выстрела принадлежит только тебе.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Выше облаков", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "С вершины возвышения любая цель как на ладони.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Метка охотника", "effects": {"crit_speed_burst": 0.07}, "lore": "Секунда после идеального выстрела принадлежит только тебе.", "metric": "best_ascension", "threshold": 3},
+			{"title": "Выше облаков", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "С вершины возвышения любая цель как на ладони.", "metric": "no_shop_wins", "threshold": 2},
 		],
 	},
 	"priest": {
@@ -261,13 +273,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Свет на пределе", "effects": {"lowhp_regen_bonus": 0.16, "aura_radius_flat": 2.0}},
 		],
 		"keystones": [
-			{"title": "Хор искупления", "effects": {"vampiric_chance_flat": 0.03, "vampiric_amount_flat": 0.6, "damage_mult": -0.04}},
-			{"title": "Щит веры", "effects": {"defense_flat": 0.027, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Хор искупления", "effects": {"hurt_damage_bonus": 0.3, "damage_mult": -0.04}},
+			{"title": "Щит веры", "effects": {"stance_damage_bonus": 0.209, "move_speed_mult": -0.06}},
 			{"title": "Глас гнева", "effects": {"damage_mult": 0.05, "buff_power_flat": 0.029, "defense_flat": -0.022}},
 		],
 		"hidden": [
-			{"title": "Чудо у алтаря", "effects": {"lowhp_guard": 1.0}, "lore": "Вера, проверенная разными реликвиями, отвечает в самый тёмный час.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Печать вершин", "effects": {"buff_power_flat": 0.016}, "lore": "Молитва, вознесённая на вершине, звучит громче.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Чудо у алтаря", "effects": {"lowhp_guard": 1.0}, "lore": "Вера, проверенная разными реликвиями, отвечает в самый тёмный час.", "metric": "class_wins", "threshold": 8},
+			{"title": "Печать вершин", "effects": {"buff_power_flat": 0.016}, "lore": "Молитва, вознесённая на вершине, звучит громче.", "metric": "best_ascension", "threshold": 4},
 		],
 	},
 	"biologist": {
@@ -280,13 +292,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Защитная реакция", "effects": {"dodge_flat": 0.003, "thorn_reflect_multiplier": 0.04}},
 		],
 		"keystones": [
-			{"title": "Пандемия", "effects": {"dot_damage_flat": 1.4, "dot_speed_flat": 0.06, "damage_mult": -0.04}},
-			{"title": "Симбионт", "effects": {"summon_bonus": 1.0, "vampiric_amount_flat": 0.4, "dot_speed_flat": -0.07}},
+			{"title": "Пандемия", "effects": {"swarm_damage_bonus": 0.177, "damage_mult": -0.04}},
+			{"title": "Симбионт", "effects": {"stance_damage_bonus": 0.204, "dot_speed_flat": -0.07}},
 			{"title": "Регенеративный цикл", "effects": {"regeneration_flat": 0.15, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
 		],
 		"hidden": [
-			{"title": "Мутация", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждый погибший образец — питательная среда для нового.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Апекс-штамм", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Выживает не сильнейший, а тот, кто больнее огрызается.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Мутация", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждый погибший образец — питательная среда для нового.", "metric": "weapon_diversity", "threshold": 3},
+			{"title": "Апекс-штамм", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Выживает не сильнейший, а тот, кто больнее огрызается.", "metric": "class_wins", "threshold": 12},
 		],
 	},
 	"robot": {
@@ -299,13 +311,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Контур перегрузки", "effects": {"ult_charge_mult": 0.016, "crit_chance_flat": 0.004}},
 		],
 		"keystones": [
-			{"title": "Овердрайв", "effects": {"ult_charge_mult": 0.11, "ultimate_flat": 0.05, "defense_flat": -0.022}},
-			{"title": "Осадный режим", "effects": {"absorb_flat": 3.0, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Овердрайв", "effects": {"stance_damage_bonus": 0.206, "defense_flat": -0.022}},
+			{"title": "Осадный режим", "effects": {"swarm_damage_bonus": 0.17, "move_speed_mult": -0.06}},
 			{"title": "Протокол мести", "effects": {"take_hit_pulse_chance": 0.11, "thorn_reflect_multiplier": 0.18, "attack_speed_mult": -0.04}},
 		],
 		"hidden": [
-			{"title": "Самопочинка", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Инженеры оставили в прошивке подарок на чёрный день.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Аварийный конденсатор", "effects": {"lowhp_guard": 1.0}, "lore": "Последний ватт всегда припасён на вершину.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Самопочинка", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Инженеры оставили в прошивке подарок на чёрный день.", "metric": "best_ascension", "threshold": 4},
+			{"title": "Аварийный конденсатор", "effects": {"lowhp_guard": 1.0}, "lore": "Последний ватт всегда припасён на вершину.", "metric": "weapon_diversity", "threshold": 2},
 		],
 	},
 	"engineer": {
@@ -318,13 +330,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Шрапнельный заряд", "effects": {"kill_explosion_chance": 0.016, "summon_bonus": 0.13}},
 		],
 		"keystones": [
-			{"title": "Армия машин", "effects": {"summon_bonus": 1.1, "buff_power_flat": 0.022, "damage_mult": -0.04}},
-			{"title": "Крепость-мастерская", "effects": {"defense_flat": 0.027, "aura_radius_flat": 9.0, "move_speed_mult": -0.06}},
+			{"title": "Армия машин", "effects": {"stance_damage_bonus": 0.208, "damage_mult": -0.04}},
+			{"title": "Крепость-мастерская", "effects": {"swarm_damage_bonus": 0.18, "move_speed_mult": -0.06}},
 			{"title": "Перегретые стволы", "effects": {"projectile_speed_flat": 33.0, "attack_speed_mult": 0.05, "defense_flat": -0.022}},
 		],
 		"hidden": [
-			{"title": "Запасная схема", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Хорошая турель собирается из того, что било по тебе.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Патент вершины", "effects": {"buff_power_flat": 0.016}, "lore": "Лучшие чертежи рождаются в разреженном воздухе.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Запасная схема", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Хорошая турель собирается из того, что било по тебе.", "metric": "class_wins", "threshold": 12},
+			{"title": "Патент вершины", "effects": {"buff_power_flat": 0.016}, "lore": "Лучшие чертежи рождаются в разреженном воздухе.", "metric": "no_shop_wins", "threshold": 1},
 		],
 	},
 	"dark_mage": {
@@ -337,13 +349,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Тёмный пакт", "effects": {"low_hp_damage_bonus": 0.03, "summon_bonus": 0.13}},
 		],
 		"keystones": [
-			{"title": "Запретное знание", "effects": {"damage_mult": 0.07, "crit_damage_flat": 0.06, "max_health_mult": -0.04}},
-			{"title": "Гниль", "effects": {"dot_damage_flat": 1.4, "aoe_radius_mult": 0.06, "damage_mult": -0.04}},
+			{"title": "Запретное знание", "effects": {"swarm_damage_bonus": 0.185, "max_health_mult": -0.04}},
+			{"title": "Гниль", "effects": {"stance_damage_bonus": 0.197, "damage_mult": -0.04}},
 			{"title": "Договор пустоты", "effects": {"summon_bonus": 0.9, "low_hp_damage_bonus": 0.14, "healing_mult": -0.3}},
 		],
 		"hidden": [
-			{"title": "Шёпот гримуара", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждая душа дочитывает за тебя одну строку заклятия.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Полночь без дна", "effects": {"low_hp_damage_bonus": 0.08}, "lore": "На краю гибели луна светит ярче всего.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Шёпот гримуара", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждая душа дочитывает за тебя одну строку заклятия.", "metric": "best_ascension", "threshold": 5},
+			{"title": "Полночь без дна", "effects": {"low_hp_damage_bonus": 0.08}, "lore": "На краю гибели луна светит ярче всего.", "metric": "weapon_diversity", "threshold": 3},
 		],
 	},
 	"guitarist": {
@@ -356,13 +368,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Сценический кураж", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Крещендо", "effects": {"buff_power_flat": 0.04, "aura_radius_flat": 11.0, "damage_mult": -0.04}},
-			{"title": "Пауэр-аккорд", "effects": {"knockback_mult": 0.09, "damage_mult": 0.05, "buff_power_flat": -0.04}},
+			{"title": "Крещендо", "effects": {"swarm_damage_bonus": 0.188, "damage_mult": -0.04}},
+			{"title": "Пауэр-аккорд", "effects": {"stance_damage_bonus": 0.191, "buff_power_flat": -0.04}},
 			{"title": "Фронтмен", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "max_health_mult": -0.04}},
 		],
 		"hidden": [
 			{"title": "Бродячий сет-лист", "effects": {"crit_speed_burst": 0.07}, "lore": "Публика помнит того, кто сыграл на всём, что звучит.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Хедлайнер вершины", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Чем выше сцена, тем громче отдача.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Хедлайнер вершины", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Чем выше сцена, тем громче отдача.", "metric": "class_wins", "threshold": 15},
 		],
 	},
 	"assassin": {
@@ -375,13 +387,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Танец клинков", "effects": {"attack_speed_mult": 0.008, "dodge_rush_bonus": 0.027}},
 		],
 		"keystones": [
-			{"title": "Из тени", "effects": {"crit_damage_flat": 0.17, "move_speed_mult": 0.03, "max_health_mult": -0.04}},
-			{"title": "Тысяча порезов", "effects": {"attack_speed_mult": 0.05, "vampiric_chance_flat": 0.026, "crit_damage_flat": -0.12}},
+			{"title": "Из тени", "effects": {"hurt_damage_bonus": 0.292, "max_health_mult": -0.04}},
+			{"title": "Тысяча порезов", "effects": {"rush_damage_bonus": 0.346, "crit_damage_flat": -0.12}},
 			{"title": "Призрачный шаг", "effects": {"dodge_flat": 0.018, "dodge_rush_bonus": 0.12, "damage_mult": -0.04}},
 		],
 		"hidden": [
-			{"title": "Контракт гильдии", "effects": {"crit_speed_burst": 0.07}, "lore": "Мастеру всё равно, чем убивать, — важно, что после этого тихо.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Тень на вершине", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Выше всех забирается тот, кого никто не видел в пути.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Контракт гильдии", "effects": {"crit_speed_burst": 0.07}, "lore": "Мастеру всё равно, чем убивать, — важно, что после этого тихо.", "metric": "no_shop_wins", "threshold": 2},
+			{"title": "Тень на вершине", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Выше всех забирается тот, кого никто не видел в пути.", "metric": "best_ascension", "threshold": 5},
 		],
 	},
 	"ranger": {
@@ -394,13 +406,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Уход в кусты", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Град стрел", "effects": {"attack_speed_mult": 0.05, "aoe_radius_mult": 0.06, "range_mult": -0.06}},
-			{"title": "Выстрел навылет", "effects": {"damage_mult": 0.05, "projectile_speed_flat": 33.0, "attack_speed_mult": -0.04}},
+			{"title": "Град стрел", "effects": {"stance_damage_bonus": 0.191, "range_mult": -0.06}},
+			{"title": "Выстрел навылет", "effects": {"swarm_damage_bonus": 0.173, "attack_speed_mult": -0.04}},
 			{"title": "Хозяин тропы", "effects": {"move_speed_mult": 0.06, "crit_chance_flat": 0.022, "max_health_mult": -0.04}},
 		],
 		"hidden": [
-			{"title": "Следопыт арсенала", "effects": {"crit_speed_burst": 0.07}, "lore": "Хороший охотник читает след любым оружием.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Гнездо на скале", "effects": {"dodge_rush_bonus": 0.07}, "lore": "На высоте промахиваются только те, кто смотрит вниз.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Следопыт арсенала", "effects": {"crit_speed_burst": 0.07}, "lore": "Хороший охотник читает след любым оружием.", "metric": "weapon_diversity", "threshold": 3},
+			{"title": "Гнездо на скале", "effects": {"dodge_rush_bonus": 0.07}, "lore": "На высоте промахиваются только те, кто смотрит вниз.", "metric": "class_wins", "threshold": 5},
 		],
 	},
 	"doctor": {
@@ -413,13 +425,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Реанимация", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
 		],
 		"keystones": [
-			{"title": "Триаж", "effects": {"regeneration_flat": 0.15, "max_health_mult": 0.04, "damage_mult": -0.04}},
-			{"title": "Полевая хирургия", "effects": {"vampiric_amount_flat": 0.6, "vampiric_chance_flat": 0.03, "move_speed_mult": -0.06}},
+			{"title": "Триаж", "effects": {"hurt_damage_bonus": 0.308, "damage_mult": -0.04}},
+			{"title": "Полевая хирургия", "effects": {"rush_damage_bonus": 0.36, "move_speed_mult": -0.06}},
 			{"title": "Доза адреналина", "effects": {"attack_speed_mult": 0.05, "buff_power_flat": 0.029, "healing_mult": -0.3}},
 		],
 		"hidden": [
-			{"title": "Протокол спасения", "effects": {"lowhp_guard": 1.0}, "lore": "Врач, освоивший весь инструментарий, не даст умереть и себе.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Горный госпиталь", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Чем выше поднимаешься, тем ценнее каждый вдох.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Протокол спасения", "effects": {"lowhp_guard": 1.0}, "lore": "Врач, освоивший весь инструментарий, не даст умереть и себе.", "metric": "class_wins", "threshold": 8},
+			{"title": "Горный госпиталь", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Чем выше поднимаешься, тем ценнее каждый вдох.", "metric": "no_shop_wins", "threshold": 2},
 		],
 	},
 	"chemist": {
@@ -432,13 +444,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Нестабильная смесь", "effects": {"kill_explosion_chance": 0.016, "dot_damage_flat": 0.21}},
 		],
 		"keystones": [
-			{"title": "Каталитический распад", "effects": {"dot_damage_flat": 1.3, "dot_speed_flat": 0.07, "damage_mult": -0.04}},
-			{"title": "Гремучая колба", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "dot_damage_flat": -1.2}},
+			{"title": "Каталитический распад", "effects": {"swarm_damage_bonus": 0.181, "damage_mult": -0.04}},
+			{"title": "Гремучая колба", "effects": {"stance_damage_bonus": 0.193, "dot_damage_flat": -1.2}},
 			{"title": "Пары эфира", "effects": {"move_speed_mult": 0.06, "dodge_flat": 0.015, "max_health_mult": -0.04}},
 		],
 		"hidden": [
-			{"title": "Побочный продукт", "effects": {"kill_explosion_chance": 0.04}, "lore": "Настоящая наука начинается со слов «а что, если смешать всё».", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Формула высот", "effects": {"dot_damage_flat": 0.5}, "lore": "Разреженный воздух — лучший катализатор.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Побочный продукт", "effects": {"kill_explosion_chance": 0.04}, "lore": "Настоящая наука начинается со слов «а что, если смешать всё».", "metric": "no_shop_wins", "threshold": 1},
+			{"title": "Формула высот", "effects": {"dot_damage_flat": 0.5}, "lore": "Разреженный воздух — лучший катализатор.", "metric": "best_ascension", "threshold": 3},
 		],
 	},
 	"knight": {
@@ -451,13 +463,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Знамя рыцаря", "effects": {"aura_radius_flat": 2.0, "buff_power_flat": 0.006}},
 		],
 		"keystones": [
-			{"title": "Бастион", "effects": {"defense_flat": 0.025, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
-			{"title": "Марш легиона", "effects": {"damage_mult": 0.05, "move_speed_mult": 0.04, "defense_flat": -0.022}},
+			{"title": "Бастион", "effects": {"stance_damage_bonus": 0.2, "move_speed_mult": -0.06}},
+			{"title": "Марш легиона", "effects": {"rush_damage_bonus": 0.328, "defense_flat": -0.022}},
 			{"title": "Шипастый панцирь", "effects": {"thorn_reflect_multiplier": 0.27, "take_hit_pulse_chance": 0.07, "attack_speed_mult": -0.04}},
 		],
 		"hidden": [
-			{"title": "Обет турнира", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Рыцарь, сменивший копьё на меч и молот, страшен в любом строю.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Страж перевала", "effects": {"lowhp_guard": 1.0}, "lore": "Тот, кто держал перевал, знает цену последнему рубежу.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Обет турнира", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Рыцарь, сменивший копьё на меч и молот, страшен в любом строю.", "metric": "best_ascension", "threshold": 4},
+			{"title": "Страж перевала", "effects": {"lowhp_guard": 1.0}, "lore": "Тот, кто держал перевал, знает цену последнему рубежу.", "metric": "class_wins", "threshold": 10},
 		],
 	},
 	"druid": {
@@ -470,13 +482,13 @@ const CONSTELLATION_SPECS := {
 			{"title": "Зов стаи", "effects": {"summon_bonus": 0.13, "crit_chance_flat": 0.004}},
 		],
 		"keystones": [
-			{"title": "Вожак стаи", "effects": {"summon_bonus": 1.1, "aura_radius_flat": 7.0, "damage_mult": -0.04}},
-			{"title": "Дикий рост", "effects": {"regeneration_flat": 0.13, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Вожак стаи", "effects": {"stance_damage_bonus": 0.209, "damage_mult": -0.04}},
+			{"title": "Дикий рост", "effects": {"swarm_damage_bonus": 0.171, "move_speed_mult": -0.06}},
 			{"title": "Гнев леса", "effects": {"dot_damage_flat": 1.4, "thorn_reflect_multiplier": 0.18, "regeneration_flat": -0.13}},
 		],
 		"hidden": [
-			{"title": "Перекличка леса", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Лес отвечает тем голосом, каким к нему обращаются.", "metric": "weapon_diversity", "threshold": 2},
-			{"title": "Древо на скале", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Корни, проросшие сквозь камень вершины, не вырвать ничем.", "metric": "best_ascension", "threshold": 2},
+			{"title": "Перекличка леса", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Лес отвечает тем голосом, каким к нему обращаются.", "metric": "class_wins", "threshold": 10},
+			{"title": "Древо на скале", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Корни, проросшие сквозь камень вершины, не вырвать ничем.", "metric": "weapon_diversity", "threshold": 3},
 		],
 	},
 }
@@ -591,6 +603,8 @@ static func condition_text(metric: String, threshold: int) -> String:
 			return "Победи на возвышении %d или выше этим классом." % threshold
 		"no_shop_wins":
 			return "Победи без покупок в магазине этим классом."
+		"class_wins":
+			return "Одержи %d финальных побед этим классом." % threshold
 		"codex_milestones":
 			return "Достигни %d вех кодекса (открывай монстров, боссов и артефакты)." % threshold
 		"secret_boss":
@@ -692,7 +706,11 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 			var attr_id := str(attrs[RAY_ATTR_PATTERN[ray][step]])
 			var star: Dictionary = STAR_ATTRS[attr_id]
 			attr_seen[attr_id] = int(attr_seen.get(attr_id, 0)) + 1
-			var value := float(star["value"])
+			# SCRUM-834 (Мета 4.1): два номинала минорных звёзд. Каждый профильный
+			# атрибут представлен дважды (I и II) — I=«+1» (×2/3), II=«+2» (×4/3).
+			# Сумма пары = 2×base → базовый бюджет созвездия сохраняется точно (§6).
+			var denom_factor := (2.0 / 3.0) if int(attr_seen[attr_id]) == 1 else (4.0 / 3.0)
+			var value := float(star["value"]) * denom_factor
 			var effects := {str(star["key"]): value}
 			var minor_id := "%s_m%d" % [class_id, ray * 3 + step]
 			_add(nodes, index, {

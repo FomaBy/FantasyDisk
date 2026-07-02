@@ -774,6 +774,8 @@ static func hidden_star_unlocked(state: Dictionary, node_id: String) -> bool:
 			return int(class_challenge_progress_for(state, class_id).get("best_ascension", 0)) >= threshold
 		"no_shop_wins":
 			return int(class_challenge_progress_for(state, class_id).get("no_shop_wins", 0)) >= threshold
+		"class_wins":
+			return class_boss_wins(state, class_id) >= threshold
 		"codex_milestones":
 			return codex_milestones_reached(state) >= threshold
 		"secret_boss":
@@ -801,6 +803,8 @@ static func hidden_star_progress(state: Dictionary, node_id: String) -> Dictiona
 			current = int(class_challenge_progress_for(state, class_id).get("best_ascension", 0))
 		"no_shop_wins":
 			current = int(class_challenge_progress_for(state, class_id).get("no_shop_wins", 0))
+		"class_wins":
+			current = class_boss_wins(state, class_id)
 		"codex_milestones":
 			current = codex_milestones_reached(state)
 		"secret_boss":

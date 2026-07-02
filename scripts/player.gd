@@ -141,6 +141,20 @@ var _echo_hit_counter := 0
 var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
 var _low_hp_active := false
+# SCRUM-834 (Мета 4.1): гейты условных keystone (не часть run_modifiers-дефолтов,
+# сбрасываются в configure_character). Активность ставит run_modifiers[*_active]
+# / [swarm_fraction], которые консумит derived_parameters.
+var _hurt_active := false                 # «пока ранен»: HP ниже половины
+var _stance_active := false               # «в стойке»: неподвижность ≥ порога
+var _stance_time := 0.0                   # накопленное время неподвижности
+var _swarm_fraction := 0.0               # «в гуще боя»: доля врагов рядом от кэпа
+var _swarm_scan_left := 0.0               # таймер редкого скана врагов рядом
+var _rush_window_tween: Tween = null      # «в рывке»: tween снятия окна после уклонения
+const STANCE_ACTIVATION_TIME := 0.8       # порог неподвижности для «стойки», сек
+const SWARM_SCAN_INTERVAL := 0.2          # период скана «гущи боя», сек
+const SWARM_RADIUS := 240.0               # радиус подсчёта врагов «рядом»
+const SWARM_CAP := 8                       # врагов до пика бонуса «гуща боя»
+const RUSH_WINDOW_TIME := 2.0             # длительность окна урона после уклонения, сек
 # SCRUM-500: триггерные артефакты — латчи/кулдауны/счётчики (не часть run_modifiers,
 # поэтому сбрасываются явно в configure_character и при run-start).
 var _crit_burst_tween: Tween = null      # «Импульс Крита»: tween снятия бафа скорости
@@ -228,6 +242,15 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
+	# SCRUM-834: сброс гейтов условных keystone.
+	_hurt_active = false
+	_stance_active = false
+	_stance_time = 0.0
+	_swarm_fraction = 0.0
+	_swarm_scan_left = 0.0
+	if _rush_window_tween != null and _rush_window_tween.is_valid():
+		_rush_window_tween.kill()
+	_rush_window_tween = null
 	if _crit_burst_tween != null and _crit_burst_tween.is_valid():
 		_crit_burst_tween.kill()
 	_crit_burst_tween = null
@@ -426,6 +449,7 @@ func _physics_process(_delta: float) -> void:
 		move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
+	_update_conditional_keystones(_delta)
 	_apply_regeneration(_delta)
 	_update_battle_shout()
 	_update_class_status_auras()
@@ -586,6 +610,7 @@ func take_damage(amount: float, _source := "") -> bool:
 		_show_dodge_popup()
 		_play_sfx("dodge")
 		_trigger_dodge_rush()
+		_trigger_rush_window()
 		return false
 
 	var defended_amount := _try_knight_counter(amount)
@@ -697,6 +722,70 @@ func _trigger_dodge_rush() -> void:
 		run_modifiers["dodge_rush_active"] = 0.0
 		_apply_stat_scaling(false, max_health)
 	)
+
+
+# SCRUM-834 (Мета 4.1): «в рывке» — окно бонуса урона после успешного уклонения
+# (keystone thief/sniper/assassin/knight/doctor). Эталон — _trigger_dodge_rush:
+# флаг rush_window_active + tween на снятие; консумит derived_parameters.
+func _trigger_rush_window() -> void:
+	if float(run_modifiers.get("rush_damage_bonus", 0.0)) <= 0.0:
+		return
+	run_modifiers["rush_window_active"] = 1.0
+	_apply_stat_scaling(false, max_health)
+	if _rush_window_tween != null and _rush_window_tween.is_valid():
+		_rush_window_tween.kill()
+	_rush_window_tween = create_tween()
+	_rush_window_tween.tween_interval(RUSH_WINDOW_TIME)
+	_rush_window_tween.tween_callback(func() -> void:
+		run_modifiers["rush_window_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+	)
+
+
+# SCRUM-834 (Мета 4.1): поддержка гейтов условных keystone «пока ранен» (HP<50%),
+# «в стойке» (неподвижность ≥ порога) и «в гуще боя» (доля врагов рядом от кэпа).
+# Пересчитывает derived_parameters только когда активный гейт сменился (как
+# _update_low_hp_state), чтобы не грузить кадр без таких keystone.
+func _update_conditional_keystones(delta: float) -> void:
+	var has_hurt := float(run_modifiers.get("hurt_damage_bonus", 0.0)) > 0.0
+	var has_stance := float(run_modifiers.get("stance_damage_bonus", 0.0)) > 0.0
+	var has_swarm := float(run_modifiers.get("swarm_damage_bonus", 0.0)) > 0.0
+	if not (has_hurt or has_stance or has_swarm):
+		return
+	var dirty := false
+	if has_hurt:
+		var hurt := max_health > 0.0 and health < max_health * 0.5
+		if hurt != _hurt_active:
+			_hurt_active = hurt
+			run_modifiers["hurt_active"] = 1.0 if hurt else 0.0
+			dirty = true
+	if has_stance:
+		if velocity.length() <= 6.0:
+			_stance_time += delta
+		else:
+			_stance_time = 0.0
+		var stance := _stance_time >= STANCE_ACTIVATION_TIME
+		if stance != _stance_active:
+			_stance_active = stance
+			run_modifiers["stance_active"] = 1.0 if stance else 0.0
+			dirty = true
+	if has_swarm:
+		_swarm_scan_left -= delta
+		if _swarm_scan_left <= 0.0:
+			_swarm_scan_left = SWARM_SCAN_INTERVAL
+			var count := 0
+			for enemy in get_tree().get_nodes_in_group("enemies"):
+				if enemy is Node2D and global_position.distance_squared_to((enemy as Node2D).global_position) <= SWARM_RADIUS * SWARM_RADIUS:
+					count += 1
+					if count >= SWARM_CAP:
+						break
+			var frac := clampf(float(count) / float(SWARM_CAP), 0.0, 1.0)
+			if not is_equal_approx(frac, _swarm_fraction):
+				_swarm_fraction = frac
+				run_modifiers["swarm_fraction"] = frac
+				dirty = true
+	if dirty:
+		_apply_stat_scaling(false, max_health)
 
 
 # SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
@@ -874,6 +963,14 @@ const META_SKILL_FLAT_MAP := {
 	"thorn_reflect_multiplier": "thorn_reflect_multiplier",
 	"crit_speed_burst": "crit_speed_burst",
 	"dodge_rush_bonus": "dodge_rush_bonus",
+	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона, активный лишь при
+	# выполнении условия. Хранятся как забеговый бонус; гейты (*_active/fraction)
+	# ставит _update_conditional_keystones/_trigger_rush_window, консумит их
+	# derived_parameters (damage_multiplier).
+	"hurt_damage_bonus": "hurt_damage_bonus",
+	"stance_damage_bonus": "stance_damage_bonus",
+	"rush_damage_bonus": "rush_damage_bonus",
+	"swarm_damage_bonus": "swarm_damage_bonus",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",

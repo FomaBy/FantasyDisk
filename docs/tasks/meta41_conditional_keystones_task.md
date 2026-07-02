@@ -1,6 +1,6 @@
 # Мета 4.1: условные keystone-механики, уникальные скрытые подвиги, номиналы минорных звёзд
 
-Статус: todo
+Статус: done
 Приоритет: high
 Роль: Back-end (Claude)
 Версия: 0.2.0
@@ -77,3 +77,46 @@ player.gd, новые ключи — только при отсутствии с
 Годо-прогоны через `python3 tools/godot_gate.py` сериализованно; гейтить вывод
 grep'ом «SCRIPT ERROR» (parse-error даёт exit 0!); git pull перед стартом,
 явный `git add` + push сразу после зелёных гейтов; .uid новых .gd коммитить.
+
+## Result / Evidence
+
+Реализовано (backend/claude):
+
+- **Условные keystone** (`k0`/`k1` всех 17 классов): статические стат-трейды
+  заменены условным бонусом урона 4 типов. Разводка `player.gd`:
+  `META_SKILL_FLAT_MAP` (`hurt/stance/rush/swarm_damage_bonus`); гейты
+  `_update_conditional_keystones` (HP<50% → `hurt_active`; неподвижность ≥0.8с →
+  `stance_active`; доля врагов рядом от `SWARM_CAP`=8 → `swarm_fraction`) и
+  `_trigger_rush_window` (2с после уворота, эталон `_trigger_dodge_rush`);
+  консумит `progression_data.derived_parameters.damage_multiplier`. Конверсия
+  budget-нейтральна: вес условного ключа в `POWER_WEIGHTS` = аптайм × вес урона,
+  `up_power` каждого keystone равен прежнему → коридор §6 [0.18..0.25] и спред
+  ≤1.25 сохранены точно (builds 0.2016..0.2243, best-спред 1.06). `k2` —
+  прежний статический трейд.
+- **Скрытые звёзды**: 16 классов (кроме берсерка, запинён per-hero-тестом)
+  получили уникальные per-class подвиги — метрики `weapon_diversity`/
+  `best_ascension`/`no_shop_wins` + новая `class_wins` (из `class_boss_wins`,
+  разведена в `meta_progression.hidden_star_unlocked/hidden_star_progress` +
+  `condition_text`), разные пороги; лор и твист-эффекты сохранены.
+- **Минорные номиналы +1/+2**: пара I/II каждого атрибута рескейлена ×2/3 и
+  ×4/3 (сумма пары = 2×base) → базовый бюджет созвездия неизменен.
+- **Приложения A/B** дизайн-дока обновлены по факту кода (таблица A —
+  6 столбцов с «целевой механикой 4.1»; B — 4 условных ключа + `class_wins`);
+  CHANGELOG (Unreleased).
+
+Гейты (сериализованно `godot_gate.py`, Godot 4.7, все exit 0, без «SCRIPT ERROR»):
+
+- `tests/meta_skill_tree_smoke_test.gd` — PASSED (data-integrity, wired-ключи,
+  budget-коридор, atlas-non-combat, новый `_test_conditional_keystones` —
+  по сценарию на каждый из 4 типов условия: урон растёт лишь при выполнении
+  условия и снимается при его снятии).
+- `tests/skill_tree_per_hero_test.gd` — PASSED (downside ≥25% апсайда, уникальные
+  сигнатуры 51 keystone, взаимоисключение, скрытые подвиги, affinity-фильтр
+  обновлён под условный `hurt_damage_bonus` k0 берсерка).
+- `tests/meta_progression_smoke_test.gd`, `tests/meta_points_per_ascension_test.gd`,
+  `tests/runtime_smoke_test.gd` — PASSED.
+
+Затронуто: `scripts/meta_progression_tree_data.gd`, `scripts/player.gd`,
+`scripts/progression_data.gd`, `scripts/meta_progression.gd`,
+`tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`,
+`docs/design/systems/meta_constellations.md`, `CHANGELOG.md`.
