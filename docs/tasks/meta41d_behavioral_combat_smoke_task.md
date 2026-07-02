@@ -1,6 +1,6 @@
 # Мета 4.1d (SCRUM-837): behavioral smoke реальных боевых эффектов keystone
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Back-end/QA (Codex)
 Версия: 0.2.0
@@ -54,7 +54,7 @@ QA-фейл SCRUM-834, блокер 3: conditional-smoke проверял син
   может готовить тестовую архитектуру, но финальные assertions должны пройти
   только поверх commit/push SCRUM-835 с реальными semantic combat subsystem keys.
 
-## WIP Evidence
+## Evidence / QA PASSED
 
 - Добавлен новый planned gate `tests/meta_keystone_behavioral_smoke_test.gd`:
   SceneTree mini-arena с real Player/Enemy/ClassWeapon/SummonerWeapon nodes.
@@ -67,9 +67,6 @@ QA-фейл SCRUM-834, блокер 3: conditional-smoke проверял син
 - `tests/meta_skill_tree_smoke_test.gd` теперь содержит lightweight contract:
   semantic SCRUM-835 keys должны быть wired и присутствовать в k0/k1 целевых
   классов, иначе gate ловит generic flattening до тяжёлого behavioral smoke.
-- Текущее состояние intentionally dependency-red: clean `origin/dev` ещё не
-  содержит финальный SCRUM-835 semantic surface, поэтому 837 не переводится в
-  `Контроль качества` до rebase/verify поверх готового 835.
 - 2026-07-02 WIP branch `codex/scrum-837-behavioral-gate` обновлён поверх
   SCRUM-834 fix `acd8e023` и текущего `origin/dev` (`4d8ef831`). Validation:
   `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_keystone_behavioral_smoke_test.gd`
@@ -78,3 +75,26 @@ QA-фейл SCRUM-834, блокер 3: conditional-smoke проверял син
   `enemy_hit_damage_down`, no `SCRIPT ERROR`; `skill_tree_per_hero_test.gd` =
   passed; `runtime_smoke_test.gd` = passed. Final QA handoff still waits for
   SCRUM-835 final commit/push and green behavioral assertions.
+- 2026-07-02 finalization: branch rebased onto `origin/dev@0e6cdaab`
+  (SCRUM-835 hardening). Rebase conflicts were bookkeeping-only
+  (`CHANGELOG.md`, `docs/process/jira_sync_map.json`); production runtime was
+  not changed in the final pass.
+- Minimal final test updates in `tests/meta_keystone_behavioral_smoke_test.gd`:
+  anti-flattening now treats SCRUM-835 class semantic keys as semantic even when
+  their names end with `_mult`; conditional tests reapply weapon scaling after
+  changing live meta conditions; gold scaling asserts the real `_damage_enemy`
+  multiplier path; reactor downside compares hot incoming damage against a cold
+  baseline with random dodge/invulnerability disabled.
+- Final validation, all green via `python3 tools/godot_gate.py`:
+  `tests/meta_keystone_behavioral_smoke_test.gd`,
+  `tests/meta_skill_tree_smoke_test.gd`,
+  `tests/skill_tree_per_hero_test.gd`,
+  `tests/runtime_smoke_test.gd`.
+- Log grep: no `SCRIPT ERROR`, no `Parse Error`, no `ERROR:` in
+  `/tmp/scrum837_meta_keystone_behavioral.log`,
+  `/tmp/scrum837_meta_skill_tree.log`,
+  `/tmp/scrum837_skill_tree_per_hero.log`,
+  `/tmp/scrum837_runtime_smoke.log`. `git diff --check` passed.
+- Mutation/self-check evidence: the behavioral gate includes disabled-wiring
+  checks for on-hit debuff, gold scaling, and pierce wiring; the final green run
+  proves those self-checks still execute successfully on top of SCRUM-835.

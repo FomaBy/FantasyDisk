@@ -179,12 +179,12 @@ func _test_keystone_signatures_are_not_flattened(errors: Array) -> void:
 		for required_key in REQUIRED_CLASS_SPECIFIC_KEYS[str(class_id)]:
 			if not key_union.has(str(required_key)):
 				errors.append("Class '%s' k0/k1 still lacks class-specific semantic key '%s'." % [str(class_id), str(required_key)])
-		var only_generic := true
+		var has_class_semantic_key := false
 		for key in key_union.keys():
-			if not GENERIC_CONDITIONAL_KEYS.has(str(key)) and not str(key).ends_with("_mult"):
-				only_generic = false
+			if REQUIRED_SEMANTIC_KEYS.has(str(key)) or (REQUIRED_CLASS_SPECIFIC_KEYS[str(class_id)] as Array).has(str(key)):
+				has_class_semantic_key = true
 				break
-		if only_generic:
+		if not has_class_semantic_key:
 			errors.append("Class '%s' k0/k1 are flattened to generic conditional/stat keys." % str(class_id))
 
 
@@ -194,6 +194,7 @@ func _test_existing_condition_outcomes(holder: Node2D, errors: Array) -> void:
 	var base_loss := await _weapon_hit_loss(holder, player, weapon)
 	player.set("health", float(player.get("max_health")) * 0.35)
 	player.call("_update_conditional_keystones", 0.1)
+	player.call("_apply_weapon_scaling", weapon)
 	var hurt_loss := await _weapon_hit_loss(holder, player, weapon)
 	if hurt_loss <= base_loss * 1.20:
 		errors.append("HP-threshold keystone did not increase real weapon damage (base %.2f, hurt %.2f)." % [base_loss, hurt_loss])
@@ -225,6 +226,7 @@ func _test_existing_condition_outcomes(holder: Node2D, errors: Array) -> void:
 		var foe := await _make_enemy(holder, player.global_position + Vector2(12.0 + index, 0.0), 100.0)
 		foe.name = "SwarmCounter_%d" % index
 	player.call("_update_conditional_keystones", PlayerScript.SWARM_SCAN_INTERVAL + 0.1)
+	player.call("_apply_weapon_scaling", weapon)
 	var swarm_loss := await _weapon_hit_loss(holder, player, weapon)
 	if swarm_loss <= base_loss * 1.15:
 		errors.append("Count-in-radius keystone did not increase real weapon damage (base %.2f, swarm %.2f)." % [base_loss, swarm_loss])
@@ -265,7 +267,7 @@ func _test_gold_scaling(holder: Node2D, errors: Array, enabled: bool) -> bool:
 	var player := await _make_player(holder, "thief", mods)
 	player.set("money", 350)
 	var weapon := await _make_weapon(player, {"damage": 100.0})
-	var loss := await _weapon_hit_loss(holder, player, weapon)
+	var loss := await _weapon_hit_loss(holder, player, weapon, 100.0)
 	_cleanup_player(player)
 	var ok := loss > 118.0 if enabled else loss < 106.0
 	if not ok:
@@ -293,17 +295,24 @@ func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
 	var player := await _make_player(holder, "robot", {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15})
 	var weapon := await _make_weapon(player, {"damage": 100.0, "attack_mode": "robot_reactor_vent", "weapon_id": "robot_reactor_vent"})
 	var cold_loss := await _weapon_hit_loss(holder, player, weapon)
+	_disable_random_damage_avoidance(player)
+	var hp_before := float(player.get("health"))
+	player.call("take_damage", 10.0, "reactor_cold_test")
+	var cold_taken := hp_before - float(player.get("health"))
+	player.set("health", hp_before)
+	player.set("_damage_invulnerability_left", 0.0)
 	for _i in range(5):
 		await _weapon_hit_loss(holder, player, weapon)
 	player.call("_update_meta_keystone_runtime", 0.05)
 	var hot_loss := await _weapon_hit_loss(holder, player, weapon)
-	var hp_before := float(player.get("health"))
+	_disable_random_damage_avoidance(player)
+	hp_before = float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_test")
 	var hot_taken := hp_before - float(player.get("health"))
 	if hot_loss <= cold_loss * 1.20:
 		errors.append("Reactor heat did not increase real weapon damage (cold %.2f, hot %.2f)." % [cold_loss, hot_loss])
-	if hot_taken <= 10.5:
-		errors.append("Reactor heat downside did not increase incoming damage (taken %.2f)." % hot_taken)
+	if cold_taken <= 0.0 or hot_taken <= cold_taken * 1.08:
+		errors.append("Reactor heat downside did not increase incoming damage (cold %.2f, hot %.2f)." % [cold_taken, hot_taken])
 	_cleanup_player(player)
 
 
@@ -511,10 +520,11 @@ func _make_enemy(holder: Node2D, position: Vector2, max_hp: float) -> Node:
 	return enemy
 
 
-func _weapon_hit_loss(holder: Node2D, player: Node, weapon: Node) -> float:
+func _weapon_hit_loss(holder: Node2D, player: Node, weapon: Node, override_amount := -1.0) -> float:
 	var enemy := await _make_enemy(holder, player.global_position + Vector2(90.0, 0.0), 1000.0)
 	var before := float(enemy.get("health"))
-	weapon.call("_damage_enemy", enemy, float(weapon.get("damage")))
+	var amount := override_amount if override_amount >= 0.0 else float(weapon.get("damage"))
+	weapon.call("_damage_enemy", enemy, amount)
 	var loss := before - float(enemy.get("health"))
 	enemy.queue_free()
 	await process_frame
@@ -529,6 +539,13 @@ func _param(player: Node, key: String) -> float:
 func _cleanup_player(player: Node) -> void:
 	if player != null and is_instance_valid(player):
 		player.queue_free()
+
+
+func _disable_random_damage_avoidance(player: Node) -> void:
+	var params: Dictionary = player.get("derived_parameters")
+	params["dodge"] = 0.0
+	player.set("derived_parameters", params)
+	player.set("_damage_invulnerability_left", 0.0)
 
 
 func _method_arg_count(obj: Object, method_name: String) -> int:
