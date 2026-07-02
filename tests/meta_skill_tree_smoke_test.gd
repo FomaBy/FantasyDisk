@@ -211,22 +211,27 @@ func _test_purchase_and_currencies() -> void:
 	if Meta.stardust_available(state) != Meta.stardust_earned(state):
 		_fail("Constellation purchase must not spend stardust.")
 		return
-	# Атлас: хаб открыт, покупка QoL-узла списывает пыль.
+	# Атлас: хаб открыт. SCRUM-828 «ранний крючок» §4 — первый QoL-узел
+	# (atlas_m0, cost 1) доступен СРАЗУ после первой победы (1 пыль).
 	if Meta.node_status(state, "atlas_hub") != "purchased":
 		_fail("Atlas hub must be open from the start.")
 		return
-	if Meta.node_status(state, "atlas_m0") != "locked":
-		_fail("Atlas node must be locked without enough stardust (cost 2 > 1).")
+	if Meta.node_status(state, "atlas_m0") != "available":
+		_fail("Atlas early-hook node (cost 1) must unlock after the first win (1 stardust).")
+		return
+	# Узлы за 2 пыли (atlas_m2) ещё заперты с одной пылью.
+	if Meta.node_status(state, "atlas_m2") != "locked":
+		_fail("Atlas cost-2 node must stay locked with only 1 stardust.")
 		return
 	state = Meta.record_boss_victory(state, "soldier", 0)  # +1 пыль (вторая первая победа)
-	if Meta.node_status(state, "atlas_m0") != "available":
-		_fail("Atlas node must unlock with 2 stardust.")
+	if Meta.node_status(state, "atlas_m2") != "available":
+		_fail("Atlas cost-2 node must unlock with 2 stardust.")
 		return
 	var dust_before := Meta.stardust_available(state)
 	var berserk_sigils_before := Meta.class_sigils_available(state, "berserk")
 	state = Meta.allocate_node(state, "atlas_m0")
-	if not Meta.is_node_purchased(state, "atlas_m0") or Meta.stardust_available(state) != dust_before - 2:
-		_fail("Atlas purchase must spend 2 stardust.")
+	if not Meta.is_node_purchased(state, "atlas_m0") or Meta.stardust_available(state) != dust_before - 1:
+		_fail("Atlas early-hook purchase (cost 1) must spend 1 stardust.")
 		return
 	if Meta.class_sigils_available(state, "berserk") != berserk_sigils_before:
 		_fail("Atlas purchase must not spend class sigils.")

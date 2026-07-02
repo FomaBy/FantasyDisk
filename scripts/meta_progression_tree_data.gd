@@ -514,15 +514,18 @@ const CONSTELLATION_LAYOUT := {
 }
 
 # --- «Атлас гильдии»: общий QoL-слой (валюта — звёздная пыль) ---
-# 25 узлов: хаб 0-cost + 14 минорных (cost 2) + 4 notable (cost 3) + 4 наследных
-# keystone v2 (cost 5: death_save/guaranteed_rare_shop/first_levelup_rare/
-# ult_start_charge — их боевой вклад заперт тестом аккаунт-множителя <1.30) +
-# 2 скрытых узла (кодекс-вехи и секретный босс «зажигают» их без покупки).
-# Полная стоимость 60 пыли при потолке заработка 50 — «всё не купить».
+# 25 узлов: хаб 0-cost + 14 минорных (13×cost 2 + 1×cost 1 — ранний крючок §4) +
+# 4 notable (cost 3) + 4 наследных keystone v2 (cost 5: death_save/
+# guaranteed_rare_shop/first_levelup_rare/ult_start_charge — их боевой вклад
+# заперт тестом аккаунт-множителя <1.30) + 2 скрытых узла (кодекс-вехи и
+# секретный босс «зажигают» их без покупки). Полная стоимость 59 пыли при
+# потолке заработка 50 — «всё не купить». SCRUM-828: узел atlas_m0 стоит 1 пыль,
+# чтобы ПЕРВАЯ победа (1 пыль, §4) сразу открывала первый QoL-узел Атласа.
 const ATLAS_NODES := [
 	{"id": "atlas_hub", "role": "core", "cost": 0, "title": "Зал гильдии", "desc": "Сердце Атласа гильдии. Открыт всем героям.", "effects": {}, "npos": Vector2(0.5, 0.5), "adj": ["atlas_m0", "atlas_m2", "atlas_m4", "atlas_m6", "atlas_m8", "atlas_m10", "atlas_m11", "atlas_m13"]},
 	# Ветвь «Казна» (северо-запад): золото и стартовый капитал.
-	{"id": "atlas_m0", "role": "minor", "cost": 2, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
+	# atlas_m0 — «ранний крючок» §4: cost 1, покупается сразу после первой победы.
+	{"id": "atlas_m0", "role": "minor", "cost": 1, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
 	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
 	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
 	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},

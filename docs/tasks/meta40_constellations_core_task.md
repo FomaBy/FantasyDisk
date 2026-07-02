@@ -1,6 +1,6 @@
 # Мета 4.0 «Созвездия героев»: ядро — валюты, per-class графы, миграция schema 5
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (Claude)
 Версия: 0.2.0
@@ -90,7 +90,8 @@ v3 требует минимального адаптера (например, �
     потерянных под капом), `active_keystones` нормализуются; save/load схемы 5.
   - **Данные** (`meta_progression_tree_data.gd`): 17 созвездий × 22 узла
     (ядро/12 минорных/4 техники/3 keystone/2 скрытых) + Атлас гильдии 25 узлов
-    (14 minor + 4 notable + 4 наследных keystone v2 + 2 скрытых + хаб, 60 пыли);
+    (14 minor + 4 notable + 4 наследных keystone v2 + 2 скрытых + хаб, 59 пыли;
+    atlas_m0 — 1 пыль, «ранний крючок» §4);
     нормированные позиции по силуэтам (приложение C, релаксация ≥0.045);
     значения звёзд подобраны под бюджет §6 через `POWER_WEIGHTS`.
   - **player.gd**: разведены `healing_mult`, `kill_explosion_chance`,
@@ -142,3 +143,22 @@ v3 требует минимального адаптера (например, �
   поведение, ожидая `atlas_m0` locked после одной победы, поэтому зелёный тест
   не покрывает требование раннего hook.
 - Bugs: отдельный bug не создан; parent `SCRUM-828` возвращён на доработку.
+
+## Доработка по QA-блокеру 2026-07-02 (backend/claude) — FIXED
+
+- **Ранний крючок §4 реализован**: `atlas_m0` («Договор с торговцами»,
+  hub-adjacent) переведён с cost 2 на **cost 1** в
+  `scripts/meta_progression_tree_data.gd`. Первая победа (1 пыль) теперь сразу
+  открывает и позволяет купить первый QoL-узел Атласа.
+- **Тестовый риск устранён**: `tests/meta_skill_tree_smoke_test.gd`
+  (`_test_purchase_and_currencies`) переписан — вместо ложного «atlas_m0 locked
+  после одной победы» проверяет ранний крючок (atlas_m0 available с 1 пылью,
+  покупка списывает 1 пыль) И сохранённое поведение узлов за 2 пыли (atlas_m2
+  locked с 1 пылью → available после второй первой победы).
+- Инвариант «всё не купить» сохранён: полная стоимость Атласа 59 > потолка
+  пыли 50 (`_test_atlas_stays_non_combat`: `atlas_total_cost() > STARDUST_CAP`).
+- Док/CHANGELOG обновлены (стоимость 60→59, описание раннего крючка).
+- Гейты (сериализованно `godot_gate.py`, Godot 4.7, exit 0, без «SCRIPT ERROR»):
+  `meta_skill_tree_smoke_test`, `skill_tree_per_hero_test`,
+  `meta_progression_smoke_test`, `meta_points_per_ascension_test`,
+  `runtime_smoke_test` — PASSED.
