@@ -9101,25 +9101,34 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	content.add_child(action_label)
 
 	# SCRUM-808: длинное описание продавливало VBox за safe-зону фрейма (флаки матрицы
-	# на 1536×864 в зависимости от выпавших наград). Подбираем шрифт описания под
-	# фактически доступную высоту, остаток страхуем многоточием — полный текст
-	# всегда доступен в tooltip карточки.
-	var desc_area_w := display_size.x - margins.x - margins.z
-	var desc_font := desc_label.get_theme_font("font")
-	if desc_font != null and desc_area_w > 0.0:
-		var row_gap := float(3 if compact_attribute else 7)
-		var title_h := desc_font.get_multiline_string_size(title, HORIZONTAL_ALIGNMENT_CENTER, desc_area_w, title_label.get_theme_font_size("font_size")).y
-		var action_h := desc_font.get_height(action_label.get_theme_font_size("font_size"))
-		var desc_avail := display_size.y - margins.y - margins.w - title_h - action_h - 2.0 * row_gap
-		var desc_font_size := desc_label.get_theme_font_size("font_size")
-		while desc_font_size > 9 and desc_font.get_multiline_string_size(description, HORIZONTAL_ALIGNMENT_CENTER, desc_area_w, desc_font_size).y > desc_avail:
-			desc_font_size -= 1
-		desc_label.add_theme_font_size_override("font_size", desc_font_size)
-		var desc_line_h := desc_font.get_height(desc_font_size)
-		if desc_line_h > 0.0:
-			desc_label.max_lines_visible = maxi(1, int(floorf(desc_avail / desc_line_h)))
+	# на 1536×864 в зависимости от выпавших наград). Доводка после ready — по реальным
+	# minimum size (шрифтовые метрики без line_spacing врут на ~1 строку).
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	button.ready.connect(_fit_economy_choice_card_content.bind(button), CONNECT_ONE_SHOT)
 	return button
+
+
+func _fit_economy_choice_card_content(button: Button) -> void:
+	# SCRUM-808: ужимаем шрифт описания (до 9), затем режем строки многоточием,
+	# пока контент не влезет в safe-зону карточки; полный текст остаётся в tooltip.
+	if button == null or not is_instance_valid(button):
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	var desc_label := button.find_child("%sDescription" % button.name, true, false) as Label
+	if content == null or desc_label == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var avail_h: float = button.custom_minimum_size.y - margins.y - margins.w
+	if avail_h <= 0.0:
+		return
+	var font_size := desc_label.get_theme_font_size("font_size")
+	while font_size > 9 and content.get_combined_minimum_size().y > avail_h:
+		font_size -= 1
+		desc_label.add_theme_font_size_override("font_size", font_size)
+	var guard := desc_label.get_line_count()
+	while guard > 1 and content.get_combined_minimum_size().y > avail_h:
+		guard -= 1
+		desc_label.max_lines_visible = guard
 
 
 func _prepend_economy_choice_content(button: Button, control: Control) -> void:
