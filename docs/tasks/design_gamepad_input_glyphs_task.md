@@ -1,9 +1,9 @@
 # Геймпад: пиксель-арт глифы кнопок (A/B/X/Y, D-pad, бамперы, стики, Start/Select)
 
-Статус: new
+Статус: done
 Контур: Claude
-Owner: unassigned
-Thread: n/a
+Owner: claude-designer
+Thread: SCRUM-810 — сдано в QA 2026-07-02
 Locked paths: `assets/sprites/ui/input_glyphs/` (новая папка), `scripts/ui/input_glyph_registry.gd` (новый), `tests/input_glyph_assets_test.gd`
 Версия: 0.1.8
 Приоритет: P1
