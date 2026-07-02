@@ -3656,7 +3656,7 @@
  "design_gamepad_input_glyphs_task.md": {
   "key": "SCRUM-810",
   "status": "К выполнению",
-  "desc_hash": "50af5a34d75c336d9d5315409898273f"
+  "desc_hash": "0c5e52ef774dc0300574bddb1b48bc28"
  },
  "qol_gamepad_core_input_device_manager_task.md": {
   "key": "SCRUM-811",

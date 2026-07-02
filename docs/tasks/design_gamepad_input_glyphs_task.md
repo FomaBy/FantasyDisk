@@ -1,9 +1,9 @@
 # Геймпад: пиксель-арт глифы кнопок (A/B/X/Y, D-pad, бамперы, стики, Start/Select)
 
-Статус: done
+Статус: new
 Контур: Claude
-Owner: claude-designer
-Thread: SCRUM-810 — сдано в QA 2026-07-02
+Owner: unassigned
+Thread: SCRUM-810 — QA failed 2026-07-02, returned to work
 Locked paths: `assets/sprites/ui/input_glyphs/` (новая папка), `scripts/ui/input_glyph_registry.gd` (новый), `tests/input_glyph_assets_test.gd`
 Версия: 0.1.8
 Приоритет: P1
@@ -83,3 +83,10 @@ core-задачей; иначе отметить в content_registry).
 ## Самопроверка
 `--import` + ассет-тест через tools/godot_gate.py; визуальная проверка контакт-листа
 (прозрачность, читаемость, стиль); alpha-cleanup при необходимости.
+
+## QA 2026-07-02 — FAILED
+Functional asset checks passed, but the task is returned to work because the
+delivery explicitly used a PIL generator instead of the required PixelLab MCP
+`create_ui_asset` pipeline. Jira comment has the full verdict, test evidence,
+and accepted/failed criteria. Next pass needs either PixelLab-compliant source
+evidence or an explicit PM waiver for PIL-generated input glyphs.
