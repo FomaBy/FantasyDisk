@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhdv5vtbqtf11"
-path="res://.godot/imported/atlas_bg.png-fdc8256c87addf1389743304d37684b8.ctex"
+uid="uid://64c7qrhhuhwy"
+path="res://.godot/imported/frame_border.png-772ab565d699396900eda607ab462386.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/meta40/atlas_bg.png"
-dest_files=["res://.godot/imported/atlas_bg.png-fdc8256c87addf1389743304d37684b8.ctex"]
+source_file="res://assets/sprites/ui/meta40/frame_border.png"
+dest_files=["res://.godot/imported/frame_border.png-772ab565d699396900eda607ab462386.ctex"]
 
 [params]
 
