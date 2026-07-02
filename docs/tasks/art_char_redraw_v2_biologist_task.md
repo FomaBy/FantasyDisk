@@ -12,6 +12,24 @@ Lane: codex
 QA: ready (2026-07-02)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
+## QA-Вердикт (текущий, live PixelLab runtime — 2026-07-02)
+Статус: PASSED
+
+Проверено claude-qa 2026-07-02 на origin/dev (29dec81f), в изолированном worktree с холодным --import (302 biologist-текстуры импортированы).
+
+Сверка acceptance:
+- Пак на origin/dev (не стрэднут): `assets/sprites/characters/full_frame/biologist_pixellab/` — 8 idle-направлений + 8×6 move-кадров = 56 PNG, парность PNG↔.import 56/56 ✓
+- Прозрачность (главный риск PixelLab): все 56 кадров RGBA, corner_alpha≈0, есть прозрачная кайма, ≥15% прозрачной площади — запечённого фона/белого/каймы нет ✓
+- move ≥5 кадров (6) loop, idle loop, attack отсутствует (спека: без attack) ✓
+- Рантайм-обвязка: `assets/sprites/characters/biologist_spriteframes.tres` + реестр `scripts/progression_data_characters.gd` подключены ✓
+- Смоуки (через godot_gate, semaphore fdengine, соло):
+  • `tests/biologist_pixellab_pack_test.gd` → passed
+  • `tests/animation_smoke_test.gd` → passed
+  • `tests/runtime_smoke_test.gd` → passed (14142 файлов, dup-artifact guard ok)
+- Превью-контакты: `docs/design/previews/scrum421_biologist_pixellab_contact.png` ✓; CHANGELOG-запись SCRUM-421 присутствует ✓
+
+Баги: нет. → Готово.
+
 ## PM Directive (2026-06-30)
 Блок снят. Эту задачу выполняет **Codex (Design/Animator-контур), НЕ Claude.**
 Claude-контур задачу не берёт. Lane: codex (метка `codex`, без `claude`/`blocked`).
