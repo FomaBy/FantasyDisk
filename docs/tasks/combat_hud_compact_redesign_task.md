@@ -1,6 +1,6 @@
 # Боевой HUD v2 — компактная верхняя панель: слим-бары HP/XP/ULT, иконки, арабская цифра возвышения
 
-Статус: in_progress
+Статус: done
 Роль: Back-end
 Контур: Claude
 Lane: claude
@@ -106,6 +106,27 @@ OpenAI gpt-image-2 (стиль существующего leather/gold UI-кит
       иконки PixelLab, png+`.import` парой в git (origin/dev pairing).
 - [ ] `_test_boss_hud_shows_timer` и boss/elite smoke зелёные; `_update_hud()` продолжает
       обновлять значения (HP/XP/gold/ULT) без ошибок в логе.
+
+## Прогресс
+
+- 2026-07-02: ассеты готовы (6 пиксель-иконок PixelLab: рубин-сердце, изумрудная звезда,
+  монета, руна ульты, песочные часы, крылатая эмблема возвышения; OpenAI: подложка
+  кластера 768×256 + слим-трек 512×32, alpha-cleanup, `.import` в коммите).
+- Код: `_build_hud_v2_cluster`/`_add_hud_v2_bar`/`_layout_hud_v2_cluster` вместо карточек;
+  таймер 264×92 с часами в safe-зоне; возвышение — арабская цифра + эмблема (бейдж 104);
+  ROMAN_NUMERALS удалён; фикс: ProgressBar в PanelContainer требовал явные size flags +
+  custom_minimum_size (высота была 1px), филл — вертикальный stretch (margins только X).
+- Тесты обновлены под v2-контракт (smoke + матрица), boss/elite smoke PASSED.
+- Капча: `tools/capture_combat_hud_v2.gd` → `build/qa/scrum806/combat_hud_{1152x648,1920x1080,2560x1440}.png`
+  + rect-дамп; топ-бэнд на 1080p ≈ 11% высоты вьюпорта (лимит матрицы 18%).
+- Фикс матрицы 4K: лейблы баров — сиблинги треков (min-height шрифта > слим-бара),
+  центрирование по зоне бара; `ui_no_overlap_matrix_test` PASSED (exit 0).
+- Сдано в QA 2026-07-02: коммиты dddb88ee + 27a02ab3 + 27e2b33d в origin/dev;
+  зелёные прогоны в изолированном worktree от origin/dev: runtime_smoke_test PASSED,
+  ui_no_overlap_matrix_test PASSED, runtime_smoke_boss_elite_test PASSED.
+  Все AC выполнены (компактный кластер без карточных рамок, лайн-бары с иконками,
+  деньги цифрами, арабское возвышение с эмблемой, alarm-таймер сохранён,
+  png+.import парой в git).
 
 ## Files
 
