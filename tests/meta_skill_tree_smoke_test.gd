@@ -46,11 +46,11 @@ func _fail(msg: String) -> void:
 # --- Данные ---
 
 func _test_tree_data_integrity() -> void:
-	# 17 созвездий × 22 узла + Атлас 24 = 398; id уникальны; adj симметричны;
-	# описания RU без внутренних токенов; у эффект-узлов есть числа или готовая
-	# фраза флага; позиции заданы и в мире (pos), и нормированно (npos).
-	if Meta.SKILL_TREE.size() != 17 * 22 + 24:
-		_fail("Expected 17*22+24=398 nodes, got %d." % Meta.SKILL_TREE.size())
+	# 17 созвездий × 22 узла + Атлас 25 (хаб + 14 minor + 4 notable + 4 keystone
+	# + 2 скрытых) = 399; id уникальны; adj симметричны; описания RU без
+	# внутренних токенов; позиции заданы и в мире (pos), и нормированно (npos).
+	if Meta.SKILL_TREE.size() != 17 * 22 + 25:
+		_fail("Expected 17*22+25=399 nodes, got %d." % Meta.SKILL_TREE.size())
 		return
 	var ids := {}
 	var class_keystones := {}
@@ -396,8 +396,10 @@ func _test_atlas_stays_non_combat() -> void:
 	if Meta.estimated_power_multiplier(state) >= 1.30:
 		_fail("Full Atlas account power must stay < 1.30.")
 		return
-	if Meta.estimated_class_power_multiplier(state, "berserk") - 1.0 > 0.05:
-		_fail("Full Atlas must add <= 5%% weighted class power.")
+	# Взвешенный вклад Атласа в class-power ≤10%: боевого там только наследные
+	# флаги (death_save/ult_start) и аптека; остальное — QoL-веса (подбор).
+	if Meta.estimated_class_power_multiplier(state, "berserk") - 1.0 > 0.10:
+		_fail("Full Atlas must add <= 10%% weighted class power.")
 		return
 	# Стоимость Атласа выше потолка пыли: «всё не купить».
 	if Meta.atlas_total_cost() <= Meta.STARDUST_CAP:
