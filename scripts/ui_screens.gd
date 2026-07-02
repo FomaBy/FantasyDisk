@@ -1119,9 +1119,9 @@ const HS4_MINIMAL_PREVIEW_SIZE := 560.0
 const HS4_MINIMAL_SLOT_SIZE := 280.0
 const HS4_MINIMAL_BASE_STATS := HeroSelectConstants.HERO_BASE_STATS
 const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
-const HS4_MINIMAL_PREVIEW_MAX_SIZE := 620.0
+const HS4_MINIMAL_PREVIEW_MAX_SIZE := 660.0
 const HS4_MINIMAL_SLOT_MIN_SIZE := 184.0
-const HS4_MINIMAL_SLOT_MAX_SIZE := 304.0
+const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
 const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
 const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 
@@ -1457,7 +1457,7 @@ func _build_character_select_v4() -> void:
 	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
 	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
 	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
-	var carousel_slot_size := clampf(vp.y * 0.275, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var carousel_slot_size := clampf(vp.y * 0.282, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
 	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
 	var carousel_y := vp.y - bottom_margin - carousel_h
 	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
@@ -1497,9 +1497,70 @@ func _build_character_select_v4() -> void:
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait)
+	var hs4_alpha_bbox_cache := {}
+	var texture_alpha_bbox := func(texture: Texture2D) -> Rect2:
+		var texture_size := Vector2(512.0, 512.0)
+		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
+			texture_size = texture.get_size()
+		if texture == null:
+			return Rect2(Vector2.ZERO, texture_size)
+		var key := texture.resource_path
+		if key.is_empty():
+			key = str(texture.get_rid())
+		if hs4_alpha_bbox_cache.has(key):
+			return hs4_alpha_bbox_cache[key]
+		var bbox := Rect2(Vector2.ZERO, texture_size)
+		var image := texture.get_image()
+		if image != null and not image.is_empty():
+			var min_x := image.get_width()
+			var min_y := image.get_height()
+			var max_x := -1
+			var max_y := -1
+			var alpha_threshold := 0.02
+			for y in range(image.get_height()):
+				for x in range(image.get_width()):
+					if image.get_pixel(x, y).a <= alpha_threshold:
+						continue
+					min_x = mini(min_x, x)
+					min_y = mini(min_y, y)
+					max_x = maxi(max_x, x)
+					max_y = maxi(max_y, y)
+			if max_x >= min_x and max_y >= min_y:
+				bbox = Rect2(Vector2(float(min_x), float(min_y)), Vector2(float(max_x - min_x + 1), float(max_y - min_y + 1)))
+		hs4_alpha_bbox_cache[key] = bbox
+		return bbox
+	var position_alpha_cropped_texture := func(texture_rect: TextureRect, texture: Texture2D, parent_size: Vector2, target_visible_size: Vector2, visible_bottom_y: float, visible_center_x: float) -> void:
+		if texture_rect == null or not is_instance_valid(texture_rect):
+			return
+		var texture_size := Vector2(512.0, 512.0)
+		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
+			texture_size = texture.get_size()
+		var bbox: Rect2 = texture_alpha_bbox.call(texture)
+		var bbox_w := maxf(1.0, bbox.size.x)
+		var bbox_h := maxf(1.0, bbox.size.y)
+		var visible_target := Vector2(maxf(1.0, target_visible_size.x), maxf(1.0, target_visible_size.y))
+		var draw_scale := minf(visible_target.x / bbox_w, visible_target.y / bbox_h)
+		draw_scale = maxf(draw_scale, 0.01)
+		var draw_size := Vector2(roundf(texture_size.x * draw_scale), roundf(texture_size.y * draw_scale))
+		var visible_texture_center_x := bbox.position.x + bbox.size.x * 0.5
+		var visible_texture_bottom_y := bbox.position.y + bbox.size.y
+		var left := roundf(visible_center_x - visible_texture_center_x * draw_scale)
+		var top := roundf(visible_bottom_y - visible_texture_bottom_y * draw_scale)
+		texture_rect.anchor_left = 0.0
+		texture_rect.anchor_top = 0.0
+		texture_rect.anchor_right = 0.0
+		texture_rect.anchor_bottom = 0.0
+		texture_rect.offset_left = left
+		texture_rect.offset_top = top
+		texture_rect.offset_right = left + draw_size.x
+		texture_rect.offset_bottom = top + draw_size.y
+	var position_main_portrait := func(texture: Texture2D) -> void:
+		var floor_y := portrait_panel.size.y - maxf(6.0, roundf(portrait_panel.size.y * 0.025))
+		var visible_target := Vector2(portrait_panel.size.x * 0.86, portrait_panel.size.y * 0.92)
+		position_alpha_cropped_texture.call(portrait, texture, portrait_panel.size, visible_target, floor_y, portrait_panel.size.x * 0.5)
 	var portrait_preview_state := {
 		"character_id": "",
 		"sprite_frames": null,
@@ -1513,6 +1574,7 @@ func _build_character_select_v4() -> void:
 	root.add_child(portrait_preview_timer)
 	portrait_preview_timer.timeout.connect(func() -> void:
 		_advance_hero_select_portrait_preview(portrait, portrait_preview_state)
+		position_main_portrait.call(portrait.texture)
 	)
 
 	var dossier_panel := PanelContainer.new()
@@ -1792,10 +1854,13 @@ func _build_character_select_v4() -> void:
 	var carousel_area_h: float = carousel.size.y
 	var arrow_size := Vector2(maxf(64.0, carousel_slot_size * 0.30), carousel_slot_size)
 	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
+	var slot_label_h := clampf(roundf(slot_size.y * 0.17), 26.0, 34.0)
+	var slot_label_gap := maxf(3.0, roundf(slot_size.y * 0.02))
+	var slot_label_margin_x := maxf(6.0, roundf(slot_size.x * 0.04))
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
 	if roster.is_empty():
 		return
-	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 12.0))), 3, roster.size())
+	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 8.0))), 3, roster.size())
 	var slot_gap: float = maxf(8.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
@@ -1820,6 +1885,7 @@ func _build_character_select_v4() -> void:
 
 	var slot_buttons: Array = []
 	var slot_portraits: Array = []
+	var slot_labels: Array = []
 	for i in range(visible_slot_count):
 		var slot := Button.new()
 		slot.name = "HS4CarouselSlot_%02d" % i
@@ -1836,56 +1902,37 @@ func _build_character_select_v4() -> void:
 		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		slot_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		slot_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		slot_portrait.anchor_left = 0.5
-		slot_portrait.anchor_right = 0.5
-		slot_portrait.anchor_top = 1.0
-		slot_portrait.anchor_bottom = 1.0
+		slot_portrait.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		slot_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(slot_portrait)
+		var slot_label := Label.new()
+		slot_label.name = "HS4CarouselLabel_%02d" % i
+		slot_label.text = ""
+		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		slot_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		slot_label.clip_text = true
+		slot_label.position = Vector2(slot_label_margin_x, slot_size.y - slot_label_h)
+		slot_label.size = Vector2(slot_size.x - slot_label_margin_x * 2.0, slot_label_h)
+		slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
+		slot_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 0.94))
+		slot_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.88))
+		slot_label.add_theme_constant_override("outline_size", 3)
+		slot.add_child(slot_label)
 		carousel.add_child(slot)
 		slot_buttons.append(slot)
 		slot_portraits.append(slot_portrait)
+		slot_labels.append(slot_label)
 
 	var state := {"offset": 0}
 	var sel0: int = roster.find(game.selected_character_id)
 	state["offset"] = clampi(sel0 - visible_slot_count / 2, 0, maxi(0, roster.size() - visible_slot_count))
-	var carousel_alpha_bottom_cache := {}
-	var carousel_texture_bottom_margin := func(texture: Texture2D) -> float:
-		if texture == null:
-			return 32.0
-		var key := texture.resource_path
-		if key.is_empty():
-			key = str(texture.get_rid())
-		if carousel_alpha_bottom_cache.has(key):
-			return float(carousel_alpha_bottom_cache[key])
-		var alpha_bottom_margin := 32.0
-		var image := texture.get_image()
-		if image != null and not image.is_empty():
-			var alpha_threshold := 0.02
-			for y in range(image.get_height() - 1, -1, -1):
-				var has_alpha := false
-				for x in range(image.get_width()):
-					if image.get_pixel(x, y).a > alpha_threshold:
-						has_alpha = true
-						break
-				if has_alpha:
-					alpha_bottom_margin = float(image.get_height() - y - 1)
-					break
-		carousel_alpha_bottom_cache[key] = alpha_bottom_margin
-		return alpha_bottom_margin
 	var position_carousel_portrait := func(slot_portrait: TextureRect, texture: Texture2D) -> void:
-		var portrait_box := Vector2(roundf(slot_size.x * 1.04), roundf(slot_size.y * 1.04))
-		var texture_size := Vector2(512.0, 512.0)
-		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
-			texture_size = texture.get_size()
-		var texture_scale := minf(portrait_box.x / texture_size.x, portrait_box.y / texture_size.y)
-		var visual_bottom_pad := maxf(2.0, roundf(slot_size.y * 0.02))
-		var portrait_bottom_margin: float = float(carousel_texture_bottom_margin.call(texture))
-		var bottom_offset := roundf(portrait_bottom_margin * texture_scale - visual_bottom_pad)
-		slot_portrait.offset_left = -roundf(portrait_box.x * 0.5)
-		slot_portrait.offset_right = roundf(portrait_box.x * 0.5)
-		slot_portrait.offset_bottom = bottom_offset
-		slot_portrait.offset_top = bottom_offset - portrait_box.y
+		var label_top := slot_size.y - slot_label_h
+		var visible_bottom_y := label_top - slot_label_gap
+		var visible_target := Vector2(slot_size.x * 0.94, maxf(24.0, visible_bottom_y * 0.96))
+		position_alpha_cropped_texture.call(slot_portrait, texture, slot_size, visible_target, visible_bottom_y, slot_size.x * 0.5)
 
 	var refresh_focus_graph := func(grab_default := false) -> void:
 		var visible_slots: Array = []
@@ -1951,6 +1998,7 @@ func _build_character_select_v4() -> void:
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
 		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
+		position_main_portrait.call(portrait.texture)
 		name_label.text = str(config.get("title", cid))
 		desc_label.text = str(config.get("description", ""))
 		strengths_label.text = "Сильные стороны: %s" % str(config.get("strengths", ""))
@@ -1994,6 +2042,7 @@ func _build_character_select_v4() -> void:
 			var idx: int = off + i
 			var slot: Button = slot_buttons[i]
 			var slot_portrait := slot_portraits[i] as TextureRect
+			var slot_label := slot_labels[i] as Label
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
@@ -2001,12 +2050,16 @@ func _build_character_select_v4() -> void:
 				slot_portrait.texture = slot_texture
 				position_carousel_portrait.call(slot_portrait, slot_texture)
 				slot.visible = true
-				slot.tooltip_text = str(rconf.get("title", rid))
+				var slot_title := str(rconf.get("title", rid))
+				slot.tooltip_text = slot_title
+				slot_label.text = slot_title
 				_apply_hs4_minimal_button_theme(slot, rid == cid)
 				slot_portrait.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.58, 0.60, 0.68, 0.78)
+				slot_label.modulate = Color(1.0, 0.96, 0.80, 1.0) if rid == cid else Color(0.66, 0.68, 0.74, 0.84)
 			else:
 				slot.visible = false
 				slot_portrait.texture = null
+				slot_label.text = ""
 		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:

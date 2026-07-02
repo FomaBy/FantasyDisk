@@ -10,6 +10,9 @@ const VIEWPORTS := [
 const PREVIEW_MIN_SIZE := 320.0
 const SLOT_MIN_SIZE := 180.0
 const SLOT_BASELINE_TOLERANCE := 3.0
+const PREVIEW_VISIBLE_MIN_RATIO := 0.68
+const SLOT_VISIBLE_HEIGHT_MIN_RATIO := 0.48
+const LABEL_MIN_HEIGHT := 24.0
 
 
 func _initialize() -> void:
@@ -60,11 +63,27 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		return
 
 	var portrait := main.find_child("HS4Portrait", true, false) as TextureRect
+	var portrait_frame := main.find_child("HS4PortraitFrame", true, false) as Control
 	if portrait == null or portrait.texture == null:
 		_fail("Expected HS4Portrait texture at %s." % str(viewport_size))
 		return
-	if portrait.get_global_rect().size.x < PREVIEW_MIN_SIZE or portrait.get_global_rect().size.y < PREVIEW_MIN_SIZE:
-		_fail("Expected HS4Portrait to use enlarged SCRUM-798 footprint at %s, got %s." % [str(viewport_size), str(portrait.get_global_rect().size)])
+	if portrait_frame == null:
+		_fail("Expected HS4PortraitFrame at %s." % str(viewport_size))
+		return
+	var portrait_frame_rect := portrait_frame.get_global_rect()
+	if portrait_frame_rect.size.x < PREVIEW_MIN_SIZE or portrait_frame_rect.size.y < PREVIEW_MIN_SIZE:
+		_fail("Expected HS4PortraitFrame to use enlarged footprint at %s, got %s." % [str(viewport_size), str(portrait_frame_rect.size)])
+		return
+	var portrait_visible_rect := _visible_alpha_global_rect(portrait)
+	if portrait_visible_rect.size.y < portrait_frame_rect.size.y * PREVIEW_VISIBLE_MIN_RATIO:
+		_fail("Expected selected preview visible silhouette to be enlarged at %s, got visible %s in frame %s." % [str(viewport_size), str(portrait_visible_rect), str(portrait_frame_rect)])
+		return
+	if not portrait_frame_rect.grow(4.0).encloses(portrait_visible_rect):
+		_fail("Expected selected preview visible silhouette to stay inside clipped frame at %s, got visible %s frame %s." % [str(viewport_size), str(portrait_visible_rect), str(portrait_frame_rect)])
+		return
+	var preview_expected_bottom := portrait_frame_rect.end.y - maxf(6.0, roundf(portrait_frame_rect.size.y * 0.025))
+	if absf(portrait_visible_rect.end.y - preview_expected_bottom) > 4.0:
+		_fail("Expected selected preview visible bottom alignment at %s; got %.2f vs %.2f." % [str(viewport_size), portrait_visible_rect.end.y, preview_expected_bottom])
 		return
 
 	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
@@ -102,28 +121,36 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		if slot_portrait == null or slot_portrait.texture == null:
 			_fail("Expected carousel portrait child inside %s at %s." % [slot.name, str(viewport_size)])
 			return
+		var slot_label := slot.find_child("HS4CarouselLabel_*", false, false) as Label
+		if slot_label == null or slot_label.text.strip_edges() == "":
+			_fail("Expected readable carousel label inside %s at %s." % [slot.name, str(viewport_size)])
+			return
 		if not slot.clip_contents:
 			_fail("Expected carousel slot to clip bottom-aligned portrait overflow at %s." % str(viewport_size))
 			return
 		var slot_rect := slot.get_global_rect()
-		var portrait_rect := slot_portrait.get_global_rect()
-		if not slot_rect.grow(slot_rect.size.y * 0.35).encloses(portrait_rect):
-			_fail("Expected carousel portrait overflow to stay bounded near its slot at %s." % str(viewport_size))
+		var label_rect := slot_label.get_global_rect()
+		if label_rect.size.y < LABEL_MIN_HEIGHT or not slot_rect.grow(2.0).encloses(label_rect):
+			_fail("Expected carousel label to stay inside slot at %s, got label %s slot %s." % [str(viewport_size), str(label_rect), str(slot_rect)])
 			return
-		var texture_size := slot_portrait.texture.get_size()
-		var draw_scale := minf(portrait_rect.size.x / texture_size.x, portrait_rect.size.y / texture_size.y)
-		var bottom_margin := _alpha_bottom_margin(slot_portrait.texture)
-		var visible_bottom := portrait_rect.position.y + (texture_size.y - bottom_margin) * draw_scale
-		var expected_bottom := slot_rect.end.y - maxf(2.0, roundf(slot_rect.size.y * 0.02))
-		if absf(visible_bottom - expected_bottom) > SLOT_BASELINE_TOLERANCE:
-			_fail("Expected carousel portrait visible bottoms to align at %s; got %.2f vs %.2f." % [str(viewport_size), visible_bottom, expected_bottom])
+		var visible_rect := _visible_alpha_global_rect(slot_portrait)
+		var portrait_area_h := label_rect.position.y - slot_rect.position.y
+		if visible_rect.size.y < maxf(slot_rect.size.y * SLOT_VISIBLE_HEIGHT_MIN_RATIO, portrait_area_h * 0.54):
+			_fail("Expected carousel visible silhouette to be enlarged/cropped at %s, got visible %s slot %s label %s." % [str(viewport_size), str(visible_rect), str(slot_rect), str(label_rect)])
+			return
+		if not Rect2(slot_rect.position, Vector2(slot_rect.size.x, portrait_area_h)).grow(4.0).encloses(visible_rect):
+			_fail("Expected carousel visible silhouette to stay in portrait area above label at %s, got visible %s slot %s label %s." % [str(viewport_size), str(visible_rect), str(slot_rect), str(label_rect)])
+			return
+		var expected_bottom := label_rect.position.y - maxf(3.0, roundf(slot_rect.size.y * 0.02))
+		if absf(visible_rect.end.y - expected_bottom) > SLOT_BASELINE_TOLERANCE:
+			_fail("Expected carousel portrait visible bottoms to align above label at %s; got %.2f vs %.2f." % [str(viewport_size), visible_rect.end.y, expected_bottom])
 			return
 		visible_slots.append(slot)
 	if visible_slots.size() < 3:
 		_fail("Expected at least 3 visible enlarged carousel slots at %s, got %d." % [str(viewport_size), visible_slots.size()])
 		return
 
-	var portrait_rect := portrait.get_global_rect()
+	var portrait_rect := portrait_frame.get_global_rect()
 	var dossier_rect := (main.find_child("HS4DossierFrame", true, false) as Control).get_global_rect()
 	var asc_rect := ascension.get_global_rect()
 	var carousel_rect := carousel.get_global_rect()
@@ -166,17 +193,39 @@ func _size_close(actual: Vector2, expected: Vector2, tolerance: float) -> bool:
 	return absf(actual.x - expected.x) <= tolerance and absf(actual.y - expected.y) <= tolerance
 
 
-func _alpha_bottom_margin(texture: Texture2D) -> float:
+func _alpha_bbox(texture: Texture2D) -> Rect2:
 	if texture == null:
-		return 0.0
+		return Rect2()
 	var image := texture.get_image()
 	if image == null or image.is_empty():
-		return 0.0
-	for y in range(image.get_height() - 1, -1, -1):
+		return Rect2(Vector2.ZERO, texture.get_size())
+	var min_x := image.get_width()
+	var min_y := image.get_height()
+	var max_x := -1
+	var max_y := -1
+	for y in range(image.get_height()):
 		for x in range(image.get_width()):
 			if image.get_pixel(x, y).a > 0.02:
-				return float(image.get_height() - y - 1)
-	return 0.0
+				min_x = mini(min_x, x)
+				min_y = mini(min_y, y)
+				max_x = maxi(max_x, x)
+				max_y = maxi(max_y, y)
+	if max_x < min_x or max_y < min_y:
+		return Rect2(Vector2.ZERO, texture.get_size())
+	return Rect2(Vector2(float(min_x), float(min_y)), Vector2(float(max_x - min_x + 1), float(max_y - min_y + 1)))
+
+
+func _visible_alpha_global_rect(texture_rect: TextureRect) -> Rect2:
+	if texture_rect == null or texture_rect.texture == null:
+		return Rect2()
+	var texture := texture_rect.texture
+	var texture_size := texture.get_size()
+	var control_rect := texture_rect.get_global_rect()
+	var draw_scale := minf(control_rect.size.x / texture_size.x, control_rect.size.y / texture_size.y)
+	var draw_size := texture_size * draw_scale
+	var draw_origin := control_rect.position + (control_rect.size - draw_size) * 0.5
+	var bbox := _alpha_bbox(texture)
+	return Rect2(draw_origin + bbox.position * draw_scale, bbox.size * draw_scale)
 
 
 func _fail(message: String) -> void:

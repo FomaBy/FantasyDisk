@@ -338,7 +338,7 @@ func _initialize() -> void:
 	if hero_screen == null:
 		_fail("Expected character select to use a fullscreen hero select root.")
 		return
-	# User redesign 2026-06-30: minimal black Hero Select with dossier, ascension chooser, and 150px carousel slots.
+	# User redesign 2026-06-30: minimal black Hero Select with dossier, ascension chooser, and enlarged labeled carousel slots.
 	var v4_black_bg := main.find_child("HS4BlackBackground", true, false) as ColorRect
 	if v4_black_bg == null or v4_black_bg.color != Color.BLACK:
 		_fail("Expected hero select to use a pure black background.")
@@ -347,10 +347,14 @@ func _initialize() -> void:
 		_fail("Expected minimal hero select to remove the old PixelLab hero_select backdrop.")
 		return
 	var v4_portrait := main.find_child("HS4Portrait", true, false) as TextureRect
+	var v4_portrait_frame := main.find_child("HS4PortraitFrame", true, false) as Control
 	if v4_portrait == null or v4_portrait.texture == null:
 		_fail("Expected hero select v4 to show the selected hero portrait.")
 		return
-	var portrait_rect := v4_portrait.get_global_rect()
+	if v4_portrait_frame == null:
+		_fail("Expected hero select v4 to expose a clipped portrait frame.")
+		return
+	var portrait_rect := v4_portrait_frame.get_global_rect()
 	if portrait_rect.size.x < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE or portrait_rect.size.y < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE:
 		_fail("Expected hero select portrait to use the enlarged SCRUM-798 footprint, got %s." % str(portrait_rect))
 		return
@@ -7539,6 +7543,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var radar := hero_main.find_child("HS4Radar", true, false) as Control
 	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var large_portrait := hero_main.find_child("HS4Portrait", true, false) as TextureRect
+	var large_portrait_frame := hero_main.find_child("HS4PortraitFrame", true, false) as Control
 	var dossier_panel := hero_main.find_child("HS4DossierFrame", true, false) as Control
 	var ascension_panel := hero_main.find_child("HS4AscensionFrame", true, false) as Control
 	var stats_grid := hero_main.find_child("HS4StatsGrid", true, false) as GridContainer
@@ -7549,7 +7554,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var back_button := hero_main.find_child("HS4BackButton", true, false) as Control
 	if back_button == null:
 		back_button = hero_main.find_child("HeroSelectBackButton", true, false) as Control
-	if hero_screen == null or black_bg == null or large_portrait == null or dossier_panel == null or ascension_panel == null or stats_grid == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
+	if hero_screen == null or black_bg == null or large_portrait == null or large_portrait_frame == null or dossier_panel == null or ascension_panel == null or stats_grid == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
 		_fail("Expected minimal hero select portrait/dossier/ascension/carousel/back nodes at %s." % context)
 		return
 	if black_bg.color != Color.BLACK:
@@ -7567,12 +7572,13 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var screen_rect := hero_screen.get_global_rect()
 	var dossier_rect := dossier_panel.get_global_rect()
 	var ascension_rect := ascension_panel.get_global_rect()
-	var portrait_image_rect := large_portrait.get_global_rect()
+	var portrait_image_rect := large_portrait_frame.get_global_rect()
 	var thumbnail_rect := thumbnail_strip.get_global_rect()
 	dump_lines.append("## %s" % context)
 	dump_lines.append("- `HeroSelectScreen`: `%s`" % str(screen_rect))
 	dump_lines.append("- `%s`: `%s`" % [back_button.name, str(back_button.get_global_rect())])
-	dump_lines.append("- `HS4Portrait`: `%s`" % str(portrait_image_rect))
+	dump_lines.append("- `HS4PortraitFrame`: `%s`" % str(portrait_image_rect))
+	dump_lines.append("- `HS4Portrait`: `%s`" % str(large_portrait.get_global_rect()))
 	dump_lines.append("- `HS4DossierFrame`: `%s`" % str(dossier_rect))
 	dump_lines.append("- `HS4AscensionFrame`: `%s`" % str(ascension_rect))
 	dump_lines.append("- `AscensionLevelLabel`: `%s`" % str(asc_label.get_global_rect()))
@@ -7587,12 +7593,12 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var first_thumb_rect := first_thumb.get_global_rect()
 	dump_lines.append("- `HeroThumbnailSample`: min=`%s`, rect=`%s`" % [str(first_thumb.custom_minimum_size), str(first_thumb_rect)])
 	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size)).grow(1.0)
-	for control in [back_button, large_portrait, dossier_panel, ascension_panel, thumbnail_strip, choose_button, asc_label, asc_mods]:
+	for control in [back_button, large_portrait_frame, dossier_panel, ascension_panel, thumbnail_strip, choose_button, asc_label, asc_mods]:
 		var rect := (control as Control).get_global_rect()
 		if not viewport_rect.encloses(rect):
 			_fail("Expected native hero select v4 control %s to stay on-screen at %s, got %s." % [(control as Control).name, context, rect])
 			return
-	var major_controls: Array = [large_portrait, dossier_panel, ascension_panel, thumbnail_strip]
+	var major_controls: Array = [large_portrait_frame, dossier_panel, ascension_panel, thumbnail_strip]
 	for i in range(major_controls.size()):
 		for j in range(i + 1, major_controls.size()):
 			var a := (major_controls[i] as Control)

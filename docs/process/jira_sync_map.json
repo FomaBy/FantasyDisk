@@ -3712,5 +3712,10 @@
   "key": "SCRUM-821",
   "status": "К выполнению",
   "desc_hash": "daf6634762fc7d9e5e5ba57b78d1b090"
+ },
+ "ui_hero_select_portrait_scale_labels_task.md": {
+  "key": "SCRUM-822",
+  "status": "В работе",
+  "desc_hash": "7ca17d1568f31bc1cb48323015243019"
  }
 }

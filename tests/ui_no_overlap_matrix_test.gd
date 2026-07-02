@@ -96,7 +96,7 @@ func _initialize() -> void:
 			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
-			"HS4Portrait", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",
+			"HS4PortraitFrame", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",

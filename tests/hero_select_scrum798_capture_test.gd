@@ -47,21 +47,22 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 
 	var context := "%s %s" % [hero_id, str(viewport_size)]
 	var portrait := main.find_child("HS4Portrait", true, false) as TextureRect
+	var portrait_frame := main.find_child("HS4PortraitFrame", true, false) as Control
 	var dossier := main.find_child("HS4DossierFrame", true, false) as Control
 	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
 	var choose := main.find_child("HS4ChooseButton", true, false) as Control
 	var carousel := main.find_child("HS4Carousel", true, false) as Control
-	if portrait == null or dossier == null or ascension == null or choose == null or carousel == null:
+	if portrait == null or portrait_frame == null or dossier == null or ascension == null or choose == null or carousel == null:
 		_fail("Missing core Hero Select SCRUM-798 nodes at %s." % context)
 		return
 
-	var portrait_rect := portrait.get_global_rect()
+	var portrait_rect := portrait_frame.get_global_rect()
 	var dossier_rect := dossier.get_global_rect()
 	var asc_rect := ascension.get_global_rect()
 	var choose_rect := choose.get_global_rect()
 	var carousel_rect := carousel.get_global_rect()
 	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size)).grow(1.0)
-	for control in [portrait, dossier, ascension, choose, carousel]:
+	for control in [portrait_frame, dossier, ascension, choose, carousel]:
 		var rect := (control as Control).get_global_rect()
 		if not viewport_rect.encloses(rect):
 			_fail("Expected %s to stay in viewport at %s, got %s." % [(control as Control).name, context, rect])
@@ -94,8 +95,9 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 			return
 
 	dump.append("## %s" % context)
-	dump.append("- `HS4Portrait`: `%s`")
+	dump.append("- `HS4PortraitFrame`: `%s`")
 	dump[dump.size() - 1] = dump[dump.size() - 1] % str(portrait_rect)
+	dump.append("- `HS4Portrait`: `%s`" % str(portrait.get_global_rect()))
 	dump.append("- `HS4DossierFrame`: `%s`" % str(dossier_rect))
 	dump.append("- `HS4AscensionFrame`: `%s`" % str(asc_rect))
 	dump.append("- `HS4ChooseButton`: `%s`" % str(choose_rect))
