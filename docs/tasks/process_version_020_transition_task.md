@@ -73,3 +73,28 @@ Verification:
 
 Disk cleanup: none created.
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт: PASSED
+
+Статус: done
+
+2026-07-02 claude-qa — приёмка на committed HEAD `origin/dev c8cc231b` (рабочее
+дерево грязное из-за живого Godot-редактора, verify по коммиту + live Jira):
+
+- `project.godot` `config/version="0.2.0"` — PASS.
+- `export_presets.cfg`: macOS `short_version/version=0.2.0`, Windows
+  `file_version=0.2.0.0`, `product_version=0.2.0` — PASS.
+- Jira active sprint id `166` = `Спринт 0.2.0` — PASS.
+- Jira Version `0.2.0` unreleased + not-archived (active target); Version `0.1.8`
+  archived — PASS.
+- `fixVersion=0.1.8` remaining: `0` (migrated to `0.2.0`) — PASS.
+- Docs `AGENTS.md`, `docs/process/release_versioning.md`,
+  `docs/process/versioning_and_branching.md` фиксируют `0.1.8`/`0.1.9` как
+  skipped/superseded, next patch-линия `0.2.1`/`0.2.2` — PASS.
+- Нет stale `Версия/Спринт: 0.1.8` в active design/task docs — PASS.
+- `python3 tests/test_jira_board_sync.py` — PASS (4/4).
+- Release flow не запускался (ветка dev, без tag/main-merge/publication) — PASS.
+
+Godot-смоук не гонялся из-за живого редактора (single-instance коллизия);
+изменение — version-string + docs + Jira metadata, runtime не затронут;
+патч-нотес smoke уже PASS у исполнителя, board_sync test независимо PASS.
