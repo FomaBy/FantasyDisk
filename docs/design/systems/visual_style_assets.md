@@ -773,7 +773,14 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   baked runtime text and preserves empty interiors for header, HUD, tooltip,
   route nodes/lines and FAB content.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
-- `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen art. SCRUM-560 refreshed the 2560x1440 D&D/dark fantasy composition: the left column stays calm for the six runtime menu buttons, the top-center stays readable for the title, and the battle detail sits center-right/lower-right. The runtime background contains no baked UI text/buttons/frames.
+- `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
+  art. The 2026-07-02 0.2.0 release pass replaced the previous dragon battle
+  image with an OpenAI-generated cosmic character-atlas background: pixel-art
+  heroes in front of a constellation atlas, distant boss figures, a calm dark
+  left column for the six runtime menu buttons and a readable title-safe area.
+  The runtime background contains no baked UI text/buttons/frames. Source,
+  backup, preview and the Telegram/Discord announcement image are documented in
+  `docs/design/mockups/main_menu_020_cosmic_release/spec.md`.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

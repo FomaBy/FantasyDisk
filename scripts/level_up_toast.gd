@@ -8,6 +8,9 @@ const TOAST_FRAME_TEXTURE := preload("res://assets/sprites/ui/frames/overhaul_2k
 const TOAST_FRAME_SIZE := Vector2(480.0, 300.0)
 const TOAST_TEXTURE_MARGINS := Vector4(58.0, 48.0, 58.0, 48.0)
 const TOAST_CONTENT_MARGINS := Vector4(70.0, 112.0, 70.0, 112.0)
+const TOAST_LABEL_FONT_SIZE := 44
+const TOAST_HEAD_OFFSET := Vector2(0.0, -190.0)
+const TOAST_VISIBLE_ALPHA := 0.70
 const RING_RADIUS := 104.0
 const RING_START_RADIUS := 28.0
 const RING_END_RADIUS := 38.0
@@ -16,6 +19,7 @@ const SPARK_DISTANCE_STEP := 6.0
 
 const GOLD := Color(1.0, 0.82, 0.32, 1.0)
 const CYAN := Color(0.40, 0.92, 1.0, 1.0)
+const LABEL_SHADOW := Color(0.05, 0.02, 0.01, 0.95)
 
 var _player: Node2D = null
 
@@ -45,7 +49,7 @@ func _additive(texture: Texture2D, color: Color) -> Sprite2D:
 
 func _build_visual() -> void:
 	var center := _toast_center()
-	_add_frame(center)
+	var frame := _add_frame(center)
 
 	var flash := _additive(FLASH_TEXTURE, GOLD)
 	flash.position = center
@@ -65,10 +69,11 @@ func _build_visual() -> void:
 		add_child(spark)
 		sparks.append(spark)
 
+	_add_label(frame)
 	_play(center, flash, ring, sparks)
 
 
-func _add_frame(center: Vector2) -> void:
+func _add_frame(center: Vector2) -> PanelContainer:
 	var frame := PanelContainer.new()
 	frame.name = "LevelUpToastFrame"
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -82,6 +87,27 @@ func _add_frame(center: Vector2) -> void:
 	frame.set_meta("toast_content_margins", TOAST_CONTENT_MARGINS)
 	frame.set_meta("toast_content_rect", _toast_content_rect(frame.position))
 	add_child(frame)
+	return frame
+
+
+func _add_label(frame: PanelContainer) -> void:
+	var content_rect := _toast_content_rect(frame.position)
+	var label := Label.new()
+	label.name = "LevelUpToastLabel"
+	label.text = "Level Up"
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.position = content_rect.position
+	label.size = content_rect.size
+	label.custom_minimum_size = content_rect.size
+	label.z_index = 20
+	label.add_theme_font_size_override("font_size", TOAST_LABEL_FONT_SIZE)
+	label.add_theme_color_override("font_color", GOLD)
+	label.add_theme_color_override("font_shadow_color", LABEL_SHADOW)
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 3)
+	add_child(label)
 
 
 func _toast_frame_style() -> StyleBoxTexture:
@@ -111,7 +137,7 @@ func _play(center: Vector2, flash: Sprite2D, ring: Sprite2D, sparks: Array[Sprit
 	modulate.a = 0.0
 	var tween := create_tween()
 	tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	tween.tween_property(self, "modulate:a", 1.0, 0.12)
+	tween.tween_property(self, "modulate:a", TOAST_VISIBLE_ALPHA, 0.12)
 	tween.tween_interval(0.6)
 	tween.tween_property(self, "modulate:a", 0.0, 0.25)
 	tween.tween_callback(func() -> void:
@@ -144,6 +170,18 @@ func _play(center: Vector2, flash: Sprite2D, ring: Sprite2D, sparks: Array[Sprit
 
 
 func _toast_center() -> Vector2:
+	var center := get_viewport_rect().size * 0.5
 	if _player != null and is_instance_valid(_player):
-		return _player.get_viewport_transform() * _player.global_position
-	return get_viewport_rect().size * 0.5
+		center = (_player.get_viewport_transform() * _player.global_position) + TOAST_HEAD_OFFSET
+	return _clamp_toast_center(center)
+
+
+func _clamp_toast_center(center: Vector2) -> Vector2:
+	var viewport_size := get_viewport_rect().size
+	var half_size := TOAST_FRAME_SIZE * 0.5
+	var max_x := maxf(half_size.x, viewport_size.x - half_size.x)
+	var max_y := maxf(half_size.y, viewport_size.y - half_size.y)
+	return Vector2(
+		clampf(center.x, half_size.x, max_x),
+		clampf(center.y, half_size.y, max_y)
+	)

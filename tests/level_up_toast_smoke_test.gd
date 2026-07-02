@@ -1,10 +1,13 @@
 extends SceneTree
 
+const TOAST_SCRIPT := preload("res://scripts/level_up_toast.gd")
 const TOAST_SCENE := preload("res://scenes/LevelUpToast.tscn")
 const TOAST_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const EXPECTED_SOURCE_SIZE := Vector2(480, 300)
 const EXPECTED_TEXTURE_MARGINS := Vector4(58, 48, 58, 48)
 const EXPECTED_CONTENT_MARGINS := Vector4(70, 112, 70, 112)
+const EXPECTED_HEAD_OFFSET := Vector2(0, -190)
+const EXPECTED_VISIBLE_ALPHA := 0.70
 
 
 func _initialize() -> void:
@@ -13,14 +16,31 @@ func _initialize() -> void:
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(viewport)
 
+	var player := Node2D.new()
+	player.global_position = Vector2(1200, 900)
+	viewport.add_child(player)
+
 	var toast := TOAST_SCENE.instantiate()
+	toast.setup(player, 1)
 	viewport.add_child(toast)
 	await process_frame
 	await process_frame
 
+	if Vector2(TOAST_SCRIPT.TOAST_HEAD_OFFSET) != EXPECTED_HEAD_OFFSET:
+		_fail("Unexpected toast head offset: %s." % str(TOAST_SCRIPT.TOAST_HEAD_OFFSET))
+		return
+	if absf(float(TOAST_SCRIPT.TOAST_VISIBLE_ALPHA) - EXPECTED_VISIBLE_ALPHA) > 0.001:
+		_fail("Unexpected toast visible alpha: %s." % str(TOAST_SCRIPT.TOAST_VISIBLE_ALPHA))
+		return
+
 	var frame := toast.find_child("LevelUpToastFrame", true, false) as PanelContainer
 	if frame == null:
 		_fail("Expected LevelUpToastFrame to be created.")
+		return
+	var frame_center := frame.position + frame.size * 0.5
+	var expected_center := player.global_position + EXPECTED_HEAD_OFFSET
+	if frame_center.distance_to(expected_center) > 1.0:
+		_fail("Expected LevelUpToastFrame above player at %s, got %s." % [str(expected_center), str(frame_center)])
 		return
 	if str(frame.get_meta("toast_frame_path", "")) != TOAST_FRAME_PATH:
 		_fail("Expected LevelUpToastFrame to use %s, got %s." % [TOAST_FRAME_PATH, str(frame.get_meta("toast_frame_path", ""))])
@@ -46,11 +66,19 @@ func _initialize() -> void:
 	if not toast.is_in_group("level_up_effects"):
 		_fail("Expected LevelUpToast to join level_up_effects for cleanup.")
 		return
-	if not toast.find_children("*", "Label", true, false).is_empty():
-		_fail("LevelUpToast must stay textless; the world-space badge is the only Level Up label.")
+	var label := toast.find_child("LevelUpToastLabel", true, false) as Label
+	if label == null:
+		_fail("Expected LevelUpToastLabel inside the toast safe zone.")
+		return
+	if label.text != "Level Up":
+		_fail("Expected LevelUpToastLabel text to be 'Level Up', got '%s'." % label.text)
 		return
 
 	var content_rect := frame.get_meta("toast_content_rect", Rect2()) as Rect2
+	var label_rect := Rect2(label.position, label.size)
+	if not content_rect.grow(1.0).encloses(label_rect):
+		_fail("LevelUpToastLabel escapes frame safe content rect: %s outside %s." % [str(label_rect), str(content_rect)])
+		return
 	for node in toast.get_children():
 		var sprite := node as Sprite2D
 		if sprite == null:

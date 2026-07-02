@@ -145,8 +145,8 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "victory_banner", Callable(self, "_open_victory_banner"), [
 			"VictoryBannerFrame",
 		], dump_lines, errors, false)
-		# SCRUM-588: transient level-up toast uses an isolated @2K frame and keeps sparkle content inside
-		# the documented safe zone; the world-space badge remains the only text/icon callout.
+		# SCRUM-588/user bugfix: transient level-up toast uses an isolated @2K frame and keeps
+		# both the Level Up label and sparkle content inside the documented safe zone.
 		await _check_screen(viewport_size, "level_up_toast", Callable(self, "_open_level_up_toast"), [
 			"LevelUpToastFrame",
 		], dump_lines, errors, false)
@@ -789,8 +789,11 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var toast := main.find_child("LevelUpToast", true, false)
 			if toast == null:
 				return "%s: expected LevelUpToast node." % context
-			if not toast.find_children("*", "Label", true, false).is_empty():
-				return "%s: expected LevelUpToast to remain textless." % context
+			var toast_label := toast.find_child("LevelUpToastLabel", true, false) as Label
+			if toast_label == null or toast_label.text != "Level Up":
+				return "%s: expected LevelUpToastLabel with Level Up text." % context
+			if not safe_rect.grow(1.0).encloses(Rect2(toast_label.position, toast_label.size)):
+				return "%s: expected LevelUpToastLabel to stay inside safe rect %s." % [context, str(safe_rect)]
 			for node in toast.get_children():
 				var sprite := node as Sprite2D
 				if sprite != null and not safe_rect.grow(4.0).has_point(sprite.position):

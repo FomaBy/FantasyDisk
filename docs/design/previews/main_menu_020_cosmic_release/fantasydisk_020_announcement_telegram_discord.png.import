@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvy6kl187tmw5"
-path="res://.godot/imported/fantasydisk_020_announcement_telegram_discord.png-d838148fab0a757e5338a023177f1c4d.ctex"
+uid="uid://fmxliifjro63"
+path="res://.godot/imported/fantasydisk_020_announcement_telegram_discord.png-5f01e8e3f8a7398a6c15352265a86680.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/marketing/fantasydisk_020_announcement_telegram_discord.png"
-dest_files=["res://.godot/imported/fantasydisk_020_announcement_telegram_discord.png-d838148fab0a757e5338a023177f1c4d.ctex"]
+source_file="res://docs/design/previews/main_menu_020_cosmic_release/fantasydisk_020_announcement_telegram_discord.png"
+dest_files=["res://.godot/imported/fantasydisk_020_announcement_telegram_discord.png-5f01e8e3f8a7398a6c15352265a86680.ctex"]
 
 [params]
 

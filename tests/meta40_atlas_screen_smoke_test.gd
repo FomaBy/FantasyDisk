@@ -74,6 +74,10 @@ func _test_open_atlas_default() -> void:
 	if nodes.size() != 22:
 		_fail("Атлас: созвездие класса должно рендериться целиком (22 узла), найдено %d." % nodes.size())
 		return
+	var node_overlap := _first_node_circle_overlap(nodes, 2.0)
+	if node_overlap != "":
+		_fail("Атлас: круги созвездия не должны наслаиваться, найдено %s." % node_overlap)
+		return
 	var emblems := main.find_child("AtlasEmblemsLabel", true, false) as Label
 	if emblems == null or not emblems.text.begins_with("Эмблемы Берсерка:"):
 		_fail("Атлас: шапка должна показывать эмблемы выбранного класса, получено: %s" % (emblems.text if emblems != null else "null"))
@@ -114,6 +118,10 @@ func _test_class_strip_switch() -> void:
 		return
 	if main.find_children("AtlasNode_*", "TextureButton", true, false).size() != 22:
 		_fail("Лента: созвездие рыцаря должно рендериться целиком.")
+		return
+	var node_overlap := _first_node_circle_overlap(main.find_children("AtlasNode_*", "TextureButton", true, false), 2.0)
+	if node_overlap != "":
+		_fail("Лента: круги созвездия рыцаря не должны наслаиваться, найдено %s." % node_overlap)
 		return
 	var emblems := main.find_child("AtlasEmblemsLabel", true, false) as Label
 	if emblems == null or not emblems.text.begins_with("Эмблемы Рыцаря:"):
@@ -239,6 +247,10 @@ func _test_guild_tab() -> void:
 	if nodes.size() != atlas_count:
 		_fail("Гильдия: должен рендериться весь Атлас (%d узлов), найдено %d." % [atlas_count, nodes.size()])
 		return
+	var node_overlap := _first_node_circle_overlap(nodes, 2.0)
+	if node_overlap != "":
+		_fail("Гильдия: круги Атласа не должны наслаиваться, найдено %s." % node_overlap)
+		return
 	var strip := main.find_child("AtlasClassStrip", true, false) as ScrollContainer
 	if strip != null and strip.visible:
 		_fail("Гильдия: лента классов на вкладке Атласа скрыта.")
@@ -330,3 +342,22 @@ func _has_digit(text: String) -> bool:
 		if code >= 48 and code <= 57:
 			return true
 	return false
+
+
+func _first_node_circle_overlap(nodes: Array, tolerance_px: float) -> String:
+	for first_index in range(nodes.size()):
+		var first := nodes[first_index] as TextureButton
+		if first == null or not first.visible:
+			continue
+		var first_rect := first.get_global_rect()
+		var first_radius := minf(first_rect.size.x, first_rect.size.y) * 0.5 - tolerance_px
+		for second_index in range(first_index + 1, nodes.size()):
+			var second := nodes[second_index] as TextureButton
+			if second == null or not second.visible:
+				continue
+			var second_rect := second.get_global_rect()
+			var second_radius := minf(second_rect.size.x, second_rect.size.y) * 0.5 - tolerance_px
+			var distance := first_rect.get_center().distance_to(second_rect.get_center())
+			if distance < first_radius + second_radius:
+				return "%s/%s distance %.1f < %.1f" % [first.name, second.name, distance, first_radius + second_radius]
+	return ""

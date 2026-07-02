@@ -7024,6 +7024,7 @@ func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewpor
 	skill_main.ui._show_atlas_screen()
 	await process_frame
 	await process_frame
+	await process_frame
 
 	# SCRUM-827: прогрессия переехала на экран «Атлас героев» (Мета 4.0, §7).
 	# Каркас: небо bg_sky + полая рама кита, лента 17 медальонов, холст созвездия
@@ -7078,6 +7079,10 @@ func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewpor
 	if node_buttons.size() != 22:
 		_fail("Expected 22 constellation nodes on the atlas canvas, got %d at %s." % [node_buttons.size(), context])
 		return
+	var node_circle_overlap := _first_atlas_node_circle_overlap(node_buttons, 2.0)
+	if not node_circle_overlap.is_empty():
+		_fail("Expected atlas constellation circles not to overlap at %s, got %s." % [context, node_circle_overlap])
+		return
 	if strip.get_global_rect().intersects(canvas.get_global_rect()):
 		_fail("Expected class strip and constellation canvas not to overlap at %s." % context)
 		return
@@ -7106,6 +7111,31 @@ func _progression_dump_texture(control: Control) -> String:
 		return _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel"))
 	if control is Button:
 		return _stylebox_texture_path((control as Button).get_theme_stylebox("normal"))
+	return ""
+
+
+func _first_atlas_node_circle_overlap(node_buttons: Array, tolerance_px: float) -> String:
+	for first_index in range(node_buttons.size()):
+		var first := node_buttons[first_index] as TextureButton
+		if first == null or not first.visible:
+			continue
+		var first_rect := first.get_global_rect()
+		var first_radius := minf(first_rect.size.x, first_rect.size.y) * 0.5 - tolerance_px
+		for second_index in range(first_index + 1, node_buttons.size()):
+			var second := node_buttons[second_index] as TextureButton
+			if second == null or not second.visible:
+				continue
+			var second_rect := second.get_global_rect()
+			var second_radius := minf(second_rect.size.x, second_rect.size.y) * 0.5 - tolerance_px
+			var distance := first_rect.get_center().distance_to(second_rect.get_center())
+			if distance < first_radius + second_radius:
+				var canvas_rect := Rect2()
+				var canvas_size := Vector2.ZERO
+				var parent_canvas := first.get_parent() as Control
+				if parent_canvas != null:
+					canvas_rect = parent_canvas.get_global_rect()
+					canvas_size = parent_canvas.size
+				return "%s/%s distance %.1f < %.1f rects %s / %s canvas %s local %s" % [first.name, second.name, distance, first_radius + second_radius, str(first_rect), str(second_rect), str(canvas_rect), str(canvas_size)]
 	return ""
 
 
