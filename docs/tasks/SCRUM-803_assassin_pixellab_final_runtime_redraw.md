@@ -135,3 +135,18 @@ Status: focused SCRUM-803 QA fix complete; ready for QA rerun.
 Disk cleanup: removed this worker's `.godot/` cache, removed generated untracked
 `.import`/`.uid` sidecars from the Godot verification run, and no Python
 `__pycache__` remained.
+
+## QA-Вердикт (2026-07-02, pm-orchestrator / claude QA)
+
+Статус: PASSED
+
+Переразбор после QA-fail «Assassin PixelLab sidecars» (был over-strict). Установлено:
+- 16 assassin-PNG без `.import` — это ТОЛЬКО 15 backup-файлов `docs/design/backups/scrum419_assassin_v2_pre_anim/*` + 1 preview `docs/design/previews/scrum803_assassin_pixellab_contact.png`. По спеке редроу backups/previews хранятся ВНЕ Godot import scope без `.import` — это НЕ дефект.
+- ВСЕ live runtime-ассеты ассасина (`assets/sprites/characters/full_frame/assassin_pixellab/`, `.../full_frame/assassin/`, `assassin.png`, cutout) свои `.import` имеют (160/160).
+
+Green-gate (origin/dev, tested locally):
+- `character_sprite_registry_alignment_test.gd` — PASS (17 персонажей).
+- `animation_smoke_test.gd` — PASS.
+- `asset_reference_integrity_test.gd` — PASS (185 файлов, 2329 res://-ссылок, 0 висячих).
+
+Миграция ассасина функционально завершена и подключена. Ложный sidecar-fail закрыт.
