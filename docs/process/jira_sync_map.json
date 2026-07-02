@@ -3642,5 +3642,50 @@
   "key": "SCRUM-805",
   "status": "К выполнению",
   "desc_hash": "d950721cc1d209e964522bde27dadd68"
+ },
+ "bug_upgrade_card_description_overflow_task.md": {
+  "key": "SCRUM-808",
+  "status": "В работе",
+  "desc_hash": "da4732b94bd77da6cb85b8f2ddab3aae"
+ },
+ "yellow_frames_audit_redesign_task.md": {
+  "key": "SCRUM-809",
+  "status": "В работе",
+  "desc_hash": "75ea0dd204a35568dcd6c4f00a59401a"
+ },
+ "design_gamepad_input_glyphs_task.md": {
+  "key": "SCRUM-810",
+  "status": "К выполнению",
+  "desc_hash": "fe86ae127ba8930239dd895255e922a0"
+ },
+ "qol_gamepad_core_input_device_manager_task.md": {
+  "key": "SCRUM-811",
+  "status": "К выполнению",
+  "desc_hash": "fed7820467653b1222d3bc59690946b5"
+ },
+ "qol_gamepad_inrun_ui_navigation_task.md": {
+  "key": "SCRUM-812",
+  "status": "К выполнению",
+  "desc_hash": "4ad1471ca637a10b7355dce17825b2ed"
+ },
+ "qol_gamepad_menu_focus_navigation_task.md": {
+  "key": "SCRUM-813",
+  "status": "К выполнению",
+  "desc_hash": "074160089bf7aae8e37152490039a582"
+ },
+ "qol_gamepad_player_analog_movement_task.md": {
+  "key": "SCRUM-814",
+  "status": "К выполнению",
+  "desc_hash": "b87461cb4fe77cfc55170ca7d016d18a"
+ },
+ "qol_gamepad_qa_navigation_smoke_task.md": {
+  "key": "SCRUM-815",
+  "status": "К выполнению",
+  "desc_hash": "a8b71f5686abe631af197e8d3d82d52d"
+ },
+ "qol_gamepad_settings_rebind_ui_task.md": {
+  "key": "SCRUM-816",
+  "status": "К выполнению",
+  "desc_hash": "16672d45b889cfd280de264ba7a42d2e"
  }
 }
