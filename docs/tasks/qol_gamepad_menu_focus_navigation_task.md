@@ -98,3 +98,12 @@ UI строится кодом в `scripts/ui_screens.gd` (10 242 строки, 
 ## Самопроверка
 Headless свой тест + runtime_smoke_ui_test + dark_fantasy_ui_theme_test через
 tools/godot_gate.py; вручную (если возможно) один проход меню на стрелках.
+
+## QA-Вердикт
+Статус: PASSED (2026-07-02, claude-qa/оркестратор)
+
+- Ancestry: f2d7e41c — merge-base ancestor origin/dev OK.
+- Worktree от origin/dev, cold --import, 5 прогонов: gamepad_menu_focus_test PASSED,
+  gamepad_inrun_ui_test PASSED (регресс SCRUM-812), gamepad_core_input_test PASSED
+  (регресс ядра SCRUM-811), runtime_smoke_test PASSED, ui_no_overlap_matrix_test PASSED.
+- PNG нет — pairing не требуется; фокус-цепочки мета-меню покрыты новым тестом (192 строки).
