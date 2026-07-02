@@ -456,10 +456,12 @@ const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
+const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
 
 var ui
 var route
 var combat
+var dev_console: CanvasLayer = null
 var meta_state := {}
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
@@ -507,6 +509,8 @@ func _ready() -> void:
 	_load_game_settings()
 	ui._setup_default_input_actions()
 	ui._apply_game_cursor()
+	dev_console = DEV_CONSOLE_SCRIPT.new(self)
+	add_child(dev_console)
 	ui._show_main_menu()
 
 
@@ -1041,6 +1045,12 @@ func apply_ascension_bonuses(player: Node) -> void:
 func _input(event: InputEvent) -> void:
 	if pending_rebind_action != "":
 		ui._handle_rebind_input(event)
+		return
+
+	# SCRUM-831: пока дев-консоль открыта, весь ввод принадлежит ей (тоггл/Esc/историю
+	# обрабатывает её _input, текст добирает LineEdit на GUI-этапе) — иначе буквы
+	# команд дёргали бы хоткеи (P-фидбек, Space-докачка, F12).
+	if dev_console != null and dev_console.is_console_open():
 		return
 
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():

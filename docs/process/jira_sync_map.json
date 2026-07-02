@@ -3685,8 +3685,8 @@
  },
  "qol_gamepad_settings_rebind_ui_task.md": {
   "key": "SCRUM-816",
-  "status": "В работе",
-  "desc_hash": "fc0a86a1dfe6dab144b9866300e62e5d"
+  "status": "Готово",
+  "desc_hash": "ed9d0915b5429e88b4385b673fa5b8b1"
  },
  "minimal_metal_recolor_leather_brass_task.md": {
   "key": "SCRUM-817",
@@ -3725,8 +3725,8 @@
  },
  "design_meta40_constellation_ui_assets_task.md": {
   "key": "SCRUM-826",
-  "status": "К выполнению",
-  "desc_hash": "1f9b987330a2d380dce6e9c4840414ba"
+  "status": "Контроль качества",
+  "desc_hash": "3102efdea0601a98fc78556f865326fd"
  },
  "meta40_atlas_screen_ui_task.md": {
   "key": "SCRUM-827",
@@ -3735,12 +3735,17 @@
  },
  "meta40_constellations_core_task.md": {
   "key": "SCRUM-828",
-  "status": "К выполнению",
-  "desc_hash": "c1d6167cc8107bfca56c5831307970d7"
+  "status": "В работе",
+  "desc_hash": "4ded3fe58d410f4641d494325609ca14"
  },
  "backend_enemy_mob_visual_scale_up_task.md": {
   "key": "SCRUM-829",
   "status": "Контроль качества",
   "desc_hash": "94deb73ab5b7f43e521305f67e6b52a9"
+ },
+ "dev_console_tilda_commands_task.md": {
+  "key": "SCRUM-831",
+  "status": "Контроль качества",
+  "desc_hash": "manual-scrum-831-pending-sync"
  }
 }

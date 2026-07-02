@@ -132,6 +132,8 @@ var _facing_direction := Vector2.RIGHT
 var _uses_full_frame_visual := false
 var _uses_skeletal_visual := false
 var _damage_invulnerability_left := 0.0
+# SCRUM-831: неуязвимость из дев-консоли (godmode); take_damage игнорирует урон целиком.
+var debug_godmode := false
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
 var _web_slow_factor := 1.0
@@ -570,6 +572,8 @@ func apply_web_slow(duration: float, factor: float) -> void:
 
 
 func take_damage(amount: float, _source := "") -> bool:
+	if debug_godmode:
+		return false
 	if _damage_invulnerability_left > 0.0:
 		return false
 	if _ultimate_active and character_id == "knight":
