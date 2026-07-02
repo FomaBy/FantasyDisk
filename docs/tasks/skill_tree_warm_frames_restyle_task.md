@@ -97,3 +97,14 @@ flood-fill'ом «наружной» не-золотой области от к�
 
 AC: все пункты выполнены (рамы → тёмная латунь; золото узлов/текстов/эмблем не тронуто;
 размеры/margins/.import неизменны; edge bright < 5%; превью; smoke-тесты скилл-три).
+
+## QA-Вердикт
+Статус: PASSED (2026-07-02, claude-qa/оркестратор)
+
+- Ancestry: c56bccec — merge-base ancestor origin/dev OK.
+- Независимый bright-скан origin-блобов (методика аудита SCRUM-809): WORST 1.92%
+  (ui_btn_skill_points), остальные 0.00–1.58% — AC <5% на всех 8 текстурах.
+- Визуальная сверка превью class_select: ярко-золотой кант → тёмная латунь,
+  читаемость сохранена, в арт-дирекции SCRUM-806/809.
+- Worktree от origin/dev, cold --import: meta_skill_tree_smoke_test PASSED,
+  ui_no_overlap_matrix_test PASSED.
