@@ -3620,7 +3620,7 @@
  },
  "SCRUM-803_assassin_pixellab_final_runtime_redraw.md": {
   "key": "SCRUM-803",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4263d2924964ada8cacbb6a8a65e190a"
  },
  "SCRUM-804_ranger_pixellab_final_runtime_redraw.md": {
@@ -3628,9 +3628,14 @@
   "status": "Контроль качества",
   "desc_hash": "b60a06a8b0effaf4c45b47ab5e3ac734"
  },
- "design_settings_menu_full_review_redesign_task.md": {
-  "key": "SCRUM-805",
+ "combat_hud_compact_redesign_task.md": {
+  "key": "SCRUM-806",
+  "status": "В работе",
+  "desc_hash": "098590756851f0ca819cbec65716c6d6"
+ },
+ "skill_tree_v3_class_identity_task.md": {
+  "key": "SCRUM-807",
   "status": "К выполнению",
-  "desc_hash": "14b0ce4c90838938c5b4189cf73d5c42"
+  "desc_hash": "d9d7a2e14adcb5bd4263fd2e1448a8af"
  }
 }
