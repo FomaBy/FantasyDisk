@@ -1,9 +1,9 @@
 # Геймпад: ядро — InputDeviceManager, автодетект устройства, joypad-биндинги базовых экшенов
 
-Статус: done
+Статус: new
 Контур: Claude
-Owner: Back-end/pm-chat-fable-gamepad
-Thread: pm-chat (Claude Code, сессия 2026-07-02)
+Owner: unassigned
+Thread: SCRUM-811 — QA failed 2026-07-02, returned to work
 Locked paths: `scripts/input_device_manager.gd` (новый), `project.godot` ([autoload]), `scripts/game_settings.gd`, `tests/gamepad_core_input_test.gd`
 Scope-фикс (PM, 2026-07-02): `scripts/player.gd` ВЫВЕДЕН из scope — joypad-события
 move_* дает SCRUM-814 (влит codex'ом); `scripts/main.gd` НЕ тронут — канон-раскладка
@@ -149,3 +149,11 @@ Acceptance: все пункты выполнены. Дальше по пакет
 ui_screens.gd), 816 (настройки, разблокирован ядром).
 
 Disk cleanup: worktree wt-scrum811 удален после push.
+
+## QA 2026-07-02 — FAILED
+Returned to work: `_on_joy_connection_changed()` emits `device_changed` even
+when `active_kind()` did not change, and can double-emit on disconnect after
+`_set_raw_kind(KIND_KEYBOARD)` already emitted. This violates the requirement
+that `device_changed(kind)` fires only on kind change. Add a hot-plug signal
+count/no-false-emission assertion to `tests/gamepad_core_input_test.gd` before
+resubmitting. Full verdict and environment notes are in Jira.
