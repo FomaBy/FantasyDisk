@@ -220,17 +220,17 @@ const HUD_V2_ICON_PATHS := {
 	"ascension": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_ascension.png",
 }
 const HUD_V2_CLUSTER_2K := Rect2(36, 36, 640, 122)
-const HUD_V2_HP_ICON_2K := Rect2(52, 46, 36, 36)
+const HUD_V2_HP_ICON_2K := Rect2(46, 43, 42, 42)
 const HUD_V2_HP_BAR_2K := Rect2(96, 48, 516, 32)
-const HUD_V2_XP_ICON_2K := Rect2(55, 90, 30, 30)
+const HUD_V2_XP_ICON_2K := Rect2(50, 87, 36, 36)
 const HUD_V2_XP_BAR_2K := Rect2(96, 92, 420, 26)
-const HUD_V2_ULT_ICON_2K := Rect2(55, 124, 30, 30)
+const HUD_V2_ULT_ICON_2K := Rect2(50, 121, 36, 36)
 const HUD_V2_ULT_BAR_2K := Rect2(96, 126, 420, 26)
 const HUD_V2_MONEY_ICON_2K := Rect2(534, 90, 30, 30)
 const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
 const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
 const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
-const HUD_V2_TIMER_ICON_2K := Rect2(1162, 66, 36, 36)
+const HUD_V2_TIMER_ICON_2K := Rect2(1194, 70, 32, 32)
 const HUD_V2_ASCENSION_2K := Rect2(2408, 40, 104, 104)
 const HUD_V2_ASCENSION_ZONE_2K := Rect2(2426, 50, 68, 84)
 
@@ -9457,7 +9457,12 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 			continue
 		var zone: Rect2 = track_zones[track_name]
 		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
-		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(_scrum666_scaled_rect(zone, scale).size, maxf(2.0, roundf(4.0 * scale))))
+		var track_size := _scrum666_scaled_rect(zone, scale).size
+		var inset := maxf(2.0, roundf(4.0 * scale))
+		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
+		var bar := track.find_child(track_name.replace("Track", "Bar"), true, false) as ProgressBar
+		if bar != null:
+			bar.custom_minimum_size = Vector2(0.0, maxf(4.0, track_size.y - inset * 2.0))
 	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
@@ -9811,8 +9816,12 @@ func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallbac
 	bar.name = "Hud%sBar" % tag
 	bar.show_percentage = false
 	bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	# PanelContainer не гарантирует растяжку Range-ребёнка — фиксируем флагами,
+	# высоту дожимает _layout_hud_v2_cluster через custom_minimum_size.
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.06, 0.08, 0.85)))
-	bar.add_theme_stylebox_override("fill", _hud_bar_fill_style(icon_id, fill_fallback))
+	bar.add_theme_stylebox_override("fill", _hud_v2_bar_fill_style(icon_id, fill_fallback))
 	track.add_child(bar)
 
 	var label := Label.new()
@@ -9992,9 +10001,18 @@ func _hud_v2_cluster_style(display_size := Vector2(640.0, 122.0)) -> StyleBox:
 
 func _hud_v2_bar_track_style(display_size := Vector2(516.0, 32.0), content_inset := 3.0) -> StyleBox:
 	# SCRUM-806: слим-жёлоб с тонкой латунной окантовкой (512×32) под лайн-бар.
-	var texture_margins := _scaled_frame_margins_xy(Vector2(512.0, 32.0), display_size, Vector4(12, 8, 12, 8))
+	var texture_margins := _scaled_frame_margins_xy(Vector2(512.0, 32.0), display_size, Vector4(10, 5, 10, 5))
 	var inset := maxf(2.0, content_inset)
 	return _global_texture_style(HUD_V2_BAR_TRACK_PATH, texture_margins, Color.WHITE, Vector4(inset, inset, inset, inset), true)
+
+
+func _hud_v2_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
+	# SCRUM-806: филл слим-бара — прежние gradient-текстуры, но с полной вертикальной
+	# растяжкой (margins только по X), иначе на треке высотой 10-20px поля съедают центр.
+	var path := str(COMBAT_HUD_BAR_FILL_PATHS.get(icon_id, ""))
+	if path != "" and ResourceLoader.exists(path):
+		return _global_texture_style(path, Vector4(6, 0, 6, 0), Color.WHITE, Vector4.ZERO)
+	return _bar_style(fallback_color)
 
 
 func _character_stats_hud_style() -> StyleBox:
