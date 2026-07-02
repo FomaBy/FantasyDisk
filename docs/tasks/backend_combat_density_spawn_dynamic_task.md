@@ -1,7 +1,7 @@
 # Боевая динамика: плотность, число и места спавна монстров с первых секунд
 
-Версия: 0.1.8 · Роль: backend · Контур: Claude · Приоритет: P1 · foma · Эпик: Бой, враги, боссы, события
-Статус: done · Спринт: 0.1.8
+Версия: 0.2.0 · Роль: backend · Контур: Claude · Приоритет: P1 · foma · Эпик: Бой, враги, боссы, события
+Статус: done · Спринт: 0.2.0
 Jira: SCRUM-784
 Owner: Backend / Claude
 Locked paths: scripts/combat_director.gd; scripts/main.gd (WAVE_SETTINGS блок)

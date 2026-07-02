@@ -44,7 +44,7 @@ func _init() -> void:
 		"bundled webhook config must be a read-only res:// resource (got %s)" % Reporter.BUNDLED_CONFIG_PATH)
 	# Локальный отчёт-тело строится только из текста+метаданных игрока и НЕ должно нести
 	# подстроку вебхука (структурная гарантия: reporter не инжектит секрет в фолбэк).
-	var sample_body := Reporter._report_body("краш на боссе", {"версия": "0.1.8", "класс": "berserk"})
+	var sample_body := Reporter._report_body("краш на боссе", {"версия": "0.2.0", "класс": "berserk"})
 	_check(not ("discord.com/api/webhooks" in sample_body) and not ("discordapp.com/api/webhooks" in sample_body),
 		"local report body must never embed a webhook URL")
 	_check("краш на боссе" in sample_body, "local report body must keep the player's description")

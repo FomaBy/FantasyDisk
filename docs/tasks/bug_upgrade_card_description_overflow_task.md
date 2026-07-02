@@ -4,7 +4,7 @@
 Роль: Back-end
 Контур: Claude
 Lane: claude
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Автор: QA-наблюдение при прогонах SCRUM-806
 Labels: foma, backend, claude

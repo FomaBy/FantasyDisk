@@ -1,7 +1,7 @@
 # Баг: HUD-таймер боя не отображается на босс-файтах (не виден 5-мин kill-timer)
 
-Версия: 0.1.8 · Роль: bug · Контур: Claude · Приоритет: P2 · foma · Эпик: Интерфейс, экраны, локализация
-Статус: done · Спринт: 0.1.8
+Версия: 0.2.0 · Роль: bug · Контур: Claude · Приоритет: P2 · foma · Эпик: Интерфейс, экраны, локализация
+Статус: done · Спринт: 0.2.0
 Jira: SCRUM-799
 Owner: Backend / Claude
 Locked paths: scripts/ui_screens.gd (_create_combat_timer_panel)

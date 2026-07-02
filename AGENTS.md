@@ -186,9 +186,11 @@ Full autonomy (user directive, 2026-06-12):
 
 Feature block:
 - **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен текущий Jira sprint на board 1
-  (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`; всегда проверяй live
-  Jira active sprint перед auto-pull/dispatch). Current-sprint Jira issues берутся
-  обычным порядком через Jira-pull claim-first.
+  (`Спринт 0.2.0` на 2026-07-02; всегда проверяй live Jira active sprint перед
+  auto-pull/dispatch). Current-sprint Jira issues берутся обычным порядком через
+  Jira-pull claim-first. Плановые версии `0.1.8` и `0.1.9` отменены/superseded:
+  новые tasks/fixVersions/sprint notes должны использовать `0.2.0`, далее
+  SemVer patch-линия `0.2.1`, `0.2.2`, ...
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
   фриз (новые не-баги → `Версия: <следующая>`, sync держит их в бэклоге).
 

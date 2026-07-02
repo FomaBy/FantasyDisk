@@ -185,6 +185,10 @@
   portrait path points to the PixelLab south idle frame.
 
 ### Changed
+- Плановая линия разработки перенесена на `0.2.0`: `project.godot`,
+  export-presets, Jira sprint/release mirrors и process docs теперь считают
+  `0.2.0` текущим target release; `0.1.8` и `0.1.9` больше не используются как
+  плановые версии.
 - SCRUM-832: UI-кит Меты 4.0 перегенерирован через OpenAI gpt-image-2 под
   целевые размеры слотов окна 2560×1440 (мандат продукта: элемент генерируется
   под размер/аспект слота, а не «вписываем в готовую картинку»). Структура

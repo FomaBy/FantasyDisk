@@ -5,7 +5,7 @@
 Owner: claude-designer
 Thread: SCRUM-810 — QA PASSED 2026-07-02 (Готово); финальный вердикт см. блок `## QA-Вердикт (2026-07-02 … Статус: PASSED)`. Первый прогон был FAILED (PIL vs PixelLab), переделан и повторно принят. Заголовок .md синхронизирован с live-Jira, чтобы board_sync не откатывал Готово→«К выполнению».
 Locked paths: `assets/sprites/ui/input_glyphs/` (новая папка), `scripts/ui/input_glyph_registry.gd` (новый), `tests/input_glyph_assets_test.gd`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P1
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя: полная поддержка геймпада)

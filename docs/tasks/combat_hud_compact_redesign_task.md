@@ -5,7 +5,7 @@
 Контур: Claude
 Lane: claude
 Owner: claude-backend
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Автор: User request (PM, голосовое ТЗ)
 Jira: SCRUM-806

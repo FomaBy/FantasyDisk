@@ -411,7 +411,7 @@ event-множители) + `post_combat`.
 - боссы → meta `boss_id` (категория `bosses`); одноимённые записи в `CODEX_ENEMY_NAME_TO_ID`
   для боссов **вестигиальны** (босс в группе `bosses` уходит в boss-ветку и до name-map не доходит).
 
-**Аудит-находки 0.1.8:**
+**Аудит-находки 0.2.0:**
 
 - *Исправлено:* 4 мини-элитки Возвышения из SCRUM-607 (`mini_siege_rammer`,
   `mini_swarm_sniper`, `mini_plague_berserker`, `mini_void_phantom`) были добавлены в

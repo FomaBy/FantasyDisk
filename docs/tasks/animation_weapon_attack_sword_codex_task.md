@@ -7,7 +7,7 @@
 Контур: Codex
 Owner: Animator/VFX Codex
 Thread: fantasydisk-codex-scrum-772-agent
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-772

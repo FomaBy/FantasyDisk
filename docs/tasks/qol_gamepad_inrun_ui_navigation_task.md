@@ -5,7 +5,7 @@
 Owner: unassigned
 Thread: n/a
 Locked paths: `scripts/ui_screens.gd` (внутризабеговые экраны), `scripts/route_map_screen.gd`, `scripts/pause_stats_menu.gd`, `tests/gamepad_inrun_ui_test.gd`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P1
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя: полная поддержка геймпада)

@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-718 (refactor wave 0.1.8): route-graph traversability invariants. runtime_smoke
+# SCRUM-718 (refactor wave 0.2.0): route-graph traversability invariants. runtime_smoke
 # checks that nodes expose next_branches and that paths are limited, but nothing verified
 # the generated graph is fully traversable. A connection-assignment regression could
 # strand a node (no incoming) or dead-end a branch (no outgoing) -> soft-lock. This sweeps

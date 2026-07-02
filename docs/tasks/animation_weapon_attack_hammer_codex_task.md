@@ -10,7 +10,7 @@ Thread: n/a
 Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/f057/AI Agent`
 Blocked: OpenAI Images API billing hard limit still reached during repo helper generation on 2026-07-01; Jira returned to `К выполнению` with `blocked` label until billing/quota is restored or PM changes the generation pipeline.
 Next verification: after unblock, generate OpenAI source via repo helper, postprocess to 256x256 transparent runtime VFX, then run unique weapon VFX and attack VFX smokes.
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-747

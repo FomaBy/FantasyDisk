@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-715 (refactor wave 0.1.8): cross-module sync between the StatFormulas codex
+# SCRUM-715 (refactor wave 0.2.0): cross-module sync between the StatFormulas codex
 # (DERIVED_STAT_ORDER / STAT_DEFINITIONS — what the player stat screen lists) and the
 # runtime values ProgressionData.derived_parameters() actually produces. The existing
 # stat_formulas_smoke_test checks the codex is self-consistent; this guards the seam

@@ -5,7 +5,7 @@
 Owner: claude-backend (оркестратор)
 Thread: n/a
 Locked paths: `scripts/ui_screens.gd` (вкладка «Управление», rebind-механизм), `scripts/game_settings.gd` (валидация новых ключей при необходимости), `tests/gamepad_settings_rebind_test.gd`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P2
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя: полная поддержка геймпада)

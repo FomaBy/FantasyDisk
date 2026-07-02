@@ -3,7 +3,7 @@
 Статус: done
 Приоритет: high
 Роль: Design (PM/Claude chat)
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Jira: SCRUM-832
 Контур: Claude

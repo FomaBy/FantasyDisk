@@ -3,7 +3,7 @@
 Статус: done
 Приоритет: medium
 Роль: Design main (Codex) -> Animator/Back-end integration
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-01
 Jira: SCRUM-804
 Контур: Codex

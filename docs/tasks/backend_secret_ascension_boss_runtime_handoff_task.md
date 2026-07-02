@@ -76,5 +76,5 @@ secret_encounter_test, secret_boss_animation_pack_smoke (16 состояний),
 Scoped follow-up (не блокирует приёмку — вынесено исполнителем вне инкремента):
 acceptance #3 (наземные telegraph PNG ring/cone/beam/rupture без fallback-кругов) —
 fairness-critical, нужна направленная ротация + визуальный QA (не верифицируется headless).
-Заведено как SCRUM-790 (backend, спринт 0.1.8). Тело босса уже телеграфирует через
+Заведено как SCRUM-790 (backend, спринт 0.2.0). Тело босса уже телеграфирует через
 анимационные attack_ring/cone/beam/rupture состояния.

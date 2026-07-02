@@ -9,7 +9,7 @@ Owner: Animator/Codex `codex-vfx-auto-12-20260701`
 Thread: one-off Codex worker
 Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/272f/AI Agent`
 Next verification: QA rerun of `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` after shared Godot import slots clear.
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-756

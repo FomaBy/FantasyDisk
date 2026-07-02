@@ -7,7 +7,7 @@
 Owner: unassigned
 Thread/Worker: n/a
 Locked paths: `scripts/ui_screens.gd`, `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`, `docs/design/systems/menus_ui.md`, `docs/tasks/bug_combat_hud_1080_oversized_empty_frames_task.md`, QA evidence under `build/qa/scrum700_1080_ui_scale/`
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Источник: SCRUM-700 1080p UI scale QA pass
 Jira: SCRUM-778

@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-06-30 (0.1.8 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-06-30 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 

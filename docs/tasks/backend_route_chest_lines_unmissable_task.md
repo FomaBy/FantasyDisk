@@ -1,7 +1,7 @@
 # Сундуки-линии на карте: ряды нодов-сундуков, которые нельзя пропустить
 
-Версия: 0.1.8 · Роль: backend · Контур: Claude · Приоритет: P2 · foma · Эпик: Бой, враги, боссы, события
-Статус: done · Спринт: 0.1.8
+Версия: 0.2.0 · Роль: backend · Контур: Claude · Приоритет: P2 · foma · Эпик: Бой, враги, боссы, события
+Статус: done · Спринт: 0.2.0
 Jira: SCRUM-787
 Owner: Backend / Claude
 Locked paths: scripts/route_map_screen.gd (chest placement); scripts/main.gd (route-консты chest)

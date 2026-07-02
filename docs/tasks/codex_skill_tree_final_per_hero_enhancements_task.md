@@ -5,7 +5,7 @@
 Роль: Design main + Back-end (Codex)
 Контур: Codex
 Lane: codex
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: PM (запрос пользователя)
 Jira: SCRUM-726

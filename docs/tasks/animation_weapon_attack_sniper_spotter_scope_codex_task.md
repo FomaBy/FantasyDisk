@@ -10,7 +10,7 @@ Thread: one-off Codex worker
 Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/99bb/AI Agent`
 Blocked: none
 Next verification: QA rerun of `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` when shared Godot gate/import slots clear.
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-765

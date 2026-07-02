@@ -1,6 +1,6 @@
 # Jira Sync — FantasyDisk
 
-Обновлено: 2026-06-27
+Обновлено: 2026-07-02
 
 ## Назначение
 
@@ -26,8 +26,11 @@ source для FantasyDisk. Это нужно, чтобы AI-агенты мог�
 - Site: `https://fantasydisk.atlassian.net`
 - Project key: `SCRUM`
 - Board: `1`
-- Current active sprint: Jira board `1` active sprint (on 2026-06-27 local mirrors
-  show `Спринт 0.1.7`; check live Jira before dispatch/claim if the numeric id matters).
+- Current active sprint: Jira board `1` active sprint (`Спринт 0.2.0` on
+  2026-07-02; check live Jira before dispatch/claim if the numeric id matters).
+- `0.1.8` and `0.1.9` are skipped/superseded planning versions. New local task
+  mirrors, Jira fixVersions, sprint notes and release/freeze notes must target
+  `0.2.0` or the later SemVer patch line (`0.2.1`, `0.2.2`, ...).
 - Feature block: v0.1.5 freeze is lifted by the v0.1.5 release (2026-06-15).
   Current-sprint Jira issues may be claimed/dispatched in dependency order after
   duplicate and active-owner audit. The freeze mechanism remains for the next
@@ -221,7 +224,7 @@ canonical Jira issue, а остальные пометить `duplicate` или 
 ## Feature Block / Sprint Policy
 
 Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Сейчас активен live Jira sprint
-на board 1 (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`).
+на board 1 (`Спринт 0.2.0` на 2026-07-02).
 Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.

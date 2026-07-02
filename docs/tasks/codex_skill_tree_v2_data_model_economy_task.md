@@ -6,7 +6,7 @@
 Исполнитель: Codex
 Lane: codex
 Owner: backend-board-watcher-20260630T111412Z
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: User request (PM)
 Jira: SCRUM-696

@@ -3,7 +3,7 @@
 Статус: in_progress
 Приоритет: high
 Роль: Back-end (Claude)
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Jira: SCRUM-828
 Контур: Claude

@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-711 (refactor wave 0.1.8): focused coverage for the AllyMinion death lifecycle
+# SCRUM-711 (refactor wave 0.2.0): focused coverage for the AllyMinion death lifecycle
 # and deployable cleanup. Guards:
 #   - a lethal hit deactivates the ally immediately (drops the "allies" group, stops
 #     physics) on BOTH the animated and non-animated death paths;

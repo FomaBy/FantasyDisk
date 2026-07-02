@@ -3,7 +3,7 @@
 Статус: done
 Приоритет: high
 Роль: Back-end / Game Design (Claude)
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Jira: SCRUM-807
 Контур: Claude

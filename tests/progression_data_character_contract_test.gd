@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-714 (refactor wave 0.1.8): per-character cross-slice data-contract validation
+# SCRUM-714 (refactor wave 0.2.0): per-character cross-slice data-contract validation
 # for the ProgressionData facade. The existing api_surface test spot-checks a single
 # character; this sweeps EVERY character so a newly added or edited class missing
 # ascension/budget/ultimate/damage-parameter data is caught instead of failing at

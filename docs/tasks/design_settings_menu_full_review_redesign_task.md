@@ -4,7 +4,7 @@
 Jira: SCRUM-805
 Создано: 2026-07-02
 Автор: PM (прямое поручение пользователя 2026-07-02)
-Версия: 0.1.8
+Версия: 0.2.0
 Контур: Claude
 Owner: claude-designer (Jira-pull рутина)
 Thread/Worker: fantasydisk-designer

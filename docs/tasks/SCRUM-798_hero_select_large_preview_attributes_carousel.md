@@ -5,7 +5,7 @@
 Owner: Back-end/Codex
 Thread: codex-backend-scrum798-dev-integration
 Locked paths: `scripts/ui_screens.gd`, `scripts/ui/hero_select_constants.gd`, focused Hero Select tests/UI smoke/no-overlap tests as needed, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `build/qa/scrum798/`, Hero Select screen
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P1
 Создано: 2026-07-01
 Автор: PM/Codex dispatcher по прямому запросу пользователя

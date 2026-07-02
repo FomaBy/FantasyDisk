@@ -10,7 +10,7 @@ Thread: one-off Codex worker
 Branch/worktree: `codex/SCRUM-759-robot-hydraulic-press-vfx` at `/Users/sergeyfomin/.codex/worktrees/08c8/AI Agent`
 Blocked: none; stale OpenAI-only text superseded by direct user directive 2026-07-01 and PixelLab MCP production path.
 Verification: passed focused static asset checks, `unique_weapon_vfx_assets_test.gd`, and `attack_vfx_smoke_test.gd`.
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-759

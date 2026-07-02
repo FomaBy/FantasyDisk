@@ -5,7 +5,7 @@
 Owner: claude-backend (оркестратор, прямой запрос пользователя)
 Thread: n/a
 Locked paths: `scripts/dev_console.gd` (новый), `scripts/main.gd` (точечные правки), `scripts/player.gd` (godmode-гард), `tests/dev_console_smoke_test.gd`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P2
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя)

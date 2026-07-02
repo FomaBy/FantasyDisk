@@ -7,7 +7,7 @@
 Контур: Codex
 Owner: Animator/VFX Codex worker
 Thread: disposable codex worker delegated from 019f1eac-35c3-7323-9067-8b7c2b88ab33
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-775

@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-709 (refactor wave 0.1.8): focused coverage for Player run-state reset on
+# SCRUM-709 (refactor wave 0.2.0): focused coverage for Player run-state reset on
 # character configuration. Guards the run_modifiers dedup (single _default_run_modifiers
 # source used by both the var initializer and configure_character) and the
 # cleanup-on-character-swap acceptance: stale modifiers, artifacts, progression and the

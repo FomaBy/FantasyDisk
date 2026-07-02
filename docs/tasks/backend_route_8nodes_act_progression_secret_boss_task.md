@@ -1,7 +1,7 @@
 # Прогрессия актов: 8 нодов до босса + босс в акте, секретный босс в конце 3 акта
 
-Версия: 0.1.8 · Роль: backend · Контур: Claude · Приоритет: P1 · foma · Эпик: Бой, враги, боссы, события
-Статус: done · Спринт: 0.1.8
+Версия: 0.2.0 · Роль: backend · Контур: Claude · Приоритет: P1 · foma · Эпик: Бой, враги, боссы, события
+Статус: done · Спринт: 0.2.0
 Jira: SCRUM-786
 Owner: Backend / Claude
 Locked paths: scripts/route_map_screen.gd; scripts/main.gd (route-консты ROUTE_STEPS_TO_BOSS/ACT_COUNT/secret-boss)

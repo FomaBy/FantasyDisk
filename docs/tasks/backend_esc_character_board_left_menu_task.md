@@ -6,7 +6,7 @@
 Контур: Codex
 Owner: Back-end Codex
 Thread/Worker: backend-board-watcher-20260630T105412Z
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: User request via Codex
 Jira: SCRUM-693
@@ -43,8 +43,8 @@ Locked paths: scripts/main.gd; scripts/ui_screens.gd; scripts/pause_stats_menu.g
   этой задаче не генерировать ассеты.
 - Вероятные места изменения: `scripts/main.gd`, `scripts/ui_screens.gd`,
   `scripts/pause_stats_menu.gd` и focused UI smoke/no-overlap тесты.
-- Jira Fix Version не проставлен при создании, потому что Jira release `0.1.8`
-  отсутствует; issue добавлен в active sprint `Спринт 0.1.8`.
+- Jira Fix Version не проставлен при создании, потому что Jira release `0.2.0`
+  отсутствует; issue добавлен в active sprint `Спринт 0.2.0`.
 
 ## Acceptance Criteria
 

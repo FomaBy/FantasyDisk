@@ -10,7 +10,7 @@ Thread: one-off Codex worker
 Branch/worktree: detached dev at `/Users/sergeyfomin/.codex/worktrees/302d/AI Agent`
 Blocked: none for asset production; old OpenAI billing blocker superseded by direct user directive 2026-07-01 and PixelLab MCP override. Godot smoke rerun blocked by shared semaphore/import saturation, see result notes.
 Next verification: QA/dispatcher rerun of `unique_weapon_vfx_assets_test.gd` and `attack_vfx_smoke_test.gd` after shared Godot import slots clear.
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-755

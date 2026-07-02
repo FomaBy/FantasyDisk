@@ -112,7 +112,7 @@ Additional checks:
 
 ### Test-suite architecture audit (SCRUM-722)
 
-Snapshot of the runtime-smoke architecture after the 0.1.8 refactor-wave pass.
+Snapshot of the runtime-smoke architecture after the 0.2.0 refactor-wave pass.
 
 - **Umbrella** `tests/runtime_smoke_test.gd` (~8k lines, 71 `_test_*` helpers) is the
   base class; every focused suite `extends` it and reuses its helper/assertion layer.
@@ -145,6 +145,6 @@ crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<
 
 Follow `docs/process/versioning_and_branching.md`:
 
-- `main` = stable `0.1`;
-- `dev` = active `0.1.x` working line; текущий sprint target — `0.1.5`;
+- `main` = stable released `0.1.x` line;
+- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.0`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

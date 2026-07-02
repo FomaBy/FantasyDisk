@@ -10,7 +10,7 @@ Thread: 019f1eac-35c3-7323-9067-8b7c2b88ab33 / worker codex-vfx-auto-8-20260701
 Branch: codex/SCRUM-746-attack-vfx-sentry-wrench
 Worktree: /Users/sergeyfomin/.codex/worktrees/d79e/AI Agent
 Dispatch: Jira-pull claim by Animator/Codex codex-vfx-auto-8-20260701 2026-07-01 20:58 EEST
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-746

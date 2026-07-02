@@ -7,7 +7,7 @@
 Owner: Back-end/Codex
 Thread/Worker: current Codex thread
 Locked paths: `scripts/player.gd`, `scenes/Player.tscn`, `tests/runtime_smoke_test.gd`, `tests/animation_smoke_test.gd`, `docs/design/systems/combat.md`, `docs/design/current_game_state.md`
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Автор: прямой запрос пользователя
 Jira: SCRUM-823

@@ -7,7 +7,7 @@ Jira: SCRUM-724
 Контур: Claude
 Owner: Backend / Claude
 Thread/Worker: claude-backend
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя на полный рефакторинг игры
 Labels: backend, claude, foma, refactor, refactor-wave, p2, area-docs, area-quality
@@ -42,7 +42,7 @@ After the refactor wave has produced implementation results, reconcile design/do
 
 ```bash
 python3 tools/jira_board_sync.py --no-create --allow-broad-status-sync
-rg -n "0.1.7|0.1.8|TODO|устарел|deprecated" docs/design docs/process | head -200
+rg -n "0.1.7|0.2.0|TODO|устарел|deprecated" docs/design docs/process | head -200
 ```
 
 ## Process Notes

@@ -1,6 +1,6 @@
 # PM Workflow — FantasyDisk
 
-Обновлено: 2026-06-27
+Обновлено: 2026-07-02
 
 Этот документ описывает работу PM-чата (проджект-менеджер) и правила, по которым формируются и выдаются задачи чатам `Design`, `Back-end` и `Animator`.
 
@@ -124,7 +124,9 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 ## Feature Freeze / Sprint Policy
 
 Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Активен live Jira sprint
-на board 1 (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`).
+на board 1 (`Спринт 0.2.0` на 2026-07-02). Плановые версии `0.1.8` и `0.1.9`
+отменены/superseded; PM/dispatcher не создают новые tasks, fixVersions или
+sprint notes под эти номера.
 Задачи текущего sprint можно брать в работу обычным порядком через Jira-pull
 claim-first, если они не заблокированы, не ждут PM/QA acceptance и не имеют
 активного владельца. Перед стабилизацией следующего релиза PM снова включает
@@ -191,8 +193,8 @@ done и QA verdict dispatcher обновляет соответствующие 
 
 ## Feature Block / Freeze
 
-На 2026-06-27 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
-board 1 (локальные mirrors показывают `Спринт 0.1.7`). Если
+На 2026-07-02 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
+board 1 (`Спринт 0.2.0`). Если
 PM включает новый freeze перед релизом, dispatcher и role agents возвращаются к
 режиму: только уже заведённые rows, баги, QA defects, regressions, release
 blockers и owner nudges; новые не-баговые запросы уходят в backlog следующей

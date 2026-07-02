@@ -6,7 +6,7 @@ Owner: Back-end/Codex
 Thread: codex-backend-scrum814-gamepad-movement
 Исполнитель: Codex
 Locked paths: `scripts/player.gd` (движение+вибрация), `tests/gamepad_player_movement_test.gd`, `docs/design/current_game_state.md`, `docs/design/systems/input_controls.md`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P1
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя: полная поддержка геймпада)

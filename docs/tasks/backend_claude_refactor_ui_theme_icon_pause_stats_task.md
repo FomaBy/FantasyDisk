@@ -7,7 +7,7 @@ Jira: SCRUM-717
 Контур: Claude
 Owner: unassigned
 Thread/Worker: n/a
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя на полный рефакторинг игры
 Labels: backend, claude, foma, refactor, refactor-wave, p2, area-ui, area-icons

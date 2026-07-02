@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-717 (refactor wave 0.1.8): exhaustive existence + anti-drift validation for the
+# SCRUM-717 (refactor wave 0.2.0): exhaustive existence + anti-drift validation for the
 # UIThemePaths theme-path collections. ui_icon_registry_smoke covers ICON_PATHS and
 # dark_fantasy_ui_theme covers the minimal_metal frame/button + text_button_unique kits,
 # but the active OVERHAUL_2K / LEVEL_UP_SCRUM682 / RED_GOLD / UNIFIED / GLOBAL collections

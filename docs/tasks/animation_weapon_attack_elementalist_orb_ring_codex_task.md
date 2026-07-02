@@ -7,7 +7,7 @@
 Контур: Codex
 Owner: Animator/Codex
 Thread: codex-vfx-auto-3-20260701
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: Codex Documentation dispatcher (запрос пользователя)
 Jira: SCRUM-742

@@ -5,7 +5,7 @@
 Owner: unassigned
 Thread: n/a
 Locked paths: `tests/gamepad_full_flow_smoke_test.gd` (новый), `docs/process/qa_protocol.md` (раздел геймпада), `docs/design/systems/input_controls.md`
-Версия: 0.1.8
+Версия: 0.2.0
 Приоритет: P2
 Создано: 2026-07-02
 Автор: PM (прямой запрос пользователя: полная проверка игры на соответствие геймпаду)

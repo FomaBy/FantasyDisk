@@ -3752,5 +3752,10 @@
   "key": "SCRUM-832",
   "status": "Контроль качества",
   "desc_hash": "34dc9dbf3aba704fda733a717452e076"
+ },
+ "process_version_020_transition_task.md": {
+  "key": "SCRUM-833",
+  "status": "Контроль качества",
+  "desc_hash": "1b4d7d05e65fc1afcf82218d3897ede1"
  }
 }

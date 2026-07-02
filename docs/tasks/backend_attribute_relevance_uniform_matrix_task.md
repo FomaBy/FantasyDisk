@@ -6,7 +6,7 @@
 Контур: Claude
 Owner: claude-backend
 Thread/Worker: claude-backend
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: User request
 Jira: SCRUM-695

@@ -7,7 +7,7 @@
 Owner: Back-end/Codex
 Thread/Worker: current Codex thread
 Locked paths: `scripts/progression_data_enemies.gd`, `tests/enemy_content_integrity_test.gd`, `docs/design/systems/enemies_bosses.md`, `docs/design/mechanics_extract.md`, `docs/design/current_game_state.md`
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-07-02
 Автор: прямой запрос пользователя
 Jira: SCRUM-829

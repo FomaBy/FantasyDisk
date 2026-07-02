@@ -8,7 +8,7 @@ Executor: Codex
 Owner: QA/Codex coordinator
 Thread/Worker: codex-qa-scrum700-finish-20260701 / codex-qa-claude-monitor
 Locked paths: read-only UI screens; `docs/tasks/qa_ui_1080_scale_visual_task.md`; QA evidence under `build/qa/scrum700_1080_ui_scale/`; follow-up bugs may lock specific UI files separately
-Версия: 0.1.8
+Версия: 0.2.0
 Создано: 2026-06-30
 Автор: PM/Codex по запросу пользователя
 Jira: SCRUM-700

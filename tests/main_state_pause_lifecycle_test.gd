@@ -1,6 +1,6 @@
 extends SceneTree
 
-# SCRUM-707 (refactor wave 0.1.8): focused coverage for the Main coordinator pause
+# SCRUM-707 (refactor wave 0.2.0): focused coverage for the Main coordinator pause
 # reference-counting lifecycle. The run-state pause system (push_pause/pop_pause/
 # _clear_all_game_pauses) is core fragile state with no dedicated test before this.
 # Semantics under test:

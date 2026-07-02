@@ -1468,7 +1468,7 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 | --- | --- | --- | --- | --- | --- | --- |
 | `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | SCRUM-539 Design source pack: `assets/sprites/bosses/secret_ascension_boss.png`, `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final animation/runtime wiring pending |
 
-## SCRUM-723 Scene/Resource Reference Integrity Audit (0.1.8)
+## SCRUM-723 Scene/Resource Reference Integrity Audit (0.2.0)
 
 Reference-integrity sweep of scenes, `.tres` resources and project config — no asset
 deletions, no canonical reference changes. Findings (all CLEAN as of the sweep):
@@ -1483,12 +1483,12 @@ deletions, no canonical reference changes. Findings (all CLEAN as of the sweep):
 - **No duplicate `class_name`** declarations across `scripts/` + `tests/` (guards the
   ` 2`-suffix global-class collision class, SCRUM-440).
 - **Version consistent** — `project.godot config/version` and every
-  `export_presets.cfg` version field are `0.1.7`; no export-preset drift.
+  `export_presets.cfg` version field are `0.2.0`; no export-preset drift.
 - **Gate strengthened:** `tests/asset_reference_integrity_test.gd` now also scans
   `.tres` under `assets/` (previously scripts/ + scenes/ only), so a broken
   SpriteFrames→texture `ext_resource path` fails the gate instead of rendering blank.
 
-## SCRUM-810 Input Glyphs (Gamepad + Keyboard) — 0.1.8
+## SCRUM-810 Input Glyphs (Gamepad + Keyboard) — 0.2.0
 
 Пиксель-арт глифы ввода для UI-подсказок пакета полной поддержки геймпада
 (подсказки «какая кнопка за что», ребинд в настройках, контекстные хинты).
