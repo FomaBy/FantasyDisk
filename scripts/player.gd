@@ -62,6 +62,8 @@ const SHOW_HELD_WEAPON_VISUAL := false
 const DEBUG_MOVE_ARRIVAL_DISTANCE := 10.0
 const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_MAX_LABELS := 42
+const DEFAULT_GAMEPAD_DEADZONE := 0.25
+const DEFAULT_GAMEPAD_VIBRATION := true
 
 const CHARACTER_CONFIGS := {
 	"berserk": {
@@ -390,16 +392,7 @@ func _physics_process(_delta: float) -> void:
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
 	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
 	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
-	var direction := Vector2.ZERO
-
-	if Input.is_action_pressed("move_left"):
-		direction.x -= 1.0
-	if Input.is_action_pressed("move_right"):
-		direction.x += 1.0
-	if Input.is_action_pressed("move_up"):
-		direction.y -= 1.0
-	if Input.is_action_pressed("move_down"):
-		direction.y += 1.0
+	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down", _gamepad_deadzone())
 	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
 		activate_ultimate()
@@ -417,7 +410,7 @@ func _physics_process(_delta: float) -> void:
 			_clear_debug_move_target()
 		else:
 			direction = to_target.normalized()
-	velocity = direction.normalized() * speed_factor
+	velocity = direction.limit_length(1.0) * speed_factor
 	if _debug_move_target_active and manual_direction.length_squared() <= 0.0:
 		var remaining := _debug_move_target - global_position
 		var max_step := velocity.length() * _delta
@@ -602,6 +595,7 @@ func take_damage(amount: float, _source := "") -> bool:
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()
 	_play_sfx("player_hit")
+	_trigger_gamepad_vibration(0.6, 0.0, 0.25)
 	damaged.emit(amount)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
@@ -624,6 +618,7 @@ func take_damage(amount: float, _source := "") -> bool:
 		var rig := _cutout_rig()
 		if rig != null and rig.has_method("spawn_death_ghost"):
 			rig.spawn_death_ghost()
+		_trigger_gamepad_vibration(0.0, 0.8, 0.5)
 		died.emit()
 		queue_free()
 	return true
@@ -986,6 +981,7 @@ func activate_ultimate() -> bool:
 	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
 	ultimate_charge = 0.0
 	_play_sfx("level_up")
+	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
 	match character_id:
 		"berserk":
 			_activate_berserk_ultimate(config, multiplier)
@@ -1758,19 +1754,100 @@ func _ensure_default_input_actions() -> void:
 	_ensure_key_action("move_down", [KEY_S, KEY_DOWN])
 	_ensure_key_action("move_left", [KEY_A, KEY_LEFT])
 	_ensure_key_action("move_right", [KEY_D, KEY_RIGHT])
+	_ensure_joy_motion_action("move_up", JOY_AXIS_LEFT_Y, -1.0)
+	_ensure_joy_motion_action("move_down", JOY_AXIS_LEFT_Y, 1.0)
+	_ensure_joy_motion_action("move_left", JOY_AXIS_LEFT_X, -1.0)
+	_ensure_joy_motion_action("move_right", JOY_AXIS_LEFT_X, 1.0)
+	_ensure_joy_button_action("move_up", JOY_BUTTON_DPAD_UP)
+	_ensure_joy_button_action("move_down", JOY_BUTTON_DPAD_DOWN)
+	_ensure_joy_button_action("move_left", JOY_BUTTON_DPAD_LEFT)
+	_ensure_joy_button_action("move_right", JOY_BUTTON_DPAD_RIGHT)
 
 
 func _ensure_key_action(action_name: String, keycodes: Array) -> void:
 	if not InputMap.has_action(action_name):
 		InputMap.add_action(action_name)
 
-	if not InputMap.action_get_events(action_name).is_empty():
-		return
-
 	for keycode in keycodes:
+		if _action_has_key_event(action_name, int(keycode)):
+			continue
 		var event := InputEventKey.new()
 		event.keycode = keycode
 		InputMap.action_add_event(action_name, event)
+
+
+func _ensure_joy_motion_action(action_name: String, axis: int, axis_value: float) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	if _action_has_joy_motion_event(action_name, axis, axis_value):
+		return
+	var event := InputEventJoypadMotion.new()
+	event.axis = axis
+	event.axis_value = axis_value
+	InputMap.action_add_event(action_name, event)
+
+
+func _ensure_joy_button_action(action_name: String, button_index: int) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	if _action_has_joy_button_event(action_name, button_index):
+		return
+	var event := InputEventJoypadButton.new()
+	event.button_index = button_index
+	InputMap.action_add_event(action_name, event)
+
+
+func _action_has_key_event(action_name: String, keycode: int) -> bool:
+	for event in InputMap.action_get_events(action_name):
+		var key_event := event as InputEventKey
+		if key_event != null and key_event.keycode == keycode:
+			return true
+	return false
+
+
+func _action_has_joy_motion_event(action_name: String, axis: int, axis_value: float) -> bool:
+	for event in InputMap.action_get_events(action_name):
+		var motion_event := event as InputEventJoypadMotion
+		if motion_event != null and motion_event.axis == axis and signf(motion_event.axis_value) == signf(axis_value):
+			return true
+	return false
+
+
+func _action_has_joy_button_event(action_name: String, button_index: int) -> bool:
+	for event in InputMap.action_get_events(action_name):
+		var button_event := event as InputEventJoypadButton
+		if button_event != null and button_event.button_index == button_index:
+			return true
+	return false
+
+
+func _gamepad_deadzone() -> float:
+	return clampf(float(_runtime_setting("gamepad_deadzone", DEFAULT_GAMEPAD_DEADZONE)), 0.0, 0.95)
+
+
+func _gamepad_vibration_enabled() -> bool:
+	return bool(_runtime_setting("gamepad_vibration", DEFAULT_GAMEPAD_VIBRATION))
+
+
+func _runtime_setting(key: String, default_value: Variant) -> Variant:
+	if is_inside_tree() and get_tree().root != null:
+		var root_node := get_tree().root
+		if root_node.has_meta(key):
+			return root_node.get_meta(key)
+		if root_node.has_meta("settings"):
+			var settings = root_node.get_meta("settings")
+			if settings is Dictionary and settings.has(key):
+				return settings[key]
+	return default_value
+
+
+func _trigger_gamepad_vibration(weak_magnitude: float, strong_magnitude: float, duration: float) -> void:
+	if not _gamepad_vibration_enabled():
+		return
+	var devices := Input.get_connected_joypads()
+	if devices.is_empty():
+		return
+	Input.start_joy_vibration(int(devices[0]), clampf(weak_magnitude, 0.0, 1.0), clampf(strong_magnitude, 0.0, 1.0), maxf(duration, 0.0))
 
 
 func _update_movement_animation(delta: float) -> void:
