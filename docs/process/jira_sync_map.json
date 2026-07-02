@@ -3737,5 +3737,10 @@
   "key": "SCRUM-828",
   "status": "К выполнению",
   "desc_hash": "c1d6167cc8107bfca56c5831307970d7"
+ },
+ "backend_enemy_mob_visual_scale_up_task.md": {
+  "key": "SCRUM-829",
+  "status": "Контроль качества",
+  "desc_hash": "94deb73ab5b7f43e521305f67e6b52a9"
  }
 }

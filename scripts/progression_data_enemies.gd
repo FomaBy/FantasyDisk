@@ -3,8 +3,8 @@ extends RefCounted
 # SCRUM-198: enemy/minion content data owned outside the progression facade.
 
 const ENEMY_SIZE_PROFILES := {
-	"ordinary": {"scale": 1.0, "label": "Обычный враг"},
-	"mini_elite": {"scale": 1.05, "label": "Мини-элитка Возвышения"},
+	"ordinary": {"scale": 1.25, "label": "Обычный враг"},
+	"mini_elite": {"scale": 1.31, "label": "Мини-элитка Возвышения"},
 	"elite": {"scale": 1.68, "label": "Карточная элитка"},
 	"boss": {"scale": 1.90, "label": "Босс"},
 }

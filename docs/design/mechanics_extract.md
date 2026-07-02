@@ -311,11 +311,11 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 Обновление 2026-06-12: элитки используют общий `ProgressionData.stage_scale(route_stage)`, получают больший HP-бюджет, усиленный урон, более частые уникальные атаки и meta-флаг второй фазы на 50% HP. Победа над элиткой открывает экран выбора 1 из 3 артефактов; шанс tier-2/tier-3 растет с глубиной акта.
 
 Обновление SCRUM-260 (2026-06-13): размеры enemy-rank вынесены в
-`ProgressionData.ENEMY_SIZE_PROFILES`. Мини-элитки свиты Возвышения используют
-`mini_elite` scale 1.05, карточные элитки узлов маршрута — `elite` scale 1.68,
-боссы — `boss` scale 1.90. Профиль записывается в meta `epic_scale_profile`
-до `_ready()`, поэтому scale согласованно тянет спрайт/rig, collision shape,
-contact_range и HP-bar.
+`ProgressionData.ENEMY_SIZE_PROFILES`. После SCRUM-829 обычные мобы используют
+`ordinary` scale 1.25, mini-элитки свиты Возвышения — `mini_elite` scale 1.31,
+карточные элитки узлов маршрута — `elite` scale 1.68, боссы — `boss` scale 1.90.
+Профиль записывается в meta `epic_scale_profile` до `_ready()`, поэтому scale
+согласованно тянет спрайт/rig, collision shape, contact_range и HP-bar.
 
 Обновление SCRUM-259 (2026-06-13): каталог mechanics элиток/боссов вынесен в
 `ProgressionData.ENEMY_MECHANIC_CATALOG`, а конкретные наборы — в

@@ -13,6 +13,12 @@ const EnemyData := preload("res://scripts/progression_data_enemies.gd")
 
 const VALID_KINDS := ["elite", "boss"]
 const EXPECTED_SIZE_PROFILES := ["ordinary", "mini_elite", "elite", "boss"]
+const EXPECTED_SIZE_PROFILE_SCALES := {
+	"ordinary": 1.25,
+	"mini_elite": 1.31,
+	"elite": 1.68,
+	"boss": 1.90,
+}
 
 
 func _initialize() -> void:
@@ -48,10 +54,20 @@ func _check_size_profiles(errors: Array) -> void:
 			errors.append("ENEMY_SIZE_PROFILES без ожидаемого профиля '%s'" % key)
 			continue
 		var p: Dictionary = profiles[key]
-		if float(p.get("scale", 0.0)) <= 0.0:
+		var scale := float(p.get("scale", 0.0))
+		if scale <= 0.0:
 			errors.append("профиль '%s': scale <= 0" % key)
+		var expected_scale := float(EXPECTED_SIZE_PROFILE_SCALES.get(key, scale))
+		if absf(scale - expected_scale) > 0.001:
+			errors.append("профиль '%s': ожидался scale %.2f, получен %.2f" % [key, expected_scale, scale])
 		if not _text_ok(str(p.get("label", ""))):
 			errors.append("профиль '%s': пустой label" % key)
+	var ordinary_scale := float((profiles.get("ordinary", {}) as Dictionary).get("scale", 0.0))
+	var mini_scale := float((profiles.get("mini_elite", {}) as Dictionary).get("scale", 0.0))
+	var elite_scale := float((profiles.get("elite", {}) as Dictionary).get("scale", 0.0))
+	var boss_scale := float((profiles.get("boss", {}) as Dictionary).get("scale", 0.0))
+	if not (ordinary_scale < mini_scale and mini_scale < elite_scale and elite_scale < boss_scale):
+		errors.append("ожидался порядок размеров ordinary < mini_elite < elite < boss")
 
 
 func _check_mechanic_catalog(errors: Array) -> void:
