@@ -11,6 +11,12 @@ var _settings_v5_icon_cache := {}
 # прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
 var _gamepad_status_label: Label = null
 var _rebind_is_gamepad := false
+# SCRUM-827: view-state экрана «Атлас героев» (ссылки на узлы + вкладка/класс/выбор).
+# Все таймеры/твины экрана — property-твины на самих нодах либо колбэки строго через
+# Callable(self, "метод").bind(...) — против use-after-free семьи SCRUM-551.
+var _atlas := {}
+# Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
+var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -503,62 +509,47 @@ const PROGRESSION_CLASS_PANEL_CONTENT := Vector4(104.0, 42.0, 42.0, 42.0)
 const PROGRESSION_POINTS_BADGE_CONTENT := Vector4(20.0, 18.0, 20.0, 28.0)
 const PROGRESSION_TOOLTIP_MARGINS := Vector4(58.0, 58.0, 76.0, 76.0)
 const PROGRESSION_TOOLTIP_CONTENT := Vector4(84.0, 78.0, 112.0, 100.0)
-# SCRUM-676: ассеты переделанной раскладки древа умений (дизайн-пак SCRUM-675).
-# Используются на НОВЫХ элементах (классовый dropdown + попап, поп-ап очков, рамки
-# путей) — стилбоксы тест-привязанных панелей остаются на progression/*-фреймах.
-const SKILL_TREE_FRAME_DIR := "res://assets/sprites/ui/skill_tree/"
-const SKILL_TREE_CLASS_SELECT_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_select.png"
-const SKILL_TREE_CLASS_POPUP_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_popup.png"
-const SKILL_TREE_POINTS_BTN_PATH := SKILL_TREE_FRAME_DIR + "ui_btn_skill_points.png"
-const SKILL_TREE_PATH_FRAMES := {
-	"wealth": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_wealth.png",
-	"lore": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_lore.png",
-	"might": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_might.png",
-	"endure": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_endure.png",
+# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн meta_constellations.md §7).
+# Ассет-кит SCRUM-826/832 нарисован ПОД целевые размеры слотов окна 2560×1440
+# (bg_sky фулскрин, frame_border под 9-slice, сокеты/звёзды/гербы под свои px).
+const META40_UI_DIR := "res://assets/sprites/ui/meta40/"
+const META40_BG_SKY_PATH := META40_UI_DIR + "bg_sky.png"
+const META40_FRAME_BORDER_PATH := META40_UI_DIR + "frame_border.png"
+const META40_STAR_ALLOC_PATH := META40_UI_DIR + "star_alloc.png"
+const META40_KEYSTONE_RING_PATH := META40_UI_DIR + "keystone_ring.png"
+const META40_CURRENCY_EMBLEM_PATH := META40_UI_DIR + "currency_emblem.png"
+const META40_CURRENCY_STARDUST_PATH := META40_UI_DIR + "currency_stardust.png"
+const META40_SOCKET_TEXTURES := {
+	"minor": META40_UI_DIR + "socket_minor.png",
+	"technique": META40_UI_DIR + "socket_notable.png",
+	"notable": META40_UI_DIR + "socket_notable.png",
+	"keystone": META40_UI_DIR + "socket_keystone.png",
+	"hidden": META40_UI_DIR + "socket_hidden.png",
+	"core": META40_UI_DIR + "socket_notable.png",
 }
-const SKILL_TREE_CLASS_SELECT_MARGINS := Vector4(40.0, 32.0, 40.0, 32.0)
-const SKILL_TREE_CLASS_SELECT_CONTENT := Vector4(28.0, 18.0, 28.0, 18.0)
-const SKILL_TREE_CLASS_POPUP_MARGINS := Vector4(72.0, 78.0, 72.0, 78.0)
-const SKILL_TREE_CLASS_POPUP_CONTENT := Vector4(54.0, 56.0, 54.0, 56.0)
-const SKILL_TREE_PATH_FRAME_MARGINS := Vector4(40.0, 56.0, 40.0, 60.0)
-const SKILL_TREE_PATH_FRAME_CONTENT := Vector4(16.0, 18.0, 16.0, 18.0)
-# SCRUM-698: ассеты графового древа умней (арт-пак SCRUM-697). Узлы/коннекторы/фон/
-# маркер входа/бейдж рендерятся в нативном/пропорциональном размере (без stretch по оси).
-const SKILL_TREE_MAIN_FRAME_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_main.png"
-const SKILL_TREE_POINTS_BADGE_PATH := SKILL_TREE_FRAME_DIR + "ui_badge_skill_points.png"
-const SKILL_TREE_BG_CANVAS_PATH := SKILL_TREE_FRAME_DIR + "bg_canvas.png"
-const SKILL_TREE_ENTRY_MARKER_PATH := SKILL_TREE_FRAME_DIR + "class_entry_marker.png"
-const SKILL_TREE_MAIN_FRAME_MARGINS := Vector4(120.0, 110.0, 120.0, 110.0)
-const SKILL_TREE_MAIN_FRAME_CONTENT := Vector4(132.0, 116.0, 132.0, 112.0)
-const SKILL_TREE_POINTS_BADGE_CONTENT := Vector4(22.0, 16.0, 22.0, 18.0)
-const SKILL_TREE_NODE_ART := {
-	"minor": {
-		"available": SKILL_TREE_FRAME_DIR + "node_state_available.png",
-		"locked": SKILL_TREE_FRAME_DIR + "node_state_locked.png",
-		"purchased": SKILL_TREE_FRAME_DIR + "node_state_purchased.png",
-	},
-	"notable": {
-		"available": SKILL_TREE_FRAME_DIR + "node_notable_available.png",
-		"locked": SKILL_TREE_FRAME_DIR + "node_notable_locked.png",
-		"purchased": SKILL_TREE_FRAME_DIR + "node_notable_allocated.png",
-	},
-	"keystone": {
-		"available": SKILL_TREE_FRAME_DIR + "node_keystone_available.png",
-		"locked": SKILL_TREE_FRAME_DIR + "node_keystone_locked.png",
-		"purchased": SKILL_TREE_FRAME_DIR + "node_keystone_allocated.png",
-	},
-	"entry": {
-		"available": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
-		"locked": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
-		"purchased": SKILL_TREE_FRAME_DIR + "class_entry_marker.png",
-	},
+# Целевые размеры сокетов @2560×1440 (§7: minor 96, notable 128, keystone 168,
+# hidden 112, герб-ядро 160); на других вьюпортах — пропорциональный масштаб.
+const ATLAS_SOCKET_SIZES := {
+	"minor": 96.0, "technique": 128.0, "notable": 128.0,
+	"keystone": 168.0, "hidden": 112.0, "core": 160.0,
 }
-const SKILL_TREE_NODE_DISPLAY := {"minor": 72.0, "notable": 98.0, "keystone": 126.0, "entry": 104.0}
-const SKILL_TREE_WORLD_ORIGIN := Vector2(1120.0, 1080.0)
-const SKILL_TREE_WORLD_SIZE := Vector2(2240.0, 2160.0)
-const SKILL_TREE_DEFAULT_ZOOM := 0.5
-const SKILL_TREE_MIN_ZOOM := 0.28
-const SKILL_TREE_MAX_ZOOM := 1.3
+const ATLAS_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+# Орнаментная полоса frame_border ≈127px source; 160 покрывает угловые вырезы.
+const ATLAS_FRAME_SOURCE_MARGIN := 160.0
+const ATLAS_FOG_DISSOLVE_SEC := 0.6
+const ATLAS_ROLE_LABELS := {
+	"core": "ЯДРО СОЗВЕЗДИЯ", "minor": "ЗВЕЗДА-АТРИБУТ", "technique": "ЗВЕЗДА-ТЕХНИКА",
+	"notable": "ПРИМЕЧАТЕЛЬНАЯ ЗВЕЗДА", "keystone": "КЛЮЧЕВАЯ ЗВЕЗДА", "hidden": "СКРЫТАЯ ЗВЕЗДА",
+}
+# Родительный падеж названий классов для шапки «Эмблемы …: N» (мокап).
+const ATLAS_CLASS_GENITIVE := {
+	"berserk": "Берсерка", "soldier": "Солдата", "thief": "Вора",
+	"elementalist": "Элементалиста", "sniper": "Снайпера", "priest": "Священника",
+	"biologist": "Биолога", "robot": "Робота", "engineer": "Инженера",
+	"dark_mage": "Темного мага", "guitarist": "Гитариста", "assassin": "Ассасина",
+	"ranger": "Рейнджера", "doctor": "Доктора", "chemist": "Химика",
+	"knight": "Рыцаря", "druid": "Друида",
+}
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
 const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -816,10 +807,10 @@ func _show_main_menu() -> void:
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
-	var skill_tree_button := _make_button("Древо умений")
+	var skill_tree_button := _make_button("Атлас героев")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
 	_set_action_button_size(skill_tree_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
-	skill_tree_button.pressed.connect(_show_skill_tree_screen)
+	skill_tree_button.pressed.connect(_show_atlas_screen)
 	action_box.add_child(skill_tree_button)
 
 	# SCRUM-159: «Что нового» с бейджем непросмотренной версии (не модалка).
@@ -2533,427 +2524,1169 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	root.add_child(fab)
 
 
-func _show_skill_tree_screen() -> void:
-	# SCRUM-698: графовое древо умений в стиле Path of Exile. Один общий граф узлов
-	# (data-driven из META_PROGRESSION, SCRUM-696): узлы по `pos`, рёбра по `adj`,
-	# трата метаочков через allocate_node(), глобальный уровень = число купленных
-	# узлов. Холст панорамируется и масштабируется; точка входа выбранного класса
-	# центрируется. Старые 4 линейные ветки заменены полностью.
+func _show_atlas_screen() -> void:
+	# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн §7 + мокап meta40_atlas_mockup).
+	# Две вкладки (Созвездие/Гильдия), созвездие класса ЦЕЛИКОМ без пан/зума на небе
+	# bg_sky, лента 17 медальонов-гербов слева, панель узла справа, церемонии покупки
+	# и рассеивания тумана. Ядро — SCRUM-828 (constellation_nodes/allocate_node/
+	# active_keystone/hidden_star_progress); арт — кит SCRUM-826/832 (meta40/).
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
 
+	var s := _atlas_ui_scale()
+	var class_id := str(game.selected_character_id)
+	if not game.META_PROGRESSION.CLASS_ENTRY_NODES.has(class_id):
+		class_id = "berserk"
+	_atlas = {
+		"tab": "constellation",
+		"class_id": class_id,
+		"selected": "",
+		"status": {},
+		"edges": [],
+		"edge_flash": {},
+		"node_buttons": {},
+		"node_centers": {},
+		"npos": {},
+		"fog_tweens": {},
+		"medallions": [],
+	}
+
 	var root := Control.new()
-	root.name = "SkillTreeScreen"
+	root.name = "AtlasScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "skill_tree")
+	_atlas["root"] = root
 
-	var main_panel := PanelContainer.new()
-	main_panel.name = "SkillTreeMainPanel"
-	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.offset_left = 40.0
-	main_panel.offset_top = 24.0
-	main_panel.offset_right = -40.0
-	main_panel.offset_bottom = -24.0
-	main_panel.add_theme_stylebox_override("panel", _skill_tree_main_panel_style())
-	root.add_child(main_panel)
+	# Ночное небо — фулскрин-ассет кита, без общего фона/шейда.
+	var sky := TextureRect.new()
+	sky.name = "AtlasSky"
+	sky.texture = game._cached_texture(META40_BG_SKY_PATH)
+	sky.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sky.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
+	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(sky)
+
+	# Контент строго в пустой зоне рамы (safe-area правило проекта): маргины
+	# повторяют texture-margins рамы (band + угловые вырезы).
+	var vp := game.get_viewport().get_visible_rect().size
+	var frame_margins := _scaled_frame_margins_xy(
+		ATLAS_FRAME_SOURCE_SIZE, vp,
+		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+	var safe := MarginContainer.new()
+	safe.name = "AtlasSafeArea"
+	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	safe.add_theme_constant_override("margin_left", int(frame_margins.x))
+	safe.add_theme_constant_override("margin_top", int(frame_margins.y))
+	safe.add_theme_constant_override("margin_right", int(frame_margins.z))
+	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w))
+	root.add_child(safe)
 
 	var layout := VBoxContainer.new()
-	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 142.0
-	layout.offset_top = 120.0
-	layout.offset_right = -142.0
-	layout.offset_bottom = -112.0
-	layout.add_theme_constant_override("separation", 10)
-	root.add_child(layout)
+	layout.name = "AtlasLayout"
+	layout.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	safe.add_child(layout)
 
-	# --- Шапка ---
+	# --- Шапка: валюты + вкладки + назад ---
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 18)
+	header.name = "AtlasHeader"
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
-	var title := Label.new()
-	title.text = "Древо умений"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", _readable_font_size(38))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	header.add_child(title)
-	var points_label := Label.new()
-	points_label.name = "SkillTreePointsLabel"
-	points_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	points_label.add_theme_font_size_override("font_size", _readable_font_size(15))
-	points_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.36, 1.0))
-	var points_badge := PanelContainer.new()
-	points_badge.name = "SkillTreePointsBadge"
-	points_badge.custom_minimum_size = Vector2(170.0, 120.0)
-	points_badge.add_theme_stylebox_override("panel", _skill_tree_points_badge_style())
-	points_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	header.add_child(points_badge)
-	points_badge.add_child(points_label)
-	var info_button := Button.new()
-	info_button.name = "SkillTreePointsInfoButton"
-	info_button.text = "?"
-	info_button.custom_minimum_size = Vector2(64.0, 64.0)
-	info_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	info_button.focus_mode = Control.FOCUS_ALL
-	info_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	info_button.tooltip_text = "Как работает древо умений"
-	info_button.add_theme_font_size_override("font_size", _readable_font_size(28))
-	info_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
-	_apply_skill_tree_text_button_theme(info_button, _skill_tree_points_button_style)
-	header.add_child(info_button)
+	var emblem_badge := _atlas_make_currency_chip("AtlasEmblemBadge", META40_CURRENCY_EMBLEM_PATH, "AtlasEmblemsLabel", s)
+	header.add_child(emblem_badge)
+	_atlas["emblem_badge"] = emblem_badge
+	_atlas["emblems_label"] = emblem_badge.find_child("AtlasEmblemsLabel", true, false)
+	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
+	header.add_child(stardust_badge)
+	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
+	var header_spacer := Control.new()
+	header_spacer.name = "AtlasHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	var tab_constellation := _make_button("Созвездие")
+	tab_constellation.name = "AtlasTabConstellation"
+	_set_action_button_size(tab_constellation, 236.0)
+	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
+	header.add_child(tab_constellation)
+	_atlas["tab_constellation"] = tab_constellation
+	var tab_guild := _make_button("Гильдия")
+	tab_guild.name = "AtlasTabGuild"
+	_set_action_button_size(tab_guild, 236.0)
+	tab_guild.pressed.connect(Callable(self, "_atlas_switch_tab").bind("guild"))
+	header.add_child(tab_guild)
+	_atlas["tab_guild"] = tab_guild
 	var back_button := _make_button("Назад в меню")
-	back_button.name = "SkillTreeBackButton"
+	back_button.name = "AtlasBackButton"
 	_set_action_button_size(back_button, 260.0)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
+	_atlas["back_button"] = back_button
 	game.ui_escape_action = _show_main_menu
 
-	# --- Тело: левая панель класса/управления + графовый холст ---
+	# --- Тело: лента классов | небо-созвездие | панель узла ---
 	var body := HBoxContainer.new()
-	body.name = "SkillTreeBody"
+	body.name = "AtlasBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 18)
+	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
-	var class_panel := PanelContainer.new()
-	class_panel.name = "SkillTreeClassPanel"
-	class_panel.custom_minimum_size = Vector2(322.0, 240.0)
-	class_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	class_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	class_panel.add_theme_stylebox_override("panel", _progression_class_panel_style())
-	body.add_child(class_panel)
-	var class_margin := MarginContainer.new()
-	class_panel.add_child(class_margin)
-	var class_box := VBoxContainer.new()
-	class_box.add_theme_constant_override("separation", 10)
-	class_margin.add_child(class_box)
-	var class_header := Label.new()
-	class_header.name = "SkillTreeClassHeader"
-	class_header.text = "Точка входа"
-	class_header.add_theme_font_size_override("font_size", _readable_font_size(18))
-	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
-	class_box.add_child(class_header)
-	var class_selector := OptionButton.new()
-	class_selector.name = "SkillTreeClassSelector"
-	class_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	class_selector.focus_mode = Control.FOCUS_ALL
-	class_selector.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_selector.add_theme_font_size_override("font_size", _readable_font_size(16))
-	class_selector.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
-	class_selector.add_theme_stylebox_override("normal", _skill_tree_class_select_style())
-	class_selector.add_theme_stylebox_override("hover", _skill_tree_class_select_style(Color(1.06, 1.04, 0.92, 1.0)))
-	class_selector.add_theme_stylebox_override("pressed", _skill_tree_class_select_style(Color(0.90, 0.88, 0.80, 1.0)))
-	class_selector.add_theme_stylebox_override("focus", _skill_tree_class_select_style(Color(1.10, 1.06, 0.94, 1.0)))
-	class_box.add_child(class_selector)
-	# SCRUM-813: стартовый фокус дерева умений — селектор класса (логичная точка входа);
-	# кнопки хедера (зум/сброс/назад) достижимы направлением. Узлы графа остаются на мыши/
-	# зуме (полная гео-навигация графа — отдельная доработка). B/Esc = назад в меню.
-	_ensure_run_ui_gamepad_bindings()
-	class_selector.call_deferred("grab_focus")
-	var focus_hint := Label.new()
-	focus_hint.name = "SkillTreeFocusHint"
-	focus_hint.text = "Дерево общее. Выбор класса наводит камеру на его точку входа."
-	focus_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	focus_hint.add_theme_font_size_override("font_size", _readable_font_size(13))
-	focus_hint.add_theme_color_override("font_color", Color(0.84, 0.90, 0.98, 0.92))
-	class_box.add_child(focus_hint)
-	var zoom_row := HBoxContainer.new()
-	zoom_row.add_theme_constant_override("separation", 10)
-	class_box.add_child(zoom_row)
-	var zoom_out_button := _make_compact_button("−")
-	zoom_out_button.name = "SkillTreeZoomOutButton"
-	zoom_out_button.tooltip_text = "Отдалить"
-	zoom_row.add_child(zoom_out_button)
-	var zoom_in_button := _make_compact_button("+")
-	zoom_in_button.name = "SkillTreeZoomInButton"
-	zoom_in_button.tooltip_text = "Приблизить"
-	zoom_row.add_child(zoom_in_button)
-	var reset_button := _make_button("Сбросить дерево")
-	reset_button.name = "SkillTreeResetButton"
-	_set_action_button_size(reset_button, 290.0)
-	reset_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	class_box.add_child(reset_button)
+	var medallion_px := roundf(clampf(112.0 * s, 64.0, 132.0))
+	var strip := ScrollContainer.new()
+	strip.name = "AtlasClassStrip"
+	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	strip.custom_minimum_size = Vector2(medallion_px + roundf(26.0 * s), 0.0)
+	strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(strip)
+	_atlas["strip"] = strip
+	var strip_box := VBoxContainer.new()
+	strip_box.name = "AtlasClassStripBox"
+	strip_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	strip.add_child(strip_box)
+	for raw_cid in game.META_PROGRESSION.constellation_class_ids():
+		var cid := str(raw_cid)
+		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
+		var mb := TextureButton.new()
+		mb.name = "AtlasMedallion_%s" % cid
+		mb.texture_normal = game._cached_texture(META40_UI_DIR + "crest_%s.png" % cid)
+		mb.ignore_texture_size = true
+		mb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		mb.custom_minimum_size = Vector2(medallion_px, medallion_px)
+		mb.focus_mode = Control.FOCUS_ALL
+		mb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		mb.tooltip_text = str(cfg.get("title", cid))
+		mb.set_meta("class_id", cid)
+		mb.pressed.connect(Callable(self, "_atlas_select_class").bind(cid))
+		strip_box.add_child(mb)
+		(_atlas["medallions"] as Array).append(mb)
+		var prog_chip := PanelContainer.new()
+		prog_chip.name = "MedallionProgressChip"
+		prog_chip.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		var chip_h := maxf(16.0, roundf(20.0 * s))
+		prog_chip.offset_top = -chip_h
+		prog_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		prog_chip.add_theme_stylebox_override("panel", _atlas_translucent_style(0.55, 6.0))
+		mb.add_child(prog_chip)
+		var prog := Label.new()
+		prog.name = "AtlasMedallionProgress_%s" % cid
+		prog.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		prog.add_theme_font_size_override("font_size", _readable_font_size(11))
+		prog.add_theme_color_override("font_color", Color(0.93, 0.89, 0.74, 0.96))
+		prog_chip.add_child(prog)
+		var badge := PanelContainer.new()
+		badge.name = "AtlasMedallionBadge_%s" % cid
+		badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		var badge_px := maxf(20.0, roundf(30.0 * s))
+		badge.offset_left = -badge_px
+		badge.offset_bottom = badge_px
+		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge.add_theme_stylebox_override("panel", _atlas_unspent_badge_style(badge_px * 0.5))
+		badge.visible = false
+		mb.add_child(badge)
+		var badge_label := Label.new()
+		badge_label.name = "BadgeCount"
+		badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(11))
+		badge_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.86, 1.0))
+		badge.add_child(badge_label)
 
-	# --- Графовый холст (пан/зум) ---
 	var canvas := Control.new()
-	canvas.name = "SkillTreeCanvas"
+	canvas.name = "AtlasCanvas"
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	canvas.clip_contents = true
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
+	canvas.gui_input.connect(Callable(self, "_atlas_canvas_input"))
+	canvas.resized.connect(Callable(self, "_atlas_layout_nodes"))
 	body.add_child(canvas)
-
-	var bg := TextureRect.new()
-	bg.name = "SkillTreeCanvasBackdrop"
-	bg.texture = game._cached_texture(SKILL_TREE_BG_CANVAS_PATH)
-	bg.stretch_mode = TextureRect.STRETCH_TILE
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg.modulate = Color(0.86, 0.90, 1.0, 0.92)
-	canvas.add_child(bg)
-
-	var world := Control.new()
-	world.name = "SkillTreeWorld"
-	world.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	world.size = SKILL_TREE_WORLD_SIZE
-	world.scale = Vector2(SKILL_TREE_DEFAULT_ZOOM, SKILL_TREE_DEFAULT_ZOOM)
-	canvas.add_child(world)
-
-	# Предрасчёт мировых позиций узлов и список рёбер (дедуп по id).
-	var node_pos_map := {}
-	var node_affinity_map := {}  # SCRUM-807: id → class_affinity (для «спящих» чужих ветвей)
-	for node in game.META_PROGRESSION.node_list():
-		node_pos_map[str(node["id"])] = SKILL_TREE_WORLD_ORIGIN + (node["pos"] as Vector2)
-		node_affinity_map[str(node["id"])] = str((node as Dictionary).get("class_affinity", ""))
-	var edges: Array = []
-	for node in game.META_PROGRESSION.node_list():
-		var a_id := str(node["id"])
-		for raw_neighbor in node.get("adj", []):
-			var b_id := str(raw_neighbor)
-			if a_id < b_id and node_pos_map.has(b_id):
-				edges.append([a_id, b_id])
-
+	_atlas["canvas"] = canvas
 	var edge_layer := Control.new()
-	edge_layer.name = "SkillTreeEdges"
+	edge_layer.name = "AtlasEdges"
+	edge_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	edge_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	edge_layer.position = Vector2.ZERO
-	edge_layer.size = SKILL_TREE_WORLD_SIZE
-	world.add_child(edge_layer)
-	edge_layer.draw.connect(func() -> void:
-		for e in edges:
-			var pa: Vector2 = node_pos_map[e[0]]
-			var pb: Vector2 = node_pos_map[e[1]]
-			var pur_a: bool = game.META_PROGRESSION.is_node_purchased(game.meta_state, e[0])
-			var pur_b: bool = game.META_PROGRESSION.is_node_purchased(game.meta_state, e[1])
-			var col := Color(0.30, 0.35, 0.44, 0.55)
-			var width := 3.0
-			if pur_a and pur_b:
-				col = Color(1.0, 0.82, 0.36, 0.95)
-				width = 6.0
-			elif pur_a or pur_b:
-				col = Color(0.86, 0.72, 0.34, 0.82)
-				width = 4.5
-			edge_layer.draw_line(pa, pb, col, width, true)
-	)
+	edge_layer.draw.connect(Callable(self, "_atlas_draw_edges"))
+	canvas.add_child(edge_layer)
+	_atlas["edge_layer"] = edge_layer
 
-	# Маркер фокуса текущего класса (свечение под точкой входа).
-	var focus_marker := TextureRect.new()
-	focus_marker.name = "SkillTreeFocusMarker"
-	focus_marker.texture = game._cached_texture(SKILL_TREE_ENTRY_MARKER_PATH)
-	focus_marker.ignore_texture_size = true
-	focus_marker.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	focus_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	focus_marker.modulate = Color(1.0, 0.84, 0.38, 0.5)
-	var focus_marker_size := 158.0
-	focus_marker.size = Vector2(focus_marker_size, focus_marker_size)
-	world.add_child(focus_marker)
+	# --- Панель узла (титул/тип/описание с числами/цена/действия) ---
+	var panel := PanelContainer.new()
+	panel.name = "AtlasNodePanel"
+	panel.custom_minimum_size = Vector2(roundf(clampf(452.0 * s, 272.0, 452.0)), 0.0)
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(16.0 * s)))
+	body.add_child(panel)
+	var panel_box := VBoxContainer.new()
+	panel_box.name = "AtlasNodePanelBox"
+	panel_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	panel.add_child(panel_box)
+	var kind_label := Label.new()
+	kind_label.name = "AtlasNodeKind"
+	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	kind_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	kind_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	panel_box.add_child(kind_label)
+	_atlas["panel_kind"] = kind_label
+	var icon_center := CenterContainer.new()
+	icon_center.name = "AtlasNodeIconCenter"
+	panel_box.add_child(icon_center)
+	var node_icon := TextureRect.new()
+	node_icon.name = "AtlasNodeIcon"
+	node_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	node_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := roundf(clampf(104.0 * s, 56.0, 104.0))
+	node_icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	icon_center.add_child(node_icon)
+	_atlas["panel_icon"] = node_icon
+	var title_label := Label.new()
+	title_label.name = "AtlasNodeTitle"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	panel_box.add_child(title_label)
+	_atlas["panel_title"] = title_label
+	var info_scroll := ScrollContainer.new()
+	info_scroll.name = "AtlasNodeScroll"
+	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	info_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel_box.add_child(info_scroll)
+	var info_box := VBoxContainer.new()
+	info_box.name = "AtlasNodeInfoBox"
+	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	info_scroll.add_child(info_box)
+	var desc_label := Label.new()
+	desc_label.name = "AtlasNodeDesc"
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.91, 0.95, 0.96))
+	info_box.add_child(desc_label)
+	_atlas["panel_desc"] = desc_label
+	var condition_label := Label.new()
+	condition_label.name = "AtlasNodeCondition"
+	condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	condition_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	condition_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	condition_label.add_theme_color_override("font_color", Color(0.72, 0.84, 1.0, 0.95))
+	condition_label.visible = false
+	info_box.add_child(condition_label)
+	_atlas["panel_condition"] = condition_label
+	var lore_label := Label.new()
+	lore_label.name = "AtlasNodeLore"
+	lore_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lore_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lore_label.add_theme_font_size_override("font_size", _readable_font_size(12))
+	lore_label.add_theme_color_override("font_color", Color(0.72, 0.74, 0.82, 0.85))
+	lore_label.visible = false
+	info_box.add_child(lore_label)
+	_atlas["panel_lore"] = lore_label
+	var price_row := HBoxContainer.new()
+	price_row.name = "AtlasNodePriceRow"
+	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	price_row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	panel_box.add_child(price_row)
+	_atlas["panel_price_row"] = price_row
+	var price_label := Label.new()
+	price_label.name = "AtlasNodePriceLabel"
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(17))
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	price_row.add_child(price_label)
+	_atlas["panel_price_label"] = price_label
+	var price_icon := TextureRect.new()
+	price_icon.name = "AtlasNodePriceIcon"
+	price_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	price_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var price_icon_px := maxf(18.0, roundf(28.0 * s))
+	price_icon.custom_minimum_size = Vector2(price_icon_px, price_icon_px)
+	price_row.add_child(price_icon)
+	_atlas["panel_price_icon"] = price_icon
+	var buy_button := _make_button("Вложить эмблему")
+	buy_button.name = "AtlasBuyButton"
+	_set_action_button_size(buy_button, 360.0, 88.0)
+	buy_button.pressed.connect(Callable(self, "_atlas_buy_selected"))
+	panel_box.add_child(buy_button)
+	_atlas["buy_button"] = buy_button
+	var keystone_toggle := _make_button("Сделать активной")
+	keystone_toggle.name = "AtlasKeystoneToggle"
+	_set_action_button_size(keystone_toggle, 360.0, 88.0)
+	keystone_toggle.pressed.connect(Callable(self, "_atlas_toggle_keystone"))
+	keystone_toggle.visible = false
+	panel_box.add_child(keystone_toggle)
+	_atlas["keystone_toggle"] = keystone_toggle
+	var progress_label := Label.new()
+	progress_label.name = "AtlasProgressLabel"
+	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	progress_label.add_theme_font_size_override("font_size", _readable_font_size(14))
+	progress_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.70, 0.95))
+	panel_box.add_child(progress_label)
+	_atlas["panel_progress"] = progress_label
+	var hidden_hint := Label.new()
+	hidden_hint.name = "AtlasHiddenHint"
+	hidden_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hidden_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(12))
+	hidden_hint.add_theme_color_override("font_color", Color(0.72, 0.82, 0.98, 0.88))
+	hidden_hint.visible = false
+	panel_box.add_child(hidden_hint)
+	_atlas["panel_hidden_hint"] = hidden_hint
 
-	# --- Узлы графа ---
-	var node_buttons: Array[TextureButton] = []
-	for node in game.META_PROGRESSION.node_list():
+	# --- Низ: «Респек — бесплатно» + легенда состояний ---
+	var footer := HBoxContainer.new()
+	footer.name = "AtlasFooter"
+	footer.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	layout.add_child(footer)
+	var respec_button := _make_button("Респек — бесплатно")
+	respec_button.name = "AtlasRespecButton"
+	_set_action_button_size(respec_button, 330.0)
+	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
+	footer.add_child(respec_button)
+	_atlas["respec_button"] = respec_button
+	var footer_spacer := Control.new()
+	footer_spacer.name = "AtlasFooterSpacer"
+	footer_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(footer_spacer)
+	var legend := HBoxContainer.new()
+	legend.name = "AtlasLegend"
+	legend.add_theme_constant_override("separation", int(roundf(16.0 * s)))
+	legend.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	footer.add_child(legend)
+	_atlas_add_legend_item(legend, META40_STAR_ALLOC_PATH, "куплено", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["minor"]), "доступно", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["keystone"]), "ключевая", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["hidden"]), "скрытая", s)
+
+	# Полая орнаментная рама кита ПОВЕРХ контента (клики сквозь; nearest — чтобы
+	# key-цвет прозрачной середины не подмешивался фильтрацией).
+	var frame := Panel.new()
+	frame.name = "AtlasFrame"
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.add_theme_stylebox_override("panel", _atlas_frame_style(frame_margins))
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	root.add_child(frame)
+
+	# --- Подтверждение респека (поверх рамы) ---
+	var respec_popup := PanelContainer.new()
+	respec_popup.name = "AtlasRespecPopup"
+	respec_popup.visible = false
+	respec_popup.custom_minimum_size = Vector2(roundf(clampf(560.0 * s, 380.0, 560.0)), 0.0)
+	respec_popup.set_anchors_preset(Control.PRESET_CENTER)
+	respec_popup.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * s)))
+	respec_popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(respec_popup)
+	_atlas["respec_popup"] = respec_popup
+	var respec_box := VBoxContainer.new()
+	respec_box.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	respec_popup.add_child(respec_box)
+	var respec_text := Label.new()
+	respec_text.name = "AtlasRespecPopupBody"
+	respec_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	respec_text.add_theme_font_size_override("font_size", _readable_font_size(16))
+	respec_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.88, 0.96))
+	respec_box.add_child(respec_text)
+	_atlas["respec_text"] = respec_text
+	var respec_actions := HBoxContainer.new()
+	respec_actions.alignment = BoxContainer.ALIGNMENT_END
+	respec_actions.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	respec_box.add_child(respec_actions)
+	var respec_cancel := _make_button("Отмена")
+	respec_cancel.name = "AtlasRespecCancelButton"
+	_set_action_button_size(respec_cancel, 200.0, 84.0)
+	respec_cancel.pressed.connect(Callable(self, "_atlas_respec_cancel"))
+	respec_actions.add_child(respec_cancel)
+	var respec_confirm := _make_button("Сбросить")
+	respec_confirm.name = "AtlasRespecConfirmButton"
+	_set_action_button_size(respec_confirm, 200.0, 84.0)
+	respec_confirm.pressed.connect(Callable(self, "_atlas_respec_confirm"))
+	respec_actions.add_child(respec_confirm)
+
+	_ensure_run_ui_gamepad_bindings()
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+# Масштаб UI Атласа: min-ось от дизайн-окна 2560×1440 (ассеты кита нарисованы
+# ровно под слоты этого окна).
+func _atlas_ui_scale() -> float:
+	var vp := Vector2(2560.0, 1440.0)
+	if game != null and game.get_viewport() != null:
+		vp = game.get_viewport().get_visible_rect().size
+	return minf(vp.x / 2560.0, vp.y / 1440.0)
+
+
+# Полая рама Атласа: 9-slice frame_border с draw_center=false (середина ассета —
+# key-прозрачность). Margins масштабируются от source→display (паттерн SCRUM-486).
+func _atlas_frame_style(margins: Vector4) -> StyleBox:
+	var texture: Texture2D = game._cached_texture(META40_FRAME_BORDER_PATH)
+	if texture == null:
+		return _atlas_chip_style(0.0, 0.0)
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = margins.x
+	style.texture_margin_top = margins.y
+	style.texture_margin_right = margins.z
+	style.texture_margin_bottom = margins.w
+	style.draw_center = false
+	return style
+
+
+# Тёмная кожа + латунный кант (курс SCRUM-806/809, без ярко-жёлтых рамок).
+func _atlas_chip_style(alpha: float, pad: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.085, 0.070, 0.055, alpha)
+	style.border_color = Color(0.52, 0.41, 0.24, 0.90)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = pad * 1.4
+	style.content_margin_right = pad * 1.4
+	style.content_margin_top = pad
+	style.content_margin_bottom = pad
+	return style
+
+
+func _atlas_translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.03, 0.03, 0.05, alpha)
+	style.set_corner_radius_all(int(radius))
+	return style
+
+
+func _atlas_unspent_badge_style(radius: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.56, 0.14, 0.12, 0.95)
+	style.border_color = Color(0.78, 0.56, 0.30, 0.9)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(int(radius))
+	return style
+
+
+func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name: String, s: float) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.name = chip_name
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	chip.add_child(row)
+	var icon := TextureRect.new()
+	icon.name = "%sIcon" % chip_name
+	icon.texture = game._cached_texture(icon_path)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := maxf(20.0, roundf(30.0 * s))
+	icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	row.add_child(icon)
+	var label := Label.new()
+	label.name = label_name
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.74, 1.0))
+	row.add_child(label)
+	return chip
+
+
+func _atlas_add_legend_item(legend: HBoxContainer, icon_path: String, text: String, s: float) -> void:
+	var item := HBoxContainer.new()
+	item.name = "AtlasLegendItem_%s" % text
+	item.add_theme_constant_override("separation", int(roundf(6.0 * s)))
+	legend.add_child(item)
+	var icon := TextureRect.new()
+	icon.texture = game._cached_texture(icon_path)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := maxf(16.0, roundf(26.0 * s))
+	icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	item.add_child(icon)
+	var label := Label.new()
+	label.text = text
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.94, 0.92))
+	item.add_child(label)
+
+
+# Узлы текущего графа: созвездие выбранного класса либо Атлас гильдии.
+func _atlas_graph_nodes() -> Array:
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		return game.META_PROGRESSION.atlas_nodes()
+	return game.META_PROGRESSION.constellation_nodes(str(_atlas.get("class_id", "berserk")))
+
+
+func _atlas_core_node_id() -> String:
+	if str(_atlas.get("tab", "constellation")) == "constellation":
+		return str(game.META_PROGRESSION.CLASS_ENTRY_NODES.get(str(_atlas.get("class_id", "")), ""))
+	for node in game.META_PROGRESSION.atlas_nodes():
+		if str((node as Dictionary).get("role", "")) == "core":
+			return str((node as Dictionary)["id"])
+	return ""
+
+
+# Пересборка холста под текущую вкладку/класс: кнопки-сокеты + оверлеи состояний.
+func _atlas_build_canvas() -> void:
+	var canvas: Control = _atlas.get("canvas")
+	if canvas == null or not is_instance_valid(canvas):
+		return
+	for nb in (_atlas.get("node_buttons", {}) as Dictionary).values():
+		if nb is Node and is_instance_valid(nb):
+			(nb as Node).queue_free()
+	_atlas["node_buttons"] = {}
+	_atlas["fog_tweens"] = {}
+	_atlas["edge_flash"] = {}
+	var s := _atlas_ui_scale()
+	var nodes := _atlas_graph_nodes()
+	var npos_map := {}
+	for node in nodes:
+		npos_map[str((node as Dictionary)["id"])] = (node as Dictionary).get("npos", Vector2(0.5, 0.5))
+	_atlas["npos"] = npos_map
+	var edges := []
+	for node in nodes:
+		var a_id := str((node as Dictionary)["id"])
+		for raw_neighbor in (node as Dictionary).get("adj", []):
+			var b_id := str(raw_neighbor)
+			if a_id < b_id and npos_map.has(b_id):
+				edges.append([a_id, b_id])
+	_atlas["edges"] = edges
+	for node in nodes:
 		var node_data: Dictionary = node
 		var node_id := str(node_data["id"])
-		var kind := str(node_data.get("kind", "minor"))
-		var disp: float = float(SKILL_TREE_NODE_DISPLAY.get(kind, 72.0))
+		var role := str(node_data.get("role", "minor"))
+		var affinity := str(node_data.get("class_affinity", ""))
 		var nb := TextureButton.new()
-		nb.name = "SkillNode_%s" % node_id
+		nb.name = "AtlasNode_%s" % node_id
+		var base_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
+		if role == "core" and affinity != "":
+			base_path = META40_UI_DIR + "crest_%s.png" % affinity
+		nb.texture_normal = game._cached_texture(base_path)
 		nb.ignore_texture_size = true
 		nb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * s))
 		nb.custom_minimum_size = Vector2(disp, disp)
 		nb.size = Vector2(disp, disp)
-		nb.position = node_pos_map[node_id] - Vector2(disp, disp) * 0.5
 		nb.focus_mode = Control.FOCUS_ALL
 		nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		nb.tooltip_text = "%s\n%s\nЦена: %d метаочк." % [str(node_data["title"]), str(node_data["desc"]), int(node_data["cost"])]
+		nb.tooltip_text = "%s\n%s" % [str(node_data.get("title", "")), str(node_data.get("desc", ""))]
 		nb.set_meta("node_id", node_id)
-		nb.set_meta("kind", kind)
-		world.add_child(nb)
-		node_buttons.append(nb)
+		nb.set_meta("role", role)
+		nb.pressed.connect(Callable(self, "_atlas_node_pressed").bind(node_id))
+		nb.focus_entered.connect(Callable(self, "_atlas_node_focused").bind(node_id))
+		canvas.add_child(nb)
+		(_atlas["node_buttons"] as Dictionary)[node_id] = nb
+		# Оверлеи состояний (§7): выбор, пульс доступности, звезда, кольцо keystone, туман.
+		var select_ring := _atlas_add_overlay(nb, "Select", META40_KEYSTONE_RING_PATH, 1.30, Color(0.55, 0.80, 1.0, 0.85))
+		select_ring.z_index = 1
+		var glow := _atlas_add_overlay(nb, "Glow", META40_STAR_ALLOC_PATH, 1.30, Color(0.66, 0.80, 1.0, 0.9))
+		var glow_pulse := glow.create_tween()
+		glow_pulse.set_loops()
+		glow_pulse.tween_property(glow, "self_modulate:a", 0.95, 0.7).from(0.30).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		glow_pulse.tween_property(glow, "self_modulate:a", 0.30, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if role != "core":
+			var star := _atlas_add_overlay(nb, "Star", META40_STAR_ALLOC_PATH, 0.80, Color.WHITE)
+			star.z_index = 1
+		if role == "keystone":
+			var ring := _atlas_add_overlay(nb, "Ring", META40_KEYSTONE_RING_PATH, 1.42, Color(0.72, 0.88, 1.0, 1.0))
+			var ring_pulse := ring.create_tween()
+			ring_pulse.set_loops()
+			ring_pulse.tween_property(ring, "self_modulate:a", 1.0, 1.1).from(0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			ring_pulse.tween_property(ring, "self_modulate:a", 0.72, 1.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if role == "hidden":
+			var qmark := Label.new()
+			qmark.name = "QMark"
+			qmark.set_anchors_preset(Control.PRESET_FULL_RECT)
+			qmark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			qmark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			qmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			qmark.text = "?"
+			qmark.add_theme_font_size_override("font_size", int(maxf(12.0, disp * 0.40)))
+			qmark.add_theme_color_override("font_color", Color(0.82, 0.90, 1.0, 0.92))
+			nb.add_child(qmark)
+			var fog := _atlas_add_overlay(nb, "Fog", str(META40_SOCKET_TEXTURES["hidden"]), 1.0, Color.WHITE)
+			fog.z_index = 2
+	# Выбор по умолчанию — ядро (панель сразу информативна).
+	if str(_atlas.get("selected", "")) == "" or not npos_map.has(str(_atlas.get("selected", ""))):
+		_atlas["selected"] = _atlas_core_node_id()
+	_atlas_layout_nodes()
 
-	# --- Состояние камеры (пан/зум) ---
-	var view_state := {"zoom": float(SKILL_TREE_DEFAULT_ZOOM), "dragging": false, "focus_class": str(game.selected_character_id)}
-	var apply_zoom := func(target_zoom: float, focus: Vector2) -> void:
-		var new_zoom := clampf(target_zoom, SKILL_TREE_MIN_ZOOM, SKILL_TREE_MAX_ZOOM)
-		var old_zoom: float = view_state["zoom"]
-		if is_equal_approx(new_zoom, old_zoom):
-			return
-		world.position = focus - (focus - world.position) * (new_zoom / old_zoom)
-		world.scale = Vector2(new_zoom, new_zoom)
-		view_state["zoom"] = new_zoom
-	var center_on := func(node_pos: Vector2) -> void:
-		var vp := canvas.size
-		if vp.x < 4.0 or vp.y < 4.0:
-			return
-		var z: float = view_state["zoom"]
-		world.position = vp * 0.5 - (SKILL_TREE_WORLD_ORIGIN + node_pos) * z
-	canvas.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton:
-			var mb := event as InputEventMouseButton
-			if mb.button_index == MOUSE_BUTTON_WHEEL_UP and mb.pressed:
-				apply_zoom.call(view_state["zoom"] * 1.12, mb.position)
-			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN and mb.pressed:
-				apply_zoom.call(view_state["zoom"] / 1.12, mb.position)
-			elif mb.button_index == MOUSE_BUTTON_LEFT:
-				view_state["dragging"] = mb.pressed
-		elif event is InputEventMouseMotion and bool(view_state["dragging"]):
-			world.position += (event as InputEventMouseMotion).relative
-	)
-	zoom_in_button.pressed.connect(func() -> void:
-		apply_zoom.call(view_state["zoom"] * 1.2, canvas.size * 0.5)
-	)
-	zoom_out_button.pressed.connect(func() -> void:
-		apply_zoom.call(view_state["zoom"] / 1.2, canvas.size * 0.5)
-	)
 
-	# --- Селектор класса (точки входа) ---
-	var entry_map: Dictionary = game.META_PROGRESSION.entry_map()
-	var class_ids: Array = entry_map.keys()
-	class_ids.sort()
-	var selected_class := str(game.selected_character_id)
-	var selected_index := 0
-	for i in range(class_ids.size()):
-		var cid := str(class_ids[i])
-		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
-		class_selector.add_item(str(cfg.get("title", cid)))
-		class_selector.set_item_metadata(class_selector.item_count - 1, cid)
-		if cid == selected_class:
-			selected_index = class_selector.item_count - 1
-	if class_selector.item_count > 0:
-		class_selector.select(selected_index)
-	var focus_class := func(cid: String) -> void:
-		view_state["focus_class"] = cid  # SCRUM-807: чужие классовые ветви «уснут» в refresh
-		var entry_id := str(entry_map.get(cid, ""))
-		if entry_id == "" or not node_pos_map.has(entry_id):
-			return
-		var entry_pos: Vector2 = node_pos_map[entry_id]
-		focus_marker.position = entry_pos - Vector2(focus_marker_size, focus_marker_size) * 0.5
-		var entry_node: Dictionary = game.META_PROGRESSION.node_by_id(entry_id)
-		center_on.call(entry_node["pos"] as Vector2)
-	class_selector.item_selected.connect(func(idx: int) -> void:
-		focus_class.call(str(class_selector.get_item_metadata(idx)))
-	)
+func _atlas_add_overlay(nb: TextureButton, overlay_name: String, texture_path: String, rel: float, tint: Color) -> TextureRect:
+	var overlay := TextureRect.new()
+	overlay.name = overlay_name
+	overlay.texture = game._cached_texture(texture_path)
+	overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	overlay.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var side := nb.custom_minimum_size.x * rel
+	overlay.size = Vector2(side, side)
+	overlay.position = (nb.custom_minimum_size - overlay.size) * 0.5
+	overlay.pivot_offset = overlay.size * 0.5
+	overlay.modulate = tint
+	overlay.visible = false
+	nb.add_child(overlay)
+	return overlay
 
-	# --- Подтверждение сброса дерева ---
-	var reset_popup := PanelContainer.new()
-	reset_popup.name = "SkillTreeResetPopup"
-	reset_popup.visible = false
-	reset_popup.custom_minimum_size = Vector2(520.0, 220.0)
-	reset_popup.set_anchors_preset(Control.PRESET_CENTER)
-	reset_popup.add_theme_stylebox_override("panel", _skill_tree_class_popup_style())
-	reset_popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	root.add_child(reset_popup)
-	var reset_box := VBoxContainer.new()
-	reset_box.add_theme_constant_override("separation", 14)
-	reset_popup.add_child(reset_box)
-	var reset_text := Label.new()
-	reset_text.name = "SkillTreeResetPopupBody"
-	reset_text.text = "Сбросить всё древо умений? Все купленные узлы вернутся, метаочки освободятся."
-	reset_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	reset_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	reset_text.add_theme_font_size_override("font_size", _readable_font_size(17))
-	reset_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.86, 0.96))
-	reset_box.add_child(reset_text)
-	var reset_actions := HBoxContainer.new()
-	reset_actions.alignment = BoxContainer.ALIGNMENT_END
-	reset_actions.add_theme_constant_override("separation", 14)
-	reset_box.add_child(reset_actions)
-	var reset_cancel := Button.new()
-	reset_cancel.name = "SkillTreeResetCancelButton"
-	reset_cancel.text = "Отмена"
-	reset_cancel.focus_mode = Control.FOCUS_ALL
-	reset_cancel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	reset_cancel.add_theme_font_size_override("font_size", _readable_font_size(15))
-	reset_cancel.add_theme_color_override("font_color", Color(0.92, 0.94, 0.86, 1.0))
-	_apply_skill_tree_text_button_theme(reset_cancel, _skill_tree_class_select_style)
-	reset_actions.add_child(reset_cancel)
-	var reset_confirm := Button.new()
-	reset_confirm.name = "SkillTreeResetConfirmButton"
-	reset_confirm.text = "Сбросить"
-	reset_confirm.focus_mode = Control.FOCUS_ALL
-	reset_confirm.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	reset_confirm.add_theme_font_size_override("font_size", _readable_font_size(15))
-	reset_confirm.add_theme_color_override("font_color", Color(1.0, 0.74, 0.62, 1.0))
-	_apply_skill_tree_text_button_theme(reset_confirm, _skill_tree_class_select_style)
-	reset_actions.add_child(reset_confirm)
 
-	# --- Поп-ап объяснения экономики метаочков ---
-	var info_popup := _make_skill_tree_popup(root, "SkillTreePointsInfoPopup", "Древо умений", "Метаочки начисляются за возвышения (ascension), максимум 100. Каждый узел стоит метаочки и открывается только рядом с уже выделенным узлом или с точки входа класса. Глобальный уровень персонажа равен числу выделенных узлов. Дерево общее для всех классов — у каждого своя точка входа. Кнопкой «Сбросить дерево» можно вернуть все метаочки.", _skill_tree_class_popup_style())
-	info_button.pressed.connect(func() -> void:
-		info_popup.visible = not info_popup.visible
-	)
-
-	# --- Обновление состояний ---
-	var refresh := func() -> void:
-		var available: int = game.META_PROGRESSION.available_meta_points(game.meta_state)
-		var level: int = game.META_PROGRESSION.global_level(game.meta_state)
-		points_label.text = "Ур. %d\nМетаочки\n%d / %d" % [level, available, game.META_PROGRESSION.META_POINTS_CAP]
-		reset_button.disabled = level <= 0
-		for nb in node_buttons:
-			var nid := str(nb.get_meta("node_id"))
-			var kind := str(nb.get_meta("kind"))
-			var status: String = game.META_PROGRESSION.node_status(game.meta_state, nid)
-			nb.disabled = status != "available"
-			var tex := _skill_tree_node_texture(kind, status)
-			nb.texture_normal = tex
-			nb.texture_hover = tex
-			nb.texture_pressed = tex
-			nb.texture_disabled = tex
-			if kind == "entry":
-				match status:
-					"purchased":
-						nb.modulate = Color(0.60, 1.0, 0.66, 1.0)
-					"available":
-						nb.modulate = Color(1.0, 0.90, 0.50, 1.0)
-					_:
-						nb.modulate = Color(0.70, 0.72, 0.78, 0.82)
-			else:
-				nb.modulate = Color(0.72, 0.74, 0.80, 0.85) if status == "locked" else Color(1.0, 1.0, 1.0, 1.0)
-			# SCRUM-807: классовая ветвь ВЫБРАННОГО героя в фокусе; чужие классовые
-			# ветви видны, но явно «спят» (их эффекты не действуют этому герою).
-			var nb_aff := str(node_affinity_map.get(nid, ""))
-			if nb_aff != "" and nb_aff != str(view_state.get("focus_class", "")):
-				nb.modulate = Color(0.42, 0.44, 0.52, 0.42)
+# Раскладка узлов: всё созвездие ЦЕЛИКОМ в холсте (без пан/зума), npos 0..1.
+func _atlas_layout_nodes() -> void:
+	var canvas: Control = _atlas.get("canvas")
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if canvas == null or not is_instance_valid(canvas):
+		return
+	var s := _atlas_ui_scale()
+	var pad := Vector2(124.0, 112.0) * s
+	var area := Vector2(maxf(canvas.size.x - pad.x * 2.0, 8.0), maxf(canvas.size.y - pad.y * 2.0, 8.0))
+	var centers := {}
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	var npos_map: Dictionary = _atlas.get("npos", {})
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb):
+			continue
+		var npos: Vector2 = npos_map.get(node_id, Vector2(0.5, 0.5))
+		var center := pad + npos * area
+		centers[node_id] = center
+		nb.position = center - nb.custom_minimum_size * 0.5
+	_atlas["node_centers"] = centers
+	if edge_layer != null and is_instance_valid(edge_layer):
 		edge_layer.queue_redraw()
 
-	for nb in node_buttons:
-		var nid := str(nb.get_meta("node_id"))
-		nb.pressed.connect(func() -> void:
-			game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, nid)
-			game.META_PROGRESSION.save_state(game.meta_state)
-			refresh.call()
-		)
 
-	reset_button.pressed.connect(func() -> void:
-		reset_popup.visible = true
-	)
-	reset_cancel.pressed.connect(func() -> void:
-		reset_popup.visible = false
-	)
-	reset_confirm.pressed.connect(func() -> void:
-		game.meta_state = game.META_PROGRESSION.reset_skill_tree(game.meta_state)
-		game.META_PROGRESSION.save_state(game.meta_state)
-		reset_popup.visible = false
-		refresh.call()
-	)
+# Силуэт-линии созвездия: тусклые до покупки, золотые между купленными; вспышка
+# покупки временно «зажигает» рёбра купленного узла (edge_flash).
+func _atlas_draw_edges() -> void:
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if edge_layer == null or not is_instance_valid(edge_layer):
+		return
+	var centers: Dictionary = _atlas.get("node_centers", {})
+	var status: Dictionary = _atlas.get("status", {})
+	var flash: Dictionary = _atlas.get("edge_flash", {})
+	var s := _atlas_ui_scale()
+	for edge in _atlas.get("edges", []):
+		var a_id := str((edge as Array)[0])
+		var b_id := str((edge as Array)[1])
+		if not centers.has(a_id) or not centers.has(b_id):
+			continue
+		var a_on := str(status.get(a_id, "")) == "purchased"
+		var b_on := str(status.get(b_id, "")) == "purchased"
+		var color := Color(0.46, 0.60, 0.82, 0.28)
+		var width := maxf(2.0, 2.6 * s)
+		if a_on and b_on:
+			color = Color(0.93, 0.77, 0.40, 0.92)
+			width = maxf(3.0, 5.0 * s)
+		elif a_on or b_on:
+			color = Color(0.78, 0.67, 0.45, 0.55)
+			width = maxf(2.5, 3.6 * s)
+		var flash_amount := maxf(float(flash.get(a_id, 0.0)), float(flash.get(b_id, 0.0)))
+		if flash_amount > 0.0:
+			color = color.lerp(Color(1.0, 0.92, 0.62, 1.0), clampf(flash_amount, 0.0, 1.0))
+			width += 2.0 * flash_amount
+		edge_layer.draw_line(centers[a_id], centers[b_id], color, width, true)
 
-	# SCRUM-807: смена класса в селекторе пере-подсвечивает ветви (чужие «спят»).
-	class_selector.item_selected.connect(func(_idx: int) -> void:
-		refresh.call()
-	)
-	refresh.call()
-	# Центрируем камеру на точке входа выбранного класса после первичной раскладки.
-	if class_selector.item_count > 0:
-		focus_class.call(str(class_selector.get_item_metadata(class_selector.selected)))
-	# Холст получает реальный размер после первой раскладки — пере-центрируемся тогда.
-	canvas.resized.connect(func() -> void:
-		if class_selector.item_count > 0:
-			focus_class.call(str(class_selector.get_item_metadata(class_selector.selected)))
-	)
-	if not node_buttons.is_empty():
-		node_buttons[0].grab_focus()
+
+# Полное обновление: валюты в шапке, медальоны, состояния узлов, панель узла.
+func _atlas_refresh() -> void:
+	if _atlas.is_empty():
+		return
+	var root: Control = _atlas.get("root")
+	if root == null or not is_instance_valid(root):
+		return
+	var state: Dictionary = game.meta_state
+	var class_id := str(_atlas.get("class_id", "berserk"))
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+
+	var emblems_label := _atlas.get("emblems_label") as Label
+	if emblems_label != null and is_instance_valid(emblems_label):
+		var genitive := str(ATLAS_CLASS_GENITIVE.get(class_id, "класса"))
+		emblems_label.text = "Эмблемы %s: %d" % [genitive, game.META_PROGRESSION.class_sigils_available(state, class_id)]
+	var stardust_label := _atlas.get("stardust_label") as Label
+	if stardust_label != null and is_instance_valid(stardust_label):
+		stardust_label.text = "Звёздная пыль: %d" % game.META_PROGRESSION.stardust_available(state)
+
+	# Медальоны: подсветка выбранного, прогресс x/N, бейдж непотраченных эмблем.
+	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
+	for raw_mb in _atlas.get("medallions", []):
+		var mb := raw_mb as TextureButton
+		if mb == null or not is_instance_valid(mb):
+			continue
+		var cid := str(mb.get_meta("class_id"))
+		mb.modulate = Color.WHITE if (cid == class_id and not on_guild) else Color(0.68, 0.70, 0.78, 0.88)
+		var visible_total := 0
+		var visible_bought := 0
+		for node in game.META_PROGRESSION.constellation_nodes(cid):
+			if str((node as Dictionary).get("role", "")) == "hidden":
+				continue
+			visible_total += 1
+			if purchased_all.has(str((node as Dictionary)["id"])):
+				visible_bought += 1
+		var prog := mb.find_child("AtlasMedallionProgress_%s" % cid, true, false) as Label
+		if prog != null:
+			prog.text = "%d/%d" % [visible_bought, visible_total]
+		var unspent: int = game.META_PROGRESSION.class_sigils_available(state, cid)
+		var badge := mb.find_child("AtlasMedallionBadge_%s" % cid, true, false) as PanelContainer
+		if badge != null:
+			badge.visible = unspent > 0
+			var badge_label := badge.find_child("BadgeCount", true, false) as Label
+			if badge_label != null:
+				badge_label.text = str(mini(unspent, 99))
+
+	# Состояния узлов текущего графа (§7: 6 состояний).
+	var status_map := {}
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	for node_id in buttons.keys():
+		status_map[node_id] = str(game.META_PROGRESSION.node_status(state, str(node_id)))
+	_atlas["status"] = status_map
+	var selected_id := str(_atlas.get("selected", ""))
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb):
+			continue
+		var role := str(nb.get_meta("role"))
+		var node_status := str(status_map.get(node_id, "locked"))
+		match node_status:
+			"purchased":
+				nb.modulate = Color.WHITE
+			"available":
+				nb.modulate = Color.WHITE
+			"hidden":
+				nb.modulate = Color(0.86, 0.90, 0.99, 0.92)
+			_:
+				nb.modulate = Color(0.52, 0.55, 0.63, 0.78)
+		var glow := nb.get_node_or_null("Glow") as TextureRect
+		if glow != null:
+			glow.visible = node_status == "available"
+		var star := nb.get_node_or_null("Star") as TextureRect
+		if star != null:
+			star.visible = node_status == "purchased" and role != "core"
+			if role == "keystone":
+				var keystone_active: bool = game.META_PROGRESSION.is_keystone_active(state, str(node_id))
+				# Купленная неактивная ключевая — «тлеет»; активная — золото + сапфир.
+				star.self_modulate = Color.WHITE if keystone_active else Color(1.0, 0.56, 0.28, 0.72)
+		var ring := nb.get_node_or_null("Ring") as TextureRect
+		if ring != null:
+			ring.visible = role == "keystone" and game.META_PROGRESSION.is_keystone_active(state, str(node_id))
+		var select_ring := nb.get_node_or_null("Select") as TextureRect
+		if select_ring != null:
+			select_ring.visible = str(node_id) == selected_id
+		var qmark := nb.get_node_or_null("QMark") as Label
+		if qmark != null:
+			qmark.visible = node_status == "hidden"
+		# Церемония открытия скрытой звезды: рассеивание тумана 0.6с, скип кликом.
+		if role == "hidden" and node_status == "purchased" and not _atlas_hidden_seen.has(node_id):
+			_atlas_hidden_seen[node_id] = true
+			var fog := nb.get_node_or_null("Fog") as TextureRect
+			if fog != null:
+				fog.visible = true
+				fog.modulate = Color.WHITE
+				var fog_tween := fog.create_tween()
+				fog_tween.tween_property(fog, "modulate:a", 0.0, ATLAS_FOG_DISSOLVE_SEC)
+				fog_tween.tween_callback(Callable(self, "_atlas_finish_fog").bind(str(node_id)))
+				(_atlas["fog_tweens"] as Dictionary)[node_id] = fog_tween
+
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if edge_layer != null and is_instance_valid(edge_layer):
+		edge_layer.queue_redraw()
+	_atlas_refresh_node_panel()
+
+
+# Правая панель: титул/тип/описание С ЧИСЛАМИ/цена/кнопки; для keystone —
+# переключатель активности; для скрытой — условие и прогресс подвига.
+func _atlas_refresh_node_panel() -> void:
+	var state: Dictionary = game.meta_state
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var selected_id := str(_atlas.get("selected", ""))
+	var node: Dictionary = game.META_PROGRESSION.node_by_id(selected_id)
+	var kind_label := _atlas.get("panel_kind") as Label
+	var icon := _atlas.get("panel_icon") as TextureRect
+	var title_label := _atlas.get("panel_title") as Label
+	var desc_label := _atlas.get("panel_desc") as Label
+	var condition_label := _atlas.get("panel_condition") as Label
+	var lore_label := _atlas.get("panel_lore") as Label
+	var price_row := _atlas.get("panel_price_row") as HBoxContainer
+	var price_label := _atlas.get("panel_price_label") as Label
+	var price_icon := _atlas.get("panel_price_icon") as TextureRect
+	var buy_button := _atlas.get("buy_button") as Button
+	var keystone_toggle := _atlas.get("keystone_toggle") as Button
+	var progress_label := _atlas.get("panel_progress") as Label
+	var hidden_hint := _atlas.get("panel_hidden_hint") as Label
+	for control in [kind_label, icon, title_label, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
+		if control == null or not is_instance_valid(control):
+			return
+	var currency_icon_path := META40_CURRENCY_STARDUST_PATH if on_guild else META40_CURRENCY_EMBLEM_PATH
+	var currency_word := "пыль" if on_guild else "эмблему"
+	if node.is_empty():
+		kind_label.text = "АТЛАС ГЕРОЕВ"
+		icon.texture = game._cached_texture(str(META40_SOCKET_TEXTURES["minor"]))
+		title_label.text = "Выберите звезду"
+		desc_label.text = "Кликните по звезде созвездия, чтобы увидеть её силу и цену."
+		condition_label.visible = false
+		lore_label.visible = false
+		price_row.visible = false
+		buy_button.visible = false
+		keystone_toggle.visible = false
+	else:
+		var role := str(node.get("role", "minor"))
+		var affinity := str(node.get("class_affinity", ""))
+		var node_status := str(game.META_PROGRESSION.node_status(state, selected_id))
+		kind_label.text = "ХАБ ГИЛЬДИИ" if (role == "core" and affinity == "") else str(ATLAS_ROLE_LABELS.get(role, "ЗВЕЗДА"))
+		var icon_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
+		if role == "core" and affinity != "":
+			icon_path = META40_UI_DIR + "crest_%s.png" % affinity
+		icon.texture = game._cached_texture(icon_path)
+		title_label.text = str(node.get("title", ""))
+		desc_label.text = str(node.get("desc", ""))
+		lore_label.text = str(node.get("lore", ""))
+		lore_label.visible = role == "hidden" and lore_label.text != ""
+		condition_label.visible = false
+		if role == "hidden":
+			var progress: Dictionary = game.META_PROGRESSION.hidden_star_progress(state, selected_id)
+			if not progress.is_empty():
+				condition_label.visible = true
+				if bool(progress.get("unlocked", false)):
+					condition_label.text = "Подвиг совершён — звезда зажжена!"
+				else:
+					condition_label.text = "Условие: %s\nПрогресс: %d/%d" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
+		var purchasable := role != "core" and role != "hidden"
+		var cost := int(node.get("cost", 0))
+		price_row.visible = purchasable and node_status != "purchased"
+		price_label.text = "Цена: %d" % cost
+		price_icon.texture = game._cached_texture(currency_icon_path)
+		buy_button.visible = purchasable and node_status != "purchased"
+		buy_button.text = "Вложить %s" % currency_word
+		buy_button.disabled = node_status != "available"
+		if node_status == "locked":
+			var have: int = game.META_PROGRESSION.currency_available_for_node(state, selected_id)
+			condition_label.visible = true
+			if have < cost:
+				condition_label.text = "Не хватает: %d из %d. Зарабатывайте %s подвигами класса." % [have, cost, "пыль" if on_guild else "эмблемы"]
+			else:
+				condition_label.text = "Нужна соседняя купленная звезда."
+		elif purchasable and node_status == "purchased":
+			condition_label.visible = true
+			condition_label.text = "Звезда зажжена."
+		keystone_toggle.visible = role == "keystone" and affinity != "" and node_status == "purchased"
+		if keystone_toggle.visible:
+			var active: bool = game.META_PROGRESSION.is_keystone_active(state, selected_id)
+			keystone_toggle.text = "Активна — погасить" if active else "Сделать активной"
+
+	# Итоги внизу панели: прогресс созвездия/Атласа + подсказка о скрытой звезде.
+	var graph_nodes := _atlas_graph_nodes()
+	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
+	var visible_total := 0
+	var visible_bought := 0
+	var hint_text := ""
+	for raw_node in graph_nodes:
+		var graph_node: Dictionary = raw_node
+		if str(graph_node.get("role", "")) == "hidden":
+			if hint_text == "" and not game.META_PROGRESSION.hidden_star_unlocked(state, str(graph_node["id"])):
+				var progress: Dictionary = game.META_PROGRESSION.hidden_star_progress(state, str(graph_node["id"]))
+				hint_text = "До скрытой звезды: %s (%d/%d)" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
+			continue
+		visible_total += 1
+		if purchased_all.has(str(graph_node["id"])):
+			visible_bought += 1
+	if on_guild:
+		progress_label.text = "Атлас гильдии: %d/%d" % [visible_bought, visible_total]
+	else:
+		var power: float = game.META_PROGRESSION.estimated_class_power_multiplier(state, str(_atlas.get("class_id", "berserk")))
+		progress_label.text = "Созвездие: %d/%d · Сила класса: +%d%%" % [visible_bought, visible_total, int(roundf((power - 1.0) * 100.0))]
+	hidden_hint.text = hint_text
+	hidden_hint.visible = hint_text != ""
+
+
+func _atlas_node_pressed(node_id: String) -> void:
+	_atlas_skip_fog_ceremonies()
+	if str(_atlas.get("selected", "")) == node_id and str((_atlas.get("status", {}) as Dictionary).get(node_id, "")) == "available":
+		_atlas_buy_selected()
+		return
+	_atlas_select_node(node_id)
+
+
+func _atlas_node_focused(node_id: String) -> void:
+	# Геймпад/клавиатура: фокус на узле сразу показывает его в панели.
+	if str(_atlas.get("selected", "")) != node_id:
+		_atlas_select_node(node_id)
+
+
+func _atlas_select_node(node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	_atlas["selected"] = node_id
+	_atlas_refresh()
+
+
+func _atlas_select_class(class_id: String) -> void:
+	if _atlas.is_empty() or str(_atlas.get("class_id", "")) == class_id and str(_atlas.get("tab", "")) == "constellation":
+		_atlas_refresh()
+		return
+	_atlas["class_id"] = class_id
+	_atlas["tab"] = "constellation"
+	_atlas["selected"] = ""
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+func _atlas_switch_tab(tab: String) -> void:
+	if _atlas.is_empty() or str(_atlas.get("tab", "")) == tab:
+		return
+	_atlas["tab"] = tab
+	_atlas["selected"] = ""
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+# LB/RB (и Tab) листают вкладки Созвездие↔Гильдия (паттерн SCRUM-813).
+func _atlas_cycle_tab(_dir: int) -> bool:
+	if _atlas.is_empty():
+		return false
+	_atlas_switch_tab("guild" if str(_atlas.get("tab", "constellation")) == "constellation" else "constellation")
+	return true
+
+
+func _atlas_apply_tab_state() -> void:
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var tab_constellation := _atlas.get("tab_constellation") as Button
+	var tab_guild := _atlas.get("tab_guild") as Button
+	var strip := _atlas.get("strip") as ScrollContainer
+	var emblem_badge := _atlas.get("emblem_badge") as PanelContainer
+	if tab_constellation == null or tab_guild == null or not is_instance_valid(tab_constellation) or not is_instance_valid(tab_guild):
+		return
+	var active_tint := Color(1.0, 0.94, 0.74, 1.0)
+	var idle_tint := Color(0.74, 0.76, 0.84, 0.92)
+	tab_constellation.modulate = idle_tint if on_guild else active_tint
+	tab_guild.modulate = active_tint if on_guild else idle_tint
+	# Tab-клавиша всегда жмёт ПРОТИВОПОЛОЖНУЮ вкладку (короткая дорога «Tab — вкладки»).
+	var tab_shortcut := Shortcut.new()
+	var tab_event := InputEventKey.new()
+	tab_event.keycode = KEY_TAB
+	tab_shortcut.events = [tab_event]
+	tab_constellation.shortcut = tab_shortcut if on_guild else null
+	tab_guild.shortcut = null if on_guild else tab_shortcut
+	if strip != null and is_instance_valid(strip):
+		strip.visible = not on_guild
+	if emblem_badge != null and is_instance_valid(emblem_badge):
+		emblem_badge.visible = not on_guild
+	var respec_button := _atlas.get("respec_button") as Button
+	if respec_button != null and is_instance_valid(respec_button):
+		respec_button.text = "Респек Атласа — бесплатно" if on_guild else "Респек — бесплатно"
+
+
+func _atlas_buy_selected() -> void:
+	var node_id := str(_atlas.get("selected", ""))
+	if node_id == "" or _atlas.is_empty():
+		return
+	if not game.META_PROGRESSION.can_buy_node(game.meta_state, node_id):
+		return
+	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_refresh()
+	_atlas_play_purchase_ceremony(node_id)
+
+
+# Церемония покупки: вспышка звезды + загорание линий к соседям (§7).
+func _atlas_play_purchase_ceremony(node_id: String) -> void:
+	var nb := (_atlas.get("node_buttons", {}) as Dictionary).get(node_id) as TextureButton
+	if nb == null or not is_instance_valid(nb):
+		return
+	var star := nb.get_node_or_null("Star") as TextureRect
+	if star != null and star.visible:
+		var star_tween := star.create_tween()
+		star_tween.tween_property(star, "scale", Vector2.ONE, 0.45).from(Vector2(1.7, 1.7)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		star_tween.parallel().tween_property(star, "self_modulate", star.self_modulate, 0.45).from(Color(2.0, 1.8, 1.2, 1.0))
+	var edge_layer := _atlas.get("edge_layer") as Control
+	if edge_layer != null and is_instance_valid(edge_layer):
+		var edge_tween := edge_layer.create_tween()
+		edge_tween.tween_method(Callable(self, "_atlas_set_edge_flash").bind(node_id), 1.0, 0.0, 0.8)
+
+
+func _atlas_set_edge_flash(value: float, node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	(_atlas.get("edge_flash", {}) as Dictionary)[node_id] = value
+	var edge_layer := _atlas.get("edge_layer") as Control
+	if edge_layer != null and is_instance_valid(edge_layer):
+		edge_layer.queue_redraw()
+
+
+func _atlas_toggle_keystone() -> void:
+	var node_id := str(_atlas.get("selected", ""))
+	var node: Dictionary = game.META_PROGRESSION.node_by_id(node_id)
+	if node.is_empty() or str(node.get("role", "")) != "keystone":
+		return
+	var class_id := str(node.get("class_affinity", ""))
+	if class_id == "":
+		return
+	var active: bool = game.META_PROGRESSION.is_keystone_active(game.meta_state, node_id)
+	game.meta_state = game.META_PROGRESSION.set_active_keystone(game.meta_state, class_id, "" if active else node_id)
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_refresh()
+
+
+func _atlas_respec_prompt() -> void:
+	var popup := _atlas.get("respec_popup") as PanelContainer
+	var text := _atlas.get("respec_text") as Label
+	if popup == null or text == null or not is_instance_valid(popup) or not is_instance_valid(text):
+		return
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		text.text = "Сбросить все узлы Атласа гильдии? Звёздная пыль вернётся полностью — респек бесплатный."
+	else:
+		var title := str(game.PROGRESSION_DATA.character_config(str(_atlas.get("class_id", ""))).get("title", ""))
+		text.text = "Сбросить созвездие класса «%s»? Эмблемы вернутся полностью — респек бесплатный." % title
+	popup.visible = true
+
+
+func _atlas_respec_cancel() -> void:
+	var popup := _atlas.get("respec_popup") as PanelContainer
+	if popup != null and is_instance_valid(popup):
+		popup.visible = false
+
+
+func _atlas_respec_confirm() -> void:
+	if _atlas.is_empty():
+		return
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, "")
+	else:
+		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, str(_atlas.get("class_id", "")))
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_respec_cancel()
+	_atlas_refresh()
+
+
+func _atlas_canvas_input(event: InputEvent) -> void:
+	# Клик по небу скипает церемонию рассеивания тумана (§7).
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+		_atlas_skip_fog_ceremonies()
+
+
+func _atlas_skip_fog_ceremonies() -> void:
+	var tweens: Dictionary = _atlas.get("fog_tweens", {})
+	for node_id in tweens.keys():
+		var fog_tween := tweens[node_id] as Tween
+		if fog_tween != null and fog_tween.is_valid():
+			fog_tween.kill()
+		_atlas_finish_fog(str(node_id))
+	_atlas["fog_tweens"] = {}
+
+
+func _atlas_finish_fog(node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	(_atlas.get("fog_tweens", {}) as Dictionary).erase(node_id)
+	var nb := (_atlas.get("node_buttons", {}) as Dictionary).get(node_id) as TextureButton
+	if nb == null or not is_instance_valid(nb):
+		return
+	var fog := nb.get_node_or_null("Fog") as TextureRect
+	if fog != null:
+		fog.visible = false
+
+
+# SCRUM-812/813: фокус-цепочки — лента классов вертикальной цепью, узлы по
+# adj-соседям созвездия (гео-направления), шапка/низ достижимы направлениями.
+func _atlas_wire_focus() -> void:
+	if _atlas.is_empty():
+		return
+	var tab_constellation := _atlas.get("tab_constellation") as Button
+	var tab_guild := _atlas.get("tab_guild") as Button
+	var back_button := _atlas.get("back_button") as Button
+	var respec_button := _atlas.get("respec_button") as Button
+	var buy_button := _atlas.get("buy_button") as Button
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var medallions: Array = [] if on_guild else _atlas.get("medallions", [])
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	var centers: Dictionary = _atlas.get("node_centers", {})
+	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button]:
+		if control == null or not is_instance_valid(control):
+			return
+	# Шапка: горизонтальная цепь.
+	var header_ring: Array = [tab_constellation, tab_guild, back_button]
+	for i in range(header_ring.size()):
+		var current := header_ring[i] as Button
+		current.focus_neighbor_left = (header_ring[(i - 1 + header_ring.size()) % header_ring.size()] as Control).get_path()
+		current.focus_neighbor_right = (header_ring[(i + 1) % header_ring.size()] as Control).get_path()
+		current.focus_neighbor_bottom = respec_button.get_path()
+	# Лента классов: вертикальная цепь, вправо — ядро созвездия.
+	var core_button := buttons.get(_atlas_core_node_id()) as TextureButton
+	for i in range(medallions.size()):
+		var mb := medallions[i] as TextureButton
+		if mb == null or not is_instance_valid(mb):
+			continue
+		var prev := medallions[(i - 1 + medallions.size()) % medallions.size()] as TextureButton
+		var next := medallions[(i + 1) % medallions.size()] as TextureButton
+		mb.focus_neighbor_top = prev.get_path()
+		mb.focus_neighbor_bottom = next.get_path()
+		if core_button != null and is_instance_valid(core_button):
+			mb.focus_neighbor_right = core_button.get_path()
+	# Узлы: гео-направления по adj (лучший сосед в каждой из 4 сторон).
+	var selected_medallion: TextureButton = null
+	for raw_mb in medallions:
+		var mb := raw_mb as TextureButton
+		if mb != null and is_instance_valid(mb) and str(mb.get_meta("class_id")) == str(_atlas.get("class_id", "")):
+			selected_medallion = mb
+			break
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb) or not centers.has(node_id):
+			continue
+		var node: Dictionary = game.META_PROGRESSION.node_by_id(str(node_id))
+		var center: Vector2 = centers[node_id]
+		var best := {"left": null, "right": null, "top": null, "bottom": null}
+		var best_score := {"left": 0.35, "right": 0.35, "top": 0.35, "bottom": 0.35}
+		for raw_adj in node.get("adj", []):
+			var adj_id := str(raw_adj)
+			if not centers.has(adj_id) or not buttons.has(adj_id):
+				continue
+			var offset := (centers[adj_id] as Vector2) - center
+			if offset.length() < 1.0:
+				continue
+			var direction := offset.normalized()
+			var scores := {"left": -direction.x, "right": direction.x, "top": -direction.y, "bottom": direction.y}
+			for side in scores.keys():
+				if float(scores[side]) > float(best_score[side]):
+					best_score[side] = float(scores[side])
+					best[side] = buttons[adj_id]
+		var left_target := best["left"] as Control
+		if left_target == null:
+			left_target = selected_medallion if selected_medallion != null else tab_constellation
+		var right_target := best["right"] as Control
+		if right_target == null:
+			right_target = buy_button if buy_button.visible and not buy_button.disabled else respec_button
+		var top_target := best["top"] as Control
+		if top_target == null:
+			top_target = tab_guild if on_guild else tab_constellation
+		var bottom_target := best["bottom"] as Control
+		if bottom_target == null:
+			bottom_target = respec_button
+		nb.focus_neighbor_left = left_target.get_path()
+		nb.focus_neighbor_right = right_target.get_path()
+		nb.focus_neighbor_top = top_target.get_path()
+		nb.focus_neighbor_bottom = bottom_target.get_path()
+	# Панель/низ: возврат к ядру созвездия.
+	if core_button != null and is_instance_valid(core_button):
+		buy_button.focus_neighbor_left = core_button.get_path()
+		respec_button.focus_neighbor_top = core_button.get_path()
+	var keystone_toggle := _atlas.get("keystone_toggle") as Button
+	if keystone_toggle != null and is_instance_valid(keystone_toggle):
+		buy_button.focus_neighbor_bottom = keystone_toggle.get_path()
+		keystone_toggle.focus_neighbor_top = buy_button.get_path()
+		if core_button != null and is_instance_valid(core_button):
+			keystone_toggle.focus_neighbor_left = core_button.get_path()
+	# Стартовый фокус: медальон выбранного класса (вкладка Гильдии — ядро Атласа).
+	var initial: Control = selected_medallion
+	if initial == null:
+		initial = core_button
+	if initial == null and not buttons.is_empty():
+		initial = buttons.values()[0] as Control
+	if initial != null and is_instance_valid(initial):
+		initial.call_deferred("grab_focus")
 
 
 func _show_patch_notes_screen() -> void:
@@ -5414,6 +6147,9 @@ func _handle_menu_shoulder_nav(dir: int) -> bool:
 		return _cycle_settings_tab(dir)
 	if game.ui_layer.find_child("CodexScreen", true, false) != null:
 		return _cycle_codex_section(dir)
+	# SCRUM-827: LB/RB листают вкладки Атласа героев (Созвездие ↔ Гильдия).
+	if game.ui_layer.find_child("AtlasScreen", true, false) != null:
+		return _atlas_cycle_tab(dir)
 	return false
 
 
@@ -9978,89 +10714,6 @@ func _codex_entry_card_style(hovered := false) -> StyleBox:
 
 func _codex_portrait_slot_style() -> StyleBox:
 	return _global_texture_style(CODEX_PORTRAIT_SLOT_PATH, CODEX_PORTRAIT_SLOT_MARGINS, Color.WHITE, CODEX_PORTRAIT_SLOT_CONTENT, true)
-
-
-func _progression_class_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_CLASS_PANEL_PATH, PROGRESSION_CLASS_PANEL_MARGINS, Color.WHITE, PROGRESSION_CLASS_PANEL_CONTENT)
-
-
-func _skill_tree_class_select_style(tint := Color.WHITE) -> StyleBox:
-	return _global_texture_style(SKILL_TREE_CLASS_SELECT_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
-
-
-func _skill_tree_class_popup_style() -> StyleBox:
-	return _global_texture_style(SKILL_TREE_CLASS_POPUP_PATH, SKILL_TREE_CLASS_POPUP_MARGINS, Color.WHITE, SKILL_TREE_CLASS_POPUP_CONTENT)
-
-
-func _skill_tree_points_button_style(tint := Color.WHITE) -> StyleBox:
-	return _global_texture_style(SKILL_TREE_POINTS_BTN_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
-
-
-func _skill_tree_main_panel_style() -> StyleBox:
-	return _global_texture_style(SKILL_TREE_MAIN_FRAME_PATH, SKILL_TREE_MAIN_FRAME_MARGINS, Color.WHITE, SKILL_TREE_MAIN_FRAME_CONTENT)
-
-
-func _skill_tree_points_badge_style() -> StyleBox:
-	return _global_texture_style(SKILL_TREE_POINTS_BADGE_PATH, Vector4(28.0, 24.0, 28.0, 24.0), Color.WHITE, SKILL_TREE_POINTS_BADGE_CONTENT)
-
-
-func _skill_tree_node_texture(kind: String, status: String) -> Texture2D:
-	var by_kind: Dictionary = SKILL_TREE_NODE_ART.get(kind, SKILL_TREE_NODE_ART["minor"])
-	var path := str(by_kind.get(status, by_kind.get("locked")))
-	return game._cached_texture(path)
-
-
-func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, body: String, style: StyleBox) -> PanelContainer:
-	# SCRUM-676: переиспользуемый попап древа умений (классовые бонусы / объяснение
-	# очков). Скрыт по умолчанию — не участвует в overlap/visible-проверках QA.
-	var popup := PanelContainer.new()
-	popup.name = popup_name
-	popup.visible = false
-	popup.custom_minimum_size = Vector2(560.0, 240.0)
-	popup.set_anchors_preset(Control.PRESET_CENTER)
-	popup.add_theme_stylebox_override("panel", style)
-	popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	parent.add_child(popup)
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 12)
-	popup.add_child(col)
-	var heading := Label.new()
-	heading.name = "%sTitle" % popup_name
-	heading.text = title
-	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	heading.add_theme_font_size_override("font_size", _readable_font_size(22))
-	heading.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
-	col.add_child(heading)
-	var text := Label.new()
-	text.name = "%sBody" % popup_name
-	text.text = body
-	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text.add_theme_font_size_override("font_size", _readable_font_size(16))
-	text.add_theme_color_override("font_color", Color(0.86, 0.94, 0.84, 0.96))
-	col.add_child(text)
-	var close_button := Button.new()
-	close_button.name = "%sClose" % popup_name
-	close_button.text = "Закрыть"
-	close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	close_button.focus_mode = Control.FOCUS_ALL
-	close_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	close_button.add_theme_font_size_override("font_size", _readable_font_size(15))
-	close_button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
-	_apply_skill_tree_text_button_theme(close_button, _skill_tree_class_select_style)
-	close_button.pressed.connect(func() -> void:
-		popup.visible = false
-	)
-	col.add_child(close_button)
-	return popup
-
-
-func _apply_skill_tree_text_button_theme(button: Button, style_fn: Callable) -> void:
-	button.add_theme_stylebox_override("normal", style_fn.call(Color.WHITE))
-	button.add_theme_stylebox_override("hover", style_fn.call(Color(1.06, 1.04, 0.92, 1.0)))
-	button.add_theme_stylebox_override("pressed", style_fn.call(Color(0.90, 0.88, 0.80, 1.0)))
-	button.add_theme_stylebox_override("focus", style_fn.call(Color(1.10, 1.06, 0.94, 1.0)))
-	button.add_theme_stylebox_override("disabled", style_fn.call(Color(0.70, 0.72, 0.78, 0.82)))
 
 
 func _progression_node_style(status: String, focused := false) -> StyleBox:
