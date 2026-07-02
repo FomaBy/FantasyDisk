@@ -94,3 +94,21 @@ Verification to run:
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
 
 Disk cleanup: none created outside committed previews/references.
+
+## QA Re-check (2026-07-02, release re-fix) — PASSED
+
+Проверено на `origin/dev@5a5bfa8d`, disposable QA worktree
+`/tmp/FantasyDisk-QA-SCRUM-680`.
+
+- Static re-check PASS: node name remains `MainMenuTitleLabel`; runtime asset
+  path is `res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png`;
+  generator `tools/build_main_menu_title_logo.py` exists; legacy
+  `assets/sprites/ui/main_menu_title.png` and `tools/generate_main_menu_title.py`
+  are absent; committed rect evidence is present.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/main_menu_title_no_overlap_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+
+Баги: нет по SCRUM-680.
+
+Disk cleanup: remove `/tmp/FantasyDisk-QA-SCRUM-680` after Jira/mirror sync.
