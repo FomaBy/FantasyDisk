@@ -1,6 +1,6 @@
 # Аудит и план замены всех жёлтых/золотых рамок UI (курс: единый стиль без жёлтых рамок)
 
-Статус: new
+Статус: done
 Роль: Back-end
 Контур: Claude
 Lane: claude
@@ -42,3 +42,37 @@ PM: «все жёлтые рамки, которые у нас есть, нуж�
 
 - Принятый стиль: SCRUM-806 reopen (`docs/tasks/combat_hud_compact_redesign_task.md`,
   раздел «Доработка по фидбеку PM»), ассеты `assets/sprites/ui/hud/combat_hud_v2/`.
+
+## Прогресс
+
+2026-07-02 — аудит завершён (read-only, код/ассеты не менялись).
+
+- Просканированы все 649 UI-PNG (python3+PIL, доля ярко-жёлтых пикселей в краевой
+  полосе; калибровка: одобренный `ui_hud_v2_cluster_bg.png` = 0.0%, известный жёлтый
+  `ui_frame_2k_chud_timer.png` = 28.9%), ключевые кандидаты сверены глазами; usage
+  оттрассирован через `scripts/ui/ui_theme_paths.gd` и стилевые хелперы
+  `scripts/ui_screens.gd` / `pause_stats_menu.gd` / `route_map_screen.gd`.
+- Итог: жёлтые рамки — 5 живых групп: (1) семья minimal_metal (жёлтый кант; экономика,
+  награды, пауза-досье, чипы CharacterStatsHud в бою, межбоевой HUD, ценники, слот
+  портрета кодекса), (2) overhaul_2k «жёлтая линия + уголки» (баннеры босса/победы,
+  карточки weapon select, тултип глоссария, межбоевой ресурс-HUD/route map),
+  (3) settings v4 (ярко-золотые поля 37% — максимум в живом UI — и action-кнопки),
+  (4) оранжево-золотая семья скилл-три (селектор/попап/ОЧКИ/панели путей),
+  (5) кнопки: FAB докачки и utility-кнопки (100% жёлтый бордюр), «Позже»/портрет
+  level-up. Плюс ~25 мёртвых жёлтых ассетов (red_gold, ornate, dark_fantasy,
+  chud_timer и др.) — перерисовка не нужна, только чистка каталогов.
+- Полная таблица «текстура → хелпер → экраны → решение (заменить/убрать/оставить)» —
+  в отчёте `docs/design/audits/yellow_frames_audit_2026_07.md`.
+- Скрин-капчи «до» НЕ сняты — осознанное отступление от AC: Godot-гейт занят
+  исполнителем SCRUM-808 (параллельный headless душит чужие прогоны); капчи «до/после»
+  включены обязательным шагом в каждую спеку волны.
+- Волна из 5 самодостаточных спек создана (все: Статус new, Lane claude, метка foma):
+  1. `docs/tasks/minimal_metal_recolor_leather_brass_task.md`
+  2. `docs/tasks/overhaul_2k_kit_brass_line_task.md`
+  3. `docs/tasks/settings_gold_frames_restyle_task.md`
+  4. `docs/tasks/skill_tree_warm_frames_restyle_task.md`
+  5. `docs/tasks/yellow_buttons_levelup_accents_task.md`
+
+## Результат
+
+Аудит завершён, отчёт docs/design/audits/yellow_frames_audit_2026_07.md, волна спек создана.
