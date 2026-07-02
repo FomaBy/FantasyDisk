@@ -215,3 +215,45 @@ smoke реальных боевых эффектов). Метки hold/blocked �
 `docs/design/systems/meta_constellations.md`, `CHANGELOG.md`. Немапящиеся пары
 (soldier «Подавление», thief «Джекпот», элементалист/робот/инженер/… — новые
 подсистемы) остаются generic до SCRUM-835; 17/17 hidden → SCRUM-836.
+
+## QA Re-check 2026-07-02 — FAILED
+
+Проверено повторно на `origin/dev@47a2bae7` в
+`/tmp/FantasyDisk-QA-SCRUM-834` после PM re-scope в **834a**.
+
+Что подтверждено:
+
+- `soldier_k1` («Шквал») содержит `stance_attack_speed_bonus: 0.191` и
+  `damage_mult: -0.04`.
+- `thief_k0` («Из тени») содержит `rush_crit_bonus: 0.172` и
+  `max_health_mult: -0.04`.
+- `player.gd`/`progression_data.gd` гейтят эти ключи по `stance_active` и
+  `rush_window_active`; по смыслу delivered-функциональность 834a выглядит
+  подключённой.
+
+Блокеры приёмки:
+
+- `tests/meta_skill_tree_smoke_test.gd` всё ещё проверяет новые стат-цели через
+  synthetic dictionaries (`{"stance_attack_speed_bonus": 0.19}`,
+  `{"rush_crit_bonus": 0.17}`), а не реальный путь
+  `soldier_k1`/`thief_k0` → meta progression selection → player/progression
+  runtime. Это доказывает generic hook, но не delivery конкретных PM-nodes.
+- `docs/design/systems/meta_constellations.md` сохраняет stale broad wording,
+  что SCRUM-834 заменил `k0/k1` всех классов на conditional damage, хотя живой
+  scope теперь 834a partial.
+- `CHANGELOG.md` содержит новый корректный 834a entry, но ниже остаётся старый
+  SCRUM-834 claim про все 17 классов и первые два keystone.
+
+QA checks:
+
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Verdict: QA FAILED. Required fix: add/adjust behavioral smoke coverage so it
+exercises the real `soldier_k1` and `thief_k0` node-to-runtime path, and remove
+or rewrite stale overclaiming docs/CHANGELOG text from the pre-decomposition
+SCRUM-834 scope.
+
+Disk cleanup: QA worktree `/tmp/FantasyDisk-QA-SCRUM-834` removed after Jira
+sync/commit; transient `.godot`, `qa_logs`, and `.import` artifacts not kept.
