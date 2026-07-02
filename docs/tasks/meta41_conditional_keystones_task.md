@@ -1,6 +1,6 @@
 # Мета 4.1: условные keystone-механики, уникальные скрытые подвиги, номиналы минорных звёзд
 
-Статус: done
+Статус: new
 Приоритет: high
 Роль: Back-end (Claude)
 Версия: 0.2.0
@@ -120,3 +120,24 @@ grep'ом «SCRIPT ERROR» (parse-error даёт exit 0!); git pull перед �
 `scripts/progression_data.gd`, `scripts/meta_progression.gd`,
 `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`,
 `docs/design/systems/meta_constellations.md`, `CHANGELOG.md`.
+
+## QA-Вердикт 2026-07-02 — FAILED
+
+- Проверено: QA static/code/docs/tests inspection на `origin/dev` `35a16047`
+  в `/tmp/FantasyDisk-QA-SCRUM-834`. Прогнаны: `meta_skill_tree_smoke_test.gd`
+  PASSED, `skill_tree_per_hero_test.gd` PASSED, `meta_progression_smoke_test.gd`
+  PASSED, `meta_points_per_ascension_test.gd` PASSED. `runtime_smoke_test.gd`
+  остановлен после найденных acceptance blockers.
+- Блокер 1: PM-таблица условных keystone-пар не реализована по смыслу.
+  Acceptance требовал конкретные механики из таблицы (например soldier
+  «Подавление»/«Шквал»), но `k0/k1` сведены к четырём generic conditional
+  damage keys (`hurt/stance/rush/swarm_damage_bonus`). Док Appendix A отражает
+  это упрощение вместо PM-approved механик.
+- Блокер 2: hidden-star acceptance 17/17 не выполнен. Result сам фиксирует,
+  что изменены 16 классов, а berserk оставлен на старой generic паре
+  `weapon_diversity=2` / `best_ascension=2`, хотя acceptance требует 17
+  уникальных per-class условий + lore строки.
+- Блокер 3: тесты не защищают PM-таблицу и hidden-star uniqueness: conditional
+  smoke проверяет synthetic modifier dictionaries, а hidden-star тест принимает
+  любой непустой metric/threshold/text/lore и pin'ит старые berserk условия.
+- Bugs: отдельный bug не создан; parent `SCRUM-834` возвращён на доработку.

@@ -3757,5 +3757,10 @@
   "key": "SCRUM-833",
   "status": "Контроль качества",
   "desc_hash": "1b4d7d05e65fc1afcf82218d3897ede1"
+ },
+ "meta41_conditional_keystones_task.md": {
+  "key": "SCRUM-834",
+  "status": "К выполнению",
+  "desc_hash": "d3eeb2fb571c9c9ff34216b5636165cb"
  }
 }
