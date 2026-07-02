@@ -71,6 +71,10 @@ const POWER_WEIGHTS := {
 	# заголовочный процент keystone держит узкий budget-вклад (§6, спред ≤1.25).
 	"hurt_damage_bonus": 0.30, "stance_damage_bonus": 0.45,
 	"rush_damage_bonus": 0.25, "swarm_damage_bonus": 0.50,
+	# SCRUM-834a: условные keystone на тех же гейтах, но с не-урон стат-целью. Вес =
+	# аптайм гейта × вес самой стат-цели. stance(≈0.45)×attack_speed_mult(1.0)=0.45;
+	# rush(≈0.25)×crit_chance_flat(2.0)=0.50. Budget-нейтрально к прежним *_damage.
+	"stance_attack_speed_bonus": 0.45, "rush_crit_bonus": 0.50,
 	"strength_flat": 0.008, "agility_flat": 0.008, "intelligence_flat": 0.008,
 	"perception_flat": 0.008, "energy_flat": 0.008, "knowledge_flat": 0.008,
 	"endurance_flat": 0.008, "leadership_flat": 0.008,
@@ -114,6 +118,9 @@ const EFFECT_LABELS := {
 	"stance_damage_bonus": {"ru": "к урону в неподвижной боевой стойке", "pct": true},
 	"rush_damage_bonus": {"ru": "к урону в рывке (окно после уклонения)", "pct": true},
 	"swarm_damage_bonus": {"ru": "к урону в гуще боя (на пике — врагов рядом)", "pct": true},
+	# SCRUM-834a: условные keystone на существующих гейтах, не-урон стат-цель.
+	"stance_attack_speed_bonus": {"ru": "к скорострельности в неподвижной боевой стойке", "pct": true},
+	"rush_crit_bonus": {"ru": "к шансу крита в рывке (окно после уклонения)", "pct": true},
 	"pickup_radius_flat": {"ru": "к радиусу подбора", "pct": false},
 	"projectile_speed_flat": {"ru": "к скорости снарядов", "pct": false},
 	"absorb_flat": {"ru": "к поглощению", "pct": false},
@@ -198,7 +205,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"keystones": [
 			{"title": "Подавляющий огонь", "effects": {"hurt_damage_bonus": 0.28, "move_speed_mult": -0.06}},
-			{"title": "Одиночными", "effects": {"stance_damage_bonus": 0.191, "attack_speed_mult": -0.04}},
+			{"title": "Шквал", "effects": {"stance_attack_speed_bonus": 0.191, "damage_mult": -0.04}},
 			{"title": "Гранатный подсумок", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "range_mult": -0.06}},
 		],
 		"hidden": [
@@ -216,7 +223,7 @@ const CONSTELLATION_SPECS := {
 			{"title": "Скользкий трюк", "effects": {"dodge_rush_bonus": 0.027, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Большой куш", "effects": {"rush_damage_bonus": 0.344, "max_health_mult": -0.04}},
+			{"title": "Из тени", "effects": {"rush_crit_bonus": 0.172, "max_health_mult": -0.04}},
 			{"title": "Ночная работа", "effects": {"swarm_damage_bonus": 0.183, "damage_mult": -0.04}},
 			{"title": "Азарт канатоходца", "effects": {"crit_damage_flat": 0.17, "dodge_rush_bonus": 0.09, "defense_flat": -0.022}},
 		],

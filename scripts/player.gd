@@ -728,7 +728,9 @@ func _trigger_dodge_rush() -> void:
 # (keystone thief/sniper/assassin/knight/doctor). Эталон — _trigger_dodge_rush:
 # флаг rush_window_active + tween на снятие; консумит derived_parameters.
 func _trigger_rush_window() -> void:
-	if float(run_modifiers.get("rush_damage_bonus", 0.0)) <= 0.0:
+	# SCRUM-834a: окно активируют и не-урон стат-цели (rush_crit_bonus — thief «Из тени»).
+	if float(run_modifiers.get("rush_damage_bonus", 0.0)) <= 0.0 \
+			and float(run_modifiers.get("rush_crit_bonus", 0.0)) <= 0.0:
 		return
 	run_modifiers["rush_window_active"] = 1.0
 	_apply_stat_scaling(false, max_health)
@@ -748,7 +750,9 @@ func _trigger_rush_window() -> void:
 # _update_low_hp_state), чтобы не грузить кадр без таких keystone.
 func _update_conditional_keystones(delta: float) -> void:
 	var has_hurt := float(run_modifiers.get("hurt_damage_bonus", 0.0)) > 0.0
-	var has_stance := float(run_modifiers.get("stance_damage_bonus", 0.0)) > 0.0
+	# SCRUM-834a: гейт «стойки» активируют и не-урон стат-цели (stance_attack_speed_bonus — soldier «Шквал»).
+	var has_stance := float(run_modifiers.get("stance_damage_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) > 0.0
 	var has_swarm := float(run_modifiers.get("swarm_damage_bonus", 0.0)) > 0.0
 	if not (has_hurt or has_stance or has_swarm):
 		return
@@ -971,6 +975,11 @@ const META_SKILL_FLAT_MAP := {
 	"stance_damage_bonus": "stance_damage_bonus",
 	"rush_damage_bonus": "rush_damage_bonus",
 	"swarm_damage_bonus": "swarm_damage_bonus",
+	# SCRUM-834a: условные keystone на СУЩЕСТВУЮЩИХ гейтах, но с не-урон стат-целью
+	# (тот же флаг stance_active/rush_window_active). stance→скорострельность
+	# (soldier «Шквал»), rush→крит-шанс (thief «Из тени»). Консумит derived_parameters.
+	"stance_attack_speed_bonus": "stance_attack_speed_bonus",
+	"rush_crit_bonus": "rush_crit_bonus",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",

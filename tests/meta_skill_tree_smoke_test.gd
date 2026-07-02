@@ -496,6 +496,15 @@ func _dmg(player: Node) -> float:
 	return float((player.get("derived_parameters") as Dictionary).get("damage", 0.0))
 
 
+# SCRUM-834a: не-урон стат-цели условных keystone (скорострельность/крит-шанс).
+func _atk_speed(player: Node) -> float:
+	return float((player.get("derived_parameters") as Dictionary).get("attack_speed", 0.0))
+
+
+func _crit(player: Node) -> float:
+	return float((player.get("derived_parameters") as Dictionary).get("crit_chance", 0.0))
+
+
 func _test_conditional_keystones() -> void:
 	var holder := Node2D.new()
 	root.add_child(holder)
@@ -554,6 +563,32 @@ func _test_conditional_keystones() -> void:
 		_fail("Условный keystone «в гуще боя» должен поднимать урон при врагах рядом.")
 		return
 	pw.queue_free()
+
+	# 5) SCRUM-834a: стойка → скорострельность (soldier «Шквал»). Не-урон стат-цель:
+	# на том же гейте stance_active меняется attack_speed, а не damage.
+	var pas := await _make_conditional_player(holder, {"stance_attack_speed_bonus": 0.19})
+	var base_as := _atk_speed(pas)
+	pas.set("velocity", Vector2.ZERO)
+	pas.call("_update_conditional_keystones", 1.0)  # > STANCE_ACTIVATION_TIME
+	if _atk_speed(pas) <= base_as:
+		_fail("Условный keystone «Шквал» (стойка→скорострельность) должен поднимать attack_speed в стойке.")
+		return
+	pas.set("velocity", Vector2(320.0, 0.0))
+	pas.call("_update_conditional_keystones", 0.1)
+	if absf(_atk_speed(pas) - base_as) > 0.01:
+		_fail("Бонус скорострельности «Шквал» обязан исчезать в движении.")
+		return
+	pas.queue_free()
+
+	# 6) SCRUM-834a: рывок → крит-шанс (thief «Из тени»). Не-урон стат-цель на
+	# существующем окне rush_window_active.
+	var prc := await _make_conditional_player(holder, {"rush_crit_bonus": 0.17})
+	var base_crit := _crit(prc)
+	prc.call("_trigger_rush_window")
+	if _crit(prc) <= base_crit:
+		_fail("Условный keystone «Из тени» (рывок→крит) должен поднимать crit_chance после уклонения.")
+		return
+	prc.queue_free()
 
 	current_scene = null
 	holder.queue_free()
