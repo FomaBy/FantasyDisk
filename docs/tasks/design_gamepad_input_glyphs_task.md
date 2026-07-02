@@ -90,3 +90,13 @@ delivery explicitly used a PIL generator instead of the required PixelLab MCP
 `create_ui_asset` pipeline. Jira comment has the full verdict, test evidence,
 and accepted/failed criteria. Next pass needs either PixelLab-compliant source
 evidence or an explicit PM waiver for PIL-generated input glyphs.
+
+## QA-Вердикт (2026-07-02, cold worktree origin/dev @ dd83b571)
+Статус: PASSED
+
+- Merge: e34812dd + bf0a1d9e — предки origin/dev; ui_screens.gd не тронут (границы дизайн-роли соблюдены).
+- Пакет: 52 PNG + 52 .import, пары 1:1 без дыр; 0 дублей блобов — 32/64 нативные у всех 26 глифов; пиксельные размеры = имени 52/52.
+- Registry: ALL_GLYPHS(26)×SIZES(2) ↔ дерево 1:1 (0 missing/0 extra); 14 JOY_BUTTON + 6 JOY_AXIS + 6 клавиш; null-safe на мусоре.
+- Арт: углы alpha=0 программно 52/52, запечённого фона нет; стиль един (тёмная кожа+латунь, A/B/X/Y цветные, жёлтый только внутри Y); читаемость на 32px подтверждена. Контакт-лист build/qa/scrum810/ в коммите.
+- Гейты (cold worktree + --import, godot_gate fdengine SLOTS=1): input_glyph_assets_test.gd PASS ×2 (26×2, 52 угла), runtime_smoke_ui_test.gd PASS.
+- Отступление PixelLab→PIL обосновано и задокументировано в content_registry.md — принято.
