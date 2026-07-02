@@ -58,3 +58,18 @@ patch этой задачи.
 
 Disk cleanup: removed `/tmp/fantasydisk-scrum823-qa` and `/tmp/scrum823_player_scale.patch`.
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-02 (claude-qa)
+Проверено на origin/dev @ f9566c33 (ancestor origin/dev; диф scale+docs+test-exp).
+
+- PLAYER_COMBAT_VISUAL_SCALE 0.425→0.64 (~x1.5) через общий BASE_SPRITE_SCALE
+  (full-frame Body, skeletal, cutout); Player.tscn Body.scale=Vector2(0.64,0.64).
+- CircleShape2D radius=8.9 не изменён; скорость/дальности/урон/enemy scale — нет.
+- animation_smoke_test — PASS. runtime_smoke_test scale-ассерт
+  (EXPECTED_PLAYER_COMBAT_VISUAL_SCALE=0.64) зелёный; weapon socket без регрессий.
+- Доки visual-only: combat.md + current_game_state.md.
+- Полный runtime_smoke_test падает на _test_main_menu_quit_confirmation (Escape) —
+  ПРЕДСУЩЕСТВУЮЩАЯ регрессия пакета геймпада, НЕ 823 (диф не трогает pause/InputMap);
+  заведена как SCRUM-830.
