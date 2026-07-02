@@ -3660,8 +3660,8 @@
  },
  "qol_gamepad_core_input_device_manager_task.md": {
   "key": "SCRUM-811",
-  "status": "К выполнению",
-  "desc_hash": "7545a0c2ec8db4929cc1554ebc725101"
+  "status": "Готово",
+  "desc_hash": "dd5713139704ef44d9e96a85991d20ca"
  },
  "qol_gamepad_inrun_ui_navigation_task.md": {
   "key": "SCRUM-812",

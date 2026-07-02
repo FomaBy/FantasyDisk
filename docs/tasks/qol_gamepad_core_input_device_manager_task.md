@@ -175,3 +175,28 @@ resubmitting. Full verdict and environment notes are in Jira.
 (a) connect → 0 сигналов; (b) disconnect из gamepad → ровно 1 «keyboard»;
 (c) повторный disconnect из keyboard → 0. Green-gate: `gamepad_core_input_test`
 PASS (exit 0), `runtime_smoke_test` PASS (exit 0).
+
+## QA-Вердикт 2026-07-02 — PASSED
+Статус: PASSED
+Recheck commit: `219dfb79`.
+
+Проверено:
+- previous blocker closed: `InputDeviceManager._on_joy_connection_changed()`
+  no longer emits on connect and no longer has an unconditional trailing
+  `device_changed.emit(...)`;
+- disconnect delegates to `_set_raw_kind(KIND_KEYBOARD)`, so `device_changed`
+  fires only when `active_kind()` actually changes;
+- regression coverage added in `tests/gamepad_core_input_test.gd`: connect emits
+  0 signals, disconnect from gamepad emits exactly 1 `keyboard`, repeated
+  disconnect from keyboard emits 0;
+- fix scope is limited to task doc, `scripts/input_device_manager.gd`, and
+  `tests/gamepad_core_input_test.gd`; no `player.gd`/`ui_screens.gd`/`main.gd`
+  collision.
+
+Tests:
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/gamepad_core_input_test.gd` — PASSED.
+- `runtime_smoke_test` re-run in the QA worktree was stopped and not counted:
+  without a prior full import it produced unrelated missing `.ctex`/asset import
+  noise from character/enemy/effect assets, not SCRUM-811 logic.
+
+Verdict: PASSED. Jira moved to `Готово`.
