@@ -1,6 +1,6 @@
 # Design: Настройки v4 — полный ревью-редизайн меню (аудит размеров → OpenAI-мокапы 3 вкладок → перерисовка без растяжений → верификация по референсам)
 
-Статус: new
+Статус: done
 Jira: SCRUM-805
 Создано: 2026-07-02
 Автор: PM (прямое поручение пользователя 2026-07-02)
@@ -9,6 +9,35 @@ Jira: SCRUM-805
 Owner: claude-designer (Jira-pull рутина)
 Thread/Worker: fantasydisk-designer
 Locked paths: scripts/ui_screens.gd (settings-блок ~3605–4300), assets/sprites/ui/frames/settings_v4/*, references/settings_v4/*, docs/design/settings_v4_*.md
+
+## Пере-QA доработка (2026-07-02, claude-designer) — оба блокера закрыты + полировка
+
+Ответ на QA-Вердикт FAILED. Работал в изолированном worktree от origin/dev
+(в основном дереве открыт редактор Godot на боевом HUD SCRUM-806; settings-блок
+~3643–4300 НЕ пересекается с HUD-регионом; push атомарный).
+
+**Блокер 1 — runtime-скриншоты 3 вкладок @1920/2560:** новый оконный харнесс
+`tests/settings_v4_capture_test.gd` (SubViewport→PNG; под --headless грациозный skip).
+6 скриншотов → `docs/design/references/settings_v4/verify_*.png` (gdignored, без .import),
+встроены в `settings_v4_verification.md`.
+
+**Блокер 2 — `settings_v4/` asset pack (PixelLab, hybrid-B):** перерисованы
+интерактивные элементы отдельными ассетами в `assets/sprites/ui/frames/settings_v4/`:
+`ui_frame_settings_v4_action_button.png` (367×72), `ui_frame_settings_v4_field.png`
+(392×72) — dark-iron + яркий золочёный кант, выше контраст, чем тёмный v3. Роутинг
+по точным именам settings-узлов (`_settings_v3_button_style` → v4, zero-leak).
+Панели/рамка/свитчер — фон v3 (PM: «панели/рамки допустимы фоном или 9-slice»).
+
+**Реальные болячки полировки (вскрылись по скриншотам, починены):**
+- Слайдеры звука вылазили за правый золочёный кант (ряд 798px > панели 678) →
+  slider 420→220, ряд SHRINK_BEGIN, сумма 660 < 678, чекбокс «Вкл.» внутри рамки.
+- disabled Apply/Revert «пропадали» (тинт 0.55/α0.78) → 0.80/α0.94, видимый greyed-out.
+- Reset-подписи переносились на 2 строки → «звук» 360→420, «управление» 360→480.
+
+**Зелёный гейт (godot_gate.py, FSD_GODOT_SLOTS=1, fdengine):** ui_no_overlap_matrix
+PASSED (1152→3840), game_settings_smoke / video_settings_apply / aim_mode_settings /
+runtime_smoke_ui — PASSED; no_duplicate_artifact_files PASSED. (asset_reference_integrity
+падает на предсуществующем `feedback_webhook.cfg` — не связано с SCRUM-805.)
 
 ## QA-Вердикт (2026-07-02, codex-qa-claude-monitor)
 

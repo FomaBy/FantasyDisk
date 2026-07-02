@@ -119,13 +119,28 @@ const SETTINGS_V3_FIELD_BTN_MARGINS := Vector4(26.0, 20.0, 26.0, 20.0)
 const SETTINGS_V3_FIELD_BTN_CONTENT := Vector4(20.0, 10.0, 20.0, 10.0)
 const SETTINGS_V3_ACTION_BTN_MARGINS := Vector4(30.0, 22.0, 30.0, 22.0)
 const SETTINGS_V3_ACTION_BTN_CONTENT := Vector4(22.0, 12.0, 22.0, 12.0)
+# SCRUM-805 v4: перерисованные интерактивные элементы (PixelLab, dark-iron + яркий
+# золочёный кант) — отдельные ассеты в settings_v4/, выше контраст, чем тёмный v3
+# (кант/поля больше не «пропадают» на тёмной модалке). Источник 367×72 (кнопка) /
+# 392×72 (поле): корнер-филигрань ≤28px по вертикали → 9-slice v-margin 28, 2×28=56 <
+# минимальной высоты контрола 60 (нет наслоения углов). Панели/рамка/свитчер — фон v3.
+const SETTINGS_V4_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v4/"
+const SETTINGS_V4_ACTION_BUTTON_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_action_button.png"
+const SETTINGS_V4_FIELD_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_field.png"
+const SETTINGS_V4_ACTION_BTN_MARGINS := Vector4(44.0, 28.0, 44.0, 28.0)
+const SETTINGS_V4_ACTION_BTN_CONTENT := Vector4(28.0, 8.0, 28.0, 8.0)
+const SETTINGS_V4_FIELD_MARGINS := Vector4(46.0, 28.0, 46.0, 28.0)
+const SETTINGS_V4_FIELD_CONTENT := Vector4(26.0, 6.0, 26.0, 6.0)
 # Per-state тинты для одного базового 9-slice (нет отдельных текстур состояний — handoff).
 const SETTINGS_V3_BTN_STATE_TINTS := {
 	"normal": Color(1.0, 1.0, 1.0, 1.0),
 	"hover": Color(1.16, 1.16, 1.16, 1.0),
 	"pressed": Color(0.86, 0.86, 0.86, 1.0),
 	"focus": Color(1.20, 1.20, 1.20, 1.0),
-	"disabled": Color(0.55, 0.55, 0.58, 0.78),
+	# SCRUM-805 v4: disabled был слишком тёмным/прозрачным (0.55/α0.78) → рамка
+	# Применить/Отменить «пропадала» без непримененных изменений (выглядело недоделкой).
+	# Осветлён до читаемого серо-золотого — кнопка видна как честный greyed-out.
+	"disabled": Color(0.80, 0.80, 0.84, 0.94),
 }
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
 const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V3_MAIN_MODAL_PATH
@@ -3994,9 +4009,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
 	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
 	reset_audio_button.name = "SettingsResetAudioButton"
-	# SCRUM-805 v4: фикс. 360×64 + SHRINK_BEGIN — раньше кнопка тянулась на всю
-	# ширину контент-бокса (~1194/1632px) из-за FILL по умолчанию в VBox.
-	_set_action_button_size(reset_audio_button, 360.0, 64.0)
+	# SCRUM-805 v4: фикс. 420×64 + SHRINK_BEGIN — раньше кнопка тянулась на всю
+	# ширину контент-бокса (~1194/1632px) из-за FILL по умолчанию в VBox. 420 (не 360)
+	# — чтобы подпись «Сбросить звук по умолчанию» не переносилась на 2 строки.
+	_set_action_button_size(reset_audio_button, 420.0, 64.0)
 	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
@@ -4105,8 +4121,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	# SCRUM-805 v4: фикс. 360×64 + SHRINK_BEGIN — раньше тянулась на всю ширину бокса.
-	_set_action_button_size(reset_button, 360.0, 64.0)
+	# SCRUM-805 v4: фикс. 480×64 + SHRINK_BEGIN — раньше тянулась на всю ширину бокса.
+	# 480 (длиннее «звук»-кнопки) — подпись из 32 символов в одну строку без переноса.
+	_set_action_button_size(reset_button, 480.0, 64.0)
 	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
@@ -4322,16 +4339,20 @@ func _add_settings_control_row(parent: VBoxContainer, title: String, control: Co
 
 
 func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String) -> void:
+	# SCRUM-805 v4: ряд-звук фиксированной суммарной ширины (метка 240 = сетка вкладок
+	# «Экран»/«Управление»; slider 220 + value 56 + toggle 108). 240+12+220+12+56+12+108=660
+	# < внутр. ширины контент-панели ~678 (пол clamp) → «Вкл.» больше НЕ вылазит за правый
+	# золочёный кант рамки (был баг: 170+420+58+108+seps=798 > 678). SHRINK_BEGIN — не тянется.
 	var row := HBoxContainer.new()
 	row.name = "VolumeRow_%s" % volume_key
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_theme_constant_override("separation", 14)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	row.add_theme_constant_override("separation", 12)
 	box.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(170, 42)
+	label.custom_minimum_size = Vector2(240, 42)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	row.add_child(label)
@@ -4341,7 +4362,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 2.0
-	slider.custom_minimum_size = Vector2(420, 42)
+	slider.custom_minimum_size = Vector2(220, 42)
 	slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	slider.focus_mode = Control.FOCUS_ALL
 	_style_slider(slider)
@@ -4354,7 +4375,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	row.add_child(slider)
 
 	var value_label := Label.new()
-	value_label.custom_minimum_size = Vector2(58, 42)
+	value_label.custom_minimum_size = Vector2(56, 42)
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
 	value_label.add_theme_color_override("font_color", Color(0.95, 0.86, 0.45, 1.0))
@@ -8283,9 +8304,9 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 
 
 func _settings_v3_button_style(button: Button, state: String) -> StyleBox:
-	# SCRUM-792: маршрутизируем v3 inset_field / action_button 9-slice на settings-узлы
-	# по ТОЧНОМУ имени (zero-leak на другие экраны). Один базовый 9-slice + per-state тинт
-	# (handoff: отдельные текстуры состояний не нужны).
+	# SCRUM-792/805: маршрутизируем settings-узлы на 9-slice inset_field / action_button
+	# по ТОЧНОМУ имени (zero-leak на другие экраны). Один базовый 9-slice + per-state тинт.
+	# SCRUM-805 v4: базовые текстуры — settings_v4/* (перерисовка, выше контраст), а не v3.
 	if button == null:
 		return null
 	var n := button.name
@@ -8295,8 +8316,8 @@ func _settings_v3_button_style(button: Button, state: String) -> StyleBox:
 		return null
 	var tint: Color = SETTINGS_V3_BTN_STATE_TINTS.get(state, SETTINGS_V3_BTN_STATE_TINTS["normal"])
 	if is_field:
-		return _global_texture_style(SETTINGS_V3_FIELD_PATH, SETTINGS_V3_FIELD_BTN_MARGINS, tint, SETTINGS_V3_FIELD_BTN_CONTENT, false)
-	return _global_texture_style(SETTINGS_V3_BUTTON_PATH, SETTINGS_V3_ACTION_BTN_MARGINS, tint, SETTINGS_V3_ACTION_BTN_CONTENT, false)
+		return _global_texture_style(SETTINGS_V4_FIELD_PATH, SETTINGS_V4_FIELD_MARGINS, tint, SETTINGS_V4_FIELD_CONTENT, false)
+	return _global_texture_style(SETTINGS_V4_ACTION_BUTTON_PATH, SETTINGS_V4_ACTION_BTN_MARGINS, tint, SETTINGS_V4_ACTION_BTN_CONTENT, false)
 
 
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
