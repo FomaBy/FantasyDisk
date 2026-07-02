@@ -137,3 +137,19 @@ OpenAI gpt-image-2 (стиль существующего leather/gold UI-кит
 - `assets/sprites/ui/hud/combat_hud_v2/**` — новые ассеты (+`.import`).
 - `tools/build_combat_hud_v2_assets.py` — генератор OpenAI-ассетов (повторяемость).
 - `tests/runtime_smoke_test.gd` — только если селекторы нод потребуют правки (не ломать).
+
+## QA-Вердикт
+Статус: PASSED (2026-07-02, claude-qa)
+
+Проверено на origin/dev HEAD (e1f1522c); SCRUM-806 коммиты — ancestors, SCRUM-805 сверху
+HUD не трогал. Изолированный worktree от origin/dev, warm `--import`, fdengine-семафор.
+
+Тесты (exit 0): `runtime_smoke_test` PASSED, `runtime_smoke_boss_elite_test` PASSED
+(`_test_boss_hud_shows_timer` зелёный), `ui_no_overlap_matrix_test` PASSED
+(combat_hud @ 1152/1920/2560/3840, no-overlap/safe-zone).
+
+AC 1-6 выполнены: слим-бары HP/XP/ULT с иконками + читаемые значения, деньги иконка+число
+без бара, единый кластер без карточных рамок; арабское возвышение + эмблема (ROMAN_NUMERALS
+удалён); компактный таймер с alarm ≤5с (красный + пульс); кластер @2K 122px (дизайн-цель
+~120, в допуске) с зелёной no-overlap матрицей; 8 ассетов с реальной альфой + png/.import
+парой в origin/dev git-tree; `_update_hud` обновляет значения с READY-логикой.
