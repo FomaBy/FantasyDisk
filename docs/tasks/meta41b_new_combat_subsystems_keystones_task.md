@@ -142,3 +142,35 @@ QA-урок 834: generic-ключи вместо смысловых механи
   `medkit_healing_mult` доктора применяется в drain-heal тракте (downside
   реален и тематичен); generic `extra_projectile` теперь добавляет цепи
   drain-link (ранее мёртвый для drain-оружия апгрейд — улучшение).
+
+## Hardening follow-up (2026-07-02, Codex backend fix)
+
+Статус Jira на момент follow-up: SCRUM-835 уже `Готово` через dev-коммит
+`1d08838f`, поэтому этот проход не двигает Jira назад и оформляется как
+усиление ветки `codex/scrum-835-combat-keystones-fix` для cherry-pick перед
+финализацией SCRUM-837.
+
+- Блокер Popper: `bastion_taunt` больше не только metadata. `Enemy` теперь
+  выбирает `_combat_target()`: активный `bastion_taunt.taunt_owner` перенаправляет
+  movement/shooting/contact/elite targeting на валидного живого владельца taunt;
+  при expiry, invalid owner, удалении из дерева или HP≤0 враг безопасно
+  возвращается к `_player()`.
+- Поведенческая защита в `tests/meta_skill_tree_smoke_test.gd` расширена:
+  проверяются expiry подавления, heal→holy chain damage, DoT spread по смерти,
+  shadow invisibility damage ignore, real homunculus/pet summon profile buffs и
+  Bastion taunt movement/fallback.
+- Verification в worktree `scrum-835-combat-keystones-fix` (все exit 0):
+  `tests/meta_skill_tree_smoke_test.gd`,
+  `tests/skill_tree_per_hero_test.gd`,
+  `tests/meta_progression_smoke_test.gd`,
+  `tests/meta_points_per_ascension_test.gd`,
+  `tests/runtime_smoke_test.gd`,
+  `tests/global_damage_balance_smoke_test.gd`,
+  `tests/global_survivability_balance_smoke_test.gd`,
+  `tests/survivability_scenario_test.gd`,
+  `tools/balance_harness.gd`,
+  `tools/survivability_harness.gd`;
+  grep по логам: no `SCRIPT ERROR` / `Parse Error`; `git diff --check` clean.
+- Решение для SCRUM-837: branch стоит cherry-pick'нуть в `dev` до финального QA
+  837, потому что smoke 837 сможет опираться на реальное enemy target behavior,
+  а не на marker-only taunt.

@@ -720,6 +720,10 @@ func _test_semantic_keystone_runtime_835() -> void:
 	if StatusEffects.damage_multiplier(suppressed) > 0.86:
 		_fail("SCRUM-835 Подавление must reduce outgoing damage of recently hit enemies.")
 		return
+	StatusEffects.tick(suppressed, 2.10)
+	if StatusEffects.damage_multiplier(suppressed) < 0.99:
+		_fail("SCRUM-835 Подавление must expire after its 2s window.")
+		return
 	soldier.queue_free()
 	suppressed.queue_free()
 
@@ -820,6 +824,17 @@ func _test_semantic_keystone_runtime_835() -> void:
 		return
 	helper.queue_free()
 
+	var priest := await _make_conditional_player(holder, {"heal_to_holy_damage_ratio": 0.50}, "priest", "priest_reliquary")
+	var holy_target := await _spawn_test_enemy(holder, priest.global_position + Vector2(96.0, 0.0), 100.0)
+	priest.set("health", float(priest.get("max_health")) * 0.50)
+	var holy_before := float(holy_target.get("health"))
+	priest.call("heal_percent", 0.20)
+	if float(holy_target.get("health")) >= holy_before:
+		_fail("SCRUM-835 Мученик must convert real healing into holy chain damage.")
+		return
+	priest.queue_free()
+	holy_target.queue_free()
+
 	var warded := await _make_conditional_player(holder, {"ward_absorb_bonus": 0.40})
 	var absorb_before := float((warded.get("run_modifiers") as Dictionary).get("absorb_flat", 0.0))
 	warded.call("meta_apply_priest_ward", 0.25)
@@ -829,6 +844,63 @@ func _test_semantic_keystone_runtime_835() -> void:
 		return
 	warded.queue_free()
 
+	var reaper := await _make_conditional_player(holder, {"dot_death_spread_duration": 2.0}, "dark_mage", "cursed_skull")
+	var dot_source := await _spawn_test_enemy(holder, reaper.global_position + Vector2(64.0, 0.0), 100.0)
+	var dot_neighbor := await _spawn_test_enemy(holder, dot_source.global_position + Vector2(42.0, 0.0), 100.0)
+	StatusEffects.apply_status(dot_source, "semantic_test_dot", {
+		"duration": 1.0,
+		"dot_damage": 2.0,
+		"dot_interval": 0.5,
+	})
+	reaper.call("on_enemy_killed", dot_source)
+	if not StatusEffects.has_status(dot_neighbor, "semantic_test_dot"):
+		_fail("SCRUM-835 Пожинатель must spread real DoT statuses on enemy death.")
+		return
+	var spread_snapshot := StatusEffects.snapshot(dot_neighbor)
+	if float((spread_snapshot.get("semantic_test_dot", {}) as Dictionary).get("remaining", 0.0)) < 1.9:
+		_fail("SCRUM-835 Пожинатель must extend spread DoT to the configured duration.")
+		return
+	reaper.queue_free()
+	dot_source.queue_free()
+	dot_neighbor.queue_free()
+
+	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers")
+	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0)
+	shadow.set("health", shadow.get("max_health"))
+	shadow.call("trigger_assassin_crit_shadow", shadow_target, 80.0)
+	var shadow_before := float(shadow.get("health"))
+	if bool(shadow.call("take_damage", 10.0, "semantic_835_shadow_invisible")) or float(shadow.get("health")) < shadow_before:
+		_fail("SCRUM-835 Теневой шаг must make the assassin ignore damage during shadow invisibility.")
+		return
+	shadow.queue_free()
+	shadow_target.queue_free()
+
+	var plain_chemist := await _make_conditional_player(holder, {}, "chemist", "homunculus_vial")
+	var prime_chemist := await _make_conditional_player(holder, {"homunculus_power_mult": 0.50}, "chemist", "homunculus_vial")
+	var plain_homunculus_weapon := plain_chemist.get("equipped_weapon") as Node
+	var prime_homunculus_weapon := prime_chemist.get("equipped_weapon") as Node
+	var plain_homunculus_profile: Dictionary = plain_homunculus_weapon.call("_summon_profile", plain_chemist)
+	var prime_homunculus_profile: Dictionary = prime_homunculus_weapon.call("_summon_profile", prime_chemist)
+	if float(prime_homunculus_profile.get("damage", 0.0)) <= float(plain_homunculus_profile.get("damage", 0.0)) * 1.49 \
+			or float(prime_homunculus_profile.get("max_health", 0.0)) <= float(plain_homunculus_profile.get("max_health", 0.0)) * 1.49:
+		_fail("SCRUM-835 Гомункул-прайм must boost real homunculus summon damage and health profiles.")
+		return
+	plain_chemist.queue_free()
+	prime_chemist.queue_free()
+
+	var plain_druid := await _make_conditional_player(holder, {}, "druid", "summon_amulet")
+	var pack_druid := await _make_conditional_player(holder, {"pet_damage_mult": 0.25}, "druid", "summon_amulet")
+	var plain_pet_weapon := plain_druid.get("equipped_weapon") as Node
+	var pack_pet_weapon := pack_druid.get("equipped_weapon") as Node
+	var plain_pet_profile: Dictionary = plain_pet_weapon.call("_summon_profile", plain_druid)
+	var pack_pet_profile: Dictionary = pack_pet_weapon.call("_summon_profile", pack_druid)
+	if float(pack_pet_profile.get("damage", 0.0)) <= float(plain_pet_profile.get("damage", 0.0)) * 1.24:
+		_fail("SCRUM-835 Вожак стаи must boost real pet summon damage profiles.")
+		return
+	plain_druid.queue_free()
+	pack_druid.queue_free()
+
+	await process_frame
 	var plain := await _make_conditional_player(holder, {})
 	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0})
 	plain.set("health", plain.get("max_health"))
@@ -842,6 +914,22 @@ func _test_semantic_keystone_runtime_835() -> void:
 	if bastion_before - float(bastion.get("health")) >= plain_before - float(plain.get("health")):
 		_fail("SCRUM-835 Бастион must reduce incoming damage while stance is active.")
 		return
+	plain.global_position = Vector2(40.0, 0.0)
+	bastion.global_position = Vector2(240.0, 0.0)
+	var taunted_enemy := await _spawn_test_enemy(holder, Vector2(160.0, 0.0), 100.0)
+	taunted_enemy.set("move_speed", 120.0)
+	taunted_enemy.set("contact_range", 12.0)
+	bastion.call("_update_conditional_keystones", 0.10)
+	taunted_enemy.call("_physics_process", 0.05)
+	if (taunted_enemy.get("velocity") as Vector2).x <= 0.0:
+		_fail("SCRUM-835 Бастион taunt must make enemy AI target the taunt owner, not the default player.")
+		return
+	StatusEffects.tick(taunted_enemy, 0.60)
+	taunted_enemy.call("_physics_process", 0.05)
+	if (taunted_enemy.get("velocity") as Vector2).x >= 0.0:
+		_fail("SCRUM-835 Бастион taunt must expire and let enemy AI fall back to the default player target.")
+		return
+	taunted_enemy.queue_free()
 	plain.queue_free()
 	bastion.queue_free()
 

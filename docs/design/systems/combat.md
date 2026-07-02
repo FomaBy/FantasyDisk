@@ -117,6 +117,10 @@
 - Статусы хранятся в meta `status_effects` на цели и тикают из `_physics_process()` владельца, поэтому пауза замораживает duration и DoT вместе с gameplay.
 - Поддерживаются duration, refresh/add/extend stack policy, DoT ticks, `speed_multiplier`, `damage_multiplier`, `damage_taken_multiplier` и marker metadata.
 - `Enemy` применяет status slow к движению и vulnerability к входящему урону.
+- `Enemy` также читает marker-status `bastion_taunt`: пока metadata `taunt_owner`
+  указывает на живого валидного игрока/владельца в дереве, movement, shooting,
+  contact damage и elite targeting используют владельца taunt как combat target;
+  при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
 - Support/Leadership classes (`guitarist`, `druid`, `engineer`, `priest`) обновляют class aura примерно раз в 0.55с. Союзники получают `command_aura`, враги в радиусе — `command_pressure`, Priest получает мягкий self-support tick.

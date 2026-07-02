@@ -397,7 +397,7 @@ runtime data state. SCRUM-835 закрыл semantic combat-пары на нов�
 | `gold_damage_per_50`, `gold_damage_bonus_cap` | `thief_k1` «Джекпот» | `meta_damage_multiplier`: floor(current gold/50) × step, capped; `shop_price_mult` downside consumed in `ui_screens.gd` | SCRUM-835 semantic smoke (floor/cap) + shop smoke |
 | `elemental_resonance_bonus` | `elementalist_k0` «Резонанс» | elemental mark metadata on enemy; different next element gets resonance multiplier | SCRUM-835 semantic smoke |
 | `elemental_orb_extra_count`, `prism_rift_radius_mult` | `elementalist_k1` «Монолит» | `meta_extra_projectiles` for `elemental_orbit`; `meta_radius_multiplier` for `prism_rift` | SCRUM-835 semantic smoke |
-| `heal_to_holy_damage_ratio` | `priest_k0` «Мученик» | heal flows call `_apply_heal_to_holy_damage`, nearest enemies receive holy/magic chain damage | wired smoke + runtime smoke |
+| `heal_to_holy_damage_ratio` | `priest_k0` «Мученик» | heal flows call `_apply_heal_to_holy_damage`, nearest enemies receive holy/magic chain damage | SCRUM-835 semantic smoke + runtime smoke |
 | `ward_absorb_bonus` | `priest_k1` «Заступник» | `meta_apply_priest_ward` temporarily increases `absorb_flat` during ward wave | SCRUM-835 semantic smoke + survivability smoke |
 | `reactor_heat_damage_bonus`, `reactor_heat_incoming_damage` | `robot_k0` «Перегрев» | robot hits build `_reactor_heat`; >70% toggles damage bonus and incoming-damage penalty | SCRUM-835 semantic smoke + survivability smoke |
 | `magnet_radius_mult` | `robot_k1` «Сверхпроводник» | `meta_radius_multiplier` for `robot_magnetic_anchor` | SCRUM-835 semantic smoke |
@@ -408,16 +408,16 @@ runtime data state. SCRUM-835 закрыл semantic combat-пары на нов�
 | `guitar_aura_radius_mult` | `guitarist_k0` «Хедлайнер» | `meta_radius_multiplier` for sound/aura modes; `knockback_mult` remains derived weapon scaling downside | SCRUM-835 semantic smoke |
 | `riff_streak_damage_bonus` | `guitarist_k1` «Рифф» | sound hits build `_riff_streak_time`; >1с toggles damage multiplier, with `attack_speed_mult` downside | SCRUM-835 semantic smoke |
 | `crit_execute_threshold` | `assassin_k0` «Экзекутор» | critical hit executes non-elite targets below threshold; elite/boss groups are excluded | SCRUM-835 semantic smoke |
-| `shadow_burst_invisibility_time` | `assassin_k1` «Теневой шаг» | `trigger_assassin_crit_shadow` grants timed invisible state after shadow burst | wired smoke + runtime smoke |
+| `shadow_burst_invisibility_time` | `assassin_k1` «Теневой шаг» | `trigger_assassin_crit_shadow` grants timed invisible state after shadow burst and ignores incoming damage during the window | SCRUM-835 semantic smoke + runtime smoke |
 | `charged_shot_extra_pierce`, `charge_time_mult` | `ranger_k0` «Штурмовая стойка» | `meta_extra_pierce` for charged shots; charge-time multiplier downside | SCRUM-835 semantic smoke |
 | `trap_extra_count`, `non_trap_damage_mult` | `ranger_k1` «Капканщик» | `meta_extra_projectiles`/`meta_trap_instant_arm` for traps; non-trap damage penalty | SCRUM-835 semantic smoke |
 | `drain_extra_targets`, `medkit_healing_mult` | `doctor_k0` «Вампирический контур» | `meta_extra_projectiles` extends drain-link target count; medkit/healing downside stored as run modifier | SCRUM-835 semantic smoke + survivability smoke |
 | `surgical_close_damage_bonus`, `ranged_damage_mult` | `doctor_k1` «Хирург» | close `stab_flurry` hits receive surgical bonus; non-stab/ranged attacks get damage penalty | SCRUM-835 semantic smoke + global damage smoke |
 | `cloud_detonation_radius_mult`, `pool_duration_mult` | `chemist_k0` «Катализатор» | cloud radius multiplier and pool/cloud duration downside | SCRUM-835 semantic smoke |
-| `homunculus_power_mult` | `chemist_k1` «Гомункул-прайм» | `summoner_weapon.gd` boosts homunculus HP/damage from owner run modifiers | wired smoke + runtime smoke |
-| `pet_damage_mult`, `pet_personal_damage_mult` | `druid_k0` «Вожак стаи» | summon/pet contexts get damage bonus; non-pet/non-briar personal damage is penalized | SCRUM-835 semantic smoke + global damage smoke |
+| `homunculus_power_mult` | `chemist_k1` «Гомункул-прайм» | `summoner_weapon.gd` boosts real homunculus summon HP/damage profiles from owner run modifiers | SCRUM-835 semantic smoke + runtime smoke |
+| `pet_damage_mult`, `pet_personal_damage_mult` | `druid_k0` «Вожак стаи» | real summon/pet profiles get damage bonus; non-pet/non-briar personal damage is penalized | SCRUM-835 semantic smoke + global damage smoke |
 | `briar_radius_mult` | `druid_k1` «Терновый круг» | `meta_radius_multiplier` for briar pool/zones; move-speed downside via derived parameters | SCRUM-835 semantic smoke |
-| `bastion_defense_bonus`, `bastion_taunt` | `knight_k0` «Бастион» | stance active adds defense in `take_damage`; `_apply_bastion_taunt` applies taunt status around the knight | SCRUM-835 semantic smoke + survivability smoke |
+| `bastion_defense_bonus`, `bastion_taunt` | `knight_k0` «Бастион» | stance active adds defense in `take_damage`; `_apply_bastion_taunt` applies taunt metadata and `Enemy._combat_target()` redirects movement/shooting/contact/elite targeting to the valid taunt owner until expiry, then falls back to `_player()` | SCRUM-835 semantic smoke + survivability smoke |
 
 Метрика скрытых звёзд `class_wins` добавлена к
 `weapon_diversity`/`best_ascension`/`no_shop_wins` и читается из

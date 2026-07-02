@@ -17,6 +17,11 @@
   and Bastion taunt/defense. Behavioral gate added to `meta_skill_tree_smoke_test`;
   balance/survivability gates remain green (в dev влито cherry-pick'ом поверх
   SCRUM-834; SCRUM-836 идёт отдельной поставкой).
+- SCRUM-835 hardening: Bastion taunt now changes live enemy targeting while the
+  `bastion_taunt` status is valid, then falls back to the default player target
+  after expiry/invalid owner. The semantic smoke now also proves taunt
+  movement/fallback, suppression expiry, heal→holy damage, DoT death spread,
+  shadow invisibility damage ignore, and real homunculus/pet summon profiles.
 - SCRUM-834a: Мета 4.1 — условные keystone на существующих гейтах с не-урон
   стат-целью. Инфра `hurt/stance/rush/swarm` расширена за пределы урона: soldier
   «Шквал» (стойка → +19.1% скорострельности `stance_attack_speed_bonus`, downside
