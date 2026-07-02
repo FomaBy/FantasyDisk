@@ -122,3 +122,12 @@ Godot 4.7 через `tools/godot_gate.py`, свежий `--import`):
 - Арт-дирекция: SCRUM-806 reopen (`docs/tasks/combat_hud_compact_redesign_task.md`).
 - Генератор: `tools/build_ui_2k_frame_kit.py` (SCRUM-485), анти-дрифт `--verify`.
 - Внимание: `scripts/ui_screens.gd` также правится волной 5 — координировать мердж.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+QA claude-qa 2026-07-02 (изолированный worktree от origin/dev, независимая проверка).
+- Диффскоуп коммита 6cd5240e: только 6 PNG overhaul_2k + превью + tools/build_ui_2k_frame_kit.py; `.import` и `ui_theme_paths.gd` НЕ тронуты (asset-only ✓).
+- Все 6 текстур: размер 1:1 против 6cd5240e^ (chud_resource 820×84, ctb_big 2360×90, ctb_small 2360×56, gt_panel 460×140, vbn_frame 1440×240, ws_card 1564×190), alpha-канал байт-в-байт идентичен.
+- Новый доминирующий цвет линии #826738 (BRASS H38° S57% V51% — как в спеке), угловой оттенок #483B26.
+- Независимый edge-band bright-скан (hue 30–68°, sat≥0.42, val≥0.52, внешние 15%): 0.15–0.90% у всех 6 (AC <5% ✓). Превью ws_card/gt_panel до/после (+corner-зум +референс cluster_bg) сверены визуально — жёлтая линия/уголки → тёмная латунь, тело без изменений.
+- Тест: ui_no_overlap_matrix_test PASS на финальном HEAD origin/dev.
