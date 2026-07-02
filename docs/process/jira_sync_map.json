@@ -56,32 +56,32 @@
  },
  "backend_berserk_weapon_identity_rebalance_task.md": {
   "key": "SCRUM-12",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5335a93a79a7ab9cde06cf7dbe07fef4"
  },
  "backend_class_attribute_relevance_levelup_reroll_fix_task.md": {
   "key": "SCRUM-13",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4ab0d3055641e3ad41b4f88be519ebdb"
  },
  "backend_class_dps_survivability_budget_task.md": {
   "key": "SCRUM-14",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "19fa7af8ee2f391d36899d98b36b1554"
  },
  "backend_class_identity_unique_patterns_task.md": {
   "key": "SCRUM-15",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "153a2df14168fa7c15a54e59d78ced32"
  },
  "backend_codex_encyclopedia_menu_task.md": {
   "key": "SCRUM-16",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "7b14cc3b24a8d2fc15755a3f1a1ed342"
  },
  "backend_combat_feedback_hp_bars_hitbox_hammer_nerf_task.md": {
   "key": "SCRUM-17",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "99608aeb7cf5ef0ad3cb9b928b6f3162"
  },
  "backend_contextual_ui_frame_theme_integration_task.md": {
@@ -91,12 +91,12 @@
  },
  "backend_dark_mage_guitarist_balance_amp_cleanup_task.md": {
   "key": "SCRUM-19",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "d4041032599cab8b9c23b2ff0b92e786"
  },
  "backend_economy_artifact_power_class_affinity_task.md": {
   "key": "SCRUM-20",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "d01fd3def52eff069b34824be2939113"
  },
  "backend_elite_boss_size_epic_terror_task.md": {
@@ -106,7 +106,7 @@
  },
  "backend_elite_overhaul_size_unique_attacks_task.md": {
   "key": "SCRUM-22",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "a170f0c1ee2a15a173d729fcac80cc37"
  },
  "backend_elite_reward_center_screen_task.md": {
@@ -116,32 +116,32 @@
  },
  "backend_enemy_scaling_elite_boss_difficulty_task.md": {
   "key": "SCRUM-24",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "cafa59cfcbd265039d4dd33b84c318ae"
  },
  "backend_escape_stats_compact_grouped_layout_task.md": {
   "key": "SCRUM-25",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "a6755fc4f6362eb9d3ef7a1bd5fe1ba7"
  },
  "backend_event_node_click_and_screen_art_integration_task.md": {
   "key": "SCRUM-26",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "aaaac0cbe2fb510721cc792d4a5573d8"
  },
  "backend_fix_windows_installer_integrity_task.md": {
   "key": "SCRUM-27",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c98df81c99d1b64657a49af83f474bb1"
  },
  "backend_full_attributes_wiring_audit_task.md": {
   "key": "SCRUM-28",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "806a53440305a495e7259a0570d92f9d"
  },
  "backend_hero_select_fullscreen_grid_task.md": {
   "key": "SCRUM-29",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e8255893eafbb69eb05bb05a5f4e8306"
  },
  "backend_hero_select_portrait_left_radar_task.md": {
@@ -151,7 +151,7 @@
  },
  "backend_integrate_stat_icons_hud_remove_obstacles_task.md": {
   "key": "SCRUM-31",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "601c6c19c992333d9cae1280d42db017"
  },
  "backend_levelup_rework_five_options_task.md": {
@@ -161,72 +161,72 @@
  },
  "backend_mage_buff_guitarist_rework_task.md": {
   "key": "SCRUM-33",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4fa58ce37bd429601cb9fe490cf497c8"
  },
  "backend_main_gd_module_split_task.md": {
   "key": "SCRUM-34",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "8212de5db9e09a6e24e60db7be69cea9"
  },
  "backend_map_2k_camera_zoom_task.md": {
   "key": "SCRUM-35",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "aa1c8cfb0401a2114104295ab69257e0"
  },
  "backend_melee_targeting_test_regression_task.md": {
   "key": "SCRUM-36",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "babb3431cd8471670df123a84b53ba19"
  },
  "backend_melee_targeting_test_update_strip_task.md": {
   "key": "SCRUM-37",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "94f177f260bbc08bf134e2be0444a0a9"
  },
  "backend_meta_ascension_levels_task.md": {
   "key": "SCRUM-38",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e6d4105bffef095aac8c9f429dd2a073"
  },
  "backend_new_classes_foundation_task.md": {
   "key": "SCRUM-39",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c59a8f1f083885b2386630ba75408027"
  },
  "backend_performance_code_quality_review_task.md": {
   "key": "SCRUM-40",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "2b7a8ad2f8f550fc31dea6d3768902d5"
  },
  "backend_project_folder_cleanup_unused_files_task.md": {
   "key": "SCRUM-41",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "6d787a764c57e127135e310bac23f6d1"
  },
  "backend_random_events_ten_scenarios_task.md": {
   "key": "SCRUM-42",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "773481348f02a7f5c8d7f0c3e0cf9f64"
  },
  "backend_release_builds_windows_macos_task.md": {
   "key": "SCRUM-43",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e9458d6ec5108af3eb90ca8782277dfb"
  },
  "backend_release_v0_1_1_merge_main_builds_task.md": {
   "key": "SCRUM-44",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "a2b446cfdd8f0e63f4d9728fc06cbf71"
  },
  "backend_release_v0_1_2_merge_main_builds_task.md": {
   "key": "SCRUM-45",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4d47a65779d1482142775a827f0f877c"
  },
  "backend_review_codex_animation_task.md": {
   "key": "SCRUM-46",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "1c3772a747bc284ee2377243be9395f9"
  },
  "backend_review_codex_hero_select_class_identity_task.md": {
@@ -236,12 +236,12 @@
  },
  "backend_route_map_start_selection_scroll_task.md": {
   "key": "SCRUM-48",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c7ecfdb081955eb621bc63a96a2b6496"
  },
  "backend_run_flow_victory_attribute_shop_levelup_button_task.md": {
   "key": "SCRUM-49",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "215aba0539642d4fd3007bbb674e25de"
  },
  "backend_runtime_smoke_combat_director_type_inference_task.md": {
@@ -256,57 +256,57 @@
  },
  "backend_secondary_attributes_universal_usefulness_task.md": {
   "key": "SCRUM-52",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "f6f7dff70cd3cf824a2d24bf32f476a1"
  },
  "backend_settings_display_audio_task.md": {
   "key": "SCRUM-53",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "65a7e6b1ec7ea580ca61583bef8f5a2f"
  },
  "backend_settings_tabs_volume_keybindings_task.md": {
   "key": "SCRUM-54",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "1cdc33c31a402b8e8b3078019c4ec317"
  },
  "backend_shop_inline_artifact_icons_cursor_integration_task.md": {
   "key": "SCRUM-55",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4562123f44166696a5a4ebe9e1e15e25"
  },
  "backend_ultimate_ability_framework_task.md": {
   "key": "SCRUM-56",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "17e2215b6a1f161e67633c258fef70e6"
  },
  "backend_unused_assets_cleanup_task.md": {
   "key": "SCRUM-57",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e5c7d543ef281ce72720c7992156e098"
  },
  "backend_ux_improvements_navigation_codex_images_task.md": {
   "key": "SCRUM-58",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "9dbd70fc9fa6a61ed19c7746459c030b"
  },
  "bug_ascension_elite_instant_phase_dead_task.md": {
   "key": "SCRUM-59",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "733b28397001b66c5ef05c0d8e8674b5"
  },
  "bug_ascension_mini_elite_chance_dead_task.md": {
   "key": "SCRUM-60",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5f144253140718de7fb23b2e0b9d830a"
  },
  "bug_ascension_selector_not_clamped_task.md": {
   "key": "SCRUM-61",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "3e80d27a8267460f72f7fcc987c05089"
  },
  "bug_boss_phase_hazard_naked_circle_task.md": {
   "key": "SCRUM-62",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "52d4dad5ba1df758a83a917bbb2c30e4"
  },
  "bug_cleanup_artifact_iteration_previews_left_in_assets_task.md": {
@@ -316,22 +316,22 @@
  },
  "codex_design_artifact_icons_dark_fantasy_task.md": {
   "key": "SCRUM-64",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "3fd09b60faf1c9667f4f5238198a48ea"
  },
  "codex_design_artifact_icons_per_item_regen_task.md": {
   "key": "SCRUM-65",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "2647d638b99f1a9567cb696b05ea1f00"
  },
  "codex_design_artifact_icons_reference_dark_artifacts_redraw_task.md": {
   "key": "SCRUM-66",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "13e821c156ed0f6918ffe0e986a40201"
  },
  "codex_design_artifact_icons_rpg_item_style_task.md": {
   "key": "SCRUM-67",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e123d979aaf7dde6c458e8e5f607b7eb"
  },
  "codex_design_contextual_ui_frame_kits_generation_task.md": {
@@ -346,7 +346,7 @@
  },
  "codex_design_new_classes_art_task.md": {
   "key": "SCRUM-70",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "20444352ef34463486158b8258f5a581"
  },
  "codex_design_new_classes_restyle_to_starter_style_task.md": {
@@ -356,112 +356,112 @@
  },
  "codex_design_route_map_background_task.md": {
   "key": "SCRUM-72",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "8c4221f96e7934f7fa4a71c058228e36"
  },
  "design_all_classes_three_weapons_visual_upgrade_task.md": {
   "key": "SCRUM-73",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "9aeebdaf18ba98b6a09e65b0ecbafdce"
  },
  "design_arena_backgrounds_2k_dnd_expansion_task.md": {
   "key": "SCRUM-74",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "18e5d14e25de9cabda625e3813d79d7b"
  },
  "design_arena_backgrounds_2k_native_task.md": {
   "key": "SCRUM-75",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "eaba31d8b3be66b9fc3eb537391f1a27"
  },
  "design_artifact_icons_fantasy_restyle_task.md": {
   "key": "SCRUM-76",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "d250615e6ab047a5735ea6ad28df6414"
  },
  "design_artifact_icons_final_redesign_task.md": {
   "key": "SCRUM-77",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "0ad9fc3d5ed0e40efed3ea0174d875ac"
  },
  "design_artifact_icons_realistic_dnd_reference_redraw_task.md": {
   "key": "SCRUM-78",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "50ab24c407d4fc34bb5b461b11e4a90c"
  },
  "design_artifact_icons_shop_cursor_task.md": {
   "key": "SCRUM-79",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "0da6a06970fddfbc5293802ffc9b15ac"
  },
  "design_cartoon_character_style_fix_task.md": {
   "key": "SCRUM-80",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "ad33e7bb105101cc7ed0e6fda803626d"
  },
  "design_contextual_ui_frames_rethink_task.md": {
   "key": "SCRUM-111",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e04ce225535c295dae09c9d05fb20e01"
  },
  "design_dark_mage_sprite_legs_rework_task.md": {
   "key": "SCRUM-82",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "3cc3f343bca114d81219f7809885a57a"
  },
  "design_elite_sprites_upsize_attack_vfx_task.md": {
   "key": "SCRUM-83",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5df54a59a079fff5bc0a02fa300d19ec"
  },
  "design_escape_stats_fantasy_frames_task.md": {
   "key": "SCRUM-84",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "7e725c7871cb5717b63d33d66d5c041a"
  },
  "design_event_shop_campfire_backgrounds_style_unification_task.md": {
   "key": "SCRUM-85",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "224afa5932c2ce6e7e121208e6b30ddb"
  },
  "design_sprite_quality_audit_cleanup_task.md": {
   "key": "SCRUM-86",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "78b9e68fb8d65330913c72f880483523"
  },
  "design_stat_icons_hud_visual_task.md": {
   "key": "SCRUM-87",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e2e0fd0e14ab8d62e9859b77921fa2e2"
  },
  "design_ui_overhaul_flat_battle_bg_motion_polish_task.md": {
   "key": "SCRUM-88",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4acec1923dfd8d4ef19760eef1ccfefa"
  },
  "design_visual_redesign_after_animation_task.md": {
   "key": "SCRUM-89",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "b45d00b4455f9e43d8fb65d1ea28a40f"
  },
  "design_weapon_art_v2_proportions_knight_task.md": {
   "key": "SCRUM-90",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "14107772b774b44cd079a1fa29180994"
  },
  "design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-91",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "3975152ea966d6de10a69eb08d48c277"
  },
  "documentation_post_changes_domain_split_task.md": {
   "key": "SCRUM-92",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "8c3029abc611a437d81d8c811f9103a2"
  },
  "elite_boss_wave_balance_camera_task.md": {
   "key": "SCRUM-93",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4c518a48577cbd77189d6726e8e9e7a6"
  },
  "qa_review_backend_ascension_difficulty_ladder_task.md": {
@@ -491,32 +491,32 @@
  },
  "qa_review_bug_ascension_elite_instant_phase_dead_task.md": {
   "key": "SCRUM-99",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "16a2171e5b36eb5bb62745bae668a79f"
  },
  "qa_review_bug_ascension_mini_elite_chance_dead_task.md": {
   "key": "SCRUM-100",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "d7b45aee195d72f96c1898b98b970862"
  },
  "qa_review_bug_ascension_selector_not_clamped_task.md": {
   "key": "SCRUM-101",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "853e7e7250896b1c9c55fd74f424d42c"
  },
  "qa_review_bug_boss_phase_hazard_naked_circle_task.md": {
   "key": "SCRUM-102",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "61fea9a86b6229380fff67a01d707430"
  },
  "qa_review_codex_design_effects_sprites_dnd_restyle_task.md": {
   "key": "SCRUM-103",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "cef98c7ece1168cacbad57eedffa14a2"
  },
  "qa_review_codex_design_new_classes_restyle_to_starter_style_task.md": {
   "key": "SCRUM-104",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "5f718447f813c9aab970b4369425f431"
  },
  "qa_review_design_contextual_ui_frames_rethink_task.md": {
@@ -576,17 +576,17 @@
  },
  "qa_recheck_backend_ascension_difficulty_ladder_task.md": {
   "key": "SCRUM-136",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "7d98974748ced42898587390b99dc8f9"
  },
  "qa_recheck_backend_project_folder_cleanup_unused_files_task.md": {
   "key": "SCRUM-137",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c99f5029c62c194b45ffff3d22b4a367"
  },
  "qa_recheck_design_weapon_attack_vfx_animations_polish_task.md": {
   "key": "SCRUM-138",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "b500ced25e85543431bcad80f51305fe"
  },
  "bug_hero_select_carousel_radar_name_layout_task.md": {
@@ -866,7 +866,7 @@
  },
  "codex_design_new_bosses_mini_elites_redraw_task.md": {
   "key": "SCRUM-180",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e91f8f1c49731841bc251662f20b28e1"
  },
  "codex_design_vfx_sprite_polish_task.md": {
@@ -891,7 +891,7 @@
  },
  "epic_full_project_quality_pass.md": {
   "key": "SCRUM-179",
-  "status": "В работе",
+  "status": "Готово",
   "desc_hash": "e1ad343dae6069a9c9c65125e74fdf20"
  },
  "animation_enemy_archetype_motion_coverage_task.md": {
@@ -1046,7 +1046,7 @@
  },
  "backend_hero_select_description_left_of_radar_task.md": {
   "key": "SCRUM-224",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "728857d6d0d9c2b81d88ade2993933fe"
  },
  "backend_weapon_select_sprite_clean_layout_task.md": {
@@ -2330,7 +2330,7 @@
  },
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "1270855a379707eaf221394b98915955"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
@@ -2375,7 +2375,7 @@
  },
  "design_integrate_generated_hero_select_mockup_task.md": {
   "key": "SCRUM-445",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "6dd1f8afd198c79983f56b309c7da3e3"
  },
  "design_hero_select_v3_mockup_zones_frames_pipeline_task.md": {
@@ -2390,7 +2390,7 @@
  },
  "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
   "key": "SCRUM-448",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "fbd17738b3b0b29c6e1c5a9374647f0d"
  },
  "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
@@ -2625,7 +2625,7 @@
  },
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
   "key": "SCRUM-623",
-  "status": "К выполнению",
+  "status": "Готово",
   "desc_hash": "70824cff19f50c53aea62934a1a0d767"
  },
  "SCRUM-521_low_hp_red_vignette.md": {
@@ -2680,7 +2680,7 @@
  },
  "design_scrum571_reward_ui_2k_mockup_task.md": {
   "key": "SCRUM-571",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "468413dc32ddd703078a6458fb82399a"
  },
  "SCRUM-589_combat_title_banner_2k_frame.md": {
@@ -2820,7 +2820,7 @@
  },
  "design_text_buttons_unique_size_redraw_task.md": {
   "key": "SCRUM-657",
-  "status": "К выполнению",
+  "status": "Готово",
   "desc_hash": "e407a3df4d1e4e196d1ff9e7bca25d53"
  },
  "SCRUM-518_enlarge_arena_shrink_player.md": {
@@ -3120,7 +3120,7 @@
  },
  "bug_SCRUM-502_dealt_damage_never_collected_task.md": {
   "key": "SCRUM-502",
-  "status": "К выполнению",
+  "status": "Готово",
   "desc_hash": "efe52e7344e930e648a05f7aa166b069"
  },
  "bug_scrum673_main_menu_logo_spec_mismatch_task.md": {
