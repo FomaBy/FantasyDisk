@@ -310,9 +310,9 @@ keystone равен прежнему). Третий keystone (`k2`) сохран
 |  | «Несущий бурю» (`berserk_k1`) | +18% к урону в гуще боя (на пике — врагов рядом) | −4% к макс. здоровью | счёт-в-радиусе | 0.050 |
 |  | «Последний рубеж» (`berserk_k2`) | +29% к урону при низком здоровье, +0.4 к регенерации при низком здоровье | −2.2% к защите | — | 0.049 |
 | **Солдат** | «Подавляющий огонь» (`soldier_k0`) | +28% к урону, пока здоровье ниже половины | −6% к скорости движения | HP-порог | 0.036 |
-|  | «Одиночными» (`soldier_k1`) | +19.1% к урону в неподвижной боевой стойке | −4% к скорости атаки | стойка | 0.046 |
+|  | «Шквал» (`soldier_k1`) | +19.1% к скорострельности в неподвижной боевой стойке (реализовано 834a) | −4% к урону | стойка | 0.046 |
 |  | «Гранатный подсумок» (`soldier_k2`) | +7% к радиусу области, +9% шанс взрыва при убийстве | −6% к дальности атаки | — | 0.039 |
-| **Вор** | «Большой куш» (`thief_k0`) | +34.4% к урону в рывке (окно после уклонения) | −4% к макс. здоровью | окно после уклонения | 0.046 |
+| **Вор** | «Из тени» (`thief_k0`) | +17.2% к шансу крита в рывке (окно после уклонения) (реализовано 834a) | −4% к макс. здоровью | окно после уклонения | 0.046 |
 |  | «Ночная работа» (`thief_k1`) | +18.3% к урону в гуще боя (на пике — врагов рядом) | −4% к урону | счёт-в-радиусе | 0.051 |
 |  | «Азарт канатоходца» (`thief_k2`) | +17% к урону крита, +9% к скорости движения после уклонения (рывок) | −2.2% к защите | — | 0.047 |
 | **Элементалист** | «Сверхновая» (`elementalist_k0`) | +18.8% к урону в гуще боя (на пике — врагов рядом) | −6% к дальности атаки | счёт-в-радиусе | 0.046 |
@@ -384,9 +384,11 @@ downside на входящее лечение (аналог «лечение л�
 | `dodge_rush_bonus` | `thief_t3/k2/h0`, `assassin_t3/k2/h1`, `ranger_h1` | `META_SKILL_FLAT_MAP` → `_trigger_dodge_rush` | wired-гейт smoke |
 | `lowhp_guard` | скрытые звезды: `berserk_h1`, `elementalist_h1`, `priest_h0`, `robot_h1`, `doctor_h0`, `knight_h1` | флаг (max-merge) → `_trigger_lowhp_guard` («Рубеж Стража») | per-hero hidden-гейт + wired-гейт |
 | `hurt_damage_bonus` | k0/k1 (HP-порог): `berserk_k0`, `soldier_k0`, `priest_k0`, `assassin_k0`, `doctor_k0` | `META_SKILL_FLAT_MAP`; гейт `hurt_active` (HP<50%) → `derived_parameters.damage_multiplier` | conditional-гейт smoke (`_test_conditional_keystones`) |
-| `stance_damage_bonus` | k0/k1 (стойка): `soldier_k1`, `sniper_k0`, `elementalist_k1`, `priest_k1`, `robot_k0`, `engineer_k0`, `biologist_k1`, `dark_mage_k1`, `guitarist_k1`, `ranger_k0`, `chemist_k1`, `knight_k0`, `druid_k0` | `META_SKILL_FLAT_MAP`; гейт `stance_active` (неподвижность ≥0.8с) → `damage_multiplier` | conditional-гейт smoke |
-| `rush_damage_bonus` | k0/k1 (окно после уклонения): `thief_k0`, `sniper_k1`, `assassin_k1`, `doctor_k1`, `knight_k1` | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` (2с после уворота, `_trigger_rush_window`) → `damage_multiplier` | conditional-гейт smoke |
+| `stance_damage_bonus` | k0/k1 (стойка): `sniper_k0`, `elementalist_k1`, `priest_k1`, `robot_k0`, `engineer_k0`, `biologist_k1`, `dark_mage_k1`, `guitarist_k1`, `ranger_k0`, `chemist_k1`, `knight_k0`, `druid_k0` | `META_SKILL_FLAT_MAP`; гейт `stance_active` (неподвижность ≥0.8с) → `damage_multiplier` | conditional-гейт smoke |
+| `rush_damage_bonus` | k0/k1 (окно после уклонения): `sniper_k1`, `assassin_k1`, `doctor_k1`, `knight_k1` | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` (2с после уворота, `_trigger_rush_window`) → `damage_multiplier` | conditional-гейт smoke |
 | `swarm_damage_bonus` | k0/k1 (счёт-в-радиусе): `berserk_k1`, `thief_k1`, `elementalist_k0`, `robot_k1`, `engineer_k1`, `biologist_k0`, `dark_mage_k0`, `guitarist_k0`, `ranger_k1`, `chemist_k0`, `druid_k1` | `META_SKILL_FLAT_MAP`; гейт `swarm_fraction` (0..1 от `SWARM_CAP`) → `damage_multiplier` | conditional-гейт smoke |
+| `stance_attack_speed_bonus` | k1 (стойка → не-урон): `soldier_k1` («Шквал», 834a) | `META_SKILL_FLAT_MAP`; гейт `stance_active` → `attack_speed_multiplier` | conditional-гейт smoke (сценарий 5) |
+| `rush_crit_bonus` | k0 (окно после уклонения → не-урон): `thief_k0` («Из тени», 834a) | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` → `crit_chance` | conditional-гейт smoke (сценарий 6) |
 
 Метрика скрытых звёзд `class_wins` (SCRUM-834) добавлена к
 `weapon_diversity`/`best_ascension`/`no_shop_wins` для уникальных per-class

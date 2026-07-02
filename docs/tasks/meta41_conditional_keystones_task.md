@@ -1,6 +1,6 @@
 # Мета 4.1a (SCRUM-834): условные keystone на существующих хуках — эталоны + мапящиеся классы
 
-Статус: todo (декомпозиция утверждена PM 2026-07-02: 834=834a, продолжения SCRUM-835/836/837; hold/blocked сняты)
+Статус: done (834a реализовано: soldier «Шквал», thief «Из тени» на существующих гейтах; смоки зелёные; сдано в QA. Немапящиеся пары → SCRUM-835/836/837)
 Приоритет: high
 Роль: Back-end (Claude)
 Версия: 0.2.0
@@ -184,3 +184,34 @@ acceptance «17/17» перенесён на завершение всей ли�
 smoke реальных боевых эффектов). Метки hold/blocked с этого тикета СНЯТЫ;
 835/837 под hold до готовности предшественников (835 после 834a; 837 после
 835), 836 независим по данным, но делит tree_data/smoke — hold до 834a.
+
+## Result / Evidence 834a 2026-07-02 (claude-backend)
+
+Реализовано: расширение conditional-инфры на не-урон стат-цели по существующим
+гейтам (без новых боевых подсистем — те → SCRUM-835).
+
+- **soldier «Шквал»** (`soldier_k1`): гейт `stance_active` (неподвижность ≥0.8с)
+  теперь поднимает СКОРОСТРЕЛЬНОСТЬ — `stance_attack_speed_bonus: 0.191`
+  (‖ downside `damage_mult -0.04`). Консум: `progression_data.attack_speed_multiplier`.
+- **thief «Из тени»** (`thief_k0`): гейт `rush_window_active` (окно после уклонения)
+  поднимает КРИТ-ШАНС — `rush_crit_bonus: 0.172` (‖ downside `max_health_mult -0.04`).
+  Консум: `progression_data.crit_chance_flat` (та же CRIT_FLAT_EFFECTIVENESS).
+- Разводка: `player.META_SKILL_FLAT_MAP` + активация гейтов в
+  `_update_conditional_keystones` (stance) и `_trigger_rush_window` (rush).
+- Баланс budget-нейтрален: веса `stance_attack_speed_bonus=0.45` (uptime×attack_speed),
+  `rush_crit_bonus=0.50` (uptime×crit), `value×weight=0.086` = прежним `*_damage`.
+  Downside-ratio 46% (≥25%), сигнатуры keystone уникальны.
+- Приложения A (строки soldier_k1/thief_k0) и B (2 новых ключа) обновлены; CHANGELOG.
+
+Гейты (godot_gate.py, Godot 4.7, изолированный worktree на origin/dev + коммит
+482be103, exit 0, без SCRIPT ERROR):
+- `tests/meta_skill_tree_smoke_test.gd` — PASSED (+ поведенческие сценарии 5/6:
+  стат растёт ЛИШЬ при выполнении условия и снимается при его снятии).
+- `tests/skill_tree_per_hero_test.gd` — PASSED (downside/uniqueness/affinity).
+- `tests/runtime_smoke_test.gd` — PASSED (полная загрузка боя, 14532 файла).
+
+Затронуто: `scripts/player.gd`, `scripts/progression_data.gd`,
+`scripts/meta_progression_tree_data.gd`, `tests/meta_skill_tree_smoke_test.gd`,
+`docs/design/systems/meta_constellations.md`, `CHANGELOG.md`. Немапящиеся пары
+(soldier «Подавление», thief «Джекпот», элементалист/робот/инженер/… — новые
+подсистемы) остаются generic до SCRUM-835; 17/17 hidden → SCRUM-836.
