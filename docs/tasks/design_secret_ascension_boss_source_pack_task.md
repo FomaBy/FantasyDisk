@@ -58,3 +58,10 @@ Read-only verification on current `origin/dev`:
 - Boss candidate is `1024x1024`; alpha bbox `[180, 42, 843, 984]` matches `secret_ascension_boss_source_pack_report.json`.
 - Contact preview `docs/design/previews/scrum539_secret_ascension_boss_contact.png` is readable and contains the boss plus all four VFX candidates.
 - No script/scene/runtime logic changed by this QA pass.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Проверил: claude-qa (drift-repair), 2026-07-02, read-only на origin/dev 8d091d5e.
+Причина правки .md: тикет с уже зафиксированным QA PASSED (см. историю комментов Jira + PM sprint audit) дрейфовал обратно в «Контроль качества». Корень — board_sync (tools/jira_board_sync.py:222-226): при «Статус: done» без секции «## QA-Вердикт» со строкой «Статус: PASSED» статус пересчитывается как done → «Контроль качества». Добавлен канонический блок, чтобы board_sync стабильно мапил тикет в «Готово».
+Верификация: deliverables на origin/dev — assets/sprites/bosses/secret_ascension_boss.png + 4 telegraph PNG (ring/cone/beam/rupture) + source_pack_report.json. Design/asset-only, смоук не требуется (уже подтверждено anim-loop-1 QA PASSED 2026-06-28).

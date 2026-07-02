@@ -77,3 +77,10 @@ runtime code locate `StatTooltipPanel` / `_make_custom_tooltip` in
 - Tests passed: `tests/display_resolution_test.gd`, `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_test.gd`.
 - `tools/godot_gate.py` was not usable on Windows due `ModuleNotFoundError: No module named 'fcntl'`; target Godot scripts were run directly through Godot 4.7 console.
 - Disposable Godot import/cache output is not part of the deliverable and was cleaned before finish.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Проверил: claude-qa (drift-repair), 2026-07-02, read-only на origin/dev 8d091d5e.
+Причина правки .md: тикет с уже зафиксированным QA PASSED (см. историю комментов Jira + PM sprint audit) дрейфовал обратно в «Контроль качества». Корень — board_sync (tools/jira_board_sync.py:222-226): при «Статус: done» без секции «## QA-Вердикт» со строкой «Статус: PASSED» статус пересчитывается как done → «Контроль качества». Добавлен канонический блок, чтобы board_sync стабильно мапил тикет в «Готово».
+Верификация: deliverables на origin/dev — assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png + spec.md + safe_zones preview. Метрики (430x288, tex-margins 32, content 44/42) совпадают с интеграцией SCRUM-593.

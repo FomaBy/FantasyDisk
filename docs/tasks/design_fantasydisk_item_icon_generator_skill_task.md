@@ -33,3 +33,10 @@ Create a reusable Codex skill workflow for FantasyDisk artifact icons, stat/attr
 - Added `skills/codex/fantasydisk-item-icon-generator/agents/openai.yaml` so the skill is discoverable in Codex-style mirrors.
 - Validation: `python3 /Users/sergeyfomin/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/codex/fantasydisk-item-icon-generator` → `Skill is valid!`.
 - YAML parse check passed for `agents/openai.yaml`.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Проверил: claude-qa (drift-repair), 2026-07-02, read-only на origin/dev 8d091d5e.
+Причина правки .md: тикет с уже зафиксированным QA PASSED (см. историю комментов Jira + PM sprint audit) дрейфовал обратно в «Контроль качества». Корень — board_sync (tools/jira_board_sync.py:222-226): при «Статус: done» без секции «## QA-Вердикт» со строкой «Статус: PASSED» статус пересчитывается как done → «Контроль качества». Добавлен канонический блок, чтобы board_sync стабильно мапил тикет в «Готово».
+Верификация: deliverable на origin/dev — skills/codex/fantasydisk-item-icon-generator/SKILL.md + agents/openai.yaml. Задача workflow/spec-only, рантайм-смоук не требуется.
