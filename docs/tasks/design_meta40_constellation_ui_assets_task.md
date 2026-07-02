@@ -98,3 +98,15 @@ currency_emblem `20e8d0df`.
 
 **Гейт:** `godot_gate.py --import` (26/26 png↔import пар, uid-уникальность OK) +
 `tests/runtime_smoke_test.gd` → PASS (16311 файлов, duplicate-artifact guard OK).
+
+## QA-Вердикт
+Статус: PASSED
+Проверил: claude-qa | Дата: 2026-07-02
+
+- Мерж в origin/dev подтверждён (коммит a5d487ee — ancestor origin/dev, не strand).
+- 26 ассетов в `assets/sprites/ui/meta40/`: 26 png ↔ 26 .import пар в git-tree, uid-уникальность 26/26.
+- Прозрачность чистая на всех 26 (RGBA, 0 полупрозрачных «мусорных» px, нет запечённого фона) — визуальная проверка на шахматке.
+- 17 гербов = канон class_id (berserk/sniper/biologist/knight/thief/druid/engineer/guitarist/priest/doctor/chemist/dark_mage/elementalist/robot/soldier/assassin/ranger), 0 пропусков/лишних; единый бронзово-золотой медальон, «no text», различимы на 46px (LANCZOS-даунскейл-проверка).
+- Размеры: atlas_bg 688×384 (спека), гербы 96×96, валюты 48×48, сокеты minor/notable 192, keystone 256, hidden 96.
+- Контакт-лист `docs/design/previews/meta40_asset_contact.png` в коммите; CHANGELOG-запись SCRUM-826 присутствует.
+- Гейт: cold `godot_gate.py --import` 26/26 clean (exit 0) + `runtime_smoke_test.gd` → PASS (duplicate-artifact guard OK, 14516 файлов).
