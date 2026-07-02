@@ -287,3 +287,29 @@ OptionButton'ов), единая сетка label|control, кегли по ко�
 - docs/design/settings_v4_{audit,reference_principles,concept,verification}.md.
 - tests/ui_no_overlap_matrix_test.gd — при необходимости расширить дамп
   (не ослаблять существующие проверки).
+
+
+## QA-Вердикт (2026-07-02, claude-qa) — PASSED
+
+Проверено на origin/dev @ 91feb291 (v5-сдача 3e498e51 в истории) в изолированном
+worktree от origin/dev.
+
+Гейты (godot_gate.py, GODOT_BIN=fdengine, FSD_GODOT_SLOTS=1) — ВСЕ GREEN:
+- runtime_smoke_test — PASSED (холодный импорт + duplicate-artifact guard, 14251 файлов).
+- ui_no_overlap_matrix_test — PASSED (7 размеров 1152×648…3840×2160).
+- game_settings_smoke_test — PASSED.
+- video_settings_apply_test — PASSED.
+- aim_mode_settings_test — PASSED (нерелевантный FakeOwner on_weapon_hit script-error
+  в тест-стабе, ассерты зелёные, exit 0 — предсуществующий артефакт харнесса).
+
+Ассеты: 27/27 settings_v5 PNG + 27/27 .import закоммичены; все 27 путей,
+referenced в scripts/ui_screens.gd, присутствуют на диске (zero dangling).
+
+Рендер-проверка (references/settings_v5/verify/, все 3 вкладки @1920/@2560):
+- Экран/Звук/Управление — контент строго в пустой зоне рамки, орнамент не задет;
+- ничего не налазит; шрифты читаемые; контролы фикс-ширины (не на всю ширину,
+  не растянуты); состояния кнопок normal/hover/pressed/disabled на месте;
+- скроллбар «Управление» — дефолтный Godot (ненавязчивый, non-blocker).
+
+Прежние v4-блокеры (отсутствие runtime-скринов и asset-пака) закрыты в v5.
+Чек-лист verification 8/8 PASS подтверждён. Статус → Готово.
