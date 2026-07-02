@@ -1,6 +1,6 @@
 # Skill Tree 3.0: глубокий анализ и per-class деревья умений с классовой идентичностью
 
-Статус: done
+Статус: new
 Приоритет: high
 Роль: Back-end / Game Design (Claude)
 Версия: 0.1.8
@@ -10,6 +10,28 @@ Jira: SCRUM-807
 Owner: unassigned
 Thread/Worker: n/a
 Locked paths: `scripts/meta_progression.gd`, `scripts/ui_screens.gd` (экран дерева умений), `scripts/player.gd` (применение мета-модов), `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`, `docs/design/systems/skill_tree.md`
+
+## QA-Вердикт (2026-07-02, codex-qa-claude-monitor)
+
+Статус: FAILED
+
+Проверено:
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_points_per_ascension_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/attribute_relevance_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/class_progression_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/berserk_dps_runaway_gate.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASSED.
+
+Блокеры приёмки:
+- `scripts/meta_progression_tree_data.gd`: ветка Biologist содержит `aoe_radius`, но `ATTRIBUTE_RELEVANCE["aoe_radius"]` не включает `biologist` ни в primary, ни в secondary.
+- `scripts/meta_progression_tree_data.gd`: ветка Robot содержит `defense`, но `ATTRIBUTE_RELEVANCE["defense"]` не включает `robot` ни в primary, ни в secondary.
+- `tests/skill_tree_per_hero_test.gd` проверяет, что primary-атрибуты представлены в ветке, но не проверяет запрет на чужие optional/non-relevant атрибуты; текущий acceptance miss проходит зелёным.
+- `_test_realistic_build_power_budget()` проверяет 61-очковый focused build, при этом задача/Result формулируют gate как реалистичный 100-очковый билд; нужно привести тест/док/Result к одному фактическому инварианту.
+
+Баги: отдельный bug не заводил — это недовыполненные acceptance/test пункты SCRUM-807 при зелёных runtime gates.
 
 ## Мандат (от продукта, дословно по смыслу)
 
