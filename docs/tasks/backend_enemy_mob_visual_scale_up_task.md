@@ -59,3 +59,15 @@ Jira: SCRUM-829
 
 Disk cleanup: removed `/tmp/fantasydisk-scrum829-qa` and `/tmp/scrum829_enemy_mob_scale_code.patch`.
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-02 (claude-qa)
+Проверено на origin/dev @ da38879e (ancestor origin/dev; код-диф — только scale).
+
+- ENEMY_SIZE_PROFILES: ordinary 1.0→1.25 (+25%, в 1.20-1.30), mini_elite 1.05→1.31.
+  elite 1.68 / boss 1.90 не изменены; HP/урон/скорость/спавн/награды — нет.
+- Иерархия ordinary<mini_elite<elite<boss закреплена enemy_content_integrity_test.
+- enemy_content_integrity_test — PASS (exit 0); runtime_smoke_test — PASS (exit 0,
+  без регрессий enemy scale).
+- Доки: enemies_bosses.md, mechanics_extract.md, current_game_state.md.
