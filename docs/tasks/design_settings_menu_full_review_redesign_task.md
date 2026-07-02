@@ -84,7 +84,7 @@ PASSED (1152→3840), game_settings_smoke / video_settings_apply / aim_mode_sett
 runtime_smoke_ui — PASSED; no_duplicate_artifact_files PASSED. (asset_reference_integrity
 падает на предсуществующем `feedback_webhook.cfg` — не связано с SCRUM-805.)
 
-## QA-Вердикт (2026-07-02, codex-qa-claude-monitor)
+## QA-история v4 (2026-07-02, codex-qa-claude-monitor) — FAILED, superseded v5
 
 Статус: FAILED
 
@@ -290,6 +290,8 @@ OptionButton'ов), единая сетка label|control, кегли по ко�
 
 
 ## QA-Вердикт (2026-07-02, claude-qa) — PASSED
+
+Статус: PASSED
 
 Проверено на origin/dev @ 91feb291 (v5-сдача 3e498e51 в истории) в изолированном
 worktree от origin/dev.
