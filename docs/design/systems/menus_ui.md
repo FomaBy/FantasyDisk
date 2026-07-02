@@ -784,3 +784,51 @@ PanelContainer/StyleBox.
 SCRUM-355 adds the strict Hero Select frame content zones documented in
 `build/qa/scrum355/hero_select_thin_frames_qa.md`; use those margins when
 integrating the thinner dossier and thumbnail strip assets.
+
+## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
+
+Все окна выбора, открывающиеся ВНУТРИ забега, полностью управляются геймпадом
+(крестовина/стик + A/B) и клавиатурой (стрелки + Enter/Esc), сохраняя мышь как
+гибрид. Реализация в `scripts/ui_screens.gd`, `scripts/route_map_screen.gd`,
+`scripts/pause_stats_menu.gd`; тест `tests/gamepad_inrun_ui_test.gd`.
+
+Механика:
+- Единый хелпер `UIScreens._wire_run_ui_focus(primary, axis_h, secondary, initial)`
+  проставляет `FOCUS_ALL`, разводит круговые `focus_neighbor_*` (ряд — лево/право,
+  столбец — верх/низ) и ставит стартовый фокус (`call_deferred("grab_focus")`).
+  `secondary` (напр. «Позже»/«Назад») доступен с перпендикулярной оси и связан
+  обратно в круг.
+- Опора на встроенные `ui_*`-экшены Godot. В текущей сборке `ui_up/down/left/right`
+  уже имеют joypad-события (крестовина 11–14 + стик), а `ui_accept`/`ui_cancel` —
+  НЕТ. Поэтому `_ensure_run_ui_gamepad_bindings()` идемпотентно доводит
+  `A→ui_accept` и `B→ui_cancel` в рантайме. Полную раскладку геймпада формализует
+  ядро **SCRUM-811** (InputDeviceManager); гард исключает дубли при слиянии.
+
+Карта стартового фокуса и cancel по экранам:
+- Level-up (`_show_level_up_screen`): карточки апгрейда по кругу лево/право, «Позже»
+  доступна ui_down; старт — первая карточка; Esc/`ui_escape_action` = отложить.
+  Окно ставит дерево на паузу (`push_pause("level_up")`), поэтому move_* не дёргают
+  игрока (требование #8).
+- Награда/премиум-награда/событие (`_show_reward_screen`,
+  `_show_elite_artifact_reward`, `_show_event_screen`): круговой фокус-граф карточек,
+  старт — первая карточка (награды обязательны — cancel не выходит).
+- Пауза (`_build_run_pause_menu`): вертикальное меню, старт — «Продолжить»;
+  B/Esc = продолжить игру.
+- Досье паузы (`PauseStatsMenu`): кнопки фокусируемы, старт — «Продолжить»; B/Esc
+  обрабатывается централизованно в `main._input`.
+- Смерть/победа (`_show_death_screen`, `_show_victory_screen`): старт — основная
+  кнопка; B/Esc = основная кнопка (нет «пустого» закрытия).
+- Магазин/отдых/улучшение (`_show_shop_screen`, `_show_rest_screen`,
+  `_show_upgrade_screen`): товары/карточки фокусируемы, «Назад» доступна ui_down,
+  покупка/выбор по A, выход по B.
+- Карта маршрута (`route_map_screen.gd`): доступные ноды — `FOCUS_ALL`, недоступные
+  `FOCUS_NONE` (пропускаются); крестовина/стик двигают выделение по доступным нодам,
+  A подтверждает (`Button.pressed`), заметная золотая кайма (`focus`-стайлбокс),
+  скролл следует за фокусом (`follow_focus`). Мышь идёт своим путём
+  (`_handle_route_node_input`); двойную активацию гасит реэнтранси-латч
+  `_route_node_activating` в `_activate_route_node`.
+
+`main._input` (SCRUM-812): геймпад B (`ui_cancel`) закрывает/отменяет ТОЛЬКО открытый
+внутризабеговый экран или паузу-оверлей (паритет с Esc); вне открытых экранов B не
+трогается — остаётся под геймплей (dodge и т.п., раскладка — SCRUM-811/814).
+Клавиатурный путь `pause` (Esc) не изменён.

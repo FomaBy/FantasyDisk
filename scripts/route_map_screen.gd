@@ -5,6 +5,13 @@ extends RefCounted
 
 var game
 
+# SCRUM-812: геймпад-навигация по карте маршрута.
+# _route_node_activating — реэнтранси-латч: активация ноды меняет экран, любой
+#   повторный вызов в том же кадре (мышь + встроенный pressed) гасится. Сброс в _show_battle_map.
+# _route_focus_target — нода, на которую ставится стартовый фокус (текущий доступный ряд).
+var _route_node_activating := false
+var _route_focus_target: Button = null
+
 const START_BATTLE_ONLY_ROWS := 2
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
@@ -34,6 +41,11 @@ func _init(game_ref) -> void:
 
 
 func _show_battle_map() -> void:
+	# SCRUM-812: сброс латча активации и цели фокуса на каждое переоткрытие карты.
+	_route_node_activating = false
+	_route_focus_target = null
+	# A→ui_accept / B→ui_cancel для геймпада (в текущей сборке их нет; идемпотентно).
+	game.ui._ensure_run_ui_gamepad_bindings()
 	game._play_music("menu")
 	game._clear_world()
 	game._clear_hud()
@@ -172,6 +184,11 @@ func _show_battle_map() -> void:
 	game.route_map_pan_active = false
 	game.route_map_drag_distance = 0.0
 	game.route_map_drag_suppressed_click = false
+	# SCRUM-812: скролл следует за выбранным нодом (крестовина/стик), стартовый фокус —
+	# доступный нод текущего ряда, чтобы карта сразу управлялась с геймпада.
+	scroll.follow_focus = true
+	if _route_focus_target != null and is_instance_valid(_route_focus_target):
+		_route_focus_target.call_deferred("grab_focus")
 	_center_route_map_on_current_row.call_deferred(scroll, map_area.custom_minimum_size)
 
 
@@ -567,7 +584,9 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			button.size = game.MAP_NODE_SIZE
 			button.position = node_positions[step_index][branch_index]
 			button.disabled = not is_clickable
-			button.focus_mode = Control.FOCUS_NONE
+			# SCRUM-812: доступные ноды фокусируемы под геймпад/стрелки; недоступные
+			# (locked/completed) остаются FOCUS_NONE — фокус-навигация их пропускает.
+			button.focus_mode = Control.FOCUS_ALL if is_clickable else Control.FOCUS_NONE
 			button.z_index = 20 if is_clickable else 10
 			_style_route_node_button(button, node_type, state)
 			_add_route_node_icon(button, _route_node_icon_path(route_node, definition), str(definition["icon"]))
@@ -585,6 +604,19 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 				button.gui_input.connect(func(event: InputEvent) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
 				)
+				# SCRUM-812: заметное выделение выбранного нода (золотая кайма) + активация
+				# по A/Enter (pressed) для геймпада/стрелок. Мышь идёт своим путём (gui_input);
+				# двойную активацию гасит реэнтранси-латч в _activate_route_node.
+				button.add_theme_stylebox_override("focus", _route_node_focus_style())
+				button.pressed.connect(func() -> void:
+					_on_route_node_activate(step_index, branch_index, route_node)
+				)
+				# Стартовый фокус — доступный нод текущего ряда (первый), иначе первый доступный.
+				button.set_meta("route_step", step_index)
+				if _route_focus_target == null:
+					_route_focus_target = button
+				elif step_index == int(game.route_stage) and int(_route_focus_target.get_meta("route_step", -1)) != int(game.route_stage):
+					_route_focus_target = button
 			map_area.add_child(button)
 
 
@@ -747,7 +779,41 @@ func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollC
 		button.accept_event()
 
 
+# SCRUM-812: активация нода с геймпада/стрелок (Button.pressed по фокусу). Мышь
+# активирует своим путём в _handle_route_node_input; латч в _activate_route_node
+# гарантирует однократную активацию за кадр, даже если сработали оба пути.
+func _on_route_node_activate(step_index: int, branch_index: int, route_node: Dictionary) -> void:
+	if game.route_map_pan_active or game.route_map_drag_suppressed_click:
+		return
+	_activate_route_node(step_index, branch_index, route_node)
+
+
+# SCRUM-812: золотая кайма выбранного нода — заметное выделение под геймпад/стрелки
+# (Godot рисует "focus"-стайлбокс поверх сфокусированного контрола).
+func _route_node_focus_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.draw_center = false
+	style.border_width_left = 5
+	style.border_width_top = 5
+	style.border_width_right = 5
+	style.border_width_bottom = 5
+	style.border_color = Color(1.0, 0.84, 0.36, 1.0)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	style.expand_margin_left = 4.0
+	style.expand_margin_top = 4.0
+	style.expand_margin_right = 4.0
+	style.expand_margin_bottom = 4.0
+	return style
+
+
 func _activate_route_node(step_index: int, branch_index: int, route_node: Dictionary) -> void:
+	# SCRUM-812: реэнтранси-латч — активация меняет экран; повторный вызов в том же кадре гасится.
+	if _route_node_activating:
+		return
+	_route_node_activating = true
 	if game.shop_reentry_pending and step_index == int(game.shop_reentry_route_stage) + 1:
 		_finalize_pending_shop_reentry()
 		game.route_stage = step_index

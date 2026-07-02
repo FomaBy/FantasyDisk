@@ -322,6 +322,13 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	)
 	button_box.add_child(menu_button)
 
+	# SCRUM-812: досье-пауза проходима с геймпада/стрелок — кнопки фокусируемы (VBox
+	# ведёт фокус вверх/вниз по геометрии), стартовый фокус — «Продолжить». B/Esc
+	# (назад в паузу/продолжить) обрабатывается централизованно в main._input.
+	for b in [resume_button, settings_button, end_run_button, menu_button]:
+		b.focus_mode = Control.FOCUS_ALL
+	resume_button.call_deferred("grab_focus")
+
 
 func _build_base_stats_block(left_column: VBoxContainer) -> void:
 	left_column.add_child(_make_section_divider())

@@ -1017,7 +1017,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
-		if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+		# SCRUM-812: закрытие фидбек-оверлея с клавиши (Esc/pause) ИЛИ геймпада (B/ui_cancel).
+		var close_feedback: bool = (event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause")) \
+			or (not (event is InputEventKey) and event.is_action_pressed("ui_cancel"))
+		if close_feedback:
 			ui._close_feedback_overlay()
 			get_viewport().set_input_as_handled()
 		return
@@ -1046,6 +1049,20 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("open_level_up"):
 		if pending_level_ups > 0 and not _has_pause_reason("level_up"):
 			ui._open_pending_level_up()
+			get_viewport().set_input_as_handled()
+			return
+
+	# SCRUM-812: геймпад B (ui_cancel) закрывает/отменяет ТОЛЬКО открытый внутризабеговый
+	# экран или паузу-оверлей — паритет с Esc. Вне открытых экранов B не трогаем: он
+	# остаётся свободным под геймплей (dodge и т.п., ядро раскладки — SCRUM-811/814).
+	# Клавиатурный путь «pause» (Esc) ниже не меняется.
+	if not (event is InputEventKey) and event.is_action_pressed("ui_cancel"):
+		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+			ui._resume_game()
+			get_viewport().set_input_as_handled()
+			return
+		elif ui_escape_action.is_valid():
+			ui_escape_action.call()
 			get_viewport().set_input_as_handled()
 			return
 

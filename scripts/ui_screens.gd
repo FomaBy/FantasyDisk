@@ -4723,6 +4723,12 @@ func _build_run_pause_menu() -> void:
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
+	# SCRUM-812: вертикальное меню паузы проходимо с геймпада/стрелок, стартовый
+	# фокус — «Продолжить»; ui_cancel (B/Esc) продолжает игру (см. main._input).
+	_wire_run_ui_focus([
+		continue_button, dossier_button, settings_button, end_run_button, main_menu_button,
+	], false, [], continue_button)
+
 
 func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
@@ -5099,6 +5105,93 @@ func _weapon_sprite_path(config: Dictionary) -> String:
 	return ""
 
 
+# SCRUM-812: единая разводка фокус-навигации внутризабеговых экранов под геймпад
+# и стрелки. primary — основной ряд/столбец интерактивных контролов (карточки или
+# кнопки меню); axis_h=true — горизонтальный ряд (лево/право по кругу), false —
+# вертикальный столбец (верх/низ по кругу). secondary — вспомогательные кнопки
+# («Позже»/«Назад»), доступные с перпендикулярной оси и связанные обратно в круг.
+# initial — стартовый фокус (по умолчанию первый доступный контрол).
+# Опирается на встроенные ui_*-экшены Godot (у них дефолтные joypad-биндинги
+# A/B/крестовина/стик), поэтому не зависит от ядра InputDeviceManager (SCRUM-811).
+func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], initial: Control = null) -> void:
+	_ensure_run_ui_gamepad_bindings()
+	var ring := _collect_focusable_controls(primary)
+	var extra := _collect_focusable_controls(secondary)
+	for i in range(ring.size()):
+		var cur := ring[i]
+		var prev := ring[(i - 1 + ring.size()) % ring.size()]
+		var nxt := ring[(i + 1) % ring.size()]
+		var cross_first: Control = extra[0] if not extra.is_empty() else cur
+		var cross_last: Control = extra[extra.size() - 1] if not extra.is_empty() else cur
+		if axis_h:
+			cur.focus_neighbor_left = prev.get_path()
+			cur.focus_neighbor_right = nxt.get_path()
+			cur.focus_neighbor_bottom = cross_first.get_path()
+			cur.focus_neighbor_top = cross_last.get_path()
+		else:
+			cur.focus_neighbor_top = prev.get_path()
+			cur.focus_neighbor_bottom = nxt.get_path()
+			cur.focus_neighbor_right = cross_first.get_path()
+			cur.focus_neighbor_left = cur.get_path()
+	var ring_head: Control = ring[0] if not ring.is_empty() else null
+	for j in range(extra.size()):
+		var cur2 := extra[j]
+		var back: Control = ring_head if ring_head != null else cur2
+		var prev2: Control = extra[j - 1] if j > 0 else back
+		var nxt2: Control = extra[j + 1] if j < extra.size() - 1 else back
+		if axis_h:
+			cur2.focus_neighbor_top = prev2.get_path()
+			cur2.focus_neighbor_bottom = nxt2.get_path()
+			cur2.focus_neighbor_left = cur2.get_path()
+			cur2.focus_neighbor_right = cur2.get_path()
+		else:
+			cur2.focus_neighbor_left = prev2.get_path()
+			cur2.focus_neighbor_right = nxt2.get_path()
+			cur2.focus_neighbor_top = cur2.get_path()
+			cur2.focus_neighbor_bottom = cur2.get_path()
+	var target := initial
+	if target == null or not is_instance_valid(target):
+		target = ring_head if ring_head != null else (extra[0] if not extra.is_empty() else null)
+	if target != null and is_instance_valid(target):
+		target.call_deferred("grab_focus")
+
+
+# SCRUM-812: собирает валидные фокусируемые контролы (не disabled), проставляя им
+# FOCUS_ALL. Порядок сохраняется — соседи разводятся по позиции в списке.
+func _collect_focusable_controls(controls: Array) -> Array[Control]:
+	var out: Array[Control] = []
+	for c in controls:
+		if c is Control and is_instance_valid(c):
+			var ctrl := c as Control
+			if ctrl is Button and (ctrl as Button).disabled:
+				continue
+			ctrl.focus_mode = Control.FOCUS_ALL
+			out.append(ctrl)
+	return out
+
+
+# SCRUM-812: в текущей сборке у ui_accept/ui_cancel НЕТ joypad-событий (проверено:
+# только клавиатура; крестовина/стик у ui_up/down/left/right есть). Без A→ui_accept и
+# B→ui_cancel геймпад не подтверждает/не отменяет на внутризабеговых экранах. Идемпотентно
+# доводим их в рантайме, чтобы SCRUM-812 работал самостоятельно. Полную раскладку геймпада
+# формализует ядро SCRUM-811 (InputDeviceManager) — гард ниже исключает дубли при слиянии.
+func _ensure_run_ui_gamepad_bindings() -> void:
+	_ensure_action_joy_button("ui_accept", JOY_BUTTON_A)
+	_ensure_action_joy_button("ui_cancel", JOY_BUTTON_B)
+
+
+func _ensure_action_joy_button(action: String, button: int) -> void:
+	if not InputMap.has_action(action):
+		return
+	for e in InputMap.action_get_events(action):
+		if e is InputEventJoypadButton and (e as InputEventJoypadButton).button_index == button:
+			return
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
+	ev.pressed = true
+	InputMap.action_add_event(action, ev)
+
+
 func _show_reward_screen() -> void:
 	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
 	_create_menu_run_hud()
@@ -5184,15 +5277,8 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
 
-	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space выбирают.
-	for index in range(reward_buttons.size()):
-		var card := reward_buttons[index]
-		var left := reward_buttons[(index - 1 + reward_buttons.size()) % reward_buttons.size()]
-		var right := reward_buttons[(index + 1) % reward_buttons.size()]
-		card.focus_neighbor_left = left.get_path()
-		card.focus_neighbor_right = right.get_path()
-	if not reward_buttons.is_empty():
-		reward_buttons[0].grab_focus()
+	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space/A выбирают.
+	# Полная разводка (карточки + «Позже») ставится ниже, после создания later_button.
 
 	# Отложенный выбор: «Позже» (и Escape) закрывают окно БЕЗ траты пика — набор
 	# зафиксирован, вернуться можно кнопкой повышения внизу экрана.
@@ -5226,6 +5312,9 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	later_button.pressed.connect(defer_choice)
 	box.add_child(later_button)
 	game.ui_escape_action = defer_choice
+
+	# SCRUM-812: карточки по кругу (лево/право), «Позже» достижима ui_down, старт — первая карточка.
+	_wire_run_ui_focus(reward_buttons, true, [later_button], reward_buttons[0] if not reward_buttons.is_empty() else null)
 
 	var panel := box.get_parent() as PanelContainer
 	var title_label := box.find_child("LevelUpTitle", true, false) as Label
@@ -5698,6 +5787,16 @@ func _show_shop_screen() -> void:
 	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
 
+	# SCRUM-812: товары проходимы с геймпада (крестовина/стик), «Назад» доступна ui_down,
+	# покупка по A. Стартовый фокус — первый доступный товар (иначе «Назад»). Соседи между
+	# анкер-размещёнными слотами Godot добирает по геометрии.
+	var shop_focus_items: Array = []
+	for slot in items_area.get_children():
+		if slot is Button and not (slot as Button).disabled:
+			shop_focus_items.append(slot)
+	_wire_run_ui_focus(shop_focus_items, true, [skip_button],
+		shop_focus_items[0] if not shop_focus_items.is_empty() else skip_button)
+
 
 func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	var purchased: bool = index < game.current_shop_purchased.size() and bool(game.current_shop_purchased[index])
@@ -6144,6 +6243,9 @@ func _show_rest_screen() -> void:
 	back_button.pressed.connect(game.route._advance_route_after_noncombat)
 	box.add_child(back_button)
 
+	# SCRUM-812: два выбора листаются лево/право, «Назад» доступна ui_down, старт — «Передышка».
+	_wire_run_ui_focus([heal_button, guard_button], true, [back_button], heal_button)
+
 
 func _show_upgrade_screen() -> void:
 	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
@@ -6152,6 +6254,7 @@ func _show_upgrade_screen() -> void:
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
 	box.add_child(choices)
 	var index := 0
+	var upgrade_cards: Array = []
 	for reward in _random_level_up_rewards(3):
 		var button := _make_economy_choice_card(str(reward["title"]), str(reward["description"]), "Выбрать", "UpgradeChoiceButton%d" % index, upgrade_card_size)
 		choices.add_child(button)
@@ -6159,7 +6262,11 @@ func _show_upgrade_screen() -> void:
 			_apply_reward_to_run(reward)
 			game.route._advance_route_after_noncombat()
 		)
+		upgrade_cards.append(button)
 		index += 1
+
+	# SCRUM-812: карточки улучшений листаются лево/право по кругу, старт — первая; A выбирает.
+	_wire_run_ui_focus(upgrade_cards, true, [], upgrade_cards[0] if not upgrade_cards.is_empty() else null)
 
 
 func _show_event_screen(route_node: Dictionary) -> void:
@@ -6332,6 +6439,9 @@ func _show_victory_screen() -> void:
 	restart_button.pressed.connect(finish_run)
 	box.add_child(restart_button)
 	game.ui_escape_action = finish_run
+	# SCRUM-812: стартовый фокус на основной кнопке; B/Esc = основная кнопка (finish_run),
+	# «пустого» закрытия нет.
+	_wire_run_ui_focus([restart_button], false, [], restart_button)
 
 
 func _show_death_screen(reason := "") -> void:
@@ -6360,6 +6470,8 @@ func _show_death_screen(reason := "") -> void:
 	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
 	game.ui_escape_action = back_to_menu
+	# SCRUM-812: стартовый фокус на «Начать заново»; B/Esc = основная кнопка, без «пустого» закрытия.
+	_wire_run_ui_focus([retry_button], false, [], retry_button)
 
 
 # SCRUM-502: блок сводки прогона на экранах победы/смерти. Кладётся в box (VBox внутри
