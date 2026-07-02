@@ -1,6 +1,6 @@
-# Design: Настройки v4 — полный ревью-редизайн меню (аудит размеров → OpenAI-мокапы 3 вкладок → перерисовка без растяжений → верификация по референсам)
+# Design: Настройки v5 — полный редизайн меню с нуля (карт-бланш): OpenAI-мокапы + точноразмерные ассеты + внедрение + верификация
 
-Статус: in_progress
+Статус: done
 Jira: SCRUM-805
 Создано: 2026-07-02
 Автор: PM (прямое поручение пользователя 2026-07-02)
@@ -8,7 +8,40 @@ Jira: SCRUM-805
 Контур: Claude
 Owner: claude-designer (Jira-pull рутина)
 Thread/Worker: fantasydisk-designer
-Locked paths: scripts/ui_screens.gd (settings-блок ~3605–4300), assets/sprites/ui/frames/settings_v4/*, references/settings_v4/*, docs/design/settings_v4_*.md
+Locked paths: scripts/ui_screens.gd (settings-блок), assets/sprites/ui/frames/settings_v5/*, references/settings_v5/*, docs/design/settings_v5_*.md (v4-пути dormant)
+
+## ФИНАЛ v5 (PM/Fable, 2026-07-02) — сдача в QA
+
+Пользователь дал карт-бланш: полный редизайн С НУЛЯ, не наследуя v4. Сделано
+лично PM/Fable в изолированном worktree, ребейз на origin/dev (skill-tree/HUD
+правки других задач сохранены; settings-блок заменён на v5).
+
+- **Дизайн**: `docs/design/settings_v5_vision.md` — «Оружейная драконьего
+  замка», дизайн-лист 1420×1060 (55.5% ширины), единый скейл s, сетка
+  label(380)|control(560), кегли 46/26/26/24/22.
+- **Мокапы** (шаг 2 поручения): OpenAI gpt-image-2, все 3 вкладки отдельно +
+  листы состояний кнопок на каждую вкладку → `references/settings_v5/`.
+- **Ассеты** (выбран вариант B+: полная перерисовка всех элементов в ТОЧНЫХ
+  дизайн-размерах, панели в родной пропорции): 27 файлов
+  `assets/sprites/ui/frames/settings_v5/` (+ .import). Рамка 1420×1060 —
+  bluescreen-генерация + despill/erode; контент-панель — PixelLab 9-slice;
+  кнопки/табы/поля/чекбоксы/слайдер/чип/иконки/медальон — по состояниям.
+- **Код**: settings-блок `scripts/ui_screens.gd` переписан (модалка 55.5%,
+  без EXPAND_FILL, все контролы фикс-размеров, текстурные состояния
+  normal/hover/pressed/disabled, попап-меню стилизованы). Имена узлов и вся
+  логика (pending video, ребинды, персист) сохранены.
+- **Тесты**: смоук-контракт свитчера обновлён под v5 (3 пластины 340×84);
+  слайдер-контракт SCRUM-674 сохранён по смыслу (текстурный жёлоб ≥8px).
+  Прогнано после ребейза: game_settings_smoke, video_settings_apply,
+  aim_mode_settings, ui_no_overlap_matrix (7 размеров), runtime_smoke — GREEN.
+- **Верификация «сверху»** (шаг 5 поручения):
+  `docs/design/settings_v5_verification.md` — чек-лист приёмки 8/8 PASS;
+  скрины всех 3 вкладок @1920/@2560 + runtime-ректы:
+  `references/settings_v5/verify/`.
+
+QA: гонять capture `tools/capture_settings_v5.gd` (оконный) + матрицу; v4-арт
+воркера остаётся на диске как dormant rollback-путь, референсной интеграции
+не имеет.
 
 ## ⚠️ Deferral to PM v5 (2026-07-02) — НЕ в QA
 
