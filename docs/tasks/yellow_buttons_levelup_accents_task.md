@@ -1,6 +1,6 @@
 # Жёлтые кнопки (FAB, utility) и золотые акценты level-up → тёмная кожа с латунью
 
-Статус: new
+Статус: done
 Роль: Back-end
 Контур: Claude
 Lane: claude
@@ -91,3 +91,13 @@ SCRUM-806 reopen: тёмная кожа + тонкая латунная лини
   зафиксировано — оконный рендер при живом редакторе не гоняем).
 - Верификация в worktree от origin/dev (cold --import): runtime_smoke PASSED,
   ui_no_overlap_matrix PASSED. Коммит 39248f12 (+docs следом) в origin/dev.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+QA claude-qa 2026-07-02 (изолированный worktree от origin/dev, независимая проверка).
+- Реальный landed-коммит в origin/dev — 410b8c2c (локальный 39248f12 перебазирован); диффскоуп: только 16 PNG кнопок (minimal_metal_buttons fab/utility ×4 стейта, level_up_scrum682 lu682_later ×3 + portrait, combat_hud level_up_plus ×4) + превью + tools/recolor_yellow_buttons_brass.py; `.import`, `ui_theme_paths.gd`, `ui_screens.gd` НЕ тронуты (asset-only ✓).
+- Все 16: размер 1:1 против 410b8c2c^, alpha-канал байт-в-байт идентичен, перекраска применена (изменённые пиксели present).
+- Независимый bright-скан (hue 30–68°, sat≥0.42, val≥0.52): WORST 0.00% по всем 16 (AC <5% ✓). card_hover осознанно оставлен как фокус-фидбек (зафиксировано в спеке).
+- Контактный лист до/после сверен визуально: ярко-жёлтые/золотые бордюры и акценты кнопок → тёмная латунь; эмблемы (дракон+крест) и disabled-состояния сохранены.
+- Тест: ui_no_overlap_matrix_test PASS на финальном HEAD origin/dev (+исполнитель: runtime_smoke PASS).
+- Прим.: локальный статус спеки был «new» на origin/dev — выставлен «done» для консистентности с board_sync (тикет сдан в QA/Готово).
