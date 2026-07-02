@@ -4,6 +4,11 @@ SCRUM-805, фаза 4. Опирается на [аудит](settings_v4_audit.md
 [референс-принципы](settings_v4_reference_principles.md) и мокапы в
 `docs/design/references/settings_v4/`. Дата: 2026-07-02.
 
+> **Реализовано (фазы 6–7):** внедрено в `scripts/ui_screens.gd`; фактические
+> размеры/отклонения (дропдаун 420 вместо 460, высота width/1.22, нетто-нового
+> растра не потребовалось — v3 9-slice + процедурные StyleBox) и runtime-замер —
+> в [settings_v4_verification.md](settings_v4_verification.md).
+
 ## Решение: гибрид с упором на B (перерисовка элементов)
 
 | Вариант | Суть | Вердикт |

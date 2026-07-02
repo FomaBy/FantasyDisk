@@ -3663,15 +3663,20 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 
 
 func _settings_v2_modal_rect() -> Rect2:
+	# SCRUM-805 v4: узкая модалка вместо старой 80%-й «растянутой». Пользователь
+	# считал 80% (1536@1080 / 2048@1440) слишком широкой; референс-цель 55-60%.
+	# Ширина = 56% вьюпорта (clamp 960..1536), высота = width/1.22 (пропорция
+	# фиксирована так, чтобы контент вкладок «Экран»/«Звук» без скролла помещался
+	# в контент-панель на 1920/2560/3840 — проверено ui_no_overlap_matrix, фаза 7).
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	var width := clampf(roundf(viewport_size.x * 0.80), 1024.0, 2048.0)
-	var height := roundf(width * 924.0 / 1536.0)
+	var width := clampf(roundf(viewport_size.x * 0.56), 960.0, 1536.0)
+	var height := roundf(width / 1.22)
 	var max_height := roundf(viewport_size.y * 0.88)
 	if height > max_height:
 		height = max_height
-		width = roundf(height * 1536.0 / 924.0)
+		width = clampf(roundf(height * 1.22), 960.0, 1536.0)
 	return Rect2(
 		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
 		Vector2(width, height)
@@ -3877,8 +3882,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	if screen_count > 1:
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		screen_options.custom_minimum_size = Vector2(520, 62)
-		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# SCRUM-805 v4: фикс. ширина 420, без EXPAND_FILL (был баг «растянутости»
+		# на всю ширину ряда ~1000/1438px). Единая двухколоночная сетка label|control.
+		screen_options.custom_minimum_size = Vector2(420, 60)
+		screen_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		_apply_compact_button_theme(screen_options)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
@@ -3893,8 +3900,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	resolution_options.custom_minimum_size = Vector2(520, 62)
-	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	resolution_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
+	resolution_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_apply_compact_button_theme(resolution_options)
 	var usable_size := Vector2i(99999, 99999)
 	var screen_full_size := Vector2i(99999, 99999)
@@ -3924,8 +3931,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var mode_options := OptionButton.new()
 	mode_options.name = "SettingsWindowModeOption"
-	mode_options.custom_minimum_size = Vector2(520, 62)
-	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mode_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
+	mode_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_apply_compact_button_theme(mode_options)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
@@ -3975,7 +3982,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
 	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
 	reset_audio_button.name = "SettingsResetAudioButton"
-	_set_action_button_size(reset_audio_button, 420.0)
+	# SCRUM-805 v4: фикс. 360×64 + SHRINK_BEGIN — раньше кнопка тянулась на всю
+	# ширину контент-бокса (~1194/1632px) из-за FILL по умолчанию в VBox.
+	_set_action_button_size(reset_audio_button, 360.0, 64.0)
+	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
 		_show_settings_menu()
@@ -4004,8 +4014,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
-	aim_options.custom_minimum_size = Vector2(520, 62)
-	aim_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	aim_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
+	aim_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_apply_compact_button_theme(aim_options)
 	aim_options.add_item("Автонаводка на ближайшего")
 	aim_options.add_item("По курсору")
@@ -4057,15 +4067,17 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 		var label := Label.new()
 		label.text = input_action["label"]
-		label.custom_minimum_size = Vector2(170, 38)
+		label.custom_minimum_size = Vector2(200, 44)  # SCRUM-805 v4: колонка label ровнее
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 		row.add_child(label)
 
 		var bind_button := _make_compact_button(_binding_text(action_name))
 		bind_button.name = "BindingButton_%s" % action_name
-		bind_button.custom_minimum_size = Vector2(420, 62)
-		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# SCRUM-805 v4: фикс. ширина 300, без EXPAND_FILL (кнопка ребинда тянулась
+		# на всю ширину ряда). Метка бинда 200 + кнопка 300 = аккуратная сетка.
+		bind_button.custom_minimum_size = Vector2(300, 58)
+		bind_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		_apply_compact_button_theme(bind_button)
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
@@ -4081,7 +4093,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var reset_button := _make_button("Сбросить управление по умолчанию")
 	reset_button.name = "SettingsResetBindingsButton"
-	_set_action_button_size(reset_button, 560.0)
+	# SCRUM-805 v4: фикс. 360×64 + SHRINK_BEGIN — раньше тянулась на всю ширину бокса.
+	_set_action_button_size(reset_button, 360.0, 64.0)
+	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
@@ -4273,18 +4287,25 @@ func _make_settings_tab(tab_name: String) -> MarginContainer:
 
 
 func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control) -> void:
+	# SCRUM-805 v4: единая двухколоночная сетка label|control. Колонка метки — фикс.
+	# 260, контрол — свой фикс. размер со SHRINK_BEGIN (не тянется на весь ряд).
 	var row := HBoxContainer.new()
 	row.name = "SettingsRow_%s" % title.replace(" ", "_")
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	row.add_theme_constant_override("separation", 14)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	row.add_theme_constant_override("separation", 18)
 	parent.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(180, 46)
+	# Колонка метки 240: label(240)+sep(18)+control(≤420)=678 < внутр. ширины контент-
+	# панели даже на минимальном модале 960px (~702) — с запасом, без клипа/overflow.
+	label.custom_minimum_size = Vector2(240, 60)
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(17))
 	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	row.add_child(label)
+	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	row.add_child(control)
 
 
