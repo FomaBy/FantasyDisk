@@ -1,6 +1,6 @@
 # PM Workflow — FantasyDisk
 
-Обновлено: 2026-06-27
+Обновлено: 2026-07-02
 
 Этот документ описывает работу PM-чата (проджект-менеджер) и правила, по которым формируются и выдаются задачи чатам `Design`, `Back-end` и `Animator`.
 
@@ -91,7 +91,7 @@ Dispatcher маршрутизирует существующие Jira issues в 
   задачей и не начинается параллельно в тех же файлах.
 - Правила одни для всех: один owner на задачу, статусы в task-файле, Jira sync,
   коммиты в `dev` там, где роль/среда это разрешает, smoke-тесты, обновление
-  документации, handoff при чужой работе.
+  документации, handoff при чужой работе, cleanup одноразовых worker-чатов.
 
 ## Контур, Owner И Locked Paths
 
@@ -124,7 +124,9 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 ## Feature Freeze / Sprint Policy
 
 Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Активен live Jira sprint
-на board 1 (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`).
+на board 1 (`Спринт 0.2.0` на 2026-07-02). Плановые версии `0.1.8` и `0.1.9`
+отменены/superseded; PM/dispatcher не создают новые tasks, fixVersions или
+sprint notes под эти номера.
 Задачи текущего sprint можно брать в работу обычным порядком через Jira-pull
 claim-first, если они не заблокированы, не ждут PM/QA acceptance и не имеют
 активного владельца. Перед стабилизацией следующего релиза PM снова включает
@@ -151,6 +153,29 @@ claim-first, если они не заблокированы, не ждут PM/Q
 результате, Back-end соблюдает их при layout, QA считает наложение на рамку
 дефектом.
 
+## PixelLab-first Redraw Intake (SCRUM-689)
+
+Будущие redraw-задачи PM/dispatcher формулирует как PixelLab-first по умолчанию.
+Это касается перерисовки персонажей, врагов, элиток, боссов, animation/source
+packs, UI/frame source kits и похожих source assets, где цель — заменить или
+серьёзно обновить визуал. Jira issue и локальный task mirror должны прямо
+указывать PixelLab как источник, expected source/runtime paths, transparent PNG,
+runtime-safe sizing/readability evidence, pivots and 8-direction/animation
+contract when relevant.
+
+`fantasydisk-ui-director` и `content-zone-image-compositor` остаются
+обязательными для UI planning, safe margins, text/content zones and compositing
+checks. PixelLab-first означает источник redraw art, а не разрешение класть текст,
+иконки, кнопки или портреты поверх орнамента. Hard frame/content-zone rule
+остаётся acceptance gate.
+
+Старый generic OpenAI/`fantasydisk-asset-generator` путь для redraw не является
+fallback. Его можно использовать только если Jira/task заранее или в blocker
+comment явно записывает исключение и причину: например `OpenAI Images override`,
+reuse of an accepted existing source, or PixelLab unavailable. Такое исключение
+должно попасть в result/evidence, чтобы QA и следующие агенты не считали его
+молчаливым обходом процесса.
+
 ## Jira Sync (с 2026-06-12, обязательный)
 
 Все задачи ведутся в Jira проекте `SCRUM`; локальные task-файлы дополнительно
@@ -168,8 +193,8 @@ done и QA verdict dispatcher обновляет соответствующие 
 
 ## Feature Block / Freeze
 
-На 2026-06-27 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
-board 1 (локальные mirrors показывают `Спринт 0.1.7`). Если
+На 2026-07-02 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
+board 1 (`Спринт 0.2.0`). Если
 PM включает новый freeze перед релизом, dispatcher и role agents возвращаются к
 режиму: только уже заведённые rows, баги, QA defects, regressions, release
 blockers и owner nudges; новые не-баговые запросы уходят в backlog следующей
@@ -261,6 +286,12 @@ Role heartbeat в этих окнах не является разрешение
 Он не должен self-select'ить `new` rows из общей доски. Ownership появляется
 только после Jira claim/comment/status или явного dispatcher/PM dispatch; затем
 task-файл/board обновляются как зеркало.
+
+Одноразовые Codex worker-чаты, созданные автоматизациями для конкретного run,
+должны архивировать себя после завершения или truthful blocker/no-task отчёта.
+Это делается через `codex_app.set_thread_archived` (`archived: true`, без
+`threadId`) последним tool-действием перед финалом. Постоянные dispatcher/watch
+чаты, такие как Back-end watcher или QA monitor, не архивируются автоматически.
 
 ### Design Collision Rules
 

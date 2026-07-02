@@ -1,0 +1,41 @@
+{
+  "jira": "SCRUM-690",
+  "asset_category": "artifact",
+  "canonical_id": "counterwave_sigil",
+  "display_name": "Kontr-volna",
+  "target_size": "256x256",
+  "final_path": "assets/sprites/ui/icons/artifacts/artifact_counterwave_sigil.png",
+  "source_png": "docs/design/references/icons/artifacts/counterwave_sigil/counterwave_sigil_source_openai.png",
+  "alpha_clean_source": "docs/design/references/icons/artifacts/counterwave_sigil/counterwave_sigil_source_openai_alpha_clean.png",
+  "prompt_notes": "docs/design/references/icons/artifacts/counterwave_sigil/prompt_notes.md",
+  "generator": "OpenAI Images API (explicit SCRUM-690 override)",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "source_request_size": "1024x1024",
+  "style_notes": "take-hit counter pulse: bronze sigil disk releasing cyan shockwave ring",
+  "prompt": "D&D + Dark Fantasy Dragon game artifact icon for FantasyDisk. Centered isolated magical item on true transparent background. No text, no letters, no numbers, no runic readable glyph letters, no frame, no UI panel, no square matte, no watermark, no background scene. 256x256 final use, strong readable silhouette at 32px, 40px, and 64px, 10-18 percent transparent padding around the subject, high contrast materials, painterly dark fantasy lighting, clean alpha edges.\nCanonical id: counterwave_sigil. Player-facing concept: Kontr-volna. Visual motif: take-hit counter pulse: bronze sigil disk releasing cyan shockwave ring.",
+  "qa": {
+    "source_bbox": [
+      105,
+      95,
+      927,
+      900
+    ],
+    "final_bbox": [
+      28,
+      30,
+      228,
+      226
+    ],
+    "margins_px": [
+      28,
+      30,
+      28,
+      30
+    ],
+    "scale": 0.24330900243309003
+  },
+  "old_sha256": "6d0a9eeb85f107f8791e8404d056791c36fe5782bf8e67ee953ee72897b76210",
+  "new_sha256": "de7198381d20d8e560ec90f4f5e03c9c782414a0574928932f8486a4fafcd4bb",
+  "average_hash": "00387c7e7e3e1c00"
+}

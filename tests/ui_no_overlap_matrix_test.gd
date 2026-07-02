@@ -4,6 +4,7 @@ const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [
 	Vector2i(1152, 648),
 	Vector2i(1280, 720),
+	Vector2i(1536, 864),
 	Vector2i(1600, 900),
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
@@ -18,7 +19,7 @@ const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
-const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
+const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
@@ -30,20 +31,21 @@ const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_
 const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
-const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_main.png"
-const CODEX_NAV_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_nav.png"
-const CODEX_LIST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_list.png"
-const CODEX_DETAIL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_detail.png"
-const CODEX_ENTRY_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_entry_card.png"
-const CODEX_TAB_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_tab_btn.png"
-const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_codex_back_btn.png"
+# SCRUM-684: кодекс переведён на Dark Fantasy pixel-art рамки (Pixel Lab, codex_pl/fit),
+# заменив старые overhaul_2k codex-фреймы. Ассерты совпадают с runtime_smoke_test.gd.
+const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_main_shell.png"
+const CODEX_NAV_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_nav_panel.png"
+const CODEX_LIST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_grid_panel.png"
+const CODEX_DETAIL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_detail_panel.png"
+const CODEX_ENTRY_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_entry_card.png"
+const CODEX_TAB_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_category_button.png"
+const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_back_button.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
-const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
-const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
-const CHUD_FIELD_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
-const CHUD_ASCENSION_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
+const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806
+const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: единая подложка, без жёлтой рамки
+const CHUD_V2_BAR_TRACK_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"  # SCRUM-806
 
 
 func _initialize() -> void:
@@ -74,9 +76,12 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
 		], dump_lines, errors, false)
+		# SCRUM-827: экран дерева заменён «Атласом героев» (шапка-валюты/вкладки,
+		# лента классов, холст созвездия, панель узла, низ с респеком и легендой).
 		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
-			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
-			"SkillTreeBranches",
+			"AtlasBackButton", "AtlasEmblemBadge", "AtlasStardustBadge",
+			"AtlasTabGuild", "AtlasClassStrip", "AtlasCanvas", "AtlasNodePanel",
+			"AtlasRespecButton", "AtlasLegend",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesPanel", "PatchNotesBackButton",
@@ -86,15 +91,15 @@ func _initialize() -> void:
 			"LevelUpRewardButton1", "LevelUpRewardButton2", "LevelUpLaterButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
-			"RunPauseMenuPanel", "RunPauseContinueButton", "RunPauseDossierButton",
-			"RunPauseSettingsButton", "RunPauseEndRunButton", "RunPauseMainMenuButton",
+			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
+			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
 			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
-			"HS4Portrait", "HS4Radar", "HS4Carousel", "HS4ChooseButton",
+			"HS4PortraitFrame", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "victory", Callable(self, "_open_victory"), [
 			"PauseEndModalPanel_victory", "ResultCrest", "VictoryNewRunButton",
@@ -130,7 +135,7 @@ func _initialize() -> void:
 		# SCRUM-671: боевой HUD — clean essential-only set from SCRUM-666:
 		# HP/XP/money/ULT, timer, ascension/elevation and bottom-right level-up plus only.
 		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
-			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "LevelUpPlusButton",
+			"RunResourceHud", "CombatTimerPanel", "AscensionHudRow", "LevelUpPlusButton",
 		], dump_lines, errors)
 		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
@@ -320,7 +325,7 @@ func _open_codex(main: Node) -> void:
 
 
 func _open_skill_tree(main: Node) -> void:
-	main.ui._show_skill_tree_screen()
+	main.ui._show_atlas_screen()
 
 
 func _open_patch_notes(main: Node) -> void:
@@ -491,15 +496,23 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var resource := main.find_child("RunResourceHud", true, false) as PanelContainer
 			if resource == null or _stylebox_texture_path(resource.get_theme_stylebox("panel")) != CHUD_RESOURCE_2K_FRAME_PATH:
 				return "%s: expected RunResourceHud to use chud_resource_panel @2K frame." % context
-			for card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
-				var card := main.find_child(card_name, true, false) as PanelContainer
-				if card == null or not card.visible or not card.get_global_rect().has_area():
-					return "%s: expected visible %s metric card." % [context, card_name]
-				if _stylebox_texture_path(card.get_theme_stylebox("panel")) != CHUD_FIELD_FRAME_PATH:
-					return "%s: expected %s to use minimal-metal field frame." % [context, card_name]
-				var card_zone: Rect2 = card.get_meta("scrum666_content_zone", Rect2()) as Rect2
-				if not card_zone.has_area() or not card_zone.grow(1.0).encloses(card.get_global_rect()):
-					return "%s: expected %s to occupy SCRUM-666 metric zone %s, got %s." % [context, card_name, str(card_zone), str(card.get_global_rect())]
+			# SCRUM-806: HUD v2 — вместо карточек проверяем слим-треки и денежную строку.
+			for legacy_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+				if main.find_child(legacy_card_name, true, false) != null:
+					return "%s: SCRUM-806 HUD v2 must not show legacy card %s." % [context, legacy_card_name]
+			for track_name in ["HudHPTrack", "HudXPTrack", "HudULTTrack"]:
+				var track := main.find_child(track_name, true, false) as PanelContainer
+				if track == null or not track.visible or not track.get_global_rect().has_area():
+					return "%s: expected visible %s slim track." % [context, track_name]
+				if _stylebox_texture_path(track.get_theme_stylebox("panel")) != CHUD_V2_BAR_TRACK_PATH:
+					return "%s: expected %s to use SCRUM-806 slim bar track." % [context, track_name]
+				var track_zone: Rect2 = track.get_meta("scrum666_content_zone", Rect2()) as Rect2
+				if not track_zone.has_area() or not track_zone.grow(1.0).encloses(track.get_global_rect()):
+					return "%s: expected %s to occupy HUD v2 zone %s, got %s." % [context, track_name, str(track_zone), str(track.get_global_rect())]
+			var money_label := main.find_child("HudMoneyLabel", true, false) as Label
+			var money_icon := main.find_child("UIIcon_money", true, false) as TextureRect
+			if money_label == null or not money_label.visible or money_icon == null or money_icon.texture == null:
+				return "%s: expected HUD v2 money row (pixel coin icon + label)." % context
 			var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
 			if timer_panel == null or _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != CHUD_TIMER_2K_FRAME_PATH:
 				return "%s: expected CombatTimerPanel to use chud_timer @2K frame." % context
@@ -507,19 +520,34 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
 			if timer_label == null or not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_label.get_global_rect()):
 				return "%s: expected CombatTimerLabel to stay inside SCRUM-666 timer zone %s." % [context, str(timer_zone)]
-			var ascension := main.find_child("AscensionHudBadge", true, false) as PanelContainer
-			if ascension == null or _stylebox_texture_path(ascension.get_theme_stylebox("panel")) != CHUD_ASCENSION_FRAME_PATH:
-				return "%s: expected AscensionHudBadge to use the live compact ascension frame." % context
-			var ascension_label := ascension.find_child("AscensionHudLabel", true, false) as Label
-			var ascension_zone: Rect2 = ascension.get_meta("scrum666_content_zone", Rect2()) as Rect2
-			if ascension_label == null or not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
-				return "%s: expected ascension label to stay inside SCRUM-666 ascension zone %s." % [context, str(ascension_zone)]
+			# SCRUM-806 reopen: возвышение — голый ряд эмблем, рамка и цифра убраны.
+			if main.find_child("AscensionHudBadge", true, false) != null:
+				return "%s: SCRUM-806 HUD v2 must not show the framed ascension badge." % context
+			var ascension_row := main.find_child("AscensionHudRow", true, false) as HBoxContainer
+			if ascension_row != null:
+				if ascension_row.get_child_count() < 1 or not ascension_row.get_global_rect().has_area():
+					return "%s: expected non-empty visible ascension pip row." % context
+				for pip in ascension_row.get_children():
+					if (pip as TextureRect) == null or (pip as TextureRect).texture == null:
+						return "%s: expected textured ascension pips." % context
 			var plus := main.find_child("LevelUpPlusButton", true, false) as Button
 			if plus == null or plus.text != "+":
 				return "%s: expected bottom-right LevelUpPlusButton." % context
 			var plus_zone: Rect2 = plus.get_meta("scrum666_content_zone", Rect2()) as Rect2
 			if not plus_zone.has_area() or not plus_zone.grow(1.0).encloses(plus.get_global_rect()):
 				return "%s: expected LevelUpPlusButton to occupy SCRUM-666 plus zone %s, got %s." % [context, str(plus_zone), str(plus.get_global_rect())]
+			if context.contains("(1920, 1080)"):
+				var viewport_rect := main.get_viewport().get_visible_rect()
+				var top_band_bottom := maxf(resource.get_global_rect().end.y, timer_panel.get_global_rect().end.y)
+				if ascension_row != null:
+					top_band_bottom = maxf(top_band_bottom, ascension_row.get_global_rect().end.y)
+				var top_band_ratio := top_band_bottom / maxf(1.0, viewport_rect.size.y)
+				if top_band_ratio > 0.18:
+					return "%s: expected compact 1080p combat HUD top band <= 18%% viewport height, got %.2f%%." % [context, top_band_ratio * 100.0]
+				var plus_frame: Rect2 = plus.get_meta("scrum666_frame_rect", Rect2()) as Rect2
+				var plus_footprint_ratio := (plus_frame.size.x * plus_frame.size.y) / maxf(1.0, viewport_rect.size.x * viewport_rect.size.y)
+				if plus_footprint_ratio > 0.035:
+					return "%s: expected compact 1080p pending-level footprint <= 3.5%% viewport area, got %.2f%%." % [context, plus_footprint_ratio * 100.0]
 			var badge_panel := plus.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
 			var badge_zone: Rect2 = badge_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2 if badge_panel != null else Rect2()
 			var badge_label := plus.find_child("LevelUpPlusBadge", true, false) as Label

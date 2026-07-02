@@ -1,0 +1,25 @@
+{
+  "source": "docs/design/references/weapon_attack_animations/elementalist_orb_ring/elementalist_orb_ring_pixellab_source.png",
+  "pixelLabObjectId": "0deb7121-dd70-4040-a79a-6dce484b20c2",
+  "sourceBackgroundKeyRgb": [
+    25,
+    21,
+    34
+  ],
+  "runtime": "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png",
+  "weaponGhostReference": "assets/sprites/weapons/elementalist_orb_ring.png",
+  "size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "nonzeroAlphaPixels": 26826,
+  "nonzeroAlphaPercent": 40.93,
+  "maxAlpha": 190,
+  "meanNonzeroAlpha": 118.24,
+  "centerMeanAlpha": 0.04,
+  "cornerAlpha": 0,
+  "edgeMaxAlpha": 190,
+  "preview": "docs/design/previews/weapon_attack_animations/elementalist_orb_ring_contact.png",
+  "watermarkCleanup": "masked x=0..57 y=232..255 in cleaned/runtime PNGs"
+}

@@ -1,0 +1,52 @@
+{
+  "disk_devourer": {
+    "states": [
+      "attack",
+      "attack_primary",
+      "attack_rift_zone",
+      "attack_vampiric_bite",
+      "death",
+      "move",
+      "skill_rift_zone",
+      "skill_vampiric_bite"
+    ],
+    "missing_states": [],
+    "texture_count": 30,
+    "missing_files": [],
+    "state_name_occurrences": {
+      "death": 1,
+      "skill_vampiric_bite": 1,
+      "attack": 1,
+      "skill_rift_zone": 1,
+      "attack_vampiric_bite": 1,
+      "attack_primary": 1,
+      "attack_rift_zone": 1,
+      "move": 1
+    }
+  },
+  "brood_mother": {
+    "states": [
+      "attack",
+      "attack_brood_spawn",
+      "attack_primary",
+      "attack_web_zone",
+      "death",
+      "move",
+      "skill_brood_spawn",
+      "skill_web_zone"
+    ],
+    "missing_states": [],
+    "texture_count": 30,
+    "missing_files": [],
+    "state_name_occurrences": {
+      "death": 1,
+      "skill_brood_spawn": 1,
+      "attack": 1,
+      "attack_primary": 1,
+      "attack_web_zone": 1,
+      "attack_brood_spawn": 1,
+      "skill_web_zone": 1,
+      "move": 1
+    }
+  }
+}

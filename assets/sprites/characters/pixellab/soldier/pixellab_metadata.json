@@ -1,0 +1,117 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "72b487d3-feea-4012-b39f-b59ba24f7f11",
+        "name": "FantasyDisk Soldier SCRUM-434",
+        "prompt": "FantasyDisk playable Soldier, disciplined dark-fantasy line infantry hero, low top-down RPG sprite, full body, empty hands relaxed and ready, no held weapon, no rifle, no gun, no bayonet, no spear, no grenade, no shield, no pistol, no tool. Readable armored soldier silhouette inspired by a steel kettle helmet, dark steel pauldrons and bracers, layered leather armor, blue cloth tabard or scarf accents, brass buckles, belt pouches only, weathered boots, stern bearded human face. D&D dark fantasy tactical soldier, heroic but compact, clean silhouette for animation, transparent background, centered stance, strong black/selective outline, not chibi, no text, no watermark.",
+        "size": {
+          "width": 244,
+          "height": 244
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-01T15:43:22.427299+00:00"
+      },
+      "folder": "FantasyDisk_Soldier_SCRUM-434",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Soldier_SCRUM-434/rotations/south.png",
+          "south-east": "FantasyDisk_Soldier_SCRUM-434/rotations/south-east.png",
+          "east": "FantasyDisk_Soldier_SCRUM-434/rotations/east.png",
+          "north-east": "FantasyDisk_Soldier_SCRUM-434/rotations/north-east.png",
+          "north": "FantasyDisk_Soldier_SCRUM-434/rotations/north.png",
+          "north-west": "FantasyDisk_Soldier_SCRUM-434/rotations/north-west.png",
+          "west": "FantasyDisk_Soldier_SCRUM-434/rotations/west.png",
+          "south-west": "FantasyDisk_Soldier_SCRUM-434/rotations/south-west.png"
+        },
+        "animations": {
+          "animating": {
+            "north-west": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating/north-west/frame_005.png"
+            ]
+          },
+          "animating-745d80b7": {
+            "north": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-745d80b7/north/frame_005.png"
+            ]
+          },
+          "animating-8e948769": {
+            "south-east": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-8e948769/south-east/frame_005.png"
+            ]
+          },
+          "animating-90215722": {
+            "south-west": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-90215722/south-west/frame_005.png"
+            ]
+          },
+          "animating-ae40fc42": {
+            "north-east": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-ae40fc42/north-east/frame_005.png"
+            ]
+          },
+          "animating-b4f0de64": {
+            "east": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-b4f0de64/east/frame_005.png"
+            ]
+          },
+          "animating-c121fa81": {
+            "west": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-c121fa81/west/frame_005.png"
+            ]
+          },
+          "animating-d07c0979": {
+            "south": [
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_000.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_001.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_002.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_003.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_004.png",
+              "FantasyDisk_Soldier_SCRUM-434/animations/animating-d07c0979/south/frame_005.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-07-01T16:07:03.376683"
+}

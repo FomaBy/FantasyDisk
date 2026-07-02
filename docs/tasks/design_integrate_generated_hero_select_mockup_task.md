@@ -43,3 +43,14 @@ UI mockup / layout template for a fantasy roguelite HERO SELECT screen, dark fan
 - Closed as approved historical reference only: the active runtime implementation is Hero Select v4 from SCRUM-470/SCRUM-491, so this legacy mockup does not need a separate runtime integration pass.
 - No final runtime asset was copied into `assets/sprites/...`; no `.import` files were intentionally modified.
 - Related runtime/UI coverage is handled by the Hero Select v4 QA path (`runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`, `runtime_smoke_test.gd`).
+
+## QA-Вердикт
+Статус: PASSED
+
+Проверено claude-qa 2026-07-02 на origin/dev (d2de5600). Reference-only / superseded design-задача, ранее уже принята (PASSED 2026-06-28). Дрейф обратно в «Контроль качества» вызван отсутствием этого блока — board_sync держит `Статус: done` без `## QA-Вердикт`/`Статус: PASSED` в «Контроль качества». Блок добавлен для устойчивого закрытия.
+
+Сверка acceptance на origin/dev:
+- Source-референс на месте: `docs/design/references/hero_select_mockup/hero_select_layout_mockup.png` + layout-метаданные `elements.json` / `elements_normalized.json` ✓
+- Финальный runtime-ассет не создавался (reference-only, закрыт как approved historical reference); активный путь — Hero Select v4 (SCRUM-470/491) ✓
+- `.import` без stray-правок; runtime-код не ссылается на легаси-мокап ✓
+- Прошлый verdict-коммит (b8db8422) — предок origin/dev; runtime-покрытие hero-select зелёное на прошлом прогоне ✓

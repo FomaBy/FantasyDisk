@@ -1,0 +1,194 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4E7C2",
+    "stroke_fill": "#12090B",
+    "stroke_width": 3,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "Выбор героя",
+    "back": "Назад",
+    "hero_name": "Берсерк",
+    "hero_role": "Ближний бой по области и высокий риск.",
+    "hero_body": "Берсерк входит в толпу первым: широкий меч, топор и молот держат врагов перед собой, давят ближнюю область и превращают рискованную позицию в главный источник урона.",
+    "hero_weapons": "Оружие: Двуручный меч / Двуручный топор / Двуручный молот",
+    "hero_traits": "Сильные стороны: урон, здоровье, толпа. Слабость: нужна близость.",
+    "ascension": "Возвышение 3 / 5",
+    "ascension_stepper": "−      Возвышение      +",
+    "ascension_body": "Свирепые элитки: элитки крепче и сразу входят в боевую фазу; в волнах появляются мини-элитки со свитой. Золото и опыт снижены.",
+    "choose": "Выбрать"
+  },
+  "zones": [
+    {
+      "id": "title",
+      "content_key": "title",
+      "x": 360,
+      "y": 48,
+      "w": 1840,
+      "h": 92,
+      "max_font": 72,
+      "min_font": 40,
+      "color": "#F8E5AA",
+      "stroke_width": 4
+    },
+    {
+      "id": "back_text",
+      "content_key": "back",
+      "x": 170,
+      "y": 124,
+      "w": 270,
+      "h": 42,
+      "max_font": 30,
+      "min_font": 18,
+      "color": "#F6E6C8"
+    },
+    {
+      "id": "portrait_content",
+      "image_path": "assets/sprites/characters/full_frame/berserk/berserk_idle_00.png",
+      "x": 136,
+      "y": 272,
+      "w": 456,
+      "h": 620,
+      "required": true
+    },
+    {
+      "id": "hero_name",
+      "content_key": "hero_name",
+      "x": 780,
+      "y": 262,
+      "w": 820,
+      "h": 62,
+      "max_font": 52,
+      "min_font": 36,
+      "color": "#FFD46A",
+      "stroke_width": 4
+    },
+    {
+      "id": "hero_role",
+      "content_key": "hero_role",
+      "x": 790,
+      "y": 342,
+      "w": 800,
+      "h": 54,
+      "max_font": 32,
+      "min_font": 22,
+      "color": "#DDE6F6"
+    },
+    {
+      "id": "hero_body",
+      "content_key": "hero_body",
+      "x": 812,
+      "y": 406,
+      "w": 756,
+      "h": 146,
+      "max_font": 31,
+      "min_font": 20,
+      "align": "left",
+      "valign": "top",
+      "color": "#E9EDF7"
+    },
+    {
+      "id": "hero_weapons",
+      "content_key": "hero_weapons",
+      "x": 812,
+      "y": 570,
+      "w": 756,
+      "h": 60,
+      "max_font": 27,
+      "min_font": 18,
+      "color": "#EED79D"
+    },
+    {
+      "id": "stats_content",
+      "image_path": "docs/design/mockups/hero_select_large_carousel_user/content/berserk_stat_bars.png",
+      "x": 820,
+      "y": 640,
+      "w": 740,
+      "h": 190,
+      "required": true
+    },
+    {
+      "id": "hero_traits",
+      "content_key": "hero_traits",
+      "x": 812,
+      "y": 838,
+      "w": 756,
+      "h": 58,
+      "max_font": 25,
+      "min_font": 17,
+      "color": "#F0C2B5"
+    },
+    {
+      "id": "choose_text",
+      "content_key": "choose",
+      "x": 1082,
+      "y": 1032,
+      "w": 332,
+      "h": 44,
+      "max_font": 34,
+      "min_font": 24,
+      "color": "#FFF0C8",
+      "stroke_width": 3
+    },
+    {
+      "id": "radar_content",
+      "image_path": "docs/design/mockups/hero_select_large_carousel_user/content/berserk_windrose_radar.png",
+      "x": 1814,
+      "y": 235,
+      "w": 584,
+      "h": 406,
+      "required": true
+    },
+    {
+      "id": "ascension_title",
+      "content_key": "ascension",
+      "x": 1790,
+      "y": 778,
+      "w": 632,
+      "h": 46,
+      "max_font": 34,
+      "min_font": 22,
+      "color": "#FFD678"
+    },
+    {
+      "id": "ascension_stepper",
+      "content_key": "ascension_stepper",
+      "x": 1860,
+      "y": 840,
+      "w": 500,
+      "h": 44,
+      "max_font": 30,
+      "min_font": 22,
+      "color": "#F2DFC0"
+    },
+    {
+      "id": "ascension_body",
+      "content_key": "ascension_body",
+      "x": 1788,
+      "y": 895,
+      "w": 636,
+      "h": 66,
+      "max_font": 22,
+      "min_font": 16,
+      "align": "left",
+      "valign": "top",
+      "color": "#F1B5AD"
+    },
+    {
+      "id": "carousel_content",
+      "image_path": "docs/design/mockups/hero_select_large_carousel_user/content/carousel_large_icons.png",
+      "x": 174,
+      "y": 1106,
+      "w": 2212,
+      "h": 220,
+      "required": true
+    }
+  ]
+}

@@ -9,6 +9,9 @@
   `user://settings.cfg`.
 - Settings are loaded in `Main._ready()` before the main menu is shown and are
   applied immediately when changed in the settings screen.
+- Audio defaults are intentionally silent for new profiles: `music_enabled` and
+  `sfx_enabled` start as `false`, while master/music/SFX slider values stay at
+  `1.0` so the player can restore sound by enabling the category toggles.
 
 ## Meta Progression
 
@@ -63,3 +66,19 @@ Main menu start checks `RunAutosave.has_run()`:
 - `tests/runtime_smoke_test.gd` covers the user flow: save exists, main menu
   prompt appears, Continue restores route/snapshot state, New Game clears the
   save, and death/victory clear the save.
+
+## Settings schema audit (SCRUM-720)
+
+`game_settings.gd` is schema-disciplined and forward/backward compatible:
+
+- `load_settings()` starts from `DEFAULTS`, reads each known key with a default
+  fallback, then **normalises every value** (clamp `resolution_index` to
+  `MAX_RESOLUTION_INDEX`, clamp volumes to `0..1`, coerce bools, whitelist
+  `aim_mode ∈ {nearest, cursor}`, guard `input_bindings` to a `Dictionary`). A
+  missing/older config therefore loads cleanly with defaults; unknown future keys
+  are ignored (not persisted back), so the on-disk schema stays bounded.
+- `save_settings()` writes only `DEFAULTS` keys and back-fills `master_zero_intent`
+  from `master_volume` — the SCRUM-deliberate "muted on purpose vs accidental 0"
+  distinction is preserved across load/save.
+- `display_resolution.gd` helpers are pure (HiDPI fit/clamp computed from passed
+  usable-rect + scale, no `DisplayServer` calls) and remain unit-testable headless.

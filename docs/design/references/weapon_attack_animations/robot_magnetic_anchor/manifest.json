@@ -1,0 +1,63 @@
+{
+  "issue": "SCRUM-760",
+  "asset": "robot_magnetic_anchor attack VFX",
+  "weapon_id": "robot_magnetic_anchor",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+  "source_files": [
+    "robot_magnetic_anchor_pixellab_source_raw.png",
+    "robot_magnetic_anchor_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/robot_magnetic_anchor_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "80184364-0712-4722-85f0-2dbcdcbe1363",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/80184364-0712-4722-85f0-2dbcdcbe1363/download",
+    "created": "2026-07-01 18:05",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required gray matte alpha cleanup",
+    "mode": "basic",
+    "prompt": "FantasyDisk attack VFX sprite for robot_magnetic_anchor weapon, transparent background, centered circular magnetic anchor pull pulse. Dark fantasy Dungeons and Dragons + arcane machinery style: cyan-blue magnetic energy ring, subtle inward pull arrows/field lines, iron anchor-shaped spectral silhouette, small lightning sparks and metal runes, readable radial area-of-effect at game scale, calm semi-transparent center, strong silhouette, no text, no letters, no numbers, no UI frame, no watermark, no character, no background."
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 removed the stale OpenAI billing blocker and instructed production attack VFX work to use PixelLab MCP through fantasydisk-asset-generator; no OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab map-object PNG to the task reference folder.",
+      "Created alpha-clean accepted source PNG by removing the opaque neutral gray PixelLab preview matte using chroma/cyan-bias masking.",
+      "Composited canonical robot_magnetic_anchor weapon PNG as a low-opacity cyan-steel ghost silhouette under the magnetic rings.",
+      "Strongly softened center alpha and capped final alpha for combat readability.",
+      "Exported 256x256 RGBA runtime PNG, static alpha/readability report, and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        10,
+        12,
+        246,
+        242
+      ],
+      "alpha_extrema": [
+        0,
+        162
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "edge_alpha_pixels": 0,
+      "visible_pixel_ratio_alpha_gt_8": 0.5093,
+      "max_alpha": 162,
+      "mean_alpha_all_pixels": 58.64,
+      "mean_alpha_visible_pixels": 115.13,
+      "center_64_mean_alpha": 79.77,
+      "center_64_max_alpha": 87,
+      "outer_ring_mean_alpha": 44.74
+    }
+  }
+}

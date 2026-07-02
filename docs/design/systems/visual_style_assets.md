@@ -130,6 +130,13 @@ and pivot `(256,470)`. White/neutral matte pixels are `0` in source/cell QA. It
 is a source handoff only until Animator/Back-end builds real idle/move
 SpriteFrames.
 
+SCRUM-430 replaces Knight's live base character source with a PixelLab
+no-shield/no-weapon directional pack. Source PNGs and manifest live under
+`assets/sprites/characters/pixellab/knight/`, normalized runtime frames under
+`assets/sprites/characters/full_frame/knight_pixellab/`, and QA contact/alpha
+evidence under `build/qa/scrum430_knight_pixellab/`. The accepted source keeps
+hands empty; spear, tower shield and flail remain separate weapon assets.
+
 SCRUM-433 adds the Sniper v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
 `sniper_v2_idle_cell_512.png`, `sniper_v2_sheet_source_handoff.png`,
@@ -142,6 +149,16 @@ transparent RGBA, visible height `374 px` and pivot `(256,470)`. White/neutral
 matte pixels are `0` in source/cell/sheet QA, with `0` edge-visible pixels after
 the edge-alpha fix. It is a source handoff only until Animator/Back-end builds
 real idle/move SpriteFrames.
+
+SCRUM-804 replaces Ranger's live base character runtime with a PixelLab
+empty-handed directional pack. Source PNGs, `manifest.json`, and
+`pixellab_metadata.json` live under `assets/sprites/characters/pixellab/ranger/`;
+normalized runtime frames live under
+`assets/sprites/characters/full_frame/ranger_pixellab/`; QA evidence is
+`docs/design/previews/scrum804_ranger_pixellab_contact.png` and
+`docs/design/previews/scrum804_ranger_pixellab_bbox_report.json`. The accepted
+source keeps hands empty with no baked bow, crossbow, quiver, arrows, trap or
+projectile; Ranger weapon visuals remain separate.
 
 SCRUM-431 adds the Priest v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/priest/priest_v2_source_clean.png`,
@@ -156,6 +173,15 @@ visible height `376 px` and pivot `(256,470)`. White/neutral matte pixels are
 edge-connected checker/white cleanup. It is a source handoff only until
 Animator/Back-end builds real idle/move SpriteFrames.
 
+SCRUM-431 later promotes Priest to a live PixelLab runtime pack:
+`assets/sprites/characters/pixellab/priest/` stores the v3 source rotations,
+6-frame `walking-6-frames` directional source frames and `manifest.json`;
+`assets/sprites/characters/full_frame/priest_pixellab/` stores transparent
+`512x512` runtime PNGs; `assets/sprites/characters/priest_spriteframes.tres`
+stores the Godot SpriteFrames rows. Contact preview:
+`docs/design/previews/scrum431_priest_pixellab_contact.png`; QA report:
+`build/qa/scrum431_priest_pixellab/scrum431_priest_pixellab_alpha_size_report.json`.
+
 SCRUM-421 adds the Biologist v2 per-class source handoff in the same format:
 `docs/design/references/characters_v2/biologist/biologist_v2_source_clean.png`,
 `biologist_v2_idle_cell_512.png`, `biologist_v2_sheet_source_handoff.png`,
@@ -166,8 +192,19 @@ The accepted source is a bright emerald bioluminescent scientist-naturalist with
 empty hands and no baked syringe/vial/flask/tool/orb/weapon, transparent RGBA,
 visible height `380 px` and pivot `(256,470)`. White/neutral matte pixels are
 `0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
-edge-connected checker/white cleanup. It is a source handoff only until
-Animator/Back-end builds real idle/move SpriteFrames.
+edge-connected checker/white cleanup. It is retained as source history after
+the live SCRUM-421 PixelLab rescue.
+
+SCRUM-421 later promotes Biologist to a live PixelLab runtime pack. Source
+rotations, the original 8-direction `walking-6-frames` rows, a regenerated
+front-facing `south-facing-walk-rescue` row, `manifest.json`,
+`pixellab_metadata.json`, and `alpha_bbox_report.json` live under
+`assets/sprites/characters/pixellab/biologist/`. Runtime transparent `512x512`
+frames live under `assets/sprites/characters/full_frame/biologist_pixellab/`
+with every visible alpha bbox normalized to `245 px` high, and
+`assets/sprites/characters/biologist_spriteframes.tres` exposes generic and
+directional `idle`, `move`, and `walk` rows. Contact preview:
+`docs/design/previews/scrum421_biologist_pixellab_contact.png`.
 
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 
@@ -227,6 +264,19 @@ content-margin contract lives at `docs/design/mockups/scrum574_codex_2k/spec.md`
 The older `assets/sprites/ui/frames/codex/` package remains a historical Codex
 component kit, while runtime `CodexScreen` now uses the slot-exact 2K family for
 its shell, panels, entry cards, tabs and compact back button.
+
+SCRUM-725 replaces the live Codex frame material with the textless
+`assets/sprites/ui/frames/codex_pl/` family: `codex_pl_main_shell`,
+`codex_pl_nav_panel`, `codex_pl_grid_panel`, `codex_pl_detail_panel`,
+`codex_pl_entry_card`, `codex_pl_category_button`, `codex_pl_back_button` and
+`codex_pl_backdrop`, plus matching `fit/` copies for existing runtime imports.
+PixelLab source IDs and raw outputs are recorded in
+`docs/design/references/codex_redesign_2026_06/pixellab_sources/manifest.md`;
+the deterministic cleanup/build script
+`docs/design/references/codex_redesign_2026_06/build_scrum725_codex_assets.py`
+keeps runtime PNGs textless, alpha-clean and confined to the SCRUM-725
+9-slice margin bands. Runtime preview:
+`docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
 
 SCRUM-584 adds the live rebind-conflict 2K frame pair under
 `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and

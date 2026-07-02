@@ -1,7 +1,13 @@
 # BUG: SCRUM-619 Secret Encounter Key Artifact Does Not Unlock
 
-Статус: new
+Статус: done — фикс влит в origin/dev, покрыт tests/secret_encounter_test.gd
 Приоритет: high
+
+## QA-Вердикт
+
+Статус: PASSED
+- 2026-06-28 (qa-worker-scrum623): проверено на живом origin/dev 4cfb53be в свежем QA-worktree; secret_encounter_test.gd покрывает raw string key, live dict-form artifacts `[{id: rift_key}]`, dict без key, ascension threshold — PASS.
+- 2026-07-02 (PM, ревизия беклога): Jira-переход SCRUM-623 в «Готово» доведён, map зафиксирован.
 Роль: Back-end
 Контур: Claude
 Owner: unassigned

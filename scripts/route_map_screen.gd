@@ -5,16 +5,23 @@ extends RefCounted
 
 var game
 
+# SCRUM-812: геймпад-навигация по карте маршрута.
+# _route_node_activating — реэнтранси-латч: активация ноды меняет экран, любой
+#   повторный вызов в том же кадре (мышь + встроенный pressed) гасится. Сброс в _show_battle_map.
+# _route_focus_target — нода, на которую ставится стартовый фокус (текущий доступный ряд).
+var _route_node_activating := false
+var _route_focus_target: Button = null
+
 const START_BATTLE_ONLY_ROWS := 2
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
 # Все опорные значения абсолютные (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
-# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=10. Из viewport
+# MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=8 (SCRUM-786). Из viewport
 # масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
 # → @2K (28,18,2504,110) — band ровно под content-min хедера (title 36px + stage 18px). Scroll:
 # L/R=±28, top=140, bottom=-28 → (28,140,2504,1272) (зазор 12 до хедера). Canvas
 # (map_area VerticalRouteMap): width = max(vp.x-56-16, 1000) = 2488 @2K; высота ДИНАМИЧЕСКАЯ:
-# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, 11)
+# h = ROUTE_MAP_PADDING.y*2 + MAP_NODE_SIZE.y + 165*(row_count-1), row_count=max(route_nodes, ROUTE_STEPS_TO_BOSS+1)
 # → минимум 144+88+165*10 = 1882 (выше viewport — это норма для скролл-карты, не overflow).
 # Узлы 88×88 рисуются процедурно (_draw_route_nodes); ряд-gap 165, padding (170,72).
 const RM_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
@@ -34,6 +41,11 @@ func _init(game_ref) -> void:
 
 
 func _show_battle_map() -> void:
+	# SCRUM-812: сброс латча активации и цели фокуса на каждое переоткрытие карты.
+	_route_node_activating = false
+	_route_focus_target = null
+	# A→ui_accept / B→ui_cancel для геймпада (в текущей сборке их нет; идемпотентно).
+	game.ui._ensure_run_ui_gamepad_bindings()
 	game._play_music("menu")
 	game._clear_world()
 	game._clear_hud()
@@ -172,6 +184,11 @@ func _show_battle_map() -> void:
 	game.route_map_pan_active = false
 	game.route_map_drag_distance = 0.0
 	game.route_map_drag_suppressed_click = false
+	# SCRUM-812: скролл следует за выбранным нодом (крестовина/стик), стартовый фокус —
+	# доступный нод текущего ряда, чтобы карта сразу управлялась с геймпада.
+	scroll.follow_focus = true
+	if _route_focus_target != null and is_instance_valid(_route_focus_target):
+		_route_focus_target.call_deferred("grab_focus")
 	_center_route_map_on_current_row.call_deferred(scroll, map_area.custom_minimum_size)
 
 
@@ -199,16 +216,23 @@ func _route_map_canvas_size() -> Vector2:
 
 
 func _node_pool_for_step(step_index: int) -> Array:
+	# SCRUM-786: диапазоны рядов вычисляются от ROUTE_STEPS_TO_BOSS (8 нодов до босса),
+	# а не магическими числами, чтобы пулы не «съезжали» при смене длины маршрута.
+	var boss_row: int = game.ROUTE_STEPS_TO_BOSS  # ряд босса; не-боссовые ряды = 0..boss_row-1
+	# Стартовые ряды — только бои (мягкий заход в акт).
 	if step_index < START_BATTLE_ONLY_ROWS:
 		return ["battle"]
-	if step_index <= 2:
+	# Первый ряд после стартовых — бои + редкое событие.
+	if step_index < START_BATTLE_ONLY_ROWS + 1:
 		return ["battle", "battle", "battle", "event"]
-	if step_index == game.ROUTE_STEPS_TO_BOSS - 1:
+	# Предбоссовый ряд — без перегруза (отдых/элитка перед боссом).
+	if step_index == boss_row - 1:
 		return ["rest", "battle", "rest", "elite_battle"]
-	if step_index >= game.ROUTE_STEPS_TO_BOSS - 3:
-		# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах — риск/награда.
+	# Поздние ряды (последняя треть до босса) — риск/награда: элитки + hazard.
+	# SCRUM-608: «Опасная развилка» (hazard) в поздних рядах.
+	if step_index >= boss_row - 3:
 		return ["battle", "elite_battle", "elite_battle", "event", "battle", "hazard"]
-	# SCRUM-608: hazard в средних рядах.
+	# Средние ряды. SCRUM-608: hazard в средних рядах.
 	return ["battle", "battle", "battle", "rest", "event", "elite_battle", "hazard"]
 
 
@@ -229,7 +253,7 @@ func _generate_route() -> Array:
 			})
 		route.append(branches)
 	_place_required_shop_nodes(route)
-	_place_central_chest_node(route)
+	_place_chest_line_rows(route)
 	_place_altar_node(route)
 	route.append([_random_boss_route_node()])
 	_assign_route_connections(route)
@@ -238,7 +262,7 @@ func _generate_route() -> Array:
 
 func _place_altar_node(route: Array) -> void:
 	# SCRUM-610: ровно один «Алтарь жертвы» на маршрут (постоянная сделка тело-за-силу).
-	# По образцу _place_central_chest_node: переопределяем один уже сгенерированный узел.
+	# Переопределяем один уже сгенерированный узел (как chest/shop placement).
 	# Стартовые ряды (только бои) исключаем; не затираем обязательные shop/chest, чтобы
 	# не сломать их гарантии. Вызывается ДО _assign_route_connections — узел получает
 	# связи как обычный узел маршрута.
@@ -304,37 +328,55 @@ func _place_shop_node_in_row_range(route: Array, row_start: int, row_end: int) -
 	route[row_index] = row
 
 
-func _place_central_chest_node(route: Array) -> void:
+func _place_chest_line_rows(route: Array) -> void:
+	# SCRUM-787: вместо одиночного сундука — целые «линии» сундуков (ряд, где КАЖДАЯ ветка
+	# = chest). Игрок проходит маршрут по одному ряду за раз (выбирает ровно одну ветку),
+	# поэтому full-chest ряд непропускаем: какой бы путь ни выбрал — попадёт на сундук и
+	# получит выбор 1-из-3 артефактов. С одного ряда — ровно 1 сундук (по выбранной ветке).
+	# Вызывается ПОСЛЕ _place_required_shop_nodes — кандидаты исключают шоп-ряды, чтобы не
+	# затереть гарантированный шоп. _place_altar_node идёт после нас и сам избегает
+	# full-chest ряда (ему нужна свободная не-shop/не-chest ветка). Детерминированно (без rng).
 	var non_boss_rows := route.size()
 	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
 		return
-	var row_index: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
-	var row: Array = route[row_index]
-	if row.is_empty():
-		return
-	var branch_index := _central_chest_branch_index(row)
-	var route_node: Dictionary = row[branch_index]
-	route_node["type"] = "chest"
-	route_node["name"] = _random_route_node_name(branch_index, "chest")
-	row[branch_index] = route_node
-	route[row_index] = row
-
-
-func _central_chest_branch_index(row: Array) -> int:
-	var center_index := clampi(int(floor(float(row.size() - 1) * 0.5)), 0, maxi(row.size() - 1, 0))
-	if str((row[center_index] as Dictionary).get("type", "")) != "shop":
-		return center_index
-	var best_index := center_index
-	var best_distance := 99999
-	for index in range(row.size()):
-		var route_node: Dictionary = row[index]
-		if str(route_node.get("type", "")) == "shop":
+	var line_count: int = maxi(1, int(game.CHEST_LINE_ROWS))
+	# Кандидаты: внутренние ряды (после стартовых battle-only), не содержащие шоп.
+	var candidate_rows := []
+	for row_index in range(START_BATTLE_ONLY_ROWS, non_boss_rows):
+		var row: Array = route[row_index]
+		if row.is_empty():
 			continue
-		var distance := absi(index - center_index)
-		if distance < best_distance:
-			best_distance = distance
-			best_index = index
-	return best_index
+		var has_shop := false
+		for route_node in row:
+			if str((route_node as Dictionary).get("type", "")) == "shop":
+				has_shop = true
+				break
+		if not has_shop:
+			candidate_rows.append(row_index)
+	if candidate_rows.is_empty():
+		return
+	# Приоритет: ближе к середине акта (детерминированно; при равенстве — меньший индекс).
+	var midpoint: int = clampi(int(floor(float(non_boss_rows - 1) * 0.5)), START_BATTLE_ONLY_ROWS, non_boss_rows - 1)
+	candidate_rows.sort_custom(func(a, b):
+		var da := absi(int(a) - midpoint)
+		var db := absi(int(b) - midpoint)
+		if da == db:
+			return int(a) < int(b)
+		return da < db)
+	var rows_to_fill: int = mini(line_count, candidate_rows.size())
+	for i in range(rows_to_fill):
+		_fill_row_with_chests(route, candidate_rows[i])
+
+
+func _fill_row_with_chests(route: Array, row_index: int) -> void:
+	var row: Array = route[row_index]
+	for branch_index in range(row.size()):
+		var route_node: Dictionary = row[branch_index]
+		route_node["type"] = "chest"
+		route_node["name"] = _random_route_node_name(branch_index, "chest")
+		route_node.erase("event_id")  # на случай если ветка была событием/алтарём
+		row[branch_index] = route_node
+	route[row_index] = row
 
 
 func _random_boss_route_node() -> Dictionary:
@@ -542,7 +584,9 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			button.size = game.MAP_NODE_SIZE
 			button.position = node_positions[step_index][branch_index]
 			button.disabled = not is_clickable
-			button.focus_mode = Control.FOCUS_NONE
+			# SCRUM-812: доступные ноды фокусируемы под геймпад/стрелки; недоступные
+			# (locked/completed) остаются FOCUS_NONE — фокус-навигация их пропускает.
+			button.focus_mode = Control.FOCUS_ALL if is_clickable else Control.FOCUS_NONE
 			button.z_index = 20 if is_clickable else 10
 			_style_route_node_button(button, node_type, state)
 			_add_route_node_icon(button, _route_node_icon_path(route_node, definition), str(definition["icon"]))
@@ -560,6 +604,19 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 				button.gui_input.connect(func(event: InputEvent) -> void:
 					_handle_route_node_input(button, event, map_area.get_parent() as ScrollContainer, step_index, branch_index, route_node)
 				)
+				# SCRUM-812: заметное выделение выбранного нода (золотая кайма) + активация
+				# по A/Enter (pressed) для геймпада/стрелок. Мышь идёт своим путём (gui_input);
+				# двойную активацию гасит реэнтранси-латч в _activate_route_node.
+				button.add_theme_stylebox_override("focus", _route_node_focus_style())
+				button.pressed.connect(func() -> void:
+					_on_route_node_activate(step_index, branch_index, route_node)
+				)
+				# Стартовый фокус — доступный нод текущего ряда (первый), иначе первый доступный.
+				button.set_meta("route_step", step_index)
+				if _route_focus_target == null:
+					_route_focus_target = button
+				elif step_index == int(game.route_stage) and int(_route_focus_target.get_meta("route_step", -1)) != int(game.route_stage):
+					_route_focus_target = button
 			map_area.add_child(button)
 
 
@@ -722,7 +779,41 @@ func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollC
 		button.accept_event()
 
 
+# SCRUM-812: активация нода с геймпада/стрелок (Button.pressed по фокусу). Мышь
+# активирует своим путём в _handle_route_node_input; латч в _activate_route_node
+# гарантирует однократную активацию за кадр, даже если сработали оба пути.
+func _on_route_node_activate(step_index: int, branch_index: int, route_node: Dictionary) -> void:
+	if game.route_map_pan_active or game.route_map_drag_suppressed_click:
+		return
+	_activate_route_node(step_index, branch_index, route_node)
+
+
+# SCRUM-812: золотая кайма выбранного нода — заметное выделение под геймпад/стрелки
+# (Godot рисует "focus"-стайлбокс поверх сфокусированного контрола).
+func _route_node_focus_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.draw_center = false
+	style.border_width_left = 5
+	style.border_width_top = 5
+	style.border_width_right = 5
+	style.border_width_bottom = 5
+	style.border_color = Color(1.0, 0.84, 0.36, 1.0)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	style.expand_margin_left = 4.0
+	style.expand_margin_top = 4.0
+	style.expand_margin_right = 4.0
+	style.expand_margin_bottom = 4.0
+	return style
+
+
 func _activate_route_node(step_index: int, branch_index: int, route_node: Dictionary) -> void:
+	# SCRUM-812: реэнтранси-латч — активация меняет экран; повторный вызов в том же кадре гасится.
+	if _route_node_activating:
+		return
+	_route_node_activating = true
 	if game.shop_reentry_pending and step_index == int(game.shop_reentry_route_stage) + 1:
 		_finalize_pending_shop_reentry()
 		game.route_stage = step_index

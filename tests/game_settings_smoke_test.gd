@@ -41,7 +41,7 @@ func _initialize() -> void:
 		push_error("Game settings smoke test: %d ошибок." % errors.size())
 		quit(1)
 		return
-	print("Game settings smoke test passed (дефолты/round-trip/клэмп/SCRUM-172 recovery).")
+	print("Game settings smoke test passed (дефолты mute-аудио/round-trip/клэмп/SCRUM-172 recovery).")
 	quit(0)
 
 
@@ -66,8 +66,10 @@ func _run(errors: Array) -> void:
 			errors.append("дефолт: ключ '%s' отсутствует" % key)
 	if not is_equal_approx(float(s.get("master_volume", -1.0)), 1.0):
 		errors.append("дефолт master_volume != 1.0 (%s)" % s.get("master_volume"))
-	if bool(s.get("music_enabled", false)) != true:
-		errors.append("дефолт music_enabled != true")
+	if bool(s.get("music_enabled", true)) != false:
+		errors.append("дефолт music_enabled != false")
+	if bool(s.get("sfx_enabled", true)) != false:
+		errors.append("дефолт sfx_enabled != false")
 
 	# 2) Round-trip нормальных значений.
 	_clear()

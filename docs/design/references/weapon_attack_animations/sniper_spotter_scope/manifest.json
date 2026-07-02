@@ -1,0 +1,68 @@
+{
+  "issue": "SCRUM-765",
+  "asset": "sniper_spotter_scope attack VFX",
+  "weapon_id": "sniper_spotter_scope",
+  "display_name": "Sniper Spotter Scope",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope.png",
+  "preview": "docs/design/previews/weapon_attack_animations/sniper_spotter_scope_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "created": "2026-07-01 18:10-18:11",
+    "size": "256x256px",
+    "view": "high top-down",
+    "mode": "basic",
+    "primary_beam_object_id": "dce7e36f-bea9-4aee-b8f1-0cffd1c828f4",
+    "supporting_reticle_object_id": "ce0de7cf-9a50-47ec-b19b-e46e63d3add2",
+    "primary_download_url": "https://api.pixellab.ai/mcp/map-objects/dce7e36f-bea9-4aee-b8f1-0cffd1c828f4/download",
+    "supporting_download_url": "https://api.pixellab.ai/mcp/map-objects/ce0de7cf-9a50-47ec-b19b-e46e63d3add2/download",
+    "background": "PixelLab metadata reported transparent; downloaded PNGs contained opaque preview fields, removed in postprocess."
+  },
+  "source_files": [
+    "sniper_spotter_scope_pixellab_source_raw.png",
+    "sniper_spotter_scope_pixellab_candidate_beams_raw.png",
+    "sniper_spotter_scope_pixellab_source.png"
+  ],
+  "evidence_files": [
+    "prompt_notes.md",
+    "static_alpha_readability_report.json",
+    "docs/design/previews/weapon_attack_animations/sniper_spotter_scope_contact.png"
+  ],
+  "override_rationale": "Direct user directive on 2026-07-01 superseded stale OpenAI-only task wording. This run used PixelLab MCP through fantasydisk-asset-generator; OpenAI Images, image_gen, and manual drawing were not used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab reticle and beam candidates into the task reference folder.",
+      "Alpha-cleaned opaque PixelLab preview backgrounds by retaining only luminous cyan/white VFX pixels.",
+      "Composited the cleaned PixelLab reticle and beam layers into an accepted source PNG.",
+      "Composited the canonical weapon PNG as a low-opacity ghost silhouette behind the PixelLab VFX.",
+      "Softened center alpha and capped runtime alpha to preserve combat readability.",
+      "Exported the final 256x256 RGBA transparent runtime PNG and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        8,
+        12,
+        248,
+        243
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.4367,
+      "max_alpha": 172,
+      "mean_alpha_all_pixels": 47.37,
+      "mean_alpha_visible_pixels": 107.32,
+      "center_64_mean_alpha": 114.6,
+      "center_64_max_alpha": 137,
+      "outer_ring_mean_alpha": 48.72
+    }
+  },
+  "runtime_contract": {
+    "format": "PNG RGBA",
+    "dimensions": "256x256",
+    "transparent_corners": true,
+    "gameplay_or_runtime_logic_changed": false,
+    "shared_docs_changed": false
+  }
+}

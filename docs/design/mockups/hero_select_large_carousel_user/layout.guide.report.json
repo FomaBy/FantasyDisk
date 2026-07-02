@@ -1,0 +1,170 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        360,
+        48,
+        1840,
+        92
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "back_text",
+      "rect": [
+        84,
+        75,
+        174,
+        40
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "portrait_content",
+      "rect": [
+        136,
+        272,
+        456,
+        620
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero_name",
+      "rect": [
+        780,
+        244,
+        820,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero_role",
+      "rect": [
+        790,
+        326,
+        800,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero_body",
+      "rect": [
+        790,
+        392,
+        800,
+        146
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero_weapons",
+      "rect": [
+        790,
+        558,
+        800,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "stats_content",
+      "rect": [
+        820,
+        640,
+        740,
+        190
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero_traits",
+      "rect": [
+        790,
+        838,
+        800,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "choose_text",
+      "rect": [
+        1060,
+        928,
+        260,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "radar_content",
+      "rect": [
+        1814,
+        235,
+        584,
+        406
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "ascension_title",
+      "rect": [
+        1790,
+        778,
+        632,
+        46
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "ascension_stepper",
+      "rect": [
+        1860,
+        840,
+        500,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "ascension_body",
+      "rect": [
+        1788,
+        895,
+        636,
+        66
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "carousel_content",
+      "rect": [
+        174,
+        1106,
+        2212,
+        220
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

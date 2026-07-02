@@ -1,13 +1,15 @@
 # Agent Role Boundaries And Handoffs
 
-Обновлено: 2026-06-27
+Обновлено: 2026-07-02
 
 Этот документ задает правило работы для всех специализированных чатов FantasyDisk:
 `Design`, `Back-end`, `Animator`, `QA`.
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Активен текущий Jira sprint на board 1 (на 2026-06-27 локальные mirrors показывают
-`Спринт 0.1.7`): v0.1.5 выпущен, feature block 0.1.5 снят. С 2026-06-27
+Активен текущий Jira sprint на board 1 (`Спринт 0.2.0` на 2026-07-02):
+v0.1.5 выпущен, feature block 0.1.5 снят. Плановые версии `0.1.8` и `0.1.9`
+отменены/superseded; новые tasks/fixVersions/sprint notes используют `0.2.0`
+и далее `0.2.1`, `0.2.2`, ... С 2026-06-27
 Jira проект `SCRUM` является authoritative task queue/status/owner source.
 Новые задачи текущего спринта берутся только из активного Jira sprint. PM/Documentation
 dispatcher может маршрутизировать задачи вручную, но role agents также могут
@@ -144,6 +146,15 @@ paths or locked leftovers. Disposable paths include `D:\FantasyDisk_worktrees\*`
 and untracked Godot `.import`/`.uid` sidecars. Do not remove committed evidence,
 runtime assets, the main repository, or unrelated user files.
 
+Codex thread cleanup is mandatory for one-off worker threads. After Jira/GitHub,
+local mirrors, memory, tests/evidence, and disk cleanup are truthful, an
+automation-created Codex worker must archive its own current thread by calling
+`codex_app.set_thread_archived` with `archived: true` and no `threadId`. Treat
+this as the last tool action before the final response. Permanent
+dispatcher/watch chats stay unarchived; do not archive active/running workers or
+threads whose ownership/status is unclear. Final reports should include
+`Thread cleanup:` with the archive result.
+
 ## Codex И Claude Параллельно
 
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной
@@ -245,6 +256,16 @@ Design отвечает за:
 - исправление visual artifacts: лишние куски текстуры, dirty pixels, halos, crop issues;
 - content registry для asset paths и visual entities.
 
+PixelLab-first redraw rule (SCRUM-689): future Design redraw tasks for
+characters, enemies, bosses, UI/frame source kits and comparable redraw source
+assets must use PixelLab as the default source pipeline. Older generic
+OpenAI/asset-generator redraw paths are allowed only when Jira/task explicitly
+records an exception and reason. Design results must still include transparent
+source/runtime PNGs, source/evidence under `docs/design/references` or previews,
+runtime-safe sizing/readability evidence, and content-zone/safe-area notes for
+UI/frame work. This rule does not weaken the hard frame rule: content remains
+only inside the empty frame zone.
+
 Design не должен самостоятельно делать:
 
 - gameplay logic;
@@ -320,6 +341,11 @@ Animator отвечает за:
   preview для playable characters. Минимум `move/walk` 5+ кадров; дополнительные
   attack/phase анимации подключать только когда они есть в PixelLab pack или
   явно указаны в задаче.
+- соблюдение PixelLab-first redraw rule: если Animator-задача требует новых или
+  перерисованных character/enemy/boss/source frames, источник по умолчанию
+  PixelLab. Non-PixelLab source допустим только как явный Jira/task override.
+  Animation delivery должна сохранять transparent background, pivots,
+  8-direction/required animation contract и runtime-safe sizing evidence.
 
 Animator не должен самостоятельно делать:
 

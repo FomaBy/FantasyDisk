@@ -141,6 +141,23 @@ done, blocked, or handed off. Disk space is part of task completion.
   A task is process-incomplete if it leaves a disposable FantasyDisk checkout or
   multi-hundred-MB cache without this note.
 
+**CODEX THREAD HYGIENE — MANDATORY (user directive 2026-07-01).**
+Codex chats created as one-off automation/agent worker threads must archive
+themselves after the task run is truthfully finished. Codex currently exposes
+archive/unarchive, not hard deletion, so "delete finished worker chat" means
+archive it from the active thread list.
+- After Jira/GitHub sync, local mirrors, memory updates, test evidence, disk
+  cleanup, and final status are complete, the worker must use `tool_search` if
+  needed to expose `set_thread_archived`, then call `codex_app.set_thread_archived`
+  with `archived: true` and no `threadId` to archive its current thread.
+- This must be the last tool action before the final response for cron-created
+  role workers (`fantasydisk-codex-*-agent`) and other one-task Codex workers.
+- Do not archive permanent dispatcher/watch chats, PM chats, user-facing control
+  chats, active/running workers, or unclear threads. Archive only the current
+  worker thread or another thread that is clearly idle/notLoaded and completed.
+- Final reports should include `Thread cleanup:` with `archived current worker
+  thread`, `not a disposable worker thread`, or `archive unavailable`.
+
 Versioning:
 - `main` is the stable `0.1` line.
 - `dev` is the active working branch for the current `0.1.x` line.
@@ -169,9 +186,11 @@ Full autonomy (user directive, 2026-06-12):
 
 Feature block:
 - **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен текущий Jira sprint на board 1
-  (на 2026-06-27 локальные mirrors показывают `Спринт 0.1.7`; всегда проверяй live
-  Jira active sprint перед auto-pull/dispatch). Current-sprint Jira issues берутся
-  обычным порядком через Jira-pull claim-first.
+  (`Спринт 0.2.0` на 2026-07-02; всегда проверяй live Jira active sprint перед
+  auto-pull/dispatch). Current-sprint Jira issues берутся обычным порядком через
+  Jira-pull claim-first. Плановые версии `0.1.8` и `0.1.9` отменены/superseded:
+  новые tasks/fixVersions/sprint notes должны использовать `0.2.0`, далее
+  SemVer patch-линия `0.2.1`, `0.2.2`, ...
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
   фриз (новые не-баги → `Версия: <следующая>`, sync держит их в бэклоге).
 
@@ -196,14 +215,23 @@ Project practices:
   Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
   отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
   макетов не использовать как fallback.
-- **Генерация графики/ассетов — ТОЛЬКО скиллом `fantasydisk-asset-generator`**
+- **PixelLab-first для будущих redraw-задач (SCRUM-689).** Перерисовки
+  персонажей, монстров, элиток, боссов, animation/source packs, UI frame/source
+  kits и других redraw source assets по умолчанию идут через PixelLab MCP /
+  PixelLab-ориентированные skills. Старый generic OpenAI/asset-generator путь
+  нельзя использовать как fallback для redraw, если Jira/task прямо не записывает
+  исключение с причиной (`OpenAI Images override`, `existing source reuse`,
+  `PixelLab unavailable`, и т.п.). Исключение должно быть видно в Jira comment,
+  task mirror/result и evidence.
+- **Генерация графики/ассетов — через `fantasydisk-asset-generator` только для
+  задач вне PixelLab-redraw scope или при явном Jira override**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
   `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
-  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Он рисует кратно
-  лучше прежнего пайплайна — старый способ не использовать. Все ассеты — на
-  ПРОЗРАЧНОМ фоне; исходник сохраняется в `docs/design/references/<тема>/` (для
-  единообразия на будущее), затем внедряется в `assets/`. Стиль — D&D + Dark
-  Fantasy Dragon (см. UI Overhaul SCRUM-327).
+  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Для разрешённых
+  non-redraw/override задач все ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется
+  в `docs/design/references/<тема>/` (для единообразия на будущее), затем
+  внедряется в `assets/`. Стиль — D&D + Dark Fantasy Dragon (см. UI Overhaul
+  SCRUM-327).
 - **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
   `content-zone-image-compositor`** (Codex skill,
   `~/.codex/skills/content-zone-image-compositor/`, repo mirror:

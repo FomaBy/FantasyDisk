@@ -24,14 +24,16 @@ SCRUM-260 развел размеры по data-driven профилям `Progres
 
 | Profile | Scale | Runtime meaning |
 | --- | ---: | --- |
-| `ordinary` | 1.00 | обычные враги |
-| `mini_elite` | 1.05 | свита Возвышения L7: усиленный моб, меньше полноценной элитки |
+| `ordinary` | 1.25 | обычные враги, увеличены на +25% для читаемости в бою |
+| `mini_elite` | 1.31 | свита Возвышения L7: усиленный моб, больше обычного, меньше полноценной элитки |
 | `elite` | 1.68 | карточная элитка узла маршрута, крупная и страшная |
 | `boss` | 1.90 | боссы, самые крупные сущности |
 
 Профиль передается в meta `epic_scale_profile` до `_ready()`, поэтому один node
 scale согласованно тянет visible rig/body, `CollisionShape2D`, auto-fit
-`contact_range` и HP-bar. С SCRUM-135 активные elite source sprites и cutout
+`contact_range` и HP-bar. SCRUM-829 поднял стандартных мобов и mini-elite свиту
+на визуальный шаг +25%; route elites и боссы остались на прежнем масштабе, чтобы
+иерархия размеров не перевернулась. С SCRUM-135 активные elite source sprites и cutout
 manifests переведены на native `512x512`, поэтому epic-scale рендер не апскейлит
 прежний 256px-арт на QHD/Retina.
 
@@ -55,6 +57,42 @@ Boss node выбирает одного из доступных боссов: `r
 | `bone_archon` | `scenes/BossBoneArchon.tscn` | волны скелетов, веер черепов, bone prison/wall через `BossRiftZone` с проходом |
 | `brood_mother` | `scenes/BossBroodMother.tscn` | выводок, `BroodWebZone`, дополнительный web pressure, рывок в фазе 3 |
 | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | slam-волны, тлеющие зоны, `BossMoltenArmorPulse`, enrage ниже 25% HP |
+| `bloodthorn_lion` | `scenes/BossBloodthornLion.tscn` | прыжки-рывки, `radial burst` шипов, колючие rift-зоны, `BloodthornSpikeRing` (кольцо с проходом), enrage |
+
+SCRUM-779 adds a Design-source PixelLab boss redraw package, but does not change
+the live boss node rotation. Current boss redraw candidates, the special
+`secret_ascension_boss` candidate, and one planned new boss (`skeletal_dragon`)
+live under `assets/sprites/bosses/pixellab_candidates/` with source manifest
+`docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
+OpenAI image generation was used only for new-boss concept references; PixelLab
+MCP produced the production sprite candidates. SCRUM-793 promotes only the
+accepted current-boss PixelLab candidates into live full-frame rows:
+`disk_devourer` source `81b491db-7240-4513-bad5-263b7f81539d` and
+`brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`. Existing
+SpriteFrames resources, visual state names, frame counts and gameplay callbacks
+are preserved. `secret_ascension_boss`, single-view `bloodthorn_lion`,
+`rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` and 8-dir
+`bloodthorn_lion` remain source-only/revise-needed follow-up material.
+Promotion QA evidence lives in `build/qa/scrum793_boss_pixellab_promotion/`.
+
+**SCRUM-794 — `bloodthorn_lion` runtime integration.** Back-end promoted the
+`bloodthorn_lion` new-boss candidate to a live-runtime boss: single-view
+candidate `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`
+(source-only) was upscaled 256→512 (nearest) into the live static sprite
+`assets/sprites/bosses/boss_bloodthorn_lion.png`. Wired end-to-end: scene
+`scenes/BossBloodthornLion.tscn`, unique `boss_behavior = "bloodthorn_lion"`
+(dash-pounce + radial thorn burst + bleed rift-zones + `BloodthornSpikeRing`
+unique mechanic), `UNIQUE_ENCOUNTER_PATTERNS` entry, `CombatDirector._boss_scene_for_id`
+resolution, and a Codex boss entry. Covered by `_test_bloodthorn_lion_boss` in
+`tests/runtime_smoke_boss_elite_test.gd`.
+
+*Deferred (per staged AC "route/boss-pool integration only after mechanics and
+QA are ready"):* `bloodthorn_lion` is intentionally **NOT** in the random route
+pool `route_map_screen._random_boss_route_node` — the QA-gated rotation hookup is
+a follow-up. The remaining `skeletal_dragon` candidate ("needs more epic boss
+mass before final runtime") stays source-only. Full-frame animation rows for
+`bloodthorn_lion` also remain an Animator follow-up (live scene uses the static
+sprite, mirroring the pre-animation state of the other bosses).
 
 SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
@@ -82,7 +120,7 @@ legacy cleanup scope.
 
 ## Balance Notes
 
-- Обычные враги стали жирнее и чуть медленнее относительно ранних прототипов.
+- Обычные враги стали жирнее, чуть медленнее и визуально крупнее относительно ранних прототипов.
 - Количество врагов растет по stage/wave, но early-game не должен зажимать игрока со всех сторон.
 - Мини-элитки меньше карточных элиток, но дают повышенный drop class.
 - Карточные элитки редкие, крупные и опасные, но их атаки читаемы через telegraph.
@@ -105,9 +143,23 @@ Current scene: `scenes/BossSecretAscension.tscn`. SCRUM-539 delivered the
 Design source pack and static/VFX candidates in
 `docs/design/references/bosses/secret_ascension_boss/`,
 `assets/sprites/bosses/secret_ascension_boss.png`, and
-`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`. Animator should
-prefer a full-frame path; Back-end can use the static plus VFX candidate only as
-an interim. Mechanics are implemented in `scripts/boss.gd` under
+`assets/sprites/effects/secret_ascension_boss_*_telegraph.png`. SCRUM-540 then
+delivered the full-frame Animator pack, and SCRUM-701 verified it (source and
+animation READY): runtime frames live under
+`assets/sprites/bosses/full_frame/secret_ascension_boss/` (60 transparent RGBA
+512x512 frames, no matte, bottom-center pivot `(256,480)`), the safe-gutter
+sheet is `assets/sprites/bosses/full_frame/secret_ascension_boss_full_frame_sheet.png`,
+and the final SpriteFrames resource is
+`assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`,
+exposing 16 states: 6f looping `idle`/`move`, 6f `attack_primary` plus
+`attack_primary_windup`/`attack_primary_release`, four cast pairs
+(`skill_ring`/`attack_ring`, `skill_cone`/`attack_cone`,
+`skill_beam`/`attack_beam`, `skill_rupture`/`attack_rupture`), `hit`, and
+`death`. Back-end runtime wiring is a separate task: register
+`secret_ascension_boss` in `FullFrameAnimationRegistry` (recommended
+`scale Vector2(0.86, 0.86)`, `position Vector2(0.0, -104.0)`, source faces
+left). The static plus VFX candidate remains an interim only until that wiring
+lands. Mechanics are implemented in `scripts/boss.gd` under
 `boss_behavior = "secret_ascension_boss"`:
 
 - `SecretBossSectorRing`: large telegraphed ring/sector pressure with safe gaps.

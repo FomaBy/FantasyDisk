@@ -6,6 +6,17 @@ extends RefCounted
 var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
+var _settings_v5_icon_cache := {}
+# SCRUM-816: живая строка статуса геймпада на вкладке «Управление» + флаг режима
+# прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
+var _gamepad_status_label: Label = null
+var _rebind_is_gamepad := false
+# SCRUM-827: view-state экрана «Атлас героев» (ссылки на узлы + вкладка/класс/выбор).
+# Все таймеры/твины экрана — property-твины на самих нодах либо колбэки строго через
+# Callable(self, "метод").bind(...) — против use-after-free семьи SCRUM-551.
+var _atlas := {}
+# Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
+var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -14,6 +25,20 @@ const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd"
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
+# SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
+const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
+
+# SCRUM-816: человекочитаемые подписи кнопок геймпада для вкладки «Управление».
+# Локальная копия имён (не зависим от автолоада InputDeviceManager в тестах).
+const GAMEPAD_BUTTON_LABELS := {
+	JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
+	JOY_BUTTON_BACK: "Select", JOY_BUTTON_GUIDE: "Home", JOY_BUTTON_START: "Start",
+	JOY_BUTTON_LEFT_STICK: "L3", JOY_BUTTON_RIGHT_STICK: "R3",
+	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB",
+	JOY_BUTTON_DPAD_UP: "Крестовина ↑", JOY_BUTTON_DPAD_DOWN: "Крестовина ↓",
+	JOY_BUTTON_DPAD_LEFT: "Крестовина ←", JOY_BUTTON_DPAD_RIGHT: "Крестовина →",
+}
+const GAMEPAD_REBIND_ACTIVATION := 0.5  # порог |value| оси в режиме прослушивания
 
 const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
 const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
@@ -86,25 +111,150 @@ const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
+const MAIN_MENU_BUTTON_COUNT := 6.0
+const MAIN_MENU_BUTTON_SEPARATION := 10.0
+const MAIN_MENU_ACTION_COLUMN_HEIGHT := STANDARD_ACTION_BUTTON_HEIGHT * MAIN_MENU_BUTTON_COUNT + MAIN_MENU_BUTTON_SEPARATION * (MAIN_MENU_BUTTON_COUNT - 1.0)
+const MAIN_MENU_LOGO_RECT := Rect2(56.0, 44.0, 720.0, 270.0)
+const MAIN_MENU_LOGO_ACTION_GAP := 80.0
+const MAIN_MENU_ACTION_BOTTOM_MARGIN := 10.0
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
+const READABILITY_FONT_SCALE_MIN := 1.32
+const READABILITY_FONT_SCALE_TARGET := 1.45
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const SETTINGS_RETURN_MAIN_MENU := "main_menu"
 const SETTINGS_RETURN_RUN_PAUSE := "run_pause"
+# SCRUM-792: Settings v3 — runtime-врезка PixelLab 9-slice фрейм-семьи (handoff SCRUM-694).
+# Production = только PixelLab-ассеты (не OpenAI mockups). Геометрия live-рамок НЕ меняется
+# (layout.json validated): source-margins пересчитаны так, что display-rects байт-в-байт
+# совпадают со старой minimal-семьёй (см. _settings_v2_content_panel_rect / margins helper).
+const SETTINGS_V3_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v3/"
+const SETTINGS_V3_MAIN_MODAL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_main_modal.png"
+const SETTINGS_V3_TAB_SWITCHER_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_tab_switcher.png"
+const SETTINGS_V3_CONTENT_PANEL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_content_panel.png"
+const SETTINGS_V3_FIELD_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_inset_field.png"
+const SETTINGS_V3_BUTTON_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_action_button.png"
+# 9-slice source-px margins: corner-cell вмещает угловой орнамент (gem+metal), чтобы он не
+# растягивался; центр — плоская тёмная зона (tile). Замерено на доставленном арте.
+const SETTINGS_V3_MAIN_SOURCE_SIZE := Vector2(640.0, 384.0)
+const SETTINGS_V3_MAIN_TEXTURE_MARGINS := Vector4(150.0, 110.0, 150.0, 110.0)
+const SETTINGS_V3_CONTENT_SOURCE_SIZE := Vector2(688.0, 246.0)
+const SETTINGS_V3_CONTENT_TEXTURE_MARGINS := Vector4(140.0, 80.0, 140.0, 78.0)
+const SETTINGS_V3_TAB_SWITCHER_SOURCE_SIZE := Vector2(688.0, 192.0)
+const SETTINGS_V3_TAB_SWITCHER_TEXTURE_MARGINS := Vector4(96.0, 70.0, 96.0, 70.0)
+# Inset-field / action-button рендерятся на мелких контролах (≤72px высотой) — фиксированные
+# display-px margins (не масштабируются от source, иначе 9-slice > высоты контрола).
+const SETTINGS_V3_FIELD_BTN_MARGINS := Vector4(26.0, 20.0, 26.0, 20.0)
+const SETTINGS_V3_FIELD_BTN_CONTENT := Vector4(20.0, 10.0, 20.0, 10.0)
+const SETTINGS_V3_ACTION_BTN_MARGINS := Vector4(30.0, 22.0, 30.0, 22.0)
+const SETTINGS_V3_ACTION_BTN_CONTENT := Vector4(22.0, 12.0, 22.0, 12.0)
+# SCRUM-805 v4: перерисованные интерактивные элементы (PixelLab, dark-iron + яркий
+# золочёный кант) — отдельные ассеты в settings_v4/, выше контраст, чем тёмный v3
+# (кант/поля больше не «пропадают» на тёмной модалке). Источник 367×72 (кнопка) /
+# 392×72 (поле): корнер-филигрань ≤28px по вертикали → 9-slice v-margin 28, 2×28=56 <
+# минимальной высоты контрола 60 (нет наслоения углов). Панели/рамка/свитчер — фон v3.
+const SETTINGS_V4_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v4/"
+const SETTINGS_V4_ACTION_BUTTON_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_action_button.png"
+const SETTINGS_V4_FIELD_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_field.png"
+const SETTINGS_V4_ACTION_BTN_MARGINS := Vector4(44.0, 28.0, 44.0, 28.0)
+const SETTINGS_V4_ACTION_BTN_CONTENT := Vector4(28.0, 8.0, 28.0, 8.0)
+const SETTINGS_V4_FIELD_MARGINS := Vector4(46.0, 28.0, 46.0, 28.0)
+const SETTINGS_V4_FIELD_CONTENT := Vector4(26.0, 6.0, 26.0, 6.0)
+# Per-state тинты для одного базового 9-slice (нет отдельных текстур состояний — handoff).
+const SETTINGS_V3_BTN_STATE_TINTS := {
+	"normal": Color(1.0, 1.0, 1.0, 1.0),
+	"hover": Color(1.16, 1.16, 1.16, 1.0),
+	"pressed": Color(0.86, 0.86, 0.86, 1.0),
+	"focus": Color(1.20, 1.20, 1.20, 1.0),
+	# SCRUM-805 v4: disabled был слишком тёмным/прозрачным (0.55/α0.78) → рамка
+	# Применить/Отменить «пропадала» без непримененных изменений (выглядело недоделкой).
+	# Осветлён до читаемого серо-золотого — кнопка видна как честный greyed-out.
+	"disabled": Color(0.80, 0.80, 0.84, 0.94),
+}
 const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
-const SETTINGS_V2_MAIN_MODAL_PATH := MINIMAL_MODAL_PATH
-const SETTINGS_V2_TAB_SWITCHER_PATH := MINIMAL_FIELD_PATH
-const SETTINGS_V2_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
-const SETTINGS_V2_CONTROL_ROW_PATH := MINIMAL_FIELD_PATH
-const SETTINGS_V2_MAIN_SOURCE_SIZE := Vector2(986.0, 900.0)
-const SETTINGS_V2_MAIN_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
-const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(72.0, 92.0, 72.0, 84.0)
+const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V3_MAIN_MODAL_PATH
+const SETTINGS_V2_TAB_SWITCHER_PATH := SETTINGS_V3_TAB_SWITCHER_PATH
+const SETTINGS_V2_SECTION_PANEL_PATH := SETTINGS_V3_CONTENT_PANEL_PATH
+const SETTINGS_V2_CONTROL_ROW_PATH := SETTINGS_V3_FIELD_PATH
+const SETTINGS_V2_MAIN_SOURCE_SIZE := SETTINGS_V3_MAIN_SOURCE_SIZE
+# Display-rects сохранены: старое (986x900, margins 72/92) давало content-inset 136px@1080;
+# новое (640x384, margins 47/39) даёт тот же 136-137px (проверено против layout.json).
+const SETTINGS_V2_MAIN_TEXTURE_MARGINS := SETTINGS_V3_MAIN_TEXTURE_MARGINS
+const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(47.0, 39.0, 47.0, 36.0)
 const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(616.0, 286.0)
 const SETTINGS_TAB_SWITCHER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
 const SETTINGS_APPLY_BUTTON_SIZE := Vector2(240.0, 72.0)
+
+# --- Settings v5 (SCRUM-805, полный редизайн с нуля) ---------------------------
+# Дизайн-система «Оружейная драконьего замка»: все координаты заданы в
+# design-px модалки 1420×1060 при базовом вьюпорте 2560×1440 и скейлятся
+# единым коэффициентом s = modal_width/1420 (пропорция модалки фиксирована).
+const SETTINGS_V5_DIR := "res://assets/sprites/ui/frames/settings_v5/"
+const SETTINGS_V5_DESIGN_SIZE := Vector2(1420.0, 1060.0)
+const SETTINGS_V5_MODAL_WIDTH_RATIO := 0.555
+const SETTINGS_V5_MODAL_FRAME_PATH := SETTINGS_V5_DIR + "ui_settings_v5_modal_frame.png"
+const SETTINGS_V5_CONTENT_INSET_PATH := SETTINGS_V5_DIR + "ui_settings_v5_content_inset.png"
+const SETTINGS_V5_MEDALLION_PATH := SETTINGS_V5_DIR + "ui_settings_v5_medallion.png"
+const SETTINGS_V5_TAB_PATHS := {
+	"active": SETTINGS_V5_DIR + "ui_settings_v5_tab_active.png",
+	"hover": SETTINGS_V5_DIR + "ui_settings_v5_tab_hover.png",
+	"inactive": SETTINGS_V5_DIR + "ui_settings_v5_tab_inactive.png",
+}
+const SETTINGS_V5_TAB_ICON_PATHS := [
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_screen.png",
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_sound.png",
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_controls.png",
+]
+const SETTINGS_V5_BTN_PATHS := {
+	"neutral": {
+		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_normal.png",
+		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_hover.png",
+		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_pressed.png",
+		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_disabled.png",
+	},
+	"primary": {
+		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_normal.png",
+		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_hover.png",
+		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_pressed.png",
+		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_disabled.png",
+	},
+}
+const SETTINGS_V5_FIELD_PATHS := {
+	"normal": SETTINGS_V5_DIR + "ui_settings_v5_field_normal.png",
+	"hover": SETTINGS_V5_DIR + "ui_settings_v5_field_hover.png",
+	"pressed": SETTINGS_V5_DIR + "ui_settings_v5_field_pressed.png",
+}
+const SETTINGS_V5_ARROW_PATH := SETTINGS_V5_DIR + "ui_settings_v5_arrow_socket.png"
+const SETTINGS_V5_CHECKBOX_ON_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_on.png"
+const SETTINGS_V5_CHECKBOX_OFF_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_off.png"
+const SETTINGS_V5_SLIDER_TRACK_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_track.png"
+const SETTINGS_V5_SLIDER_FILL_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_fill.png"
+const SETTINGS_V5_SLIDER_GEM_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_gem.png"
+const SETTINGS_V5_VALUE_CHIP_PATH := SETTINGS_V5_DIR + "ui_settings_v5_value_chip.png"
+# Геометрия (design-px @1420×1060): title/табы/панель/низ.
+const SETTINGS_V5_TITLE_RECT := Rect2(80.0, 56.0, 1260.0, 62.0)
+const SETTINGS_V5_TAB_SIZE := Vector2(340.0, 84.0)
+const SETTINGS_V5_TAB_GAP := 20.0
+const SETTINGS_V5_TAB_TOP := 150.0
+const SETTINGS_V5_CONTENT_RECT := Rect2(72.0, 258.0, 1276.0, 630.0)
+const SETTINGS_V5_CONTENT_PAD := Vector4(44.0, 34.0, 44.0, 30.0)
+const SETTINGS_V5_DIVIDER_Y := 910.0
+const SETTINGS_V5_ACTION_SIZE := Vector2(320.0, 80.0)
+const SETTINGS_V5_ACTION_GAP := 30.0
+const SETTINGS_V5_ACTION_TOP := 936.0
+const SETTINGS_V5_LABEL_COL := Vector2(380.0, 56.0)
+const SETTINGS_V5_CONTROL_SIZE := Vector2(560.0, 56.0)
+# Палитра v5.
+const SETTINGS_V5_TEXT := Color(0.949, 0.902, 0.761, 1.0)
+const SETTINGS_V5_TEXT_BRIGHT := Color(1.0, 0.96, 0.84, 1.0)
+const SETTINGS_V5_GOLD := Color(0.792, 0.643, 0.180, 1.0)
+const SETTINGS_V5_AMBER := Color(0.96, 0.78, 0.40, 1.0)
+const SETTINGS_V5_MUTED := Color(0.72, 0.68, 0.58, 1.0)
+const SETTINGS_V5_DISABLED := Color(0.48, 0.45, 0.40, 1.0)
+const SETTINGS_V5_BRONZE_LINE := Color(0.54, 0.42, 0.18, 0.55)
 const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
 const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
 const COMBAT_HUD_RESOURCE_PANEL_PATH := MINIMAL_HUD_STRIP_PATH
@@ -115,7 +265,6 @@ const COMBAT_HUD_CARD_PATHS := {
 	"ultimate_multiplier": MINIMAL_FIELD_PATH,
 }
 const COMBAT_HUD_TIMER_PATH := MINIMAL_FIELD_PATH
-const COMBAT_HUD_ASCENSION_BADGE_PATH := MINIMAL_CARD_PATH
 const COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES := {
 	"normal": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus.png",
 	"hover": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus_hover.png",
@@ -161,18 +310,45 @@ const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)
 const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay (full-rect)
 
 # SCRUM-671 / SCRUM-666 clean essential-only runtime HUD geometry.
-const SCRUM666_CHUD_RESOURCE_PANEL_2K := Rect2(40, 84, 1488, 212)
-const SCRUM666_CHUD_HP_ZONE_2K := Rect2(150, 140, 300, 58)
-const SCRUM666_CHUD_XP_ZONE_2K := Rect2(520, 140, 260, 58)
-const SCRUM666_CHUD_GOLD_ZONE_2K := Rect2(850, 140, 235, 58)
-const SCRUM666_CHUD_ULT_ZONE_2K := Rect2(1138, 140, 296, 58)
-const SCRUM666_CHUD_TIMER_2K := Rect2(1592, 82, 424, 218)
-const SCRUM666_CHUD_TIMER_ZONE_2K := Rect2(1690, 145, 232, 62)
-const SCRUM666_CHUD_ASCENSION_BADGE_2K := Rect2(2165, 55, 330, 322)
-const SCRUM666_CHUD_ASCENSION_ZONE_2K := Rect2(2265, 150, 128, 94)
-const SCRUM666_CHUD_LEVELUP_FRAME_2K := Rect2(2190, 1010, 366, 428)
-const SCRUM666_CHUD_LEVELUP_BUTTON_2K := Rect2(2308, 1148, 124, 104)
-const SCRUM666_CHUD_LEVELUP_BADGE_2K := Rect2(2442, 1079, 48, 40)
+# SCRUM-778 keeps the same accepted HUD content, but compacts the runtime footprint
+# so the 1080p top band and pending-level control no longer dominate the arena.
+# SCRUM-806: карточные зоны (RESOURCE_PANEL/HP/XP/GOLD/ULT/TIMER/ASCENSION) заменены
+# HUD_V2_* геометрией ниже; здесь остались только слоты level-up контрола.
+const SCRUM666_CHUD_LEVELUP_FRAME_2K := Rect2(2300, 1160, 220, 250)
+const SCRUM666_CHUD_LEVELUP_BUTTON_2K := Rect2(2370, 1248, 88, 104)
+const SCRUM666_CHUD_LEVELUP_BADGE_2K := Rect2(2458, 1212, 58, 48)
+
+# SCRUM-806: боевой HUD v2 — компактный кластер слим-баров без карточных рамок.
+# Иконки — пиксель-арт PixelLab, подложка/трек — OpenAI-арт в стиле leather/gold кита.
+# Геометрия @2K, масштабируется той же SCRUM-666 системой (_scrum666_hud_scale).
+const COMBAT_HUD_V2_DIR := "res://assets/sprites/ui/hud/combat_hud_v2/"
+const HUD_V2_CLUSTER_BG_PATH := COMBAT_HUD_V2_DIR + "ui_hud_v2_cluster_bg.png"
+const HUD_V2_BAR_TRACK_PATH := COMBAT_HUD_V2_DIR + "ui_hud_v2_bar_track.png"
+const HUD_V2_ICON_PATHS := {
+	"hp": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_hp.png",
+	"xp": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_xp.png",
+	"ultimate_multiplier": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_ult.png",
+	"money": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_money.png",
+	"timer": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_timer.png",
+	"ascension": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_ascension.png",
+}
+const HUD_V2_CLUSTER_2K := Rect2(36, 36, 640, 122)
+const HUD_V2_HP_ICON_2K := Rect2(46, 43, 42, 42)
+const HUD_V2_HP_BAR_2K := Rect2(96, 48, 516, 32)
+const HUD_V2_XP_ICON_2K := Rect2(50, 87, 36, 36)
+const HUD_V2_XP_BAR_2K := Rect2(96, 92, 420, 26)
+const HUD_V2_ULT_ICON_2K := Rect2(50, 121, 36, 36)
+const HUD_V2_ULT_BAR_2K := Rect2(96, 126, 420, 26)
+const HUD_V2_MONEY_ICON_2K := Rect2(534, 90, 30, 30)
+const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
+const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
+const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
+const HUD_V2_TIMER_ICON_2K := Rect2(1194, 70, 32, 32)
+# Ряд эмблем возвышения: правый край/верх/размер пипа/зазор @2K (ширина = от уровня).
+const HUD_V2_ASCENSION_RIGHT_2K := 2524.0
+const HUD_V2_ASCENSION_TOP_2K := 52.0
+const HUD_V2_ASCENSION_PIP_2K := 44.0
+const HUD_V2_ASCENSION_GAP_2K := 8.0
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
 const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
@@ -198,7 +374,7 @@ const LU_HERO_PORTRAIT_RECT := Rect2(118.0, 40.0, 100.0, 100.0)
 const LU_TITLE_RECT := Rect2(292.0, 30.0, 880.0, 60.0)
 const LU_SUBTITLE_RECT := Rect2(292.0, 100.0, 920.0, 44.0)
 const LU_REWARDS_ROW_RECT := Rect2(63.0, 175.0, 1410.0, 560.0)
-const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 82.0)
+const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 76.0)
 const LU_CARD_CONTENT_RECT := Rect2(58.0, 70.0, 354.0, 426.0)
 const LU_CARD_ICON_RECT := Rect2(97.0, 21.0, 160.0, 160.0)
 const LU_CARD_TITLE_RECT := Rect2(12.0, 201.0, 330.0, 46.0)
@@ -249,7 +425,7 @@ const ATTR_SAFE_2K := Rect2(788, 100, 1008, 1246)          # панель − co
 const ATTR_OFFER_2K := Rect2(0, 0, 480, 340)               # AttributeOffer_* = ECONOMY_CHOICE_TARGET_1440 (грид 2 кол)
 const ATTR_ACTION_BUTTON_2K := Rect2(0, 0, 420, 62)        # AttributeReroll/Skip (фикс ВНЕ скролла снизу)
 
-# #10 Дерево навыков — _show_skill_tree_screen (самый плотный: класс-панель + N веток)
+# #10 Дерево навыков (легаси-спека v3; экран заменён Атласом героев — _show_atlas_screen, SCRUM-827)
 const SKILL_MAIN_PANEL_2K := Rect2(48, 26, 2464, 1388)
 const SKILL_SAFE_2K := Rect2(136, 118, 2288, 1214)         # layout-VBox (header→hint→body)
 const SKILL_POINTS_BADGE_2K := Rect2(0, 0, 215, 96)        # SkillTreePointsBadge (ширина растёт под текст очков)
@@ -339,25 +515,47 @@ const PROGRESSION_CLASS_PANEL_CONTENT := Vector4(104.0, 42.0, 42.0, 42.0)
 const PROGRESSION_POINTS_BADGE_CONTENT := Vector4(20.0, 18.0, 20.0, 28.0)
 const PROGRESSION_TOOLTIP_MARGINS := Vector4(58.0, 58.0, 76.0, 76.0)
 const PROGRESSION_TOOLTIP_CONTENT := Vector4(84.0, 78.0, 112.0, 100.0)
-# SCRUM-676: ассеты переделанной раскладки древа умений (дизайн-пак SCRUM-675).
-# Используются на НОВЫХ элементах (классовый dropdown + попап, поп-ап очков, рамки
-# путей) — стилбоксы тест-привязанных панелей остаются на progression/*-фреймах.
-const SKILL_TREE_FRAME_DIR := "res://assets/sprites/ui/skill_tree/"
-const SKILL_TREE_CLASS_SELECT_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_select.png"
-const SKILL_TREE_CLASS_POPUP_PATH := SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_class_popup.png"
-const SKILL_TREE_POINTS_BTN_PATH := SKILL_TREE_FRAME_DIR + "ui_btn_skill_points.png"
-const SKILL_TREE_PATH_FRAMES := {
-	"wealth": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_wealth.png",
-	"lore": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_lore.png",
-	"might": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_might.png",
-	"endure": SKILL_TREE_FRAME_DIR + "ui_frame_skill_tree_path_endure.png",
+# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн meta_constellations.md §7).
+# Ассет-кит SCRUM-826/832 нарисован ПОД целевые размеры слотов окна 2560×1440
+# (bg_sky фулскрин, frame_border под 9-slice, сокеты/звёзды/гербы под свои px).
+const META40_UI_DIR := "res://assets/sprites/ui/meta40/"
+const META40_BG_SKY_PATH := META40_UI_DIR + "bg_sky.png"
+const META40_FRAME_BORDER_PATH := META40_UI_DIR + "frame_border.png"
+const META40_STAR_ALLOC_PATH := META40_UI_DIR + "star_alloc.png"
+const META40_KEYSTONE_RING_PATH := META40_UI_DIR + "keystone_ring.png"
+const META40_CURRENCY_EMBLEM_PATH := META40_UI_DIR + "currency_emblem.png"
+const META40_CURRENCY_STARDUST_PATH := META40_UI_DIR + "currency_stardust.png"
+const META40_SOCKET_TEXTURES := {
+	"minor": META40_UI_DIR + "socket_minor.png",
+	"technique": META40_UI_DIR + "socket_notable.png",
+	"notable": META40_UI_DIR + "socket_notable.png",
+	"keystone": META40_UI_DIR + "socket_keystone.png",
+	"hidden": META40_UI_DIR + "socket_hidden.png",
+	"core": META40_UI_DIR + "socket_notable.png",
 }
-const SKILL_TREE_CLASS_SELECT_MARGINS := Vector4(40.0, 32.0, 40.0, 32.0)
-const SKILL_TREE_CLASS_SELECT_CONTENT := Vector4(28.0, 18.0, 28.0, 18.0)
-const SKILL_TREE_CLASS_POPUP_MARGINS := Vector4(72.0, 78.0, 72.0, 78.0)
-const SKILL_TREE_CLASS_POPUP_CONTENT := Vector4(54.0, 56.0, 54.0, 56.0)
-const SKILL_TREE_PATH_FRAME_MARGINS := Vector4(40.0, 56.0, 40.0, 60.0)
-const SKILL_TREE_PATH_FRAME_CONTENT := Vector4(16.0, 18.0, 16.0, 18.0)
+# Целевые размеры сокетов @2560×1440 (§7: minor 96, notable 128, keystone 168,
+# hidden 112, герб-ядро 160); на других вьюпортах — пропорциональный масштаб.
+const ATLAS_SOCKET_SIZES := {
+	"minor": 96.0, "technique": 128.0, "notable": 128.0,
+	"keystone": 168.0, "hidden": 112.0, "core": 160.0,
+}
+const ATLAS_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+# Орнаментная полоса frame_border ≈127px source; 160 покрывает угловые вырезы.
+const ATLAS_FRAME_SOURCE_MARGIN := 160.0
+const ATLAS_FOG_DISSOLVE_SEC := 0.6
+const ATLAS_ROLE_LABELS := {
+	"core": "ЯДРО СОЗВЕЗДИЯ", "minor": "ЗВЕЗДА-АТРИБУТ", "technique": "ЗВЕЗДА-ТЕХНИКА",
+	"notable": "ПРИМЕЧАТЕЛЬНАЯ ЗВЕЗДА", "keystone": "КЛЮЧЕВАЯ ЗВЕЗДА", "hidden": "СКРЫТАЯ ЗВЕЗДА",
+}
+# Родительный падеж названий классов для шапки «Эмблемы …: N» (мокап).
+const ATLAS_CLASS_GENITIVE := {
+	"berserk": "Берсерка", "soldier": "Солдата", "thief": "Вора",
+	"elementalist": "Элементалиста", "sniper": "Снайпера", "priest": "Священника",
+	"biologist": "Биолога", "robot": "Робота", "engineer": "Инженера",
+	"dark_mage": "Темного мага", "guitarist": "Гитариста", "assassin": "Ассасина",
+	"ranger": "Рейнджера", "doctor": "Доктора", "chemist": "Химика",
+	"knight": "Рыцаря", "druid": "Друида",
+}
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
 const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -385,25 +583,29 @@ const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
 const CODEX_TAB_CONTENT := Vector4(24.0, 14.0, 24.0, 14.0)
 const CODEX_V2_BASE_SIZE := Vector2(1920.0, 1080.0)
 # SCRUM-684: поля вокруг всей кодекс-композиции, чтобы рамка не клипалась краем экрана.
-const CODEX_V2_SCREEN_INSET := Vector2(28.0, 30.0)
-const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 20.0, 1872.0, 1040.0)
-# SCRUM-684: заголовок и кнопку «назад» опускаем в тёмно-багровую безопасную
-# зону main_shell, ниже верхней руной-полосы и угловых золотых кронштейнов.
-const CODEX_V2_HEADER_TITLE_SAFE := Rect2(196.0, 116.0, 1040.0, 60.0)
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(1636.0, 104.0, 168.0, 84.0)
-const CODEX_V2_NAV_PANEL_RECT := Rect2(72.0, 170.0, 304.0, 872.0)
-const CODEX_V2_NAV_SAFE := Rect2(88.0, 198.0, 258.0, 720.0)
-const CODEX_V2_LIST_PANEL_RECT := Rect2(388.0, 170.0, 835.0, 872.0)
-const CODEX_V2_DETAIL_PANEL_RECT := Rect2(1242.0, 170.0, 606.0, 872.0)
-const CODEX_V2_PORTRAIT_SAFE := Rect2(1396.0, 226.0, 320.0, 300.0)
-const CODEX_V2_CHIP_ROW_SAFE := Rect2(1298.0, 548.0, 486.0, 80.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(722.0, 132.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(48.0, 26.0, 52.0, 24.0)
-const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 44.0, 72.0, 38.0)
-const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 64.0, 72.0, 36.0)
-const CODEX_V2_NAV_PANEL_CONTENT := Vector4(16.0, 28.0, 30.0, 124.0)
-const CODEX_V2_LIST_PANEL_CONTENT := Vector4(36.0, 34.0, 63.0, 42.0)
-const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(48.0, 44.0, 44.0, 48.0)
+const CODEX_V2_SCREEN_INSET := Vector2.ZERO
+# SCRUM-725: layout_map.md geometry from the accepted Codex redesign mockup.
+# The composition scales uniformly from 1920x1080 and centers in letterbox space;
+# the backdrop cover-crops separately, so no UI frame is one-axis stretched.
+const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 24.0, 1872.0, 1032.0)
+const CODEX_V2_HEADER_TITLE_SAFE := Rect2(190.0, 32.0, 557.0, 130.0)
+const CODEX_V2_HEADER_SUBTITLE_SAFE := Rect2(720.0, 54.0, 520.0, 90.0)
+const CODEX_V2_BACK_BUTTON_SAFE := Rect2(24.0, 24.0, 96.0, 120.0)
+const CODEX_V2_NAV_PANEL_RECT := Rect2(24.0, 192.0, 384.0, 864.0)
+const CODEX_V2_NAV_SAFE := Rect2(64.0, 284.0, 304.0, 724.0)
+const CODEX_V2_LIST_PANEL_RECT := Rect2(426.0, 192.0, 517.0, 864.0)
+const CODEX_V2_DETAIL_PANEL_RECT := Rect2(964.0, 192.0, 932.0, 864.0)
+const CODEX_V2_PORTRAIT_SAFE := Rect2(1070.0, 274.0, 720.0, 300.0)
+const CODEX_V2_CHIP_ROW_SAFE := Rect2(1048.0, 602.0, 760.0, 72.0)
+const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 150.0)
+const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
+const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(68.0, 68.0)
+const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(304.0, 102.0)
+const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
+const CODEX_V2_NAV_PANEL_CONTENT := Vector4(56.0, 72.0, 56.0, 64.0)
+const CODEX_V2_LIST_PANEL_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
+const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
 const CODEX_V2_TOOLTIP_CONTENT := Vector4(20.0, 28.0, 18.0, 34.0)
 # SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab). Рамки нарисованы в
 # малом нативном размере, поэтому НЕ масштабируем texture-margins по display
@@ -421,29 +623,35 @@ const CODEX_PL_DETAIL_PATH := CODEX_PL_FIT_DIR + "codex_pl_detail_panel.png"
 const CODEX_PL_ENTRY_CARD_PATH := CODEX_PL_FIT_DIR + "codex_pl_entry_card.png"
 const CODEX_PL_CATEGORY_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_category_button.png"
 const CODEX_PL_BACK_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_back_button.png"
+const CODEX_PL_BACKDROP_PATH := CODEX_PL_FRAME_DIR + "codex_pl_backdrop.png"
 # texture-margins (9-slice corner zones), измерены в обрезанных fit-PNG
-const CODEX_PL_MAIN_TEX := Vector4(68.0, 50.0, 64.0, 50.0)
-const CODEX_PL_NAV_TEX := Vector4(40.0, 100.0, 40.0, 102.0)
-const CODEX_PL_LIST_TEX := Vector4(52.0, 74.0, 54.0, 50.0)
-const CODEX_PL_DETAIL_TEX := Vector4(58.0, 50.0, 58.0, 50.0)
-const CODEX_PL_ENTRY_CARD_TEX := Vector4(18.0, 14.0, 18.0, 12.0)
-const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(50.0, 18.0, 18.0, 17.0)
-const CODEX_PL_BACK_BUTTON_TEX := Vector4(10.0, 18.0, 20.0, 18.0)
+const CODEX_PL_MAIN_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_NAV_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_LIST_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_DETAIL_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
+const CODEX_PL_ENTRY_CARD_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
+const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(24.0, 24.0, 24.0, 24.0)
+const CODEX_PL_BACK_BUTTON_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
 # content-margins (display px) — куда ложится контент, с воздухом от орнамента
-const CODEX_PL_MAIN_CONTENT := Vector4(96.0, 78.0, 96.0, 64.0)
-const CODEX_PL_NAV_CONTENT := Vector4(40.0, 130.0, 40.0, 132.0)
-const CODEX_PL_LIST_CONTENT := Vector4(74.0, 96.0, 76.0, 64.0)
-const CODEX_PL_DETAIL_CONTENT := Vector4(78.0, 70.0, 76.0, 66.0)
-const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(34.0, 26.0, 34.0, 22.0)
-const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(96.0, 30.0, 40.0, 30.0)
-const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(28.0, 30.0, 38.0, 30.0)
-# SCRUM-684: текст карточек-строк сидит на пергаменте → тёмные тона, не свет-на-свет.
-const CODEX_PL_CARD_TITLE_COLOR := Color(0.28, 0.13, 0.06, 1.0)
-const CODEX_PL_CARD_BODY_COLOR := Color(0.34, 0.24, 0.15, 1.0)
-const CODEX_PL_CARD_ACCENT_COLOR := Color(0.20, 0.34, 0.14, 1.0)
-# Текст в detail-панели поверх рунического пергамента → тёмно-коричневый.
-const CODEX_PL_DETAIL_TITLE_COLOR := Color(0.30, 0.12, 0.05, 1.0)
-const CODEX_PL_DETAIL_BODY_COLOR := Color(0.20, 0.13, 0.07, 1.0)
+const CODEX_PL_MAIN_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
+const CODEX_PL_NAV_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
+const CODEX_PL_LIST_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
+const CODEX_PL_DETAIL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
+const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
+const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(84.0, 24.0, 34.0, 24.0)
+const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(24.0, 24.0, 24.0, 24.0)
+const CODEX_PL_TEXT_CREAM := Color(0.91, 0.84, 0.66, 1.0)
+const CODEX_PL_TEXT_CREAM_MUTED := Color(0.76, 0.70, 0.57, 1.0)
+const CODEX_PL_TEXT_GOLD := Color(0.88, 0.75, 0.43, 1.0)
+const CODEX_PL_PARCHMENT_FILL := Color(0.85, 0.79, 0.63, 0.96)
+const CODEX_PL_PARCHMENT_BORDER := Color(0.46, 0.31, 0.16, 0.92)
+const CODEX_PL_INK_DARK := Color(0.18, 0.125, 0.075, 1.0)
+const CODEX_PL_CHIP_FILL := Color(0.165, 0.133, 0.106, 0.96)
+const CODEX_PL_CARD_TITLE_COLOR := CODEX_PL_TEXT_CREAM
+const CODEX_PL_CARD_BODY_COLOR := CODEX_PL_TEXT_CREAM_MUTED
+const CODEX_PL_CARD_ACCENT_COLOR := CODEX_PL_TEXT_GOLD
+const CODEX_PL_DETAIL_TITLE_COLOR := CODEX_PL_TEXT_GOLD
+const CODEX_PL_DETAIL_BODY_COLOR := CODEX_PL_INK_DARK
 const CODEX_PL_ICONS := {
 	"characters": CODEX_PL_FRAME_DIR + "codex_pl_icon_characters.png",
 	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
@@ -476,18 +684,27 @@ func _init(game_ref) -> void:
 # (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
 # вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
 const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const MM_TITLE_2K := Rect2(640, 72, 1280, 150)
+const MM_TITLE_2K := Rect2(56, 44, 720, 270)
 # Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
-# 6 кнопок 380×104, separation 10 → высота 674, центр 1440 → top=383).
-const MM_BUTTON_COLUMN_2K := Rect2(72, 383, 380, 674)
-const MM_BTN_START_2K := Rect2(72, 383, 380, 104)
-const MM_BTN_SETTINGS_2K := Rect2(72, 497, 380, 104)
-const MM_BTN_SKILLTREE_2K := Rect2(72, 611, 380, 104)
-const MM_BTN_PATCHNOTES_2K := Rect2(72, 725, 380, 104)
-const MM_BTN_CODEX_2K := Rect2(72, 839, 380, 104)
-const MM_BTN_EXIT_2K := Rect2(72, 953, 380, 104)
+# 6 кнопок 380×104, separation 10 → высота 674; top рассчитывается ниже лого).
+const MM_BUTTON_COLUMN_2K := Rect2(72, 394, 380, 674)
+const MM_BTN_START_2K := Rect2(72, 394, 380, 104)
+const MM_BTN_SETTINGS_2K := Rect2(72, 508, 380, 104)
+const MM_BTN_SKILLTREE_2K := Rect2(72, 622, 380, 104)
+const MM_BTN_PATCHNOTES_2K := Rect2(72, 736, 380, 104)
+const MM_BTN_CODEX_2K := Rect2(72, 850, 380, 104)
+const MM_BTN_EXIT_2K := Rect2(72, 964, 380, 104)
 const MM_VERSION_LABEL_2K := Rect2(2440, 1406, 104, 24)  # якорь bottom-right
-const MM_SAFE_2K := Rect2(72, 383, 380, 674)  # фон обязан держать эту колонку пустой
+const MM_SAFE_2K := Rect2(72, 394, 380, 674)  # фон обязан держать эту колонку пустой
+
+
+func _main_menu_actions_top(viewport_size: Vector2, title_bottom: float) -> float:
+	var preferred_top := roundf((viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT) * 0.5)
+	var min_top := roundf(title_bottom + MAIN_MENU_LOGO_ACTION_GAP)
+	var max_top := roundf(viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT - MAIN_MENU_ACTION_BOTTOM_MARGIN)
+	if max_top >= min_top:
+		return clampf(maxf(preferred_top, min_top), min_top, max_top)
+	return maxf(0.0, max_top)
 
 
 func _show_main_menu() -> void:
@@ -537,25 +754,27 @@ func _show_main_menu() -> void:
 	title_logo.anchor_top = 0.0
 	title_logo.anchor_right = 0.0
 	title_logo.anchor_bottom = 0.0
-	title_logo.offset_left = 72.0
-	title_logo.offset_top = 56.0
-	title_logo.offset_right = 712.0
-	title_logo.offset_bottom = 323.0
+	title_logo.offset_left = MAIN_MENU_LOGO_RECT.position.x
+	title_logo.offset_top = MAIN_MENU_LOGO_RECT.position.y
+	title_logo.offset_right = MAIN_MENU_LOGO_RECT.position.x + MAIN_MENU_LOGO_RECT.size.x
+	title_logo.offset_bottom = MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y
 	title_logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	title_logo.texture = game._cached_texture("res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png")
 	title_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_logo)
 
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var action_top := _main_menu_actions_top(viewport_size, MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y)
 	var layout := MarginContainer.new()
 	layout.anchor_left = 0.0
 	layout.anchor_top = 0.0
 	layout.anchor_right = 0.0
-	layout.anchor_bottom = 1.0
+	layout.anchor_bottom = 0.0
 	layout.offset_left = 72.0
-	layout.offset_top = 0.0
+	layout.offset_top = action_top
 	layout.offset_right = 452.0
-	layout.offset_bottom = 0.0
+	layout.offset_bottom = action_top + MAIN_MENU_ACTION_COLUMN_HEIGHT
 	layout.add_theme_constant_override("margin_left", 0)
 	layout.add_theme_constant_override("margin_top", 0)
 	layout.add_theme_constant_override("margin_right", 0)
@@ -564,9 +783,9 @@ func _show_main_menu() -> void:
 
 	var action_box := VBoxContainer.new()
 	action_box.name = "MainMenuActions"
-	action_box.custom_minimum_size = Vector2(380, 0)
-	action_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_box.add_theme_constant_override("separation", 10)
+	action_box.custom_minimum_size = Vector2(380, MAIN_MENU_ACTION_COLUMN_HEIGHT)
+	action_box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	action_box.add_theme_constant_override("separation", int(MAIN_MENU_BUTTON_SEPARATION))
 	layout.add_child(action_box)
 
 	var start_button := _make_button("Начать новую игру")
@@ -600,15 +819,15 @@ func _show_main_menu() -> void:
 	version_label.offset_right = -16.0
 	version_label.offset_bottom = -10.0
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", 13)
+	version_label.add_theme_font_size_override("font_size", _readable_font_size(13))
 	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
-	var skill_tree_button := _make_button("Древо умений")
+	var skill_tree_button := _make_button("Атлас героев")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
 	_set_action_button_size(skill_tree_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
-	skill_tree_button.pressed.connect(_show_skill_tree_screen)
+	skill_tree_button.pressed.connect(_show_atlas_screen)
 	action_box.add_child(skill_tree_button)
 
 	# SCRUM-159: «Что нового» с бейджем непросмотренной версии (не модалка).
@@ -639,6 +858,12 @@ func _show_main_menu() -> void:
 	exit_button.pressed.connect(_show_quit_confirmation_dialog)
 	action_box.add_child(exit_button)
 	game.ui_escape_action = _show_quit_confirmation_dialog
+
+	# SCRUM-813: главное меню проходимо с геймпада/стрелок — вертикальный круг кнопок,
+	# стартовый фокус «Начать новую игру»; B/Esc = подтверждение выхода (ui_escape_action).
+	_wire_run_ui_focus([
+		start_button, settings_button, skill_tree_button, patch_notes_button, codex_button, exit_button,
+	], false, [], start_button)
 
 
 # SCRUM-484: координатная спека @2560×1440 — подтверждение выхода (модалка).
@@ -704,7 +929,7 @@ func _show_quit_confirmation_dialog() -> void:
 	title_label.name = "QuitConfirmationTitle"
 	title_label.text = "Выйти из игры?"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 34)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -713,7 +938,7 @@ func _show_quit_confirmation_dialog() -> void:
 	subtitle_label.text = "Несохраненный забег будет завершен. Продолжить выход?"
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -867,7 +1092,7 @@ func _show_continue_run_dialog() -> void:
 	subtitle_label.text = "%s · акт %d/%d · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, current_act, game.ACT_COUNT, route_stage, level, money]
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", 16)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -922,6 +1147,15 @@ const HS4_RADAR := Rect2(0.715, 0.175, 0.230, 0.320)
 const HS4_CAROUSEL := Rect2(0.020, 0.735, 0.960, 0.215)
 const HS4_CAROUSEL_SLOTS := 9
 const HS4_DOSSIER_STATS := ["strength", "agility", "intelligence", "endurance", "perception"]
+const HS4_MINIMAL_PREVIEW_SIZE := 560.0
+const HS4_MINIMAL_SLOT_SIZE := 280.0
+const HS4_MINIMAL_BASE_STATS := HeroSelectConstants.HERO_BASE_STATS
+const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
+const HS4_MINIMAL_PREVIEW_MAX_SIZE := 660.0
+const HS4_MINIMAL_SLOT_MIN_SIZE := 184.0
+const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
+const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
+const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Выбор героя v4» (полноэкранный).
 # ВАЖНО: билдер _build_character_select_v4 НЕ использует нормализованные доли HS4_* (выше,
@@ -943,6 +1177,63 @@ const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-�
 # Карусель SCRUM-561: content-zone comes from hs4_carousel_panel; thumbnails stay square inside the safe band.
 const HS4_CAROUSEL_SLOT_2K := Rect2(237, 1230, 101, 101)     # square slot inside hud-strip content safe area
 const HS4_CAROUSEL_SLOT_STEP_2K := 248.0
+const HS4_PIXELLAB_DIR := "res://assets/sprites/ui/frames/hero_select_pixellab/"
+const HS4_PIXELLAB_PATHS := {
+	"background": HS4_PIXELLAB_DIR + "background.png",
+	"back": HS4_PIXELLAB_DIR + "button_back.png",
+	"title": HS4_PIXELLAB_DIR + "frame_title.png",
+	"portrait": HS4_PIXELLAB_DIR + "frame_portrait.png",
+	"dossier": HS4_PIXELLAB_DIR + "frame_dossier.png",
+	"radar": HS4_PIXELLAB_DIR + "frame_radar.png",
+	"ascension": HS4_PIXELLAB_DIR + "frame_ascension.png",
+	"asc_minus": HS4_PIXELLAB_DIR + "button_asc_minus.png",
+	"asc_plus": HS4_PIXELLAB_DIR + "button_asc_plus.png",
+	"choose": HS4_PIXELLAB_DIR + "button_choose.png",
+	"carousel": HS4_PIXELLAB_DIR + "frame_carousel.png",
+	"carousel_left": HS4_PIXELLAB_DIR + "button_carousel_left.png",
+	"carousel_right": HS4_PIXELLAB_DIR + "button_carousel_right.png",
+	"hero_slot": HS4_PIXELLAB_DIR + "frame_hero_slot.png",
+}
+const HS4_PIXELLAB_SOURCE_SIZE := {
+	"back": Vector2(460, 148),
+	"title": Vector2(1840, 184),
+	"portrait": Vector2(600, 820),
+	"dossier": Vector2(980, 820),
+	"radar": Vector2(780, 520),
+	"ascension": Vector2(780, 270),
+	"asc_minus": Vector2(132, 92),
+	"asc_plus": Vector2(132, 92),
+	"choose": Vector2(512, 118),
+	"carousel": Vector2(2432, 330),
+	"carousel_left": Vector2(132, 176),
+	"carousel_right": Vector2(132, 176),
+	"hero_slot": Vector2(196, 220),
+}
+const HS4_PIXELLAB_CONTENT_RECT := {
+	"back": Rect2(70, 38, 320, 72),
+	"title": Rect2(120, 42, 1600, 96),
+	"portrait": Rect2(72, 94, 456, 620),
+	"dossier": Rect2(92, 84, 796, 640),
+	"radar": Rect2(98, 57, 584, 406),
+	"ascension": Rect2(74, 50, 632, 183),
+	"asc_minus": Rect2(32, 22, 68, 48),
+	"asc_plus": Rect2(32, 22, 68, 48),
+	"choose": Rect2(70, 34, 372, 50),
+	"carousel": Rect2(110, 61, 2212, 220),
+	"carousel_left": Rect2(36, 42, 60, 92),
+	"carousel_right": Rect2(36, 42, 60, 92),
+	"hero_slot": Rect2(18, 18, 160, 160),
+}
+const HS4_PIXELLAB_LAYOUT_2K := {
+	"back": Rect2(100, 86, 460, 148),
+	"title": Rect2(240, 6, 1840, 184),
+	"portrait": Rect2(64, 178, 600, 820),
+	"dossier": Rect2(720, 178, 980, 820),
+	"radar": Rect2(1716, 178, 780, 520),
+	"ascension": Rect2(1714, 728, 780, 270),
+	"choose": Rect2(1012, 998, 512, 118),
+	"carousel": Rect2(64, 1080, 2432, 330),
+}
 
 
 func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
@@ -952,11 +1243,37 @@ func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
 	)
 
 
-func _hs4_place(ctrl: Control, parent: Control, canvas_size: Vector2, zone: Rect2) -> void:
-	var rect := _hs4_scaled_rect(zone, canvas_size)
-	ctrl.position = rect.position
-	ctrl.size = rect.size
-	parent.add_child(ctrl)
+func _hs4_pixellab_scale(viewport_size: Vector2) -> float:
+	return minf(viewport_size.x / HS4_DESIGN_BASE_2K.x, viewport_size.y / HS4_DESIGN_BASE_2K.y)
+
+
+func _hs4_pixellab_origin(viewport_size: Vector2, scale: float) -> Vector2:
+	return Vector2(
+		roundf((viewport_size.x - HS4_DESIGN_BASE_2K.x * scale) * 0.5),
+		roundf((viewport_size.y - HS4_DESIGN_BASE_2K.y * scale) * 0.5)
+	)
+
+
+func _hs4_pixellab_content_margins(slot: String, display_size: Vector2) -> Vector4:
+	if not HS4_PIXELLAB_SOURCE_SIZE.has(slot) or not HS4_PIXELLAB_CONTENT_RECT.has(slot):
+		return Vector4.ZERO
+	var source_size: Vector2 = HS4_PIXELLAB_SOURCE_SIZE[slot]
+	var content_rect: Rect2 = HS4_PIXELLAB_CONTENT_RECT[slot]
+	var scale_x := display_size.x / maxf(source_size.x, 1.0)
+	var scale_y := display_size.y / maxf(source_size.y, 1.0)
+	return Vector4(
+		roundf(content_rect.position.x * scale_x),
+		roundf(content_rect.position.y * scale_y),
+		roundf((source_size.x - content_rect.position.x - content_rect.size.x) * scale_x),
+		roundf((source_size.y - content_rect.position.y - content_rect.size.y) * scale_y)
+	)
+
+
+func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHITE) -> StyleBox:
+	if not HS4_PIXELLAB_PATHS.has(slot):
+		return _minimal_metal_frame_style("panel", tint)
+	var margins := _hs4_pixellab_content_margins(slot, display_size)
+	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
 
 
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
@@ -972,24 +1289,6 @@ func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_w
 	return style
 
 
-func _hs4_make_overlay_button(text: String, font_size: int) -> Button:
-	var button := Button.new()
-	button.text = text
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	button.add_theme_stylebox_override("normal", _hs4_overlay_style(Color(0.02, 0.015, 0.01, 0.04)))
-	button.add_theme_stylebox_override("hover", _hs4_overlay_style(Color(0.32, 0.18, 0.04, 0.16), Color(0.98, 0.76, 0.34, 0.8), 1))
-	button.add_theme_stylebox_override("focus", _hs4_overlay_style(Color(0.32, 0.18, 0.04, 0.18), Color(1.0, 0.86, 0.42, 0.95), 2))
-	button.add_theme_stylebox_override("pressed", _hs4_overlay_style(Color(0.05, 0.025, 0.015, 0.28), Color(0.86, 0.62, 0.22, 0.9), 1))
-	button.add_theme_stylebox_override("disabled", _hs4_overlay_style(Color(0.02, 0.02, 0.02, 0.12)))
-	button.add_theme_font_size_override("font_size", font_size)
-	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.72, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.72, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.9, 1.0, 0.96, 1.0))
-	return button
-
-
 func _hero_select_preview_sprite_frames(character_id: String) -> SpriteFrames:
 	var frames_path := "res://assets/sprites/characters/%s_spriteframes.tres" % character_id
 	if not ResourceLoader.exists(frames_path):
@@ -998,9 +1297,17 @@ func _hero_select_preview_sprite_frames(character_id: String) -> SpriteFrames:
 	if frames == null:
 		return null
 	for direction in HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS:
-		if frames.has_animation("move_%s" % direction) or frames.has_animation("walk_%s" % direction):
+		if not _hero_select_direction_animation_name(frames, direction).is_empty():
 			return frames
 	return null
+
+
+func _hero_select_direction_animation_name(frames: SpriteFrames, direction: String) -> String:
+	for prefix in ["idle", "move", "walk"]:
+		var animation_name := "%s_%s" % [prefix, direction]
+		if frames.has_animation(animation_name):
+			return animation_name
+	return ""
 
 
 func _set_hero_select_portrait_preview(portrait: TextureRect, character_id: String, config: Dictionary, preview_state: Dictionary) -> void:
@@ -1028,10 +1335,8 @@ func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state:
 	var directions := HERO_SELECT_PREVIEW_CLOCKWISE_DIRECTIONS
 	for attempt in range(directions.size()):
 		var direction := str(directions[posmod(direction_index + attempt, directions.size())])
-		var animation_name := "move_%s" % direction
-		if not frames.has_animation(animation_name):
-			animation_name = "walk_%s" % direction
-		if not frames.has_animation(animation_name):
+		var animation_name := _hero_select_direction_animation_name(frames, direction)
+		if animation_name.is_empty():
 			continue
 		var frame_count := maxi(frames.get_frame_count(animation_name), 1)
 		frame_index = posmod(frame_index, frame_count)
@@ -1047,6 +1352,116 @@ func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state:
 		return
 
 
+func _hs4_minimal_style(fill: Color, border := Color(0.0, 0.0, 0.0, 0.0), border_width := 0, radius := 4) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = fill
+	style.border_color = border
+	style.set_border_width_all(border_width)
+	style.set_corner_radius_all(radius)
+	style.content_margin_left = 10
+	style.content_margin_top = 8
+	style.content_margin_right = 10
+	style.content_margin_bottom = 8
+	return style
+
+
+func _apply_hs4_minimal_button_theme(button: Button, selected := false) -> void:
+	var normal_border := Color(0.70, 0.55, 0.26, 0.72) if selected else Color(0.18, 0.18, 0.18, 0.52)
+	var normal_fill := Color(0.03, 0.03, 0.032, 0.86) if selected else Color(0.0, 0.0, 0.0, 0.06)
+	button.add_theme_stylebox_override("normal", _hs4_minimal_style(normal_fill, normal_border, 1 if selected else 0, 3))
+	button.add_theme_stylebox_override("hover", _hs4_minimal_style(Color(0.12, 0.085, 0.035, 0.52), Color(0.96, 0.76, 0.35, 0.90), 1, 3))
+	button.add_theme_stylebox_override("focus", _hs4_minimal_style(Color(0.13, 0.09, 0.035, 0.58), Color(1.0, 0.86, 0.44, 1.0), 2, 3))
+	button.add_theme_stylebox_override("pressed", _hs4_minimal_style(Color(0.20, 0.11, 0.035, 0.70), Color(0.78, 0.52, 0.20, 0.95), 1, 3))
+	button.add_theme_stylebox_override("disabled", _hs4_minimal_style(Color(0.0, 0.0, 0.0, 0.16), Color(0.12, 0.12, 0.14, 0.48), 1, 3))
+	button.add_theme_color_override("font_color", Color(0.94, 0.88, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.78, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.78, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.48, 0.52, 1.0))
+
+
+func _hs4_stat_tooltip(stat_id: String, value: float, character_id: String) -> String:
+	var definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
+	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+	return "%s\nЗначение: %d\n\n%s\n\nВлияет на: %s\nФормула: %s\nИнтерпретация класса: %s" % [
+		stat_name,
+		int(round(value)),
+		str(definition.get("description", "")),
+		str(definition.get("influences", "")),
+		str(definition.get("formula", "")),
+		game.PROGRESSION_DATA.class_interpretation_text(character_id, stat_id),
+	]
+
+
+func _hs4_ascension_text(level: int) -> String:
+	var lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(level)
+	if lines.is_empty():
+		return "Уровень 0: без усложнений."
+	return "\n".join(lines)
+
+
+func _hs4_attribute_display_name(attr_id: String) -> String:
+	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
+		var item := entry as Dictionary
+		if str(item.get("id", "")) == attr_id:
+			return str(item.get("name", attr_id))
+	return str(game.PROGRESSION_DATA.STAT_NAMES.get(attr_id, attr_id))
+
+
+func _hs4_attribute_guidance_groups(character_id: String) -> Dictionary:
+	var groups := {
+		"primary": [],
+		"secondary": [],
+		"optional": [],
+	}
+	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
+		var item := entry as Dictionary
+		var attr_id := str(item.get("id", ""))
+		if attr_id == "":
+			continue
+		var relevance := str(game.PROGRESSION_DATA.attribute_relevance(attr_id, character_id))
+		if not groups.has(relevance):
+			relevance = "optional"
+		(groups[relevance] as Array).append(_hs4_attribute_display_name(attr_id))
+	return groups
+
+
+func _hs4_join_guidance_names(names: Array, max_items := 8) -> String:
+	if names.is_empty():
+		return "Нет."
+	var shown := PackedStringArray()
+	for i in range(mini(names.size(), max_items)):
+		shown.append(str(names[i]))
+	if names.size() > max_items:
+		shown.append("+%d" % (names.size() - max_items))
+	return ", ".join(shown)
+
+
+func _hs4_stat_fill_color(stat_id: String) -> Color:
+	var base := Color(0.92, 0.70, 0.28, 0.95)
+	if HERO_CLASS_COLORS.has(game.selected_character_id):
+		base = HERO_CLASS_COLORS[game.selected_character_id]
+	match stat_id:
+		"strength":
+			return Color(1.0, 0.34, 0.22, 0.95).lerp(base, 0.25)
+		"agility":
+			return Color(0.96, 0.76, 0.28, 0.95).lerp(base, 0.25)
+		"intelligence":
+			return Color(0.62, 0.42, 1.0, 0.95).lerp(base, 0.25)
+		"perception":
+			return Color(0.44, 0.72, 1.0, 0.95).lerp(base, 0.25)
+		"energy":
+			return Color(0.24, 0.88, 1.0, 0.95).lerp(base, 0.25)
+		"knowledge":
+			return Color(0.52, 0.92, 0.54, 0.95).lerp(base, 0.25)
+		"endurance":
+			return Color(0.92, 0.52, 0.32, 0.95).lerp(base, 0.25)
+		"leadership":
+			return Color(1.0, 0.86, 0.42, 0.95).lerp(base, 0.25)
+		_:
+			return base
+
+
 func _build_character_select_v4() -> void:
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -1057,61 +1472,127 @@ func _build_character_select_v4() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "hero_select")
 
 	var vp: Vector2 = root.get_viewport_rect().size
 	if vp.x <= 0.0 or vp.y <= 0.0:
 		vp = Vector2(1600.0, 900.0)
-	var mx: float = round(vp.x * 0.022)
-	var my: float = round(vp.y * 0.028)
-	var top_h: float = round(vp.y * 0.085)
-	var car_h: float = round(vp.y * 0.17)
-	var gap: float = round(vp.x * 0.014)
-	var content_w: float = vp.x - mx * 2.0
-	var mid_y: float = my + top_h + round(vp.y * 0.012)
-	var car_y: float = vp.y - my - car_h
-	var mid_h: float = car_y - mid_y - round(vp.y * 0.012)
-	var left_w: float = round(content_w * 0.27)
-	var right_w: float = round(content_w * 0.255)
-	var center_w: float = content_w - left_w - right_w - gap * 2.0
-	var pad: float = round(vp.y * 0.02)
+	var layout_scale := clampf(vp.y / 900.0, 0.76, 1.18)
 
-	var title := Label.new()
-	title.text = "Выбор героя"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.position = Vector2(mx, my)
-	title.size = Vector2(content_w, top_h)
-	title.add_theme_font_size_override("font_size", maxi(20, int(round(vp.y * 0.04))))
-	title.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(title)
+	var black_background := ColorRect.new()
+	black_background.name = "HS4BlackBackground"
+	black_background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	black_background.color = Color.BLACK
+	black_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(black_background)
+
+	var margin_x := clampf(vp.x * 0.035, 28.0, 76.0)
+	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
+	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
+	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
+	var carousel_slot_size := clampf(vp.y * 0.282, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
+	var carousel_y := vp.y - bottom_margin - carousel_h
+	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
+	var ascension_h := clampf(vp.y * 0.12, HS4_MINIMAL_ASCENSION_MIN_HEIGHT, HS4_MINIMAL_ASCENSION_MAX_HEIGHT)
+	var ascension_gap := clampf(vp.y * 0.012, 8.0, 12.0)
+	var ascension_reserved_h := 148.0
+	if vp.y < 720.0:
+		ascension_reserved_h = 88.0
+	elif vp.y < 1000.0:
+		ascension_reserved_h = 136.0
+	var left_w := clampf(vp.x * 0.33, 370.0, 660.0)
+	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
+	var portrait_size := clampf(minf(left_w, top_h - ascension_reserved_h - ascension_gap), preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
+	var left_x := margin_x
+	var dossier_x := left_x + left_w + gap
+	var dossier_w := maxf(420.0, vp.x - margin_x - dossier_x)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	var back_button_size := Vector2(maxf(132.0, round(vp.x * 0.085)), clampf(round(top_h * 0.72), 44.0, 54.0))
-	back_button.custom_minimum_size = back_button_size
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		back_button.add_theme_stylebox_override(state, _compact_button_style(state == "hover" or state == "focus", state == "pressed", state == "disabled"))
-	back_button.position = Vector2(mx, my + round((top_h - back_button_size.y) * 0.5))
+	back_button.position = Vector2(margin_x, maxf(12.0, top_y - 50.0))
+	_set_action_button_size(back_button, 124.0, 44.0)
+	_apply_hs4_minimal_button_theme(back_button)
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(14.0 * layout_scale))), 0, 24))
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
 
-	var portrait_panel := Panel.new()
-	portrait_panel.position = Vector2(mx, mid_y)
-	portrait_panel.size = Vector2(left_w, mid_h)
-	portrait_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_portrait_panel", portrait_panel.size))
+	var portrait_panel := Control.new()
+	portrait_panel.name = "HS4PortraitFrame"
+	portrait_panel.position = Vector2(left_x + maxf(0.0, (left_w - portrait_size) * 0.5), top_y)
+	portrait_panel.size = Vector2(portrait_size, portrait_size)
+	portrait_panel.custom_minimum_size = portrait_panel.size
+	portrait_panel.clip_contents = true
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(portrait_panel)
-	var portrait_safe := _overhaul_2k_content_margins("hs4_portrait_panel", portrait_panel.size)
 	var portrait := TextureRect.new()
 	portrait.name = "HS4Portrait"
+	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.position = Vector2(portrait_safe.x, portrait_safe.y)
-	portrait.size = Vector2(left_w - portrait_safe.x - portrait_safe.z, mid_h - portrait_safe.y - portrait_safe.w)
+	portrait.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait_panel.add_child(portrait)
+	var hs4_alpha_bbox_cache := {}
+	var texture_alpha_bbox := func(texture: Texture2D) -> Rect2:
+		var texture_size := Vector2(512.0, 512.0)
+		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
+			texture_size = texture.get_size()
+		if texture == null:
+			return Rect2(Vector2.ZERO, texture_size)
+		var key := texture.resource_path
+		if key.is_empty():
+			key = str(texture.get_rid())
+		if hs4_alpha_bbox_cache.has(key):
+			return hs4_alpha_bbox_cache[key]
+		var bbox := Rect2(Vector2.ZERO, texture_size)
+		var image := texture.get_image()
+		if image != null and not image.is_empty():
+			var min_x := image.get_width()
+			var min_y := image.get_height()
+			var max_x := -1
+			var max_y := -1
+			var alpha_threshold := 0.02
+			for y in range(image.get_height()):
+				for x in range(image.get_width()):
+					if image.get_pixel(x, y).a <= alpha_threshold:
+						continue
+					min_x = mini(min_x, x)
+					min_y = mini(min_y, y)
+					max_x = maxi(max_x, x)
+					max_y = maxi(max_y, y)
+			if max_x >= min_x and max_y >= min_y:
+				bbox = Rect2(Vector2(float(min_x), float(min_y)), Vector2(float(max_x - min_x + 1), float(max_y - min_y + 1)))
+		hs4_alpha_bbox_cache[key] = bbox
+		return bbox
+	var position_alpha_cropped_texture := func(texture_rect: TextureRect, texture: Texture2D, parent_size: Vector2, target_visible_size: Vector2, visible_bottom_y: float, visible_center_x: float) -> void:
+		if texture_rect == null or not is_instance_valid(texture_rect):
+			return
+		var texture_size := Vector2(512.0, 512.0)
+		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
+			texture_size = texture.get_size()
+		var bbox: Rect2 = texture_alpha_bbox.call(texture)
+		var bbox_w := maxf(1.0, bbox.size.x)
+		var bbox_h := maxf(1.0, bbox.size.y)
+		var visible_target := Vector2(maxf(1.0, target_visible_size.x), maxf(1.0, target_visible_size.y))
+		var draw_scale := minf(visible_target.x / bbox_w, visible_target.y / bbox_h)
+		draw_scale = maxf(draw_scale, 0.01)
+		var draw_size := Vector2(roundf(texture_size.x * draw_scale), roundf(texture_size.y * draw_scale))
+		var visible_texture_center_x := bbox.position.x + bbox.size.x * 0.5
+		var visible_texture_bottom_y := bbox.position.y + bbox.size.y
+		var left := roundf(visible_center_x - visible_texture_center_x * draw_scale)
+		var top := roundf(visible_bottom_y - visible_texture_bottom_y * draw_scale)
+		texture_rect.anchor_left = 0.0
+		texture_rect.anchor_top = 0.0
+		texture_rect.anchor_right = 0.0
+		texture_rect.anchor_bottom = 0.0
+		texture_rect.offset_left = left
+		texture_rect.offset_top = top
+		texture_rect.offset_right = left + draw_size.x
+		texture_rect.offset_bottom = top + draw_size.y
+	var position_main_portrait := func(texture: Texture2D) -> void:
+		var floor_y := portrait_panel.size.y - maxf(6.0, roundf(portrait_panel.size.y * 0.025))
+		var visible_target := Vector2(portrait_panel.size.x * 0.86, portrait_panel.size.y * 0.92)
+		position_alpha_cropped_texture.call(portrait, texture, portrait_panel.size, visible_target, floor_y, portrait_panel.size.x * 0.5)
 	var portrait_preview_state := {
 		"character_id": "",
 		"sprite_frames": null,
@@ -1125,226 +1606,370 @@ func _build_character_select_v4() -> void:
 	root.add_child(portrait_preview_timer)
 	portrait_preview_timer.timeout.connect(func() -> void:
 		_advance_hero_select_portrait_preview(portrait, portrait_preview_state)
+		position_main_portrait.call(portrait.texture)
 	)
 
-	var dossier_panel := Panel.new()
-	dossier_panel.position = Vector2(mx + left_w + gap, mid_y)
-	dossier_panel.size = Vector2(center_w, mid_h)
-	dossier_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_dossier_panel", dossier_panel.size))
-	dossier_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var dossier_panel := PanelContainer.new()
+	dossier_panel.name = "HS4DossierFrame"
+	dossier_panel.position = Vector2(dossier_x, top_y)
+	dossier_panel.size = Vector2(dossier_w, top_h)
+	dossier_panel.add_theme_stylebox_override("panel", _hs4_minimal_style(Color(0.018, 0.018, 0.022, 0.72), Color(0.34, 0.28, 0.18, 0.64), 1, 4))
+	dossier_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(dossier_panel)
-	var dossier_safe := _overhaul_2k_content_margins("hs4_dossier_panel", dossier_panel.size)
-	var dossier := VBoxContainer.new()
-	dossier.position = Vector2(dossier_safe.x, dossier_safe.y)
-	dossier.size = Vector2(center_w - dossier_safe.x - dossier_safe.z, mid_h - dossier_safe.y - dossier_safe.w)
-	dossier.add_theme_constant_override("separation", maxi(4, int(round(vp.y * 0.012))))
-	dossier.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier_panel.add_child(dossier)
+
+	var dossier_margin := MarginContainer.new()
+	dossier_margin.name = "HS4DossierContentSafe"
+	dossier_margin.add_theme_constant_override("margin_left", maxi(14, int(round(20.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_top", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_right", maxi(14, int(round(20.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_bottom", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_panel.add_child(dossier_margin)
+
+	var dossier_scroll := ScrollContainer.new()
+	dossier_scroll.name = "HS4DossierScroll"
+	dossier_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	dossier_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	dossier_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dossier_margin.add_child(dossier_scroll)
+
+	var dossier_content := VBoxContainer.new()
+	dossier_content.name = "HS4DossierContent"
+	dossier_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dossier_content.add_theme_constant_override("separation", maxi(5, int(round(8.0 * layout_scale))))
+	dossier_scroll.add_child(dossier_content)
 
 	var name_label := Label.new()
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", maxi(18, int(round(vp.y * 0.035))))
-	name_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
-	dossier.add_child(name_label)
+	name_label.name = "HS4NameLabel"
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
+	name_label.add_theme_color_override("font_color", Color(0.98, 0.88, 0.56, 1.0))
+	dossier_content.add_child(name_label)
 
 	var desc_label := Label.new()
+	desc_label.name = "HS4Description"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_label.add_theme_font_size_override("font_size", maxi(11, int(round(vp.y * 0.019))))
+	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	desc_label.max_lines_visible = 3
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
 	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
-	dossier.add_child(desc_label)
+	dossier_content.add_child(desc_label)
 
-	# SCRUM-493: строка стартового оружия класса (бриф v4). Trim-ellipsis, чтобы 3 названия
-	# не вылезали за панель на 1280. Заполняется в refresh через _hero_weapon_names.
+	var strengths_label := Label.new()
+	strengths_label.name = "HS4Strengths"
+	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	strengths_label.max_lines_visible = 2
+	strengths_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
+	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
+	dossier_content.add_child(strengths_label)
+
+	var weaknesses_label := Label.new()
+	weaknesses_label.name = "HS4Weaknesses"
+	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	weaknesses_label.max_lines_visible = 2
+	weaknesses_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
+	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
+	dossier_content.add_child(weaknesses_label)
+
 	var weapon_label := Label.new()
 	weapon_label.name = "HS4Weapon"
 	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapon_label.max_lines_visible = 1
+	weapon_label.max_lines_visible = 2
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	weapon_label.add_theme_font_size_override("font_size", maxi(11, int(round(vp.y * 0.019))))
-	weapon_label.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 1.0))
+	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	weapon_label.add_theme_color_override("font_color", Color(0.84, 0.90, 1.0, 0.96))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier.add_child(weapon_label)
+	dossier_content.add_child(weapon_label)
 
-	# SCRUM-493: 5 строк статов = [иконка] [название] [бар до глобального максимума] [значение],
-	# вместо плоского GridContainer "%s: %d". Бар красится в цвет стата (ICON_COLORS), как радар.
-	var stats_box := VBoxContainer.new()
-	stats_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stats_box.add_theme_constant_override("separation", maxi(3, int(round(vp.y * 0.007))))
-	stats_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier.add_child(stats_box)
+	var identity_label := Label.new()
+	identity_label.name = "HS4Identity"
+	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	identity_label.max_lines_visible = 2
+	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
+	identity_label.add_theme_color_override("font_color", Color(0.72, 0.76, 0.84, 1.0))
+	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dossier_content.add_child(identity_label)
+
+	var stats_title := Label.new()
+	stats_title.name = "HS4StatsTitle"
+	stats_title.text = "Основные характеристики"
+	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	stats_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	stats_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
+	dossier_content.add_child(stats_title)
+
+	var stats_grid := GridContainer.new()
+	stats_grid.name = "HS4StatsGrid"
+	stats_grid.columns = 2
+	stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_grid.add_theme_constant_override("h_separation", maxi(8, int(round(12.0 * layout_scale))))
+	stats_grid.add_theme_constant_override("v_separation", maxi(5, int(round(7.0 * layout_scale))))
+	dossier_content.add_child(stats_grid)
+	var stat_buttons := {}
+	var stat_fill_nodes := {}
 	var stat_value_labels := {}
-	var stat_bars := {}
-	var stat_icon_px := maxi(18, int(round(vp.y * 0.028)))
-	var stat_font_px := maxi(11, int(round(vp.y * 0.019)))
-	var stat_name_min_w := maxf(float(center_w) * 0.30, 96.0)
-	var stat_value_min_w := maxf(float(center_w) * 0.10, 36.0)
-	var stat_bar_min_h := maxi(8, int(round(vp.y * 0.016)))
-	for sid in HS4_DOSSIER_STATS:
-		var srow := HBoxContainer.new()
-		srow.name = "HS4StatRow_%s" % sid
-		srow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		srow.add_theme_constant_override("separation", maxi(6, int(round(vp.x * 0.008))))
-		srow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var icon: Control = game.UIIconRegistry.make_icon(sid, Vector2(stat_icon_px, stat_icon_px))
-		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		srow.add_child(icon)
-		var name_lbl := Label.new()
-		name_lbl.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
-		name_lbl.custom_minimum_size = Vector2(stat_name_min_w, 0.0)
-		name_lbl.add_theme_font_size_override("font_size", stat_font_px)
-		name_lbl.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
-		name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		srow.add_child(name_lbl)
-		var bar := ProgressBar.new()
-		bar.show_percentage = false
-		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		bar.custom_minimum_size = Vector2(0.0, stat_bar_min_h)
-		bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var bar_bg := StyleBoxFlat.new()
-		bar_bg.bg_color = Color(0.10, 0.12, 0.16, 0.85)
-		bar_bg.set_corner_radius_all(maxi(2, stat_bar_min_h / 3))
-		var bar_fill := StyleBoxFlat.new()
-		bar_fill.bg_color = game.UIIconRegistry.ICON_COLORS.get(sid, Color(0.95, 0.78, 0.34, 1.0))
-		bar_fill.set_corner_radius_all(maxi(2, stat_bar_min_h / 3))
-		bar.add_theme_stylebox_override("background", bar_bg)
-		bar.add_theme_stylebox_override("fill", bar_fill)
-		srow.add_child(bar)
-		var value_lbl := Label.new()
-		value_lbl.custom_minimum_size = Vector2(stat_value_min_w, 0.0)
-		value_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		value_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		value_lbl.add_theme_font_size_override("font_size", stat_font_px)
-		value_lbl.add_theme_color_override("font_color", Color(0.92, 0.94, 0.98, 1.0))
-		value_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		srow.add_child(value_lbl)
-		stats_box.add_child(srow)
-		stat_bars[sid] = bar
-		stat_value_labels[sid] = value_lbl
+	var stat_button_w := maxf(180.0, (dossier_w - 64.0) * 0.5)
+	var stat_button_h := maxf(38.0, roundf(42.0 * layout_scale))
+	for sid in HS4_MINIMAL_BASE_STATS:
+		var stat_button := Button.new()
+		stat_button.name = "HS4Stat_%s" % sid
+		stat_button.custom_minimum_size = Vector2(stat_button_w, stat_button_h)
+		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
+		stat_button.focus_mode = Control.FOCUS_ALL
+		stat_button.text = ""
+		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
+		_apply_hs4_minimal_button_theme(stat_button)
+		var stat_row := HBoxContainer.new()
+		stat_row.name = "HS4StatLine_%s" % sid
+		stat_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+		stat_row.offset_left = 8.0
+		stat_row.offset_right = -8.0
+		stat_row.offset_top = 5.0
+		stat_row.offset_bottom = -5.0
+		stat_row.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stat_button.add_child(stat_row)
+		var stat_name := Label.new()
+		stat_name.name = "HS4StatName_%s" % sid
+		stat_name.custom_minimum_size = Vector2(maxf(72.0, 92.0 * layout_scale), 0.0)
+		stat_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
+		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		stat_name.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
+		stat_name.add_theme_color_override("font_color", Color(0.88, 0.84, 0.74, 1.0))
+		stat_row.add_child(stat_name)
+		var bar_bg := ColorRect.new()
+		bar_bg.name = "HS4StatBar_%s" % sid
+		bar_bg.custom_minimum_size = Vector2(maxf(72.0, 126.0 * layout_scale), maxf(10.0, 12.0 * layout_scale))
+		bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar_bg.color = Color(0.09, 0.085, 0.075, 0.92)
+		bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stat_row.add_child(bar_bg)
+		var bar_fill := ColorRect.new()
+		bar_fill.name = "HS4StatBarFill_%s" % sid
+		bar_fill.set_anchors_preset(Control.PRESET_FULL_RECT)
+		bar_fill.anchor_right = 0.5
+		bar_fill.color = _hs4_stat_fill_color(sid)
+		bar_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		bar_bg.add_child(bar_fill)
+		var stat_value := Label.new()
+		stat_value.name = "HS4StatValue_%s" % sid
+		stat_value.custom_minimum_size = Vector2(maxf(22.0, 28.0 * layout_scale), 0.0)
+		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		stat_value.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
+		stat_value.add_theme_color_override("font_color", Color(0.96, 0.90, 0.70, 1.0))
+		stat_row.add_child(stat_value)
+		stats_grid.add_child(stat_button)
+		stat_buttons[sid] = stat_button
+		stat_fill_nodes[sid] = bar_fill
+		stat_value_labels[sid] = stat_value
 
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier.add_child(spacer)
+	var guidance_title := Label.new()
+	guidance_title.name = "HS4BuildGuidanceTitle"
+	guidance_title.text = "Подсказки билда"
+	guidance_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	guidance_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	guidance_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
+	dossier_content.add_child(guidance_title)
 
-	var asc_box := HBoxContainer.new()
-	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_box.add_theme_constant_override("separation", maxi(8, int(round(vp.x * 0.01))))
-	dossier.add_child(asc_box)
-	var asc_minus := _make_button("−")
-	asc_minus.name = "AscensionMinusButton"
-	_set_action_button_size(asc_minus, vp.x * 0.04, vp.y * 0.05)
-	_apply_overhaul_2k_button_theme(asc_minus, "hs4_asc_btn", asc_minus.custom_minimum_size)
-	asc_box.add_child(asc_minus)
+	var guidance_labels := {}
+	for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+		var guide_label := Label.new()
+		guide_label.name = "HS4BuildGuidance_%s" % relevance
+		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		guide_label.max_lines_visible = 2 if relevance != "optional" else 1
+		guide_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
+		guide_label.add_theme_color_override("font_color", Color(0.78, 0.82, 0.90, 1.0))
+		dossier_content.add_child(guide_label)
+		guidance_labels[relevance] = guide_label
+
+	var ascension_panel := VBoxContainer.new()
+	ascension_panel.name = "HS4AscensionFrame"
+	ascension_panel.position = Vector2(portrait_panel.position.x, portrait_panel.position.y + portrait_size + ascension_gap)
+	ascension_panel.size = Vector2(portrait_size, ascension_h)
+	ascension_panel.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
+	ascension_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(ascension_panel)
+
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.custom_minimum_size = Vector2(vp.x * 0.13, 0.0)
-	asc_label.add_theme_font_size_override("font_size", maxi(13, int(round(vp.y * 0.022))))
+	asc_label.custom_minimum_size = Vector2(0.0, maxf(20.0, 26.0 * layout_scale))
+	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
 	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
-	asc_box.add_child(asc_label)
+	asc_label.visible = vp.y >= 900.0
+	ascension_panel.add_child(asc_label)
+
+	var asc_intro := Label.new()
+	asc_intro.name = "HS4AscensionIntro"
+	asc_intro.text = "Возвышение усложняет забег и открывает мета-прогресс персонажа после победы над боссом."
+	asc_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	asc_intro.max_lines_visible = 1
+	asc_intro.visible = false
+	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_intro.add_theme_color_override("font_color", Color(0.78, 0.80, 0.86, 1.0))
+	ascension_panel.add_child(asc_intro)
+
+	var asc_action_row := HBoxContainer.new()
+	asc_action_row.name = "HS4AscensionActionRow"
+	asc_action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	asc_action_row.add_theme_constant_override("separation", maxi(6, int(round(9.0 * layout_scale))))
+	ascension_panel.add_child(asc_action_row)
+	var asc_box := HBoxContainer.new()
+	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+	asc_action_row.add_child(asc_box)
+	var asc_minus := _make_button("−")
+	asc_minus.name = "AscensionMinusButton"
+	var asc_button_size := Vector2(maxf(46.0, 52.0 * layout_scale), maxf(40.0, 46.0 * layout_scale))
+	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
+	_apply_hs4_minimal_button_theme(asc_minus)
+	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
+	asc_box.add_child(asc_minus)
+	var asc_stepper_label := Label.new()
+	asc_stepper_label.name = "HS4AscensionValue"
+	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	asc_stepper_label.custom_minimum_size = Vector2(maxf(76.0, 92.0 * layout_scale), asc_button_size.y)
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
+	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
-	_set_action_button_size(asc_plus, vp.x * 0.04, vp.y * 0.05)
-	_apply_overhaul_2k_button_theme(asc_plus, "hs4_asc_btn", asc_plus.custom_minimum_size)
+	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
+	_apply_hs4_minimal_button_theme(asc_plus)
+	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_plus)
-
-	var asc_mods := Label.new()
-	asc_mods.name = "AscensionModsLabel"
-	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 2
-	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", maxi(10, int(round(vp.y * 0.017))))
-	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	dossier.add_child(asc_mods)
 
 	var select_button := _make_button("Выбрать")
 	select_button.name = "HS4ChooseButton"
 	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(select_button, vp.x * 0.2, vp.y * 0.062)
-	_apply_overhaul_2k_button_theme(select_button, "hs4_choose_btn", select_button.custom_minimum_size)
-	dossier.add_child(select_button)
+	_set_action_button_size(select_button, maxf(124.0, minf(190.0, portrait_size * 0.34)), asc_button_size.y)
+	_apply_hs4_minimal_button_theme(select_button, true)
+	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	asc_action_row.add_child(select_button)
 
-	var radar_panel := Panel.new()
-	radar_panel.position = Vector2(mx + left_w + gap + center_w + gap, mid_y)
-	radar_panel.size = Vector2(right_w, mid_h)
-	radar_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_radar_panel", radar_panel.size))
-	radar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(radar_panel)
-	var radar_safe := _overhaul_2k_content_margins("hs4_radar_panel", radar_panel.size)
-	var radar := HeroStatRadar.new()
-	radar.name = "HS4Radar"
-	radar.position = Vector2(radar_safe.x, radar_safe.y)
-	radar.size = Vector2(right_w - radar_safe.x - radar_safe.z, mid_h - radar_safe.y - radar_safe.w)
-	radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	radar_panel.add_child(radar)
+	var asc_mods := Label.new()
+	asc_mods.name = "AscensionModsLabel"
+	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	asc_mods.max_lines_visible = 1 if vp.y < 1200.0 else 2
+	asc_mods.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
+	ascension_panel.add_child(asc_mods)
 
-	var carousel_panel := Panel.new()
-	carousel_panel.position = Vector2(mx, car_y)
-	carousel_panel.size = Vector2(content_w, car_h)
-	carousel_panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("hs4_carousel_panel", carousel_panel.size))
+	var carousel_panel := Control.new()
+	carousel_panel.name = "HS4CarouselFrame"
+	carousel_panel.position = Vector2(margin_x, carousel_y)
+	carousel_panel.size = Vector2(vp.x - margin_x * 2.0, carousel_h)
 	carousel_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(carousel_panel)
-	var carousel_safe := _overhaul_2k_content_margins("hs4_carousel_panel", carousel_panel.size)
 	var carousel := Control.new()
 	carousel.name = "HS4Carousel"
-	carousel.position = Vector2(carousel_safe.x, carousel_safe.y)
-	carousel.size = Vector2(content_w - carousel_safe.x - carousel_safe.z, car_h - carousel_safe.y - carousel_safe.w)
+	carousel.position = Vector2.ZERO
+	carousel.size = carousel_panel.size
 	carousel.mouse_filter = Control.MOUSE_FILTER_PASS
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
-	var carousel_h: float = carousel.size.y
-	var cpad: float = round(carousel_h * 0.1)
-	var arrow_w: float = round(carousel_h * 0.5)
-	var slot_h: float = carousel_h - cpad * 2.0
-	var slot_w: float = slot_h
-	var slot_gap: float = maxf(0.0, (carousel_w - arrow_w * 2.0 - cpad * 2.0 - slot_w * float(HS4_CAROUSEL_SLOTS)) / float(maxi(1, HS4_CAROUSEL_SLOTS - 1)))
-
-	var left_arrow := _make_button("◄")
-	left_arrow.name = "HS4CarouselPrevButton"
-	_set_action_button_size(left_arrow, arrow_w, slot_h * 0.8)
-	_apply_overhaul_2k_button_theme(left_arrow, "hs4_asc_btn", left_arrow.custom_minimum_size)
-	left_arrow.position = Vector2(cpad, round((carousel_h - slot_h * 0.8) * 0.5))
-	carousel.add_child(left_arrow)
-	var right_arrow := _make_button("►")
-	right_arrow.name = "HS4CarouselNextButton"
-	_set_action_button_size(right_arrow, arrow_w, slot_h * 0.8)
-	_apply_overhaul_2k_button_theme(right_arrow, "hs4_asc_btn", right_arrow.custom_minimum_size)
-	right_arrow.position = Vector2(carousel_w - cpad - arrow_w, round((carousel_h - slot_h * 0.8) * 0.5))
-	carousel.add_child(right_arrow)
-
+	var carousel_area_h: float = carousel.size.y
+	var arrow_size := Vector2(maxf(64.0, carousel_slot_size * 0.30), carousel_slot_size)
+	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
+	var slot_label_h := clampf(roundf(slot_size.y * 0.17), 26.0, 34.0)
+	var slot_label_gap := maxf(3.0, roundf(slot_size.y * 0.02))
+	var slot_label_margin_x := maxf(6.0, roundf(slot_size.x * 0.04))
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
 	if roster.is_empty():
 		return
+	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 8.0))), 3, roster.size())
+	var slot_gap: float = maxf(8.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
+	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
+	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
+
+	var left_arrow := _make_button("<")
+	left_arrow.name = "HS4CarouselPrevButton"
+	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
+	_apply_hs4_minimal_button_theme(left_arrow)
+	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	left_arrow.position = Vector2(0.0, arrow_y)
+	carousel.add_child(left_arrow)
+	var right_arrow := _make_button(">")
+	right_arrow.name = "HS4CarouselNextButton"
+	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
+	_apply_hs4_minimal_button_theme(right_arrow)
+	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
+	carousel.add_child(right_arrow)
+
 	if not roster.has(game.selected_character_id):
 		game.selected_character_id = str(roster[0])
 
 	var slot_buttons: Array = []
-	for i in range(HS4_CAROUSEL_SLOTS):
-		var slot := TextureButton.new()
+	var slot_portraits: Array = []
+	var slot_labels: Array = []
+	for i in range(visible_slot_count):
+		var slot := Button.new()
 		slot.name = "HS4CarouselSlot_%02d" % i
 		slot.focus_mode = Control.FOCUS_ALL
-		slot.ignore_texture_size = true
-		slot.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		slot.text = ""
+		slot.clip_contents = true
 		slot.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		slot.position = Vector2(cpad + arrow_w + i * (slot_w + slot_gap), cpad)
-		slot.size = Vector2(slot_w, slot_h)
+		slot.position = Vector2(arrow_size.x + slot_gap + i * (slot_size.x + slot_gap), slot_y)
+		slot.size = slot_size
+		slot.custom_minimum_size = slot_size
+		_apply_hs4_minimal_button_theme(slot)
+		var slot_portrait := TextureRect.new()
+		slot_portrait.name = "HS4CarouselPortrait_%02d" % i
+		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		slot_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		slot_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		slot_portrait.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		slot_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(slot_portrait)
+		var slot_label := Label.new()
+		slot_label.name = "HS4CarouselLabel_%02d" % i
+		slot_label.text = ""
+		slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		slot_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		slot_label.clip_text = true
+		slot_label.position = Vector2(slot_label_margin_x, slot_size.y - slot_label_h)
+		slot_label.size = Vector2(slot_size.x - slot_label_margin_x * 2.0, slot_label_h)
+		slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
+		slot_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 0.94))
+		slot_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.88))
+		slot_label.add_theme_constant_override("outline_size", 3)
+		slot.add_child(slot_label)
 		carousel.add_child(slot)
 		slot_buttons.append(slot)
+		slot_portraits.append(slot_portrait)
+		slot_labels.append(slot_label)
 
 	var state := {"offset": 0}
 	var sel0: int = roster.find(game.selected_character_id)
-	state["offset"] = clampi(sel0 - HS4_CAROUSEL_SLOTS / 2, 0, maxi(0, roster.size() - HS4_CAROUSEL_SLOTS))
-	var stat_maxima := _hero_radar_global_maxima()
+	state["offset"] = clampi(sel0 - visible_slot_count / 2, 0, maxi(0, roster.size() - visible_slot_count))
+	var position_carousel_portrait := func(slot_portrait: TextureRect, texture: Texture2D) -> void:
+		var label_top := slot_size.y - slot_label_h
+		var visible_bottom_y := label_top - slot_label_gap
+		var visible_target := Vector2(slot_size.x * 0.94, maxf(24.0, visible_bottom_y * 0.96))
+		position_alpha_cropped_texture.call(slot_portrait, texture, slot_size, visible_target, visible_bottom_y, slot_size.x * 0.5)
 
 	var refresh_focus_graph := func(grab_default := false) -> void:
 		var visible_slots: Array = []
 		for slot in slot_buttons:
-			var slot_button := slot as TextureButton
+			var slot_button := slot as Button
 			slot_button.focus_mode = Control.FOCUS_ALL
 			if slot_button.visible:
 				visible_slots.append(slot_button)
@@ -1388,15 +2013,15 @@ func _build_character_select_v4() -> void:
 		if selected_index < 0:
 			selected_index = 0
 			game.selected_character_id = str(roster[0])
-		var max_offset: int = maxi(0, roster.size() - HS4_CAROUSEL_SLOTS)
-		if roster.size() <= HS4_CAROUSEL_SLOTS:
+		var max_offset: int = maxi(0, roster.size() - visible_slot_count)
+		if roster.size() <= visible_slot_count:
 			state["offset"] = 0
 			return
 		var offset: int = int(state["offset"])
 		if selected_index < offset:
 			offset = selected_index
-		elif selected_index >= offset + HS4_CAROUSEL_SLOTS:
-			offset = selected_index - HS4_CAROUSEL_SLOTS + 1
+		elif selected_index >= offset + visible_slot_count:
+			offset = selected_index - visible_slot_count + 1
 		state["offset"] = clampi(offset, 0, max_offset)
 
 	var refresh := func() -> void:
@@ -1405,35 +2030,68 @@ func _build_character_select_v4() -> void:
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
 		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
+		position_main_portrait.call(portrait.texture)
 		name_label.text = str(config.get("title", cid))
 		desc_label.text = str(config.get("description", ""))
+		strengths_label.text = "Сильные стороны: %s" % str(config.get("strengths", ""))
+		weaknesses_label.text = "Слабые стороны: %s" % str(config.get("weaknesses", ""))
 		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)
-		# SCRUM-493: бар каждого стата масштабируется к глобальному максимуму (stat_maxima,
-		# захвачен выше из _hero_radar_global_maxima); значение — справа. Не пересчитывать maxima.
-		for sid in HS4_DOSSIER_STATS:
+		var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(cid)
+		var main_attr: String = str(game.PROGRESSION_DATA.class_main_attribute(cid))
+		identity_label.text = "%s: %s" % [str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)), str(identity.get("summary", ""))]
+		for sid in HS4_MINIMAL_BASE_STATS:
 			var sval := float(stats.get(sid, 0.0))
-			var smax := maxf(float(stat_maxima.get(sid, 1.0)), 1.0)
-			var sbar := stat_bars[sid] as ProgressBar
-			sbar.max_value = smax
-			sbar.value = clampf(sval, 0.0, smax)
-			(stat_value_labels[sid] as Label).text = "%d" % int(round(sval))
+			var stat_button := stat_buttons[sid] as Button
+			stat_button.text = ""
+			stat_button.tooltip_text = _hs4_stat_tooltip(sid, sval, cid)
+			var stat_fill := stat_fill_nodes[sid] as ColorRect
+			stat_fill.anchor_right = clampf(sval / 10.0, 0.04, 1.0)
+			stat_fill.color = _hs4_stat_fill_color(sid)
+			var stat_value := stat_value_labels[sid] as Label
+			stat_value.text = str(int(round(sval)))
+		var guidance_groups := _hs4_attribute_guidance_groups(cid)
+		for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+			var guide_label := guidance_labels[relevance] as Label
+			var title := str(HeroSelectConstants.HERO_BUILD_RELEVANCE_TITLES.get(relevance, relevance))
+			var names: Array = guidance_groups.get(relevance, [])
+			guide_label.text = "%s: %s" % [title, _hs4_join_guidance_names(names, 8 if relevance != "optional" else 6)]
+			var tooltip_names := PackedStringArray()
+			for name in names:
+				tooltip_names.append(str(name))
+			guide_label.tooltip_text = "%s\n%s" % [title, ", ".join(tooltip_names)]
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
-		asc_label.text = "Возв.: %d / %d" % [game.selected_ascension_level, maxl]
+		asc_label.text = "Возвышение"
+		asc_stepper_label.text = "%d / %d" % [game.selected_ascension_level, maxl]
 		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
-		radar.setup(stats, stat_maxima, game.PROGRESSION_DATA.STAT_NAMES, HERO_RADAR_STATS, HERO_CLASS_COLORS.get(cid, Color(0.95, 0.78, 0.34, 0.82)))
+		var ascension_tooltip := _hs4_ascension_text(game.selected_ascension_level)
+		asc_mods.tooltip_text = ascension_tooltip
+		ascension_panel.tooltip_text = ascension_tooltip
+		asc_minus.disabled = game.selected_ascension_level <= 0
+		asc_plus.disabled = game.selected_ascension_level >= maxl
 		var off: int = int(state["offset"])
-		for i in range(HS4_CAROUSEL_SLOTS):
+		for i in range(visible_slot_count):
 			var idx: int = off + i
-			var slot: TextureButton = slot_buttons[i]
+			var slot: Button = slot_buttons[i]
+			var slot_portrait := slot_portraits[i] as TextureRect
+			var slot_label := slot_labels[i] as Label
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
-				slot.texture_normal = game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", ""))))
+				var slot_texture := game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", "")))) as Texture2D
+				slot_portrait.texture = slot_texture
+				position_carousel_portrait.call(slot_portrait, slot_texture)
 				slot.visible = true
-				slot.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.5, 0.52, 0.58, 0.78)
+				var slot_title := str(rconf.get("title", rid))
+				slot.tooltip_text = slot_title
+				slot_label.text = slot_title
+				_apply_hs4_minimal_button_theme(slot, rid == cid)
+				slot_portrait.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.58, 0.60, 0.68, 0.78)
+				slot_label.modulate = Color(1.0, 0.96, 0.80, 1.0) if rid == cid else Color(0.66, 0.68, 0.74, 0.84)
 			else:
 				slot.visible = false
+				slot_portrait.texture = null
+				slot_label.text = ""
 		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:
@@ -1448,7 +2106,7 @@ func _build_character_select_v4() -> void:
 		var next_index: int = posmod(selected_index + direction, roster.size())
 		select_hero.call(str(roster[next_index]))
 
-	for i in range(HS4_CAROUSEL_SLOTS):
+	for i in range(visible_slot_count):
 		var slot_index := i
 		slot_buttons[i].pressed.connect(func() -> void:
 			var idx: int = int(state["offset"]) + slot_index
@@ -1496,25 +2154,6 @@ func _show_character_select() -> void:
 
 	# Экран выбора героя строит v4-билдер (SCRUM-470). Мёртвая v3-вёрстка удалена (SCRUM-492).
 	_build_character_select_v4()
-
-
-func _place_control_in_rect(control: Control, rect: Rect2) -> void:
-	if control == null:
-		return
-	control.position = rect.position
-	control.size = rect.size
-	control.custom_minimum_size = rect.size
-
-
-func _hero_radar_global_maxima() -> Dictionary:
-	var maxima := {}
-	for stat_id in HERO_RADAR_STATS:
-		maxima[stat_id] = 1.0
-	for character_id in game.PROGRESSION_DATA.character_ids():
-		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(str(character_id))
-		for stat_id in HERO_RADAR_STATS:
-			maxima[stat_id] = max(float(maxima.get(stat_id, 1.0)), float(stats.get(stat_id, 0.0)))
-	return maxima
 
 
 func _hero_weapon_names(character_id: String) -> String:
@@ -1628,7 +2267,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 90)
+	label.add_theme_font_size_override("font_size", _readable_font_size(90))
 	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
@@ -1724,14 +2363,14 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	var title := Label.new()
 	title.text = "Докачка"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_font_size_override("font_size", _readable_font_size(34))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
 	var money_label := Label.new()
 	money_label.name = "AttributeShopMoney"
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	money_label.add_theme_font_size_override("font_size", 18)
+	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
 	box.add_child(money_label)
 
@@ -1841,6 +2480,20 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		)
 		offers_box.add_child(offer_button)
 
+	# SCRUM-813: докач-опции + Reroll/Skip проходимы с геймпада/стрелок; старт — первая
+	# доступная опция (иначе Reroll/Skip). follow_focus у скролла прокручивает к выбранной.
+	var attr_skip_button := root.find_child("AttributeSkipButton", true, false) as Button
+	var attr_focus: Array = []
+	for offer_child in offers_box.get_children():
+		if offer_child is Button:
+			attr_focus.append(offer_child)
+	var attr_secondary: Array = []
+	if reroll_button != null:
+		attr_secondary.append(reroll_button)
+	if attr_skip_button != null:
+		attr_secondary.append(attr_skip_button)
+	_wire_run_ui_focus(attr_focus, true, attr_secondary, null)
+
 
 func _spend_run_money(amount: int) -> bool:
 	if game.current_player != null and is_instance_valid(game.current_player):
@@ -1875,7 +2528,7 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	fab.offset_top = -88.0
 	fab.offset_right = -24.0
 	fab.offset_bottom = -24.0
-	fab.add_theme_font_size_override("font_size", 30)
+	fab.add_theme_font_size_override("font_size", _readable_font_size(30))
 	_apply_compact_button_theme(fab)
 	fab.tooltip_text = "Докачка характеристик за золото"
 	if not allow_attribute_shop:
@@ -1888,309 +2541,1169 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 	root.add_child(fab)
 
 
-func _show_skill_tree_screen() -> void:
-	# SCRUM-150 ч.3: общий экран древа умений из главного меню. Данные/логика —
-	# META_PROGRESSION (data-driven), сохранение узлов в user://. Применение
-	# эффектов к забегу — player.apply_meta_skill_modifiers (ч.2a) + старт-вайринг (ч.2b).
+func _show_atlas_screen() -> void:
+	# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн §7 + мокап meta40_atlas_mockup).
+	# Две вкладки (Созвездие/Гильдия), созвездие класса ЦЕЛИКОМ без пан/зума на небе
+	# bg_sky, лента 17 медальонов-гербов слева, панель узла справа, церемонии покупки
+	# и рассеивания тумана. Ядро — SCRUM-828 (constellation_nodes/allocate_node/
+	# active_keystone/hidden_star_progress); арт — кит SCRUM-826/832 (meta40/).
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
 
+	var s := _atlas_ui_scale()
+	var class_id := str(game.selected_character_id)
+	if not game.META_PROGRESSION.CLASS_ENTRY_NODES.has(class_id):
+		class_id = "berserk"
+	_atlas = {
+		"tab": "constellation",
+		"class_id": class_id,
+		"selected": "",
+		"status": {},
+		"edges": [],
+		"edge_flash": {},
+		"node_buttons": {},
+		"node_centers": {},
+		"npos": {},
+		"fog_tweens": {},
+		"medallions": [],
+	}
+
 	var root := Control.new()
-	root.name = "SkillTreeScreen"
+	root.name = "AtlasScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
-	# SCRUM-569: выделенный тематичный бэкдроп «святилище умений» (дракон-колонны +
-	# руны-созвездие веток, тёмный центр под панели) вместо общего codex-собора.
-	_add_screen_background(root, "skill_tree")
+	_atlas["root"] = root
 
-	var main_panel := PanelContainer.new()
-	main_panel.name = "SkillTreeMainPanel"
-	main_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	main_panel.offset_left = 48.0
-	main_panel.offset_top = 26.0
-	main_panel.offset_right = -48.0
-	main_panel.offset_bottom = -26.0
-	main_panel.add_theme_stylebox_override("panel", _progression_main_panel_style())
-	root.add_child(main_panel)
+	# Ночное небо — фулскрин-ассет кита, без общего фона/шейда.
+	var sky := TextureRect.new()
+	sky.name = "AtlasSky"
+	sky.texture = game._cached_texture(META40_BG_SKY_PATH)
+	sky.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sky.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
+	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(sky)
+
+	# Контент строго в пустой зоне рамы (safe-area правило проекта): маргины
+	# повторяют texture-margins рамы (band + угловые вырезы).
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	var frame_margins := _scaled_frame_margins_xy(
+		ATLAS_FRAME_SOURCE_SIZE, vp,
+		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+	var safe := MarginContainer.new()
+	safe.name = "AtlasSafeArea"
+	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	safe.add_theme_constant_override("margin_left", int(frame_margins.x))
+	safe.add_theme_constant_override("margin_top", int(frame_margins.y))
+	safe.add_theme_constant_override("margin_right", int(frame_margins.z))
+	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w))
+	root.add_child(safe)
 
 	var layout := VBoxContainer.new()
-	layout.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layout.offset_left = 136.0
-	layout.offset_top = 118.0
-	layout.offset_right = -136.0
-	layout.offset_bottom = -108.0
-	layout.add_theme_constant_override("separation", 10)
-	root.add_child(layout)
+	layout.name = "AtlasLayout"
+	layout.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	safe.add_child(layout)
 
+	# --- Шапка: валюты + вкладки + назад ---
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 18)
+	header.name = "AtlasHeader"
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
-	var title := Label.new()
-	title.text = "Древо умений"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", 38)
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	header.add_child(title)
-	var points_label := Label.new()
-	points_label.name = "SkillTreePointsLabel"
-	points_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	points_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	points_label.add_theme_font_size_override("font_size", 22)
-	points_label.add_theme_color_override("font_color", Color(1.0, 0.84, 0.34, 1.0))
-	var points_badge := PanelContainer.new()
-	points_badge.name = "SkillTreePointsBadge"
-	points_badge.custom_minimum_size = Vector2(132.0, 96.0)
-	points_badge.add_theme_stylebox_override("panel", _progression_points_badge_style())
-	points_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	header.add_child(points_badge)
-	points_badge.add_child(points_label)
-	# SCRUM-676: отдельная кнопка-«?» объяснения очков (поп-ап появляется по клику).
-	var points_help_button := Button.new()
-	points_help_button.name = "SkillTreePointsInfoButton"
-	points_help_button.text = "?"
-	points_help_button.custom_minimum_size = Vector2(64.0, 64.0)
-	points_help_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	points_help_button.focus_mode = Control.FOCUS_ALL
-	points_help_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	points_help_button.tooltip_text = "Как работают очки умений"
-	points_help_button.add_theme_font_size_override("font_size", 28)
-	points_help_button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.52, 1.0))
-	_apply_skill_tree_text_button_theme(points_help_button, _skill_tree_points_button_style)
-	header.add_child(points_help_button)
+	var emblem_badge := _atlas_make_currency_chip("AtlasEmblemBadge", META40_CURRENCY_EMBLEM_PATH, "AtlasEmblemsLabel", s)
+	header.add_child(emblem_badge)
+	_atlas["emblem_badge"] = emblem_badge
+	_atlas["emblems_label"] = emblem_badge.find_child("AtlasEmblemsLabel", true, false)
+	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
+	header.add_child(stardust_badge)
+	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
+	var header_spacer := Control.new()
+	header_spacer.name = "AtlasHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	var tab_constellation := _make_button("Созвездие")
+	tab_constellation.name = "AtlasTabConstellation"
+	_set_action_button_size(tab_constellation, 236.0)
+	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
+	header.add_child(tab_constellation)
+	_atlas["tab_constellation"] = tab_constellation
+	var tab_guild := _make_button("Гильдия")
+	tab_guild.name = "AtlasTabGuild"
+	_set_action_button_size(tab_guild, 236.0)
+	tab_guild.pressed.connect(Callable(self, "_atlas_switch_tab").bind("guild"))
+	header.add_child(tab_guild)
+	_atlas["tab_guild"] = tab_guild
 	var back_button := _make_button("Назад в меню")
-	back_button.name = "SkillTreeBackButton"
+	back_button.name = "AtlasBackButton"
 	_set_action_button_size(back_button, 260.0)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
+	_atlas["back_button"] = back_button
 	game.ui_escape_action = _show_main_menu
 
-	var hint := Label.new()
-	hint.name = "SkillTreeHint"
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 14)
-	hint.add_theme_color_override("font_color", Color(0.80, 0.86, 0.92, 0.9))
-	layout.add_child(hint)
-
+	# --- Тело: лента классов | небо-созвездие | панель узла ---
 	var body := HBoxContainer.new()
-	body.name = "SkillTreeBody"
+	body.name = "AtlasBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 18)
+	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
-	# SCRUM-360: прогресс ПО КЛАССУ (выбранный класс) — реиграбельность за классы.
-	var class_panel := PanelContainer.new()
-	class_panel.name = "SkillTreeClassPanel"
-	class_panel.custom_minimum_size = Vector2(330.0, 210.0)
-	class_panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	class_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	class_panel.add_theme_stylebox_override("panel", _progression_class_panel_style())
-	body.add_child(class_panel)
-	var class_margin := MarginContainer.new()
-	class_panel.add_child(class_margin)
-	var class_box := VBoxContainer.new()
-	class_box.add_theme_constant_override("separation", 8)
-	class_margin.add_child(class_box)
-	var class_header := Label.new()
-	class_header.name = "SkillTreeClassHeader"
-	class_header.text = "Класс"
-	class_header.add_theme_font_size_override("font_size", 18)
-	class_header.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
-	class_box.add_child(class_header)
-	# SCRUM-676: вместо постоянного Label-списка — селектор класса (dropdown) +
-	# попап с применёнными бонусами. Источник данных — class_unlocked_tiers.
-	var class_id := str(game.selected_character_id)
-	var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
-	var class_title := str(class_config.get("title", class_id))
-	var class_selector := OptionButton.new()
-	class_selector.name = "SkillTreeClassSelector"
-	class_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	class_selector.focus_mode = Control.FOCUS_ALL
-	class_selector.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_selector.add_theme_font_size_override("font_size", 17)
-	class_selector.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
-	class_selector.add_item("«%s»" % class_title)
-	class_selector.add_theme_stylebox_override("normal", _skill_tree_class_select_style())
-	class_selector.add_theme_stylebox_override("hover", _skill_tree_class_select_style(Color(1.06, 1.04, 0.92, 1.0)))
-	class_selector.add_theme_stylebox_override("pressed", _skill_tree_class_select_style(Color(0.90, 0.88, 0.80, 1.0)))
-	class_selector.add_theme_stylebox_override("focus", _skill_tree_class_select_style(Color(1.10, 1.06, 0.94, 1.0)))
-	class_box.add_child(class_selector)
-	var class_progress := Label.new()
-	class_progress.name = "SkillTreeClassProgress"
-	class_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	class_progress.add_theme_font_size_override("font_size", 15)
-	class_progress.add_theme_color_override("font_color", Color(0.86, 0.92, 1.0, 0.95))
-	class_box.add_child(class_progress)
-	var class_bonus_button := Button.new()
-	class_bonus_button.name = "SkillTreeClassBonusButton"
-	class_bonus_button.text = "Показать бонусы класса"
-	class_bonus_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	class_bonus_button.focus_mode = Control.FOCUS_ALL
-	class_bonus_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	class_bonus_button.add_theme_font_size_override("font_size", 15)
-	class_bonus_button.add_theme_color_override("font_color", Color(0.86, 1.0, 0.90, 1.0))
-	_apply_skill_tree_text_button_theme(class_bonus_button, _skill_tree_class_select_style)
-	class_box.add_child(class_bonus_button)
-	var class_wins: int = game.META_PROGRESSION.class_boss_wins(game.meta_state, class_id)
-	var class_unlocked: int = game.META_PROGRESSION.class_level(game.meta_state, class_id)
-	var class_next: Dictionary = game.META_PROGRESSION.class_next_threshold(game.meta_state, class_id)
-	var class_text := "«%s»: %d побед над боссами, открыто бонусов: %d/%d." % [class_title, class_wins, class_unlocked, game.META_PROGRESSION.class_progression().size()]
-	if class_next.is_empty():
-		class_text += " Все бонусы класса открыты."
+	var medallion_px := roundf(clampf(112.0 * s, 64.0, 132.0))
+	var strip := ScrollContainer.new()
+	strip.name = "AtlasClassStrip"
+	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	strip.custom_minimum_size = Vector2(medallion_px + roundf(26.0 * s), 0.0)
+	strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(strip)
+	_atlas["strip"] = strip
+	var strip_box := VBoxContainer.new()
+	strip_box.name = "AtlasClassStripBox"
+	strip_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	strip.add_child(strip_box)
+	for raw_cid in game.META_PROGRESSION.constellation_class_ids():
+		var cid := str(raw_cid)
+		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
+		var mb := TextureButton.new()
+		mb.name = "AtlasMedallion_%s" % cid
+		mb.texture_normal = game._cached_texture(META40_UI_DIR + "crest_%s.png" % cid)
+		mb.ignore_texture_size = true
+		mb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		mb.custom_minimum_size = Vector2(medallion_px, medallion_px)
+		mb.focus_mode = Control.FOCUS_ALL
+		mb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		mb.tooltip_text = str(cfg.get("title", cid))
+		mb.set_meta("class_id", cid)
+		mb.pressed.connect(Callable(self, "_atlas_select_class").bind(cid))
+		strip_box.add_child(mb)
+		(_atlas["medallions"] as Array).append(mb)
+		var prog_chip := PanelContainer.new()
+		prog_chip.name = "MedallionProgressChip"
+		prog_chip.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		var chip_h := maxf(16.0, roundf(20.0 * s))
+		prog_chip.offset_top = -chip_h
+		prog_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		prog_chip.add_theme_stylebox_override("panel", _atlas_translucent_style(0.55, 6.0))
+		mb.add_child(prog_chip)
+		var prog := Label.new()
+		prog.name = "AtlasMedallionProgress_%s" % cid
+		prog.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		prog.add_theme_font_size_override("font_size", _readable_font_size(11))
+		prog.add_theme_color_override("font_color", Color(0.93, 0.89, 0.74, 0.96))
+		prog_chip.add_child(prog)
+		var badge := PanelContainer.new()
+		badge.name = "AtlasMedallionBadge_%s" % cid
+		badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		var badge_px := maxf(20.0, roundf(30.0 * s))
+		badge.offset_left = -badge_px
+		badge.offset_bottom = badge_px
+		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge.add_theme_stylebox_override("panel", _atlas_unspent_badge_style(badge_px * 0.5))
+		badge.visible = false
+		mb.add_child(badge)
+		var badge_label := Label.new()
+		badge_label.name = "BadgeCount"
+		badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(11))
+		badge_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.86, 1.0))
+		badge.add_child(badge_label)
+
+	var canvas := Control.new()
+	canvas.name = "AtlasCanvas"
+	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	canvas.clip_contents = true
+	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
+	canvas.gui_input.connect(Callable(self, "_atlas_canvas_input"))
+	canvas.resized.connect(Callable(self, "_atlas_layout_nodes"))
+	body.add_child(canvas)
+	_atlas["canvas"] = canvas
+	var edge_layer := Control.new()
+	edge_layer.name = "AtlasEdges"
+	edge_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	edge_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	edge_layer.draw.connect(Callable(self, "_atlas_draw_edges"))
+	canvas.add_child(edge_layer)
+	_atlas["edge_layer"] = edge_layer
+
+	# --- Панель узла (титул/тип/описание с числами/цена/действия) ---
+	var panel := PanelContainer.new()
+	panel.name = "AtlasNodePanel"
+	panel.custom_minimum_size = Vector2(roundf(clampf(452.0 * s, 272.0, 452.0)), 0.0)
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(16.0 * s)))
+	body.add_child(panel)
+	var panel_box := VBoxContainer.new()
+	panel_box.name = "AtlasNodePanelBox"
+	panel_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	panel.add_child(panel_box)
+	var kind_label := Label.new()
+	kind_label.name = "AtlasNodeKind"
+	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	kind_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	kind_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	panel_box.add_child(kind_label)
+	_atlas["panel_kind"] = kind_label
+	var icon_center := CenterContainer.new()
+	icon_center.name = "AtlasNodeIconCenter"
+	panel_box.add_child(icon_center)
+	var node_icon := TextureRect.new()
+	node_icon.name = "AtlasNodeIcon"
+	node_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	node_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := roundf(clampf(104.0 * s, 56.0, 104.0))
+	node_icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	icon_center.add_child(node_icon)
+	_atlas["panel_icon"] = node_icon
+	var title_label := Label.new()
+	title_label.name = "AtlasNodeTitle"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	panel_box.add_child(title_label)
+	_atlas["panel_title"] = title_label
+	var info_scroll := ScrollContainer.new()
+	info_scroll.name = "AtlasNodeScroll"
+	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	info_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel_box.add_child(info_scroll)
+	var info_box := VBoxContainer.new()
+	info_box.name = "AtlasNodeInfoBox"
+	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	info_scroll.add_child(info_box)
+	var desc_label := Label.new()
+	desc_label.name = "AtlasNodeDesc"
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.91, 0.95, 0.96))
+	info_box.add_child(desc_label)
+	_atlas["panel_desc"] = desc_label
+	var condition_label := Label.new()
+	condition_label.name = "AtlasNodeCondition"
+	condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	condition_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	condition_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	condition_label.add_theme_color_override("font_color", Color(0.72, 0.84, 1.0, 0.95))
+	condition_label.visible = false
+	info_box.add_child(condition_label)
+	_atlas["panel_condition"] = condition_label
+	var lore_label := Label.new()
+	lore_label.name = "AtlasNodeLore"
+	lore_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lore_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lore_label.add_theme_font_size_override("font_size", _readable_font_size(12))
+	lore_label.add_theme_color_override("font_color", Color(0.72, 0.74, 0.82, 0.85))
+	lore_label.visible = false
+	info_box.add_child(lore_label)
+	_atlas["panel_lore"] = lore_label
+	var price_row := HBoxContainer.new()
+	price_row.name = "AtlasNodePriceRow"
+	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	price_row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	panel_box.add_child(price_row)
+	_atlas["panel_price_row"] = price_row
+	var price_label := Label.new()
+	price_label.name = "AtlasNodePriceLabel"
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(17))
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	price_row.add_child(price_label)
+	_atlas["panel_price_label"] = price_label
+	var price_icon := TextureRect.new()
+	price_icon.name = "AtlasNodePriceIcon"
+	price_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	price_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var price_icon_px := maxf(18.0, roundf(28.0 * s))
+	price_icon.custom_minimum_size = Vector2(price_icon_px, price_icon_px)
+	price_row.add_child(price_icon)
+	_atlas["panel_price_icon"] = price_icon
+	var buy_button := _make_button("Вложить эмблему")
+	buy_button.name = "AtlasBuyButton"
+	_set_action_button_size(buy_button, 360.0, 88.0)
+	buy_button.pressed.connect(Callable(self, "_atlas_buy_selected"))
+	panel_box.add_child(buy_button)
+	_atlas["buy_button"] = buy_button
+	var keystone_toggle := _make_button("Сделать активной")
+	keystone_toggle.name = "AtlasKeystoneToggle"
+	_set_action_button_size(keystone_toggle, 360.0, 88.0)
+	keystone_toggle.pressed.connect(Callable(self, "_atlas_toggle_keystone"))
+	keystone_toggle.visible = false
+	panel_box.add_child(keystone_toggle)
+	_atlas["keystone_toggle"] = keystone_toggle
+	var progress_label := Label.new()
+	progress_label.name = "AtlasProgressLabel"
+	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	progress_label.add_theme_font_size_override("font_size", _readable_font_size(14))
+	progress_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.70, 0.95))
+	panel_box.add_child(progress_label)
+	_atlas["panel_progress"] = progress_label
+	var hidden_hint := Label.new()
+	hidden_hint.name = "AtlasHiddenHint"
+	hidden_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hidden_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(12))
+	hidden_hint.add_theme_color_override("font_color", Color(0.72, 0.82, 0.98, 0.88))
+	hidden_hint.visible = false
+	panel_box.add_child(hidden_hint)
+	_atlas["panel_hidden_hint"] = hidden_hint
+
+	# --- Низ: «Респек — бесплатно» + легенда состояний ---
+	var footer := HBoxContainer.new()
+	footer.name = "AtlasFooter"
+	footer.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	layout.add_child(footer)
+	var respec_button := _make_button("Респек — бесплатно")
+	respec_button.name = "AtlasRespecButton"
+	_set_action_button_size(respec_button, 330.0)
+	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
+	footer.add_child(respec_button)
+	_atlas["respec_button"] = respec_button
+	var footer_spacer := Control.new()
+	footer_spacer.name = "AtlasFooterSpacer"
+	footer_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(footer_spacer)
+	var legend := HBoxContainer.new()
+	legend.name = "AtlasLegend"
+	legend.add_theme_constant_override("separation", int(roundf(16.0 * s)))
+	legend.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	footer.add_child(legend)
+	_atlas_add_legend_item(legend, META40_STAR_ALLOC_PATH, "куплено", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["minor"]), "доступно", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["keystone"]), "ключевая", s)
+	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["hidden"]), "скрытая", s)
+
+	# Полая орнаментная рама кита ПОВЕРХ контента (клики сквозь; nearest — чтобы
+	# key-цвет прозрачной середины не подмешивался фильтрацией).
+	var frame := Panel.new()
+	frame.name = "AtlasFrame"
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.add_theme_stylebox_override("panel", _atlas_frame_style(frame_margins))
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	root.add_child(frame)
+
+	# --- Подтверждение респека (поверх рамы) ---
+	var respec_popup := PanelContainer.new()
+	respec_popup.name = "AtlasRespecPopup"
+	respec_popup.visible = false
+	respec_popup.custom_minimum_size = Vector2(roundf(clampf(560.0 * s, 380.0, 560.0)), 0.0)
+	respec_popup.set_anchors_preset(Control.PRESET_CENTER)
+	respec_popup.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * s)))
+	respec_popup.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(respec_popup)
+	_atlas["respec_popup"] = respec_popup
+	var respec_box := VBoxContainer.new()
+	respec_box.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	respec_popup.add_child(respec_box)
+	var respec_text := Label.new()
+	respec_text.name = "AtlasRespecPopupBody"
+	respec_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	respec_text.add_theme_font_size_override("font_size", _readable_font_size(16))
+	respec_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.88, 0.96))
+	respec_box.add_child(respec_text)
+	_atlas["respec_text"] = respec_text
+	var respec_actions := HBoxContainer.new()
+	respec_actions.alignment = BoxContainer.ALIGNMENT_END
+	respec_actions.add_theme_constant_override("separation", int(roundf(14.0 * s)))
+	respec_box.add_child(respec_actions)
+	var respec_cancel := _make_button("Отмена")
+	respec_cancel.name = "AtlasRespecCancelButton"
+	_set_action_button_size(respec_cancel, 200.0, 84.0)
+	respec_cancel.pressed.connect(Callable(self, "_atlas_respec_cancel"))
+	respec_actions.add_child(respec_cancel)
+	var respec_confirm := _make_button("Сбросить")
+	respec_confirm.name = "AtlasRespecConfirmButton"
+	_set_action_button_size(respec_confirm, 200.0, 84.0)
+	respec_confirm.pressed.connect(Callable(self, "_atlas_respec_confirm"))
+	respec_actions.add_child(respec_confirm)
+
+	_ensure_run_ui_gamepad_bindings()
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+# Масштаб UI Атласа: min-ось от дизайн-окна 2560×1440 (ассеты кита нарисованы
+# ровно под слоты этого окна).
+func _atlas_ui_scale() -> float:
+	var vp := Vector2(2560.0, 1440.0)
+	if game != null and game.get_viewport() != null:
+		vp = game.get_viewport().get_visible_rect().size
+	return minf(vp.x / 2560.0, vp.y / 1440.0)
+
+
+# Полая рама Атласа: 9-slice frame_border с draw_center=false (середина ассета —
+# key-прозрачность). Margins масштабируются от source→display (паттерн SCRUM-486).
+func _atlas_frame_style(margins: Vector4) -> StyleBox:
+	var texture: Texture2D = game._cached_texture(META40_FRAME_BORDER_PATH)
+	if texture == null:
+		return _atlas_chip_style(0.0, 0.0)
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = margins.x
+	style.texture_margin_top = margins.y
+	style.texture_margin_right = margins.z
+	style.texture_margin_bottom = margins.w
+	style.draw_center = false
+	return style
+
+
+# Тёмная кожа + латунный кант (курс SCRUM-806/809, без ярко-жёлтых рамок).
+func _atlas_chip_style(alpha: float, pad: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.085, 0.070, 0.055, alpha)
+	style.border_color = Color(0.52, 0.41, 0.24, 0.90)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = pad * 1.4
+	style.content_margin_right = pad * 1.4
+	style.content_margin_top = pad
+	style.content_margin_bottom = pad
+	return style
+
+
+func _atlas_translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.03, 0.03, 0.05, alpha)
+	style.set_corner_radius_all(int(radius))
+	return style
+
+
+func _atlas_unspent_badge_style(radius: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.56, 0.14, 0.12, 0.95)
+	style.border_color = Color(0.78, 0.56, 0.30, 0.9)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(int(radius))
+	return style
+
+
+func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name: String, s: float) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.name = chip_name
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
+	chip.add_child(row)
+	var icon := TextureRect.new()
+	icon.name = "%sIcon" % chip_name
+	icon.texture = game._cached_texture(icon_path)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := maxf(20.0, roundf(30.0 * s))
+	icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	row.add_child(icon)
+	var label := Label.new()
+	label.name = label_name
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.74, 1.0))
+	row.add_child(label)
+	return chip
+
+
+func _atlas_add_legend_item(legend: HBoxContainer, icon_path: String, text: String, s: float) -> void:
+	var item := HBoxContainer.new()
+	item.name = "AtlasLegendItem_%s" % text
+	item.add_theme_constant_override("separation", int(roundf(6.0 * s)))
+	legend.add_child(item)
+	var icon := TextureRect.new()
+	icon.texture = game._cached_texture(icon_path)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_px := maxf(16.0, roundf(26.0 * s))
+	icon.custom_minimum_size = Vector2(icon_px, icon_px)
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	item.add_child(icon)
+	var label := Label.new()
+	label.text = text
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.94, 0.92))
+	item.add_child(label)
+
+
+# Узлы текущего графа: созвездие выбранного класса либо Атлас гильдии.
+func _atlas_graph_nodes() -> Array:
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		return game.META_PROGRESSION.atlas_nodes()
+	return game.META_PROGRESSION.constellation_nodes(str(_atlas.get("class_id", "berserk")))
+
+
+func _atlas_core_node_id() -> String:
+	if str(_atlas.get("tab", "constellation")) == "constellation":
+		return str(game.META_PROGRESSION.CLASS_ENTRY_NODES.get(str(_atlas.get("class_id", "")), ""))
+	for node in game.META_PROGRESSION.atlas_nodes():
+		if str((node as Dictionary).get("role", "")) == "core":
+			return str((node as Dictionary)["id"])
+	return ""
+
+
+# Пересборка холста под текущую вкладку/класс: кнопки-сокеты + оверлеи состояний.
+func _atlas_build_canvas() -> void:
+	var canvas: Control = _atlas.get("canvas")
+	if canvas == null or not is_instance_valid(canvas):
+		return
+	for nb in (_atlas.get("node_buttons", {}) as Dictionary).values():
+		if nb is Node and is_instance_valid(nb):
+			(nb as Node).queue_free()
+	_atlas["node_buttons"] = {}
+	_atlas["fog_tweens"] = {}
+	_atlas["edge_flash"] = {}
+	var s := _atlas_ui_scale()
+	var nodes := _atlas_graph_nodes()
+	var npos_map := {}
+	for node in nodes:
+		npos_map[str((node as Dictionary)["id"])] = (node as Dictionary).get("npos", Vector2(0.5, 0.5))
+	_atlas["npos"] = npos_map
+	var edges := []
+	for node in nodes:
+		var a_id := str((node as Dictionary)["id"])
+		for raw_neighbor in (node as Dictionary).get("adj", []):
+			var b_id := str(raw_neighbor)
+			if a_id < b_id and npos_map.has(b_id):
+				edges.append([a_id, b_id])
+	_atlas["edges"] = edges
+	for node in nodes:
+		var node_data: Dictionary = node
+		var node_id := str(node_data["id"])
+		var role := str(node_data.get("role", "minor"))
+		var affinity := str(node_data.get("class_affinity", ""))
+		var nb := TextureButton.new()
+		nb.name = "AtlasNode_%s" % node_id
+		var base_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
+		if role == "core" and affinity != "":
+			base_path = META40_UI_DIR + "crest_%s.png" % affinity
+		nb.texture_normal = game._cached_texture(base_path)
+		nb.ignore_texture_size = true
+		nb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * s))
+		nb.custom_minimum_size = Vector2(disp, disp)
+		nb.size = Vector2(disp, disp)
+		nb.focus_mode = Control.FOCUS_ALL
+		nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		nb.tooltip_text = "%s\n%s" % [str(node_data.get("title", "")), str(node_data.get("desc", ""))]
+		nb.set_meta("node_id", node_id)
+		nb.set_meta("role", role)
+		nb.pressed.connect(Callable(self, "_atlas_node_pressed").bind(node_id))
+		nb.focus_entered.connect(Callable(self, "_atlas_node_focused").bind(node_id))
+		canvas.add_child(nb)
+		(_atlas["node_buttons"] as Dictionary)[node_id] = nb
+		# Оверлеи состояний (§7): выбор, пульс доступности, звезда, кольцо keystone, туман.
+		var select_ring := _atlas_add_overlay(nb, "Select", META40_KEYSTONE_RING_PATH, 1.30, Color(0.55, 0.80, 1.0, 0.85))
+		select_ring.z_index = 1
+		var glow := _atlas_add_overlay(nb, "Glow", META40_STAR_ALLOC_PATH, 1.30, Color(0.66, 0.80, 1.0, 0.9))
+		var glow_pulse := glow.create_tween()
+		glow_pulse.set_loops()
+		glow_pulse.tween_property(glow, "self_modulate:a", 0.95, 0.7).from(0.30).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		glow_pulse.tween_property(glow, "self_modulate:a", 0.30, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if role != "core":
+			var star := _atlas_add_overlay(nb, "Star", META40_STAR_ALLOC_PATH, 0.80, Color.WHITE)
+			star.z_index = 1
+		if role == "keystone":
+			var ring := _atlas_add_overlay(nb, "Ring", META40_KEYSTONE_RING_PATH, 1.42, Color(0.72, 0.88, 1.0, 1.0))
+			var ring_pulse := ring.create_tween()
+			ring_pulse.set_loops()
+			ring_pulse.tween_property(ring, "self_modulate:a", 1.0, 1.1).from(0.72).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			ring_pulse.tween_property(ring, "self_modulate:a", 0.72, 1.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		if role == "hidden":
+			var qmark := Label.new()
+			qmark.name = "QMark"
+			qmark.set_anchors_preset(Control.PRESET_FULL_RECT)
+			qmark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			qmark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			qmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			qmark.text = "?"
+			qmark.add_theme_font_size_override("font_size", int(maxf(12.0, disp * 0.40)))
+			qmark.add_theme_color_override("font_color", Color(0.82, 0.90, 1.0, 0.92))
+			nb.add_child(qmark)
+			var fog := _atlas_add_overlay(nb, "Fog", str(META40_SOCKET_TEXTURES["hidden"]), 1.0, Color.WHITE)
+			fog.z_index = 2
+	# Выбор по умолчанию — ядро (панель сразу информативна).
+	if str(_atlas.get("selected", "")) == "" or not npos_map.has(str(_atlas.get("selected", ""))):
+		_atlas["selected"] = _atlas_core_node_id()
+	_atlas_layout_nodes()
+
+
+func _atlas_add_overlay(nb: TextureButton, overlay_name: String, texture_path: String, rel: float, tint: Color) -> TextureRect:
+	var overlay := TextureRect.new()
+	overlay.name = overlay_name
+	overlay.texture = game._cached_texture(texture_path)
+	overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	overlay.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var side := nb.custom_minimum_size.x * rel
+	overlay.size = Vector2(side, side)
+	overlay.position = (nb.custom_minimum_size - overlay.size) * 0.5
+	overlay.pivot_offset = overlay.size * 0.5
+	overlay.modulate = tint
+	overlay.visible = false
+	nb.add_child(overlay)
+	return overlay
+
+
+# Раскладка узлов: всё созвездие ЦЕЛИКОМ в холсте (без пан/зума), npos 0..1.
+func _atlas_layout_nodes() -> void:
+	var canvas: Control = _atlas.get("canvas")
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if canvas == null or not is_instance_valid(canvas):
+		return
+	var s := _atlas_ui_scale()
+	var pad := Vector2(124.0, 112.0) * s
+	var area := Vector2(maxf(canvas.size.x - pad.x * 2.0, 8.0), maxf(canvas.size.y - pad.y * 2.0, 8.0))
+	var centers := {}
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	var npos_map: Dictionary = _atlas.get("npos", {})
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb):
+			continue
+		var npos: Vector2 = npos_map.get(node_id, Vector2(0.5, 0.5))
+		var center := pad + npos * area
+		centers[node_id] = center
+		nb.position = center - nb.custom_minimum_size * 0.5
+	_atlas["node_centers"] = centers
+	if edge_layer != null and is_instance_valid(edge_layer):
+		edge_layer.queue_redraw()
+
+
+# Силуэт-линии созвездия: тусклые до покупки, золотые между купленными; вспышка
+# покупки временно «зажигает» рёбра купленного узла (edge_flash).
+func _atlas_draw_edges() -> void:
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if edge_layer == null or not is_instance_valid(edge_layer):
+		return
+	var centers: Dictionary = _atlas.get("node_centers", {})
+	var status: Dictionary = _atlas.get("status", {})
+	var flash: Dictionary = _atlas.get("edge_flash", {})
+	var s := _atlas_ui_scale()
+	for edge in _atlas.get("edges", []):
+		var a_id := str((edge as Array)[0])
+		var b_id := str((edge as Array)[1])
+		if not centers.has(a_id) or not centers.has(b_id):
+			continue
+		var a_on := str(status.get(a_id, "")) == "purchased"
+		var b_on := str(status.get(b_id, "")) == "purchased"
+		var color := Color(0.46, 0.60, 0.82, 0.28)
+		var width := maxf(2.0, 2.6 * s)
+		if a_on and b_on:
+			color = Color(0.93, 0.77, 0.40, 0.92)
+			width = maxf(3.0, 5.0 * s)
+		elif a_on or b_on:
+			color = Color(0.78, 0.67, 0.45, 0.55)
+			width = maxf(2.5, 3.6 * s)
+		var flash_amount := maxf(float(flash.get(a_id, 0.0)), float(flash.get(b_id, 0.0)))
+		if flash_amount > 0.0:
+			color = color.lerp(Color(1.0, 0.92, 0.62, 1.0), clampf(flash_amount, 0.0, 1.0))
+			width += 2.0 * flash_amount
+		edge_layer.draw_line(centers[a_id], centers[b_id], color, width, true)
+
+
+# Полное обновление: валюты в шапке, медальоны, состояния узлов, панель узла.
+func _atlas_refresh() -> void:
+	if _atlas.is_empty():
+		return
+	var root: Control = _atlas.get("root")
+	if root == null or not is_instance_valid(root):
+		return
+	var state: Dictionary = game.meta_state
+	var class_id := str(_atlas.get("class_id", "berserk"))
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+
+	var emblems_label := _atlas.get("emblems_label") as Label
+	if emblems_label != null and is_instance_valid(emblems_label):
+		var genitive := str(ATLAS_CLASS_GENITIVE.get(class_id, "класса"))
+		emblems_label.text = "Эмблемы %s: %d" % [genitive, game.META_PROGRESSION.class_sigils_available(state, class_id)]
+	var stardust_label := _atlas.get("stardust_label") as Label
+	if stardust_label != null and is_instance_valid(stardust_label):
+		stardust_label.text = "Звёздная пыль: %d" % game.META_PROGRESSION.stardust_available(state)
+
+	# Медальоны: подсветка выбранного, прогресс x/N, бейдж непотраченных эмблем.
+	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
+	for raw_mb in _atlas.get("medallions", []):
+		var mb := raw_mb as TextureButton
+		if mb == null or not is_instance_valid(mb):
+			continue
+		var cid := str(mb.get_meta("class_id"))
+		mb.modulate = Color.WHITE if (cid == class_id and not on_guild) else Color(0.68, 0.70, 0.78, 0.88)
+		var visible_total := 0
+		var visible_bought := 0
+		for node in game.META_PROGRESSION.constellation_nodes(cid):
+			if str((node as Dictionary).get("role", "")) == "hidden":
+				continue
+			visible_total += 1
+			if purchased_all.has(str((node as Dictionary)["id"])):
+				visible_bought += 1
+		var prog := mb.find_child("AtlasMedallionProgress_%s" % cid, true, false) as Label
+		if prog != null:
+			prog.text = "%d/%d" % [visible_bought, visible_total]
+		var unspent: int = game.META_PROGRESSION.class_sigils_available(state, cid)
+		var badge := mb.find_child("AtlasMedallionBadge_%s" % cid, true, false) as PanelContainer
+		if badge != null:
+			badge.visible = unspent > 0
+			var badge_label := badge.find_child("BadgeCount", true, false) as Label
+			if badge_label != null:
+				badge_label.text = str(mini(unspent, 99))
+
+	# Состояния узлов текущего графа (§7: 6 состояний).
+	var status_map := {}
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	for node_id in buttons.keys():
+		status_map[node_id] = str(game.META_PROGRESSION.node_status(state, str(node_id)))
+	_atlas["status"] = status_map
+	var selected_id := str(_atlas.get("selected", ""))
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb):
+			continue
+		var role := str(nb.get_meta("role"))
+		var node_status := str(status_map.get(node_id, "locked"))
+		match node_status:
+			"purchased":
+				nb.modulate = Color.WHITE
+			"available":
+				nb.modulate = Color.WHITE
+			"hidden":
+				nb.modulate = Color(0.86, 0.90, 0.99, 0.92)
+			_:
+				nb.modulate = Color(0.52, 0.55, 0.63, 0.78)
+		var glow := nb.get_node_or_null("Glow") as TextureRect
+		if glow != null:
+			glow.visible = node_status == "available"
+		var star := nb.get_node_or_null("Star") as TextureRect
+		if star != null:
+			star.visible = node_status == "purchased" and role != "core"
+			if role == "keystone":
+				var keystone_active: bool = game.META_PROGRESSION.is_keystone_active(state, str(node_id))
+				# Купленная неактивная ключевая — «тлеет»; активная — золото + сапфир.
+				star.self_modulate = Color.WHITE if keystone_active else Color(1.0, 0.56, 0.28, 0.72)
+		var ring := nb.get_node_or_null("Ring") as TextureRect
+		if ring != null:
+			ring.visible = role == "keystone" and game.META_PROGRESSION.is_keystone_active(state, str(node_id))
+		var select_ring := nb.get_node_or_null("Select") as TextureRect
+		if select_ring != null:
+			select_ring.visible = str(node_id) == selected_id
+		var qmark := nb.get_node_or_null("QMark") as Label
+		if qmark != null:
+			qmark.visible = node_status == "hidden"
+		# Церемония открытия скрытой звезды: рассеивание тумана 0.6с, скип кликом.
+		if role == "hidden" and node_status == "purchased" and not _atlas_hidden_seen.has(node_id):
+			_atlas_hidden_seen[node_id] = true
+			var fog := nb.get_node_or_null("Fog") as TextureRect
+			if fog != null:
+				fog.visible = true
+				fog.modulate = Color.WHITE
+				var fog_tween := fog.create_tween()
+				fog_tween.tween_property(fog, "modulate:a", 0.0, ATLAS_FOG_DISSOLVE_SEC)
+				fog_tween.tween_callback(Callable(self, "_atlas_finish_fog").bind(str(node_id)))
+				(_atlas["fog_tweens"] as Dictionary)[node_id] = fog_tween
+
+	var edge_layer: Control = _atlas.get("edge_layer")
+	if edge_layer != null and is_instance_valid(edge_layer):
+		edge_layer.queue_redraw()
+	_atlas_refresh_node_panel()
+
+
+# Правая панель: титул/тип/описание С ЧИСЛАМИ/цена/кнопки; для keystone —
+# переключатель активности; для скрытой — условие и прогресс подвига.
+func _atlas_refresh_node_panel() -> void:
+	var state: Dictionary = game.meta_state
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var selected_id := str(_atlas.get("selected", ""))
+	var node: Dictionary = game.META_PROGRESSION.node_by_id(selected_id)
+	var kind_label := _atlas.get("panel_kind") as Label
+	var icon := _atlas.get("panel_icon") as TextureRect
+	var title_label := _atlas.get("panel_title") as Label
+	var desc_label := _atlas.get("panel_desc") as Label
+	var condition_label := _atlas.get("panel_condition") as Label
+	var lore_label := _atlas.get("panel_lore") as Label
+	var price_row := _atlas.get("panel_price_row") as HBoxContainer
+	var price_label := _atlas.get("panel_price_label") as Label
+	var price_icon := _atlas.get("panel_price_icon") as TextureRect
+	var buy_button := _atlas.get("buy_button") as Button
+	var keystone_toggle := _atlas.get("keystone_toggle") as Button
+	var progress_label := _atlas.get("panel_progress") as Label
+	var hidden_hint := _atlas.get("panel_hidden_hint") as Label
+	for control in [kind_label, icon, title_label, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
+		if control == null or not is_instance_valid(control):
+			return
+	var currency_icon_path := META40_CURRENCY_STARDUST_PATH if on_guild else META40_CURRENCY_EMBLEM_PATH
+	var currency_word := "пыль" if on_guild else "эмблему"
+	if node.is_empty():
+		kind_label.text = "АТЛАС ГЕРОЕВ"
+		icon.texture = game._cached_texture(str(META40_SOCKET_TEXTURES["minor"]))
+		title_label.text = "Выберите звезду"
+		desc_label.text = "Кликните по звезде созвездия, чтобы увидеть её силу и цену."
+		condition_label.visible = false
+		lore_label.visible = false
+		price_row.visible = false
+		buy_button.visible = false
+		keystone_toggle.visible = false
 	else:
-		class_text += " Следующий бонус — на %d победах: %s (%s)." % [int(class_next.get("wins", 0)), str(class_next.get("title", "")), str(class_next.get("desc", ""))]
-	class_progress.text = class_text
-	# Текст применённых бонусов класса (рендерится внутри попапа).
-	var unlocked_tiers: Array = game.META_PROGRESSION.class_unlocked_tiers(game.meta_state, class_id)
-	var class_bonus_text := ""
-	if unlocked_tiers.is_empty():
-		class_bonus_text = "Открытых классовых бонусов пока нет. Победи босса этим героем, чтобы начать его личную ветку."
+		var role := str(node.get("role", "minor"))
+		var affinity := str(node.get("class_affinity", ""))
+		var node_status := str(game.META_PROGRESSION.node_status(state, selected_id))
+		kind_label.text = "ХАБ ГИЛЬДИИ" if (role == "core" and affinity == "") else str(ATLAS_ROLE_LABELS.get(role, "ЗВЕЗДА"))
+		var icon_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
+		if role == "core" and affinity != "":
+			icon_path = META40_UI_DIR + "crest_%s.png" % affinity
+		icon.texture = game._cached_texture(icon_path)
+		title_label.text = str(node.get("title", ""))
+		desc_label.text = str(node.get("desc", ""))
+		lore_label.text = str(node.get("lore", ""))
+		lore_label.visible = role == "hidden" and lore_label.text != ""
+		condition_label.visible = false
+		if role == "hidden":
+			var progress: Dictionary = game.META_PROGRESSION.hidden_star_progress(state, selected_id)
+			if not progress.is_empty():
+				condition_label.visible = true
+				if bool(progress.get("unlocked", false)):
+					condition_label.text = "Подвиг совершён — звезда зажжена!"
+				else:
+					condition_label.text = "Условие: %s\nПрогресс: %d/%d" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
+		var purchasable := role != "core" and role != "hidden"
+		var cost := int(node.get("cost", 0))
+		price_row.visible = purchasable and node_status != "purchased"
+		price_label.text = "Цена: %d" % cost
+		price_icon.texture = game._cached_texture(currency_icon_path)
+		buy_button.visible = purchasable and node_status != "purchased"
+		buy_button.text = "Вложить %s" % currency_word
+		buy_button.disabled = node_status != "available"
+		if node_status == "locked":
+			var have: int = game.META_PROGRESSION.currency_available_for_node(state, selected_id)
+			condition_label.visible = true
+			if have < cost:
+				condition_label.text = "Не хватает: %d из %d. Зарабатывайте %s подвигами класса." % [have, cost, "пыль" if on_guild else "эмблемы"]
+			else:
+				condition_label.text = "Нужна соседняя купленная звезда."
+		elif purchasable and node_status == "purchased":
+			condition_label.visible = true
+			condition_label.text = "Звезда зажжена."
+		keystone_toggle.visible = role == "keystone" and affinity != "" and node_status == "purchased"
+		if keystone_toggle.visible:
+			var active: bool = game.META_PROGRESSION.is_keystone_active(state, selected_id)
+			keystone_toggle.text = "Активна — погасить" if active else "Сделать активной"
+
+	# Итоги внизу панели: прогресс созвездия/Атласа + подсказка о скрытой звезде.
+	var graph_nodes := _atlas_graph_nodes()
+	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
+	var visible_total := 0
+	var visible_bought := 0
+	var hint_text := ""
+	for raw_node in graph_nodes:
+		var graph_node: Dictionary = raw_node
+		if str(graph_node.get("role", "")) == "hidden":
+			if hint_text == "" and not game.META_PROGRESSION.hidden_star_unlocked(state, str(graph_node["id"])):
+				var progress: Dictionary = game.META_PROGRESSION.hidden_star_progress(state, str(graph_node["id"]))
+				hint_text = "До скрытой звезды: %s (%d/%d)" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
+			continue
+		visible_total += 1
+		if purchased_all.has(str(graph_node["id"])):
+			visible_bought += 1
+	if on_guild:
+		progress_label.text = "Атлас гильдии: %d/%d" % [visible_bought, visible_total]
 	else:
-		var bonus_lines := PackedStringArray()
-		for tier in unlocked_tiers:
-			bonus_lines.append("%s: %s" % [str(tier.get("title", "")), str(tier.get("desc", ""))])
-		class_bonus_text = "\n".join(bonus_lines)
-	# Попап применённых бонусов класса (скрыт по умолчанию, не влияет на overlap-проверки).
-	var class_popup := _make_skill_tree_popup(root, "SkillTreeClassBonusPopup", "Бонусы класса «%s»" % class_title, class_bonus_text, _skill_tree_class_popup_style())
-	class_bonus_button.pressed.connect(func() -> void:
-		class_popup.visible = not class_popup.visible
-	)
-	# Попап-объяснение очков умений.
-	var points_popup := _make_skill_tree_popup(root, "SkillTreePointsInfoPopup", "Очки умений", "Очки умений зарабатываются за победы над боссами. Тратьте их на узлы веток: каждый следующий узел требует открытого предыдущего. Покупки сохраняются между забегами.", _skill_tree_class_popup_style())
-	points_help_button.pressed.connect(func() -> void:
-		points_popup.visible = not points_popup.visible
-	)
+		var power: float = game.META_PROGRESSION.estimated_class_power_multiplier(state, str(_atlas.get("class_id", "berserk")))
+		progress_label.text = "Созвездие: %d/%d · Сила класса: +%d%%" % [visible_bought, visible_total, int(roundf((power - 1.0) * 100.0))]
+	hidden_hint.text = hint_text
+	hidden_hint.visible = hint_text != ""
 
-	var scroll := ScrollContainer.new()
-	scroll.name = "SkillTreeBranchScroll"
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	body.add_child(scroll)
-	var branches_row := HBoxContainer.new()
-	branches_row.name = "SkillTreeBranches"
-	branches_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	branches_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	branches_row.add_theme_constant_override("separation", 14)
-	scroll.add_child(branches_row)
 
-	var node_buttons: Array[Button] = []
-	var refresh := func() -> void:
-		var pts: int = game.META_PROGRESSION.skill_points(game.meta_state)
-		points_label.text = "Очки умений: %d" % pts
-		var bought: int = game.META_PROGRESSION.purchased_nodes(game.meta_state).size()
-		hint.text = "Очки умений зарабатываются за победы над боссами. Открывай узлы по ветвям — следующий требует предыдущий." if (pts == 0 and bought == 0) else ""
-		for nb in node_buttons:
-			var node_id: String = str(nb.get_meta("node_id"))
-			var status: String = game.META_PROGRESSION.node_status(game.meta_state, node_id)
-			nb.disabled = status != "available"
-			_apply_progression_node_button_theme(nb, status)
-			var title_label := nb.get_meta("title_label") as Label
-			var desc_label := nb.get_meta("desc_label") as Label
-			match status:
-				"purchased":
-					nb.modulate = Color(0.62, 1.0, 0.66, 1.0)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(0.62, 1.0, 0.66, 1.0))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.82, 0.95))
-				"available":
-					nb.modulate = Color(1.0, 0.92, 0.6, 1.0)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 1.0))
-				_:
-					nb.modulate = Color(0.62, 0.64, 0.70, 0.7)
-					if title_label != null:
-						title_label.add_theme_color_override("font_color", Color(0.70, 0.72, 0.78, 0.9))
-					if desc_label != null:
-						desc_label.add_theme_color_override("font_color", Color(0.60, 0.64, 0.70, 0.82))
+func _atlas_node_pressed(node_id: String) -> void:
+	_atlas_skip_fog_ceremonies()
+	if str(_atlas.get("selected", "")) == node_id and str((_atlas.get("status", {}) as Dictionary).get(node_id, "")) == "available":
+		_atlas_buy_selected()
+		return
+	_atlas_select_node(node_id)
 
-	for branch in game.META_PROGRESSION.SKILL_BRANCHES:
-		var branch_id: String = str(branch)
-		var branch_panel := PanelContainer.new()
-		branch_panel.name = "SkillTreeBranchPanel_%s" % branch_id
-		# SCRUM-676: компактнее по ширине (футпринт уменьшен 164→132), сохраняем
-		# тест-привязанную progression-рамку на самой панели.
-		branch_panel.custom_minimum_size = Vector2(132.0, 412.0)
-		branch_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		branch_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		branch_panel.add_theme_stylebox_override("panel", _progression_branch_panel_style())
-		branches_row.add_child(branch_panel)
-		# SCRUM-676: каждый путь в собственной рамке из дизайн-пака SCRUM-675.
-		var path_frame := PanelContainer.new()
-		path_frame.name = "SkillTreePathFrame_%s" % branch_id
-		path_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		path_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		path_frame.add_theme_stylebox_override("panel", _skill_tree_path_frame_style(branch_id))
-		branch_panel.add_child(path_frame)
-		var col := VBoxContainer.new()
-		col.name = "SkillTreeBranchContent_%s" % branch_id
-		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		col.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		col.add_theme_constant_override("separation", 6)
-		path_frame.add_child(col)
-		var branch_title := Label.new()
-		branch_title.text = str(game.META_PROGRESSION.SKILL_BRANCH_TITLES.get(branch_id, branch_id))
-		branch_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		branch_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		# SCRUM-676: заголовок пути крупнее для читаемости.
-		branch_title.add_theme_font_size_override("font_size", 20)
-		branch_title.add_theme_color_override("font_color", Color(0.96, 0.88, 0.54, 1.0))
-		col.add_child(branch_title)
-		for node in game.META_PROGRESSION.branch_nodes(branch_id):
-			var node_data: Dictionary = node
-			var node_id: String = str(node_data["id"])
-			var node_box := VBoxContainer.new()
-			node_box.name = "SkillNodeBlock_%s" % node_id
-			node_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			node_box.add_theme_constant_override("separation", 2)
-			col.add_child(node_box)
-			var nb := Button.new()
-			nb.name = "SkillNode_%s" % node_id
-			nb.text = str(int(node_data["cost"]))
-			nb.tooltip_text = "%s\n%s" % [str(node_data["title"]), str(node_data["desc"])]
-			nb.custom_minimum_size = Vector2(74.0, 74.0)
-			nb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-			nb.focus_mode = Control.FOCUS_ALL
-			nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-			nb.add_theme_font_size_override("font_size", 20)
-			nb.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
-			nb.add_theme_color_override("font_disabled_color", Color(0.70, 0.72, 0.78, 0.82))
-			_apply_progression_node_button_theme(nb, "locked")
-			nb.set_meta("node_id", node_id)
-			nb.pressed.connect(func() -> void:
-				game.meta_state = game.META_PROGRESSION.buy_skill_node(game.meta_state, node_id)
-				game.META_PROGRESSION.save_state(game.meta_state)
-				refresh.call()
-			)
-			node_buttons.append(nb)
-			node_box.add_child(nb)
-			var node_title := Label.new()
-			node_title.name = "SkillNodeTitle_%s" % node_id
-			node_title.text = str(node_data["title"])
-			node_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			node_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			# SCRUM-676: подписи узлов крупнее для читаемости (12→14 / 10→12).
-			node_title.add_theme_font_size_override("font_size", 14)
-			node_title.add_theme_color_override("font_color", Color(0.82, 0.84, 0.90, 0.95))
-			node_box.add_child(node_title)
-			var node_desc := Label.new()
-			node_desc.name = "SkillNodeDesc_%s" % node_id
-			node_desc.text = str(node_data["desc"])
-			node_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			node_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			node_desc.add_theme_font_size_override("font_size", 12)
-			node_desc.add_theme_color_override("font_color", Color(0.70, 0.74, 0.80, 0.9))
-			node_box.add_child(node_desc)
-			nb.set_meta("title_label", node_title)
-			nb.set_meta("desc_label", node_desc)
 
-	refresh.call()
-	if not node_buttons.is_empty():
-		node_buttons[0].grab_focus()
+func _atlas_node_focused(node_id: String) -> void:
+	# Геймпад/клавиатура: фокус на узле сразу показывает его в панели.
+	if str(_atlas.get("selected", "")) != node_id:
+		_atlas_select_node(node_id)
+
+
+func _atlas_select_node(node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	_atlas["selected"] = node_id
+	_atlas_refresh()
+
+
+func _atlas_select_class(class_id: String) -> void:
+	if _atlas.is_empty() or str(_atlas.get("class_id", "")) == class_id and str(_atlas.get("tab", "")) == "constellation":
+		_atlas_refresh()
+		return
+	_atlas["class_id"] = class_id
+	_atlas["tab"] = "constellation"
+	_atlas["selected"] = ""
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+func _atlas_switch_tab(tab: String) -> void:
+	if _atlas.is_empty() or str(_atlas.get("tab", "")) == tab:
+		return
+	_atlas["tab"] = tab
+	_atlas["selected"] = ""
+	_atlas_apply_tab_state()
+	_atlas_build_canvas()
+	_atlas_refresh()
+	_atlas_wire_focus()
+
+
+# LB/RB (и Tab) листают вкладки Созвездие↔Гильдия (паттерн SCRUM-813).
+func _atlas_cycle_tab(_dir: int) -> bool:
+	if _atlas.is_empty():
+		return false
+	_atlas_switch_tab("guild" if str(_atlas.get("tab", "constellation")) == "constellation" else "constellation")
+	return true
+
+
+func _atlas_apply_tab_state() -> void:
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var tab_constellation := _atlas.get("tab_constellation") as Button
+	var tab_guild := _atlas.get("tab_guild") as Button
+	var strip := _atlas.get("strip") as ScrollContainer
+	var emblem_badge := _atlas.get("emblem_badge") as PanelContainer
+	if tab_constellation == null or tab_guild == null or not is_instance_valid(tab_constellation) or not is_instance_valid(tab_guild):
+		return
+	var active_tint := Color(1.0, 0.94, 0.74, 1.0)
+	var idle_tint := Color(0.74, 0.76, 0.84, 0.92)
+	tab_constellation.modulate = idle_tint if on_guild else active_tint
+	tab_guild.modulate = active_tint if on_guild else idle_tint
+	# Tab-клавиша всегда жмёт ПРОТИВОПОЛОЖНУЮ вкладку (короткая дорога «Tab — вкладки»).
+	var tab_shortcut := Shortcut.new()
+	var tab_event := InputEventKey.new()
+	tab_event.keycode = KEY_TAB
+	tab_shortcut.events = [tab_event]
+	tab_constellation.shortcut = tab_shortcut if on_guild else null
+	tab_guild.shortcut = null if on_guild else tab_shortcut
+	if strip != null and is_instance_valid(strip):
+		strip.visible = not on_guild
+	if emblem_badge != null and is_instance_valid(emblem_badge):
+		emblem_badge.visible = not on_guild
+	var respec_button := _atlas.get("respec_button") as Button
+	if respec_button != null and is_instance_valid(respec_button):
+		respec_button.text = "Респек Атласа — бесплатно" if on_guild else "Респек — бесплатно"
+
+
+func _atlas_buy_selected() -> void:
+	var node_id := str(_atlas.get("selected", ""))
+	if node_id == "" or _atlas.is_empty():
+		return
+	if not game.META_PROGRESSION.can_buy_node(game.meta_state, node_id):
+		return
+	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_refresh()
+	_atlas_play_purchase_ceremony(node_id)
+
+
+# Церемония покупки: вспышка звезды + загорание линий к соседям (§7).
+func _atlas_play_purchase_ceremony(node_id: String) -> void:
+	var nb := (_atlas.get("node_buttons", {}) as Dictionary).get(node_id) as TextureButton
+	if nb == null or not is_instance_valid(nb):
+		return
+	var star := nb.get_node_or_null("Star") as TextureRect
+	if star != null and star.visible:
+		var star_tween := star.create_tween()
+		star_tween.tween_property(star, "scale", Vector2.ONE, 0.45).from(Vector2(1.7, 1.7)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		star_tween.parallel().tween_property(star, "self_modulate", star.self_modulate, 0.45).from(Color(2.0, 1.8, 1.2, 1.0))
+	var edge_layer := _atlas.get("edge_layer") as Control
+	if edge_layer != null and is_instance_valid(edge_layer):
+		var edge_tween := edge_layer.create_tween()
+		edge_tween.tween_method(Callable(self, "_atlas_set_edge_flash").bind(node_id), 1.0, 0.0, 0.8)
+
+
+func _atlas_set_edge_flash(value: float, node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	(_atlas.get("edge_flash", {}) as Dictionary)[node_id] = value
+	var edge_layer := _atlas.get("edge_layer") as Control
+	if edge_layer != null and is_instance_valid(edge_layer):
+		edge_layer.queue_redraw()
+
+
+func _atlas_toggle_keystone() -> void:
+	var node_id := str(_atlas.get("selected", ""))
+	var node: Dictionary = game.META_PROGRESSION.node_by_id(node_id)
+	if node.is_empty() or str(node.get("role", "")) != "keystone":
+		return
+	var class_id := str(node.get("class_affinity", ""))
+	if class_id == "":
+		return
+	var active: bool = game.META_PROGRESSION.is_keystone_active(game.meta_state, node_id)
+	game.meta_state = game.META_PROGRESSION.set_active_keystone(game.meta_state, class_id, "" if active else node_id)
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_refresh()
+
+
+func _atlas_respec_prompt() -> void:
+	var popup := _atlas.get("respec_popup") as PanelContainer
+	var text := _atlas.get("respec_text") as Label
+	if popup == null or text == null or not is_instance_valid(popup) or not is_instance_valid(text):
+		return
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		text.text = "Сбросить все узлы Атласа гильдии? Звёздная пыль вернётся полностью — респек бесплатный."
+	else:
+		var title := str(game.PROGRESSION_DATA.character_config(str(_atlas.get("class_id", ""))).get("title", ""))
+		text.text = "Сбросить созвездие класса «%s»? Эмблемы вернутся полностью — респек бесплатный." % title
+	popup.visible = true
+
+
+func _atlas_respec_cancel() -> void:
+	var popup := _atlas.get("respec_popup") as PanelContainer
+	if popup != null and is_instance_valid(popup):
+		popup.visible = false
+
+
+func _atlas_respec_confirm() -> void:
+	if _atlas.is_empty():
+		return
+	if str(_atlas.get("tab", "constellation")) == "guild":
+		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, "")
+	else:
+		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, str(_atlas.get("class_id", "")))
+	game.META_PROGRESSION.save_state(game.meta_state)
+	_atlas_respec_cancel()
+	_atlas_refresh()
+
+
+func _atlas_canvas_input(event: InputEvent) -> void:
+	# Клик по небу скипает церемонию рассеивания тумана (§7).
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+		_atlas_skip_fog_ceremonies()
+
+
+func _atlas_skip_fog_ceremonies() -> void:
+	var tweens: Dictionary = _atlas.get("fog_tweens", {})
+	for node_id in tweens.keys():
+		var fog_tween := tweens[node_id] as Tween
+		if fog_tween != null and fog_tween.is_valid():
+			fog_tween.kill()
+		_atlas_finish_fog(str(node_id))
+	_atlas["fog_tweens"] = {}
+
+
+func _atlas_finish_fog(node_id: String) -> void:
+	if _atlas.is_empty():
+		return
+	(_atlas.get("fog_tweens", {}) as Dictionary).erase(node_id)
+	var nb := (_atlas.get("node_buttons", {}) as Dictionary).get(node_id) as TextureButton
+	if nb == null or not is_instance_valid(nb):
+		return
+	var fog := nb.get_node_or_null("Fog") as TextureRect
+	if fog != null:
+		fog.visible = false
+
+
+# SCRUM-812/813: фокус-цепочки — лента классов вертикальной цепью, узлы по
+# adj-соседям созвездия (гео-направления), шапка/низ достижимы направлениями.
+func _atlas_wire_focus() -> void:
+	if _atlas.is_empty():
+		return
+	var tab_constellation := _atlas.get("tab_constellation") as Button
+	var tab_guild := _atlas.get("tab_guild") as Button
+	var back_button := _atlas.get("back_button") as Button
+	var respec_button := _atlas.get("respec_button") as Button
+	var buy_button := _atlas.get("buy_button") as Button
+	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var medallions: Array = [] if on_guild else _atlas.get("medallions", [])
+	var buttons: Dictionary = _atlas.get("node_buttons", {})
+	var centers: Dictionary = _atlas.get("node_centers", {})
+	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button]:
+		if control == null or not is_instance_valid(control):
+			return
+	# Шапка: горизонтальная цепь.
+	var header_ring: Array = [tab_constellation, tab_guild, back_button]
+	for i in range(header_ring.size()):
+		var current := header_ring[i] as Button
+		current.focus_neighbor_left = (header_ring[(i - 1 + header_ring.size()) % header_ring.size()] as Control).get_path()
+		current.focus_neighbor_right = (header_ring[(i + 1) % header_ring.size()] as Control).get_path()
+		current.focus_neighbor_bottom = respec_button.get_path()
+	# Лента классов: вертикальная цепь, вправо — ядро созвездия.
+	var core_button := buttons.get(_atlas_core_node_id()) as TextureButton
+	for i in range(medallions.size()):
+		var mb := medallions[i] as TextureButton
+		if mb == null or not is_instance_valid(mb):
+			continue
+		var prev := medallions[(i - 1 + medallions.size()) % medallions.size()] as TextureButton
+		var next := medallions[(i + 1) % medallions.size()] as TextureButton
+		mb.focus_neighbor_top = prev.get_path()
+		mb.focus_neighbor_bottom = next.get_path()
+		if core_button != null and is_instance_valid(core_button):
+			mb.focus_neighbor_right = core_button.get_path()
+	# Узлы: гео-направления по adj (лучший сосед в каждой из 4 сторон).
+	var selected_medallion: TextureButton = null
+	for raw_mb in medallions:
+		var mb := raw_mb as TextureButton
+		if mb != null and is_instance_valid(mb) and str(mb.get_meta("class_id")) == str(_atlas.get("class_id", "")):
+			selected_medallion = mb
+			break
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb) or not centers.has(node_id):
+			continue
+		var node: Dictionary = game.META_PROGRESSION.node_by_id(str(node_id))
+		var center: Vector2 = centers[node_id]
+		var best := {"left": null, "right": null, "top": null, "bottom": null}
+		var best_score := {"left": 0.35, "right": 0.35, "top": 0.35, "bottom": 0.35}
+		for raw_adj in node.get("adj", []):
+			var adj_id := str(raw_adj)
+			if not centers.has(adj_id) or not buttons.has(adj_id):
+				continue
+			var offset := (centers[adj_id] as Vector2) - center
+			if offset.length() < 1.0:
+				continue
+			var direction := offset.normalized()
+			var scores := {"left": -direction.x, "right": direction.x, "top": -direction.y, "bottom": direction.y}
+			for side in scores.keys():
+				if float(scores[side]) > float(best_score[side]):
+					best_score[side] = float(scores[side])
+					best[side] = buttons[adj_id]
+		var left_target := best["left"] as Control
+		if left_target == null:
+			left_target = selected_medallion if selected_medallion != null else tab_constellation
+		var right_target := best["right"] as Control
+		if right_target == null:
+			right_target = buy_button if buy_button.visible and not buy_button.disabled else respec_button
+		var top_target := best["top"] as Control
+		if top_target == null:
+			top_target = tab_guild if on_guild else tab_constellation
+		var bottom_target := best["bottom"] as Control
+		if bottom_target == null:
+			bottom_target = respec_button
+		nb.focus_neighbor_left = left_target.get_path()
+		nb.focus_neighbor_right = right_target.get_path()
+		nb.focus_neighbor_top = top_target.get_path()
+		nb.focus_neighbor_bottom = bottom_target.get_path()
+	# Панель/низ: возврат к ядру созвездия.
+	if core_button != null and is_instance_valid(core_button):
+		buy_button.focus_neighbor_left = core_button.get_path()
+		respec_button.focus_neighbor_top = core_button.get_path()
+	var keystone_toggle := _atlas.get("keystone_toggle") as Button
+	if keystone_toggle != null and is_instance_valid(keystone_toggle):
+		buy_button.focus_neighbor_bottom = keystone_toggle.get_path()
+		keystone_toggle.focus_neighbor_top = buy_button.get_path()
+		if core_button != null and is_instance_valid(core_button):
+			keystone_toggle.focus_neighbor_left = core_button.get_path()
+	# Стартовый фокус: медальон выбранного класса (вкладка Гильдии — ядро Атласа).
+	var initial: Control = selected_medallion
+	if initial == null:
+		initial = core_button
+	if initial == null and not buttons.is_empty():
+		initial = buttons.values()[0] as Control
+	if initial != null and is_instance_valid(initial):
+		initial.call_deferred("grab_focus")
 
 
 func _show_patch_notes_screen() -> void:
@@ -2233,7 +3746,7 @@ func _show_patch_notes_screen() -> void:
 	var title := Label.new()
 	title.text = "Что нового"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", _readable_font_size(38))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	header.add_child(title)
 	var back_button := _make_button("Назад в меню")
@@ -2242,6 +3755,11 @@ func _show_patch_notes_screen() -> void:
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
+	# SCRUM-813: стартовый фокус — «Назад в меню»; A возвращает в меню, B/Esc тоже.
+	# Контент патч-ноутов read-only — прокрутка колесом/перетаскиванием (гео-скролл геймпадом
+	# на чисто-текстовых экранах — отдельная мелкая доработка).
+	_ensure_run_ui_gamepad_bindings()
+	back_button.call_deferred("grab_focus")
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -2258,14 +3776,14 @@ func _show_patch_notes_screen() -> void:
 		var version_label := Label.new()
 		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
 		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
-		version_label.add_theme_font_size_override("font_size", 24)
+		version_label.add_theme_font_size_override("font_size", _readable_font_size(24))
 		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
 		content.add_child(version_label)
 		for line in (entry_data.get("highlights", []) as Array):
 			var bullet := Label.new()
 			bullet.text = "•  %s" % str(line)
 			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			bullet.add_theme_font_size_override("font_size", 16)
+			bullet.add_theme_font_size_override("font_size", _readable_font_size(16))
 			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
 			content.add_child(bullet)
 
@@ -2285,7 +3803,7 @@ func _show_codex_screen() -> void:
 	# карточки/иконки/фон, чтобы апскейл вьюпорта был хрустящим без блюра.
 	root.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
-	_add_screen_background(root, "codex")
+	_add_codex_pl_background(root)
 
 	var main_panel := PanelContainer.new()
 	main_panel.name = "CodexMainPanel"
@@ -2295,17 +3813,26 @@ func _show_codex_screen() -> void:
 
 	var title := Label.new()
 	title.name = "CodexHeaderTitle"
-	title.text = "Кодекс · Персонажи"
+	title.text = "Кодекс"
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 38)
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
+	title.add_theme_color_override("font_color", CODEX_PL_TEXT_GOLD)
 	root.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "CodexHeaderSubtitle"
+	subtitle.text = "Записи о героях, тварях, реликвиях и правилах мира."
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
+	subtitle.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
+	root.add_child(subtitle)
 
 	var back_button := _make_compact_button("←")
 	back_button.name = "CodexBackButton"
 	_apply_codex_pl_button_theme(back_button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, CODEX_PL_BACK_BUTTON_CONTENT)
 	back_button.tooltip_text = "Назад в меню"
-	back_button.add_theme_font_size_override("font_size", 28)
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(28))
 	back_button.pressed.connect(_show_main_menu)
 	root.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -2333,11 +3860,14 @@ func _show_codex_screen() -> void:
 
 	content.set_meta("codex_detail_panel", detail_panel)
 	content.set_meta("codex_header_title", title)
+	content.set_meta("codex_header_subtitle", subtitle)
 	content.set_meta("codex_tabs", tabs_row)
+	content.set_meta("codex_active_section", "characters")
 
 	var layout_entries: Array = []
 	_codex_v2_register_rect(layout_entries, main_panel, CODEX_V2_OUTER_FRAME_RECT)
 	_codex_v2_register_rect(layout_entries, title, CODEX_V2_HEADER_TITLE_SAFE)
+	_codex_v2_register_rect(layout_entries, subtitle, CODEX_V2_HEADER_SUBTITLE_SAFE)
 	_codex_v2_register_rect(layout_entries, back_button, CODEX_V2_BACK_BUTTON_SAFE)
 	_codex_v2_register_rect(layout_entries, nav_panel, CODEX_V2_NAV_PANEL_RECT)
 	_codex_v2_register_rect(layout_entries, tabs_row, CODEX_V2_NAV_SAFE)
@@ -2349,19 +3879,33 @@ func _show_codex_screen() -> void:
 		var tab_button := _make_button(str(section["title"]))
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		tab_button.add_theme_font_size_override("font_size", 15)
+		tab_button.add_theme_font_size_override("font_size", _readable_font_size(15))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		tabs_row.add_child(tab_button)
 		_codex_pl_add_category_emblem(tab_button, section_id)
 
 	_codex_v2_apply_layout(layout_entries)
+	_codex_v2_apply_header_metrics(title, subtitle)
 	_codex_v2_apply_tab_metrics(tabs_row)
+	_codex_v2_apply_back_button_metrics(back_button)
 	root.resized.connect(func() -> void:
 		_codex_v2_apply_layout(layout_entries)
+		_codex_v2_apply_header_metrics(title, subtitle)
 		_codex_v2_apply_tab_metrics(tabs_row)
+		_codex_v2_apply_back_button_metrics(back_button)
+		_codex_rebuild_current_section(content)
 	)
 
 	_show_codex_section(content, "characters")
+
+	# SCRUM-813: стартовый фокус — первая вкладка кодекса; LB/RB листают разделы
+	# (см. _handle_menu_shoulder_nav), карточки записей фокусируемы и прокручиваются
+	# (follow_focus). B/Esc = назад в меню.
+	_ensure_run_ui_gamepad_bindings()
+	var first_codex_tab := tabs_row.get_node_or_null("CodexTab_characters") as Button
+	if first_codex_tab != null:
+		first_codex_tab.focus_mode = Control.FOCUS_ALL
+		first_codex_tab.call_deferred("grab_focus")
 
 
 func _show_codex_section(content: PanelContainer, section_id: String) -> void:
@@ -2371,9 +3915,13 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 		return
 	var detail_panel := content.get_meta("codex_detail_panel", null) as PanelContainer
 	var header_title := content.get_meta("codex_header_title", null) as Label
+	var header_subtitle := content.get_meta("codex_header_subtitle", null) as Label
 	var tabs_row := content.get_meta("codex_tabs", null) as Control
 	if header_title != null:
-		header_title.text = "Кодекс · %s" % _codex_section_title(section_id)
+		header_title.text = "Кодекс"
+	if header_subtitle != null:
+		header_subtitle.text = "Раздел: %s" % _codex_section_title(section_id)
+	content.set_meta("codex_active_section", section_id)
 	_codex_update_tab_selection(tabs_row, section_id)
 	for child in content.get_children():
 		child.visible = false
@@ -2389,6 +3937,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	scroll.name = "CodexSection_%s" % section_id
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# SCRUM-813: скролл секции следует за сфокусированной карточкой (крестовина/стик).
+	scroll.follow_focus = true
 	content.add_child(scroll)
 
 	var list := VBoxContainer.new()
@@ -2470,13 +4020,39 @@ func _codex_pl_entry_icon_slot_style() -> StyleBox:
 	return box
 
 
+func _codex_chip_style() -> StyleBox:
+	var box := StyleBoxFlat.new()
+	box.bg_color = CODEX_PL_CHIP_FILL
+	box.border_color = Color(0.72, 0.58, 0.31, 0.86)
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(4)
+	box.content_margin_left = 12.0
+	box.content_margin_right = 12.0
+	box.content_margin_top = 6.0
+	box.content_margin_bottom = 6.0
+	return box
+
+
+func _codex_parchment_style() -> StyleBox:
+	var box := StyleBoxFlat.new()
+	box.bg_color = CODEX_PL_PARCHMENT_FILL
+	box.border_color = CODEX_PL_PARCHMENT_BORDER
+	box.set_border_width_all(3)
+	box.set_corner_radius_all(5)
+	box.content_margin_left = 22.0
+	box.content_margin_right = 22.0
+	box.content_margin_top = 18.0
+	box.content_margin_bottom = 18.0
+	return box
+
+
 func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
 	var slot := PanelContainer.new()
 	slot.name = node_name
 	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Слот в карточке-строке: фикс-квадрат, по вертикали ужимается и центрируется,
 	# чтобы НИКОГДА не превышать высоту пергамента карточки (не торчал сверху/снизу).
-	var slot_padding := Vector2(8.0, 8.0) * _codex_v2_scale()
+	var slot_padding := Vector2(6.0, 6.0) * _codex_v2_scale()
 	slot.custom_minimum_size = size + slot_padding
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -2496,24 +4072,33 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	slot.add_child(portrait)
 
 
-func _codex_label(parent: Control, text: String, font_size: int, color: Color) -> Label:
+func _codex_label(parent: Control, text: String, font_size: int, color: Color, max_lines := 0) -> Label:
 	var label := Label.new()
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", _codex_font_size(font_size, 10, 44))
 	label.add_theme_color_override("font_color", color)
+	if max_lines > 0:
+		label.clip_text = true
+		label.max_lines_visible = max_lines
+		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		label.custom_minimum_size.y = ceilf(float(_codex_font_size(font_size, 10, 44) * max_lines) * 1.18)
 	parent.add_child(label)
 	return label
+
+
+func _codex_font_size(base_size: int, min_size := 10, max_size := 44) -> int:
+	var scale := clampf(_codex_v2_scale(), 0.82, 1.32)
+	return clampi(int(roundf(float(base_size) * scale)), min_size, max_size)
 
 
 func _codex_v2_scale(viewport_size := Vector2.ZERO) -> float:
 	var size := viewport_size
 	if size == Vector2.ZERO:
 		size = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	# SCRUM-684: вписываем 1920×1080-композицию в инсет-область вьюпорта (поля со
-	# всех сторон), чтобы орнамент рамки main_shell не упирался в край экрана.
+	# SCRUM-725: the base rects already include the 24px outer inset from layout_map.md.
 	var avail := size - CODEX_V2_SCREEN_INSET * 2.0
 	return minf(avail.x / CODEX_V2_BASE_SIZE.x, avail.y / CODEX_V2_BASE_SIZE.y)
 
@@ -2560,29 +4145,66 @@ func _codex_v2_apply_layout(entries: Array) -> void:
 		control.custom_minimum_size = rect.size
 
 
+func _codex_v2_apply_header_metrics(title: Label, subtitle: Label) -> void:
+	if title != null:
+		title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
+
+
 func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
 	if tabs_row == null:
 		return
 	var scale := _codex_v2_scale()
-	var tab_size := Vector2(258.0, 92.0) * scale
-	var separation: int = maxi(8, int(round(14.0 * scale)))
+	var tab_size := CODEX_V2_CATEGORY_BUTTON_SIZE * scale
+	var separation: int = maxi(7, int(round(14.0 * scale)))
 	tabs_row.add_theme_constant_override("separation", separation)
 	for child in tabs_row.get_children():
 		var button := child as Button
 		if button == null:
 			continue
 		button.custom_minimum_size = tab_size
-		button.add_theme_font_size_override("font_size", 13 if scale < 0.8 else 15)
+		button.add_theme_font_size_override("font_size", _codex_font_size(18, 12, 23))
 		# Полоса слева под эмблему: ruby-rivet (≈левый tex-margin) + сама эмблема.
 		# content-margins масштабируем под размер плитки (display px); левый margin
 		# уводит подпись правее эмблемы, остальные кладут текст в parchment-зону.
-		var px := tab_size.x / 470.0
+		var px := tab_size.x / 512.0
 		var rivet_end := CODEX_PL_CATEGORY_BUTTON_TEX.x * px
-		var emblem := clampf(tab_size.y * 0.50, 40.0, 52.0)
-		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 26.0 * px, 30.0 * px, 26.0 * px)
+		var emblem := clampf(tab_size.y * 0.50, 30.0, 64.0)
+		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 22.0 * px, 26.0 * px, 22.0 * px)
 		_apply_codex_pl_button_theme(button, CODEX_PL_CATEGORY_BUTTON_PATH, CODEX_PL_CATEGORY_BUTTON_TEX, btn_content)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		_codex_pl_layout_category_emblem(button, tab_size, rivet_end, emblem)
+
+
+# SCRUM-684 fix: компактная кнопка «Назад» масштабирует content-margins и шрифт под
+# свою (168×84-в-base) display-высоту. Без этого фикс-margins (60px) + шрифт 28
+# давали intrinsic-min ≈99px, и на малых разрешениях кнопка раздувалась ниже своего
+# layout-rect и налезала на CodexDetailPanel (ui_no_overlap_matrix_test, все res).
+# Пропорциональные margins/font держат intrinsic-min < layout-высоты на всех scale.
+func _codex_v2_apply_back_button_metrics(button: Button) -> void:
+	if button == null:
+		return
+	var scale := _codex_v2_scale()
+	var height := CODEX_V2_BACK_BUTTON_SAFE.size.y * scale
+	var v_margin := maxf(6.0, height * 0.13)
+	var content := Vector4(
+		CODEX_PL_BACK_BUTTON_CONTENT.x * scale,
+		v_margin,
+		CODEX_PL_BACK_BUTTON_CONTENT.z * scale,
+		v_margin)
+	_apply_codex_pl_button_theme(button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, content)
+	button.add_theme_font_size_override("font_size", _codex_font_size(int(round(clampf(height * 0.34, 16.0, 40.0))), 14, 44))
+
+
+func _codex_rebuild_current_section(content: PanelContainer) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var section_id := str(content.get_meta("codex_active_section", "characters"))
+	for child in content.get_children():
+		content.remove_child(child)
+		child.queue_free()
+	_show_codex_section(content, section_id)
 
 
 # SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
@@ -2650,7 +4272,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		child.queue_free()
 	var box := VBoxContainer.new()
 	box.name = "CodexDetailContent"
-	box.add_theme_constant_override("separation", int(round(14.0 * _codex_v2_scale())))
+	box.add_theme_constant_override("separation", int(round(12.0 * _codex_v2_scale())))
 	detail_panel.add_child(box)
 
 	var title := Label.new()
@@ -2658,7 +4280,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.text = str(detail_data.get("title", ""))
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 22 if _codex_v2_scale() < 0.8 else 28)
+	title.add_theme_font_size_override("font_size", _codex_font_size(34, 22, 44))
 	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
 	box.add_child(title)
 
@@ -2692,12 +4314,17 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		var chip_limit := mini(4, chips.size())
 		for chip_index in range(chip_limit):
 			var chip_text = chips[chip_index]
-			var chip := Label.new()
-			chip.text = str(chip_text)
-			chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			chip.add_theme_font_size_override("font_size", 12 if _codex_v2_scale() < 0.8 else 14)
-			chip.add_theme_color_override("font_color", Color(0.42, 0.20, 0.10, 1.0))
+			var chip := PanelContainer.new()
+			chip.name = "CodexDetailChip"
+			chip.add_theme_stylebox_override("panel", _codex_chip_style())
 			chip_row.add_child(chip)
+			var chip_label := Label.new()
+			chip_label.text = str(chip_text)
+			chip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			chip_label.add_theme_font_size_override("font_size", _codex_font_size(15, 11, 20))
+			chip_label.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
+			chip.add_child(chip_label)
 
 	var term_id := str(detail_data.get("term_id", ""))
 	if term_id != "":
@@ -2706,11 +4333,17 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		box.add_child(glossary_button)
 
+	var parchment := PanelContainer.new()
+	parchment.name = "CodexDetailParchmentInset"
+	parchment.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parchment.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	parchment.add_theme_stylebox_override("panel", _codex_parchment_style())
+	box.add_child(parchment)
 	var text_scroll := ScrollContainer.new()
 	text_scroll.name = "CodexDetailTextScroll"
 	text_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(text_scroll)
+	parchment.add_child(text_scroll)
 	var text_box := VBoxContainer.new()
 	text_box.name = "CodexDetailTextBody"
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2718,7 +4351,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	text_scroll.add_child(text_box)
 	var lines: Array = detail_data.get("body_lines", [])
 	for line in lines:
-		_codex_label(text_box, str(line), 13 if _codex_v2_scale() < 0.8 else 15, CODEX_PL_DETAIL_BODY_COLOR)
+		_codex_label(text_box, str(line), 18, CODEX_PL_DETAIL_BODY_COLOR)
 
 
 func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
@@ -2730,7 +4363,7 @@ func _make_glossary_term_button(term_id: String, popup_context := false) -> Butt
 	button.focus_mode = Control.FOCUS_NONE
 	button.mouse_filter = Control.MOUSE_FILTER_STOP
 	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
-	button.add_theme_font_size_override("font_size", 14)
+	button.add_theme_font_size_override("font_size", _readable_font_size(14))
 	button.add_theme_color_override("font_color", Color(0.92, 0.82, 0.54, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.62, 1.0))
 	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
@@ -2806,13 +4439,13 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	tooltip.add_child(box)
 	var title := Label.new()
 	title.text = str(definition.get("name", term_id))
-	title.add_theme_font_size_override("font_size", GT_TITLE_FONT_SIZE)
+	title.add_theme_font_size_override("font_size", _readable_font_size(GT_TITLE_FONT_SIZE))
 	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
 	box.add_child(title)
 	var desc := Label.new()
 	desc.text = str(definition.get("desc", ""))
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", GT_DESC_FONT_SIZE)
+	desc.add_theme_font_size_override("font_size", _readable_font_size(GT_DESC_FONT_SIZE))
 	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
 	box.add_child(desc)
 	game.ui_layer.add_child(tooltip)
@@ -2856,21 +4489,19 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"chips": ["Герой", str(character.get("id", ""))],
 			"body_lines": body_lines,
 		})
-		_codex_portrait(row, str(character["sprite"]), Vector2(58, 58) * _codex_v2_scale())
+		_codex_portrait(row, str(character["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		text_box.add_theme_constant_override("separation", 4)
 		row.add_child(text_box)
-		_codex_label(text_box, str(character["title"]), 18, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(character["playstyle"]), 13, CODEX_PL_CARD_BODY_COLOR)
-		_codex_label(text_box, "Сильное: %s" % character["strengths"], 12, CODEX_PL_CARD_ACCENT_COLOR)
+		_codex_label(text_box, "%s — %s" % [character["title"], character["playstyle"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
-		_codex_label(list, str(kind_titles[kind]), 26, Color(0.96, 0.90, 0.68, 1.0))
+		_codex_label(list, str(kind_titles[kind]), 24, CODEX_PL_TEXT_GOLD)
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
 				continue
@@ -2887,14 +4518,13 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"chips": [str(kind_titles[kind]), str(monster["id"])],
 				"body_lines": body_lines,
 			})
-			_codex_portrait(row, str(monster["sprite"]), Vector2(58, 58) * _codex_v2_scale())
+			_codex_portrait(row, str(monster["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
-			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 17, CODEX_PL_CARD_TITLE_COLOR)
-			_codex_label(text_box, str(monster["behavior"]), 12, CODEX_PL_CARD_BODY_COLOR)
+			_codex_label(text_box, "%s (%s) — %s" % [monster["title"], monster["id"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
@@ -2918,18 +4548,17 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
 			"body_lines": body_lines,
 		})
-		_codex_icon_slot(row, icon_texture, Vector2(52, 52) * _codex_v2_scale(), "CodexArtifactIconSlot")
+		_codex_icon_slot(row, icon_texture, Vector2(62, 62) * _codex_v2_scale(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 15, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(artifact["description"]), 12, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], _artifact_tier_text(artifact_definition), artifact["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
-	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 26, Color(0.96, 0.90, 0.68, 1.0))
-	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 13, Color(0.86, 0.90, 0.95, 1.0))
+	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 24, CODEX_PL_TEXT_GOLD)
+	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for entry in CODEX_DATA.ascensions():
 		var row := _codex_entry_panel(list, {
 			"title": "%d. %s" % [entry["level"], entry["title"]],
@@ -2940,14 +4569,13 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%d. %s" % [entry["level"], entry["title"]], 18, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(entry["description"]), 13, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "%d. %s — %s" % [entry["level"], entry["title"], entry["description"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
 	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
 	for stat_type in ["base", "derived"]:
-		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 26, Color(0.96, 0.90, 0.68, 1.0))
+		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 24, CODEX_PL_TEXT_GOLD)
 		for stat in CODEX_DATA.stats():
 			if str(stat["type"]) != stat_type:
 				continue
@@ -2964,15 +4592,12 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(text_box)
-			_codex_label(text_box, str(stat["title"]), 17, Color(0.96, 0.88, 0.40, 1.0))
-			_codex_label(text_box, str(stat["description"]), 13, Color(0.93, 0.89, 0.80, 1.0))
-			if str(stat["influences"]) != "":
-				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 12, Color(0.70, 0.78, 0.88, 1.0))
+			_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_glossary(list: VBoxContainer) -> void:
-	_codex_label(list, "Глоссарий терминов", 26, Color(0.96, 0.90, 0.68, 1.0))
-	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 13, Color(0.86, 0.90, 0.95, 1.0))
+	_codex_label(list, "Глоссарий терминов", 24, CODEX_PL_TEXT_GOLD)
+	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for term_id in GLOSSARY.term_ids():
 		var definition: Dictionary = GLOSSARY.definition(term_id)
 		var row := _codex_entry_panel(list, {
@@ -2986,7 +4611,7 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(box)
 		box.add_child(_make_glossary_term_button(term_id, false))
-		_codex_label(box, str(definition.get("desc", "")), 12, Color(0.90, 0.86, 0.76, 1.0))
+		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
@@ -2998,64 +4623,78 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 
 
 func _settings_v2_modal_rect() -> Rect2:
+	# SCRUM-805 v5: модалка 55.5% ширины вьюпорта, пропорция дизайн-листа
+	# 1420×1060 (≈1.34) зафиксирована — вся внутренняя геометрия скейлится
+	# единым s = width/1420 без искажений. Кап по высоте 87% вьюпорта.
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	var width := clampf(roundf(viewport_size.x * 0.80), 1024.0, 2048.0)
-	var height := roundf(width * 924.0 / 1536.0)
-	var max_height := roundf(viewport_size.y * 0.88)
+	var aspect := SETTINGS_V5_DESIGN_SIZE.x / SETTINGS_V5_DESIGN_SIZE.y
+	var width := clampf(roundf(viewport_size.x * SETTINGS_V5_MODAL_WIDTH_RATIO), 980.0, 1560.0)
+	var height := roundf(width / aspect)
+	var max_height := roundf(viewport_size.y * 0.87)
 	if height > max_height:
 		height = max_height
-		width = roundf(height * 1536.0 / 924.0)
+		width = roundf(height * aspect)
 	return Rect2(
 		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
 		Vector2(width, height)
 	)
 
 
-func _settings_v2_scaled_modal_rect(reference_rect: Rect2, modal_size: Vector2) -> Rect2:
-	var scale := modal_size / Vector2(1536.0, 924.0)
+func _settings_v5_scale(modal_size: Vector2) -> float:
+	return modal_size.x / SETTINGS_V5_DESIGN_SIZE.x
+
+
+func _settings_v5_rect(design_rect: Rect2, s: float) -> Rect2:
 	return Rect2(
-		Vector2(roundf(reference_rect.position.x * scale.x), roundf(reference_rect.position.y * scale.y)),
-		Vector2(roundf(reference_rect.size.x * scale.x), roundf(reference_rect.size.y * scale.y))
+		Vector2(roundf(design_rect.position.x * s), roundf(design_rect.position.y * s)),
+		Vector2(roundf(design_rect.size.x * s), roundf(design_rect.size.y * s))
 	)
 
 
-func _settings_v2_tab_switcher_size(modal_size: Vector2) -> Vector2:
-	var width := clampf(roundf(modal_size.x * 0.573), 640.0, 1100.0)
-	var height := roundf(width / 5.0)
-	return Vector2(width, height)
+func _settings_v5_font(design_px: float, s: float) -> int:
+	# Кегль скейлится вместе с сеткой (s), пол 12px. На 1080p (s=0.75)
+	# label 26 → 19.5px, статус 22 → 16.5px — читаемо по дизайн-инварианту.
+	return maxi(12, int(roundf(design_px * s)))
 
 
-func _settings_v2_switcher_top(modal_size: Vector2) -> float:
-	# Свитчер табов («Экран»/«Управление») ставится НИЖЕ заголовка «Настройки».
-	# Заголовок прибит к верхней safe-зоне рамки (mockup y=94 ≈ локально 78–118);
-	# раньше свитчер стоял на y≈40 и наезжал И на орнамент рамки, И на заголовок —
-	# «Настройки» висела в пустой середине таб-бара (SCRUM-468). Теперь под ним.
-	return roundf(maxf(112.0, modal_size.y * 0.172))
+func _settings_v5_icon(path: String, design_size: Vector2, s: float) -> Texture2D:
+	# Иконки тем (чекбоксы, граббер, стрелка, иконки табов) рендерятся Godot в
+	# НАТИВНОМ размере текстуры — заранее ресайзим под текущий масштаб сетки.
+	var target := Vector2i(maxi(1, int(roundf(design_size.x * s))), maxi(1, int(roundf(design_size.y * s))))
+	var key := "%s@%dx%d" % [path, target.x, target.y]
+	if _settings_v5_icon_cache.has(key):
+		return _settings_v5_icon_cache[key]
+	var texture: Texture2D = game._cached_texture(path)
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null:
+		return texture
+	image = image.duplicate()
+	image.resize(target.x, target.y, Image.INTERPOLATE_LANCZOS)
+	var scaled := ImageTexture.create_from_image(image)
+	_settings_v5_icon_cache[key] = scaled
+	return scaled
 
 
-func _settings_v2_content_panel_rect(modal_size: Vector2) -> Rect2:
-	var main_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, modal_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
-	var switcher_size := _settings_v2_tab_switcher_size(modal_size)
-	var switcher_top := _settings_v2_switcher_top(modal_size)
-	var top := switcher_top + switcher_size.y + roundf(maxf(18.0, modal_size.y * 0.028))
-	var back_top := modal_size.y - 64.0 - maxf(28.0, modal_size.y * 0.055)
-	var left := main_margins.x + 24.0
-	var right := main_margins.z + 24.0
-	var min_height := 180.0 if modal_size.y <= 590.0 else 248.0
-	var height := maxf(min_height, back_top - top - 24.0)
-	return Rect2(Vector2(left, top), Vector2(maxf(640.0, modal_size.x - left - right), height))
+func _settings_v5_texture_box(path: String, source_margins: Vector4, content: Vector4) -> StyleBox:
+	# margins — в px источника (углы рисуются 1:1, середина тянется);
+	# content — в экранных px (уже ×s у вызывающего).
+	return _global_texture_style(path, source_margins, Color.WHITE, content)
 
 
 func _settings_v2_main_modal_style(display_size: Vector2) -> StyleBox:
-	var texture_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
-	return _global_texture_style(SETTINGS_V2_MAIN_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
+	# Арт рамки в пропорции модалки (1420:1060) — рисуется целиком без
+	# 9-slice-растяжений орнамента (аспект rect == аспект текстуры при любом s).
+	var s := _settings_v5_scale(display_size)
+	var content := Vector4(72.0 * s, 130.0 * s, 72.0 * s, 44.0 * s)
+	return _settings_v5_texture_box(SETTINGS_V5_MODAL_FRAME_PATH, Vector4(12.0, 12.0, 12.0, 12.0), content)
 
 
-func _settings_v2_content_panel_style() -> StyleBox:
-	return _minimal_frame_style("panel", Color(1.0, 1.0, 1.0, 0.96))
+func _settings_v2_content_panel_style(display_size := Vector2.ZERO) -> StyleBox:
+	return _settings_v5_texture_box(SETTINGS_V5_CONTENT_INSET_PATH, Vector4(30.0, 30.0, 30.0, 30.0), Vector4.ZERO)
 
 
 func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
@@ -3147,6 +4786,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_apply_control_rect(modal, modal_rect)
 	root.add_child(modal)
 
+	var s := _settings_v5_scale(modal_rect.size)
+
 	var modal_frame := PanelContainer.new()
 	modal_frame.name = "SettingsV2MainModalFrame"
 	modal_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -3154,54 +4795,57 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	modal_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modal.add_child(modal_frame)
 
+	var medallion_texture: Texture2D = game._cached_texture(SETTINGS_V5_MEDALLION_PATH)
+	if medallion_texture != null:
+		var medallion := TextureRect.new()
+		medallion.name = "SettingsV5Medallion"
+		medallion.texture = medallion_texture
+		medallion.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		medallion.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_apply_control_rect(medallion, _settings_v5_rect(Rect2(620.0, -14.0, 180.0, 72.0), s))
+		modal.add_child(medallion)
+
 	var title := Label.new()
 	title.name = "SettingsV2Title"
-	title.text = "Настройки"
+	title.text = "НАСТРОЙКИ"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 34)
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	_apply_control_rect(title, _settings_v2_scaled_modal_rect(Rect2(144.0, 94.0, 1248.0, 48.0), modal_rect.size))
+	title.add_theme_font_size_override("font_size", _settings_v5_font(46.0, s))
+	title.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
+	_apply_control_rect(title, _settings_v5_rect(SETTINGS_V5_TITLE_RECT, s))
 	modal.add_child(title)
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
-	tabs.custom_minimum_size = Vector2(700, 220)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
-	tabs.add_theme_font_size_override("font_size", 17)
-	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
-	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
 
-	var switcher_size := _settings_v2_tab_switcher_size(modal_rect.size)
-	var switcher := _make_settings_tab_switcher(tabs, switcher_size)
-	_apply_control_rect(switcher, Rect2(
-		Vector2(roundf((modal_rect.size.x - switcher_size.x) * 0.5), _settings_v2_switcher_top(modal_rect.size)),
-		switcher_size
-	))
+	var tab_bar_width := SETTINGS_V5_TAB_SIZE.x * 3.0 + SETTINGS_V5_TAB_GAP * 2.0
+	var switcher := _make_settings_tab_switcher(tabs, Vector2(tab_bar_width, SETTINGS_V5_TAB_SIZE.y) * s)
+	_apply_control_rect(switcher, _settings_v5_rect(
+		Rect2((SETTINGS_V5_DESIGN_SIZE.x - tab_bar_width) * 0.5, SETTINGS_V5_TAB_TOP, tab_bar_width, SETTINGS_V5_TAB_SIZE.y), s))
 	modal.add_child(switcher)
 
 	var content_panel := Panel.new()
 	content_panel.name = "SettingsContentPanel"
-	var content_panel_rect := _settings_v2_content_panel_rect(modal_rect.size)
-	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style())
+	var content_panel_rect := _settings_v5_rect(SETTINGS_V5_CONTENT_RECT, s)
+	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style(content_panel_rect.size))
 	content_panel.clip_contents = true
 	_apply_control_rect(content_panel, content_panel_rect)
 	modal.add_child(content_panel)
 	var content_margin := MarginContainer.new()
 	content_margin.name = "SettingsContentSafe"
 	content_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content_margin.add_theme_constant_override("margin_left", 18)
-	content_margin.add_theme_constant_override("margin_top", 14)
-	content_margin.add_theme_constant_override("margin_right", 18)
-	content_margin.add_theme_constant_override("margin_bottom", 14)
+	content_margin.add_theme_constant_override("margin_left", int(roundf(SETTINGS_V5_CONTENT_PAD.x * s)))
+	content_margin.add_theme_constant_override("margin_top", int(roundf(SETTINGS_V5_CONTENT_PAD.y * s)))
+	content_margin.add_theme_constant_override("margin_right", int(roundf(SETTINGS_V5_CONTENT_PAD.z * s)))
+	content_margin.add_theme_constant_override("margin_bottom", int(roundf(SETTINGS_V5_CONTENT_PAD.w * s)))
 	content_panel.add_child(content_margin)
 	content_margin.add_child(tabs)
 
-	var screen_tab := _make_settings_tab("Экран")
+	var screen_tab := _make_settings_tab("Экран", s)
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
-	screen_box.add_theme_constant_override("separation", 8)
 	tabs.add_child(screen_tab)
 
 	var screen_count := DisplayServer.get_screen_count()
@@ -3209,9 +4853,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	if screen_count > 1:
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		screen_options.custom_minimum_size = Vector2(520, 62)
-		screen_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_apply_compact_button_theme(screen_options)
+		_settings_v5_apply_field_theme(screen_options, s)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
 			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
@@ -3221,13 +4863,11 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 			_clamp_pending_resolution_for_screen(index)
 			_show_settings_menu()
 		)
-		_add_settings_control_row(screen_box, "Монитор", screen_options)
+		_add_settings_control_row(screen_box, "Монитор", screen_options, s)
 
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	resolution_options.custom_minimum_size = Vector2(520, 62)
-	resolution_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_compact_button_theme(resolution_options)
+	_settings_v5_apply_field_theme(resolution_options, s)
 	var usable_size := Vector2i(99999, 99999)
 	var screen_full_size := Vector2i(99999, 99999)
 	var screen_scale := 1.0
@@ -3252,13 +4892,11 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		settings_video_pending["resolution_index"] = index
 		_show_settings_menu()
 	)
-	_add_settings_control_row(screen_box, "Разрешение", resolution_options)
+	_add_settings_control_row(screen_box, "Разрешение", resolution_options, s)
 
 	var mode_options := OptionButton.new()
 	mode_options.name = "SettingsWindowModeOption"
-	mode_options.custom_minimum_size = Vector2(520, 62)
-	mode_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_compact_button_theme(mode_options)
+	_settings_v5_apply_field_theme(mode_options, s)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
 	mode_options.selected = clampi(int(settings_video_pending.get("window_mode_index", game.selected_window_mode_index)), 0, game.WINDOW_MODE_OPTIONS.size() - 1)
@@ -3266,55 +4904,49 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		settings_video_pending["window_mode_index"] = index
 		_show_settings_menu()
 	)
-	_add_settings_control_row(screen_box, "Режим окна", mode_options)
+	_add_settings_control_row(screen_box, "Режим окна", mode_options, s)
 
-	var shake_row := HBoxContainer.new()
-	shake_row.name = "ScreenShakeRow"
-	shake_row.add_theme_constant_override("separation", 12)
-	screen_box.add_child(shake_row)
-	var shake_label := Label.new()
-	shake_label.text = "Тряска камеры"
-	shake_label.custom_minimum_size = Vector2(220, 36)
-	shake_label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.96, 1.0))
-	shake_row.add_child(shake_label)
 	var shake_toggle := CheckBox.new()
 	shake_toggle.name = "ScreenShakeToggle"
 	shake_toggle.button_pressed = game.screen_shake_enabled
-	_style_checkbox(shake_toggle)
+	shake_toggle.text = "Вкл." if shake_toggle.button_pressed else "Выкл."
+	_settings_v5_style_checkbox(shake_toggle, s)
 	shake_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.screen_shake_enabled = pressed
 		game.get_tree().root.set_meta("screen_shake", pressed)
+		shake_toggle.text = "Вкл." if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	shake_row.add_child(shake_toggle)
+	_add_settings_control_row(screen_box, "Тряска камеры", shake_toggle, s)
 
 	var pending_label := Label.new()
 	pending_label.name = "SettingsPendingLabel"
 	pending_label.text = "Есть непримененные изменения." if _settings_video_dirty() else "Экранные настройки применены."
-	pending_label.custom_minimum_size = Vector2(420, 30)
+	pending_label.custom_minimum_size = Vector2(roundf(600.0 * s), roundf(36.0 * s))
 	pending_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pending_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pending_label.add_theme_font_size_override("font_size", 14)
-	pending_label.add_theme_color_override("font_color", Color(0.96, 0.80, 0.42, 1.0) if _settings_video_dirty() else Color(0.68, 0.76, 0.82, 1.0))
+	pending_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	pending_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER if _settings_video_dirty() else SETTINGS_V5_MUTED)
 	screen_box.add_child(pending_label)
 
-	var audio_tab := _make_settings_tab("Звук")
+	var audio_tab := _make_settings_tab("Звук", s)
 	var audio_box := audio_tab.get_child(0) as VBoxContainer
 	tabs.add_child(audio_tab)
-	_add_volume_row(audio_box, "Общая громкость", "master_volume", "")
-	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled")
-	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
-	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
+	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
+	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled", s)
+	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled", s)
+	var reset_audio_button := _settings_v5_make_action_button("Сбросить звук", "neutral", s)
 	reset_audio_button.name = "SettingsResetAudioButton"
-	_set_action_button_size(reset_audio_button, 420.0)
+	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
 		_show_settings_menu()
 	)
 	audio_box.add_child(reset_audio_button)
 
-	var controls_tab := _make_settings_tab("Управление")
+	var controls_tab := _make_settings_tab("Управление", s)
 	tabs.add_child(controls_tab)
 	# Вкладка «Управление» переполнялась (прицеливание + строка-ребинд на каждый
 	# INPUT_ACTION) — оборачиваем контент в вертикальный ScrollContainer, чтобы
@@ -3331,14 +4963,51 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var controls_box := VBoxContainer.new()
 	controls_box.name = "ControlsContent"
 	controls_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	controls_box.add_theme_constant_override("separation", 14)
+	controls_box.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	controls_scroll.add_child(controls_box)
+
+	# SCRUM-816: верхняя секция «Устройство ввода» — режим подсказок + live-статус.
+	_add_controls_section_header(controls_box, "Устройство ввода", s)
+	var device_option := OptionButton.new()
+	device_option.name = "SettingsInputModeOption"
+	device_option.focus_mode = Control.FOCUS_ALL
+	_settings_v5_apply_field_theme(device_option, s)
+	device_option.add_item("Авто (по последнему вводу)")
+	device_option.add_item("Клавиатура и мышь")
+	device_option.add_item("Геймпад")
+	var input_mode_index: int = int({"auto": 0, "keyboard": 1, "gamepad": 2}.get(str(game.input_mode), 0))
+	device_option.selected = input_mode_index
+	device_option.item_selected.connect(func(index: int) -> void:
+		var mode: String = ["auto", "keyboard", "gamepad"][clampi(index, 0, 2)]
+		game.input_mode = mode
+		var idm := _input_device_manager()
+		if idm != null and idm.has_method("set_input_mode"):
+			idm.set_input_mode(mode)
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Режим устройства", device_option, s)
+
+	var device_hint := Label.new()
+	device_hint.name = "SettingsInputModeHint"
+	device_hint.text = "И клавиатура, и геймпад работают одновременно в любом режиме — режим лишь задаёт, чьи подсказки показывать."
+	device_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	device_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
+	device_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
+	device_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	controls_box.add_child(device_hint)
+
+	var gamepad_status := Label.new()
+	gamepad_status.name = "SettingsGamepadStatus"
+	gamepad_status.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	gamepad_status.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	controls_box.add_child(gamepad_status)
+	_gamepad_status_label = gamepad_status
+	_connect_gamepad_status_signals()
+	_refresh_gamepad_status_line()
 
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
-	aim_options.custom_minimum_size = Vector2(520, 62)
-	aim_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_compact_button_theme(aim_options)
+	_settings_v5_apply_field_theme(aim_options, s)
 	aim_options.add_item("Автонаводка на ближайшего")
 	aim_options.add_item("По курсору")
 	aim_options.selected = 1 if str(game.aim_mode) == "cursor" else 0
@@ -3347,109 +5016,184 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		game.get_tree().root.set_meta("aim_mode", game.aim_mode)
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Прицеливание", aim_options)
+	_add_settings_control_row(controls_box, "Прицеливание", aim_options, s)
 
 	var debug_toggle := CheckBox.new()
 	debug_toggle.name = "DebugModeToggle"
-	debug_toggle.custom_minimum_size = Vector2(300, 42)
 	debug_toggle.button_pressed = game.debug_mode_enabled
 	debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if debug_toggle.button_pressed else "Выкл."
 	debug_toggle.tooltip_text = "Дебаг: в бою ПКМ или Shift+ЛКМ задают точку движения, средняя кнопка телепортирует."
-	_style_checkbox(debug_toggle)
+	_settings_v5_style_checkbox(debug_toggle, s)
 	debug_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.debug_mode_enabled = pressed
 		game.get_tree().root.set_meta("debug_mode", pressed)
 		debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle)
+	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle, s)
 
 	var feedback_toggle := CheckBox.new()
 	feedback_toggle.name = "CombatFeedbackToggle"
-	feedback_toggle.custom_minimum_size = Vector2(300, 42)
 	feedback_toggle.button_pressed = game.combat_feedback_enabled
 	feedback_toggle.text = "Вкл." if feedback_toggle.button_pressed else "Выкл."
 	feedback_toggle.tooltip_text = "Боевые цифры, крит-маркеры, вспышка попадания и зелёные числа лечения."
-	_style_checkbox(feedback_toggle)
+	_settings_v5_style_checkbox(feedback_toggle, s)
 	feedback_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.combat_feedback_enabled = pressed
 		game.get_tree().root.set_meta("combat_feedback", pressed)
 		feedback_toggle.text = "Вкл." if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle)
+	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle, s)
 
+	_add_controls_section_header(controls_box, "Клавиатура", s)
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
-		var row := HBoxContainer.new()
-		row.name = "BindingRow_%s" % action_name
-		row.alignment = BoxContainer.ALIGNMENT_BEGIN
-		row.add_theme_constant_override("separation", 12)
-		controls_box.add_child(row)
-
-		var label := Label.new()
-		label.text = input_action["label"]
-		label.custom_minimum_size = Vector2(170, 38)
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
-		row.add_child(label)
-
-		var bind_button := _make_compact_button(_binding_text(action_name))
+		var bind_button := Button.new()
 		bind_button.name = "BindingButton_%s" % action_name
-		bind_button.custom_minimum_size = Vector2(420, 62)
-		bind_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_apply_compact_button_theme(bind_button)
+		bind_button.text = _binding_text(action_name)
+		bind_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		_settings_v5_apply_field_theme(bind_button, s)
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
 		)
-		row.add_child(bind_button)
+		var bind_row := _add_settings_control_row(controls_box, input_action["label"], bind_button, s)
+		bind_row.name = "BindingRow_%s" % action_name
 
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hint_label.add_theme_font_size_override("font_size", 14)
-	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
+	hint_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	hint_label.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
 	controls_box.add_child(hint_label)
 
-	var reset_button := _make_button("Сбросить управление по умолчанию")
+	var reset_button := _settings_v5_make_action_button("Сбросить управление", "neutral", s)
 	reset_button.name = "SettingsResetBindingsButton"
-	_set_action_button_size(reset_button, 560.0)
+	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
 		_show_settings_menu()
 	)
 	controls_box.add_child(reset_button)
 
+	# SCRUM-816: секция «Геймпад» — ребинд joypad-кнопок/осей + deadzone + вибрация.
+	_add_controls_section_header(controls_box, "Геймпад", s)
+	for input_action in game.INPUT_ACTIONS:
+		var gp_action: String = input_action["action"]
+		var gp_button := Button.new()
+		gp_button.name = "GamepadBindButton_%s" % gp_action
+		gp_button.text = _gamepad_binding_text(gp_action)
+		gp_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		gp_button.focus_mode = Control.FOCUS_ALL
+		_settings_v5_apply_field_theme(gp_button, s)
+		var gp_glyph := _gamepad_glyph_for_action(gp_action)
+		if gp_glyph != null:
+			gp_button.icon = gp_glyph
+			gp_button.expand_icon = false
+		gp_button.pressed.connect(func() -> void:
+			_begin_gamepad_rebind(gp_action)
+		)
+		var gp_row := _add_settings_control_row(controls_box, input_action["label"], gp_button, s)
+		gp_row.name = "GamepadBindRow_%s" % gp_action
+
+	var gp_hint := Label.new()
+	gp_hint.text = "Клик по кнопке, затем нажми кнопку/наклони стик геймпада. B/Esc отменяет."
+	gp_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	gp_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	gp_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
+	gp_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
+	gp_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	controls_box.add_child(gp_hint)
+
+	var deadzone_slider := HSlider.new()
+	deadzone_slider.name = "SettingsGamepadDeadzoneSlider"
+	deadzone_slider.min_value = 0.05
+	deadzone_slider.max_value = 0.5
+	deadzone_slider.step = 0.05
+	deadzone_slider.custom_minimum_size = Vector2(roundf(420.0 * s), roundf(42.0 * s))
+	deadzone_slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	deadzone_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	deadzone_slider.focus_mode = Control.FOCUS_ALL
+	_settings_v5_style_slider(deadzone_slider, s)
+	deadzone_slider.value = clampf(float(game.gamepad_deadzone), 0.05, 0.5)
+	var deadzone_row := _add_settings_control_row(controls_box, "Мёртвая зона стика", deadzone_slider, s)
+	var deadzone_value := Label.new()
+	deadzone_value.name = "SettingsGamepadDeadzoneValue"
+	deadzone_value.text = "%.2f" % deadzone_slider.value
+	deadzone_value.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	deadzone_value.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	deadzone_row.add_child(deadzone_value)
+	deadzone_slider.value_changed.connect(func(value: float) -> void:
+		var dz := snappedf(clampf(value, 0.05, 0.5), 0.05)
+		game.gamepad_deadzone = dz
+		game.get_tree().root.set_meta("gamepad_deadzone", dz)
+		deadzone_value.text = "%.2f" % dz
+		game.save_game_settings()
+	)
+
+	var vibration_toggle := CheckBox.new()
+	vibration_toggle.name = "SettingsGamepadVibrationToggle"
+	vibration_toggle.button_pressed = bool(game.gamepad_vibration)
+	vibration_toggle.text = "Вкл." if vibration_toggle.button_pressed else "Выкл."
+	_settings_v5_style_checkbox(vibration_toggle, s)
+	vibration_toggle.toggled.connect(func(pressed: bool) -> void:
+		game.gamepad_vibration = pressed
+		game.get_tree().root.set_meta("gamepad_vibration", pressed)
+		vibration_toggle.text = "Вкл." if pressed else "Выкл."
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Вибрация", vibration_toggle, s)
+
+	var gp_reset := _settings_v5_make_action_button("Сбросить геймпад", "neutral", s)
+	gp_reset.name = "SettingsResetGamepadButton"
+	gp_reset.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	gp_reset.pressed.connect(func() -> void:
+		_reset_gamepad_bindings_to_defaults()
+	)
+	controls_box.add_child(gp_reset)
+
 	var settings_back := func() -> void:
 		_return_from_settings()
+
+	var divider := ColorRect.new()
+	divider.name = "SettingsV5Divider"
+	divider.color = SETTINGS_V5_BRONZE_LINE
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_apply_control_rect(divider, _settings_v5_rect(Rect2(160.0, SETTINGS_V5_DIVIDER_Y, 1100.0, 2.0), s))
+	divider.custom_minimum_size.y = maxf(1.0, divider.custom_minimum_size.y)
+	modal.add_child(divider)
+
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
 	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_row.add_theme_constant_override("separation", 12)
-	var action_row_size := Vector2(784.0, SETTINGS_APPLY_BUTTON_SIZE.y)
-	_apply_control_rect(action_row, Rect2(
-		Vector2(roundf((modal_rect.size.x - action_row_size.x) * 0.5), roundf(modal_rect.size.y - action_row_size.y - maxf(28.0, modal_rect.size.y * 0.055))),
-		action_row_size
-	))
+	action_row.add_theme_constant_override("separation", int(roundf(SETTINGS_V5_ACTION_GAP * s)))
+	var action_row_width := SETTINGS_V5_ACTION_SIZE.x * 3.0 + SETTINGS_V5_ACTION_GAP * 2.0
+	_apply_control_rect(action_row, _settings_v5_rect(
+		Rect2((SETTINGS_V5_DESIGN_SIZE.x - action_row_width) * 0.5, SETTINGS_V5_ACTION_TOP, action_row_width, SETTINGS_V5_ACTION_SIZE.y), s))
 	modal.add_child(action_row)
-	var apply_button := _make_button("Применить")
+	var apply_button := _settings_v5_make_action_button("Применить", "primary", s)
 	apply_button.name = "SettingsApplyButton"
-	_set_action_button_size(apply_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
 	apply_button.disabled = not _settings_video_dirty()
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
-	var revert_button := _make_button("Отменить")
+	var revert_button := _settings_v5_make_action_button("Вернуть", "neutral", s)
 	revert_button.name = "SettingsRevertButton"
-	_set_action_button_size(revert_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
 	action_row.add_child(revert_button)
-	var back_button := _make_button("Назад")
+	var back_button := _settings_v5_make_action_button("Назад", "neutral", s)
 	back_button.name = "SettingsBackButton"
-	_set_action_button_size(back_button, 280.0, 64.0)
 	back_button.pressed.connect(settings_back)
 	action_row.add_child(back_button)
 	game.ui_escape_action = settings_back
+
+	# SCRUM-813: стартовый фокус — первая вкладка настроек; LB/RB листают вкладки
+	# (см. _handle_menu_shoulder_nav). Слайдеры/OptionButton/CheckBox фокусируемы —
+	# ui_left/right меняют значение из коробки. B/Esc = «Назад» (settings_back).
+	_ensure_run_ui_gamepad_bindings()
+	var first_settings_tab := root.find_child("SettingsTabButton_0", true, false) as Button
+	if first_settings_tab != null:
+		first_settings_tab.call_deferred("grab_focus")
 
 
 func _resolve_settings_return_origin(requested_return_origin: String) -> String:
@@ -3476,6 +5220,9 @@ func _return_from_settings() -> void:
 	var return_origin := settings_return_origin
 	settings_return_origin = SETTINGS_RETURN_MAIN_MENU
 	settings_video_pending.clear()
+	# SCRUM-816: live-статус геймпада привязан к Label вкладки — обнуляем ссылку,
+	# чтобы hot-plug коллбэки не трогали освобождённый узел (они гардят валидность).
+	_gamepad_status_label = null
 	if return_origin == SETTINGS_RETURN_RUN_PAUSE:
 		game.pending_rebind_action = ""
 		game.ui_escape_action = Callable()
@@ -3488,49 +5235,39 @@ func _return_from_settings() -> void:
 
 
 func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
+	# v5: три «листа-закладки» фиксированного размера 340×84×s с иконками,
+	# без общей рамки-подложки (арт каждого таба — самостоятельная пластина).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
-	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(640.0, 128.0)
+	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(1060.0, 84.0)
+	var s := actual_display_size.y / SETTINGS_V5_TAB_SIZE.y
 	switcher.custom_minimum_size = actual_display_size
 	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	var art := Panel.new()
-	art.name = "SettingsTabSwitcherFrame"
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	art.add_theme_stylebox_override("panel", _minimal_frame_style("field"))
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	switcher.add_child(art)
-
 	var buttons: Array[Button] = []
 	var labels := ["Экран", "Звук", "Управление"]
-	var content_left := roundf(actual_display_size.x * SETTINGS_TAB_SWITCHER_CONTENT.x / SETTINGS_TAB_SWITCHER_BASE_SIZE.x)
-	var content_top := roundf(actual_display_size.y * SETTINGS_TAB_SWITCHER_CONTENT.y / SETTINGS_TAB_SWITCHER_BASE_SIZE.y)
-	var content_right := roundf(actual_display_size.x * SETTINGS_TAB_SWITCHER_CONTENT.z / SETTINGS_TAB_SWITCHER_BASE_SIZE.x)
-	var content_bottom := roundf(actual_display_size.y * SETTINGS_TAB_SWITCHER_CONTENT.w / SETTINGS_TAB_SWITCHER_BASE_SIZE.y)
-	var safe_rect := Rect2(
-		Vector2(content_left, content_top),
-		Vector2(
-			maxf(1.0, actual_display_size.x - content_left - content_right),
-			maxf(1.0, actual_display_size.y - content_top - content_bottom)
-		)
-	)
-	var tab_gap := maxf(6.0, roundf(actual_display_size.x * 0.014))
-	var tab_width := maxf(1.0, (safe_rect.size.x - tab_gap * 2.0) / 3.0)
+	var tab_width := roundf(SETTINGS_V5_TAB_SIZE.x * s)
+	var tab_gap := roundf(SETTINGS_V5_TAB_GAP * s)
 	for tab_index in range(labels.size()):
-		var tab_left := safe_rect.position.x + float(tab_index) * (tab_width + tab_gap)
+		var tab_left := float(tab_index) * (tab_width + tab_gap)
 		var button := Button.new()
 		button.name = "SettingsTabButton_%d" % tab_index
 		button.text = labels[tab_index]
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.focus_mode = Control.FOCUS_ALL
 		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		button.offset_left = roundf(tab_left)
-		button.offset_top = roundf(safe_rect.position.y)
-		button.offset_right = roundf(tab_left + tab_width)
-		button.offset_bottom = roundf(safe_rect.position.y + safe_rect.size.y)
-		button.add_theme_font_size_override("font_size", 12)
+		button.offset_left = tab_left
+		button.offset_top = 0.0
+		button.offset_right = tab_left + tab_width
+		button.offset_bottom = actual_display_size.y
+		button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+		var icon := _settings_v5_icon(SETTINGS_V5_TAB_ICON_PATHS[tab_index], Vector2(44.0, 44.0), s)
+		if icon != null:
+			button.icon = icon
+			button.expand_icon = false
+			button.add_theme_constant_override("h_separation", int(roundf(12.0 * s)))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -3541,7 +5278,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 
 	var update_buttons := func(active_tab: int) -> void:
 		for button_index in range(buttons.size()):
-			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab)
+			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab, s)
 	update_buttons.call(tabs.current_tab)
 	tabs.tab_changed.connect(func(tab_index: int) -> void:
 		update_buttons.call(tab_index)
@@ -3549,88 +5286,93 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 	return switcher
 
 
-func _apply_settings_tab_button_theme(button: Button, selected: bool) -> void:
-	button.add_theme_stylebox_override("normal", _settings_tab_button_style(selected, false, false))
-	button.add_theme_stylebox_override("hover", _settings_tab_button_style(selected, true, false))
-	button.add_theme_stylebox_override("pressed", _settings_tab_button_style(selected, true, true))
-	button.add_theme_stylebox_override("focus", _settings_tab_button_style(selected, true, false))
-	button.add_theme_stylebox_override("disabled", _settings_tab_button_style(false, false, false))
-	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.58, 1.0) if selected else Color(0.84, 0.86, 0.91, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.78, 1.0, 0.96, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+func _settings_v5_tab_stylebox(state: String, s: float) -> StyleBox:
+	# Арт таба 340×84 — точный дизайн-размер пластины (аспект rect == аспект арта).
+	var content := Vector4(18.0 * s, 10.0 * s, 18.0 * s, 12.0 * s)
+	return _settings_v5_texture_box(SETTINGS_V5_TAB_PATHS[state], Vector4(14.0, 12.0, 14.0, 12.0), content)
 
 
-func _settings_tab_button_style(selected: bool, hovered: bool, pressed: bool) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.035, 0.032, 0.040, 0.08)
-	style.border_color = Color(0.74, 0.80, 0.88, 0.14)
-	if selected:
-		style.bg_color = Color(0.22, 0.045, 0.035, 0.34)
-		style.border_color = Color(0.95, 0.82, 0.48, 0.42)
-	if hovered:
-		style.bg_color = Color(0.16, 0.16, 0.18, 0.38) if not selected else Color(0.28, 0.075, 0.060, 0.44)
-		style.border_color = Color(0.92, 0.94, 0.98, 0.56)
-	if pressed:
-		style.bg_color = Color(0.05, 0.12, 0.13, 0.46)
-		style.border_color = Color(0.72, 1.0, 0.96, 0.70)
-	style.set_corner_radius_all(8)
-	style.set_border_width_all(1)
-	style.content_margin_left = 6
-	style.content_margin_right = 6
-	style.content_margin_top = 4
-	style.content_margin_bottom = 4
-	return style
+func _apply_settings_tab_button_theme(button: Button, selected: bool, s := 1.0) -> void:
+	var normal_state := "active" if selected else "inactive"
+	var hover_state := "active" if selected else "hover"
+	button.add_theme_stylebox_override("normal", _settings_v5_tab_stylebox(normal_state, s))
+	button.add_theme_stylebox_override("hover", _settings_v5_tab_stylebox(hover_state, s))
+	button.add_theme_stylebox_override("pressed", _settings_v5_tab_stylebox("active", s))
+	button.add_theme_stylebox_override("focus", _settings_v5_tab_stylebox(hover_state, s))
+	button.add_theme_stylebox_override("disabled", _settings_v5_tab_stylebox("inactive", s))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if selected else SETTINGS_V5_MUTED)
+	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
 
 
-func _make_settings_tab(tab_name: String) -> MarginContainer:
+func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
 	var margin := MarginContainer.new()
 	margin.name = tab_name
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_theme_constant_override("margin_left", 16)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_right", 16)
-	margin.add_theme_constant_override("margin_bottom", 12)
+	margin.add_theme_constant_override("margin_left", 0)
+	margin.add_theme_constant_override("margin_top", 0)
+	margin.add_theme_constant_override("margin_right", 0)
+	margin.add_theme_constant_override("margin_bottom", 0)
 	var page := VBoxContainer.new()
 	page.name = "%sContent" % tab_name
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 14)
+	page.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	margin.add_child(page)
 	return margin
 
 
-func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control) -> void:
+func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control, s := 1.0) -> HBoxContainer:
+	# v5: единая двухколоночная сетка label(380)|control — колонки выровнены по
+	# всем вкладкам, контролы фиксированных размеров, ничего не тянется.
 	var row := HBoxContainer.new()
 	row.name = "SettingsRow_%s" % title.replace(" ", "_")
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	row.add_theme_constant_override("separation", 14)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	row.add_theme_constant_override("separation", int(roundf(24.0 * s)))
 	parent.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(180, 46)
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
 	row.add_child(label)
+	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(control)
+	return row
 
 
-func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String) -> void:
+func _add_controls_section_header(parent: VBoxContainer, title: String, s := 1.0) -> Label:
+	# SCRUM-816: заголовок секции вкладки «Управление» (Устройство/Клавиатура/Геймпад).
+	var header := Label.new()
+	header.name = "SettingsSectionHeader_%s" % title.replace(" ", "_")
+	header.text = title
+	header.add_theme_font_size_override("font_size", _settings_v5_font(28.0, s))
+	header.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
+	parent.add_child(header)
+	return header
+
+
+func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String, s := 1.0) -> void:
 	var row := HBoxContainer.new()
 	row.name = "VolumeRow_%s" % volume_key
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_theme_constant_override("separation", 14)
+	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	row.add_theme_constant_override("separation", int(roundf(16.0 * s)))
 	box.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(170, 42)
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
 	row.add_child(label)
 
 	var slider := HSlider.new()
@@ -3638,10 +5380,12 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 2.0
-	slider.custom_minimum_size = Vector2(420, 42)
+	# Высота 42×s — компактный sound-ряд (контракт SCRUM-674: ≤460×46).
+	slider.custom_minimum_size = Vector2(roundf(420.0 * s), roundf(42.0 * s))
 	slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slider.focus_mode = Control.FOCUS_ALL
-	_style_slider(slider)
+	_settings_v5_style_slider(slider, s)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
 		game.audio_settings[volume_key] = value / 100.0
@@ -3650,23 +5394,31 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	)
 	row.add_child(slider)
 
+	var chip := PanelContainer.new()
+	chip.name = "VolumeChip_%s" % volume_key
+	chip.custom_minimum_size = Vector2(roundf(96.0 * s), roundf(48.0 * s))
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _settings_v5_texture_box(
+		SETTINGS_V5_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
+	row.add_child(chip)
 	var value_label := Label.new()
-	value_label.custom_minimum_size = Vector2(58, 42)
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
-	value_label.add_theme_color_override("font_color", Color(0.95, 0.86, 0.45, 1.0))
+	value_label.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	value_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
 	slider.value_changed.connect(func(value: float) -> void:
 		value_label.text = "%d%%" % int(value)
 	)
-	row.add_child(value_label)
+	chip.add_child(value_label)
 
 	if enabled_key != "":
 		var toggle := CheckBox.new()
 		toggle.name = "VolumeToggle_%s" % enabled_key
-		toggle.custom_minimum_size = Vector2(108, 42)
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
 		toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
-		_style_checkbox(toggle)
+		toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_settings_v5_style_checkbox(toggle, s)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
@@ -3676,6 +5428,103 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 			game.save_game_settings()
 		)
 		row.add_child(toggle)
+
+
+func _settings_v5_apply_field_theme(button: Button, s: float) -> void:
+	# Врезное поле 560×56×s: дропдауны и кнопки биндингов. Арт — 9-slice
+	# источник 320×56 (углы 1:1, плоская середина тянется по ширине).
+	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_CONTROL_SIZE.x * s), roundf(SETTINGS_V5_CONTROL_SIZE.y * s))
+	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	var content := Vector4(24.0 * s, 6.0 * s, 24.0 * s, 6.0 * s)
+	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
+	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
+	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["pressed"], source_margins, content))
+	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+	if button is OptionButton:
+		var arrow := _settings_v5_icon(SETTINGS_V5_ARROW_PATH, Vector2(36.0, 36.0), s)
+		if arrow != null:
+			button.add_theme_icon_override("arrow", arrow)
+		var popup := (button as OptionButton).get_popup()
+		popup.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+		var popup_style := StyleBoxFlat.new()
+		popup_style.bg_color = Color(0.086, 0.063, 0.043, 0.98)
+		popup_style.border_color = SETTINGS_V5_GOLD
+		popup_style.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
+		popup_style.set_content_margin_all(roundf(10.0 * s))
+		popup.add_theme_stylebox_override("panel", popup_style)
+
+
+func _settings_v5_make_action_button(text: String, kind: String, s: float) -> Button:
+	# Кнопка 320×80×s с четырьмя состояниями из отдельных ассетов (без растяжений:
+	# арт 320×80 рисуется в точной пропорции, углы 9-slice 1:1).
+	var button := Button.new()
+	button.text = text
+	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_ACTION_SIZE.x * s), roundf(SETTINGS_V5_ACTION_SIZE.y * s))
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	var paths: Dictionary = SETTINGS_V5_BTN_PATHS[kind]
+	var content := Vector4(24.0 * s, 10.0 * s, 24.0 * s, 12.0 * s)
+	var source_margins := Vector4(30.0, 26.0, 30.0, 28.0)
+	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(paths["normal"], source_margins, content))
+	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(paths["hover"], source_margins, content))
+	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(paths["pressed"], source_margins, content))
+	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(paths["hover"], source_margins, content))
+	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(paths["disabled"], source_margins, content))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if kind == "primary" else SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+	return button
+
+
+func _settings_v5_style_checkbox(toggle: CheckBox, s: float) -> void:
+	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	toggle.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	var unchecked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
+	var checked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_ON_PATH, Vector2(52.0, 52.0), s)
+	if unchecked != null:
+		toggle.add_theme_icon_override("unchecked", unchecked)
+		toggle.add_theme_icon_override("unchecked_disabled", unchecked)
+	if checked != null:
+		toggle.add_theme_icon_override("checked", checked)
+		toggle.add_theme_icon_override("checked_disabled", checked)
+	toggle.add_theme_constant_override("h_separation", int(roundf(14.0 * s)))
+	toggle.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	toggle.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	toggle.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+
+
+func _settings_v5_style_slider(slider: HSlider, s: float) -> void:
+	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var groove_h := maxf(8.0, 9.0 * s)
+	var track := _settings_v5_texture_box(SETTINGS_V5_SLIDER_TRACK_PATH, Vector4(8.0, 5.0, 8.0, 5.0), Vector4.ZERO)
+	if track is StyleBoxTexture:
+		track.content_margin_top = groove_h
+		track.content_margin_bottom = groove_h
+	var fill := _settings_v5_texture_box(SETTINGS_V5_SLIDER_FILL_PATH, Vector4(6.0, 4.0, 6.0, 4.0), Vector4.ZERO)
+	if fill is StyleBoxTexture:
+		fill.content_margin_top = maxf(8.0, groove_h - 2.0 * s)
+		fill.content_margin_bottom = maxf(8.0, groove_h - 2.0 * s)
+	slider.add_theme_stylebox_override("slider", track)
+	slider.add_theme_stylebox_override("grabber_area", fill)
+	slider.add_theme_stylebox_override("grabber_area_highlight", fill)
+	slider.add_theme_constant_override("center_grabber", 1)
+	var gem := _settings_v5_icon(SETTINGS_V5_SLIDER_GEM_PATH, Vector2(36.0, 36.0), s)
+	if gem != null:
+		slider.add_theme_icon_override("grabber", gem)
+		slider.add_theme_icon_override("grabber_highlight", gem)
+		slider.add_theme_icon_override("grabber_disabled", gem)
 
 
 func _reset_audio_to_defaults() -> void:
@@ -3699,7 +5548,10 @@ func _show_pause_menu(force := false) -> void:
 	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.pause_overlay_layer)
 	game.pause_stats_menu = null
-	_build_run_pause_menu()
+	if _should_open_pause_dossier_first():
+		_show_pause_dossier_menu()
+	else:
+		_build_run_pause_menu()
 
 
 # SCRUM-484: координатная спека @2560×1440 — пауза в забеге (модалка).
@@ -3766,7 +5618,7 @@ func _build_run_pause_menu() -> void:
 	title.name = "RunPauseMenuTitle"
 	title.text = "Пауза"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 44)
+	title.add_theme_font_size_override("font_size", _readable_font_size(44))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -3774,7 +5626,7 @@ func _build_run_pause_menu() -> void:
 	subtitle.name = "RunPauseMenuSubtitle"
 	subtitle.text = "Забег поставлен на паузу"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	box.add_child(subtitle)
 
@@ -3818,6 +5670,12 @@ func _build_run_pause_menu() -> void:
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
+	# SCRUM-812: вертикальное меню паузы проходимо с геймпада/стрелок, стартовый
+	# фокус — «Продолжить»; ui_cancel (B/Esc) продолжает игру (см. main._input).
+	_wire_run_ui_focus([
+		continue_button, dossier_button, settings_button, end_run_button, main_menu_button,
+	], false, [], continue_button)
+
 
 func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
@@ -3847,6 +5705,17 @@ func _show_pause_dossier_menu() -> void:
 
 func _is_run_pause_overlay_open() -> bool:
 	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
+
+
+func _should_open_pause_dossier_first() -> bool:
+	if not game.combat_active:
+		return false
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return true
+	for screen_name in ["LevelUpOverlay", "ShopScreen", "AttributeShopScreen", "EliteArtifactRewardScreen", "EventScreen", "RouteMapScreen"]:
+		if game.ui_layer.find_child(screen_name, true, false) != null:
+			return false
+	return true
 
 
 func _can_open_pause_dossier() -> bool:
@@ -3927,113 +5796,11 @@ func _end_current_run_by_player() -> void:
 	_show_death_screen("Забег завершен игроком.")
 
 
-func _add_character_button(box: Container, character_id: String, info_labels: Dictionary) -> void:
-	var config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
-	var stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
-	var title := str(config.get("title", character_id))
-	var description := str(config.get("description", ""))
-	var strengths := str(config.get("strengths", ""))
-	var weaknesses := str(config.get("weaknesses", ""))
-	var stats_text: String = game.PROGRESSION_DATA.display_stats(stats)
-	# Вся карточка — одна кнопка: клик в любом месте, hover подсвечивает рамку.
-	var card := Button.new()
-	card.name = "CharacterCard_%s" % character_id
-	card.custom_minimum_size = Vector2(300, 150)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	card.clip_contents = true
-	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.tooltip_text = "%s\n%s\nСильные: %s\nСлабые: %s\n%s" % [title, description, strengths, weaknesses, stats_text]
-	card.add_theme_stylebox_override("normal", _character_card_style())
-	card.add_theme_stylebox_override("hover", _card_hover_style())
-	card.add_theme_stylebox_override("pressed", _card_hover_style())
-	card.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	card.mouse_entered.connect(func() -> void:
-		_update_hero_select_info(info_labels, title, description, strengths, weaknesses, stats_text)
-	)
-	card.pressed.connect(func() -> void:
-		game.selected_character_id = character_id
-		# Уровень возвышения клампится к открытому максимуму этого героя.
-		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, game.ascension_selectable_max(character_id))
-		_show_weapon_select()
-	)
-	box.add_child(card)
-
-	var margin := MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 8)
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(margin)
-
-	var column := VBoxContainer.new()
-	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_theme_constant_override("separation", 3)
-	margin.add_child(column)
-
-	var portrait := TextureRect.new()
-	portrait.name = "CharacterPortrait_%s" % character_id
-	portrait.texture = game._cached_texture(str(config.get("sprite_path", "")))
-	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(0, 96)
-	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	column.add_child(portrait)
-
-	var asc_badge := Label.new()
-	asc_badge.name = "CharacterAscension_%s" % character_id
-	var asc_unlocked: int = game.ascension_level_for(character_id)
-	asc_badge.text = ("Возвышение %d" % asc_unlocked) if asc_unlocked > 0 else "Возвышение 0"
-	asc_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_badge.add_theme_font_size_override("font_size", 11)
-	asc_badge.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 0.9))
-	asc_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(asc_badge)
-
-	var title_label := Label.new()
-	title_label.name = "CharacterTitle_%s" % character_id
-	title_label.text = title
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 20)
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.38, 1.0))
-	title_label.clip_text = true
-	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(title_label)
-
-	var style_line := _hero_card_line(description, 13, Color(0.94, 0.90, 0.81, 1.0))
-	style_line.name = "CharacterStyle_%s" % character_id
-	column.add_child(style_line)
-
-	var strengths_line := _hero_card_line("Сильные: %s" % strengths, 12, Color(0.70, 0.95, 0.78, 1.0))
-	strengths_line.name = "CharacterStrengths_%s" % character_id
-	column.add_child(strengths_line)
-
-	var weaknesses_line := _hero_card_line("Слабые: %s" % weaknesses, 12, Color(0.95, 0.72, 0.70, 1.0))
-	weaknesses_line.name = "CharacterWeaknesses_%s" % character_id
-	column.add_child(weaknesses_line)
-
-	var ascension_level = game.ascension_level_for(character_id)
-	if ascension_level > 0:
-		var ascension_label := Label.new()
-		ascension_label.name = "CharacterAscension_%s" % character_id
-		ascension_label.text = "Возвышение: %d/%d" % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]  # SCRUM-516: динамический кап (5) вместо хардкода /10
-		ascension_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		ascension_label.add_theme_font_size_override("font_size", 11)
-		ascension_label.add_theme_color_override("font_color", Color(0.78, 0.58, 1.0, 1.0))
-		ascension_label.clip_text = true
-		ascension_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		column.add_child(ascension_label)
-
-
 func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
 	label.add_theme_color_override("font_color", color)
 	label.clip_text = true
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4081,6 +5848,7 @@ func _show_weapon_select() -> void:
 		WS_PANEL_2K.size
 	)
 	box.add_theme_constant_override("separation", 24)
+	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
 		var button := _make_weapon_select_card(config)
@@ -4093,6 +5861,7 @@ func _show_weapon_select() -> void:
 			_show_start_boon_select()
 		)
 		box.add_child(button)
+		weapon_cards.append(button)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "WeaponSelectBackButton"
@@ -4102,6 +5871,11 @@ func _show_weapon_select() -> void:
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
+
+	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» ниже; A выбирает,
+	# B/Esc возвращает к выбору героя. Старт — первая карточка.
+	_wire_run_ui_focus(weapon_cards, false, [back_button],
+		weapon_cards[0] if not weapon_cards.is_empty() else back_button)
 
 
 func _make_weapon_select_card(config: Dictionary) -> Button:
@@ -4154,7 +5928,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	var title_label := Label.new()
 	title_label.name = "WeaponSelectTitle_%s" % weapon_id
 	title_label.text = str(config.get("title", weapon_id))
-	title_label.add_theme_font_size_override("font_size", 28)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(28))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -4163,7 +5937,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
 	desc_label.text = str(config.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 20)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(20))
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -4178,7 +5952,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 		float(config.get("aoe_radius", 0.0)),
 		float(config.get("fire_interval", 0.0)),
 	]
-	stats_label.add_theme_font_size_override("font_size", 18)
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
@@ -4200,6 +5974,7 @@ func _show_start_boon_select() -> void:
 	var offered: Array = pool.slice(0, mini(3, pool.size()))
 
 	var box := _create_menu_box("Стартовый боон", "Выбери одно благословение на этот забег.", "weapon_select")
+	var boon_cards: Array = []
 	for boon in offered:
 		var boon_dict: Dictionary = boon
 		var button := _make_start_boon_card(boon_dict)
@@ -4209,9 +5984,11 @@ func _show_start_boon_select() -> void:
 			game.route._show_battle_map()
 		)
 		box.add_child(button)
+		boon_cards.append(button)
 
 	# «Без боона» — пропустить (тождественность). Возможность не брать ничего.
 	var skip_button := _make_button("Без боона")
+	skip_button.name = "StartBoonSkipButton"
 	skip_button.pressed.connect(func() -> void:
 		game.selected_start_boon_id = ""
 		game.save_run_autosave("start_boon")
@@ -4219,6 +5996,11 @@ func _show_start_boon_select() -> void:
 	)
 	box.add_child(skip_button)
 	game.ui_escape_action = _show_weapon_select
+
+	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже; A выбирает,
+	# B/Esc возвращает к выбору оружия. Старт — первый боон.
+	_wire_run_ui_focus(boon_cards, false, [skip_button],
+		boon_cards[0] if not boon_cards.is_empty() else skip_button)
 
 
 func _make_start_boon_card(boon: Dictionary) -> Button:
@@ -4251,7 +6033,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	var title_label := Label.new()
 	title_label.name = "StartBoonTitle_%s" % boon_id
 	title_label.text = str(boon.get("title", boon_id))
-	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(21))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -4260,7 +6042,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	desc_label.name = "StartBoonDescription_%s" % boon_id
 	desc_label.text = str(boon.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", 14)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -4283,6 +6065,158 @@ func _weapon_sprite_path(config: Dictionary) -> String:
 	if ResourceLoader.exists(direct_path):
 		return direct_path
 	return ""
+
+
+# SCRUM-812: единая разводка фокус-навигации внутризабеговых экранов под геймпад
+# и стрелки. primary — основной ряд/столбец интерактивных контролов (карточки или
+# кнопки меню); axis_h=true — горизонтальный ряд (лево/право по кругу), false —
+# вертикальный столбец (верх/низ по кругу). secondary — вспомогательные кнопки
+# («Позже»/«Назад»), доступные с перпендикулярной оси и связанные обратно в круг.
+# initial — стартовый фокус (по умолчанию первый доступный контрол).
+# Опирается на встроенные ui_*-экшены Godot (у них дефолтные joypad-биндинги
+# A/B/крестовина/стик), поэтому не зависит от ядра InputDeviceManager (SCRUM-811).
+func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], initial: Control = null) -> void:
+	_ensure_run_ui_gamepad_bindings()
+	var ring := _collect_focusable_controls(primary)
+	var extra := _collect_focusable_controls(secondary)
+	for i in range(ring.size()):
+		var cur := ring[i]
+		var prev := ring[(i - 1 + ring.size()) % ring.size()]
+		var nxt := ring[(i + 1) % ring.size()]
+		var cross_first: Control = extra[0] if not extra.is_empty() else cur
+		var cross_last: Control = extra[extra.size() - 1] if not extra.is_empty() else cur
+		if axis_h:
+			cur.focus_neighbor_left = prev.get_path()
+			cur.focus_neighbor_right = nxt.get_path()
+			cur.focus_neighbor_bottom = cross_first.get_path()
+			cur.focus_neighbor_top = cross_last.get_path()
+		else:
+			cur.focus_neighbor_top = prev.get_path()
+			cur.focus_neighbor_bottom = nxt.get_path()
+			cur.focus_neighbor_right = cross_first.get_path()
+			cur.focus_neighbor_left = cur.get_path()
+	var ring_head: Control = ring[0] if not ring.is_empty() else null
+	for j in range(extra.size()):
+		var cur2 := extra[j]
+		var back: Control = ring_head if ring_head != null else cur2
+		var prev2: Control = extra[j - 1] if j > 0 else back
+		var nxt2: Control = extra[j + 1] if j < extra.size() - 1 else back
+		if axis_h:
+			cur2.focus_neighbor_top = prev2.get_path()
+			cur2.focus_neighbor_bottom = nxt2.get_path()
+			cur2.focus_neighbor_left = cur2.get_path()
+			cur2.focus_neighbor_right = cur2.get_path()
+		else:
+			cur2.focus_neighbor_left = prev2.get_path()
+			cur2.focus_neighbor_right = nxt2.get_path()
+			cur2.focus_neighbor_top = cur2.get_path()
+			cur2.focus_neighbor_bottom = cur2.get_path()
+	var target := initial
+	if target == null or not is_instance_valid(target):
+		target = ring_head if ring_head != null else (extra[0] if not extra.is_empty() else null)
+	if target != null and is_instance_valid(target):
+		target.call_deferred("grab_focus")
+
+
+# SCRUM-812: собирает валидные фокусируемые контролы (не disabled), проставляя им
+# FOCUS_ALL. Порядок сохраняется — соседи разводятся по позиции в списке.
+func _collect_focusable_controls(controls: Array) -> Array[Control]:
+	var out: Array[Control] = []
+	for c in controls:
+		if c is Control and is_instance_valid(c):
+			var ctrl := c as Control
+			if ctrl is Button and (ctrl as Button).disabled:
+				continue
+			ctrl.focus_mode = Control.FOCUS_ALL
+			out.append(ctrl)
+	return out
+
+
+# SCRUM-812: в текущей сборке у ui_accept/ui_cancel НЕТ joypad-событий (проверено:
+# только клавиатура; крестовина/стик у ui_up/down/left/right есть). Без A→ui_accept и
+# B→ui_cancel геймпад не подтверждает/не отменяет на внутризабеговых экранах. Идемпотентно
+# доводим их в рантайме, чтобы SCRUM-812 работал самостоятельно. Полную раскладку геймпада
+# формализует ядро SCRUM-811 (InputDeviceManager) — гард ниже исключает дубли при слиянии.
+func _ensure_run_ui_gamepad_bindings() -> void:
+	_ensure_action_joy_button("ui_accept", JOY_BUTTON_A)
+	_ensure_action_joy_button("ui_cancel", JOY_BUTTON_B)
+
+
+func _ensure_action_joy_button(action: String, button: int) -> void:
+	if not InputMap.has_action(action):
+		return
+	for e in InputMap.action_get_events(action):
+		if e is InputEventJoypadButton and (e as InputEventJoypadButton).button_index == button:
+			return
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
+	ev.pressed = true
+	InputMap.action_add_event(action, ev)
+
+
+# SCRUM-813: LB/RB листают вкладки настроек / секции кодекса. Роутинг из main._input
+# (raw JOY_BUTTON_LEFT/RIGHT_SHOULDER) в этот диспетчер — локально по открытому мета-экрану.
+# dir: -1 = предыдущая (LB), +1 = следующая (RB). Возвращает true, если обработано.
+func _handle_menu_shoulder_nav(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	if game.ui_layer.find_child("SettingsV2Root", true, false) != null:
+		return _cycle_settings_tab(dir)
+	if game.ui_layer.find_child("CodexScreen", true, false) != null:
+		return _cycle_codex_section(dir)
+	# SCRUM-827: LB/RB листают вкладки Атласа героев (Созвездие ↔ Гильдия).
+	if game.ui_layer.find_child("AtlasScreen", true, false) != null:
+		return _atlas_cycle_tab(dir)
+	return false
+
+
+func _cycle_settings_tab(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	var root_node: Node = game.ui_layer.find_child("SettingsV2Root", true, false)
+	if root_node == null:
+		return false
+	var tab_containers: Array = root_node.find_children("*", "TabContainer", true, false)
+	if tab_containers.is_empty():
+		return false
+	var tabs := tab_containers[0] as TabContainer
+	var count := tabs.get_tab_count()
+	if count <= 0:
+		return false
+	tabs.current_tab = (tabs.current_tab + dir + count) % count
+	var tab_btn := root_node.find_child("SettingsTabButton_%d" % tabs.current_tab, true, false) as Button
+	if tab_btn != null:
+		tab_btn.call_deferred("grab_focus")
+	return true
+
+
+func _cycle_codex_section(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	var content: PanelContainer = null
+	for node in game.ui_layer.find_children("*", "PanelContainer", true, false):
+		if node.has_meta("codex_active_section"):
+			content = node as PanelContainer
+			break
+	if content == null:
+		return false
+	var ids: Array = []
+	for section in CODEX_SECTIONS:
+		ids.append(str(section["id"]))
+	if ids.is_empty():
+		return false
+	var cur := str(content.get_meta("codex_active_section", ids[0]))
+	var idx := ids.find(cur)
+	if idx < 0:
+		idx = 0
+	var next_id := str(ids[(idx + dir + ids.size()) % ids.size()])
+	_show_codex_section(content, next_id)
+	var tabs_row := content.get_meta("codex_tabs", null) as Control
+	if tabs_row != null:
+		var tab_btn := tabs_row.get_node_or_null("CodexTab_%s" % next_id) as Button
+		if tab_btn != null:
+			tab_btn.call_deferred("grab_focus")
+	return true
 
 
 func _show_reward_screen() -> void:
@@ -4370,15 +6304,8 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
 
-	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space выбирают.
-	for index in range(reward_buttons.size()):
-		var card := reward_buttons[index]
-		var left := reward_buttons[(index - 1 + reward_buttons.size()) % reward_buttons.size()]
-		var right := reward_buttons[(index + 1) % reward_buttons.size()]
-		card.focus_neighbor_left = left.get_path()
-		card.focus_neighbor_right = right.get_path()
-	if not reward_buttons.is_empty():
-		reward_buttons[0].grab_focus()
+	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space/A выбирают.
+	# Полная разводка (карточки + «Позже») ставится ниже, после создания later_button.
 
 	# Отложенный выбор: «Позже» (и Escape) закрывают окно БЕЗ траты пика — набор
 	# зафиксирован, вернуться можно кнопкой повышения внизу экрана.
@@ -4412,6 +6339,9 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	later_button.pressed.connect(defer_choice)
 	box.add_child(later_button)
 	game.ui_escape_action = defer_choice
+
+	# SCRUM-812: карточки по кругу (лево/право), «Позже» достижима ui_down, старт — первая карточка.
+	_wire_run_ui_focus(reward_buttons, true, [later_button], reward_buttons[0] if not reward_buttons.is_empty() else null)
 
 	var panel := box.get_parent() as PanelContainer
 	var title_label := box.find_child("LevelUpTitle", true, false) as Label
@@ -4464,7 +6394,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	title.name = "EliteArtifactRewardTitle"
 	title.text = "Трофей элитки"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 52)
+	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
 	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
 	box.add_child(title)
 
@@ -4472,7 +6402,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	subtitle.name = "EliteArtifactRewardSubtitle"
 	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 20)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
 	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
 	box.add_child(subtitle)
 
@@ -4561,7 +6491,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	title_label.clip_text = true
 	title_label.max_lines_visible = 1
 	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, card_scale)
-	title_label.add_theme_font_size_override("font_size", maxi(7, int(roundf(18.0 * card_scale.y))))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26))
 	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -4574,7 +6504,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	description_label.clip_text = true
 	description_label.max_lines_visible = 2
 	_level_up_place_card_child(description_label, LU_CARD_DESCRIPTION_RECT, card_scale)
-	description_label.add_theme_font_size_override("font_size", maxi(6, int(roundf(12.0 * card_scale.y))))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
 	description_label.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	content.add_child(description_label)
 
@@ -4594,7 +6524,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_label.clip_text = true
 	effect_label.max_lines_visible = 1
-	effect_label.add_theme_font_size_override("font_size", maxi(6, int(roundf(12.0 * card_scale.y))))
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
 	effect_label.add_theme_color_override("font_color", Color(0.84, 0.97, 1.0, 1.0))
 	effect_panel.add_child(effect_label)
 	return button
@@ -4615,13 +6545,13 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 
 	var content := _add_reward_card_content_container(button, false)
 	content.name = "BattleRewardCardContent"
-	content.add_theme_constant_override("separation", 7)
+	content.add_theme_constant_override("separation", 5)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(64, 64)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(40, 40)))
 
 	var title_label := Label.new()
 	title_label.name = "BattleRewardTitle"
@@ -4629,7 +6559,9 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.text = str(reward.get("title", "Награда"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 17)
+	title_label.max_lines_visible = 2
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 22))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -4639,7 +6571,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", 14)
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 16))
 	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
 	content.add_child(preview_label)
 
@@ -4649,13 +6581,15 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.text = str(reward.get("description", ""))
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description_label.add_theme_font_size_override("font_size", 12)
+	description_label.max_lines_visible = 2
+	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 14))
 	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
 	content.add_child(description_label)
 
 	var spacer := Control.new()
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	spacer.custom_minimum_size = Vector2(0.0, 4.0)
+	spacer.custom_minimum_size = Vector2(0.0, 0.0)
 	content.add_child(spacer)
 
 	var action_label := Label.new()
@@ -4663,7 +6597,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", 15)
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 16))
 	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
@@ -4689,20 +6623,22 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 
 	var content := _add_reward_card_content_container(button, true)
 	content.name = "EliteArtifactRewardContent"
-	content.add_theme_constant_override("separation", 6)
+	content.add_theme_constant_override("separation", 3)
 
 	var icon_row := HBoxContainer.new()
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(112, 112)))
+	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(52, 52)))
 
 	var title_label := Label.new()
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Артефакт"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 18)
+	title_label.max_lines_visible = 2
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 22))
 	title_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(title_label)
 
@@ -4711,7 +6647,9 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	tier_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tier_label.text = _artifact_tier_text(reward)
 	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tier_label.add_theme_font_size_override("font_size", 13)
+	tier_label.max_lines_visible = 1
+	tier_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	tier_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 16))
 	tier_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(tier_label)
 
@@ -4721,7 +6659,9 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	effect_label.text = str(reward.get("description", ""))
 	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.add_theme_font_size_override("font_size", 12)
+	effect_label.max_lines_visible = 2
+	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 15))
 	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	content.add_child(effect_label)
 
@@ -4733,19 +6673,13 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 		interp_label.text = interpretation
 		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		interp_label.add_theme_font_size_override("font_size", 11)
+		interp_label.max_lines_visible = 1
+		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 0, 14))
 		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
 		content.add_child(interp_label)
 
 	return button
-
-
-func _resume_combat_after_level_up() -> void:
-	game.pop_pause("level_up")
-	game._clear_ui()
-	if game.combat_active:
-		_create_hud()
-		_update_hud()
 
 
 func _current_shop_node_key() -> String:
@@ -4816,14 +6750,14 @@ func _show_shop_screen() -> void:
 	var title := Label.new()
 	title.text = "Магазин"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 42)
+	title.add_theme_font_size_override("font_size", _readable_font_size(42))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_box.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.text = "Выбери предмет. Описание появляется при наведении."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
 	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	title_box.add_child(subtitle)
 
@@ -4880,6 +6814,16 @@ func _show_shop_screen() -> void:
 	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
 
+	# SCRUM-812: товары проходимы с геймпада (крестовина/стик), «Назад» доступна ui_down,
+	# покупка по A. Стартовый фокус — первый доступный товар (иначе «Назад»). Соседи между
+	# анкер-размещёнными слотами Godot добирает по геометрии.
+	var shop_focus_items: Array = []
+	for slot in items_area.get_children():
+		if slot is Button and not (slot as Button).disabled:
+			shop_focus_items.append(slot)
+	_wire_run_ui_focus(shop_focus_items, true, [skip_button],
+		shop_focus_items[0] if not shop_focus_items.is_empty() else skip_button)
+
 
 func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	var purchased: bool = index < game.current_shop_purchased.size() and bool(game.current_shop_purchased[index])
@@ -4902,7 +6846,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.name = "ShopAffinityNote"
 			note_label.text = "!"
 			note_label.tooltip_text = str(affinity_note["text"])
-			note_label.add_theme_font_size_override("font_size", 22)
+			note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
 			note_label.add_theme_color_override("font_color", affinity_note["color"])
 			note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 			note_label.offset_left = -26.0
@@ -5004,7 +6948,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	caption.offset_top = SHOP_INLINE_CAPTION_TOP
 	caption.offset_right = (SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
 	caption.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
-	caption.add_theme_font_size_override("font_size", 13)
+	caption.add_theme_font_size_override("font_size", _readable_font_size(13))
 	caption.add_theme_color_override("font_color", Color(0.30, 0.20, 0.10, 1.0) if affordable else Color(0.42, 0.36, 0.30, 0.86))
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(caption)
@@ -5044,7 +6988,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", 18)
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
@@ -5082,7 +7026,7 @@ func _add_shop_empty_hook(button: Button) -> void:
 	label.text = "снято"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
 	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hook.add_child(label)
@@ -5100,7 +7044,7 @@ func _add_shop_state_overlay(button: Button, text: String) -> void:
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 17)
+	label.add_theme_font_size_override("font_size", _readable_font_size(17))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	overlay.add_child(label)
 
@@ -5189,27 +7133,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	if modifiers.has("damage_multiplier"):
 		return "damage"
 	return "artifact"
-
-
-func _shop_slot_style(is_hovered: bool) -> StyleBox:
-	var texture_path := SHOP_SLOT_HOVER_PATH if is_hovered else SHOP_SLOT_FRAME_PATH
-	var texture_style := _shop_texture_style(texture_path, Vector2(24, 24))
-	if texture_style != null:
-		return texture_style
-
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.060, 0.105, 0.110, 0.72) if is_hovered else Color(0.035, 0.055, 0.070, 0.58)
-	style.border_color = Color(0.60, 0.98, 0.92, 0.96) if is_hovered else Color(0.96, 0.75, 0.26, 0.72)
-	style.set_border_width_all(2 if is_hovered else 1)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 10
-	style.content_margin_top = 10
-	style.content_margin_right = 10
-	style.content_margin_bottom = 10
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.42)
-	style.shadow_size = 12 if is_hovered else 6
-	style.shadow_offset = Vector2(0.0, 4.0)
-	return style
 
 
 func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
@@ -5347,6 +7270,9 @@ func _show_rest_screen() -> void:
 	back_button.pressed.connect(game.route._advance_route_after_noncombat)
 	box.add_child(back_button)
 
+	# SCRUM-812: два выбора листаются лево/право, «Назад» доступна ui_down, старт — «Передышка».
+	_wire_run_ui_focus([heal_button, guard_button], true, [back_button], heal_button)
+
 
 func _show_upgrade_screen() -> void:
 	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
@@ -5355,6 +7281,7 @@ func _show_upgrade_screen() -> void:
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
 	box.add_child(choices)
 	var index := 0
+	var upgrade_cards: Array = []
 	for reward in _random_level_up_rewards(3):
 		var button := _make_economy_choice_card(str(reward["title"]), str(reward["description"]), "Выбрать", "UpgradeChoiceButton%d" % index, upgrade_card_size)
 		choices.add_child(button)
@@ -5362,7 +7289,11 @@ func _show_upgrade_screen() -> void:
 			_apply_reward_to_run(reward)
 			game.route._advance_route_after_noncombat()
 		)
+		upgrade_cards.append(button)
 		index += 1
+
+	# SCRUM-812: карточки улучшений листаются лево/право по кругу, старт — первая; A выбирает.
+	_wire_run_ui_focus(upgrade_cards, true, [], upgrade_cards[0] if not upgrade_cards.is_empty() else null)
 
 
 func _show_event_screen(route_node: Dictionary) -> void:
@@ -5535,6 +7466,9 @@ func _show_victory_screen() -> void:
 	restart_button.pressed.connect(finish_run)
 	box.add_child(restart_button)
 	game.ui_escape_action = finish_run
+	# SCRUM-812: стартовый фокус на основной кнопке; B/Esc = основная кнопка (finish_run),
+	# «пустого» закрытия нет.
+	_wire_run_ui_focus([restart_button], false, [], restart_button)
 
 
 func _show_death_screen(reason := "") -> void:
@@ -5563,6 +7497,8 @@ func _show_death_screen(reason := "") -> void:
 	retry_button.pressed.connect(back_to_menu)
 	box.add_child(retry_button)
 	game.ui_escape_action = back_to_menu
+	# SCRUM-812: стартовый фокус на «Начать заново»; B/Esc = основная кнопка, без «пустого» закрытия.
+	_wire_run_ui_focus([retry_button], false, [], retry_button)
 
 
 # SCRUM-502: блок сводки прогона на экранах победы/смерти. Кладётся в box (VBox внутри
@@ -5578,7 +7514,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", 17)
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(17))
 		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(outcome_label)
@@ -5608,7 +7544,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", 16)
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
@@ -5616,7 +7552,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", 16)
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(16))
 		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
@@ -5633,7 +7569,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		artifacts_label.text = ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", 14)
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(artifacts_label)
@@ -5737,14 +7673,6 @@ func _random_event_choices() -> Array:
 		"heal_percent": 0.25,
 	})
 	return choices
-
-
-func _event_choice_button_text(event_choice: Dictionary) -> String:
-	return "%s\n%s%s" % [
-		str(event_choice.get("title", "Выбор")),
-		"",
-		_event_choice_description_text(event_choice),
-	]
 
 
 func _event_choice_description_text(event_choice: Dictionary) -> String:
@@ -5904,9 +7832,13 @@ const MAIN_STAT_SLOT_CHANCE := 0.05
 func _random_level_up_rewards(count: int) -> Array:
 	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
+	# SCRUM-695: правило релевантности — в одном показе НЕ БОЛЕЕ 1 атрибута,
+	# который для текущего класса `optional`, и ВСЕГДА минимум 1 primary/secondary
+	# (никогда набор только из необязательных). Основные характеристики (rare-слот)
+	# и capstone «Озарение» считаются не-optional и правилу не противоречат.
 	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
-	var rewards := []
+	var prefill: Array = []
 	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
 	# в забеге гарантированно даёт основную характеристику. Гейт по level<=2
 	# (run-persistent через снапшот) — срабатывает один раз за забег.
@@ -5915,34 +7847,12 @@ func _random_level_up_rewards(count: int) -> Array:
 			and game.current_player != null and is_instance_valid(game.current_player) \
 			and int(game.current_player.get("level")) <= 2:
 		var forced_index: int = game.rng.randi_range(0, stat_pool.size() - 1)
-		rewards.append(stat_pool[forced_index])
+		prefill.append(stat_pool[forced_index])
 		stat_pool.remove_at(forced_index)
-	while rewards.size() < count and (not regular_pool.is_empty() or not stat_pool.is_empty()):
-		var want_rare: bool = not stat_pool.is_empty() and float(game.rng.randf()) < MAIN_STAT_SLOT_CHANCE
-		var source: Array = stat_pool if (want_rare or regular_pool.is_empty()) else regular_pool
-		var index: int = _weighted_level_up_index(source)
-		rewards.append(source[index])
-		source.remove_at(index)
-	return rewards
-
-
-func _weighted_level_up_index(source: Array) -> int:
-	if source.size() <= 1:
-		return 0
-	var total := 0.0
-	var weights := []
-	for reward in source:
-		var weight: float = game.PROGRESSION_DATA.level_up_reward_weight(reward, game.selected_character_id)
-		weights.append(weight)
-		total += weight
-	if total <= 0.0:
-		return game.rng.randi_range(0, source.size() - 1)
-	var roll: float = game.rng.randf() * total
-	for index in range(source.size()):
-		roll -= float(weights[index])
-		if roll <= 0.0:
-			return index
-	return source.size() - 1
+	# SCRUM-695: правило релевантности (≤1 optional, ≥1 primary/secondary) и взвешивание
+	# по матрице вынесены в тестируемую ProgressionData.weighted_level_up_selection.
+	return game.PROGRESSION_DATA.weighted_level_up_selection(
+		regular_pool, stat_pool, count, game.selected_character_id, game.rng, MAIN_STAT_SLOT_CHANCE, prefill)
 
 
 func _random_shop_items(count: int) -> Array:
@@ -5952,6 +7862,13 @@ func _random_shop_items(count: int) -> Array:
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	price_mult *= maxf(1.0 + float(skill_mods.get("shop_price_mult", 0.0)), 0.1)
+	# SCRUM-835: class keystone downside может быть положительным штрафом к ценам
+	# выбранного героя (thief «Джекпот»), поэтому читаем class-specific моды тоже.
+	# QA-фикс: skill_modifiers_for_class = Атлас + созвездие класса, поэтому берём
+	# только классовую ДЕЛЬТУ — иначе аккаунтная скидка Атласа применялась бы дважды.
+	var class_skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers_for_class(game.meta_state, game.selected_character_id)
+	var class_shop_price_delta := float(class_skill_mods.get("shop_price_mult", 0.0)) - float(skill_mods.get("shop_price_mult", 0.0))
+	price_mult *= maxf(1.0 + class_shop_price_delta, 0.1)
 	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
 	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
 		var has_rare := false
@@ -6101,7 +8018,7 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 54 if big else 34)
+	label.add_theme_font_size_override("font_size", _readable_font_size(54 if big else 34, 0, 54 if big else 36))
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 6 if big else 4)
@@ -6139,7 +8056,7 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
-		game.level_up_button.add_theme_font_size_override("font_size", 34)
+		game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(34))
 		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
@@ -6158,7 +8075,7 @@ func _update_level_up_button() -> void:
 		badge.name = "LevelUpPlusBadge"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge.add_theme_font_size_override("font_size", 16)
+		badge.add_theme_font_size_override("font_size", _readable_font_size(16))
 		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
 		badge_panel.add_child(badge)
 
@@ -6177,7 +8094,7 @@ func _update_level_up_button() -> void:
 	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
 	game.level_up_button.set_meta("scrum666_content_zone", plus_rect)
 	game.level_up_button.clip_text = true
-	game.level_up_button.add_theme_font_size_override("font_size", maxi(18, int(roundf(24.0 * scale))))
+	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(roundf(24.0 * scale))), 0, 34))
 	_apply_fantasy_button_theme(game.level_up_button)
 
 	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
@@ -6193,13 +8110,7 @@ func _update_level_up_button() -> void:
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
-		badge_label.add_theme_font_size_override("font_size", maxi(9, int(roundf(14.0 * scale))))
-
-
-func _level_up_affinity_suffix(reward: Dictionary) -> String:
-	if str(reward.get("kind", "")) != "artifact":
-		return ""
-	return _artifact_affinity_suffix(reward)
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
 
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
@@ -6571,9 +8482,25 @@ func _setup_default_input_actions() -> void:
 		if not InputMap.has_action(action_name):
 			InputMap.add_action(action_name)
 
-		if InputMap.action_get_events(action_name).is_empty():
+		# SCRUM-830: гардим по отсутствию именно КЛАВИАТУРНОГО (InputEventKey) события,
+		# а не по is_empty(). Автолоад InputDeviceManager (SCRUM-811) может предзасеять
+		# joypad-события в глобальный InputMap ДО этого вызова (гонка старта под нагрузкой);
+		# тогда is_empty()=false и клавиатурные дефолты (Escape=pause, R=ultimate и др.)
+		# терялись — Escape не открывал quit-диалог, R не давал ультимейт. Проверка «нет
+		# key-события» доливает клавиатуру идемпотентно, joypad не трогая
+		# (_apply_keycodes_to_action стирает только key-события).
+		if not _action_has_key_event(action_name):
 			_apply_keycodes_to_action(action_name, _default_keycodes_for_action(input_action))
 	_apply_saved_input_bindings()
+
+
+func _action_has_key_event(action_name: String) -> bool:
+	if not InputMap.has_action(action_name):
+		return false
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			return true
+	return false
 
 
 func _apply_saved_input_bindings() -> void:
@@ -6600,7 +8527,15 @@ func _default_keycodes_for_action(input_action: Dictionary) -> Array:
 func _apply_keycodes_to_action(action_name: String, keycodes: Array) -> void:
 	if not InputMap.has_action(action_name):
 		InputMap.add_action(action_name)
-	InputMap.action_erase_events(action_name)
+	# SCRUM-816 баг-фикс: раньше здесь был action_erase_events, стиравший ВСЕ события
+	# экшена — включая joypad-биндинги ядра (SCRUM-811). Клавиатурный ребинд/применение
+	# сохранённых клавиш ронял геймпад. Теперь трогаем только InputEventKey.
+	# ВАЖНО: НЕ звать здесь ensure_joypad_bindings — это примитив, используемый в
+	# цикле _setup_default_input_actions. Долив joypad всем экшенам в середине цикла
+	# сделал бы ещё-не-обработанные экшены «непустыми» и клавиатурные дефолты бы
+	# пропустились. Долив делает менеджер (autoload) после первого кадра, а в
+	# пользовательских ребиндах — вызывающие (_handle_rebind_input/reset) явно.
+	_erase_key_events(action_name)
 	for keycode_value in keycodes:
 		var keycode := int(keycode_value)
 		if keycode == 0:
@@ -6608,6 +8543,31 @@ func _apply_keycodes_to_action(action_name: String, keycodes: Array) -> void:
 		var event := InputEventKey.new()
 		event.keycode = keycode
 		InputMap.action_add_event(action_name, event)
+
+
+func _erase_key_events(action_name: String) -> void:
+	# Стереть только клавиатурные события экшена, не трогая joypad-биндинги.
+	if not InputMap.has_action(action_name):
+		return
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			InputMap.action_erase_event(action_name, event)
+
+
+func _input_device_manager() -> Node:
+	# Автолоад InputDeviceManager (SCRUM-811). null-safe для тестов без автолоада.
+	if game == null:
+		return null
+	var tree = game.get_tree()
+	if tree == null or tree.root == null:
+		return null
+	return tree.root.get_node_or_null("InputDeviceManager")
+
+
+func _ensure_joypad_after_rebind() -> void:
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("ensure_joypad_bindings"):
+		idm.ensure_joypad_bindings()
 
 
 func _current_input_bindings() -> Dictionary:
@@ -6641,6 +8601,7 @@ func _apply_game_cursor() -> void:
 
 func _begin_rebind(action_name: String) -> void:
 	game.pending_rebind_action = action_name
+	_rebind_is_gamepad = false
 	var label := _action_label(action_name)
 	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.", "settings")
 
@@ -6653,6 +8614,13 @@ func _begin_rebind(action_name: String) -> void:
 
 
 func _handle_rebind_input(event: InputEvent) -> void:
+	# SCRUM-816: один диспетчер на два режима прослушивания. В режиме геймпада ждём
+	# joypad-кнопку/ось, в клавиатурном — клавишу. Роутинг из main._input по
+	# game.pending_rebind_action; _rebind_is_gamepad различает режим.
+	if _rebind_is_gamepad:
+		_handle_gamepad_rebind_input(event)
+		return
+
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
 
@@ -6667,15 +8635,41 @@ func _handle_rebind_input(event: InputEvent) -> void:
 		_show_rebind_conflict(game.pending_rebind_action, keycode, conflict_action)
 		return
 
-	InputMap.action_erase_events(game.pending_rebind_action)
+	# SCRUM-816 баг-фикс: только клавиатурные события, joypad ядра не затираем.
+	_erase_key_events(game.pending_rebind_action)
 	var new_event := InputEventKey.new()
 	new_event.keycode = keycode
 	new_event.physical_keycode = event.physical_keycode
 	InputMap.action_add_event(game.pending_rebind_action, new_event)
+	_ensure_joypad_after_rebind()
 
 	game.input_bindings = _current_input_bindings()
 	game.save_game_settings()
 	game.pending_rebind_action = ""
+	_show_settings_menu()
+
+
+func _handle_gamepad_rebind_input(event: InputEvent) -> void:
+	# Отмена: Esc (клавиатура) или B (ui_cancel). B в этот момент НЕ назначается.
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+		_cancel_gamepad_rebind()
+		return
+	if event is InputEventJoypadButton and event.pressed and int(event.button_index) == JOY_BUTTON_B:
+		_cancel_gamepad_rebind()
+		return
+
+	if event is InputEventJoypadButton and event.pressed:
+		_assign_gamepad_button(game.pending_rebind_action, int(event.button_index))
+		return
+	if event is InputEventJoypadMotion and absf(event.axis_value) > GAMEPAD_REBIND_ACTIVATION:
+		var value := 1.0 if event.axis_value > 0.0 else -1.0
+		_assign_gamepad_axis(game.pending_rebind_action, int(event.axis), value)
+		return
+
+
+func _cancel_gamepad_rebind() -> void:
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	_show_settings_menu()
 
 
@@ -6732,7 +8726,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	title_label.text = "Клавиша занята"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", 36)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(36, 0, 40))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel.add_child(title_label)
 	title_label.position = RC_TITLE_2K.position - RC_PANEL_2K.position
@@ -6745,7 +8739,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	message_label.clip_text = true
-	message_label.add_theme_font_size_override("font_size", 18)
+	message_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 24))
 	message_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	panel.add_child(message_label)
 	message_label.position = RC_MESSAGE_2K.position - RC_PANEL_2K.position
@@ -6755,7 +8749,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	retry_button.name = "RebindConflictRetryButton"
 	_set_action_button_size(retry_button, RC_BTN_RETRY_2K.size.x, RC_BTN_RETRY_2K.size.y)
 	_apply_overhaul_2k_button_theme(retry_button, "rc_btn", RC_BTN_RETRY_2K.size)
-	retry_button.add_theme_font_size_override("font_size", 18)
+	retry_button.clip_text = true
+	retry_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
 	)
@@ -6766,7 +8761,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	back_button.name = "RebindConflictBackButton"
 	_set_action_button_size(back_button, RC_BTN_BACK_2K.size.x, RC_BTN_BACK_2K.size.y)
 	_apply_overhaul_2k_button_theme(back_button, "rc_btn", RC_BTN_BACK_2K.size)
-	back_button.add_theme_font_size_override("font_size", 18)
+	back_button.clip_text = true
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
 	back_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
@@ -6784,23 +8780,230 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 func _reset_input_bindings_to_defaults() -> void:
 	for input_action in game.INPUT_ACTIONS:
 		_apply_keycodes_to_action(str(input_action["action"]), _default_keycodes_for_action(input_action))
+	# После сброса клавиатуры один раз доливаем joypad (эрейз клавиш их не трогал,
+	# но страхуемся и на случай, если экшен был свежесоздан).
+	_ensure_joypad_after_rebind()
 	game.input_bindings = _current_input_bindings()
 	game.save_game_settings()
 
 
 func _binding_text(action_name: String) -> String:
-	var events := InputMap.action_get_events(action_name)
-	if events.is_empty():
-		return "Не назначено"
-
+	# Только клавиатурные события: joypad-биндинги ядра (SCRUM-811) теперь живут в
+	# том же экшене, но у клавиатурной кнопки-ребинда показываем лишь клавиши.
 	var labels := []
-	for event in events:
+	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey:
 			var keycode: int = int(event.keycode if event.keycode != 0 else event.physical_keycode)
 			labels.append(OS.get_keycode_string(keycode))
-		else:
-			labels.append(event.as_text())
+	if labels.is_empty():
+		return "Не назначено"
 	return " / ".join(labels)
+
+
+# --- SCRUM-816: геймпад — текст биндингов, ребинд, статус устройства ---
+
+func _gamepad_binding_text(action_name: String) -> String:
+	if not InputMap.has_action(action_name):
+		return "Не назначено"
+	var labels := []
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton:
+			labels.append(_gamepad_button_label(int(event.button_index)))
+		elif event is InputEventJoypadMotion:
+			labels.append(_gamepad_axis_label(int(event.axis), float(event.axis_value)))
+	if labels.is_empty():
+		return "Не назначено"
+	return " / ".join(labels)
+
+
+func _gamepad_button_label(button_index: int) -> String:
+	return GAMEPAD_BUTTON_LABELS.get(button_index, "Кнопка %d" % button_index)
+
+
+func _gamepad_axis_label(axis: int, value: float) -> String:
+	match axis:
+		JOY_AXIS_LEFT_X:
+			return "Стик ←" if value < 0.0 else "Стик →"
+		JOY_AXIS_LEFT_Y:
+			return "Стик ↑" if value < 0.0 else "Стик ↓"
+		JOY_AXIS_RIGHT_X:
+			return "Пр. стик ←" if value < 0.0 else "Пр. стик →"
+		JOY_AXIS_RIGHT_Y:
+			return "Пр. стик ↑" if value < 0.0 else "Пр. стик ↓"
+		JOY_AXIS_TRIGGER_LEFT:
+			return "LT"
+		JOY_AXIS_TRIGGER_RIGHT:
+			return "RT"
+	return "Ось %d" % axis
+
+
+func _gamepad_glyph_for_action(action_name: String) -> Texture2D:
+	# Иконка первого joypad-события экшена, если ассет-манифест существует (SCRUM-810).
+	# null-safe: нет ассета → null → показываем только текст.
+	if not InputMap.has_action(action_name):
+		return null
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton:
+			return InputGlyphRegistry.texture_for_joy_button(int(event.button_index), 32)
+		elif event is InputEventJoypadMotion:
+			return InputGlyphRegistry.texture_for_axis(int(event.axis), 32)
+	return null
+
+
+func _begin_gamepad_rebind(action_name: String) -> void:
+	game.pending_rebind_action = action_name
+	_rebind_is_gamepad = true
+	var label := _action_label(action_name)
+	var box := _create_menu_box("Геймпад: %s" % label, "Нажми кнопку или наклони стик. B/Esc отменяет.", "settings")
+
+	var cancel_button := _make_button("Отмена")
+	cancel_button.pressed.connect(func() -> void:
+		_cancel_gamepad_rebind()
+	)
+	box.add_child(cancel_button)
+
+
+func _assign_gamepad_button(action_name: String, button_index: int) -> void:
+	var conflict := _gamepad_button_conflict(action_name, button_index)
+	if conflict != "":
+		_show_gamepad_rebind_conflict(action_name, _gamepad_button_label(button_index), conflict)
+		return
+	_commit_gamepad_binding(action_name, {"buttons": [button_index], "axes": []})
+
+
+func _assign_gamepad_axis(action_name: String, axis: int, value: float) -> void:
+	var conflict := _gamepad_axis_conflict(action_name, axis, value)
+	if conflict != "":
+		_show_gamepad_rebind_conflict(action_name, _gamepad_axis_label(axis, value), conflict)
+		return
+	_commit_gamepad_binding(action_name, {"buttons": [], "axes": [{"axis": axis, "value": value}]})
+
+
+func _commit_gamepad_binding(action_name: String, binding: Dictionary) -> void:
+	# Заменяет только joypad-часть экшена; клавиатурные события не трогаются
+	# (ensure_joypad_bindings внутри set_gamepad_bindings стирает лишь joypad).
+	if not (game.gamepad_bindings is Dictionary):
+		game.gamepad_bindings = {}
+	game.gamepad_bindings[action_name] = binding
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("set_gamepad_bindings"):
+		idm.set_gamepad_bindings(game.gamepad_bindings)
+	else:
+		# Тесты без автолоада: применяем joypad-часть локально, детерминированно.
+		_apply_gamepad_binding_local(action_name, binding)
+	game.save_game_settings()
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
+	_show_settings_menu()
+
+
+func _apply_gamepad_binding_local(action_name: String, binding: Dictionary) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+			InputMap.action_erase_event(action_name, event)
+	for button_index in binding.get("buttons", []):
+		var btn := InputEventJoypadButton.new()
+		btn.button_index = int(button_index) as JoyButton
+		InputMap.action_add_event(action_name, btn)
+	for axis_binding in binding.get("axes", []):
+		var motion := InputEventJoypadMotion.new()
+		motion.axis = int(axis_binding.get("axis", 0)) as JoyAxis
+		motion.axis_value = float(axis_binding.get("value", 1.0))
+		InputMap.action_add_event(action_name, motion)
+
+
+func _gamepad_button_conflict(target_action: String, button_index: int) -> String:
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		if action_name == target_action:
+			continue
+		for event in InputMap.action_get_events(action_name):
+			if event is InputEventJoypadButton and int(event.button_index) == button_index:
+				return action_name
+	return ""
+
+
+func _gamepad_axis_conflict(target_action: String, axis: int, value: float) -> String:
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		if action_name == target_action:
+			continue
+		for event in InputMap.action_get_events(action_name):
+			if event is InputEventJoypadMotion and int(event.axis) == axis \
+					and signf(event.axis_value) == signf(value):
+				return action_name
+	return ""
+
+
+func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, conflict_action: String) -> void:
+	# Тот же UX, что и у клавиатурного конфликта (_show_rebind_conflict), но текст
+	# про кнопку/ось геймпада. «Выбрать другую» перезапускает прослушивание.
+	var target_label := _action_label(target_action)
+	var conflict_label := _action_label(conflict_action)
+	var box := _create_menu_box("Кнопка занята",
+		"%s занята: «%s». Для «%s» выбери другую." % [binding_desc, conflict_label, target_label], "settings")
+
+	var retry_button := _make_button("Выбрать другую")
+	retry_button.name = "GamepadRebindConflictRetryButton"
+	retry_button.pressed.connect(func() -> void:
+		_begin_gamepad_rebind(target_action)
+	)
+	box.add_child(retry_button)
+
+	var back_button := _make_button("Настройки")
+	back_button.name = "GamepadRebindConflictBackButton"
+	back_button.pressed.connect(func() -> void:
+		_cancel_gamepad_rebind()
+	)
+	box.add_child(back_button)
+
+
+func _reset_gamepad_bindings_to_defaults() -> void:
+	game.gamepad_bindings = {}
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("reset_gamepad_bindings_to_defaults"):
+		idm.reset_gamepad_bindings_to_defaults()
+	game.save_game_settings()
+	_show_settings_menu()
+
+
+func _refresh_gamepad_status_line() -> void:
+	if _gamepad_status_label == null or not is_instance_valid(_gamepad_status_label):
+		return
+	var idm := _input_device_manager()
+	var connected := false
+	var pad_name := ""
+	if idm != null and idm.has_method("gamepad_connected"):
+		connected = idm.gamepad_connected()
+		pad_name = idm.gamepad_name()
+	else:
+		var pads := Input.get_connected_joypads()
+		connected = not pads.is_empty()
+		pad_name = Input.get_joy_name(int(pads[0])) if not pads.is_empty() else ""
+	if connected:
+		_gamepad_status_label.text = "Геймпад: %s подключён" % (pad_name if pad_name != "" else "устройство")
+	else:
+		_gamepad_status_label.text = "Геймпад не обнаружен"
+
+
+func _connect_gamepad_status_signals() -> void:
+	# Идемпотентно: ui_screens живёт всю сессию, коллбэки гардятся валидностью Label.
+	if not Input.joy_connection_changed.is_connected(_on_gamepad_joy_connection_changed):
+		Input.joy_connection_changed.connect(_on_gamepad_joy_connection_changed)
+	var idm := _input_device_manager()
+	if idm != null and idm.has_signal("device_changed") \
+			and not idm.device_changed.is_connected(_on_gamepad_device_changed):
+		idm.device_changed.connect(_on_gamepad_device_changed)
+
+
+func _on_gamepad_device_changed(_kind: String) -> void:
+	_refresh_gamepad_status_line()
+
+
+func _on_gamepad_joy_connection_changed(_device: int, _connected: bool) -> void:
+	_refresh_gamepad_status_line()
 
 
 func _action_label(action_name: String) -> String:
@@ -6952,7 +9155,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	var title := Label.new()
 	title.text = "Отправить фидбек"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_font_size_override("font_size", _readable_font_size(32))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -6975,7 +9178,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 16)
+	hint.add_theme_font_size_override("font_size", _readable_font_size(16))
 	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	scroll_body.add_child(hint)
 
@@ -6985,7 +9188,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
 	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", 17)
+	text_edit.add_theme_font_size_override("font_size", _readable_font_size(17))
 	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
 	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
 	scroll_body.add_child(text_edit)
@@ -7011,7 +9214,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	status.text = "Отправка происходит только после нажатия «Отправить»."
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", 14)
+	status.add_theme_font_size_override("font_size", _readable_font_size(14))
 	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
 	box.add_child(status)
 
@@ -7172,7 +9375,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.add_theme_font_size_override("font_size", 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -7182,7 +9385,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	subtitle_label.add_theme_font_size_override("font_size", 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17)
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
 
@@ -7248,6 +9451,32 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 	# SCRUM-684: кодекс рисуется поверх детального гримуар-разворота — гасим фон
 	# сильнее, чтобы орнаментные панели читались как передний план.
 	shade.color = Color(0.02, 0.015, 0.03, 0.62) if screen_background_id == "codex" else Color(0.0, 0.0, 0.0, 0.44)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+
+
+func _add_codex_pl_background(root: Control) -> void:
+	var texture: Texture2D = null
+	if ResourceLoader.exists(CODEX_PL_BACKDROP_PATH):
+		texture = game._cached_texture(CODEX_PL_BACKDROP_PATH)
+	if texture != null:
+		var background := TextureRect.new()
+		background.name = "ScreenBackground_codex"
+		background.set_anchors_preset(Control.PRESET_FULL_RECT)
+		background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		background.texture = texture
+		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_codex_pl_make_nearest(background)
+		root.add_child(background)
+	else:
+		_add_screen_background(root, "codex")
+		return
+
+	var shade := ColorRect.new()
+	shade.name = "ScreenBackgroundReadableShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.015, 0.012, 0.018, 0.24)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
@@ -7407,7 +9636,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.size = layout.get("title_size", Vector2(440.0, 30.0))
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
-	title_label.add_theme_font_size_override("font_size", int(layout.get("title_font", 50)))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("title_font", 50)), 0, 72))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.30, 1.0))
 	box.add_child(title_label)
 
@@ -7419,7 +9648,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.position = layout.get("subtitle_position", Vector2.ZERO)
 	subtitle_label.size = layout.get("subtitle_size", Vector2(460.0, 22.0))
-	subtitle_label.add_theme_font_size_override("font_size", int(layout.get("subtitle_font", 17)))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("subtitle_font", 17)), 0, 26))
 	subtitle_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
 	box.add_child(subtitle_label)
 
@@ -7536,12 +9765,6 @@ func _start_level_up_burst_intro(sparkle_root: Node) -> void:
 			tween.tween_property(rect, "color:a", 0.0, 0.28)
 
 
-func _level_up_badge_text() -> String:
-	if game.current_player != null and is_instance_valid(game.current_player):
-		return "УРОВЕНЬ %d" % int(game.current_player.get("level"))
-	return "НОВЫЙ УРОВЕНЬ"
-
-
 func _make_button(text: String) -> Button:
 	var button := Button.new()
 	button.text = text
@@ -7552,45 +9775,21 @@ func _make_button(text: String) -> Button:
 	return button
 
 
-func _add_text_action_block(parent: Control, title: String, description: String, action_text := "Выбрать", button_name := "") -> Button:
-	var block := VBoxContainer.new()
-	block.name = "%sBlock" % button_name if button_name != "" else "TextActionBlock"
-	block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	block.add_theme_constant_override("separation", 8)
-	parent.add_child(block)
+func _readability_font_scale() -> float:
+	var viewport_height := 864.0
+	if game != null and game.get_viewport() != null:
+		viewport_height = game.get_viewport().get_visible_rect().size.y
+	var t := clampf((viewport_height - 648.0) / 216.0, 0.0, 1.0)
+	return lerpf(READABILITY_FONT_SCALE_MIN, READABILITY_FONT_SCALE_TARGET, t)
 
-	var frame := PanelContainer.new()
-	frame.name = "%sInfoFrame" % button_name if button_name != "" else "TextActionInfoFrame"
-	frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	frame.add_theme_stylebox_override("panel", _character_card_style())
-	block.add_child(frame)
 
-	var text_box := VBoxContainer.new()
-	text_box.add_theme_constant_override("separation", 3)
-	frame.add_child(text_box)
-
-	var title_label := Label.new()
-	title_label.text = title
-	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 17)
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
-	text_box.add_child(title_label)
-
-	if description.strip_edges() != "":
-		var desc_label := Label.new()
-		desc_label.text = description
-		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc_label.add_theme_font_size_override("font_size", 13)
-		desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
-		text_box.add_child(desc_label)
-
-	var button := _make_button(action_text)
-	if button_name != "":
-		button.name = button_name
-	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(button, STANDARD_ACTION_BUTTON_WIDTH)
-	block.add_child(button)
-	return button
+func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
+	var scaled := int(roundf(float(base_size) * _readability_font_scale()))
+	if min_size > 0:
+		scaled = maxi(scaled, min_size)
+	if max_size > 0:
+		scaled = mini(scaled, max_size)
+	return scaled
 
 
 func _make_compact_button(text: String) -> Button:
@@ -7598,7 +9797,7 @@ func _make_compact_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", 18)
+	button.add_theme_font_size_override("font_size", _readable_font_size(18))
 	_apply_compact_button_theme(button)
 	return button
 
@@ -7616,7 +9815,7 @@ func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WID
 
 func _style_button_control(button: Button) -> void:
 	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", 16)
+	button.add_theme_font_size_override("font_size", _readable_font_size(16))
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
@@ -7631,18 +9830,6 @@ func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
-func _apply_static_level_up_return_button_theme(button: Button) -> void:
-	var style := _level_up_return_button_style()
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		button.add_theme_stylebox_override(state, style)
-	button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_pressed_color", Color(1.0, 0.92, 0.58, 1.0))
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_disabled_color", Color(0.78, 0.70, 0.48, 1.0))
-	button.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 
 func _level_up_return_button_style() -> StyleBoxFlat:
@@ -7730,7 +9917,27 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 	return "back_s"
 
 
+func _settings_v3_button_style(button: Button, state: String) -> StyleBox:
+	# SCRUM-792/805: маршрутизируем settings-узлы на 9-slice inset_field / action_button
+	# по ТОЧНОМУ имени (zero-leak на другие экраны). Один базовый 9-slice + per-state тинт.
+	# SCRUM-805 v4: базовые текстуры — settings_v4/* (перерисовка, выше контраст), а не v3.
+	if button == null:
+		return null
+	var n := button.name
+	var is_field := n in ["SettingsScreenOption", "SettingsResolutionOption", "SettingsWindowModeOption", "SettingsAimModeOption"] or n.begins_with("BindingButton_")
+	var is_action := n in ["SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton", "SettingsResetAudioButton", "SettingsResetBindingsButton"]
+	if not is_field and not is_action:
+		return null
+	var tint: Color = SETTINGS_V3_BTN_STATE_TINTS.get(state, SETTINGS_V3_BTN_STATE_TINTS["normal"])
+	if is_field:
+		return _global_texture_style(SETTINGS_V4_FIELD_PATH, SETTINGS_V4_FIELD_MARGINS, tint, SETTINGS_V4_FIELD_CONTENT, false)
+	return _global_texture_style(SETTINGS_V4_ACTION_BUTTON_PATH, SETTINGS_V4_ACTION_BTN_MARGINS, tint, SETTINGS_V4_ACTION_BTN_CONTENT, false)
+
+
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
+	var settings_v3_style := _settings_v3_button_style(button, state)
+	if settings_v3_style != null:
+		return settings_v3_style
 	var button_type := _button_asset_type(button)
 	if button_type == "combat_level_up_plus":
 		var plus_state := state
@@ -7798,7 +10005,7 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
 		return "rebind_420x62"
 	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
-		return "continue_240x72"
+		return ""
 	if button_name == "WeaponSelectBackButton":
 		return "pause_280x60"
 	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
@@ -7837,45 +10044,6 @@ func _apply_compact_button_theme(button: Button) -> void:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
-func _compact_button_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.075, 0.085, 0.78)
-	style.border_color = Color(0.58, 0.48, 0.28, 0.86)
-	if hovered:
-		style.bg_color = Color(0.12, 0.10, 0.075, 0.92)
-		style.border_color = Color(0.92, 0.72, 0.32, 1.0)
-	if pressed:
-		style.bg_color = Color(0.055, 0.060, 0.070, 0.96)
-	if disabled:
-		style.bg_color = Color(0.04, 0.045, 0.055, 0.58)
-		style.border_color = Color(0.24, 0.24, 0.25, 0.72)
-	style.set_corner_radius_all(8)
-	style.set_border_width_all(1)
-	style.content_margin_left = 8
-	style.content_margin_top = 6
-	style.content_margin_right = 8
-	style.content_margin_bottom = 6
-	return style
-
-
-func _hero_select_compact_choice_style(hovered := false, pressed := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.058, 0.064, 0.075, 0.80)
-	style.border_color = Color(0.56, 0.50, 0.36, 0.82)
-	if hovered:
-		style.bg_color = Color(0.080, 0.084, 0.090, 0.92)
-		style.border_color = Color(0.78, 0.72, 0.58, 0.96)
-	if pressed:
-		style.bg_color = Color(0.045, 0.050, 0.058, 0.96)
-	style.set_corner_radius_all(7)
-	style.set_border_width_all(1)
-	style.content_margin_left = 6
-	style.content_margin_top = 2
-	style.content_margin_right = 6
-	style.content_margin_bottom = 2
-	return style
 
 
 func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
@@ -7920,15 +10088,6 @@ func _level_up_text_field_style(hovered := false, rare := false, pressed := fals
 	return style
 
 
-func _make_section_label(text: String) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 18)
-	label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
-	return label
-
-
 func _panel_style() -> StyleBox:
 	return _minimal_frame_style("panel")
 
@@ -7959,21 +10118,6 @@ func _level_up_effect_preview_style(display_size: Vector2) -> StyleBox:
 		Vector4(22.0, 18.0, 22.0, 18.0),
 		Vector4(32.0, 22.0, 32.0, 22.0)
 	)
-
-
-func _level_up_hero_style() -> StyleBox:
-	var style := _level_up_text_field_style(false, false)
-	style.bg_color = Color(0.045, 0.070, 0.085, 0.88)
-	style.border_color = Color(0.38, 0.80, 0.92, 0.82)
-	style.content_margin_left = 6
-	style.content_margin_top = 6
-	style.content_margin_right = 6
-	style.content_margin_bottom = 6
-	return style
-
-
-func _hero_portrait_style() -> StyleBox:
-	return _minimal_frame_style("card", Color(1.06, 0.98, 0.82, 1.0))
 
 
 func _card_hover_style() -> StyleBox:
@@ -8135,7 +10279,7 @@ func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector
 
 
 func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	if slot in ["cr_btn", "pm_btn", "rc_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
+	if slot in ["cr_btn", "pm_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
 		_apply_fantasy_button_theme(button)
 		return
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
@@ -8203,14 +10347,14 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	if title_label != null:
 		title_label.name = "EventTitle"
 		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
-		title_label.add_theme_font_size_override("font_size", 30 if compact else 36)
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 36, 0, 48))
 	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
 	if story_label != null:
 		story_label.name = "EventStory"
 		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
 		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		story_label.add_theme_font_size_override("font_size", 14 if compact else 17)
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
 
 
 # SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
@@ -8283,7 +10427,7 @@ func _apply_level_up_later_button_theme(button: Button, display_size: Vector2) -
 	button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.60, 1.0))
 	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_font_size_override("font_size", maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))))
+	button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))), 0, 22))
 	var label_safe := Rect2(Vector2(54.0, 28.0), Vector2(192.0, 26.0))
 	button.set_meta("level_up_later_content_rect", label_safe)
 
@@ -8419,7 +10563,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", 14 if compact_attribute else 17)
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 0, 24))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title_label)
@@ -8431,7 +10575,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", 11 if compact_attribute else 13)
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 0, 20))
 	desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(desc_label)
@@ -8440,11 +10584,40 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.name = "%sAction" % button.name
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", 12 if compact_attribute else 15)
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 0, 14))
 	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
+
+	# SCRUM-808: длинное описание продавливало VBox за safe-зону фрейма (флаки матрицы
+	# на 1536×864 в зависимости от выпавших наград). Доводка после ready — по реальным
+	# minimum size (шрифтовые метрики без line_spacing врут на ~1 строку).
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	button.ready.connect(_fit_economy_choice_card_content.bind(button), CONNECT_ONE_SHOT)
 	return button
+
+
+func _fit_economy_choice_card_content(button: Button) -> void:
+	# SCRUM-808: ужимаем шрифт описания (до 9), затем режем строки многоточием,
+	# пока контент не влезет в safe-зону карточки; полный текст остаётся в tooltip.
+	if button == null or not is_instance_valid(button):
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	var desc_label := button.find_child("%sDescription" % button.name, true, false) as Label
+	if content == null or desc_label == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var avail_h: float = button.custom_minimum_size.y - margins.y - margins.w
+	if avail_h <= 0.0:
+		return
+	var font_size := desc_label.get_theme_font_size("font_size")
+	while font_size > 9 and content.get_combined_minimum_size().y > avail_h:
+		font_size -= 1
+		desc_label.add_theme_font_size_override("font_size", font_size)
+	var guard := desc_label.get_line_count()
+	while guard > 1 and content.get_combined_minimum_size().y > avail_h:
+		guard -= 1
+		desc_label.max_lines_visible = guard
 
 
 func _prepend_economy_choice_content(button: Button, control: Control) -> void:
@@ -8542,10 +10715,6 @@ func _add_reward_card_content_container(button: Button, elite := false) -> VBoxC
 	return content
 
 
-func _codex_main_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_MAIN_PANEL_PATH, CODEX_MAIN_PANEL_MARGINS, Color.WHITE, CODEX_MAIN_PANEL_CONTENT, true)
-
-
 func _codex_v2_main_panel_style() -> StyleBox:
 	return _codex_pl_frame_style(CODEX_PL_MAIN_PATH, CODEX_PL_MAIN_TEX, CODEX_PL_MAIN_CONTENT)
 
@@ -8562,10 +10731,6 @@ func _codex_v2_detail_panel_style() -> StyleBox:
 	return _codex_pl_frame_style(CODEX_PL_DETAIL_PATH, CODEX_PL_DETAIL_TEX, CODEX_PL_DETAIL_CONTENT)
 
 
-func _codex_section_panel_style() -> StyleBox:
-	return _global_texture_style(CODEX_SECTION_PANEL_PATH, CODEX_SECTION_PANEL_MARGINS, Color.WHITE, CODEX_SECTION_PANEL_CONTENT, true)
-
-
 func _codex_entry_card_style(hovered := false) -> StyleBox:
 	var tint := BUTTON_NEUTRAL_HOVER_TINT if hovered else Color.WHITE
 	return _codex_pl_frame_style(CODEX_PL_ENTRY_CARD_PATH, CODEX_PL_ENTRY_CARD_TEX, CODEX_PL_ENTRY_CARD_CONTENT, tint)
@@ -8573,101 +10738,6 @@ func _codex_entry_card_style(hovered := false) -> StyleBox:
 
 func _codex_portrait_slot_style() -> StyleBox:
 	return _global_texture_style(CODEX_PORTRAIT_SLOT_PATH, CODEX_PORTRAIT_SLOT_MARGINS, Color.WHITE, CODEX_PORTRAIT_SLOT_CONTENT, true)
-
-
-func _codex_tooltip_style() -> StyleBox:
-	return _global_texture_style(CODEX_TOOLTIP_PATH, CODEX_TOOLTIP_MARGINS, Color.WHITE, CODEX_TOOLTIP_CONTENT, true)
-
-
-func _progression_main_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_MAIN_PANEL_PATH, PROGRESSION_MAIN_PANEL_MARGINS, Color.WHITE, PROGRESSION_MAIN_PANEL_CONTENT)
-
-
-func _progression_branch_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_BRANCH_PANEL_PATH, PROGRESSION_BRANCH_PANEL_MARGINS, Color.WHITE, PROGRESSION_BRANCH_PANEL_CONTENT)
-
-
-func _progression_class_panel_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_CLASS_PANEL_PATH, PROGRESSION_CLASS_PANEL_MARGINS, Color.WHITE, PROGRESSION_CLASS_PANEL_CONTENT)
-
-
-func _progression_points_badge_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_POINTS_BADGE_PATH, Vector4.ZERO, Color.WHITE, PROGRESSION_POINTS_BADGE_CONTENT)
-
-
-func _progression_tooltip_style() -> StyleBox:
-	return _global_texture_style(PROGRESSION_TOOLTIP_PATH, PROGRESSION_TOOLTIP_MARGINS, Color.WHITE, PROGRESSION_TOOLTIP_CONTENT)
-
-
-# SCRUM-676: стили переделанной раскладки (ассеты SCRUM-675).
-func _skill_tree_class_select_style(tint := Color.WHITE) -> StyleBox:
-	return _global_texture_style(SKILL_TREE_CLASS_SELECT_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
-
-
-func _skill_tree_class_popup_style() -> StyleBox:
-	return _global_texture_style(SKILL_TREE_CLASS_POPUP_PATH, SKILL_TREE_CLASS_POPUP_MARGINS, Color.WHITE, SKILL_TREE_CLASS_POPUP_CONTENT)
-
-
-func _skill_tree_points_button_style(tint := Color.WHITE) -> StyleBox:
-	return _global_texture_style(SKILL_TREE_POINTS_BTN_PATH, SKILL_TREE_CLASS_SELECT_MARGINS, tint, SKILL_TREE_CLASS_SELECT_CONTENT)
-
-
-func _skill_tree_path_frame_style(branch_id: String) -> StyleBox:
-	var path := str(SKILL_TREE_PATH_FRAMES.get(branch_id, SKILL_TREE_PATH_FRAMES.get("might")))
-	return _global_texture_style(path, SKILL_TREE_PATH_FRAME_MARGINS, Color.WHITE, SKILL_TREE_PATH_FRAME_CONTENT)
-
-
-func _make_skill_tree_popup(parent: Control, popup_name: String, title: String, body: String, style: StyleBox) -> PanelContainer:
-	# SCRUM-676: переиспользуемый попап древа умений (классовые бонусы / объяснение
-	# очков). Скрыт по умолчанию — не участвует в overlap/visible-проверках QA.
-	var popup := PanelContainer.new()
-	popup.name = popup_name
-	popup.visible = false
-	popup.custom_minimum_size = Vector2(560.0, 240.0)
-	popup.set_anchors_preset(Control.PRESET_CENTER)
-	popup.add_theme_stylebox_override("panel", style)
-	popup.mouse_filter = Control.MOUSE_FILTER_STOP
-	parent.add_child(popup)
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 12)
-	popup.add_child(col)
-	var heading := Label.new()
-	heading.name = "%sTitle" % popup_name
-	heading.text = title
-	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	heading.add_theme_font_size_override("font_size", 22)
-	heading.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
-	col.add_child(heading)
-	var text := Label.new()
-	text.name = "%sBody" % popup_name
-	text.text = body
-	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text.add_theme_font_size_override("font_size", 16)
-	text.add_theme_color_override("font_color", Color(0.86, 0.94, 0.84, 0.96))
-	col.add_child(text)
-	var close_button := Button.new()
-	close_button.name = "%sClose" % popup_name
-	close_button.text = "Закрыть"
-	close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	close_button.focus_mode = Control.FOCUS_ALL
-	close_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	close_button.add_theme_font_size_override("font_size", 15)
-	close_button.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62, 1.0))
-	_apply_skill_tree_text_button_theme(close_button, _skill_tree_class_select_style)
-	close_button.pressed.connect(func() -> void:
-		popup.visible = false
-	)
-	col.add_child(close_button)
-	return popup
-
-
-func _apply_skill_tree_text_button_theme(button: Button, style_fn: Callable) -> void:
-	button.add_theme_stylebox_override("normal", style_fn.call(Color.WHITE))
-	button.add_theme_stylebox_override("hover", style_fn.call(Color(1.06, 1.04, 0.92, 1.0)))
-	button.add_theme_stylebox_override("pressed", style_fn.call(Color(0.90, 0.88, 0.80, 1.0)))
-	button.add_theme_stylebox_override("focus", style_fn.call(Color(1.10, 1.06, 0.94, 1.0)))
-	button.add_theme_stylebox_override("disabled", style_fn.call(Color(0.70, 0.72, 0.78, 0.82)))
 
 
 func _progression_node_style(status: String, focused := false) -> StyleBox:
@@ -8680,14 +10750,6 @@ func _progression_node_style(status: String, focused := false) -> StyleBox:
 	return _global_texture_style(str(PROGRESSION_NODE_TEXTURES[texture_id]), Vector4.ZERO, tint, Vector4(18.0, 18.0, 18.0, 18.0))
 
 
-func _apply_progression_node_button_theme(button: Button, status: String) -> void:
-	button.add_theme_stylebox_override("normal", _progression_node_style(status))
-	button.add_theme_stylebox_override("hover", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("pressed", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("focus", _progression_node_style(status, true))
-	button.add_theme_stylebox_override("disabled", _progression_node_style(status))
-
-
 func _hero_select_clear_button_style(hovered := false) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(1.0, 0.86, 0.42, 0.08) if hovered else Color(0.0, 0.0, 0.0, 0.0)
@@ -8698,27 +10760,6 @@ func _hero_select_clear_button_style(hovered := false) -> StyleBoxFlat:
 	style.content_margin_top = 8
 	style.content_margin_right = 10
 	style.content_margin_bottom = 8
-	return style
-
-
-func _apply_hero_select_clear_button_theme(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _hero_select_clear_button_style(false))
-	button.add_theme_stylebox_override("hover", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("pressed", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("focus", _hero_select_clear_button_style(true))
-	button.add_theme_stylebox_override("disabled", _hero_select_clear_button_style(false))
-
-
-func _hero_select_text_backplate_style(alpha := 0.68) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.025, 0.026, 0.024, alpha)
-	style.border_color = Color(0.75, 0.55, 0.22, 0.18)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.content_margin_left = 8
-	style.content_margin_top = 4
-	style.content_margin_right = 8
-	style.content_margin_bottom = 4
 	return style
 
 
@@ -8778,18 +10819,6 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	return style
 
 
-func _unified_frame_style(frame_type: String, tint := Color.WHITE, center_fill := true) -> StyleBox:
-	var content: Vector4 = UNIFIED_FRAME_CONTENT.get(frame_type, UNIFIED_FRAME_CONTENT.get("global_panel", Vector4(24, 24, 24, 24)))
-	var path := UNIFIED_MASTER_FILL_FRAME_PATH if center_fill else GLOBAL_PANEL_FRAME_PATH
-	return _global_texture_style(path, UNIFIED_FRAME_TEXTURE_MARGINS, tint, content, true)
-
-
-func _ornate_frame_style(path: String, frame_type: String, tint := Color.WHITE) -> StyleBox:
-	var margins: Vector4 = ORNATE_FRAME_MARGINS.get(frame_type, Vector4(30, 30, 30, 30))
-	var content: Vector4 = ORNATE_FRAME_CONTENT.get(frame_type, Vector4(12, 12, 12, 12))
-	return _global_texture_style(path, margins, tint, content)
-
-
 func _style_slider(slider: HSlider) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	slider.add_theme_stylebox_override("slider", _slider_track_style(Color(0.035, 0.045, 0.065, 0.96), Color(0.55, 0.42, 0.18, 0.85)))
@@ -8844,80 +10873,64 @@ func _create_hud() -> void:
 	_update_hud()
 
 
-const ROMAN_NUMERALS := ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
-
-
 func _create_combat_timer_panel(root: Control) -> void:
-	# Индикатор уровня возвышения (римская цифра) — поверх любого боя.
+	# SCRUM-806 (reopen): уровень возвышения — ряд пиксель-эмблем по числу уровня,
+	# без плашки-рамки и цифры: считывается как «звёзды сложности», тултип сохранён.
 	if game.selected_ascension_level > 0:
-		var asc_badge := PanelContainer.new()
-		asc_badge.name = "AscensionHudBadge"
-		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		asc_badge.position = Vector2(0, 18)
-		asc_badge.custom_minimum_size = Vector2(64, 64)
-		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style())
-		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
-		root.add_child(asc_badge)
-		var asc_text := Label.new()
-		asc_text.name = "AscensionHudLabel"
-		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)]  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
-		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		asc_text.add_theme_font_size_override("font_size", 24)
-		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
-		asc_badge.add_child(asc_text)
+		var asc_row := HBoxContainer.new()
+		asc_row.name = "AscensionHudRow"
+		asc_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_row.mouse_filter = Control.MOUSE_FILTER_STOP
+		asc_row.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
+		root.add_child(asc_row)
+		var pip_count := clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
+		for pip_index in range(pip_count):
+			var pip := _make_hud_v2_icon("ascension")
+			pip.name = "AscensionHudPip%d" % pip_index
+			pip.custom_minimum_size = Vector2(44, 44)
+			asc_row.add_child(pip)
 
-	# На босс-файтах таймера нет — панель не создается вовсе.
-	if game.boss_combat_active:
-		game.timer_label = null
-		return
+	# SCRUM-799: таймер показываем во всех боях, включая боссовый/элитный
+	# (5-минутный kill-timer из SCRUM-785). Ранний выход по boss_combat_active снят —
+	# панель и timer_label создаются одинаково для обычного, элитного и боссового боя,
+	# иначе игрок не видит обратный отсчёт и внезапно проигрывает на 5:00.
 	var panel := PanelContainer.new()
 	panel.name = "CombatTimerPanel"
 	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	panel.position = Vector2(0, 14)
 	panel.custom_minimum_size = Vector2(192, 64)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _timer_panel_style(false, SCRUM666_CHUD_TIMER_2K.size, _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, 1.0)))
+	panel.add_theme_stylebox_override("panel", _timer_panel_style(false, HUD_V2_TIMER_2K.size, _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, 1.0)))
 	root.add_child(panel)
 
 	var label := Label.new()
 	label.name = "CombatTimerLabel"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 30)
+	label.add_theme_font_size_override("font_size", _readable_font_size(26))
 	label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.74, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)
 	panel.add_child(label)
 	game.timer_label = label
 
+	# SCRUM-806: пиксель-песочные часы на левом краю плашки таймера.
+	var timer_icon := _make_hud_v2_icon("timer")
+	timer_icon.name = "CombatTimerIcon"
+	timer_icon.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	timer_icon.custom_minimum_size = Vector2(28, 28)
+	root.add_child(timer_icon)
 
-func _timer_panel_style(alarm: bool, display_size := Vector2(288.0, 96.0), content_margins := Vector4.ZERO) -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка таймера (SCRUM666_CHUD_TIMER_2K=288×96), нарисованная 1:1 под слот
-	# с нативными 9-slice бордюрами — резкий орнамент на 1080p/2K/4K вместо ужатого field-фрейма.
-	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
-	var style := _overhaul_2k_frame_style("chud_timer", display_size, tint)
+
+func _timer_panel_style(alarm: bool, display_size := Vector2(264.0, 92.0), content_margins := Vector4.ZERO) -> StyleBox:
+	# SCRUM-806 (reopen): жёлтая рамка chud_timer убрана — таймер на той же кожаной
+	# подложке, что левый кластер (единый стиль); alarm подкрашивает кожу в алый.
+	var tint := Color(1.45, 0.58, 0.50, 0.96) if alarm else Color(1.0, 1.0, 1.0, 0.93)
+	var texture_margins := _scaled_frame_margins_xy(Vector2(768.0, 256.0), display_size, Vector4(26, 22, 26, 22))
+	var style := _global_texture_style(HUD_V2_CLUSTER_BG_PATH, texture_margins, tint, Vector4.ZERO, true)
 	if content_margins != Vector4.ZERO:
 		_apply_stylebox_content_margins(style, content_margins)
 	return style
-
-
-func _ascension_badge_style(display_size := Vector2(128.0, 128.0), content_margins := Vector4(10, 10, 10, 10)) -> StyleBox:
-	var texture_margins := _scaled_frame_margins_xy(Vector2(128.0, 128.0), display_size, Vector4(6, 8, 6, 8))
-	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, texture_margins, Color.WHITE, content_margins, true)
-
-
-func _create_artifact_hud_row(root: Control) -> void:
-	var row := HFlowContainer.new()
-	row.name = "ArtifactHudRow"
-	row.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	row.position = Vector2(0, 16)
-	row.custom_minimum_size = Vector2(402, 104)
-	row.alignment = FlowContainer.ALIGNMENT_END
-	row.add_theme_constant_override("h_separation", 6)
-	row.add_theme_constant_override("v_separation", 6)
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(row)
 
 
 func _scrum666_hud_scale_for_size(viewport_size: Vector2) -> float:
@@ -8972,73 +10985,109 @@ func _apply_chud_rect(control: Control, rect: Rect2, meta_key := "") -> void:
 		control.set_meta(meta_key, rect)
 
 
-func _apply_chud_card_rect(card: PanelContainer, resource_rect: Rect2, zone_rect: Rect2, scale: float, icon_id: String) -> void:
-	if card == null:
-		return
-	var zone := _scrum666_scaled_rect(zone_rect, scale)
-	card.position = zone.position - resource_rect.position
-	card.custom_minimum_size = zone.size
-	card.size = zone.size
-	card.set_meta("scrum666_content_zone", zone)
-	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id, zone.size))
-	_apply_chud_card_content_scale(card, scale)
-
-
-func _apply_chud_card_content_scale(card: PanelContainer, scale: float) -> void:
-	for node in card.find_children("*", "BoxContainer", true, false):
-		var box := node as BoxContainer
-		if box != null:
-			box.add_theme_constant_override("separation", 1)
-	var icon_size := maxf(10.0, roundf(22.0 * scale))
-	for node in card.find_children("*", "TextureRect", true, false):
-		var icon := node as TextureRect
-		if icon != null:
-			icon.custom_minimum_size = Vector2(icon_size, icon_size)
-	var label_size := maxi(8, int(roundf(14.0 * scale)))
-	for node in card.find_children("*", "Label", true, false):
-		var label := node as Label
-		if label != null:
-			label.add_theme_font_size_override("font_size", label_size)
-	var bar_height := maxf(3.0, roundf(6.0 * scale))
-	for node in card.find_children("*", "ProgressBar", true, false):
-		var bar := node as ProgressBar
-		if bar != null:
-			bar.custom_minimum_size.y = bar_height
-
-
 func _layout_combat_hud(root: Control) -> void:
 	if root == null or not is_instance_valid(root):
 		return
 	var scale := _scrum666_hud_scale(root)
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource != null:
-		var resource_rect := _scrum666_scaled_rect(SCRUM666_CHUD_RESOURCE_PANEL_2K, scale)
+		var resource_rect := _scrum666_scaled_rect(HUD_V2_CLUSTER_2K, scale)
 		_apply_chud_rect(resource, resource_rect, "scrum666_frame_rect")
-		resource.add_theme_stylebox_override("panel", _hud_panel_style(resource_rect.size, true))
-		_apply_chud_card_rect(resource.find_child("HudHPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_HP_ZONE_2K, scale, "hp")
-		_apply_chud_card_rect(resource.find_child("HudXPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_XP_ZONE_2K, scale, "xp")
-		_apply_chud_card_rect(resource.find_child("HudMoneyCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_GOLD_ZONE_2K, scale, "money")
-		_apply_chud_card_rect(resource.find_child("HudULTCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_ULT_ZONE_2K, scale, "ultimate_multiplier")
+		resource.add_theme_stylebox_override("panel", _hud_v2_cluster_style(resource_rect.size))
+		_layout_hud_v2_cluster(resource, resource_rect, scale)
 
 	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
 	if timer_panel != null:
-		var timer_rect := _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_2K, scale)
-		var timer_content := _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, scale)
+		var timer_rect := _scrum666_scaled_rect(HUD_V2_TIMER_2K, scale)
+		var timer_content := _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, scale)
 		_apply_chud_rect(timer_panel, timer_rect, "scrum666_frame_rect")
 		timer_panel.set_meta("scrum666_content_margins", timer_content)
-		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_ZONE_2K, scale))
+		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_TIMER_ZONE_2K, scale))
 		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
 		if game.timer_label != null:
 			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
+		var timer_icon := root.find_child("CombatTimerIcon", true, false) as TextureRect
+		if timer_icon != null:
+			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
 
-	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
-	if asc_badge != null:
-		var asc_rect := _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_BADGE_2K, scale)
-		var asc_content := _scrum666_content_margins(SCRUM666_CHUD_ASCENSION_BADGE_2K, SCRUM666_CHUD_ASCENSION_ZONE_2K, scale)
-		_apply_chud_rect(asc_badge, asc_rect, "scrum666_frame_rect")
-		asc_badge.set_meta("scrum666_content_margins", asc_content)
-		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_ZONE_2K, scale))
-		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style(asc_rect.size, asc_content))
+	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
+	if asc_row != null:
+		var pip_size := maxf(18.0, roundf(HUD_V2_ASCENSION_PIP_2K * scale))
+		var pip_gap := maxf(2.0, roundf(HUD_V2_ASCENSION_GAP_2K * scale))
+		asc_row.add_theme_constant_override("separation", int(pip_gap))
+		var pip_count := asc_row.get_child_count()
+		for pip in asc_row.get_children():
+			var pip_icon := pip as TextureRect
+			if pip_icon != null:
+				pip_icon.custom_minimum_size = Vector2(pip_size, pip_size)
+		var row_size := Vector2(pip_count * pip_size + maxf(0.0, pip_count - 1.0) * pip_gap, pip_size)
+		var row_rect := Rect2(Vector2(roundf(HUD_V2_ASCENSION_RIGHT_2K * scale) - row_size.x, roundf(HUD_V2_ASCENSION_TOP_2K * scale)), row_size)
+		_apply_chud_rect(asc_row, row_rect, "scrum666_frame_rect")
+		asc_row.set_meta("scrum666_content_zone", row_rect)
+
+
+func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: float) -> void:
+	# SCRUM-806: раскладка слим-кластера — все дети RunResourceHudContent позиционируются
+	# по @2K-зонам, переведённым в координаты панели (content = full-rect без margins).
+	var icon_zones := {
+		"UIIcon_hp": HUD_V2_HP_ICON_2K,
+		"UIIcon_xp": HUD_V2_XP_ICON_2K,
+		"UIIcon_ultimate_multiplier": HUD_V2_ULT_ICON_2K,
+		"UIIcon_money": HUD_V2_MONEY_ICON_2K,
+	}
+	for icon_name in icon_zones.keys():
+		var icon := resource.find_child(str(icon_name), true, false) as TextureRect
+		if icon != null:
+			_hud_v2_place_in_panel(icon, icon_zones[icon_name], panel_rect, scale)
+	var track_zones := {
+		"HudHPTrack": HUD_V2_HP_BAR_2K,
+		"HudXPTrack": HUD_V2_XP_BAR_2K,
+		"HudULTTrack": HUD_V2_ULT_BAR_2K,
+	}
+	for track_name in track_zones.keys():
+		var track := resource.find_child(str(track_name), true, false) as PanelContainer
+		if track == null:
+			continue
+		var zone: Rect2 = track_zones[track_name]
+		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
+		var track_size := _scrum666_scaled_rect(zone, scale).size
+		var inset := maxf(2.0, roundf(4.0 * scale))
+		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
+		var bar := track.find_child(track_name.replace("Track", "Bar"), true, false) as ProgressBar
+		if bar != null:
+			bar.custom_minimum_size = Vector2(0.0, maxf(4.0, track_size.y - inset * 2.0))
+	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
+	if money_label != null:
+		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
+		money_label.add_theme_font_size_override("font_size", maxi(11, int(roundf(24.0 * scale))))
+	var bar_labels := {
+		"HudHPLabel": [HUD_V2_HP_BAR_2K, 20.0],
+		"HudXPLabel": [HUD_V2_XP_BAR_2K, 17.0],
+		"HudULTLabel": [HUD_V2_ULT_BAR_2K, 17.0],
+	}
+	for label_name in bar_labels.keys():
+		var label := resource.find_child(str(label_name), true, false) as Label
+		if label == null:
+			continue
+		label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_labels[label_name][1]) * scale))))
+		label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
+		_hud_v2_place_in_panel(label, bar_labels[label_name][0], panel_rect, scale)
+		# Шрифт может требовать больше высоты, чем слим-бар: расширяем рект лейбла
+		# симметрично вокруг зоны бара, текст остаётся визуально по центру бара.
+		var min_h := label.get_combined_minimum_size().y
+		if min_h > label.size.y:
+			label.position.y -= roundf((min_h - label.size.y) * 0.5)
+			label.size.y = min_h
+			label.custom_minimum_size.y = 0.0
+
+
+func _hud_v2_place_in_panel(node: Control, zone_2k: Rect2, panel_rect: Rect2, scale: float) -> void:
+	var zone := _scrum666_scaled_rect(zone_2k, scale)
+	node.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	node.position = zone.position - panel_rect.position
+	node.custom_minimum_size = zone.size
+	node.size = zone.size
+	node.set_meta("scrum666_content_zone", zone)
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -9288,7 +11337,7 @@ func _create_menu_run_hud() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
-	_create_resource_hud_panel(root, Vector2(18, 16))
+	_create_resource_hud_panel(root, Vector2(18, 10))
 	_update_hud()
 	_update_level_up_button()
 
@@ -9298,47 +11347,107 @@ func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layou
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = SCRUM666_CHUD_RESOURCE_PANEL_2K.size if combat_layout else Vector2(690, 72)
-	panel.add_theme_stylebox_override("panel", _hud_panel_style(SCRUM666_CHUD_RESOURCE_PANEL_2K.size, true) if combat_layout else _hud_panel_style())
+	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size if combat_layout else Vector2(690, 72)
+	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size) if combat_layout else _hud_panel_style())
 	parent.add_child(panel)
 
-	var content: Control
 	if combat_layout:
-		content = Control.new()
+		# SCRUM-806: боевой HUD v2 — слим-бары с пиксель-иконками вместо карточек.
+		var content := Control.new()
 		content.name = "RunResourceHudContent"
 		content.set_anchors_preset(Control.PRESET_FULL_RECT)
 		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		panel.add_child(content)
-	else:
-		var row := HBoxContainer.new()
-		row.name = "RunResourceHudContent"
-		row.add_theme_constant_override("separation", 6)
-		panel.add_child(row)
-		content = row
-
-	game.health_bar = _add_hud_resource_card(content, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
-	game.xp_bar = _add_hud_resource_card(content, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
-	_add_hud_money_card(content)
-	game.ultimate_bar = _add_hud_resource_card(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
-
-
-func _create_character_stats_hud(parent: Control, position: Vector2) -> void:
-	var panel := PanelContainer.new()
-	panel.name = "CharacterStatsHud"
-	panel.position = position
-	panel.custom_minimum_size = Vector2(690, 58)
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _character_stats_hud_style())
-	parent.add_child(panel)
+		_build_hud_v2_cluster(content)
+		return
 
 	var row := HBoxContainer.new()
-	row.name = "CharacterStatsHudRow"
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 8)
+	row.name = "RunResourceHudContent"
+	row.add_theme_constant_override("separation", 6)
 	panel.add_child(row)
+	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
+	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
+	_add_hud_money_card(row)
+	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
 
-	for entry in _compact_character_stat_entries():
-		row.add_child(_make_character_stat_chip(entry))
+
+func _build_hud_v2_cluster(content: Control) -> void:
+	game.health_bar = _add_hud_v2_bar(content, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
+	game.xp_bar = _add_hud_v2_bar(content, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
+	game.ultimate_bar = _add_hud_v2_bar(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+
+	var money_icon := _make_hud_v2_icon("money")
+	money_icon.name = "UIIcon_money"
+	content.add_child(money_icon)
+
+	game.money_label = Label.new()
+	game.money_label.name = "HudMoneyLabel"
+	game.money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
+	game.money_label.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
+	game.money_label.add_theme_constant_override("outline_size", 3)
+	game.money_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(game.money_label)
+
+
+func _make_hud_v2_icon(icon_id: String) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = game._cached_texture(str(HUD_V2_ICON_PATHS.get(icon_id, HUD_V2_ICON_PATHS["hp"])))
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	# Пиксель-арт PixelLab: nearest сохраняет хрусткие пиксели при даунскейле.
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
+
+
+func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallback: Color) -> ProgressBar:
+	var icon := _make_hud_v2_icon(icon_id)
+	icon.name = "UIIcon_%s" % icon_id
+	parent.add_child(icon)
+
+	var track := PanelContainer.new()
+	track.name = "Hud%sTrack" % tag
+	track.mouse_filter = Control.MOUSE_FILTER_PASS
+	track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style())
+	parent.add_child(track)
+
+	var bar := ProgressBar.new()
+	bar.name = "Hud%sBar" % tag
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	# PanelContainer не гарантирует растяжку Range-ребёнка — фиксируем флагами,
+	# высоту дожимает _layout_hud_v2_cluster через custom_minimum_size.
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.06, 0.08, 0.85)))
+	bar.add_theme_stylebox_override("fill", _hud_v2_bar_fill_style(icon_id, fill_fallback))
+	track.add_child(bar)
+
+	# Лейбл — сиблинг трека (не ребёнок бара): min-height шрифта на 4K выше слим-бара,
+	# внутри бара он вылезал бы за родителя (text-overflow инвариант матрицы).
+	# Позиционируется _layout_hud_v2_cluster по зоне бара с вертикальным центрированием.
+	var label := Label.new()
+	label.name = "Hud%sLabel" % tag
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.clip_text = true
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
+	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(label)
+
+	if icon_id == "hp":
+		game.health_label = label
+	elif icon_id == "xp":
+		game.xp_label = label
+	elif icon_id == "ultimate_multiplier":
+		game.ultimate_label = label
+	return bar
 
 
 func _compact_character_stat_entries(limit := 4) -> Array:
@@ -9394,7 +11503,7 @@ func _make_character_stat_chip(entry: Dictionary) -> Control:
 	value.clip_text = true
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value.add_theme_font_size_override("font_size", 15)
+	value.add_theme_font_size_override("font_size", _readable_font_size(15))
 	value.add_theme_color_override("font_color", _hud_stat_value_color(entry))
 	line.add_child(value)
 	return chip
@@ -9431,7 +11540,7 @@ func _add_hud_resource_card(parent: Control, icon_id: String, label_text: String
 
 	var value_label := Label.new()
 	value_label.name = "Hud%sLabel" % label_text
-	value_label.add_theme_font_size_override("font_size", 14)
+	value_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	value_label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	value_box.add_child(value_label)
 	if icon_id == "hp":
@@ -9473,7 +11582,7 @@ func _add_hud_money_card(parent: Control) -> void:
 	game.money_label = Label.new()
 	game.money_label.name = "HudMoneyLabel"
 	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", 18)
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
 	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
 	line.add_child(game.money_label)
 
@@ -9485,6 +11594,29 @@ func _hud_panel_style(display_size := Vector2(820.0, 84.0), zero_content := fals
 	if zero_content:
 		_apply_stylebox_content_margins(style, Vector4.ZERO)
 	return style
+
+
+func _hud_v2_cluster_style(display_size := Vector2(640.0, 122.0)) -> StyleBox:
+	# SCRUM-806: лёгкая кожаная подложка с тонкой латунной линией (768×256, OpenAI),
+	# полупрозрачная, чтобы кластер не выглядел тяжёлой плитой поверх арены.
+	var texture_margins := _scaled_frame_margins_xy(Vector2(768.0, 256.0), display_size, Vector4(26, 22, 26, 22))
+	return _global_texture_style(HUD_V2_CLUSTER_BG_PATH, texture_margins, Color(1.0, 1.0, 1.0, 0.93), Vector4.ZERO, true)
+
+
+func _hud_v2_bar_track_style(display_size := Vector2(516.0, 32.0), content_inset := 3.0) -> StyleBox:
+	# SCRUM-806: слим-жёлоб с тонкой латунной окантовкой (512×32) под лайн-бар.
+	var texture_margins := _scaled_frame_margins_xy(Vector2(512.0, 32.0), display_size, Vector4(10, 5, 10, 5))
+	var inset := maxf(2.0, content_inset)
+	return _global_texture_style(HUD_V2_BAR_TRACK_PATH, texture_margins, Color.WHITE, Vector4(inset, inset, inset, inset), true)
+
+
+func _hud_v2_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
+	# SCRUM-806: филл слим-бара — прежние gradient-текстуры, но с полной вертикальной
+	# растяжкой (margins только по X), иначе на треке высотой 10-20px поля съедают центр.
+	var path := str(COMBAT_HUD_BAR_FILL_PATHS.get(icon_id, ""))
+	if path != "" and ResourceLoader.exists(path):
+		return _global_texture_style(path, Vector4(6, 0, 6, 0), Color.WHITE, Vector4.ZERO)
+	return _bar_style(fallback_color)
 
 
 func _character_stats_hud_style() -> StyleBox:
@@ -9572,7 +11704,8 @@ func _update_hud() -> void:
 	var ultimate_max: float = maxf(float(values.get("ultimate_max", 100.0)), 1.0)
 	var ultimate_charge: float = clampf(float(values.get("ultimate_charge", 0.0)), 0.0, ultimate_max)
 	var timer_seconds := -1
-	if game.combat_active and not game.boss_combat_active:
+	# SCRUM-785: таймер показываем во всех боях, включая боссовый (5-минутный kill-timer).
+	if game.combat_active:
 		timer_seconds = maxi(int(ceil(game.round_time_left)), 0)
 	var next_snapshot := {
 		"hp": int(ceil(hp)),
@@ -9628,7 +11761,7 @@ func _update_combat_timer(timer_seconds: int) -> void:
 	game.timer_label.set_meta("alarm_active", alarm)
 	game.timer_label.add_theme_color_override("font_color", Color(1.0, 0.32, 0.26, 1.0) if alarm else Color(0.96, 0.92, 0.74, 1.0))
 	if panel != null:
-		var content_margins: Vector4 = panel.get_meta("scrum666_content_margins", _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, _scrum666_hud_scale_for_size(panel.get_viewport_rect().size))) as Vector4
+		var content_margins: Vector4 = panel.get_meta("scrum666_content_margins", _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, _scrum666_hud_scale_for_size(panel.get_viewport_rect().size))) as Vector4
 		panel.add_theme_stylebox_override("panel", _timer_panel_style(alarm, panel.size, content_margins))
 	if alarm:
 		var tween: Tween = game.timer_label.create_tween()
@@ -9636,16 +11769,3 @@ func _update_combat_timer(timer_seconds: int) -> void:
 		tween.tween_property(game.timer_label, "scale", Vector2(1.12, 1.12), 0.16).set_trans(Tween.TRANS_QUAD)
 		tween.tween_property(game.timer_label, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_QUAD)
 		game.timer_label.pivot_offset = game.timer_label.size * 0.5
-
-
-func _format_artifact_list(artifacts: Array) -> String:
-	if artifacts.is_empty():
-		return "Artifacts\nNone"
-
-	var visible_artifacts := []
-	for index in range(min(artifacts.size(), 6)):
-		var entry = artifacts[index]
-		visible_artifacts.append(str(entry.get("title", "")) if entry is Dictionary else str(entry))
-	if artifacts.size() > visible_artifacts.size():
-		visible_artifacts.append("+%d more" % (artifacts.size() - visible_artifacts.size()))
-	return "Artifacts\n%s" % "\n".join(visible_artifacts)

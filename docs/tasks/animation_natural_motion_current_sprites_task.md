@@ -161,3 +161,7 @@
 - `docs/design/content_registry.md` - animation assets/rig parts, если добавлены;
 - `docs/design/fantasydisk_design_brief.md` - направление анимации;
 - `docs/tasks/design_visual_redesign_after_animation_task.md` или создать новый design handoff, если нужен фронтальный redraw.
+
+## QA-Вердикт
+Статус: PASSED
+Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.

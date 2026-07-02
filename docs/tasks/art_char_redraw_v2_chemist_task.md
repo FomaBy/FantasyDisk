@@ -1,16 +1,34 @@
 # ART/ANIM: Перерисовать «Химик» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: cancelled
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-423
+Lane: codex
+Исполнитель: Codex
+Owner: Design/Codex worker
+Thread: codex-design-scrum-423-chemist-pixellab
+Branch: codex/scrum-423-chemist-pixellab
+Worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/design-board-watcher
+Clean publish worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/SCRUM-423-clean
+Locked paths: assets/sprites/characters/pixellab/chemist/, assets/sprites/characters/full_frame/chemist_pixellab/, assets/sprites/characters/chemist_spriteframes.tres, scripts/progression_data_characters.gd, tests focused PixelLab/animation checks, docs/design/content_registry.md, docs/design/current_game_state.md, docs/design/systems/animation.md, CHANGELOG.md
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## PM Directive (2026-06-30)
+Блок снят. Эту задачу выполняет **Codex (Design/Animator-контур), НЕ Claude.**
+Claude-контур задачу не берёт. Lane: codex (метка `codex`, без `claude`/`blocked`).
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## PM Unhold / Current Queue State (2026-06-30)
+
+Пользователь снял `user-hold` с задач в `К выполнению`: SCRUM-423 снова доступна
+для автономного Jira-pull/dispatch. Историческая отмена 2026-06-15 ниже
+сохранена как контекст, но больше не блокирует старт.
 
 ## Контекст
 Пер-персонажная задача инициативы «Перерисовка персонажей v2» (0.1.6) — класс **Химик** (`chemist`).
@@ -50,5 +68,98 @@ Jira: SCRUM-423
 ## Документация
 docs/design/content_registry.md (chemist), current_game_state.
 
-## ОТМЕНЕНО 2026-06-15 (пользователь)
-Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+## Историческая отмена 2026-06-15 (перекрыта 2026-06-30)
+Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
+2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-423
+снова `new` / `К выполнению`.
+
+## Blocker — Codex Design 2026-06-30
+
+Jira-pull claim by `codex-design-board-watcher` confirmed SCRUM-423 is eligible
+again, but production work is blocked before asset creation: current
+`fantasydisk-asset-generator` requires PixelLab MCP for new character art and
+forbids legacy OpenAI/`generate_asset.py`/`image_gen` fallback. PixelLab tools
+were not exposed in this Codex session, and the locally configured
+`mcp_servers.pixellab` bridge (`mcp-remote`) did not complete MCP
+`initialize/tools/list` handshake in two attempts. No character files were
+generated or modified. Jira labels `blocked` and `pixellab-blocked` were added,
+and the issue was returned to `К выполнению` to avoid a stale `В работе` owner.
+
+## PM Readiness Update — PixelLab 2026-06-30
+
+PM/Jira повторно открыл SCRUM-423 для Design/Codex: Chemist должен быть
+пересобран через PixelLab по актуальному runtime-пайплайну, аналогично Dark Mage
+PixelLab Hero Select/runtime примеру (SCRUM-685). Обязательный scope: PixelLab
+character source/fetch для `chemist`, 8-direction idle poses, 8-direction
+move/walk animation, transparent normalized 512x512 runtime pack under
+`assets/sprites/characters/full_frame/chemist_pixellab/`, source manifest under
+`assets/sprites/characters/pixellab/chemist/`, `chemist_spriteframes.tres`,
+runtime/Hero Select integration, docs and focused smokes. Non-PixelLab fallback
+is not allowed unless Jira explicitly records an override.
+
+## Blocker Update — Codex Design 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-423 after PM readiness and
+rechecked PixelLab availability. The local `mcp_servers.pixellab` bridge now
+initializes and returns the PixelLab tool list (`49` tools), but actual tool
+calls fail with `401 Missing Authorization header`; no token/secret was printed.
+
+Because `fantasydisk-asset-generator` and
+`fantasydisk-pixellab-animation-integrator` both require PixelLab for this
+production character source/animation scope and forbid legacy/OpenAI/manual
+fallback, no asset/runtime integration was started. Jira was returned to
+`К выполнению` with labels `blocked` and `pixellab-blocked`. Unblock: configure
+PixelLab MCP Authorization for Codex Desktop `mcp-remote`, then requeue
+SCRUM-423 for Design/Codex.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-423 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.
+
+## Result — Codex Design 2026-06-30
+
+Статус: done / ready_for_QA
+
+PixelLab MCP config smoke PASS (`get_balance`, no secrets printed). Created and
+integrated Chemist PixelLab character
+`c7fe44d3-1f15-45a1-b762-b2862833b151`:
+
+- Source/evidence: `assets/sprites/characters/pixellab/chemist/`
+  (`manifest.json`, `pixellab_character_get.txt`, 8 idle rotations, 48 movement
+  source frames).
+- Runtime: `assets/sprites/characters/full_frame/chemist_pixellab/` with
+  transparent `512x512` idle and 6-frame movement rows for all 8 directions.
+- SpriteFrames: `assets/sprites/characters/chemist_spriteframes.tres` exposes
+  `idle`, `move`, `walk`, plus directional `idle/move/walk_<direction>` rows.
+- Runtime portrait path switched to
+  `res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png`.
+- Docs/tests updated: CHANGELOG, content registry, current game state, animation
+  system doc, character sprite registry test, animation smoke expectations and
+  Hero Select PixelLab preview smoke.
+
+Verification:
+
+- PASS: Python alpha/dimension/frame-count validation (`27` SpriteFrames
+  animations checked, `56` runtime PNGs checked, no errors).
+- PASS: Visual contact sheet inspected at
+  `build/qa/scrum423_chemist_pixellab/scrum423_chemist_pixellab_contact.png`.
+- PASS: Godot gate
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+  completed in the clean publish worktree; registry alignment passed for all 17
+  characters. Import produced only pre-existing Dark Mage/Knight skeleton UID
+  duplicate warnings.
+- PASS: `python3 tools/jira_board_sync.py` completed after Jira transition,
+  skipped inaccessible SCRUM-327 and synced SCRUM-423 to `Контроль качества`.
+
+Disk cleanup: removed `.godot/`, generated `.import` sidecars and `__pycache__`
+from the clean publish worktree; final temporary worktree removal happens after
+the pushed sync commit.

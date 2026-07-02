@@ -1,11 +1,21 @@
 ---
 name: fantasydisk-asset-generator
-description: Use this skill when creating or editing game assets, sprites, UI frames, icons, buttons, sprite sheets, 9-slice frames, or Godot-ready PNG assets for a dark fantasy game.
+description: Use this skill when creating or editing FantasyDisk characters, objects, props, sprites, icons, UI frames, HUD elements, buttons, sprite sheets, 9-slice frames, or Godot-ready PNG assets. All new visual asset creation must use the PixelLab MCP workflow, with D&D + Dark Fantasy Dragon art direction, transparent/source PNG exports, reference/runtime path discipline, and QA evidence.
 ---
 
 # Game Asset Art Director
 
 You are helping build a Godot dark fantasy D&D-style game.
+
+## Mandatory PixelLab Rule
+
+For every new FantasyDisk character, object, prop, sprite, UI frame, HUD element, icon, button, mockup art layer, or production-ready PNG, use PixelLab through MCP as the source generation/editing tool.
+
+- First try exposed PixelLab MCP tools in the chat. If tools are not visible, use tool discovery for `pixellab`.
+- If the PixelLab MCP server is configured locally but not exposed as direct tools, read `../pixellab_mcp_auth.md`, then call it through the configured MCP bridge without printing tokens, headers, or secrets.
+- If PixelLab MCP appears unavailable, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking Jira blocked. Do not treat stale tool discovery or missing ambient `AUTH_HEADER` as proof of broken auth.
+- If the post-fix MCP smoke truly fails, mark the task blocked or create the correct handoff. Do not silently fall back to OpenAI Images, `image_gen`, hand drawing, old random generators, or the legacy `generate_asset.py` pipeline.
+- Record the PixelLab source asset/project ID, tag/name, export IDs when available, prompt/spec, exported source paths, runtime paths, and QA evidence in the task/Jira result.
 
 Always produce assets with:
 
@@ -21,24 +31,14 @@ Always produce assets with:
 
 ## Generation Workflow
 
-When asked to generate assets, use `tools/artgen/generate_asset.py` when that project-local script exists.
-
-If the project-local script is absent, use the bundled generator:
-
-```bash
-python3 ~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py \
-  --prompt "dark fantasy ornate frame, no text, transparent background if possible" \
-  --output "reference_pack/asset_reference.png" \
-  --size 1536x1024 \
-  --quality high
-```
-
-The bundled script:
-
-1. Calls the OpenAI Images API with `model="gpt-image-2"` and `output_format="png"`.
-2. Saves relative outputs under `docs/design/references/`.
-3. Creates a new `docs/tasks/design_integrate_generated_<slug>_task.md` task for implementation.
-4. Runs `python3 tools/jira_board_sync.py` when available, then patches the generated task with the Jira key.
+1. Confirm the task owner/Jira state and locked paths before creating files.
+2. Build a concise PixelLab prompt/spec from the task: asset type, canonical ID, target use, size/aspect, style, forbidden text, safe zones, alpha needs, and animation/state needs.
+3. Use PixelLab MCP to create, revise, or fetch the source asset. Prefer stable tags matching the canonical ID, for example `berserk`, `artifact_blood_sigil`, `ui_frame_combat_hud_health`.
+4. Export source PNGs from PixelLab into `docs/design/references/<task_or_pack>/`.
+5. Save a `manifest.json` beside the source files with PixelLab IDs/tags, prompt/spec, export dimensions, frame/state names, and source filenames. Never store API tokens or Authorization headers.
+6. Postprocess the result before presenting it as game-ready.
+7. Create preview/contact sheets when useful, especially for batches, state sheets, frames, or animations.
+8. Promote accepted runtime assets to `assets/...` only when integration is part of the task.
 
 After generation, postprocess the result before presenting it as game-ready:
 
@@ -48,6 +48,8 @@ After generation, postprocess the result before presenting it as game-ready:
 - create preview/contact sheets when useful;
 - write safe content padding notes for UI assets;
 - create or update the implementation task when the asset must be integrated.
+
+Legacy note: `tools/artgen/generate_asset.py` and `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py` are historical OpenAI Images helpers. Do not use them for new production asset creation unless the user explicitly overrides the PixelLab rule in the active task and the Jira/task evidence records that exception.
 
 ## UI Frames
 
@@ -62,16 +64,20 @@ For UI frames:
 
 For 9-slice frames, include texture margins and content margins in the task or result notes. If margins are not known, mark them as estimates and ask the implementer to verify in Godot.
 
+For HUD or full UI frame layers, generate empty, calm content interiors in PixelLab from the approved geometry plan. Decorative art may surround content zones but must not enter them.
+
 ## Sprites
 
 For sprites:
 
-- generate frame lists;
-- create sprite sheets;
+- use PixelLab frame/state exports, not manually imagined frame lists;
+- create sprite sheets or full-frame PNG rows only from exported PixelLab frames;
 - include `frame_width`, `frame_height`, and `frame_count`;
 - avoid changing character proportions between frames;
 - keep pivots and silhouette consistent across animation frames;
 - document intended animation names, FPS, loop settings, and direction count when relevant.
+
+For animated characters, also follow `$fantasydisk-pixellab-animation-integrator`.
 
 ## Output Paths
 
@@ -82,20 +88,13 @@ For sprites:
 
 Use descriptive folder names matching the task or reference pack, for example `settings_tab_switcher_frame`, `hero_select_dossier`, `artifact_icons_realistic_dnd`, `main_menu_background_bosses`, or `elite_boss_vfx`.
 
-## Quality And Size
+## QA And Reporting
 
-Pass `--quality low`, `medium`, `high`, or `auto`.
+Every asset task should finish with:
 
-Pass `--size auto` or `WIDTHxHEIGHT`. For `gpt-image-2`, keep dimensions divisible by 16, aspect ratio between `1:3` and `3:1`, and stay at or below the documented maximum of `3840x2160` pixels unless the project explicitly needs an experimental size.
-
-`gpt-image-2` currently does not support transparent backgrounds directly. If FantasyDisk needs alpha-ready final art, generate the reference first, then postprocess alpha or create a cleanup/integration task.
-
-## Environment
-
-Require `OPENAI_API_KEY` in the environment and the Python `openai` package available to the interpreter for API-backed generation.
-
-To create only the PNG/task without Jira sync in an offline or credentialless environment:
-
-```bash
-FANTASYDISK_SKIP_JIRA_SYNC=1 python3 ~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py ...
-```
+- PixelLab source ID/tag/name and exported source paths;
+- final runtime paths when promoted;
+- size, alpha, crop/padding, state/frame count, and safe content margins;
+- preview/contact sheet path when useful;
+- tests or visual QA performed;
+- explicit note that PixelLab MCP was used, or a blocker/handoff explaining why it could not be used.

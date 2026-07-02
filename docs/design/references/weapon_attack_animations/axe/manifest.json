@@ -1,0 +1,42 @@
+{
+  "issue": "SCRUM-728",
+  "weapon_id": "axe",
+  "weapon_name": "Двуручный топор",
+  "role": "Animator / VFX",
+  "pipeline_override": "OpenAI Images gpt-image-2 via skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py; PixelLab intentionally not used for this issue per user override.",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "requested_source_size": "1024x1024",
+  "runtime_size": "256x256",
+  "mechanical_contract": {
+    "attack_shape": "sweep",
+    "sweep_degrees": 140,
+    "radius": 320,
+    "runtime_api_changed": false,
+    "gameplay_changed": false
+  },
+  "source_files": [
+    "docs/design/references/weapon_attack_animations/axe/openai_axe_arc_source.png",
+    "docs/design/references/weapon_attack_animations/axe/axe_vfx_runtime_candidate_256.png",
+    "docs/design/references/weapon_attack_animations/axe/axe_vfx_alpha_debug.png",
+    "docs/design/references/weapon_attack_animations/axe/prompt_notes.md"
+  ],
+  "runtime_files": [
+    "assets/sprites/effects/vfx_weapon_axe.png"
+  ],
+  "preview_files": [
+    "docs/design/previews/weapon_attack_animations/axe_contact.png"
+  ],
+  "reference_weapon": "assets/sprites/weapons/two_handed_axe.png",
+  "visual_acceptance_notes": [
+    "Broad right-facing crescent cleave communicates the axe's 140-degree sweep.",
+    "RGBA runtime alpha is clamped to stay semi-transparent and readable over light and dark combat backgrounds.",
+    "Canonical two-handed axe ghost silhouette is composited inside the VFX as a translucent shape.",
+    "No text, logo, watermark, HUD element, damage/cooldown/targeting/range/balance/runtime hook change."
+  ],
+  "alpha_stats": {
+    "runtime_alpha_max": 188,
+    "runtime_alpha_nonzero_percent": 39.35,
+    "runtime_alpha_mean": 55.74
+  }
+}

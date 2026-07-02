@@ -1,0 +1,41 @@
+{
+  "issue": "SCRUM-756",
+  "weapon_id": "priest_reliquary",
+  "pixel_lab_object_id": "722346d1-554d-4ecd-8970-b2a6e154b543",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/priest_reliquary/priest_reliquary_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/priest_reliquary/priest_reliquary_pixellab_source.png",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+  "weapon_reference_path": "assets/sprites/weapons/priest_reliquary.png",
+  "preview": "docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png",
+  "background_cleanup": {
+    "estimated_corner_background_rgb": [
+      88,
+      88,
+      92
+    ],
+    "method": "border-median gray preview cleanup for PixelLab source; center alpha softening; canonical priest_reliquary weapon ghost composited from source PNG; final combat alpha cap",
+    "final_center_readability_trim": "center alpha multiplied by 0.68..1.0 radial ramp after ghost composite"
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      17,
+      18,
+      239,
+      238
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.5837,
+    "max_alpha": 170,
+    "mean_alpha_all_pixels": 77.95,
+    "mean_alpha_visible_pixels": 133.53,
+    "center_64_mean_alpha": 88.78,
+    "center_64_max_alpha": 106,
+    "outer_ring_mean_alpha": 113.93
+  },
+  "readability_decision": "pass",
+  "visual_read": "golden-white sanctify seal with transparent center, relic-window starburst, and low-opacity actual Light Reliquary silhouette embedded in the effect"
+}

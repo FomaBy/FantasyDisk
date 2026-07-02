@@ -1,8 +1,10 @@
 extends SceneTree
 
-# SCRUM-537: central route chest reward node.
-# Verifies placement, icon contract, 1-of-3 artifact choice, reward application,
-# and no same-node re-open after returning to the map.
+# SCRUM-537 / SCRUM-787: route chest reward as an UNMISSABLE chest-line row.
+# Verifies that exactly CHEST_LINE_ROWS full rows have EVERY branch = chest (so any chosen
+# path hits a chest), placement preserves shops and start battle-only rows, icon/tooltip
+# contract, 1-of-3 artifact choice, exactly one artifact applied per chest row, and no
+# same-node re-open after returning to the map.
 
 const CHEST_ICON_PATH := "res://assets/sprites/map_icons/map_chest_artifact.png"
 const ProgressionData := preload("res://scripts/progression_data.gd")
@@ -46,37 +48,65 @@ func _run() -> bool:
 	return true
 
 
+# Полные «линии» сундуков: ряды (кроме босс-ряда), где КАЖДАЯ ветка — chest.
+func _full_chest_rows(route: Array) -> Array:
+	var rows := []
+	# route.back() — ряд босса; не-боссовые ряды = 0..route.size()-2.
+	for row_index in range(route.size() - 1):
+		var row: Array = route[row_index]
+		if row.is_empty():
+			continue
+		var all_chest := true
+		for route_node in row:
+			if str((route_node as Dictionary).get("type", "")) != "chest":
+				all_chest = false
+				break
+		if all_chest:
+			rows.append(row_index)
+	return rows
+
+
 func _assert_generated_route(main: Node, route: Array, attempt: int) -> bool:
 	var non_boss_rows := route.size() - 1
-	var expected_row := int(floor(float(non_boss_rows - 1) * 0.5))
-	var chest_count := 0
+	var expected_lines := int(main.CHEST_LINE_ROWS)
+	var start_battle_only := 2  # route_map_screen.START_BATTLE_ONLY_ROWS
+
+	var chest_rows := _full_chest_rows(route)
+	# SCRUM-787: ≥1 непропускаемая линия; ровно CHEST_LINE_ROWS полных chest-рядов.
+	if chest_rows.size() != expected_lines:
+		_fail("attempt %d: expected %d full chest-line row(s), got %d" % [attempt, expected_lines, chest_rows.size()])
+		return false
+
 	var shop_count := 0
-	var chest_branch := -1
 	for row_index in range(route.size()):
-		var row: Array = route[row_index]
-		for branch_index in range(row.size()):
-			var route_node: Dictionary = row[branch_index]
-			var node_type := str(route_node.get("type", ""))
-			if node_type == "chest":
-				chest_count += 1
-				chest_branch = branch_index
-				if row_index != expected_row:
-					_fail("attempt %d: chest row %d != expected lower midpoint %d" % [attempt, row_index, expected_row])
-					return false
-			elif node_type == "shop":
+		for route_node in (route[row_index] as Array):
+			if str((route_node as Dictionary).get("type", "")) == "shop":
 				shop_count += 1
-	if chest_count != 1:
-		_fail("attempt %d: expected exactly one chest, got %d" % [attempt, chest_count])
-		return false
 	if shop_count != 2:
-		_fail("attempt %d: chest placement must preserve exactly two shops, got %d" % [attempt, shop_count])
+		_fail("attempt %d: chest-line placement must preserve exactly two shops, got %d" % [attempt, shop_count])
 		return false
-	for early_row in range(mini(2, non_boss_rows)):
+
+	for chest_row in chest_rows:
+		# Линия — внутренний ряд (не стартовый battle-only, не босс-ряд).
+		if int(chest_row) < start_battle_only or int(chest_row) >= non_boss_rows:
+			_fail("attempt %d: chest-line row %d must be an inner row (>=%d, <%d)" % [attempt, chest_row, start_battle_only, non_boss_rows])
+			return false
+		# Непропускаемость: КАЖДАЯ ветка ряда — сундук (любой путь проходит сундук).
+		var row: Array = route[chest_row]
+		for route_node in row:
+			if str((route_node as Dictionary).get("type", "")) != "chest":
+				_fail("attempt %d: chest-line row %d has a non-chest branch (missable)" % [attempt, chest_row])
+				return false
+
+	for early_row in range(mini(start_battle_only, non_boss_rows)):
 		for route_node in (route[early_row] as Array):
 			if str((route_node as Dictionary).get("type", "")) != "battle":
 				_fail("attempt %d: early row %d must remain battle-only" % [attempt, early_row])
 				return false
-	var chest_node: Dictionary = (route[expected_row] as Array)[chest_branch]
+
+	# Icon/tooltip контракт на одном сундуке линии.
+	var sample_row: int = int(chest_rows[0])
+	var chest_node: Dictionary = (route[sample_row] as Array)[0]
 	var definition: Dictionary = main.get("route").call("_map_node_definition", "chest")
 	var icon_path: String = main.call("_route_node_icon_path", chest_node, definition)
 	if icon_path != CHEST_ICON_PATH:
@@ -91,12 +121,12 @@ func _assert_generated_route(main: Node, route: Array, attempt: int) -> bool:
 
 func _assert_open_choose_and_advance(main: Node) -> bool:
 	var route: Array = main.call("_generate_route")
-	var non_boss_rows := route.size() - 1
-	var chest_row := int(floor(float(non_boss_rows - 1) * 0.5))
-	var chest_branch := _find_chest_branch(route, chest_row)
-	if chest_branch < 0:
-		_fail("generated route has no chest in expected row")
+	var chest_rows := _full_chest_rows(route)
+	if chest_rows.is_empty():
+		_fail("generated route has no full chest-line row")
 		return false
+	var chest_row: int = int(chest_rows[0])
+	var chest_branch := 0  # вся линия — сундуки; берём первую ветку
 
 	main.set("route_nodes", route)
 	main.set("route_stage", chest_row)
@@ -133,6 +163,7 @@ func _assert_open_choose_and_advance(main: Node) -> bool:
 
 	var snapshot: Dictionary = main.get("run_player_snapshot")
 	var artifacts: Array = snapshot.get("artifacts", [])
+	# Игрок проходит ровно ОДНУ ветку ряда → получает ровно 1 артефакт с chest-линии.
 	if artifacts.size() != 1:
 		_fail("choosing chest artifact must apply exactly one artifact, got %d" % artifacts.size())
 		return false
@@ -144,14 +175,6 @@ func _assert_open_choose_and_advance(main: Node) -> bool:
 		_fail("completed chest should not be available after return to map; state=%s" % state)
 		return false
 	return true
-
-
-func _find_chest_branch(route: Array, row_index: int) -> int:
-	var row: Array = route[row_index]
-	for branch_index in range(row.size()):
-		if str((row[branch_index] as Dictionary).get("type", "")) == "chest":
-			return branch_index
-	return -1
 
 
 func _route_path_to_row(route: Array, target_row: int, target_branch: int) -> Array:

@@ -1,0 +1,52 @@
+{
+  "issue": "SCRUM-755",
+  "asset": "priest_chime attack VFX",
+  "weapon_id": "priest_chime",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_priest_chime.png",
+  "source_files": [
+    "priest_chime_pixellab_source_raw.png",
+    "priest_chime_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/priest_chime_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "b5ef3873-53d2-4f45-bb1a-3f274c6186a7",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/b5ef3873-53d2-4f45-bb1a-3f274c6186a7/download",
+    "created": "2026-07-01 18:06",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required corner-color alpha cleanup",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 removed the stale OpenAI billing blocker and instructed agents to continue through PixelLab MCP / fantasydisk-asset-generator. No OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab source PNG to task reference folder.",
+      "Created alpha-clean accepted source PNG from PixelLab output by removing flat preview background.",
+      "Composited canonical priest_chime weapon PNG as low-opacity chime ghost silhouette under the PixelLab prayer-chain ring.",
+      "Softened center alpha and capped final alpha for combat readability.",
+      "Exported 256x256 transparent RGBA runtime PNG.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        24,
+        27,
+        233,
+        234
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.2687,
+      "max_alpha": 172,
+      "mean_alpha_all_pixels": 31.28,
+      "mean_alpha_visible_pixels": 116.34,
+      "center_64_mean_alpha": 85.17,
+      "center_64_max_alpha": 172,
+      "outer_ring_mean_alpha": 38.34
+    }
+  }
+}

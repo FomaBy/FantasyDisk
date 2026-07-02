@@ -205,23 +205,23 @@ func _physics_process(delta: float) -> void:
 	# SCRUM-498: окно «недавно стрелял» для off-screen threat-маркера дальнобоев.
 	if _threat_fire_marker_left > 0.0:
 		_threat_fire_marker_left = maxf(0.0, _threat_fire_marker_left - delta)
-	var player := _player()
-	if player == null:
+	var target := _combat_target()
+	if target == null:
 		velocity = _consume_knockback(delta)
 		move_and_slide()
 		return
 
-	var direction := player.global_position - global_position
+	var direction := target.global_position - global_position
 	var distance := direction.length()
 
-	if _update_elite_dash(delta, player, distance):
+	if _update_elite_dash(delta, target, distance):
 		move_and_slide()
 		global_position = _clamp_to_arena(global_position)
 		_update_movement_animation(delta)
-		_update_contact_damage(delta, player, distance)
+		_update_contact_damage(delta, target, distance)
 		return
 
-	if _update_elite_attack(delta, player, distance):
+	if _update_elite_attack(delta, target, distance):
 		velocity = Vector2.ZERO
 		move_and_slide()
 		_update_movement_animation(delta)
@@ -245,10 +245,10 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	global_position = _clamp_to_arena(global_position)
 	_update_movement_animation(delta)
-	_update_contact_damage(delta, player, distance)
-	_update_shooting(delta, player)
+	_update_contact_damage(delta, target, distance)
+	_update_shooting(delta, target)
 	_update_summoning(delta)
-	_update_elite_patterns(delta, player, distance)
+	_update_elite_patterns(delta, target, distance)
 
 
 func take_damage(amount: float, feedback := {}) -> void:
@@ -776,7 +776,7 @@ func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
 	if player_max_health > 0.0:
 		damage = minf(damage, player_max_health * 0.25)
-	return damage
+	return _outgoing_damage(damage)
 
 
 func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
@@ -1131,6 +1131,33 @@ func _player() -> Node2D:
 	return _cached_player
 
 
+func _combat_target() -> Node2D:
+	var taunt_target := _taunt_target()
+	if taunt_target != null:
+		return taunt_target
+	return _player()
+
+
+func _taunt_target() -> Node2D:
+	var statuses := StatusEffects.snapshot(self)
+	var status_raw = statuses.get("bastion_taunt", {})
+	if not (status_raw is Dictionary):
+		return null
+	var status: Dictionary = status_raw
+	var owner_id := int(status.get("taunt_owner", 0))
+	if owner_id <= 0:
+		return null
+	var owner := instance_from_id(owner_id) as Node2D
+	if owner == null or not is_instance_valid(owner) or owner.is_queued_for_deletion():
+		return null
+	if not owner.is_inside_tree() or not owner.has_method("take_damage"):
+		return null
+	var health_value = owner.get("health")
+	if health_value != null and float(health_value) <= 0.0:
+		return null
+	return owner
+
+
 func _update_shooting(delta: float, player: Node2D) -> void:
 	if not can_shoot or projectile_scene == null:
 		return
@@ -1147,7 +1174,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 	projectile_parent.add_child(projectile)
 
 	if projectile.has_method("setup"):
-		projectile.setup(global_position, player.global_position, projectile_damage, projectile_speed)
+		projectile.setup(global_position, player.global_position, _outgoing_damage(projectile_damage), projectile_speed)
 
 	_play_rig_action("shoot", player.global_position - global_position)
 	_shoot_cooldown = fire_interval
@@ -1212,10 +1239,15 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
 		if player_max_health > 0.0:
 			contact_hit = minf(contact_hit, player_max_health * 0.20)
+		contact_hit = _outgoing_damage(contact_hit)
 		player.take_damage(contact_hit, "contact")
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0
+
+
+func _outgoing_damage(amount: float) -> float:
+	return maxf(amount * StatusEffects.damage_multiplier(self), 0.0)
 
 
 func _play_contact_windup() -> void:

@@ -82,6 +82,23 @@
 - mechanics_extract (таблица возвышений и формулы), content_registry (ID),
   current_game_state (мета-цикл), CHANGELOG.
 
+## QA-Вердикт (архивная перепроверка, 2026-06-30)
+Статус: PASSED
+
+SCRUM-10 был принят повторным QA 2026-06-12; текущая игра позже намеренно
+переведена на 5-ступенчатые Возвышения задачей SCRUM-516 (QA PASSED, Jira
+`Готово`). Старый критерий "10 уровней" не переоткрывается: он superseded
+актуальным SCRUM-516.
+
+Проверено read-only на текущем `dev`:
+- `tests/meta_progression_smoke_test.gd` — PASS.
+- `tests/ascension_curve_balance_test.gd` — PASS.
+- `tests/runtime_smoke_progression_economy_test.gd` — PASS.
+- `tests/runtime_smoke_boss_elite_test.gd` — PASS.
+- `tests/runtime_smoke_ui_test.gd` — PASS.
+
+Disk cleanup: none created.
+
 ## QA-Вердикт (2026-06-12)
 Статус: FAILED (3 бага)
 

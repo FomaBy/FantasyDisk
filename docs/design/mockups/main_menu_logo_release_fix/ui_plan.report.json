@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "logo_art_layer",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        960,
+        360
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "disk_crest_decor",
+      "kind": "decor",
+      "rect": [
+        24,
+        28,
+        270,
+        290
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title_text_zone",
+      "kind": "text",
+      "rect": [
+        320,
+        82,
+        600,
+        154
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 92
+    },
+    {
+      "id": "title_glow_reserve",
+      "kind": "zone",
+      "rect": [
+        296,
+        52,
+        646,
+        214
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

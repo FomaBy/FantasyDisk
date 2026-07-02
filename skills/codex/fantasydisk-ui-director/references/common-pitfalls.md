@@ -3,26 +3,20 @@
 Hard-won lessons. Check these before generating UI art or integrating frames so
 the same mistakes do not repeat.
 
-## OpenAI image generation (gpt-image-2)
+## PixelLab MCP generation/export
 
-The bundled `generate_asset.py` now auto-handles these, but know them anyway:
-
-- **Minimum pixel budget.** Requests below ~1.0 MP fail with "below the current
-  minimum pixel budget". Use >= 1024x1024-area sizes. Tiny frames (512x512,
-  512x768, 1536x256) are rejected — the script auto-bumps them; do not hand-pick
-  sub-MP sizes.
-- **Aspect limit 1:3..3:1.** A very wide bar (e.g. 6:1 carousel) is rejected.
-  Generate at <=3:1 and let 9-slice stretch the middle, or compose the final
-  thin strip from a taller source.
-- **Divisible by 16.** Each side must be a multiple of 16.
-- **API key.** The key lives in `~/.codex/.env` (`export OPENAI_API_KEY=...`),
-  not the shell env. `generate_asset.py` now sources it automatically; if you
-  call the API another way, load it yourself.
-- **Real failures (billing/quota/moderation) => block or handoff.** Never
-  silently replace an API mockup with a hand-drawn substitute (SKILL rule 4).
-- **Batch frame sets with `--no-task`.** Each plain run creates a
-  `design_integrate_generated_*` task; a 4-frame batch spawns 4+ near-duplicate
-  tasks. Pass `--no-task` for all but one, or delete the duplicates afterward.
+- **Use PixelLab MCP for new art.** Characters, objects, props, frames, HUD,
+  icons, buttons, mockups, and production UI art must come from PixelLab MCP.
+- **Tool visibility.** If direct PixelLab tools are not exposed, use tool
+  discovery or the configured local MCP bridge. Never print or commit tokens,
+  Authorization headers, or raw config containing secrets.
+- **Unavailable PixelLab => block/handoff.** Do not silently replace a PixelLab
+  mockup with OpenAI Images, `image_gen`, old manual art, or `generate_asset.py`.
+- **Record provenance.** Save PixelLab source/project IDs, tags/names, prompts,
+  export dimensions, and source filenames in the task/spec or a nearby manifest.
+- **Export for the target shape.** Very wide bars and irregular frames should be
+  generated/exported at the real panel aspect when possible, or designed as
+  9-slice/composed pieces so Godot does not stretch ornament.
 
 ## Frame rendering in Godot — avoid distortion
 

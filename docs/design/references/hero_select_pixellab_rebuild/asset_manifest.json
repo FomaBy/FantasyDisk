@@ -1,0 +1,20 @@
+{
+  "task": "SCRUM-686",
+  "note": "Production-ready PixelLab Hero Select frame assets (textless). Canonical location is assets/sprites/ui/frames/hero_select_pixellab/. Layout coordinates live in docs/design/mockups/hero_select_pixellab_rebuild/zones.json.",
+  "frames": [
+    {"id": "background",            "path": "assets/sprites/ui/frames/hero_select_pixellab/background.png",            "size": [2560, 1440]},
+    {"id": "frame_title",          "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_title.png",          "size": [1840, 184],  "interior": [120, 42, 1600, 96]},
+    {"id": "button_back",          "path": "assets/sprites/ui/frames/hero_select_pixellab/button_back.png",          "size": [460, 148],   "interior": [70, 38, 320, 72]},
+    {"id": "frame_portrait",       "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_portrait.png",       "size": [600, 820],   "interior": [72, 94, 456, 620]},
+    {"id": "frame_dossier",        "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_dossier.png",        "size": [980, 820],   "interior": [92, 84, 796, 640]},
+    {"id": "frame_radar",          "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_radar.png",          "size": [780, 520],   "interior": [98, 57, 584, 406]},
+    {"id": "frame_ascension",      "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_ascension.png",      "size": [780, 270],   "interior": [74, 50, 632, 183]},
+    {"id": "button_choose",        "path": "assets/sprites/ui/frames/hero_select_pixellab/button_choose.png",        "size": [512, 118],   "interior": [70, 34, 372, 50]},
+    {"id": "frame_carousel",       "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_carousel.png",       "size": [2432, 330],  "interior": [110, 61, 2212, 220]},
+    {"id": "frame_hero_slot",      "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_hero_slot.png",      "size": [196, 220],   "interior": [18, 18, 160, 160]},
+    {"id": "button_carousel_left", "path": "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_left.png", "size": [132, 176]},
+    {"id": "button_carousel_right","path": "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_right.png","size": [132, 176]},
+    {"id": "button_asc_minus",     "path": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_minus.png",     "size": [132, 92]},
+    {"id": "button_asc_plus",      "path": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_plus.png",      "size": [132, 92]}
+  ]
+}

@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Священник» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: cancelled
+Статус: done (готово к QA — SCRUM-431 PixelLab Priest source/runtime pack pushed)
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -12,6 +12,12 @@ QA: in_progress (2026-06-15)
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## PM Unhold / Current Queue State (2026-06-30)
+
+Пользователь снял `user-hold` с задач в `К выполнению`: SCRUM-431 снова доступна
+для автономного Jira-pull/dispatch. Историческая отмена 2026-06-15 ниже
+сохранена как контекст, но больше не блокирует старт.
 
 ## Designer 2 Takeover (2026-06-15)
 
@@ -93,8 +99,8 @@ Acceptance notes:
   cell for idle/move rows; Animator must produce real idle and move/walk frames
   before SpriteFrames/runtime integration.
 
-## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: priest v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+## Исторический Design-Source QA Verdict (2026-06-15)
+Historical status: PASSED (Design-source: priest v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **priest v2 source прозрачный**: `priest_v2_source_clean` (1024²), `_idle_cell_512`
@@ -117,5 +123,134 @@ Acceptance (Design-source scope):
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
 
-## ОТМЕНЕНО 2026-06-15 (пользователь)
-Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+## Историческая отмена 2026-06-15 (перекрыта 2026-06-30)
+Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
+2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-431
+снова `new` / `К выполнению`.
+
+## Codex Design Claim Audit / Release — 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-431 и проверил mirror/Jira
+историю. Новую Design-генерацию начинать нельзя и не нужно: Design-source scope
+уже записан выше как PASSED by Designer 2, accepted source paths и QA evidence
+присутствуют в репозитории.
+
+Оставшаяся работа — Animator/runtime integration: реальные idle/move кадры,
+SpriteFrames, Godot import/runtime hookup и animation/runtime smoke. Jira
+возвращена в `К выполнению`; Design claim снят, stale `В работе` owner не
+оставлен. Для очереди это должно идти как Animator/Codex follow-up, а не как
+новая Design/Codex генерация.
+
+## Blocker Refresh — Codex Design 2026-06-30
+
+SCRUM-431 был повторно claim-first взят `codex-design-board-watcher` после PM
+readiness/unhold. Текущая Jira readiness уже требует не acceptance старого
+Designer 2 source handoff, а обязательный PixelLab character generation +
+8-direction idle/move source pack для `priest`.
+
+Повторная проверка показала, что PixelLab MCP bridge виден через локальный
+Codex config и отдаёт `tools/list` (`49` tools, включая `list_characters`,
+`create_character`, `animate_character`), но реальный вызов
+`list_characters(tags="priest")` возвращает:
+
+`401: Missing Authorization header. Please configure your MCP client with 'Authorization: Bearer YOUR_API_TOKEN'`.
+
+Дополнительное evidence: `mcp-remote` stderr указывает, что custom header
+настроен как `Authorization: ${AUTH_HEADER}`, но environment variable
+`AUTH_HEADER` не задана. Без валидного PixelLab auth нельзя получить или создать
+обязательный PixelLab source/motion pack для `priest`, а активные skills
+запрещают fallback на legacy OpenAI/manual assets без явного Jira override.
+
+Задача возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`; stale `В работе` owner не оставлен. Unblock: передать Codex
+runtime переменную `AUTH_HEADER` с валидным `Bearer ...` для PixelLab MCP либо
+добавить явный Jira override на non-PixelLab path / повторное использование
+старого Design-source handoff.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-431 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.
+
+## Codex Design/Animation Source Result — 2026-06-30
+
+Статус: review / ready for QA. Claimed as Design/Codex worker
+`codex-scrum-431-priest-pixellab` in separate worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-431-priest-pixellab`
+on branch `codex/scrum-431-priest-pixellab`.
+
+PixelLab MCP was used through the config-backed bridge; `get_balance` smoke
+PASS (`isError=false`), no secrets printed. Direct PixelLab tools were not
+exposed in this stale thread, so the bridge path from the skills was used.
+
+PixelLab source:
+- Character ID: `ed7db59e-0845-4218-b178-a56f948254b5`
+- Name: `FantasyDisk priest SCRUM-431`
+- Mode: v3 humanoid, 8 directions, low top-down
+- Animation: `walking-6-frames`, 6 frames per direction; one `north-east`
+  attempt failed under heavy load and the retried direction completed.
+- Note: PixelLab bundle endpoint stayed HTTP 423 because stale failed job
+  records remained; completed rotation/frame URLs from `get_character` were
+  downloaded directly.
+
+Delivered paths:
+- Source frames + manifest:
+  `assets/sprites/characters/pixellab/priest/`
+- Normalized runtime frames:
+  `assets/sprites/characters/full_frame/priest_pixellab/`
+- Godot SpriteFrames:
+  `assets/sprites/characters/priest_spriteframes.tres`
+- Hero Select / portrait source path:
+  `scripts/progression_data_characters.gd` →
+  `res://assets/sprites/characters/full_frame/priest_pixellab/priest_idle_south.png`
+- Contact preview:
+  `docs/design/previews/scrum431_priest_pixellab_contact.png`
+- QA report:
+  `build/qa/scrum431_priest_pixellab/scrum431_priest_pixellab_alpha_size_report.json`
+
+Normalization:
+- Source PNGs: 8 idle rotations + 48 move frames (`252x252`, RGBA).
+- Runtime PNGs: 8 idle rotations + 48 move frames (`512x512`, RGBA).
+- Transparent padding only was trimmed before nearest-neighbor x2 scale; no
+  character pixels cropped. Runtime frames are centered X and bottom-aligned
+  with 32px bottom padding.
+- Attack rows remain absent; weapon visuals still own combat actions.
+
+Checks:
+- PixelLab MCP config smoke `get_balance`: PASS.
+- `list_characters(tags="priest")`: PASS, no existing Priest found.
+- Asset count/alpha/manifest/SpriteFrames static check: PASS
+  (`56` source PNG, `56` runtime PNG, all 8 dirs, all directional rows).
+- Import sidecar UID check for new Priest PNGs: PASS (`113` unique UIDs).
+- `git diff --check` on task-owned text files: PASS.
+- Direct Godot:
+  `character_sprite_registry_alignment_test.gd`: PASS.
+- Direct Godot:
+  `animation_smoke_test.gd`: PASS / exit 0 after adding explicit
+  `ProgressionData` preload; the clean worktree lacks a full imported `.godot`
+  texture cache, so Godot printed unrelated missing `.ctex` resource errors
+  while still reaching `Animation smoke test passed.`
+- `tools/godot_gate.py ... animation_smoke_test.gd`: BLOCKED by fresh-worktree
+  `--import --quit` timeout after 360s, after pre-existing Dark Mage/Knight
+  skeleton duplicate-UID warnings. Orphaned headless import processes were
+  terminated. This appears to be import/cache setup debt, not a Priest
+  SpriteFrames assertion failure.
+
+Docs updated:
+- `CHANGELOG.md`
+- `docs/design/content_registry.md`
+- `docs/design/current_game_state.md`
+- `docs/design/systems/animation.md`
+- `docs/design/systems/visual_style_assets.md`
+
+Disk cleanup:
+- Removed/kept out of commit: transient `.godot/` cache at completion.
+- No PixelLab tokens or auth headers stored.

@@ -2,6 +2,13 @@ class_name HeroSelectConstants
 extends RefCounted
 
 const HERO_RADAR_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+const HERO_BASE_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+const HERO_BUILD_RELEVANCE_ORDER := ["primary", "secondary", "optional"]
+const HERO_BUILD_RELEVANCE_TITLES := {
+	"primary": "Основные атрибуты",
+	"secondary": "Второстепенные атрибуты",
+	"optional": "Дополнительные атрибуты",
+}
 const HERO_CLASS_COLORS := {
 	"berserk": Color(1.00, 0.38, 0.22, 0.82),
 	"soldier": Color(0.84, 0.74, 0.46, 0.82),

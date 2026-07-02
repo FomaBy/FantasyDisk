@@ -111,7 +111,9 @@ const BASE_STATS := {
 		"perception": 5.0,
 		"energy": 7.0,
 		"knowledge": 6.0,
-		"endurance": 2.0,
+		"endurance": 3.0,  # SCRUM-783: 2.0→3.0 — поднять пол выживаемости (EHP ~34.6→~50,
+		# уровень aoe-стекла elementalist/chemist). Остаётся самым хрупким aoe-классом, но
+		# не умирает от одного касания. survival-tier/damage-таргеты НЕ затронуты (отдельный label).
 		"leadership": 5.0,
 	},
 	"guitarist": {
@@ -147,7 +149,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тактика, залпы и контроль позиции.",
 		"strengths": "дальность, стабильность, контроль.",
 		"weaknesses": "нужна линия огня.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/soldier/soldier_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
 	},
 	"thief": {
 		"id": "thief",
@@ -155,7 +157,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Уловки, рывки и карманная экономика.",
 		"strengths": "мобильность, крит, золото.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/thief/thief_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
@@ -163,7 +165,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Смена стихий, орбиты и разломы.",
 		"strengths": "области поражения, контроль зон, взрывной урон.",
 		"weaknesses": "хрупкий, требует позицию.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist/elementalist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
 	},
 	"sniper": {
 		"id": "sniper",
@@ -171,7 +173,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Точные выстрелы, метки и зоны поражения.",
 		"strengths": "дальность, одиночные цели, фокус элиток.",
 		"weaknesses": "слабее против плотной толпы рядом.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/sniper/sniper_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_idle_south.png",
 	},
 	"priest": {
 		"id": "priest",
@@ -179,7 +181,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Благословения, печати и священное восстановление.",
 		"strengths": "лечение, защита, стабильность.",
 		"weaknesses": "меньше взрывного урона по одиночной цели.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/priest/priest_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/priest_pixellab/priest_idle_south.png",
 	},
 	"biologist": {
 		"id": "biologist",
@@ -187,7 +189,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Образцы, споры и симбиотические реакции.",
 		"strengths": "контроль биомассой, периодический урон, адаптация.",
 		"weaknesses": "нужны цели для цепных реакций.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png",
 	},
 	"robot": {
 		"id": "robot",
@@ -195,7 +197,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
 		"strengths": "выживаемость, контроль, стабильный урон.",
 		"weaknesses": "медленный, зависит от позиционирования.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/robot/robot_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/robot_pixellab/robot_idle_south.png",
 	},
 	"engineer": {
 		"id": "engineer",
@@ -203,7 +205,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Мастерская устройств, дронов и минных сеток.",
 		"strengths": "устройства, зона контроля, поддержка.",
 		"weaknesses": "нужно заранее ставить позицию.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/engineer/engineer_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/engineer_pixellab/engineer_idle_south.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
@@ -211,7 +213,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Области поражения, лучи и проклятия.",
 		"strengths": "площадь, периодический урон, пробивание.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
 	},
 	"guitarist": {
 		"id": "guitarist",
@@ -219,49 +221,49 @@ const CHARACTER_CONFIGS := {
 		"description": "Ритм, волны и контроль.",
 		"strengths": "отталкивание, области поражения, темп.",
 		"weaknesses": "слабее по боссам.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist/guitarist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png",
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",
 		"description": "Криты, скорость и яд.",
 		"strengths": "криты, уворот, темп.",
 		"weaknesses": "мало здоровья.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/assassin/assassin_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
 		"description": "Дальние линии и ловушки.",
 		"strengths": "дальность, пробивание.",
 		"weaknesses": "плох вблизи.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/ranger/ranger_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
 		"description": "Лечение через урон.",
 		"strengths": "восстановление, яд, стабильность.",
 		"weaknesses": "низкий взрывной урон.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/doctor/doctor_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",
 		"description": "Взрывы и ядовитые зоны.",
 		"strengths": "зоны, периодический урон, области поражения.",
 		"weaknesses": "хрупкий.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/chemist/chemist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
 	},
 	"knight": {
 		"id": "knight", "title": "Рыцарь",
 		"description": "Танк, копье и щит.",
 		"strengths": "здоровье, защита, контроль.",
 		"weaknesses": "медленный.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/knight/knight_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/knight_pixellab/knight_idle_south.png",
 	},
 	"druid": {
 		"id": "druid", "title": "Друид",
 		"description": "Стая, тернии и тотемы.",
 		"strengths": "призывы, зоны.",
 		"weaknesses": "слаб один.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/druid/druid_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png",
 	},
 }
 
@@ -694,4 +696,73 @@ const ATTRIBUTE_PRIORITY_REASONS := {
 	"knowledge": "усиливает DoT, лечение, регенерацию и стабильность билда",
 	"endurance": "дает HP, защиту, поглощение и устойчивость под давлением",
 	"leadership": "усиливает призывы, эхо-оружие, поддержку и ауры",
+}
+
+# SCRUM-695: КАНОНИЧЕСКИЙ реестр боевых атрибутов — единственный источник правды для
+# набора прокачиваемых атрибутов (id, RU-имя, иконка-папка, тип значения). Раньше
+# список фактически дублировался в трёх местах (папки иконок, LEVEL_UP_REWARDS и
+# маппинг reward_attribute_dependency). Теперь LEVEL_UP_REWARDS ссылается на эти id
+# через поле "attr", а матрица релевантности ниже строится по этим же id.
+#   value_type: "percent" — множитель/доля, "flat" — плоская добавка.
+#   icon — имя папки в docs/design/references/icons/attributes/ (трассируемость арта).
+const ATTRIBUTE_REGISTRY := [
+	{"id": "damage", "name": "Урон", "icon": "damage", "value_type": "percent"},
+	{"id": "attack_speed", "name": "Скорость атаки", "icon": "attack_speed", "value_type": "percent"},
+	{"id": "max_health", "name": "Макс. здоровье", "icon": "health_point", "value_type": "flat"},
+	{"id": "move_speed", "name": "Скорость движения", "icon": "move_speed", "value_type": "percent"},
+	{"id": "aoe_radius", "name": "Радиус области", "icon": "aoe_radius", "value_type": "percent"},
+	{"id": "pickup_radius", "name": "Радиус подбора", "icon": "pickup_radius", "value_type": "flat"},
+	{"id": "defense", "name": "Защита", "icon": "defense", "value_type": "percent"},
+	{"id": "magic_focus", "name": "Магический фокус", "icon": "magic_damage", "value_type": "percent"},
+	{"id": "knockback", "name": "Отталкивание", "icon": "knockback_power", "value_type": "percent"},
+	{"id": "crit_chance", "name": "Шанс крита", "icon": "crit_chance", "value_type": "percent"},
+	{"id": "crit_damage", "name": "Урон крита", "icon": "crit_damage_multiplier", "value_type": "percent"},
+	{"id": "dodge", "name": "Уклонение", "icon": "dodge", "value_type": "percent"},
+	{"id": "range", "name": "Дальность атаки", "icon": "attack_range", "value_type": "percent"},
+	{"id": "dot_damage", "name": "Периодический урон", "icon": "dot_damage", "value_type": "flat"},
+	{"id": "dot_speed", "name": "Скорость тиков", "icon": "dot_speed", "value_type": "flat"},
+	{"id": "projectile_speed", "name": "Скорость снарядов", "icon": "projectile_speed", "value_type": "flat"},
+	{"id": "aura_radius", "name": "Радиус ауры", "icon": "aura_radius", "value_type": "flat"},
+	{"id": "buff_power", "name": "Сила поддержки", "icon": "buff_power", "value_type": "percent"},
+	{"id": "summon_amount", "name": "Сила призыва", "icon": "summon_amount", "value_type": "flat"},
+	{"id": "absorb", "name": "Поглощение", "icon": "absorb", "value_type": "flat"},
+	{"id": "regeneration", "name": "Регенерация", "icon": "regeneration", "value_type": "flat"},
+	{"id": "vampiric_amount", "name": "Вампиризм (лечение)", "icon": "vampiric_amount", "value_type": "flat"},
+	{"id": "vampiric_chance", "name": "Вампиризм (шанс)", "icon": "vampiric_chance", "value_type": "percent"},
+	{"id": "ultimate_power", "name": "Сила ультимейта", "icon": "ultimate_multiplier", "value_type": "percent"},
+]
+
+# SCRUM-695: ПРЯМАЯ матрица релевантности (атрибут × 17 классов), первоисточник
+# полезности атрибута для класса (заменяет косвенный расчёт через 8 базовых
+# характеристик в level-up-наградах). ЖЁСТКИЙ ИНВАРИАНТ по каждому атрибуту:
+# ровно 2 primary + 8 secondary + 7 optional = 17 классов (проверяется
+# tests/attribute_relevance_test.gd). optional выводится как «все остальные».
+# primary = сигнатурный геймплей класса; secondary = ощутимо полезно; optional =
+# профильно мимо. Раскладка осмысленна (берсерк — урон/отталкивание/вампиризм,
+# снайпер — крит/дальность, жрец — защита/аура/поддержка, друид — аура/призыв/реген).
+const ATTRIBUTE_RELEVANCE := {
+	"damage": {"primary": ["berserk", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "chemist", "knight"]},
+	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "doctor", "chemist"]},
+	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "thief", "sniper", "priest", "engineer", "assassin", "ranger", "doctor"]},
+	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "elementalist", "sniper", "biologist", "dark_mage", "assassin", "chemist", "knight"]},
+	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "thief", "sniper", "priest", "robot", "engineer", "dark_mage", "ranger"]},
+	"pickup_radius": {"primary": ["robot", "engineer"], "secondary": ["berserk", "thief", "elementalist", "sniper", "assassin", "ranger", "chemist", "knight"]},
+	"defense": {"primary": ["knight", "priest"], "secondary": ["thief", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
+	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["sniper", "priest", "robot", "engineer", "assassin", "ranger", "doctor", "chemist"]},
+	"knockback": {"primary": ["berserk", "guitarist"], "secondary": ["soldier", "elementalist", "sniper", "priest", "biologist", "chemist", "knight", "druid"]},
+	"crit_chance": {"primary": ["thief", "sniper"], "secondary": ["berserk", "soldier", "biologist", "robot", "dark_mage", "assassin", "ranger", "druid"]},
+	"crit_damage": {"primary": ["sniper", "assassin"], "secondary": ["berserk", "soldier", "thief", "robot", "dark_mage", "guitarist", "ranger", "druid"]},
+	"dodge": {"primary": ["thief", "assassin"], "secondary": ["berserk", "soldier", "sniper", "biologist", "guitarist", "ranger", "doctor", "druid"]},
+	"range": {"primary": ["sniper", "ranger"], "secondary": ["soldier", "elementalist", "priest", "biologist", "engineer", "dark_mage", "chemist", "druid"]},
+	"dot_damage": {"primary": ["biologist", "dark_mage"], "secondary": ["elementalist", "priest", "engineer", "guitarist", "assassin", "doctor", "chemist", "druid"]},
+	"dot_speed": {"primary": ["biologist", "chemist"], "secondary": ["elementalist", "priest", "engineer", "dark_mage", "guitarist", "assassin", "doctor", "druid"]},
+	"projectile_speed": {"primary": ["soldier", "ranger"], "secondary": ["thief", "elementalist", "sniper", "robot", "engineer", "dark_mage", "guitarist", "chemist"]},
+	"aura_radius": {"primary": ["priest", "druid"], "secondary": ["soldier", "thief", "biologist", "robot", "engineer", "guitarist", "doctor", "knight"]},
+	"buff_power": {"primary": ["priest", "engineer"], "secondary": ["berserk", "soldier", "biologist", "robot", "guitarist", "doctor", "knight", "druid"]},
+	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["elementalist", "priest", "biologist", "robot", "dark_mage", "guitarist", "doctor", "knight"]},
+	"absorb": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "priest", "biologist", "engineer", "guitarist", "doctor", "druid"]},
+	"regeneration": {"primary": ["doctor", "druid"], "secondary": ["berserk", "soldier", "priest", "biologist", "robot", "engineer", "guitarist", "knight"]},
+	"vampiric_amount": {"primary": ["berserk", "doctor"], "secondary": ["soldier", "thief", "biologist", "robot", "guitarist", "assassin", "knight", "druid"]},
+	"vampiric_chance": {"primary": ["assassin", "doctor"], "secondary": ["berserk", "soldier", "thief", "biologist", "robot", "guitarist", "knight", "druid"]},
+	"ultimate_power": {"primary": ["elementalist", "guitarist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "doctor", "druid"]},
 }

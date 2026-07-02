@@ -1,7 +1,14 @@
 # bug(SCRUM-502): нанесённый урон (damage_dealt) никогда не собирается — на экране итогов всегда 0
 
 Jira: SCRUM-502 (переоткрыт QA) · Роль: bug · Контур: claude · Приоритет: P2 · foma
-Статус: Исправлено — на Контроль качества (claude-backend, 2026-06-28)
+Статус: done — исправлено (claude-backend, 2026-06-28), QA PASSED
+
+## QA-Вердикт
+
+Статус: PASSED
+- 2026-06-28 17:51 (claude-backend-3): фикс 2fe432b4 на месте в origin/dev — хук в единой точке схода scripts/enemy.gd:271-272, после `health -= final_amount` репортит в current_scene.add_run_damage_dealt.
+- 2026-06-28 19:09 (codex-qa-502): mirror-вердикт на fresh origin/dev worktree b57410a9, Windows Godot 4.7 — PASS; runtime_smoke_test.gd:4327 проверяет реальный бой (не инжект).
+- 2026-07-02 (PM, ревизия беклога): Jira-переход SCRUM-502 в «Готово» доведён (дрейфовал из-за нестандартного слова статуса в этом файле), map зафиксирован.
 
 ## Решение (claude-backend, 2026-06-28)
 Подключил `add_run_damage_dealt` в ЕДИНОЙ точке схода всех источников урона по врагу —

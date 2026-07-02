@@ -1,6 +1,6 @@
 ---
 name: content-zone-image-compositor
-description: Plan, generate, and finish AI-created UI elements, game interface panels, HUD/menu frames, posters, infographics, cards, banners, and report images using content zones defined before image generation. Use when text, numbers, labels, icons, portraits, lists, buttons, scroll areas, charts, or other content must fit into exact coordinates without covering decorative frames, ornaments, borders, or artwork. This skill first estimates layout/fit/scrollbar needs from the source request, requires a ready/revise decision, then prompts image generation to preserve strict content zones, composites content only inside those zones, and verifies the result with debug overlays and fit reports.
+description: Plan, generate, and finish PixelLab MCP-created UI elements, game interface panels, HUD/menu frames, posters, infographics, cards, banners, and report images using content zones defined before image generation. Use when text, numbers, labels, icons, portraits, lists, buttons, scroll areas, charts, or other content must fit into exact coordinates without covering decorative frames, ornaments, borders, or artwork. This skill first estimates layout/fit/scrollbar needs from the source request, requires a ready/revise decision, then prompts PixelLab generation to preserve strict content zones, composites content only inside those zones, and verifies the result with debug overlays and fit reports.
 ---
 
 # Content Zone Image Compositor
@@ -25,7 +25,7 @@ If content does not fit, shorten content, reduce font size, or regenerate the im
 1. **Parse the request into content inventory.** List every text block, button, icon, portrait, stat row, list item, tab, scrollbar, and dynamic state that must exist.
 2. **Plan geometry before art.** Create a `ui_plan.json` or `layout.json` with exact rectangles, minimum sizes, gaps, scroll behavior, and content zones.
 3. **Run the planning gate.** Use `scripts/validate_ui_layout_plan.py` for UI plans. Continue only if the report says `decision: ready_for_image`. If it says `revise_task`, adjust content, zone sizes, scroll rules, or task scope before generation.
-4. **Generate frame/layout layer.** Prompt the image model to create empty brutal dark fantasy / dragon specific / D&D interface art around the approved coordinates. Explicitly forbid text, numbers, pseudo text, watermarks, and filled content in those areas.
+4. **Generate frame/layout layer.** Use PixelLab MCP to create empty brutal dark fantasy / dragon specific / D&D interface art around the approved coordinates. Explicitly forbid text, numbers, pseudo text, watermarks, and filled content in those areas.
 5. **Inspect the image.** Check that the generated artwork left the planned zones visually usable. If important zones are blocked by ornament/art, regenerate or revise the plan.
 6. **Composite content.** Run `scripts/render_content_zones.py` with the generated image and `layout.json`.
 7. **Verify.** Review the final image and the debug overlay. The render report must show `ok: true`; every text block must fit inside its zone.
@@ -35,7 +35,7 @@ For detailed UI planning rules, read `references/ui_element_workflow.md`.
 
 ## Image Generation Prompt Pattern
 
-Use the planned zones directly in the prompt. Example:
+Use the planned zones directly in the PixelLab prompt/spec. Example:
 
 ```text
 Create a 1920x1080 dark fantasy / dragon specific / D&D UI frame layer with no text.
@@ -50,6 +50,11 @@ Style: strict, brutal and epic dark fantasy; dragon-forged metal, black stone, w
 ```
 
 For FantasyDisk UI/report work, also apply the global frame rule: content belongs only in the empty inner area of a frame, never on the ornament.
+
+If PixelLab MCP is unavailable, read `../pixellab_mcp_auth.md` and run the
+config-based smoke before blocking or handing off the task. Do not use OpenAI
+Images, built-in image generation, old manual art, or legacy asset scripts as a
+fallback for FantasyDisk UI/HUD/frame generation.
 
 ## Planning Gate
 

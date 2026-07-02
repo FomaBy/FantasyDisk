@@ -1,0 +1,60 @@
+{
+  "canvas": {
+    "width": 960,
+    "height": 360
+  },
+  "policy": {
+    "min_gap": 24,
+    "allow_overlap": false
+  },
+  "content": {
+    "title": "Fantasy Disk"
+  },
+  "elements": [
+    {
+      "id": "logo_art_layer",
+      "kind": "panel",
+      "x": 0,
+      "y": 0,
+      "w": 960,
+      "h": 360,
+      "min_w": 720,
+      "min_h": 270,
+      "collision": false
+    },
+    {
+      "id": "disk_crest_decor",
+      "kind": "decor",
+      "parent": "logo_art_layer",
+      "x": 24,
+      "y": 28,
+      "w": 270,
+      "h": 290,
+      "collision": false
+    },
+    {
+      "id": "title_text_zone",
+      "kind": "text",
+      "parent": "logo_art_layer",
+      "content_zone": true,
+      "x": 320,
+      "y": 82,
+      "w": 600,
+      "h": 154,
+      "text_key": "title",
+      "max_font": 118,
+      "min_font": 72,
+      "collision": false
+    },
+    {
+      "id": "title_glow_reserve",
+      "kind": "zone",
+      "parent": "logo_art_layer",
+      "x": 296,
+      "y": 52,
+      "w": 646,
+      "h": 214,
+      "collision": false
+    }
+  ]
+}

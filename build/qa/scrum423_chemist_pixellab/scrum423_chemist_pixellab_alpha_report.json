@@ -1,0 +1,979 @@
+{
+  "character_id": "chemist",
+  "pixellab_character_id": "c7fe44d3-1f15-45a1-b762-b2862833b151",
+  "source_dir": "assets/sprites/characters/pixellab/chemist",
+  "runtime_dir": "assets/sprites/characters/full_frame/chemist_pixellab",
+  "idle_directions": {
+    "south": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        176,
+        134,
+        324,
+        378
+      ]
+    },
+    "south-east": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        178,
+        134,
+        326,
+        376
+      ]
+    },
+    "east": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        176,
+        132,
+        320,
+        382
+      ]
+    },
+    "north-east": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        178,
+        134,
+        292,
+        376
+      ]
+    },
+    "north": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        188,
+        136,
+        300,
+        374
+      ]
+    },
+    "north-west": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        180,
+        134,
+        320,
+        368
+      ]
+    },
+    "west": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        202,
+        134,
+        314,
+        376
+      ]
+    },
+    "south-west": {
+      "size": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "nontransparent_bbox": [
+        202,
+        134,
+        324,
+        382
+      ]
+    }
+  },
+  "move_directions": {
+    "south": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          138,
+          318,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          138,
+          318,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          140,
+          316,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          196,
+          138,
+          330,
+          388
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          192,
+          138,
+          328,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          138,
+          328,
+          380
+        ]
+      }
+    ],
+    "south-east": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          136,
+          308,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          188,
+          134,
+          328,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          190,
+          134,
+          324,
+          370
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          136,
+          318,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          184,
+          134,
+          326,
+          384
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          134,
+          322,
+          384
+        ]
+      }
+    ],
+    "east": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          182,
+          136,
+          304,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          182,
+          138,
+          332,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          182,
+          138,
+          318,
+          380
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          176,
+          130,
+          324,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          176,
+          132,
+          322,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          176,
+          130,
+          322,
+          378
+        ]
+      }
+    ],
+    "north-east": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          138,
+          306,
+          376
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          188,
+          138,
+          316,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          188,
+          138,
+          312,
+          378
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          178,
+          134,
+          296,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          178,
+          134,
+          308,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          178,
+          134,
+          300,
+          372
+        ]
+      }
+    ],
+    "north": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          130,
+          312,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          134,
+          314,
+          376
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          194,
+          130,
+          316,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          200,
+          136,
+          312,
+          370
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          200,
+          134,
+          314,
+          366
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          200,
+          134,
+          312,
+          370
+        ]
+      }
+    ],
+    "north-west": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          184,
+          136,
+          308,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          138,
+          308,
+          370
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          186,
+          142,
+          320,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          204,
+          134,
+          310,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          182,
+          134,
+          320,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          180,
+          134,
+          320,
+          374
+        ]
+      }
+    ],
+    "west": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          204,
+          138,
+          318,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          174,
+          140,
+          324,
+          370
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          190,
+          142,
+          320,
+          372
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          208,
+          132,
+          330,
+          376
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          206,
+          132,
+          330,
+          374
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          206,
+          132,
+          330,
+          374
+        ]
+      }
+    ],
+    "south-west": [
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          212,
+          134,
+          330,
+          380
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          202,
+          136,
+          332,
+          382
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          206,
+          136,
+          334,
+          384
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          212,
+          134,
+          336,
+          386
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          200,
+          132,
+          334,
+          386
+        ]
+      },
+      {
+        "size": [
+          512,
+          512
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "nontransparent_bbox": [
+          212,
+          132,
+          336,
+          386
+        ]
+      }
+    ]
+  },
+  "errors": []
+}

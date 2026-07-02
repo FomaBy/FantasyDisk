@@ -61,3 +61,8 @@
 
 ## Зависимости
 - Старт после готовности фаз атак в backend-задаче (или параллельно по согласованным именам состояний).
+
+## QA-Вердикт
+Статус: PASSED
+
+Легаси-задача (старт 2026-06-11), работа выполнена и в игре: enemy.gd подключает backend-фазы windup/strike/recover к cutout_rig_2d.gd через animation variant, phase-aware body poses для Iron Bastion/Night Stalker/Plague Prophet/Shard Marshal. Повторно всплыла в QA из-за board-sync revert (в .md «Статус: done» без блока ## QA-Вердикт/Статус: PASSED). QA-проверка 2026-06-30: tests/animation_smoke_test.gd PASS на origin/dev. Блок дописан, чтобы остановить дрейф.

@@ -1,22 +1,22 @@
 ---
 name: fantasydisk-pixellab-animation-integrator
-description: "Use when integrating PixelLab-created FantasyDisk character animation packs into Godot: fetching a character by PixelLab tag/name, importing 8-direction idle and movement frames, normalizing PNGs into full-frame runtime assets, rebuilding SpriteFrames, wiring directional player movement, and making the Hero Select character preview rotate clockwise through the same directional frames."
+description: "Use when creating, fetching, or integrating PixelLab MCP-created FantasyDisk character packs and animation/source frames into Godot: characters, monsters, bosses, summons, 8-direction idle/movement frames, normalized full-frame runtime assets, SpriteFrames, directional movement, and Hero Select rotating previews."
 ---
 
 # FantasyDisk PixelLab Animation Integrator
 
 ## Purpose
 
-Apply PixelLab animation packs to existing FantasyDisk characters. This skill replaces the old rig/sprite-sheet animation director for character runtime integration; prefer PixelLab-authored idle and movement frames over generating or slicing new motion.
+Create, fetch, and apply PixelLab character/creature packs to FantasyDisk characters, monsters, bosses, and summons. This skill replaces the old rig/sprite-sheet animation director for character runtime integration; PixelLab MCP is mandatory for new character source art and motion.
 
 ## Workflow
 
 1. Sync the repo before work: check branch/dirty tree, fetch/pull `dev`, and keep unrelated WIP out of the commit.
 2. Read the FantasyDisk onboarding/process docs required by `AGENTS.md` for animation, visual, UI, and gameplay-adjacent changes.
-3. Locate the PixelLab character through the PixelLab MCP server. Prefer `list_characters` filtered by tag/name, then `get_character` for the selected ID.
-4. Confirm the pack has 8 directional idle poses and 8 directional movement animations:
+3. Locate or create the PixelLab character through the PixelLab MCP server. Prefer existing assets by tag/name first; create/revise in PixelLab only when the task asks for new source art.
+4. Confirm the pack has 8 directional idle poses and, when runtime movement is required, 8 directional movement animations:
    `south`, `south-east`, `east`, `north-east`, `north`, `north-west`, `west`, `south-west`.
-5. Download source PNGs into `assets/sprites/characters/pixellab/<character_id>/`.
+5. Download/export source PNGs into `assets/sprites/characters/pixellab/<character_id>/`.
    Store `manifest.json` with PixelLab IDs, directions, frame counts, and source file names. Do not store API tokens or Authorization headers.
 6. Normalize source frames into full-frame runtime PNGs under `assets/sprites/characters/full_frame/<character_id>_pixellab/`.
    Use transparent 512x512 canvases, nearest-neighbor scaling, centered x, bottom-aligned y, and no crop.
@@ -35,7 +35,12 @@ Apply PixelLab animation packs to existing FantasyDisk characters. This skill re
 
 ## PixelLab Access
 
-Use PixelLab MCP tools when available in the chat. If the MCP tools are not exposed but the local Codex config already defines the PixelLab MCP server, it is acceptable to call `npx mcp-remote` locally for JSON-RPC calls. Never print or commit the bearer token. If direct image URLs return 403, retry downloads with a browser-like `User-Agent`.
+Use PixelLab MCP tools when available in the chat. If the MCP tools are not exposed but the local Codex config already defines the PixelLab MCP server, read `../pixellab_mcp_auth.md` and call the configured MCP bridge locally for JSON-RPC calls. Never print or commit the bearer token, Authorization header, or raw config containing secrets. If direct image URLs return 403, retry downloads with a browser-like `User-Agent`.
+
+Before marking a character/animation task blocked by PixelLab auth, read
+`../pixellab_mcp_auth.md` and run the config-based smoke there. Stale tool
+discovery in an already-open thread or a missing ambient shell `AUTH_HEADER` is
+not enough evidence for `blocked` / `pixellab-blocked`.
 
 Keep PixelLab source and runtime assets separate:
 
@@ -75,3 +80,4 @@ The work is complete only when:
 - Hero Select preview rotates clockwise with live frames, not a static PNG.
 - Source PixelLab files, runtime files, SpriteFrames, config, docs, and tests are committed.
 - Focused animation and Hero Select smoke tests pass.
+- The task/Jira result states the PixelLab MCP source ID/tag/name and confirms no legacy/manual/non-PixelLab character art path was used for new source art.

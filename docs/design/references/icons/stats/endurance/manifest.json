@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "stats",
+  "id": "endurance",
+  "runtime_target": "stat_endurance.png",
+  "source_image": "endurance_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a steel heart shield with frost-white cracks and resilient glow, toughness and survival.",
+  "created_at": "2026-06-30T08:36:46.459781+00:00",
+  "alpha_clean_image": "endurance_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/stats/stat_endurance.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "409c9f32ab0a613cc1a1ff03a1c6b809ada2de852aa9c3d30e9a6052141bd66e",
+  "alpha_nonzero_pixels": 17111,
+  "content_bbox": [
+    47,
+    37,
+    209,
+    219
+  ],
+  "postprocessed_at": "2026-06-30T09:11:16.467016+00:00"
+}

@@ -1,4 +1,4 @@
 interface:
   display_name: "FantasyDisk Item Icon Generator"
-  short_description: "Stable FantasyDisk item icon workflow"
-  default_prompt: "Use $fantasydisk-item-icon-generator to create or audit a transparent FantasyDisk artifact, stat/attribute, or weapon icon workflow with canonical names and QA evidence."
+  short_description: "PixelLab MCP item icon workflow"
+  default_prompt: "Use $fantasydisk-item-icon-generator to create or audit a transparent FantasyDisk artifact, stat/attribute, or weapon icon workflow through PixelLab MCP with canonical names and QA evidence."

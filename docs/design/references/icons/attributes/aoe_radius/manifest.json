@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "aoe_radius",
+  "runtime_target": "attr_aoe_radius.png",
+  "source_image": "aoe_radius_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a fiery circular blast ring expanding around a central rune-stone, area radius.",
+  "created_at": "2026-06-30T08:36:46.465896+00:00",
+  "alpha_clean_image": "aoe_radius_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_aoe_radius.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "61bcc4f0e035a7af53d68d4adef6327f78195c103ecac9cb5779ed82c2a7368a",
+  "alpha_nonzero_pixels": 18058,
+  "content_bbox": [
+    37,
+    37,
+    219,
+    219
+  ],
+  "postprocessed_at": "2026-06-30T09:11:30.078028+00:00"
+}

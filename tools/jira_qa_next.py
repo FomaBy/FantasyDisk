@@ -99,7 +99,7 @@ def main():
 
     # JQL по имени статуса с кириллицей ненадёжен → берём не-Done и фильтруем по имени в Python.
     jql = f'project=SCRUM AND sprint={sid} AND statusCategory != Done ORDER BY created ASC'
-    r = api("/rest/api/3/search/jql?maxResults=50&fields=summary,status,labels,description&jql="
+    r = api("/rest/api/3/search/jql?maxResults=100&fields=summary,status,labels,description&jql="
             + urllib.parse.quote(jql)) or {}
     cands = [i for i in r.get("issues", []) if i["fields"]["status"]["name"] == REVIEW_STATUS]
     cands.sort(key=lambda i: next(

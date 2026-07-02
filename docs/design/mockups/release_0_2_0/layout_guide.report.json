@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "version_badge",
+      "rect": [
+        120,
+        82,
+        560,
+        74
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        120,
+        430,
+        860,
+        118
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "bullets",
+      "rect": [
+        120,
+        588,
+        905,
+        310
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        120,
+        950,
+        770,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

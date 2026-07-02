@@ -1,0 +1,54 @@
+{
+  "issue": "SCRUM-763",
+  "asset": "sniper_deadeye_rifle attack VFX",
+  "weapon_id": "sniper_deadeye_rifle",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle.png",
+  "source_files": [
+    "sniper_deadeye_rifle_pixellab_source_raw.png",
+    "sniper_deadeye_rifle_pixellab_source.png",
+    "sniper_deadeye_rifle_pixellab_candidate_a_raw.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/sniper_deadeye_rifle_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "574b078d-d81f-4ccd-aa7c-c7edda19d5ba",
+    "unused_candidate_id": "7c6e6f3e-11f1-4919-b81b-8f15b6711f03",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/574b078d-d81f-4ccd-aa7c-c7edda19d5ba/download",
+    "created": "2026-07-01 18:11",
+    "size": "256x256px",
+    "view": "low top-down",
+    "background": "transparent metadata; downloaded PNG required corner-color alpha cleanup",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 removed the stale OpenAI Images-only blocker and instructed this worker to use PixelLab MCP via fantasydisk-asset-generator. No OpenAI Images, image_gen, manual drawing, scene edits, gameplay edits, or shared runtime changes were used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab selected source PNG to the task reference folder.",
+      "Saved unused first PixelLab candidate for audit trail only.",
+      "Created alpha-clean accepted source PNG from PixelLab output by removing flat preview background and a tiny bottom-right preview/noise island.",
+      "Composited canonical weapon PNG as a low-opacity spectral rifle ghost under the PixelLab-generated lockshot beam.",
+      "Capped final alpha for combat readability and fitted the visible layer inside the 256px canvas to avoid clipped muzzle flare.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        8,
+        78,
+        248,
+        156
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.1286,
+      "max_alpha": 176,
+      "mean_alpha_all_pixels": 14.35,
+      "mean_alpha_visible_pixels": 111.33,
+      "center_64_mean_alpha": 56.49,
+      "center_64_max_alpha": 154,
+      "outer_ring_mean_alpha": 119.12
+    }
+  }
+}

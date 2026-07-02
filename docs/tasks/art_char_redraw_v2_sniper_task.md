@@ -1,17 +1,85 @@
 # ART/ANIM: Перерисовать «Снайпер» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: cancelled
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-433
-QA: in_progress (2026-06-15)
+Контур: Codex
+Owner: Codex Animator worker
+Thread/Worker: codex-animator-auto
+Locked paths: `assets/sprites/characters/pixellab/sniper/`, `assets/sprites/characters/full_frame/sniper_pixellab/`, `assets/sprites/characters/sniper_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
+QA: ready for QA after Codex Animator integration on 2026-07-01
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## PM/Codex Reactivation — PixelLab Final Runtime Pass (2026-07-01)
+
+Директива пользователя 2026-07-01: не все игровые персонажи находятся в новой
+PixelLab-графике. SCRUM-433 переиспользуется как актуальный ticket для `sniper`
+вместо создания дубля.
+
+Актуальный scope: Codex Design main через `fantasydisk-pixellab-animation-integrator`
+создаёт/интегрирует PixelLab 8-direction idle + 6-frame move/walk pack по текущим
+референсам `docs/design/references/characters_v2/sniper/sniper_v2_source_clean.png`,
+`docs/design/references/characters/sniper/sniper_sheet_source.png` и
+`assets/sprites/characters/sniper.png`.
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## Codex Animator Claim — 2026-07-01
+
+SCRUM-433 взят `codex-animator-auto` через Jira-pull для серийной Animator/runtime
+интеграции после QA-возврата. Scope этого pass: влить уже созданный PixelLab
+Sniper pack из `origin/codex/scrum-433-sniper-pixellab` в dev-based worktree,
+подключить live `sprite_path`, обновить docs/tests/evidence, прогнать focused
+animation/Hero Select smokes, закоммитить и запушить в `origin/dev`.
+
+Locked paths:
+- `assets/sprites/characters/pixellab/sniper/`
+- `assets/sprites/characters/full_frame/sniper_pixellab/`
+- `assets/sprites/characters/sniper_spriteframes.tres`
+- `scripts/progression_data_characters.gd`
+- character docs/tests/evidence for SCRUM-433
+
+Next verification step: import existing PixelLab pack, wire Sniper portrait/runtime
+to `sniper_pixellab/sniper_idle_south.png`, then run focused animation and Hero
+Select registry checks.
+
+## Codex Animator Result — 2026-07-01
+
+SCRUM-433 Animator/runtime integration completed and ready for QA. The previously
+created PixelLab Sniper pack from `origin/codex/scrum-433-sniper-pixellab`
+(`PixelLab character_id: 74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) is now present
+in the dev-based worktree and wired as the live Sniper runtime.
+
+Implemented:
+- Source pack: `assets/sprites/characters/pixellab/sniper/` (56 PNG frames + manifest/import metadata).
+- Runtime pack: `assets/sprites/characters/full_frame/sniper_pixellab/` (56 transparent normalized PNG frames).
+- SpriteFrames: `assets/sprites/characters/sniper_spriteframes.tres` with 8-direction idle plus 6-frame move/walk rows.
+- Runtime portrait/path: `scripts/progression_data_characters.gd` now uses `res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_idle_south.png`.
+- Hero Select and registry tests include Sniper in PixelLab directional coverage.
+- Docs updated in `CHANGELOG.md`, `docs/design/content_registry.md`,
+  `docs/design/current_game_state.md`, and `docs/design/systems/animation.md`.
+
+Verification passed:
+- `python3 tools/godot_gate.py --headless --path . --script res://build/qa/scrum433_sniper_pixellab/sniper_spriteframes_validate.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Disk cleanup: generated Godot `.godot/` import cache removed before final report;
+unrelated generated `.import` sidecars from test import were discarded; no
+disposable external checkout created.
+
+## PM Unhold / Current Queue State (2026-06-30)
+
+Пользователь снял `user-hold` с задач в `К выполнению`: SCRUM-433 снова доступна
+для автономного Jira-pull/dispatch. Историческая отмена 2026-06-15 ниже
+сохранена как контекст, но больше не блокирует старт.
 
 ## Designer 2 Takeover (2026-06-15)
 
@@ -93,7 +161,7 @@ Acceptance notes:
   before SpriteFrames/runtime integration.
 
 ## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: sniper v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+Статус: Design-source accepted (sniper v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **sniper v2 source прозрачный**: `sniper_v2_source_clean` (1024²), `_idle_cell_512`
@@ -115,5 +183,59 @@ Acceptance (Design-source scope):
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
 
-## ОТМЕНЕНО 2026-06-15 (пользователь)
-Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+## Историческая отмена 2026-06-15 (перекрыта 2026-06-30)
+Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
+2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-433
+снова `new` / `К выполнению`.
+
+## Codex Design Claim Audit / Release — 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-433 и проверил mirror/Jira
+историю. Новую Design-генерацию начинать нельзя и не нужно: Design-source scope
+уже записан выше как PASSED by Designer 2, accepted source paths и QA evidence
+присутствуют в репозитории.
+
+Оставшаяся работа — Animator/runtime integration: реальные idle/move кадры,
+SpriteFrames, Godot import/runtime hookup и animation/runtime smoke. Jira
+возвращена в `К выполнению`; Design claim снят, stale `В работе` owner не
+оставлен. Для очереди это должно идти как Animator/Codex follow-up, а не как
+новая Design/Codex генерация.
+
+## Blocker Refresh — Codex Design 2026-06-30
+
+SCRUM-433 был повторно claim-first взят `codex-design-board-watcher` после PM
+readiness/unhold. Текущая Jira readiness уже требует не acceptance старого
+Designer 2 source handoff, а обязательный PixelLab character generation +
+8-direction idle/move source pack для `sniper`.
+
+Повторная проверка показала, что PixelLab MCP bridge виден через локальный
+Codex config и отдаёт `tools/list` (`49` tools, включая `list_characters`,
+`create_character`, `animate_character`), но реальный вызов
+`list_characters(tags="sniper")` возвращает:
+
+`401: Missing Authorization header. Please configure your MCP client with 'Authorization: Bearer YOUR_API_TOKEN'`.
+
+Дополнительное evidence: `mcp-remote` stderr указывает, что custom header
+настроен как `Authorization: ${AUTH_HEADER}`, но environment variable
+`AUTH_HEADER` не задана. Без валидного PixelLab auth нельзя получить или создать
+обязательный PixelLab source/motion pack для `sniper`, а активные skills
+запрещают fallback на legacy OpenAI/manual assets без явного Jira override.
+
+Задача возвращена в Jira `К выполнению` с labels `blocked` и
+`pixellab-blocked`; stale `В работе` owner не оставлен. Unblock: передать Codex
+runtime переменную `AUTH_HEADER` с валидным `Bearer ...` для PixelLab MCP либо
+добавить явный Jira override на non-PixelLab path / повторное использование
+старого Design-source handoff.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-433 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.

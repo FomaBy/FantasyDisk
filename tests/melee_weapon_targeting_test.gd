@@ -135,15 +135,15 @@ func _initialize() -> void:
 		push_error("Expected hammer subclass to attach circular AoE weapon.")
 		quit(1)
 		return
-	if absf(float(hammer.get("max_aoe_radius")) - 145.0) > 0.01:
-		push_error("Expected hammer AoE to have SCRUM-545 close-ring radius cap.")
+	if absf(float(hammer.get("max_aoe_radius")) - 115.0) > 0.01:
+		push_error("Expected hammer AoE to have SCRUM-602 close-ring radius cap.")
 		quit(1)
 		return
 	hammer.set_process(false)
 
 	var hammer_enemy := enemy_scene.instantiate()
 	root.add_child(hammer_enemy)
-	hammer_enemy.global_position = Vector2(900, 430)
+	hammer_enemy.global_position = Vector2(900, 410)
 	hammer_enemy.add_to_group("enemies")
 	hammer_enemy.set("health", hammer_enemy.get("max_health"))
 
@@ -167,16 +167,16 @@ func _initialize() -> void:
 	hammer.set("aoe_radius", 360.0)
 	var cap_inside_probe := enemy_scene.instantiate()
 	root.add_child(cap_inside_probe)
-	cap_inside_probe.global_position = Vector2(900, 440)
+	cap_inside_probe.global_position = Vector2(900, 410)
 	if not bool(hammer.call("_is_enemy_inside_attack", hammer_player, cap_inside_probe, Vector2.RIGHT)):
 		push_error("Expected scaled hammer AoE to keep hitting inside the close-ring cap.")
 		quit(1)
 		return
 	var cap_outside_probe := enemy_scene.instantiate()
 	root.add_child(cap_outside_probe)
-	cap_outside_probe.global_position = Vector2(900, 466)
+	cap_outside_probe.global_position = Vector2(900, 426)
 	if bool(hammer.call("_is_enemy_inside_attack", hammer_player, cap_outside_probe, Vector2.RIGHT)):
-		push_error("Expected SCRUM-545 hammer radius cap to reject targets beyond 145px even after AoE scaling.")
+		push_error("Expected SCRUM-602 hammer radius cap to reject targets beyond 115px even after AoE scaling.")
 		quit(1)
 		return
 

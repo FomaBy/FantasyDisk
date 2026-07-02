@@ -1,0 +1,63 @@
+{
+  "issue": "SCRUM-759",
+  "weapon_id": "robot_hydraulic_press",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/robot_hydraulic_press_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/robot_hydraulic_press_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/robot_hydraulic_press.png",
+  "pixel_lab_selected_object_id": "99b9c7ec-23d3-4110-a22a-912cf8b455b8",
+  "pixel_lab_unused_candidate_id": null,
+  "raw_download_corner_rgb_used_for_alpha_cleanup": [
+    142,
+    144,
+    145
+  ],
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      20,
+      10,
+      237,
+      240
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.6065,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 147.8,
+    "mean_alpha_visible_pixels": 243.6,
+    "center_64_mean_alpha": 255.0,
+    "center_64_max_alpha": 255,
+    "outer_ring_mean_alpha": 154.0
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      20,
+      10,
+      237,
+      240
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.6042,
+    "max_alpha": 148,
+    "mean_alpha_all_pixels": 69.43,
+    "mean_alpha_visible_pixels": 114.84,
+    "center_64_mean_alpha": 90.34,
+    "center_64_max_alpha": 133,
+    "outer_ring_mean_alpha": 80.41
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA with transparent background.",
+    "PixelLab raw download is preserved separately; accepted source PNG is alpha-cleaned from the PixelLab output.",
+    "Center/corridor alpha is softened so the compression lane reads without becoming an opaque wall.",
+    "Canonical weapon PNG is used only as a low-opacity ghost silhouette under the PixelLab-generated hydraulic jaws.",
+    "No gameplay, cooldown, damage, targeting, shared runtime logic, scene, weapon reference, or other weapon VFX files were changed."
+  ]
+}

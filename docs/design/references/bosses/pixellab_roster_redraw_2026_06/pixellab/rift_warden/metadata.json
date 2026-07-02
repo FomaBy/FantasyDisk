@@ -1,0 +1,36 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "bab59c56-4618-4587-918d-23ca15e66235",
+        "name": "FantasyDisk Rift Warden Boss Redraw",
+        "prompt": "Rift Warden boss for FantasyDisk: floating armored void guardian, black iron and tarnished gold spiked armor, horned crown helm, huge purple rift core in chest, glowing violet hands, lower body dissolving into a vortex tail. Dark fantasy D&D pixel-art boss creature, transparent background, no text, no weapon, strong readable silhouette.",
+        "size": {
+          "width": 244,
+          "height": 244
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-06-30T14:42:28.633509+00:00"
+      },
+      "folder": "FantasyDisk_Rift_Warden_Boss_Redraw",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/south.png",
+          "south-east": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/south-east.png",
+          "east": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/east.png",
+          "north-east": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/north-east.png",
+          "north": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/north.png",
+          "north-west": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/north-west.png",
+          "west": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/west.png",
+          "south-west": "FantasyDisk_Rift_Warden_Boss_Redraw/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-06-30T14:49:34.554128"
+}

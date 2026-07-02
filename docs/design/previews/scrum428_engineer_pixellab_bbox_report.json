@@ -1,0 +1,1474 @@
+{
+  "source_dir": "assets/sprites/characters/pixellab/engineer",
+  "runtime_dir": "assets/sprites/characters/full_frame/engineer_pixellab",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "source": {
+    "engineer_idle_south.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        77,
+        63,
+        164,
+        185
+      ],
+      "opaque_pixels": 6787
+    },
+    "engineer_move_south_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        62,
+        164,
+        185
+      ],
+      "opaque_pixels": 6440
+    },
+    "engineer_move_south_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        63,
+        162,
+        185
+      ],
+      "opaque_pixels": 6144
+    },
+    "engineer_move_south_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        63,
+        164,
+        185
+      ],
+      "opaque_pixels": 6146
+    },
+    "engineer_move_south_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        64,
+        169,
+        186
+      ],
+      "opaque_pixels": 6526
+    },
+    "engineer_move_south_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        63,
+        166,
+        185
+      ],
+      "opaque_pixels": 6487
+    },
+    "engineer_move_south_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        64,
+        168,
+        185
+      ],
+      "opaque_pixels": 6460
+    },
+    "engineer_idle_south-east.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        64,
+        165,
+        182
+      ],
+      "opaque_pixels": 6483
+    },
+    "engineer_move_south-east_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        88,
+        63,
+        156,
+        186
+      ],
+      "opaque_pixels": 5298
+    },
+    "engineer_move_south-east_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        89,
+        63,
+        161,
+        183
+      ],
+      "opaque_pixels": 5354
+    },
+    "engineer_move_south-east_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        89,
+        65,
+        160,
+        186
+      ],
+      "opaque_pixels": 5235
+    },
+    "engineer_move_south-east_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        66,
+        167,
+        185
+      ],
+      "opaque_pixels": 5811
+    },
+    "engineer_move_south-east_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        66,
+        164,
+        186
+      ],
+      "opaque_pixels": 5916
+    },
+    "engineer_move_south-east_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        66,
+        167,
+        186
+      ],
+      "opaque_pixels": 5923
+    },
+    "engineer_idle_east.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        62,
+        159,
+        186
+      ],
+      "opaque_pixels": 5820
+    },
+    "engineer_move_east_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        62,
+        150,
+        186
+      ],
+      "opaque_pixels": 3833
+    },
+    "engineer_move_east_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        63,
+        162,
+        188
+      ],
+      "opaque_pixels": 3793
+    },
+    "engineer_move_east_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        66,
+        155,
+        184
+      ],
+      "opaque_pixels": 3623
+    },
+    "engineer_move_east_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        91,
+        62,
+        147,
+        186
+      ],
+      "opaque_pixels": 3934
+    },
+    "engineer_move_east_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        89,
+        62,
+        148,
+        184
+      ],
+      "opaque_pixels": 4152
+    },
+    "engineer_move_east_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        62,
+        147,
+        184
+      ],
+      "opaque_pixels": 4000
+    },
+    "engineer_idle_north-east.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        62,
+        150,
+        186
+      ],
+      "opaque_pixels": 4933
+    },
+    "engineer_move_north-east_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        65,
+        168,
+        184
+      ],
+      "opaque_pixels": 4737
+    },
+    "engineer_move_north-east_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        64,
+        169,
+        185
+      ],
+      "opaque_pixels": 5005
+    },
+    "engineer_move_north-east_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        67,
+        169,
+        184
+      ],
+      "opaque_pixels": 4730
+    },
+    "engineer_move_north-east_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        63,
+        149,
+        182
+      ],
+      "opaque_pixels": 4609
+    },
+    "engineer_move_north-east_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        64,
+        150,
+        182
+      ],
+      "opaque_pixels": 4479
+    },
+    "engineer_move_north-east_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        63,
+        150,
+        182
+      ],
+      "opaque_pixels": 4633
+    },
+    "engineer_idle_north.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        85,
+        64,
+        170,
+        186
+      ],
+      "opaque_pixels": 5705
+    },
+    "engineer_move_north_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        63,
+        171,
+        184
+      ],
+      "opaque_pixels": 5680
+    },
+    "engineer_move_north_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        63,
+        173,
+        183
+      ],
+      "opaque_pixels": 5751
+    },
+    "engineer_move_north_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        66,
+        169,
+        183
+      ],
+      "opaque_pixels": 5469
+    },
+    "engineer_move_north_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        64,
+        170,
+        181
+      ],
+      "opaque_pixels": 5079
+    },
+    "engineer_move_north_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        63,
+        170,
+        180
+      ],
+      "opaque_pixels": 4977
+    },
+    "engineer_move_north_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        90,
+        64,
+        170,
+        180
+      ],
+      "opaque_pixels": 4944
+    },
+    "engineer_idle_north-west.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        83,
+        62,
+        170,
+        181
+      ],
+      "opaque_pixels": 6141
+    },
+    "engineer_move_north-west_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        95,
+        65,
+        152,
+        182
+      ],
+      "opaque_pixels": 4388
+    },
+    "engineer_move_north-west_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        92,
+        65,
+        154,
+        183
+      ],
+      "opaque_pixels": 4180
+    },
+    "engineer_move_north-west_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        99,
+        65,
+        159,
+        183
+      ],
+      "opaque_pixels": 4190
+    },
+    "engineer_move_north-west_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        93,
+        66,
+        154,
+        179
+      ],
+      "opaque_pixels": 4364
+    },
+    "engineer_move_north-west_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        81,
+        66,
+        159,
+        181
+      ],
+      "opaque_pixels": 4677
+    },
+    "engineer_move_north-west_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        82,
+        66,
+        160,
+        181
+      ],
+      "opaque_pixels": 4669
+    },
+    "engineer_idle_west.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        88,
+        63,
+        160,
+        185
+      ],
+      "opaque_pixels": 5739
+    },
+    "engineer_move_west_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        98,
+        62,
+        163,
+        186
+      ],
+      "opaque_pixels": 3833
+    },
+    "engineer_move_west_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        63,
+        163,
+        188
+      ],
+      "opaque_pixels": 3793
+    },
+    "engineer_move_west_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        93,
+        66,
+        162,
+        184
+      ],
+      "opaque_pixels": 3623
+    },
+    "engineer_move_west_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        101,
+        62,
+        157,
+        186
+      ],
+      "opaque_pixels": 3934
+    },
+    "engineer_move_west_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        100,
+        62,
+        159,
+        184
+      ],
+      "opaque_pixels": 4152
+    },
+    "engineer_move_west_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        101,
+        62,
+        158,
+        184
+      ],
+      "opaque_pixels": 4000
+    },
+    "engineer_idle_south-west.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        63,
+        164,
+        185
+      ],
+      "opaque_pixels": 5021
+    },
+    "engineer_move_south-west_00.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        87,
+        66,
+        162,
+        185
+      ],
+      "opaque_pixels": 4889
+    },
+    "engineer_move_south-west_01.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        80,
+        64,
+        162,
+        184
+      ],
+      "opaque_pixels": 5233
+    },
+    "engineer_move_south-west_02.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        86,
+        65,
+        161,
+        184
+      ],
+      "opaque_pixels": 5007
+    },
+    "engineer_move_south-west_03.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        101,
+        63,
+        158,
+        185
+      ],
+      "opaque_pixels": 4492
+    },
+    "engineer_move_south-west_04.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        102,
+        64,
+        156,
+        181
+      ],
+      "opaque_pixels": 4293
+    },
+    "engineer_move_south-west_05.png": {
+      "size": [
+        248,
+        248
+      ],
+      "bbox": [
+        104,
+        64,
+        157,
+        182
+      ],
+      "opaque_pixels": 4254
+    }
+  },
+  "runtime": {
+    "engineer_idle_south.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        162,
+        126,
+        336,
+        370
+      ],
+      "opaque_pixels": 27148
+    },
+    "engineer_move_south_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        174,
+        124,
+        336,
+        370
+      ],
+      "opaque_pixels": 25760
+    },
+    "engineer_move_south_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        126,
+        332,
+        370
+      ],
+      "opaque_pixels": 24576
+    },
+    "engineer_move_south_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        126,
+        336,
+        370
+      ],
+      "opaque_pixels": 24584
+    },
+    "engineer_move_south_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        128,
+        346,
+        372
+      ],
+      "opaque_pixels": 26104
+    },
+    "engineer_move_south_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        174,
+        126,
+        340,
+        370
+      ],
+      "opaque_pixels": 25948
+    },
+    "engineer_move_south_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        128,
+        344,
+        370
+      ],
+      "opaque_pixels": 25840
+    },
+    "engineer_idle_south-east.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        172,
+        128,
+        338,
+        364
+      ],
+      "opaque_pixels": 25932
+    },
+    "engineer_move_south-east_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        184,
+        126,
+        320,
+        372
+      ],
+      "opaque_pixels": 21192
+    },
+    "engineer_move_south-east_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        186,
+        126,
+        330,
+        366
+      ],
+      "opaque_pixels": 21416
+    },
+    "engineer_move_south-east_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        186,
+        130,
+        328,
+        372
+      ],
+      "opaque_pixels": 20940
+    },
+    "engineer_move_south-east_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        188,
+        132,
+        342,
+        370
+      ],
+      "opaque_pixels": 23244
+    },
+    "engineer_move_south-east_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        182,
+        132,
+        336,
+        372
+      ],
+      "opaque_pixels": 23664
+    },
+    "engineer_move_south-east_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        132,
+        342,
+        372
+      ],
+      "opaque_pixels": 23692
+    },
+    "engineer_idle_east.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        124,
+        326,
+        372
+      ],
+      "opaque_pixels": 23280
+    },
+    "engineer_move_east_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        124,
+        308,
+        372
+      ],
+      "opaque_pixels": 15332
+    },
+    "engineer_move_east_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        126,
+        332,
+        376
+      ],
+      "opaque_pixels": 15172
+    },
+    "engineer_move_east_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        180,
+        132,
+        318,
+        368
+      ],
+      "opaque_pixels": 14492
+    },
+    "engineer_move_east_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        190,
+        124,
+        302,
+        372
+      ],
+      "opaque_pixels": 15736
+    },
+    "engineer_move_east_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        186,
+        124,
+        304,
+        368
+      ],
+      "opaque_pixels": 16608
+    },
+    "engineer_move_east_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        188,
+        124,
+        302,
+        368
+      ],
+      "opaque_pixels": 16000
+    },
+    "engineer_idle_north-east.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        174,
+        124,
+        308,
+        372
+      ],
+      "opaque_pixels": 19732
+    },
+    "engineer_move_north-east_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        130,
+        344,
+        368
+      ],
+      "opaque_pixels": 18948
+    },
+    "engineer_move_north-east_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        128,
+        346,
+        370
+      ],
+      "opaque_pixels": 20020
+    },
+    "engineer_move_north-east_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        134,
+        346,
+        368
+      ],
+      "opaque_pixels": 18920
+    },
+    "engineer_move_north-east_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        126,
+        306,
+        364
+      ],
+      "opaque_pixels": 18436
+    },
+    "engineer_move_north-east_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        128,
+        308,
+        364
+      ],
+      "opaque_pixels": 17916
+    },
+    "engineer_move_north-east_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        126,
+        308,
+        364
+      ],
+      "opaque_pixels": 18532
+    },
+    "engineer_idle_north.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        178,
+        128,
+        348,
+        372
+      ],
+      "opaque_pixels": 22820
+    },
+    "engineer_move_north_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        180,
+        126,
+        350,
+        368
+      ],
+      "opaque_pixels": 22720
+    },
+    "engineer_move_north_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        182,
+        126,
+        354,
+        366
+      ],
+      "opaque_pixels": 23004
+    },
+    "engineer_move_north_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        180,
+        132,
+        346,
+        366
+      ],
+      "opaque_pixels": 21876
+    },
+    "engineer_move_north_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        188,
+        128,
+        348,
+        362
+      ],
+      "opaque_pixels": 20316
+    },
+    "engineer_move_north_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        188,
+        126,
+        348,
+        360
+      ],
+      "opaque_pixels": 19908
+    },
+    "engineer_move_north_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        188,
+        128,
+        348,
+        360
+      ],
+      "opaque_pixels": 19776
+    },
+    "engineer_idle_north-west.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        174,
+        124,
+        348,
+        362
+      ],
+      "opaque_pixels": 24564
+    },
+    "engineer_move_north-west_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        198,
+        130,
+        312,
+        364
+      ],
+      "opaque_pixels": 17552
+    },
+    "engineer_move_north-west_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        192,
+        130,
+        316,
+        366
+      ],
+      "opaque_pixels": 16720
+    },
+    "engineer_move_north-west_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        206,
+        130,
+        326,
+        366
+      ],
+      "opaque_pixels": 16760
+    },
+    "engineer_move_north-west_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        194,
+        132,
+        316,
+        358
+      ],
+      "opaque_pixels": 17456
+    },
+    "engineer_move_north-west_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        170,
+        132,
+        326,
+        362
+      ],
+      "opaque_pixels": 18708
+    },
+    "engineer_move_north-west_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        172,
+        132,
+        328,
+        362
+      ],
+      "opaque_pixels": 18676
+    },
+    "engineer_idle_west.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        184,
+        126,
+        328,
+        370
+      ],
+      "opaque_pixels": 22956
+    },
+    "engineer_move_west_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        204,
+        124,
+        334,
+        372
+      ],
+      "opaque_pixels": 15332
+    },
+    "engineer_move_west_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        180,
+        126,
+        334,
+        376
+      ],
+      "opaque_pixels": 15172
+    },
+    "engineer_move_west_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        194,
+        132,
+        332,
+        368
+      ],
+      "opaque_pixels": 14492
+    },
+    "engineer_move_west_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        210,
+        124,
+        322,
+        372
+      ],
+      "opaque_pixels": 15736
+    },
+    "engineer_move_west_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        208,
+        124,
+        326,
+        368
+      ],
+      "opaque_pixels": 16608
+    },
+    "engineer_move_west_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        210,
+        124,
+        324,
+        368
+      ],
+      "opaque_pixels": 16000
+    },
+    "engineer_idle_south-west.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        182,
+        126,
+        336,
+        370
+      ],
+      "opaque_pixels": 20084
+    },
+    "engineer_move_south-west_00.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        182,
+        132,
+        332,
+        370
+      ],
+      "opaque_pixels": 19556
+    },
+    "engineer_move_south-west_01.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        168,
+        128,
+        332,
+        368
+      ],
+      "opaque_pixels": 20932
+    },
+    "engineer_move_south-west_02.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        180,
+        130,
+        330,
+        368
+      ],
+      "opaque_pixels": 20028
+    },
+    "engineer_move_south-west_03.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        210,
+        126,
+        324,
+        370
+      ],
+      "opaque_pixels": 17968
+    },
+    "engineer_move_south-west_04.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        212,
+        128,
+        320,
+        362
+      ],
+      "opaque_pixels": 17172
+    },
+    "engineer_move_south-west_05.png": {
+      "size": [
+        512,
+        512
+      ],
+      "bbox": [
+        216,
+        128,
+        322,
+        364
+      ],
+      "opaque_pixels": 17016
+    }
+  }
+}

@@ -68,3 +68,23 @@ Headless runs cannot read a real viewport screenshot, so the overlay uses a smal
   `Content-Disposition` filename, so Discord keeps the screenshot attachment.
 - `tests/feedback_webhook_config_test.gd` rejects missing/placeholder/invalid
   webhook config without leaking the URL.
+
+## Audit (SCRUM-720)
+
+Security/persistence audit of the feedback path — no runtime behaviour changed,
+findings + a regression guard:
+
+- **Secrets never leak.** The resolved webhook URL lives only in memory
+  (`_pending_webhook_url`) and is passed solely to `request_raw`. It is never
+  `print`/`push_error`-logged, never written into `report.txt`, and never embedded
+  in failure/config messages. The real `feedback_webhook.cfg` is gitignored
+  (`*.cfg`) and untracked; only `feedback_webhook.cfg.example` (placeholder
+  `XXXX/YYYY`) and fake test fixtures are committed.
+- **Fallback stays out of the repo.** Local reports and the user webhook config
+  live under `user://` (`LOCAL_ROOT`, `CONFIG_PATH`); the bundled config is a
+  read-only `res://` resource generated at release from the secret. Guarded by
+  `feedback_webhook_config_test.gd` (path-prefix asserts) so a regression like
+  `LOCAL_ROOT → "res://feedback"` fails the gate instead of leaking player text/
+  screenshots into the source tree.
+- Resolution priority (env → bundled `res://` → user `user://`), retry/backoff and
+  upload-size handling were reviewed and left as-is (already SCRUM-547/460-hardened).

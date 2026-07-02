@@ -311,11 +311,11 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 Обновление 2026-06-12: элитки используют общий `ProgressionData.stage_scale(route_stage)`, получают больший HP-бюджет, усиленный урон, более частые уникальные атаки и meta-флаг второй фазы на 50% HP. Победа над элиткой открывает экран выбора 1 из 3 артефактов; шанс tier-2/tier-3 растет с глубиной акта.
 
 Обновление SCRUM-260 (2026-06-13): размеры enemy-rank вынесены в
-`ProgressionData.ENEMY_SIZE_PROFILES`. Мини-элитки свиты Возвышения используют
-`mini_elite` scale 1.05, карточные элитки узлов маршрута — `elite` scale 1.68,
-боссы — `boss` scale 1.90. Профиль записывается в meta `epic_scale_profile`
-до `_ready()`, поэтому scale согласованно тянет спрайт/rig, collision shape,
-contact_range и HP-bar.
+`ProgressionData.ENEMY_SIZE_PROFILES`. После SCRUM-829 обычные мобы используют
+`ordinary` scale 1.25, mini-элитки свиты Возвышения — `mini_elite` scale 1.31,
+карточные элитки узлов маршрута — `elite` scale 1.68, боссы — `boss` scale 1.90.
+Профиль записывается в meta `epic_scale_profile` до `_ready()`, поэтому scale
+согласованно тянет спрайт/rig, collision shape, contact_range и HP-bar.
 
 Обновление SCRUM-259 (2026-06-13): каталог mechanics элиток/боссов вынесен в
 `ProgressionData.ENEMY_MECHANIC_CATALOG`, а конкретные наборы — в
@@ -520,7 +520,7 @@ Escape открывает крупное меню характеристик:
 |  |  | Тики ауры |
 |  | подбор опыта и расходок, выпадение вещей из монстров | Опыт / Бабки дроп с мобов | Леха |
 |  |  | Поднятие опыта на радиусе х (Радиус подбора = радиус ауры) | Леха |
-|  | Таймер и завершение раунда | Динамический, зависит от количества пройденных этапов 30сек + 5 за проходку | Леха |
+|  | Таймер и завершение раунда | SCRUM-785: обычный бой 60с база +3с/стадию (макс 90, ×Возвышение), выжил = победа; элитка/босс — фикс. 300с «убей или проиграл» (таймаут с живой целью = поражение) | Леха |
 |  |  | смерть игрока | Леха |
 
 ## Лист2
@@ -850,21 +850,25 @@ AoE/DoT/саммоны — зачистка волны; точные замер�
 
 Прогресс: `meta_progression.record_boss_victory(state, char, run_level)` повышает уровень только если `run_level >= completed`; `selectable_max = completed + 1` (cap 5). Наградный трек меты — per-class `ASCENSION_LEVELS` по 5 уровней, применяются за пройденные уровни постоянно. Выбор уровня — селектор в hero select (клампится к `ascension_selectable_max` героя при пике), HUD-индикатор римской цифрой у таймера, кодекс-раздел «Возвышения».
 
-### Мета-древо умений (SCRUM-150)
+### Мета-древо умений (SCRUM-726)
 
-Общее для всех персонажей древо в `meta_progression.gd` (`SKILL_TREE`, data-driven). 4 независимые ветви по 10 узлов, последовательная разблокировка (tier N+1 требует tier N той же ветви), бюджет полной прокачки **42 очка** (диапазон 40-50). Валюта — `skill_points`, начисляются вместе с `meta_points` за победу над боссом (одна экономика); сохранение `skill_points`+`skill_nodes` в `user://`. Полная прокачка ≤ **~+30% эффективной силы** (`estimated_power_multiplier`).
+Канон системы: `docs/design/systems/skill_tree.md`.
 
-Ветви и эффекты (`skill_modifiers(state)` — множители суммируются как `1.0+Σ`, флаги — max):
-- **Богатство**: `money_gain_mult` (+опыт золота), `shop_price_mult` (скидка магазина), `start_gold_flat`, `attr_cost_mult` (удешевление докачки), capstone `guaranteed_rare_shop`.
-- **Знания**: `xp_gain_mult`, `levelup_rerolls`, `attr_extra_options` (+варианты докачки), capstone `first_levelup_rare`.
-- **Мощь**: `damage_mult`, `attack_speed_mult`, `ult_charge_mult`, `elite_boss_damage_mult`, capstone `ult_start_charge` (0.5).
-- **Стойкость**: `max_health_mult`, `regeneration_flat`, `defense_flat`, `dodge_flat`, capstone `death_save`.
+Общее для всех персонажей древо в `meta_progression.gd` (`SKILL_TREE`, data-driven) является графом в стиле Path of Exile: у каждого узла есть `pos`, `kind`, `cost`, `effects` и неориентированные связи `adj`. Финальная схема v3: **107 узлов**, **21 keystone** (4 нейтральных + 17 классовых), полный бюджет **183 метаочка** при неизменном `META_POINTS_CAP = 100`. Игрок не может купить всё дерево и выбирает путь под героя; `reset_skill_tree` возвращает потраченные метаочки.
 
-Применение (по мере освобождения файлов, сериализуется):
-- Боевое подмножество → `player.apply_meta_skill_modifiers(mods)` в `run_modifiers` + предзаряд ульты (ч.2a).
-- Эконом-флаги в UI: `shop_price_mult` → `_random_shop_items`, `attr_cost_mult` → `_ascension_price`, `attr_extra_options` → `_random_attribute_pair` (ч.5-7).
-- Экран древа — пункт «Древо умений» в главном меню (`_show_skill_tree_screen`, состояния узлов/покупка/счётчик, ч.3); «+очко умений» на экране победы (ч.4).
-- Старт забега (`main.apply_ascension_bonuses`): `player.apply_meta_skill_modifiers(skill_modifiers)` + начисление `start_gold_flat` в money (ч.12). SCRUM-150 завершён.
+Топология: центральное ядро + 8 атрибутных лепестков (`strength/agility/intelligence/perception/energy/knowledge/endurance/leadership`) + 17 class pods. У каждого playable class id есть уникальная стартовая точка в `CLASS_ENTRY_NODES`; стартовые class entry nodes можно выделять сразу, остальные узлы открываются только как соседи уже выделенных узлов. «Глобальный уровень» = количество выделенных узлов (`global_level`), доступный бюджет = `earned_meta_points(state) - allocated_meta_points(state)`.
+
+Атрибутные узлы используют ключи `strength_flat`, `agility_flat`, `intelligence_flat`, `perception_flat`, `energy_flat`, `knowledge_flat`, `endurance_flat`, `leadership_flat`. `Player.apply_meta_skill_modifiers()` прибавляет их к базовым `stats` героя до пересчета `ProgressionData.derived_parameters()`, поэтому один и тот же путь по дереву даёт разный боевой профиль разным героям.
+
+Классовые сигнатуры: рядом с каждой `entry_<class>` есть minor, notable и уникальный `sig_<class>_keystone` с `class_affinity`. `skill_modifiers(state)` теперь возвращает только account-wide эффекты для UI/общего превью; `skill_modifiers_for_class(state, character_id)` добавляет эффекты узлов, у которых `class_affinity == character_id`. В `main.apply_ascension_bonuses` старт забега использует class-aware helper, так что чужие class pod эффекты «спят».
+
+Экономика метаочков не изменилась: первый clear уровня возвышения 0..5 каждым классом даёт **1, 1, 2, 3, 4, 5** метаочков соответственно; повторы того же уровня не фармятся, общий cap заработка = 100. `skill_points` оставлен как compatibility facade текущего UI и возвращает доступные метаочки. Save schema v3 получает безопасный respec для старых schema 2 ids: `skill_nodes = []`, метаочки пересчитываются из `ascension_levels`/`meta_point_awards`, остальные поля сохраняются.
+
+Нейтральные keystone ядра: `core_battle_cry` (`ult_start_charge = 0.5`), `core_second_life` (`death_save`), `core_guild_ties` (`guaranteed_rare_shop` + стартовое золото), `core_insight` (`first_levelup_rare`). Поддержанные class-signature run keys включают damage/attack/move/range/AoE/aura/knockback multipliers, crit flats, defense/regen, DoT flats, summon bonus, buff power, vampiric flats, `ultimate_flat`, `ult_charge_mult`, low-HP bonuses, money and elite/boss damage.
+
+Публичный API для UI/QA сохранён: `node_list()`, `entry_map()`, `node_status(state, node_id)`, `allocate_node(state, node_id)` / compatibility `buy_skill_node`, `reset_skill_tree(state)`, `earned_meta_points`, `available_meta_points`, `allocated_meta_points`, `global_level`, `skill_tree_total_cost`, `skill_modifiers`. Добавлен helper `skill_tree_total_cost_capped()` для отображения cap-aware total.
+
+Проверки SCRUM-726: `tests/meta_skill_tree_smoke_test.gd` и `tests/skill_tree_per_hero_test.gd`.
 
 ### Экран «Что нового» / патч-ноуты (SCRUM-159)
 

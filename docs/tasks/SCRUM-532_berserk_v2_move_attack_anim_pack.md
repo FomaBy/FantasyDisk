@@ -1,7 +1,7 @@
 # SCRUM-532: Berserk v2 animation pack — move + primary attack из принятого source
 
 Jira: SCRUM-532 · Роль: animator · Контур: codex · Приоритет: P1 · foma · Эпик: — (нет parent)
-Статус: К выполнению (blocked — ждёт SCRUM-531)
+Статус: done
 
 ## Что и зачем
 
@@ -344,3 +344,15 @@ Validation:
 - Static alpha/slicing QA checked 12 PNG/sheet entries: `edge_alpha_pixels = 0` for all generated frame PNGs and sheet.
 - `git diff -- assets/sprites/characters/berserk_spriteframes.tres scripts/player.gd tests/animation_smoke_test.gd` is empty.
 - `animation_smoke_test.gd` was attempted with Godot 4.7 on Windows and is recorded in `build/qa/scrum532_berserk_v2_anim/animation_smoke_output.txt`; it failed before execution on pre-existing parse/class visibility issue: `Identifier "ProgressionData" not declared in the current scope` at `tests/animation_smoke_test.gd:29`.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+Проверено claude-qa 2026-07-01 на HEAD origin/dev (delivery commit 7f588c52 = ancestor origin/dev).
+- move: 5 кадров loop:true; walk: alias(move) 5 кадров loop:true; attack_primary: 6 кадров loop:false — все ≥5 (контракт валидатора выполнен).
+- Все кадры PNG 512×512, alpha 0-255, edge_alpha_pixels=0 по 12 записям alpha-report (sheet 3408×1168 без alpha-bleed).
+- animation_manifest.json validator: OK: 1 entities (committed manifest_validator_output.txt).
+- Scope соблюдён (asset-pack-only): 7f588c52 НЕ трогает berserk_spriteframes.tres/player.gd/animation_smoke_test.gd/progression_data; runtime_integration в манифесте помечен «not connected by SCRUM-532 scope».
+- animation_smoke_test.gd → PASS (exit 0) на HEAD; runtime_smoke → PASS.
+- QA-артефакты на месте: contact, GIF move, GIF attack, манифест, вывод валидатора, alpha-report.
+Прим.: в живом рантайме берсерк уже использует новый berserk_pixellab пак (SCRUM-703); v2 anim-пак поставлен по своему asset-only скоупу и не подключён в рантайм — это соответствует ТЗ, supersession — вопрос продукта, не QA-блокер.
+Блок добавлен в .md, чтобы board_sync не реверт-ил PASSED-тикет.

@@ -1,0 +1,58 @@
+{
+  "issue": "SCRUM-774",
+  "weapon_id": "thief_shadow_cloak",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+  "pixel_lab_raw_source_path": "docs/design/references/attack_vfx/thief_shadow_cloak/thief_shadow_cloak_pixellab_source_raw.png",
+  "source_path": "docs/design/references/attack_vfx/thief_shadow_cloak/thief_shadow_cloak_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/thief_shadow_cloak.png",
+  "pixel_lab_object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9",
+  "pixel_lab_download_url": "https://api.pixellab.ai/mcp/objects/35360c9c-d67b-4f84-8fc5-6041c87db9e9/download",
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      21,
+      12,
+      239,
+      237
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.2249,
+    "max_alpha": 255,
+    "mean_alpha_all_pixels": 41.33,
+    "mean_alpha_visible_pixels": 183.73,
+    "center_64_mean_alpha": 73.52,
+    "center_64_max_alpha": 255,
+    "outer_ring_mean_alpha": 185.95
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      21,
+      12,
+      239,
+      237
+    ],
+    "visible_pixel_ratio_alpha_gt_8": 0.3864,
+    "max_alpha": 174,
+    "mean_alpha_all_pixels": 36.98,
+    "mean_alpha_visible_pixels": 95.23,
+    "center_64_mean_alpha": 68.51,
+    "center_64_max_alpha": 174,
+    "outer_ring_mean_alpha": 94.83
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA at the existing AttackVfx weapon-signature path.",
+    "PixelLab raw download is preserved separately; accepted source removes baked checkerboard pixels from the PixelLab output.",
+    "Canonical thief_shadow_cloak weapon PNG is used as a low-opacity ghost silhouette under the PixelLab-generated cloak sweep.",
+    "Backstab area is reinforced with a violet crescent path and small center-right splash ring; alpha is capped for combat readability.",
+    "No gameplay, cooldown, damage, targeting, shared runtime logic, or scene files were changed."
+  ]
+}

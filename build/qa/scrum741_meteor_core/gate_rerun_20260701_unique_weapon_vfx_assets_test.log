@@ -1,0 +1,7 @@
+Command: python3 tools/godot_gate.py --headless --path . --script res://tests/unique_weapon_vfx_assets_test.gd
+Started: 2026-07-01T18:30:41Z
+CWD: /Users/sergeyfomin/.codex/worktrees/57a9/AI Agent
+
+
+Stopped: 2026-07-01T18:43:34Z
+Exit code: 143 (own queued godot_gate process terminated by QA worker after >12m semaphore wait; test body did not start)

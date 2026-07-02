@@ -1,0 +1,47 @@
+{
+  "issue": "SCRUM-761",
+  "weapon_id": "robot_reactor_core",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+  "source_path": "docs/design/references/weapon_attack_animations/robot_reactor_core/robot_reactor_core_pixellab_source.png",
+  "raw_source_path": "docs/design/references/weapon_attack_animations/robot_reactor_core/robot_reactor_core_pixellab_source_raw.png",
+  "preview_path": "docs/design/previews/weapon_attack_animations/robot_reactor_core_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "object_id": "a5e165f2-6609-45f7-b099-71361a68a0d0",
+    "download_url": "https://api.pixellab.ai/mcp/map-objects/a5e165f2-6609-45f7-b099-71361a68a0d0/download",
+    "created": "2026-07-01 18:09",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required background alpha cleanup"
+  },
+  "size": [
+    256,
+    256
+  ],
+  "mode": "RGBA",
+  "bbox": [
+    33,
+    34,
+    223,
+    223
+  ],
+  "visible_pixel_ratio_alpha_gt_8": 0.3309,
+  "max_alpha": 172,
+  "mean_alpha_all_pixels": 47.5,
+  "mean_alpha_visible_pixels": 143.52,
+  "center_64_mean_alpha": 118.27,
+  "center_64_max_alpha": 146,
+  "outer_ring_mean_alpha": 50.92,
+  "corner_alphas": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "notes": [
+    "PixelLab raw output had alpha 255 everywhere and a baked flat preview background.",
+    "Background was removed from the dominant corner/field colors.",
+    "Canonical robot_reactor_core weapon art was composited at low opacity as a centered ghost silhouette.",
+    "Center alpha was softened and final alpha capped for combat readability."
+  ]
+}

@@ -110,10 +110,41 @@ Additional checks:
   disabled with an insufficient-gold tooltip, and direct activation must fail
   without mutating the run snapshot.
 
+### Test-suite architecture audit (SCRUM-722)
+
+Snapshot of the runtime-smoke architecture after the 0.2.0 refactor-wave pass.
+
+- **Umbrella** `tests/runtime_smoke_test.gd` (~8k lines, 71 `_test_*` helpers) is the
+  base class; every focused suite `extends` it and reuses its helper/assertion layer.
+- **Single failure point.** All suites fail through one helper:
+  `_fail(message, evidence_path := "")` — `push_error` + a deterministic evidence
+  crumb at `build/qa/runtime_smoke_last_failure.md` (records the broken
+  screen/system message and any caller-supplied evidence path) + `quit(1)`. The
+  crumb is written only on failure, so green runs are unaffected. Naming the broken
+  system in `message` is mandatory; assertions read like
+  `_fail("Expected the settings backdrop in UI smoke.")`.
+- **No raw fail triplets.** The legacy `push_error(...); quit(1); return` triplet was
+  consolidated into `_fail(...); return` across the umbrella (400 sites). New
+  assertions must call `_fail`, never re-introduce the raw triplet, so failure
+  formatting/evidence stays centralised.
+- **Bool integrity helpers** (`_assert_*` returning `bool`) keep their
+  `push_error(...); return false` form on purpose — they report up to a caller that
+  decides whether to `quit`, so they are intentionally excluded from `_fail`.
+- **Determinism.** A small number of real-time `await create_timer(...)` waits remain
+  where the test genuinely advances live simulation (combat/animation settling);
+  these are load-sensitive and run serialized via `tools/godot_gate.py`. Prefer
+  `await process_frame` / condition polling for new tests; only use timed waits when
+  exercising real elapsed-time behaviour, and document why.
+- **Python unit test** `tests/test_jira_board_sync.py` (4 cases) covers board-sync
+  status mapping and is run with `python3 tests/test_jira_board_sync.py`.
+
+Gate everything through the semaphore wrapper to avoid headless single-instance
+crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<suite>.gd`.
+
 ## Branching
 
 Follow `docs/process/versioning_and_branching.md`:
 
-- `main` = stable `0.1`;
-- `dev` = active `0.1.x` working line; текущий sprint target — `0.1.5`;
+- `main` = stable released `0.1.x` line;
+- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.0`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

@@ -1,8 +1,8 @@
 # Combat
 
-Обновлено: 2026-06-13 (0.1.5)
+Обновлено: 2026-06-30 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
 
-Этот файл описывает активную боевую систему `dev` / версии 0.1.5. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
+Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
 ## Arena And Camera
 
@@ -16,9 +16,15 @@
 
 1. Игрок входит в combat node маршрута.
 2. Игрок появляется в центре арены.
-3. Враги появляются через wave/spawn budget до конца раунда.
-4. Обычный бой заканчивается по таймеру.
-5. Boss fight заканчивается победой после смерти босса или смертью игрока.
+3. Враги появляются через wave/spawn budget; бой плотный с первой секунды —
+   первая волна выходит почти мгновенно и спавн идёт минимум с 2 краёв арены
+   (до 3–4 на поздних стадиях/волнах), вне `SPAWN_PLAYER_SAFE_RADIUS` (SCRUM-784).
+4. Обычный бой длится по таймеру (база `60с`, +3с/стадию до `90с`, с учётом
+   множителя Возвышения) — выжил до конца таймера = победа (SCRUM-785).
+5. Элитка и Босс — фиксированный таймер «убей или проиграл» `300с` (5 минут, без
+   множителя Возвышения): победа = убить элитку/босса до истечения; таймаут с живой
+   целью = поражение (death screen, `outcome_reason` поясняет «не успел убить … за
+   5 минут»). Таймер тикает и в боссовом бою (SCRUM-785).
 6. После обычного/elite боя игрок получает XP/деньги/route reward и возвращается на маршрут.
 7. После boss Act 1/2 игрок получает boss reward, сохраняет билд и переходит на
    новую route map следующего акта. После boss Act 3 показывается финальная победа
@@ -27,12 +33,12 @@
 ## Player Control And Attacks
 
 - Движение: WASD / переназначаемые hotkeys.
-- SCRUM-417 sets playable character combat visuals to
-  `BASE_SPRITE_SCALE = Vector2(0.36, 0.36)` for both accepted full-frame
-  `AnimatedSprite2D` characters and the legacy cutout-rig fallback, about +29%
-  from the old `0.28` baseline. The player collision radius remains `10.5` so
-  readability improves without changing combat ranges, contact behavior or
-  balance.
+- SCRUM-823 sets playable character combat visuals to
+  `BASE_SPRITE_SCALE = Vector2(0.64, 0.64)` for accepted full-frame
+  `AnimatedSprite2D` characters, skeletal rigs and the legacy cutout-rig fallback,
+  about x1.5 from the previous `0.425` combat scale. The player collision radius
+  remains `8.9`, so readability improves without changing combat ranges, contact
+  behavior or balance.
 - Дебаг-режим (SCRUM-375): если persisted setting `debug_mode` включен, то
   только в активном combat ПКМ или Shift+ЛКМ задают точку плавного движения
   игрока на арене, а средняя кнопка мыши мгновенно переносит игрока в выбранную
@@ -111,6 +117,10 @@
 - Статусы хранятся в meta `status_effects` на цели и тикают из `_physics_process()` владельца, поэтому пауза замораживает duration и DoT вместе с gameplay.
 - Поддерживаются duration, refresh/add/extend stack policy, DoT ticks, `speed_multiplier`, `damage_multiplier`, `damage_taken_multiplier` и marker metadata.
 - `Enemy` применяет status slow к движению и vulnerability к входящему урону.
+- `Enemy` также читает marker-status `bastion_taunt`: пока metadata `taunt_owner`
+  указывает на живого валидного игрока/владельца в дереве, movement, shooting,
+  contact damage и elite targeting используют владельца taunt как combat target;
+  при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
 - Support/Leadership classes (`guitarist`, `druid`, `engineer`, `priest`) обновляют class aura примерно раз в 0.55с. Союзники получают `command_aura`, враги в радиусе — `command_pressure`, Priest получает мягкий self-support tick.
@@ -119,7 +129,12 @@
 ## Spawn And Waves
 
 - Спавн использует bounds новой арены, active cap и wave pacing.
-- На ранних stage плотность ниже, дальше растет количество и сила врагов.
+- SCRUM-784: бой динамичен с первой секунды — `WAVE_SETTINGS` дают базовую волну
+  `4` врага (было 2), active cap `20`→`36`, паузы спавна `0.8–1.4с` (было 1.35–2.15),
+  первая волна почти мгновенно (`spawn_cooldown=0.1`). `_choose_wave_spawn_edges`:
+  минимум 2 края всегда, до 3–4 на поздних стадиях/волнах (босс держит 2). Без
+  читерского спавна в лицо — позиции вне `SPAWN_PLAYER_SAFE_RADIUS`.
+- На ранних stage плотность чуть ниже, дальше растут количество и сила врагов.
 - Для 3-актного забега combat scaling использует `route_scaling_stage()`, а не
   act-local `route_stage`: Act 2/3 стартуют с новым маршрутом, но без tutorial
   ослабления волн/экономики.

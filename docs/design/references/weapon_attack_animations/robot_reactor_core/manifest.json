@@ -1,0 +1,67 @@
+{
+  "issue": "SCRUM-761",
+  "asset": "robot_reactor_core attack VFX",
+  "weapon_id": "robot_reactor_core",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+  "source_files": [
+    "robot_reactor_core_pixellab_source_raw.png",
+    "robot_reactor_core_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/robot_reactor_core_contact.png",
+  "static_report": "docs/design/references/weapon_attack_animations/robot_reactor_core/static_alpha_readability_report.json",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "object_id": "a5e165f2-6609-45f7-b099-71361a68a0d0",
+    "download_url": "https://api.pixellab.ai/mcp/map-objects/a5e165f2-6609-45f7-b099-71361a68a0d0/download",
+    "created": "2026-07-01 18:09",
+    "size": "256x256px",
+    "view": "high top-down",
+    "detail": "medium detail",
+    "outline": "lineless",
+    "shading": "medium shading",
+    "background": "transparent metadata; downloaded PNG required background alpha cleanup"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 superseded the stale OpenAI Images-only mirror text. Production path for SCRUM-761 used PixelLab MCP through the fantasydisk-asset-generator skill; no OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab download to the task reference folder.",
+      "Removed the baked preview background from the raw PixelLab PNG using dominant corner/field colors.",
+      "Composited the canonical robot_reactor_core weapon PNG at low opacity as a centered ghost silhouette under the PixelLab exhaust arms.",
+      "Softened the center alpha and capped final alpha for combat readability.",
+      "Exported the accepted 256x256 transparent RGBA runtime PNG.",
+      "Generated a contact preview and static alpha/readability report."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        33,
+        34,
+        223,
+        223
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.3309,
+      "max_alpha": 172,
+      "mean_alpha_all_pixels": 47.5,
+      "mean_alpha_visible_pixels": 143.52,
+      "center_64_mean_alpha": 118.27,
+      "center_64_max_alpha": 146,
+      "outer_ring_mean_alpha": 50.92,
+      "corner_alphas": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "runtime_scope": {
+    "gameplay_changed": false,
+    "shared_runtime_logic_changed": false,
+    "scenes_changed": false,
+    "other_weapon_vfx_changed": false
+  }
+}

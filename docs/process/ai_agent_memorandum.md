@@ -186,6 +186,12 @@ Locked paths: <файлы/папки/ассеты/экраны>
 Jira: SCRUM-<номер>
 ```
 
+Для Codex one-off worker threads действует thread hygiene: после truthful
+Jira/GitHub/local mirror/memory/test/disk cleanup результата worker архивирует
+свой текущий чат через `codex_app.set_thread_archived` (`archived: true`, без
+`threadId`) как последнее tool-действие перед финалом. Постоянные PM,
+dispatcher/watch и user control чаты не архивируются автоматически.
+
 `OtherAI` используется для DeepSeek, Gemini или любого другого AI. Правила те же:
 single owner, locked paths, Jira sync, GitHub sync, QA gate.
 
@@ -398,7 +404,8 @@ dispatcher can remove it after the process exits.
 | Область | Skill / Pipeline |
 | --- | --- |
 | UI screens, HUD, menus, frames, responsive layout | `fantasydisk-ui-director` |
-| Raster assets, sprites, icons, frames, buttons, VFX PNG | `fantasydisk-asset-generator` |
+| Future redraw source work: characters, enemies, bosses, UI/frame source kits, animation/source packs | PixelLab MCP / PixelLab-oriented FantasyDisk skills by default |
+| Non-redraw raster assets, sprites, icons, frames, buttons, VFX PNG, or explicit Jira exceptions | `fantasydisk-asset-generator` |
 | Posters, infographics, report images, or UI elements/mockups with fixed text/content zones over AI art | `content-zone-image-compositor` |
 | Character/enemy/boss PixelLab animation import, directional SpriteFrames, Hero Select preview | `fantasydisk-pixellab-animation-integrator` |
 | Class/weapon balance | `fantasydisk-class-balance-director` |
@@ -412,9 +419,23 @@ UI hard rule: before UI implementation/redesign, create/consult OpenAI-generated
 mockup/spec with safe margins and content zones, then reproduce in Godot and
 verify screenshots/rects.
 
-Asset hard rule: generated assets must use transparent background, D&D + Dark
-Fantasy Dragon style when applicable, source saved in `docs/design/references/`,
-runtime asset integrated under `assets/`.
+PixelLab-first redraw hard rule: future redraw tasks use PixelLab as the default
+source pipeline for character/enemy/boss redraws, animation/source packs, UI
+frame/source kits and comparable redraw source assets. PM/dispatcher must write
+this expectation into Jira/task wording when creating redraw work. A non-PixelLab
+path is allowed only when the Jira issue or task mirror records an explicit
+exception and reason, for example an OpenAI Images override, reuse of an accepted
+existing source, or a temporary PixelLab availability blocker. UI-director and
+content-zone planning still apply: PixelLab provides the final redraw/source art,
+but text, controls and layout content must remain inside declared safe/content
+zones and must never cover frame ornament.
+
+Asset hard rule: generated or redrawn assets must use transparent background,
+D&D + Dark Fantasy Dragon style when applicable, source saved in
+`docs/design/references/`, runtime asset integrated under `assets/`, and evidence
+must prove alpha/readability/fit. Character redraws and animation source packs
+must preserve pivots, runtime-safe sizing and required 8-direction or animation
+contracts.
 
 Content-zone image hard rule: when an AI-generated poster/report/UI element will
 receive text, numbers, icons, portraits, lists, controls or labels after

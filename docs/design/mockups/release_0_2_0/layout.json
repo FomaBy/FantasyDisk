@@ -1,0 +1,77 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#13080C",
+    "stroke_width": 4,
+    "line_spacing": 1.08,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "version_badge": "РЕЛИЗ 0.2.0",
+    "subtitle": "Атлас героев, геймпад и живая классовая мета",
+    "bullets": "Новый Атлас героев: 17 созвездий классов, эмблемы и скрытые звёзды\nKeystone теперь меняют бой: таунт, питомцы, стихии, облака и цепи исцеления\nПолноценная поддержка геймпада: стик, D-pad, переназначение, deadzone, вибрация\nБольшая волна PixelLab-анимаций героев и боссов",
+    "footer": "macOS + Windows • 2 июля 2026"
+  },
+  "zones": [
+    {
+      "id": "version_badge",
+      "content_key": "version_badge",
+      "x": 120,
+      "y": 82,
+      "w": 560,
+      "h": 74,
+      "max_font": 54,
+      "min_font": 34,
+      "color": "#FFD789",
+      "stroke_width": 5,
+      "uppercase": true,
+      "debug_color": "#ffcc33"
+    },
+    {
+      "id": "subtitle",
+      "content_key": "subtitle",
+      "x": 120,
+      "y": 430,
+      "w": 860,
+      "h": 118,
+      "max_font": 48,
+      "min_font": 30,
+      "color": "#FFF0C8",
+      "stroke_width": 5,
+      "debug_color": "#66ccff"
+    },
+    {
+      "id": "bullets",
+      "content_key": "bullets",
+      "x": 120,
+      "y": 588,
+      "w": 905,
+      "h": 310,
+      "max_font": 34,
+      "min_font": 23,
+      "color": "#F8E3B0",
+      "stroke_width": 4,
+      "valign": "top",
+      "debug_color": "#66ff99"
+    },
+    {
+      "id": "footer",
+      "content_key": "footer",
+      "x": 120,
+      "y": 950,
+      "w": 770,
+      "h": 70,
+      "max_font": 30,
+      "min_font": 20,
+      "color": "#DAB777",
+      "stroke_width": 4,
+      "debug_color": "#cc88ff"
+    }
+  ]
+}

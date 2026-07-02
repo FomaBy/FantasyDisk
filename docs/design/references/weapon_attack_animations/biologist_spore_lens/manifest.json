@@ -1,0 +1,53 @@
+{
+  "issue": "SCRUM-731",
+  "asset": "biologist_spore_lens attack VFX",
+  "weapon_id": "biologist_spore_lens",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_biologist_spore_lens.png",
+  "source_files": [
+    "biologist_spore_lens_pixellab_source_raw.png",
+    "biologist_spore_lens_pixellab_source.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/biologist_spore_lens_contact.png",
+  "pixel_lab": {
+    "tool": "create_map_object",
+    "selected_object_id": "3e336a3b-d5cf-4bf6-b0f5-ab8ee64392ea",
+    "unused_candidate_id": "8cbe4e4e-5b08-4ee1-8e23-0b588f5201cd",
+    "selected_download_url": "https://api.pixellab.ai/mcp/map-objects/3e336a3b-d5cf-4bf6-b0f5-ab8ee64392ea/download",
+    "created": "2026-07-01 17:37",
+    "size": "256x256px",
+    "view": "high top-down",
+    "background": "transparent metadata; downloaded PNG required corner-color alpha cleanup",
+    "mode": "basic"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 removed the stale OpenAI billing blocker and instructed agents to decide/unblock work. SCRUM-731 production path was changed from the stale OpenAI-only helper to PixelLab MCP through fantasydisk-asset-generator; no OpenAI Images, image_gen, or manual drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab selected source PNG to task reference folder.",
+      "Created alpha-clean accepted source PNG from PixelLab output by removing flat preview background.",
+      "Softened center alpha to preserve combat readability and spore-ring readability.",
+      "Composited canonical weapon PNG as low-opacity fungal-glass ghost silhouette under rings.",
+      "Capped final alpha for combat readability and exported 256x256 RGBA runtime PNG.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        13,
+        16,
+        244,
+        242
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.5542,
+      "max_alpha": 170,
+      "mean_alpha_all_pixels": 78.75,
+      "mean_alpha_visible_pixels": 142.07,
+      "center_64_mean_alpha": 88.99,
+      "center_64_max_alpha": 149,
+      "outer_ring_mean_alpha": 110.76
+    }
+  }
+}

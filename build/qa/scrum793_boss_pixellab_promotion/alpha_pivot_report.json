@@ -1,0 +1,945 @@
+{
+  "task": "SCRUM-793",
+  "generated_at": "2026-07-02",
+  "promoted": [
+    {
+      "id": "disk_devourer",
+      "pixellab_id": "81b491db-7240-4513-bad5-263b7f81539d",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/disk_devourer/disk_devourer_pixellab_object_alpha.png",
+      "runtime_dir": "assets/sprites/bosses/full_frame/disk_devourer",
+      "target_bbox_from_previous_move_00": [
+        133,
+        208,
+        382,
+        464
+      ],
+      "frames": [
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_00.png",
+          "state": "attack_primary",
+          "index": 0,
+          "bbox": [
+            138,
+            223,
+            377,
+            468
+          ],
+          "scale_extra": 0.96,
+          "dx": 0,
+          "dy": 4,
+          "alpha_mult": 0.92
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_01.png",
+          "state": "attack_primary",
+          "index": 1,
+          "bbox": [
+            136,
+            216,
+            380,
+            466
+          ],
+          "scale_extra": 0.98,
+          "dx": 0,
+          "dy": 2,
+          "alpha_mult": 0.96
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_02.png",
+          "state": "attack_primary",
+          "index": 2,
+          "bbox": [
+            128,
+            195,
+            387,
+            460
+          ],
+          "scale_extra": 1.04,
+          "dx": 0,
+          "dy": -4,
+          "alpha_mult": 1.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_03.png",
+          "state": "attack_primary",
+          "index": 3,
+          "bbox": [
+            123,
+            180,
+            392,
+            456
+          ],
+          "scale_extra": 1.08,
+          "dx": 0,
+          "dy": -8,
+          "alpha_mult": 1.18
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_04.png",
+          "state": "attack_primary",
+          "index": 4,
+          "bbox": [
+            130,
+            198,
+            386,
+            461
+          ],
+          "scale_extra": 1.03,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_attack_primary_05.png",
+          "state": "attack_primary",
+          "index": 5,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_00.png",
+          "state": "death",
+          "index": 0,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_01.png",
+          "state": "death",
+          "index": 1,
+          "bbox": [
+            136,
+            219,
+            380,
+            469
+          ],
+          "scale_extra": 0.98,
+          "dx": 0,
+          "dy": 5,
+          "alpha_mult": 0.82
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_02.png",
+          "state": "death",
+          "index": 2,
+          "bbox": [
+            140,
+            236,
+            374,
+            476
+          ],
+          "scale_extra": 0.94,
+          "dx": 0,
+          "dy": 12,
+          "alpha_mult": 0.62
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_03.png",
+          "state": "death",
+          "index": 3,
+          "bbox": [
+            148,
+            259,
+            367,
+            484
+          ],
+          "scale_extra": 0.88,
+          "dx": 0,
+          "dy": 20,
+          "alpha_mult": 0.42
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_04.png",
+          "state": "death",
+          "index": 4,
+          "bbox": [
+            160,
+            295,
+            354,
+            494
+          ],
+          "scale_extra": 0.78,
+          "dx": 0,
+          "dy": 30,
+          "alpha_mult": 0.25
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_death_05.png",
+          "state": "death",
+          "index": 5,
+          "bbox": [
+            176,
+            338,
+            340,
+            506
+          ],
+          "scale_extra": 0.66,
+          "dx": 0,
+          "dy": 42,
+          "alpha_mult": 0.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_00.png",
+          "state": "move",
+          "index": 0,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_01.png",
+          "state": "move",
+          "index": 1,
+          "bbox": [
+            132,
+            203,
+            383,
+            461
+          ],
+          "scale_extra": 1.01,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_02.png",
+          "state": "move",
+          "index": 2,
+          "bbox": [
+            133,
+            204,
+            382,
+            459
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": -5,
+          "alpha_mult": 1.04
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_03.png",
+          "state": "move",
+          "index": 3,
+          "bbox": [
+            134,
+            208,
+            381,
+            461
+          ],
+          "scale_extra": 0.99,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_04.png",
+          "state": "move",
+          "index": 4,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_move_05.png",
+          "state": "move",
+          "index": 5,
+          "bbox": [
+            134,
+            213,
+            381,
+            466
+          ],
+          "scale_extra": 0.99,
+          "dx": 0,
+          "dy": 2,
+          "alpha_mult": 0.98
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_00.png",
+          "state": "skill_rift_zone",
+          "index": 0,
+          "bbox": [
+            136,
+            209,
+            385,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 3,
+          "dy": 0,
+          "alpha_mult": 0.98
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_01.png",
+          "state": "skill_rift_zone",
+          "index": 1,
+          "bbox": [
+            132,
+            202,
+            386,
+            462
+          ],
+          "scale_extra": 1.02,
+          "dx": 2,
+          "dy": -2,
+          "alpha_mult": 1.05
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_02.png",
+          "state": "skill_rift_zone",
+          "index": 2,
+          "bbox": [
+            127,
+            191,
+            388,
+            459
+          ],
+          "scale_extra": 1.05,
+          "dx": 0,
+          "dy": -5,
+          "alpha_mult": 1.12
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_03.png",
+          "state": "skill_rift_zone",
+          "index": 3,
+          "bbox": [
+            122,
+            187,
+            388,
+            460
+          ],
+          "scale_extra": 1.07,
+          "dx": -2,
+          "dy": -4,
+          "alpha_mult": 1.16
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_04.png",
+          "state": "skill_rift_zone",
+          "index": 4,
+          "bbox": [
+            128,
+            200,
+            384,
+            463
+          ],
+          "scale_extra": 1.03,
+          "dx": -2,
+          "dy": -1,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_rift_zone_05.png",
+          "state": "skill_rift_zone",
+          "index": 5,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_00.png",
+          "state": "skill_vampiric_bite",
+          "index": 0,
+          "bbox": [
+            130,
+            209,
+            379,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": -3,
+          "dy": 0,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_01.png",
+          "state": "skill_vampiric_bite",
+          "index": 1,
+          "bbox": [
+            128,
+            198,
+            384,
+            461
+          ],
+          "scale_extra": 1.03,
+          "dx": -2,
+          "dy": -3,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_02.png",
+          "state": "skill_vampiric_bite",
+          "index": 2,
+          "bbox": [
+            126,
+            187,
+            390,
+            458
+          ],
+          "scale_extra": 1.06,
+          "dx": 0,
+          "dy": -6,
+          "alpha_mult": 1.14
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_03.png",
+          "state": "skill_vampiric_bite",
+          "index": 3,
+          "bbox": [
+            125,
+            183,
+            394,
+            459
+          ],
+          "scale_extra": 1.08,
+          "dx": 2,
+          "dy": -5,
+          "alpha_mult": 1.18
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_04.png",
+          "state": "skill_vampiric_bite",
+          "index": 4,
+          "bbox": [
+            130,
+            197,
+            389,
+            462
+          ],
+          "scale_extra": 1.04,
+          "dx": 2,
+          "dy": -2,
+          "alpha_mult": 1.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/disk_devourer/disk_devourer_skill_vampiric_bite_05.png",
+          "state": "skill_vampiric_bite",
+          "index": 5,
+          "bbox": [
+            133,
+            209,
+            382,
+            464
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.02
+        }
+      ],
+      "note": "strong radial maw single-view candidate"
+    },
+    {
+      "id": "brood_mother",
+      "pixellab_id": "99d1c48c-ab86-4025-80b0-5a0ccb3d2edf",
+      "source_path": "docs/design/references/bosses/pixellab_roster_redraw_2026_06/pixellab/brood_mother/brood_mother_pixellab_object_alpha.png",
+      "runtime_dir": "assets/sprites/bosses/full_frame/brood_mother",
+      "target_bbox_from_previous_move_00": [
+        158,
+        232,
+        381,
+        448
+      ],
+      "frames": [
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_00.png",
+          "state": "attack_primary",
+          "index": 0,
+          "bbox": [
+            168,
+            245,
+            372,
+            452
+          ],
+          "scale_extra": 0.96,
+          "dx": 0,
+          "dy": 4,
+          "alpha_mult": 0.92
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_01.png",
+          "state": "attack_primary",
+          "index": 1,
+          "bbox": [
+            166,
+            238,
+            374,
+            450
+          ],
+          "scale_extra": 0.98,
+          "dx": 0,
+          "dy": 2,
+          "alpha_mult": 0.96
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_02.png",
+          "state": "attack_primary",
+          "index": 2,
+          "bbox": [
+            159,
+            219,
+            380,
+            444
+          ],
+          "scale_extra": 1.04,
+          "dx": 0,
+          "dy": -4,
+          "alpha_mult": 1.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_03.png",
+          "state": "attack_primary",
+          "index": 3,
+          "bbox": [
+            155,
+            207,
+            384,
+            440
+          ],
+          "scale_extra": 1.08,
+          "dx": 0,
+          "dy": -8,
+          "alpha_mult": 1.18
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_04.png",
+          "state": "attack_primary",
+          "index": 4,
+          "bbox": [
+            160,
+            223,
+            379,
+            445
+          ],
+          "scale_extra": 1.03,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_05.png",
+          "state": "attack_primary",
+          "index": 5,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_00.png",
+          "state": "death",
+          "index": 0,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_01.png",
+          "state": "death",
+          "index": 1,
+          "bbox": [
+            166,
+            241,
+            374,
+            453
+          ],
+          "scale_extra": 0.98,
+          "dx": 0,
+          "dy": 5,
+          "alpha_mult": 0.82
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_02.png",
+          "state": "death",
+          "index": 2,
+          "bbox": [
+            170,
+            257,
+            369,
+            460
+          ],
+          "scale_extra": 0.94,
+          "dx": 0,
+          "dy": 12,
+          "alpha_mult": 0.62
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_03.png",
+          "state": "death",
+          "index": 3,
+          "bbox": [
+            176,
+            278,
+            363,
+            468
+          ],
+          "scale_extra": 0.88,
+          "dx": 0,
+          "dy": 20,
+          "alpha_mult": 0.42
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_04.png",
+          "state": "death",
+          "index": 4,
+          "bbox": [
+            186,
+            310,
+            352,
+            478
+          ],
+          "scale_extra": 0.78,
+          "dx": 0,
+          "dy": 30,
+          "alpha_mult": 0.25
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_05.png",
+          "state": "death",
+          "index": 5,
+          "bbox": [
+            200,
+            347,
+            340,
+            490
+          ],
+          "scale_extra": 0.66,
+          "dx": 0,
+          "dy": 42,
+          "alpha_mult": 0.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_00.png",
+          "state": "move",
+          "index": 0,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_01.png",
+          "state": "move",
+          "index": 1,
+          "bbox": [
+            162,
+            227,
+            376,
+            445
+          ],
+          "scale_extra": 1.01,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_02.png",
+          "state": "move",
+          "index": 2,
+          "bbox": [
+            164,
+            227,
+            376,
+            443
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": -5,
+          "alpha_mult": 1.04
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_03.png",
+          "state": "move",
+          "index": 3,
+          "bbox": [
+            164,
+            231,
+            374,
+            445
+          ],
+          "scale_extra": 0.99,
+          "dx": 0,
+          "dy": -3,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_04.png",
+          "state": "move",
+          "index": 4,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_05.png",
+          "state": "move",
+          "index": 5,
+          "bbox": [
+            164,
+            236,
+            374,
+            450
+          ],
+          "scale_extra": 0.99,
+          "dx": 0,
+          "dy": 2,
+          "alpha_mult": 0.98
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_00.png",
+          "state": "skill_brood_spawn",
+          "index": 0,
+          "bbox": [
+            160,
+            232,
+            372,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": -3,
+          "dy": 0,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_01.png",
+          "state": "skill_brood_spawn",
+          "index": 1,
+          "bbox": [
+            158,
+            223,
+            377,
+            445
+          ],
+          "scale_extra": 1.03,
+          "dx": -2,
+          "dy": -3,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_02.png",
+          "state": "skill_brood_spawn",
+          "index": 2,
+          "bbox": [
+            157,
+            213,
+            382,
+            442
+          ],
+          "scale_extra": 1.06,
+          "dx": 0,
+          "dy": -6,
+          "alpha_mult": 1.14
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_03.png",
+          "state": "skill_brood_spawn",
+          "index": 3,
+          "bbox": [
+            157,
+            210,
+            386,
+            443
+          ],
+          "scale_extra": 1.08,
+          "dx": 2,
+          "dy": -5,
+          "alpha_mult": 1.18
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_04.png",
+          "state": "skill_brood_spawn",
+          "index": 4,
+          "bbox": [
+            161,
+            221,
+            382,
+            446
+          ],
+          "scale_extra": 1.04,
+          "dx": 2,
+          "dy": -2,
+          "alpha_mult": 1.1
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_05.png",
+          "state": "skill_brood_spawn",
+          "index": 5,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.02
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_00.png",
+          "state": "skill_web_zone",
+          "index": 0,
+          "bbox": [
+            166,
+            232,
+            378,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 3,
+          "dy": 0,
+          "alpha_mult": 0.98
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_01.png",
+          "state": "skill_web_zone",
+          "index": 1,
+          "bbox": [
+            164,
+            226,
+            380,
+            446
+          ],
+          "scale_extra": 1.02,
+          "dx": 2,
+          "dy": -2,
+          "alpha_mult": 1.05
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_02.png",
+          "state": "skill_web_zone",
+          "index": 2,
+          "bbox": [
+            158,
+            216,
+            381,
+            443
+          ],
+          "scale_extra": 1.05,
+          "dx": 0,
+          "dy": -5,
+          "alpha_mult": 1.12
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_03.png",
+          "state": "skill_web_zone",
+          "index": 3,
+          "bbox": [
+            154,
+            213,
+            381,
+            444
+          ],
+          "scale_extra": 1.07,
+          "dx": -2,
+          "dy": -4,
+          "alpha_mult": 1.16
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_04.png",
+          "state": "skill_web_zone",
+          "index": 4,
+          "bbox": [
+            158,
+            225,
+            377,
+            447
+          ],
+          "scale_extra": 1.03,
+          "dx": -2,
+          "dy": -1,
+          "alpha_mult": 1.08
+        },
+        {
+          "path": "assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_05.png",
+          "state": "skill_web_zone",
+          "index": 5,
+          "bbox": [
+            164,
+            232,
+            376,
+            448
+          ],
+          "scale_extra": 1.0,
+          "dx": 0,
+          "dy": 0,
+          "alpha_mult": 1.0
+        }
+      ],
+      "note": "readable spider queen single-view candidate"
+    }
+  ],
+  "held_source_only": [
+    "rift_warden",
+    "bone_archon",
+    "ashen_colossus",
+    "skeletal_dragon",
+    "bloodthorn_lion_8dir",
+    "secret_ascension_boss",
+    "bloodthorn_lion"
+  ]
+}

@@ -1,0 +1,2074 @@
+[
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_south.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      80,
+      62,
+      158,
+      182
+    ],
+    "source_alpha_size": [
+      78,
+      120
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0416666666666665
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      176,
+      251,
+      335,
+      496
+    ],
+    "runtime_alpha_size": [
+      159,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      87,
+      63,
+      155,
+      181
+    ],
+    "source_alpha_size": [
+      68,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      185,
+      251,
+      326,
+      496
+    ],
+    "runtime_alpha_size": [
+      141,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      88,
+      65,
+      154,
+      180
+    ],
+    "source_alpha_size": [
+      66,
+      115
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.130434782608696
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      185,
+      251,
+      326,
+      496
+    ],
+    "runtime_alpha_size": [
+      141,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      63,
+      156,
+      178
+    ],
+    "source_alpha_size": [
+      72,
+      115
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.130434782608696
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      179,
+      251,
+      332,
+      496
+    ],
+    "runtime_alpha_size": [
+      153,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      79,
+      61,
+      156,
+      177
+    ],
+    "source_alpha_size": [
+      77,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      174,
+      251,
+      337,
+      496
+    ],
+    "runtime_alpha_size": [
+      163,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      75,
+      61,
+      161,
+      177
+    ],
+    "source_alpha_size": [
+      86,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      165,
+      251,
+      347,
+      496
+    ],
+    "runtime_alpha_size": [
+      182,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      76,
+      64,
+      162,
+      184
+    ],
+    "source_alpha_size": [
+      86,
+      120
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0416666666666665
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      168,
+      251,
+      344,
+      496
+    ],
+    "runtime_alpha_size": [
+      176,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_south-east.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south-east.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      83,
+      63,
+      162,
+      178
+    ],
+    "source_alpha_size": [
+      79,
+      115
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.130434782608696
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      172,
+      251,
+      340,
+      496
+    ],
+    "runtime_alpha_size": [
+      168,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      83,
+      60,
+      159,
+      182
+    ],
+    "source_alpha_size": [
+      76,
+      122
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0081967213114753
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      179,
+      251,
+      332,
+      496
+    ],
+    "runtime_alpha_size": [
+      153,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      83,
+      59,
+      162,
+      176
+    ],
+    "source_alpha_size": [
+      79,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      173,
+      251,
+      338,
+      496
+    ],
+    "runtime_alpha_size": [
+      165,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      82,
+      60,
+      156,
+      178
+    ],
+    "source_alpha_size": [
+      74,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      179,
+      251,
+      333,
+      496
+    ],
+    "runtime_alpha_size": [
+      154,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      85,
+      61,
+      148,
+      177
+    ],
+    "source_alpha_size": [
+      63,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      189,
+      251,
+      322,
+      496
+    ],
+    "runtime_alpha_size": [
+      133,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      61,
+      158,
+      178
+    ],
+    "source_alpha_size": [
+      74,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      178,
+      251,
+      333,
+      496
+    ],
+    "runtime_alpha_size": [
+      155,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-east_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-east_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      61,
+      156,
+      178
+    ],
+    "source_alpha_size": [
+      72,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      180,
+      251,
+      331,
+      496
+    ],
+    "runtime_alpha_size": [
+      151,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_east.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_east.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      61,
+      155,
+      183
+    ],
+    "source_alpha_size": [
+      71,
+      122
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0081967213114753
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      184,
+      251,
+      327,
+      496
+    ],
+    "runtime_alpha_size": [
+      143,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      61,
+      145,
+      183
+    ],
+    "source_alpha_size": [
+      61,
+      122
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0081967213114753
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      195,
+      251,
+      317,
+      496
+    ],
+    "runtime_alpha_size": [
+      122,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      86,
+      61,
+      158,
+      181
+    ],
+    "source_alpha_size": [
+      72,
+      120
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0416666666666665
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      182,
+      251,
+      329,
+      496
+    ],
+    "runtime_alpha_size": [
+      147,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      87,
+      62,
+      152,
+      178
+    ],
+    "source_alpha_size": [
+      65,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      187,
+      251,
+      324,
+      496
+    ],
+    "runtime_alpha_size": [
+      137,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      88,
+      62,
+      141,
+      180
+    ],
+    "source_alpha_size": [
+      53,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      201,
+      251,
+      311,
+      496
+    ],
+    "runtime_alpha_size": [
+      110,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      87,
+      62,
+      148,
+      178
+    ],
+    "source_alpha_size": [
+      61,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      191,
+      251,
+      320,
+      496
+    ],
+    "runtime_alpha_size": [
+      129,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_east_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_east_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      88,
+      63,
+      145,
+      179
+    ],
+    "source_alpha_size": [
+      57,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      196,
+      251,
+      316,
+      496
+    ],
+    "runtime_alpha_size": [
+      120,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_north-east.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_north-east.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      90,
+      61,
+      142,
+      181
+    ],
+    "source_alpha_size": [
+      52,
+      120
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0416666666666665
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      203,
+      251,
+      309,
+      496
+    ],
+    "runtime_alpha_size": [
+      106,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      92,
+      61,
+      151,
+      178
+    ],
+    "source_alpha_size": [
+      59,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      194,
+      251,
+      318,
+      496
+    ],
+    "runtime_alpha_size": [
+      124,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      90,
+      63,
+      155,
+      178
+    ],
+    "source_alpha_size": [
+      65,
+      115
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.130434782608696
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      187,
+      251,
+      325,
+      496
+    ],
+    "runtime_alpha_size": [
+      138,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      91,
+      62,
+      153,
+      175
+    ],
+    "source_alpha_size": [
+      62,
+      113
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.168141592920354
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      189,
+      251,
+      323,
+      496
+    ],
+    "runtime_alpha_size": [
+      134,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      93,
+      61,
+      145,
+      180
+    ],
+    "source_alpha_size": [
+      52,
+      119
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0588235294117645
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      202,
+      251,
+      309,
+      496
+    ],
+    "runtime_alpha_size": [
+      107,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      91,
+      61,
+      153,
+      179
+    ],
+    "source_alpha_size": [
+      62,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      191,
+      251,
+      320,
+      496
+    ],
+    "runtime_alpha_size": [
+      129,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-east_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-east_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      92,
+      61,
+      146,
+      179
+    ],
+    "source_alpha_size": [
+      54,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      200,
+      251,
+      312,
+      496
+    ],
+    "runtime_alpha_size": [
+      112,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_north.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_north.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      84,
+      63,
+      158,
+      179
+    ],
+    "source_alpha_size": [
+      74,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      178,
+      251,
+      334,
+      496
+    ],
+    "runtime_alpha_size": [
+      156,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      87,
+      64,
+      154,
+      175
+    ],
+    "source_alpha_size": [
+      67,
+      111
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2072072072072073
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      182,
+      251,
+      330,
+      496
+    ],
+    "runtime_alpha_size": [
+      148,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      89,
+      63,
+      154,
+      175
+    ],
+    "source_alpha_size": [
+      65,
+      112
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1875
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      185,
+      251,
+      327,
+      496
+    ],
+    "runtime_alpha_size": [
+      142,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      89,
+      64,
+      154,
+      175
+    ],
+    "source_alpha_size": [
+      65,
+      111
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2072072072072073
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      184,
+      251,
+      327,
+      496
+    ],
+    "runtime_alpha_size": [
+      143,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      91,
+      64,
+      153,
+      174
+    ],
+    "source_alpha_size": [
+      62,
+      110
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.227272727272727
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      187,
+      251,
+      325,
+      496
+    ],
+    "runtime_alpha_size": [
+      138,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      90,
+      65,
+      154,
+      175
+    ],
+    "source_alpha_size": [
+      64,
+      110
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.227272727272727
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      184,
+      251,
+      327,
+      496
+    ],
+    "runtime_alpha_size": [
+      143,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      91,
+      66,
+      153,
+      175
+    ],
+    "source_alpha_size": [
+      62,
+      109
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2477064220183487
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      186,
+      251,
+      325,
+      496
+    ],
+    "runtime_alpha_size": [
+      139,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_north-west.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_north-west.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      82,
+      62,
+      157,
+      175
+    ],
+    "source_alpha_size": [
+      75,
+      113
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.168141592920354
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      174,
+      251,
+      337,
+      496
+    ],
+    "runtime_alpha_size": [
+      163,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      95,
+      65,
+      145,
+      174
+    ],
+    "source_alpha_size": [
+      50,
+      109
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2477064220183487
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      200,
+      251,
+      312,
+      496
+    ],
+    "runtime_alpha_size": [
+      112,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      88,
+      66,
+      146,
+      174
+    ],
+    "source_alpha_size": [
+      58,
+      108
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2685185185185186
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      190,
+      251,
+      322,
+      496
+    ],
+    "runtime_alpha_size": [
+      132,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      90,
+      67,
+      152,
+      172
+    ],
+    "source_alpha_size": [
+      62,
+      105
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.3333333333333335
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      183,
+      251,
+      328,
+      496
+    ],
+    "runtime_alpha_size": [
+      145,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      93,
+      65,
+      149,
+      176
+    ],
+    "source_alpha_size": [
+      56,
+      111
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.2072072072072073
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      194,
+      251,
+      318,
+      496
+    ],
+    "runtime_alpha_size": [
+      124,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      83,
+      65,
+      154,
+      177
+    ],
+    "source_alpha_size": [
+      71,
+      112
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1875
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      178,
+      251,
+      333,
+      496
+    ],
+    "runtime_alpha_size": [
+      155,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_north-west_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_north-west_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      83,
+      65,
+      153,
+      178
+    ],
+    "source_alpha_size": [
+      70,
+      113
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.168141592920354
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      180,
+      251,
+      332,
+      496
+    ],
+    "runtime_alpha_size": [
+      152,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_west.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_west.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      89,
+      61,
+      153,
+      180
+    ],
+    "source_alpha_size": [
+      64,
+      119
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0588235294117645
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      190,
+      251,
+      322,
+      496
+    ],
+    "runtime_alpha_size": [
+      132,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      97,
+      61,
+      149,
+      178
+    ],
+    "source_alpha_size": [
+      52,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      201,
+      251,
+      310,
+      496
+    ],
+    "runtime_alpha_size": [
+      109,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      81,
+      62,
+      150,
+      177
+    ],
+    "source_alpha_size": [
+      69,
+      115
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.130434782608696
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      182,
+      251,
+      329,
+      496
+    ],
+    "runtime_alpha_size": [
+      147,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      89,
+      63,
+      150,
+      176
+    ],
+    "source_alpha_size": [
+      61,
+      113
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.168141592920354
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      190,
+      251,
+      322,
+      496
+    ],
+    "runtime_alpha_size": [
+      132,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      103,
+      62,
+      149,
+      179
+    ],
+    "source_alpha_size": [
+      46,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      208,
+      251,
+      304,
+      496
+    ],
+    "runtime_alpha_size": [
+      96,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      97,
+      63,
+      152,
+      180
+    ],
+    "source_alpha_size": [
+      55,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      198,
+      251,
+      313,
+      496
+    ],
+    "runtime_alpha_size": [
+      115,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_west_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_west_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      99,
+      63,
+      148,
+      180
+    ],
+    "source_alpha_size": [
+      49,
+      117
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.094017094017094
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      204,
+      251,
+      307,
+      496
+    ],
+    "runtime_alpha_size": [
+      103,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_idle_south-west.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south-west.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      93,
+      61,
+      152,
+      183
+    ],
+    "source_alpha_size": [
+      59,
+      122
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0081967213114753
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      197,
+      251,
+      315,
+      496
+    ],
+    "runtime_alpha_size": [
+      118,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_00.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_00.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      95,
+      64,
+      154,
+      180
+    ],
+    "source_alpha_size": [
+      59,
+      116
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.1120689655172415
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      193,
+      251,
+      318,
+      496
+    ],
+    "runtime_alpha_size": [
+      125,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_01.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_01.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      90,
+      63,
+      154,
+      181
+    ],
+    "source_alpha_size": [
+      64,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      189,
+      251,
+      322,
+      496
+    ],
+    "runtime_alpha_size": [
+      133,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_02.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_02.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      92,
+      62,
+      153,
+      180
+    ],
+    "source_alpha_size": [
+      61,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      192,
+      251,
+      319,
+      496
+    ],
+    "runtime_alpha_size": [
+      127,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_03.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_03.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      101,
+      61,
+      152,
+      182
+    ],
+    "source_alpha_size": [
+      51,
+      121
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.024793388429752
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      204,
+      251,
+      307,
+      496
+    ],
+    "runtime_alpha_size": [
+      103,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_04.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_04.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      98,
+      61,
+      152,
+      180
+    ],
+    "source_alpha_size": [
+      54,
+      119
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0588235294117645
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      200,
+      251,
+      311,
+      496
+    ],
+    "runtime_alpha_size": [
+      111,
+      245
+    ]
+  },
+  {
+    "source": "assets/sprites/characters/pixellab/biologist/biologist_move_south-west_05.png",
+    "runtime": "assets/sprites/characters/full_frame/biologist_pixellab/biologist_move_south-west_05.png",
+    "source_size": [
+      244,
+      244
+    ],
+    "source_alpha_bbox": [
+      103,
+      61,
+      150,
+      179
+    ],
+    "source_alpha_size": [
+      47,
+      118
+    ],
+    "normalization": {
+      "target_visible_height": 245,
+      "bottom_padding": 16,
+      "scale": 2.0762711864406778
+    },
+    "runtime_size": [
+      512,
+      512
+    ],
+    "runtime_alpha_bbox": [
+      207,
+      251,
+      305,
+      496
+    ],
+    "runtime_alpha_size": [
+      98,
+      245
+    ]
+  }
+]

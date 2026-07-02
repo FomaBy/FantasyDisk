@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "attack_speed",
+  "runtime_target": "attr_attack_speed.png",
+  "source_image": "attack_speed_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: three rapid bronze blade afterimages in a circular motion arc, attack tempo.",
+  "created_at": "2026-06-30T08:36:46.462263+00:00",
+  "alpha_clean_image": "attack_speed_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_attack_speed.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "cfc0a3135bc12fc8d760eae6e423bce4550ca7abb50851fec2dbfc5d2c8f4fb1",
+  "alpha_nonzero_pixels": 16385,
+  "content_bbox": [
+    55,
+    36,
+    201,
+    220
+  ],
+  "postprocessed_at": "2026-06-30T09:11:20.763769+00:00"
+}

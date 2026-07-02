@@ -14,7 +14,43 @@ Final regenerated `build/character_balance_dps.csv` evidence:
 - Random-build best spreads are stable: `lvl20_random_1t` 1.620x and `lvl20_random_20t` 2.193x.
 - `summon_weapon_crowd_floor_test.gd` now uses deterministic budget estimates for the three summon/deploy floor checks: druid amulet 129.8/621.7, chemist homunculus 194.2/611.6, engineer sentry 139.7/648.5 (lvl1/lvl20 ideal 20t).
 
-Tuning notes:
+### Damage re-eval (SCRUM-782, 2026-06-30)
+
+Дочерний damage-пасс волны пересмотра баланса (по `balance_reeval_2026_06.md`).
+Свежий замер подтвердил: **damage-ось всё ещё удовлетворяет всем AC SCRUM-782 на
+тюнинге SCRUM-504/506** — дополнительные правки баланс-значений НЕ вносились
+(нет out-of-band метрики, и они риск-регрессивны на срезо-зависимом разбросе).
+
+AC-проверка (все выполнены тюнингом 504/506, см. числа выше):
+- best-weapon `lvl20_ideal_1t` spread без berserk = **1.980x ≤ 2.0x** (min
+  dark_mage/dark_wand 249.78, max assassin/chakrams 494.65). На пределе band, но в нём.
+- Целевые классы выше 0.75x пола, вне нижней четвёрки (guitarist 278.69, priest
+  269.21, robot 268.68, druid 274.22).
+- random-build spreads не ухудшены (`lvl20_random_1t` 1.620x, `lvl20_random_20t` 2.193x).
+- summon/deploy floor стабилен — свежий `summon_weapon_crowd_floor_test` дал те же
+  числа: druid/summon_amulet 129.8/621.7, chemist/homunculus_vial 194.2/611.6,
+  engineer/sentry 139.7/648.5 (lvl1/lvl20 ideal 20t).
+
+Свежие гейты (tools/godot_gate.py, Godot 4.7) — все PASS: global_damage_balance_smoke
+(combined ±25%, solo ±20%, worst CCT doctor/restore_potion/20 +22%),
+class_damage_table_3variants (lvl20-optimum в коридоре 0.90–1.10 → кросс-классовый
+spread ≈1.22x), summon_weapon_crowd_floor, berserk_dps_runaway (20t=2194≤3600,
+1t=484≤650). character_balance_csv НЕ гонялся (SIGABRT-флейк; 1.980x — из
+committed-evidence 504/506).
+
+**Известная структурная хрупкость (НЕ AC SCRUM-782, отложена):** budget-tuning
+форсирует output к таргету, поэтому ~16/51 пар уперты в budget-cap 2.800 (сырьё
+слишком слабое, нет запаса вниз), а summon/DoT-over-hitters душатся до mult 0.28–0.62
+(druid/summon_amulet raw +2344%, chemist/homunculus +719%). Это **идентичностная**, а
+не output-spread проблема — output-ось уже в band. Безопасный путь (для будущего
+пасса с рабочим арбитром): output-нейтральный подъём сырья cap-pinned оружия +
+смягчение over-hitter-формул тиков/призывов, с проверкой ре-нормировки в Python и
+полно-билдового CSV. Текущий CSV-арбитр (`character_balance_csv.gd`) SIGABRT-нестабилен
+под нагрузкой и не верифицирует срезо-зависимые выбросы — поэтому форс-ретюн здесь
+повторил бы блокер SCRUM-504/505/506/544 (PM-решение). Без верифицируемого арбитра
+правки не вносятся.
+
+Tuning notes (наследие 504/506):
 - `guitarist` keeps AoE/control identity but uses a fairer solo target.
 - `priest`, `robot`, and `knight` receive moderate solo/lvl20 growth support without breaching the class-kit 0.90..1.10 corridor.
 - `assassin` retains solo-class identity but loses the excessive lvl20 growth tail that was driving the non-berserk solo spread.
@@ -32,6 +68,34 @@ Tuning notes:
 - Knowledge / Знание;
 - Endurance / Выносливость;
 - Leadership / Лидерство.
+
+### Survivability re-eval (SCRUM-783, 2026-06-30)
+
+Дочерний survivability-пасс волны пересмотра баланса (по `balance_reeval_2026_06.md`).
+Аудит зафиксировал EHP-разброс **5.9x** (floor dark_mage 34.6, ceiling knight 203/
+robot 185) — dark_mage умирал почти от одного касания (0.39x медианы ~88).
+
+Правка (только survivability-параметр, `progression_data_characters.gd::BASE_STATS`):
+- **dark_mage `endurance` 2.0 → 3.0**: EHP **34.6 → 50.4** (before→after, замер
+  `balance_harness`), теперь на уровне aoe-стекла elementalist 50.8 / chemist 51.2.
+  Остаётся самым хрупким aoe-классом (по-прежнему «glass cannon», 224 DPS 5T), но не
+  one-touch-truп. survival-tier «fragile» и damage-таргеты НЕ затронуты (это отдельный
+  hardcoded label в `CLASS_BUDGET_PROFILES`, не производное от endurance).
+
+Итог: EHP-spread **5.9x → 4.03x** (50.4 .. 203.3); dark_mage floor 0.39x → 0.57x медианы.
+
+**Танк-потолок (knight 203 / robot 185) ОСТАВЛЕН без правки — осознанно:** пробный
+trim endurance 10→9 нарушал damage-коридор `class_damage_table` (lvl20-optimum
+relative_score 1.103/1.105 > 1.10) — survivability-стат связан с damage-метрикой
+(срезо-зависимость, тот же класс блокеров 504/505/506/544). Танки при 185–203 EHP не
+«бессмертны» (survivability-гейт: TTD ≤ 600с, митигация < 98%), потолок — их роль.
+Trim танк-потолка отложен в совместный damage+survivability пасс с ре-деривацией
+коридора (нельзя сделать изолированно в этом тикете без поломки соседнего гейта).
+
+Гейты (все PASS): global_survivability_balance_smoke, survivability_scenario (формула
+EHP == боевой take_damage), comfort_band_cross_class (spread 1.13x — НЕ ухудшен),
+contact_damage_softcap, class_damage_table_3variants (коридор восстановлен),
+global_damage_balance_smoke, runtime_smoke_test.
 
 ## Derived Parameters
 
@@ -68,6 +132,36 @@ Tuning notes:
 
 UI обязан показывать эти интерпретации текстом в level-up cards, attribute-upgrade tooltips, artifact notes, shop/HUD/pause tooltips и кодексе. Старые пометки «Не работает на текущем классе» и «Работает вполсилы» больше не используются.
 
+### Attribute Relevance Matrix (SCRUM-695)
+
+Для прокачиваемых боевых атрибутов level-up введён ПРЯМОЙ источник правды
+вместо косвенного расчёта через 8 базовых характеристик:
+
+- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный реестр 24 атрибутов
+  (`id`, `name`, `icon`-папка, `value_type`). На него ссылается каждый
+  `LEVEL_UP_REWARDS` через поле `attr`; иконки атрибутов лежат в
+  `docs/design/references/icons/attributes/<icon>/`.
+- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (атрибут × 17 классов) со
+  значениями `primary`/`secondary`/`optional`. **Жёсткий инвариант по каждому
+  атрибуту: ровно 2 primary, 8 secondary, 7 optional** (2+8+7=17), проверяется
+  `tests/attribute_relevance_test.gd` — любое нарушение валит data-гейт.
+  `optional` выводится как «все остальные классы». При 24 атрибутах per-class
+  выходит ~2-3 primary / 10-12 secondary / 9-12 optional (идеально ровный
+  per-class расклад достижим только при N, кратном 17; здесь сознательно
+  сохранён полный набор атрибутов вместо консолидации до 17, чтобы не убирать
+  игровые варианты прокачки — per-attribute правило 2/8/7 выполнено при любом N).
+- `attribute_relevance(attr, class)` и `attribute_relevance_weight(attr, class)`
+  читают матрицу напрямую; `level_up_reward_weight` весит награды от
+  релевантности (primary 2.4 > secondary 1.0 >> optional 0.4, optional держится
+  выше 0.3, чтобы атрибут не выпадал из пула). `ATTRIBUTE_PRIORITIES` (8 базовых
+  характеристик) остаётся для редкого main-stat слота и pause-stats tooltips.
+- Правило показа набора (`ProgressionData.weighted_level_up_selection`,
+  делегируется из `ui_screens._random_level_up_rewards`): в одном показе из 3
+  вариантов **не более 1** `optional`-атрибута и **всегда минимум 1**
+  primary/secondary; набор никогда не состоит только из необязательных. Редкий
+  main-stat слот (`MAIN_STAT_SLOT_CHANCE`) и capstone «Озарение» считаются
+  не-optional и правилу не противоречат.
+
 ## XP, Money And Pickups
 
 - Враги могут дропать XP и money pickups.
@@ -86,6 +180,36 @@ UI обязан показывать эти интерпретации текс�
 - Autosave persists `current_act`, route nodes, selected route history, shop
   state and player snapshot. Continue restores Act 2/3 map checkpoints with the
   same build state.
+
+## Comfort/Pacing re-eval (SCRUM-781)
+
+Дочерний пасс волны пересмотра баланса по оси **комфорт/pacing**, по выводам
+`docs/design/reviews/balance_reeval_2026_06.md`. Итог замера: ось **здорова в
+пределах locked paths этой задачи** (волны/спавн/темп, кривая ascension, drop-
+экономика) — тюнинг-значения НЕ менялись, чтобы не регрессировать соседние гейты.
+
+Свидетельства (все зелёные):
+- `comfort_band_cross_class_gate`: spread **1.13x** на срезах 1/5/20t, 0 нарушений
+  ±20% медианы (153 замера) — кросс-классовый комфорт-DPS уже очень узкий.
+- `ascension_curve_balance_test`: кривая монотонна до L5 (hp×1.80), mini-elite-«горб»
+  пик L3=0.16 → спад L5=0.03 — без провисаний и стен.
+- `enemy_damage_spread_gate`: TTD-floor 0.48с, fragile TTD ≥ 1.5× окна реакции на
+  стадиях 0/4/8/10, наклон сжат — недизайненных ваншотов нет.
+- `live_balance_simulation_test`: 5 архетипов, 0 мягких заметок.
+
+Темп наград/прогресса (level-up + drop-экономика) подтверждён здоровым и НЕ
+инфлирован: 24 level-up-карты (data-driven, выбор 1 из 3), START_BOONS в пределах
++10% боевой силы (`start_boons_test`), shop/артефакты с трейд-офф-модами.
+
+Wave-density-комфорт («динамичный бой с первой секунды») доставлен отдельно в
+SCRUM-784 (WAVE_SETTINGS/`_choose_wave_spawn_edges` в main.gd/combat_director.gd —
+другой контур, вне locked paths этой задачи).
+
+**Отложено в damage-пасс (вне scope комфорта):** 4 crowd-clear-лаггера +20–22% на
+20-врагах (doctor/restore_potion, druid/summon_amulet, druid/raven_totem,
+chemist/homunculus_vial) — это **per-weapon** свойство (растекание/задержка
+призыва), а не pacing/curve/economy; правится в damage-пассе (`class_weapon`/
+weapon-числа), а не здесь, чтобы не пересекать damage-числа.
 
 ## Level-Up
 
@@ -238,12 +362,28 @@ event-множители) + `post_combat`.
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.
 
-### Древо умений (мета, SCRUM-150)
+### Древо умений (мета, SCRUM-726 → SCRUM-807 Skill Tree 3.0)
 
-- 4 ветки (`Богатство`/`Знания`/`Мощь`/`Стойкость`), ~10 узлов каждая; покупка по тирам с пререквизитами.
-- Очки умений (`skill_points`) начисляются за победу над боссом; бюджет полного древа ≈ +29% силы (кап ≤ ~+30%).
-- Боевое подмножество модификаторов уходит в `run_modifiers` на старте забега (`player.apply_meta_skill_modifiers`); экономические узлы дают стартовое золото/скидки. Capstone «Вторая жизнь» (Стойкость) — раз за забег смертельный удар оставляет 1 HP.
-- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`.
+- Канон: `docs/design/systems/skill_tree.md`. Данные/конструктор графа вынесены в
+  `scripts/meta_progression_tree_data.gd` (v3).
+- **v3 (schema 4):** 192 узла, суммарная стоимость 285 при неизменном
+  `META_POINTS_CAP = 100` (на 100 очков покупается ~35% графа). Ядро 7 + 8 лепестков
+  (32) + 17 классовых ветвей по 9 нодов (238). У каждого класса ≥8 классовых нодов
+  (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE` + 2 notable + 1 уникальный
+  keystone) — настоящая классовая идентичность вместо одного вектора ×скаляр.
+- **Бюджет силы дерева:** аддитивный слой поверх базы; anti-runaway/comfort гейты
+  НЕ прокачивают дерево, поэтому оно вне их коридоров. Реалистичный 100-очковый
+  билд даёт классу ~+12–20% эффективного DPS/EHP (`damage_mult` в коридоре
+  0.08..0.40, под-тест `_test_realistic_build_power_budget`); аккаунтная сила
+  почти нейтральна (классовые эффекты affinity-gated).
+- Миграция schema 3→4: полный респек купленных узлов, очки пересчитываются из
+  возвышений (без потери).
+- (историческое) Schema 3: 107 узлов, стоимость 183 — тонкая классовая идентичность
+  (3 узла/класс одним вектором ×0.18/0.36/1.0).
+- Атрибутные узлы (`strength_flat`, `agility_flat`, `intelligence_flat`, `perception_flat`, `energy_flat`, `knowledge_flat`, `endurance_flat`, `leadership_flat`) добавляются к базовым stats героя до `ProgressionData.derived_parameters()`.
+- `class_affinity` узлы можно купить в общем графе, но их эффекты применяются только выбранному герою через `MetaProgression.skill_modifiers_for_class(meta_state, selected_character_id)`. `skill_modifiers(state)` оставлен для account-wide UI preview.
+- Нейтральные capstone ядра: «Боевой раж», «Вторая жизнь», «Связи в гильдии», «Озарение». У каждого из 17 героев есть ровно один сигнатурный keystone.
+- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd` (+ `meta_progression_tree_data.gd`). v3: ветвь выбранного героя в фокусе, чужие классовые ветви «спят» (затемнены). Фокусные проверки: `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
 
 ### Прогрессия По Классам (SCRUM-360)
 
@@ -257,6 +397,37 @@ event-множители) + `post_combat`.
 ### Патч-ноуты (SCRUM-159)
 
 - Кнопка «Что нового» + бейдж в меню; данные — `scripts/patch_notes_data.gd`, последняя виденная версия — `last_seen_version` в `game_settings`.
+
+### Контракт codex-открытий (SCRUM-719 аудит)
+
+Кодекс открывается рантаймом при убийстве врага: `Main.record_codex_enemy_discovery`
+выводит `content_id` и `category`, далее `MetaProgression.record_codex_discovery`
+записывает его в мета-сейв. **Критично:** id, не входящий в канонический набор
+(`MetaProgression._canonical_codex_ids` ← `CodexData.monsters()`), молча
+отбрасывается — открытие теряется без ошибки. Источники id рантайма:
+
+- обычные враги/элитки → `Main.CODEX_ENEMY_NAME_TO_ID[enemy_type_name]` (категория `monsters`);
+- мини-элитки → meta `mini_elite_kind` = `ProgressionData.mini_elite_kinds()[].id` (категория `monsters`);
+- боссы → meta `boss_id` (категория `bosses`); одноимённые записи в `CODEX_ENEMY_NAME_TO_ID`
+  для боссов **вестигиальны** (босс в группе `bosses` уходит в boss-ветку и до name-map не доходит).
+
+**Аудит-находки 0.2.0:**
+
+- *Исправлено:* 4 мини-элитки Возвышения из SCRUM-607 (`mini_siege_rammer`,
+  `mini_swarm_sniper`, `mini_plague_berserker`, `mini_void_phantom`) были добавлены в
+  геймплей (`progression_data_enemies.gd::MINI_ELITE_KINDS`, анимации, roster-тест), но
+  **не зеркалированы в `codex_data.gd`** — их убийство молча не открывало кодекс.
+  Добавлены canonical-записи (player-facing RU title/desc — зеркало `MINI_ELITE_KINDS`).
+  Кодекс монстров: 26 → 30.
+- *Filed (не исправлено намеренно):* секретный босс `secret_ascension_boss`
+  (`MetaProgression.SECRET_BOSS_ID`) выставляет meta `boss_id` и при убийстве зовёт
+  `record_codex_discovery('bosses', ...)`, но codex-записи у него нет → открытие теряется.
+  Показывать ли секретного босса в кодексе — player-facing/дизайн-решение, поэтому
+  оставлено как находка, а не правка. Контракт-тест закрепляет текущую реальность и
+  «покраснеет», если разрыв осознанно закроют.
+- Регрессия-гейт: `tests/codex_discovery_contract_test.gd` — end-to-end сверяет, что
+  каждый рантайм-источник id реально записывается метой, и что нет «мёртвых»
+  codex-монстров без рантайм-пути открытия (двусторонняя сверка).
 
 ## Balance Validation
 

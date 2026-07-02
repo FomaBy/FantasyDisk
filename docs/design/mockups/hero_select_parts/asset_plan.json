@@ -1,0 +1,19 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "assets": [
+    {"id":"background", "target":"2560x1440", "content_rect":"full screen backdrop, no UI text"},
+    {"id":"button_back", "target":"460x148", "content_rect":"70,38,320,72"},
+    {"id":"frame_title", "target":"1840x184", "content_rect":"120,42,1600,96"},
+    {"id":"frame_portrait", "target":"600x820", "content_rect":"72,94,456,620"},
+    {"id":"frame_dossier", "target":"980x820", "content_rect":"92,84,796,640"},
+    {"id":"frame_radar", "target":"780x520", "content_rect":"98,57,584,406"},
+    {"id":"frame_ascension", "target":"780x270", "content_rect":"74,50,632,183"},
+    {"id":"button_asc_minus", "target":"132x92", "content_rect":"32,22,68,48"},
+    {"id":"button_asc_plus", "target":"132x92", "content_rect":"32,22,68,48"},
+    {"id":"button_choose", "target":"512x118", "content_rect":"70,34,372,50"},
+    {"id":"frame_carousel", "target":"2432x330", "content_rect":"110,61,2212,220"},
+    {"id":"button_carousel_left", "target":"132x176", "content_rect":"36,42,60,92"},
+    {"id":"button_carousel_right", "target":"132x176", "content_rect":"36,42,60,92"},
+    {"id":"frame_hero_slot", "target":"196x220", "content_rect":"18,18,160,160"}
+  ]
+}

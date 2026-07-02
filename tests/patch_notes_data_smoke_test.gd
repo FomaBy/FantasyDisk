@@ -4,7 +4,7 @@ extends SceneTree
 # («Что нового» в меню), и ЛОГИКА сравнения версий (entries_since/has_new_since/
 # _version_greater) для бейджа новой версии после обновления. Поломка всплыла бы
 # только у игрока после апдейта. Валидирует структуру записей, порядок версий и
-# корректность version-логики (в т.ч. числовое 0.1.10 > 0.1.9, нечисловые части).
+# корректность version-логики (в т.ч. числовое 0.2.10 > 0.2.9, нечисловые части).
 # Отдельный изолированный файл.
 #
 # Запуск: Godot --headless --path . --script res://tests/patch_notes_data_smoke_test.gd
@@ -81,17 +81,17 @@ func _check_ordering(errors: Array) -> void:
 
 
 func _check_version_logic(errors: Array) -> void:
-	# Числовое, НЕ лексикографическое сравнение (классический баг 0.1.10 vs 0.1.9).
-	if not PatchNotes._version_greater("0.1.10", "0.1.9"):
-		errors.append("_version_greater('0.1.10','0.1.9') должно быть true (числовое сравнение)")
-	if PatchNotes._version_greater("0.1.9", "0.1.10"):
-		errors.append("_version_greater('0.1.9','0.1.10') должно быть false")
+	# Числовое, НЕ лексикографическое сравнение (классический баг 0.2.10 vs 0.2.9).
+	if not PatchNotes._version_greater("0.2.10", "0.2.9"):
+		errors.append("_version_greater('0.2.10','0.2.9') должно быть true (числовое сравнение)")
+	if PatchNotes._version_greater("0.2.9", "0.2.10"):
+		errors.append("_version_greater('0.2.9','0.2.10') должно быть false")
 	# Равные версии — не больше.
 	if PatchNotes._version_greater("0.1.4", "0.1.4"):
 		errors.append("_version_greater равных версий должно быть false")
-	# Старшинство по major/minor.
-	if not PatchNotes._version_greater("0.2.0", "0.1.9"):
-		errors.append("_version_greater('0.2.0','0.1.9') должно быть true (minor старше)")
+	# Старшинство по minor: 0.2.0 является следующим релизом после 0.1.x.
+	if not PatchNotes._version_greater("0.2.0", "0.1.7"):
+		errors.append("_version_greater('0.2.0','0.1.7') должно быть true (minor старше)")
 	# Нечисловые части трактуются как 0.
 	if PatchNotes._version_greater("0.0.indev", "0.0.0"):
 		errors.append("нечисловая patch-часть должна трактоваться как 0 (не > 0.0.0)")

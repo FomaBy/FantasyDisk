@@ -1,0 +1,60 @@
+{
+  "issue": "SCRUM-766",
+  "asset": "soldier_bayonet attack VFX",
+  "weapon_id": "soldier_bayonet",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_soldier_bayonet.png",
+  "source_files": [
+    "soldier_bayonet_pixellab_source_raw.png",
+    "soldier_bayonet_pixellab_source.png",
+    "vfx_weapon_soldier_bayonet_runtime_256.png"
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/soldier_bayonet_contact.png",
+  "pixel_lab": {
+    "tool": "create_1_direction_object",
+    "object_id": "0c10ba57-becc-4a2e-bfcd-9d6f6e8e7a71",
+    "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/0c10ba57-becc-4a2e-bfcd-9d6f6e8e7a71/rotations/unknown.png",
+    "created": "2026-07-01",
+    "size": "256x256px",
+    "view": "top-down",
+    "mode": "1-direction",
+    "cost": "20 generations"
+  },
+  "override_rationale": "Direct user directive on 2026-07-01 kept the SCRUM-766 unblock on PixelLab-first generation after the old OpenAI Images helper was blocked by billing_hard_limit_reached. No OpenAI Images, image_gen, or manual VFX drawing pipeline was used.",
+  "postprocess": {
+    "steps": [
+      "Saved raw PixelLab source PNG to the task reference folder.",
+      "Dropped only near-invisible alpha dust to create the accepted source PNG.",
+      "Rotated the PixelLab brace from vertical to +X/right so AttackVfx.weapon_signature can rotate it with the attack direction.",
+      "Composited the canonical soldier_bayonet weapon PNG as a low-opacity ghost silhouette under the PixelLab-generated brace corridor.",
+      "Added a soft source-derived shadow for dark/light field contrast.",
+      "Capped final alpha at 170 and exported 256x256 RGBA runtime PNG.",
+      "Generated static alpha/readability report and contact preview."
+    ],
+    "runtime_metrics": {
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bbox": [
+        16,
+        86,
+        240,
+        170
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "visible_pixel_ratio_alpha_gt_8": 0.1282,
+      "max_alpha": 170,
+      "mean_alpha_all_pixels": 15.22,
+      "mean_alpha_visible_pixels": 117.24,
+      "center_64_mean_alpha": 81.49,
+      "center_64_max_alpha": 170,
+      "corridor_192x40_mean_alpha": 66.79
+    }
+  }
+}

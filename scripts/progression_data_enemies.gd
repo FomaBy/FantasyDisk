@@ -3,8 +3,8 @@ extends RefCounted
 # SCRUM-198: enemy/minion content data owned outside the progression facade.
 
 const ENEMY_SIZE_PROFILES := {
-	"ordinary": {"scale": 1.0, "label": "Обычный враг"},
-	"mini_elite": {"scale": 1.05, "label": "Мини-элитка Возвышения"},
+	"ordinary": {"scale": 1.25, "label": "Обычный враг"},
+	"mini_elite": {"scale": 1.31, "label": "Мини-элитка Возвышения"},
 	"elite": {"scale": 1.68, "label": "Карточная элитка"},
 	"boss": {"scale": 1.90, "label": "Босс"},
 }
@@ -121,6 +121,14 @@ const UNIQUE_ENCOUNTER_PATTERNS := {
 		"title": "Пепельный колосс", "kind": "boss",
 		"mechanics": ["hazard_pool", "reflect_thorns", "weakpoint_shell", "rift_wave"],
 		"summary": "slam-волны, тлеющие зоны, раскаленный панцирь и энрейдж",
+	},
+	# SCRUM-794: новый босс из design-пакета SCRUM-779. Пока НЕ в ротации маршрута
+	# (route-пул подключается отдельной задачей после QA) — сцена/механики/кодекс
+	# готовы к рантайму и покрыты boss/elite-смоуком.
+	"bloodthorn_lion": {
+		"title": "Кровавый шипастый лев", "kind": "boss",
+		"mechanics": ["charge_telegraph", "hazard_pool", "rift_wave", "split_spawn"],
+		"summary": "хищник-прыгун: частые рывки, радиальные шипы и кольцо кровавых шипов с проходом",
 	},
 	"secret_ascension_boss": {
 		"title": "Secret Ascension Boss", "kind": "boss",

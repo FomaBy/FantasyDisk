@@ -4,6 +4,30 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## SCRUM-692 Runtime Readability Pass
+
+SCRUM-692 increases runtime UI readability without changing gameplay, economy,
+progression, save data, or generated art. `scripts/ui_screens.gd` now routes
+player-facing font overrides through a viewport-aware scale: about `1.32x` on
+short `648p` layouts and `1.45x` at `864p+`, with per-screen caps where a larger
+font would leave a frame content zone. Tight safe-zone exceptions include Codex
+tabs, rebind conflict actions, combat title banner, Level Up later button,
+economy-card action labels, reward cards, and compact combat HUD labels.
+
+`scripts/ui_icon_registry.gd` scales common icon requests up by `1.45x` through
+`72px` and `1.20x` through `100px`; larger authored icons stay at source size.
+Screens with narrow card safe-zones request smaller fit icons instead of
+allowing content to cover frame ornament. Menu HUD is shifted slightly upward on
+720p screens so the enlarged HUD strip does not overlap shop headers.
+
+Acceptance coverage: `tests/ui_no_overlap_matrix_test.gd` includes `1536x864`,
+`1920x1080`, and `2560x1440`; required smoke tests are
+`runtime_smoke_ui_test.gd`, `runtime_smoke_test.gd`, and
+`ui_icon_registry_smoke_test.gd`. Screenshot evidence is written by
+`tests/design_review_screenshot_capture_test.gd` to
+`build/qa/design_review/` for Hero Select, Level Up, Shop, Codex, Settings, and
+Combat HUD at `1280x720`, `1920x1080`, and `2560x1440`.
+
 ## Shop UI
 
 Магазин должен ощущаться частью shop background, а не отдельным default modal window. Предметы располагаются в центральной свободной зоне canonical backdrop `assets/backgrounds/ui/ui_backdrop_merchant_archive.png`.
@@ -88,6 +112,21 @@ dark track/gold fill/focus behavior, so they no longer stretch across the whole
 content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
 OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
 
+SCRUM-694 delivers the Settings **v3** full redraw design package: a from-scratch
+premium dark-fantasy frame family (PixelLab) replacing the shared minimal-metal
+styleboxes for every Settings surface. Pipeline: live inventory →
+`docs/design/references/settings_v3_full_redraw/layout.json` (responsive geometry,
+fit gate `ready_for_image`, validated against the live 2K constants) → three
+textless OpenAI mockups (`docs/design/mockups/settings_v3_full_redraw/`, reference
+only) → five PixelLab final 9-slice frames in
+`assets/sprites/ui/frames/settings_v3/`: main modal (dragon-wing crest + red-gem
+corners), tab switcher (3 slots), content panel, inset field (dropdowns/rebind),
+action button. Native-size sources, transparent, textless, alpha-clean; modal
+native 2048×1232 (covers 2K+4K), proportional 1536×924 at 1080p (no one-axis
+stretch — only tiled 9-slice centers adapt). Runtime swap is a Back-end follow-up
+per `docs/design/references/settings_v3_full_redraw/backend_handoff.md` (exact
+paths, texture margins, node IDs, tests); v2/minimal-metal stays live until then.
+
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
 buttons only below 660px viewport height, while Settings permits a compressed
@@ -153,7 +192,7 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
 
 ## Route Map 2K Source
 
@@ -169,27 +208,26 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- Hero select now uses the SCRUM-447 v3 fullscreen runtime contract. `_show_character_select()` builds a centered proportional `1536x864` `HeroSelectCanvas` from the accepted SCRUM-446 source package in `docs/design/references/hero_select_v3/`: `mockup.png`, corrected `zones.json` / `zones_normalized.json`, `frames_spec.json`, and `hero_select_v3_mockup_spec.md`. The live runtime uses `assets/sprites/ui/frames/hero_select_v3/background.png`, `frame_preview.png`, `frame_dossier.png`, square `frame_radar.png`, and `frame_carousel.png`; Godot import sidecars are required for these runtime assets. Title, Back, preview, dossier, radar and carousel are placed from the v3 source rects, while all labels, portraits, controls, hover highlights and thumbnails stay inside each frame's documented content rect. The live SCRUM-322/SCRUM-347 `HeroSelectRadarPanel` / `HeroStatRadar` compass-rose contract is preserved and rendered inside the square v3 radar content zone without non-uniform stretch. SCRUM-389 ascension selection, SCRUM-416 full-frame portrait routing and SCRUM-417 portrait scaling remain live. Runtime smoke asserts v3 texture loading, proportional canvas aspect, safe-zone containment, preserved radar placement, carousel containment, portrait texture paths/scaling and no-overlap at responsive sizes; QA evidence lives in `build/qa/scrum446_hero_select_v3/`.
+- SCRUM-798 keeps the 2026-06-30 user-requested minimal black Hero Select direction, not the older ornate/Pixellab frame layout, but rebuilds the live sizing and information hierarchy. `_show_character_select()` / `_build_character_select_v4()` builds `HeroSelectScreen` over `HS4BlackBackground`; no title frame, no PixelLab backdrop, no compass rose, and no `HeroStatRadar` are active. The selected `HS4Portrait` is now the dominant left-column object (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `660x660` on tall screens) and keeps SCRUM-416/SCRUM-687 directional SpriteFrame rotation when available. `HS4AscensionFrame` is directly below the preview with `-`/`+`, max clamping, modifier text/tooltip and `HS4ChooseButton`. The right `HS4DossierFrame` is scroll-safe and contains class title, description, strengths, weaknesses, weapon names, class identity, eight base characteristics as hoverable Line Bars with rich `StatFormulas.STAT_DEFINITIONS` + class interpretation tooltips, and data-driven build guidance sections `Основные атрибуты`, `Второстепенные атрибуты`, `Дополнительные атрибуты` from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive `HS4CarouselSlot_*` buttons (`~203px` at 720p, `~305px` at 1080p, capped near `320px`), larger arrows, cyclic paging and default focus on the selected visible slot. Since SCRUM-421 follow-up, carousel portraits are also alpha-bottom aligned inside clipped slots so PixelLab classes with different transparent canvas padding share one visible baseline. SCRUM-822 now positions both the large preview and carousel portraits by cached alpha bounding boxes, so transparent side padding is ignored, visible bodies are centered/bottom-aligned, and each carousel slot reserves a bottom `HS4CarouselLabel_*` name strip from the character title. Evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`, `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
 - SCRUM-562 updates the live Weapon Select 2K pass. `_show_weapon_select()` now uses a dedicated `WS_PANEL_2K` frame at `420,190,1720,1060` with `WS_SAFE_2K` `498,286,1564,898`; the start-boon screen continues to use the generic `weapon_select` economy panel. Runtime frames are `ws_panel`, `ws_card`, and `ws_btn_back` in `assets/sprites/ui/frames/overhaul_2k/`, registered through `UIThemePaths.OVERHAUL_2K_FRAME_*`. OpenAI/source and safe-zone evidence live under `docs/design/references/scrum562_weapon_select_2k/`, `docs/design/mockups/scrum562_weapon_select_2k/`, and `docs/design/previews/scrum562_weapon_select_2k_*`. Route Map/SCRUM-563 geometry is intentionally untouched.
 - Live HS4 Hero Select keeps the same runtime selection contract: carousel arrow
   buttons select previous/next character cyclically in
   `ProgressionData.character_ids()` order and use the same refresh path as
-  thumbnail/slot clicks for portrait, dossier, radar, ascension label and
-  selected thumbnail state. The arrows remain inside the existing carousel
-  content zone; no frame art or safe-zone geometry changes are part of this
-  behavior.
+  slot clicks for portrait, dossier, ascension label and selected carousel state.
+  The arrows remain inside the bottom carousel band.
 - 2026-06-29: `HS4Portrait` can render an animated class preview when the
-  selected character exposes directional SpriteFrames. Berserk uses the new
-  PixelLab `walk_<direction>` rows and cycles `south -> south_west -> west ->
-  north_west -> north -> north_east -> east -> south_east` so the preview turns
-  clockwise while staying inside the existing portrait content zone. Other
-  characters keep the static `sprite_path` portrait fallback.
+  selected character exposes directional SpriteFrames. PixelLab classes use
+  one-frame `idle_<direction>` rotation rows and cycle `south -> south_west ->
+  west -> north_west -> north -> north_east -> east -> south_east`, so Berserk,
+  Dark Mage and Guitarist turn clockwise with the same static-pose cadence while
+  staying inside the existing portrait content zone. Other characters keep the
+  static `sprite_path` portrait fallback.
 - SCRUM-664 fixes HS4 keyboard/gamepad focus for the same screen: the visible
   carousel hero slots are focusable, the selected visible slot receives default
   focus, carousel arrows/slots/Ascension/Choose/Back have explicit directional
   focus neighbors, and Escape/Back still returns to the main menu. This is a
   runtime input fix only; no frame art or safe-zone geometry changed.
-- SCRUM-561 updates the live HS4 Hero Select v4 2K pass. Slot-exact assets now
+- Historical: SCRUM-561 updated the older HS4 Hero Select v4 2K frame pass. Slot-exact assets
   live under `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_hs4_*.png` and are
   registered in `UIThemePaths.OVERHAUL_2K_FRAME_*`. Runtime content uses scaled
   frame content margins via `_overhaul_2k_content_margins()`: portrait/dossier/radar
@@ -201,7 +239,7 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
 - Historical SCRUM-436 720p safe-area notes: the v2 `HeroSelectBackButton`, portrait/dossier/radar separation and bottom thumbnail strip were fixed with corrected slices in `assets/sprites/ui/frames/hero_select_v2/`. Those files and QA dumps in `build/qa/scrum436/` remain reference evidence only; the active runtime frame kit is SCRUM-447 v3.
 - SCRUM-355 supersedes the earlier dossier/carousel content-zone guidance for Design-safe ornament avoidance: the live `ui_frame_hero_select_dossier.png` and `ui_frame_hero_select_thumbnail_strip.png` were recomposed thinner/lighter by `tools/build_hero_select_thin_frames.py`; strict source margins are dossier `Vector4(126, 160, 126, 172)` and thumbnail strip `Vector4(132, 62, 132, 62)`. SCRUM-354 wires those exact source-space margins into runtime, scaling the carousel from its actual `1536x255` source image rather than the `1024x170` 720p display size. Labels, description text, ascension controls, the start button, thumbnails, hover states and selection states stay inside the computed safe rects; the 720p runtime dump shows dossier content `[P: (489, 191), S: (299, 280)]` within the 2px test tolerance of safe `[P: (488.5, 191.3), S: (299.9, 279.3)]`, carousel content `[P: (216, 587), S: (848, 88)]` within the same tolerance of safe `[P: (216, 587.3), S: (848, 87.3)]`, and a 22px gap between dossier and carousel frames. QA rects live in `build/qa/hero_select_radar_rects.md`.
 - SCRUM-356 runtime integration: `ui_frame_hero_select_unified_panel.png` is drawn as one proportional `TextureRect`, not 9-sliced or stretched on one axis. Runtime content may only use these source-space safe zones: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `ui_frame_hero_select_asc_button_small.png` is the compact `256x256` stepper frame for both `-` and `+`; on compact 720p layouts the ascension delta line is hidden so the row and choose button stay inside `bottom_controls`, while larger layouts show the delta line inside the same safe-zone. QA rects live in `build/qa/hero_select_radar_rects.md`.
-- SCRUM-436 runtime integration is complete historical work for Sprint 0.1.6, but SCRUM-447 is the current live Hero Select basis. Do not place future Hero Select labels, portraits, icons, buttons, hover highlights or tooltips outside the SCRUM-446/SCRUM-447 source-space content zones or on frame ornament.
+- SCRUM-436 and SCRUM-447 runtime integrations are historical Hero Select work for Sprint 0.1.6. The 2026-06-30 black minimal Hero Select contract above is the active runtime basis; future ornate/frame-based Hero Select work must first replace that active contract intentionally.
 - SCRUM-446 is the Design-source package behind the live SCRUM-447 runtime. Source artifacts live in `docs/design/references/hero_select_v3/` and the UI-director mirror package in `docs/design/mockups/hero_select_v3/`: `mockup.png`, `mockup_zones_annotated.png`, raw `zones_vision_raw.json`, corrected non-overlapping `zones.json` / `zones_normalized.json`, `frames_spec.json`, and `hero_select_v3_mockup_spec.md`. Production frame assets are `assets/sprites/ui/frames/hero_select_v3/frame_preview.png`, `frame_dossier.png`, `frame_radar.png`, `frame_carousel.png`, plus `background.png`. The four transparent frame assets are RGBA with `white_opaque_pixels=0` after cleanup and declare texture/content margins in `frames_spec.json`.
 - SCRUM-373/SCRUM-382 add and integrate the unified master frame kit in `assets/sprites/ui/frames/unified/`. SCRUM-384 revises the same preserved runtime paths into a thinner metallic frame with small red corner gems and separate optional dragon overlays. Generic panels/cards/tooltips/HUD/timer frames use a shared StyleBoxTexture builder with tile stretch on both axes and texture margins `72/72/72/72`; filled runtime surfaces use `ui_frame_unified_master_fill.png` for readability, while `ui_frame_unified_master.png` remains the border-only variant. Strict content margins are `88/88/88/88` from the `1024x1024` source (`Rect2(88, 88, 848, 848)` safe rect). Screen-specific whole-image frames with authored source safe zones, including Hero Select SCRUM-356, the radar, carousel and settings tab switcher, stay proportional and are not forced into the generic 9-slice builder. Optional top/bottom unified ornaments remain large-window-only; no runtime content may overlap them.
 - SCRUM-448 adds the Design-source package for the 0.1.6 minimalist UI restyle
@@ -375,6 +413,17 @@ button. Source and geometry live under
 accepted content zones into generated dark interiors and out of rail/ornament
 positions; level-up plus and pending-count zones are separate and
 non-overlapping at 2560x1440.
+
+SCRUM-778 compacts the same accepted SCRUM-666/SCRUM-671 runtime HUD geometry
+without generating new art or changing the essential-only content set. At
+1920x1080 the resource strip is now `938x111`, the timer panel `233x108`, the
+ascension badge `123x123`, and the pending level-up button `66x78`; the top HUD
+band bottoms at `162 px` (`15.0%` of viewport height) instead of the SCRUM-700
+reported `26.2%`. The 1080p no-overlap matrix now gates combat HUD footprint:
+top band must stay at or below `18%` of viewport height, and pending-level frame
+footprint at or below `3.5%` of viewport area. Runtime content still uses the
+same frame-safe metadata zones and may not overlap decorative rails, bevels,
+rims, or badges.
 - Weapon select uses lightweight clickable cards, not parchment/wax button frames. Each card shows `assets/sprites/weapons/<weapon_id>.png` (with legacy Berserk aliases `sword/axe/hammer -> two_handed_*`), title/description, and Russian stat labels: `Дальность`, `Радиус`, `Перезарядка`.
 - Level-up reward options remain full-card clickable Buttons for input/focus and
   now use the larger SCRUM-682 runtime frame family from
@@ -461,6 +510,28 @@ list, detail, entry card, tab button and back button slots. `CodexMainPanel`,
 `CodexTab_*` and `CodexBackButton` must use those slot-exact frames; portraits
 and text still stay inside the recorded content margins and never overlap the
 ornamental rails.
+
+SCRUM-725 supersedes the SCRUM-574 frame material and old geometry for the live
+Codex screen. Runtime now follows
+`docs/design/mockups/codex_redesign_2026_06/layout_map.md`: full-screen
+`codex_pl_backdrop` cover-crop, lighter readable shade, 24px base outer inset,
+left nav / center list / right detail columns at the accepted proportions, and
+textless 9-slice assets under `assets/sprites/ui/frames/codex_pl/` plus matching
+`fit/` paths. Entry/list/detail text uses cream/gold on dark frames; dark ink is
+confined to the `CodexDetailParchmentInset`. Active sections rebuild on viewport
+resize so entry-card heights, portrait slots and detail text zones recompute
+instead of keeping stale rects from the previous resolution. Source/provenance:
+`docs/design/references/codex_redesign_2026_06/`; previews:
+`docs/design/previews/codex_redesign_2026_06_pixellab_contact.png` and
+`docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
+SCRUM-725 verification retry on 2026-07-02 tightened the live list-panel
+content margins to `Vector4(64, 72, 64, 64)`, keeping list content outside the
+48px `codex_pl_grid_panel` ornament band with horizontal reserve. The follow-up
+2026-07-02c verification retry keeps entry cards at a 150px source height with
+`Vector4(28, 36, 28, 28)` card content margins, and renders each list card as a
+single clamped title-summary block so text stays readable inside the empty card
+zone without touching the red diamond ornament or 9-slice rails. Full description
+text remains in `CodexDetailParchmentInset`.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
@@ -555,6 +626,14 @@ remain decorative header art and 720p result actions use smaller crest/button
 sizes so labels and click/focus zones stay off the border ornaments. QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
+SCRUM-693 changes the active-combat Escape entry point: when no other run screen
+is covering gameplay, Escape opens the pause dossier / character board directly
+and uses its left run-control column as the available pause actions. The old
+standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
+route/shop/event/level-up/reward contexts, but it must not appear over or instead
+of the character board for clean active gameplay. Resume, Settings Back, and
+repeated Escape preserve the same run state and pause-stack semantics.
+
 ## Feedback Overlay
 
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
@@ -587,8 +666,8 @@ button rects against the scaled safe rects:
 
 SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
 menu returns to the main menu on Back/Escape, while Settings opened from the
-in-run pause/dossier flow returns to the run pause menu and preserves the active
-run state instead of rebuilding the start screen.
+in-run pause/dossier flow returns to the appropriate run pause surface and
+preserves the active run state instead of rebuilding the start screen.
 
 | Slot | Safe Rect |
 | --- | --- |
@@ -616,6 +695,21 @@ SCRUM-497 adds `CombatFeedbackToggle` to the same «Управление» tab. 
 normal checkbox row inside `ControlsScroll`, persists as `combat_feedback` in
 `user://settings.cfg`, defaults ON, and controls floating damage/heal numbers,
 critical markers and hit flash/outline visuals without changing gameplay.
+
+SCRUM-816 restructures the «Управление» tab into three labelled sections
+(`_add_controls_section_header` → `SettingsSectionHeader_*`) inside the same
+`ControlsScroll`:
+- **Устройство ввода** — `SettingsInputModeOption` (Авто / Клавиатура и мышь /
+  Геймпад → `input_mode`, applied live via `InputDeviceManager.set_input_mode`),
+  a hint line, and the live `SettingsGamepadStatus` label (updates on hot-plug via
+  `InputDeviceManager.device_changed` + `Input.joy_connection_changed`).
+- **Клавиатура** — the existing per-action keyboard rebind rows
+  (`BindingButton_*`) plus «Сбросить управление».
+- **Геймпад** — per-action joypad rebind rows (`GamepadBindButton_*`, listening
+  mode assigns the next joypad button / stick axis, conflicts reuse a menu-box
+  dialog), `SettingsGamepadDeadzoneSlider` (`gamepad_deadzone`),
+  `SettingsGamepadVibrationToggle` (`gamepad_vibration`), and «Сбросить геймпад»
+  (`SettingsResetGamepadButton`). Full contract: `docs/design/systems/input_controls.md`.
 
 ### SCRUM-584. Key Rebind Conflict Dialog
 
@@ -705,3 +799,87 @@ PanelContainer/StyleBox.
 SCRUM-355 adds the strict Hero Select frame content zones documented in
 `build/qa/scrum355/hero_select_thin_frames_qa.md`; use those margins when
 integrating the thinner dossier and thumbnail strip assets.
+
+## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
+
+Все окна выбора, открывающиеся ВНУТРИ забега, полностью управляются геймпадом
+(крестовина/стик + A/B) и клавиатурой (стрелки + Enter/Esc), сохраняя мышь как
+гибрид. Реализация в `scripts/ui_screens.gd`, `scripts/route_map_screen.gd`,
+`scripts/pause_stats_menu.gd`; тест `tests/gamepad_inrun_ui_test.gd`.
+
+Механика:
+- Единый хелпер `UIScreens._wire_run_ui_focus(primary, axis_h, secondary, initial)`
+  проставляет `FOCUS_ALL`, разводит круговые `focus_neighbor_*` (ряд — лево/право,
+  столбец — верх/низ) и ставит стартовый фокус (`call_deferred("grab_focus")`).
+  `secondary` (напр. «Позже»/«Назад») доступен с перпендикулярной оси и связан
+  обратно в круг.
+- Опора на встроенные `ui_*`-экшены Godot. В текущей сборке `ui_up/down/left/right`
+  уже имеют joypad-события (крестовина 11–14 + стик), а `ui_accept`/`ui_cancel` —
+  НЕТ. Поэтому `_ensure_run_ui_gamepad_bindings()` идемпотентно доводит
+  `A→ui_accept` и `B→ui_cancel` в рантайме. Полную раскладку геймпада формализует
+  ядро **SCRUM-811** (InputDeviceManager); гард исключает дубли при слиянии.
+
+Карта стартового фокуса и cancel по экранам:
+- Level-up (`_show_level_up_screen`): карточки апгрейда по кругу лево/право, «Позже»
+  доступна ui_down; старт — первая карточка; Esc/`ui_escape_action` = отложить.
+  Окно ставит дерево на паузу (`push_pause("level_up")`), поэтому move_* не дёргают
+  игрока (требование #8).
+- Награда/премиум-награда/событие (`_show_reward_screen`,
+  `_show_elite_artifact_reward`, `_show_event_screen`): круговой фокус-граф карточек,
+  старт — первая карточка (награды обязательны — cancel не выходит).
+- Пауза (`_build_run_pause_menu`): вертикальное меню, старт — «Продолжить»;
+  B/Esc = продолжить игру.
+- Досье паузы (`PauseStatsMenu`): кнопки фокусируемы, старт — «Продолжить»; B/Esc
+  обрабатывается централизованно в `main._input`.
+- Смерть/победа (`_show_death_screen`, `_show_victory_screen`): старт — основная
+  кнопка; B/Esc = основная кнопка (нет «пустого» закрытия).
+- Магазин/отдых/улучшение (`_show_shop_screen`, `_show_rest_screen`,
+  `_show_upgrade_screen`): товары/карточки фокусируемы, «Назад» доступна ui_down,
+  покупка/выбор по A, выход по B.
+- Карта маршрута (`route_map_screen.gd`): доступные ноды — `FOCUS_ALL`, недоступные
+  `FOCUS_NONE` (пропускаются); крестовина/стик двигают выделение по доступным нодам,
+  A подтверждает (`Button.pressed`), заметная золотая кайма (`focus`-стайлбокс),
+  скролл следует за фокусом (`follow_focus`). Мышь идёт своим путём
+  (`_handle_route_node_input`); двойную активацию гасит реэнтранси-латч
+  `_route_node_activating` в `_activate_route_node`.
+
+`main._input` (SCRUM-812): геймпад B (`ui_cancel`) закрывает/отменяет ТОЛЬКО открытый
+внутризабеговый экран или паузу-оверлей (паритет с Esc); вне открытых экранов B не
+трогается — остаётся под геймплей (dodge и т.п., раскладка — SCRUM-811/814).
+Клавиатурный путь `pause` (Esc) не изменён.
+
+## SCRUM-813 — навигация мета-меню с геймпада/клавиатуры
+
+Мета-экраны вне забега управляются крестовиной/стиком + A/B (и стрелками+Enter/Esc),
+мышь — гибрид. Опора на ядро **SCRUM-811** (InputDeviceManager биндит A→ui_accept,
+B→ui_cancel, крестовину/стик к ui_*) и общий хелпер `_wire_run_ui_focus` (SCRUM-812).
+
+Карта стартового фокуса и cancel по мета-экранам:
+- Главное меню (`_show_main_menu`): вертикальный круг кнопок, старт — «Начать новую
+  игру»; B/Esc = подтверждение выхода.
+- Диалоги выхода/продолжения (`_show_quit_confirmation_dialog`,
+  `_show_continue_run_dialog`): пара кнопок, круговой фокус, старт на «Отмена»/
+  «Продолжить»; B/Esc = отмена (фокус ограничен попапом).
+- Выбор героя (`_build_character_select_v4`): 2D-граф фокуса (карусель + возвышение
+  +/- + Выбрать + Назад) — уже был (SCRUM-664), сохранён.
+- Выбор оружия/боона (`_show_weapon_select`, `_show_start_boon_select`): карточки
+  вертикально по кругу, «Назад»/«Без боона» ниже; старт — первая карточка.
+- Магазин атрибутов (`_show_attribute_shop`): докач-опции + Reroll/Skip, старт — первая
+  доступная опция; `follow_focus` прокручивает список.
+- Дерево умений (`_show_skill_tree_screen`): старт — селектор класса; кнопки хедера
+  (зум/сброс/назад) достижимы направлением; узлы графа — мышь/зум (гео-навигация графа
+  геймпадом — отдельная доработка).
+- Патч-ноуты (`_show_patch_notes_screen`): старт — «Назад в меню»; контент read-only
+  (колесо/перетаскивание).
+- Кодекс (`_show_codex_screen`): старт — первая вкладка; карточки записей фокусируемы,
+  секция-скролл `follow_focus`. **LB/RB листают секции** (`_cycle_codex_section`).
+- Настройки (`_show_settings_menu`): старт — первая вкладка; слайдеры/OptionButton/
+  CheckBox фокусируемы (ui_left/right меняют значение из коробки). **LB/RB листают
+  вкладки** (`_cycle_settings_tab`).
+
+Механика LB/RB: `main._input` ловит raw `JOY_BUTTON_LEFT_SHOULDER(9)`/
+`RIGHT_SHOULDER(10)` и роутит в `UIScreens._handle_menu_shoulder_nav(dir)`, который
+локально по открытому экрану (SettingsV2Root / CodexScreen под `game.ui_layer`) листает
+вкладку/секцию. Обрабатывается, только если экран открыт — иначе не трогается.
+ui_cancel/B закрывает попапы через `ui_escape_action` (SCRUM-812 путь в `main._input`).
+Focus-стиль — существующие не-жёлтые focus-текстуры темы (курс «без жёлтых рамок»).

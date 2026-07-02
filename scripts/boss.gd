@@ -1,5 +1,26 @@
 extends "res://scripts/enemy.gd"
 
+# SCRUM-790: доставленные radial telegraph-PNG секретного босса (Animator-pack SCRUM-539).
+# Используются ТОЛЬКО для secret_ascension_boss и ТОЛЬКО на круговых зонах (radius-based),
+# с которыми их радиальная геометрия совпадает. См. коммент в _spawn_secret_sector_ring.
+const SECRET_RING_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png")
+const SECRET_RUPTURE_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png")
+
+# SCRUM-791: НАПРАВЛЕННЫЕ telegraph-PNG секретного босса (cone-sector / beam-lane).
+# Канон ориентации обоих PNG — +X: исток (вершина конуса / устье луча) слева, форма
+# растёт вправо. *_ANCHOR_PX — пиксель-исток, который сажается в origin зоны и вокруг
+# которого крутится телеграф под направление атаки. *_LENGTH_PX — активная длина арта
+# от истока до края (замерено по alpha). FAIRNESS: та же `dir`, что крутит телеграф,
+# питает геометрию урона (directional_hit) — ориентация PNG == геометрия зоны.
+const SECRET_CONE_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png")
+const SECRET_BEAM_TELEGRAPH := preload("res://assets/sprites/effects/secret_ascension_boss_beam_telegraph.png")
+const SECRET_CONE_ANCHOR_PX := Vector2(77.0, 281.0)
+const SECRET_CONE_LENGTH_PX := 617.0
+const SECRET_CONE_HALF_ANGLE := 0.384  # ~22°, внутри видимого раствора арт-конуса (fairness)
+const SECRET_BEAM_ANCHOR_PX := Vector2(121.0, 146.0)
+const SECRET_BEAM_LENGTH_PX := 525.0
+const SECRET_BEAM_HALF_WIDTH_PX := 48.0  # внутри видимой полосы (~52px) арт-луча (fairness)
+
 @export var boss_behavior := ""
 # Русский титул для баннера появления (enemy_type_name остаётся системным).
 @export var boss_display_name := ""
@@ -33,6 +54,8 @@ var _dash_direction := Vector2.ZERO
 var _shield_cooldown := 4.0
 var _shield_time_left := 0.0
 var _boss_summon_cooldown := 5.0
+var _boss_directional_cooldown := 5.2  # SCRUM-791: cone/beam-каденс секретного босса
+var _directional_beam_next := false    # чередование cone↔beam (beam — c фазы 2)
 var _rift_zone_cooldown := 3.4
 var _slam_cooldown := 4.2
 var _zone_wave_cooldown := 6.0
@@ -155,9 +178,28 @@ func _update_boss_attacks(delta: float) -> void:
 				_fire_radial_burst()
 				_spawn_secret_sector_ring(player.global_position)
 				_burst_cooldown = burst_interval * _phase_interval_multiplier(0.82 if boss_phase >= 2 else 1.0)
+			_boss_directional_cooldown -= delta
+			if _boss_directional_cooldown <= 0.0:
+				_spawn_secret_directional(player.global_position)
+				_boss_directional_cooldown = (4.2 if _enraged else 5.2) * _phase_interval_multiplier(0.85 if boss_phase >= 2 else 1.0)
 			if boss_phase >= 2 and _boss_summon_cooldown <= 0.0:
 				_summon_riftlings()
 				_boss_summon_cooldown = boss_summon_interval * _phase_interval_multiplier(0.82)
+		"bloodthorn_lion":
+			# SCRUM-794: Кровавый Шипастый Лев — агрессивный хищник. Частые прыжки-рывки,
+			# радиальный залп шипов и колючие зоны кровотечения под ногами героя;
+			# уникальная механика — кольцо кровавых шипов (см. _spawn_bloodthorn_spike_ring).
+			_dash_cooldown -= delta
+			_rift_zone_cooldown -= delta
+			if _dash_cooldown <= 0.0:
+				_start_dash_toward(player)
+				_dash_cooldown = dash_interval * _phase_interval_multiplier(0.78 if _enraged else 1.0)
+			if _burst_cooldown <= 0.0:
+				_fire_radial_burst()
+				_burst_cooldown = burst_interval * _phase_interval_multiplier(0.88 if _enraged else 1.0)
+			if _rift_zone_cooldown <= 0.0:
+				_spawn_rift_zone(player.global_position)
+				_rift_zone_cooldown = rift_zone_interval * _phase_interval_multiplier(0.9 if boss_phase >= 2 else 1.0)
 		_:
 			_boss_summon_cooldown -= delta
 			_rift_zone_cooldown -= delta
@@ -209,6 +251,9 @@ func _update_boss_unique_mechanic(delta: float, player: Node2D) -> void:
 			if boss_phase >= 2:
 				_spawn_secret_eruption_cluster(player.global_position)
 			_boss_unique_cooldown = 6.8 * _phase_interval_multiplier(0.78 if boss_phase >= 2 else 1.0)
+		"bloodthorn_lion":
+			_spawn_bloodthorn_spike_ring(player.global_position)
+			_boss_unique_cooldown = 8.2 * _phase_interval_multiplier(0.8 if _enraged else 1.0)
 		_:
 			_boss_unique_cooldown = 6.0
 
@@ -246,7 +291,10 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 	var radius := _safe_radius(250.0 + float(boss_phase - 1) * 34.0)
 	var color := Color(0.78, 0.24, 1.0, 1.0)
 	var windup := _ascension_telegraph(0.78)
-	HazardVfx.telegraph(marker, radius, color, windup)
+	# SCRUM-790: доставленный radial ring-PNG вместо процедурного круга (зона круговая —
+	# геометрия совпадает, ротация не нужна). Только секретный босс.
+	var ring_tex: Texture2D = SECRET_RING_TELEGRAPH if boss_behavior == "secret_ascension_boss" else null
+	HazardVfx.telegraph(marker, radius, color, windup, ring_tex)
 	var marker_ref: WeakRef = weakref(marker)
 	var tween := marker.create_tween()
 	tween.tween_interval(windup)
@@ -278,6 +326,93 @@ func _spawn_secret_eruption_cluster(center: Vector2) -> void:
 		var angle := TAU * (float(index) / float(maxi(count, 1))) + randf_range(-0.24, 0.24)
 		var distance := randf_range(70.0, 210.0 + float(boss_phase - 1) * 30.0)
 		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * distance, 92.0), index == 0)
+
+
+# SCRUM-791: чистая (без self/SceneTree) функция теста попадания направленной зоны —
+# ЕДИНСТВЕННЫЙ источник правды для геометрии урона cone/beam. Та же `dir`, что крутит
+# telegraph-PNG, питает эту проверку → ориентация телеграфа == геометрия зоны (fairness).
+# kind: "cone" — угловой сектор от вершины `origin` (half_extent = полу-угол, рад;
+#       урон если dist≤length и |угол(point−origin, dir)|≤half_extent);
+# kind: "beam" — прямой коридор от устья `origin` вдоль `dir` (half_extent = полуширина;
+#       урон если проекция на ось в [0, length] и |перпендикуляр|≤half_extent).
+static func directional_hit(kind: String, origin: Vector2, dir: Vector2, length: float, half_extent: float, point: Vector2) -> bool:
+	var d := dir.normalized()
+	if d == Vector2.ZERO:
+		return false
+	var rel := point - origin
+	if kind == "beam":
+		var along := rel.dot(d)
+		if along < 0.0 or along > length:
+			return false
+		return absf(rel.dot(Vector2(-d.y, d.x))) <= half_extent
+	# cone
+	var dist := rel.length()
+	if dist < 1.0:
+		return true
+	if dist > length:
+		return false
+	return absf(rel.angle_to(d)) <= half_extent
+
+
+# SCRUM-791: один направленный удар секретного босса — конус-сектор (с фазы 1) либо
+# луч-коридор (чередуется с фазы 2). Цель — текущая позиция игрока на момент каста;
+# windup-телеграф даёт окно для уворота вбок (fairness).
+func _spawn_secret_directional(target: Vector2) -> void:
+	var dir := target - global_position
+	if dir.length_squared() < 1.0:
+		dir = Vector2.RIGHT.rotated(randf() * TAU)
+	dir = dir.normalized()
+	var use_beam := _directional_beam_next and boss_phase >= 2
+	_directional_beam_next = not _directional_beam_next
+	if use_beam:
+		_spawn_secret_directional_zone("beam", dir, SECRET_BEAM_TELEGRAPH, SECRET_BEAM_ANCHOR_PX, \
+			SECRET_BEAM_LENGTH_PX, SECRET_BEAM_HALF_WIDTH_PX, 1.15, Color(1.0, 0.52, 0.26, 1.0))
+	else:
+		_spawn_secret_directional_zone("cone", dir, SECRET_CONE_TELEGRAPH, SECRET_CONE_ANCHOR_PX, \
+			SECRET_CONE_LENGTH_PX, SECRET_CONE_HALF_ANGLE, 1.0, Color(0.86, 0.36, 1.0, 1.0))
+
+
+# SCRUM-791: спавн направленной зоны = telegraph-PNG (повёрнут под `dir`) + отложенный
+# урон через directional_hit с ТОЙ ЖЕ `dir`. Для cone `half_extent` — угол (рад, scale
+# не трогает); для beam — полуширина в пикселях арта, масштабируется тем же scale_factor,
+# что и текстура → геометрия урона всегда внутри видимого телеграфа (fairness-гейт).
+func _spawn_secret_directional_zone(kind: String, dir: Vector2, texture: Texture2D, anchor_px: Vector2, \
+		length_px: float, half_extent: float, scale_factor: float, color: Color) -> void:
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	var rift_skill := _boss_rift_zone_skill_state()
+	if rift_skill != "":
+		_play_boss_skill_visual(rift_skill, "cast", dir)
+	var marker := Node2D.new()
+	marker.name = "SecretBossDirectional"
+	marker.add_to_group("enemy_hazards")
+	marker.set_meta("boss_behavior", boss_behavior)
+	marker.global_position = global_position
+	marker.z_index = 10
+	parent.add_child(marker)
+	var angle := dir.angle()
+	var windup := _ascension_telegraph(0.82)
+	var length_world := length_px * scale_factor
+	var half_extent_world := (half_extent * scale_factor) if kind == "beam" else half_extent
+	HazardVfx.directional_telegraph(marker, texture, anchor_px, scale_factor, angle, color, windup)
+	var marker_ref: WeakRef = weakref(marker)
+	var tween := marker.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var m: Node2D = marker_ref.get_ref()
+		if m == null:
+			return
+		var holder := m.get_node_or_null("HazardDirTelegraph") as Node2D
+		if holder != null:
+			HazardVfx.directional_detonate(holder, color)
+		var player := get_tree().get_first_node_in_group("player") as Node2D
+		if player != null and player.has_method("take_damage") \
+				and directional_hit(kind, m.global_position, dir, length_world, half_extent_world, player.global_position):
+			player.take_damage(projectile_damage * (0.80 + float(boss_phase - 1) * 0.16), "secret_" + kind)
+	)
+	tween.tween_interval(0.5)
+	tween.tween_callback(marker.queue_free)
 
 
 func _spawn_gravity_well(target_position: Vector2) -> void:
@@ -400,6 +535,50 @@ func _spawn_molten_armor_pulse() -> void:
 	tween.tween_callback(pulse.queue_free)
 
 
+func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
+	# SCRUM-794: уникальная механика Кровавого Льва — телеграф-нова кровавых шипов
+	# у позиции героя + пояс шипастых зон по кольцу с гарантированным проходом
+	# (safe corridor). Fairness: та же геометрия, что телеграфится, и наносит урон.
+	var parent := get_tree().current_scene
+	if parent == null:
+		parent = get_tree().root
+	_play_boss_skill_visual("", "cast", center - global_position)
+	var ring := Node2D.new()
+	ring.name = "BloodthornSpikeRing"
+	ring.add_to_group("enemy_hazards")
+	ring.set_meta("boss_behavior", boss_behavior)
+	ring.global_position = _clamp_to_arena(center, 120.0)
+	ring.z_index = 9
+	parent.add_child(ring)
+	var radius := _safe_radius(150.0 + float(boss_phase - 1) * 16.0)
+	var thorn_color := Color(0.78, 0.10, 0.16, 1.0)
+	var windup := _ascension_telegraph(0.55)
+	HazardVfx.telegraph(ring, radius, thorn_color, windup)
+	var thorn_damage := contact_damage * 0.7
+	var ring_ref: WeakRef = weakref(ring)
+	var tween := ring.create_tween()
+	tween.tween_interval(windup)
+	tween.tween_callback(func() -> void:
+		var r: Node2D = ring_ref.get_ref()
+		if r == null:
+			return
+		HazardVfx.detonate(r, radius, thorn_color)
+		var current_player := get_tree().get_first_node_in_group("player") as Node2D
+		if current_player != null and current_player.global_position.distance_to(r.global_position) <= radius and current_player.has_method("take_damage"):
+			current_player.take_damage(thorn_damage, "bloodthorn_spike")
+	)
+	tween.tween_interval(0.5)
+	tween.tween_callback(ring.queue_free)
+	# Пояс кровавых шипов по кольцу с двумя смежными пропущенными секторами.
+	var count := 8
+	var gap_index := randi() % count
+	for i in range(count):
+		if i == gap_index or i == (gap_index + 1) % count:
+			continue
+		var angle := TAU * float(i) / float(count)
+		_spawn_rift_zone(_clamp_to_arena(center + Vector2.RIGHT.rotated(angle) * 340.0, 92.0), false)
+
+
 func _start_dash_toward(player: Node2D) -> void:
 	var direction := player.global_position - global_position
 	if direction.length_squared() > 0.0:
@@ -505,7 +684,11 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 	var radius := _safe_radius(92.0 + float(boss_phase - 1) * 16.0)
 	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
 	var zone_telegraph := _ascension_telegraph(0.65)
-	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph)
+	# SCRUM-790: доставленный radial rupture-PNG для наземной круговой зоны секретного
+	# босса (geometry-match). _spawn_rift_zone — общая для боссов, поэтому гейтим по
+	# boss_behavior: остальные боссы получают null = прежний процедурный круг (без регресса).
+	var rupture_tex: Texture2D = SECRET_RUPTURE_TELEGRAPH if boss_behavior == "secret_ascension_boss" else null
+	HazardVfx.telegraph(zone, radius, zone_color, zone_telegraph, rupture_tex)
 	var zone_ref: WeakRef = weakref(zone)
 	var zone_tween := zone.create_tween()
 	zone_tween.tween_interval(zone_telegraph)
@@ -693,13 +876,14 @@ func _ascension_telegraph(base: float) -> float:
 	return base * float(get_meta("ascension_telegraph_mult", 1.0))
 
 
-func _update_boss_phase() -> void:
-	if max_health <= 0.0:
-		return
-	var ratio := health / max_health
-	var has_extra_phase := bool(get_meta("ascension_extra_phase", false))
+# SCRUM-713: чистая (без self/SceneTree) функция порога фаз — вынесена из
+# _update_boss_phase, чтобы контракт «секретный/обычный пороги + монотонность»
+# покрывался фокус-тестом (boss_phase_progression_test). Возвращает фазу 1..4;
+# maxi с current_phase делает монотонность явной (HP может скакнуть вверх от
+# лечения — фаза при этом не откатывается).
+static func phase_for_ratio(behavior: String, ratio: float, current_phase: int, has_extra_phase: bool) -> int:
 	var next_phase := 1
-	if boss_behavior == "secret_ascension_boss":
+	if behavior == "secret_ascension_boss":
 		if has_extra_phase and ratio <= 0.15:
 			next_phase = 4
 		elif ratio <= 0.25:
@@ -713,6 +897,15 @@ func _update_boss_phase() -> void:
 			next_phase = 3
 		elif ratio <= 0.66:
 			next_phase = 2
+	return maxi(next_phase, current_phase)
+
+
+func _update_boss_phase() -> void:
+	if max_health <= 0.0:
+		return
+	var ratio := health / max_health
+	var has_extra_phase := bool(get_meta("ascension_extra_phase", false))
+	var next_phase := phase_for_ratio(boss_behavior, ratio, boss_phase, has_extra_phase)
 	if next_phase <= boss_phase:
 		return
 

@@ -144,7 +144,7 @@ def find_next(
     # claimed-в-«В работе» уходят в категорию In Progress и сюда не попадают (anti-collision).
     jql = (f'project={PROJECT} AND sprint={sprint_id} AND statusCategory="To Do" '
            f'AND labels="{role_label}" AND assignee is EMPTY ORDER BY created ASC')
-    r = api("GET", "/rest/api/3/search/jql?maxResults=50&fields=summary,labels,priority,description&jql="
+    r = api("GET", "/rest/api/3/search/jql?maxResults=100&fields=summary,labels,priority,description&jql="
             + urllib.parse.quote(jql))
     cands = []
     for issue in (r or {}).get("issues", []):

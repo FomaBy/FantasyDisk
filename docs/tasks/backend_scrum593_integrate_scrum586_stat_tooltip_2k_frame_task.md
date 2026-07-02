@@ -60,3 +60,10 @@ Validation:
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Evidence: `build/qa/scrum586_stat_tooltip/scrum593_runtime_integration_evidence.md`.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Проверил: claude-qa (drift-repair), 2026-07-02, read-only на origin/dev 8d091d5e.
+Причина правки .md: тикет с уже зафиксированным QA PASSED (см. историю комментов Jira + PM sprint audit) дрейфовал обратно в «Контроль качества». Корень — board_sync (tools/jira_board_sync.py:222-226): при «Статус: done» без секции «## QA-Вердикт» со строкой «Статус: PASSED» статус пересчитывается как done → «Контроль качества». Добавлен канонический блок, чтобы board_sync стабильно мапил тикет в «Готово».
+Верификация: рантайм-интеграция на origin/dev — ui_theme_paths.gd регистрирует stat_tooltip (430x288, tex-margins 32, content 44/42), pause_stats_menu.gd подгружает STAT_TOOLTIP_FRAME_2K. Evidence: build/qa/scrum586_stat_tooltip/scrum593_runtime_integration_evidence.md.

@@ -1,0 +1,328 @@
+{
+  "ticket": "SCRUM-694",
+  "name": "settings_v3_full_redraw",
+  "base_design_resolution": "2560x1440",
+  "modal_native_source": "2048x1232",
+  "modal_coord_system": [
+    1536.0,
+    924.0
+  ],
+  "pixellab_long_axis_cap": 688,
+  "scaling_policy": "Frames (modal, tab switcher, content panel, buttons, dropdown field) ship as 9-slice: native corners/ornaments + tileable flat center only. No one-axis stretch of ornaments. Fixed controls (checkbox, slider handle) ship exact-size.",
+  "viewports": {
+    "1280x720": {
+      "modal_rect_abs": [
+        128,
+        52,
+        1024,
+        616
+      ],
+      "frame_texture_margins_lrtb": [
+        48,
+        42,
+        48,
+        40
+      ],
+      "title_rect_local": [
+        96,
+        63,
+        832,
+        32
+      ],
+      "tab_switcher_local": [
+        192,
+        112,
+        640.0,
+        128
+      ],
+      "tab_switcher_aspect": 5.0,
+      "content_panel_local": [
+        99,
+        258,
+        826,
+        248
+      ],
+      "content_safe_zone_local": [
+        117,
+        272,
+        790,
+        220
+      ],
+      "bottom_actions_local": [
+        120,
+        510,
+        784,
+        72
+      ]
+    },
+    "1920x1080": {
+      "modal_rect_abs": [
+        192,
+        78,
+        1536,
+        924
+      ],
+      "frame_texture_margins_lrtb": [
+        72,
+        64,
+        72,
+        60
+      ],
+      "title_rect_local": [
+        144,
+        94,
+        1248,
+        48
+      ],
+      "tab_switcher_local": [
+        328,
+        159,
+        880,
+        176
+      ],
+      "tab_switcher_aspect": 5.0,
+      "content_panel_local": [
+        136,
+        361,
+        1264,
+        424
+      ],
+      "content_safe_zone_local": [
+        154,
+        375,
+        1228,
+        396
+      ],
+      "bottom_actions_local": [
+        376,
+        801,
+        784,
+        72
+      ]
+    },
+    "2560x1440": {
+      "modal_rect_abs": [
+        256,
+        104,
+        2048,
+        1232
+      ],
+      "frame_texture_margins_lrtb": [
+        96,
+        85,
+        96,
+        79
+      ],
+      "title_rect_local": [
+        192,
+        125,
+        1664,
+        64
+      ],
+      "tab_switcher_local": [
+        474,
+        212,
+        1100.0,
+        220
+      ],
+      "tab_switcher_aspect": 5.0,
+      "content_panel_local": [
+        174,
+        466,
+        1700,
+        610
+      ],
+      "content_safe_zone_local": [
+        192,
+        480,
+        1664,
+        582
+      ],
+      "bottom_actions_local": [
+        632,
+        1092,
+        784,
+        72
+      ]
+    },
+    "3840x2160": {
+      "modal_rect_abs": [
+        896,
+        464,
+        2048.0,
+        1232
+      ],
+      "frame_texture_margins_lrtb": [
+        96,
+        85,
+        96,
+        79
+      ],
+      "title_rect_local": [
+        192,
+        125,
+        1664,
+        64
+      ],
+      "tab_switcher_local": [
+        474,
+        212,
+        1100.0,
+        220
+      ],
+      "tab_switcher_aspect": 5.0,
+      "content_panel_local": [
+        174,
+        466,
+        1700,
+        610
+      ],
+      "content_safe_zone_local": [
+        192,
+        480,
+        1664,
+        582
+      ],
+      "bottom_actions_local": [
+        632,
+        1092,
+        784,
+        72
+      ]
+    }
+  },
+  "fixed_controls_px": {
+    "option_dropdown": [
+      520,
+      62
+    ],
+    "rebind_button": [
+      420,
+      62
+    ],
+    "action_apply": [
+      240,
+      72
+    ],
+    "action_back": [
+      280,
+      64
+    ],
+    "action_reset_audio": [
+      420,
+      64
+    ],
+    "action_reset_binds": [
+      560,
+      64
+    ],
+    "checkbox": [
+      42,
+      42
+    ],
+    "volume_slider": [
+      300,
+      28
+    ]
+  },
+  "pixellab_targets": {
+    "modal_frame": {
+      "source_px": [
+        688,
+        414
+      ],
+      "aspect": "1.662 (2048x1232)",
+      "nine_slice": true
+    },
+    "tab_switcher": {
+      "source_px": [
+        688,
+        138
+      ],
+      "aspect": "5.0 (1100x220)",
+      "nine_slice": true
+    },
+    "content_panel": {
+      "source_px": [
+        688,
+        246
+      ],
+      "aspect": "2.787 (1700x609)",
+      "nine_slice": true
+    },
+    "dropdown_field": {
+      "source_px": [
+        520,
+        96
+      ],
+      "aspect": "8.39 (520x62 runtime)",
+      "nine_slice": true
+    },
+    "action_button": {
+      "source_px": [
+        480,
+        120
+      ],
+      "aspect": "4:1 family (covers 240-560 wide)",
+      "nine_slice": true
+    },
+    "rebind_button": {
+      "source_px": [
+        520,
+        96
+      ],
+      "aspect": "shares dropdown_field family",
+      "nine_slice": true
+    },
+    "slider_track": {
+      "source_px": [
+        512,
+        64
+      ],
+      "aspect": "horizontal 9-slice",
+      "nine_slice": true
+    },
+    "slider_handle": {
+      "source_px": [
+        64,
+        64
+      ],
+      "aspect": "square exact-size",
+      "nine_slice": false
+    },
+    "toggle_off": {
+      "source_px": [
+        64,
+        64
+      ],
+      "aspect": "square exact-size",
+      "nine_slice": false
+    },
+    "toggle_on": {
+      "source_px": [
+        64,
+        64
+      ],
+      "aspect": "square exact-size",
+      "nine_slice": false
+    },
+    "scrollbar": {
+      "source_px": [
+        48,
+        512
+      ],
+      "aspect": "vertical 9-slice grabber",
+      "nine_slice": true
+    }
+  },
+  "fit_gate": {
+    "checks": [
+      "title above switcher",
+      "switcher above content panel",
+      "content panel above action row",
+      "safe width >= widest control (560)"
+    ],
+    "result": "ready_for_image",
+    "failures": []
+  }
+}

@@ -15,14 +15,20 @@ const DEFAULTS := {
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
 	"master_zero_intent": false,
-	"music_enabled": true,
-	"sfx_enabled": true,
+	"music_enabled": false,
+	"sfx_enabled": false,
 	"screen_shake": true,
 	"combat_feedback": true,
 	"debug_mode": false,
 	"aim_mode": "nearest",
 	"last_seen_version": "0.0.0",
 	"input_bindings": {},
+	# SCRUM-811: геймпад. input_mode влияет на active_kind/подсказки, оба
+	# устройства физически работают всегда; deadzone/vibration читают SCRUM-814/816.
+	"input_mode": "auto",
+	"gamepad_bindings": {},
+	"gamepad_deadzone": 0.25,
+	"gamepad_vibration": true,
 }
 
 
@@ -53,6 +59,13 @@ static func load_settings() -> Dictionary:
 	settings["last_seen_version"] = str(settings["last_seen_version"])
 	if not (settings["input_bindings"] is Dictionary):
 		settings["input_bindings"] = {}
+	settings["input_mode"] = str(settings["input_mode"])
+	if not ["auto", "keyboard", "gamepad"].has(settings["input_mode"]):
+		settings["input_mode"] = DEFAULTS["input_mode"]
+	if not (settings["gamepad_bindings"] is Dictionary):
+		settings["gamepad_bindings"] = {}
+	settings["gamepad_deadzone"] = clampf(float(settings["gamepad_deadzone"]), 0.05, 0.5)
+	settings["gamepad_vibration"] = bool(settings["gamepad_vibration"])
 	if float(settings["master_volume"]) <= 0.0 and not has_master_zero_intent:
 		settings["master_volume"] = float(DEFAULTS["master_volume"])
 		settings["master_zero_intent"] = false

@@ -1,0 +1,85 @@
+{
+  "issue": "SCRUM-760",
+  "weapon_id": "robot_magnetic_anchor",
+  "runtime_path": "assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+  "pixel_lab_raw_source_path": "docs/design/references/weapon_attack_animations/robot_magnetic_anchor/robot_magnetic_anchor_pixellab_source_raw.png",
+  "source_path": "docs/design/references/weapon_attack_animations/robot_magnetic_anchor/robot_magnetic_anchor_pixellab_source.png",
+  "weapon_reference_path": "assets/sprites/weapons/robot_magnetic_anchor.png",
+  "pixel_lab_selected_object_id": "80184364-0712-4722-85f0-2dbcdcbe1363",
+  "pixel_lab_download_url": "https://api.pixellab.ai/mcp/map-objects/80184364-0712-4722-85f0-2dbcdcbe1363/download",
+  "raw_download_corner_rgb_used_for_alpha_cleanup": [
+    85,
+    86,
+    87
+  ],
+  "source_metrics_after_background_cleanup": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      10,
+      12,
+      246,
+      242
+    ],
+    "alpha_extrema": [
+      0,
+      230
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "edge_alpha_pixels": 0,
+    "visible_pixel_ratio_alpha_gt_8": 0.4754,
+    "max_alpha": 230,
+    "mean_alpha_all_pixels": 106.93,
+    "mean_alpha_visible_pixels": 224.93,
+    "center_64_mean_alpha": 230.0,
+    "center_64_max_alpha": 230,
+    "outer_ring_mean_alpha": 61.75
+  },
+  "runtime_metrics": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bbox": [
+      10,
+      12,
+      246,
+      242
+    ],
+    "alpha_extrema": [
+      0,
+      162
+    ],
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "edge_alpha_pixels": 0,
+    "visible_pixel_ratio_alpha_gt_8": 0.5093,
+    "max_alpha": 162,
+    "mean_alpha_all_pixels": 58.64,
+    "mean_alpha_visible_pixels": 115.13,
+    "center_64_mean_alpha": 79.77,
+    "center_64_max_alpha": 87,
+    "outer_ring_mean_alpha": 44.74
+  },
+  "readability_decision": "pass",
+  "notes": [
+    "Runtime is 256x256 RGBA with transparent background.",
+    "PixelLab raw download is preserved separately; accepted source PNG is alpha-cleaned from the PixelLab output matte.",
+    "Center alpha is strongly softened so the magnetic pull pulse reads as rings instead of an opaque disk.",
+    "Canonical robot_magnetic_anchor weapon PNG is used only as a low-opacity ghost silhouette under the PixelLab-generated field.",
+    "No gameplay, cooldown, damage, targeting, shared runtime logic, scene files, or broad design docs were changed."
+  ]
+}

@@ -7,12 +7,12 @@ func _initialize() -> void:
 		_fail("Expected Berserk PixelLab SpriteFrames to load.")
 		return
 	for direction in ["south", "south_west", "west", "north_west", "north", "north_east", "east", "south_east"]:
-		var animation_name := "walk_%s" % direction
+		var animation_name := "idle_%s" % direction
 		if not frames.has_animation(animation_name):
 			_fail("Expected Berserk preview to expose %s." % animation_name)
 			return
-		if frames.get_frame_count(animation_name) != 6:
-			_fail("Expected %s to contain 6 PixelLab frames." % animation_name)
+		if frames.get_frame_count(animation_name) != 1:
+			_fail("Expected %s to contain 1 PixelLab rotation frame." % animation_name)
 			return
 
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
@@ -31,7 +31,7 @@ func _initialize() -> void:
 	var first_texture := portrait.texture
 	await create_timer(0.24).timeout
 	if portrait.texture == null or portrait.texture == first_texture:
-		_fail("Expected Hero Select Berserk preview to advance animation frames.")
+		_fail("Expected Hero Select Berserk preview to advance through PixelLab direction frames.")
 		return
 
 	print("Hero Select Berserk preview smoke test passed.")

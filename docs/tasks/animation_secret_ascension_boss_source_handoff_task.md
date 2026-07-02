@@ -1,6 +1,6 @@
 # Animator Handoff: Secret Ascension Boss Source
 
-Status: handoff note
+Статус: done
 Parent Jira: SCRUM-539
 Owner: unassigned
 Locked paths for future animation work: assets/sprites/bosses/full_frame/secret_ascension_boss*, assets/sprites/bosses/cutout/secret_ascension_boss*, animation smoke evidence
@@ -64,3 +64,20 @@ States: `idle`, `move`, `attack`, `attack_primary`,
 
 Back-end runtime wiring remains a separate task; add the boss to
 `FullFrameAnimationRegistry` when the encounter implementation is ready.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+2026-07-02 dispatcher verification closed SCRUM-701 as completed by SCRUM-540
+evidence already merged to `origin/dev`:
+
+- Dev evidence: `137079ca` includes `180f9ccd docs(SCRUM-701): verify+finalize secret ascension boss animation handoff`.
+- Assets verified in repo: `assets/sprites/bosses/full_frame/secret_ascension_boss/`,
+  `assets/sprites/bosses/full_frame/secret_ascension_boss_full_frame_sheet.png`,
+  `assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres`.
+- Jira evidence records Godot 4.7 headless import PASS and
+  `tests/animation_smoke_test.gd` PASS; runtime smoke residual was unrelated to
+  this animation handoff.
+- Disk cleanup: none created by dispatcher.
+- Thread cleanup: not a disposable worker thread.

@@ -1,0 +1,36 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "1ac09499-e512-4886-bed5-5d43ac29ff9d",
+        "name": "FantasyDisk Bloodthorn Lion Boss",
+        "prompt": "FantasyDisk new boss: Bloodthorn Lion, huge demonic lion with dark crimson mane, thorn-like bone spikes along mane and spine, black claws, blood-red crystal growths, ember-gold eyes, predatory low pounce stance. Dark fantasy D&D pixel-art boss creature, transparent background, no text, readable feline silhouette.",
+        "size": {
+          "width": 180,
+          "height": 180
+        },
+        "template_id": "lion",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-07-01T05:50:06.737542+00:00"
+      },
+      "folder": "FantasyDisk_Bloodthorn_Lion_Boss",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/south.png",
+          "south-east": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/south-east.png",
+          "east": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/east.png",
+          "north-east": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/north-east.png",
+          "north": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/north.png",
+          "north-west": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/north-west.png",
+          "west": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/west.png",
+          "south-west": "FantasyDisk_Bloodthorn_Lion_Boss/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-07-01T05:56:33.288492"
+}

@@ -1,0 +1,27 @@
+{
+  "jira": "SCRUM-691",
+  "category": "attributes",
+  "id": "move_speed",
+  "runtime_target": "attr_move_speed.png",
+  "source_image": "move_speed_source_openai.png",
+  "generator": "OpenAI gpt-image-2 via generate_asset.py",
+  "quality": "high",
+  "size": "1024x1024",
+  "prompt": "FantasyDisk RPG UI attribute icon. Detailed painterly raster item/sigil, D&D dark fantasy dragon art direction. Single centered object only, transparent background, 10-18 percent empty padding, readable at 32px and 40px. No text, no letters, no numbers, no UI frame, no panel, no watermark, no opaque square, no checkerboard. Motif: a wind-wrapped boot with blue-white motion streaks, travel speed.",
+  "created_at": "2026-06-30T08:36:46.462700+00:00",
+  "alpha_clean_image": "move_speed_source_openai_alpha_clean.png",
+  "runtime_export": "assets/sprites/ui/icons/derived/attr_move_speed.png",
+  "runtime_size": [
+    256,
+    256
+  ],
+  "runtime_sha256": "aed67e2ec8eae34a334dc1c7e5c52a3139acb60b7177e098e0c4a95413a3d379",
+  "alpha_nonzero_pixels": 12631,
+  "content_bbox": [
+    36,
+    41,
+    220,
+    214
+  ],
+  "postprocessed_at": "2026-06-30T09:11:22.124700+00:00"
+}

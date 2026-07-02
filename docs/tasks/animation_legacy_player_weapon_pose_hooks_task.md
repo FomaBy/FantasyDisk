@@ -53,6 +53,9 @@ Verification:
   fix landed in the shared workspace.
 
 ## QA-Вердикт
+Статус: PASSED
+(SCRUM-186 легаси-реконфирм 2026-06-30) Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.
+
 Ожидает QA. Если QA вернет PASSED, Jira SCRUM-186 можно переводить в
 `Готово`; если FAILED, задачу нужно открыть заново с конкретным дефектом.
 Jira sync note 2026-06-13: direct read/update from this environment is blocked

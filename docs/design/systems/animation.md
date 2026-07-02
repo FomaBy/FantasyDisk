@@ -80,6 +80,29 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   SpriteFrames, frame counts, states, timings and gameplay behavior were not
   changed.
 
+### Runtime registry/loader audit (SCRUM-721)
+
+Audit of the animation **runtime** loaders only (no art/motion/clip changes):
+
+- **Safe fallback is intentional.** `sprite_frames_for`/`configure_entity_visual`
+  guard every load with `ResourceLoader.exists` and a null/`SpriteFrames`-cast check,
+  returning `null` so the entity keeps its static body. A registry entry is optional —
+  a missing one is a valid no-op, not an error.
+- **But a registered path must be valid.** A stale/typo'd `frames` path used to drop
+  an entity's visual silently (null fallback, no evidence). Evidence now comes at
+  test-time: `tests/full_frame_registry_integrity_test.gd` iterates **every**
+  `FULL_FRAME_SPRITEFRAMES` entry (30) and asserts the resource exists, loads via the
+  same `sprite_frames_for` path, is a `SpriteFrames` with ≥1 animation, and has
+  `Vector2 scale/position` + `bool source_faces_left`. Prior coverage
+  (`animation_smoke_test`) only exercised hardcoded entity lists, so a typo on a new
+  entry could slip through; the integrity gate closes that.
+- Runtime stays log-quiet on purpose (no per-spawn `push_warning` spam) — the CI gate
+  is the evidence channel for stale registry paths.
+- `sliced_rig_manifest`, `skeleton_player_rig_2d`, `cutout_rig_2d` resource/manifest
+  loading reviewed and left as-is (covered by `sliced_rig_manifest_smoke_test` /
+  `skeletal_rig_rest_det_smoke_test`; manifests preload part textures, smoke gates the
+  string `source` path + `attack_part`/`torso` coverage).
+
 ## Player Motion
 
 - SCRUM-456 defines the new cartoon/anime playable-character restyle source
@@ -144,19 +167,99 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `scripts/player.gd`, and `tests/animation_smoke_test.gd` remain unchanged by
   scope, so runtime still uses the SCRUM-461 idle/walk/move-only Berserk until a
   separate wiring task.
-- 2026-06-29 PixelLab Berserk wiring replaces the live Berserk runtime
-  `assets/sprites/characters/berserk_spriteframes.tres` with 8-direction
-  pixel-art movement. Source downloads are stored under
-  `assets/sprites/characters/pixellab/berserk/` (`112x112` source frames plus
-  `manifest.json`), while runtime frames are nearest-neighbor padded to a
-  `512x512` canvas under `assets/sprites/characters/full_frame/berserk_pixellab/`.
-  The SpriteFrames resource exposes `idle_<direction>` one-frame fallbacks and
-  `move_<direction>` / `walk_<direction>` 6-frame looping rows for `south`,
-  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
-  `south_west`, plus generic `idle` / `move` / `walk` fallbacks. `Player`
-  resolves the movement vector into the matching 8-way row and disables
-  horizontal `flip_h` for directional rows. Body attack rows remain absent by
-  current combat-visual scope.
+- 2026-07-01 SCRUM-703 PixelLab Berserk redraw replaces the previous tiny live
+  pack with new unarmed v3 source character
+  `8486ce45-f749-4c63-9a6d-f0477d619c2d`. Source downloads are stored under
+  `assets/sprites/characters/pixellab/berserk/` (`252x252` source frames plus
+  `manifest.json`, `pixellab_metadata.json`, and `alpha_bbox_report.json`),
+  while runtime frames are transparent `512x512` canvases under
+  `assets/sprites/characters/full_frame/berserk_pixellab/` with every idle/move
+  alpha bbox normalized to `245 px` high. The SpriteFrames resource exposes
+  `idle_<direction>` one-frame fallbacks and `move_<direction>` /
+  `walk_<direction>` 6-frame looping rows for `south`, `south_east`, `east`,
+  `north_east`, `north`, `north_west`, `west`, and `south_west`, plus generic
+  `idle` / `move` / `walk` fallbacks. `Player` resolves the movement vector into
+  the matching 8-way row and disables horizontal `flip_h` for directional rows.
+  The final north-west move row uses a PixelLab v3 custom empty-hands replacement
+  after QA rejected a first template row with hammer-like props. Body attack rows
+  remain absent by current combat-visual scope.
+- SCRUM-423 (2026-06-30) applies the PixelLab directional runtime path to
+  Chemist. Source downloads and manifest live under
+  `assets/sprites/characters/pixellab/chemist/` (`252x252` source frames),
+  runtime frames are nearest-neighbor normalized to a transparent `512x512`
+  canvas under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
+  `assets/sprites/characters/chemist_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame looping `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-426 (2026-06-30) applies the PixelLab directional runtime path to
+  Druid. Source downloads and manifest live under
+  `assets/sprites/characters/pixellab/druid/` (`244x244` source frames), runtime
+  frames are nearest-neighbor normalized to a transparent `512x512` canvas under
+  `assets/sprites/characters/full_frame/druid_pixellab/`, and
+  `assets/sprites/characters/druid_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame looping `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-428 (2026-07-01) applies the PixelLab directional runtime path to
+  Engineer using existing source character
+  `c5bd9766-e7de-4316-ace6-e687c951e621`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/engineer/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/engineer_pixellab/`, and
+  `assets/sprites/characters/engineer_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-433 (2026-07-01) applies the PixelLab directional runtime path to
+  Sniper using existing source character
+  `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/sniper/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/sniper_pixellab/`, and
+  `assets/sprites/characters/sniper_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+- SCRUM-803 (2026-07-01) applies the PixelLab directional runtime path to
+  Assassin using accepted empty-open-hands source character
+  `ec73da27-b704-4336-9275-74c8e3e578df`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/assassin/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/assassin_pixellab/`, and
+  `assets/sprites/characters/assassin_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+  PixelLab candidate `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` was rejected before
+  import because it baked a held blade.
+- SCRUM-804 (2026-07-01) applies the PixelLab directional runtime path to
+  Ranger using new empty-handed source character
+  `1646d83c-f570-4bdd-9065-cb1b46bf13f7`. Source rotations and
+  `walking-6-frames` rows live under
+  `assets/sprites/characters/pixellab/ranger/`; normalized runtime frames live
+  under `assets/sprites/characters/full_frame/ranger_pixellab/`, and
+  `assets/sprites/characters/ranger_spriteframes.tres` exposes static
+  `idle_<direction>` poses plus 6-frame `move_<direction>` /
+  `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
+  fallbacks use the south row, Hero Select rotates through the same directional
+  frames, and body attack rows remain absent by weapon-owned combat scope.
+- 2026-07-01 SCRUM-421 PixelLab Biologist rescue finishes the previously queued
+  source character `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` in a clean worktree.
+  Source rotations and movement frames are stored under
+  `assets/sprites/characters/pixellab/biologist/`; runtime frames are
+  transparent `512x512` canvases under
+  `assets/sprites/characters/full_frame/biologist_pixellab/` with every
+  visible alpha bbox normalized to `245 px` high. The SpriteFrames resource
+  exposes `idle`, `move`, `walk`, plus 8-direction `idle_`, `move_`, and
+  `walk_` rows; Hero Select rotates through those directional frames. The
+  south movement row uses a PixelLab v3 custom front-facing replacement after
+  visual QA rejected the initial downloaded row as wrong-facing.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
@@ -189,7 +292,29 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Animation smoke passes; full runtime smoke is currently blocked by an
   unrelated Hero Select v3 back-button UI assertion. The bundled manifest
   validator still reports the expected missing `attack_primary` rows because it
-  does not yet understand `attack_required=false`.
+  predates the SCRUM-473 no-attack scope.
+- 2026-06-30 SCRUM-704 supersedes the earlier static Dark Mage PixelLab pass with
+  a new readable-scale v3 PixelLab character
+  `9bb0eca8-5afe-49d4-8e56-7115a45efdcc` (`248x248` source), empty hands, and no
+  baked book/skull/wand/staff/orb/held prop. Source rotations plus
+  `walking-6-frames` movement frames live under
+  `assets/sprites/characters/pixellab/dark_mage/`; normalized 512x512 runtime
+  frames live under `assets/sprites/characters/full_frame/dark_mage_pixellab/`.
+  `assets/sprites/characters/dark_mage_spriteframes.tres` now exposes
+  one-frame `idle` / `idle_<direction>` and 6-frame `move` / `walk` /
+  `move_<direction>` / `walk_<direction>` rows for all 8 directions so combat
+  runtime and Hero Select both use the same PixelLab movement pack. Dark Mage is
+  routed through the full-frame `AnimatedSprite2D` path; the historical
+  Skeleton2D/Bone2D rig remains regression/source history rather than live
+  runtime priority.
+- SCRUM-430 promotes Knight to a PixelLab no-shield directional pack. Source
+  downloads live under `assets/sprites/characters/pixellab/knight/`; normalized
+  512x512 runtime frames live under
+  `assets/sprites/characters/full_frame/knight_pixellab/`.
+  `assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
+  `idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>`
+  rows for all 8 directions. Weapons and shield remain separate weapon visuals;
+  the base Knight source has empty hands and no baked equipment.
 - SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
   Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
   skeleton-source packages under
@@ -255,6 +380,31 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   pass. The bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-429 explicitly
   excludes attack animation.
+- SCRUM-706 replaces the live Guitarist placeholder with a new PixelLab-only
+  empty-hands source `704fd67b-da81-4804-acd2-07e75fefd9de`. The rejected
+  candidates are `f41e1d57-f720-4ae1-a739-8873d935163b`
+  (failed/listed `128x128`) and `d278e753-9885-4550-82ff-81ee3bef297d`
+  (`240x240` but baked a held instrument). Source rotations and six-frame
+  `walking-6-frames` movement live under
+  `assets/sprites/characters/pixellab/guitarist/`; normalized transparent
+  runtime frames live under
+  `assets/sprites/characters/full_frame/guitarist_pixellab/`, centered on a
+  `512x512` canvas with every visible alpha bbox at `245 px` height. The live
+  `assets/sprites/characters/guitarist_spriteframes.tres` exposes generic
+  `idle` / `move` / `walk` fallbacks, `idle_<direction>` one-frame rows, and
+  6-frame looping `move_<direction>` / `walk_<direction>` rows for `south`,
+  `south_east`, `east`, `north_east`, `north`, `north_west`, `west`, and
+  `south_west`; weapon/instrument visuals remain separate weapon effects.
+- SCRUM-797 supersedes the SCRUM-706 Guitarist empty-hands live body by direct
+  user request. PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` is now
+  accepted for live runtime because its held-guitar silhouette is more readable
+  and characterful. The runtime contract is unchanged: 8 idle directions,
+  6-frame `walking-6-frames` movement rows, transparent `512x512` runtime PNGs,
+  every visible alpha bbox normalized to `245 px`, and the same
+  `idle`/`move`/`walk` plus directional rows consumed by player movement and
+  Hero Select preview rotation. The previous SCRUM-706 pack is backed up under
+  `docs/design/backups/scrum797_guitarist_instrument_pack_pre_swap/`; SCRUM-797
+  evidence lives under `docs/design/previews/scrum797_guitarist_instrument_pack_*`.
 - SCRUM-435 adds the Thief v2 Design-source handoff under
   `docs/design/references/characters_v2/thief/` and promotes the accepted
   source into the live runtime resource
@@ -284,13 +434,15 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   pass. The bundled manifest validator was run and records the expected
   `missing attack_primary animation` failure because SCRUM-427 explicitly
   excludes attack animation.
-- SCRUM-433 adds the Sniper v2 Design-source handoff under
+- Historical Sniper v2 Design-source handoff: SCRUM-433 originally added source
+  assets under
   `docs/design/references/characters_v2/sniper/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
   accepted source sheet copy and QA report. Asset-side handoff copies live in
   `assets/sprites/characters/v2/sniper/`. The sheet repeats the accepted source
-  for idle/move placeholders only; Animator must create real `idle` and
-  `move/walk` frames before SpriteFrames/runtime integration. White/neutral
+  for idle/move placeholders only; live Sniper runtime has since moved to the
+  PixelLab directional pack under `assets/sprites/characters/full_frame/sniper_pixellab/`.
+  White/neutral
   matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
   and `0` edge-visible pixels in source/cell/sheet outputs.
 - SCRUM-431 adds the Priest v2 Design-source handoff under
@@ -302,6 +454,17 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `move/walk` frames before SpriteFrames/runtime integration. White/neutral
   matte QA is strict: `0` opaque-white pixels, `0` neutral-light visible pixels
   and `0` edge-visible pixels in source/cell/sheet outputs.
+- 2026-06-30 SCRUM-431 PixelLab pass promotes Priest to live directional
+  runtime/Hero Select art. PixelLab character
+  `ed7db59e-0845-4218-b178-a56f948254b5` provides 8 static idle rotations and
+  `walking-6-frames` movement for all 8 directions. Source PNGs and
+  `manifest.json` live under `assets/sprites/characters/pixellab/priest/`;
+  normalized transparent `512x512` runtime frames live under
+  `assets/sprites/characters/full_frame/priest_pixellab/`. The runtime resource
+  `assets/sprites/characters/priest_spriteframes.tres` exposes fallback
+  `idle`/`move`/`walk`, plus `idle_<direction>`, `move_<direction>` and
+  `walk_<direction>` rows. Attack rows remain absent because weapon visuals own
+  combat actions.
 - SCRUM-421 adds the Biologist v2 Design-source handoff under
   `docs/design/references/characters_v2/biologist/` with alpha-clean source,
   normalized `512x512` idle cell, `2560x1024` source placeholder sheet,
@@ -420,6 +583,16 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - Movement facing — отдельно от attack targeting.
 - Attack direction приходит из weapon targeting и не перетирается velocity.
 - `WeaponSocket` используется для attached weapons и должен оставаться совместимым с анимацией.
+- SCRUM-705 (2026-07-01) replaces the live Doctor PixelLab pack with a fresh
+  v3 plague-doctor redraw (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`): source idle
+  and 6-frame walk frames live under `assets/sprites/characters/pixellab/doctor/`,
+  normalized transparent runtime frames live under
+  `assets/sprites/characters/full_frame/doctor_pixellab/`, and every runtime
+  alpha bbox is 244 px high inside a `512x512` canvas. `doctor_spriteframes.tres`
+  exposes `idle_<direction>`, `move_<direction>`, and `walk_<direction>` for all
+  8 directions; Hero Select uses the same clockwise directional rows. The base
+  body intentionally has empty hands, leaving restore potion, plague syringe and
+  bone saw to weapon visuals rather than baked character art.
 - Player cutout rig использует per-character `walk_blend_rate` / `direction_blend_rate`: `berserk` двигается тяжелее, `dark_mage` мягче и с меньшим robe/body lean, `guitarist` быстрее. Pass 2026-06-12 добавил отдельные visual motion profiles для новых классов: `assassin` быстрый/резкий, `ranger` собранный, `doctor` спокойный тяжелый, `chemist` чуть нервный, `knight` тяжелый инертный, `druid` мягкий ритуальный. Pass SCRUM-168 2026-06-13 добавил `soldier`: средневесовый дисциплинированный шаг, меньше arm swing, умеренный body bob. Pass SCRUM-169 2026-06-13 добавил `thief`: легкий осторожный шаг с быстрым direction blend, меньшим bob и сдержанным переносом веса. Pass SCRUM-163 2026-06-13 добавил `elementalist`: плавный энергичный caster-step, легче Dark Mage, с выраженным breath/channel sway. Pass SCRUM-167 2026-06-13 добавил `sniper`: controlled ranged/sniper gait, low bob, low arm swing, steady aim stance without melee lunge feel. Pass SCRUM-165 2026-06-13 добавил `priest`: calm healer/support caster gait, low aggression, restrained arm swing, readable robe bob and support-caster sway. Pass SCRUM-162 2026-06-13 добавил `biologist`: careful field-scientist gait, modest bob, specimen-handling arm posture, distinct from Chemist/Doctor. Pass SCRUM-166 2026-06-13 добавил `robot`: heavy construct gait, slow inertial walk, strong mass bob, low arm swing, slower direction blend. Pass SCRUM-164 2026-06-13 добавил `engineer`: practical tinkerer gait with workshop backpack/tools, moderate bob, measured arm swing, distinct from Druid/Robot.
 - Все cutout rigs имеют контактную `GroundShadow`; на новых плоских фонах она остается основным grounding cue и не должна удаляться при будущих visual passes.
 - Berserk attack pose получает animation variant из текущего `weapon_id`: `sword` = forward thrust, `axe` = wide arc, `hammer` = overhead slam. Это только motion layer; damage shape/window остаются в weapon/backend конфигурации.
@@ -444,6 +617,14 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
 - SCRUM-371 (2026-06-14) добавил тот же production full-frame contract для `shard_marshal`: `move`, `attack`/`attack_primary`, `skill_shard_fan`, `skill_command_pulse` и matching `attack_*` aliases; backend phase `shard_marshal:shard_fan:*` визуально резолвится в `skill_shard_fan`.
 - SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`. SCRUM-370 добавил каждому `death` 6f one-shot.
 - SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними. SCRUM-370 добавил `death` 6f one-shot rows для всех 5 boss SpriteFrames.
+- SCRUM-793 (2026-07-02) promotes accepted SCRUM-779 PixelLab single-view boss
+  candidates into the existing live full-frame rows for `disk_devourer`
+  (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`
+  (`99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`). SpriteFrames paths, state names,
+  frame counts, speeds and boss gameplay callbacks are unchanged; `rift_warden`,
+  `bone_archon`, `ashen_colossus`, `secret_ascension_boss`, `skeletal_dragon`
+  and `bloodthorn_lion` candidates remain source-only/revise-needed follow-ups.
+  Evidence: `build/qa/scrum793_boss_pixellab_promotion/`.
 - SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
 
 ## Summon / Ally Motion

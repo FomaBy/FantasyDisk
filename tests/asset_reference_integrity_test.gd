@@ -1,17 +1,21 @@
 extends SceneTree
 
-# Сплошной res://-reference-integrity тест: сканирует scripts/ и scenes/ на ЛИТЕРАЛЬНЫЕ
-# res://-пути с расширением и проверяет, что каждый существует (ResourceLoader.exists
-# или FileAccess.file_exists). content_registry_consistency покрывает только реестровые
-# ассеты; этот тест ловит ЛЮБУЮ битую ссылку — safety-net для дедупа assets/ (SCRUM-418):
-# если удаление снесёт всё ещё используемый ассет, гейт упадёт, а не игрок.
+# Сплошной res://-reference-integrity тест: сканирует scripts/, scenes/ и .tres-ресурсы
+# в assets/ на ЛИТЕРАЛЬНЫЕ res://-пути с расширением и проверяет, что каждый существует
+# (ResourceLoader.exists или FileAccess.file_exists). content_registry_consistency
+# покрывает только реестровые ассеты; этот тест ловит ЛЮБУЮ битую ссылку — safety-net
+# для дедупа assets/ (SCRUM-418): если удаление снесёт всё ещё используемый ассет, гейт
+# упадёт, а не игрок.
+# SCRUM-723: добавлено сканирование .tres в assets/ — SpriteFrames/ресурсы ссылаются на
+# текстуры-атласы через ext_resource path="res://..."; битая такая ссылка раньше не
+# ловилась (тест читал только scripts/+scenes/), теперь ловится.
 # Динамически собранные пути ("res://.../" + id) и format-строки (%s) намеренно
-# пропускаются — извлекаем только полные пути-литералы. Изолированный файл (assets/ не трогает).
+# пропускаются — извлекаем только полные пути-литералы. Сам тест assets/ не модифицирует.
 #
 # Запуск: Godot --headless --path . --script res://tests/asset_reference_integrity_test.gd
 
-const SCAN_DIRS := ["res://scripts", "res://scenes"]
-const SCAN_EXTS := ["gd", "tscn"]
+const SCAN_DIRS := ["res://scripts", "res://scenes", "res://assets"]
+const SCAN_EXTS := ["gd", "tscn", "tres"]
 
 
 func _initialize() -> void:

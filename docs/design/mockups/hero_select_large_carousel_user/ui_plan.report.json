@@ -1,0 +1,283 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "back_button",
+      "kind": "button",
+      "rect": [
+        56,
+        58,
+        230,
+        74
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "back_text",
+      "kind": "button_content",
+      "rect": [
+        84,
+        75,
+        174,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "title",
+      "kind": "text_zone",
+      "rect": [
+        360,
+        48,
+        1840,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 72
+    },
+    {
+      "id": "portrait_frame",
+      "kind": "frame",
+      "rect": [
+        64,
+        178,
+        600,
+        820
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "portrait_content",
+      "kind": "portrait_content",
+      "rect": [
+        136,
+        272,
+        456,
+        620
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "frame",
+      "rect": [
+        700,
+        178,
+        980,
+        820
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hero_name",
+      "kind": "text_zone",
+      "rect": [
+        780,
+        244,
+        820,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 58
+    },
+    {
+      "id": "hero_role",
+      "kind": "text_zone",
+      "rect": [
+        790,
+        326,
+        800,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 32
+    },
+    {
+      "id": "hero_body",
+      "kind": "text_zone",
+      "rect": [
+        790,
+        392,
+        800,
+        146
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 31
+    },
+    {
+      "id": "hero_weapons",
+      "kind": "text_zone",
+      "rect": [
+        790,
+        558,
+        800,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    },
+    {
+      "id": "stats_content",
+      "kind": "chart_content",
+      "rect": [
+        820,
+        640,
+        740,
+        190
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hero_traits",
+      "kind": "text_zone",
+      "rect": [
+        790,
+        838,
+        800,
+        58
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "choose_button",
+      "kind": "button",
+      "rect": [
+        1015,
+        914,
+        350,
+        66
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "choose_text",
+      "kind": "button_content",
+      "rect": [
+        1060,
+        928,
+        260,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "radar_frame",
+      "kind": "frame",
+      "rect": [
+        1716,
+        178,
+        780,
+        520
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "radar_content",
+      "kind": "chart_content",
+      "rect": [
+        1814,
+        235,
+        584,
+        406
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ascension_frame",
+      "kind": "frame",
+      "rect": [
+        1716,
+        728,
+        780,
+        270
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ascension_title",
+      "kind": "text_zone",
+      "rect": [
+        1790,
+        778,
+        632,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "ascension_stepper",
+      "kind": "button_content",
+      "rect": [
+        1860,
+        840,
+        500,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "ascension_body",
+      "kind": "text_zone",
+      "rect": [
+        1788,
+        895,
+        636,
+        66
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "carousel_frame",
+      "kind": "frame",
+      "rect": [
+        64,
+        1045,
+        2432,
+        330
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "carousel_content",
+      "kind": "thumbnail_strip",
+      "rect": [
+        174,
+        1106,
+        2212,
+        220
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

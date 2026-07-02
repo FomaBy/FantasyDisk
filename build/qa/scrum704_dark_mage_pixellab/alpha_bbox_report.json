@@ -1,0 +1,2552 @@
+{
+  "summary": {
+    "task": "SCRUM-704",
+    "character_id": "dark_mage",
+    "pixellab_character_id": "9bb0eca8-5afe-49d4-8e56-7115a45efdcc",
+    "generated_at": "2026-07-01T05:50:19.545360",
+    "source_created_at": "2026-06-30T14:47:45.18859+00:00",
+    "directions": [
+      "south",
+      "south-east",
+      "east",
+      "north-east",
+      "north",
+      "north-west",
+      "west",
+      "south-west"
+    ],
+    "animation_template": "walking-6-frames",
+    "move_frame_count": 6,
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "normalization": {
+      "method": "alpha-bbox fit from PixelLab source, nearest-neighbor, centered X, bottom aligned",
+      "target_visible_height": 246,
+      "bottom_padding": 32,
+      "crop_margin": 4,
+      "alpha_threshold": 8
+    },
+    "source_bbox_summary": {
+      "height_min": 114,
+      "height_max": 125,
+      "width_min": 54,
+      "width_max": 113
+    },
+    "runtime_bbox_summary": {
+      "height_min": 245,
+      "height_max": 247,
+      "width_min": 111,
+      "width_max": 230
+    },
+    "primary_south_idle": {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        67,
+        63,
+        180,
+        184
+      ],
+      "source_bbox_size": [
+        113,
+        121
+      ],
+      "crop_box": [
+        63,
+        59,
+        184,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        141,
+        234,
+        371,
+        480
+      ],
+      "runtime_bbox_size": [
+        230,
+        246
+      ],
+      "sha256": "db37bbf7d17a11a4eecd9bd228c21e682b6fbfb0be704da63dbdac2a078ac307"
+    },
+    "qa_contract": {
+      "primary_south_idle_visible_height_px": "240..250",
+      "all_runtime_visible_height_px": "240..250",
+      "runtime_size_px": "512x512 transparent RGBA",
+      "no_baked_held_props": "Prompt and visual review require empty hands; book/skull/wand/staff/orb/held prop forbidden."
+    },
+    "source_files": {
+      "idle": {
+        "south": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south.png",
+        "south-east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-east.png",
+        "east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_east.png",
+        "north-east": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-east.png",
+        "north": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north.png",
+        "north-west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-west.png",
+        "west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_west.png",
+        "south-west": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-west.png"
+      },
+      "move": {
+        "south": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_05.png"
+        ],
+        "south-east": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_05.png"
+        ],
+        "east": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_05.png"
+        ],
+        "north-east": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_05.png"
+        ],
+        "north": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_05.png"
+        ],
+        "north-west": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_05.png"
+        ],
+        "west": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_05.png"
+        ],
+        "south-west": [
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_00.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_01.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_02.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_03.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_04.png",
+          "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_05.png"
+        ]
+      }
+    },
+    "runtime_files": {
+      "idle": {
+        "south": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
+        "south-east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-east.png",
+        "east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_east.png",
+        "north-east": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-east.png",
+        "north": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north.png",
+        "north-west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-west.png",
+        "west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_west.png",
+        "south-west": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-west.png"
+      },
+      "move": {
+        "south": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_05.png"
+        ],
+        "south-east": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_05.png"
+        ],
+        "east": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_05.png"
+        ],
+        "north-east": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_05.png"
+        ],
+        "north": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_05.png"
+        ],
+        "north-west": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_05.png"
+        ],
+        "west": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_05.png"
+        ],
+        "south-west": [
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_00.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_01.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_02.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_03.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_04.png",
+          "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_05.png"
+        ]
+      }
+    },
+    "spriteframes": "assets/sprites/characters/dark_mage_spriteframes.tres",
+    "reports": {
+      "source_bbox": "build/qa/scrum704_dark_mage_pixellab/source_bbox_report.json",
+      "runtime_bbox": "build/qa/scrum704_dark_mage_pixellab/alpha_bbox_report.json",
+      "contact_sheet": "docs/design/previews/scrum704_dark_mage_pixellab_contact.png",
+      "south_walk_gif": "docs/design/previews/scrum704_dark_mage_pixellab_south_walk.gif"
+    }
+  },
+  "frames": [
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        67,
+        63,
+        180,
+        184
+      ],
+      "source_bbox_size": [
+        113,
+        121
+      ],
+      "crop_box": [
+        63,
+        59,
+        184,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        141,
+        234,
+        371,
+        480
+      ],
+      "runtime_bbox_size": [
+        230,
+        246
+      ],
+      "sha256": "db37bbf7d17a11a4eecd9bd228c21e682b6fbfb0be704da63dbdac2a078ac307"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        83,
+        63,
+        166,
+        185
+      ],
+      "source_bbox_size": [
+        83,
+        122
+      ],
+      "crop_box": [
+        79,
+        59,
+        170,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        172,
+        234,
+        339,
+        480
+      ],
+      "runtime_bbox_size": [
+        167,
+        246
+      ],
+      "sha256": "e3c5f230b001af4f06e3bd63f540251d875eedfccb5312f335e44f930fe4e6a4"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        82,
+        62,
+        165,
+        181
+      ],
+      "source_bbox_size": [
+        83,
+        119
+      ],
+      "crop_box": [
+        78,
+        58,
+        169,
+        185
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        170,
+        234,
+        342,
+        481
+      ],
+      "runtime_bbox_size": [
+        172,
+        247
+      ],
+      "sha256": "ac5c774c53519623d46ab572aab968f75f3fdef84353171e82034dda9f6de703"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        83,
+        62,
+        165,
+        182
+      ],
+      "source_bbox_size": [
+        82,
+        120
+      ],
+      "crop_box": [
+        79,
+        58,
+        169,
+        186
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        172,
+        234,
+        340,
+        480
+      ],
+      "runtime_bbox_size": [
+        168,
+        246
+      ],
+      "sha256": "6397b4195f571fdb1676fd045b15909f8a02ae7c30d441b77189cc55a2a9cb9e"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        63,
+        159,
+        184
+      ],
+      "source_bbox_size": [
+        70,
+        121
+      ],
+      "crop_box": [
+        85,
+        59,
+        163,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        185,
+        234,
+        328,
+        480
+      ],
+      "runtime_bbox_size": [
+        143,
+        246
+      ],
+      "sha256": "4d969db508816ea1a1e5783801f73d973cfd73391dbd3495b3bee2734c8b873c"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        88,
+        63,
+        158,
+        182
+      ],
+      "source_bbox_size": [
+        70,
+        119
+      ],
+      "crop_box": [
+        84,
+        59,
+        162,
+        186
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        183,
+        234,
+        328,
+        481
+      ],
+      "runtime_bbox_size": [
+        145,
+        247
+      ],
+      "sha256": "0c5ae9786f188de6aaec0c7a160b1c5bc3524b883ca26f1bc4a834da87bd0044"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        63,
+        159,
+        181
+      ],
+      "source_bbox_size": [
+        70,
+        118
+      ],
+      "crop_box": [
+        85,
+        59,
+        163,
+        185
+      ],
+      "target_visible_height": 246,
+      "scale": 2.084746,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        183,
+        234,
+        330,
+        481
+      ],
+      "runtime_bbox_size": [
+        147,
+        247
+      ],
+      "sha256": "95839a1fae942045d6ea119dc57fc7de33a874e00db8ab4bccb35bafdf3903dc"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-east.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-east.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        80,
+        63,
+        177,
+        186
+      ],
+      "source_bbox_size": [
+        97,
+        123
+      ],
+      "crop_box": [
+        76,
+        59,
+        181,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.0,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        159,
+        234,
+        353,
+        480
+      ],
+      "runtime_bbox_size": [
+        194,
+        246
+      ],
+      "sha256": "f2f0863a285f57592bd3203f11cc286c40fdc5af4d3833e8b7c1ab7cf1839520"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        64,
+        169,
+        185
+      ],
+      "source_bbox_size": [
+        92,
+        121
+      ],
+      "crop_box": [
+        73,
+        60,
+        173,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        162,
+        234,
+        349,
+        480
+      ],
+      "runtime_bbox_size": [
+        187,
+        246
+      ],
+      "sha256": "cf1bef0d00ae243f6a289992c8ba15a6a95f86136d1dfac3f47b58755201d8ee"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        80,
+        64,
+        178,
+        186
+      ],
+      "source_bbox_size": [
+        98,
+        122
+      ],
+      "crop_box": [
+        76,
+        60,
+        182,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        157,
+        234,
+        355,
+        480
+      ],
+      "runtime_bbox_size": [
+        198,
+        246
+      ],
+      "sha256": "7ad10b4e03de4ef54b9fa5f1be0f2ad3cb84bae6468e70f0f35c69d55fea2fe9"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        79,
+        64,
+        183,
+        182
+      ],
+      "source_bbox_size": [
+        104,
+        118
+      ],
+      "crop_box": [
+        75,
+        60,
+        187,
+        186
+      ],
+      "target_visible_height": 246,
+      "scale": 2.084746,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        147,
+        234,
+        364,
+        481
+      ],
+      "runtime_bbox_size": [
+        217,
+        247
+      ],
+      "sha256": "39c579f2faf7a10342f781f91135241196b482841fad40230a74d40fd40a9245"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        81,
+        63,
+        178,
+        185
+      ],
+      "source_bbox_size": [
+        97,
+        122
+      ],
+      "crop_box": [
+        77,
+        59,
+        182,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        158,
+        234,
+        354,
+        480
+      ],
+      "runtime_bbox_size": [
+        196,
+        246
+      ],
+      "sha256": "1b3edb1e50d75c35c120015d5d4abb24b4d04c22b2481b1d26258a7e4a9167ba"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        80,
+        63,
+        177,
+        185
+      ],
+      "source_bbox_size": [
+        97,
+        122
+      ],
+      "crop_box": [
+        76,
+        59,
+        181,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        158,
+        234,
+        354,
+        480
+      ],
+      "runtime_bbox_size": [
+        196,
+        246
+      ],
+      "sha256": "15432006a1ea111ab2690b5b2fbf2786cc33a04cbdf223c9378222388a86e7db"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-east_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        81,
+        63,
+        178,
+        185
+      ],
+      "source_bbox_size": [
+        97,
+        122
+      ],
+      "crop_box": [
+        77,
+        59,
+        182,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        158,
+        234,
+        354,
+        480
+      ],
+      "runtime_bbox_size": [
+        196,
+        246
+      ],
+      "sha256": "5569bcb1dd478ca570b4b3f63e149e77a6a3926bd8ad6896f54d505204bd0231"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_east.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_east.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        87,
+        63,
+        159,
+        186
+      ],
+      "source_bbox_size": [
+        72,
+        123
+      ],
+      "crop_box": [
+        83,
+        59,
+        163,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.0,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        184,
+        234,
+        328,
+        480
+      ],
+      "runtime_bbox_size": [
+        144,
+        246
+      ],
+      "sha256": "d8f715c3cfd035149de41e169f568ac64fcbb56988281ea2b4e375bd163b58be"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        91,
+        65,
+        160,
+        186
+      ],
+      "source_bbox_size": [
+        69,
+        121
+      ],
+      "crop_box": [
+        87,
+        61,
+        164,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        186,
+        234,
+        327,
+        480
+      ],
+      "runtime_bbox_size": [
+        141,
+        246
+      ],
+      "sha256": "aa555d97ad691d7c53bad7648f58efd80330a230f538097f9f24a8377584fe42"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        65,
+        160,
+        185
+      ],
+      "source_bbox_size": [
+        71,
+        120
+      ],
+      "crop_box": [
+        85,
+        61,
+        164,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        183,
+        234,
+        329,
+        480
+      ],
+      "runtime_bbox_size": [
+        146,
+        246
+      ],
+      "sha256": "1fc0c6ff56f7be75d4dacd2934feba09e62eceab6a861ca22b927812aca21ac4"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        65,
+        159,
+        184
+      ],
+      "source_bbox_size": [
+        70,
+        119
+      ],
+      "crop_box": [
+        85,
+        61,
+        163,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        183,
+        234,
+        328,
+        481
+      ],
+      "runtime_bbox_size": [
+        145,
+        247
+      ],
+      "sha256": "06257e7a5bd5b82a017e606085ae88e6be539bfdf20017d196cf85868e2212c8"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        91,
+        68,
+        159,
+        188
+      ],
+      "source_bbox_size": [
+        68,
+        120
+      ],
+      "crop_box": [
+        87,
+        64,
+        163,
+        192
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        186,
+        234,
+        326,
+        480
+      ],
+      "runtime_bbox_size": [
+        140,
+        246
+      ],
+      "sha256": "2f33d41e4c3e1bd79e8290b572f237cdd798cb441d0f5db5fe9488003800dff8"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        68,
+        160,
+        187
+      ],
+      "source_bbox_size": [
+        71,
+        119
+      ],
+      "crop_box": [
+        85,
+        64,
+        164,
+        191
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        182,
+        234,
+        329,
+        481
+      ],
+      "runtime_bbox_size": [
+        147,
+        247
+      ],
+      "sha256": "cc1943f24cf5bd82daf6f25f3f32617573b7348898d8e9a648a5f4cb9a5e5cdb"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_east_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        89,
+        68,
+        160,
+        187
+      ],
+      "source_bbox_size": [
+        71,
+        119
+      ],
+      "crop_box": [
+        85,
+        64,
+        164,
+        191
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        182,
+        234,
+        329,
+        481
+      ],
+      "runtime_bbox_size": [
+        147,
+        247
+      ],
+      "sha256": "cdd4d218917cc117df184826451f26a7f098a8e1cb0766bb9abb4f1e18ccb61a"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-east.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-east.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        82,
+        63,
+        170,
+        185
+      ],
+      "source_bbox_size": [
+        88,
+        122
+      ],
+      "crop_box": [
+        78,
+        59,
+        174,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        167,
+        234,
+        345,
+        480
+      ],
+      "runtime_bbox_size": [
+        178,
+        246
+      ],
+      "sha256": "d9608442109ab6d77320425c57acfc520ed7501db1486f063f47e70abfc64f96"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        83,
+        65,
+        173,
+        184
+      ],
+      "source_bbox_size": [
+        90,
+        119
+      ],
+      "crop_box": [
+        79,
+        61,
+        177,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        163,
+        234,
+        350,
+        481
+      ],
+      "runtime_bbox_size": [
+        187,
+        247
+      ],
+      "sha256": "871cb5cbc303007753be488e1409309e365ee2c7f322b3f1178f4fb10983f12e"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        84,
+        66,
+        172,
+        183
+      ],
+      "source_bbox_size": [
+        88,
+        117
+      ],
+      "crop_box": [
+        80,
+        62,
+        176,
+        187
+      ],
+      "target_visible_height": 246,
+      "scale": 2.102564,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        163,
+        234,
+        349,
+        481
+      ],
+      "runtime_bbox_size": [
+        186,
+        247
+      ],
+      "sha256": "69a6a4414c43f9425c61cbf5822310424801bd3fce451832a7ae52e08fcd51f9"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        82,
+        66,
+        171,
+        183
+      ],
+      "source_bbox_size": [
+        89,
+        117
+      ],
+      "crop_box": [
+        78,
+        62,
+        175,
+        187
+      ],
+      "target_visible_height": 246,
+      "scale": 2.102564,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        162,
+        234,
+        350,
+        481
+      ],
+      "runtime_bbox_size": [
+        188,
+        247
+      ],
+      "sha256": "2d724c6ed69384d4103b6193ab6b6e15c587bb83e55323f717d5f39cb6df8bc3"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        80,
+        65,
+        168,
+        180
+      ],
+      "source_bbox_size": [
+        88,
+        115
+      ],
+      "crop_box": [
+        76,
+        61,
+        172,
+        184
+      ],
+      "target_visible_height": 246,
+      "scale": 2.13913,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        162,
+        234,
+        349,
+        479
+      ],
+      "runtime_bbox_size": [
+        187,
+        245
+      ],
+      "sha256": "cbd08c1dbf821e4925ceea09ab01751d7af6957f5e8488c108e3f155a9c95243"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        82,
+        66,
+        170,
+        180
+      ],
+      "source_bbox_size": [
+        88,
+        114
+      ],
+      "crop_box": [
+        78,
+        62,
+        174,
+        184
+      ],
+      "target_visible_height": 246,
+      "scale": 2.157895,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        161,
+        234,
+        350,
+        479
+      ],
+      "runtime_bbox_size": [
+        189,
+        245
+      ],
+      "sha256": "50197eaf07eb8bea224aadf8c2c6d86635556b2376a2ab4f1e914a4bbed1e450"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-east_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        81,
+        66,
+        169,
+        180
+      ],
+      "source_bbox_size": [
+        88,
+        114
+      ],
+      "crop_box": [
+        77,
+        62,
+        173,
+        184
+      ],
+      "target_visible_height": 246,
+      "scale": 2.157895,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        161,
+        234,
+        350,
+        479
+      ],
+      "runtime_bbox_size": [
+        189,
+        245
+      ],
+      "sha256": "3fccc7ae41d9d65327be4ef59777ec03813200e0b524e7e2019752684cd9fe43"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        69,
+        63,
+        180,
+        183
+      ],
+      "source_bbox_size": [
+        111,
+        120
+      ],
+      "crop_box": [
+        65,
+        59,
+        184,
+        187
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        142,
+        234,
+        370,
+        480
+      ],
+      "runtime_bbox_size": [
+        228,
+        246
+      ],
+      "sha256": "3846467d4c46bfe0b427da3277dd379f51ff6fac0853e61c9bdb8dce1deb71eb"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        87,
+        64,
+        165,
+        180
+      ],
+      "source_bbox_size": [
+        78,
+        116
+      ],
+      "crop_box": [
+        83,
+        60,
+        169,
+        184
+      ],
+      "target_visible_height": 246,
+      "scale": 2.12069,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        173,
+        234,
+        339,
+        481
+      ],
+      "runtime_bbox_size": [
+        166,
+        247
+      ],
+      "sha256": "01609a31da1a2b2140424c9a24d45e16b8b299d5ca616df35ab22b572ee6db24"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        86,
+        66,
+        163,
+        182
+      ],
+      "source_bbox_size": [
+        77,
+        116
+      ],
+      "crop_box": [
+        82,
+        62,
+        167,
+        186
+      ],
+      "target_visible_height": 246,
+      "scale": 2.12069,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        174,
+        234,
+        338,
+        481
+      ],
+      "runtime_bbox_size": [
+        164,
+        247
+      ],
+      "sha256": "431279b039ee134430cc6d7da30b1326b69504a90863f27e2093517f1ca7bcd8"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        88,
+        66,
+        165,
+        181
+      ],
+      "source_bbox_size": [
+        77,
+        115
+      ],
+      "crop_box": [
+        84,
+        62,
+        169,
+        185
+      ],
+      "target_visible_height": 246,
+      "scale": 2.13913,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        174,
+        234,
+        338,
+        479
+      ],
+      "runtime_bbox_size": [
+        164,
+        245
+      ],
+      "sha256": "be98bd8f973d311421fe34e42b36d7a970fe69c0bad4a09c529f2a6c88dd20be"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        83,
+        64,
+        167,
+        178
+      ],
+      "source_bbox_size": [
+        84,
+        114
+      ],
+      "crop_box": [
+        79,
+        60,
+        171,
+        182
+      ],
+      "target_visible_height": 246,
+      "scale": 2.157895,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        166,
+        234,
+        347,
+        479
+      ],
+      "runtime_bbox_size": [
+        181,
+        245
+      ],
+      "sha256": "9bf95cdcf60372ad468203bc32c99acd2de461072937a9dafa2804880d84f98d"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        82,
+        65,
+        167,
+        179
+      ],
+      "source_bbox_size": [
+        85,
+        114
+      ],
+      "crop_box": [
+        78,
+        61,
+        171,
+        183
+      ],
+      "target_visible_height": 246,
+      "scale": 2.157895,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        165,
+        234,
+        348,
+        479
+      ],
+      "runtime_bbox_size": [
+        183,
+        245
+      ],
+      "sha256": "1bee564d514af7c7ca138b5ae3cc50fb40f49d0653360da8b5ee4766319018d1"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        83,
+        65,
+        167,
+        179
+      ],
+      "source_bbox_size": [
+        84,
+        114
+      ],
+      "crop_box": [
+        79,
+        61,
+        171,
+        183
+      ],
+      "target_visible_height": 246,
+      "scale": 2.157895,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        166,
+        234,
+        347,
+        479
+      ],
+      "runtime_bbox_size": [
+        181,
+        245
+      ],
+      "sha256": "569dd40384d644ed6cdb63e4d374c627d4fd2d0664b6ce089297d94a3f03bd23"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-west.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_north-west.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        71,
+        63,
+        169,
+        185
+      ],
+      "source_bbox_size": [
+        98,
+        122
+      ],
+      "crop_box": [
+        67,
+        59,
+        173,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        157,
+        234,
+        355,
+        480
+      ],
+      "runtime_bbox_size": [
+        198,
+        246
+      ],
+      "sha256": "7b4a0a5290797a13d08573b2248de77b3a3c55d1f3500e1dcfd3dbc820a1a0bd"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        64,
+        167,
+        184
+      ],
+      "source_bbox_size": [
+        90,
+        120
+      ],
+      "crop_box": [
+        73,
+        60,
+        171,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        164,
+        234,
+        349,
+        480
+      ],
+      "runtime_bbox_size": [
+        185,
+        246
+      ],
+      "sha256": "06a6237cc462978dcb8d31475681c629a12fff843b7e38ff367cb69e734e3fbc"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        76,
+        63,
+        168,
+        183
+      ],
+      "source_bbox_size": [
+        92,
+        120
+      ],
+      "crop_box": [
+        72,
+        59,
+        172,
+        187
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        162,
+        234,
+        351,
+        480
+      ],
+      "runtime_bbox_size": [
+        189,
+        246
+      ],
+      "sha256": "c12a17e75e07e6d86b97e7f9ea7520bbe717ca406b798abe752c92fbd7849e42"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        76,
+        63,
+        166,
+        182
+      ],
+      "source_bbox_size": [
+        90,
+        119
+      ],
+      "crop_box": [
+        72,
+        59,
+        170,
+        186
+      ],
+      "target_visible_height": 246,
+      "scale": 2.067227,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        163,
+        234,
+        350,
+        481
+      ],
+      "runtime_bbox_size": [
+        187,
+        247
+      ],
+      "sha256": "09bfd07cf3614ee1d551c666ad932630ce9e569fc13b98a16656412fda5f118a"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        71,
+        65,
+        169,
+        185
+      ],
+      "source_bbox_size": [
+        98,
+        120
+      ],
+      "crop_box": [
+        67,
+        61,
+        173,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        155,
+        234,
+        356,
+        480
+      ],
+      "runtime_bbox_size": [
+        201,
+        246
+      ],
+      "sha256": "a570e9e356561a4a236cbba74478d27be0fc02bdc63993db7c8c273b1de666e5"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        70,
+        65,
+        168,
+        186
+      ],
+      "source_bbox_size": [
+        98,
+        121
+      ],
+      "crop_box": [
+        66,
+        61,
+        172,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        156,
+        234,
+        356,
+        480
+      ],
+      "runtime_bbox_size": [
+        200,
+        246
+      ],
+      "sha256": "58804211e00b514828e2fc9b4af39269ea5afd824f42be229bfa0730e0e59532"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_north-west_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        70,
+        65,
+        168,
+        186
+      ],
+      "source_bbox_size": [
+        98,
+        121
+      ],
+      "crop_box": [
+        66,
+        61,
+        172,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        156,
+        234,
+        356,
+        480
+      ],
+      "runtime_bbox_size": [
+        200,
+        246
+      ],
+      "sha256": "e290b205fd27531d480e7443602e47b1d0d3f2ce48dcc906e5c4805b61cda1ba"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_west.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_west.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        94,
+        63,
+        161,
+        185
+      ],
+      "source_bbox_size": [
+        67,
+        122
+      ],
+      "crop_box": [
+        90,
+        59,
+        165,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        188,
+        234,
+        323,
+        480
+      ],
+      "runtime_bbox_size": [
+        135,
+        246
+      ],
+      "sha256": "b24b160b7b2094bb93624d541260ddcfbd37ded7b86fffad1c05a344a40534a6"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        96,
+        63,
+        152,
+        185
+      ],
+      "source_bbox_size": [
+        56,
+        122
+      ],
+      "crop_box": [
+        92,
+        59,
+        156,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.016393,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        199,
+        234,
+        312,
+        480
+      ],
+      "runtime_bbox_size": [
+        113,
+        246
+      ],
+      "sha256": "a648b73e839cc1e619b72d8ef30970818685521c7b87aa7d2691ec6fd6dda8e0"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        91,
+        63,
+        152,
+        184
+      ],
+      "source_bbox_size": [
+        61,
+        121
+      ],
+      "crop_box": [
+        87,
+        59,
+        156,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        194,
+        234,
+        318,
+        480
+      ],
+      "runtime_bbox_size": [
+        124,
+        246
+      ],
+      "sha256": "d4e6a9d6c301d7a0794d7e498d0b968236f04d03b087840b75524b867f30d32f"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        97,
+        63,
+        159,
+        184
+      ],
+      "source_bbox_size": [
+        62,
+        121
+      ],
+      "crop_box": [
+        93,
+        59,
+        163,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        193,
+        234,
+        319,
+        480
+      ],
+      "runtime_bbox_size": [
+        126,
+        246
+      ],
+      "sha256": "cd7629ceb99eac77282eef1bb4312f17fef136f3d6d2a4a540820c438b9b8496"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        97,
+        64,
+        153,
+        185
+      ],
+      "source_bbox_size": [
+        56,
+        121
+      ],
+      "crop_box": [
+        93,
+        60,
+        157,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        199,
+        234,
+        313,
+        480
+      ],
+      "runtime_bbox_size": [
+        114,
+        246
+      ],
+      "sha256": "f822eb639b3c115d831f1d55303def2b7b862c5c901246693178ac0a8c9c1b2e"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        96,
+        64,
+        153,
+        185
+      ],
+      "source_bbox_size": [
+        57,
+        121
+      ],
+      "crop_box": [
+        92,
+        60,
+        157,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        198,
+        234,
+        314,
+        480
+      ],
+      "runtime_bbox_size": [
+        116,
+        246
+      ],
+      "sha256": "67a97c6579c4584008d26c340082d87a93b18d07e109e2f4527a86d622801eb6"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_west_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        96,
+        64,
+        150,
+        184
+      ],
+      "source_bbox_size": [
+        54,
+        120
+      ],
+      "crop_box": [
+        92,
+        60,
+        154,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        200,
+        234,
+        311,
+        480
+      ],
+      "runtime_bbox_size": [
+        111,
+        246
+      ],
+      "sha256": "6795aaac72e3a67bd1cf5f600fab4da0ba61a9dbdee436bcd9640983d477f811"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-west.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south-west.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        63,
+        161,
+        186
+      ],
+      "source_bbox_size": [
+        84,
+        123
+      ],
+      "crop_box": [
+        73,
+        59,
+        165,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.0,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        172,
+        234,
+        340,
+        480
+      ],
+      "runtime_bbox_size": [
+        168,
+        246
+      ],
+      "sha256": "07d94a4bd8062f1c906d834800b9ebbab8939cf625f5965434bc60fe8534f4dd"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_00.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_00.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        63,
+        159,
+        188
+      ],
+      "source_bbox_size": [
+        82,
+        125
+      ],
+      "crop_box": [
+        73,
+        59,
+        163,
+        192
+      ],
+      "target_visible_height": 246,
+      "scale": 1.968,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        175,
+        234,
+        336,
+        480
+      ],
+      "runtime_bbox_size": [
+        161,
+        246
+      ],
+      "sha256": "20136da68174031e4f9d0b8030376e429899045e3a11571c6fe533e27ef2a515"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_01.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_01.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        61,
+        159,
+        181
+      ],
+      "source_bbox_size": [
+        82,
+        120
+      ],
+      "crop_box": [
+        73,
+        57,
+        163,
+        185
+      ],
+      "target_visible_height": 246,
+      "scale": 2.05,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        172,
+        234,
+        340,
+        480
+      ],
+      "runtime_bbox_size": [
+        168,
+        246
+      ],
+      "sha256": "0dbbbced5b262282821b11971d637d87a1dd8103f10f50480addbf92ce334092"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_02.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_02.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        62,
+        159,
+        185
+      ],
+      "source_bbox_size": [
+        82,
+        123
+      ],
+      "crop_box": [
+        73,
+        58,
+        163,
+        189
+      ],
+      "target_visible_height": 246,
+      "scale": 2.0,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        174,
+        234,
+        338,
+        480
+      ],
+      "runtime_bbox_size": [
+        164,
+        246
+      ],
+      "sha256": "636b2c14032e6fb38b297d82697d9318f4835e8ddc61083814b23f73dfb6171c"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_03.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_03.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        76,
+        63,
+        156,
+        184
+      ],
+      "source_bbox_size": [
+        80,
+        121
+      ],
+      "crop_box": [
+        72,
+        59,
+        160,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        175,
+        234,
+        338,
+        480
+      ],
+      "runtime_bbox_size": [
+        163,
+        246
+      ],
+      "sha256": "26ebfcda209b34238450a4febc4b3c338869c02e6865ffe5b4b993fb4a611647"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_04.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_04.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        77,
+        63,
+        159,
+        184
+      ],
+      "source_bbox_size": [
+        82,
+        121
+      ],
+      "crop_box": [
+        73,
+        59,
+        163,
+        188
+      ],
+      "target_visible_height": 246,
+      "scale": 2.033058,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        173,
+        234,
+        340,
+        480
+      ],
+      "runtime_bbox_size": [
+        167,
+        246
+      ],
+      "sha256": "cbe86e6a8e65b50ec2f3657f6dacdead168061db39266e14560ee129415329de"
+    },
+    {
+      "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_05.png",
+      "runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_move_south-west_05.png",
+      "source_image_size": [
+        248,
+        248
+      ],
+      "source_bbox": [
+        78,
+        63,
+        159,
+        186
+      ],
+      "source_bbox_size": [
+        81,
+        123
+      ],
+      "crop_box": [
+        74,
+        59,
+        163,
+        190
+      ],
+      "target_visible_height": 246,
+      "scale": 2.0,
+      "runtime_image_size": [
+        512,
+        512
+      ],
+      "runtime_bbox": [
+        175,
+        234,
+        337,
+        480
+      ],
+      "runtime_bbox_size": [
+        162,
+        246
+      ],
+      "sha256": "19a8048e3fce85915d35c1403886be82efbee89527757d5feca9807351afb82c"
+    }
+  ]
+}

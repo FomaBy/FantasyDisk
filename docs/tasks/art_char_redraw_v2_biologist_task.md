@@ -1,17 +1,47 @@
 # ART/ANIM: Перерисовать «Биолог» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: cancelled
+Статус: done
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
 Создано: 2026-06-15
 Автор: PM (запрос пользователя)
 Jira: SCRUM-421
-QA: in_progress (2026-06-15)
+Lane: codex
+Исполнитель: Codex Animator/UI runtime 2026-07-02
+QA: ready (2026-07-02)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
+
+## QA-Вердикт (текущий, live PixelLab runtime — 2026-07-02)
+Статус: PASSED
+
+Проверено claude-qa 2026-07-02 на origin/dev (29dec81f), в изолированном worktree с холодным --import (302 biologist-текстуры импортированы).
+
+Сверка acceptance:
+- Пак на origin/dev (не стрэднут): `assets/sprites/characters/full_frame/biologist_pixellab/` — 8 idle-направлений + 8×6 move-кадров = 56 PNG, парность PNG↔.import 56/56 ✓
+- Прозрачность (главный риск PixelLab): все 56 кадров RGBA, corner_alpha≈0, есть прозрачная кайма, ≥15% прозрачной площади — запечённого фона/белого/каймы нет ✓
+- move ≥5 кадров (6) loop, idle loop, attack отсутствует (спека: без attack) ✓
+- Рантайм-обвязка: `assets/sprites/characters/biologist_spriteframes.tres` + реестр `scripts/progression_data_characters.gd` подключены ✓
+- Смоуки (через godot_gate, semaphore fdengine, соло):
+  • `tests/biologist_pixellab_pack_test.gd` → passed
+  • `tests/animation_smoke_test.gd` → passed
+  • `tests/runtime_smoke_test.gd` → passed (14142 файлов, dup-artifact guard ok)
+- Превью-контакты: `docs/design/previews/scrum421_biologist_pixellab_contact.png` ✓; CHANGELOG-запись SCRUM-421 присутствует ✓
+
+Баги: нет. → Готово.
+
+## PM Directive (2026-06-30)
+Блок снят. Эту задачу выполняет **Codex (Design/Animator-контур), НЕ Claude.**
+Claude-контур задачу не берёт. Lane: codex (метка `codex`, без `claude`/`blocked`).
 
 ## Autonomy / Approval
 Пользователь заранее одобрил всё. Полная автономия, без вопросов.
+
+## PM Unhold / Current Queue State (2026-06-30)
+
+Пользователь снял `user-hold` с задач в `К выполнению`: SCRUM-421 снова доступна
+для автономного Jira-pull/dispatch. Историческая отмена 2026-06-15 ниже
+сохранена как контекст, но больше не блокирует старт.
 
 ## Designer 2 Takeover (2026-06-15)
 
@@ -94,8 +124,8 @@ Acceptance notes:
   cell for idle/move rows; Animator must produce real idle and move/walk frames
   before SpriteFrames/runtime integration.
 
-## QA-Вердикт (2026-06-15)
-Статус: PASSED (Design-source: biologist v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
+## Historical Design-Source Check (2026-06-15)
+Статус: design-source accepted (biologist v2 ярко/эпично + 512-cell + source-sheet handoff); Animator-фаза (idle/move) — pending
 
 Проверено (фактически):
 - **biologist v2 source прозрачный**: `biologist_v2_source_clean` (1024²), `_idle_cell_512`
@@ -116,5 +146,105 @@ Acceptance (Design-source scope):
 
 Статус: Design-source PASS, ждёт Animator-фазу. Баги: нет (Design-scope).
 
-## ОТМЕНЕНО 2026-06-15 (пользователь)
-Широкий редизайн персонажей v2 отменён — пользователю не нравится подход. Работаем по одному классу заново (старт — Берсерк, отдельная задача).
+## Историческая отмена 2026-06-15 (перекрыта 2026-06-30)
+Широкий редизайн персонажей v2 был отменён — пользователю не нравился подход.
+2026-06-30 пользователь снял `user-hold` с To Do задач; текущий статус SCRUM-421
+снова `new` / `К выполнению`.
+
+## PM Readiness Update — PixelLab 2026-06-30
+
+PM/Jira повторно открыл SCRUM-421 для Design/Codex: Biologist должен быть
+пересобран через PixelLab по актуальному runtime-пайплайну, аналогично Dark Mage
+PixelLab Hero Select/runtime примеру (SCRUM-685). Обязательный scope: PixelLab
+character source/fetch для `biologist`, 8-direction idle poses, 8-direction
+move/walk animation, transparent normalized 512x512 runtime pack under
+`assets/sprites/characters/full_frame/biologist_pixellab/`, source manifest under
+`assets/sprites/characters/pixellab/biologist/`, `biologist_spriteframes.tres`,
+runtime/Hero Select integration, docs and focused smokes. Non-PixelLab fallback
+is not allowed unless Jira explicitly records an override.
+
+## Blocker — Codex Design 2026-06-30
+
+`codex-design-board-watcher` claim-first взял SCRUM-421 after PM readiness and
+checked PixelLab availability. Exposed PixelLab tools are not available through
+Codex `tool_search`. The local `mcp_servers.pixellab` bridge initializes and
+returns the PixelLab tool list, but actual tool calls fail with `401 Missing
+Authorization header`; no token/secret was printed.
+
+Because `fantasydisk-asset-generator` and
+`fantasydisk-pixellab-animation-integrator` both require PixelLab for this
+production character source/animation scope and forbid legacy/OpenAI/manual
+fallback, no asset/runtime integration was started. Jira was returned to
+`К выполнению` with labels `blocked` and `pixellab-blocked`. Unblock: configure
+PixelLab MCP Authorization for Codex Desktop `mcp-remote`, then requeue
+SCRUM-421 for Design/Codex.
+
+## Unblocked — PixelLab MCP 2026-06-30
+
+PM/Codex cleanup rechecked PixelLab after the Codex config fix. The local
+`mcp-remote` bridge now starts with the Codex bundled `node` in `PATH`,
+`initialize` succeeds against `PixelLab MCP Server 0.2.0`, and authenticated
+`get_balance` returns the active subscription/generation balance. The previous
+`401 Missing Authorization header` / missing `AUTH_HEADER` blocker is stale.
+
+Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-421 remains
+`К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
+Already-open Codex threads may still need restart/new thread tool discovery to
+expose PixelLab tools. Disk cleanup: none created.
+
+## PixelLab Runtime Rescue Result — Codex Design 2026-07-01
+
+SCRUM-421 finished as a live PixelLab runtime pack, reusing the valid prior
+PixelLab character source `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` and replacing
+only the faulty south walking row with a new PixelLab `south-facing-walk-rescue`
+animation from the same character. No unrelated character packs were edited.
+
+Delivered paths:
+- Source pack: `assets/sprites/characters/pixellab/biologist/` (8 idle poses,
+  8 directions x 6 move/walk frames, manifest, PixelLab metadata, alpha report).
+- Runtime pack: `assets/sprites/characters/full_frame/biologist_pixellab/`
+  (56 normalized `512x512` transparent PNGs, visible alpha height `245 px`).
+- SpriteFrames: `assets/sprites/characters/biologist_spriteframes.tres`
+  (`idle`/`walk`/`move` fallbacks plus 8-direction `idle_`, `walk_`, `move_`
+  animations; no `attack` / `attack_primary`).
+- Runtime integration: Biologist now points to
+  `res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png`.
+- Preview: `docs/design/previews/scrum421_biologist_pixellab_contact.png`.
+
+Acceptance:
+- [x] Biologist PixelLab source/runtime pack is transparent and weapon-free.
+- [x] 8-direction idle + 8-direction 6-frame move/walk integrated in runtime.
+- [x] `biologist_spriteframes.tres` exposes idle/walk/move only; attacks remain
+  absent by SCRUM-421 scope.
+- [x] Hero Select preview advances the Biologist PixelLab walk frames.
+- [x] Documentation and changelog updated.
+
+Verification:
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Ready for Jira QA on branch `codex/scrum-421-biologist-rescue`.
+
+## Jira QA Sync Result — Codex 2026-07-02
+
+SCRUM-421 was revalidated and restored into live `dev` after the earlier rescue
+branch was not present in-game. Existing PixelLab source
+`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` was found and applied to the runtime
+Biologist class. The Hero Select carousel was also adjusted to align bottom-row
+portraits by visible alpha baseline and slightly enlarge slots.
+
+Additional verification:
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Pushed to `dev`: `f972cc4c feat(SCRUM-421): restore biologist pixellab pack`.
+Disk cleanup: removed `/tmp/fantasydisk-scrum421-sync`; no disposable checkout remains.

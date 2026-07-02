@@ -63,32 +63,91 @@
 
 | ID | Игровое имя | Роль | Источник | Ассет | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/berserk_spriteframes.tres`, `assets/sprites/characters/full_frame/berserk_pixellab/`, `assets/sprites/characters/pixellab/berserk/`, legacy `assets/sprites/characters/full_frame/berserk/`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано; live runtime uses PixelLab 8-direction pixel-art move/walk rows (6f each) and directional idle fallbacks; legacy art remains fallback/history |
-| `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано |
-| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-435 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
-| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-427 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
-| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper.png`, `assets/sprites/characters/sniper_sheet.png`, `assets/sprites/characters/sniper_spriteframes.tres`, `assets/sprites/characters/full_frame/sniper/`, `assets/sprites/characters/cutout/sniper_*.png`, v2 source handoff `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png` | Реализовано; SCRUM-296 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-433 v2 source handoff ready, not live runtime |
-| `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest.png`; `assets/sprites/characters/cutout/priest_*.png`, v2 source handoff `assets/sprites/characters/v2/priest/priest_v2_idle_source.png` | Реализовано; SCRUM-431 v2 source handoff ready, not live runtime |
-| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-284 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; SCRUM-421 v2 source handoff ready, not live runtime |
-| `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot.png`; `assets/sprites/characters/cutout/robot_*.png` | Реализовано |
-| `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer.png`; `assets/sprites/characters/cutout/engineer_*.png` | Реализовано |
-| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd` | `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work; animation smoke PASS, runtime smoke blocked by unrelated Hero Select v3 back-button UI assertion |
-| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-429 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
-| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-419 v2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; animation/runtime smokes PASS |
-| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-294 unarmed 5 idle / 5 walk / 5 attack_primary SpriteFrames integrated; animation/runtime smokes PASS |
-| `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано |
-| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight.png`, `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-473 cartoon2 live SpriteFrames integrated with 5 idle / 5 walk / 5 move frames and no attack by scope; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
-| `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано |
+| `berserk` | Берсерк | Ближний бой, физический урон, конусы и AoE | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/berserk_spriteframes.tres`, `assets/sprites/characters/full_frame/berserk_pixellab/`, `assets/sprites/characters/pixellab/berserk/`, legacy `assets/sprites/characters/full_frame/berserk/`, `assets/sprites/characters/cutout/berserk_*.png` | Реализовано; SCRUM-703 live runtime uses a new unarmed PixelLab v3 8-direction pack (`8486ce45-f749-4c63-9a6d-f0477d619c2d`) with 6f move/walk rows, directional idle fallbacks, and normalized `245 px` alpha-bbox height on `512x512` frames; legacy art remains fallback/history |
+| `soldier` | Солдат | Тактический физический класс: залпы, гранаты и удержание линии | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/soldier_spriteframes.tres`, `assets/sprites/characters/full_frame/soldier_pixellab/`, `assets/sprites/characters/pixellab/soldier/`, legacy `assets/sprites/characters/soldier.png`, `assets/sprites/characters/cutout/soldier_*.png` | Реализовано; SCRUM-434 live runtime uses PixelLab character `72b487d3-feea-4012-b39f-b59ba24f7f11` with 8-direction idle rotations and 6-frame directional move/walk rows, normalized to 245 px visible height on `512x512` runtime frames; legacy art remains fallback/history |
+| `thief` | Вор | Уловки, рикошет монет, backstab и дымовое уклонение | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/thief_spriteframes.tres`, `assets/sprites/characters/full_frame/thief_pixellab/`, `assets/sprites/characters/pixellab/thief/`, legacy `assets/sprites/characters/full_frame/thief/`, `assets/sprites/characters/thief.png`, `assets/sprites/characters/thief_sheet.png`, `assets/sprites/characters/cutout/thief_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/thief/` | Реализовано; SCRUM-800 live runtime uses PixelLab character `02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f` with 8-direction idle rotations and 6-frame directional move/walk rows; SCRUM-435 v2 assets remain fallback/history |
+| `elementalist` | Элементалист | Стихийный AoE-контроль: орбиты, призмы и метеорные осколки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/elementalist_spriteframes.tres`, `assets/sprites/characters/full_frame/elementalist_pixellab/`, `assets/sprites/characters/pixellab/elementalist/`, legacy `assets/sprites/characters/full_frame/elementalist/`, `assets/sprites/characters/elementalist.png`, `assets/sprites/characters/elementalist_sheet.png`, `assets/sprites/characters/cutout/elementalist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/elementalist/` | Реализовано; SCRUM-801 live runtime uses PixelLab character `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f` with 8-direction idle rotations and 6-frame directional move/walk rows; SCRUM-427 v2 assets remain fallback/history |
+| `sniper` | Снайпер | Дальний точный класс: lockshot, kill-zone и split rounds | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd` | `assets/sprites/characters/sniper_spriteframes.tres`, `assets/sprites/characters/full_frame/sniper_pixellab/`, `assets/sprites/characters/pixellab/sniper/`, legacy `assets/sprites/characters/full_frame/sniper/`, `assets/sprites/characters/sniper.png`, `assets/sprites/characters/sniper_sheet.png`, `assets/sprites/characters/cutout/sniper_*.png`, v2 source handoff `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png` | Реализовано; SCRUM-433 live runtime uses PixelLab character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c` with 8-direction idle rotations and 6-frame directional move/walk rows, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-296 full-frame art remains fallback/history |
+| `priest` | Священник | Священный sustain: sanctify, ward-пульсы и молитвенная цепь | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/priest_spriteframes.tres`, `assets/sprites/characters/full_frame/priest_pixellab/`, `assets/sprites/characters/pixellab/priest/`, legacy `assets/sprites/characters/full_frame/priest/`, `assets/sprites/characters/priest.png`, `assets/sprites/characters/cutout/priest_*.png`, v2 source handoff `assets/sprites/characters/v2/priest/priest_v2_idle_source.png` | Реализовано; SCRUM-431 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy full-frame art remains history/fallback |
+| `biologist` | Биолог | Биореакции: spore bloom, sample analysis и symbiote web | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/biologist_spriteframes.tres`, `assets/sprites/characters/full_frame/biologist_pixellab/`, `assets/sprites/characters/pixellab/biologist/`, legacy `assets/sprites/characters/full_frame/biologist/`, `assets/sprites/characters/biologist.png`, `assets/sprites/characters/biologist_sheet.png`, `assets/sprites/characters/cutout/biologist_*.png`, v2 source handoff `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png` | Реализовано; SCRUM-421 live Hero Select/runtime SpriteFrames use PixelLab source `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` with 8 idle directions and 6-frame directional `move`/`walk`, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-284 full-frame art remains history/fallback |
+| `robot` | Робот | Тяжелый tank-control: magnetic anchor, compression line и reactor vent | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/robot_spriteframes.tres`, `assets/sprites/characters/full_frame/robot_pixellab/`, `assets/sprites/characters/pixellab/robot/`, legacy `assets/sprites/characters/robot.png`, `assets/sprites/characters/cutout/robot_*.png` | Реализовано; SCRUM-802 live runtime uses PixelLab character `37c6ccf2-ab40-4c89-83a3-db8365f85257` with 8-direction idle rotations and 6-frame directional move/walk rows, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-432/v2 scope remains history/fallback |
+| `engineer` | Инженер | Механический summoner/support: sentry link, repair drone и pressure mines | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/cutout_rig_2d.gd`, `scripts/sliced_rig_manifest.gd` | `assets/sprites/characters/engineer_spriteframes.tres`, `assets/sprites/characters/full_frame/engineer_pixellab/`, `assets/sprites/characters/pixellab/engineer/`, legacy `assets/sprites/characters/full_frame/engineer/`, `assets/sprites/characters/engineer.png`, `assets/sprites/characters/cutout/engineer_*.png` | Реализовано; SCRUM-428 live runtime uses PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621` with 8-direction idle rotations and 6-frame directional move/walk rows; legacy art remains fallback/history |
+| `dark_mage` | Темный маг | Магический урон, AoE, DoT, лучи | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/dark_mage_spriteframes.tres`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/pixellab/dark_mage/`, legacy `assets/sprites/characters/full_frame/dark_mage/`, `assets/sprites/characters/dark_mage.png`, `assets/sprites/characters/dark_mage_sheet.png`, `assets/sprites/characters/cartoon2/dark_mage/dark_mage_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/dark_mage_*.png`, v2 source/runtime assets under `assets/sprites/characters/v2/dark_mage/`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/dark_mage/skeleton_source_manifest.json` | Реализовано; SCRUM-704 live Hero Select/runtime SpriteFrames use a new PixelLab v3 8-direction 240-250px full redraw with 6-frame directional move/walk rows and empty hands; legacy SCRUM-473 cartoon2 and skeleton assets remain history/fallback |
+| `guitarist` | Гитарист | Звуковые волны, импульсы, ауры, отталкивание | `scripts/progression_data.gd` | `assets/sprites/characters/guitarist_spriteframes.tres`, `assets/sprites/characters/full_frame/guitarist_pixellab/`, `assets/sprites/characters/pixellab/guitarist/`, legacy `assets/sprites/characters/full_frame/guitarist/`, `assets/sprites/characters/guitarist.png`, `assets/sprites/characters/guitarist_sheet.png`, `assets/sprites/characters/cutout/guitarist_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/guitarist/` | Реализовано; SCRUM-797 live Hero Select/runtime SpriteFrames use PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` with a held-guitar silhouette by direct user override, 8 idle directions and 6-frame directional `move`/`walk`, normalized to 245 px visible height on `512x512` runtime frames; legacy SCRUM-706 empty-hands pack and SCRUM-429 v2 full-frame assets remain history/fallback |
+| `assassin` | Ассасин | Возвращающиеся чакрамы, крит-мили, яд и рывки к цели на критах | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/assassin_spriteframes.tres`, `assets/sprites/characters/full_frame/assassin_pixellab/`, `assets/sprites/characters/pixellab/assassin/`, legacy `assets/sprites/characters/full_frame/assassin/`, `assets/sprites/characters/assassin.png`, `assets/sprites/characters/assassin_sheet.png`, `assets/sprites/characters/cutout/assassin_*.png`, v2 runtime/source assets under `assets/sprites/characters/v2/assassin/` | Реализовано; SCRUM-803 live runtime uses PixelLab character `ec73da27-b704-4336-9275-74c8e3e578df` with empty open hands, 8-direction idle rotations and 6-frame directional move/walk rows normalized to 245 px visible height on `512x512` runtime frames; SCRUM-419 v2 art remains fallback/history |
+| `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger_pixellab/`, `assets/sprites/characters/pixellab/ranger/`, legacy `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-804 live runtime uses PixelLab character `1646d83c-f570-4bdd-9065-cb1b46bf13f7` with empty hands, 8-direction idle rotations and 6-frame directional move/walk rows normalized to 245 px visible height on `512x512` frames; legacy SCRUM-294 art remains fallback/history |
+| `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor_spriteframes.tres`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/pixellab/doctor/`, legacy `assets/sprites/characters/full_frame/doctor/`, `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано; SCRUM-705 live Hero Select/runtime SpriteFrames use fresh PixelLab v3 full redraw (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) with 8-direction idle + 6-frame directional move/walk, normalized to 244 px visible height in `512x512`; empty hands, no baked potion/syringe/saw; legacy full-frame art and SCRUM-425 pack remain history/fallback |
+| `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist_spriteframes.tres`, `assets/sprites/characters/full_frame/chemist_pixellab/`, `assets/sprites/characters/pixellab/chemist/`, legacy `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано; SCRUM-423 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy art remains fallback/history |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight_pixellab/`, `assets/sprites/characters/pixellab/knight/`, legacy `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/knight.png`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-430 live SpriteFrames/portrait use PixelLab no-shield 8-direction idle rotations plus 6-frame directional walk/move rows; legacy SCRUM-473 cartoon2 frames remain history/fallback; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
+| `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid_spriteframes.tres`, `assets/sprites/characters/full_frame/druid_pixellab/`, `assets/sprites/characters/pixellab/druid/`, legacy `assets/sprites/characters/full_frame/druid/`, `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано; live runtime uses PixelLab 8-direction idle rotations and 6-frame move/walk rows; legacy art remains fallback/history |
 
-SCRUM-416 runtime portrait rule: for every playable class, `scripts/progression_data_characters.gd`
-uses the accepted cleaned full-frame idle frame as the canonical static UI
-portrait path: `assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`.
+SCRUM-416 runtime portrait rule: for most playable classes,
+`scripts/progression_data_characters.gd` uses the accepted cleaned full-frame
+idle frame as the canonical static UI portrait path:
+`assets/sprites/characters/full_frame/<class>/<class>_idle_00.png`. PixelLab
+directional classes (`assassin`, `berserk`, `biologist`, `dark_mage`,
+`guitarist`, `doctor`, `chemist`, `engineer`, `knight`, `priest`, `druid`,
+`elementalist`, `ranger`, `robot`, `sniper`, `soldier`, `thief`) use
+`assets/sprites/characters/full_frame/<class>_pixellab/<class>_idle_south.png`
+instead.
 Hero Select, hero thumbnails, Codex and level-up portrait surfaces read this
 single `sprite_path`; legacy `assets/sprites/characters/<class>.png` files remain
 historical/fallback asset references and are not the live static portrait source.
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
+
+SCRUM-423 promotes Chemist to the PixelLab directional runtime contract:
+PixelLab character `c7fe44d3-1f15-45a1-b762-b2862833b151` provides 8 static
+idle rotations and `walking-6-frames` movement rows for all directions. Source
+PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/chemist/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/chemist_pixellab/`, and
+`assets/sprites/characters/chemist_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract.
+
+SCRUM-428 promotes Engineer to the same PixelLab directional runtime contract:
+PixelLab character `c5bd9766-e7de-4316-ace6-e687c951e621` provides 8 static
+idle rotations and `walking-6-frames` movement rows for all directions. Source
+PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/engineer/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/engineer_pixellab/`, and
+`assets/sprites/characters/engineer_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract.
+
+SCRUM-433 promotes Sniper to the same PixelLab directional runtime contract:
+PixelLab character `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c` provides 8 static
+idle rotations and `walking-6-frames` movement rows for all directions. Source
+PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/sniper/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/sniper_pixellab/`, and
+`assets/sprites/characters/sniper_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract.
+
+SCRUM-803 promotes Assassin to the same PixelLab directional runtime contract:
+PixelLab character `ec73da27-b704-4336-9275-74c8e3e578df` provides empty-handed
+8-direction idle rotations and `walking-6-frames` movement rows for all
+directions. Source PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/assassin/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/assassin_pixellab/`, and
+`assets/sprites/characters/assassin_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract. PixelLab
+candidate `cdee7e9a-1d04-430e-8fc9-60fafc2cd4a8` was rejected/deleted before
+import because it baked a held blade into the body art.
+
+SCRUM-804 promotes Ranger to the same PixelLab directional runtime contract:
+PixelLab character `1646d83c-f570-4bdd-9065-cb1b46bf13f7` provides empty-handed
+8-direction idle rotations and `walking-6-frames` movement rows for all
+directions. Source PNGs, manifest and PixelLab evidence live under
+`assets/sprites/characters/pixellab/ranger/`; normalized runtime frames live
+under `assets/sprites/characters/full_frame/ranger_pixellab/`, and
+`assets/sprites/characters/ranger_spriteframes.tres` exposes generic
+idle/move/walk fallbacks plus `idle_<direction>`, `move_<direction>` and
+`walk_<direction>` rows for the 8-direction runtime/preview contract. Bow,
+crossbow, trap and projectile visuals remain separate weapon-owned assets.
 
 SCRUM-422 adds the first 0.1.6 character redraw v2 Design source anchor. The
 accepted exemplar for the future per-class v2 rows is Berserk, using a bright,
@@ -170,6 +229,15 @@ looping `idle`, `walk`, and `move` only, with runtime PNGs under
 under `build/qa/scrum473_cartoon2_dark_mage_knight_anim/`. Attack animation
 remains absent by SCRUM-473 scope because weapon visuals own attacks.
 
+SCRUM-430 replaces the live Knight SpriteFrames/portrait source with PixelLab.
+Source downloads live under `assets/sprites/characters/pixellab/knight/`,
+normalized 512x512 runtime frames under
+`assets/sprites/characters/full_frame/knight_pixellab/`, and
+`assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
+`idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>` rows
+for all 8 directions. The accepted PixelLab pass is explicitly no-shield/no-weapon;
+Knight weapons and shield visuals remain separate weapon assets.
+
 SCRUM-475 adds Design-source skeleton packages for Dark Mage and Knight under
 `docs/design/references/chars_cartoon/skeleton_parts/`. Each character has a
 transparent accepted source copy, 19 separated PNG parts, documented local
@@ -217,6 +285,19 @@ live frames are backed up under
 `docs/design/backups/scrum429_guitarist_v2_pre_anim/`. Attack animation remains
 absent by SCRUM-429 scope; animation/runtime smokes PASS.
 
+SCRUM-706 first replaced the live Guitarist PixelLab static placeholder with an
+empty-hands production pack. SCRUM-797 then applies a direct user override:
+PixelLab source `d278e753-9885-4550-82ff-81ee3bef297d` is now the live
+Guitarist body because its held-guitar silhouette reads stronger and cooler in
+Hero Select/combat. Live source rotations and six-frame movement are stored
+under `assets/sprites/characters/pixellab/guitarist/`, normalized runtime frames
+under `assets/sprites/characters/full_frame/guitarist_pixellab/` keep every
+visible alpha bbox at `245 px` height, and
+`assets/sprites/characters/guitarist_spriteframes.tres` exposes `idle`, `move`,
+`walk`, plus directional `idle/move/walk_<direction>` rows for all eight
+directions. The previous SCRUM-706 empty-hands pack is backed up under
+`docs/design/backups/scrum797_guitarist_instrument_pack_pre_swap/`.
+
 SCRUM-435 adds the Thief v2 Design-source handoff under
 `docs/design/references/characters_v2/thief/` and promotes the accepted source
 into live `assets/sprites/characters/thief_spriteframes.tres` with v2 `idle` /
@@ -239,16 +320,16 @@ previous live frames are backed up under
 under `build/qa/scrum427_elementalist_v2_anim/`; animation and runtime smokes
 PASS.
 
-SCRUM-433 adds the Sniper v2 Design-source handoff under
+Historical Sniper v2 Design-source handoff: SCRUM-433 originally added
 `docs/design/references/characters_v2/sniper/`: raw OpenAI source,
 alpha-clean source, normalized `512x512` idle cell, `2560x1024` placeholder
 source-sheet layout, accepted source sheet copy, handoff note and QA report.
 Asset-side handoff copies live in
 `assets/sprites/characters/v2/sniper/sniper_v2_idle_source.png`,
 `assets/sprites/characters/v2/sniper/sniper_v2_sheet_source_handoff.png` and
-`assets/sprites/characters/v2/sniper/sniper_v2_sheet.png`. These are source
-handoff assets only; they do not replace current runtime `sniper_sheet.png` or
-`sniper_spriteframes.tres` until Animator/Back-end integration is accepted.
+`assets/sprites/characters/v2/sniper/sniper_v2_sheet.png`. These source-handoff
+assets are historical now; live Sniper runtime/portrait uses the PixelLab
+directional pack under `assets/sprites/characters/full_frame/sniper_pixellab/`.
 
 SCRUM-431 adds the Priest v2 Design-source handoff under
 `docs/design/references/characters_v2/priest/`: raw OpenAI source, alpha-clean
@@ -268,10 +349,13 @@ source-sheet layout, accepted source sheet copy, handoff note and QA report.
 Asset-side handoff copies live in
 `assets/sprites/characters/v2/biologist/biologist_v2_idle_source.png`,
 `assets/sprites/characters/v2/biologist/biologist_v2_sheet_source_handoff.png`
-and `assets/sprites/characters/v2/biologist/biologist_v2_sheet.png`. These are
-source handoff assets only; they do not replace current runtime
-`biologist_sheet.png` or `biologist_spriteframes.tres` until Animator/Back-end
-integration is accepted.
+and `assets/sprites/characters/v2/biologist/biologist_v2_sheet.png`. These
+older v2 handoff assets remain source history. SCRUM-421 later finished the live
+PixelLab runtime pack from character `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`
+under `assets/sprites/characters/pixellab/biologist/` and
+`assets/sprites/characters/full_frame/biologist_pixellab/`, with a regenerated
+front-facing south movement row and all 56 runtime frames normalized to `245 px`
+visible alpha height.
 
 SCRUM-432 adds the Robot v2 Design-source handoff under
 `docs/design/references/characters_v2/robot/`: raw OpenAI source,
@@ -440,6 +524,8 @@ SCRUM-261 elite/boss VFX pass 2026-06-14: добавлены dedicated 512x512/2
 SCRUM-258 unique weapon VFX pass 2026-06-14: добавлены 51 dedicated `256x256` RGBA PNG `vfx_weapon_<weapon_id>.png` для всех текущих `ProgressionData.WEAPONS_BY_CLASS` weapon IDs. Это короткие D&D/painterly VFX-пластины под реальные mechanics SCRUM-256/251/254/245: melee execute/cleave/stagger, charged shots/traps, drain/status links, summon/deploy identities, auras and buff/debuff reads. `scripts/attack_vfx.gd::weapon_signature()`, `scripts/class_weapon.gd::_spawn_weapon_signature()` и SCRUM-335 `scripts/berserk_weapon.gd::_show_weapon_signature()` подключают их визуально по `weapon_id` без изменения урона, формул, targeting, cooldowns или таймингов. QA previews: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
 SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный runtime-пак эффектов атак пересобран через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) и deterministic sheet-cut pipeline `tools/build_scrum337_attack_vfx_from_sources.py`. Заменены на месте 83 `assets/sprites/effects/*.png` и 2 `assets/sprites/projectiles/*.png`; имена, размеры, alpha/RGBA и runtime-пути сохранены. Source sheets/manifest: `docs/design/references/attack_vfx_realistic_dark_fantasy/`; QA previews: `docs/design/previews/scrum337_attack_vfx_core_contact.png`, `docs/design/previews/scrum337_attack_vfx_weapon_contact.png`. Gameplay timing, damage, targeting, formulas и Back-end runtime logic не менялись.
+
+SCRUM-756 attack VFX targeted redraw 2026-07-01: `vfx_weapon_priest_reliquary.png` заменен через PixelLab MCP / `fantasydisk-asset-generator` как отдельная полупрозрачная sanctify-seal пластина с ghost-силуэтом `assets/sprites/weapons/priest_reliquary.png`. Runtime path, размер `256x256`, alpha/RGBA контракт, gameplay timing, damage, healing, targeting, formulas и Back-end runtime logic не менялись. Evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/manifest.json`, preview `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`.
 
 Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (70 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
@@ -676,18 +762,21 @@ to `discovered_bosses`, and artifact IDs from `ProgressionData.ARTIFACTS` go to
 
 ## Мини-Элитки (Свита Возвышения L7, SCRUM-155)
 
-Data-driven ростер `scripts/progression_data.gd::MINI_ELITE_KINDS` (6 видов): `mini_scavenger_reaper` Жнец-Падальщик, `mini_plague_bellringer` Чумной Звонарь, `mini_bone_warden` Костяной Страж, `mini_spark_wight` Искровик, `mini_rot_hound` Гнилая Гончая, `mini_shadow_devourer` Теневой Пожиратель. Каждый вид: базовая elite-сцена, профиль hp/speed/damage, RGB-тинт различимости, поведение ближайшего elite-паттерна. Свита L7 выбирает вид случайно (`combat_director._maybe_spawn_mini_elite`); kind-мета `mini_elite_kind` на узле. SCRUM-156 подготовил финальные source sprites `assets/sprites/elites/mini_<id>.png` (`512x512`, RGBA, transparent). Runtime использует базовые elite-сцены с mini-elite meta/scale/drop profile, а кодекс имеет отдельный раздел «Мини-элитки». SCRUM-372: full-frame visual lookup теперь предпочитает registered `mini_elite_kind` SpriteFrames entry и fallback'ается на base `elite_behavior`, если mini-specific frames еще не подключены. SCRUM-376 подключил все 6 `assets/sprites/elites/full_frame/mini_*_spriteframes.tres`: у каждого есть `move` loop, `attack`/`attack_primary`, две `skill_*` rows и matching `attack_*` aliases. SCRUM-370 добавил `death` 6f/10fps no-loop rows для всех 6 mini-elite SpriteFrames.
+Data-driven ростер `scripts/progression_data_enemies.gd::MINI_ELITE_KINDS` (10 видов): `mini_scavenger_reaper` Жнец-Падальщик, `mini_plague_bellringer` Чумной Звонарь, `mini_bone_warden` Костяной Страж, `mini_spark_wight` Искровик, `mini_rot_hound` Гнилая Гончая, `mini_shadow_devourer` Теневой Пожиратель и (SCRUM-607, «Эхо бездны») `mini_siege_rammer` Осадный Таран, `mini_swarm_sniper` Роевой Снайпер, `mini_plague_berserker` Чумной Берсерк, `mini_void_phantom` Фантом Бездны. Каждый вид: базовая elite-сцена, профиль hp/speed/damage, RGB-тинт различимости, поведение ближайшего elite-паттерна. Свита L7 выбирает вид случайно (`combat_director._maybe_spawn_mini_elite`); kind-мета `mini_elite_kind` на узле. SCRUM-156 подготовил финальные source sprites `assets/sprites/elites/mini_<id>.png` (`512x512`, RGBA, transparent). Runtime использует базовые elite-сцены с mini-elite meta/scale/drop profile, а кодекс имеет отдельный раздел «Мини-элитки». SCRUM-372: full-frame visual lookup теперь предпочитает registered `mini_elite_kind` SpriteFrames entry и fallback'ается на base `elite_behavior`, если mini-specific frames еще не подключены. SCRUM-376 подключил все 6 `assets/sprites/elites/full_frame/mini_*_spriteframes.tres`: у каждого есть `move` loop, `attack`/`attack_primary`, две `skill_*` rows и matching `attack_*` aliases. SCRUM-370 добавил `death` 6f/10fps no-loop rows для всех 6 mini-elite SpriteFrames. SCRUM-607 расширил ростер до 10 видов: четвёрка `mini_siege_rammer`/`mini_swarm_sniper`/`mini_plague_berserker`/`mini_void_phantom` использует базовые elite-сцены (выделенных full-frame SpriteFrames пока нет — registry безопасно fallback'ается на base `elite_behavior`). SCRUM-719 добавил их canonical-записи в кодекс (`codex_data.gd`); ранее эта четвёрка не была зеркалирована и её убийство молча не открывало codex-запись — теперь покрыто контракт-гейтом `tests/codex_discovery_contract_test.gd`.
 
 ## Боссы
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Паттерны | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
 | `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png`; full-frame `assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres` | Залпы, зоны разлома, призыв, щит, увороты. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_gravity_well`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
-| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres` | Рывки, disk slam AoE, radial burst, enrage. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres` | Рывки, disk slam AoE, radial burst, enrage. Визуально: SCRUM-793 PixelLab source `81b491db-7240-4513-bad5-263b7f81539d` promoted into `move`, `attack`/`attack_primary`, `death`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
 | `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_*.png` + `bone_archon_death_row.png` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
-| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
+| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: SCRUM-793 PixelLab source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf` promoted into `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
 | `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
+| `bloodthorn_lion` | Кровавый Шипастый Лев | `scenes/BossBloodthornLion.tscn` | Новый боссовый хищник (SCRUM-794, design SCRUM-779) | Live static `assets/sprites/bosses/boss_bloodthorn_lion.png` (upscale 256→512 из single-view кандидата `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`); full-frame rows — Animator follow-up | Прыжки-рывки (dash-pounce), radial burst шипов, колючие `BossRiftZone` bleed-зоны, уникальная `BloodthornSpikeRing` (кольцо с проходом), enrage <35% HP. Визуально пока static-sprite fallback | Runtime реализован (SCRUM-794); **вне случайной route-ротации** до QA-gated follow-up; full-frame анимация — Animator |
 | `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
+| `skeletal_dragon` | Костяной Дракон | TBD | Planned flying skeletal dragon boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/skeletal_dragon_concept_openai.png`; PixelLab candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned: flying skeletal pressure, bone/necromancy hazards, wing-safe telegraphs. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
+| `bloodthorn_lion` | Шипастый Кровавый Лев | TBD | Planned fast predatory blood-thorn boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/bloodthorn_lion_concept_openai.png`; PixelLab candidates `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`, `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion_8dir/bloodthorn_lion_pixellab_south.png` | Planned: leap/pounce pressure, thorn bursts, blood-crystal trail. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
 
 SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
 `assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
@@ -708,6 +797,21 @@ cells, `24px` discard-only gutters and `24px` outer padding; общий мани
 source pack и подключены Animator-owned SpriteFrames integration SCRUM-370.
 
 Обновление SCRUM-135 от 2026-06-12: оба boss source PNG заменены на native `512x512` и перенарезаны в `assets/sprites/bosses/cutout/`; `rift_warden` сохраняет отдельный `vortex` part, `disk_devourer` остается single-torso rig по текущему CONFIG. Epic boss scale не менялся.
+
+SCRUM-779 (2026-07-01) добавил PixelLab-first Design-source pass для boss
+roster refresh и двух новых candidates. OpenAI image generation использовался
+только для concept references `skeletal_dragon` и `bloodthorn_lion`; production
+sprite candidates созданы через PixelLab MCP и сохранены под
+`assets/sprites/bosses/pixellab_candidates/`, с manifest/QA notes в
+`docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
+SCRUM-793 (2026-07-02) promoted only the accepted current-boss candidates:
+`disk_devourer` and `brood_mother` now use those PixelLab single-view sources in
+their existing live full-frame runtime rows while preserving SpriteFrames state
+names, frame counts and boss gameplay callbacks. `secret_ascension_boss`,
+single-view `bloodthorn_lion`, `rift_warden`, `bone_archon`, `ashen_colossus`,
+`skeletal_dragon` and 8-dir `bloodthorn_lion` remain source-only/revise-needed
+for separate follow-up. QA evidence:
+`build/qa/scrum793_boss_pixellab_promotion/`.
 
 ## Узлы Маршрутной Карты
 
@@ -786,17 +890,24 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `move_speed` | Скорость движения | `assets/sprites/ui/icons/derived/attr_move_speed.png` |
 | `dodge` | Уворот | `assets/sprites/ui/icons/derived/attr_dodge.png` |
 | `defense` | Защита | `assets/sprites/ui/icons/derived/attr_defense.png` |
+| `absorb` | Поглощение | `assets/sprites/ui/icons/derived/attr_absorb.png` |
 | `health_point` | Максимальное здоровье | `assets/sprites/ui/icons/derived/attr_health_point.png` |
+| `knockback_distance` | Дистанция отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_distance.png` |
+| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
 | `attack_range` | Дальность атаки | `assets/sprites/ui/icons/derived/attr_attack_range.png` |
-| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
-| `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
+| `range_multiplier` | Множитель дальности | `assets/sprites/ui/icons/derived/attr_range_multiplier.png` |
+| `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
+| `vampiric_amount` | Вампиризм | `assets/sprites/ui/icons/derived/attr_vampiric_amount.png` |
+| `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
 | `dot_damage` | Урон DoT | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
 | `dot_speed` | Скорость тиков DoT | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
-| `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
+| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
 | `knockback_power` | Сила отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_power.png` |
-| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
+| `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
+| `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
 
 ### HUD Ресурсы
 
@@ -805,7 +916,7 @@ source pack и подключены Animator-owned SpriteFrames integration SCRU
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_buff_power.png` fallback via `UIIconRegistry` |
+| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 
@@ -938,6 +1049,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_frame_hero_select_dossier` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_dossier.png` | Live Hero Select dossier frame; SCRUM-355 thin DescriptionHS recomposition, `1120x1140` RGBA, rendered as whole-image proportional `TextureRect` inside `HeroSelectDossierFrame` (base frame `387x394`; strict Design safe margins `Vector4(126, 160, 126, 172)`; backup in `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`; Back-end SCRUM-354 must integrate the new runtime margins) |
 | `ui_frame_hero_select_unified_panel` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png` | SCRUM-356 Design-ready unified portrait+description frame, `1536x1024` RGBA, generated through OpenAI Images/`fantasydisk-asset-generator` workflow and postprocessed to alpha. Intended to replace separate portrait+dossier runtime frames after Back-end integration; whole-image proportional scaling only. Content zones: portrait `[130,145,420,560]`, description `[610,145,786,500]`, bottom controls `[570,705,660,178]`; metadata in `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json` |
 | `ui_frame_hero_select_radar` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_radar.png` | Live Hero Select floating stat radar frame; SCRUM-322 windrose compass frame, 1024x1024 RGBA, rendered as square whole-image proportional `TextureRect` (safe margins `Vector4(245, 245, 245, 235)`, backup in `build/cleanup_backup_hero_select_windrose_2026_06_14/`) |
+| `ui_frame_hero_select_pixellab_parts` | `assets/sprites/ui/frames/hero_select_pixellab/` (`background.png`, `frame_title.png`, `button_back.png`, `frame_portrait.png`, `frame_dossier.png`, `frame_radar.png`, `frame_ascension.png`, `button_asc_minus.png`, `button_asc_plus.png`, `button_choose.png`, `frame_carousel.png`, `button_carousel_left.png`, `button_carousel_right.png`, `frame_hero_slot.png`) | SCRUM-687 live Hero Select PixelLab rebuild kit. Runtime scales the `2560x1440` source-space layout uniformly, keeps all labels/buttons/radar/portraits inside per-part content rects, uses framed carousel slots with child portrait textures, and preserves directional `512x512` PixelLab preview rotation for Berserk, Dark Mage, Guitarist and Doctor. |
 | `hero_select_v2_mockup_spec` | `docs/design/mockups/scrum436_hero_select_v2/spec.md` | SCRUM-436 Design-ready Hero Select v2 rebuild package, not a runtime texture. OpenAI mockup, annotated safe-zones and `hero_select_v2_layout_metadata.json` preserve the existing live `HeroSelectRadarPanel` / `HeroStatRadar` while respecing hero preview, dossier/traits/weapons, ascension controls, Select/Back buttons, wide carousel and tooltip zones for 1280x720 / 1920x1080 / 2560x1440. Back-end must rebuild live Controls from this spec rather than displaying the mockup image. |
 | `ui_frame_hero_select_thumbnail_strip` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail_strip.png` | Live Hero Select bottom thumbnail strip frame; SCRUM-355 thin Carusel recomposition, `1536x255` RGBA, rendered as whole-image proportional `TextureRect` (no 9-slice/one-axis stretch; strict Design safe margins `Vector4(132, 62, 132, 62)`; backup in `build/qa/scrum355/hero_select_pre_scrum355_frame_assets.zip`; Back-end SCRUM-354 must integrate the new runtime margins) |
 | `ui_frame_hero_select_thumbnail` | `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_thumbnail.png` | Live Hero Select adaptive hero thumbnail button frame |
@@ -959,6 +1071,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_btn_red_gold_utility_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_utility.png` + hover/pressed/disabled | Compact utility 54x42 |
 | `ui_btn_red_gold_pause_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png` + hover/pressed/disabled | Pause menu 280x60 |
 | `ui_btn_red_gold_rebind_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_rebind.png` + hover/pressed/disabled | Keybinding/dropdown-style 420x62 controls |
+| `main_menu_title_fantasy_disk` | `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` | SCRUM-680 release refresh main menu logo/title, `960x360` RGBA transparent. PixelLab textless crest source and manifest live in `docs/design/references/main_menu_logo_release_fix/`; generator `tools/build_main_menu_title_logo.py` renders exact `Fantasy Disk` text and runtime displays the asset as `MainMenuTitleLabel` at `Rect2(56,44,720,270)`. |
 | `ui_df_button_primary/secondary/danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_*` | Superseded SCRUM-147 parchment/wax buttons; retained only as legacy/reference fallback |
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Superseded SCRUM-229 panel fallback/reference |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Superseded merchant/shop frame fallback/reference |
@@ -1050,7 +1163,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `attack_speed`, `crit_chance`, `crit_damage_multiplier`, `move_speed`, `dodge`, `defense`, `health_point`, `attack_range`, `aoe_radius`, `pickup_radius`, `dot_damage`, `dot_speed`, `projectile_speed`, `aura_radius`, `buff_power`, `knockback_power`, `summon_amount` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.
@@ -1355,3 +1468,64 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 | ID | Game name | Current scene | Role | Asset | Patterns | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | SCRUM-539 Design source pack: `assets/sprites/bosses/secret_ascension_boss.png`, `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final animation/runtime wiring pending |
+
+## SCRUM-723 Scene/Resource Reference Integrity Audit (0.2.0)
+
+Reference-integrity sweep of scenes, `.tres` resources and project config — no asset
+deletions, no canonical reference changes. Findings (all CLEAN as of the sweep):
+
+- **0 broken `res://` references** across all tracked `.tscn`/`.tres`/`.godot`/`.cfg`
+  (1510 literal refs checked offline; in-engine gate re-checks 1746 unique refs over
+  184 files).
+- **0 orphan sidecars** — no tracked `.import`/`.uid` whose base file is missing; all
+  2561 media files under `assets/` have a tracked `.import`. The 427 images without
+  `.import` are all `docs/design/**` backups/references + 2 `build/qa/**` artifacts —
+  outside the `res://` import pipeline, correctly un-imported.
+- **No duplicate `class_name`** declarations across `scripts/` + `tests/` (guards the
+  ` 2`-suffix global-class collision class, SCRUM-440).
+- **Version consistent** — `project.godot config/version` and every
+  `export_presets.cfg` version field are `0.2.0`; no export-preset drift.
+- **Gate strengthened:** `tests/asset_reference_integrity_test.gd` now also scans
+  `.tres` under `assets/` (previously scripts/ + scenes/ only), so a broken
+  SpriteFrames→texture `ext_resource path` fails the gate instead of rendering blank.
+
+## SCRUM-810 Input Glyphs (Gamepad + Keyboard) — 0.2.0
+
+Пиксель-арт глифы ввода для UI-подсказок пакета полной поддержки геймпада
+(подсказки «какая кнопка за что», ребинд в настройках, контекстные хинты).
+
+**Метод генерации:** программная (PIL, `scratchpad/gen_glyphs.py` — не в репо),
+НЕ PixelLab MCP. Обоснование: глифы ввода — геометрические UI-примитивы с
+точными буквами/стрелками (A/B/X/Y, ESC, WASD, направления), а канон PixelLab —
+«no text» (нечитаемый текст на 64px, запекаемый фон — частый QA-FAIL). PIL даёт
+гарантированно прозрачный фон (углы alpha=0), читаемые на 32px буквы, единый
+стиль и не грузит перегруженный Godot-флот / PixelLab-биллинг. Стиль кита выдержан:
+тёмная кожаная основа + светлый латунный контур; лицевые кнопки — узнаваемая
+generic Xbox-раскладка (A зелёная / B красная / X синяя / Y жёлтая).
+
+**Размеры:** два нативных — `32×32` и `64×64` (каждый растеризован под свой
+масштаб, не даунскейл). `size` в аксессорах реестра выбирает ближайший.
+
+**Пути:** `assets/sprites/ui/input_glyphs/<name>_<32|64>.png` (+ парный `.import`).
+
+**Реестр:** `scripts/ui/input_glyph_registry.gd` — `ALL_GLYPHS`, словари
+`JOY_BUTTON_TO_GLYPH` / `JOY_AXIS_TO_GLYPH` / `KEY_TO_GLYPH`; API (все null-safe):
+`path_for`, `has_glyph`, `texture_for`, `texture_for_joy_button(idx,size)`,
+`texture_for_axis(axis,size)`, `texture_for_key(name,size)`. Экраны НЕ трогает —
+интеграцию делают UI-задачи пакета.
+
+**Гейт:** `tests/input_glyph_assets_test.gd` (существование ресурсов, загрузка
+текстур, размер PNG, прозрачность углов, покрытие JOY_BUTTON/JOY_AXIS/клавиш,
+null-safety). Контакт-лист QA: `build/qa/scrum810/glyphs_contact_sheet.png`.
+
+| Группа | Глифы (name) | Маппинг |
+| --- | --- | --- |
+| Лицевые | `btn_a` `btn_b` `btn_x` `btn_y` | JOY_BUTTON_A/B/X/Y |
+| D-pad | `dpad` `dpad_up` `dpad_down` `dpad_left` `dpad_right` | JOY_BUTTON_DPAD_UP..RIGHT (11-14) |
+| Плечи/курки | `lb` `rb` `lt` `rt` | LEFT/RIGHT_SHOULDER; JOY_AXIS_TRIGGER_LEFT/RIGHT |
+| Меню | `start` `select` | JOY_BUTTON_START / JOY_BUTTON_BACK |
+| Стики | `stick_l` `stick_r` `stick_l_press` `stick_r_press` `stick_move` | LEFT/RIGHT_STICK (нажатие); оси LEFT_*→stick_move, RIGHT_*→stick_r |
+| Клавиатура | `key_generic` `key_esc` `key_enter` `key_space` `key_wasd` `key_arrows` | KEY_TO_GLYPH |
+
+`docs/design/systems/input_controls.md` на момент SCRUM-810 не создан (core-задача
+пакета); при его появлении сослаться на этот блок и реестр.

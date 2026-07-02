@@ -1,0 +1,218 @@
+{
+  "source": "PixelLab MCP",
+  "character_id": "guitarist",
+  "pixellab_character_id": "704fd67b-da81-4804-acd2-07e75fefd9de",
+  "pixellab_name": "FantasyDisk SCRUM-706 Sonic Bard empty palms 240",
+  "generated_at": "2026-07-01",
+  "mode": "v3",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "completed_size": [
+    248,
+    248
+  ],
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "runtime_target_visible_height": 245,
+  "runtime_scale_policy": "per-frame alpha crop scaled to 245px visible height",
+  "runtime_bottom_padding": 112,
+  "template_animation_id": "walking-6-frames",
+  "animation_frames_per_direction": 6,
+  "clockwise_preview_order": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "source_files": {
+    "idle": {
+      "south": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_south.png",
+      "south-east": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_south-east.png",
+      "east": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_east.png",
+      "north-east": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_north-east.png",
+      "north": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_north.png",
+      "north-west": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_north-west.png",
+      "west": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_west.png",
+      "south-west": "assets/sprites/characters/pixellab/guitarist/guitarist_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south_05.png"
+      ],
+      "south-east": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-east_05.png"
+      ],
+      "east": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_east_05.png"
+      ],
+      "north-east": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-east_05.png"
+      ],
+      "north": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north_05.png"
+      ],
+      "north-west": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_north-west_05.png"
+      ],
+      "west": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_west_05.png"
+      ],
+      "south-west": [
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_00.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_01.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_02.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_03.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_04.png",
+        "assets/sprites/characters/pixellab/guitarist/guitarist_move_south-west_05.png"
+      ]
+    }
+  },
+  "runtime_files": {
+    "idle": {
+      "south": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png",
+      "south-east": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south-east.png",
+      "east": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_east.png",
+      "north-east": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north-east.png",
+      "north": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north.png",
+      "north-west": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_north-west.png",
+      "west": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_west.png",
+      "south-west": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south_05.png"
+      ],
+      "south-east": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-east_05.png"
+      ],
+      "east": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_east_05.png"
+      ],
+      "north-east": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-east_05.png"
+      ],
+      "north": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north_05.png"
+      ],
+      "north-west": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_north-west_05.png"
+      ],
+      "west": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_west_05.png"
+      ],
+      "south-west": [
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_00.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_01.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_02.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_03.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_04.png",
+        "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_move_south-west_05.png"
+      ]
+    }
+  },
+  "spriteframes": "assets/sprites/characters/guitarist_spriteframes.tres",
+  "bbox_report": "docs/design/previews/scrum706_guitarist_pixellab_bbox_report.json",
+  "preview_contact_sheet": "docs/design/previews/scrum706_guitarist_pixellab_contact.png",
+  "preview_gifs": [
+    "docs/design/previews/scrum706_guitarist_pixellab_walk_south.gif",
+    "docs/design/previews/scrum706_guitarist_pixellab_walk_east.gif"
+  ],
+  "accepted_source_notes": "Production source accepted because completed size is 248x248 and south preview shows open empty hands with no baked guitar/bass/amp/mic/held prop.",
+  "rejected_sources": [
+    {
+      "pixellab_character_id": "f41e1d57-f720-4ae1-a739-8873d935163b",
+      "reason": "Listed as 8dir 128x128 before generation failed; rejected for SCRUM-706 size contract."
+    },
+    {
+      "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
+      "reason": "Completed 240x240 but preview baked a held instrument; rejected for empty-hands rule."
+    }
+  ],
+  "notes": "New PixelLab-only SCRUM-706 production pack. Weapon/instrument visuals remain separate weapon effects; base body art is empty-handed."
+}

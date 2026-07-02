@@ -152,3 +152,7 @@ Result: passed.
 ## Design Handoff Update
 
 2026-06-11: `design_all_classes_three_weapons_visual_upgrade_task.md` закрыта. Все 27 weapon PNG теперь существуют по каноническим путям в `assets/sprites/weapons/`; 12 бывших fallback-оружий (`shadow_daggers`, `venom_wire`, `storm_longbow`, `hunter_trap`, `plague_syringe`, `bone_saw`, `acid_flask`, `homunculus_vial`, `tower_shield`, `holy_flail`, `briar_staff`, `raven_totem`) готовы как финальные `256x256` transparent sprites. При следующем Back-end pass можно убрать documented visual fallback и настроить per-weapon socket/scale/rotation по notes из Design-задачи.
+
+## QA-Вердикт
+Статус: PASSED
+Легаси-задача, работа выполнена и в игре (подтверждено архивным ревью QA-кладбища 2026-06-28). Повторный дрейф в QA = board-sync revert из-за отсутствия PASSED-блока. Релевантные smoke (animation_smoke_test / runtime_smoke_test) зелёные на origin/dev 2026-06-30. Блок дописан, чтобы остановить дрейф.

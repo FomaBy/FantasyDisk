@@ -20,10 +20,16 @@ extends Node2D
 @export var elite_commander_scene: PackedScene
 @export var pickup_scene: PackedScene
 
-const BASE_ROUND_DURATION := 30.0
+const BASE_ROUND_DURATION := 60.0
 const ROUND_DURATION_STEP := 3.0
-const ROUND_DURATION_MAX := 60.0
-const ROUTE_STEPS_TO_BOSS := 10
+const ROUND_DURATION_MAX := 90.0
+# SCRUM-785: элитка и босс — таймер «убей или проиграл» на 5 минут.
+const ELITE_BOSS_ROUND_DURATION := 300.0
+const ROUTE_STEPS_TO_BOSS := 8
+# SCRUM-787: сундуки оформлены целыми «линиями» (ряд, где КАЖДАЯ ветка = chest), чтобы
+# игрок не мог их пропустить (любой путь проходит через ряд). 1 линия в середине акта;
+# можно поднять до 2 (ранняя + поздняя).
+const CHEST_LINE_ROWS := 1
 const ACT_COUNT := 3
 const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2
@@ -211,21 +217,21 @@ const SPAWN_EDGE_PADDING := 72.0
 const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
 const SMALL_PACK_CHANCE := 0.22
 const WAVE_SETTINGS := {
-	"base_spawn_count": 2,
+	"base_spawn_count": 4,
 	"spawn_count_per_stage": 1,
 	"spawn_count_per_wave_step": 1,
 	"wave_step_size": 3,
-	"normal_spawn_limit": 5,
+	"normal_spawn_limit": 8,
 	"elite_spawn_limit": 3,
 	"boss_spawn_limit": 3,
-	"base_active_cap": 14,
+	"base_active_cap": 20,
 	"active_cap_per_stage": 5,
 	"active_cap_per_wave_step": 2,
 	"elite_active_cap": 12,
 	"boss_active_cap": 12,
-	"max_active_cap": 30,
-	"spawn_pause_min": 1.35,
-	"spawn_pause_max": 2.15,
+	"max_active_cap": 36,
+	"spawn_pause_min": 0.8,
+	"spawn_pause_max": 1.4,
 	"boss_spawn_pause_min": 2.0,
 	"boss_spawn_pause_max": 3.2,
 }
@@ -450,10 +456,12 @@ const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
+const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
 
 var ui
 var route
 var combat
+var dev_console: CanvasLayer = null
 var meta_state := {}
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
@@ -472,13 +480,20 @@ var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
-	"music_enabled": true,
-	"sfx_enabled": true,
+	"music_enabled": false,
+	"sfx_enabled": false,
 }
 var input_bindings := {}
 var aim_mode := "nearest"
 var debug_mode_enabled := false
-var _quit_requested := false
+# SCRUM-816: геймпад-настройки (устройство ввода + ребинд/deadzone/vibration).
+# Персистятся через save_game_settings; deadzone/vibration зеркалятся в root-мету
+# (player.gd._runtime_setting читает мету), input_mode/bindings применяет
+# InputDeviceManager при живой смене из вкладки «Управление».
+var input_mode := "auto"
+var gamepad_bindings := {}
+var gamepad_deadzone := 0.25
+var gamepad_vibration := true
 
 
 func _init() -> void:
@@ -494,6 +509,8 @@ func _ready() -> void:
 	_load_game_settings()
 	ui._setup_default_input_actions()
 	ui._apply_game_cursor()
+	dev_console = DEV_CONSOLE_SCRIPT.new(self)
+	add_child(dev_console)
 	ui._show_main_menu()
 
 
@@ -507,7 +524,6 @@ func _notification(what: int) -> void:
 
 
 func request_game_quit() -> void:
-	_quit_requested = true
 	set_meta("game_quit_requested", true)
 	if bool(get_meta("suppress_game_quit", false)):
 		return
@@ -535,11 +551,22 @@ func _load_game_settings() -> void:
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
 	combat_feedback_enabled = bool(settings.get("combat_feedback", true))
 	debug_mode_enabled = bool(settings.get("debug_mode", false))
+	# SCRUM-816: геймпад-настройки. input_mode валидируется, bindings — Dictionary,
+	# deadzone клампится в диапазон ядра [0.05..0.5], vibration — bool.
+	input_mode = str(settings.get("input_mode", "auto"))
+	if not ["auto", "keyboard", "gamepad"].has(input_mode):
+		input_mode = "auto"
+	gamepad_bindings = (settings.get("gamepad_bindings", {}) as Dictionary).duplicate(true)
+	gamepad_deadzone = clampf(float(settings.get("gamepad_deadzone", 0.25)), 0.05, 0.5)
+	gamepad_vibration = bool(settings.get("gamepad_vibration", true))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
+	# player.gd читает эти два ключа через root-мету (_runtime_setting).
+	get_tree().root.set_meta("gamepad_deadzone", gamepad_deadzone)
+	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -561,10 +588,18 @@ func save_game_settings() -> void:
 		settings["input_bindings"] = ui._current_input_bindings()
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
+	# SCRUM-816: без этих ключей save_settings перезаписал бы их дефолтами при
+	# любом сохранении (aim/громкость/ребинд) — раскладка геймпада бы слетала.
+	settings["input_mode"] = input_mode
+	settings["gamepad_bindings"] = gamepad_bindings.duplicate(true)
+	settings["gamepad_deadzone"] = gamepad_deadzone
+	settings["gamepad_vibration"] = gamepad_vibration
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
+	get_tree().root.set_meta("gamepad_deadzone", gamepad_deadzone)
+	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 
 
 func run_autosave_has_run() -> bool:
@@ -982,7 +1017,7 @@ func apply_ascension_bonuses(player: Node) -> void:
 		if player.has_method("_apply_stat_scaling"):
 			player._apply_stat_scaling(true)
 	# 3) Мета-древо умений (SCRUM-150): боевое подмножество в run_modifiers + старт-золото забега.
-	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers(meta_state)
+	var skill_mods: Dictionary = META_PROGRESSION.skill_modifiers_for_class(meta_state, selected_character_id)
 	# Прогрессия по классам (SCRUM-360): бонусы ТОЛЬКО выбранного класса — мерджим в
 	# skill_mods (ключи class_* не пересекаются с аккаунтными), применяются вместе.
 	var class_mods: Dictionary = META_PROGRESSION.class_modifiers(meta_state, selected_character_id)
@@ -1007,13 +1042,35 @@ func apply_ascension_bonuses(player: Node) -> void:
 		player.set("money", int(player.get("money")) + start_gold)
 
 
+func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		return key_event.pressed and not key_event.echo and key_event.is_action_pressed(action)
+	if event is InputEventJoypadButton:
+		var button_event := event as InputEventJoypadButton
+		return button_event.pressed and button_event.is_action_pressed(action)
+	if event is InputEventAction:
+		var action_event := event as InputEventAction
+		return action_event.pressed and action_event.is_action_pressed(action)
+	return false
+
+
 func _input(event: InputEvent) -> void:
 	if pending_rebind_action != "":
 		ui._handle_rebind_input(event)
 		return
 
+	# SCRUM-831: пока дев-консоль открыта, весь ввод принадлежит ей (тоггл/Esc/историю
+	# обрабатывает её _input, текст добирает LineEdit на GUI-этапе) — иначе буквы
+	# команд дёргали бы хоткеи (P-фидбек, Space-докачка, F12).
+	if dev_console != null and dev_console.is_console_open():
+		return
+
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
-		if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+		# SCRUM-812: закрытие фидбек-оверлея с клавиши (Esc/pause) ИЛИ геймпада (B/ui_cancel).
+		var close_feedback: bool = (event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause")) \
+			or (not (event is InputEventKey) and event.is_action_pressed("ui_cancel"))
+		if close_feedback:
 			ui._close_feedback_overlay()
 			get_viewport().set_input_as_handled()
 		return
@@ -1039,19 +1096,47 @@ func _input(event: InputEvent) -> void:
 	if _handle_debug_combat_move_input(event):
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("open_level_up"):
+	if _is_fresh_action_press(event, &"open_level_up"):
 		if pending_level_ups > 0 and not _has_pause_reason("level_up"):
 			ui._open_pending_level_up()
 			get_viewport().set_input_as_handled()
 			return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
+	# SCRUM-812: геймпад B (ui_cancel) закрывает/отменяет ТОЛЬКО открытый внутризабеговый
+	# экран или паузу-оверлей — паритет с Esc. Вне открытых экранов B не трогаем: он
+	# остаётся свободным под геймплей (dodge и т.п., ядро раскладки — SCRUM-811/814).
+	# Клавиатурный путь «pause» (Esc) ниже не меняется.
+	if not (event is InputEventKey) and event.is_action_pressed("ui_cancel"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
-		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
-			ui._show_pause_menu()
+			get_viewport().set_input_as_handled()
+			return
 		elif ui_escape_action.is_valid():
 			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
+			return
+
+	# SCRUM-813: LB/RB (плечевые) листают вкладки настроек и секции кодекса — локально
+	# по открытому мета-экрану (ui._handle_menu_shoulder_nav). Обрабатывается, только если
+	# соответствующий экран открыт, иначе не трогаем (RB=open_level_up в бою — отдельный путь).
+	if event is InputEventJoypadButton and event.pressed:
+		var shoulder := event as InputEventJoypadButton
+		if shoulder.button_index == JOY_BUTTON_LEFT_SHOULDER or shoulder.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+			var dir := 1 if shoulder.button_index == JOY_BUTTON_RIGHT_SHOULDER else -1
+			if ui.has_method("_handle_menu_shoulder_nav") and ui._handle_menu_shoulder_nav(dir):
+				get_viewport().set_input_as_handled()
+				return
+
+	if _is_fresh_action_press(event, &"pause"):
+		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+			ui._resume_game()
+			get_viewport().set_input_as_handled()
+		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
+			ui._show_pause_menu()
+			get_viewport().set_input_as_handled()
+		elif ui_escape_action.is_valid():
+			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
 
 
 func _handle_debug_combat_move_input(event: InputEvent) -> bool:
@@ -1099,8 +1184,8 @@ func _process(delta: float) -> void:
 	# SCRUM-502: суммарное время забега (только в активном бою, не в паузе — оба гарда выше).
 	add_run_time(delta)
 
-	if not boss_combat_active:
-		round_time_left -= delta
+	# SCRUM-785: таймер тикает во ВСЕХ боях, включая боссовый (5-минутный «убей или проиграл»).
+	round_time_left -= delta
 	spawn_cooldown -= delta
 
 	if spawn_cooldown <= 0.0:
@@ -1112,21 +1197,24 @@ func _process(delta: float) -> void:
 	combat._update_pickups(delta)
 	ui._update_hud()
 
-	if boss_combat_active and get_tree().get_nodes_in_group("bosses").is_empty():
+	# SCRUM-785: условия победы/поражения по типу боя.
+	var timer_expired := round_time_left <= 0.0
+	if boss_combat_active:
+		# Босс: убит — мгновенная победа; таймер вышел с живым боссом — поражение.
+		if get_tree().get_nodes_in_group("bosses").is_empty():
+			combat._end_combat(true)
+		elif timer_expired:
+			combat._end_combat(false)
+	elif current_combat_type == "elite":
+		# Элитка: убита — победа (награда гейтится _elite_defeated в _end_combat);
+		# таймер вышел с живой элиткой — поражение.
+		if combat.is_elite_defeated():
+			combat._end_combat(true)
+		elif timer_expired:
+			combat._end_combat(false)
+	elif timer_expired:
+		# Обычный бой: выжил до конца таймера = победа.
 		combat._end_combat(true)
-	elif not boss_combat_active and round_time_left <= 0.0:
-		combat._end_combat(true)
-
-
-func set_game_paused(reason: String, should_pause: bool) -> void:
-	if should_pause:
-		push_pause(reason)
-	else:
-		pop_pause(reason)
-
-
-func set_gameplay_paused(should_pause: bool, reason := "") -> void:
-	set_game_paused(reason, should_pause)
 
 
 func push_pause(reason: String) -> void:
@@ -1144,10 +1232,6 @@ func pop_pause(reason: String) -> void:
 
 	pause_reasons.erase(reason)
 	get_tree().paused = not pause_reasons.is_empty()
-
-
-func is_gameplay_paused() -> bool:
-	return _is_gameplay_paused()
 
 
 func _is_gameplay_paused() -> bool:

@@ -1,0 +1,116 @@
+{
+  "group_id": null,
+  "states": [
+    {
+      "character": {
+        "id": "cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4",
+        "name": "FantasyDisk Biologist PixelLab SCRUM-421 2026-06-30",
+        "prompt": "FantasyDisk playable character biologist, 2D pixel art for a top-down dark fantasy Dungeons & Dragons roguelite. A bright epic scientist-naturalist in protective field suit and leather apron, emerald bioluminescent organic patterns, glowing moss/leaf accents, small glass sample capsules strapped to belt and backpack only, no held objects. Empty hands clearly visible, no weapon, no syringe, no flask, no staff, no orb, no UI, no text. Humanoid full body, readable strong silhouette, medium heroic proportions, low top-down three-quarter RPG camera, centered, transparent background, no baked shadow, no frame. Palette: fresh emerald green glow, deep forest leather, ivory cloth, brass/bronze lab fittings, dark fantasy but clean and readable at game sprite size.",
+        "size": {
+          "width": 244,
+          "height": 244
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-06-30T14:02:40.295504+00:00"
+      },
+      "folder": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3",
+      "frames": {
+        "rotations": {
+          "south": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/south.png",
+          "south-east": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/south-east.png",
+          "east": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/east.png",
+          "north-east": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/north-east.png",
+          "north": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/north.png",
+          "north-west": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/north-west.png",
+          "west": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/west.png",
+          "south-west": "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/rotations/south-west.png"
+        },
+        "animations": {
+          "animating": {
+            "north-east": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-east/frame_005.png"
+            ],
+            "north-west": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/north-west/frame_005.png"
+            ],
+            "south-east": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-east/frame_005.png"
+            ],
+            "south-west": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating/south-west/frame_005.png"
+            ]
+          },
+          "walking_south_toward_the_camera_front-facing_body": {
+            "south": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_005.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/walking_south_toward_the_camera_front-facing_body/south/frame_006.png"
+            ]
+          },
+          "animating-9a485e8a": {
+            "south": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/south/frame_005.png"
+            ],
+            "east": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/east/frame_005.png"
+            ],
+            "north": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/north/frame_005.png"
+            ],
+            "west": [
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_000.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_001.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_002.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_003.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_004.png",
+              "FantasyDisk_Biologist_PixelLab_SCRUM-421_2026-06-3/animations/animating-9a485e8a/west/frame_005.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.0",
+  "export_date": "2026-07-01T09:29:58.244633"
+}
