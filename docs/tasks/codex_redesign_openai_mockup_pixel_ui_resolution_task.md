@@ -240,3 +240,35 @@ Disk cleanup: removed this worker's `.godot` import cache (756 MB before
 cleanup), restored/removed Godot-generated `.import`/`.uid` sidecars, no Python
 caches found, no disposable clone/worktree created.
 Thread cleanup: pending archive at worker finish.
+
+## QA-Вердикт — Codex QA worker 2026-07-02
+
+Статус: PASSED / Jira `Готово`
+Thread/Worker: codex-scrum-725-qa-worker-20260702
+
+Проверено:
+- PASS: `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/codex_data_smoke_test.gd`.
+- PASS: `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`. First run hit a non-SCRUM-725 `upgrade_economy` safe-rect assertion at 1600x900; immediate rerun passed. Codex matrix sections were green at 1152x648, 1280x720, 1536x864, 1600x900, 1920x1080, 2560x1440 and 3840x2160.
+- PASS: `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`.
+- PASS: `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --path . --script res://tests/design_review_screenshot_capture_test.gd`.
+
+Evidence inspected:
+- `build/qa/design_review/codex_1280x720.png`
+- `build/qa/design_review/codex_1920x1080.png`
+- `build/qa/design_review/codex_2560x1440.png`
+- `build/qa/design_review/codex_tooltip_1920x1080.png`
+- `build/qa/design_review/manifest.md`
+
+Result:
+- Codex list-card title/summary text is clipped/readable inside the inner card
+  content zones and does not overlap red diamond ornaments, 9-slice rails,
+  scrollbars or frame corners.
+- Right detail panel portrait, chips, parchment text and scrollbar stay inside
+  their content zones; dark ink remains confined to parchment.
+- No product-code changes were made by this QA worker; `scripts/codex_data.gd`
+  remained read-only.
+
+Disk cleanup: removed this worker's `.godot` cache, restored/removed generated
+`.import`/`.uid` sidecars, no Python caches remained, no disposable clone/worktree
+created. Fresh screenshot evidence remains under `build/qa/design_review/`.
+Thread cleanup: pending archive at worker finish.
