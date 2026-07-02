@@ -127,7 +127,7 @@ v3 требует минимального адаптера (например, �
   keystone-вариантам = +18..25% взвешенной силы; спред лучших билдов ≤1.25;
   Атлас целиком: аккаунт-множитель <1.30, вклад в class-power ≤5%.
 
-## QA-Вердикт 2026-07-02 — FAILED
+## QA-история 2026-07-02 (FAILED, superseded)
 
 - Проверено: статическая QA-инспекция docs/code/tests на `origin/dev`
   `892d0d8a`; дополнительно `meta_points_per_ascension_test.gd` и
@@ -162,3 +162,21 @@ v3 требует минимального адаптера (например, �
   `meta_skill_tree_smoke_test`, `skill_tree_per_hero_test`,
   `meta_progression_smoke_test`, `meta_points_per_ascension_test`,
   `runtime_smoke_test` — PASSED.
+
+## QA-Вердикт 2026-07-02 (re-check, claude-qa 17:25) — PASSED
+
+Статус: PASSED
+
+- Merge-check: c31d228b — ancestor origin/dev (проверено против HEAD 226b730d);
+  коммитов, трогающих файлы 828 после фикса, нет.
+- Блокер §4 устранён: atlas_m0 («Договор с торговцами», hub-adjacent) cost 1
+  (meta_progression_tree_data.gd:528); первая победа (STARDUST_FIRST_WIN=1)
+  делает узел available и покупка списывает 1 пыль. Тестовый риск закрыт:
+  _test_purchase_and_currencies закрепляет ранний крючок + поведение cost-2
+  узлов; инвариант «всё не купить» (59 > 50) заперт _test_atlas_stays_non_combat.
+- Регресс-обзор diff c31d228b: только целевая правка (data-строка + тест +
+  doc-синхрон 60→59), побочных изменений нет.
+- Гейты (чистый worktree от origin/dev 226b730d, полный --import, сериализованно
+  godot_gate.py/fdengine, exit 0, без SCRIPT ERROR): meta_skill_tree_smoke_test
+  (×2), skill_tree_per_hero_test, meta_points_per_ascension_test,
+  meta_progression_smoke_test, runtime_smoke_test — все PASSED.
