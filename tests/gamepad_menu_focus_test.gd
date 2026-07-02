@@ -95,11 +95,14 @@ func _test_weapon_and_boon_focus(main) -> bool:
 
 
 func _test_skill_tree_focus(main) -> bool:
-	main.ui._show_skill_tree_screen()
+	# SCRUM-827: экран дерева заменён «Атласом героев» — стартовый фокус на
+	# медальоне выбранного класса в ленте (логичная точка входа, как селектор v3).
+	main.ui._show_atlas_screen()
 	await process_frame
 	await process_frame
-	if _focus_name(main) != "SkillTreeClassSelector":
-		_fail("SCRUM-813: стартовый фокус дерева умений — SkillTreeClassSelector, получено: %s" % [_focus_name(main)])
+	var expected := "AtlasMedallion_%s" % str(main.get("selected_character_id"))
+	if _focus_name(main) != expected:
+		_fail("SCRUM-813/827: стартовый фокус Атласа — %s, получено: %s" % [expected, _focus_name(main)])
 		return false
 	return true
 

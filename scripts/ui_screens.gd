@@ -419,7 +419,7 @@ const ATTR_SAFE_2K := Rect2(788, 100, 1008, 1246)          # панель − co
 const ATTR_OFFER_2K := Rect2(0, 0, 480, 340)               # AttributeOffer_* = ECONOMY_CHOICE_TARGET_1440 (грид 2 кол)
 const ATTR_ACTION_BUTTON_2K := Rect2(0, 0, 420, 62)        # AttributeReroll/Skip (фикс ВНЕ скролла снизу)
 
-# #10 Дерево навыков — _show_skill_tree_screen (самый плотный: класс-панель + N веток)
+# #10 Дерево навыков (легаси-спека v3; экран заменён Атласом героев — _show_atlas_screen, SCRUM-827)
 const SKILL_MAIN_PANEL_2K := Rect2(48, 26, 2464, 1388)
 const SKILL_SAFE_2K := Rect2(136, 118, 2288, 1214)         # layout-VBox (header→hint→body)
 const SKILL_POINTS_BADGE_2K := Rect2(0, 0, 215, 96)        # SkillTreePointsBadge (ширина растёт под текст очков)

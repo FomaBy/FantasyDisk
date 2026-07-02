@@ -561,8 +561,9 @@ func _test_conditional_keystones() -> void:
 
 
 func _test_skill_tree_screen() -> void:
-	# Старый экран (v3 UI, SCRUM-698) живёт на новом ядре: все узлы рендерятся,
-	# статусы/покупка работают, фасад очков тратится.
+	# SCRUM-827: экран прокачки = «Атлас героев». Созвездие выбранного класса
+	# рендерится целиком (22 узла), выбор узла + «Вложить эмблему» покупают
+	# звезду, фасад очков тратится.
 	var main := MAIN_SCENE.instantiate()
 	root.add_child(main)
 	await process_frame
@@ -570,31 +571,38 @@ func _test_skill_tree_screen() -> void:
 	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3]}
 	state["skill_nodes"] = []
 	main.set("meta_state", state)
+	main.set("selected_character_id", "berserk")
 
-	main.ui._show_skill_tree_screen()
+	main.ui._show_atlas_screen()
 	await process_frame
-	if main.find_child("SkillTreeScreen", true, false) == null:
-		_fail("Expected skill tree screen to open.")
+	if main.find_child("AtlasScreen", true, false) == null:
+		_fail("Expected atlas screen to open.")
 		return
-	var node_buttons: Array = main.find_children("SkillNode_*", "BaseButton", true, false)
-	if node_buttons.size() != Meta.SKILL_TREE.size():
-		_fail("Expected %d skill node buttons, got %d." % [Meta.SKILL_TREE.size(), node_buttons.size()])
+	var node_buttons: Array = main.find_children("AtlasNode_*", "BaseButton", true, false)
+	if node_buttons.size() != 22:
+		_fail("Expected 22 constellation node buttons, got %d." % node_buttons.size())
 		return
-	if main.find_child("SkillTreePointsLabel", true, false) == null:
-		_fail("Expected a skill points counter.")
+	if main.find_child("AtlasEmblemsLabel", true, false) == null:
+		_fail("Expected a class sigil counter in the atlas header.")
 		return
 
 	# Купить звезду у ядра берсерка — фасад очков тратится, узел куплен.
 	var star_id := "berserk_m0"
-	var star_btn := main.find_child("SkillNode_%s" % star_id, true, false) as BaseButton
-	if star_btn == null or star_btn.disabled:
-		_fail("Expected core-adjacent star '%s' to be enabled/available." % star_id)
+	var star_btn := main.find_child("AtlasNode_%s" % star_id, true, false) as BaseButton
+	if star_btn == null:
+		_fail("Expected core-adjacent star '%s' on the canvas." % star_id)
 		return
 	var points_before: int = Meta.skill_points(main.get("meta_state"))
 	star_btn.pressed.emit()
 	await process_frame
+	var buy_button := main.find_child("AtlasBuyButton", true, false) as BaseButton
+	if buy_button == null or not buy_button.visible or buy_button.disabled:
+		_fail("Expected an enabled buy button for available star '%s'." % star_id)
+		return
+	buy_button.pressed.emit()
+	await process_frame
 	if not Meta.is_node_purchased(main.get("meta_state"), star_id):
-		_fail("Expected clicking a star to purchase it.")
+		_fail("Expected the buy button to purchase the selected star.")
 		return
 	if Meta.skill_points(main.get("meta_state")) != points_before - 1:
 		_fail("Expected purchase to spend a point on screen.")

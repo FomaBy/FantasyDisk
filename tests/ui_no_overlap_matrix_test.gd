@@ -76,9 +76,12 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
 			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
 		], dump_lines, errors, false)
+		# SCRUM-827: экран дерева заменён «Атласом героев» (шапка-валюты/вкладки,
+		# лента классов, холст созвездия, панель узла, низ с респеком и легендой).
 		await _check_screen(viewport_size, "skill_tree", Callable(self, "_open_skill_tree"), [
-			"SkillTreeBackButton", "SkillTreePointsBadge", "SkillTreeClassPanel",
-			"SkillTreeCanvas",
+			"AtlasBackButton", "AtlasEmblemBadge", "AtlasStardustBadge",
+			"AtlasTabGuild", "AtlasClassStrip", "AtlasCanvas", "AtlasNodePanel",
+			"AtlasRespecButton", "AtlasLegend",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "patch_notes", Callable(self, "_open_patch_notes"), [
 			"PatchNotesPanel", "PatchNotesBackButton",
@@ -322,7 +325,7 @@ func _open_codex(main: Node) -> void:
 
 
 func _open_skill_tree(main: Node) -> void:
-	main.ui._show_skill_tree_screen()
+	main.ui._show_atlas_screen()
 
 
 func _open_patch_notes(main: Node) -> void:
