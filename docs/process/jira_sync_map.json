@@ -3627,5 +3627,10 @@
   "key": "SCRUM-804",
   "status": "Контроль качества",
   "desc_hash": "b60a06a8b0effaf4c45b47ab5e3ac734"
+ },
+ "design_settings_menu_full_review_redesign_task.md": {
+  "key": "SCRUM-805",
+  "status": "К выполнению",
+  "desc_hash": "14b0ce4c90838938c5b4189cf73d5c42"
  }
 }
