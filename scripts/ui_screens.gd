@@ -833,6 +833,12 @@ func _show_main_menu() -> void:
 	action_box.add_child(exit_button)
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
+	# SCRUM-813: главное меню проходимо с геймпада/стрелок — вертикальный круг кнопок,
+	# стартовый фокус «Начать новую игру»; B/Esc = подтверждение выхода (ui_escape_action).
+	_wire_run_ui_focus([
+		start_button, settings_button, skill_tree_button, patch_notes_button, codex_button, exit_button,
+	], false, [], start_button)
+
 
 # SCRUM-484: координатная спека @2560×1440 — подтверждение выхода (модалка).
 # Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
@@ -2448,6 +2454,20 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		)
 		offers_box.add_child(offer_button)
 
+	# SCRUM-813: докач-опции + Reroll/Skip проходимы с геймпада/стрелок; старт — первая
+	# доступная опция (иначе Reroll/Skip). follow_focus у скролла прокручивает к выбранной.
+	var attr_skip_button := root.find_child("AttributeSkipButton", true, false) as Button
+	var attr_focus: Array = []
+	for offer_child in offers_box.get_children():
+		if offer_child is Button:
+			attr_focus.append(offer_child)
+	var attr_secondary: Array = []
+	if reroll_button != null:
+		attr_secondary.append(reroll_button)
+	if attr_skip_button != null:
+		attr_secondary.append(attr_skip_button)
+	_wire_run_ui_focus(attr_focus, true, attr_secondary, null)
+
 
 func _spend_run_money(amount: int) -> bool:
 	if game.current_player != null and is_instance_valid(game.current_player):
@@ -2610,6 +2630,11 @@ func _show_skill_tree_screen() -> void:
 	class_selector.add_theme_stylebox_override("pressed", _skill_tree_class_select_style(Color(0.90, 0.88, 0.80, 1.0)))
 	class_selector.add_theme_stylebox_override("focus", _skill_tree_class_select_style(Color(1.10, 1.06, 0.94, 1.0)))
 	class_box.add_child(class_selector)
+	# SCRUM-813: стартовый фокус дерева умений — селектор класса (логичная точка входа);
+	# кнопки хедера (зум/сброс/назад) достижимы направлением. Узлы графа остаются на мыши/
+	# зуме (полная гео-навигация графа — отдельная доработка). B/Esc = назад в меню.
+	_ensure_run_ui_gamepad_bindings()
+	class_selector.call_deferred("grab_focus")
 	var focus_hint := Label.new()
 	focus_hint.name = "SkillTreeFocusHint"
 	focus_hint.text = "Дерево общее. Выбор класса наводит камеру на его точку входа."
@@ -2962,6 +2987,11 @@ func _show_patch_notes_screen() -> void:
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
+	# SCRUM-813: стартовый фокус — «Назад в меню»; A возвращает в меню, B/Esc тоже.
+	# Контент патч-ноутов read-only — прокрутка колесом/перетаскиванием (гео-скролл геймпадом
+	# на чисто-текстовых экранах — отдельная мелкая доработка).
+	_ensure_run_ui_gamepad_bindings()
+	back_button.call_deferred("grab_focus")
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -3100,6 +3130,15 @@ func _show_codex_screen() -> void:
 
 	_show_codex_section(content, "characters")
 
+	# SCRUM-813: стартовый фокус — первая вкладка кодекса; LB/RB листают разделы
+	# (см. _handle_menu_shoulder_nav), карточки записей фокусируемы и прокручиваются
+	# (follow_focus). B/Esc = назад в меню.
+	_ensure_run_ui_gamepad_bindings()
+	var first_codex_tab := tabs_row.get_node_or_null("CodexTab_characters") as Button
+	if first_codex_tab != null:
+		first_codex_tab.focus_mode = Control.FOCUS_ALL
+		first_codex_tab.call_deferred("grab_focus")
+
 
 func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	# Ленивое построение: раздел собирается при первом открытии и кэшируется
@@ -3130,6 +3169,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	scroll.name = "CodexSection_%s" % section_id
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# SCRUM-813: скролл секции следует за сфокусированной карточкой (крестовина/стик).
+	scroll.follow_focus = true
 	content.add_child(scroll)
 
 	var list := VBoxContainer.new()
@@ -4262,6 +4303,14 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	action_row.add_child(back_button)
 	game.ui_escape_action = settings_back
 
+	# SCRUM-813: стартовый фокус — первая вкладка настроек; LB/RB листают вкладки
+	# (см. _handle_menu_shoulder_nav). Слайдеры/OptionButton/CheckBox фокусируемы —
+	# ui_left/right меняют значение из коробки. B/Esc = «Назад» (settings_back).
+	_ensure_run_ui_gamepad_bindings()
+	var first_settings_tab := root.find_child("SettingsTabButton_0", true, false) as Button
+	if first_settings_tab != null:
+		first_settings_tab.call_deferred("grab_focus")
+
 
 func _resolve_settings_return_origin(requested_return_origin: String) -> String:
 	if requested_return_origin == SETTINGS_RETURN_RUN_PAUSE:
@@ -4901,6 +4950,7 @@ func _show_weapon_select() -> void:
 		WS_PANEL_2K.size
 	)
 	box.add_theme_constant_override("separation", 24)
+	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
 		var button := _make_weapon_select_card(config)
@@ -4913,6 +4963,7 @@ func _show_weapon_select() -> void:
 			_show_start_boon_select()
 		)
 		box.add_child(button)
+		weapon_cards.append(button)
 
 	var back_button := _make_button("Назад")
 	back_button.name = "WeaponSelectBackButton"
@@ -4922,6 +4973,11 @@ func _show_weapon_select() -> void:
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
+
+	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» ниже; A выбирает,
+	# B/Esc возвращает к выбору героя. Старт — первая карточка.
+	_wire_run_ui_focus(weapon_cards, false, [back_button],
+		weapon_cards[0] if not weapon_cards.is_empty() else back_button)
 
 
 func _make_weapon_select_card(config: Dictionary) -> Button:
@@ -5020,6 +5076,7 @@ func _show_start_boon_select() -> void:
 	var offered: Array = pool.slice(0, mini(3, pool.size()))
 
 	var box := _create_menu_box("Стартовый боон", "Выбери одно благословение на этот забег.", "weapon_select")
+	var boon_cards: Array = []
 	for boon in offered:
 		var boon_dict: Dictionary = boon
 		var button := _make_start_boon_card(boon_dict)
@@ -5029,9 +5086,11 @@ func _show_start_boon_select() -> void:
 			game.route._show_battle_map()
 		)
 		box.add_child(button)
+		boon_cards.append(button)
 
 	# «Без боона» — пропустить (тождественность). Возможность не брать ничего.
 	var skip_button := _make_button("Без боона")
+	skip_button.name = "StartBoonSkipButton"
 	skip_button.pressed.connect(func() -> void:
 		game.selected_start_boon_id = ""
 		game.save_run_autosave("start_boon")
@@ -5039,6 +5098,11 @@ func _show_start_boon_select() -> void:
 	)
 	box.add_child(skip_button)
 	game.ui_escape_action = _show_weapon_select
+
+	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже; A выбирает,
+	# B/Esc возвращает к выбору оружия. Старт — первый боон.
+	_wire_run_ui_focus(boon_cards, false, [skip_button],
+		boon_cards[0] if not boon_cards.is_empty() else skip_button)
 
 
 func _make_start_boon_card(boon: Dictionary) -> Button:
@@ -5190,6 +5254,68 @@ func _ensure_action_joy_button(action: String, button: int) -> void:
 	ev.button_index = button
 	ev.pressed = true
 	InputMap.action_add_event(action, ev)
+
+
+# SCRUM-813: LB/RB листают вкладки настроек / секции кодекса. Роутинг из main._input
+# (raw JOY_BUTTON_LEFT/RIGHT_SHOULDER) в этот диспетчер — локально по открытому мета-экрану.
+# dir: -1 = предыдущая (LB), +1 = следующая (RB). Возвращает true, если обработано.
+func _handle_menu_shoulder_nav(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	if game.ui_layer.find_child("SettingsV2Root", true, false) != null:
+		return _cycle_settings_tab(dir)
+	if game.ui_layer.find_child("CodexScreen", true, false) != null:
+		return _cycle_codex_section(dir)
+	return false
+
+
+func _cycle_settings_tab(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	var root_node: Node = game.ui_layer.find_child("SettingsV2Root", true, false)
+	if root_node == null:
+		return false
+	var tab_containers: Array = root_node.find_children("*", "TabContainer", true, false)
+	if tab_containers.is_empty():
+		return false
+	var tabs := tab_containers[0] as TabContainer
+	var count := tabs.get_tab_count()
+	if count <= 0:
+		return false
+	tabs.current_tab = (tabs.current_tab + dir + count) % count
+	var tab_btn := root_node.find_child("SettingsTabButton_%d" % tabs.current_tab, true, false) as Button
+	if tab_btn != null:
+		tab_btn.call_deferred("grab_focus")
+	return true
+
+
+func _cycle_codex_section(dir: int) -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	var content: PanelContainer = null
+	for node in game.ui_layer.find_children("*", "PanelContainer", true, false):
+		if node.has_meta("codex_active_section"):
+			content = node as PanelContainer
+			break
+	if content == null:
+		return false
+	var ids: Array = []
+	for section in CODEX_SECTIONS:
+		ids.append(str(section["id"]))
+	if ids.is_empty():
+		return false
+	var cur := str(content.get_meta("codex_active_section", ids[0]))
+	var idx := ids.find(cur)
+	if idx < 0:
+		idx = 0
+	var next_id := str(ids[(idx + dir + ids.size()) % ids.size()])
+	_show_codex_section(content, next_id)
+	var tabs_row := content.get_meta("codex_tabs", null) as Control
+	if tabs_row != null:
+		var tab_btn := tabs_row.get_node_or_null("CodexTab_%s" % next_id) as Button
+		if tab_btn != null:
+			tab_btn.call_deferred("grab_focus")
+	return true
 
 
 func _show_reward_screen() -> void:

@@ -1066,6 +1066,17 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	# SCRUM-813: LB/RB (плечевые) листают вкладки настроек и секции кодекса — локально
+	# по открытому мета-экрану (ui._handle_menu_shoulder_nav). Обрабатывается, только если
+	# соответствующий экран открыт, иначе не трогаем (RB=open_level_up в бою — отдельный путь).
+	if event is InputEventJoypadButton and event.pressed:
+		var shoulder := event as InputEventJoypadButton
+		if shoulder.button_index == JOY_BUTTON_LEFT_SHOULDER or shoulder.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+			var dir := 1 if shoulder.button_index == JOY_BUTTON_RIGHT_SHOULDER else -1
+			if ui.has_method("_handle_menu_shoulder_nav") and ui._handle_menu_shoulder_nav(dir):
+				get_viewport().set_input_as_handled()
+				return
+
 	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause"):
 		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
