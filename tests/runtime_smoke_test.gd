@@ -54,7 +54,9 @@ const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_
 const SETTINGS_V3_TAB_SWITCHER_TEXTURE := "res://assets/sprites/ui/frames/settings_v3/ui_frame_settings_v3_tab_switcher.png"
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
 # нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
-const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806: слим-кластер v2
+const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
+const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
 # SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
 const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
@@ -476,24 +478,22 @@ func _initialize() -> void:
 	if _stylebox_texture_path(resource_style) != HUD_RESOURCE_PANEL_TEXTURE_2K:
 		_fail("Expected combat resource HUD to use the SCRUM-564 @2K HUD resource frame.")
 		return
-	var expected_hud_cards := {
-		"HudHPCard": MINIMAL_FIELD_TEXTURE,
-		"HudXPCard": MINIMAL_FIELD_TEXTURE,
-		"HudMoneyCard": MINIMAL_FIELD_TEXTURE,
-		"HudULTCard": MINIMAL_FIELD_TEXTURE,
-	}
-	for hud_node_name in ["HudHPCard", "HudXPCard", "HudMoneyCard"]:
-		if resource_hud.find_child(hud_node_name, true, false) == null:
-			_fail("Expected combat resource HUD to include %s." % hud_node_name)
+	# SCRUM-806: HUD v2 — карточные рамки убраны, метрики живут в слим-треках.
+	for legacy_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+		if resource_hud.find_child(legacy_card_name, true, false) != null:
+			_fail("Expected SCRUM-806 combat HUD v2 to remove legacy card %s." % legacy_card_name)
 			return
-	for hud_node_name in expected_hud_cards.keys():
-		var hud_card := resource_hud.find_child(str(hud_node_name), true, false) as PanelContainer
-		if hud_card == null or _stylebox_texture_path(hud_card.get_theme_stylebox("panel")) != str(expected_hud_cards[hud_node_name]):
-			_fail("Expected %s to use SCRUM-448 minimal field frame %s." % [hud_node_name, str(expected_hud_cards[hud_node_name])])
+	for track_name in ["HudHPTrack", "HudXPTrack", "HudULTTrack"]:
+		var hud_track := resource_hud.find_child(track_name, true, false) as PanelContainer
+		if hud_track == null or not hud_track.visible or not hud_track.get_global_rect().has_area():
+			_fail("Expected combat HUD v2 to include visible slim track %s." % track_name)
 			return
-		var card_zone: Rect2 = hud_card.get_meta("scrum666_content_zone", Rect2()) as Rect2
-		if not card_zone.has_area() or not card_zone.grow(1.0).encloses(hud_card.get_global_rect()):
-			_fail("Expected %s to expose and occupy its SCRUM-666 metric zone, got card=%s zone=%s." % [hud_node_name, hud_card.get_global_rect(), card_zone])
+		if _stylebox_texture_path(hud_track.get_theme_stylebox("panel")) != HUD_V2_BAR_TRACK_TEXTURE:
+			_fail("Expected %s to use the SCRUM-806 slim bar track %s." % [track_name, HUD_V2_BAR_TRACK_TEXTURE])
+			return
+		var track_zone: Rect2 = hud_track.get_meta("scrum666_content_zone", Rect2()) as Rect2
+		if not track_zone.has_area() or not track_zone.grow(1.0).encloses(hud_track.get_global_rect()):
+			_fail("Expected %s to expose and occupy its HUD v2 zone, got track=%s zone=%s." % [track_name, hud_track.get_global_rect(), track_zone])
 			return
 	var expected_hud_fills := {
 		"HudHPBar": "res://assets/sprites/ui/hud/combat_hud/ui_hud_bar_fill_hp.png",
@@ -510,8 +510,8 @@ func _initialize() -> void:
 		if hud_icon == null or hud_icon.texture == null:
 			_fail("Expected combat HUD icon %s to use a PNG texture." % hud_icon_id)
 			return
-	if (resource_hud.find_child("UIIcon_money", true, false) as TextureRect).texture.resource_path != "res://assets/sprites/ui/hud/combat_hud/ui_hud_gold_medallion.png":
-		_fail("Expected combat money HUD icon to use the SCRUM-390 gold medallion.")
+	if (resource_hud.find_child("UIIcon_money", true, false) as TextureRect).texture.resource_path != HUD_V2_MONEY_ICON_TEXTURE:
+		_fail("Expected combat money HUD icon to use the SCRUM-806 pixel-art coin.")
 		return
 	if main.get("status_label") != null:
 		_fail("Expected combat HUD to stay compact and not expose the status label.")
@@ -693,6 +693,11 @@ func _initialize() -> void:
 	# проверяем именно свежую атаку с замахом.
 	contact_enemy.set("_contact_windup_left", -1.0)
 	contact_enemy.set("_contact_cooldown", 0.0)
+	# Сбрасываем и i-frames игрока: проход сквозь врага выше мог выставить
+	# _damage_invulnerability_left, а между кадрами теста он почти не спадает —
+	# иначе take_damage ниже ловит ранний-return и урон замаха не проходит.
+	# (Та же изоляция, что и в contact-cooldown секции ниже.)
+	player.set("_damage_invulnerability_left", 0.0)
 	hp_before_contact = float(player.get("health"))
 	contact_enemy.call("_physics_process", 0.05)
 	await process_frame
@@ -1064,10 +1069,10 @@ func _initialize() -> void:
 	if restored_resource_hud == null or main.get("health_bar") == null or main.get("xp_bar") == null or main.get("money_label") == null:
 		_fail("Expected combat HUD to be restored as compact HP/XP/money resources.")
 		return
-	for restored_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
-		var restored_card := restored_resource_hud.find_child(restored_card_name, true, false) as PanelContainer
-		if restored_card == null or not restored_card.visible or not restored_card.get_global_rect().has_area():
-			_fail("Expected restored SCRUM-671 combat HUD to include visible %s." % restored_card_name)
+	for restored_track_name in ["HudHPTrack", "HudXPTrack", "HudULTTrack"]:
+		var restored_track := restored_resource_hud.find_child(restored_track_name, true, false) as PanelContainer
+		if restored_track == null or not restored_track.visible or not restored_track.get_global_rect().has_area():
+			_fail("Expected restored SCRUM-806 combat HUD v2 to include visible %s." % restored_track_name)
 			return
 	if main.find_child("CharacterStatsHud", true, false) != null:
 		_fail("Expected restored SCRUM-671 combat HUD to keep CharacterStatsHud removed.")

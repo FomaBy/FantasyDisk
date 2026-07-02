@@ -199,18 +199,40 @@ const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay
 # SCRUM-671 / SCRUM-666 clean essential-only runtime HUD geometry.
 # SCRUM-778 keeps the same accepted HUD content, but compacts the runtime footprint
 # so the 1080p top band and pending-level control no longer dominate the arena.
-const SCRUM666_CHUD_RESOURCE_PANEL_2K := Rect2(40, 60, 1250, 148)
-const SCRUM666_CHUD_HP_ZONE_2K := Rect2(118, 104, 250, 56)
-const SCRUM666_CHUD_XP_ZONE_2K := Rect2(394, 104, 220, 56)
-const SCRUM666_CHUD_GOLD_ZONE_2K := Rect2(640, 104, 195, 56)
-const SCRUM666_CHUD_ULT_ZONE_2K := Rect2(860, 104, 260, 56)
-const SCRUM666_CHUD_TIMER_2K := Rect2(1375, 58, 310, 144)
-const SCRUM666_CHUD_TIMER_ZONE_2K := Rect2(1418, 82, 224, 80)
-const SCRUM666_CHUD_ASCENSION_BADGE_2K := Rect2(2280, 52, 164, 164)
-const SCRUM666_CHUD_ASCENSION_ZONE_2K := Rect2(2325, 101, 74, 58)
+# SCRUM-806: карточные зоны (RESOURCE_PANEL/HP/XP/GOLD/ULT/TIMER/ASCENSION) заменены
+# HUD_V2_* геометрией ниже; здесь остались только слоты level-up контрола.
 const SCRUM666_CHUD_LEVELUP_FRAME_2K := Rect2(2300, 1160, 220, 250)
 const SCRUM666_CHUD_LEVELUP_BUTTON_2K := Rect2(2370, 1248, 88, 104)
 const SCRUM666_CHUD_LEVELUP_BADGE_2K := Rect2(2458, 1212, 58, 48)
+
+# SCRUM-806: боевой HUD v2 — компактный кластер слим-баров без карточных рамок.
+# Иконки — пиксель-арт PixelLab, подложка/трек — OpenAI-арт в стиле leather/gold кита.
+# Геометрия @2K, масштабируется той же SCRUM-666 системой (_scrum666_hud_scale).
+const COMBAT_HUD_V2_DIR := "res://assets/sprites/ui/hud/combat_hud_v2/"
+const HUD_V2_CLUSTER_BG_PATH := COMBAT_HUD_V2_DIR + "ui_hud_v2_cluster_bg.png"
+const HUD_V2_BAR_TRACK_PATH := COMBAT_HUD_V2_DIR + "ui_hud_v2_bar_track.png"
+const HUD_V2_ICON_PATHS := {
+	"hp": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_hp.png",
+	"xp": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_xp.png",
+	"ultimate_multiplier": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_ult.png",
+	"money": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_money.png",
+	"timer": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_timer.png",
+	"ascension": COMBAT_HUD_V2_DIR + "ui_hud_v2_icon_ascension.png",
+}
+const HUD_V2_CLUSTER_2K := Rect2(36, 36, 640, 122)
+const HUD_V2_HP_ICON_2K := Rect2(52, 46, 36, 36)
+const HUD_V2_HP_BAR_2K := Rect2(96, 48, 516, 32)
+const HUD_V2_XP_ICON_2K := Rect2(55, 90, 30, 30)
+const HUD_V2_XP_BAR_2K := Rect2(96, 92, 420, 26)
+const HUD_V2_ULT_ICON_2K := Rect2(55, 124, 30, 30)
+const HUD_V2_ULT_BAR_2K := Rect2(96, 126, 420, 26)
+const HUD_V2_MONEY_ICON_2K := Rect2(534, 90, 30, 30)
+const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
+const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
+const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
+const HUD_V2_TIMER_ICON_2K := Rect2(1162, 66, 36, 36)
+const HUD_V2_ASCENSION_2K := Rect2(2408, 40, 104, 104)
+const HUD_V2_ASCENSION_ZONE_2K := Rect2(2426, 50, 68, 84)
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
 const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
@@ -9237,11 +9259,9 @@ func _create_hud() -> void:
 	_update_hud()
 
 
-const ROMAN_NUMERALS := ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
-
-
 func _create_combat_timer_panel(root: Control) -> void:
-	# Индикатор уровня возвышения (римская цифра) — поверх любого боя.
+	# SCRUM-806: индикатор уровня возвышения — эмблема + обычная (арабская) цифра,
+	# римские цифры убраны: игроку сразу видно «что это» и «сколько».
 	if game.selected_ascension_level > 0:
 		var asc_badge := PanelContainer.new()
 		asc_badge.name = "AscensionHudBadge"
@@ -9251,14 +9271,26 @@ func _create_combat_timer_panel(root: Control) -> void:
 		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style())
 		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
 		root.add_child(asc_badge)
+		var asc_box := VBoxContainer.new()
+		asc_box.name = "AscensionHudBox"
+		asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		asc_box.add_theme_constant_override("separation", 2)
+		asc_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		asc_badge.add_child(asc_box)
+		var asc_icon := _make_hud_v2_icon("ascension")
+		asc_icon.name = "AscensionHudIcon"
+		asc_icon.custom_minimum_size = Vector2(30, 30)
+		asc_box.add_child(asc_icon)
 		var asc_text := Label.new()
 		asc_text.name = "AscensionHudLabel"
-		asc_text.text = ROMAN_NUMERALS[clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)]  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
+		asc_text.text = str(clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL))  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
 		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		asc_text.add_theme_font_size_override("font_size", _readable_font_size(24))
 		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
-		asc_badge.add_child(asc_text)
+		asc_text.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
+		asc_text.add_theme_constant_override("outline_size", 3)
+		asc_box.add_child(asc_text)
 
 	# SCRUM-799: таймер показываем во всех боях, включая боссовый/элитный
 	# (5-минутный kill-timer из SCRUM-785). Ранний выход по boss_combat_active снят —
@@ -9270,19 +9302,26 @@ func _create_combat_timer_panel(root: Control) -> void:
 	panel.position = Vector2(0, 14)
 	panel.custom_minimum_size = Vector2(192, 64)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", _timer_panel_style(false, SCRUM666_CHUD_TIMER_2K.size, _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, 1.0)))
+	panel.add_theme_stylebox_override("panel", _timer_panel_style(false, HUD_V2_TIMER_2K.size, _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, 1.0)))
 	root.add_child(panel)
 
 	var label := Label.new()
 	label.name = "CombatTimerLabel"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(30))
+	label.add_theme_font_size_override("font_size", _readable_font_size(26))
 	label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.74, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)
 	panel.add_child(label)
 	game.timer_label = label
+
+	# SCRUM-806: пиксель-песочные часы на левом краю плашки таймера.
+	var timer_icon := _make_hud_v2_icon("timer")
+	timer_icon.name = "CombatTimerIcon"
+	timer_icon.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	timer_icon.custom_minimum_size = Vector2(28, 28)
+	root.add_child(timer_icon)
 
 
 func _timer_panel_style(alarm: bool, display_size := Vector2(288.0, 96.0), content_margins := Vector4.ZERO) -> StyleBox:
@@ -9352,80 +9391,96 @@ func _apply_chud_rect(control: Control, rect: Rect2, meta_key := "") -> void:
 		control.set_meta(meta_key, rect)
 
 
-func _apply_chud_card_rect(card: PanelContainer, resource_rect: Rect2, zone_rect: Rect2, scale: float, icon_id: String) -> void:
-	if card == null:
-		return
-	var zone := _scrum666_scaled_rect(zone_rect, scale)
-	card.position = zone.position - resource_rect.position
-	card.custom_minimum_size = zone.size
-	card.size = zone.size
-	card.set_meta("scrum666_content_zone", zone)
-	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id, zone.size))
-	_apply_chud_card_content_scale(card, scale)
-
-
-func _apply_chud_card_content_scale(card: PanelContainer, scale: float) -> void:
-	for node in card.find_children("*", "BoxContainer", true, false):
-		var box := node as BoxContainer
-		if box != null:
-			box.add_theme_constant_override("separation", 1)
-	var compact_ramp := clampf((scale - 0.50) / 0.25, 0.0, 1.0)
-	var icon_base := lerpf(22.0, 30.0, compact_ramp)
-	var label_base := lerpf(14.0, 19.0, compact_ramp)
-	var bar_base := lerpf(6.0, 8.0, compact_ramp)
-	var icon_size := maxf(10.0, roundf(icon_base * scale))
-	for node in card.find_children("*", "TextureRect", true, false):
-		var icon := node as TextureRect
-		if icon != null:
-			icon.custom_minimum_size = Vector2(icon_size, icon_size)
-	var label_size := maxi(8, int(roundf(label_base * scale)))
-	for node in card.find_children("*", "Label", true, false):
-		var label := node as Label
-		if label != null:
-			label.add_theme_font_size_override("font_size", label_size)
-	var bar_height := maxf(3.0, roundf(bar_base * scale))
-	for node in card.find_children("*", "ProgressBar", true, false):
-		var bar := node as ProgressBar
-		if bar != null:
-			bar.custom_minimum_size.y = bar_height
-
-
 func _layout_combat_hud(root: Control) -> void:
 	if root == null or not is_instance_valid(root):
 		return
 	var scale := _scrum666_hud_scale(root)
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource != null:
-		var resource_rect := _scrum666_scaled_rect(SCRUM666_CHUD_RESOURCE_PANEL_2K, scale)
+		var resource_rect := _scrum666_scaled_rect(HUD_V2_CLUSTER_2K, scale)
 		_apply_chud_rect(resource, resource_rect, "scrum666_frame_rect")
-		resource.add_theme_stylebox_override("panel", _hud_panel_style(resource_rect.size, true))
-		_apply_chud_card_rect(resource.find_child("HudHPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_HP_ZONE_2K, scale, "hp")
-		_apply_chud_card_rect(resource.find_child("HudXPCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_XP_ZONE_2K, scale, "xp")
-		_apply_chud_card_rect(resource.find_child("HudMoneyCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_GOLD_ZONE_2K, scale, "money")
-		_apply_chud_card_rect(resource.find_child("HudULTCard", true, false) as PanelContainer, resource_rect, SCRUM666_CHUD_ULT_ZONE_2K, scale, "ultimate_multiplier")
+		resource.add_theme_stylebox_override("panel", _hud_v2_cluster_style(resource_rect.size))
+		_layout_hud_v2_cluster(resource, resource_rect, scale)
 
 	var timer_panel := root.find_child("CombatTimerPanel", true, false) as PanelContainer
 	if timer_panel != null:
-		var timer_rect := _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_2K, scale)
-		var timer_content := _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, scale)
+		var timer_rect := _scrum666_scaled_rect(HUD_V2_TIMER_2K, scale)
+		var timer_content := _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, scale)
 		_apply_chud_rect(timer_panel, timer_rect, "scrum666_frame_rect")
 		timer_panel.set_meta("scrum666_content_margins", timer_content)
-		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_TIMER_ZONE_2K, scale))
+		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_TIMER_ZONE_2K, scale))
 		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
 		if game.timer_label != null:
-			game.timer_label.add_theme_font_size_override("font_size", maxi(18, int(roundf(40.0 * scale))))
+			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
+		var timer_icon := root.find_child("CombatTimerIcon", true, false) as TextureRect
+		if timer_icon != null:
+			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
 
 	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
 	if asc_badge != null:
-		var asc_rect := _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_BADGE_2K, scale)
-		var asc_content := _scrum666_content_margins(SCRUM666_CHUD_ASCENSION_BADGE_2K, SCRUM666_CHUD_ASCENSION_ZONE_2K, scale)
+		var asc_rect := _scrum666_scaled_rect(HUD_V2_ASCENSION_2K, scale)
+		var asc_content := _scrum666_content_margins(HUD_V2_ASCENSION_2K, HUD_V2_ASCENSION_ZONE_2K, scale)
 		_apply_chud_rect(asc_badge, asc_rect, "scrum666_frame_rect")
 		asc_badge.set_meta("scrum666_content_margins", asc_content)
-		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(SCRUM666_CHUD_ASCENSION_ZONE_2K, scale))
+		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_ASCENSION_ZONE_2K, scale))
 		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style(asc_rect.size, asc_content))
+		var asc_icon := asc_badge.find_child("AscensionHudIcon", true, false) as TextureRect
+		if asc_icon != null:
+			var asc_icon_size := maxf(14.0, roundf(34.0 * scale))
+			asc_icon.custom_minimum_size = Vector2(asc_icon_size, asc_icon_size)
 		var asc_label := asc_badge.find_child("AscensionHudLabel", true, false) as Label
 		if asc_label != null:
-			asc_label.add_theme_font_size_override("font_size", maxi(12, int(roundf(28.0 * scale))))
+			asc_label.add_theme_font_size_override("font_size", maxi(12, int(roundf(30.0 * scale))))
+
+
+func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: float) -> void:
+	# SCRUM-806: раскладка слим-кластера — все дети RunResourceHudContent позиционируются
+	# по @2K-зонам, переведённым в координаты панели (content = full-rect без margins).
+	var icon_zones := {
+		"UIIcon_hp": HUD_V2_HP_ICON_2K,
+		"UIIcon_xp": HUD_V2_XP_ICON_2K,
+		"UIIcon_ultimate_multiplier": HUD_V2_ULT_ICON_2K,
+		"UIIcon_money": HUD_V2_MONEY_ICON_2K,
+	}
+	for icon_name in icon_zones.keys():
+		var icon := resource.find_child(str(icon_name), true, false) as TextureRect
+		if icon != null:
+			_hud_v2_place_in_panel(icon, icon_zones[icon_name], panel_rect, scale)
+	var track_zones := {
+		"HudHPTrack": HUD_V2_HP_BAR_2K,
+		"HudXPTrack": HUD_V2_XP_BAR_2K,
+		"HudULTTrack": HUD_V2_ULT_BAR_2K,
+	}
+	for track_name in track_zones.keys():
+		var track := resource.find_child(str(track_name), true, false) as PanelContainer
+		if track == null:
+			continue
+		var zone: Rect2 = track_zones[track_name]
+		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
+		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(_scrum666_scaled_rect(zone, scale).size, maxf(2.0, roundf(4.0 * scale))))
+	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
+	if money_label != null:
+		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
+		money_label.add_theme_font_size_override("font_size", maxi(11, int(roundf(24.0 * scale))))
+	var bar_fonts := {
+		"HudHPLabel": 20.0,
+		"HudXPLabel": 17.0,
+		"HudULTLabel": 17.0,
+	}
+	for label_name in bar_fonts.keys():
+		var label := resource.find_child(str(label_name), true, false) as Label
+		if label != null:
+			label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_fonts[label_name]) * scale))))
+			label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
+
+
+func _hud_v2_place_in_panel(node: Control, zone_2k: Rect2, panel_rect: Rect2, scale: float) -> void:
+	var zone := _scrum666_scaled_rect(zone_2k, scale)
+	node.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	node.position = zone.position - panel_rect.position
+	node.custom_minimum_size = zone.size
+	node.size = zone.size
+	node.set_meta("scrum666_content_zone", zone)
 
 
 func _refresh_artifact_hud_row() -> void:
@@ -9685,28 +9740,101 @@ func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layou
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = SCRUM666_CHUD_RESOURCE_PANEL_2K.size if combat_layout else Vector2(690, 72)
-	panel.add_theme_stylebox_override("panel", _hud_panel_style(SCRUM666_CHUD_RESOURCE_PANEL_2K.size, true) if combat_layout else _hud_panel_style())
+	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size if combat_layout else Vector2(690, 72)
+	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size) if combat_layout else _hud_panel_style())
 	parent.add_child(panel)
 
-	var content: Control
 	if combat_layout:
-		content = Control.new()
+		# SCRUM-806: боевой HUD v2 — слим-бары с пиксель-иконками вместо карточек.
+		var content := Control.new()
 		content.name = "RunResourceHudContent"
 		content.set_anchors_preset(Control.PRESET_FULL_RECT)
 		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		panel.add_child(content)
-	else:
-		var row := HBoxContainer.new()
-		row.name = "RunResourceHudContent"
-		row.add_theme_constant_override("separation", 6)
-		panel.add_child(row)
-		content = row
+		_build_hud_v2_cluster(content)
+		return
 
-	game.health_bar = _add_hud_resource_card(content, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
-	game.xp_bar = _add_hud_resource_card(content, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
-	_add_hud_money_card(content)
-	game.ultimate_bar = _add_hud_resource_card(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+	var row := HBoxContainer.new()
+	row.name = "RunResourceHudContent"
+	row.add_theme_constant_override("separation", 6)
+	panel.add_child(row)
+	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
+	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
+	_add_hud_money_card(row)
+	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+
+
+func _build_hud_v2_cluster(content: Control) -> void:
+	game.health_bar = _add_hud_v2_bar(content, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
+	game.xp_bar = _add_hud_v2_bar(content, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
+	game.ultimate_bar = _add_hud_v2_bar(content, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+
+	var money_icon := _make_hud_v2_icon("money")
+	money_icon.name = "UIIcon_money"
+	content.add_child(money_icon)
+
+	game.money_label = Label.new()
+	game.money_label.name = "HudMoneyLabel"
+	game.money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
+	game.money_label.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
+	game.money_label.add_theme_constant_override("outline_size", 3)
+	game.money_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(game.money_label)
+
+
+func _make_hud_v2_icon(icon_id: String) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = game._cached_texture(str(HUD_V2_ICON_PATHS.get(icon_id, HUD_V2_ICON_PATHS["hp"])))
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	# Пиксель-арт PixelLab: nearest сохраняет хрусткие пиксели при даунскейле.
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
+
+
+func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallback: Color) -> ProgressBar:
+	var icon := _make_hud_v2_icon(icon_id)
+	icon.name = "UIIcon_%s" % icon_id
+	parent.add_child(icon)
+
+	var track := PanelContainer.new()
+	track.name = "Hud%sTrack" % tag
+	track.mouse_filter = Control.MOUSE_FILTER_PASS
+	track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style())
+	parent.add_child(track)
+
+	var bar := ProgressBar.new()
+	bar.name = "Hud%sBar" % tag
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.06, 0.08, 0.85)))
+	bar.add_theme_stylebox_override("fill", _hud_bar_fill_style(icon_id, fill_fallback))
+	track.add_child(bar)
+
+	var label := Label.new()
+	label.name = "Hud%sLabel" % tag
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.clip_text = true
+	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
+	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
+	label.add_theme_constant_override("outline_size", 3)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.add_child(label)
+
+	if icon_id == "hp":
+		game.health_label = label
+	elif icon_id == "xp":
+		game.xp_label = label
+	elif icon_id == "ultimate_multiplier":
+		game.ultimate_label = label
+	return bar
 
 
 func _compact_character_stat_entries(limit := 4) -> Array:
@@ -9855,6 +9983,20 @@ func _hud_panel_style(display_size := Vector2(820.0, 84.0), zero_content := fals
 	return style
 
 
+func _hud_v2_cluster_style(display_size := Vector2(640.0, 122.0)) -> StyleBox:
+	# SCRUM-806: лёгкая кожаная подложка с тонкой латунной линией (768×256, OpenAI),
+	# полупрозрачная, чтобы кластер не выглядел тяжёлой плитой поверх арены.
+	var texture_margins := _scaled_frame_margins_xy(Vector2(768.0, 256.0), display_size, Vector4(26, 22, 26, 22))
+	return _global_texture_style(HUD_V2_CLUSTER_BG_PATH, texture_margins, Color(1.0, 1.0, 1.0, 0.93), Vector4.ZERO, true)
+
+
+func _hud_v2_bar_track_style(display_size := Vector2(516.0, 32.0), content_inset := 3.0) -> StyleBox:
+	# SCRUM-806: слим-жёлоб с тонкой латунной окантовкой (512×32) под лайн-бар.
+	var texture_margins := _scaled_frame_margins_xy(Vector2(512.0, 32.0), display_size, Vector4(12, 8, 12, 8))
+	var inset := maxf(2.0, content_inset)
+	return _global_texture_style(HUD_V2_BAR_TRACK_PATH, texture_margins, Color.WHITE, Vector4(inset, inset, inset, inset), true)
+
+
 func _character_stats_hud_style() -> StyleBox:
 	return _global_texture_style(MINIMAL_FIELD_PATH, Vector4(10, 10, 10, 10), Color(1.0, 1.0, 1.0, 0.95), Vector4(16, 12, 16, 12), true)
 
@@ -9997,7 +10139,7 @@ func _update_combat_timer(timer_seconds: int) -> void:
 	game.timer_label.set_meta("alarm_active", alarm)
 	game.timer_label.add_theme_color_override("font_color", Color(1.0, 0.32, 0.26, 1.0) if alarm else Color(0.96, 0.92, 0.74, 1.0))
 	if panel != null:
-		var content_margins: Vector4 = panel.get_meta("scrum666_content_margins", _scrum666_content_margins(SCRUM666_CHUD_TIMER_2K, SCRUM666_CHUD_TIMER_ZONE_2K, _scrum666_hud_scale_for_size(panel.get_viewport_rect().size))) as Vector4
+		var content_margins: Vector4 = panel.get_meta("scrum666_content_margins", _scrum666_content_margins(HUD_V2_TIMER_2K, HUD_V2_TIMER_ZONE_2K, _scrum666_hud_scale_for_size(panel.get_viewport_rect().size))) as Vector4
 		panel.add_theme_stylebox_override("panel", _timer_panel_style(alarm, panel.size, content_margins))
 	if alarm:
 		var tween: Tween = game.timer_label.create_tween()

@@ -43,9 +43,9 @@ const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/f
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
-const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_resource_panel.png"
+const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806
 const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
-const CHUD_FIELD_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
+const CHUD_V2_BAR_TRACK_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"  # SCRUM-806
 const CHUD_ASCENSION_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 
 
@@ -494,15 +494,23 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var resource := main.find_child("RunResourceHud", true, false) as PanelContainer
 			if resource == null or _stylebox_texture_path(resource.get_theme_stylebox("panel")) != CHUD_RESOURCE_2K_FRAME_PATH:
 				return "%s: expected RunResourceHud to use chud_resource_panel @2K frame." % context
-			for card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
-				var card := main.find_child(card_name, true, false) as PanelContainer
-				if card == null or not card.visible or not card.get_global_rect().has_area():
-					return "%s: expected visible %s metric card." % [context, card_name]
-				if _stylebox_texture_path(card.get_theme_stylebox("panel")) != CHUD_FIELD_FRAME_PATH:
-					return "%s: expected %s to use minimal-metal field frame." % [context, card_name]
-				var card_zone: Rect2 = card.get_meta("scrum666_content_zone", Rect2()) as Rect2
-				if not card_zone.has_area() or not card_zone.grow(1.0).encloses(card.get_global_rect()):
-					return "%s: expected %s to occupy SCRUM-666 metric zone %s, got %s." % [context, card_name, str(card_zone), str(card.get_global_rect())]
+			# SCRUM-806: HUD v2 — вместо карточек проверяем слим-треки и денежную строку.
+			for legacy_card_name in ["HudHPCard", "HudXPCard", "HudMoneyCard", "HudULTCard"]:
+				if main.find_child(legacy_card_name, true, false) != null:
+					return "%s: SCRUM-806 HUD v2 must not show legacy card %s." % [context, legacy_card_name]
+			for track_name in ["HudHPTrack", "HudXPTrack", "HudULTTrack"]:
+				var track := main.find_child(track_name, true, false) as PanelContainer
+				if track == null or not track.visible or not track.get_global_rect().has_area():
+					return "%s: expected visible %s slim track." % [context, track_name]
+				if _stylebox_texture_path(track.get_theme_stylebox("panel")) != CHUD_V2_BAR_TRACK_PATH:
+					return "%s: expected %s to use SCRUM-806 slim bar track." % [context, track_name]
+				var track_zone: Rect2 = track.get_meta("scrum666_content_zone", Rect2()) as Rect2
+				if not track_zone.has_area() or not track_zone.grow(1.0).encloses(track.get_global_rect()):
+					return "%s: expected %s to occupy HUD v2 zone %s, got %s." % [context, track_name, str(track_zone), str(track.get_global_rect())]
+			var money_label := main.find_child("HudMoneyLabel", true, false) as Label
+			var money_icon := main.find_child("UIIcon_money", true, false) as TextureRect
+			if money_label == null or not money_label.visible or money_icon == null or money_icon.texture == null:
+				return "%s: expected HUD v2 money row (pixel coin icon + label)." % context
 			var timer_panel := main.find_child("CombatTimerPanel", true, false) as PanelContainer
 			if timer_panel == null or _stylebox_texture_path(timer_panel.get_theme_stylebox("panel")) != CHUD_TIMER_2K_FRAME_PATH:
 				return "%s: expected CombatTimerPanel to use chud_timer @2K frame." % context
