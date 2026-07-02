@@ -38,12 +38,16 @@ func _initialize() -> void:
 	if Meta.ascension_level(state, "berserk") != 1:
 		errors.append("повтор не должен поднимать возвышение")
 
-	# 3. Лестница эмблем 2/2/3/4/5/6: накопительно 2/4/7/11/16/22.
-	var expected := {1: 4, 2: 7, 3: 11, 4: 16, 5: 22}
+	# 3. Лестница эмблем 2/2/3/4/5/6 (накопительно 2/4/7/11/16/22) + челлендж
+	# peak_climber (победа на возвышении 3+) закрывается сам на клире A3 и даёт
+	# +2 — итого 13/18/24 с уровня A3 (эмблемная связка §4 дизайна).
+	var expected := {1: 4, 2: 7, 3: 13, 4: 18, 5: 24}
 	for level in [1, 2, 3, 4, 5]:
 		state = Meta.record_boss_victory(state, "berserk", level)
 		if Meta.class_sigils_earned(state, "berserk") != int(expected[level]):
 			errors.append("после первого clear A%d должно быть %d эмблем (got %d)" % [level, int(expected[level]), Meta.class_sigils_earned(state, "berserk")])
+	if not Meta.class_challenges_done(state, "berserk").has("peak_climber"):
+		errors.append("клир A3+ должен закрыть челлендж peak_climber")
 	var before_max_repeat := Meta.class_sigils_earned(state, "berserk")
 	state = Meta.record_boss_victory(state, "berserk", 5)
 	if Meta.class_sigils_earned(state, "berserk") != before_max_repeat:
@@ -132,14 +136,15 @@ func _initialize() -> void:
 	if Meta.class_boss_wins(state, "berserk") < 7:
 		errors.append("class_boss_wins должен копиться за каждую победу (got %d)" % Meta.class_boss_wins(state, "berserk"))
 
-	# 12. Legacy-like state на максимуме: первый clear A5 даёт свои +6 эмблем, повтор — нет.
+	# 12. Legacy-like state на максимуме: первый clear A5 даёт лестницу 22 +
+	# авто-челлендж peak_climber (+2) = 24; повтор — ничего.
 	var maxed := Meta.default_state()
 	maxed["ascension_levels"] = {"berserk": Meta.MAX_ASCENSION_LEVEL}
 	maxed = Meta.record_boss_victory(maxed, "berserk", Meta.MAX_ASCENSION_LEVEL)
-	if Meta.class_sigils_earned(maxed, "berserk") != 22:
-		errors.append("legacy-макс класс после первого clear A5 должен иметь 22 эмблемы (got %d)" % Meta.class_sigils_earned(maxed, "berserk"))
+	if Meta.class_sigils_earned(maxed, "berserk") != 24:
+		errors.append("legacy-макс класс после первого clear A5 должен иметь 24 эмблемы (got %d)" % Meta.class_sigils_earned(maxed, "berserk"))
 	maxed = Meta.record_boss_victory(maxed, "berserk", Meta.MAX_ASCENSION_LEVEL)
-	if Meta.class_sigils_earned(maxed, "berserk") != 22:
+	if Meta.class_sigils_earned(maxed, "berserk") != 24:
 		errors.append("повтор A5 не должен фармить эмблемы legacy-класса")
 	if Meta.ascension_level(maxed, "berserk") != Meta.MAX_ASCENSION_LEVEL:
 		errors.append("возвышение не должно превышать максимум")
