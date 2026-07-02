@@ -1487,3 +1487,44 @@ deletions, no canonical reference changes. Findings (all CLEAN as of the sweep):
 - **Gate strengthened:** `tests/asset_reference_integrity_test.gd` now also scans
   `.tres` under `assets/` (previously scripts/ + scenes/ only), so a broken
   SpriteFrames→texture `ext_resource path` fails the gate instead of rendering blank.
+
+## SCRUM-810 Input Glyphs (Gamepad + Keyboard) — 0.1.8
+
+Пиксель-арт глифы ввода для UI-подсказок пакета полной поддержки геймпада
+(подсказки «какая кнопка за что», ребинд в настройках, контекстные хинты).
+
+**Метод генерации:** программная (PIL, `scratchpad/gen_glyphs.py` — не в репо),
+НЕ PixelLab MCP. Обоснование: глифы ввода — геометрические UI-примитивы с
+точными буквами/стрелками (A/B/X/Y, ESC, WASD, направления), а канон PixelLab —
+«no text» (нечитаемый текст на 64px, запекаемый фон — частый QA-FAIL). PIL даёт
+гарантированно прозрачный фон (углы alpha=0), читаемые на 32px буквы, единый
+стиль и не грузит перегруженный Godot-флот / PixelLab-биллинг. Стиль кита выдержан:
+тёмная кожаная основа + светлый латунный контур; лицевые кнопки — узнаваемая
+generic Xbox-раскладка (A зелёная / B красная / X синяя / Y жёлтая).
+
+**Размеры:** два нативных — `32×32` и `64×64` (каждый растеризован под свой
+масштаб, не даунскейл). `size` в аксессорах реестра выбирает ближайший.
+
+**Пути:** `assets/sprites/ui/input_glyphs/<name>_<32|64>.png` (+ парный `.import`).
+
+**Реестр:** `scripts/ui/input_glyph_registry.gd` — `ALL_GLYPHS`, словари
+`JOY_BUTTON_TO_GLYPH` / `JOY_AXIS_TO_GLYPH` / `KEY_TO_GLYPH`; API (все null-safe):
+`path_for`, `has_glyph`, `texture_for`, `texture_for_joy_button(idx,size)`,
+`texture_for_axis(axis,size)`, `texture_for_key(name,size)`. Экраны НЕ трогает —
+интеграцию делают UI-задачи пакета.
+
+**Гейт:** `tests/input_glyph_assets_test.gd` (существование ресурсов, загрузка
+текстур, размер PNG, прозрачность углов, покрытие JOY_BUTTON/JOY_AXIS/клавиш,
+null-safety). Контакт-лист QA: `build/qa/scrum810/glyphs_contact_sheet.png`.
+
+| Группа | Глифы (name) | Маппинг |
+| --- | --- | --- |
+| Лицевые | `btn_a` `btn_b` `btn_x` `btn_y` | JOY_BUTTON_A/B/X/Y |
+| D-pad | `dpad` `dpad_up` `dpad_down` `dpad_left` `dpad_right` | JOY_BUTTON_DPAD_UP..RIGHT (11-14) |
+| Плечи/курки | `lb` `rb` `lt` `rt` | LEFT/RIGHT_SHOULDER; JOY_AXIS_TRIGGER_LEFT/RIGHT |
+| Меню | `start` `select` | JOY_BUTTON_START / JOY_BUTTON_BACK |
+| Стики | `stick_l` `stick_r` `stick_l_press` `stick_r_press` `stick_move` | LEFT/RIGHT_STICK (нажатие); оси LEFT_*→stick_move, RIGHT_*→stick_r |
+| Клавиатура | `key_generic` `key_esc` `key_enter` `key_space` `key_wasd` `key_arrows` | KEY_TO_GLYPH |
+
+`docs/design/systems/input_controls.md` на момент SCRUM-810 не создан (core-задача
+пакета); при его появлении сослаться на этот блок и реестр.
