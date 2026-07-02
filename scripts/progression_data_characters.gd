@@ -189,7 +189,7 @@ const CHARACTER_CONFIGS := {
 		"description": "Образцы, споры и симбиотические реакции.",
 		"strengths": "контроль биомассой, периодический урон, адаптация.",
 		"weaknesses": "нужны цели для цепных реакций.",
-		"sprite_path": "res://assets/sprites/characters/full_frame/biologist/biologist_idle_00.png",
+		"sprite_path": "res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png",
 	},
 	"robot": {
 		"id": "robot",

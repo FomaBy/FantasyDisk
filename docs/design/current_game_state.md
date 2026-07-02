@@ -810,9 +810,13 @@ SCRUM-421 подготовил per-class Biologist v2 Design-source handoff:
 field suit, без syringe/vial/flask/sample jar/tool/orb/staff/weapon или held
 object в руках, прозрачный RGBA, visible height `380 px` в `512x512` cell и
 pivot `[256,470]`. White/neutral matte pixels и edge-visible pixels в
-source/cell/sheet равны `0`. Это не live runtime replacement; current
-`biologist_sheet.png` / `biologist_spriteframes.tres` остаются активными до
-Animator/Back-end integration.
+source/cell/sheet равны `0`. Этот v2 package теперь исторический source
+handoff: SCRUM-421 завершил live PixelLab runtime rescue from source
+`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`, with source frames under
+`assets/sprites/characters/pixellab/biologist/`, normalized runtime frames under
+`assets/sprites/characters/full_frame/biologist_pixellab/`, and
+`assets/sprites/characters/biologist_spriteframes.tres` exposing 8-direction
+`idle`, `move`, and `walk` rows.
 
 SCRUM-432 подготовил per-class Robot v2 Design-source handoff:
 `docs/design/references/characters_v2/robot/robot_v2_source_clean.png`,
@@ -1018,7 +1022,13 @@ artifacts under `build/qa/scrum284_biologist/`. Animator pass подключил
 `assets/sprites/characters/full_frame/biologist/`: `idle` 5f loop, `walk` 5f
 loop, `attack_primary`/runtime `attack` 5f one-shot. Animator QA artifacts:
 `build/qa/scrum284/`; manifest validation, Godot import, animation smoke and
-runtime smoke PASS.
+runtime smoke PASS. SCRUM-421 later superseded the live body runtime with a
+PixelLab-only 8-direction idle + 6-frame move/walk pack:
+`assets/sprites/characters/pixellab/biologist/`,
+`assets/sprites/characters/full_frame/biologist_pixellab/`, and
+`assets/sprites/characters/biologist_spriteframes.tres`. The legacy SCRUM-284
+frames remain history/fallback; the base body still has no attack row because
+weapon visuals own attacks.
 
 SCRUM-256 добавил framework уникальных классовых идентичностей: `ProgressionData.CLASS_MECHANIC_IDENTITIES` и фасадные API `class_mechanic_identity`, `class_main_attribute`, `weapon_mechanic_identity`. Для всех 17 классов зафиксированы главный атрибут, identity title, mechanic tags и 3 weapon identity. Это data contract для патча 0.1.5: последующие задачи melee/summoner/aura/VFX используют таблицу как источник направления, а сам framework не меняет текущий баланс.
 

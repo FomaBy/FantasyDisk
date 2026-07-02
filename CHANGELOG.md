@@ -54,6 +54,17 @@
   `assets/sprites/characters/full_frame/druid_pixellab/`, and
   `druid_spriteframes.tres` now exposes directional idle/move/walk rows for
   combat and Hero Select preview rotation.
+- SCRUM-421: PixelLab Biologist 8-direction runtime pack rescued and finished.
+  Reused the completed PixelLab source character
+  (`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`), regenerated a front-facing south
+  movement row (`south-facing-walk-rescue`), stored source rotations and 6-frame
+  move/walk rows under `assets/sprites/characters/pixellab/biologist/`,
+  normalized transparent `512x512` runtime frames under
+  `assets/sprites/characters/full_frame/biologist_pixellab/` with every visible
+  alpha bbox at `245 px` high, and rebuilt `biologist_spriteframes.tres` with
+  `idle_<direction>` plus 6-frame looping `move_<direction>` / `walk_<direction>`
+  rows for all 8 directions. Biologist now uses the PixelLab south idle portrait
+  and participates in Hero Select directional preview coverage.
 - SCRUM-705: PixelLab Doctor full redraw at the new 240-250 px runtime scale.
   Generated a fresh PixelLab plague-doctor source character
   (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`), replaced the live source pack under

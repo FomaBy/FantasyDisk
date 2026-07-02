@@ -9,6 +9,7 @@ const VIEWPORTS := [
 ]
 const PREVIEW_MIN_SIZE := 320.0
 const SLOT_MIN_SIZE := 180.0
+const SLOT_BASELINE_TOLERANCE := 3.0
 
 
 func _initialize() -> void:
@@ -18,6 +19,7 @@ func _initialize() -> void:
 	await _assert_directional_preview("assassin")
 	await _assert_directional_preview("chemist")
 	await _assert_directional_preview("dark_mage")
+	await _assert_directional_preview("biologist")
 	await _assert_directional_preview("doctor")
 	await _assert_directional_preview("druid")
 	await _assert_directional_preview("elementalist")
@@ -100,8 +102,21 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		if slot_portrait == null or slot_portrait.texture == null:
 			_fail("Expected carousel portrait child inside %s at %s." % [slot.name, str(viewport_size)])
 			return
-		if not slot.get_global_rect().encloses(slot_portrait.get_global_rect()):
-			_fail("Expected carousel portrait to stay inside 150x150 slot at %s." % str(viewport_size))
+		if not slot.clip_contents:
+			_fail("Expected carousel slot to clip bottom-aligned portrait overflow at %s." % str(viewport_size))
+			return
+		var slot_rect := slot.get_global_rect()
+		var portrait_rect := slot_portrait.get_global_rect()
+		if not slot_rect.grow(slot_rect.size.y * 0.35).encloses(portrait_rect):
+			_fail("Expected carousel portrait overflow to stay bounded near its slot at %s." % str(viewport_size))
+			return
+		var texture_size := slot_portrait.texture.get_size()
+		var draw_scale := minf(portrait_rect.size.x / texture_size.x, portrait_rect.size.y / texture_size.y)
+		var bottom_margin := _alpha_bottom_margin(slot_portrait.texture)
+		var visible_bottom := portrait_rect.position.y + (texture_size.y - bottom_margin) * draw_scale
+		var expected_bottom := slot_rect.end.y - maxf(2.0, roundf(slot_rect.size.y * 0.02))
+		if absf(visible_bottom - expected_bottom) > SLOT_BASELINE_TOLERANCE:
+			_fail("Expected carousel portrait visible bottoms to align at %s; got %.2f vs %.2f." % [str(viewport_size), visible_bottom, expected_bottom])
 			return
 		visible_slots.append(slot)
 	if visible_slots.size() < 3:
@@ -149,6 +164,19 @@ func _assert_directional_preview(character_id: String) -> void:
 
 func _size_close(actual: Vector2, expected: Vector2, tolerance: float) -> bool:
 	return absf(actual.x - expected.x) <= tolerance and absf(actual.y - expected.y) <= tolerance
+
+
+func _alpha_bottom_margin(texture: Texture2D) -> float:
+	if texture == null:
+		return 0.0
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		return 0.0
+	for y in range(image.get_height() - 1, -1, -1):
+		for x in range(image.get_width()):
+			if image.get_pixel(x, y).a > 0.02:
+				return float(image.get_height() - y - 1)
+	return 0.0
 
 
 func _fail(message: String) -> void:

@@ -1349,7 +1349,7 @@ func _build_character_select_v4() -> void:
 	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
 	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
 	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
-	var carousel_slot_size := clampf(vp.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var carousel_slot_size := clampf(vp.y * 0.275, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
 	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
 	var carousel_y := vp.y - bottom_margin - carousel_h
 	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
@@ -1728,11 +1728,10 @@ func _build_character_select_v4() -> void:
 		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		slot_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		slot_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		slot_portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
-		slot_portrait.offset_left = 4.0
-		slot_portrait.offset_top = 4.0
-		slot_portrait.offset_right = -4.0
-		slot_portrait.offset_bottom = -4.0
+		slot_portrait.anchor_left = 0.5
+		slot_portrait.anchor_right = 0.5
+		slot_portrait.anchor_top = 1.0
+		slot_portrait.anchor_bottom = 1.0
 		slot_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(slot_portrait)
 		carousel.add_child(slot)
@@ -1742,6 +1741,43 @@ func _build_character_select_v4() -> void:
 	var state := {"offset": 0}
 	var sel0: int = roster.find(game.selected_character_id)
 	state["offset"] = clampi(sel0 - visible_slot_count / 2, 0, maxi(0, roster.size() - visible_slot_count))
+	var carousel_alpha_bottom_cache := {}
+	var carousel_texture_bottom_margin := func(texture: Texture2D) -> float:
+		if texture == null:
+			return 32.0
+		var key := texture.resource_path
+		if key.is_empty():
+			key = str(texture.get_rid())
+		if carousel_alpha_bottom_cache.has(key):
+			return float(carousel_alpha_bottom_cache[key])
+		var alpha_bottom_margin := 32.0
+		var image := texture.get_image()
+		if image != null and not image.is_empty():
+			var alpha_threshold := 0.02
+			for y in range(image.get_height() - 1, -1, -1):
+				var has_alpha := false
+				for x in range(image.get_width()):
+					if image.get_pixel(x, y).a > alpha_threshold:
+						has_alpha = true
+						break
+				if has_alpha:
+					alpha_bottom_margin = float(image.get_height() - y - 1)
+					break
+		carousel_alpha_bottom_cache[key] = alpha_bottom_margin
+		return alpha_bottom_margin
+	var position_carousel_portrait := func(slot_portrait: TextureRect, texture: Texture2D) -> void:
+		var portrait_box := Vector2(roundf(slot_size.x * 1.04), roundf(slot_size.y * 1.04))
+		var texture_size := Vector2(512.0, 512.0)
+		if texture != null and texture.get_size().x > 0.0 and texture.get_size().y > 0.0:
+			texture_size = texture.get_size()
+		var texture_scale := minf(portrait_box.x / texture_size.x, portrait_box.y / texture_size.y)
+		var visual_bottom_pad := maxf(2.0, roundf(slot_size.y * 0.02))
+		var portrait_bottom_margin: float = float(carousel_texture_bottom_margin.call(texture))
+		var bottom_offset := roundf(portrait_bottom_margin * texture_scale - visual_bottom_pad)
+		slot_portrait.offset_left = -roundf(portrait_box.x * 0.5)
+		slot_portrait.offset_right = roundf(portrait_box.x * 0.5)
+		slot_portrait.offset_bottom = bottom_offset
+		slot_portrait.offset_top = bottom_offset - portrait_box.y
 
 	var refresh_focus_graph := func(grab_default := false) -> void:
 		var visible_slots: Array = []
@@ -1853,7 +1889,9 @@ func _build_character_select_v4() -> void:
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
-				slot_portrait.texture = game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", ""))))
+				var slot_texture := game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", "")))) as Texture2D
+				slot_portrait.texture = slot_texture
+				position_carousel_portrait.call(slot_portrait, slot_texture)
 				slot.visible = true
 				slot.tooltip_text = str(rconf.get("title", rid))
 				_apply_hs4_minimal_button_theme(slot, rid == cid)

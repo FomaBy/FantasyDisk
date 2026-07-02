@@ -192,8 +192,19 @@ The accepted source is a bright emerald bioluminescent scientist-naturalist with
 empty hands and no baked syringe/vial/flask/tool/orb/weapon, transparent RGBA,
 visible height `380 px` and pivot `(256,470)`. White/neutral matte pixels are
 `0` in source/cell/sheet QA, with `0` edge-visible pixels after strict
-edge-connected checker/white cleanup. It is a source handoff only until
-Animator/Back-end builds real idle/move SpriteFrames.
+edge-connected checker/white cleanup. It is retained as source history after
+the live SCRUM-421 PixelLab rescue.
+
+SCRUM-421 later promotes Biologist to a live PixelLab runtime pack. Source
+rotations, the original 8-direction `walking-6-frames` rows, a regenerated
+front-facing `south-facing-walk-rescue` row, `manifest.json`,
+`pixellab_metadata.json`, and `alpha_bbox_report.json` live under
+`assets/sprites/characters/pixellab/biologist/`. Runtime transparent `512x512`
+frames live under `assets/sprites/characters/full_frame/biologist_pixellab/`
+with every visible alpha bbox normalized to `245 px` high, and
+`assets/sprites/characters/biologist_spriteframes.tres` exposes generic and
+directional `idle`, `move`, and `walk` rows. Contact preview:
+`docs/design/previews/scrum421_biologist_pixellab_contact.png`.
 
 SCRUM-165 adds Priest with canonical Design assets `assets/sprites/characters/priest.png`, `assets/sprites/weapons/priest_reliquary.png`, `assets/sprites/weapons/priest_censer.png`, and `assets/sprites/weapons/priest_chime.png`; source/result details are tracked in `docs/tasks/codex_design_priest_art_task.md`. Priest rig/cutout/motion ownership is tracked separately in `docs/tasks/animation_priest_rig_motion_task.md`.
 

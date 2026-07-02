@@ -1,6 +1,6 @@
 # ART/ANIM: Перерисовать «Биолог» v2 — ярко/эпично, move+idle, прозрачный фон
 
-Статус: new
+Статус: review
 Приоритет: medium
 Роль: Designer (Codex) → Animator (Codex)
 Версия: 0.1.6
@@ -8,8 +8,8 @@
 Автор: PM (запрос пользователя)
 Jira: SCRUM-421
 Lane: codex
-Исполнитель: Codex
-QA: in_progress (2026-06-15)
+Исполнитель: codex-design-biologist-rescue-20260701
+QA: ready (2026-07-01)
 Координация (НЕ блок, скилл задаёт критерии): SCRUM-422 (опорная: стиль/формат/размер v2)
 
 ## PM Directive (2026-06-30)
@@ -173,3 +173,40 @@ Jira labels `blocked` and `pixellab-blocked` were removed; SCRUM-421 remains
 `К выполнению`, unassigned, and ready for normal claim-first Design/Codex work.
 Already-open Codex threads may still need restart/new thread tool discovery to
 expose PixelLab tools. Disk cleanup: none created.
+
+## PixelLab Runtime Rescue Result — Codex Design 2026-07-01
+
+SCRUM-421 finished as a live PixelLab runtime pack, reusing the valid prior
+PixelLab character source `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` and replacing
+only the faulty south walking row with a new PixelLab `south-facing-walk-rescue`
+animation from the same character. No unrelated character packs were edited.
+
+Delivered paths:
+- Source pack: `assets/sprites/characters/pixellab/biologist/` (8 idle poses,
+  8 directions x 6 move/walk frames, manifest, PixelLab metadata, alpha report).
+- Runtime pack: `assets/sprites/characters/full_frame/biologist_pixellab/`
+  (56 normalized `512x512` transparent PNGs, visible alpha height `245 px`).
+- SpriteFrames: `assets/sprites/characters/biologist_spriteframes.tres`
+  (`idle`/`walk`/`move` fallbacks plus 8-direction `idle_`, `walk_`, `move_`
+  animations; no `attack` / `attack_primary`).
+- Runtime integration: Biologist now points to
+  `res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png`.
+- Preview: `docs/design/previews/scrum421_biologist_pixellab_contact.png`.
+
+Acceptance:
+- [x] Biologist PixelLab source/runtime pack is transparent and weapon-free.
+- [x] 8-direction idle + 8-direction 6-frame move/walk integrated in runtime.
+- [x] `biologist_spriteframes.tres` exposes idle/walk/move only; attacks remain
+  absent by SCRUM-421 scope.
+- [x] Hero Select preview advances the Biologist PixelLab walk frames.
+- [x] Documentation and changelog updated.
+
+Verification:
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/character_sprite_registry_alignment_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Ready for Jira QA on branch `codex/scrum-421-biologist-rescue`.

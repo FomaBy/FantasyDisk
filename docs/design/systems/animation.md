@@ -249,6 +249,17 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `walk_<direction>` rows for all 8 directions. The generic idle/move/walk
   fallbacks use the south row, Hero Select rotates through the same directional
   frames, and body attack rows remain absent by weapon-owned combat scope.
+- 2026-07-01 SCRUM-421 PixelLab Biologist rescue finishes the previously queued
+  source character `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4` in a clean worktree.
+  Source rotations and movement frames are stored under
+  `assets/sprites/characters/pixellab/biologist/`; runtime frames are
+  transparent `512x512` canvases under
+  `assets/sprites/characters/full_frame/biologist_pixellab/` with every
+  visible alpha bbox normalized to `245 px` high. The SpriteFrames resource
+  exposes `idle`, `move`, `walk`, plus 8-direction `idle_`, `move_`, and
+  `walk_` rows; Hero Select rotates through those directional frames. The
+  south movement row uses a PixelLab v3 custom front-facing replacement after
+  visual QA rejected the initial downloaded row as wrong-facing.
 - SCRUM-540 (2026-06-28) produces the Secret Ascension Boss full-frame animation
   pack from the accepted SCRUM-539 source. Candidate assets live under
   `assets/sprites/bosses/full_frame/secret_ascension_boss/` with a 512x512
