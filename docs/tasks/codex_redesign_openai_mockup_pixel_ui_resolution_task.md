@@ -1,13 +1,13 @@
 # Полный редизайн экрана «Кодекс»: OpenAI-мокап → карта layout → новый пиксельный UI без растяжения
 
-Статус: blocked
+Статус: review
 Версия: 0.1.8
 Создано: 2026-06-30
 Роль: Design
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a (released by 019f1fbb-ac80-7013-90c6-5b8003afad49 / codex-scrum-725-verification-worker after blocker)
-Locked paths: `docs/design/mockups/codex_redesign_2026_06/`, `assets/sprites/ui/frames/codex_pl/`, Codex-only section of `scripts/ui_screens.gd`, `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`, `build/qa/codex_redesign*`
+Owner: Codex SCRUM-725 verification worker
+Thread/Worker: 019f1feb-e0c8-7b73-82c3-808b65ff4ad6 / codex-scrum-725-verification-retry-20260702c
+Locked paths: `docs/design/mockups/codex_redesign_2026_06/`, `assets/sprites/ui/frames/codex_pl/`, Codex-only section of `scripts/ui_screens.gd`, `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md`, `build/qa/codex_redesign*`, `build/qa/design_review/`
 Приоритет: P1
 Метки: foma
 Jira: SCRUM-725
@@ -193,4 +193,50 @@ environment verification pass after Godot import unblocks. Do not move to
 
 Disk cleanup: pending removal of this worker's `.godot` cache and ignored
 `build/qa/codex_redesign_asset_audit.md` after sync/commit.
+Thread cleanup: pending archive at worker finish.
+
+## Verification Retry - Codex SCRUM-725 verification worker 2026-07-02c
+
+Статус: review / ready for Jira `Контроль качества`
+Thread/Worker: 019f1feb-e0c8-7b73-82c3-808b65ff4ad6 / codex-scrum-725-verification-retry-20260702c
+
+Scope: verify/unblock the pushed SCRUM-725 implementation on current
+`origin/dev` (`fc2dd5e8` implementation, `971eaf6e` list-margin fix, later
+`b7fe1ee2` fast-forward with unrelated SCRUM-793 bookkeeping). `scripts/codex_data.gd`
+was not edited.
+
+Result:
+- PASS. The earlier Godot import blocker did not reproduce when the worker waited
+  beyond `[ DONE ] first_scan_filesystem`; import preflight completed cleanly.
+- Tiny SCRUM-725-scoped UI fix in `scripts/ui_screens.gd`: Codex entry cards now
+  use `CODEX_V2_ENTRY_CARD_SOURCE_SIZE.y = 150`, `CODEX_PL_ENTRY_CARD_CONTENT =
+  Vector4(28, 36, 28, 28)`, clamped one-block title-summary text, and explicit
+  clamped-label line height. Full per-entry detail text remains in the right
+  detail panel.
+- Non-Godot checks PASS: `git diff --check`; deterministic
+  `docs/design/references/codex_redesign_2026_06/build_scrum725_codex_assets.py`
+  rerun with no asset diffs; content-margin audit confirms every
+  `CODEX_PL_*_CONTENT >= CODEX_PL_*_TEX`; Patch Notes still routes through
+  `_add_screen_background(root, "codex")`; Codex routes through
+  `_add_codex_pl_background(root)` with `STRETCH_KEEP_ASPECT_COVERED`; contrast
+  sanity ratios for live Codex text colors are all above 4.5:1.
+- Godot gates PASS through `python3 tools/godot_gate.py`: `--headless --path .
+  --import --quit`, `tests/codex_data_smoke_test.gd`,
+  `tests/ui_no_overlap_matrix_test.gd`, and `tests/runtime_smoke_test.gd`.
+  One unrelated transient runtime assertion on `BattleRewardButton2` safe rect did
+  not reproduce on immediate retry; final runtime smoke passed.
+- Screenshot evidence PASS through non-headless gated capture:
+  `build/qa/design_review/codex_1280x720.png`,
+  `build/qa/design_review/codex_1920x1080.png`,
+  `build/qa/design_review/codex_2560x1440.png`, plus tooltip variants and
+  `build/qa/design_review/manifest.md`. Visual review confirms list-card text is
+  readable, clipped inside the card safe zone, and does not overlap the red
+  diamond ornaments, 9-slice rails, or frame corners.
+
+Next status: move SCRUM-725 to Jira `Контроль качества` with branch/commit/test
+evidence after commit/push.
+
+Disk cleanup: removed this worker's `.godot` import cache (756 MB before
+cleanup), restored/removed Godot-generated `.import`/`.uid` sidecars, no Python
+caches found, no disposable clone/worktree created.
 Thread cleanup: pending archive at worker finish.

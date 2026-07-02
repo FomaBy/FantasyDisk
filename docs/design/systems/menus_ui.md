@@ -526,7 +526,12 @@ instead of keeping stale rects from the previous resolution. Source/provenance:
 `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
 SCRUM-725 verification retry on 2026-07-02 tightened the live list-panel
 content margins to `Vector4(64, 72, 64, 64)`, keeping list content outside the
-48px `codex_pl_grid_panel` ornament band with horizontal reserve.
+48px `codex_pl_grid_panel` ornament band with horizontal reserve. The follow-up
+2026-07-02c verification retry keeps entry cards at a 150px source height with
+`Vector4(28, 36, 28, 28)` card content margins, and renders each list card as a
+single clamped title-summary block so text stays readable inside the empty card
+zone without touching the red diamond ornament or 9-slice rails. Full description
+text remains in `CodexDetailParchmentInset`.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.

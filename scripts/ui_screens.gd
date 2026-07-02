@@ -474,8 +474,8 @@ const CODEX_V2_LIST_PANEL_RECT := Rect2(426.0, 192.0, 517.0, 864.0)
 const CODEX_V2_DETAIL_PANEL_RECT := Rect2(964.0, 192.0, 932.0, 864.0)
 const CODEX_V2_PORTRAIT_SAFE := Rect2(1070.0, 274.0, 720.0, 300.0)
 const CODEX_V2_CHIP_ROW_SAFE := Rect2(1048.0, 602.0, 760.0, 72.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 132.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 22.0, 28.0, 20.0)
+const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 150.0)
+const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
 const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(68.0, 68.0)
 const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(304.0, 102.0)
 const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 48.0, 48.0, 48.0)
@@ -514,7 +514,7 @@ const CODEX_PL_MAIN_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
 const CODEX_PL_NAV_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
 const CODEX_PL_LIST_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
 const CODEX_PL_DETAIL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
-const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(28.0, 22.0, 28.0, 20.0)
+const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
 const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(84.0, 24.0, 34.0, 24.0)
 const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(24.0, 24.0, 24.0, 24.0)
 const CODEX_PL_TEXT_CREAM := Color(0.91, 0.84, 0.66, 1.0)
@@ -3052,7 +3052,7 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	slot.add_child(portrait)
 
 
-func _codex_label(parent: Control, text: String, font_size: int, color: Color) -> Label:
+func _codex_label(parent: Control, text: String, font_size: int, color: Color, max_lines := 0) -> Label:
 	var label := Label.new()
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = text
@@ -3060,6 +3060,11 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color) -
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.add_theme_font_size_override("font_size", _codex_font_size(font_size, 10, 44))
 	label.add_theme_color_override("font_color", color)
+	if max_lines > 0:
+		label.clip_text = true
+		label.max_lines_visible = max_lines
+		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		label.custom_minimum_size.y = ceilf(float(_codex_font_size(font_size, 10, 44) * max_lines) * 1.18)
 	parent.add_child(label)
 	return label
 
@@ -3470,9 +3475,7 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		text_box.add_theme_constant_override("separation", 4)
 		row.add_child(text_box)
-		_codex_label(text_box, str(character["title"]), 17, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(character["playstyle"]), 12, CODEX_PL_CARD_BODY_COLOR)
-		_codex_label(text_box, "Сильное: %s" % character["strengths"], 11, CODEX_PL_CARD_ACCENT_COLOR)
+		_codex_label(text_box, "%s — %s" % [character["title"], character["playstyle"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
@@ -3501,8 +3504,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
-			_codex_label(text_box, "%s   (%s)" % [monster["title"], monster["id"]], 16, CODEX_PL_CARD_TITLE_COLOR)
-			_codex_label(text_box, str(monster["behavior"]), 11, CODEX_PL_CARD_BODY_COLOR)
+			_codex_label(text_box, "%s (%s) — %s" % [monster["title"], monster["id"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
@@ -3531,8 +3533,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%s   [%s]" % [artifact["title"], _artifact_tier_text(artifact_definition)], 15, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(artifact["description"]), 12, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], _artifact_tier_text(artifact_definition), artifact["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
@@ -3548,8 +3549,7 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%d. %s" % [entry["level"], entry["title"]], 18, CODEX_PL_CARD_TITLE_COLOR)
-		_codex_label(text_box, str(entry["description"]), 13, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(text_box, "%d. %s — %s" % [entry["level"], entry["title"], entry["description"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_stats(list: VBoxContainer) -> void:
@@ -3572,10 +3572,7 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			var text_box := VBoxContainer.new()
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(text_box)
-			_codex_label(text_box, str(stat["title"]), 16, CODEX_PL_CARD_TITLE_COLOR)
-			_codex_label(text_box, str(stat["description"]), 12, CODEX_PL_CARD_BODY_COLOR)
-			if str(stat["influences"]) != "":
-				_codex_label(text_box, "Влияет на: %s" % stat["influences"], 11, CODEX_PL_CARD_ACCENT_COLOR)
+			_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_glossary(list: VBoxContainer) -> void:
@@ -3594,7 +3591,7 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(box)
 		box.add_child(_make_glossary_term_button(term_id, false))
-		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR)
+		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
