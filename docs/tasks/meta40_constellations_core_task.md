@@ -1,13 +1,13 @@
 # Мета 4.0 «Созвездия героев»: ядро — валюты, per-class графы, миграция schema 5
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (Claude)
 Версия: 0.1.8
 Создано: 2026-07-02
 Jira: SCRUM-828
 Контур: Claude
-Owner: unassigned
+Owner: claude-backend (оркестратор, 2-й заход после session-limit)
 Thread/Worker: n/a
 Locked paths: `scripts/meta_progression.gd`, `scripts/meta_progression_tree_data.gd`, `scripts/player.gd` (ключи мета-эффектов), `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`, `tests/meta_points_per_ascension_test.gd`
 
