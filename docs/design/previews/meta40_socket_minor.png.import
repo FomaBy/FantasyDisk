@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsbngy81ru0fp"
-path="res://.godot/imported/scrum431_priest_pixellab_contact.png-7ea90788003e01ef61ffa1270d3281c7.ctex"
+uid="uid://fdnc8dvocer0"
+path="res://.godot/imported/meta40_socket_minor.png-c1e6887948f2b113232bd4facb42d8e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://docs/design/previews/scrum431_priest_pixellab_contact.png"
-dest_files=["res://.godot/imported/scrum431_priest_pixellab_contact.png-7ea90788003e01ef61ffa1270d3281c7.ctex"]
+source_file="res://docs/design/previews/meta40_socket_minor.png"
+dest_files=["res://.godot/imported/meta40_socket_minor.png-c1e6887948f2b113232bd4facb42d8e8.ctex"]
 
 [params]
 

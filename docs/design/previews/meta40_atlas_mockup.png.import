@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dsbngy81ru0fp"
-path="res://.godot/imported/scrum431_priest_pixellab_contact.png-7ea90788003e01ef61ffa1270d3281c7.ctex"
+uid="uid://vdo0acjtsymi"
+path="res://.godot/imported/meta40_atlas_mockup.png-b34b20c84f0653e7ec7d1089c0e57aa1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://docs/design/previews/scrum431_priest_pixellab_contact.png"
-dest_files=["res://.godot/imported/scrum431_priest_pixellab_contact.png-7ea90788003e01ef61ffa1270d3281c7.ctex"]
+source_file="res://docs/design/previews/meta40_atlas_mockup.png"
+dest_files=["res://.godot/imported/meta40_atlas_mockup.png-b34b20c84f0653e7ec7d1089c0e57aa1.ctex"]
 
 [params]
 

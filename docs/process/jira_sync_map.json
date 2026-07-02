@@ -3685,8 +3685,8 @@
  },
  "qol_gamepad_settings_rebind_ui_task.md": {
   "key": "SCRUM-816",
-  "status": "К выполнению",
-  "desc_hash": "8e931417b8d5fe5c8fc4052782deeebb"
+  "status": "В работе",
+  "desc_hash": "fc0a86a1dfe6dab144b9866300e62e5d"
  },
  "minimal_metal_recolor_leather_brass_task.md": {
   "key": "SCRUM-817",
@@ -3722,5 +3722,20 @@
   "key": "SCRUM-823",
   "status": "Контроль качества",
   "desc_hash": "0cf60df0b8c6a50373439e8d9b07ae3f"
+ },
+ "design_meta40_constellation_ui_assets_task.md": {
+  "key": "SCRUM-826",
+  "status": "К выполнению",
+  "desc_hash": "1f9b987330a2d380dce6e9c4840414ba"
+ },
+ "meta40_atlas_screen_ui_task.md": {
+  "key": "SCRUM-827",
+  "status": "К выполнению",
+  "desc_hash": "1247ab5f0274c92e211994101a3e317d"
+ },
+ "meta40_constellations_core_task.md": {
+  "key": "SCRUM-828",
+  "status": "К выполнению",
+  "desc_hash": "c1d6167cc8107bfca56c5831307970d7"
  }
 }
