@@ -1,15 +1,15 @@
 # Мета 4.1a (SCRUM-834): условные keystone на существующих хуках — эталоны + мапящиеся классы
 
-Статус: done (834a реализовано: soldier «Шквал», thief «Из тени» на существующих гейтах; смоки зелёные; сдано в QA. Немапящиеся пары → SCRUM-835/836/837)
+Статус: done (834a QA-fix: real-node smoke для soldier_k1/thief_k0 + cleanup docs/changelog overclaims; смоки зелёные; сдаётся в QA)
 Приоритет: high
-Роль: Back-end (Claude)
+Роль: Back-end (Codex)
 Версия: 0.2.0
 Создано: 2026-07-02
 Jira: SCRUM-834
-Контур: Claude
-Owner: —
-Thread/Worker: —
-Locked paths: `scripts/meta_progression_tree_data.gd`, `scripts/player.gd` (условные модификаторы), `tests/meta_skill_tree_smoke_test.gd`, `docs/design/systems/meta_constellations.md` (приложение A)
+Контур: Codex
+Owner: Codex backend subagent Helmholtz
+Thread/Worker: 019f23d3-fc28-7721-8ef4-5f39ebaa193e
+Locked paths: `tests/meta_skill_tree_smoke_test.gd`, `docs/design/systems/meta_constellations.md`, `CHANGELOG.md`, `docs/tasks/meta41_conditional_keystones_task.md`
 
 ## Контекст
 
@@ -257,3 +257,36 @@ SCRUM-834 scope.
 
 Disk cleanup: QA worktree `/tmp/FantasyDisk-QA-SCRUM-834` removed after Jira
 sync/commit; transient `.godot`, `qa_logs`, and `.import` artifacts not kept.
+
+## Result / Evidence 834a QA-fix 2026-07-02 (codex-backend)
+
+Статус: done, готово к повторной QA после commit/push.
+
+Исправлены оба blocker'а QA re-check:
+
+- `tests/meta_skill_tree_smoke_test.gd` больше не проверяет `soldier_k1` /
+  `thief_k0` через synthetic dictionaries. Сценарии 5/6 теперь создают
+  `meta_state`, покупают соответствующий keystone, активируют его через
+  `Meta.set_active_keystone`, берут `Meta.skill_modifiers_for_class`, применяют
+  моды к реальному `Player.tscn` нужного класса/оружия и проверяют derived
+  runtime values: `soldier_k1` повышает `attack_speed` только при
+  `stance_active`, `thief_k0` повышает `crit_chance` только при
+  `rush_window_active`. Дополнительно тест проверяет, что купленный, но
+  неактивный keystone не отдаёт свои effects.
+- `docs/design/systems/meta_constellations.md` и `CHANGELOG.md` убрали stale
+  broad claim, будто SCRUM-834 финально заменил `k0/k1` всех 17 классов и
+  закрыл 17/17 hidden stars. Документы теперь явно фиксируют PM-decomposition:
+  834a — частичный slice `soldier_k1`/`thief_k0`, новые боевые подсистемы →
+  SCRUM-835, 17/17 hidden uniqueness → SCRUM-836, полный real-effect behavioral
+  smoke → SCRUM-837.
+
+Гейты (Godot 4.7 через `tools/godot_gate.py`, exit 0, без `SCRIPT ERROR`):
+
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd` — PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd` — PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASSED.
+- `git diff --check` — PASSED.
+
+Затронуто: `tests/meta_skill_tree_smoke_test.gd`,
+`docs/design/systems/meta_constellations.md`, `CHANGELOG.md`,
+`docs/tasks/meta41_conditional_keystones_task.md`.

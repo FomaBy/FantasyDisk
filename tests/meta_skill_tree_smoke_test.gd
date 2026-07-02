@@ -481,15 +481,39 @@ func _test_player_application() -> void:
 # SCRUM-834 (Мета 4.1): каждый из 4 типов условных keystone поднимает урон ЛИШЬ
 # при выполнении условия; гейты ставит player (HP-порог, стойка, окно-после-
 # уклонения, счёт-в-радиусе). Минимум 1 поведенческий сценарий на тип условия.
-func _make_conditional_player(holder: Node2D, mods: Dictionary) -> Node:
+func _make_conditional_player(holder: Node2D, mods: Dictionary, class_id: String = "berserk", weapon_id: String = "sword") -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	holder.add_child(player)
 	if player.has_method("configure_character"):
-		player.configure_character("berserk", "sword")
+		player.configure_character(class_id, weapon_id)
 	await process_frame
 	player.call("apply_meta_skill_modifiers", mods)
 	await process_frame
 	return player
+
+
+func _mods_for_active_keystone(class_id: String, node_id: String) -> Dictionary:
+	var node := Meta.node_by_id(node_id)
+	if node.is_empty():
+		_fail("Real-node smoke expected existing keystone '%s'." % node_id)
+		return {}
+	if str(node.get("role", "")) != "keystone" or str(node.get("class_affinity", "")) != class_id:
+		_fail("Real-node smoke expected '%s' to be a '%s' keystone." % [node_id, class_id])
+		return {}
+	var inactive_state: Dictionary = Meta.default_state()
+	inactive_state["skill_nodes"] = [node_id]
+	var inactive_mods := Meta.skill_modifiers_for_class(inactive_state, class_id)
+	for key in (node.get("effects", {}) as Dictionary).keys():
+		if inactive_mods.has(str(key)):
+			_fail("Keystone '%s' effect '%s' must sleep until the node is active." % [node_id, str(key)])
+			return {}
+	var state: Dictionary = Meta.default_state()
+	state["skill_nodes"] = [node_id]
+	state = Meta.set_active_keystone(state, class_id, node_id)
+	if Meta.active_keystone(state, class_id) != node_id:
+		_fail("Real-node smoke could not activate keystone '%s' for '%s'." % [node_id, class_id])
+		return {}
+	return Meta.skill_modifiers_for_class(state, class_id)
 
 
 func _dmg(player: Node) -> float:
@@ -564,9 +588,14 @@ func _test_conditional_keystones() -> void:
 		return
 	pw.queue_free()
 
-	# 5) SCRUM-834a: стойка → скорострельность (soldier «Шквал»). Не-урон стат-цель:
-	# на том же гейте stance_active меняется attack_speed, а не damage.
-	var pas := await _make_conditional_player(holder, {"stance_attack_speed_bonus": 0.19})
+	# 5) SCRUM-834a: real PM node soldier_k1 «Шквал» → active meta keystone →
+	# player/progression runtime. Не-урон стат-цель: на том же гейте
+	# stance_active меняется attack_speed, а не synthetic dictionary.
+	var soldier_mods := _mods_for_active_keystone("soldier", "soldier_k1")
+	if float(soldier_mods.get("stance_attack_speed_bonus", 0.0)) < 0.18:
+		_fail("soldier_k1 must provide stance_attack_speed_bonus through Meta.skill_modifiers_for_class.")
+		return
+	var pas := await _make_conditional_player(holder, soldier_mods, "soldier", "soldier_rifle")
 	var base_as := _atk_speed(pas)
 	pas.set("velocity", Vector2.ZERO)
 	pas.call("_update_conditional_keystones", 1.0)  # > STANCE_ACTIVATION_TIME
@@ -580,9 +609,14 @@ func _test_conditional_keystones() -> void:
 		return
 	pas.queue_free()
 
-	# 6) SCRUM-834a: рывок → крит-шанс (thief «Из тени»). Не-урон стат-цель на
-	# существующем окне rush_window_active.
-	var prc := await _make_conditional_player(holder, {"rush_crit_bonus": 0.17})
+	# 6) SCRUM-834a: real PM node thief_k0 «Из тени» → active meta keystone →
+	# player/progression runtime. Не-урон стат-цель на существующем окне
+	# rush_window_active, без synthetic modifier dictionary.
+	var thief_mods := _mods_for_active_keystone("thief", "thief_k0")
+	if float(thief_mods.get("rush_crit_bonus", 0.0)) < 0.16:
+		_fail("thief_k0 must provide rush_crit_bonus through Meta.skill_modifiers_for_class.")
+		return
+	var prc := await _make_conditional_player(holder, thief_mods, "thief", "thief_smoke_bomb")
 	var base_crit := _crit(prc)
 	prc.call("_trigger_rush_window")
 	if _crit(prc) <= base_crit:

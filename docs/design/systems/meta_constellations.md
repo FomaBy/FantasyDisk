@@ -269,19 +269,22 @@ erode 1px → точный LANCZOS в целевой размер; в промп
 
 ## Приложение A — keystone-тройки 17 классов
 
-Заполнено в T1 (SCRUM-828), доведено до условных механик в 4.1 (SCRUM-834): у
-каждого класса РОВНО 3 взаимоисключающих keystone (cost 4, exclusive-группа
+Заполнено в T1 (SCRUM-828), затем частично переведено в условные механики в
+линейке 4.1 (SCRUM-834a/835/836/837): у каждого класса РОВНО 3 взаимоисключающих keystone (cost 4, exclusive-группа
 `<class>_keystones`, активен ≤1, переключение купленных бесплатно). Числовой
 downside обязателен и ≥25% ценности апсайда в весах силы (`POWER_WEIGHTS`
 дата-модуля); «чистый вклад» (последний столбец) — вклад keystone в
 damage-mult-эквивалент бюджета §6, удержан в узкой полосе 0.036–0.054 ради
 кросс-классового спреда ≤1.25.
 
-**4.1 — условные keystone (SCRUM-834).** Первые два keystone каждого класса
-(`k0`, `k1`) заменены со статических стат-трейдов на УСЛОВНЫЙ бонус урона,
-активный лишь при выполнении условия (столбец «целевая механика 4.1»). Четыре
-типа условий разведены в `player.gd` (гейты `*_active`/`swarm_fraction`,
-консумит `progression_data.derived_parameters`):
+**4.1 — условные keystone (SCRUM-834a и продолжения).** После QA-декомпозиции
+SCRUM-834a является частичным backend-slice: реально защищённые PM-ноды сейчас
+`soldier_k1` «Шквал» (стойка → скорострельность) и `thief_k0` «Из тени»
+(окно после уклонения → крит-шанс). Остальные `k0`/`k1` строки ниже отражают
+текущие generic conditional placeholders, оставшиеся до SCRUM-835/837; они не
+считаются финальной реализацией всей PM-таблицы 17 классов. Четыре базовых типа
+условий разведены в `player.gd` (гейты `*_active`/`swarm_fraction`, консумит
+`progression_data.derived_parameters`):
 
 - **HP-порог** (`hurt_damage_bonus`) — пока здоровье героя ниже половины
   (`_update_conditional_keystones`, порог 50%). «Кровавый танец», «Хор
@@ -297,12 +300,12 @@ damage-mult-эквивалент бюджета §6, удержан в узко�
 
 Вес каждого условного ключа в `POWER_WEIGHTS` = средняя доля времени активности
 (аптайм) × вес урона, поэтому крупный заголовочный процент (напр. +34% «в
-рывке») держит тот же budget-вклад, что старый статический трейд — коридор §6 и
-спред ≤1.25 сохранены точно (конверсия budget-нейтральна: `up_power` каждого
-keystone равен прежнему). Третий keystone (`k2`) сохраняет статический трейд T1.
-Эталоны §3 реализованы этими ключами (источник данных: `CONSTELLATION_SPECS`
-в `scripts/meta_progression_tree_data.gd`; код и таблица генерируются из одной
-спеки — расхождение = баг).
+рывке») держит тот же budget-вклад, что старый статический трейд. Для 834a
+та же бюджетная логика применена к не-урон стат-целям `stance_attack_speed_bonus`
+и `rush_crit_bonus`; коридор §6 и спред ≤1.25 сохранены. Третий keystone (`k2`)
+сохраняет статический трейд T1. PM-эталоны §3 закрываются инкрементально:
+реальные боевые подсистемы идут в SCRUM-835, а строгий behavioral smoke всех
+реальных эффектов — в SCRUM-837.
 
 | Класс | Keystone | Апсайд | Downside | Целевая механика 4.1 | Чистый вклад |
 | --- | --- | --- | --- | --- | --- |
@@ -358,21 +361,19 @@ keystone равен прежнему). Третий keystone (`k2`) сохран
 |  | «Дикий рост» (`druid_k1`) | +17.1% к урону в гуще боя (на пике — врагов рядом) | −6% к скорости движения | счёт-в-радиусе | 0.038 |
 |  | «Гнев леса» (`druid_k2`) | +1.4 периодического урона, +18% полученного урона отражается шипами | −0.13 к регенерации | — | 0.043 |
 
-Примечание к эталонам §3 (реализация 4.1): формульные триггеры выведены в
-условные ключи. «Кровавый танец» → урон, пока HP<50% (`hurt_damage_bonus`) с
-downside на входящее лечение (аналог «лечение лавки −50%»); «Несущий бурю» →
-`swarm_damage_bonus` (за врагов рядом) с downside на max HP; «Один выстрел» →
-`stance_damage_bonus` (стойка снайпера) с downside на скорострельность; «Бастион»
-→ `stance_damage_bonus`; «Марш легиона» → `rush_damage_bonus` (окно после
-уклонения — маршевый импульс); «Пандемия» → `swarm_damage_bonus`. Столбец
-«целевая механика 4.1» таблицы фиксирует тип условия каждого k0/k1.
+Примечание к эталонам §3 (реализация 4.1): строки таблицы фиксируют текущий
+runtime data state, но после re-scope не означают, что SCRUM-834a закрыл все
+PM-механики. 834a закрывает только мапящиеся на существующие гейты не-урон
+варианты `soldier_k1` и `thief_k0`; остальные формульные/generic триггеры
+остаются переходным состоянием до SCRUM-835/837.
 
 ## Приложение B — реестр новых ключей эффектов
 
-Заполнено в T1 (SCRUM-828), дополнено условными ключами 4.1 (SCRUM-834). Все
+Заполнено в T1 (SCRUM-828), дополнено условными ключами 4.1 (SCRUM-834a и
+продолжения). Все
 ключи — через `apply_meta_skill_modifiers` в `player.gd`; потребители — либо
 существующие артефакт-триггеры (SCRUM-500), либо `derived_parameters` (условные
-бонусы урона 4.1, гейты ставит player):
+бонусы урона 4.1 и 834a не-урон стат-цели, гейты ставит player):
 
 | Ключ | Узлы | Разводка в player.gd | Тест |
 | --- | --- | --- | --- |
@@ -387,13 +388,14 @@ downside на входящее лечение (аналог «лечение л�
 | `stance_damage_bonus` | k0/k1 (стойка): `sniper_k0`, `elementalist_k1`, `priest_k1`, `robot_k0`, `engineer_k0`, `biologist_k1`, `dark_mage_k1`, `guitarist_k1`, `ranger_k0`, `chemist_k1`, `knight_k0`, `druid_k0` | `META_SKILL_FLAT_MAP`; гейт `stance_active` (неподвижность ≥0.8с) → `damage_multiplier` | conditional-гейт smoke |
 | `rush_damage_bonus` | k0/k1 (окно после уклонения): `sniper_k1`, `assassin_k1`, `doctor_k1`, `knight_k1` | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` (2с после уворота, `_trigger_rush_window`) → `damage_multiplier` | conditional-гейт smoke |
 | `swarm_damage_bonus` | k0/k1 (счёт-в-радиусе): `berserk_k1`, `thief_k1`, `elementalist_k0`, `robot_k1`, `engineer_k1`, `biologist_k0`, `dark_mage_k0`, `guitarist_k0`, `ranger_k1`, `chemist_k0`, `druid_k1` | `META_SKILL_FLAT_MAP`; гейт `swarm_fraction` (0..1 от `SWARM_CAP`) → `damage_multiplier` | conditional-гейт smoke |
-| `stance_attack_speed_bonus` | k1 (стойка → не-урон): `soldier_k1` («Шквал», 834a) | `META_SKILL_FLAT_MAP`; гейт `stance_active` → `attack_speed_multiplier` | conditional-гейт smoke (сценарий 5) |
-| `rush_crit_bonus` | k0 (окно после уклонения → не-урон): `thief_k0` («Из тени», 834a) | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` → `crit_chance` | conditional-гейт smoke (сценарий 6) |
+| `stance_attack_speed_bonus` | k1 (стойка → не-урон): `soldier_k1` («Шквал», 834a) | `META_SKILL_FLAT_MAP`; гейт `stance_active` → `attack_speed_multiplier` | real-node conditional smoke (`soldier_k1` → active keystone → player/progression) |
+| `rush_crit_bonus` | k0 (окно после уклонения → не-урон): `thief_k0` («Из тени», 834a) | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` → `crit_chance` | real-node conditional smoke (`thief_k0` → active keystone → player/progression) |
 
-Метрика скрытых звёзд `class_wins` (SCRUM-834) добавлена к
-`weapon_diversity`/`best_ascension`/`no_shop_wins` для уникальных per-class
-подвигов — читается из `class_boss_wins` (`meta_progression.hidden_star_unlocked/
-hidden_star_progress`, `condition_text`); свежий аккаунт = 0, не открыта.
+Метрика скрытых звёзд `class_wins` добавлена к
+`weapon_diversity`/`best_ascension`/`no_shop_wins` и читается из
+`class_boss_wins` (`meta_progression.hidden_star_unlocked/hidden_star_progress`,
+`condition_text`); строгий аудит 17/17 уникальных hidden-star условий и лора
+вынесен в SCRUM-836.
 
 Гейт: `tests/meta_skill_tree_smoke_test.gd::_test_effect_keys_are_wired` — любой
 ключ эффекта графа, не разведённый в `player.gd` (`META_SKILL_*_MAP`, флаги) или
