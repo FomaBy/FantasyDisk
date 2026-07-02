@@ -58,3 +58,41 @@ Locked paths: `scripts/ui_screens.gd` (экран дерева/атласа), `t
 
 Полная автономия; git pull перед стартом, явный add, push после зелёных гейтов;
 гейты через `python3 tools/godot_gate.py` сериализованно.
+
+## Прогресс
+
+2026-07-02 — реализация завершена, сдано в QA (Claude, SCRUM-827).
+
+- Экран: `_show_atlas_screen` + семейство `_atlas_*` в `scripts/ui_screens.gd`
+  (старый `_show_skill_tree_screen` и его хелперы/константы удалены; кнопка
+  меню `MainMenuSkillTreeButton` теперь «Атлас героев»).
+- §7 покрыт: две вкладки (Tab-шорткат на неактивной вкладке + LB/RB через
+  `_handle_menu_shoulder_nav`), созвездие целиком без пан/зума (npos 0..1 →
+  холст), 6 состояний узлов (звезда/пульс/тусклый/туман «?»/сапфировое кольцо
+  активного keystone/тлеющий неактивный), лента 17 медальонов-гербов с
+  прогрессом x/N и бейджем непотраченных эмблем, панель узла (тип/титул/
+  описание с числами/цена/«Вложить эмблему|пыль», keystone-переключатель,
+  условие+прогресс скрытой), шапка-валюты, низ «Респек — бесплатно» (свой
+  конфирм; per-class / Атлас) + легенда. Церемонии: вспышка покупки +
+  загорание линий (edge_flash), рассеивание тумана 0.6с со скипом кликом
+  (реестр показов per-session).
+- Anti-freed-lambda: все твины — property-твины на самих нодах; колбэки только
+  `Callable(self, "метод").bind(...)` (паттерн SCRUM-551).
+- Ассеты: строго кит `assets/sprites/ui/meta40/` (bg_sky, полая рама
+  frame_border 9-slice c draw_center=false + nearest, сокеты по ролям,
+  star_alloc, keystone_ring, crest_* как ядра созвездий и медальоны ленты,
+  currency_*). Контент в safe-area рамы (margins = texture-margins рамы).
+- Тесты (worktree, изолированный user-dir, полный --import): новый
+  `tests/meta40_atlas_screen_smoke_test.gd` (открытие/лента/покупка/keystone/
+  Гильдия/туман) PASS; `ui_no_overlap_matrix_test` (7 вьюпортов, атлас-набор
+  контролов) PASS; `runtime_smoke_test` (атлас-каркас + back-button QA) PASS;
+  `gamepad_menu_focus_test` (стартовый фокус — медальон выбранного класса)
+  PASS; `meta_skill_tree_smoke_test` (покупка через панель Атласа) PASS.
+- Отступление от AC-2 (скриншот-evidence `meta40_atlas_runtime_*.png`):
+  headless dummy-рендер Godot не растеризует SubViewport (пустой Image),
+  оконный запуск запрещён — на машине живой редактор пользователя. Evidence —
+  геометрические дампы `build/qa/ui_no_overlap_matrix.md` (секции skill_tree)
+  и `build/qa/scrum331/progression_skill_tree_runtime_dump.md` (atlas NxN,
+  текстуры кита в каждом контроле). Скриншоты добрать в QA-прогоне с окном.
+- Origin: dbf8e607 (экран) → becb4d36 (parse-fix) → 9d44bb09 (смоки) →
+  c7515444 (.uid) → b4419fd4 (CHANGELOG + done).
