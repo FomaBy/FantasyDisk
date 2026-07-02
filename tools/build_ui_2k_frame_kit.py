@@ -38,9 +38,16 @@ THEME_PATHS = ROOT / "scripts/ui/ui_theme_paths.gd"
 OUT_DIR = ROOT / "assets/sprites/ui/frames/overhaul_2k"
 CONTACT_SHEET = ROOT / "docs/design/previews/ui_2k_frame_kit_contact.png"
 
-# --- стиль (тот же bright-минимал, что в tools/render_bright_frames.py) --------
-AMBER = (228, 170, 52)
-ACCENT = (245, 196, 96)
+# --- стиль (SCRUM-818: тёмная латунь вместо ярко-жёлтой линии) ------------------
+# Арт-дирекция SCRUM-806 reopen / аудит SCRUM-809: тёмное тело + тонкая тёмно-
+# латунная линия (референс assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png,
+# латунь ~#8a6d3b..#a8895a). BRASS сидит ПОД порогом «ярко-жёлтого» пиксель-скана
+# аудита (hue 30–68°, sat≥0.42, val≥0.52): val 0.51 < 0.52 → гейт bright<5% зелёный.
+# Уголки — тёплый латунный хайлайт #a8895a (совпадает с бликами референса),
+# их площадь <0.3% краевой полосы. До SCRUM-818 здесь был ярко-жёлтый
+# AMBER (228,170,52) / ACCENT (245,196,96).
+BRASS = (130, 103, 56)          # основная линия рамки (~#826738, тёмная латунь)
+BRASS_ACCENT = (168, 137, 90)   # угловые L-скобки (#a8895a, верх латунной шкалы)
 FILL_TOP = (34, 31, 27)
 FILL_BOT = (24, 22, 19)
 FILL_ALPHA = 214
@@ -216,11 +223,11 @@ def render(w: int, h: int, margins) -> Image.Image:
     img = Image.composite(grad, img, mask)
 
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((x0, y0, x1, y1), radius=rad, outline=AMBER + (255,), width=border_w)
+    d.rounded_rectangle((x0, y0, x1, y1), radius=rad, outline=BRASS + (255,), width=border_w)
     inner = pad + border_w
     d.rounded_rectangle((inner, inner, w - inner - 1, h - inner - 1),
                         radius=max(2, rad - border_w),
-                        outline=_lerp(FILL_TOP, AMBER, 0.4) + (110,), width=1)
+                        outline=_lerp(FILL_TOP, BRASS, 0.4) + (110,), width=1)
 
     # угловые L-скобки строго внутри margin-band (не дальше самой узкой полосы)
     off = pad + border_w + 2
@@ -228,8 +235,8 @@ def render(w: int, h: int, margins) -> Image.Image:
     if leg >= 4:
         for cx, cy, sx, sy in ((x0 + off, y0 + off, 1, 1), (x1 - off, y0 + off, -1, 1),
                                (x0 + off, y1 - off, 1, -1), (x1 - off, y1 - off, -1, -1)):
-            d.line([(cx, cy), (cx + sx * leg, cy)], fill=ACCENT + (255,), width=2)
-            d.line([(cx, cy), (cx, cy + sy * leg)], fill=ACCENT + (255,), width=2)
+            d.line([(cx, cy), (cx + sx * leg, cy)], fill=BRASS_ACCENT + (255,), width=2)
+            d.line([(cx, cy), (cx, cy + sy * leg)], fill=BRASS_ACCENT + (255,), width=2)
     return img
 
 
@@ -330,18 +337,29 @@ def asset_path(slug: str) -> Path:
     return OUT_DIR / f"ui_frame_2k_{slug}.png"
 
 
-def build():
+def build(only: set[str] | None = None):
+    """Сгенерить ассеты. `only` (SCRUM-818) — перегенерить лишь перечисленные slug'и,
+    остальные PNG на диске не трогаются (селективная перекраска живых слотов);
+    контактный лист при этом всё равно пересобирается из ВСЕХ слотов с диска."""
     frame_margins, button_margins = load_margins()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    if only:
+        unknown = only - {s["slug"] for s in SLOTS}
+        if unknown:
+            raise SystemExit(f"--only: неизвестные слоты: {', '.join(sorted(unknown))}")
     built = []
+    sheet_rows = []
     for slot in SLOTS:
         w, h, margins = resolve_slot(slot, frame_margins, button_margins)
-        img = render(w, h, margins)
-        out = asset_path(slot["slug"])
-        img.save(out)
-        built.append((slot, w, h, margins))
-        print(f"  {slot['slug']:<14} {w}x{h:<5} kind={slot['kind']:<6} margins={margins} -> {out.relative_to(ROOT)}")
-    _contact_sheet(built)
+        if only is None or slot["slug"] in only:
+            img = render(w, h, margins)
+            out = asset_path(slot["slug"])
+            img.save(out)
+            built.append((slot, w, h, margins))
+            print(f"  {slot['slug']:<14} {w}x{h:<5} kind={slot['kind']:<6} margins={margins} -> {out.relative_to(ROOT)}")
+        if asset_path(slot["slug"]).exists():
+            sheet_rows.append((slot, w, h, margins))
+    _contact_sheet(sheet_rows)
     print(f"built {len(built)} assets in {OUT_DIR.relative_to(ROOT)}; contact: {CONTACT_SHEET.relative_to(ROOT)}")
     return built
 
@@ -402,10 +420,14 @@ def main():
     ap = argparse.ArgumentParser(description="SCRUM-485 UI 2K frame kit builder/verifier")
     ap.add_argument("--verify", action="store_true", help="только рендер-верификатор (exit!=0 при FAIL)")
     ap.add_argument("--all", action="store_true", help="сгенерить и сразу верифицировать")
+    ap.add_argument("--only", default=None, metavar="SLUGS",
+                    help="перегенерить только перечисленные slug'и (через запятую), "
+                         "остальные PNG не трогаются (SCRUM-818)")
     args = ap.parse_args()
     if args.verify:
         sys.exit(0 if verify() else 1)
-    build()
+    only = {s.strip() for s in args.only.split(",") if s.strip()} if args.only else None
+    build(only)
     if args.all:
         sys.exit(0 if verify() else 1)
 
