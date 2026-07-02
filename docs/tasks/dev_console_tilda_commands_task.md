@@ -84,3 +84,12 @@ help + Tab-автодополнение). Нужна для быстрых QA-п
 Headless: `GODOT_BIN=... python3 tools/godot_gate.py --headless -s tests/dev_console_smoke_test.gd`.
 Руками: старт боя → `~` → `godmode`, `spawn shaman 5`, `kill all`, `timescale 3`,
 `win`; на карте — `gold 500`, `act 3`, `fight boss`.
+
+## QA-Вердикт
+Статус: PASSED
+Проверил: claude-qa | Дата: 2026-07-02
+
+- Мерж в origin/dev подтверждён (коммит 21ee4d91 — ancestor origin/dev).
+- Ревью кода: `player.gd` godmode-гард (`if debug_godmode: return false` в начале take_damage) — неинвазивно, при флаге false поведение не меняется; `main.gd` ранний return в `_input` сгейчен строго `dev_console.is_console_open()` — при закрытой консоли ввод (Esc/quit/хоткеи) не трогается, регресса SCRUM-830 нет.
+- Тесты (изолированный worktree, gate/fdengine): `dev_console_smoke_test.gd` → PASS ×2; регрессия `gamepad_full_flow_smoke_test.gd` → PASS (SOFT-DEFECT D1 = пред-существующий SCRUM-824, не от этой правки); `runtime_smoke_test.gd` с активной консолью → PASS (duplicate-artifact guard OK).
+- Acceptance 1-5 покрыты: тоггл/пауза/захват ввода, help+подсказки, вежливый отказ без игрока/боя, боевые команды (gold/godmode/spawn/kill/timer/timescale/win), смоук 2× + gamepad-регрессия зелёные.
