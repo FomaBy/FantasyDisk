@@ -413,6 +413,11 @@ SCRUM-518 (увеличение арены) ужал персонажа на −
 `PLAYER_COMBAT_VISUAL_SCALE` `0.5 → 0.425` (тянет `Body` и скелет/cutout риги
 через `BASE_SPRITE_SCALE`) и согласованно коллизию `CircleShape2D radius`
 `10.5 → 8.9` — sprite и collision уменьшены на один процент, без рассинхрона.
+SCRUM-823 снова увеличил только боевую визуальную читаемость playable characters:
+`PLAYER_COMBAT_VISUAL_SCALE` теперь `0.64` (примерно x1.5 от `0.425`) для
+`Body`, skeletal и cutout fallback paths. `CircleShape2D radius` остаётся `8.9`,
+поэтому hurtbox, контактное поведение, дальности, pivot, flip и `WeaponSocket`
+не менялись.
 
 SCRUM-412 очистил полный playable full-frame runtime set от белой/checkerboard
 подложки: все `255` PNG в

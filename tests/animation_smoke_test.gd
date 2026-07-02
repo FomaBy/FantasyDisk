@@ -2,7 +2,7 @@ extends SceneTree
 
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.425, 0.425)  # SCRUM-518: lock-step с player.gd (−15%)
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := Vector2(0.64, 0.64)  # SCRUM-823: lock-step with player.gd visual-only bump.
 
 
 func _initialize() -> void:
@@ -171,9 +171,9 @@ func _test_player_animation() -> void:
 	if rig.visible:
 		_fail("Expected Berserk cutout RigRoot to be hidden behind the full-frame AnimatedSprite2D.")
 	if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
-		_fail("Expected Berserk full-frame visual to use SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
+		_fail("Expected Berserk full-frame visual to use SCRUM-823 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(body.scale)])
 	if rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
-		_fail("Expected hidden fallback cutout rig to receive SCRUM-417 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
+		_fail("Expected hidden fallback cutout rig to receive SCRUM-823 combat scale %s, got %s." % [str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE), str(rig.get("base_scale"))])
 	if body.sprite_frames == null:
 		_fail("Expected Berserk player SpriteFrames to load.")
 	if body.sprite_frames.resource_path != "res://assets/sprites/characters/berserk_spriteframes.tres":
@@ -319,7 +319,7 @@ func _test_player_animation() -> void:
 		elif not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
-			_fail("Expected %s visual paths to use SCRUM-417 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
+			_fail("Expected %s visual paths to use SCRUM-823 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
 		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "biologist" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "engineer" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "ranger" or sheet_character_id == "robot" or sheet_character_id == "sniper" or sheet_character_id == "soldier" or sheet_character_id == "thief":
 			var v2_label := "PixelLab directional"
 			if not body.sprite_frames.has_animation("idle") or not body.sprite_frames.has_animation("walk") or not body.sprite_frames.has_animation("move"):

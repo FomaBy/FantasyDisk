@@ -3717,5 +3717,10 @@
   "key": "SCRUM-822",
   "status": "Контроль качества",
   "desc_hash": "0e9f87c63d300e4ca4ebdda70c364720"
+ },
+ "backend_player_combat_visual_scale_up_task.md": {
+  "key": "SCRUM-823",
+  "status": "Контроль качества",
+  "desc_hash": "0cf60df0b8c6a50373439e8d9b07ae3f"
  }
 }

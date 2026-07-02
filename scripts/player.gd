@@ -35,7 +35,7 @@ const DIRECTIONAL_ANIMATION_SUFFIXES := ["east", "south_east", "south", "south_w
 # SCRUM-595: потолок суммарного absorb_flat от оверхил-ульты Доктора за забег,
 # как доля от max_health (раньше копился безгранично → пауэр-крип/эксплойт).
 const DOCTOR_ULT_ABSORB_CAP_FRACTION := 0.5
-const PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (тело меньше на просторной арене)
+const PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: visual-only +~50% from 0.425; collision unchanged.
 const BASE_SPRITE_SCALE := Vector2(PLAYER_COMBAT_VISUAL_SCALE, PLAYER_COMBAT_VISUAL_SCALE)
 # Анимация атаки персонажей отключена по запросу пользователя (2026-06-15).
 const USE_ATTACK_ANIMATION := false

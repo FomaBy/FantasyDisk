@@ -79,7 +79,7 @@ const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
 const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
 # SCRUM-568: карточки опций докачи переехали на overhaul_2k evt_card-рамку.
 const ATTRIBUTE_OFFER_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
-const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.425  # SCRUM-518: −15% от 0.5 (lock-step с player.gd)
+const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
@@ -600,7 +600,7 @@ func _initialize() -> void:
 		return
 	var player_body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
 	if player_body == null or absf(player_body.scale.x - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001 or absf(player_body.scale.y - EXPECTED_PLAYER_COMBAT_VISUAL_SCALE) > 0.001:
-		_fail("Expected player visual scale to match combat scale %.3f (SCRUM-518 −15%%)." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
+		_fail("Expected player visual scale to match combat scale %.3f (SCRUM-823 visual-only bump)." % EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)
 		return
 	var player_rig := player.get_node_or_null("VisualRoot/RigRoot") as Node2D
 	if not player_body.visible or player_rig == null or player_rig.visible:
