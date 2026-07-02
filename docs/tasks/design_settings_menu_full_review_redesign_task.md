@@ -1,6 +1,6 @@
 # Design: Настройки v4 — полный ревью-редизайн меню (аудит размеров → OpenAI-мокапы 3 вкладок → перерисовка без растяжений → верификация по референсам)
 
-Статус: done
+Статус: new
 Jira: SCRUM-805
 Создано: 2026-07-02
 Автор: PM (прямое поручение пользователя 2026-07-02)
@@ -9,6 +9,23 @@ Jira: SCRUM-805
 Owner: claude-designer (Jira-pull рутина)
 Thread/Worker: fantasydisk-designer
 Locked paths: scripts/ui_screens.gd (settings-блок ~3605–4300), assets/sprites/ui/frames/settings_v4/*, references/settings_v4/*, docs/design/settings_v4_*.md
+
+## QA-Вердикт (2026-07-02, codex-qa-claude-monitor)
+
+Статус: FAILED
+
+Проверено:
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/game_settings_smoke_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/video_settings_apply_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/aim_mode_settings_test.gd` — PASSED; есть нерелевантный script error в тестовом fake owner, тест завершился PASS.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASSED.
+
+Блокеры приёмки:
+- В `docs/design/settings_v4_verification.md` нет обязательных runtime screenshots всех 3 вкладок на 1920×1080 и 2560×1440; `find build docs -path '*settings_v4*' -o -path '*SCRUM-805*' -o -path '*scrum805*'` показывает только mockup PNG и markdown, без runtime screenshot evidence.
+- `assets/sprites/ui/frames/settings_v4/*.png` не создан, хотя задача/locked paths/план фазы 5 требуют `settings_v4` asset pack и направление PM — гибрид с упором на B, интерактивные элементы отдельными ассетами в точном финальном размере. Текущее решение переиспользует `settings_v3/*`; это нужно либо довести до acceptance, либо оформить отдельным PM-approved scope reduction.
+
+Баги: не заводил отдельный runtime bug — функциональные/overlap gates зелёные; это недовыполненные acceptance/evidence пункты SCRUM-805.
 
 ## Ход выполнения (обновлено 2026-07-02, claude-designer)
 
