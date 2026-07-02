@@ -9467,16 +9467,25 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
 		money_label.add_theme_font_size_override("font_size", maxi(11, int(roundf(24.0 * scale))))
-	var bar_fonts := {
-		"HudHPLabel": 20.0,
-		"HudXPLabel": 17.0,
-		"HudULTLabel": 17.0,
+	var bar_labels := {
+		"HudHPLabel": [HUD_V2_HP_BAR_2K, 20.0],
+		"HudXPLabel": [HUD_V2_XP_BAR_2K, 17.0],
+		"HudULTLabel": [HUD_V2_ULT_BAR_2K, 17.0],
 	}
-	for label_name in bar_fonts.keys():
+	for label_name in bar_labels.keys():
 		var label := resource.find_child(str(label_name), true, false) as Label
-		if label != null:
-			label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_fonts[label_name]) * scale))))
-			label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
+		if label == null:
+			continue
+		label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_labels[label_name][1]) * scale))))
+		label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
+		_hud_v2_place_in_panel(label, bar_labels[label_name][0], panel_rect, scale)
+		# Шрифт может требовать больше высоты, чем слим-бар: расширяем рект лейбла
+		# симметрично вокруг зоны бара, текст остаётся визуально по центру бара.
+		var min_h := label.get_combined_minimum_size().y
+		if min_h > label.size.y:
+			label.position.y -= roundf((min_h - label.size.y) * 0.5)
+			label.size.y = min_h
+			label.custom_minimum_size.y = 0.0
 
 
 func _hud_v2_place_in_panel(node: Control, zone_2k: Rect2, panel_rect: Rect2, scale: float) -> void:
@@ -9824,9 +9833,11 @@ func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallbac
 	bar.add_theme_stylebox_override("fill", _hud_v2_bar_fill_style(icon_id, fill_fallback))
 	track.add_child(bar)
 
+	# Лейбл — сиблинг трека (не ребёнок бара): min-height шрифта на 4K выше слим-бара,
+	# внутри бара он вылезал бы за родителя (text-overflow инвариант матрицы).
+	# Позиционируется _layout_hud_v2_cluster по зоне бара с вертикальным центрированием.
 	var label := Label.new()
 	label.name = "Hud%sLabel" % tag
-	label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.clip_text = true
@@ -9835,7 +9846,7 @@ func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallbac
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 3)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bar.add_child(label)
+	parent.add_child(label)
 
 	if icon_id == "hp":
 		game.health_label = label
