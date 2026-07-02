@@ -112,6 +112,42 @@ OpenAI gpt-image-2 (стиль существующего leather/gold UI-кит
   флаки апгрейд-карточки, вынесен в bug_upgrade_card_description_overflow_task.md,
   на базовой ревизии без этого коммита тоже флакует по RNG наград).
 
+## QA-Вердикт (reopen): PASSED
+
+Статус: PASSED
+Дата: 2026-07-02
+QA: claude-qa
+
+Проверено на origin/dev @ 6ae3d8b7 в изолированном worktree (reopen-коммиты
+7cc57480/c1922e1f — ancestors; последующие коммиты SCRUM-805/808/809 combat-HUD-код
+НЕ трогали — сверено git-diff по `scripts/ui_screens.gd` combat-HUD функциям и по
+`tests/*`, до tip ddb05c1d включительно).
+
+Примечание к AC: пункт «Возвышение показывается арабской цифрой» ниже относится к
+ревизии 1 и переопределён reopen-ТЗ PM (возвышение = ряд эмблем без цифры/плашки);
+приёмка ведётся по reopen-спеке из «## Доработка по фидбеку PM».
+
+Код (`scripts/ui_screens.gd`):
+- Жёлтые рамки убраны: `ui_frame_2k_chud_timer` / `minimal_metal_card` / `ROMAN_NUMERALS`
+  отсутствуют в файле (grep = 0).
+- Таймер на кожаной подложке `ui_hud_v2_cluster_bg.png` (`_timer_panel_style` →
+  `HUD_V2_CLUSTER_BG_PATH`); alarm ≤5с — алый tint подложки `Color(1.45,0.58,0.50)` +
+  красный текст `Color(1.0,0.32,0.26)` + пульс-твин 1.12 (сохранены).
+- Возвышение — `AscensionHudRow` (HBox): ряд эмблем `AscensionHudPip` × уровень,
+  clampi по `MAX_ASCENSION_LEVEL`, без плашки/цифры; framed `AscensionHudBadge`
+  отсутствует; тултип с модификаторами возвышения жив.
+- Ассеты `combat_hud_v2` 8/8 png+`.import` парой в git-tree origin/dev; эмблема
+  возвышения 48×48, 69% прозрачна, углы (0,0,0,0) — без запечённого фона.
+
+Тесты (`tools/godot_gate.py`, `FSD_GODOT_SLOTS=1`, Godot 4.7, все зелёные):
+- `runtime_smoke_test` — PASSED (dup-guard 14164 files; `_test_boss_hud_shows_timer` зелёный)
+- `runtime_smoke_boss_elite_test` — PASSED
+- `ui_no_overlap_matrix_test` — PASSED ×3 на 9fb1a8e4 + ×1 на 6ae3d8b7
+  (combat_hud contract: таймер=cluster_bg не жёлтая рамка, нет `AscensionHudBadge`,
+  непустой текстурированный `AscensionHudRow`, слим-треки HP/XP/ULT, денежная строка).
+
+Все reopen-AC выполнены → Готово.
+
 ## Acceptance Criteria
 
 - [ ] HP/XP/ULT — тонкие лайн-бары с иконками и читаемыми значениями; деньги — иконка+число
