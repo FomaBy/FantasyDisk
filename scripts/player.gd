@@ -835,6 +835,10 @@ const META_SKILL_MULT_MAP := {
 	"money_gain_mult": "money_gain_multiplier",
 	"ult_charge_mult": "ult_charge_multiplier",
 	"elite_boss_damage_mult": "elite_boss_damage_multiplier",
+	# SCRUM-828 (Мета 4.0): лечение как рычаг keystone-трейдоффов созвездий
+	# (аптека Атласа +, «Кровавый танец» берсерка −). healing_multiplier уже
+	# консумится в _apply_regeneration/heal-потоках.
+	"healing_mult": "healing_multiplier",
 	# Прогрессия по классам (SCRUM-360): бонусы текущего класса (передаются только
 	# выбранному классу из main); множатся с аккаунтными на тот же run_modifier.
 	"class_damage_mult": "damage_multiplier",
@@ -862,6 +866,14 @@ const META_SKILL_FLAT_MAP := {
 	"pickup_radius_flat": "pickup_radius_flat",
 	"projectile_speed_flat": "projectile_speed_flat",
 	"absorb_flat": "absorb_flat",
+	# SCRUM-828 (Мета 4.0): механики звёзд-техник и скрытых звёзд созвездий.
+	# Все ключи уже консумятся артефакт-триггерами player.gd (SCRUM-500):
+	# взрыв при убийстве, контр-волна, шипы, рывки по криту/уклонению.
+	"kill_explosion_chance": "kill_explosion_chance",
+	"take_hit_pulse_chance": "take_hit_pulse_chance",
+	"thorn_reflect_multiplier": "thorn_reflect_multiplier",
+	"crit_speed_burst": "crit_speed_burst",
+	"dodge_rush_bonus": "dodge_rush_bonus",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",
@@ -900,6 +912,10 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	# Capstone «Вторая жизнь»: флаг спасения от смерти (логика — в take_damage).
 	if float(mods.get("death_save", 0.0)) > 0.0:
 		run_modifiers["death_save"] = 1.0
+	# SCRUM-828: скрытые звезды «щит-волна при низком HP» (та же механика, что
+	# артефакт «Рубеж Стража» — _trigger_lowhp_guard, перезаряд за порог).
+	if float(mods.get("lowhp_guard", 0.0)) > 0.0:
+		run_modifiers["lowhp_guard"] = 1.0
 
 
 func _apply_regeneration(delta: float) -> void:

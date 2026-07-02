@@ -1,67 +1,78 @@
 extends RefCounted
 
-# SCRUM-807 — Skill Tree 3.0: данные и конструктор графа умений вынесены из
-# meta_progression.gd (тот раздувался). Здесь живут: топология общего ядра, восемь
-# атрибутных лепестков (8 базовых характеристик), и — главное новшество v3 —
-# полноценные КЛАССОВЫЕ ВЕТВИ: у каждого из 17 классов ≥8 классовых нодов
-# (5 профильных атрибутных + 2 notable + 1 уникальный keystone), собранных
-# по матрице релевантности класса (progression_data_characters.ATTRIBUTE_RELEVANCE).
+# SCRUM-828 — Мета 4.0 «Созвездия героев» (дизайн: docs/design/systems/
+# meta_constellations.md). Этот модуль хранит ДАННЫЕ и сборщик графа меты:
+#   • 17 персональных созвездий классов (по 22 узла: ядро-эмблема 0-cost,
+#     12 звёзд-атрибутов cost 1, 4 звезды-техники cost 2, 3 взаимоисключающих
+#     keystone cost 4 с числовым downside, 2 скрытые звезды на challenge-условиях);
+#   • «Атлас гильдии» — общий QoL-слой ~24 узла (валюта — звёздная пыль),
+#     боевой силы почти не несёт (4 наследных keystone v2 — отдельный бюджет);
+#   • реестр значений звёзд-атрибутов (STAR_ATTRS), веса силы (POWER_WEIGHTS)
+#     для бюджет-гейта +18–25%, RU-подписи эффектов (EFFECT_LABELS/FLAG_DESC).
 #
 # Публичный API meta_progression.gd (node_list/allocate_node/skill_modifiers*/
-# entry_map) остаётся обратно-совместимым: этот модуль только СТРОИТ Array узлов
-# в том же формате {id,branch,tier,cost,kind,title,desc,effects,pos,adj,
-# class_affinity?}. Значения эффектов используют ТОЛЬКО ключи, разведённые в
-# player.gd (META_SKILL_*_MAP) — иначе эффект молча теряется.
+# entry_map) сохраняет формат узла {id,branch,tier,cost,kind,title,desc,effects,
+# pos,adj,class_affinity?} + новые поля Меты 4.0: role, npos (нормализованная
+# позиция 0..1 по силуэту приложения C), exclusive_group (keystone-группа класса),
+# condition/lore (скрытые звезды). Ключи эффектов — ТОЛЬКО разведённые в player.gd
+# (META_SKILL_*_MAP) или в main/ui (экономические) — иначе эффект молча теряется
+# (гейт в tests/meta_skill_tree_smoke_test.gd).
 
-# --- Восемь общих атрибутных лепестков (8 базовых характеристик) ---
-# Идентично v2: якорят геометрию графа, дают базовые *_flat характеристики и
-# служат точками стыковки классовых ветвей. angle — направление лепестка (deg).
-const ATTRIBUTE_SKILL_PETALS := [
-	{"id": "strength", "title": "Сила", "short": "сила", "angle": 0.0, "effects": {"strength_flat": 1.0}, "notable_effects": {"strength_flat": 2.0, "damage_mult": 0.010}, "classes": ["berserk"]},
-	{"id": "agility", "title": "Ловкость", "short": "ловкость", "angle": 45.0, "effects": {"agility_flat": 1.0}, "notable_effects": {"agility_flat": 2.0, "crit_chance_flat": 0.010}, "classes": ["thief", "assassin"]},
-	{"id": "intelligence", "title": "Интеллект", "short": "интеллект", "angle": 90.0, "effects": {"intelligence_flat": 1.0}, "notable_effects": {"intelligence_flat": 2.0, "aoe_radius_mult": 0.015}, "classes": ["elementalist", "dark_mage"]},
-	{"id": "perception", "title": "Восприятие", "short": "восприятие", "angle": 135.0, "effects": {"perception_flat": 1.0}, "notable_effects": {"perception_flat": 2.0, "range_mult": 0.015}, "classes": ["soldier", "sniper", "ranger"]},
-	{"id": "energy", "title": "Энергия", "short": "энергия", "angle": 180.0, "effects": {"energy_flat": 1.0}, "notable_effects": {"energy_flat": 2.0, "ult_charge_mult": 0.030}, "classes": []},
-	{"id": "knowledge", "title": "Знание", "short": "знание", "angle": 225.0, "effects": {"knowledge_flat": 1.0}, "notable_effects": {"knowledge_flat": 2.0, "dot_damage_flat": 0.80, "attr_extra_options": 1.0}, "classes": ["chemist", "biologist", "doctor", "priest"]},
-	{"id": "endurance", "title": "Стойкость", "short": "стойкость", "angle": 270.0, "effects": {"endurance_flat": 1.0}, "notable_effects": {"endurance_flat": 2.0, "max_health_mult": 0.015}, "classes": ["knight", "robot"]},
-	{"id": "leadership", "title": "Лидерство", "short": "лидерство", "angle": 315.0, "effects": {"leadership_flat": 1.0}, "notable_effects": {"leadership_flat": 2.0, "aura_radius_mult": 0.015}, "classes": ["engineer", "druid", "guitarist"]},
-]
-
-# --- Реестр боевых атрибутов древа (24 attr → ключ эффекта пайплайна) ---
-# Каждый профильный (минорный) узел классовой ветви = один такой атрибут.
-# key   — ключ эффекта (разведён в player.gd META_SKILL_*_MAP);
-# unit  — значение на минорном узле; note — значение внутри notable;
-# short — заголовок узла (RU); ru — хвост описания; pct — показывать как %.
-# magic_focus не имеет собственного ключа (магурон масштабируется damage_mult),
-# поэтому magic-классы представляют его через "damage" (см. дизайн-док).
-const ATTR_EFFECT := {
-	"damage": {"key": "damage_mult", "unit": 0.030, "note": 0.045, "short": "Урон", "ru": "к урону", "pct": true},
-	"attack_speed": {"key": "attack_speed_mult", "unit": 0.030, "note": 0.045, "short": "Скорость атаки", "ru": "к скорости атаки", "pct": true},
-	"max_health": {"key": "max_health_mult", "unit": 0.030, "note": 0.050, "short": "Живучесть", "ru": "к макс. здоровью", "pct": true},
-	"move_speed": {"key": "move_speed_mult", "unit": 0.030, "note": 0.045, "short": "Скорость", "ru": "к скорости движения", "pct": true},
-	"aoe_radius": {"key": "aoe_radius_mult", "unit": 0.040, "note": 0.060, "short": "Область", "ru": "к радиусу области", "pct": true},
-	"pickup_radius": {"key": "pickup_radius_flat", "unit": 12.0, "note": 18.0, "short": "Подбор", "ru": "к радиусу подбора", "pct": false},
-	"defense": {"key": "defense_flat", "unit": 0.015, "note": 0.025, "short": "Защита", "ru": "к защите", "pct": true},
-	"knockback": {"key": "knockback_mult", "unit": 0.050, "note": 0.075, "short": "Отталкивание", "ru": "к отталкиванию", "pct": true},
-	"crit_chance": {"key": "crit_chance_flat", "unit": 0.015, "note": 0.025, "short": "Шанс крита", "ru": "к шансу крита", "pct": true},
-	"crit_damage": {"key": "crit_damage_flat", "unit": 0.080, "note": 0.120, "short": "Урон крита", "ru": "к урону крита", "pct": true},
-	"dodge": {"key": "dodge_flat", "unit": 0.010, "note": 0.015, "short": "Уклонение", "ru": "к уклонению", "pct": true},
-	"range": {"key": "range_mult", "unit": 0.030, "note": 0.050, "short": "Дальность", "ru": "к дальности атаки", "pct": true},
-	"dot_damage": {"key": "dot_damage_flat", "unit": 0.80, "note": 1.20, "short": "Периодический урон", "ru": "периодического урона", "pct": false},
-	"dot_speed": {"key": "dot_speed_flat", "unit": 0.050, "note": 0.080, "short": "Скорость тиков", "ru": "к скорости тиков", "pct": false},
-	"projectile_speed": {"key": "projectile_speed_flat", "unit": 22.0, "note": 34.0, "short": "Снаряды", "ru": "к скорости снарядов", "pct": false},
-	"aura_radius": {"key": "aura_radius_flat", "unit": 6.0, "note": 9.0, "short": "Аура", "ru": "к радиусу ауры", "pct": false},
-	"buff_power": {"key": "buff_power_flat", "unit": 0.020, "note": 0.030, "short": "Поддержка", "ru": "к силе поддержки", "pct": true},
-	"summon_amount": {"key": "summon_bonus", "unit": 0.50, "note": 0.80, "short": "Призыв", "ru": "к силе призыва", "pct": false},
-	"absorb": {"key": "absorb_flat", "unit": 2.0, "note": 3.0, "short": "Поглощение", "ru": "к поглощению", "pct": false},
-	"regeneration": {"key": "regeneration_flat", "unit": 0.080, "note": 0.120, "short": "Регенерация", "ru": "к регенерации", "pct": false},
-	"vampiric_amount": {"key": "vampiric_amount_flat", "unit": 0.350, "note": 0.500, "short": "Вампиризм", "ru": "к лечению вампиризмом", "pct": false},
-	"vampiric_chance": {"key": "vampiric_chance_flat", "unit": 0.020, "note": 0.030, "short": "Шанс вампиризма", "ru": "к шансу вампиризма", "pct": true},
-	"ultimate_power": {"key": "ultimate_flat", "unit": 0.040, "note": 0.060, "short": "Ультимейт", "ru": "к силе ультимейта", "pct": true},
+# --- Реестр звёзд-атрибутов (значение минорной звезды подобрано под бюджет ---
+# силы: value × POWER_WEIGHTS[key] ≈ 0.008 damage-mult-эквивалента на звезду).
+const STAR_ATTRS := {
+	"damage": {"key": "damage_mult", "value": 0.008, "short": "Урон", "ru": "к урону", "pct": true},
+	"attack_speed": {"key": "attack_speed_mult", "value": 0.008, "short": "Скорость атаки", "ru": "к скорости атаки", "pct": true},
+	"max_health": {"key": "max_health_mult", "value": 0.008, "short": "Живучесть", "ru": "к макс. здоровью", "pct": true},
+	"move_speed": {"key": "move_speed_mult", "value": 0.01, "short": "Скорость", "ru": "к скорости движения", "pct": true},
+	"aoe_radius": {"key": "aoe_radius_mult", "value": 0.013, "short": "Область", "ru": "к радиусу области", "pct": true},
+	"pickup_radius": {"key": "pickup_radius_flat", "value": 5.0, "short": "Подбор", "ru": "к радиусу подбора", "pct": false},
+	"defense": {"key": "defense_flat", "value": 0.004, "short": "Защита", "ru": "к защите", "pct": true},
+	"knockback": {"key": "knockback_mult", "value": 0.02, "short": "Отталкивание", "ru": "к отталкиванию", "pct": true},
+	"crit_chance": {"key": "crit_chance_flat", "value": 0.004, "short": "Шанс крита", "ru": "к шансу крита", "pct": true},
+	"crit_damage": {"key": "crit_damage_flat", "value": 0.021, "short": "Урон крита", "ru": "к урону крита", "pct": true},
+	"dodge": {"key": "dodge_flat", "value": 0.003, "short": "Уклонение", "ru": "к уклонению", "pct": true},
+	"range": {"key": "range_mult", "value": 0.01, "short": "Дальность", "ru": "к дальности атаки", "pct": true},
+	"dot_damage": {"key": "dot_damage_flat", "value": 0.21, "short": "Периодический урон", "ru": "периодического урона", "pct": false},
+	"dot_speed": {"key": "dot_speed_flat", "value": 0.013, "short": "Скорость тиков", "ru": "к скорости тиков", "pct": false},
+	"projectile_speed": {"key": "projectile_speed_flat", "value": 7.0, "short": "Снаряды", "ru": "к скорости снарядов", "pct": false},
+	"aura_radius": {"key": "aura_radius_flat", "value": 2.0, "short": "Аура", "ru": "к радиусу ауры", "pct": false},
+	"buff_power": {"key": "buff_power_flat", "value": 0.006, "short": "Поддержка", "ru": "к силе поддержки", "pct": true},
+	"summon_amount": {"key": "summon_bonus", "value": 0.13, "short": "Призыв", "ru": "к силе призыва", "pct": false},
+	"absorb": {"key": "absorb_flat", "value": 0.5, "short": "Поглощение", "ru": "к поглощению", "pct": false},
+	"regeneration": {"key": "regeneration_flat", "value": 0.023, "short": "Регенерация", "ru": "к регенерации", "pct": false},
+	"vampiric_amount": {"key": "vampiric_amount_flat", "value": 0.1, "short": "Вампиризм", "ru": "к лечению вампиризмом", "pct": false},
+	"vampiric_chance": {"key": "vampiric_chance_flat", "value": 0.006, "short": "Шанс вампиризма", "ru": "к шансу вампиризма", "pct": true},
+	"ultimate_power": {"key": "ultimate_flat", "value": 0.011, "short": "Ультимейт", "ru": "к силе ультимейта", "pct": true},
 }
 
-# --- RU-подписи для ЛЮБОГО ключа эффекта (для авто-описаний с числами) ---
-# Покрывает атрибутные ключи + «сигнатурные» ключи keystone-ов. pct=true → %.
+# --- Веса силы: damage-mult-эквивалент единицы значения ключа. Используются ---
+# meta_progression.estimated_class_power_multiplier и бюджет-гейтом §6 дизайна
+# (полный билд класса = +18..25%, спред по классам ≤1.25). Экономические ключи
+# намеренно весят 0 (Атлас не несёт боевой силы).
+const POWER_WEIGHTS := {
+	"damage_mult": 1.0, "attack_speed_mult": 1.0, "max_health_mult": 1.0,
+	"move_speed_mult": 0.8, "aoe_radius_mult": 0.6, "pickup_radius_flat": 0.0015,
+	"defense_flat": 2.0, "knockback_mult": 0.4, "crit_chance_flat": 2.0,
+	"crit_damage_flat": 0.375, "dodge_flat": 3.0, "range_mult": 0.8,
+	"dot_damage_flat": 0.0375, "dot_speed_flat": 0.6, "projectile_speed_flat": 0.0011,
+	"aura_radius_flat": 0.004, "aura_radius_mult": 0.6, "buff_power_flat": 1.25,
+	"summon_bonus": 0.06, "absorb_flat": 0.015, "regeneration_flat": 0.35,
+	"vampiric_amount_flat": 0.08, "vampiric_chance_flat": 1.4, "ultimate_flat": 0.75,
+	"ult_charge_mult": 0.5, "elite_boss_damage_mult": 0.5,
+	"low_hp_damage_bonus": 0.25, "lowhp_regen_bonus": 0.05, "healing_mult": 0.15,
+	"kill_explosion_chance": 0.5, "take_hit_pulse_chance": 0.5,
+	"thorn_reflect_multiplier": 0.2, "crit_speed_burst": 0.3, "dodge_rush_bonus": 0.3,
+	"lowhp_guard": 0.02, "death_save": 0.03, "ult_start_charge": 0.02,
+	"strength_flat": 0.008, "agility_flat": 0.008, "intelligence_flat": 0.008,
+	"perception_flat": 0.008, "energy_flat": 0.008, "knowledge_flat": 0.008,
+	"endurance_flat": 0.008, "leadership_flat": 0.008,
+	"xp_gain_mult": 0.0, "money_gain_mult": 0.0, "shop_price_mult": 0.0,
+	"attr_cost_mult": 0.0, "start_gold_flat": 0.0, "attr_extra_options": 0.0,
+	"guaranteed_rare_shop": 0.0, "first_levelup_rare": 0.0,
+}
+
+# --- RU-подписи для авто-описаний с числами (узлы обязаны читаться без токенов) ---
 const EFFECT_LABELS := {
 	"damage_mult": {"ru": "к урону", "pct": true},
 	"attack_speed_mult": {"ru": "к скорости атаки", "pct": true},
@@ -74,6 +85,10 @@ const EFFECT_LABELS := {
 	"ult_charge_mult": {"ru": "к скорости заряда ультимейта", "pct": true},
 	"elite_boss_damage_mult": {"ru": "к урону по элиткам и боссам", "pct": true},
 	"money_gain_mult": {"ru": "к добыче золота", "pct": true},
+	"xp_gain_mult": {"ru": "к получаемому опыту", "pct": true},
+	"shop_price_mult": {"ru": "к ценам лавки", "pct": true},
+	"attr_cost_mult": {"ru": "к цене докачки атрибутов", "pct": true},
+	"healing_mult": {"ru": "к получаемому лечению", "pct": true},
 	"defense_flat": {"ru": "к защите", "pct": true},
 	"dodge_flat": {"ru": "к уклонению", "pct": true},
 	"crit_chance_flat": {"ru": "к шансу крита", "pct": true},
@@ -82,6 +97,11 @@ const EFFECT_LABELS := {
 	"buff_power_flat": {"ru": "к силе поддержки", "pct": true},
 	"ultimate_flat": {"ru": "к силе ультимейта", "pct": true},
 	"low_hp_damage_bonus": {"ru": "к урону при низком здоровье", "pct": true},
+	"kill_explosion_chance": {"ru": "шанс взрыва при убийстве", "pct": true},
+	"take_hit_pulse_chance": {"ru": "шанс ответной волны при получении удара", "pct": true},
+	"thorn_reflect_multiplier": {"ru": "полученного урона отражается шипами", "pct": true},
+	"crit_speed_burst": {"ru": "к скорости движения после крита (короткий рывок)", "pct": true},
+	"dodge_rush_bonus": {"ru": "к скорости движения после уклонения (рывок)", "pct": true},
 	"pickup_radius_flat": {"ru": "к радиусу подбора", "pct": false},
 	"projectile_speed_flat": {"ru": "к скорости снарядов", "pct": false},
 	"absorb_flat": {"ru": "к поглощению", "pct": false},
@@ -92,189 +112,442 @@ const EFFECT_LABELS := {
 	"regeneration_flat": {"ru": "к регенерации", "pct": false},
 	"vampiric_amount_flat": {"ru": "к лечению вампиризмом", "pct": false},
 	"lowhp_regen_bonus": {"ru": "к регенерации при низком здоровье", "pct": false},
+	"start_gold_flat": {"ru": "золота на старте забега", "pct": false},
+	"strength_flat": {"ru": "к Силе", "pct": false},
+	"agility_flat": {"ru": "к Ловкости", "pct": false},
+	"intelligence_flat": {"ru": "к Интеллекту", "pct": false},
+	"perception_flat": {"ru": "к Восприятию", "pct": false},
+	"energy_flat": {"ru": "к Энергии", "pct": false},
+	"knowledge_flat": {"ru": "к Знанию", "pct": false},
+	"endurance_flat": {"ru": "к Стойкости", "pct": false},
+	"leadership_flat": {"ru": "к Лидерству", "pct": false},
 }
 
-# --- Классовые ветви v3 (17 классов) ---
-# attrs   — 5 профильных атрибутов ветви (primary-first по ATTRIBUTE_RELEVANCE);
-#           каждый становится минорным узлом (см. ATTR_EFFECT).
-# notables — 2 notable-узла: {title, attrs:[a,b]} (сумма двух атрибутов в note-объёме).
-# keystone — уникальный build-defining узел {title, effects{}} (эффекты — из
-#           профиля/фантазии класса; уникальны между классами; class_affinity).
-const CLASS_BRANCH_SPECS := {
+# Флаговые ключи описываются готовой фразой (не «+1 …»), мержатся через max().
+const FLAG_DESC := {
+	"death_save": "Раз за забег смертельный удар оставляет героя на ногах.",
+	"guaranteed_rare_shop": "В каждой лавке гарантированно есть редкий товар.",
+	"first_levelup_rare": "Первое повышение в забеге гарантированно даёт основную характеристику.",
+	"ult_start_charge": "Ультимейт начинает забег заряженным наполовину.",
+	"lowhp_guard": "Падение ниже 30% HP раз за порог поднимает щит-волну и даёт миг неуязвимости.",
+	"attr_extra_options": "Докачка атрибутов предлагает на 1 вариант больше.",
+}
+
+# --- Базовый атрибут ядра-эмблемы (первый вкус класса без гринда, +1) ---
+const CLASS_BASE_ATTRIBUTE := {
+	"berserk": "strength_flat", "soldier": "perception_flat", "thief": "agility_flat",
+	"elementalist": "intelligence_flat", "sniper": "perception_flat", "priest": "knowledge_flat",
+	"biologist": "knowledge_flat", "robot": "endurance_flat", "engineer": "leadership_flat",
+	"dark_mage": "intelligence_flat", "guitarist": "leadership_flat", "assassin": "agility_flat",
+	"ranger": "perception_flat", "doctor": "knowledge_flat", "chemist": "knowledge_flat",
+	"knight": "endurance_flat", "druid": "leadership_flat",
+}
+
+# Порядок классов = порядок на кольце старого экрана и в ленте Атласа героев.
+const CLASS_ORDER := ["berserk", "soldier", "thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]
+
+# Раскладка минорных звёзд по лучам силуэта: 4 луча × 3 звезды из 6 профильных
+# атрибутов класса (A..F, primary-first). Зеркальная схема читается как узор.
+const RAY_ATTR_PATTERN := [[0, 1, 0], [2, 3, 2], [1, 4, 5], [3, 5, 4]]
+
+# Условия скрытых звёзд созвездий строятся на инфраструктуре челленджей класса
+# (class_challenge_progress): metric ∈ {weapon_diversity, best_ascension,
+# no_shop_wins}; Атлас использует аккаунт-метрики {codex_milestones, secret_boss,
+# achievement_milestones}. Текст условия генерится в _condition_text().
+
+const CONSTELLATION_SPECS := {
 	"berserk": {
-		"title": "Путь берсерка",
-		"attrs": ["damage", "knockback", "vampiric_amount", "max_health", "crit_damage"],
-		"notables": [
-			{"title": "Кровавый напор", "attrs": ["damage", "vampiric_amount"]},
-			{"title": "Сокрушающий вихрь", "attrs": ["knockback", "max_health"]},
+		"core_title": "Сердце ярости",
+		"attrs": ["damage", "knockback", "vampiric_amount", "max_health", "crit_damage", "move_speed"],
+		"techniques": [
+			{"title": "Широкий замах", "effects": {"damage_mult": 0.008, "knockback_mult": 0.02}},
+			{"title": "Кровавый отбор", "effects": {"vampiric_amount_flat": 0.1, "vampiric_chance_flat": 0.006}},
+			{"title": "Ярость толпы", "effects": {"take_hit_pulse_chance": 0.016, "max_health_mult": 0.008}},
+			{"title": "Второе дыхание", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
 		],
-		"keystone": {"title": "Кровавая жатва", "effects": {"damage_mult": 0.040, "low_hp_damage_bonus": 0.18, "lowhp_regen_bonus": 0.18}},
+		"keystones": [
+			{"title": "Кровавый танец", "effects": {"vampiric_chance_flat": 0.04, "vampiric_amount_flat": 0.5, "healing_mult": -0.3}},
+			{"title": "Несущий бурю", "effects": {"damage_mult": 0.09, "max_health_mult": -0.04}},
+			{"title": "Последний рубеж", "effects": {"low_hp_damage_bonus": 0.29, "lowhp_regen_bonus": 0.4, "defense_flat": -0.022}},
+		],
+		"hidden": [
+			{"title": "Клич предков", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Гнев рода живёт в каждом ударе, что ты принимаешь.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Неукротимый", "effects": {"lowhp_guard": 1.0}, "lore": "Того, кто вставал с колен на вершине, не сломить у подножия.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"soldier": {
-		"title": "Строй солдата",
-		"attrs": ["damage", "attack_speed", "projectile_speed", "range", "crit_chance"],
-		"notables": [
-			{"title": "Огневой рубеж", "attrs": ["damage", "attack_speed"]},
-			{"title": "Пристрелка", "attrs": ["range", "projectile_speed"]},
+		"core_title": "Устав штурмовика",
+		"attrs": ["damage", "attack_speed", "projectile_speed", "range", "crit_chance", "buff_power"],
+		"techniques": [
+			{"title": "Огневой рубеж", "effects": {"damage_mult": 0.008, "attack_speed_mult": 0.008}},
+			{"title": "Пристрелка", "effects": {"range_mult": 0.01, "projectile_speed_flat": 7.0}},
+			{"title": "Бронебойный расчёт", "effects": {"elite_boss_damage_mult": 0.016, "crit_chance_flat": 0.004}},
+			{"title": "Полевая смекалка", "effects": {"buff_power_flat": 0.006, "max_health_mult": 0.008}},
 		],
-		"keystone": {"title": "Подавляющий огонь", "effects": {"attack_speed_mult": 0.060, "range_mult": 0.040, "elite_boss_damage_mult": 0.030}},
+		"keystones": [
+			{"title": "Подавляющий огонь", "effects": {"attack_speed_mult": 0.06, "range_mult": 0.03, "move_speed_mult": -0.06}},
+			{"title": "Одиночными", "effects": {"damage_mult": 0.05, "crit_chance_flat": 0.018, "attack_speed_mult": -0.04}},
+			{"title": "Гранатный подсумок", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "range_mult": -0.06}},
+		],
+		"hidden": [
+			{"title": "Окопная выучка", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Тот, кто держал рубеж всем арсеналом, бьёт в ответ без команды.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Ветеран высот", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "Возвышения — та же высота: бери её штурмом.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"thief": {
-		"title": "Тропа вора",
-		"attrs": ["move_speed", "crit_chance", "dodge", "damage", "pickup_radius"],
-		"notables": [
-			{"title": "Лёгкие пальцы", "attrs": ["crit_chance", "move_speed"]},
-			{"title": "Дым и тень", "attrs": ["dodge", "damage"]},
+		"core_title": "Первый куш",
+		"attrs": ["move_speed", "crit_chance", "dodge", "damage", "pickup_radius", "crit_damage"],
+		"techniques": [
+			{"title": "Лёгкие пальцы", "effects": {"crit_chance_flat": 0.004, "move_speed_mult": 0.01}},
+			{"title": "Дым и тень", "effects": {"dodge_flat": 0.003, "damage_mult": 0.008}},
+			{"title": "Карманы без дна", "effects": {"pickup_radius_flat": 5.0, "crit_damage_flat": 0.021}},
+			{"title": "Скользкий трюк", "effects": {"dodge_rush_bonus": 0.027, "move_speed_mult": 0.01}},
 		],
-		"keystone": {"title": "Большой куш", "effects": {"money_gain_mult": 0.160, "crit_chance_flat": 0.030, "move_speed_mult": 0.040}},
+		"keystones": [
+			{"title": "Большой куш", "effects": {"crit_chance_flat": 0.027, "move_speed_mult": 0.04, "max_health_mult": -0.04}},
+			{"title": "Ночная работа", "effects": {"dodge_flat": 0.018, "crit_damage_flat": 0.1, "damage_mult": -0.04}},
+			{"title": "Азарт канатоходца", "effects": {"crit_damage_flat": 0.17, "dodge_rush_bonus": 0.09, "defense_flat": -0.022}},
+		],
+		"hidden": [
+			{"title": "Отмычка судьбы", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Каждый замок в городе знает эти руки.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Крыши столицы", "effects": {"crit_speed_burst": 0.07}, "lore": "Кто бегал по черепице над стражей, того не догнать и на земле.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"elementalist": {
-		"title": "Стихийная схема",
-		"attrs": ["aoe_radius", "damage", "ultimate_power", "range", "dot_damage"],
-		"notables": [
-			{"title": "Разогретая формула", "attrs": ["aoe_radius", "damage"]},
-			{"title": "Стихийный контур", "attrs": ["ultimate_power", "dot_damage"]},
+		"core_title": "Триада стихий",
+		"attrs": ["aoe_radius", "ultimate_power", "damage", "range", "dot_damage", "move_speed"],
+		"techniques": [
+			{"title": "Разогретая формула", "effects": {"aoe_radius_mult": 0.013, "damage_mult": 0.008}},
+			{"title": "Стихийный контур", "effects": {"ultimate_flat": 0.011, "dot_damage_flat": 0.21}},
+			{"title": "Дальняя дуга", "effects": {"range_mult": 0.01, "move_speed_mult": 0.01}},
+			{"title": "Пепел и искры", "effects": {"kill_explosion_chance": 0.016, "aoe_radius_mult": 0.013}},
 		],
-		"keystone": {"title": "Сверхновая", "effects": {"aoe_radius_mult": 0.140, "damage_mult": 0.050, "ultimate_flat": 0.08}},
+		"keystones": [
+			{"title": "Сверхновая", "effects": {"aoe_radius_mult": 0.09, "damage_mult": 0.04, "range_mult": -0.06}},
+			{"title": "Канал ульты", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "damage_mult": -0.04}},
+			{"title": "Огонь по площади", "effects": {"kill_explosion_chance": 0.11, "dot_damage_flat": 1.0, "move_speed_mult": -0.06}},
+		],
+		"hidden": [
+			{"title": "Резонанс стихий", "effects": {"kill_explosion_chance": 0.04}, "lore": "Три стихии спорят, чья вспышка ярче — выигрывает Диск.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Око бури", "effects": {"lowhp_guard": 1.0}, "lore": "В сердце шторма всегда тихо — стой там.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"sniper": {
-		"title": "Прицел снайпера",
-		"attrs": ["crit_chance", "crit_damage", "range", "damage", "projectile_speed"],
-		"notables": [
-			{"title": "Спокойный выдох", "attrs": ["crit_chance", "crit_damage"]},
-			{"title": "Дальний рубеж", "attrs": ["range", "damage"]},
+		"core_title": "Холодный расчёт",
+		"attrs": ["crit_chance", "crit_damage", "range", "damage", "projectile_speed", "dodge"],
+		"techniques": [
+			{"title": "Спокойный выдох", "effects": {"crit_chance_flat": 0.004, "crit_damage_flat": 0.021}},
+			{"title": "Дальний рубеж", "effects": {"range_mult": 0.01, "damage_mult": 0.008}},
+			{"title": "Скоростная пуля", "effects": {"projectile_speed_flat": 7.0, "crit_chance_flat": 0.004}},
+			{"title": "Отход с позиции", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
-		"keystone": {"title": "Идеальный выстрел", "effects": {"crit_chance_flat": 0.050, "crit_damage_flat": 0.25, "range_mult": 0.100}},
+		"keystones": [
+			{"title": "Один выстрел", "effects": {"crit_damage_flat": 0.16, "damage_mult": 0.03, "attack_speed_mult": -0.04}},
+			{"title": "Свинцовый ветер", "effects": {"attack_speed_mult": 0.05, "projectile_speed_flat": 33.0, "crit_damage_flat": -0.12}},
+			{"title": "Гнездо ястреба", "effects": {"range_mult": 0.06, "crit_chance_flat": 0.02, "move_speed_mult": -0.06}},
+		],
+		"hidden": [
+			{"title": "Метка охотника", "effects": {"crit_speed_burst": 0.07}, "lore": "Секунда после идеального выстрела принадлежит только тебе.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Выше облаков", "effects": {"elite_boss_damage_mult": 0.04}, "lore": "С вершины возвышения любая цель как на ладони.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"priest": {
-		"title": "Священная печать",
-		"attrs": ["defense", "aura_radius", "buff_power", "max_health", "regeneration"],
-		"notables": [
-			{"title": "Мягкий хор", "attrs": ["aura_radius", "buff_power"]},
-			{"title": "Освящённый оплот", "attrs": ["defense", "regeneration"]},
+		"core_title": "Обет заступника",
+		"attrs": ["defense", "aura_radius", "buff_power", "max_health", "regeneration", "summon_amount"],
+		"techniques": [
+			{"title": "Мягкий хор", "effects": {"aura_radius_flat": 2.0, "buff_power_flat": 0.006}},
+			{"title": "Освящённый оплот", "effects": {"defense_flat": 0.004, "regeneration_flat": 0.023}},
+			{"title": "Глас утешения", "effects": {"max_health_mult": 0.008, "buff_power_flat": 0.006}},
+			{"title": "Свет на пределе", "effects": {"lowhp_regen_bonus": 0.16, "aura_radius_flat": 2.0}},
 		],
-		"keystone": {"title": "Хор искупления", "effects": {"vampiric_chance_flat": 0.070, "vampiric_amount_flat": 0.65, "aura_radius_mult": 0.100}},
+		"keystones": [
+			{"title": "Хор искупления", "effects": {"vampiric_chance_flat": 0.03, "vampiric_amount_flat": 0.6, "damage_mult": -0.04}},
+			{"title": "Щит веры", "effects": {"defense_flat": 0.027, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Глас гнева", "effects": {"damage_mult": 0.05, "buff_power_flat": 0.029, "defense_flat": -0.022}},
+		],
+		"hidden": [
+			{"title": "Чудо у алтаря", "effects": {"lowhp_guard": 1.0}, "lore": "Вера, проверенная разными реликвиями, отвечает в самый тёмный час.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Печать вершин", "effects": {"buff_power_flat": 0.016}, "lore": "Молитва, вознесённая на вершине, звучит громче.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"biologist": {
-		"title": "Живая гипотеза",
-		# SCRUM-807 QA-fix: aoe_radius не релевантен биологу (optional по ATTRIBUTE_RELEVANCE)
-		# → заменён на vampiric_amount (secondary; фантазия паразита/симбиоза).
-		"attrs": ["dot_damage", "dot_speed", "summon_amount", "vampiric_amount", "regeneration"],
-		"notables": [
-			{"title": "Споровый посев", "attrs": ["dot_damage", "dot_speed"]},
-			{"title": "Симбиоз", "attrs": ["summon_amount", "vampiric_amount"]},
+		"core_title": "Живая гипотеза",
+		"attrs": ["dot_damage", "dot_speed", "summon_amount", "vampiric_amount", "regeneration", "dodge"],
+		"techniques": [
+			{"title": "Споровый посев", "effects": {"dot_damage_flat": 0.21, "dot_speed_flat": 0.013}},
+			{"title": "Симбиоз", "effects": {"summon_bonus": 0.13, "vampiric_amount_flat": 0.1}},
+			{"title": "Культура штамма", "effects": {"regeneration_flat": 0.023, "dot_damage_flat": 0.21}},
+			{"title": "Защитная реакция", "effects": {"dodge_flat": 0.003, "thorn_reflect_multiplier": 0.04}},
 		],
-		"keystone": {"title": "Эпидемия", "effects": {"dot_damage_flat": 1.80, "dot_speed_flat": 0.16, "summon_bonus": 1.0}},
+		"keystones": [
+			{"title": "Пандемия", "effects": {"dot_damage_flat": 1.4, "dot_speed_flat": 0.06, "damage_mult": -0.04}},
+			{"title": "Симбионт", "effects": {"summon_bonus": 1.0, "vampiric_amount_flat": 0.4, "dot_speed_flat": -0.07}},
+			{"title": "Регенеративный цикл", "effects": {"regeneration_flat": 0.15, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+		],
+		"hidden": [
+			{"title": "Мутация", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждый погибший образец — питательная среда для нового.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Апекс-штамм", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Выживает не сильнейший, а тот, кто больнее огрызается.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"robot": {
-		"title": "Бронеконтур робота",
-		# SCRUM-807 QA-fix: defense не релевантна роботу (optional по ATTRIBUTE_RELEVANCE)
-		# → заменена на regeneration (secondary; фантазия самопочинки брони).
-		# defense_flat в keystone-е оставлен намеренно: keystone — build-defining узел,
-		# не атрибутный (правило релевантности к keystone-ам не применяется).
-		"attrs": ["max_health", "absorb", "pickup_radius", "regeneration", "ultimate_power"],
-		"notables": [
-			{"title": "Тёплый реактор", "attrs": ["ultimate_power", "absorb"]},
-			{"title": "Бронеплиты", "attrs": ["max_health", "regeneration"]},
+		"core_title": "Ядро реактора",
+		"attrs": ["max_health", "absorb", "pickup_radius", "regeneration", "ultimate_power", "crit_chance"],
+		"techniques": [
+			{"title": "Тёплый реактор", "effects": {"ultimate_flat": 0.011, "absorb_flat": 0.5}},
+			{"title": "Бронеплиты", "effects": {"max_health_mult": 0.008, "regeneration_flat": 0.023}},
+			{"title": "Магнитный захват", "effects": {"pickup_radius_flat": 5.0, "absorb_flat": 0.5}},
+			{"title": "Контур перегрузки", "effects": {"ult_charge_mult": 0.016, "crit_chance_flat": 0.004}},
 		],
-		"keystone": {"title": "Овердрайв", "effects": {"ult_charge_mult": 0.240, "ultimate_flat": 0.16, "defense_flat": 0.035}},
+		"keystones": [
+			{"title": "Овердрайв", "effects": {"ult_charge_mult": 0.11, "ultimate_flat": 0.05, "defense_flat": -0.022}},
+			{"title": "Осадный режим", "effects": {"absorb_flat": 3.0, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Протокол мести", "effects": {"take_hit_pulse_chance": 0.11, "thorn_reflect_multiplier": 0.18, "attack_speed_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Самопочинка", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Инженеры оставили в прошивке подарок на чёрный день.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Аварийный конденсатор", "effects": {"lowhp_guard": 1.0}, "lore": "Последний ватт всегда припасён на вершину.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"engineer": {
-		"title": "Мастерская инженера",
-		"attrs": ["summon_amount", "buff_power", "pickup_radius", "defense", "aura_radius"],
-		"notables": [
-			{"title": "Сборочный приказ", "attrs": ["summon_amount", "buff_power"]},
-			{"title": "Ремонтная сеть", "attrs": ["defense", "aura_radius"]},
+		"core_title": "Чертёж мастерской",
+		"attrs": ["summon_amount", "buff_power", "pickup_radius", "defense", "aura_radius", "projectile_speed"],
+		"techniques": [
+			{"title": "Сборочный приказ", "effects": {"summon_bonus": 0.13, "buff_power_flat": 0.006}},
+			{"title": "Ремонтная сеть", "effects": {"defense_flat": 0.004, "aura_radius_flat": 2.0}},
+			{"title": "Полевой конвейер", "effects": {"pickup_radius_flat": 5.0, "projectile_speed_flat": 7.0}},
+			{"title": "Шрапнельный заряд", "effects": {"kill_explosion_chance": 0.016, "summon_bonus": 0.13}},
 		],
-		"keystone": {"title": "Армия машин", "effects": {"summon_bonus": 2.0, "buff_power_flat": 0.060, "defense_flat": 0.020}},
+		"keystones": [
+			{"title": "Армия машин", "effects": {"summon_bonus": 1.1, "buff_power_flat": 0.022, "damage_mult": -0.04}},
+			{"title": "Крепость-мастерская", "effects": {"defense_flat": 0.027, "aura_radius_flat": 9.0, "move_speed_mult": -0.06}},
+			{"title": "Перегретые стволы", "effects": {"projectile_speed_flat": 33.0, "attack_speed_mult": 0.05, "defense_flat": -0.022}},
+		],
+		"hidden": [
+			{"title": "Запасная схема", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Хорошая турель собирается из того, что било по тебе.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Патент вершины", "effects": {"buff_power_flat": 0.016}, "lore": "Лучшие чертежи рождаются в разреженном воздухе.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"dark_mage": {
-		"title": "Тёмная формула",
-		"attrs": ["damage", "dot_damage", "aoe_radius", "dot_speed", "crit_damage"],
-		"notables": [
-			{"title": "Тонкая завеса", "attrs": ["damage", "dot_damage"]},
-			{"title": "Распад", "attrs": ["aoe_radius", "dot_speed"]},
+		"core_title": "Серп заката",
+		"attrs": ["dot_damage", "damage", "aoe_radius", "dot_speed", "crit_damage", "summon_amount"],
+		"techniques": [
+			{"title": "Тонкая завеса", "effects": {"damage_mult": 0.008, "dot_damage_flat": 0.21}},
+			{"title": "Распад", "effects": {"aoe_radius_mult": 0.013, "dot_speed_flat": 0.013}},
+			{"title": "Жатва теней", "effects": {"crit_damage_flat": 0.021, "dot_damage_flat": 0.21}},
+			{"title": "Тёмный пакт", "effects": {"low_hp_damage_bonus": 0.03, "summon_bonus": 0.13}},
 		],
-		"keystone": {"title": "Запретное знание", "effects": {"damage_mult": 0.140, "max_health_mult": -0.080, "dot_damage_flat": 1.20}},
+		"keystones": [
+			{"title": "Запретное знание", "effects": {"damage_mult": 0.07, "crit_damage_flat": 0.06, "max_health_mult": -0.04}},
+			{"title": "Гниль", "effects": {"dot_damage_flat": 1.4, "aoe_radius_mult": 0.06, "damage_mult": -0.04}},
+			{"title": "Договор пустоты", "effects": {"summon_bonus": 0.9, "low_hp_damage_bonus": 0.14, "healing_mult": -0.3}},
+		],
+		"hidden": [
+			{"title": "Шёпот гримуара", "effects": {"kill_explosion_chance": 0.04}, "lore": "Каждая душа дочитывает за тебя одну строку заклятия.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Полночь без дна", "effects": {"low_hp_damage_bonus": 0.08}, "lore": "На краю гибели луна светит ярче всего.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"guitarist": {
-		"title": "Сценический контракт",
-		"attrs": ["attack_speed", "knockback", "ultimate_power", "buff_power", "aura_radius"],
-		"notables": [
-			{"title": "Резонанс зала", "attrs": ["buff_power", "aura_radius"]},
-			{"title": "Ритм-секция", "attrs": ["attack_speed", "knockback"]},
+		"core_title": "Первый аккорд",
+		"attrs": ["attack_speed", "knockback", "ultimate_power", "buff_power", "aura_radius", "dodge"],
+		"techniques": [
+			{"title": "Резонанс зала", "effects": {"buff_power_flat": 0.006, "aura_radius_flat": 2.0}},
+			{"title": "Ритм-секция", "effects": {"attack_speed_mult": 0.008, "knockback_mult": 0.02}},
+			{"title": "Соло на бис", "effects": {"ultimate_flat": 0.011, "ult_charge_mult": 0.016}},
+			{"title": "Сценический кураж", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
-		"keystone": {"title": "Крещендо", "effects": {"buff_power_flat": 0.080, "aura_radius_mult": 0.140, "knockback_mult": 0.100}},
+		"keystones": [
+			{"title": "Крещендо", "effects": {"buff_power_flat": 0.04, "aura_radius_flat": 11.0, "damage_mult": -0.04}},
+			{"title": "Пауэр-аккорд", "effects": {"knockback_mult": 0.09, "damage_mult": 0.05, "buff_power_flat": -0.04}},
+			{"title": "Фронтмен", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "max_health_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Бродячий сет-лист", "effects": {"crit_speed_burst": 0.07}, "lore": "Публика помнит того, кто сыграл на всём, что звучит.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Хедлайнер вершины", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Чем выше сцена, тем громче отдача.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"assassin": {
-		"title": "Тень ассасина",
-		"attrs": ["crit_damage", "dodge", "vampiric_chance", "move_speed", "crit_chance"],
-		"notables": [
-			{"title": "Тихий выпад", "attrs": ["crit_damage", "crit_chance"]},
-			{"title": "Скользящая тень", "attrs": ["dodge", "move_speed"]},
+		"core_title": "Клинок-полумесяц",
+		"attrs": ["crit_damage", "dodge", "vampiric_chance", "move_speed", "crit_chance", "attack_speed"],
+		"techniques": [
+			{"title": "Тихий выпад", "effects": {"crit_damage_flat": 0.021, "crit_chance_flat": 0.004}},
+			{"title": "Скользящая тень", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
+			{"title": "Кровь на лезвии", "effects": {"vampiric_chance_flat": 0.006, "crit_damage_flat": 0.021}},
+			{"title": "Танец клинков", "effects": {"attack_speed_mult": 0.008, "dodge_rush_bonus": 0.027}},
 		],
-		"keystone": {"title": "Из тени", "effects": {"crit_damage_flat": 0.32, "crit_chance_flat": 0.035, "move_speed_mult": 0.060}},
+		"keystones": [
+			{"title": "Из тени", "effects": {"crit_damage_flat": 0.17, "move_speed_mult": 0.03, "max_health_mult": -0.04}},
+			{"title": "Тысяча порезов", "effects": {"attack_speed_mult": 0.05, "vampiric_chance_flat": 0.026, "crit_damage_flat": -0.12}},
+			{"title": "Призрачный шаг", "effects": {"dodge_flat": 0.018, "dodge_rush_bonus": 0.12, "damage_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Контракт гильдии", "effects": {"crit_speed_burst": 0.07}, "lore": "Мастеру всё равно, чем убивать, — важно, что после этого тихо.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Тень на вершине", "effects": {"dodge_rush_bonus": 0.07}, "lore": "Выше всех забирается тот, кого никто не видел в пути.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"ranger": {
-		"title": "След рейнджера",
-		"attrs": ["range", "move_speed", "projectile_speed", "damage", "crit_chance"],
-		"notables": [
-			{"title": "Натянутая тетива", "attrs": ["range", "damage"]},
-			{"title": "Ветер охоты", "attrs": ["move_speed", "projectile_speed"]},
+		"core_title": "След стрелы",
+		"attrs": ["range", "move_speed", "projectile_speed", "damage", "crit_chance", "dodge"],
+		"techniques": [
+			{"title": "Натянутая тетива", "effects": {"range_mult": 0.01, "damage_mult": 0.008}},
+			{"title": "Ветер охоты", "effects": {"move_speed_mult": 0.01, "projectile_speed_flat": 7.0}},
+			{"title": "Меткий глаз", "effects": {"crit_chance_flat": 0.004, "range_mult": 0.01}},
+			{"title": "Уход в кусты", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
-		"keystone": {"title": "Град стрел", "effects": {"attack_speed_mult": 0.060, "range_mult": 0.060, "aoe_radius_mult": 0.050}},
+		"keystones": [
+			{"title": "Град стрел", "effects": {"attack_speed_mult": 0.05, "aoe_radius_mult": 0.06, "range_mult": -0.06}},
+			{"title": "Выстрел навылет", "effects": {"damage_mult": 0.05, "projectile_speed_flat": 33.0, "attack_speed_mult": -0.04}},
+			{"title": "Хозяин тропы", "effects": {"move_speed_mult": 0.06, "crit_chance_flat": 0.022, "max_health_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Следопыт арсенала", "effects": {"crit_speed_burst": 0.07}, "lore": "Хороший охотник читает след любым оружием.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Гнездо на скале", "effects": {"dodge_rush_bonus": 0.07}, "lore": "На высоте промахиваются только те, кто смотрит вниз.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"doctor": {
-		"title": "Полевой трактат",
-		"attrs": ["regeneration", "vampiric_amount", "vampiric_chance", "max_health", "buff_power"],
-		"notables": [
-			{"title": "Срочная перевязка", "attrs": ["regeneration", "max_health"]},
-			{"title": "Переливание", "attrs": ["vampiric_amount", "vampiric_chance"]},
+		"core_title": "Клятва полевого врача",
+		"attrs": ["regeneration", "vampiric_amount", "vampiric_chance", "max_health", "buff_power", "attack_speed"],
+		"techniques": [
+			{"title": "Срочная перевязка", "effects": {"regeneration_flat": 0.023, "max_health_mult": 0.008}},
+			{"title": "Переливание", "effects": {"vampiric_amount_flat": 0.1, "vampiric_chance_flat": 0.006}},
+			{"title": "Стимулятор", "effects": {"attack_speed_mult": 0.008, "buff_power_flat": 0.006}},
+			{"title": "Реанимация", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
 		],
-		"keystone": {"title": "Триаж", "effects": {"regeneration_flat": 0.22, "max_health_mult": 0.060, "vampiric_chance_flat": 0.040}},
+		"keystones": [
+			{"title": "Триаж", "effects": {"regeneration_flat": 0.15, "max_health_mult": 0.04, "damage_mult": -0.04}},
+			{"title": "Полевая хирургия", "effects": {"vampiric_amount_flat": 0.6, "vampiric_chance_flat": 0.03, "move_speed_mult": -0.06}},
+			{"title": "Доза адреналина", "effects": {"attack_speed_mult": 0.05, "buff_power_flat": 0.029, "healing_mult": -0.3}},
+		],
+		"hidden": [
+			{"title": "Протокол спасения", "effects": {"lowhp_guard": 1.0}, "lore": "Врач, освоивший весь инструментарий, не даст умереть и себе.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Горный госпиталь", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Чем выше поднимаешься, тем ценнее каждый вдох.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"chemist": {
-		"title": "Алхимический обмен",
-		"attrs": ["aoe_radius", "dot_speed", "dot_damage", "damage", "range"],
-		"notables": [
-			{"title": "Едкий ускоритель", "attrs": ["dot_speed", "dot_damage"]},
-			{"title": "Цепная реакция", "attrs": ["aoe_radius", "damage"]},
+		"core_title": "Реторта истины",
+		"attrs": ["aoe_radius", "dot_speed", "dot_damage", "damage", "range", "move_speed"],
+		"techniques": [
+			{"title": "Едкий ускоритель", "effects": {"dot_speed_flat": 0.013, "dot_damage_flat": 0.21}},
+			{"title": "Цепная реакция", "effects": {"aoe_radius_mult": 0.013, "damage_mult": 0.008}},
+			{"title": "Летучая фракция", "effects": {"move_speed_mult": 0.01, "range_mult": 0.01}},
+			{"title": "Нестабильная смесь", "effects": {"kill_explosion_chance": 0.016, "dot_damage_flat": 0.21}},
 		],
-		"keystone": {"title": "Каталитический распад", "effects": {"dot_damage_flat": 2.20, "dot_speed_flat": 0.20, "aoe_radius_mult": 0.060}},
+		"keystones": [
+			{"title": "Каталитический распад", "effects": {"dot_damage_flat": 1.3, "dot_speed_flat": 0.07, "damage_mult": -0.04}},
+			{"title": "Гремучая колба", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "dot_damage_flat": -1.2}},
+			{"title": "Пары эфира", "effects": {"move_speed_mult": 0.06, "dodge_flat": 0.015, "max_health_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Побочный продукт", "effects": {"kill_explosion_chance": 0.04}, "lore": "Настоящая наука начинается со слов «а что, если смешать всё».", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Формула высот", "effects": {"dot_damage_flat": 0.5}, "lore": "Разреженный воздух — лучший катализатор.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"knight": {
-		"title": "Клятва рыцаря",
-		"attrs": ["max_health", "defense", "absorb", "aura_radius", "buff_power"],
-		"notables": [
-			{"title": "Щитовая выучка", "attrs": ["defense", "absorb"]},
-			{"title": "Несокрушимый оплот", "attrs": ["max_health", "buff_power"]},
+		"core_title": "Клятва щита",
+		"attrs": ["max_health", "defense", "absorb", "aura_radius", "buff_power", "damage"],
+		"techniques": [
+			{"title": "Щитовая выучка", "effects": {"defense_flat": 0.004, "absorb_flat": 0.5}},
+			{"title": "Несокрушимый оплот", "effects": {"max_health_mult": 0.008, "buff_power_flat": 0.006}},
+			{"title": "Ответный удар", "effects": {"thorn_reflect_multiplier": 0.04, "damage_mult": 0.008}},
+			{"title": "Знамя рыцаря", "effects": {"aura_radius_flat": 2.0, "buff_power_flat": 0.006}},
 		],
-		"keystone": {"title": "Несокрушимый", "effects": {"defense_flat": 0.065, "max_health_mult": 0.120, "attack_speed_mult": -0.060}},
+		"keystones": [
+			{"title": "Бастион", "effects": {"defense_flat": 0.025, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Марш легиона", "effects": {"damage_mult": 0.05, "move_speed_mult": 0.04, "defense_flat": -0.022}},
+			{"title": "Шипастый панцирь", "effects": {"thorn_reflect_multiplier": 0.27, "take_hit_pulse_chance": 0.07, "attack_speed_mult": -0.04}},
+		],
+		"hidden": [
+			{"title": "Обет турнира", "effects": {"take_hit_pulse_chance": 0.04}, "lore": "Рыцарь, сменивший копьё на меч и молот, страшен в любом строю.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Страж перевала", "effects": {"lowhp_guard": 1.0}, "lore": "Тот, кто держал перевал, знает цену последнему рубежу.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 	"druid": {
-		"title": "Корни друида",
-		"attrs": ["aura_radius", "summon_amount", "regeneration", "buff_power", "dot_damage"],
-		"notables": [
-			{"title": "Голос чащи", "attrs": ["aura_radius", "summon_amount"]},
-			{"title": "Корни жизни", "attrs": ["regeneration", "buff_power"]},
+		"core_title": "Корень мира",
+		"attrs": ["aura_radius", "summon_amount", "regeneration", "buff_power", "dot_damage", "crit_chance"],
+		"techniques": [
+			{"title": "Голос чащи", "effects": {"aura_radius_flat": 2.0, "summon_bonus": 0.13}},
+			{"title": "Корни жизни", "effects": {"regeneration_flat": 0.023, "buff_power_flat": 0.006}},
+			{"title": "Терновый покров", "effects": {"thorn_reflect_multiplier": 0.04, "dot_damage_flat": 0.21}},
+			{"title": "Зов стаи", "effects": {"summon_bonus": 0.13, "crit_chance_flat": 0.004}},
 		],
-		"keystone": {"title": "Зов стаи", "effects": {"summon_bonus": 1.0, "aura_radius_mult": 0.120, "buff_power_flat": 0.050}},
+		"keystones": [
+			{"title": "Вожак стаи", "effects": {"summon_bonus": 1.1, "aura_radius_flat": 7.0, "damage_mult": -0.04}},
+			{"title": "Дикий рост", "effects": {"regeneration_flat": 0.13, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
+			{"title": "Гнев леса", "effects": {"dot_damage_flat": 1.4, "thorn_reflect_multiplier": 0.18, "regeneration_flat": -0.13}},
+		],
+		"hidden": [
+			{"title": "Перекличка леса", "effects": {"thorn_reflect_multiplier": 0.1}, "lore": "Лес отвечает тем голосом, каким к нему обращаются.", "metric": "weapon_diversity", "threshold": 2},
+			{"title": "Древо на скале", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Корни, проросшие сквозь камень вершины, не вырвать ничем.", "metric": "best_ascension", "threshold": 2},
+		],
 	},
 }
 
-# Геометрия классовой ветви (локальные смещения узлов от точки входа, в осях
-# лепестка dir/tangent). Держим в пределах мирового холста (radius <= ~1090).
-const CLASS_ENTRY_RADIUS := 680.0
-const CLASS_NODE_LAYOUT := [
-	{"key": "a0", "u": 58.0, "v": -46.0},
-	{"key": "a1", "u": 58.0, "v": 46.0},
-	{"key": "n0", "u": 128.0, "v": 0.0},
-	{"key": "a2", "u": 196.0, "v": -52.0},
-	{"key": "a3", "u": 196.0, "v": 52.0},
-	{"key": "n1", "u": 268.0, "v": 0.0},
-	{"key": "a4", "u": 338.0, "v": 0.0},
-	{"key": "key", "u": 408.0, "v": 0.0},
+const CONSTELLATION_LAYOUT := {
+	"berserk": [Vector2(0.500, 0.560), Vector2(0.425, 0.456), Vector2(0.353, 0.374), Vector2(0.270, 0.304), Vector2(0.180, 0.240), Vector2(0.575, 0.456), Vector2(0.647, 0.374), Vector2(0.730, 0.304), Vector2(0.820, 0.240), Vector2(0.500, 0.431), Vector2(0.500, 0.321), Vector2(0.500, 0.210), Vector2(0.500, 0.102), Vector2(0.500, 0.661), Vector2(0.500, 0.747), Vector2(0.500, 0.834), Vector2(0.500, 0.920), Vector2(0.081, 0.141), Vector2(0.919, 0.141), Vector2(0.500, 0.050), Vector2(0.726, 0.437), Vector2(0.400, 0.747)],
+	"soldier": [Vector2(0.500, 0.400), Vector2(0.417, 0.523), Vector2(0.336, 0.619), Vector2(0.242, 0.704), Vector2(0.140, 0.780), Vector2(0.583, 0.523), Vector2(0.664, 0.619), Vector2(0.758, 0.704), Vector2(0.860, 0.780), Vector2(0.500, 0.310), Vector2(0.500, 0.234), Vector2(0.500, 0.157), Vector2(0.500, 0.102), Vector2(0.500, 0.546), Vector2(0.500, 0.670), Vector2(0.500, 0.795), Vector2(0.500, 0.920), Vector2(0.050, 0.882), Vector2(0.950, 0.882), Vector2(0.500, 0.050), Vector2(0.584, 0.679), Vector2(0.400, 0.670)],
+	"thief": [Vector2(0.440, 0.580), Vector2(0.440, 0.440), Vector2(0.440, 0.320), Vector2(0.440, 0.200), Vector2(0.440, 0.102), Vector2(0.355, 0.633), Vector2(0.286, 0.683), Vector2(0.221, 0.740), Vector2(0.160, 0.800), Vector2(0.525, 0.633), Vector2(0.594, 0.683), Vector2(0.659, 0.740), Vector2(0.720, 0.800), Vector2(0.572, 0.530), Vector2(0.681, 0.477), Vector2(0.783, 0.413), Vector2(0.880, 0.340), Vector2(0.440, 0.050), Vector2(0.050, 0.886), Vector2(0.830, 0.886), Vector2(0.230, 0.600), Vector2(0.720, 0.569)],
+	"elementalist": [Vector2(0.500, 0.560), Vector2(0.522, 0.426), Vector2(0.529, 0.310), Vector2(0.520, 0.195), Vector2(0.500, 0.102), Vector2(0.408, 0.641), Vector2(0.325, 0.703), Vector2(0.235, 0.755), Vector2(0.140, 0.800), Vector2(0.592, 0.641), Vector2(0.675, 0.703), Vector2(0.765, 0.755), Vector2(0.860, 0.800), Vector2(0.500, 0.661), Vector2(0.500, 0.747), Vector2(0.500, 0.834), Vector2(0.500, 0.920), Vector2(0.500, 0.050), Vector2(0.050, 0.878), Vector2(0.950, 0.878), Vector2(0.262, 0.625), Vector2(0.400, 0.747)],
+	"sniper": [Vector2(0.500, 0.500), Vector2(0.515, 0.388), Vector2(0.520, 0.292), Vector2(0.514, 0.196), Vector2(0.500, 0.102), Vector2(0.612, 0.515), Vector2(0.708, 0.520), Vector2(0.804, 0.514), Vector2(0.898, 0.500), Vector2(0.485, 0.612), Vector2(0.480, 0.708), Vector2(0.486, 0.804), Vector2(0.500, 0.898), Vector2(0.388, 0.485), Vector2(0.292, 0.480), Vector2(0.196, 0.486), Vector2(0.100, 0.500), Vector2(0.500, 0.050), Vector2(0.950, 0.500), Vector2(0.500, 0.950), Vector2(0.698, 0.620), Vector2(0.302, 0.380)],
+	"priest": [Vector2(0.500, 0.520), Vector2(0.517, 0.397), Vector2(0.522, 0.291), Vector2(0.515, 0.186), Vector2(0.500, 0.102), Vector2(0.595, 0.573), Vector2(0.680, 0.611), Vector2(0.769, 0.639), Vector2(0.860, 0.660), Vector2(0.394, 0.545), Vector2(0.306, 0.575), Vector2(0.222, 0.614), Vector2(0.140, 0.660), Vector2(0.500, 0.638), Vector2(0.500, 0.738), Vector2(0.500, 0.839), Vector2(0.500, 0.940), Vector2(0.500, 0.050), Vector2(0.950, 0.711), Vector2(0.050, 0.711), Vector2(0.635, 0.700), Vector2(0.400, 0.738)],
+	"biologist": [Vector2(0.500, 0.520), Vector2(0.455, 0.390), Vector2(0.401, 0.289), Vector2(0.327, 0.200), Vector2(0.240, 0.120), Vector2(0.545, 0.390), Vector2(0.599, 0.289), Vector2(0.673, 0.200), Vector2(0.760, 0.120), Vector2(0.454, 0.644), Vector2(0.399, 0.741), Vector2(0.326, 0.825), Vector2(0.240, 0.900), Vector2(0.546, 0.644), Vector2(0.601, 0.741), Vector2(0.674, 0.825), Vector2(0.760, 0.900), Vector2(0.164, 0.050), Vector2(0.836, 0.050), Vector2(0.161, 0.950), Vector2(0.691, 0.328), Vector2(0.510, 0.783)],
+	"robot": [Vector2(0.500, 0.500), Vector2(0.500, 0.382), Vector2(0.500, 0.282), Vector2(0.500, 0.181), Vector2(0.500, 0.102), Vector2(0.389, 0.545), Vector2(0.300, 0.593), Vector2(0.217, 0.652), Vector2(0.140, 0.720), Vector2(0.611, 0.545), Vector2(0.700, 0.593), Vector2(0.783, 0.652), Vector2(0.860, 0.720), Vector2(0.500, 0.618), Vector2(0.500, 0.718), Vector2(0.500, 0.819), Vector2(0.500, 0.920), Vector2(0.500, 0.050), Vector2(0.050, 0.793), Vector2(0.950, 0.793), Vector2(0.258, 0.502), Vector2(0.400, 0.718)],
+	"engineer": [Vector2(0.500, 0.500), Vector2(0.430, 0.402), Vector2(0.362, 0.326), Vector2(0.284, 0.260), Vector2(0.200, 0.200), Vector2(0.570, 0.402), Vector2(0.638, 0.326), Vector2(0.716, 0.260), Vector2(0.800, 0.200), Vector2(0.430, 0.598), Vector2(0.362, 0.674), Vector2(0.284, 0.740), Vector2(0.200, 0.800), Vector2(0.570, 0.598), Vector2(0.638, 0.674), Vector2(0.716, 0.740), Vector2(0.800, 0.800), Vector2(0.101, 0.101), Vector2(0.899, 0.101), Vector2(0.101, 0.899), Vector2(0.716, 0.388), Vector2(0.560, 0.736)],
+	"dark_mage": [Vector2(0.560, 0.500), Vector2(0.467, 0.408), Vector2(0.398, 0.321), Vector2(0.344, 0.224), Vector2(0.300, 0.120), Vector2(0.437, 0.531), Vector2(0.331, 0.540), Vector2(0.226, 0.527), Vector2(0.120, 0.500), Vector2(0.508, 0.620), Vector2(0.451, 0.716), Vector2(0.381, 0.801), Vector2(0.300, 0.880), Vector2(0.650, 0.510), Vector2(0.726, 0.513), Vector2(0.803, 0.509), Vector2(0.880, 0.500), Vector2(0.221, 0.050), Vector2(0.050, 0.500), Vector2(0.221, 0.950), Vector2(0.314, 0.441), Vector2(0.719, 0.612)],
+	"guitarist": [Vector2(0.360, 0.660), Vector2(0.365, 0.501), Vector2(0.357, 0.366), Vector2(0.334, 0.232), Vector2(0.300, 0.100), Vector2(0.457, 0.536), Vector2(0.530, 0.424), Vector2(0.589, 0.305), Vector2(0.640, 0.180), Vector2(0.315, 0.733), Vector2(0.277, 0.795), Vector2(0.238, 0.858), Vector2(0.200, 0.920), Vector2(0.459, 0.632), Vector2(0.545, 0.614), Vector2(0.632, 0.605), Vector2(0.720, 0.600), Vector2(0.285, 0.050), Vector2(0.711, 0.059), Vector2(0.127, 0.950), Vector2(0.611, 0.483), Vector2(0.569, 0.712)],
+	"assassin": [Vector2(0.420, 0.560), Vector2(0.348, 0.440), Vector2(0.299, 0.332), Vector2(0.264, 0.218), Vector2(0.240, 0.100), Vector2(0.490, 0.420), Vector2(0.567, 0.316), Vector2(0.666, 0.231), Vector2(0.780, 0.160), Vector2(0.547, 0.550), Vector2(0.654, 0.556), Vector2(0.758, 0.582), Vector2(0.860, 0.620), Vector2(0.373, 0.656), Vector2(0.340, 0.741), Vector2(0.316, 0.829), Vector2(0.300, 0.920), Vector2(0.189, 0.050), Vector2(0.874, 0.056), Vector2(0.950, 0.639), Vector2(0.653, 0.368), Vector2(0.248, 0.701)],
+	"ranger": [Vector2(0.460, 0.520), Vector2(0.460, 0.391), Vector2(0.460, 0.281), Vector2(0.460, 0.170), Vector2(0.460, 0.102), Vector2(0.349, 0.550), Vector2(0.263, 0.590), Vector2(0.188, 0.649), Vector2(0.120, 0.720), Vector2(0.540, 0.602), Vector2(0.617, 0.658), Vector2(0.705, 0.695), Vector2(0.800, 0.720), Vector2(0.572, 0.419), Vector2(0.668, 0.333), Vector2(0.764, 0.246), Vector2(0.860, 0.160), Vector2(0.460, 0.050), Vector2(0.050, 0.791), Vector2(0.921, 0.791), Vector2(0.230, 0.496), Vector2(0.735, 0.407)],
+	"doctor": [Vector2(0.500, 0.500), Vector2(0.500, 0.382), Vector2(0.500, 0.282), Vector2(0.500, 0.181), Vector2(0.500, 0.102), Vector2(0.606, 0.500), Vector2(0.698, 0.500), Vector2(0.789, 0.500), Vector2(0.880, 0.500), Vector2(0.500, 0.618), Vector2(0.500, 0.718), Vector2(0.500, 0.819), Vector2(0.500, 0.898), Vector2(0.394, 0.500), Vector2(0.302, 0.500), Vector2(0.211, 0.500), Vector2(0.120, 0.500), Vector2(0.500, 0.050), Vector2(0.950, 0.500), Vector2(0.500, 0.950), Vector2(0.698, 0.600), Vector2(0.302, 0.400)],
+	"chemist": [Vector2(0.500, 0.360), Vector2(0.455, 0.287), Vector2(0.417, 0.225), Vector2(0.378, 0.162), Vector2(0.340, 0.100), Vector2(0.545, 0.287), Vector2(0.583, 0.225), Vector2(0.622, 0.162), Vector2(0.660, 0.100), Vector2(0.443, 0.516), Vector2(0.379, 0.641), Vector2(0.296, 0.754), Vector2(0.200, 0.860), Vector2(0.557, 0.516), Vector2(0.621, 0.641), Vector2(0.704, 0.754), Vector2(0.800, 0.860), Vector2(0.267, 0.050), Vector2(0.733, 0.050), Vector2(0.128, 0.950), Vector2(0.668, 0.277), Vector2(0.529, 0.681)],
+	"knight": [Vector2(0.500, 0.440), Vector2(0.396, 0.391), Vector2(0.312, 0.343), Vector2(0.234, 0.284), Vector2(0.160, 0.220), Vector2(0.604, 0.391), Vector2(0.688, 0.343), Vector2(0.766, 0.284), Vector2(0.840, 0.220), Vector2(0.500, 0.580), Vector2(0.500, 0.700), Vector2(0.500, 0.820), Vector2(0.500, 0.898), Vector2(0.500, 0.345), Vector2(0.500, 0.263), Vector2(0.500, 0.182), Vector2(0.500, 0.100), Vector2(0.050, 0.144), Vector2(0.950, 0.144), Vector2(0.500, 0.950), Vector2(0.734, 0.431), Vector2(0.600, 0.263)],
+	"druid": [Vector2(0.500, 0.620), Vector2(0.432, 0.491), Vector2(0.365, 0.387), Vector2(0.286, 0.291), Vector2(0.200, 0.200), Vector2(0.500, 0.469), Vector2(0.500, 0.339), Vector2(0.500, 0.210), Vector2(0.500, 0.102), Vector2(0.568, 0.491), Vector2(0.635, 0.387), Vector2(0.714, 0.291), Vector2(0.800, 0.200), Vector2(0.500, 0.710), Vector2(0.500, 0.786), Vector2(0.500, 0.863), Vector2(0.500, 0.940), Vector2(0.119, 0.086), Vector2(0.500, 0.050), Vector2(0.881, 0.086), Vector2(0.600, 0.339), Vector2(0.400, 0.786)],
+}
+
+# --- «Атлас гильдии»: общий QoL-слой (валюта — звёздная пыль) ---
+# 24 узла: хаб 0-cost + 13 минорных (cost 2) + 4 notable (cost 3) + 4 наследных
+# keystone v2 (cost 5: death_save/guaranteed_rare_shop/first_levelup_rare/
+# ult_start_charge — их боевой вклад заперт тестом аккаунт-множителя <1.30) +
+# 2 скрытых узла (кодекс-вехи и секретный босс «зажигают» их без покупки).
+# Полная стоимость ~58 пыли при потолке заработка 50 — «всё не купить».
+const ATLAS_NODES := [
+	{"id": "atlas_hub", "role": "core", "cost": 0, "title": "Зал гильдии", "desc": "Сердце Атласа гильдии. Открыт всем героям.", "effects": {}, "npos": Vector2(0.5, 0.5), "adj": ["atlas_m0", "atlas_m2", "atlas_m4", "atlas_m6", "atlas_m8", "atlas_m10", "atlas_m11", "atlas_m13"]},
+	# Ветвь «Казна» (северо-запад): золото и стартовый капитал.
+	{"id": "atlas_m0", "role": "minor", "cost": 2, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
+	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
+	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
+	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},
+	{"id": "atlas_n0", "role": "notable", "cost": 3, "title": "Золотая жила", "effects": {"money_gain_mult": 0.03, "start_gold_flat": 5.0}, "npos": Vector2(0.26, 0.14), "adj": ["atlas_m1", "atlas_m3", "atlas_k0"]},
+	{"id": "atlas_k0", "role": "keystone", "cost": 5, "title": "Связи в гильдии", "effects": {"guaranteed_rare_shop": 1.0, "start_gold_flat": 15.0}, "npos": Vector2(0.12, 0.08), "adj": ["atlas_n0"]},
+	# Ветвь «Лавка» (северо-восток): скидки лавки и докачки.
+	{"id": "atlas_m4", "role": "minor", "cost": 2, "title": "Скидка по знакомству", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.62, 0.38), "adj": ["atlas_hub", "atlas_m5"]},
+	{"id": "atlas_m5", "role": "minor", "cost": 2, "title": "Оптовые цены", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.72, 0.28), "adj": ["atlas_m4", "atlas_n1"]},
+	{"id": "atlas_m6", "role": "minor", "cost": 2, "title": "Тренировочный зал", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.54, 0.30), "adj": ["atlas_hub", "atlas_m7"]},
+	{"id": "atlas_m7", "role": "minor", "cost": 2, "title": "Наставники гильдии", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.60, 0.19), "adj": ["atlas_m6", "atlas_n1"]},
+	{"id": "atlas_n1", "role": "notable", "cost": 3, "title": "Штатный интендант", "effects": {"shop_price_mult": -0.02, "attr_cost_mult": -0.02}, "npos": Vector2(0.74, 0.14), "adj": ["atlas_m5", "atlas_m7", "atlas_k1"]},
+	{"id": "atlas_k1", "role": "keystone", "cost": 5, "title": "Озарение", "effects": {"first_levelup_rare": 1.0}, "npos": Vector2(0.88, 0.08), "adj": ["atlas_n1"]},
+	# Ветвь «Знание» (юго-запад): опыт, кругозор, ульта-раж.
+	{"id": "atlas_m8", "role": "minor", "cost": 2, "title": "Хроники походов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.38, 0.62), "adj": ["atlas_hub", "atlas_m9"]},
+	{"id": "atlas_m9", "role": "minor", "cost": 2, "title": "Разбор полётов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.28, 0.72), "adj": ["atlas_m8", "atlas_n2", "atlas_h0"]},
+	{"id": "atlas_m10", "role": "minor", "cost": 2, "title": "Полевые заметки", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.46, 0.70), "adj": ["atlas_hub", "atlas_n2"]},
+	{"id": "atlas_n2", "role": "notable", "cost": 3, "title": "Кругозор", "effects": {"attr_extra_options": 1.0}, "npos": Vector2(0.34, 0.84), "adj": ["atlas_m9", "atlas_m10", "atlas_k2"]},
+	{"id": "atlas_k2", "role": "keystone", "cost": 5, "title": "Боевой раж", "effects": {"ult_start_charge": 0.5}, "npos": Vector2(0.18, 0.92), "adj": ["atlas_n2"]},
+	{"id": "atlas_h0", "role": "hidden", "cost": 0, "title": "Архив гильдии", "effects": {"money_gain_mult": 0.03}, "npos": Vector2(0.16, 0.62), "adj": ["atlas_m9"], "metric": "codex_milestones", "threshold": 4, "lore": "Полки архива пополняются трофеями всех походов гильдии."},
+	# Ветвь «Дорога» (юго-восток): подбор, аптека, вторая жизнь.
+	{"id": "atlas_m11", "role": "minor", "cost": 2, "title": "Цепкие руки", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.62, 0.62), "adj": ["atlas_hub", "atlas_m12"]},
+	{"id": "atlas_m12", "role": "minor", "cost": 2, "title": "Длинный шаг", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.72, 0.72), "adj": ["atlas_m11", "atlas_n3", "atlas_h1"]},
+	{"id": "atlas_m13", "role": "minor", "cost": 2, "title": "Походная аптека", "effects": {"healing_mult": 0.04}, "npos": Vector2(0.54, 0.70), "adj": ["atlas_hub", "atlas_n3"]},
+	{"id": "atlas_n3", "role": "notable", "cost": 3, "title": "Страховой взнос", "effects": {"pickup_radius_flat": 8.0, "healing_mult": 0.03}, "npos": Vector2(0.66, 0.84), "adj": ["atlas_m12", "atlas_m13", "atlas_k3"]},
+	{"id": "atlas_k3", "role": "keystone", "cost": 5, "title": "Вторая жизнь", "effects": {"death_save": 1.0}, "npos": Vector2(0.82, 0.92), "adj": ["atlas_n3"]},
+	{"id": "atlas_h1", "role": "hidden", "cost": 0, "title": "Трофей разлома", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.84, 0.62), "adj": ["atlas_m12"], "metric": "secret_boss", "threshold": 1, "lore": "Осколок сущности секретного босса оплачивает любые долги гильдии."},
 ]
+
+# --- Геометрия старого экрана (SCRUM-698 canvas): созвездия на кольце, Атлас в центре ---
+const RING_RADIUS := 760.0
+const CONSTELLATION_SCALE := 470.0
+const ATLAS_SCALE := 620.0
+
+# Стоимости по ролям (созвездие: §3 дизайна; Атлас: §2).
+const ROLE_COSTS := {"core": 0, "minor": 1, "technique": 2, "keystone": 4, "hidden": 0}
+# kind для старого экрана (арт/размер узла): core→entry, technique→notable.
+const ROLE_KINDS := {"core": "entry", "minor": "minor", "notable": "notable", "technique": "notable", "keystone": "keystone", "hidden": "hidden"}
 
 
 static func _fmt(x: float) -> String:
@@ -282,10 +555,12 @@ static func _fmt(x: float) -> String:
 		return str(int(roundf(x)))
 	if is_equal_approx(x, snappedf(x, 0.1)):
 		return "%.1f" % snappedf(x, 0.1)
-	return "%.2f" % x
+	if is_equal_approx(x, snappedf(x, 0.01)):
+		return "%.2f" % snappedf(x, 0.01)
+	return "%.3f" % x
 
 
-# Один эффект → человекочитаемый фрагмент с числом («+3% к урону», «+0.8 периодического урона»).
+# Один эффект → человекочитаемый фрагмент с числом («+0.8% к урону»).
 static func _effect_fragment(key: String, value: float) -> String:
 	var label: Dictionary = EFFECT_LABELS.get(key, {})
 	var ru := str(label.get("ru", key))
@@ -296,23 +571,39 @@ static func _effect_fragment(key: String, value: float) -> String:
 	return "%s%s%s %s" % [sign, _fmt(num), unit, ru]
 
 
-# Все эффекты узла → строка описания с числами (без утечки внутренних токенов).
-static func _effects_desc(effects: Dictionary) -> String:
+# Все эффекты узла → строка описания с числами; флаговые ключи — готовой фразой.
+static func effects_desc(effects: Dictionary) -> String:
 	var parts: Array = []
 	for key in effects.keys():
-		parts.append(_effect_fragment(str(key), float(effects[key])))
+		if FLAG_DESC.has(str(key)):
+			parts.append(str(FLAG_DESC[str(key)]).trim_suffix("."))
+		else:
+			parts.append(_effect_fragment(str(key), float(effects[key])))
 	return ", ".join(parts)
 
 
-static func _add(nodes: Array, index: Dictionary, id: String, branch: String, tier: int, cost: int, kind: String, title: String, desc: String, effects: Dictionary, pos: Vector2, class_affinity := "") -> void:
-	var node := {
-		"id": id, "branch": branch, "tier": tier, "cost": cost, "kind": kind,
-		"title": title, "desc": desc, "effects": effects, "pos": pos, "adj": [],
-	}
-	if str(class_affinity) != "":
-		node["class_affinity"] = str(class_affinity)
+# RU-текст условия скрытой звезды (для панели узла и тумана «?»).
+static func condition_text(metric: String, threshold: int) -> String:
+	match metric:
+		"weapon_diversity":
+			return "Победи финального босса %d разными оружиями этого класса." % threshold
+		"best_ascension":
+			return "Победи на возвышении %d или выше этим классом." % threshold
+		"no_shop_wins":
+			return "Победи без покупок в магазине этим классом."
+		"codex_milestones":
+			return "Достигни %d вех кодекса (открывай монстров, боссов и артефакты)." % threshold
+		"secret_boss":
+			return "Одолей секретного босса возвышений."
+		"achievement_milestones":
+			return "Достигни %d вех достижений." % threshold
+	return "Условие скрыто."
+
+
+static func _add(nodes: Array, index: Dictionary, node: Dictionary) -> void:
+	node["adj"] = []
 	nodes.append(node)
-	index[id] = node
+	index[str(node["id"])] = node
 
 
 static func _connect(index: Dictionary, a: String, b: String) -> void:
@@ -326,132 +617,137 @@ static func _connect(index: Dictionary, a: String, b: String) -> void:
 		adj_b.append(a)
 
 
-# Единственная точка сборки графа. entry_nodes = meta_progression.CLASS_ENTRY_NODES
-# (id точек входа по классу) — берём как параметр, чтобы не плодить круговых preload.
+# Мировая позиция узла созвездия для старого экрана: кольцо 17 классов.
+static func _world_pos(class_index: int, npos: Vector2) -> Vector2:
+	var angle := TAU * float(class_index) / float(CLASS_ORDER.size()) - PI * 0.5
+	var center := Vector2(cos(angle), sin(angle)) * RING_RADIUS
+	return center + (npos - Vector2(0.5, 0.5)) * CONSTELLATION_SCALE
+
+
+# Единственная точка сборки графа Меты 4.0. entry_nodes =
+# meta_progression.CLASS_ENTRY_NODES (id ядра-эмблемы по классу) — параметром,
+# чтобы не плодить круговых preload.
 static func build_tree(entry_nodes: Dictionary) -> Array:
 	var nodes := []
 	var index := {}
 
-	# --- Общее ядро (QoL/экономика/выживание) — идентично v2 ---
-	_add(nodes, index, "core_origin", "core", 1, 1, "minor", "Искра Пути", "Центральный хаб общего дерева.", {}, Vector2(0, 0))
-	_add(nodes, index, "core_rewards", "core", 2, 1, "minor", "Память дороги", "Опыт и золото за бои немного выше.", {"money_gain_mult": 0.006, "xp_gain_mult": 0.006}, Vector2(0, -92))
-	_add(nodes, index, "core_craft", "core", 3, 1, "minor", "Тихий торг", "Лавка и докачка атрибутов немного дешевле.", {"shop_price_mult": -0.010, "attr_cost_mult": -0.010}, Vector2(0, 92))
-	_add(nodes, index, "core_battle_cry", "core", 4, 3, "keystone", "Боевой раж", "Ультимейт начинает забег заряженным наполовину.", {"ult_start_charge": 0.5}, Vector2(135, -35))
-	_add(nodes, index, "core_second_life", "core", 5, 3, "keystone", "Вторая жизнь", "Раз за забег смертельный удар оставляет героя на ногах.", {"death_save": 1.0}, Vector2(-135, -35))
-	_add(nodes, index, "core_guild_ties", "core", 6, 3, "keystone", "Связи в гильдии", "В каждой лавке гарантированно есть редкий товар.", {"guaranteed_rare_shop": 1.0, "start_gold_flat": 15.0}, Vector2(0, 182))
-	_add(nodes, index, "core_insight", "core", 7, 3, "keystone", "Озарение", "Первое повышение в забеге гарантированно даёт основную характеристику.", {"first_levelup_rare": 1.0}, Vector2(0, -182))
-	_connect(index, "core_origin", "core_rewards")
-	_connect(index, "core_origin", "core_craft")
-	_connect(index, "core_rewards", "core_battle_cry")
-	_connect(index, "core_rewards", "core_second_life")
-	_connect(index, "core_rewards", "core_insight")
-	_connect(index, "core_craft", "core_guild_ties")
+	# --- Атлас гильдии (центр мира; account-слой, class_affinity = "") ---
+	for spec in ATLAS_NODES:
+		var s: Dictionary = spec
+		var role := str(s["role"])
+		var effects: Dictionary = (s.get("effects", {}) as Dictionary).duplicate(true)
+		var desc := str(s.get("desc", ""))
+		if desc == "":
+			desc = "%s." % effects_desc(effects) if not effects.is_empty() else "Узел Атласа гильдии."
+		var node := {
+			"id": str(s["id"]), "branch": "atlas", "tier": 1, "cost": int(s["cost"]),
+			"kind": str(ROLE_KINDS[role]), "role": role, "title": str(s["title"]),
+			"desc": desc, "effects": effects,
+			"npos": s["npos"], "pos": ((s["npos"] as Vector2) - Vector2(0.5, 0.5)) * ATLAS_SCALE,
+		}
+		if role == "hidden":
+			node["condition"] = {"metric": str(s["metric"]), "threshold": int(s["threshold"]), "text": condition_text(str(s["metric"]), int(s["threshold"]))}
+			node["lore"] = str(s.get("lore", ""))
+			node["desc"] = "%s Открывается подвигом: %s" % [node["desc"], str(node["condition"]["text"])]
+		_add(nodes, index, node)
+	for spec in ATLAS_NODES:
+		for neighbor in (spec as Dictionary).get("adj", []):
+			_connect(index, str((spec as Dictionary)["id"]), str(neighbor))
 
-	# --- Восемь атрибутных лепестков (8 базовых характеристик) ---
-	var petal_notables := {}
-	var petal_gates := []
-	var radius_gate := 255.0
-	var radius_minor_a := 390.0
-	var radius_minor_b := 505.0
-	var radius_notable := 625.0
-	for petal_index in range(ATTRIBUTE_SKILL_PETALS.size()):
-		var spec: Dictionary = ATTRIBUTE_SKILL_PETALS[petal_index]
-		var attr := str(spec["id"])
-		var angle := deg_to_rad(float(spec["angle"]))
-		var dir := Vector2(cos(angle), sin(angle))
-		var tangent := Vector2(-dir.y, dir.x)
-		var gate_id := "%s_gate" % attr
-		var minor_a_id := "%s_flow_1" % attr
-		var minor_b_id := "%s_flow_2" % attr
-		var notable_id := "%s_notable" % attr
-		var title := str(spec["title"])
-		_add(nodes, index, gate_id, attr, 1, 1, "minor", "%s: вход" % title, "Открывает атрибутный лепесток: %s." % str(spec["short"]), {}, dir * radius_gate)
-		_add(nodes, index, minor_a_id, attr, 2, 1, "minor", "%s I" % title, "+1 к атрибуту %s." % str(spec["short"]), (spec["effects"] as Dictionary).duplicate(true), dir * radius_minor_a + tangent * 34.0)
-		_add(nodes, index, minor_b_id, attr, 3, 1, "minor", "%s II" % title, "Ещё +1 к атрибуту %s." % str(spec["short"]), (spec["effects"] as Dictionary).duplicate(true), dir * radius_minor_b - tangent * 34.0)
-		_add(nodes, index, notable_id, attr, 4, 1, "notable", "%s: мастерство" % title, "Крупный атрибутный узел и малый профильный бонус.", (spec["notable_effects"] as Dictionary).duplicate(true), dir * radius_notable)
-		petal_notables[attr] = notable_id
-		petal_gates.append(gate_id)
-		_connect(index, "core_origin", gate_id)
-		_connect(index, gate_id, minor_a_id)
-		_connect(index, minor_a_id, minor_b_id)
-		_connect(index, minor_b_id, notable_id)
-	for i in range(petal_gates.size()):
-		_connect(index, str(petal_gates[i]), str(petal_gates[(i + 1) % petal_gates.size()]))
-
-	# --- Классовые ветви v3 (17 классов) ---
-	for petal_spec in ATTRIBUTE_SKILL_PETALS:
-		var attr := str((petal_spec as Dictionary)["id"])
-		var angle := deg_to_rad(float((petal_spec as Dictionary)["angle"]))
-		var dir := Vector2(cos(angle), sin(angle))
-		var tangent := Vector2(-dir.y, dir.x)
-		var class_ids: Array = (petal_spec as Dictionary).get("classes", [])
-		var count := maxi(class_ids.size(), 1)
-		for class_index in range(class_ids.size()):
-			var class_id := str(class_ids[class_index])
-			_build_class_branch(nodes, index, entry_nodes, class_id, attr, dir, tangent, (float(class_index) - float(count - 1) * 0.5) * 168.0, str(petal_notables[attr]))
+	# --- 17 созвездий классов ---
+	for class_index in range(CLASS_ORDER.size()):
+		var class_id: String = CLASS_ORDER[class_index]
+		_build_constellation(nodes, index, entry_nodes, class_id, class_index)
 
 	for node in nodes:
 		(node["adj"] as Array).sort()
 	return nodes
 
 
-static func _build_class_branch(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, attr: String, dir: Vector2, tangent: Vector2, branch_v: float, petal_notable_id: String) -> void:
-	var spec: Dictionary = CLASS_BRANCH_SPECS.get(class_id, {})
-	if spec.is_empty():
+# Созвездие класса: 22 узла по силуэту приложения C (CONSTELLATION_LAYOUT:
+# [ядро, 4 луча × (m0,m1,m2,техника), 3 keystone, 2 скрытых]).
+static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
+	var spec: Dictionary = CONSTELLATION_SPECS.get(class_id, {})
+	var layout: Array = CONSTELLATION_LAYOUT.get(class_id, [])
+	if spec.is_empty() or layout.size() != 22:
 		return
-	var attrs: Array = spec.get("attrs", [])
-	var notables: Array = spec.get("notables", [])
-	var keystone: Dictionary = spec.get("keystone", {})
-	var entry_id := str(entry_nodes.get(class_id, "entry_%s" % class_id))
-	var entry_pos := dir * CLASS_ENTRY_RADIUS + tangent * branch_v
-	_add(nodes, index, entry_id, attr, 10, 1, "entry", str(spec.get("title", class_id)), "Вход в классовую ветвь. Доступен сразу; открывает узлы только этого героя.", {}, entry_pos)
-	_connect(index, petal_notable_id, entry_id)
+	var attrs: Array = spec["attrs"]
+	var core_id := str(entry_nodes.get(class_id, "%s_core" % class_id))
+	var base_attr_key := str(CLASS_BASE_ATTRIBUTE.get(class_id, "strength_flat"))
+	var core_effects := {base_attr_key: 1.0}
+	_add(nodes, index, {
+		"id": core_id, "branch": class_id, "tier": 10, "cost": 0, "kind": "entry",
+		"role": "core", "title": str(spec.get("core_title", "Эмблема класса")),
+		"desc": "Ядро созвездия: герб героя. Открыто сразу и даёт %s." % effects_desc(core_effects),
+		"effects": core_effects, "npos": layout[0],
+		"pos": _world_pos(class_index, layout[0]), "class_affinity": class_id,
+	})
 
-	# Позиции по фиксированной раскладке; порядок цепочки: entry → a0 → a1 → n0 → a2 → a3 → n1 → a4 → key.
-	var pos_of := func(u: float, v: float) -> Vector2:
-		return dir * (CLASS_ENTRY_RADIUS + u) + tangent * (branch_v + v)
-	var minor_attr_slots := ["a0", "a1", "a2", "a3", "a4"]  # соответствуют attrs[0..4]
-	var id_by_slot := {}
-	# Минорные атрибутные узлы.
-	for mi in range(minor_attr_slots.size()):
-		var m_slot: String = minor_attr_slots[mi]
-		var m_attr_id := str(attrs[mi]) if mi < attrs.size() else str(attrs[attrs.size() - 1])
-		var m_ae: Dictionary = ATTR_EFFECT[m_attr_id]
-		var m_effects := {str(m_ae["key"]): float(m_ae["unit"])}
-		var m_node_id := "%s_%s" % [class_id, m_slot]
-		id_by_slot[m_slot] = m_node_id
-		var m_layout: Vector2 = _layout_for(m_slot)
-		_add(nodes, index, m_node_id, attr, 11, 1, "minor", str(m_ae["short"]), "Профильный атрибут ветви: %s." % _effects_desc(m_effects), m_effects, pos_of.call(m_layout.x, m_layout.y), class_id)
-	# Notable-узлы.
-	for ni in range(2):
-		var n_slot: String = "n%d" % ni
-		var n_spec: Dictionary = notables[ni] if ni < notables.size() else {}
-		var n_effects := {}
-		for na in n_spec.get("attrs", []):
-			var n_ae: Dictionary = ATTR_EFFECT[str(na)]
-			n_effects[str(n_ae["key"])] = float(n_effects.get(str(n_ae["key"]), 0.0)) + float(n_ae["note"])
-		var n_node_id := "%s_%s" % [class_id, n_slot]
-		id_by_slot[n_slot] = n_node_id
-		var n_layout: Vector2 = _layout_for(n_slot)
-		_add(nodes, index, n_node_id, attr, 12 + ni, 2, "notable", str(n_spec.get("title", "Узел ветви")), "Notable ветви: %s." % _effects_desc(n_effects), n_effects, pos_of.call(n_layout.x, n_layout.y), class_id)
-	# Keystone.
-	var key_effects: Dictionary = (keystone.get("effects", {}) as Dictionary).duplicate(true)
-	var key_id := "%s_key" % class_id
-	id_by_slot["key"] = key_id
-	var key_layout: Vector2 = _layout_for("key")
-	_add(nodes, index, key_id, attr, 16, 4, "keystone", str(keystone.get("title", "Легенда класса")), "Легендарный узел «%s»: %s. Эффект работает только у этого героя." % [str(keystone.get("title", "")), _effects_desc(key_effects)], key_effects, pos_of.call(key_layout.x, key_layout.y), class_id)
+	# 4 луча × 3 минорные звезды + звезда-техника на конце луча.
+	var attr_seen := {}
+	for ray in range(4):
+		var prev_id := core_id
+		for step in range(3):
+			var li: int = 1 + ray * 4 + step
+			var attr_id := str(attrs[RAY_ATTR_PATTERN[ray][step]])
+			var star: Dictionary = STAR_ATTRS[attr_id]
+			attr_seen[attr_id] = int(attr_seen.get(attr_id, 0)) + 1
+			var value := float(star["value"])
+			var effects := {str(star["key"]): value}
+			var minor_id := "%s_m%d" % [class_id, ray * 3 + step]
+			_add(nodes, index, {
+				"id": minor_id, "branch": class_id, "tier": 11, "cost": int(ROLE_COSTS["minor"]),
+				"kind": "minor", "role": "minor",
+				"title": "%s %s" % [str(star["short"]), "I" if int(attr_seen[attr_id]) == 1 else "II"],
+				"desc": "Звезда-атрибут: %s." % effects_desc(effects),
+				"effects": effects, "npos": layout[li],
+				"pos": _world_pos(class_index, layout[li]), "class_affinity": class_id,
+			})
+			_connect(index, prev_id, minor_id)
+			prev_id = minor_id
+		var t_li: int = 1 + ray * 4 + 3
+		var tech: Dictionary = (spec["techniques"] as Array)[ray]
+		var tech_effects: Dictionary = (tech["effects"] as Dictionary).duplicate(true)
+		var tech_id := "%s_t%d" % [class_id, ray]
+		_add(nodes, index, {
+			"id": tech_id, "branch": class_id, "tier": 12, "cost": int(ROLE_COSTS["technique"]),
+			"kind": "notable", "role": "technique", "title": str(tech["title"]),
+			"desc": "Звезда-техника: %s." % effects_desc(tech_effects),
+			"effects": tech_effects, "npos": layout[t_li],
+			"pos": _world_pos(class_index, layout[t_li]), "class_affinity": class_id,
+		})
+		_connect(index, prev_id, tech_id)
 
-	# Цепочка связей (единый путь до keystone — «всё дерево не купить»).
-	var chain := ["a0", "a1", "n0", "a2", "a3", "n1", "a4", "key"]
-	_connect(index, entry_id, str(id_by_slot["a0"]))
-	for ci in range(chain.size() - 1):
-		_connect(index, str(id_by_slot[chain[ci]]), str(id_by_slot[chain[ci + 1]]))
-	# Небольшая перемычка entry↔a1 для читаемого ромба на входе.
-	_connect(index, entry_id, str(id_by_slot["a1"]))
+	# 3 взаимоисключающих keystone (общая exclusive-группа класса) на концах лучей 0..2.
+	for ki in range(3):
+		var k_li: int = 17 + ki
+		var keystone: Dictionary = (spec["keystones"] as Array)[ki]
+		var k_effects: Dictionary = (keystone["effects"] as Dictionary).duplicate(true)
+		var k_id := "%s_k%d" % [class_id, ki]
+		_add(nodes, index, {
+			"id": k_id, "branch": class_id, "tier": 16, "cost": int(ROLE_COSTS["keystone"]),
+			"kind": "keystone", "role": "keystone", "title": str(keystone["title"]),
+			"desc": "Ключевая звезда «%s»: %s. Активна лишь одна ключевая звезда созвездия; переключение купленных — бесплатно." % [str(keystone["title"]), effects_desc(k_effects)],
+			"effects": k_effects, "npos": layout[k_li],
+			"pos": _world_pos(class_index, layout[k_li]), "class_affinity": class_id,
+			"exclusive_group": "%s_keystones" % class_id,
+		})
+		_connect(index, "%s_t%d" % [class_id, ki], k_id)
 
-
-static func _layout_for(slot: String) -> Vector2:
-	for item in CLASS_NODE_LAYOUT:
-		if str((item as Dictionary)["key"]) == slot:
-			return Vector2(float((item as Dictionary)["u"]), float((item as Dictionary)["v"]))
-	return Vector2.ZERO
+	# 2 скрытые звезды (лучи 1 и 3, середина) — открываются подвигом, не покупкой.
+	for hi in range(2):
+		var h_li: int = 20 + hi
+		var hidden: Dictionary = (spec["hidden"] as Array)[hi]
+		var h_effects: Dictionary = (hidden["effects"] as Dictionary).duplicate(true)
+		var h_id := "%s_h%d" % [class_id, hi]
+		var cond_text := condition_text(str(hidden["metric"]), int(hidden["threshold"]))
+		_add(nodes, index, {
+			"id": h_id, "branch": class_id, "tier": 14, "cost": 0,
+			"kind": "hidden", "role": "hidden", "title": str(hidden["title"]),
+			"desc": "Скрытая звезда: %s. Открывается подвигом: %s" % [effects_desc(h_effects), cond_text],
+			"effects": h_effects, "npos": layout[h_li],
+			"pos": _world_pos(class_index, layout[h_li]), "class_affinity": class_id,
+			"condition": {"metric": str(hidden["metric"]), "threshold": int(hidden["threshold"]), "text": cond_text},
+			"lore": str(hidden.get("lore", "")),
+		})
+		_connect(index, "%s_m%d" % [class_id, (1 if hi == 0 else 3) * 3 + 1], h_id)
