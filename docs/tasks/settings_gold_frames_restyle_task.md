@@ -89,3 +89,12 @@ Labels: foma, backend, claude
 - Тесты в worktree от origin/dev + cherry-pick: game_settings_smoke PASSED,
   video_settings_apply PASSED, aim_mode_settings PASSED, ui_no_overlap_matrix PASSED.
 - Коммит ассетов: e43c6465 (+ docs-коммит следом), оба в origin/dev.
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+QA claude-qa 2026-07-02 (изолированный worktree от origin/dev, независимая проверка).
+- Реальный landed-коммит ассетов в origin/dev — df1ea4b0 (локальный e43c6465 перебазирован при пуше); диффскоуп: только 3 PNG (settings_v3_tab_switcher, settings_v4_action_button, settings_v4_field) + превью + tools/recolor_settings_brass.py; `.import` и `ui_screens.gd` НЕ тронуты (asset-only ✓).
+- Размеры 1:1 против df1ea4b0^ (tab 688×192, action 367×72, field 392×72), alpha байт-в-байт идентичен; изменено ровно 4853/4018/5966 px (совпадает с отчётом исполнителя).
+- Независимый bright-скан (hue 30–68°, sat≥0.42, val≥0.52): tab 0.44%, action 0.71%, field 3.04% (AC <5% ✓). Новые тона — кожа/латунь (#675236 / #937A58 / #503F29).
+- In-game капчи до/после (combo_before_top_after_bottom.png) сверены визуально: ярко-золотые орнаментальные рамки полей/чекбокса → тёмная кожа + тонкая латунная линия.
+- Тест: ui_no_overlap_matrix_test PASS на финальном HEAD origin/dev (+исполнитель: game_settings_smoke/video_settings_apply/aim_mode_settings PASS).
