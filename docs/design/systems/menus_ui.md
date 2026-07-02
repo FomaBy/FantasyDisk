@@ -192,7 +192,7 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. The 2026-07-02 0.2.0 release pass replaces the earlier dragon-battle image with a 2560x1440 OpenAI-generated cosmic character-atlas background: pixel-art heroes, constellation/star-chart rings, atlas silhouettes and distant bosses, while preserving the calm left button-safe column and readable title-safe area. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. Source, backup, preview and the Telegram/Discord announcement derivative are tracked in `docs/design/mockups/main_menu_020_cosmic_release/spec.md`. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
 
 ## Route Map 2K Source
 
@@ -332,19 +332,21 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png` through
   `UIThemePaths.OVERHAUL_2K_FRAME_*["lut_toast"]` at source size `480x300`,
   texture margins `58/48/58/48`, and strict content margins `70/112/70/112`.
-  The toast remains textless; the existing world-space level-up badge is still
-  the single `Level Up` text/icon callout. Sparkle/ring content starts inside
-  the frame safe rect only. Mockup/spec and audit evidence live in
+  The toast now owns the single visible `Level Up` label inside that safe rect;
+  the world-space `LevelUpEffect` is only a flash/ring/spark burst with no
+  separate badge plaque. The frame is centered `190px` above the player screen
+  position and fades in only to `0.70` opacity so it remains about 30%
+  transparent. Sparkle/ring content starts inside the frame safe rect only.
+  Mockup/spec and audit evidence live in
   `docs/design/mockups/scrum588_levelup_toast/`,
   `docs/design/references/scrum588_levelup_toast/`, and
   `docs/design/previews/scrum588_levelup_toast_safe_zone.png`.
 
 - SCRUM-654 keeps the overhead level-up callout compact and singular. Runtime
-  uses the accepted `LevelUpPopupBadge` at `160x80`; when multiple level-ups
-  arrive quickly, `_spawn_level_up_effect()` removes older live `LevelUpEffect`
-  nodes from the `level_up_effects` group before spawning the replacement.
-  `LevelUpToast` stays outside that cleanup group and remains a textless
-  sparkle/ring cue, so there is only one visible `Level Up` text badge.
+  keeps `_spawn_level_up_effect()` as a textless player-following burst; when
+  multiple level-ups arrive quickly, it removes older live `LevelUpEffect` nodes
+  from the `level_up_effects` group before spawning the replacement. The only
+  visible `Level Up` text is `LevelUpToastLabel` inside `LevelUpToastFrame`.
 
 - SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
@@ -799,6 +801,17 @@ PanelContainer/StyleBox.
 SCRUM-355 adds the strict Hero Select frame content zones documented in
 `build/qa/scrum355/hero_select_thin_frames_qa.md`; use those margins when
 integrating the thinner dossier and thumbnail strip assets.
+
+## SCRUM-827 — Атлас героев: no-overlap сокетов
+
+`scripts/ui_screens.gd::_show_atlas_screen()` строит экран «Атлас героев»:
+лента классов, холст созвездия, панель узла и вкладка гильдии. Сокеты
+созвездий используют `ATLAS_SOCKET_SIZES` как 2560×1440-ориентир, но runtime
+применяет compact scale для 720p/1080p, stagger для плотных колонок,
+collision-relax и финальный nearest-open placement. Acceptance rule: круги
+`AtlasNode_*` не наслаиваются друг на друга на 1280×720, 1920×1080 и
+2560×1440; тестовое покрытие — `runtime_smoke_test.gd`,
+`runtime_smoke_ui_test.gd` и `meta40_atlas_screen_smoke_test.gd`.
 
 ## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
 

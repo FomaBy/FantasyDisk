@@ -1,13 +1,12 @@
 # SCRUM-654 Level Up Head Badge Runtime Spec
 
-SCRUM-654 is a backend/runtime cleanup for the accepted level-up visual language from SCRUM-519 and SCRUM-588. No new bitmap mockup is generated: the implementation reuses `LevelUpPopupBadge` and keeps all text inside that authored badge artwork.
+SCRUM-654 was a backend/runtime cleanup for the accepted level-up visual language from SCRUM-519 and SCRUM-588. The current user bugfix disables the separate `LevelUpPopupBadge` plaque so the only `Level Up` text is centered inside `LevelUpToastFrame`.
 
 Runtime requirements:
 
 - One visible overhead `LevelUpEffect` node in the `level_up_effects` group at a time.
 - Rapid level-ups replace older live `LevelUpEffect` group members before spawning the next one.
-- Badge display size is `160x80`, within the accepted compact range `144x72..180x90`.
-- `LevelUpToast` remains outside the world-effect cleanup group and stays textless: sparkle/ring feedback only, with no duplicate `Label` child.
-- The badge follows the player through `LevelUpEffect.setup(player)` and keeps frame content inside the authored empty badge zone.
+- `LevelUpEffect` follows the player through `LevelUpEffect.setup(player)` and renders only flash/ring/spark burst content, with no `LevelUpPopupBadge` and no `Label`.
+- `LevelUpToast` joins the cleanup group and owns the single visible `Level Up` label inside its strict `70/112/70/112` frame content margins.
 
 Acceptance evidence is covered by focused runtime tests and the UI smoke assertion for duplicate effects.

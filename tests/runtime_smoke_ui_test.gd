@@ -1,8 +1,5 @@
 extends "res://tests/runtime_smoke_test.gd"
 
-const LevelUpEffectScript := preload("res://scripts/level_up_effect.gd")
-
-
 func _initialize() -> void:
 	var main_scene := load("res://scenes/Main.tscn") as PackedScene
 	if main_scene == null:
@@ -45,7 +42,7 @@ func _initialize() -> void:
 	await _test_shop_wall_no_overlap_layouts(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_level_up_toast_frame(main_scene)
-	await _test_level_up_single_compact_badge(main_scene)
+	await _test_level_up_world_burst_without_badge(main_scene)
 
 	main.queue_free()
 	await process_frame
@@ -142,7 +139,7 @@ func _test_settings_return_origins(main_scene: PackedScene) -> void:
 	await process_frame
 
 
-func _test_level_up_single_compact_badge(main_scene: PackedScene) -> void:
+func _test_level_up_world_burst_without_badge(main_scene: PackedScene) -> void:
 	var run_main := main_scene.instantiate()
 	root.add_child(run_main)
 	await process_frame
@@ -170,12 +167,8 @@ func _test_level_up_single_compact_badge(main_scene: PackedScene) -> void:
 
 	var effect := live_effects[0] as Node
 	var badge := effect.find_child("LevelUpPopupBadge", true, false) as Node2D
-	if badge == null:
-		_fail("Expected LevelUpPopupBadge in compact badge smoke.")
-		return
-	var display_size := Vector2(LevelUpEffectScript.BADGE_DISPLAY_SIZE)
-	if display_size.x < 144.0 or display_size.x > 180.0 or display_size.y < 72.0 or display_size.y > 90.0:
-		_fail("Expected compact LevelUpEffect badge within 144x72..180x90, got %s." % str(display_size))
+	if badge != null:
+		_fail("LevelUpEffect must not create a separate LevelUpPopupBadge plaque.")
 		return
 
 	for label in run_main.find_children("*", "Label", true, false):
@@ -214,8 +207,13 @@ func _test_level_up_toast_frame(main_scene: PackedScene) -> void:
 	if not toast.is_in_group("level_up_effects"):
 		_fail("Expected LevelUpToast to join level_up_effects for cleanup.")
 		return
-	if not toast.find_children("*", "Label", true, false).is_empty():
-		_fail("Expected LevelUpToast to stay textless in runtime UI smoke.")
+	var label := toast.find_child("LevelUpToastLabel", true, false) as Label
+	if label == null or label.text != "Level Up":
+		_fail("Expected LevelUpToastLabel with Level Up text in runtime UI smoke.")
+		return
+	var safe_rect: Rect2 = toast_frame.get_meta("toast_content_rect", Rect2()) as Rect2
+	if not safe_rect.has_area() or not safe_rect.grow(1.0).encloses(Rect2(label.position, label.size)):
+		_fail("Expected LevelUpToastLabel to stay inside the toast safe rect.")
 		return
 	run_main.queue_free()
 	await process_frame

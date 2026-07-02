@@ -539,6 +539,9 @@ const ATLAS_SOCKET_SIZES := {
 	"minor": 96.0, "technique": 128.0, "notable": 128.0,
 	"keystone": 168.0, "hidden": 112.0, "core": 160.0,
 }
+const ATLAS_NODE_LAYOUT_PAD := Vector2(54.0, 42.0)
+const ATLAS_NODE_COLLISION_GAP := 10.0
+const ATLAS_NODE_RELAX_ITERATIONS := 180
 const ATLAS_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 # Орнаментная полоса frame_border ≈127px source; 160 покрывает угловые вырезы.
 const ATLAS_FRAME_SOURCE_MARGIN := 160.0
@@ -2624,19 +2627,20 @@ func _show_atlas_screen() -> void:
 	header.add_child(header_spacer)
 	var tab_constellation := _make_button("Созвездие")
 	tab_constellation.name = "AtlasTabConstellation"
-	_set_action_button_size(tab_constellation, 236.0)
+	var atlas_action_h := _atlas_action_button_height()
+	_set_action_button_size(tab_constellation, 236.0, atlas_action_h)
 	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
 	header.add_child(tab_constellation)
 	_atlas["tab_constellation"] = tab_constellation
 	var tab_guild := _make_button("Гильдия")
 	tab_guild.name = "AtlasTabGuild"
-	_set_action_button_size(tab_guild, 236.0)
+	_set_action_button_size(tab_guild, 236.0, atlas_action_h)
 	tab_guild.pressed.connect(Callable(self, "_atlas_switch_tab").bind("guild"))
 	header.add_child(tab_guild)
 	_atlas["tab_guild"] = tab_guild
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "AtlasBackButton"
-	_set_action_button_size(back_button, 260.0)
+	_set_action_button_size(back_button, 260.0, atlas_action_h)
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	_atlas["back_button"] = back_button
@@ -2716,7 +2720,7 @@ func _show_atlas_screen() -> void:
 	canvas.clip_contents = true
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	canvas.gui_input.connect(Callable(self, "_atlas_canvas_input"))
-	canvas.resized.connect(Callable(self, "_atlas_layout_nodes"))
+	canvas.resized.connect(Callable(self, "_atlas_schedule_layout_passes"))
 	body.add_child(canvas)
 	_atlas["canvas"] = canvas
 	var edge_layer := Control.new()
@@ -2858,7 +2862,7 @@ func _show_atlas_screen() -> void:
 	layout.add_child(footer)
 	var respec_button := _make_button("Респек — бесплатно")
 	respec_button.name = "AtlasRespecButton"
-	_set_action_button_size(respec_button, 330.0)
+	_set_action_button_size(respec_button, 330.0, atlas_action_h)
 	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
 	footer.add_child(respec_button)
 	_atlas["respec_button"] = respec_button
@@ -2935,6 +2939,25 @@ func _atlas_ui_scale() -> float:
 	if game != null and game.get_viewport() != null:
 		vp = game.get_viewport().get_visible_rect().size
 	return minf(vp.x / 2560.0, vp.y / 1440.0)
+
+
+func _atlas_socket_scale() -> float:
+	var vp := Vector2(2560.0, 1440.0)
+	if game != null and game.get_viewport() != null:
+		vp = game.get_viewport().get_visible_rect().size
+	var compact := clampf((vp.y - 720.0) / 720.0, 0.0, 1.0)
+	return _atlas_ui_scale() * lerpf(0.80, 1.0, compact)
+
+
+func _atlas_action_button_height() -> float:
+	var vp_h := 1440.0
+	if game != null and game.get_viewport() != null:
+		vp_h = game.get_viewport().get_visible_rect().size.y
+	if vp_h < 760.0:
+		return 72.0
+	if vp_h < 1000.0:
+		return 88.0
+	return STANDARD_ACTION_BUTTON_HEIGHT
 
 
 # Полая рама Атласа: 9-slice frame_border с draw_center=false (середина ассета —
@@ -3056,7 +3079,7 @@ func _atlas_build_canvas() -> void:
 	_atlas["node_buttons"] = {}
 	_atlas["fog_tweens"] = {}
 	_atlas["edge_flash"] = {}
-	var s := _atlas_ui_scale()
+	var socket_scale := _atlas_socket_scale()
 	var nodes := _atlas_graph_nodes()
 	var npos_map := {}
 	for node in nodes:
@@ -3083,7 +3106,7 @@ func _atlas_build_canvas() -> void:
 		nb.texture_normal = game._cached_texture(base_path)
 		nb.ignore_texture_size = true
 		nb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * s))
+		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * socket_scale))
 		nb.custom_minimum_size = Vector2(disp, disp)
 		nb.size = Vector2(disp, disp)
 		nb.focus_mode = Control.FOCUS_ALL
@@ -3129,6 +3152,7 @@ func _atlas_build_canvas() -> void:
 	if str(_atlas.get("selected", "")) == "" or not npos_map.has(str(_atlas.get("selected", ""))):
 		_atlas["selected"] = _atlas_core_node_id()
 	_atlas_layout_nodes()
+	_atlas_schedule_layout_passes()
 
 
 func _atlas_add_overlay(nb: TextureButton, overlay_name: String, texture_path: String, rel: float, tint: Color) -> TextureRect:
@@ -3154,10 +3178,14 @@ func _atlas_layout_nodes() -> void:
 	var edge_layer: Control = _atlas.get("edge_layer")
 	if canvas == null or not is_instance_valid(canvas):
 		return
+	if canvas.size.x <= 1.0 or canvas.size.y <= 1.0:
+		call_deferred("_atlas_layout_nodes")
+		return
 	var s := _atlas_ui_scale()
-	var pad := Vector2(124.0, 112.0) * s
+	var pad := ATLAS_NODE_LAYOUT_PAD * s
 	var area := Vector2(maxf(canvas.size.x - pad.x * 2.0, 8.0), maxf(canvas.size.y - pad.y * 2.0, 8.0))
 	var centers := {}
+	var radii := {}
 	var buttons: Dictionary = _atlas.get("node_buttons", {})
 	var npos_map: Dictionary = _atlas.get("npos", {})
 	for node_id in buttons.keys():
@@ -3165,12 +3193,191 @@ func _atlas_layout_nodes() -> void:
 		if nb == null or not is_instance_valid(nb):
 			continue
 		var npos: Vector2 = npos_map.get(node_id, Vector2(0.5, 0.5))
+		var radius := minf(nb.custom_minimum_size.x, nb.custom_minimum_size.y) * 0.5
 		var center := pad + npos * area
+		center.x += _atlas_column_jitter(str(node_id), npos, npos_map, radius, s)
+		center = _atlas_clamp_node_center(center, radius, canvas.size, s)
 		centers[node_id] = center
+		radii[node_id] = radius
+	_atlas_relax_node_centers(centers, radii, canvas.size, s)
+	_atlas_place_open_node_centers(centers, radii, canvas.size, s)
+	for node_id in buttons.keys():
+		var nb := buttons[node_id] as TextureButton
+		if nb == null or not is_instance_valid(nb) or not centers.has(node_id):
+			continue
+		var center: Vector2 = centers[node_id]
 		nb.position = center - nb.custom_minimum_size * 0.5
 	_atlas["node_centers"] = centers
 	if edge_layer != null and is_instance_valid(edge_layer):
 		edge_layer.queue_redraw()
+
+
+func _atlas_finish_deferred_layout() -> void:
+	if _atlas.is_empty():
+		return
+	var canvas = _atlas.get("canvas")
+	if canvas == null or not is_instance_valid(canvas):
+		_atlas["layout_passes_left"] = 0
+		return
+	_atlas_layout_nodes()
+	_atlas_wire_focus()
+
+
+func _atlas_schedule_layout_passes() -> void:
+	if _atlas.is_empty():
+		return
+	_atlas["layout_passes_left"] = maxi(int(_atlas.get("layout_passes_left", 0)), 6)
+	call_deferred("_atlas_finish_deferred_layout")
+	if game != null and game.get_tree() != null:
+		var layout_pass := Callable(self, "_atlas_process_frame_layout")
+		if not game.get_tree().process_frame.is_connected(layout_pass):
+			game.get_tree().process_frame.connect(layout_pass, CONNECT_ONE_SHOT)
+
+
+func _atlas_process_frame_layout() -> void:
+	if _atlas.is_empty():
+		return
+	_atlas_finish_deferred_layout()
+	var remaining := maxi(int(_atlas.get("layout_passes_left", 0)) - 1, 0)
+	_atlas["layout_passes_left"] = remaining
+	if remaining > 0 and game != null and game.get_tree() != null:
+		var layout_pass := Callable(self, "_atlas_process_frame_layout")
+		if not game.get_tree().process_frame.is_connected(layout_pass):
+			game.get_tree().process_frame.connect(layout_pass, CONNECT_ONE_SHOT)
+
+
+func _atlas_column_jitter(node_id: String, npos: Vector2, npos_map: Dictionary, radius: float, s: float) -> float:
+	var rank := 0
+	var group_size := 0
+	for other_id in npos_map.keys():
+		var other_pos: Vector2 = npos_map.get(other_id, Vector2.ZERO)
+		if absf(other_pos.x - npos.x) > 0.026:
+			continue
+		group_size += 1
+		if other_pos.y < npos.y:
+			rank += 1
+	if group_size < 2 or node_id == _atlas_core_node_id():
+		return 0.0
+	var side := -1.0 if rank % 2 == 0 else 1.0
+	return side * maxf(radius * 2.10, 30.0 * s)
+
+
+func _atlas_relax_node_centers(centers: Dictionary, radii: Dictionary, canvas_size: Vector2, s: float) -> void:
+	var ids := centers.keys()
+	var gap := maxf(2.0, ATLAS_NODE_COLLISION_GAP * s)
+	for iteration in range(ATLAS_NODE_RELAX_ITERATIONS):
+		var moved := false
+		for first_index in range(ids.size()):
+			var first_id = ids[first_index]
+			if not centers.has(first_id) or not radii.has(first_id):
+				continue
+			for second_index in range(first_index + 1, ids.size()):
+				var second_id = ids[second_index]
+				if not centers.has(second_id) or not radii.has(second_id):
+					continue
+				var first_center: Vector2 = centers[first_id]
+				var second_center: Vector2 = centers[second_id]
+				var delta := second_center - first_center
+				var distance := delta.length()
+				var min_distance := float(radii[first_id]) + float(radii[second_id]) + gap
+				if distance >= min_distance:
+					continue
+				var direction := Vector2.ZERO
+				if distance > 0.001:
+					if absf(delta.x) < min_distance * 0.35:
+						var pair_hash := int(("%s/%s" % [str(first_id), str(second_id)]).hash())
+						var side := -1.0 if pair_hash % 2 == 0 else 1.0
+						delta.x += side * min_distance * 0.72
+						distance = delta.length()
+					direction = delta / distance
+				else:
+					var angle := TAU * float(first_index + second_index + iteration + 1) / maxf(float(ids.size()), 1.0)
+					direction = Vector2(cos(angle), sin(angle))
+					distance = 0.0
+				var push := min_distance - distance
+				var first_radius := float(radii[first_id])
+				var second_radius := float(radii[second_id])
+				var total_radius := maxf(first_radius + second_radius, 1.0)
+				first_center -= direction * push * (second_radius / total_radius)
+				second_center += direction * push * (first_radius / total_radius)
+				centers[first_id] = _atlas_clamp_node_center(first_center, first_radius, canvas_size, s)
+				centers[second_id] = _atlas_clamp_node_center(second_center, second_radius, canvas_size, s)
+				moved = true
+		if not moved:
+			return
+
+
+func _atlas_place_open_node_centers(centers: Dictionary, radii: Dictionary, canvas_size: Vector2, s: float) -> void:
+	var remaining := centers.keys()
+	var placed := {}
+	var core_id := _atlas_core_node_id()
+	while remaining.size() > 0:
+		var best_index := 0
+		var best_score := -INF
+		for idx in range(remaining.size()):
+			var node_id = remaining[idx]
+			var score := float(radii.get(node_id, 0.0))
+			if str(node_id) == core_id:
+				score += 1000.0
+			if score > best_score:
+				best_score = score
+				best_index = idx
+		var place_id = remaining[best_index]
+		remaining.remove_at(best_index)
+		var radius := float(radii.get(place_id, 1.0))
+		var anchor: Vector2 = centers.get(place_id, canvas_size * 0.5)
+		placed[place_id] = _atlas_find_open_node_center(anchor, radius, placed, radii, canvas_size, s)
+	for node_id in placed.keys():
+		centers[node_id] = placed[node_id]
+
+
+func _atlas_find_open_node_center(anchor: Vector2, radius: float, placed: Dictionary, radii: Dictionary, canvas_size: Vector2, s: float) -> Vector2:
+	var gap := maxf(2.0, ATLAS_NODE_COLLISION_GAP * s)
+	var start := _atlas_clamp_node_center(anchor, radius, canvas_size, s)
+	if _atlas_node_center_is_open(start, radius, placed, radii, gap):
+		return start
+	var best_center := start
+	var best_clearance := -INF
+	var step := maxf(12.0 * s, radius * 0.55)
+	var angle_count := 16
+	for ring in range(1, 34):
+		var distance := step * float(ring)
+		for angle_index in range(angle_count):
+			var angle := TAU * float(angle_index) / float(angle_count)
+			var candidate := _atlas_clamp_node_center(anchor + Vector2(cos(angle), sin(angle)) * distance, radius, canvas_size, s)
+			var clearance := _atlas_node_center_clearance(candidate, radius, placed, radii)
+			if clearance > best_clearance:
+				best_clearance = clearance
+				best_center = candidate
+			if clearance >= gap:
+				return candidate
+	return best_center
+
+
+func _atlas_node_center_is_open(center: Vector2, radius: float, placed: Dictionary, radii: Dictionary, gap: float) -> bool:
+	return _atlas_node_center_clearance(center, radius, placed, radii) >= gap
+
+
+func _atlas_node_center_clearance(center: Vector2, radius: float, placed: Dictionary, radii: Dictionary) -> float:
+	var clearance := INF
+	for other_id in placed.keys():
+		var other_center: Vector2 = placed[other_id]
+		var other_radius := float(radii.get(other_id, 0.0))
+		clearance = minf(clearance, center.distance_to(other_center) - radius - other_radius)
+	return clearance
+
+
+func _atlas_clamp_node_center(center: Vector2, radius: float, canvas_size: Vector2, s: float) -> Vector2:
+	var edge_gap := maxf(2.0, ATLAS_NODE_COLLISION_GAP * s * 0.5)
+	var min_pos := Vector2(radius + edge_gap, radius + edge_gap)
+	var max_pos := Vector2(
+		maxf(min_pos.x, canvas_size.x - radius - edge_gap),
+		maxf(min_pos.y, canvas_size.y - radius - edge_gap)
+	)
+	return Vector2(
+		clampf(center.x, min_pos.x, max_pos.x),
+		clampf(center.y, min_pos.y, max_pos.y)
+	)
 
 
 # Силуэт-линии созвездия: тусклые до покупки, золотые между купленными; вспышка
