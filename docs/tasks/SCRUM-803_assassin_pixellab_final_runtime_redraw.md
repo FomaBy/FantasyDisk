@@ -1,14 +1,14 @@
 # ART/ANIM PixelLab: «Ассасин» (assassin) — final 8-direction runtime redraw
 
-Статус: blocked
+Статус: done
 Приоритет: medium
 Роль: Design main (Codex) -> Animator/Back-end integration
 Версия: 0.1.8
 Создано: 2026-07-01
 Jira: SCRUM-803
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Design/Codex
+Thread/Worker: codex-scrum-803-sidecar-cleanup-20260702
 Locked paths: `assets/sprites/characters/pixellab/assassin/`, `assets/sprites/characters/full_frame/assassin_pixellab/`, `assets/sprites/characters/assassin_spriteframes.tres`, `scripts/progression_data_characters.gd`, character docs/tests.
 
 Dispatch: Jira-pull claimed by Animator/Codex (`codex-animator-auto`) 2026-07-01.
@@ -108,3 +108,30 @@ run the required focused smokes:
 the required Godot gates from origin/dev.
 
 Disk cleanup: removed this worker's `.godot/` cache after recording evidence.
+
+## Result / 2026-07-02 Codex sidecar cleanup
+
+Status: focused SCRUM-803 QA fix complete; ready for QA rerun.
+
+- Removed only the 112 tracked Assassin PixelLab `.import` sidecars:
+  56 under `assets/sprites/characters/pixellab/assassin/` and 56 under
+  `assets/sprites/characters/full_frame/assassin_pixellab/`.
+- Preserved all Assassin source/runtime PNGs, `manifest.json`,
+  `assassin_spriteframes.tres`, and
+  `scripts/progression_data_characters.gd`.
+- Final static validation PASS:
+  56 source PNGs, 56 runtime PNGs, 56 resolving SpriteFrames refs,
+  generic and 8-direction idle/move/walk rows with 1/6/6 frames,
+  canonical `assassin_idle_south.png` `sprite_path`, and 0 tracked/physical
+  `.import` or `.uid` sidecars in the two Assassin PixelLab dirs.
+- Godot gates PASS through `python3 tools/godot_gate.py`:
+  `res://tests/character_sprite_registry_alignment_test.gd`,
+  `res://tests/hero_select_pixellab_layout_test.gd`,
+  `res://tests/animation_smoke_test.gd`, and
+  `res://tests/runtime_smoke_test.gd`.
+- No art was regenerated and no PNG/source/runtime/SpriteFrames contract was
+  changed.
+
+Disk cleanup: removed this worker's `.godot/` cache, removed generated untracked
+`.import`/`.uid` sidecars from the Godot verification run, and no Python
+`__pycache__` remained.
