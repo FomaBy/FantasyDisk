@@ -166,7 +166,6 @@ const COMBAT_HUD_CARD_PATHS := {
 	"ultimate_multiplier": MINIMAL_FIELD_PATH,
 }
 const COMBAT_HUD_TIMER_PATH := MINIMAL_FIELD_PATH
-const COMBAT_HUD_ASCENSION_BADGE_PATH := MINIMAL_CARD_PATH
 const COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES := {
 	"normal": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus.png",
 	"hover": COMBAT_HUD_FRAME_DIR + "ui_btn_combat_level_up_plus_hover.png",
@@ -246,8 +245,11 @@ const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
 const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
 const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
 const HUD_V2_TIMER_ICON_2K := Rect2(1194, 70, 32, 32)
-const HUD_V2_ASCENSION_2K := Rect2(2408, 40, 104, 104)
-const HUD_V2_ASCENSION_ZONE_2K := Rect2(2426, 50, 68, 84)
+# Ряд эмблем возвышения: правый край/верх/размер пипа/зазор @2K (ширина = от уровня).
+const HUD_V2_ASCENSION_RIGHT_2K := 2524.0
+const HUD_V2_ASCENSION_TOP_2K := 52.0
+const HUD_V2_ASCENSION_PIP_2K := 44.0
+const HUD_V2_ASCENSION_GAP_2K := 8.0
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
 const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
@@ -9314,37 +9316,21 @@ func _create_hud() -> void:
 
 
 func _create_combat_timer_panel(root: Control) -> void:
-	# SCRUM-806: индикатор уровня возвышения — эмблема + обычная (арабская) цифра,
-	# римские цифры убраны: игроку сразу видно «что это» и «сколько».
+	# SCRUM-806 (reopen): уровень возвышения — ряд пиксель-эмблем по числу уровня,
+	# без плашки-рамки и цифры: считывается как «звёзды сложности», тултип сохранён.
 	if game.selected_ascension_level > 0:
-		var asc_badge := PanelContainer.new()
-		asc_badge.name = "AscensionHudBadge"
-		asc_badge.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		asc_badge.position = Vector2(0, 18)
-		asc_badge.custom_minimum_size = Vector2(64, 64)
-		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style())
-		asc_badge.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
-		root.add_child(asc_badge)
-		var asc_box := VBoxContainer.new()
-		asc_box.name = "AscensionHudBox"
-		asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-		asc_box.add_theme_constant_override("separation", 2)
-		asc_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		asc_badge.add_child(asc_box)
-		var asc_icon := _make_hud_v2_icon("ascension")
-		asc_icon.name = "AscensionHudIcon"
-		asc_icon.custom_minimum_size = Vector2(30, 30)
-		asc_box.add_child(asc_icon)
-		var asc_text := Label.new()
-		asc_text.name = "AscensionHudLabel"
-		asc_text.text = str(clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL))  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
-		asc_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		asc_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		asc_text.add_theme_font_size_override("font_size", _readable_font_size(24))
-		asc_text.add_theme_color_override("font_color", Color(1.0, 0.74, 0.30, 1.0))
-		asc_text.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
-		asc_text.add_theme_constant_override("outline_size", 3)
-		asc_box.add_child(asc_text)
+		var asc_row := HBoxContainer.new()
+		asc_row.name = "AscensionHudRow"
+		asc_row.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		asc_row.mouse_filter = Control.MOUSE_FILTER_STOP
+		asc_row.tooltip_text = "Возвышение %d\n%s" % [game.selected_ascension_level, "\n".join(game.PROGRESSION_DATA.ascension_modifier_lines(game.selected_ascension_level))]
+		root.add_child(asc_row)
+		var pip_count := clampi(game.selected_ascension_level, 0, game.META_PROGRESSION.MAX_ASCENSION_LEVEL)  # SCRUM-622: клампить по динамическому капу (5), не хардкод 10
+		for pip_index in range(pip_count):
+			var pip := _make_hud_v2_icon("ascension")
+			pip.name = "AscensionHudPip%d" % pip_index
+			pip.custom_minimum_size = Vector2(44, 44)
+			asc_row.add_child(pip)
 
 	# SCRUM-799: таймер показываем во всех боях, включая боссовый/элитный
 	# (5-минутный kill-timer из SCRUM-785). Ранний выход по boss_combat_active снят —
@@ -9378,19 +9364,15 @@ func _create_combat_timer_panel(root: Control) -> void:
 	root.add_child(timer_icon)
 
 
-func _timer_panel_style(alarm: bool, display_size := Vector2(288.0, 96.0), content_margins := Vector4.ZERO) -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка таймера (SCRUM666_CHUD_TIMER_2K=288×96), нарисованная 1:1 под слот
-	# с нативными 9-slice бордюрами — резкий орнамент на 1080p/2K/4K вместо ужатого field-фрейма.
-	var tint := Color(1.20, 0.78, 0.72, 1.0) if alarm else Color.WHITE
-	var style := _overhaul_2k_frame_style("chud_timer", display_size, tint)
+func _timer_panel_style(alarm: bool, display_size := Vector2(264.0, 92.0), content_margins := Vector4.ZERO) -> StyleBox:
+	# SCRUM-806 (reopen): жёлтая рамка chud_timer убрана — таймер на той же кожаной
+	# подложке, что левый кластер (единый стиль); alarm подкрашивает кожу в алый.
+	var tint := Color(1.45, 0.58, 0.50, 0.96) if alarm else Color(1.0, 1.0, 1.0, 0.93)
+	var texture_margins := _scaled_frame_margins_xy(Vector2(768.0, 256.0), display_size, Vector4(26, 22, 26, 22))
+	var style := _global_texture_style(HUD_V2_CLUSTER_BG_PATH, texture_margins, tint, Vector4.ZERO, true)
 	if content_margins != Vector4.ZERO:
 		_apply_stylebox_content_margins(style, content_margins)
 	return style
-
-
-func _ascension_badge_style(display_size := Vector2(128.0, 128.0), content_margins := Vector4(10, 10, 10, 10)) -> StyleBox:
-	var texture_margins := _scaled_frame_margins_xy(Vector2(128.0, 128.0), display_size, Vector4(6, 8, 6, 8))
-	return _global_texture_style(COMBAT_HUD_ASCENSION_BADGE_PATH, texture_margins, Color.WHITE, content_margins, true)
 
 
 func _scrum666_hud_scale_for_size(viewport_size: Vector2) -> float:
@@ -9470,21 +9452,20 @@ func _layout_combat_hud(root: Control) -> void:
 		if timer_icon != null:
 			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
 
-	var asc_badge := root.find_child("AscensionHudBadge", true, false) as PanelContainer
-	if asc_badge != null:
-		var asc_rect := _scrum666_scaled_rect(HUD_V2_ASCENSION_2K, scale)
-		var asc_content := _scrum666_content_margins(HUD_V2_ASCENSION_2K, HUD_V2_ASCENSION_ZONE_2K, scale)
-		_apply_chud_rect(asc_badge, asc_rect, "scrum666_frame_rect")
-		asc_badge.set_meta("scrum666_content_margins", asc_content)
-		asc_badge.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_ASCENSION_ZONE_2K, scale))
-		asc_badge.add_theme_stylebox_override("panel", _ascension_badge_style(asc_rect.size, asc_content))
-		var asc_icon := asc_badge.find_child("AscensionHudIcon", true, false) as TextureRect
-		if asc_icon != null:
-			var asc_icon_size := maxf(14.0, roundf(34.0 * scale))
-			asc_icon.custom_minimum_size = Vector2(asc_icon_size, asc_icon_size)
-		var asc_label := asc_badge.find_child("AscensionHudLabel", true, false) as Label
-		if asc_label != null:
-			asc_label.add_theme_font_size_override("font_size", maxi(12, int(roundf(30.0 * scale))))
+	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
+	if asc_row != null:
+		var pip_size := maxf(18.0, roundf(HUD_V2_ASCENSION_PIP_2K * scale))
+		var pip_gap := maxf(2.0, roundf(HUD_V2_ASCENSION_GAP_2K * scale))
+		asc_row.add_theme_constant_override("separation", int(pip_gap))
+		var pip_count := asc_row.get_child_count()
+		for pip in asc_row.get_children():
+			var pip_icon := pip as TextureRect
+			if pip_icon != null:
+				pip_icon.custom_minimum_size = Vector2(pip_size, pip_size)
+		var row_size := Vector2(pip_count * pip_size + maxf(0.0, pip_count - 1.0) * pip_gap, pip_size)
+		var row_rect := Rect2(Vector2(roundf(HUD_V2_ASCENSION_RIGHT_2K * scale) - row_size.x, roundf(HUD_V2_ASCENSION_TOP_2K * scale)), row_size)
+		_apply_chud_rect(asc_row, row_rect, "scrum666_frame_rect")
+		asc_row.set_meta("scrum666_content_zone", row_rect)
 
 
 func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: float) -> void:

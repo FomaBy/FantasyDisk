@@ -44,9 +44,8 @@ const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
 const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806
-const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: единая подложка, без жёлтой рамки
 const CHUD_V2_BAR_TRACK_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"  # SCRUM-806
-const CHUD_ASCENSION_FRAME_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 
 
 func _initialize() -> void:
@@ -133,7 +132,7 @@ func _initialize() -> void:
 		# SCRUM-671: боевой HUD — clean essential-only set from SCRUM-666:
 		# HP/XP/money/ULT, timer, ascension/elevation and bottom-right level-up plus only.
 		await _check_screen(viewport_size, "combat_hud", Callable(self, "_open_combat_hud"), [
-			"RunResourceHud", "CombatTimerPanel", "AscensionHudBadge", "LevelUpPlusButton",
+			"RunResourceHud", "CombatTimerPanel", "AscensionHudRow", "LevelUpPlusButton",
 		], dump_lines, errors)
 		# SCRUM-487: баннер появления босса — ширина из CTB_*_2K (фикс легаси 1280=720p),
 		# текст центрируется по 2K-базе и помещается в рамку. Транзиентный — один контрол.
@@ -518,13 +517,16 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var timer_zone: Rect2 = timer_panel.get_meta("scrum666_content_zone", Rect2()) as Rect2
 			if timer_label == null or not timer_zone.has_area() or not timer_zone.grow(1.0).encloses(timer_label.get_global_rect()):
 				return "%s: expected CombatTimerLabel to stay inside SCRUM-666 timer zone %s." % [context, str(timer_zone)]
-			var ascension := main.find_child("AscensionHudBadge", true, false) as PanelContainer
-			if ascension == null or _stylebox_texture_path(ascension.get_theme_stylebox("panel")) != CHUD_ASCENSION_FRAME_PATH:
-				return "%s: expected AscensionHudBadge to use the live compact ascension frame." % context
-			var ascension_label := ascension.find_child("AscensionHudLabel", true, false) as Label
-			var ascension_zone: Rect2 = ascension.get_meta("scrum666_content_zone", Rect2()) as Rect2
-			if ascension_label == null or not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
-				return "%s: expected ascension label to stay inside SCRUM-666 ascension zone %s." % [context, str(ascension_zone)]
+			# SCRUM-806 reopen: возвышение — голый ряд эмблем, рамка и цифра убраны.
+			if main.find_child("AscensionHudBadge", true, false) != null:
+				return "%s: SCRUM-806 HUD v2 must not show the framed ascension badge." % context
+			var ascension_row := main.find_child("AscensionHudRow", true, false) as HBoxContainer
+			if ascension_row != null:
+				if ascension_row.get_child_count() < 1 or not ascension_row.get_global_rect().has_area():
+					return "%s: expected non-empty visible ascension pip row." % context
+				for pip in ascension_row.get_children():
+					if (pip as TextureRect) == null or (pip as TextureRect).texture == null:
+						return "%s: expected textured ascension pips." % context
 			var plus := main.find_child("LevelUpPlusButton", true, false) as Button
 			if plus == null or plus.text != "+":
 				return "%s: expected bottom-right LevelUpPlusButton." % context
@@ -533,10 +535,9 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected LevelUpPlusButton to occupy SCRUM-666 plus zone %s, got %s." % [context, str(plus_zone), str(plus.get_global_rect())]
 			if context.contains("(1920, 1080)"):
 				var viewport_rect := main.get_viewport().get_visible_rect()
-				var top_band_bottom := maxf(
-					maxf(resource.get_global_rect().end.y, timer_panel.get_global_rect().end.y),
-					ascension.get_global_rect().end.y
-				)
+				var top_band_bottom := maxf(resource.get_global_rect().end.y, timer_panel.get_global_rect().end.y)
+				if ascension_row != null:
+					top_band_bottom = maxf(top_band_bottom, ascension_row.get_global_rect().end.y)
 				var top_band_ratio := top_band_bottom / maxf(1.0, viewport_rect.size.y)
 				if top_band_ratio > 0.18:
 					return "%s: expected compact 1080p combat HUD top band <= 18%% viewport height, got %.2f%%." % [context, top_band_ratio * 100.0]

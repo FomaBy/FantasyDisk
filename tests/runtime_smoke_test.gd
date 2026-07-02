@@ -57,7 +57,7 @@ const SETTINGS_V3_TAB_SWITCHER_TEXTURE := "res://assets/sprites/ui/frames/settin
 const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806: слим-кластер v2
 const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
 const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
-const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_chud_timer.png"
+const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
 # SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
 const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
 # SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab); рамки берутся из
@@ -545,14 +545,25 @@ func _initialize() -> void:
 	if bool(timer_text.get_meta("alarm_active", false)):
 		_fail("Expected the combat timer alarm to reset above 5 seconds.")
 		return
-	var ascension_badge := main.find_child("AscensionHudBadge", true, false) as PanelContainer
-	var ascension_label := main.find_child("AscensionHudLabel", true, false) as Label
-	if ascension_badge == null or ascension_label == null:
-		_fail("Expected SCRUM-671 combat HUD to show the ascension badge for an elevated run.")
+	# SCRUM-806 reopen: возвышение — ряд пиксель-эмблем по уровню, без плашки и цифры.
+	if main.find_child("AscensionHudBadge", true, false) != null:
+		_fail("Expected SCRUM-806 HUD v2 to remove the framed ascension badge.")
 		return
-	var ascension_zone: Rect2 = ascension_badge.get_meta("scrum666_content_zone", Rect2()) as Rect2
-	if not ascension_zone.has_area() or not ascension_zone.grow(1.0).encloses(ascension_label.get_global_rect()):
-		_fail("Expected ascension label to stay inside SCRUM-666 ascension zone %s, got %s." % [ascension_zone, ascension_label.get_global_rect()])
+	var ascension_row := main.find_child("AscensionHudRow", true, false) as HBoxContainer
+	if ascension_row == null:
+		_fail("Expected SCRUM-806 combat HUD to show the ascension pip row for an elevated run.")
+		return
+	var expected_pips: int = clampi(int(main.get("selected_ascension_level")), 0, 5)
+	if ascension_row.get_child_count() != expected_pips:
+		_fail("Expected %d ascension pips, got %d." % [expected_pips, ascension_row.get_child_count()])
+		return
+	for pip in ascension_row.get_children():
+		var pip_icon := pip as TextureRect
+		if pip_icon == null or pip_icon.texture == null:
+			_fail("Expected every ascension pip to be a textured pixel emblem.")
+			return
+	if not ascension_row.get_global_rect().has_area():
+		_fail("Expected the ascension pip row to occupy a visible rect.")
 		return
 	var hud_overlap := _first_control_overlap(_visible_hud_top_controls(main), 2.0)
 	if not hud_overlap.is_empty():
@@ -7844,9 +7855,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 		if control.name == "CombatTimerPanel" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != HUD_TIMER_PANEL_TEXTURE_2K:
 			_fail("Expected CombatTimerPanel to use SCRUM-564 @2K HUD timer frame at %s." % context)
 			return
-		if control.name == "AscensionHudBadge" and _stylebox_texture_path((control as PanelContainer).get_theme_stylebox("panel")) != MINIMAL_CARD_TEXTURE:
-			_fail("Expected AscensionHudBadge to use SCRUM-448 minimal card frame at %s." % context)
-			return
+		# SCRUM-806 reopen: AscensionHudRow — голый ряд эмблем без stylebox-рамки.
 	var overlap := _first_control_overlap(controls, 2.0)
 	if not overlap.is_empty():
 		_fail("Expected no top HUD overlap at %s, got %s." % [context, overlap])
@@ -7857,7 +7866,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 
 func _visible_hud_top_controls(main: Node) -> Array:
 	var controls := []
-	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudBadge"]:
+	for node_name in ["RunResourceHud", "CombatTimerPanel", "AscensionHudRow"]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control != null and control.visible:
 			controls.append(control)

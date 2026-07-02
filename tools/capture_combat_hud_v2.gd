@@ -17,7 +17,7 @@ const DUMP_NODES := [
 	"UIIcon_ultimate_multiplier", "HudULTTrack", "HudULTBar", "HudULTLabel",
 	"UIIcon_money", "HudMoneyLabel",
 	"CombatTimerPanel", "CombatTimerLabel", "CombatTimerIcon",
-	"AscensionHudBadge", "AscensionHudIcon", "AscensionHudLabel",
+	"AscensionHudRow", "AscensionHudPip0", "AscensionHudPip2",
 	"LevelUpPlusButton",
 ]
 
