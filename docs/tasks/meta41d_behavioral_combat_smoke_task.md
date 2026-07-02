@@ -98,3 +98,18 @@ QA-фейл SCRUM-834, блокер 3: conditional-smoke проверял син
 - Mutation/self-check evidence: the behavioral gate includes disabled-wiring
   checks for on-hit debuff, gold scaling, and pierce wiring; the final green run
   proves those self-checks still execute successfully on top of SCRUM-835.
+
+## QA-Вердикт
+
+Статус: PASSED
+Дата: 2026-07-02
+Проверка: финальный Codex QA/finalization subagent.
+
+- Branch/commit: `origin/codex/scrum-837-behavioral-gate-final@d2fa25a1`
+  поверх `origin/dev@0e6cdaab`.
+- Production runtime changes: none in the final pass.
+- Tests: `meta_keystone_behavioral_smoke_test.gd`,
+  `meta_skill_tree_smoke_test.gd`, `skill_tree_per_hero_test.gd`,
+  `runtime_smoke_test.gd` — PASSED via `python3 tools/godot_gate.py`.
+- Log grep: no `SCRIPT ERROR`, no `Parse Error`, no `ERROR:`.
+- Static check: `git diff --check` PASSED.
