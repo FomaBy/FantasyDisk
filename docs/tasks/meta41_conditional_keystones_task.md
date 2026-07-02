@@ -121,7 +121,7 @@ grep'ом «SCRIPT ERROR» (parse-error даёт exit 0!); git pull перед �
 `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`,
 `docs/design/systems/meta_constellations.md`, `CHANGELOG.md`.
 
-## QA-Вердикт 2026-07-02 — FAILED
+## QA-история (superseded) 2026-07-02 — FAILED
 
 - Проверено: QA static/code/docs/tests inspection на `origin/dev` `35a16047`
   в `/tmp/FantasyDisk-QA-SCRUM-834`. Прогнаны: `meta_skill_tree_smoke_test.gd`
@@ -290,3 +290,10 @@ sync/commit; transient `.godot`, `qa_logs`, and `.import` artifacts not kept.
 Затронуто: `tests/meta_skill_tree_smoke_test.gd`,
 `docs/design/systems/meta_constellations.md`, `CHANGELOG.md`,
 `docs/tasks/meta41_conditional_keystones_task.md`.
+
+## QA-Вердикт (re-check 2026-07-02, claude-qa)
+
+Статус: PASSED
+
+- Фикс Helmholtz (4180468e real-node coverage + acd8e023 sync) был застрэнджен на codex/scrum-834-real-node-smoke — QA забрал cherry-pick'ом в origin/dev (конфликтов 0). Scope: тест+доки, рантайм не тронут.
+- Focused-гейт: tests/meta_skill_tree_smoke_test.gd PASS на чистом worktree после --import (реальные условные keystone-ноды покрыты).
