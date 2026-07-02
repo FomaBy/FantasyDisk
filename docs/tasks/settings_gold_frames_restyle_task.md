@@ -1,6 +1,6 @@
 # Настройки: золотые рамки полей и кнопок → кожа с латунным кантом
 
-Статус: new
+Статус: done
 Роль: Back-end
 Контур: Claude
 Lane: claude
@@ -75,3 +75,17 @@ Labels: foma, backend, claude
 - Аудит: `docs/design/audits/yellow_frames_audit_2026_07.md` (SCRUM-809), секция «волна 3».
 - Арт-дирекция: SCRUM-806 reopen (`docs/tasks/combat_hud_compact_redesign_task.md`).
 - Контекст v4: SCRUM-805 (`docs/design/settings_v4_*.md`).
+
+## Прогресс (2026-07-02)
+
+- Перекраска tools/recolor_settings_brass.py (hue 25–70° sat≥0.25 val≥0.30 → латунь 34°,
+  val 0.16–0.58): field 5966px, action_button 4018px, v3 tab_switcher 4853px;
+  размеры/альфа/имена 1:1, .import/margins нетронуты.
+- Скан методики аудита: bright 37.0→3.4% (field), 18.4→0.4% (action), 12.3→1.8% (tab) — AC <5%.
+- Hover/focus: state-тинты 1.16/1.20 поверх латуни различимы (капчи вкладок).
+- Капчи до/после: docs/design/previews/scrum819/ (до — старый локальный лейаут,
+  после — актуальный 805-лейаут из origin с латунью; предупреждение: тёплый .godot-кэш
+  основной папки маскирует замену PNG — «после» снималось в worktree после cold --import).
+- Тесты в worktree от origin/dev + cherry-pick: game_settings_smoke PASSED,
+  video_settings_apply PASSED, aim_mode_settings PASSED, ui_no_overlap_matrix PASSED.
+- Коммит ассетов: e43c6465 (+ docs-коммит следом), оба в origin/dev.
