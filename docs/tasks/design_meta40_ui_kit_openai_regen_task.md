@@ -66,3 +66,16 @@ generation. Ключевое правило: элементы ГЕНЕРИРУЮ
   рама+небо) удалён в пользу модульных bg_sky + frame_border.
 
 Статус меняю на done — тикет уходит в «Контроль качества».
+
+## QA-Вердикт
+Статус: PASSED
+Проверил: claude-qa | Дата: 2026-07-02
+
+- Мерж подтверждён: 033c9226 (27 ассетов + tools/generate_meta40_ui_openai.py) и follow-up 0cf1b513 (CHANGELOG + sync-map пин + санитария crest_doctor) — оба ancestor origin/dev, не strand.
+- Состав: 27 png ↔ 27 .import пар в git-tree (1:1), uid-дублей 0; atlas_bg удалён чисто с сайдкаром, битых ссылок в коде/сценах нет.
+- Размеры — все 27 точно по спеке/§7: bg_sky 2560×1440 (фулскрин), frame_border 1536×1024 (полая, центр alpha=0, 9-slice), сокеты 96/128/168/112, star_alloc 80, keystone_ring 200 (полое), валюты 64, 17 гербов crest_* 160.
+- Прозрачность: RGBA везде, bg_sky opaque по спеке; 0 px маджента-остатков на всех 27 (строгий скан, включая дочищенный crest_doctor); полости frame_border/keystone_ring реально прозрачны.
+- Перегенерация native-size: sha всех 25 переживших имён отличаются от 826-версий (+2 новых), апскейлов нет (канва аспекта слота → LANCZOS в целевой размер).
+- Визуал: единый D&D dark fantasy кит (бронза/золото/сапфир), рама полая с чистой safe-area, гербы канон-символов «no text», мокап 2560×1440 — контент в safe-area; контакт-лист полный (27).
+- Acceptance 1–4 закрыты: пары в git-tree, контакт-лист+мокап, дизайн-док §7 (пайплайн OpenAI + supersede 826), CHANGELOG (Unreleased/Changed, 0cf1b513) + Jira evidence + sync-map пин КК.
+- Гейты: чистый worktree от origin/dev, cold --import exit 0 (0 ERROR/WARNING) + runtime_smoke_ui_test.gd PASS ×2 (fdengine, slots=1).
