@@ -133,3 +133,13 @@ cherry-pick + полный `--import` через `tools/godot_gate.py`, fdengine
 - Арт-дирекция: SCRUM-806 reopen (`docs/tasks/combat_hud_compact_redesign_task.md`).
 - Паттерн безопасной правки альфы/цвета без смены размера: memory
   alpha-flood-fill-fix-baked-bg (не менять размер → .import валиден).
+
+## QA-Вердикт: PASSED
+Статус: PASSED
+QA claude-qa 2026-07-02 (изолированный worktree от origin/dev, независимая проверка).
+- Диффскоуп: коммит a8bec1f0 трогает только 6 PNG minimal_metal + превью + tools/recolor_minimal_metal_brass.py; `.import` и `ui_theme_paths.gd` НЕ менялись (AC surgical-diff ✓).
+- Размеры PNG 1:1 (card 426×486, panel 782×716, field 616×286, tooltip 760×242, modal 986×900, hud_strip 1122×288 — сверено против a8bec1f0^).
+- Alpha-канал байт-в-байт идентичен во всех 6; изменены только пиксели канта (1.7–4.4%).
+- Кант #E4AA34 → #745D37 (тёмная латунь H37° S53% V45%), блик #F5C460 → #7B6848 — как задано.
+- Независимый edge-band bright-скан (hue 30–68°, sat≥0.42, val≥0.52, внешние 15%): 0.00% у всех 6 (AC <5% ✓). Превью до/после визуально сверены (card): яркий жёлтый → тонкая латунная линия, тело угольное без изменений.
+- Тесты: ui_no_overlap_matrix_test PASS; runtime_smoke_test PASS (×2 после единичного known save-state флейка «autosave prompt» — SCRUM-817 меняет только PNG, к автосейв-логике отношения не имеет; см. memory godot-userdatadir-not-isolating-real-save).
