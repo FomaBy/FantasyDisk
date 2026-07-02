@@ -3630,8 +3630,8 @@
  },
  "combat_hud_compact_redesign_task.md": {
   "key": "SCRUM-806",
-  "status": "В работе",
-  "desc_hash": "e7b8e8f5e0de29d8687ebb6455697df7"
+  "status": "Готово",
+  "desc_hash": "a0db3773524d18e17a5a4d60d0f6dbed"
  },
  "skill_tree_v3_class_identity_task.md": {
   "key": "SCRUM-807",
