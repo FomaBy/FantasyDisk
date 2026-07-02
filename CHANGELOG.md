@@ -290,6 +290,9 @@
   numbers continue to show the concrete effect for the current build.
 
 ### Fixed
+- SCRUM-584: fixed the key-rebind conflict modal so Retry/Back use the dedicated
+  `ui_frame_2k_rc_btn.png` runtime frame, and the UI matrix now asserts that
+  asset instead of the generic `continue_240x72` text-button texture.
 - SCRUM-693: in active combat, Escape now opens the character board / pause
   dossier immediately with the left run controls, pauses gameplay, and resumes
   via Resume or repeated Escape without showing the old standalone pause menu.

@@ -19,7 +19,7 @@ const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
-const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
+const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"

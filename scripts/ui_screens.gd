@@ -9998,7 +9998,7 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
 		return "rebind_420x62"
 	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
-		return "continue_240x72"
+		return ""
 	if button_name == "WeaponSelectBackButton":
 		return "pause_280x60"
 	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
@@ -10272,7 +10272,7 @@ func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector
 
 
 func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	if slot in ["cr_btn", "pm_btn", "rc_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
+	if slot in ["cr_btn", "pm_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
 		_apply_fantasy_button_theme(button)
 		return
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
