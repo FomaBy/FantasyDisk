@@ -151,13 +151,22 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
 	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
+	var run_modifiers_raw = owner_node.get("run_modifiers")
+	var run_modifiers: Dictionary = run_modifiers_raw if run_modifiers_raw is Dictionary else {}
+	var meta_damage_mult := 1.0
+	var meta_health_mult := 1.0
+	if weapon_id == "homunculus_vial":
+		meta_damage_mult *= 1.0 + float(run_modifiers.get("homunculus_power_mult", 0.0))
+		meta_health_mult *= 1.0 + float(run_modifiers.get("homunculus_power_mult", 0.0))
+	if weapon_id == "summon_amulet":
+		meta_damage_mult *= 1.0 + float(run_modifiers.get("pet_damage_mult", 0.0))
 	return {
-		"damage": maxf(base_damage * damage_multiplier * role_damage, 1.0),
+		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult, 1.0),
 		"move_speed": 230.0 * summon_speed_multiplier * (1.0 + minf(leadership * 0.010, 0.28)),
 		"attack_range": maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0),
 		"attack_interval": maxf(summon_attack_interval / (1.0 + summon_haste), 0.18),
 		"lifetime": 12.0 * summon_lifetime_multiplier * (1.0 + minf(leadership * 0.026, 0.48)),
-		"max_health": owner_max_hp * summon_health_multiplier * (1.0 + summon_bulk),
+		"max_health": owner_max_hp * summon_health_multiplier * (1.0 + summon_bulk) * meta_health_mult,
 		"summon_role": summon_role,
 		"control_knockback": summon_control_knockback,
 		"support_heal_percent": summon_support_heal_percent,

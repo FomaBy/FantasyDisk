@@ -10,8 +10,10 @@ const Meta := preload("res://scripts/meta_progression.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
 const PlayerScript := preload("res://scripts/player.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 
 func _initialize() -> void:
@@ -25,6 +27,7 @@ func _initialize() -> void:
 	_test_atlas_stays_non_combat()
 	await _test_player_application()
 	await _test_conditional_keystones()
+	await _test_semantic_combat_keystones_835()
 	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
@@ -623,6 +626,224 @@ func _test_conditional_keystones() -> void:
 		_fail("Условный keystone «Из тени» (рывок→крит) должен поднимать crit_chance после уклонения.")
 		return
 	prc.queue_free()
+
+	current_scene = null
+	holder.queue_free()
+	await process_frame
+
+
+func _test_semantic_combat_keystones_835() -> void:
+	_test_semantic_keystone_data_835()
+	await _test_semantic_keystone_runtime_835()
+
+
+func _test_semantic_keystone_data_835() -> void:
+	var expected := {
+		"soldier_k0": {"title": "Подавление", "effects": {"enemy_hit_damage_down": 0.15, "move_speed_mult": -0.10}},
+		"thief_k1": {"title": "Джекпот", "effects": {"gold_damage_per_50": 0.01, "gold_damage_bonus_cap": 0.25, "shop_price_mult": 0.20}},
+		"elementalist_k0": {"title": "Резонанс", "effects": {"elemental_resonance_bonus": 0.35, "damage_mult": -0.12}},
+		"elementalist_k1": {"title": "Монолит", "effects": {"elemental_orb_extra_count": 2.0, "prism_rift_radius_mult": -0.20}},
+		"priest_k0": {"title": "Мученик", "effects": {"heal_to_holy_damage_ratio": 0.50, "healing_mult": -0.30}},
+		"priest_k1": {"title": "Заступник", "effects": {"ward_absorb_bonus": 0.40, "ult_charge_mult": -0.17}},
+		"robot_k0": {"title": "Перегрев", "effects": {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15}},
+		"robot_k1": {"title": "Сверхпроводник", "effects": {"magnet_radius_mult": 0.50, "max_health_mult": -0.12}},
+		"engineer_k0": {"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
+		"engineer_k1": {"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
+		"dark_mage_k0": {"title": "Пожинатель", "effects": {"dot_death_spread_duration": 2.0, "direct_damage_mult": -0.15}},
+		"dark_mage_k1": {"title": "Ненасытный луч", "effects": {"beam_duration_mult": 0.30, "explosion_radius_mult": -0.20}},
+		"guitarist_k0": {"title": "Хедлайнер", "effects": {"guitar_aura_radius_mult": 0.30, "knockback_mult": -0.50}},
+		"guitarist_k1": {"title": "Рифф", "effects": {"riff_streak_damage_bonus": 0.25, "attack_speed_mult": -0.10}},
+		"assassin_k0": {"title": "Экзекутор", "effects": {"crit_execute_threshold": 0.35, "crit_chance_flat": -0.10}},
+		"assassin_k1": {"title": "Теневой шаг", "effects": {"shadow_burst_invisibility_time": 2.0, "max_health_mult": -0.15}},
+		"ranger_k0": {"title": "Штурмовая стойка", "effects": {"charged_shot_extra_pierce": 2.0, "charge_time_mult": 0.20}},
+		"ranger_k1": {"title": "Капканщик", "effects": {"trap_extra_count": 2.0, "non_trap_damage_mult": -0.12}},
+		"doctor_k0": {"title": "Вампирический контур", "effects": {"drain_extra_targets": 1.0, "medkit_healing_mult": -0.40}},
+		"doctor_k1": {"title": "Хирург", "effects": {"surgical_close_damage_bonus": 0.60, "ranged_damage_mult": -0.20}},
+		"chemist_k0": {"title": "Катализатор", "effects": {"cloud_detonation_radius_mult": 0.40, "pool_duration_mult": -0.30}},
+		"chemist_k1": {"title": "Гомункул-прайм", "effects": {"homunculus_power_mult": 0.50, "max_health_mult": -0.10}},
+		"knight_k0": {"title": "Бастион", "effects": {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0, "move_speed_mult": -0.15}},
+		"druid_k0": {"title": "Вожак стаи", "effects": {"pet_damage_mult": 0.25, "pet_personal_damage_mult": -0.15}},
+		"druid_k1": {"title": "Терновый круг", "effects": {"briar_radius_mult": 0.35, "move_speed_mult": -0.10}},
+	}
+	var generic_placeholders := ["hurt_damage_bonus", "stance_damage_bonus", "rush_damage_bonus", "swarm_damage_bonus"]
+	for node_id in expected.keys():
+		var node := Meta.node_by_id(str(node_id))
+		if node.is_empty():
+			_fail("SCRUM-835 expected keystone '%s' is missing." % str(node_id))
+			return
+		var expected_node: Dictionary = expected[node_id]
+		if str(node.get("title", "")) != str(expected_node.get("title", "")):
+			_fail("SCRUM-835 keystone '%s' title mismatch: %s." % [str(node_id), str(node.get("title", ""))])
+			return
+		var effects: Dictionary = node.get("effects", {})
+		for key in (expected_node.get("effects", {}) as Dictionary).keys():
+			if not effects.has(key) or not is_equal_approx(float(effects[key]), float((expected_node["effects"] as Dictionary)[key])):
+				_fail("SCRUM-835 keystone '%s' missing/changed effect '%s'." % [str(node_id), str(key)])
+				return
+		for generic_key in generic_placeholders:
+			if effects.has(generic_key):
+				_fail("SCRUM-835 keystone '%s' must use semantic subsystem keys, not generic '%s'." % [str(node_id), str(generic_key)])
+				return
+
+
+func _spawn_test_enemy(holder: Node2D, position: Vector2, max_hp := 100.0) -> Node2D:
+	var enemy := ENEMY_SCENE.instantiate() as Node2D
+	holder.add_child(enemy)
+	enemy.global_position = position
+	enemy.add_to_group("enemies")
+	await process_frame
+	enemy.set("max_health", max_hp)
+	enemy.set("health", max_hp)
+	return enemy
+
+
+func _test_semantic_keystone_runtime_835() -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+
+	var gold_player := await _make_conditional_player(holder, {"gold_damage_per_50": 0.01, "gold_damage_bonus_cap": 0.25})
+	gold_player.set("money", 49)
+	if not is_equal_approx(float(gold_player.call("meta_damage_multiplier", {}, null)), 1.0):
+		_fail("SCRUM-835 Джекпот must floor gold bonus to full 50-gold steps.")
+		return
+	gold_player.set("money", 2500)
+	if absf(float(gold_player.call("meta_damage_multiplier", {}, null)) - 1.25) > 0.001:
+		_fail("SCRUM-835 Джекпот must cap gold damage bonus at +25%.")
+		return
+	gold_player.queue_free()
+
+	var soldier := await _make_conditional_player(holder, {"enemy_hit_damage_down": 0.15})
+	var suppressed := await _spawn_test_enemy(holder, soldier.global_position + Vector2(32.0, 0.0))
+	soldier.call("_apply_meta_keystone_hit_effects", suppressed, 5.0, {})
+	if StatusEffects.damage_multiplier(suppressed) > 0.86:
+		_fail("SCRUM-835 Подавление must reduce outgoing damage of recently hit enemies.")
+		return
+	soldier.queue_free()
+	suppressed.queue_free()
+
+	var elementalist := await _make_conditional_player(holder, {"elemental_resonance_bonus": 0.35})
+	var resonant := await _spawn_test_enemy(holder, elementalist.global_position + Vector2(48.0, 0.0))
+	resonant.set_meta("meta_elemental_mark_element", "fire")
+	resonant.set_meta("meta_elemental_mark_owner", elementalist.get_instance_id())
+	var same_element := float(elementalist.call("meta_damage_multiplier", {"element": "fire"}, resonant))
+	var other_element := float(elementalist.call("meta_damage_multiplier", {"element": "storm"}, resonant))
+	if other_element <= same_element * 1.34:
+		_fail("SCRUM-835 Резонанс must boost a different element against marked targets.")
+		return
+	elementalist.queue_free()
+	resonant.queue_free()
+
+	var robot := await _make_conditional_player(holder, {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15})
+	var cold := float(robot.call("meta_damage_multiplier", {"attack_mode": "robot_reactor_core"}, null))
+	for _i in range(5):
+		robot.call("_apply_meta_keystone_hit_effects", null, 10.0, {"attack_mode": "robot_reactor_core"})
+	robot.call("_update_meta_keystone_runtime", 0.0)
+	var hot := float(robot.call("meta_damage_multiplier", {"attack_mode": "robot_reactor_core"}, null))
+	if hot <= cold * 1.29:
+		_fail("SCRUM-835 Перегрев must grant damage after reactor heat exceeds 70%.")
+		return
+	robot.queue_free()
+
+	var assassin := await _make_conditional_player(holder, {"crit_execute_threshold": 0.35})
+	var victim := await _spawn_test_enemy(holder, assassin.global_position + Vector2(40.0, 0.0), 100.0)
+	victim.set("health", 34.0)
+	assassin.call("_apply_meta_keystone_hit_effects", victim, 10.0, {"critical": true, "damage_type": "physical"})
+	if float(victim.get("health")) > 0.0:
+		_fail("SCRUM-835 Экзекутор must execute non-elite targets under 35% HP on crit.")
+		return
+	var elite := await _spawn_test_enemy(holder, assassin.global_position + Vector2(60.0, 0.0), 100.0)
+	elite.add_to_group("elite_enemies")
+	elite.set("health", 34.0)
+	assassin.call("_apply_meta_keystone_hit_effects", elite, 10.0, {"critical": true, "damage_type": "physical"})
+	if float(elite.get("health")) <= 0.0:
+		_fail("SCRUM-835 Экзекутор must not execute elite targets.")
+		return
+	assassin.queue_free()
+	victim.queue_free()
+	elite.queue_free()
+
+	var helper := await _make_conditional_player(holder, {
+		"elemental_orb_extra_count": 2.0,
+		"mine_extra_count": 2.0,
+		"trap_extra_count": 2.0,
+		"drain_extra_targets": 1.0,
+		"charged_shot_extra_pierce": 2.0,
+		"magnet_radius_mult": 0.50,
+		"prism_rift_radius_mult": -0.20,
+		"cloud_detonation_radius_mult": 0.40,
+		"briar_radius_mult": 0.35,
+		"beam_duration_mult": 0.30,
+		"pool_duration_mult": -0.30,
+		"device_attack_speed_bonus": 0.25,
+		"charge_time_mult": 0.20,
+	})
+	if int(helper.call("meta_extra_projectiles", {"attack_mode": "elemental_orbit"})) != 2:
+		_fail("SCRUM-835 Монолит must add two elemental orbit orbs.")
+		return
+	if int(helper.call("meta_extra_projectiles", {"attack_mode": "engineer_pressure_mines"})) != 2:
+		_fail("SCRUM-835 Минёр must add two pressure mines.")
+		return
+	if int(helper.call("meta_extra_projectiles", {"attack_mode": "trap"})) != 2 or not bool(helper.call("meta_trap_instant_arm", {"attack_mode": "trap"})):
+		_fail("SCRUM-835 Капканщик must add two traps and arm them instantly.")
+		return
+	if int(helper.call("meta_extra_projectiles", {"attack_mode": "drain_link"})) != 1:
+		_fail("SCRUM-835 Вампирический контур must add one drain-link target.")
+		return
+	if int(helper.call("meta_extra_pierce", {"is_charged": true})) != 2:
+		_fail("SCRUM-835 Штурмовая стойка must add charged-shot pierce.")
+		return
+	if float(helper.call("meta_radius_multiplier", {"attack_mode": "robot_magnetic_anchor"})) < 1.49:
+		_fail("SCRUM-835 Сверхпроводник must expand magnet radius.")
+		return
+	if float(helper.call("meta_radius_multiplier", {"attack_mode": "prism_rift"})) > 0.81:
+		_fail("SCRUM-835 Монолит must shrink prism/rift zones.")
+		return
+	if float(helper.call("meta_radius_multiplier", {"is_cloud": true})) < 1.39:
+		_fail("SCRUM-835 Катализатор must expand cloud detonation radius.")
+		return
+	if float(helper.call("meta_radius_multiplier", {"is_briar": true})) < 1.34:
+		_fail("SCRUM-835 Терновый круг must expand briar zones.")
+		return
+	if float(helper.call("meta_duration_multiplier", {"attack_mode": "beam"})) < 1.29:
+		_fail("SCRUM-835 Ненасытный луч must extend beam duration.")
+		return
+	if float(helper.call("meta_duration_multiplier", {"is_cloud": true})) > 0.71:
+		_fail("SCRUM-835 Катализатор downside must shorten pool/cloud duration.")
+		return
+	if float(helper.call("meta_interval_multiplier", {"is_device": true})) >= 0.81:
+		_fail("SCRUM-835 Автоматизация must make devices shoot faster.")
+		return
+	if float(helper.call("meta_charge_time_multiplier", {"is_charged": true})) < 1.19:
+		_fail("SCRUM-835 Штурмовая стойка downside must slow charge time.")
+		return
+	helper.queue_free()
+
+	var warded := await _make_conditional_player(holder, {"ward_absorb_bonus": 0.40})
+	var absorb_before := float((warded.get("run_modifiers") as Dictionary).get("absorb_flat", 0.0))
+	warded.call("meta_apply_priest_ward", 0.25)
+	var absorb_after := float((warded.get("run_modifiers") as Dictionary).get("absorb_flat", 0.0))
+	if absorb_after <= absorb_before:
+		_fail("SCRUM-835 Заступник must add ward absorb.")
+		return
+	warded.queue_free()
+
+	var plain := await _make_conditional_player(holder, {})
+	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0})
+	plain.set("health", plain.get("max_health"))
+	bastion.set("health", bastion.get("max_health"))
+	bastion.set("velocity", Vector2.ZERO)
+	bastion.call("_update_conditional_keystones", 1.0)
+	var plain_before := float(plain.get("health"))
+	var bastion_before := float(bastion.get("health"))
+	plain.call("take_damage", 10.0, "semantic_835_plain")
+	bastion.call("take_damage", 10.0, "semantic_835_bastion")
+	if bastion_before - float(bastion.get("health")) >= plain_before - float(plain.get("health")):
+		_fail("SCRUM-835 Бастион must reduce incoming damage while stance is active.")
+		return
+	plain.queue_free()
+	bastion.queue_free()
 
 	current_scene = null
 	holder.queue_free()

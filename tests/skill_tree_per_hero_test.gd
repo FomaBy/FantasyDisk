@@ -172,11 +172,14 @@ func _test_keystones_have_downside_and_unique_signatures() -> void:
 		for k in effects.keys():
 			var v := float(effects[k])
 			var w := float(TreeData.POWER_WEIGHTS.get(str(k), 0.0))
-			if v < 0.0:
+			if str(k) == "shop_price_mult" and v > 0.0:
+				w = -0.25
+			var contribution := v * w
+			if contribution < 0.0:
 				has_negative = true
-				down_power += -v * w
+				down_power += absf(contribution)
 			else:
-				up_power += v * w
+				up_power += contribution
 		if not has_negative:
 			_fail("Keystone '%s' без числового downside." % str(node_data["id"]))
 			return

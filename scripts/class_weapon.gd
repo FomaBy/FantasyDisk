@@ -743,8 +743,9 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 	var damage_value := _rolled_damage(owner_node)
 	var hit_count := 0
+	var hit_limit := _effective_pierce_count()
 	for hit in hits:
-		if hit_count >= pierce_count:
+		if hit_count >= hit_limit:
 			break
 		_damage_enemy(hit["node"], damage_value)
 		hit_count += 1
@@ -775,8 +776,9 @@ func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 	var damage_value := _rolled_damage(owner_node)
 	var hit_count := 0
+	var hit_limit := _effective_pierce_count()
 	for hit in hits:
-		if hit_count >= pierce_count:
+		if hit_count >= hit_limit:
 			break
 		_damage_enemy_with_dot(hit["node"], damage_value, owner_node)
 		hit_count += 1
@@ -798,6 +800,25 @@ func _fire_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 		_damage_enemy_with_dot(target, damage_value, owner_node)
 	else:
 		_damage_enemy(target, damage_value)
+	var extra_links := int(_extra_projectiles())
+	if extra_links <= 0:
+		return
+	var used := {target.get_instance_id(): true}
+	var previous_position := target.global_position
+	for link_index in range(extra_links):
+		var next_target := _find_nearest_enemy_from(previous_position, aoe_radius, used)
+		if next_target == null:
+			break
+		used[next_target.get_instance_id()] = true
+		var width: float = beam_width * maxf(0.42, pow(damage_falloff, float(link_index + 1)) + 0.10)
+		var tether := AttackVfx.beam(_projectile_parent(), previous_position, next_target.global_position, width, visual_color)
+		_register_effect(tether)
+		var chained_damage := damage_value * pow(damage_falloff, float(link_index + 1))
+		if dot_ticks > 0:
+			_damage_enemy_with_dot(next_target, chained_damage, owner_node)
+		else:
+			_damage_enemy(next_target, chained_damage)
+		previous_position = next_target.global_position
 
 
 func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
@@ -933,8 +954,12 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	var trap_id := trap.get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var weapon_id := get_instance_id()
+	var instant_arm := false
+	if owner_node.has_method("meta_trap_instant_arm"):
+		instant_arm = bool(owner_node.call("meta_trap_instant_arm", _meta_context()))
 	for check_index in range(check_count):
-		trap_tween.tween_interval(check_interval)
+		if check_index > 0 or not instant_arm:
+			trap_tween.tween_interval(check_interval)
 		trap_tween.tween_callback(func() -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_trap := instance_from_id(trap_id) as Node2D
@@ -1480,6 +1505,8 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 	var owner_id := owner_node.get_instance_id()
 	var pulse_count: int = maxi(storm_ticks, 1)
 	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.06) * float(maxi(pulse_count - 1, 1)), Vector2.RIGHT, {"count": pulse_count})
+	if owner_node.has_method("meta_apply_priest_ward"):
+		owner_node.call("meta_apply_priest_ward", maxf(burst_interval, 0.06) * float(pulse_count) + 0.35)
 	var damage_value: float = _rolled_damage(owner_node)
 	for pulse_index in range(pulse_count):
 		var ward_tween := create_tween()
@@ -1963,9 +1990,37 @@ func _extra_projectiles() -> int:
 	if owner_node == null:
 		return 0
 	var mods = owner_node.get("run_modifiers")
-	if not (mods is Dictionary):
-		return 0
-	return int(mods.get("extra_projectile", 0.0))
+	var generic_extra := 0
+	if mods is Dictionary:
+		generic_extra = int((mods as Dictionary).get("extra_projectile", 0.0))
+	var semantic_extra := 0
+	if owner_node.has_method("meta_extra_projectiles"):
+		semantic_extra = int(owner_node.call("meta_extra_projectiles", _meta_context()))
+	return generic_extra + semantic_extra
+
+
+func _effective_pierce_count() -> int:
+	var owner_node := _owner_node()
+	var extra := 0
+	if owner_node != null and owner_node.has_method("meta_extra_pierce"):
+		extra = int(owner_node.call("meta_extra_pierce", _meta_context({"charge_seconds": charge_seconds})))
+	return maxi(pierce_count + extra, 1)
+
+
+func _meta_context(extra := {}) -> Dictionary:
+	var owner_node := _owner_node()
+	var payload: Dictionary = extra.duplicate(true) if extra is Dictionary else {}
+	payload["pool_element"] = pool_element
+	payload["leaves_pool"] = leaves_pool
+	payload["summon_role"] = summon_role
+	payload["charge_seconds"] = charge_seconds
+	if owner_node != null and owner_node.has_method("meta_context_for_weapon"):
+		return owner_node.call("meta_context_for_weapon", self, payload)
+	payload["weapon_id"] = weapon_id
+	payload["attack_mode"] = attack_mode
+	payload["damage_parameter"] = damage_parameter
+	payload["damage_type"] = str(payload.get("damage_type", _weapon_damage_type()))
+	return payload
 
 
 func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
@@ -2022,15 +2077,21 @@ func _weapon_damage_type() -> String:
 func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := true, damage_type := "", notify_owner_hit := true) -> void:
 	if enemy != null and is_instance_valid(enemy) and enemy.has_method("take_damage"):
 		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
-		_call_take_damage(enemy, amount, {"critical": _last_attack_crit and apply_unique_melee_effects, "damage_type": hit_type})
 		var owner_node := _owner_node()
+		var hit_context := _meta_context({"damage_type": hit_type})
+		var is_critical := _last_attack_crit and apply_unique_melee_effects
+		hit_context["critical"] = is_critical
+		var final_amount := amount
+		if owner_node != null and owner_node.has_method("meta_damage_multiplier"):
+			final_amount *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy))
+		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
 		if notify_owner_hit and owner_node != null and owner_node.has_method("on_weapon_hit"):
-			owner_node.on_weapon_hit(enemy, amount, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
-		_heal_owner_from_damage(owner_node, amount)
+			owner_node.on_weapon_hit(enemy, final_amount, _last_attack_crit, hit_context)  # SCRUM-500/SCRUM-835: крит + semantic hit context
+		_heal_owner_from_damage(owner_node, final_amount)
 		if _last_attack_crit and crit_shadow_burst_radius > 0.0 and owner_node != null and owner_node.has_method("trigger_assassin_crit_shadow"):
 			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)
 		if apply_unique_melee_effects and owner_node != null:
-			_apply_unique_melee_hit_effects(owner_node, enemy, amount)
+			_apply_unique_melee_hit_effects(owner_node, enemy, final_amount)
 
 
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: float) -> void:

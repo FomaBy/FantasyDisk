@@ -776,7 +776,7 @@ func _elite_attack_damage(config: Dictionary, player: Node2D) -> float:
 	var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
 	if player_max_health > 0.0:
 		damage = minf(damage, player_max_health * 0.25)
-	return damage
+	return _outgoing_damage(damage)
 
 
 func _strike_slam_wave(config: Dictionary, player: Node2D) -> void:
@@ -1147,7 +1147,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 	projectile_parent.add_child(projectile)
 
 	if projectile.has_method("setup"):
-		projectile.setup(global_position, player.global_position, projectile_damage, projectile_speed)
+		projectile.setup(global_position, player.global_position, _outgoing_damage(projectile_damage), projectile_speed)
 
 	_play_rig_action("shoot", player.global_position - global_position)
 	_shoot_cooldown = fire_interval
@@ -1212,10 +1212,15 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		var player_max_health := float(player.get("max_health")) if player.get("max_health") != null else 0.0
 		if player_max_health > 0.0:
 			contact_hit = minf(contact_hit, player_max_health * 0.20)
+		contact_hit = _outgoing_damage(contact_hit)
 		player.take_damage(contact_hit, "contact")
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0
+
+
+func _outgoing_damage(amount: float) -> float:
+	return maxf(amount * StatusEffects.damage_multiplier(self), 0.0)
 
 
 func _play_contact_windup() -> void:

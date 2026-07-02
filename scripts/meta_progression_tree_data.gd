@@ -75,6 +75,31 @@ const POWER_WEIGHTS := {
 	# аптайм гейта × вес самой стат-цели. stance(≈0.45)×attack_speed_mult(1.0)=0.45;
 	# rush(≈0.25)×crit_chance_flat(2.0)=0.50. Budget-нейтрально к прежним *_damage.
 	"stance_attack_speed_bonus": 0.45, "rush_crit_bonus": 0.50,
+	# SCRUM-835 (Мета 4.1b): semantic combat subsystem keys. Positive downside
+	# values (incoming damage, charge time) use negative weights so
+	# power budget and downside gates read the signed contribution.
+	"enemy_hit_damage_down": 0.80,
+	"gold_damage_per_50": 0.0, "gold_damage_bonus_cap": 0.20,
+	"elemental_resonance_bonus": 0.47, "elemental_orb_extra_count": 0.065,
+	"prism_rift_radius_mult": 0.40,
+	"heal_to_holy_damage_ratio": 0.18, "ward_absorb_bonus": 0.32,
+	"reactor_heat_damage_bonus": 0.37, "reactor_heat_incoming_damage": -0.45,
+	"magnet_radius_mult": 0.33,
+	"device_attack_speed_bonus": 0.45, "non_device_damage_mult": 0.35,
+	"mine_extra_count": 0.06, "repair_radius_mult": 0.25,
+	"dot_death_spread_duration": 0.055, "direct_damage_mult": 0.45,
+	"beam_duration_mult": 0.30, "explosion_radius_mult": 0.25,
+	"guitar_aura_radius_mult": 0.80, "riff_streak_damage_bonus": 0.58,
+	"crit_execute_threshold": 0.70, "shadow_burst_invisibility_time": 0.095,
+	"charged_shot_extra_pierce": 0.048, "charge_time_mult": -0.25,
+	"trap_extra_count": 0.045, "non_trap_damage_mult": 0.35,
+	"drain_extra_targets": 0.105, "medkit_healing_mult": 0.15,
+	"surgical_close_damage_bonus": 0.18, "ranged_damage_mult": 0.35,
+	"cloud_detonation_radius_mult": 0.25, "pool_duration_mult": 0.20,
+	"homunculus_power_mult": 0.30,
+	"pet_damage_mult": 0.35, "pet_personal_damage_mult": 0.35,
+	"briar_radius_mult": 0.36,
+	"bastion_defense_bonus": 0.60, "bastion_taunt": 0.015,
 	"strength_flat": 0.008, "agility_flat": 0.008, "intelligence_flat": 0.008,
 	"perception_flat": 0.008, "energy_flat": 0.008, "knowledge_flat": 0.008,
 	"endurance_flat": 0.008, "leadership_flat": 0.008,
@@ -121,6 +146,46 @@ const EFFECT_LABELS := {
 	# SCRUM-834a: условные keystone на существующих гейтах, не-урон стат-цель.
 	"stance_attack_speed_bonus": {"ru": "к скорострельности в неподвижной боевой стойке", "pct": true},
 	"rush_crit_bonus": {"ru": "к шансу крита в рывке (окно после уклонения)", "pct": true},
+	# SCRUM-835: semantic keystone effects for new combat subsystems.
+	"enemy_hit_damage_down": {"ru": "меньше урона от врагов, поражённых за последние 2 сек.", "pct": true},
+	"gold_damage_per_50": {"ru": "к урону за каждые 50 золота", "pct": true},
+	"gold_damage_bonus_cap": {"ru": "предел бонуса урона от золота", "pct": true},
+	"elemental_resonance_bonus": {"ru": "к урону другой стихией по отмеченной цели", "pct": true},
+	"elemental_orb_extra_count": {"ru": "дополнительных стихийных орб", "pct": false},
+	"prism_rift_radius_mult": {"ru": "к радиусу призматического разлома", "pct": true},
+	"heal_to_holy_damage_ratio": {"ru": "исходящего лечения превращается в святую цепь урона", "pct": true},
+	"ward_absorb_bonus": {"ru": "к поглощению ward-волн", "pct": true},
+	"reactor_heat_damage_bonus": {"ru": "к урону при жаре реактора выше 70%", "pct": true},
+	"reactor_heat_incoming_damage": {"ru": "входящего урона при перегреве реактора", "pct": true},
+	"magnet_radius_mult": {"ru": "к радиусу магнитного якоря", "pct": true},
+	"device_attack_speed_bonus": {"ru": "к темпу устройств", "pct": true},
+	"non_device_damage_mult": {"ru": "к личному урону вне устройств", "pct": true},
+	"mine_extra_count": {"ru": "дополнительных мин", "pct": false},
+	"repair_radius_mult": {"ru": "к радиусу ремонтной сети", "pct": true},
+	"dot_death_spread_duration": {"ru": "сек. продления DoT вокруг погибшей проклятой цели", "pct": false},
+	"direct_damage_mult": {"ru": "к прямому урону", "pct": true},
+	"beam_duration_mult": {"ru": "к длительности лучей", "pct": true},
+	"explosion_radius_mult": {"ru": "к радиусу взрывов луча", "pct": true},
+	"guitar_aura_radius_mult": {"ru": "к ширине звуковых аур", "pct": true},
+	"riff_streak_damage_bonus": {"ru": "к урону при непрерывной рифф-серии", "pct": true},
+	"crit_execute_threshold": {"ru": "порог добивания критом не-элитных целей", "pct": true},
+	"shadow_burst_invisibility_time": {"ru": "сек. невидимости после теневого всплеска", "pct": false},
+	"charged_shot_extra_pierce": {"ru": "пробития заряженным выстрелом", "pct": false},
+	"charge_time_mult": {"ru": "к времени зарядки", "pct": true},
+	"trap_extra_count": {"ru": "дополнительных капканов", "pct": false},
+	"non_trap_damage_mult": {"ru": "к урону вне капканов", "pct": true},
+	"drain_extra_targets": {"ru": "дополнительная цель drain-связи", "pct": false},
+	"medkit_healing_mult": {"ru": "к лечению меднабора", "pct": true},
+	"surgical_close_damage_bonus": {"ru": "к хирургическому удару в упор", "pct": true},
+	"ranged_damage_mult": {"ru": "к дальнему урону", "pct": true},
+	"cloud_detonation_radius_mult": {"ru": "к площади детонации облаков", "pct": true},
+	"pool_duration_mult": {"ru": "к длительности луж и облаков", "pct": true},
+	"homunculus_power_mult": {"ru": "к здоровью и урону гомункула", "pct": true},
+	"pet_damage_mult": {"ru": "к урону питомцев", "pct": true},
+	"pet_personal_damage_mult": {"ru": "к личному урону без питомцев и терний", "pct": true},
+	"briar_radius_mult": {"ru": "к ширине терновых зон", "pct": true},
+	"bastion_defense_bonus": {"ru": "к защите после 1 сек. стойки", "pct": true},
+	"bastion_taunt": {"ru": "провокация врагов в стойке", "pct": false},
 	"pickup_radius_flat": {"ru": "к радиусу подбора", "pct": false},
 	"projectile_speed_flat": {"ru": "к скорости снарядов", "pct": false},
 	"absorb_flat": {"ru": "к поглощению", "pct": false},
@@ -204,7 +269,7 @@ const CONSTELLATION_SPECS := {
 			{"title": "Полевая смекалка", "effects": {"buff_power_flat": 0.006, "max_health_mult": 0.008}},
 		],
 		"keystones": [
-			{"title": "Подавляющий огонь", "effects": {"hurt_damage_bonus": 0.28, "move_speed_mult": -0.06}},
+			{"title": "Подавление", "effects": {"enemy_hit_damage_down": 0.15, "move_speed_mult": -0.10}},
 			{"title": "Шквал", "effects": {"stance_attack_speed_bonus": 0.191, "damage_mult": -0.04}},
 			{"title": "Гранатный подсумок", "effects": {"aoe_radius_mult": 0.07, "kill_explosion_chance": 0.09, "range_mult": -0.06}},
 		],
@@ -224,7 +289,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"keystones": [
 			{"title": "Из тени", "effects": {"rush_crit_bonus": 0.172, "max_health_mult": -0.04}},
-			{"title": "Ночная работа", "effects": {"swarm_damage_bonus": 0.183, "damage_mult": -0.04}},
+			{"title": "Джекпот", "effects": {"gold_damage_per_50": 0.01, "gold_damage_bonus_cap": 0.25, "shop_price_mult": 0.20}},
 			{"title": "Азарт канатоходца", "effects": {"crit_damage_flat": 0.17, "dodge_rush_bonus": 0.09, "defense_flat": -0.022}},
 		],
 		"hidden": [
@@ -242,8 +307,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Пепел и искры", "effects": {"kill_explosion_chance": 0.016, "aoe_radius_mult": 0.013}},
 		],
 		"keystones": [
-			{"title": "Сверхновая", "effects": {"swarm_damage_bonus": 0.188, "range_mult": -0.06}},
-			{"title": "Канал ульты", "effects": {"stance_damage_bonus": 0.194, "damage_mult": -0.04}},
+			{"title": "Резонанс", "effects": {"elemental_resonance_bonus": 0.35, "damage_mult": -0.12}},
+			{"title": "Монолит", "effects": {"elemental_orb_extra_count": 2.0, "prism_rift_radius_mult": -0.20}},
 			{"title": "Огонь по площади", "effects": {"kill_explosion_chance": 0.11, "dot_damage_flat": 1.0, "move_speed_mult": -0.06}},
 		],
 		"hidden": [
@@ -280,8 +345,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Свет на пределе", "effects": {"lowhp_regen_bonus": 0.16, "aura_radius_flat": 2.0}},
 		],
 		"keystones": [
-			{"title": "Хор искупления", "effects": {"hurt_damage_bonus": 0.3, "damage_mult": -0.04}},
-			{"title": "Щит веры", "effects": {"stance_damage_bonus": 0.209, "move_speed_mult": -0.06}},
+			{"title": "Мученик", "effects": {"heal_to_holy_damage_ratio": 0.50, "healing_mult": -0.30}},
+			{"title": "Заступник", "effects": {"ward_absorb_bonus": 0.40, "ult_charge_mult": -0.17}},
 			{"title": "Глас гнева", "effects": {"damage_mult": 0.05, "buff_power_flat": 0.029, "defense_flat": -0.022}},
 		],
 		"hidden": [
@@ -318,8 +383,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Контур перегрузки", "effects": {"ult_charge_mult": 0.016, "crit_chance_flat": 0.004}},
 		],
 		"keystones": [
-			{"title": "Овердрайв", "effects": {"stance_damage_bonus": 0.206, "defense_flat": -0.022}},
-			{"title": "Осадный режим", "effects": {"swarm_damage_bonus": 0.17, "move_speed_mult": -0.06}},
+			{"title": "Перегрев", "effects": {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15}},
+			{"title": "Сверхпроводник", "effects": {"magnet_radius_mult": 0.50, "max_health_mult": -0.12}},
 			{"title": "Протокол мести", "effects": {"take_hit_pulse_chance": 0.11, "thorn_reflect_multiplier": 0.18, "attack_speed_mult": -0.04}},
 		],
 		"hidden": [
@@ -337,8 +402,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Шрапнельный заряд", "effects": {"kill_explosion_chance": 0.016, "summon_bonus": 0.13}},
 		],
 		"keystones": [
-			{"title": "Армия машин", "effects": {"stance_damage_bonus": 0.208, "damage_mult": -0.04}},
-			{"title": "Крепость-мастерская", "effects": {"swarm_damage_bonus": 0.18, "move_speed_mult": -0.06}},
+			{"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
+			{"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
 			{"title": "Перегретые стволы", "effects": {"projectile_speed_flat": 33.0, "attack_speed_mult": 0.05, "defense_flat": -0.022}},
 		],
 		"hidden": [
@@ -356,8 +421,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Тёмный пакт", "effects": {"low_hp_damage_bonus": 0.03, "summon_bonus": 0.13}},
 		],
 		"keystones": [
-			{"title": "Запретное знание", "effects": {"swarm_damage_bonus": 0.185, "max_health_mult": -0.04}},
-			{"title": "Гниль", "effects": {"stance_damage_bonus": 0.197, "damage_mult": -0.04}},
+			{"title": "Пожинатель", "effects": {"dot_death_spread_duration": 2.0, "direct_damage_mult": -0.15}},
+			{"title": "Ненасытный луч", "effects": {"beam_duration_mult": 0.30, "explosion_radius_mult": -0.20}},
 			{"title": "Договор пустоты", "effects": {"summon_bonus": 0.9, "low_hp_damage_bonus": 0.14, "healing_mult": -0.3}},
 		],
 		"hidden": [
@@ -375,8 +440,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Сценический кураж", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Крещендо", "effects": {"swarm_damage_bonus": 0.188, "damage_mult": -0.04}},
-			{"title": "Пауэр-аккорд", "effects": {"stance_damage_bonus": 0.191, "buff_power_flat": -0.04}},
+			{"title": "Хедлайнер", "effects": {"guitar_aura_radius_mult": 0.30, "knockback_mult": -0.50}},
+			{"title": "Рифф", "effects": {"riff_streak_damage_bonus": 0.25, "attack_speed_mult": -0.10}},
 			{"title": "Фронтмен", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "max_health_mult": -0.04}},
 		],
 		"hidden": [
@@ -394,8 +459,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Танец клинков", "effects": {"attack_speed_mult": 0.008, "dodge_rush_bonus": 0.027}},
 		],
 		"keystones": [
-			{"title": "Из тени", "effects": {"hurt_damage_bonus": 0.292, "max_health_mult": -0.04}},
-			{"title": "Тысяча порезов", "effects": {"rush_damage_bonus": 0.346, "crit_damage_flat": -0.12}},
+			{"title": "Экзекутор", "effects": {"crit_execute_threshold": 0.35, "crit_chance_flat": -0.10}},
+			{"title": "Теневой шаг", "effects": {"shadow_burst_invisibility_time": 2.0, "max_health_mult": -0.15}},
 			{"title": "Призрачный шаг", "effects": {"dodge_flat": 0.018, "dodge_rush_bonus": 0.12, "damage_mult": -0.04}},
 		],
 		"hidden": [
@@ -413,8 +478,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Уход в кусты", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Град стрел", "effects": {"stance_damage_bonus": 0.191, "range_mult": -0.06}},
-			{"title": "Выстрел навылет", "effects": {"swarm_damage_bonus": 0.173, "attack_speed_mult": -0.04}},
+			{"title": "Штурмовая стойка", "effects": {"charged_shot_extra_pierce": 2.0, "charge_time_mult": 0.20}},
+			{"title": "Капканщик", "effects": {"trap_extra_count": 2.0, "non_trap_damage_mult": -0.12}},
 			{"title": "Хозяин тропы", "effects": {"move_speed_mult": 0.06, "crit_chance_flat": 0.022, "max_health_mult": -0.04}},
 		],
 		"hidden": [
@@ -432,8 +497,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Реанимация", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
 		],
 		"keystones": [
-			{"title": "Триаж", "effects": {"hurt_damage_bonus": 0.308, "damage_mult": -0.04}},
-			{"title": "Полевая хирургия", "effects": {"rush_damage_bonus": 0.36, "move_speed_mult": -0.06}},
+			{"title": "Вампирический контур", "effects": {"drain_extra_targets": 1.0, "medkit_healing_mult": -0.40}},
+			{"title": "Хирург", "effects": {"surgical_close_damage_bonus": 0.60, "ranged_damage_mult": -0.20}},
 			{"title": "Доза адреналина", "effects": {"attack_speed_mult": 0.05, "buff_power_flat": 0.029, "healing_mult": -0.3}},
 		],
 		"hidden": [
@@ -451,8 +516,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Нестабильная смесь", "effects": {"kill_explosion_chance": 0.016, "dot_damage_flat": 0.21}},
 		],
 		"keystones": [
-			{"title": "Каталитический распад", "effects": {"swarm_damage_bonus": 0.181, "damage_mult": -0.04}},
-			{"title": "Гремучая колба", "effects": {"stance_damage_bonus": 0.193, "dot_damage_flat": -1.2}},
+			{"title": "Катализатор", "effects": {"cloud_detonation_radius_mult": 0.40, "pool_duration_mult": -0.30}},
+			{"title": "Гомункул-прайм", "effects": {"homunculus_power_mult": 0.50, "max_health_mult": -0.10}},
 			{"title": "Пары эфира", "effects": {"move_speed_mult": 0.06, "dodge_flat": 0.015, "max_health_mult": -0.04}},
 		],
 		"hidden": [
@@ -470,7 +535,7 @@ const CONSTELLATION_SPECS := {
 			{"title": "Знамя рыцаря", "effects": {"aura_radius_flat": 2.0, "buff_power_flat": 0.006}},
 		],
 		"keystones": [
-			{"title": "Бастион", "effects": {"stance_damage_bonus": 0.2, "move_speed_mult": -0.06}},
+			{"title": "Бастион", "effects": {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0, "move_speed_mult": -0.15}},
 			{"title": "Марш легиона", "effects": {"rush_damage_bonus": 0.328, "defense_flat": -0.022}},
 			{"title": "Шипастый панцирь", "effects": {"thorn_reflect_multiplier": 0.27, "take_hit_pulse_chance": 0.07, "attack_speed_mult": -0.04}},
 		],
@@ -489,8 +554,8 @@ const CONSTELLATION_SPECS := {
 			{"title": "Зов стаи", "effects": {"summon_bonus": 0.13, "crit_chance_flat": 0.004}},
 		],
 		"keystones": [
-			{"title": "Вожак стаи", "effects": {"stance_damage_bonus": 0.209, "damage_mult": -0.04}},
-			{"title": "Дикий рост", "effects": {"swarm_damage_bonus": 0.171, "move_speed_mult": -0.06}},
+			{"title": "Вожак стаи", "effects": {"pet_damage_mult": 0.25, "pet_personal_damage_mult": -0.15}},
+			{"title": "Терновый круг", "effects": {"briar_radius_mult": 0.35, "move_speed_mult": -0.10}},
 			{"title": "Гнев леса", "effects": {"dot_damage_flat": 1.4, "thorn_reflect_multiplier": 0.18, "regeneration_flat": -0.13}},
 		],
 		"hidden": [

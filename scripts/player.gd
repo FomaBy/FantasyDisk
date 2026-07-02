@@ -167,6 +167,11 @@ var _assassin_crit_shadow_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
+var _reactor_heat := 0.0
+var _reactor_heat_active := false
+var _shadow_invisible_left := 0.0
+var _riff_streak_time := 0.0
+var _riff_streak_active := false
 var _vampiric_heal_budget := 0.0
 # SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
 # drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
@@ -242,6 +247,11 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
+	_reactor_heat = 0.0
+	_reactor_heat_active = false
+	_shadow_invisible_left = 0.0
+	_riff_streak_time = 0.0
+	_riff_streak_active = false
 	# SCRUM-834: сброс гейтов условных keystone.
 	_hurt_active = false
 	_stance_active = false
@@ -414,6 +424,7 @@ func _physics_process(_delta: float) -> void:
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	_battle_shout_cooldown_left = max(_battle_shout_cooldown_left - _delta, 0.0)
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
+	_update_meta_keystone_runtime(_delta)
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
 	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
 	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
@@ -600,6 +611,9 @@ func take_damage(amount: float, _source := "") -> bool:
 		return false
 	if _damage_invulnerability_left > 0.0:
 		return false
+	if _shadow_invisible_left > 0.0:
+		_play_sfx("dodge")
+		return false
 	if _ultimate_active and character_id == "knight":
 		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
 		_play_sfx("dodge")
@@ -614,7 +628,11 @@ func take_damage(amount: float, _source := "") -> bool:
 		return false
 
 	var defended_amount := _try_knight_counter(amount)
+	if _reactor_heat_active and float(run_modifiers.get("reactor_heat_incoming_damage", 0.0)) > 0.0:
+		defended_amount *= 1.0 + float(run_modifiers.get("reactor_heat_incoming_damage", 0.0))
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
+		defense = clampf(defense + float(run_modifiers.get("bastion_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
 	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
@@ -671,6 +689,10 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	var radius := maxf(burst_radius, 42.0)
 	AttackVfx.ring_pulse(parent, target.global_position, radius, Color(0.70, 0.20, 1.0, 0.38), false)
 	AttackVfx.slash(parent, (target.global_position - global_position).normalized(), minf(radius * 1.4, 180.0), Color(0.72, 0.22, 1.0, 0.34)).global_position = target.global_position
+	var invis_time := float(run_modifiers.get("shadow_burst_invisibility_time", 0.0))
+	if invis_time > 0.0:
+		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
+		_damage_invulnerability_left = maxf(_damage_invulnerability_left, minf(invis_time, 2.0))
 
 
 func _try_knight_counter(incoming_amount: float) -> float:
@@ -752,7 +774,9 @@ func _update_conditional_keystones(delta: float) -> void:
 	var has_hurt := float(run_modifiers.get("hurt_damage_bonus", 0.0)) > 0.0
 	# SCRUM-834a: гейт «стойки» активируют и не-урон стат-цели (stance_attack_speed_bonus — soldier «Шквал»).
 	var has_stance := float(run_modifiers.get("stance_damage_bonus", 0.0)) > 0.0 \
-		or float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) > 0.0
+		or float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("bastion_taunt", 0.0)) > 0.0
 	var has_swarm := float(run_modifiers.get("swarm_damage_bonus", 0.0)) > 0.0
 	if not (has_hurt or has_stance or has_swarm):
 		return
@@ -790,6 +814,237 @@ func _update_conditional_keystones(delta: float) -> void:
 				dirty = true
 	if dirty:
 		_apply_stat_scaling(false, max_health)
+	if _stance_active and float(run_modifiers.get("bastion_taunt", 0.0)) > 0.0:
+		_apply_bastion_taunt()
+
+
+func _update_meta_keystone_runtime(delta: float) -> void:
+	if _shadow_invisible_left > 0.0:
+		_shadow_invisible_left = maxf(_shadow_invisible_left - delta, 0.0)
+	if _riff_streak_time > 0.0:
+		_riff_streak_time = maxf(_riff_streak_time - delta * 0.62, 0.0)
+	var riff_active := _riff_streak_time >= 1.0 and float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0
+	_riff_streak_active = riff_active
+	run_modifiers["riff_streak_active"] = 1.0 if riff_active else 0.0
+	if float(run_modifiers.get("reactor_heat_damage_bonus", 0.0)) <= 0.0:
+		_reactor_heat = 0.0
+		_reactor_heat_active = false
+		run_modifiers["reactor_heat_active"] = 0.0
+		return
+	_reactor_heat = maxf(_reactor_heat - delta * 0.18, 0.0)
+	_reactor_heat_active = _reactor_heat >= 0.70
+	run_modifiers["reactor_heat_active"] = 1.0 if _reactor_heat_active else 0.0
+
+
+func meta_context_for_weapon(weapon: Node, extra := {}) -> Dictionary:
+	var context: Dictionary = extra.duplicate(true) if extra is Dictionary else {}
+	var mode := ""
+	if weapon != null and weapon.get("attack_mode") != null:
+		mode = str(weapon.get("attack_mode"))
+	var wid := ""
+	if weapon != null and weapon.get("weapon_id") != null:
+		wid = str(weapon.get("weapon_id"))
+	var damage_param := ""
+	if weapon != null and weapon.get("damage_parameter") != null:
+		damage_param = str(weapon.get("damage_parameter"))
+	context["weapon_id"] = wid
+	context["attack_mode"] = mode
+	context["damage_parameter"] = damage_param
+	context["damage_type"] = str(context.get("damage_type", _damage_type_for_parameter(damage_param)))
+	context["element"] = str(context.get("element", _element_for_weapon_context(wid, mode, weapon)))
+	context["is_device"] = mode in ["amp", "engineer_sentry_link", "engineer_repair_drone", "engineer_pressure_mines"]
+	context["is_trap"] = mode in ["trap", "engineer_pressure_mines"]
+	context["is_pet"] = wid in ["summon_amulet", "homunculus_vial"] or str(context.get("summon_role", "")) != ""
+	context["is_briar"] = wid == "briar_staff" or str(context.get("pool_element", "")) == "briar"
+	context["is_cloud"] = wid in ["acid_flask", "volatile_vial", "blast_powder"] or bool(context.get("leaves_pool", false))
+	context["is_sound"] = damage_param == "sound_wave_damage" or mode in ["sound_wave", "pulse", "amp"]
+	context["is_charged"] = weapon != null and weapon.get("charge_seconds") != null and float(weapon.get("charge_seconds")) > 0.0
+	return context
+
+
+func _damage_type_for_parameter(parameter_id: String) -> String:
+	match parameter_id:
+		"magic_damage":
+			return "magic"
+		"sound_wave_damage":
+			return "sound"
+		_:
+			return "physical"
+
+
+func _element_for_weapon_context(weapon_id_value: String, mode: String, weapon: Node) -> String:
+	if weapon != null and weapon.get("pool_element") != null and str(weapon.get("pool_element")) != "":
+		return str(weapon.get("pool_element"))
+	match mode:
+		"elemental_orbit":
+			return "storm"
+		"prism_rift":
+			return "prism"
+		"meteor_shards":
+			return "fire"
+	match weapon_id_value:
+		"spark_vial":
+			return "spark"
+		"acid_flask":
+			return "poison"
+		"volatile_vial", "blast_powder":
+			return "fire"
+	return ""
+
+
+func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	var mode := str(ctx.get("attack_mode", ""))
+	var multiplier := 1.0
+	var gold_cap := float(run_modifiers.get("gold_damage_bonus_cap", 0.0))
+	var gold_step := float(run_modifiers.get("gold_damage_per_50", 0.0))
+	if gold_cap > 0.0 and gold_step > 0.0:
+		multiplier *= 1.0 + minf(floor(float(money) / 50.0) * gold_step, gold_cap)
+	var element_bonus := float(run_modifiers.get("elemental_resonance_bonus", 0.0))
+	var element := str(ctx.get("element", ""))
+	if element_bonus > 0.0 and element != "" and enemy != null and is_instance_valid(enemy):
+		var previous_element := str(enemy.get_meta("meta_elemental_mark_element", ""))
+		var previous_owner := int(enemy.get_meta("meta_elemental_mark_owner", 0))
+		if previous_owner == get_instance_id() and previous_element != "" and previous_element != element:
+			multiplier *= 1.0 + element_bonus
+	if _reactor_heat_active:
+		multiplier *= 1.0 + float(run_modifiers.get("reactor_heat_damage_bonus", 0.0))
+	if _riff_streak_active:
+		multiplier *= 1.0 + float(run_modifiers.get("riff_streak_damage_bonus", 0.0))
+	if float(run_modifiers.get("direct_damage_mult", 0.0)) != 0.0 and str(ctx.get("damage_type", "")) != "dot":
+		multiplier *= maxf(0.05, 1.0 + float(run_modifiers.get("direct_damage_mult", 0.0)))
+	if float(run_modifiers.get("non_device_damage_mult", 0.0)) != 0.0 and not bool(ctx.get("is_device", false)):
+		multiplier *= maxf(0.05, 1.0 + float(run_modifiers.get("non_device_damage_mult", 0.0)))
+	if float(run_modifiers.get("non_trap_damage_mult", 0.0)) != 0.0 and not bool(ctx.get("is_trap", false)):
+		multiplier *= maxf(0.05, 1.0 + float(run_modifiers.get("non_trap_damage_mult", 0.0)))
+	if float(run_modifiers.get("pet_personal_damage_mult", 0.0)) != 0.0 and not bool(ctx.get("is_pet", false)) and not bool(ctx.get("is_briar", false)):
+		multiplier *= maxf(0.05, 1.0 + float(run_modifiers.get("pet_personal_damage_mult", 0.0)))
+	if float(run_modifiers.get("ranged_damage_mult", 0.0)) != 0.0 and mode != "stab_flurry":
+		multiplier *= maxf(0.05, 1.0 + float(run_modifiers.get("ranged_damage_mult", 0.0)))
+	if float(run_modifiers.get("surgical_close_damage_bonus", 0.0)) > 0.0 and mode == "stab_flurry" and enemy != null and is_instance_valid(enemy):
+		if global_position.distance_squared_to(enemy.global_position) <= 132.0 * 132.0:
+			multiplier *= 1.0 + float(run_modifiers.get("surgical_close_damage_bonus", 0.0))
+	return multiplier
+
+
+func meta_extra_projectiles(context := {}) -> int:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	var mode := str(ctx.get("attack_mode", ""))
+	if mode == "elemental_orbit":
+		return int(run_modifiers.get("elemental_orb_extra_count", 0.0))
+	if mode == "engineer_pressure_mines":
+		return int(run_modifiers.get("mine_extra_count", 0.0))
+	if mode == "trap":
+		return int(run_modifiers.get("trap_extra_count", 0.0))
+	if mode == "drain_link":
+		return int(run_modifiers.get("drain_extra_targets", 0.0))
+	return 0
+
+
+func meta_extra_pierce(context := {}) -> int:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	if bool(ctx.get("is_charged", false)) or float(ctx.get("charge_seconds", 0.0)) > 0.0:
+		return int(run_modifiers.get("charged_shot_extra_pierce", 0.0))
+	return 0
+
+
+func meta_trap_instant_arm(context := {}) -> bool:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	var mode := str(ctx.get("attack_mode", ""))
+	if mode == "trap" and int(run_modifiers.get("trap_extra_count", 0.0)) > 0:
+		return true
+	if mode == "engineer_pressure_mines" and int(run_modifiers.get("mine_extra_count", 0.0)) > 0:
+		return true
+	return false
+
+
+func meta_radius_multiplier(context := {}) -> float:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	var mode := str(ctx.get("attack_mode", ""))
+	var wid := str(ctx.get("weapon_id", ""))
+	var multiplier := 1.0
+	if mode == "robot_magnetic_anchor":
+		multiplier *= 1.0 + float(run_modifiers.get("magnet_radius_mult", 0.0))
+	if mode == "engineer_repair_drone":
+		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("repair_radius_mult", 0.0)))
+	if mode == "prism_rift":
+		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("prism_rift_radius_mult", 0.0)))
+	if mode in ["beam", "dot_beam"] or wid in ["dark_beam", "void_ray"]:
+		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("explosion_radius_mult", 0.0)))
+	if bool(ctx.get("is_sound", false)):
+		multiplier *= 1.0 + float(run_modifiers.get("guitar_aura_radius_mult", 0.0))
+	if bool(ctx.get("is_cloud", false)):
+		multiplier *= 1.0 + float(run_modifiers.get("cloud_detonation_radius_mult", 0.0))
+	if bool(ctx.get("is_briar", false)):
+		multiplier *= 1.0 + float(run_modifiers.get("briar_radius_mult", 0.0))
+	return multiplier
+
+
+func meta_duration_multiplier(context := {}) -> float:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	var multiplier := 1.0
+	var mode := str(ctx.get("attack_mode", ""))
+	if mode in ["dot_beam", "beam"]:
+		multiplier *= 1.0 + float(run_modifiers.get("beam_duration_mult", 0.0))
+	if bool(ctx.get("is_cloud", false)):
+		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("pool_duration_mult", 0.0)))
+	return multiplier
+
+
+func meta_interval_multiplier(context := {}) -> float:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	if bool(ctx.get("is_device", false)):
+		return 1.0 / maxf(1.0 + float(run_modifiers.get("device_attack_speed_bonus", 0.0)), 0.1)
+	return 1.0
+
+
+func meta_charge_time_multiplier(context := {}) -> float:
+	var ctx: Dictionary = context if context is Dictionary else {}
+	if bool(ctx.get("is_charged", false)):
+		return maxf(0.1, 1.0 + float(run_modifiers.get("charge_time_mult", 0.0)))
+	return 1.0
+
+
+func meta_knockback_multiplier(context := {}) -> float:
+	return 1.0
+
+
+func meta_apply_priest_ward(duration: float) -> void:
+	var bonus := float(run_modifiers.get("ward_absorb_bonus", 0.0))
+	if bonus <= 0.0:
+		return
+	var added_absorb := maxf(float(derived_parameters.get("absorb", 0.0)) * bonus, max_health * 0.018 * bonus)
+	if added_absorb <= 0.0:
+		return
+	run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + added_absorb
+	_apply_stat_scaling(false, max_health)
+	var owner_id := get_instance_id()
+	var ward_tween := create_tween()
+	ward_tween.tween_interval(maxf(duration, 0.15))
+	ward_tween.tween_callback(func() -> void:
+		var current_owner := instance_from_id(owner_id) as Node
+		if current_owner == null:
+			return
+		var modifiers_raw = current_owner.get("run_modifiers")
+		if modifiers_raw is Dictionary:
+			var modifiers: Dictionary = modifiers_raw
+			modifiers["absorb_flat"] = maxf(0.0, float(modifiers.get("absorb_flat", 0.0)) - added_absorb)
+		if current_owner.has_method("_apply_stat_scaling"):
+			current_owner.call("_apply_stat_scaling", false, current_owner.get("max_health"))
+	)
+
+
+func _apply_bastion_taunt() -> void:
+	if not is_inside_tree():
+		return
+	var radius := maxf(float(derived_parameters.get("aura_radius", 180.0)), 190.0)
+	for enemy_node in TARGET_QUERY.in_radius(self, global_position, radius):
+		StatusEffects.apply_status(enemy_node, "bastion_taunt", {
+			"duration": 0.55,
+			"speed_multiplier": 1.04,
+			"marker_color": Color(0.82, 0.88, 1.0, 1.0),
+			"taunt_owner": get_instance_id(),
+		})
 
 
 # SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
@@ -980,6 +1235,48 @@ const META_SKILL_FLAT_MAP := {
 	# (soldier «Шквал»), rush→крит-шанс (thief «Из тени»). Консумит derived_parameters.
 	"stance_attack_speed_bonus": "stance_attack_speed_bonus",
 	"rush_crit_bonus": "rush_crit_bonus",
+	# SCRUM-835 (Мета 4.1b): semantic keystone keys. Их консумят meta_* helpers
+	# player.gd/class_weapon.gd, чтобы эффекты были привязаны к боевой подсистеме,
+	# а не к generic damage-gate.
+	"enemy_hit_damage_down": "enemy_hit_damage_down",
+	"gold_damage_per_50": "gold_damage_per_50",
+	"gold_damage_bonus_cap": "gold_damage_bonus_cap",
+	"elemental_resonance_bonus": "elemental_resonance_bonus",
+	"elemental_orb_extra_count": "elemental_orb_extra_count",
+	"prism_rift_radius_mult": "prism_rift_radius_mult",
+	"heal_to_holy_damage_ratio": "heal_to_holy_damage_ratio",
+	"ward_absorb_bonus": "ward_absorb_bonus",
+	"reactor_heat_damage_bonus": "reactor_heat_damage_bonus",
+	"reactor_heat_incoming_damage": "reactor_heat_incoming_damage",
+	"magnet_radius_mult": "magnet_radius_mult",
+	"device_attack_speed_bonus": "device_attack_speed_bonus",
+	"non_device_damage_mult": "non_device_damage_mult",
+	"mine_extra_count": "mine_extra_count",
+	"repair_radius_mult": "repair_radius_mult",
+	"dot_death_spread_duration": "dot_death_spread_duration",
+	"direct_damage_mult": "direct_damage_mult",
+	"beam_duration_mult": "beam_duration_mult",
+	"explosion_radius_mult": "explosion_radius_mult",
+	"guitar_aura_radius_mult": "guitar_aura_radius_mult",
+	"riff_streak_damage_bonus": "riff_streak_damage_bonus",
+	"crit_execute_threshold": "crit_execute_threshold",
+	"shadow_burst_invisibility_time": "shadow_burst_invisibility_time",
+	"charged_shot_extra_pierce": "charged_shot_extra_pierce",
+	"charge_time_mult": "charge_time_mult",
+	"trap_extra_count": "trap_extra_count",
+	"non_trap_damage_mult": "non_trap_damage_mult",
+	"drain_extra_targets": "drain_extra_targets",
+	"medkit_healing_mult": "medkit_healing_mult",
+	"surgical_close_damage_bonus": "surgical_close_damage_bonus",
+	"ranged_damage_mult": "ranged_damage_mult",
+	"cloud_detonation_radius_mult": "cloud_detonation_radius_mult",
+	"pool_duration_mult": "pool_duration_mult",
+	"homunculus_power_mult": "homunculus_power_mult",
+	"pet_damage_mult": "pet_damage_mult",
+	"pet_personal_damage_mult": "pet_personal_damage_mult",
+	"briar_radius_mult": "briar_radius_mult",
+	"bastion_defense_bonus": "bastion_defense_bonus",
+	"bastion_taunt": "bastion_taunt",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",
@@ -1040,7 +1337,8 @@ func _apply_regeneration(delta: float) -> void:
 	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
 
 
-func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false) -> void:
+func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_context := {}) -> void:
+	var context: Dictionary = hit_context if hit_context is Dictionary else {}
 	_gain_ultimate_charge(maxf(dealt_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
 	# SCRUM-500 (on_crit): «Импульс Крита» — короткий бафф скорости движения по криту.
 	if was_crit:
@@ -1058,6 +1356,72 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false) -> voi
 	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
+	_apply_meta_keystone_hit_effects(enemy, dealt_damage, context)
+
+
+func _apply_meta_keystone_hit_effects(enemy: Node2D, dealt_damage: float, context: Dictionary) -> void:
+	if enemy != null and is_instance_valid(enemy):
+		var suppress := float(run_modifiers.get("enemy_hit_damage_down", 0.0))
+		if suppress > 0.0:
+			StatusEffects.apply_status(enemy, "soldier_suppressed_fire", {
+				"duration": 2.0,
+				"damage_multiplier": maxf(0.05, 1.0 - suppress),
+				"marker_color": Color(0.95, 0.82, 0.38, 1.0),
+			})
+		var element := str(context.get("element", ""))
+		if element != "" and float(run_modifiers.get("elemental_resonance_bonus", 0.0)) > 0.0:
+			enemy.set_meta("meta_elemental_mark_element", element)
+			enemy.set_meta("meta_elemental_mark_owner", get_instance_id())
+		_apply_meta_crit_execute(enemy, context)
+	if _is_robot_context(context) and dealt_damage > 0.0 and float(run_modifiers.get("reactor_heat_damage_bonus", 0.0)) > 0.0:
+		_reactor_heat = clampf(_reactor_heat + 0.16, 0.0, 1.0)
+	if bool(context.get("is_sound", false)) and dealt_damage > 0.0 and float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0:
+		_riff_streak_time = minf(_riff_streak_time + 0.52, 1.8)
+
+
+func _apply_meta_crit_execute(enemy: Node2D, context: Dictionary) -> void:
+	var threshold := float(run_modifiers.get("crit_execute_threshold", 0.0))
+	if threshold <= 0.0 or not bool(context.get("critical", false)):
+		return
+	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage") or not _is_non_elite_enemy(enemy):
+		return
+	var max_hp_value = enemy.get("max_health")
+	if max_hp_value == null:
+		return
+	var max_hp := float(max_hp_value)
+	if max_hp <= 0.0:
+		return
+	var health_value = enemy.get("health")
+	var current_hp := float(health_value) if health_value != null else max_hp
+	if current_hp <= 0.0 or current_hp / max_hp > threshold:
+		return
+	var execute_damage := maxf(current_hp + max_hp * 0.01, 1.0)
+	var feedback := {"critical": true, "damage_type": str(context.get("damage_type", "physical"))}
+	if _take_damage_accepts_feedback(enemy):
+		enemy.take_damage(execute_damage, feedback)
+	else:
+		enemy.take_damage(execute_damage)
+
+
+func _is_non_elite_enemy(enemy: Node2D) -> bool:
+	if enemy == null or not is_instance_valid(enemy):
+		return false
+	if enemy.is_in_group("elite_enemies") or enemy.is_in_group("bosses"):
+		return false
+	if enemy.has_meta("elite_behavior") or enemy.has_meta("boss_id"):
+		return false
+	var elite_value = enemy.get("elite_behavior")
+	if elite_value != null and str(elite_value) != "":
+		return false
+	var boss_value = enemy.get("boss_behavior")
+	if boss_value != null and str(boss_value) != "":
+		return false
+	return true
+
+
+func _is_robot_context(context: Dictionary) -> bool:
+	var mode := str(context.get("attack_mode", ""))
+	return character_id == "robot" or mode.begins_with("robot_")
 
 
 # SCRUM-517: единая точка DRAIN-heal оружия (drain_link/lifesteal). Раньше
@@ -1072,11 +1436,13 @@ func apply_drain_heal(amount: float) -> float:
 		return 0.0
 	var allowed := minf(amount, _drain_heal_budget)
 	var before := health
-	health = minf(health + allowed * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
+	var combat_healing_mult := float(run_modifiers.get("healing_multiplier", 1.0)) * maxf(0.05, 1.0 + float(run_modifiers.get("medkit_healing_mult", 0.0)))
+	health = minf(health + allowed * combat_healing_mult, max_health)
 	var healed := health - before
 	# Списываем из бюджета по «сырому» allowed (до healing_multiplier и до клампа об
 	# max_health), чтобы стоять у полного HP не позволяло копить и сливать бюджет залпом.
 	_drain_heal_budget = maxf(_drain_heal_budget - allowed, 0.0)
+	_apply_heal_to_holy_damage(healed)
 	return healed
 
 
@@ -1681,6 +2047,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 # _on_enemy_died. Взрыв «Цепная Искра» (шанс) + лечение-стак «Сбор Душ» (каждое N-е).
 # Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
 func on_enemy_killed(enemy: Node2D) -> void:
+	_apply_dot_death_spread(enemy)
 	# «Цепная Искра»: шанс взрыва по области у трупа.
 	var explosion_chance := clampf(float(run_modifiers.get("kill_explosion_chance", 0.0)), 0.0, 1.0)
 	if explosion_chance > 0.0 and enemy != null and is_instance_valid(enemy) and is_inside_tree() and randf() < explosion_chance:
@@ -1700,6 +2067,60 @@ func on_enemy_killed(enemy: Node2D) -> void:
 		if _kill_streak_counter >= streak_every:
 			_kill_streak_counter = 0
 			heal_percent(0.03)
+
+
+func _apply_dot_death_spread(enemy: Node2D) -> void:
+	var extra_duration := float(run_modifiers.get("dot_death_spread_duration", 0.0))
+	if extra_duration <= 0.0 or enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
+		return
+	var statuses := StatusEffects.snapshot(enemy)
+	if statuses.is_empty():
+		return
+	var dot_statuses := []
+	for status_id in statuses.keys():
+		var status: Dictionary = statuses[status_id]
+		if float(status.get("dot_damage", 0.0)) > 0.0:
+			dot_statuses.append(status)
+	if dot_statuses.is_empty():
+		return
+	var radius := maxf(float(derived_parameters.get("aoe_radius", 180.0)) * 0.72, 130.0)
+	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
+		if other_node == enemy:
+			continue
+		for status in dot_statuses:
+			var spread: Dictionary = (status as Dictionary).duplicate(true)
+			spread["duration"] = extra_duration
+			spread["remaining"] = extra_duration
+			spread["stack_mode"] = "extend"
+			StatusEffects.apply_status(other_node, str(status.get("id", "spread_dot")), spread)
+
+
+func _apply_heal_to_holy_damage(healed: float) -> void:
+	var ratio := float(run_modifiers.get("heal_to_holy_damage_ratio", 0.0))
+	if ratio <= 0.0 or healed <= 0.0 or not is_inside_tree():
+		return
+	var damage_amount := healed * ratio
+	var radius := maxf(float(derived_parameters.get("aura_radius", 180.0)), 180.0)
+	var targets := TARGET_QUERY.nearest_many(self, global_position, radius, 3)
+	var previous_position := global_position
+	for index in range(targets.size()):
+		var enemy_node := targets[index] as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node) or not enemy_node.has_method("take_damage"):
+			continue
+		AttackVfx.beam(_vfx_parent(), previous_position, enemy_node.global_position, 26.0, Color(1.0, 0.92, 0.56, 0.38))
+		var chain_damage := damage_amount * pow(0.72, float(index))
+		if _take_damage_accepts_feedback(enemy_node):
+			enemy_node.take_damage(chain_damage, {"damage_type": "magic"})
+		else:
+			enemy_node.take_damage(chain_damage)
+		previous_position = enemy_node.global_position
+
+
+func _take_damage_accepts_feedback(target: Node) -> bool:
+	for method in target.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			return int((method.get("args", []) as Array).size()) >= 2
+	return false
 
 
 func gain_xp(amount: int) -> void:
@@ -1733,7 +2154,9 @@ func heal_percent(percent: float) -> void:
 	health = min(max_health, health + max_health * percent * float(run_modifiers.get("healing_multiplier", 1.0)))
 	if health > before + 0.01:
 		_show_heal_vfx()
-		show_combat_feedback_number(health - before, "heal")
+		var healed := health - before
+		show_combat_feedback_number(healed, "heal")
+		_apply_heal_to_holy_damage(healed)
 
 
 # SCRUM-603: БОЕВОЕ лечение-от-атаки (heal_percent_on_attack/melee_heal_percent_on_hit/
@@ -1792,6 +2215,7 @@ func _apply_stat_scaling(full_heal := false, old_max_health := 0.0) -> void:
 
 func _apply_weapon_scaling(weapon: Node) -> void:
 	_capture_weapon_base_values(weapon)
+	var meta_context := meta_context_for_weapon(weapon)
 
 	if weapon.get("damage") != null:
 		var damage_parameter := "damage"
@@ -1802,7 +2226,7 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	if weapon.get("fire_interval") != null:
 		var attack_speed := float(derived_parameters.get("attack_speed", 1.0))
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
-		weapon.set("fire_interval", max(0.18, base_fire_interval / max(attack_speed, 0.1)))
+		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
 
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
@@ -1815,13 +2239,31 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 			weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * width_scale)
 
 	if weapon.get("aoe_radius") != null:
-		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))))
+		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context))
 
 	if weapon.get("projectile_speed") != null:
 		weapon.set("projectile_speed", float(derived_parameters.get("projectile_speed", weapon.get_meta("base_projectile_speed", 520.0))))
 
 	if weapon.get("knockback") != null:
-		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))))
+		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context))
+
+	if weapon.get("amp_pulse_interval") != null and weapon.has_meta("base_amp_pulse_interval"):
+		weapon.set("amp_pulse_interval", maxf(0.08, float(weapon.get_meta("base_amp_pulse_interval")) * meta_interval_multiplier(meta_context)))
+
+	if weapon.get("pool_tick_interval") != null and weapon.has_meta("base_pool_tick_interval"):
+		weapon.set("pool_tick_interval", maxf(0.08, float(weapon.get_meta("base_pool_tick_interval")) * meta_interval_multiplier(meta_context)))
+
+	if weapon.get("pool_duration") != null and weapon.has_meta("base_pool_duration"):
+		weapon.set("pool_duration", maxf(0.2, float(weapon.get_meta("base_pool_duration")) * meta_duration_multiplier(meta_context)))
+
+	if weapon.get("orbit_duration") != null and weapon.has_meta("base_orbit_duration"):
+		weapon.set("orbit_duration", maxf(0.2, float(weapon.get_meta("base_orbit_duration")) * meta_duration_multiplier(meta_context)))
+
+	if weapon.get("charge_seconds") != null and weapon.has_meta("base_charge_seconds"):
+		var charge_context := meta_context.duplicate(true)
+		charge_context["charge_seconds"] = float(weapon.get_meta("base_charge_seconds"))
+		charge_context["is_charged"] = float(weapon.get_meta("base_charge_seconds")) > 0.0
+		weapon.set("charge_seconds", maxf(0.0, float(weapon.get_meta("base_charge_seconds")) * meta_charge_time_multiplier(charge_context)))
 
 	if weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
 		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
@@ -1873,6 +2315,16 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_wave_width", weapon.get("wave_width"))
 	if weapon.get("knockback") != null and not weapon.has_meta("base_knockback"):
 		weapon.set_meta("base_knockback", weapon.get("knockback"))
+	if weapon.get("amp_pulse_interval") != null and not weapon.has_meta("base_amp_pulse_interval"):
+		weapon.set_meta("base_amp_pulse_interval", weapon.get("amp_pulse_interval"))
+	if weapon.get("pool_tick_interval") != null and not weapon.has_meta("base_pool_tick_interval"):
+		weapon.set_meta("base_pool_tick_interval", weapon.get("pool_tick_interval"))
+	if weapon.get("pool_duration") != null and not weapon.has_meta("base_pool_duration"):
+		weapon.set_meta("base_pool_duration", weapon.get("pool_duration"))
+	if weapon.get("orbit_duration") != null and not weapon.has_meta("base_orbit_duration"):
+		weapon.set_meta("base_orbit_duration", weapon.get("orbit_duration"))
+	if weapon.get("charge_seconds") != null and not weapon.has_meta("base_charge_seconds"):
+		weapon.set_meta("base_charge_seconds", weapon.get("charge_seconds"))
 
 
 func _ensure_default_input_actions() -> void:

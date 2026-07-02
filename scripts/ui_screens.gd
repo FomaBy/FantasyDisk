@@ -7862,6 +7862,13 @@ func _random_shop_items(count: int) -> Array:
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	price_mult *= maxf(1.0 + float(skill_mods.get("shop_price_mult", 0.0)), 0.1)
+	# SCRUM-835: class keystone downside может быть положительным штрафом к ценам
+	# выбранного героя (thief «Джекпот»), поэтому читаем class-specific моды тоже.
+	# QA-фикс: skill_modifiers_for_class = Атлас + созвездие класса, поэтому берём
+	# только классовую ДЕЛЬТУ — иначе аккаунтная скидка Атласа применялась бы дважды.
+	var class_skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers_for_class(game.meta_state, game.selected_character_id)
+	var class_shop_price_delta := float(class_skill_mods.get("shop_price_mult", 0.0)) - float(skill_mods.get("shop_price_mult", 0.0))
+	price_mult *= maxf(1.0 + class_shop_price_delta, 0.1)
 	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
 	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
 		var has_rare := false

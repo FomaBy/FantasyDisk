@@ -269,22 +269,25 @@ erode 1px → точный LANCZOS в целевой размер; в промп
 
 ## Приложение A — keystone-тройки 17 классов
 
-Заполнено в T1 (SCRUM-828), затем частично переведено в условные механики в
-линейке 4.1 (SCRUM-834a/835/836/837): у каждого класса РОВНО 3 взаимоисключающих keystone (cost 4, exclusive-группа
+Заполнено в T1 (SCRUM-828), затем частично переведено в условные и семантические
+боевые механики в линейке 4.1 (SCRUM-834a/835/836/837): у каждого класса РОВНО 3 взаимоисключающих keystone (cost 4, exclusive-группа
 `<class>_keystones`, активен ≤1, переключение купленных бесплатно). Числовой
 downside обязателен и ≥25% ценности апсайда в весах силы (`POWER_WEIGHTS`
 дата-модуля); «чистый вклад» (последний столбец) — вклад keystone в
-damage-mult-эквивалент бюджета §6, удержан в узкой полосе 0.036–0.054 ради
+damage-mult-эквивалент бюджета §6, удержан в узкой полосе 0.035–0.060 ради
 кросс-классового спреда ≤1.25.
 
-**4.1 — условные keystone (SCRUM-834a и продолжения).** После QA-декомпозиции
-SCRUM-834a является частичным backend-slice: реально защищённые PM-ноды сейчас
-`soldier_k1` «Шквал» (стойка → скорострельность) и `thief_k0` «Из тени»
-(окно после уклонения → крит-шанс). Остальные `k0`/`k1` строки ниже отражают
-текущие generic conditional placeholders, оставшиеся до SCRUM-835/837; они не
-считаются финальной реализацией всей PM-таблицы 17 классов. Четыре базовых типа
-условий разведены в `player.gd` (гейты `*_active`/`swarm_fraction`, консумит
-`progression_data.derived_parameters`):
+**4.1 — условные и семантические keystone (SCRUM-834a/835).** SCRUM-834a
+закрывает real-node путь `soldier_k1` «Шквал» (стойка → скорострельность) и
+`thief_k0` «Из тени» (окно после уклонения → крит-шанс). SCRUM-835 переводит
+PM-пары на новые боевые подсистемы: on-hit suppression, gold-scaling, elemental
+resonance, ward/heal conversion, reactor heat, devices/mines, DoT death-spread,
+beam duration, sound/riff, execute/invisibility, charged pierce/traps, drain/
+surgery, cloud/homunculus, pets/briars и bastion taunt. Оставшиеся generic
+conditional rows в таблице ниже — только переходные старые узлы, которые не
+входили в 835 scope (например Berserk/Sniper/Biologist/Knight-k1).
+Четыре базовых типа условий разведены в `player.gd` (гейты
+`*_active`/`swarm_fraction`, консумит `progression_data.derived_parameters`):
 
 - **HP-порог** (`hurt_damage_bonus`) — пока здоровье героя ниже половины
   (`_update_conditional_keystones`, порог 50%). «Кровавый танец», «Хор
@@ -302,70 +305,70 @@ SCRUM-834a является частичным backend-slice: реально з�
 (аптайм) × вес урона, поэтому крупный заголовочный процент (напр. +34% «в
 рывке») держит тот же budget-вклад, что старый статический трейд. Для 834a
 та же бюджетная логика применена к не-урон стат-целям `stance_attack_speed_bonus`
-и `rush_crit_bonus`; коридор §6 и спред ≤1.25 сохранены. Третий keystone (`k2`)
-сохраняет статический трейд T1. PM-эталоны §3 закрываются инкрементально:
-реальные боевые подсистемы идут в SCRUM-835, а строгий behavioral smoke всех
-реальных эффектов — в SCRUM-837.
+и `rush_crit_bonus`; для 835 semantic-ключей вес = ожидаемый аптайм/полезность
+подсистемы, а положительные штрафы (`reactor_heat_incoming_damage`,
+`charge_time_mult`) имеют отрицательный вес. Экономический `shop_price_mult`
+остаётся weight-0 для Атласа, а downside «Джекпота» проверяется per-hero gate.
+Третий keystone (`k2`) сохраняет статический трейд T1.
 
 | Класс | Keystone | Апсайд | Downside | Целевая механика 4.1 | Чистый вклад |
 | --- | --- | --- | --- | --- | --- |
 | **Берсерк** | «Кровавый танец» (`berserk_k0`) | +32% к урону, пока здоровье ниже половины | −30% к получаемому лечению | HP-порог | 0.051 |
 |  | «Несущий бурю» (`berserk_k1`) | +18% к урону в гуще боя (на пике — врагов рядом) | −4% к макс. здоровью | счёт-в-радиусе | 0.050 |
 |  | «Последний рубеж» (`berserk_k2`) | +29% к урону при низком здоровье, +0.4 к регенерации при низком здоровье | −2.2% к защите | — | 0.049 |
-| **Солдат** | «Подавляющий огонь» (`soldier_k0`) | +28% к урону, пока здоровье ниже половины | −6% к скорости движения | HP-порог | 0.036 |
+| **Солдат** | «Подавление» (`soldier_k0`) | поражённые за последние 2с враги наносят −15% урона | −10% к скорости движения | on-hit suppression | 0.040 |
 |  | «Шквал» (`soldier_k1`) | +19.1% к скорострельности в неподвижной боевой стойке (реализовано 834a) | −4% к урону | стойка | 0.046 |
 |  | «Гранатный подсумок» (`soldier_k2`) | +7% к радиусу области, +9% шанс взрыва при убийстве | −6% к дальности атаки | — | 0.039 |
 | **Вор** | «Из тени» (`thief_k0`) | +17.2% к шансу крита в рывке (окно после уклонения) (реализовано 834a) | −4% к макс. здоровью | окно после уклонения | 0.046 |
-|  | «Ночная работа» (`thief_k1`) | +18.3% к урону в гуще боя (на пике — врагов рядом) | −4% к урону | счёт-в-радиусе | 0.051 |
+|  | «Джекпот» (`thief_k1`) | +1% к урону за каждые 50 золота, cap +25% | +20% к ценам лавки | gold-scaling | 0.050 |
 |  | «Азарт канатоходца» (`thief_k2`) | +17% к урону крита, +9% к скорости движения после уклонения (рывок) | −2.2% к защите | — | 0.047 |
-| **Элементалист** | «Сверхновая» (`elementalist_k0`) | +18.8% к урону в гуще боя (на пике — врагов рядом) | −6% к дальности атаки | счёт-в-радиусе | 0.046 |
-|  | «Канал ульты» (`elementalist_k1`) | +19.4% к урону в неподвижной боевой стойке | −4% к урону | стойка | 0.047 |
+| **Элементалист** | «Резонанс» (`elementalist_k0`) | +35% к урону другой стихией по отмеченной цели | −12% к прямому урону | elemental mark/resonance | 0.045 |
+|  | «Монолит» (`elementalist_k1`) | +2 стихийные орбы | −20% к радиусу prism/rift зон | elemental orbit + rift radius | 0.050 |
 |  | «Огонь по площади» (`elementalist_k2`) | +11% шанс взрыва при убийстве, +1 периодического урона | −6% к скорости движения | — | 0.044 |
 | **Снайпер** | «Один выстрел» (`sniper_k0`) | +20% к урону в неподвижной боевой стойке | −4% к скорости атаки | стойка | 0.050 |
 |  | «Свинцовый ветер» (`sniper_k1`) | +34.5% к урону в рывке (окно после уклонения) | −12% к урону крита | окно после уклонения | 0.041 |
 |  | «Гнездо ястреба» (`sniper_k2`) | +6% к дальности атаки, +2% к шансу крита | −6% к скорости движения | — | 0.040 |
-| **Священник** | «Хор искупления» (`priest_k0`) | +30% к урону, пока здоровье ниже половины | −4% к урону | HP-порог | 0.050 |
-|  | «Щит веры» (`priest_k1`) | +20.9% к урону в неподвижной боевой стойке | −6% к скорости движения | стойка | 0.046 |
+| **Священник** | «Мученик» (`priest_k0`) | 50% исходящего лечения превращается в святую цепь урона | −30% к получаемому лечению | heal→holy chain | 0.045 |
+|  | «Заступник» (`priest_k1`) | +40% к поглощению ward-волн | −17% к скорости заряда ультимейта | ward absorb | 0.043 |
 |  | «Глас гнева» (`priest_k2`) | +5% к урону, +2.9% к силе поддержки | −2.2% к защите | — | 0.042 |
 | **Биолог** | «Пандемия» (`biologist_k0`) | +17.7% к урону в гуще боя (на пике — врагов рядом) | −4% к урону | счёт-в-радиусе | 0.048 |
 |  | «Симбионт» (`biologist_k1`) | +20.4% к урону в неподвижной боевой стойке | −0.07 к скорости тиков | стойка | 0.050 |
 |  | «Регенеративный цикл» (`biologist_k2`) | +0.15 к регенерации, +4% к макс. здоровью | −6% к скорости движения | — | 0.044 |
-| **Робот** | «Овердрайв» (`robot_k0`) | +20.6% к урону в неподвижной боевой стойке | −2.2% к защите | стойка | 0.049 |
-|  | «Осадный режим» (`robot_k1`) | +17% к урону в гуще боя (на пике — врагов рядом) | −6% к скорости движения | счёт-в-радиусе | 0.037 |
+| **Робот** | «Перегрев» (`robot_k0`) | при жаре реактора >70% +30% к урону | +15% входящего урона при перегреве | reactor heat | 0.044 |
+|  | «Сверхпроводник» (`robot_k1`) | +50% к радиусу магнитного якоря | −12% к макс. здоровью | magnet radius | 0.045 |
 |  | «Протокол мести» (`robot_k2`) | +11% шанс ответной волны при получении удара, +18% полученного урона отражается шипами | −4% к скорости атаки | — | 0.051 |
-| **Инженер** | «Армия машин» (`engineer_k0`) | +20.8% к урону в неподвижной боевой стойке | −4% к урону | стойка | 0.054 |
-|  | «Крепость-мастерская» (`engineer_k1`) | +18% к урону в гуще боя (на пике — врагов рядом) | −6% к скорости движения | счёт-в-радиусе | 0.042 |
+| **Инженер** | «Автоматизация» (`engineer_k0`) | устройства стреляют на 25% быстрее | −15% к личному урону вне устройств | devices | 0.060 |
+|  | «Минёр» (`engineer_k1`) | +2 мины, мгновенный взвод | −30% к радиусу ремонтной сети | mines + repair radius | 0.045 |
 |  | «Перегретые стволы» (`engineer_k2`) | +33 к скорости снарядов, +5% к скорости атаки | −2.2% к защите | — | 0.042 |
-| **Тёмный маг** | «Запретное знание» (`dark_mage_k0`) | +18.5% к урону в гуще боя (на пике — врагов рядом) | −4% к макс. здоровью | счёт-в-радиусе | 0.052 |
-|  | «Гниль» (`dark_mage_k1`) | +19.7% к урону в неподвижной боевой стойке | −4% к урону | стойка | 0.049 |
+| **Тёмный маг** | «Пожинатель» (`dark_mage_k0`) | смерть cursed/DoT цели распространяет/продлевает DoT вокруг на +2с | −15% к прямому урону | DoT death-spread | 0.043 |
+|  | «Ненасытный луч» (`dark_mage_k1`) | +30% к длительности лучей | −20% к радиусу взрывов луча | beam duration | 0.040 |
 |  | «Договор пустоты» (`dark_mage_k2`) | +0.9 к силе призыва, +14% к урону при низком здоровье | −30% к получаемому лечению | — | 0.044 |
-| **Гитарист** | «Крещендо» (`guitarist_k0`) | +18.8% к урону в гуще боя (на пике — врагов рядом) | −4% к урону | счёт-в-радиусе | 0.054 |
-|  | «Пауэр-аккорд» (`guitarist_k1`) | +19.1% к урону в неподвижной боевой стойке | −4% к силе поддержки | стойка | 0.036 |
+| **Гитарист** | «Хедлайнер» (`guitarist_k0`) | +30% к ширине звуковых аур | −50% к отталкиванию | sound aura width | 0.040 |
+|  | «Рифф» (`guitarist_k1`) | непрерывная серия без паузы >1с даёт +25% к урону | −10% к базовой скорости атаки | riff streak | 0.045 |
 |  | «Фронтмен» (`guitarist_k2`) | +7% к силе ультимейта, +7% к скорости заряда ультимейта | −4% к макс. здоровью | — | 0.048 |
-| **Ассасин** | «Из тени» (`assassin_k0`) | +29.2% к урону, пока здоровье ниже половины | −4% к макс. здоровью | HP-порог | 0.048 |
-|  | «Тысяча порезов» (`assassin_k1`) | +34.6% к урону в рывке (окно после уклонения) | −12% к урону крита | окно после уклонения | 0.041 |
+| **Ассасин** | «Экзекутор» (`assassin_k0`) | крит добивает не-элитную цель ниже 35% HP | −10% к шансу крита | crit execute | 0.045 |
+|  | «Теневой шаг» (`assassin_k1`) | 2с невидимости после shadow_burst | −15% к макс. здоровью | shadow invisibility | 0.040 |
 |  | «Призрачный шаг» (`assassin_k2`) | +1.8% к уклонению, +12% к скорости движения после уклонения (рывок) | −4% к урону | — | 0.050 |
-| **Рейнджер** | «Град стрел» (`ranger_k0`) | +19.1% к урону в неподвижной боевой стойке | −6% к дальности атаки | стойка | 0.038 |
-|  | «Выстрел навылет» (`ranger_k1`) | +17.3% к урону в гуще боя (на пике — врагов рядом) | −4% к скорости атаки | счёт-в-радиусе | 0.046 |
+| **Рейнджер** | «Штурмовая стойка» (`ranger_k0`) | заряженный выстрел получает +2 пробития | +20% к времени зарядки | charged pierce | 0.046 |
+|  | «Капканщик» (`ranger_k1`) | +2 капкана, мгновенный взвод | −12% к урону вне капканов | traps | 0.048 |
 |  | «Хозяин тропы» (`ranger_k2`) | +6% к скорости движения, +2.2% к шансу крита | −4% к макс. здоровью | — | 0.052 |
-| **Доктор** | «Триаж» (`doctor_k0`) | +30.8% к урону, пока здоровье ниже половины | −4% к урону | HP-порог | 0.052 |
-|  | «Полевая хирургия» (`doctor_k1`) | +36% к урону в рывке (окно после уклонения) | −6% к скорости движения | окно после уклонения | 0.042 |
+| **Доктор** | «Вампирический контур» (`doctor_k0`) | drain-link цепляет +1 цель | −40% к лечению меднабора | drain link | 0.045 |
+|  | «Хирург» (`doctor_k1`) | +60% к хирургическому удару в упор | −20% к дальнему урону | close surgery | 0.038 |
 |  | «Доза адреналина» (`doctor_k2`) | +5% к скорости атаки, +2.9% к силе поддержки | −30% к получаемому лечению | — | 0.041 |
-| **Химик** | «Каталитический распад» (`chemist_k0`) | +18.1% к урону в гуще боя (на пике — врагов рядом) | −4% к урону | счёт-в-радиусе | 0.050 |
-|  | «Гремучая колба» (`chemist_k1`) | +19.3% к урону в неподвижной боевой стойке | −1.2 периодического урона | стойка | 0.042 |
+| **Химик** | «Катализатор» (`chemist_k0`) | +40% к площади детонации облаков | −30% к длительности луж/облаков | cloud detonation | 0.040 |
+|  | «Гомункул-прайм» (`chemist_k1`) | гомункул получает +50% к HP и урону | −10% к макс. здоровью | homunculus | 0.050 |
 |  | «Пары эфира» (`chemist_k2`) | +6% к скорости движения, +1.5% к уклонению | −4% к макс. здоровью | — | 0.053 |
-| **Рыцарь** | «Бастион» (`knight_k0`) | +20% к урону в неподвижной боевой стойке | −6% к скорости движения | стойка | 0.042 |
+| **Рыцарь** | «Бастион» (`knight_k0`) | после 1с стойки +25% защиты и провокация врагов | −15% к скорости движения | bastion taunt | 0.045 |
 |  | «Марш легиона» (`knight_k1`) | +32.8% к урону в рывке (окно после уклонения) | −2.2% к защите | окно после уклонения | 0.038 |
 |  | «Шипастый панцирь» (`knight_k2`) | +27% полученного урона отражается шипами, +7% шанс ответной волны при получении удара | −4% к скорости атаки | — | 0.049 |
-| **Друид** | «Вожак стаи» (`druid_k0`) | +20.9% к урону в неподвижной боевой стойке | −4% к урону | стойка | 0.054 |
-|  | «Дикий рост» (`druid_k1`) | +17.1% к урону в гуще боя (на пике — врагов рядом) | −6% к скорости движения | счёт-в-радиусе | 0.038 |
+| **Друид** | «Вожак стаи» (`druid_k0`) | питомцы наносят +25% урона | −15% к личному урону без питомцев и терний | pets | 0.035 |
+|  | «Терновый круг» (`druid_k1`) | +35% к ширине терновых зон | −10% к скорости движения | briar zones | 0.046 |
 |  | «Гнев леса» (`druid_k2`) | +1.4 периодического урона, +18% полученного урона отражается шипами | −0.13 к регенерации | — | 0.043 |
 
 Примечание к эталонам §3 (реализация 4.1): строки таблицы фиксируют текущий
-runtime data state, но после re-scope не означают, что SCRUM-834a закрыл все
-PM-механики. 834a закрывает только мапящиеся на существующие гейты не-урон
-варианты `soldier_k1` и `thief_k0`; остальные формульные/generic триггеры
-остаются переходным состоянием до SCRUM-835/837.
+runtime data state. SCRUM-835 закрыл semantic combat-пары на новых подсистемах;
+оставшиеся generic conditional строки — отдельный будущий scope, а не статус
+835.
 
 ## Приложение B — реестр новых ключей эффектов
 
@@ -384,12 +387,37 @@ PM-механики. 834a закрывает только мапящиеся н�
 | `crit_speed_burst` | `thief_h1`, `sniper_h0`, `guitarist_h0`, `assassin_h0`, `ranger_h0` | `META_SKILL_FLAT_MAP` → `_trigger_crit_speed_burst` | wired-гейт smoke |
 | `dodge_rush_bonus` | `thief_t3/k2/h0`, `assassin_t3/k2/h1`, `ranger_h1` | `META_SKILL_FLAT_MAP` → `_trigger_dodge_rush` | wired-гейт smoke |
 | `lowhp_guard` | скрытые звезды: `berserk_h1`, `elementalist_h1`, `priest_h0`, `robot_h1`, `doctor_h0`, `knight_h1` | флаг (max-merge) → `_trigger_lowhp_guard` («Рубеж Стража») | per-hero hidden-гейт + wired-гейт |
-| `hurt_damage_bonus` | k0/k1 (HP-порог): `berserk_k0`, `soldier_k0`, `priest_k0`, `assassin_k0`, `doctor_k0` | `META_SKILL_FLAT_MAP`; гейт `hurt_active` (HP<50%) → `derived_parameters.damage_multiplier` | conditional-гейт smoke (`_test_conditional_keystones`) |
-| `stance_damage_bonus` | k0/k1 (стойка): `sniper_k0`, `elementalist_k1`, `priest_k1`, `robot_k0`, `engineer_k0`, `biologist_k1`, `dark_mage_k1`, `guitarist_k1`, `ranger_k0`, `chemist_k1`, `knight_k0`, `druid_k0` | `META_SKILL_FLAT_MAP`; гейт `stance_active` (неподвижность ≥0.8с) → `damage_multiplier` | conditional-гейт smoke |
-| `rush_damage_bonus` | k0/k1 (окно после уклонения): `sniper_k1`, `assassin_k1`, `doctor_k1`, `knight_k1` | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` (2с после уворота, `_trigger_rush_window`) → `damage_multiplier` | conditional-гейт smoke |
-| `swarm_damage_bonus` | k0/k1 (счёт-в-радиусе): `berserk_k1`, `thief_k1`, `elementalist_k0`, `robot_k1`, `engineer_k1`, `biologist_k0`, `dark_mage_k0`, `guitarist_k0`, `ranger_k1`, `chemist_k0`, `druid_k1` | `META_SKILL_FLAT_MAP`; гейт `swarm_fraction` (0..1 от `SWARM_CAP`) → `damage_multiplier` | conditional-гейт smoke |
+| `hurt_damage_bonus` | k0 (HP-порог): `berserk_k0` | `META_SKILL_FLAT_MAP`; гейт `hurt_active` (HP<50%) → `derived_parameters.damage_multiplier` | conditional-гейт smoke (`_test_conditional_keystones`) |
+| `stance_damage_bonus` | k0/k1 (стойка): `sniper_k0`, `biologist_k1` | `META_SKILL_FLAT_MAP`; гейт `stance_active` (неподвижность ≥0.8с) → `damage_multiplier` | conditional-гейт smoke |
+| `rush_damage_bonus` | k1 (окно после уклонения): `sniper_k1`, `knight_k1` | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` (2с после уворота, `_trigger_rush_window`) → `damage_multiplier` | conditional-гейт smoke |
+| `swarm_damage_bonus` | k0/k1 (счёт-в-радиусе): `berserk_k1`, `biologist_k0` | `META_SKILL_FLAT_MAP`; гейт `swarm_fraction` (0..1 от `SWARM_CAP`) → `damage_multiplier` | conditional-гейт smoke |
 | `stance_attack_speed_bonus` | k1 (стойка → не-урон): `soldier_k1` («Шквал», 834a) | `META_SKILL_FLAT_MAP`; гейт `stance_active` → `attack_speed_multiplier` | real-node conditional smoke (`soldier_k1` → active keystone → player/progression) |
 | `rush_crit_bonus` | k0 (окно после уклонения → не-урон): `thief_k0` («Из тени», 834a) | `META_SKILL_FLAT_MAP`; гейт `rush_window_active` → `crit_chance` | real-node conditional smoke (`thief_k0` → active keystone → player/progression) |
+| `enemy_hit_damage_down` | `soldier_k0` «Подавление» | `META_SKILL_FLAT_MAP`; `on_weapon_hit` → `_apply_meta_keystone_hit_effects` → `StatusEffects.damage_multiplier(enemy)` на 2с | SCRUM-835 semantic smoke + `global_survivability_balance_smoke` |
+| `gold_damage_per_50`, `gold_damage_bonus_cap` | `thief_k1` «Джекпот» | `meta_damage_multiplier`: floor(current gold/50) × step, capped; `shop_price_mult` downside consumed in `ui_screens.gd` | SCRUM-835 semantic smoke (floor/cap) + shop smoke |
+| `elemental_resonance_bonus` | `elementalist_k0` «Резонанс» | elemental mark metadata on enemy; different next element gets resonance multiplier | SCRUM-835 semantic smoke |
+| `elemental_orb_extra_count`, `prism_rift_radius_mult` | `elementalist_k1` «Монолит» | `meta_extra_projectiles` for `elemental_orbit`; `meta_radius_multiplier` for `prism_rift` | SCRUM-835 semantic smoke |
+| `heal_to_holy_damage_ratio` | `priest_k0` «Мученик» | heal flows call `_apply_heal_to_holy_damage`, nearest enemies receive holy/magic chain damage | wired smoke + runtime smoke |
+| `ward_absorb_bonus` | `priest_k1` «Заступник» | `meta_apply_priest_ward` temporarily increases `absorb_flat` during ward wave | SCRUM-835 semantic smoke + survivability smoke |
+| `reactor_heat_damage_bonus`, `reactor_heat_incoming_damage` | `robot_k0` «Перегрев» | robot hits build `_reactor_heat`; >70% toggles damage bonus and incoming-damage penalty | SCRUM-835 semantic smoke + survivability smoke |
+| `magnet_radius_mult` | `robot_k1` «Сверхпроводник» | `meta_radius_multiplier` for `robot_magnetic_anchor` | SCRUM-835 semantic smoke |
+| `device_attack_speed_bonus`, `non_device_damage_mult` | `engineer_k0` «Автоматизация» | `meta_interval_multiplier` speeds devices; `meta_damage_multiplier` penalizes non-device damage | SCRUM-835 semantic smoke + global damage smoke |
+| `mine_extra_count`, `repair_radius_mult` | `engineer_k1` «Минёр» | `meta_extra_projectiles`/`meta_trap_instant_arm` for pressure mines; repair-drone radius multiplier | SCRUM-835 semantic smoke |
+| `dot_death_spread_duration`, `direct_damage_mult` | `dark_mage_k0` «Пожинатель» | `on_enemy_killed` snapshots DoT statuses and spreads/extends them around the corpse; direct-damage penalty in `meta_damage_multiplier` | SCRUM-835 semantic smoke + runtime smoke |
+| `beam_duration_mult`, `explosion_radius_mult` | `dark_mage_k1` «Ненасытный луч» | `meta_duration_multiplier` for beams; beam/explosion radius multiplier | SCRUM-835 semantic smoke |
+| `guitar_aura_radius_mult` | `guitarist_k0` «Хедлайнер» | `meta_radius_multiplier` for sound/aura modes; `knockback_mult` remains derived weapon scaling downside | SCRUM-835 semantic smoke |
+| `riff_streak_damage_bonus` | `guitarist_k1` «Рифф» | sound hits build `_riff_streak_time`; >1с toggles damage multiplier, with `attack_speed_mult` downside | SCRUM-835 semantic smoke |
+| `crit_execute_threshold` | `assassin_k0` «Экзекутор» | critical hit executes non-elite targets below threshold; elite/boss groups are excluded | SCRUM-835 semantic smoke |
+| `shadow_burst_invisibility_time` | `assassin_k1` «Теневой шаг» | `trigger_assassin_crit_shadow` grants timed invisible state after shadow burst | wired smoke + runtime smoke |
+| `charged_shot_extra_pierce`, `charge_time_mult` | `ranger_k0` «Штурмовая стойка» | `meta_extra_pierce` for charged shots; charge-time multiplier downside | SCRUM-835 semantic smoke |
+| `trap_extra_count`, `non_trap_damage_mult` | `ranger_k1` «Капканщик» | `meta_extra_projectiles`/`meta_trap_instant_arm` for traps; non-trap damage penalty | SCRUM-835 semantic smoke |
+| `drain_extra_targets`, `medkit_healing_mult` | `doctor_k0` «Вампирический контур» | `meta_extra_projectiles` extends drain-link target count; medkit/healing downside stored as run modifier | SCRUM-835 semantic smoke + survivability smoke |
+| `surgical_close_damage_bonus`, `ranged_damage_mult` | `doctor_k1` «Хирург» | close `stab_flurry` hits receive surgical bonus; non-stab/ranged attacks get damage penalty | SCRUM-835 semantic smoke + global damage smoke |
+| `cloud_detonation_radius_mult`, `pool_duration_mult` | `chemist_k0` «Катализатор» | cloud radius multiplier and pool/cloud duration downside | SCRUM-835 semantic smoke |
+| `homunculus_power_mult` | `chemist_k1` «Гомункул-прайм» | `summoner_weapon.gd` boosts homunculus HP/damage from owner run modifiers | wired smoke + runtime smoke |
+| `pet_damage_mult`, `pet_personal_damage_mult` | `druid_k0` «Вожак стаи» | summon/pet contexts get damage bonus; non-pet/non-briar personal damage is penalized | SCRUM-835 semantic smoke + global damage smoke |
+| `briar_radius_mult` | `druid_k1` «Терновый круг» | `meta_radius_multiplier` for briar pool/zones; move-speed downside via derived parameters | SCRUM-835 semantic smoke |
+| `bastion_defense_bonus`, `bastion_taunt` | `knight_k0` «Бастион» | stance active adds defense in `take_damage`; `_apply_bastion_taunt` applies taunt status around the knight | SCRUM-835 semantic smoke + survivability smoke |
 
 Метрика скрытых звёзд `class_wins` добавлена к
 `weapon_diversity`/`best_ascension`/`no_shop_wins` и читается из

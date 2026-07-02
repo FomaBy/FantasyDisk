@@ -5,6 +5,18 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-835: Мета 4.1b — keystone-пары на новых боевых подсистемах вместо
+  generic damage placeholders. Реализованы real PM semantics для
+  `soldier_k0`/`thief_k1`/`elementalist_k0-k1`/`priest_k0-k1`/`robot_k0-k1`/
+  `engineer_k0-k1`/`dark_mage_k0-k1`/`guitarist_k0-k1`/`assassin_k0-k1`/
+  `ranger_k0-k1`/`doctor_k0-k1`/`chemist_k0-k1`/`knight_k0`/`druid_k0-k1`:
+  suppression, gold cap, elemental resonance/orbs, heal→holy chain, ward absorb,
+  reactor heat, magnet radius, device tempo, instant mines/traps, DoT death spread,
+  beam duration, riff streak, crit execute, shadow invisibility, charged pierce,
+  drain extra targets, close surgery, cloud detonation, homunculus/pet/briar buffs
+  and Bastion taunt/defense. Behavioral gate added to `meta_skill_tree_smoke_test`;
+  balance/survivability gates remain green (в dev влито cherry-pick'ом поверх
+  SCRUM-834; SCRUM-836 идёт отдельной поставкой).
 - SCRUM-834a: Мета 4.1 — условные keystone на существующих гейтах с не-урон
   стат-целью. Инфра `hurt/stance/rush/swarm` расширена за пределы урона: soldier
   «Шквал» (стойка → +19.1% скорострельности `stance_attack_speed_bonus`, downside
