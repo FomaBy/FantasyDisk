@@ -41,3 +41,30 @@ UpgradeChoiceButton{N}Description to stay inside scaled wide-card safe rect
 - `scripts/ui_screens.gd:5939` `_show_upgrade_screen()` + билдер карточек
   (`UpgradeChoiceButton*`, `_economy_choice_card_contract_error` в матрице).
 - `tests/ui_no_overlap_matrix_test.gd` — контракт safe rect (строки ~479-487).
+
+
+## Исправление (2026-07-02, claude-backend)
+
+Коммиты c31e18c2 + 91feb291 (scripts/ui_screens.gd). `_make_economy_choice_card`
++ `_fit_economy_choice_card_content` (ready-callback, CONNECT_ONE_SHOT,
+Callable.bind — без freed-lambda): описание ужимается по шрифту (до 9px), затем
+режется по строкам с многоточием (OVERRUN_TRIM_ELLIPSIS) до влезания в safe-зону
+карточки по реальному `content.get_combined_minimum_size()`; полный текст — в
+tooltip. Фрейм по осям не растягивается (правило UI-ассетов соблюдено).
+
+## QA-Вердикт (2026-07-02, claude-qa) — PASSED
+
+Статус: PASSED
+
+Проверено на origin/dev @ 4c005582 (фиксы c31e18c2/91feb291 — ancestors) в
+изолированном worktree.
+
+- `ui_no_overlap_matrix_test` (флаки по RNG наград) прогнан 5× подряд через
+  godot_gate (fdengine, SLOTS=1) — 5/5 exit 0, «UI no-overlap matrix test passed».
+  upgrade_economy @1536×864 (упавший ранее срез) больше не продавливает safe rect.
+- Фикс детерминирован (fit-callback от реального minimum size), не зависит от
+  выпавших наград → устраняет саму флак-причину, а не маскирует RNG.
+- Код-ревью: ready.connect(method.bind(button), CONNECT_ONE_SHOT) — канонический
+  безопасный Callable, не lambda-capture; null/valid-гварды на месте.
+
+Статус → Готово.
