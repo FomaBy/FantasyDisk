@@ -7,8 +7,8 @@
 Создано: 2026-07-02
 Jira: SCRUM-828
 Контур: Claude
-Owner: claude-backend (оркестратор, 2-й заход после session-limit)
-Thread/Worker: n/a
+Owner: claude-backend (оркестратор, 3-й заход после session-limit)
+Thread/Worker: pm-chat-continuation-2026-07-02 (изолированный worktree wt-828core)
 Locked paths: `scripts/meta_progression.gd`, `scripts/meta_progression_tree_data.gd`, `scripts/player.gd` (ключи мета-эффектов), `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`, `tests/meta_points_per_ascension_test.gd`
 
 ## Источник истины
