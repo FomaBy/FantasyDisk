@@ -11,6 +11,27 @@ Owner: unassigned
 Thread/Worker: n/a
 Locked paths: `scripts/meta_progression.gd`, `scripts/ui_screens.gd` (экран дерева умений), `scripts/player.gd` (применение мета-модов), `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`, `docs/design/systems/skill_tree.md`
 
+## QA-Вердикт (2026-07-02, codex-qa-claude-monitor recheck)
+
+Статус: PASSED
+
+Проверено на `origin/dev` @ `9fb1a8e4` после reopen-фикса:
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/attribute_relevance_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/class_progression_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_points_per_ascension_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/berserk_dps_runaway_gate.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASSED.
+- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASSED.
+
+Предыдущие блокеры закрыты: Biologist больше не получает non-relevant `aoe_radius`
+на minor/notable-ветке (`vampiric_amount` secondary), Robot больше не получает
+non-relevant `defense` на minor/notable-ветке (`regeneration` secondary), per-hero
+тест запрещает optional/non-relevant attrs на minor/notable и исключает keystone,
+док/тест/CHANGELOG синхронизированы на 61/100 focused build + near-cap ≈89/100.
+Sidecar `019f21c4-8755-7623-9644-169a62a2a9bb` дал PASS-рекомендацию по статике.
+
 ## Реопен-фикс (2026-07-02, claude-backend) — блокеры QA закрыты
 
 Ответ на QA-FAILED (codex-qa-claude-monitor). Все 4 блокера устранены; правки в
