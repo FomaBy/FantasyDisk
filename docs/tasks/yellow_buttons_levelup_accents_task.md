@@ -74,3 +74,20 @@ SCRUM-806 reopen: тёмная кожа + тонкая латунная лини
 - Арт-дирекция: SCRUM-806 reopen (`docs/tasks/combat_hud_compact_redesign_task.md`).
 - Внимание: `scripts/ui_screens.gd` также правится волной 2 — правок кода здесь по
   умолчанию нет (in-place перекраска), но если решите менять хелперы — координировать.
+
+## Прогресс (2026-07-02)
+
+- 16 текстур перекрашено tools/recolor_yellow_buttons_brass.py (методика волны:
+  hue 25–70° → латунь 34°, val 0.16–0.50 — верх мапа НИЖЕ bright-порога скана 0.52,
+  иначе почти белые hover fab/utility оставались «ярко-жёлтыми» по метрике):
+  FAB ×4, utility ×4, lu682_later ×3, lu682_portrait, combat level_up_plus ×4.
+- Решения по пограничным (AC): card_hover — ОСТАВЛЕН (кремовый ореол = фокус-фидбек
+  выбора карты, не рамка; убирать его — терять читаемость выбора);
+  combat level_up_plus — ПРИГЛУШЁН той же маской для единообразия с HUD v2.
+- Стейт-различимость: value-мап монотонный (hover светлее normal, pressed темнее) —
+  видно на контактном листе docs/design/previews/scrum821/contact_sheet_before_after.png.
+- Скан (методика аудита): WORST 0.00% по всем 16 (AC <5%).
+- Экранные капчи заменены контактным листом текстур (как в 817/818: отступление
+  зафиксировано — оконный рендер при живом редакторе не гоняем).
+- Верификация в worktree от origin/dev (cold --import): runtime_smoke PASSED,
+  ui_no_overlap_matrix PASSED. Коммит 39248f12 (+docs следом) в origin/dev.
