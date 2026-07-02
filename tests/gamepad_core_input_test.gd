@@ -130,11 +130,35 @@ func _run() -> void:
 	_check(_action_has_button("ultimate", JOY_BUTTON_Y), "reset не вернул дефолтный Y")
 	_check(not _action_has_button("ultimate", JOY_BUTTON_X), "reset не убрал кастомный X")
 
-	# 7) Hot-plug: отключение пада возвращает на клавиатуру.
+	# 7) Hot-plug: device_changed эмитится РОВНО при смене active_kind.
+	#    QA 2026-07-02 regression: connect не должен эмитить (устройство
+	#    переключается лишь по первому вводу), disconnect не должен двоить.
 	mgr._input(joy_btn)
 	_check(mgr.active_kind() == "gamepad", "прекондиция hot-plug: gamepad")
+
+	# (a) Подключение пада само по себе не меняет активное устройство → тишина.
+	var before_connect: int = signal_log.size()
+	mgr._on_joy_connection_changed(0, true)
+	_check(signal_log.size() == before_connect,
+		"connect эмитнул ложный device_changed (было %d, стало %d)"
+			% [before_connect, signal_log.size()])
+	_check(mgr.active_kind() == "gamepad", "connect не должен менять active_kind")
+
+	# (b) Отключение из gamepad-состояния — РОВНО один сигнал "keyboard".
+	var before_disconnect: int = signal_log.size()
 	mgr._on_joy_connection_changed(0, false)
 	_check(mgr.active_kind() == "keyboard", "отключение пада не вернуло keyboard")
+	_check(signal_log.size() - before_disconnect == 1,
+		"disconnect должен эмитить device_changed ровно один раз (эмитнуто %d)"
+			% (signal_log.size() - before_disconnect))
+	_check(signal_log.back() == "keyboard", "disconnect эмитнул не 'keyboard'")
+
+	# (c) Повторный disconnect уже из keyboard-состояния — без сигнала.
+	var before_noop: int = signal_log.size()
+	mgr._on_joy_connection_changed(0, false)
+	_check(signal_log.size() == before_noop,
+		"повторный disconnect эмитнул лишний device_changed (было %d, стало %d)"
+			% [before_noop, signal_log.size()])
 
 	# 8) Настройки: новые ключи с дефолтами и валидными типами.
 	var settings := GameSettingsScript.load_settings()

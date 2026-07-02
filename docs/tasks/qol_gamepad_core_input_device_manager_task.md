@@ -1,9 +1,9 @@
 # Геймпад: ядро — InputDeviceManager, автодетект устройства, joypad-биндинги базовых экшенов
 
-Статус: new
+Статус: done
 Контур: Claude
-Owner: unassigned
-Thread: SCRUM-811 — QA failed 2026-07-02, returned to work
+Owner: Back-end/claude-backend
+Thread: SCRUM-811 — QA fail 2026-07-02 исправлен, повторно в QA
 Locked paths: `scripts/input_device_manager.gd` (новый), `project.godot` ([autoload]), `scripts/game_settings.gd`, `tests/gamepad_core_input_test.gd`
 Scope-фикс (PM, 2026-07-02): `scripts/player.gd` ВЫВЕДЕН из scope — joypad-события
 move_* дает SCRUM-814 (влит codex'ом); `scripts/main.gd` НЕ тронут — канон-раскладка
@@ -157,3 +157,21 @@ when `active_kind()` did not change, and can double-emit on disconnect after
 that `device_changed(kind)` fires only on kind change. Add a hot-plug signal
 count/no-false-emission assertion to `tests/gamepad_core_input_test.gd` before
 resubmitting. Full verdict and environment notes are in Jira.
+
+## Fix 2026-07-02 (claude-backend) — повторно в QA
+Причина: `_on_joy_connection_changed()` безусловно вызывал
+`device_changed.emit(active_kind())` в конце — ложный сигнал на connect (устройство
+по спеке переключается лишь по первому вводу) и двойной эмит на disconnect поверх
+уже эмитнутого `_set_raw_kind(KIND_KEYBOARD)`.
+
+Исправление (`scripts/input_device_manager.gd`):
+- connect-ветка только доливает биндинги (`ensure_joypad_bindings()`), device_changed
+  НЕ эмитит;
+- disconnect-ветка полагается на `_set_raw_kind(KIND_KEYBOARD)`, который эмитит ровно
+  один раз и только при реальной смене `active_kind()` (в forced-режиме gamepad — молчит);
+- завершающий безусловный `emit` удалён.
+
+Тест (`tests/gamepad_core_input_test.gd`, секция 7) расширен на счётчик сигналов:
+(a) connect → 0 сигналов; (b) disconnect из gamepad → ровно 1 «keyboard»;
+(c) повторный disconnect из keyboard → 0. Green-gate: `gamepad_core_input_test`
+PASS (exit 0), `runtime_smoke_test` PASS (exit 0).

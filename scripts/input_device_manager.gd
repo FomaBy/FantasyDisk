@@ -235,11 +235,15 @@ func _set_raw_kind(kind: String) -> void:
 
 func _on_joy_connection_changed(_device: int, connected: bool) -> void:
 	if connected:
+		# Подключение само по себе не меняет активное устройство: оно
+		# переключится на геймпад лишь при первом вводе с него (см. _input).
+		# Только доливаем биндинги — device_changed здесь НЕ эмитим.
 		ensure_joypad_bindings()
 	elif not gamepad_connected():
 		# Геймпад выдернули — мгновенно возвращаемся на клавиатуру.
+		# _set_raw_kind сам эмитит device_changed ровно один раз и только при
+		# реальной смене active_kind() (в режиме gamepad смены нет — молчит).
 		_set_raw_kind(KIND_KEYBOARD)
-	device_changed.emit(active_kind())
 
 
 func _erase_joypad_events(action_name: String) -> void:
