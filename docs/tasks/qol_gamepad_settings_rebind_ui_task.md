@@ -152,3 +152,23 @@ tools/godot_gate.py; скрин/дамп дерева вкладки «Упра�
 - `gamepad_settings_rebind_test` — PASS (3 прогона зелёные).
 - `runtime_smoke_test` — PASS; `runtime_smoke_ui_test` — PASS;
   `aim_mode_settings_test` — PASS; `gamepad_core_input_test` — PASS.
+
+## QA-Вердикт
+Статус: PASSED
+Дата: 2026-07-02 (claude-qa)
+Проверено на origin/dev @ 701f797e (ancestor origin/dev; мердж компилируется чисто).
+
+- Вкладка «Управление»: OptionButton режима ввода + слайдер deadzone + чекбокс
+  vibration (_test_controls_tab_widgets); режим применяется live.
+- Ребинд кнопки/оси (_test_gamepad_button_rebind/_test_axis_rebind), конфликты
+  (_test_gamepad_conflict), клавиатура↔joypad не затираются
+  (_test_keyboard_rebind_preserves_joypad — фикс _erase_key_events).
+- Сброс к канону; deadzone(0.35)/vibration персистятся и читаются
+  (_test_persistence_round_trip); legacy settings.cfg → дефолты
+  (_test_legacy_settings_compat). Тест бэкапит реальный сейв.
+- Тесты: gamepad_settings_rebind_test PASS ×2, aim_mode_settings_test PASS,
+  runtime_smoke_ui_test PASS (exit 0).
+- Полный runtime_smoke_test падает на Escape (quit-диалог) — ПРЕДСУЩЕСТВУЮЩАЯ
+  регрессия пакета (is_empty-гард _setup_default_input_actions vs joypad-предзасев
+  InputDeviceManager из SCRUM-811; гард с v0.1.0), НЕ 816. Заведена SCRUM-830.
+  Acceptance 816 требует runtime_smoke_ui_test (subset) — зелёный.
