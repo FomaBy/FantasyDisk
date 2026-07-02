@@ -19,11 +19,10 @@ func _initialize() -> void:
 	await _test_elite_phase2_escalation()
 	await _test_boss_zone_wave_safe_corridor()
 	await _test_elite_boss_presentation(main_scene)
-	# TODO(SCRUM follow-up): `_test_boss_hud_omits_timer` was called here but its
-	# definition was never committed (stranded from SCRUM-725/HUD work), causing a
-	# parse error that broke the entire boss/elite smoke. Neutralized to restore the
-	# suite; re-add the call once the test function is properly defined+committed.
-	# await _test_boss_hud_omits_timer(main_scene)
+	# SCRUM-799 renamed _test_boss_hud_omits_timer -> _test_boss_hud_shows_timer
+	# (boss/elite fights now SHOW the kill-timer) but missed updating this child call,
+	# which broke the boss/elite smoke with a parse error. Point at the renamed fn.
+	await _test_boss_hud_shows_timer(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
 	await _test_bloodthorn_lion_boss(main_scene)
