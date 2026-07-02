@@ -1,8 +1,8 @@
 # Геймпад: настройки — выбор устройства ввода и ребинд кнопок геймпада
 
-Статус: new
+Статус: done
 Контур: Claude
-Owner: unassigned
+Owner: claude-backend (оркестратор)
 Thread: n/a
 Locked paths: `scripts/ui_screens.gd` (вкладка «Управление», rebind-механизм), `scripts/game_settings.gd` (валидация новых ключей при необходимости), `tests/gamepad_settings_rebind_test.gd`
 Версия: 0.1.8
@@ -120,3 +120,35 @@ fallback, глифы подключить ТОЛЬКО если манифест
 ## Самопроверка
 Headless свой тест + aim_mode_settings_test + runtime_smoke_ui_test через
 tools/godot_gate.py; скрин/дамп дерева вкладки «Управление» в evidence.
+
+## Реализация (claude-backend, 2026-07-02)
+- `scripts/ui_screens.gd`: вкладка «Управление» разбита на секции
+  «Устройство ввода» / «Клавиатура» / «Геймпад» (`_add_controls_section_header`).
+  Устройство: `SettingsInputModeOption` (→ `input_mode` + `InputDeviceManager.set_input_mode`),
+  пояснение, live-строка `SettingsGamepadStatus` (подписка на `device_changed` +
+  `Input.joy_connection_changed`, guard по валидности Label). Геймпад: per-action
+  `GamepadBindButton_*` (текст из InputMap, глиф из `input_glyph_registry` null-safe),
+  режим прослушивания `_begin_gamepad_rebind`/`_handle_gamepad_rebind_input`
+  (joypad-кнопка или ось `|value|>0.5`; B/Esc отмена, B не назначается), конфликт
+  `_show_gamepad_rebind_conflict`, слайдер `gamepad_deadzone`, чекбокс
+  `gamepad_vibration`, «Сбросить геймпад».
+- БАГ-ФИКС: `_apply_keycodes_to_action` и `_handle_rebind_input` стирают только
+  `InputEventKey` (joypad-часть ядра сохраняется); `_binding_text` показывает лишь
+  клавиши. Долив joypad — у вызывающих (reset/rebind), НЕ в примитиве setup-цикла
+  (иначе клавиатурные дефолты не-обработанных экшенов пропускались — пойман тестом).
+- `scripts/main.gd`: поля `input_mode`/`gamepad_bindings`/`gamepad_deadzone`/
+  `gamepad_vibration` + их load/валидация/сохранение в `save_game_settings`
+  (иначе `GameSettings.save_settings` перезаписывал бы их дефолтами при любом
+  сохранении) + зеркало deadzone/vibration в root-мету для `player.gd`.
+- `scripts/game_settings.gd`: ключи уже были (SCRUM-811) — не менял.
+- Тест `tests/gamepad_settings_rebind_test.gd`: виджеты вкладки, joypad-ребинд
+  кнопки/оси, конфликт, сохранность клавиатуры при joypad-ребинде и joypad при
+  клавиатурном, round-trip settings.cfg, legacy-совместимость. Бэкап/restore
+  реального сейва; сброс к дефолтам в начале для детерминизма.
+- Обновлён устаревший ассерт в `tests/runtime_smoke_test.gd` (клавиша ultimate
+  ищется независимо от порядка событий, т.к. joypad теперь сохраняется).
+
+## Результаты тестов (tools/godot_gate.py, headless, GODOT 4.7)
+- `gamepad_settings_rebind_test` — PASS (3 прогона зелёные).
+- `runtime_smoke_test` — PASS; `runtime_smoke_ui_test` — PASS;
+  `aim_mode_settings_test` — PASS; `gamepad_core_input_test` — PASS.

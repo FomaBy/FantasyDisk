@@ -39,6 +39,52 @@
   кламп `0.05..0.5`), `gamepad_vibration` (`true`). Владелец UI сохранения —
   SCRUM-816; менеджер читает значения на старте.
 
+## Настройки: устройство ввода и ребинд геймпада (SCRUM-816)
+
+Вкладка «Управление» (`ui_screens._show_settings_menu`) разбита на секции
+(`_add_controls_section_header`): «Устройство ввода», «Клавиатура», «Геймпад».
+
+### Режим устройства
+- `OptionButton` `SettingsInputModeOption`: «Авто (по последнему вводу)» /
+  «Клавиатура и мышь» / «Геймпад» → `game.input_mode` (`auto`/`keyboard`/
+  `gamepad`). Применяется сразу через `InputDeviceManager.set_input_mode()` и
+  сохраняется (`game.save_game_settings`). Оба устройства работают в любом
+  режиме — режим лишь определяет приоритет подсказок/глифов.
+- Live-строка `SettingsGamepadStatus`: «Геймпад: <имя> подключён» / «Геймпад не
+  обнаружен». Обновляется по `InputDeviceManager.device_changed` и
+  `Input.joy_connection_changed` (hot-plug на открытом экране; коллбэки гардят
+  валидность Label, ссылка обнуляется при выходе из настроек).
+
+### Ребинд геймпада
+- Для каждого экшена `game.INPUT_ACTIONS` — строка `GamepadBindRow_<action>` с
+  кнопкой `GamepadBindButton_<action>`; текст берётся из фактического InputMap
+  (`_gamepad_binding_text`, не хардкод), поэтому канон-раскладка показывается
+  корректно уже при первом входе. Если существует манифест глифов
+  (`scripts/ui/input_glyph_registry.gd`), рядом с текстом рисуется иконка
+  (null-safe: нет ассета → только текст).
+- Клик по кнопке → режим прослушивания (`_begin_gamepad_rebind`): следующий
+  `InputEventJoypadButton` или значимое `InputEventJoypadMotion` (`|value| > 0.5`)
+  назначается экшену; `B`/`Esc` отменяют (B в этот момент не назначается).
+- Конфликт (кнопка/ось занята другим экшеном) → диалог `_show_gamepad_rebind_conflict`
+  («Выбрать другую» / «Настройки»); биндинг не меняется.
+- Назначение заменяет только joypad-часть экшена (клавиатурные события не
+  трогаются) и применяется через `InputDeviceManager.set_gamepad_bindings()`,
+  сохраняясь в `game.gamepad_bindings` (формат ядра SCRUM-811).
+- Кнопка `SettingsResetGamepadButton` («Сбросить геймпад») →
+  `InputDeviceManager.reset_gamepad_bindings_to_defaults()` (канон-раскладка).
+- Слайдер `SettingsGamepadDeadzoneSlider` (`0.05..0.5`, шаг `0.05`, дефолт `0.25`)
+  → `gamepad_deadzone`; CheckBox `SettingsGamepadVibrationToggle` →
+  `gamepad_vibration`. Оба зеркалятся в root-мету (player.gd читает через
+  `_runtime_setting`) и сохраняются в `settings.cfg`.
+
+### Персистенс (баг-фикс)
+`main.save_game_settings()` теперь пишет `input_mode`/`gamepad_bindings`/
+`gamepad_deadzone`/`gamepad_vibration` (иначе `GameSettings.save_settings`
+перезаписал бы их дефолтами при любом сохранении — прицеливание/громкость/
+клавиатурный ребинд — и раскладка геймпада бы слетала). `_load_game_settings()`
+читает и валидирует их, зеркаля deadzone/vibration в root-мету. Старый
+`settings.cfg` без новых ключей грузится с дефолтами без ошибок.
+
 ## Движение Игрока
 
 - Боевое движение живет в `scripts/player.gd`.
@@ -121,7 +167,8 @@ UI-навигация (все экраны/попапы):
 - **RB не открывает level-up в бою** (bug **SCRUM-825**): аналогичный гейт
   `open_level_up` на `InputEventKey`; RB (bound to `open_level_up`) в бою не
   срабатывает. Нижняя UI-кнопка «Повышение уровня» доступна фокусом.
-- **Ребинд геймпада**: экран настроек `_handle_rebind_input` принимает только
-  `InputEventKey` — переназначение на кнопку геймпада ещё не реализовано (scope
-  SCRUM-816). Клавиатурный ребинд делает `action_erase_events`, что стирает и
-  joypad-часть экшена — учесть при реализации SCRUM-816.
+- **Ребинд геймпада** — реализовано в **SCRUM-816** (см. секцию «Настройки:
+  устройство ввода и ребинд геймпада» ниже). Заодно устранён баг с
+  `action_erase_events`: клавиатурный ребинд/сброс больше не стирают joypad-часть
+  экшена (`_apply_keycodes_to_action`/`_handle_rebind_input` трогают только
+  `InputEventKey`).

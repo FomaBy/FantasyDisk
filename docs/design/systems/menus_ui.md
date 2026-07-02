@@ -696,6 +696,21 @@ normal checkbox row inside `ControlsScroll`, persists as `combat_feedback` in
 `user://settings.cfg`, defaults ON, and controls floating damage/heal numbers,
 critical markers and hit flash/outline visuals without changing gameplay.
 
+SCRUM-816 restructures the «Управление» tab into three labelled sections
+(`_add_controls_section_header` → `SettingsSectionHeader_*`) inside the same
+`ControlsScroll`:
+- **Устройство ввода** — `SettingsInputModeOption` (Авто / Клавиатура и мышь /
+  Геймпад → `input_mode`, applied live via `InputDeviceManager.set_input_mode`),
+  a hint line, and the live `SettingsGamepadStatus` label (updates on hot-plug via
+  `InputDeviceManager.device_changed` + `Input.joy_connection_changed`).
+- **Клавиатура** — the existing per-action keyboard rebind rows
+  (`BindingButton_*`) plus «Сбросить управление».
+- **Геймпад** — per-action joypad rebind rows (`GamepadBindButton_*`, listening
+  mode assigns the next joypad button / stick axis, conflicts reuse a menu-box
+  dialog), `SettingsGamepadDeadzoneSlider` (`gamepad_deadzone`),
+  `SettingsGamepadVibrationToggle` (`gamepad_vibration`), and «Сбросить геймпад»
+  (`SettingsResetGamepadButton`). Full contract: `docs/design/systems/input_controls.md`.
+
 ### SCRUM-584. Key Rebind Conflict Dialog
 
 SCRUM-584 completes the `_show_rebind_conflict` 2K pass. The dialog is now a

@@ -7,6 +7,10 @@ var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
 var _settings_v5_icon_cache := {}
+# SCRUM-816: живая строка статуса геймпада на вкладке «Управление» + флаг режима
+# прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
+var _gamepad_status_label: Label = null
+var _rebind_is_gamepad := false
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -15,6 +19,20 @@ const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd"
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
+# SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
+const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
+
+# SCRUM-816: человекочитаемые подписи кнопок геймпада для вкладки «Управление».
+# Локальная копия имён (не зависим от автолоада InputDeviceManager в тестах).
+const GAMEPAD_BUTTON_LABELS := {
+	JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
+	JOY_BUTTON_BACK: "Select", JOY_BUTTON_GUIDE: "Home", JOY_BUTTON_START: "Start",
+	JOY_BUTTON_LEFT_STICK: "L3", JOY_BUTTON_RIGHT_STICK: "R3",
+	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB",
+	JOY_BUTTON_DPAD_UP: "Крестовина ↑", JOY_BUTTON_DPAD_DOWN: "Крестовина ↓",
+	JOY_BUTTON_DPAD_LEFT: "Крестовина ←", JOY_BUTTON_DPAD_RIGHT: "Крестовина →",
+}
+const GAMEPAD_REBIND_ACTIVATION := 0.5  # порог |value| оси в режиме прослушивания
 
 const ARTIFACT_ICON_DIR := ShopUIConstants.ARTIFACT_ICON_DIR
 const SHOP_ICON_DIR := ShopUIConstants.SHOP_ICON_DIR
@@ -4198,6 +4216,45 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	controls_box.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	controls_scroll.add_child(controls_box)
 
+	# SCRUM-816: верхняя секция «Устройство ввода» — режим подсказок + live-статус.
+	_add_controls_section_header(controls_box, "Устройство ввода", s)
+	var device_option := OptionButton.new()
+	device_option.name = "SettingsInputModeOption"
+	device_option.focus_mode = Control.FOCUS_ALL
+	_settings_v5_apply_field_theme(device_option, s)
+	device_option.add_item("Авто (по последнему вводу)")
+	device_option.add_item("Клавиатура и мышь")
+	device_option.add_item("Геймпад")
+	var input_mode_index: int = int({"auto": 0, "keyboard": 1, "gamepad": 2}.get(str(game.input_mode), 0))
+	device_option.selected = input_mode_index
+	device_option.item_selected.connect(func(index: int) -> void:
+		var mode: String = ["auto", "keyboard", "gamepad"][clampi(index, 0, 2)]
+		game.input_mode = mode
+		var idm := _input_device_manager()
+		if idm != null and idm.has_method("set_input_mode"):
+			idm.set_input_mode(mode)
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Режим устройства", device_option, s)
+
+	var device_hint := Label.new()
+	device_hint.name = "SettingsInputModeHint"
+	device_hint.text = "И клавиатура, и геймпад работают одновременно в любом режиме — режим лишь задаёт, чьи подсказки показывать."
+	device_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	device_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
+	device_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
+	device_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	controls_box.add_child(device_hint)
+
+	var gamepad_status := Label.new()
+	gamepad_status.name = "SettingsGamepadStatus"
+	gamepad_status.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	gamepad_status.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	controls_box.add_child(gamepad_status)
+	_gamepad_status_label = gamepad_status
+	_connect_gamepad_status_signals()
+	_refresh_gamepad_status_line()
+
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
 	_settings_v5_apply_field_theme(aim_options, s)
@@ -4239,6 +4296,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle, s)
 
+	_add_controls_section_header(controls_box, "Клавиатура", s)
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
 		var bind_button := Button.new()
@@ -4267,6 +4325,82 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		_show_settings_menu()
 	)
 	controls_box.add_child(reset_button)
+
+	# SCRUM-816: секция «Геймпад» — ребинд joypad-кнопок/осей + deadzone + вибрация.
+	_add_controls_section_header(controls_box, "Геймпад", s)
+	for input_action in game.INPUT_ACTIONS:
+		var gp_action: String = input_action["action"]
+		var gp_button := Button.new()
+		gp_button.name = "GamepadBindButton_%s" % gp_action
+		gp_button.text = _gamepad_binding_text(gp_action)
+		gp_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		gp_button.focus_mode = Control.FOCUS_ALL
+		_settings_v5_apply_field_theme(gp_button, s)
+		var gp_glyph := _gamepad_glyph_for_action(gp_action)
+		if gp_glyph != null:
+			gp_button.icon = gp_glyph
+			gp_button.expand_icon = false
+		gp_button.pressed.connect(func() -> void:
+			_begin_gamepad_rebind(gp_action)
+		)
+		var gp_row := _add_settings_control_row(controls_box, input_action["label"], gp_button, s)
+		gp_row.name = "GamepadBindRow_%s" % gp_action
+
+	var gp_hint := Label.new()
+	gp_hint.text = "Клик по кнопке, затем нажми кнопку/наклони стик геймпада. B/Esc отменяет."
+	gp_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	gp_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	gp_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
+	gp_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
+	gp_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	controls_box.add_child(gp_hint)
+
+	var deadzone_slider := HSlider.new()
+	deadzone_slider.name = "SettingsGamepadDeadzoneSlider"
+	deadzone_slider.min_value = 0.05
+	deadzone_slider.max_value = 0.5
+	deadzone_slider.step = 0.05
+	deadzone_slider.custom_minimum_size = Vector2(roundf(420.0 * s), roundf(42.0 * s))
+	deadzone_slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	deadzone_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	deadzone_slider.focus_mode = Control.FOCUS_ALL
+	_settings_v5_style_slider(deadzone_slider, s)
+	deadzone_slider.value = clampf(float(game.gamepad_deadzone), 0.05, 0.5)
+	var deadzone_row := _add_settings_control_row(controls_box, "Мёртвая зона стика", deadzone_slider, s)
+	var deadzone_value := Label.new()
+	deadzone_value.name = "SettingsGamepadDeadzoneValue"
+	deadzone_value.text = "%.2f" % deadzone_slider.value
+	deadzone_value.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	deadzone_value.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	deadzone_row.add_child(deadzone_value)
+	deadzone_slider.value_changed.connect(func(value: float) -> void:
+		var dz := snappedf(clampf(value, 0.05, 0.5), 0.05)
+		game.gamepad_deadzone = dz
+		game.get_tree().root.set_meta("gamepad_deadzone", dz)
+		deadzone_value.text = "%.2f" % dz
+		game.save_game_settings()
+	)
+
+	var vibration_toggle := CheckBox.new()
+	vibration_toggle.name = "SettingsGamepadVibrationToggle"
+	vibration_toggle.button_pressed = bool(game.gamepad_vibration)
+	vibration_toggle.text = "Вкл." if vibration_toggle.button_pressed else "Выкл."
+	_settings_v5_style_checkbox(vibration_toggle, s)
+	vibration_toggle.toggled.connect(func(pressed: bool) -> void:
+		game.gamepad_vibration = pressed
+		game.get_tree().root.set_meta("gamepad_vibration", pressed)
+		vibration_toggle.text = "Вкл." if pressed else "Выкл."
+		game.save_game_settings()
+	)
+	_add_settings_control_row(controls_box, "Вибрация", vibration_toggle, s)
+
+	var gp_reset := _settings_v5_make_action_button("Сбросить геймпад", "neutral", s)
+	gp_reset.name = "SettingsResetGamepadButton"
+	gp_reset.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	gp_reset.pressed.connect(func() -> void:
+		_reset_gamepad_bindings_to_defaults()
+	)
+	controls_box.add_child(gp_reset)
 
 	var settings_back := func() -> void:
 		_return_from_settings()
@@ -4336,6 +4470,9 @@ func _return_from_settings() -> void:
 	var return_origin := settings_return_origin
 	settings_return_origin = SETTINGS_RETURN_MAIN_MENU
 	settings_video_pending.clear()
+	# SCRUM-816: live-статус геймпада привязан к Label вкладки — обнуляем ссылку,
+	# чтобы hot-plug коллбэки не трогали освобождённый узел (они гардят валидность).
+	_gamepad_status_label = null
 	if return_origin == SETTINGS_RETURN_RUN_PAUSE:
 		game.pending_rebind_action = ""
 		game.ui_escape_action = Callable()
@@ -4459,6 +4596,17 @@ func _add_settings_control_row(parent: VBoxContainer, title: String, control: Co
 	control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(control)
 	return row
+
+
+func _add_controls_section_header(parent: VBoxContainer, title: String, s := 1.0) -> Label:
+	# SCRUM-816: заголовок секции вкладки «Управление» (Устройство/Клавиатура/Геймпад).
+	var header := Label.new()
+	header.name = "SettingsSectionHeader_%s" % title.replace(" ", "_")
+	header.text = title
+	header.add_theme_font_size_override("font_size", _settings_v5_font(28.0, s))
+	header.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
+	parent.add_child(header)
+	return header
 
 
 func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String, s := 1.0) -> void:
@@ -7603,7 +7751,15 @@ func _default_keycodes_for_action(input_action: Dictionary) -> Array:
 func _apply_keycodes_to_action(action_name: String, keycodes: Array) -> void:
 	if not InputMap.has_action(action_name):
 		InputMap.add_action(action_name)
-	InputMap.action_erase_events(action_name)
+	# SCRUM-816 баг-фикс: раньше здесь был action_erase_events, стиравший ВСЕ события
+	# экшена — включая joypad-биндинги ядра (SCRUM-811). Клавиатурный ребинд/применение
+	# сохранённых клавиш ронял геймпад. Теперь трогаем только InputEventKey.
+	# ВАЖНО: НЕ звать здесь ensure_joypad_bindings — это примитив, используемый в
+	# цикле _setup_default_input_actions. Долив joypad всем экшенам в середине цикла
+	# сделал бы ещё-не-обработанные экшены «непустыми» и клавиатурные дефолты бы
+	# пропустились. Долив делает менеджер (autoload) после первого кадра, а в
+	# пользовательских ребиндах — вызывающие (_handle_rebind_input/reset) явно.
+	_erase_key_events(action_name)
 	for keycode_value in keycodes:
 		var keycode := int(keycode_value)
 		if keycode == 0:
@@ -7611,6 +7767,31 @@ func _apply_keycodes_to_action(action_name: String, keycodes: Array) -> void:
 		var event := InputEventKey.new()
 		event.keycode = keycode
 		InputMap.action_add_event(action_name, event)
+
+
+func _erase_key_events(action_name: String) -> void:
+	# Стереть только клавиатурные события экшена, не трогая joypad-биндинги.
+	if not InputMap.has_action(action_name):
+		return
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey:
+			InputMap.action_erase_event(action_name, event)
+
+
+func _input_device_manager() -> Node:
+	# Автолоад InputDeviceManager (SCRUM-811). null-safe для тестов без автолоада.
+	if game == null:
+		return null
+	var tree = game.get_tree()
+	if tree == null or tree.root == null:
+		return null
+	return tree.root.get_node_or_null("InputDeviceManager")
+
+
+func _ensure_joypad_after_rebind() -> void:
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("ensure_joypad_bindings"):
+		idm.ensure_joypad_bindings()
 
 
 func _current_input_bindings() -> Dictionary:
@@ -7644,6 +7825,7 @@ func _apply_game_cursor() -> void:
 
 func _begin_rebind(action_name: String) -> void:
 	game.pending_rebind_action = action_name
+	_rebind_is_gamepad = false
 	var label := _action_label(action_name)
 	var box := _create_menu_box("Клавиша: %s" % label, "Нажми новую клавишу. Esc отменяет.", "settings")
 
@@ -7656,6 +7838,13 @@ func _begin_rebind(action_name: String) -> void:
 
 
 func _handle_rebind_input(event: InputEvent) -> void:
+	# SCRUM-816: один диспетчер на два режима прослушивания. В режиме геймпада ждём
+	# joypad-кнопку/ось, в клавиатурном — клавишу. Роутинг из main._input по
+	# game.pending_rebind_action; _rebind_is_gamepad различает режим.
+	if _rebind_is_gamepad:
+		_handle_gamepad_rebind_input(event)
+		return
+
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
 
@@ -7670,15 +7859,41 @@ func _handle_rebind_input(event: InputEvent) -> void:
 		_show_rebind_conflict(game.pending_rebind_action, keycode, conflict_action)
 		return
 
-	InputMap.action_erase_events(game.pending_rebind_action)
+	# SCRUM-816 баг-фикс: только клавиатурные события, joypad ядра не затираем.
+	_erase_key_events(game.pending_rebind_action)
 	var new_event := InputEventKey.new()
 	new_event.keycode = keycode
 	new_event.physical_keycode = event.physical_keycode
 	InputMap.action_add_event(game.pending_rebind_action, new_event)
+	_ensure_joypad_after_rebind()
 
 	game.input_bindings = _current_input_bindings()
 	game.save_game_settings()
 	game.pending_rebind_action = ""
+	_show_settings_menu()
+
+
+func _handle_gamepad_rebind_input(event: InputEvent) -> void:
+	# Отмена: Esc (клавиатура) или B (ui_cancel). B в этот момент НЕ назначается.
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+		_cancel_gamepad_rebind()
+		return
+	if event is InputEventJoypadButton and event.pressed and int(event.button_index) == JOY_BUTTON_B:
+		_cancel_gamepad_rebind()
+		return
+
+	if event is InputEventJoypadButton and event.pressed:
+		_assign_gamepad_button(game.pending_rebind_action, int(event.button_index))
+		return
+	if event is InputEventJoypadMotion and absf(event.axis_value) > GAMEPAD_REBIND_ACTIVATION:
+		var value := 1.0 if event.axis_value > 0.0 else -1.0
+		_assign_gamepad_axis(game.pending_rebind_action, int(event.axis), value)
+		return
+
+
+func _cancel_gamepad_rebind() -> void:
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	_show_settings_menu()
 
 
@@ -7789,23 +8004,230 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 func _reset_input_bindings_to_defaults() -> void:
 	for input_action in game.INPUT_ACTIONS:
 		_apply_keycodes_to_action(str(input_action["action"]), _default_keycodes_for_action(input_action))
+	# После сброса клавиатуры один раз доливаем joypad (эрейз клавиш их не трогал,
+	# но страхуемся и на случай, если экшен был свежесоздан).
+	_ensure_joypad_after_rebind()
 	game.input_bindings = _current_input_bindings()
 	game.save_game_settings()
 
 
 func _binding_text(action_name: String) -> String:
-	var events := InputMap.action_get_events(action_name)
-	if events.is_empty():
-		return "Не назначено"
-
+	# Только клавиатурные события: joypad-биндинги ядра (SCRUM-811) теперь живут в
+	# том же экшене, но у клавиатурной кнопки-ребинда показываем лишь клавиши.
 	var labels := []
-	for event in events:
+	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey:
 			var keycode: int = int(event.keycode if event.keycode != 0 else event.physical_keycode)
 			labels.append(OS.get_keycode_string(keycode))
-		else:
-			labels.append(event.as_text())
+	if labels.is_empty():
+		return "Не назначено"
 	return " / ".join(labels)
+
+
+# --- SCRUM-816: геймпад — текст биндингов, ребинд, статус устройства ---
+
+func _gamepad_binding_text(action_name: String) -> String:
+	if not InputMap.has_action(action_name):
+		return "Не назначено"
+	var labels := []
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton:
+			labels.append(_gamepad_button_label(int(event.button_index)))
+		elif event is InputEventJoypadMotion:
+			labels.append(_gamepad_axis_label(int(event.axis), float(event.axis_value)))
+	if labels.is_empty():
+		return "Не назначено"
+	return " / ".join(labels)
+
+
+func _gamepad_button_label(button_index: int) -> String:
+	return GAMEPAD_BUTTON_LABELS.get(button_index, "Кнопка %d" % button_index)
+
+
+func _gamepad_axis_label(axis: int, value: float) -> String:
+	match axis:
+		JOY_AXIS_LEFT_X:
+			return "Стик ←" if value < 0.0 else "Стик →"
+		JOY_AXIS_LEFT_Y:
+			return "Стик ↑" if value < 0.0 else "Стик ↓"
+		JOY_AXIS_RIGHT_X:
+			return "Пр. стик ←" if value < 0.0 else "Пр. стик →"
+		JOY_AXIS_RIGHT_Y:
+			return "Пр. стик ↑" if value < 0.0 else "Пр. стик ↓"
+		JOY_AXIS_TRIGGER_LEFT:
+			return "LT"
+		JOY_AXIS_TRIGGER_RIGHT:
+			return "RT"
+	return "Ось %d" % axis
+
+
+func _gamepad_glyph_for_action(action_name: String) -> Texture2D:
+	# Иконка первого joypad-события экшена, если ассет-манифест существует (SCRUM-810).
+	# null-safe: нет ассета → null → показываем только текст.
+	if not InputMap.has_action(action_name):
+		return null
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton:
+			return InputGlyphRegistry.texture_for_joy_button(int(event.button_index), 32)
+		elif event is InputEventJoypadMotion:
+			return InputGlyphRegistry.texture_for_axis(int(event.axis), 32)
+	return null
+
+
+func _begin_gamepad_rebind(action_name: String) -> void:
+	game.pending_rebind_action = action_name
+	_rebind_is_gamepad = true
+	var label := _action_label(action_name)
+	var box := _create_menu_box("Геймпад: %s" % label, "Нажми кнопку или наклони стик. B/Esc отменяет.", "settings")
+
+	var cancel_button := _make_button("Отмена")
+	cancel_button.pressed.connect(func() -> void:
+		_cancel_gamepad_rebind()
+	)
+	box.add_child(cancel_button)
+
+
+func _assign_gamepad_button(action_name: String, button_index: int) -> void:
+	var conflict := _gamepad_button_conflict(action_name, button_index)
+	if conflict != "":
+		_show_gamepad_rebind_conflict(action_name, _gamepad_button_label(button_index), conflict)
+		return
+	_commit_gamepad_binding(action_name, {"buttons": [button_index], "axes": []})
+
+
+func _assign_gamepad_axis(action_name: String, axis: int, value: float) -> void:
+	var conflict := _gamepad_axis_conflict(action_name, axis, value)
+	if conflict != "":
+		_show_gamepad_rebind_conflict(action_name, _gamepad_axis_label(axis, value), conflict)
+		return
+	_commit_gamepad_binding(action_name, {"buttons": [], "axes": [{"axis": axis, "value": value}]})
+
+
+func _commit_gamepad_binding(action_name: String, binding: Dictionary) -> void:
+	# Заменяет только joypad-часть экшена; клавиатурные события не трогаются
+	# (ensure_joypad_bindings внутри set_gamepad_bindings стирает лишь joypad).
+	if not (game.gamepad_bindings is Dictionary):
+		game.gamepad_bindings = {}
+	game.gamepad_bindings[action_name] = binding
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("set_gamepad_bindings"):
+		idm.set_gamepad_bindings(game.gamepad_bindings)
+	else:
+		# Тесты без автолоада: применяем joypad-часть локально, детерминированно.
+		_apply_gamepad_binding_local(action_name, binding)
+	game.save_game_settings()
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
+	_show_settings_menu()
+
+
+func _apply_gamepad_binding_local(action_name: String, binding: Dictionary) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+			InputMap.action_erase_event(action_name, event)
+	for button_index in binding.get("buttons", []):
+		var btn := InputEventJoypadButton.new()
+		btn.button_index = int(button_index) as JoyButton
+		InputMap.action_add_event(action_name, btn)
+	for axis_binding in binding.get("axes", []):
+		var motion := InputEventJoypadMotion.new()
+		motion.axis = int(axis_binding.get("axis", 0)) as JoyAxis
+		motion.axis_value = float(axis_binding.get("value", 1.0))
+		InputMap.action_add_event(action_name, motion)
+
+
+func _gamepad_button_conflict(target_action: String, button_index: int) -> String:
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		if action_name == target_action:
+			continue
+		for event in InputMap.action_get_events(action_name):
+			if event is InputEventJoypadButton and int(event.button_index) == button_index:
+				return action_name
+	return ""
+
+
+func _gamepad_axis_conflict(target_action: String, axis: int, value: float) -> String:
+	for input_action in game.INPUT_ACTIONS:
+		var action_name: String = input_action["action"]
+		if action_name == target_action:
+			continue
+		for event in InputMap.action_get_events(action_name):
+			if event is InputEventJoypadMotion and int(event.axis) == axis \
+					and signf(event.axis_value) == signf(value):
+				return action_name
+	return ""
+
+
+func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, conflict_action: String) -> void:
+	# Тот же UX, что и у клавиатурного конфликта (_show_rebind_conflict), но текст
+	# про кнопку/ось геймпада. «Выбрать другую» перезапускает прослушивание.
+	var target_label := _action_label(target_action)
+	var conflict_label := _action_label(conflict_action)
+	var box := _create_menu_box("Кнопка занята",
+		"%s занята: «%s». Для «%s» выбери другую." % [binding_desc, conflict_label, target_label], "settings")
+
+	var retry_button := _make_button("Выбрать другую")
+	retry_button.name = "GamepadRebindConflictRetryButton"
+	retry_button.pressed.connect(func() -> void:
+		_begin_gamepad_rebind(target_action)
+	)
+	box.add_child(retry_button)
+
+	var back_button := _make_button("Настройки")
+	back_button.name = "GamepadRebindConflictBackButton"
+	back_button.pressed.connect(func() -> void:
+		_cancel_gamepad_rebind()
+	)
+	box.add_child(back_button)
+
+
+func _reset_gamepad_bindings_to_defaults() -> void:
+	game.gamepad_bindings = {}
+	var idm := _input_device_manager()
+	if idm != null and idm.has_method("reset_gamepad_bindings_to_defaults"):
+		idm.reset_gamepad_bindings_to_defaults()
+	game.save_game_settings()
+	_show_settings_menu()
+
+
+func _refresh_gamepad_status_line() -> void:
+	if _gamepad_status_label == null or not is_instance_valid(_gamepad_status_label):
+		return
+	var idm := _input_device_manager()
+	var connected := false
+	var pad_name := ""
+	if idm != null and idm.has_method("gamepad_connected"):
+		connected = idm.gamepad_connected()
+		pad_name = idm.gamepad_name()
+	else:
+		var pads := Input.get_connected_joypads()
+		connected = not pads.is_empty()
+		pad_name = Input.get_joy_name(int(pads[0])) if not pads.is_empty() else ""
+	if connected:
+		_gamepad_status_label.text = "Геймпад: %s подключён" % (pad_name if pad_name != "" else "устройство")
+	else:
+		_gamepad_status_label.text = "Геймпад не обнаружен"
+
+
+func _connect_gamepad_status_signals() -> void:
+	# Идемпотентно: ui_screens живёт всю сессию, коллбэки гардятся валидностью Label.
+	if not Input.joy_connection_changed.is_connected(_on_gamepad_joy_connection_changed):
+		Input.joy_connection_changed.connect(_on_gamepad_joy_connection_changed)
+	var idm := _input_device_manager()
+	if idm != null and idm.has_signal("device_changed") \
+			and not idm.device_changed.is_connected(_on_gamepad_device_changed):
+		idm.device_changed.connect(_on_gamepad_device_changed)
+
+
+func _on_gamepad_device_changed(_kind: String) -> void:
+	_refresh_gamepad_status_line()
+
+
+func _on_gamepad_joy_connection_changed(_device: int, _connected: bool) -> void:
+	_refresh_gamepad_status_line()
 
 
 func _action_label(action_name: String) -> String:

@@ -5705,8 +5705,10 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	rebind_event.keycode = KEY_T
 	rebind_event.pressed = true
 	ui.call("_handle_rebind_input", rebind_event)
-	var ultimate_events := InputMap.action_get_events("ultimate")
-	if ultimate_events.is_empty() or not (ultimate_events[0] is InputEventKey) or (ultimate_events[0] as InputEventKey).keycode != KEY_T:
+	# SCRUM-816: клавиатурный ребинд теперь СОХРАНЯЕТ joypad-события экшена (баг-фикс
+	# _apply_keycodes_to_action), поэтому клавиша может быть не под индексом 0 —
+	# ищем InputEventKey с нужным keycode независимо от порядка.
+	if not (KEY_T in _keycodes_for_action("ultimate")):
 		_fail("Expected ultimate rebind to apply the new key.")
 		return
 	var loaded: Dictionary = game_settings.load_settings()

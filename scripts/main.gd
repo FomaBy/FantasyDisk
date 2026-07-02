@@ -484,6 +484,14 @@ var audio_settings := {
 var input_bindings := {}
 var aim_mode := "nearest"
 var debug_mode_enabled := false
+# SCRUM-816: геймпад-настройки (устройство ввода + ребинд/deadzone/vibration).
+# Персистятся через save_game_settings; deadzone/vibration зеркалятся в root-мету
+# (player.gd._runtime_setting читает мету), input_mode/bindings применяет
+# InputDeviceManager при живой смене из вкладки «Управление».
+var input_mode := "auto"
+var gamepad_bindings := {}
+var gamepad_deadzone := 0.25
+var gamepad_vibration := true
 
 
 func _init() -> void:
@@ -539,11 +547,22 @@ func _load_game_settings() -> void:
 	screen_shake_enabled = bool(settings.get("screen_shake", true))
 	combat_feedback_enabled = bool(settings.get("combat_feedback", true))
 	debug_mode_enabled = bool(settings.get("debug_mode", false))
+	# SCRUM-816: геймпад-настройки. input_mode валидируется, bindings — Dictionary,
+	# deadzone клампится в диапазон ядра [0.05..0.5], vibration — bool.
+	input_mode = str(settings.get("input_mode", "auto"))
+	if not ["auto", "keyboard", "gamepad"].has(input_mode):
+		input_mode = "auto"
+	gamepad_bindings = (settings.get("gamepad_bindings", {}) as Dictionary).duplicate(true)
+	gamepad_deadzone = clampf(float(settings.get("gamepad_deadzone", 0.25)), 0.05, 0.5)
+	gamepad_vibration = bool(settings.get("gamepad_vibration", true))
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
+	# player.gd читает эти два ключа через root-мету (_runtime_setting).
+	get_tree().root.set_meta("gamepad_deadzone", gamepad_deadzone)
+	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
 		ui._apply_video_settings()
@@ -565,10 +584,18 @@ func save_game_settings() -> void:
 		settings["input_bindings"] = ui._current_input_bindings()
 	else:
 		settings["input_bindings"] = input_bindings.duplicate(true)
+	# SCRUM-816: без этих ключей save_settings перезаписал бы их дефолтами при
+	# любом сохранении (aim/громкость/ребинд) — раскладка геймпада бы слетала.
+	settings["input_mode"] = input_mode
+	settings["gamepad_bindings"] = gamepad_bindings.duplicate(true)
+	settings["gamepad_deadzone"] = gamepad_deadzone
+	settings["gamepad_vibration"] = gamepad_vibration
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
 	get_tree().root.set_meta("debug_mode", debug_mode_enabled)
+	get_tree().root.set_meta("gamepad_deadzone", gamepad_deadzone)
+	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 
 
 func run_autosave_has_run() -> bool:
