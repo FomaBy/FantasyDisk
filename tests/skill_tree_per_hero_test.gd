@@ -65,12 +65,29 @@ func _test_class_affinity_keystones_are_unique() -> void:
 func _test_class_branch_contract() -> void:
 	# Инвертируем матрицу релевантности → primary-атрибуты каждого класса.
 	var primaries := {}
+	# relevant[class] = множество атрибутов класса (primary ∪ secondary). Всё вне
+	# него — optional («профильно мимо»). SCRUM-807: атрибутные ноды ветви обязаны
+	# следовать этой матрице; optional-атрибуты в ветви запрещены.
+	var relevant := {}
 	for attr in CharacterData.ATTRIBUTE_RELEVANCE.keys():
-		for c in CharacterData.ATTRIBUTE_RELEVANCE[attr].get("primary", []):
+		var rel: Dictionary = CharacterData.ATTRIBUTE_RELEVANCE[attr]
+		for c in rel.get("primary", []):
 			var cid := str(c)
 			if not primaries.has(cid):
 				primaries[cid] = []
 			(primaries[cid] as Array).append(str(attr))
+			if not relevant.has(cid):
+				relevant[cid] = {}
+			(relevant[cid] as Dictionary)[str(attr)] = true
+		for c in rel.get("secondary", []):
+			var cid := str(c)
+			if not relevant.has(cid):
+				relevant[cid] = {}
+			(relevant[cid] as Dictionary)[str(attr)] = true
+	# Обратный маппинг ключ-эффекта → attr-id (только атрибутные ключи ATTR_EFFECT).
+	var key_to_attr := {}
+	for a in TreeData.ATTR_EFFECT.keys():
+		key_to_attr[str((TreeData.ATTR_EFFECT[a] as Dictionary)["key"])] = str(a)
 	# Собираем классовые ноды по классу.
 	var affinity_count := {}
 	var notable_count := {}
@@ -92,6 +109,18 @@ func _test_class_branch_contract() -> void:
 		var effects: Dictionary = node_data.get("effects", {})
 		for k in effects.keys():
 			(branch_keys[aff] as Dictionary)[str(k)] = true
+		# Запрет чужих optional/non-relevant атрибутов на АТРИБУТНЫХ узлах ветви
+		# (minor/notable). Keystone — build-defining узел, не атрибутный: его
+		# уникальная механика может использовать любые ключи (правило не применяется).
+		if kind == "minor" or kind == "notable":
+			for k in effects.keys():
+				var ek := str(k)
+				if not key_to_attr.has(ek):
+					continue
+				var attr_id := str(key_to_attr[ek])
+				if not (relevant.get(aff, {}) as Dictionary).has(attr_id):
+					_fail("Class '%s' %s node '%s' grants non-relevant (optional) attr '%s' (%s)." % [aff, kind, str(node_data.get("id", "")), attr_id, ek])
+					return
 		# Описания эффект-нодов обязаны содержать число (мандат «ясно и понятно»).
 		if not effects.is_empty() and not _has_digit(str(node_data.get("desc", ""))):
 			_fail("Class node '%s' desc has no number: %s" % [str(node_data.get("id", "")), str(node_data.get("desc", ""))])

@@ -1,6 +1,6 @@
 # Skill Tree 3.0: глубокий анализ и per-class деревья умений с классовой идентичностью
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end / Game Design (Claude)
 Версия: 0.1.8
@@ -11,27 +11,24 @@ Owner: unassigned
 Thread/Worker: n/a
 Locked paths: `scripts/meta_progression.gd`, `scripts/ui_screens.gd` (экран дерева умений), `scripts/player.gd` (применение мета-модов), `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`, `docs/design/systems/skill_tree.md`
 
-## QA-Вердикт (2026-07-02, codex-qa-claude-monitor)
+## Реопен-фикс (2026-07-02, claude-backend) — блокеры QA закрыты
 
-Статус: FAILED
+Ответ на QA-FAILED (codex-qa-claude-monitor). Все 4 блокера устранены; правки в
+изолированном worktree от `origin/dev`, гейты зелёные (см. §Result / Evidence):
 
-Проверено:
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_skill_tree_smoke_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/skill_tree_per_hero_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/meta_points_per_ascension_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/attribute_relevance_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/class_progression_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/berserk_dps_runaway_gate.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASSED.
-- `FSD_GODOT_SLOTS=1 python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASSED.
-
-Блокеры приёмки:
-- `scripts/meta_progression_tree_data.gd`: ветка Biologist содержит `aoe_radius`, но `ATTRIBUTE_RELEVANCE["aoe_radius"]` не включает `biologist` ни в primary, ни в secondary.
-- `scripts/meta_progression_tree_data.gd`: ветка Robot содержит `defense`, но `ATTRIBUTE_RELEVANCE["defense"]` не включает `robot` ни в primary, ни в secondary.
-- `tests/skill_tree_per_hero_test.gd` проверяет, что primary-атрибуты представлены в ветке, но не проверяет запрет на чужие optional/non-relevant атрибуты; текущий acceptance miss проходит зелёным.
-- `_test_realistic_build_power_budget()` проверяет 61-очковый focused build, при этом задача/Result формулируют gate как реалистичный 100-очковый билд; нужно привести тест/док/Result к одному фактическому инварианту.
-
-Баги: отдельный bug не заводил — это недовыполненные acceptance/test пункты SCRUM-807 при зелёных runtime gates.
+1. **Biologist × `aoe_radius`** (optional по матрице) → заменён на `vampiric_amount`
+   (secondary; фантазия паразита/симбиоза) в attrs и notable «Симбиоз».
+   `meta_progression_tree_data.gd`.
+2. **Robot × `defense`** (optional по матрице) → заменён на `regeneration`
+   (secondary; самопочинка брони) в attrs и notable «Бронеплиты».
+   `defense_flat` в keystone «Овердрайв» оставлен намеренно (build-defining узел).
+3. **`skill_tree_per_hero_test.gd`**: добавлен запрет чужих optional/non-relevant
+   атрибутов на minor/notable-узлах ветви (keystone исключён). Тест теперь ловит
+   промах, который раньше проходил зелёным.
+4. **Бюджет силы приведён к одному факту**: `_test_realistic_build_power_budget`
+   меряет сфокусированный билд **61/100** очков (потолок классовой силы дерева) и
+   добавлен near-cap под-инвариант **≈89/100** (добор чужих ветвей affinity-gated,
+   силу класса НЕ повышает). Док `skill_tree.md` §4 и §Validation синхронны с тестом.
 
 ## Мандат (от продукта, дословно по смыслу)
 
@@ -264,10 +261,19 @@ SCRUM-726 «per-hero skill tree»), но классовая идентичнос
 primary-first + 2 notable + 1 уникальный keystone). Экономика возвышений и
 балансовые скаляры не тронуты — дерево аддитивный слой.
 
-**Бюджет силы (числа):** реалистичный 100-очковый билд даёт классу
-`damage_mult` ≈0.115 (коридор теста 0.08..0.40) + low-HP механика keystone;
-аккаунтная сила почти нейтральна (`estimated_power_multiplier` <1.30) —
-классовые эффекты affinity-gated. Anti-runaway/comfort гейты дерево не прокачивают.
+**Бюджет силы (числа, один фактический инвариант):** сфокусированный билд одного
+класса = **61 очко из 100** (ядро 15 + лепестки 32 + классовая ветвь 14) — потолок
+классовой силы дерева: `skill_modifiers_for_class` берсерка `damage_mult` ≈**0.125**
+(ветвь 0.115 + общий strength-notable 0.010; коридор теста 0.08..0.40) + low-HP
+механика keystone. Near-cap билд **≈89/100** (добор чужих ветвей) силу класса НЕ
+повышает — эффекты affinity-gated. Аккаунтная сила почти нейтральна
+(`estimated_power_multiplier` <1.30). Anti-runaway/comfort гейты дерево не прокачивают.
+
+**Reopen-фикс (2026-07-02, claude-backend):** biologist `aoe_radius`→`vampiric_amount`,
+robot `defense`→`regeneration` (attrs+notables, optional→secondary по матрице);
+per-hero тест теперь запрещает optional-атрибуты на minor/notable (keystone исключён);
+бюджет-тест приведён к 61/100 + near-cap ≈89/100. Правки в изолированном worktree от
+`origin/dev`; гейты перегнаны зелёными (Godot 4.7).
 
 **Изменённые/новые файлы:**
 - `scripts/meta_progression_tree_data.gd` (**новый**) — данные + конструктор графа
@@ -288,14 +294,15 @@ primary-first + 2 notable + 1 уникальный keystone). Экономика
   per-class таблица + миграция + решения/трейд-оффы), `progression_balance.md`,
   `CHANGELOG.md`.
 
-**Прогнанные гейты (все через `tools/godot_gate.py`, ЗЕЛЁНЫЕ):**
+**Прогнанные гейты (реопен, все через `tools/godot_gate.py`, Godot 4.7, ЗЕЛЁНЫЕ):**
 - `meta_skill_tree_smoke_test` PASS (целостность 192/285, миграция→4, roundtrip,
-  бюджет силы, capstone-флаги, экономика/скидки/attr-опции).
+  бюджет силы 61/100 + near-cap ≈89, capstone-флаги, экономика/скидки/attr-опции).
 - `skill_tree_per_hero_test` PASS (17 классов, уникальные keystone, primary,
-  числа, affinity-фильтр).
-- `meta_points_per_ascension_test` PASS · `attribute_relevance_test` PASS ·
-  `class_progression_test` PASS · `runtime_smoke_test` PASS (14152 файлов) ·
-  `berserk_dps_runaway_gate` PASS (20t=2253≤3600, 1t=514≤650 — дерево не влияет).
+  запрет optional-атрибутов на minor/notable, числа, affinity-фильтр).
+- `meta_points_per_ascension_test` PASS · `attribute_relevance_test` PASS
+  (24×17, инвариант 2/8/7) · `class_progression_test` PASS · `runtime_smoke_test`
+  PASS (14164 файлов) · `berserk_dps_runaway_gate` PASS (20t=2104≤3600, 1t=514≤650
+  — дерево не влияет).
 
 **Решения (подробно в дизайн-доке §Решения и трейд-оффы):** ядро+лепестки
 сохранены, центр тяжести перенесён укрупнением классовых ветвей; keystone-и =

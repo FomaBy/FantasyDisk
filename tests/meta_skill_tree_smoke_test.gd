@@ -648,24 +648,35 @@ func _test_player_application() -> void:
 	await process_frame
 
 
+# SCRUM-807 задокументированный бюджет силы (skill_tree.md v3, §Бюджет силы):
+# сфокусированный билд ОДНОГО класса тратит ровно столько очков из cap 100.
+const FOCUSED_BUILD_COST := 61  # ядро 15 + 8 лепестков ×4 = 32 + классовая ветвь 14.
+
+
 func _test_realistic_build_power_budget() -> void:
-	# SCRUM-807 бюджет силы: реалистичный сфокусированный билд (полное ядро + все
-	# лепестки + одна классовая ветвь целиком ≈ 61 очко из 100) даёт КЛАССУ ощутимый,
-	# но ограниченный прирост, а АККАУНТНАЯ (кросс-классовая) сила почти нейтральна —
-	# классовые эффекты affinity-gated. Числа задокументированы в skill_tree.md v3.
+	# SCRUM-807 бюджет силы (ОДИН фактический инвариант, синхронный с skill_tree.md v3):
+	# сфокусированный билд одного класса = полное ядро + все лепестки + одна классовая
+	# ветвь целиком = FOCUSED_BUILD_COST (61) из cap 100. Это ПОТОЛОК силы, которую
+	# дерево даёт одному классу: остаток cap уходит только в affinity-gated ЧУЖИЕ ветви
+	# и силу выбранного класса НЕ повышает (проверяется near-cap билдом ниже). Числа
+	# берсерка: damage_mult ≈0.125 (коридор 0.08..0.40); аккаунтная сила почти нейтральна.
 	var state: Dictionary = Meta.default_state()
 	var build := ["core_origin", "core_rewards", "core_craft", "core_battle_cry", "core_second_life", "core_guild_ties", "core_insight"]
 	for attr in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		build.append_array(["%s_gate" % attr, "%s_flow_1" % attr, "%s_flow_2" % attr, "%s_notable" % attr])
-	build.append_array(["entry_berserk", "berserk_a0", "berserk_a1", "berserk_n0", "berserk_a2", "berserk_a3", "berserk_n1", "berserk_a4", "berserk_key"])
+	build.append_array(_class_branch_nodes("berserk"))
 	state["skill_nodes"] = build
-	# Все id валидны и билд помещается в cap.
+	# Все id валидны.
 	if Meta.purchased_nodes(state).size() != build.size():
 		_fail("Realistic build references unknown node ids.")
 		return
+	# Стоимость сфокусированного билда = задокументированный инвариант (не «100»).
 	var cost := Meta.allocated_meta_points(state)
+	if cost != FOCUSED_BUILD_COST:
+		_fail("Expected focused single-class build to cost %d (documented), got %d." % [FOCUSED_BUILD_COST, cost])
+		return
 	if cost > Meta.META_POINTS_CAP:
-		_fail("Expected realistic focused build to fit under cap 100 (got %d)." % cost)
+		_fail("Expected focused build to fit under cap 100 (got %d)." % cost)
 		return
 	# Классовая сила берсерка: damage_mult в задокументированном коридоре [0.08..0.40].
 	var berserk_mods := Meta.skill_modifiers_for_class(state, "berserk")
@@ -686,6 +697,34 @@ func _test_realistic_build_power_budget() -> void:
 	if account_power >= 1.30:
 		_fail("Expected account-wide estimated power to stay bounded (<1.30), got %.3f." % account_power)
 		return
+
+	# Near-cap билд (≈89/100): focused + две ЧУЖИЕ классовые ветви (soldier, thief).
+	# Инвариант «что даёт 100-очковый билд одному классу»: сила берсерка НЕ растёт —
+	# дополнительные очки affinity-gated. Это и есть потолок из §Бюджет силы.
+	var near_cap := build.duplicate()
+	near_cap.append_array(_class_branch_nodes("soldier"))
+	near_cap.append_array(_class_branch_nodes("thief"))
+	var near_state: Dictionary = Meta.default_state()
+	near_state["skill_nodes"] = near_cap
+	if Meta.purchased_nodes(near_state).size() != near_cap.size():
+		_fail("Near-cap build references unknown node ids.")
+		return
+	var near_cost := Meta.allocated_meta_points(near_state)
+	if near_cost <= FOCUSED_BUILD_COST or near_cost > Meta.META_POINTS_CAP:
+		_fail("Expected near-cap build to spend more than focused yet fit cap 100 (got %d)." % near_cost)
+		return
+	var near_berserk := Meta.skill_modifiers_for_class(near_state, "berserk")
+	if not is_equal_approx(float(near_berserk.get("damage_mult", 0.0)), class_dmg):
+		_fail("Expected extra cap spend on other classes NOT to raise berserk class power (affinity-gated): %.3f vs %.3f." % [float(near_berserk.get("damage_mult", 0.0)), class_dmg])
+		return
+
+
+# Полный набор id одной классовой ветви (entry + 5 minor + 2 notable + keystone).
+func _class_branch_nodes(class_id: String) -> Array:
+	var ids := [str(Meta.CLASS_ENTRY_NODES[class_id])]
+	for slot in ["a0", "a1", "n0", "a2", "a3", "n1", "a4", "key"]:
+		ids.append("%s_%s" % [class_id, slot])
+	return ids
 
 
 func _test_full_tree_power_cap() -> void:

@@ -16,7 +16,10 @@
   подсвечивает ветвь выбранного героя, чужие классовые ветви «спят». Экономика
   возвышений и балансовые гейты не тронуты (дерево — аддитивный слой). Канон:
   `docs/design/systems/skill_tree.md` (v3). Бюджет силы: ~+12–20% DPS/EHP классу
-  за 100-очковый билд.
+  за сфокусированный билд (61/100 очков — потолок классовой силы; добор чужих
+  ветвей affinity-gated). QA-реопен: атрибутные ноды ветви приведены к матрице
+  релевантности (biologist `aoe_radius`→вампиризм, robot `defense`→реген; keystone
+  исключён из правила), per-hero тест ловит optional-атрибуты.
 - SCRUM-793: promoted accepted SCRUM-779 PixelLab boss candidates into live
   full-frame runtime rows for `disk_devourer`
   (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`

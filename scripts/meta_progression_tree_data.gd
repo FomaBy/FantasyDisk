@@ -157,19 +157,25 @@ const CLASS_BRANCH_SPECS := {
 	},
 	"biologist": {
 		"title": "Живая гипотеза",
-		"attrs": ["dot_damage", "dot_speed", "summon_amount", "aoe_radius", "regeneration"],
+		# SCRUM-807 QA-fix: aoe_radius не релевантен биологу (optional по ATTRIBUTE_RELEVANCE)
+		# → заменён на vampiric_amount (secondary; фантазия паразита/симбиоза).
+		"attrs": ["dot_damage", "dot_speed", "summon_amount", "vampiric_amount", "regeneration"],
 		"notables": [
 			{"title": "Споровый посев", "attrs": ["dot_damage", "dot_speed"]},
-			{"title": "Симбиоз", "attrs": ["summon_amount", "aoe_radius"]},
+			{"title": "Симбиоз", "attrs": ["summon_amount", "vampiric_amount"]},
 		],
 		"keystone": {"title": "Эпидемия", "effects": {"dot_damage_flat": 1.80, "dot_speed_flat": 0.16, "summon_bonus": 1.0}},
 	},
 	"robot": {
 		"title": "Бронеконтур робота",
-		"attrs": ["max_health", "absorb", "pickup_radius", "defense", "ultimate_power"],
+		# SCRUM-807 QA-fix: defense не релевантна роботу (optional по ATTRIBUTE_RELEVANCE)
+		# → заменена на regeneration (secondary; фантазия самопочинки брони).
+		# defense_flat в keystone-е оставлен намеренно: keystone — build-defining узел,
+		# не атрибутный (правило релевантности к keystone-ам не применяется).
+		"attrs": ["max_health", "absorb", "pickup_radius", "regeneration", "ultimate_power"],
 		"notables": [
 			{"title": "Тёплый реактор", "attrs": ["ultimate_power", "absorb"]},
-			{"title": "Бронеплиты", "attrs": ["max_health", "defense"]},
+			{"title": "Бронеплиты", "attrs": ["max_health", "regeneration"]},
 		],
 		"keystone": {"title": "Овердрайв", "effects": {"ult_charge_mult": 0.240, "ultimate_flat": 0.16, "defense_flat": 0.035}},
 	},
