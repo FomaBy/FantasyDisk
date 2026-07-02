@@ -3747,5 +3747,10 @@
   "key": "SCRUM-831",
   "status": "Контроль качества",
   "desc_hash": "manual-scrum-831-pending-sync"
+ },
+ "design_meta40_ui_kit_openai_regen_task.md": {
+  "key": "SCRUM-832",
+  "status": "Контроль качества",
+  "desc_hash": "34dc9dbf3aba704fda733a717452e076"
  }
 }

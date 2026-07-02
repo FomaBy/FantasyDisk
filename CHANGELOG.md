@@ -185,6 +185,18 @@
   portrait path points to the PixelLab south idle frame.
 
 ### Changed
+- SCRUM-832: UI-кит Меты 4.0 перегенерирован через OpenAI gpt-image-2 под
+  целевые размеры слотов окна 2560×1440 (мандат продукта: элемент генерируется
+  под размер/аспект слота, а не «вписываем в готовую картинку»). Структура
+  `assets/sprites/ui/meta40/` (27 ассетов): `atlas_bg` (688×384, запечённая
+  рама+небо) удалён в пользу модульных `bg_sky.png` 2560×1440 (фулскрин) +
+  `frame_border.png` (полая орнаментная рама под 9-slice); сокеты 96/128/168/112,
+  `star_alloc` 80, `keystone_ring` 200 (полый центр), валюты 64, 17 гербов
+  `crest_*` 160 (единый медальон-шаблон). Пайплайн воспроизводим:
+  `tools/generate_meta40_ui_openai.py` (маджента-key → flood-fill → erode 1px →
+  LANCZOS в слот; --only/--dry-run/--sheet-only). Контакт-лист
+  `docs/design/previews/meta40_asset_contact.png`, мокап экрана пересобран в
+  нативном 1440p (`meta40_atlas_mockup.png`). Дизайн-док §7 обновлён.
 - SCRUM-797: replaced the live Guitarist PixelLab body with the stronger held-guitar
   instrument variant (`d278e753-9885-4550-82ff-81ee3bef297d`) by direct user
   override. The pack keeps the same 8-direction `walking-6-frames` runtime
