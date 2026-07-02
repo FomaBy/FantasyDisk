@@ -70,3 +70,11 @@ QA-фейл SCRUM-834, блокер 3: conditional-smoke проверял син
 - Текущее состояние intentionally dependency-red: clean `origin/dev` ещё не
   содержит финальный SCRUM-835 semantic surface, поэтому 837 не переводится в
   `Контроль качества` до rebase/verify поверх готового 835.
+- 2026-07-02 WIP branch `codex/scrum-837-behavioral-gate` обновлён поверх
+  SCRUM-834 fix `acd8e023` и текущего `origin/dev` (`4d8ef831`). Validation:
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_keystone_behavioral_smoke_test.gd`
+  = expected dependency-red, 162 errors, no `SCRIPT ERROR`;
+  `meta_skill_tree_smoke_test.gd` = expected dependency-red on
+  `enemy_hit_damage_down`, no `SCRIPT ERROR`; `skill_tree_per_hero_test.gd` =
+  passed; `runtime_smoke_test.gd` = passed. Final QA handoff still waits for
+  SCRUM-835 final commit/push and green behavioral assertions.
