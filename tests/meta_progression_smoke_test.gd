@@ -33,8 +33,10 @@ func _test_save_load_roundtrip() -> void:
 	META_PROGRESSION.save_state(state, TEST_SAVE_PATH)
 
 	var loaded := META_PROGRESSION.load_state(TEST_SAVE_PATH)
-	if int(loaded.get("meta_points", 0)) != 3:
-		push_error("Expected 3 meta points after reload, got %s." % str(loaded.get("meta_points")))
+	# SCRUM-828 (Мета 4.0): фасад meta_points = эмблемы (2/2 за A0/A1 берсерка +
+	# 2 за A0 гитариста) + звёздная пыль (2 первые победы классами) = 8.
+	if int(loaded.get("meta_points", 0)) != 8:
+		push_error("Expected 8 meta points (Meta 4.0 currencies) after reload, got %s." % str(loaded.get("meta_points")))
 		quit(1)
 		return
 	if META_PROGRESSION.ascension_level(loaded, "berserk") != 2:
