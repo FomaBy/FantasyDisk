@@ -1,6 +1,6 @@
 # Геймпад: аналоговое движение стиком, deadzone и вибрация
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Back-end/Codex
 Thread: codex-backend-scrum814-gamepad-movement

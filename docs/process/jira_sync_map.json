@@ -2255,8 +2255,8 @@
  },
  "art_char_redraw_v2_biologist_task.md": {
   "key": "SCRUM-421",
-  "status": "Контроль качества",
-  "desc_hash": "c3dc9864f4a715bfcd63bff4ac91a44a"
+  "status": "Готово",
+  "desc_hash": "95809a11c65b77f23794eea109673afa"
  },
  "art_char_redraw_v2_bright_epic_anchor_task.md": {
   "key": "SCRUM-422",
@@ -2331,7 +2331,7 @@
  "design_hero_select_rebuild_from_scratch_mockup_task.md": {
   "key": "SCRUM-436",
   "status": "Готово",
-  "desc_hash": "1270855a379707eaf221394b98915955"
+  "desc_hash": "cfac2f79ffc616d3cb1f8242e9e588d4"
  },
  "bug_economy_choice_card_too_narrow_widen_frame_task.md": {
   "key": "SCRUM-437",
@@ -2376,7 +2376,7 @@
  "design_integrate_generated_hero_select_mockup_task.md": {
   "key": "SCRUM-445",
   "status": "Готово",
-  "desc_hash": "6dd1f8afd198c79983f56b309c7da3e3"
+  "desc_hash": "d4aed65bdbd4fb28ee8a9dd497ddc3a0"
  },
  "design_hero_select_v3_mockup_zones_frames_pipeline_task.md": {
   "key": "SCRUM-446",
@@ -2391,7 +2391,7 @@
  "design_ui_minimalist_restyle_keep_red_buttons_task.md": {
   "key": "SCRUM-448",
   "status": "Готово",
-  "desc_hash": "fbd17738b3b0b29c6e1c5a9374647f0d"
+  "desc_hash": "972ce4ca5a6ae741b4ebaf7a3a376d3a"
  },
  "backend_ui_minimalist_restyle_keep_red_buttons_integration_task.md": {
   "key": "SCRUM-449",
@@ -2626,7 +2626,7 @@
  "bug_scrum619_secret_encounter_artifact_key_unlock_task.md": {
   "key": "SCRUM-623",
   "status": "Готово",
-  "desc_hash": "70824cff19f50c53aea62934a1a0d767"
+  "desc_hash": "33f21b0259b93b0a67bdcf9e7a55adf4"
  },
  "SCRUM-521_low_hp_red_vignette.md": {
   "key": "SCRUM-521",
@@ -3121,12 +3121,12 @@
  "bug_SCRUM-502_dealt_damage_never_collected_task.md": {
   "key": "SCRUM-502",
   "status": "Готово",
-  "desc_hash": "efe52e7344e930e648a05f7aa166b069"
+  "desc_hash": "678dcb0447636d91e7f387c2850e452c"
  },
  "bug_scrum673_main_menu_logo_spec_mismatch_task.md": {
   "key": "SCRUM-680",
-  "status": "К выполнению",
-  "desc_hash": "e7868aaa33c0aa060ae9731e453c75e0"
+  "status": "Готово",
+  "desc_hash": "19e56f9c8c114f034b2fb0531af6e0b9"
  },
  "design_berserk_v2_visual_redesign_task.md": {
   "key": "SCRUM-531",
@@ -3640,52 +3640,77 @@
  },
  "design_settings_menu_full_review_redesign_task.md": {
   "key": "SCRUM-805",
-  "status": "К выполнению",
-  "desc_hash": "d950721cc1d209e964522bde27dadd68"
+  "status": "Готово",
+  "desc_hash": "43d23e88773c375083601d8c984afe39"
  },
  "bug_upgrade_card_description_overflow_task.md": {
   "key": "SCRUM-808",
-  "status": "В работе",
-  "desc_hash": "da4732b94bd77da6cb85b8f2ddab3aae"
+  "status": "Готово",
+  "desc_hash": "330118ebc42752cc53ea800a745dabd5"
  },
  "yellow_frames_audit_redesign_task.md": {
   "key": "SCRUM-809",
-  "status": "В работе",
-  "desc_hash": "75ea0dd204a35568dcd6c4f00a59401a"
+  "status": "Готово",
+  "desc_hash": "f5d7220c0209c7ecc98400627d6fac0b"
  },
  "design_gamepad_input_glyphs_task.md": {
   "key": "SCRUM-810",
   "status": "К выполнению",
-  "desc_hash": "fe86ae127ba8930239dd895255e922a0"
+  "desc_hash": "50af5a34d75c336d9d5315409898273f"
  },
  "qol_gamepad_core_input_device_manager_task.md": {
   "key": "SCRUM-811",
   "status": "К выполнению",
-  "desc_hash": "fed7820467653b1222d3bc59690946b5"
+  "desc_hash": "2454feab72ff6cbbf9e61f42e718d37e"
  },
  "qol_gamepad_inrun_ui_navigation_task.md": {
   "key": "SCRUM-812",
   "status": "К выполнению",
-  "desc_hash": "4ad1471ca637a10b7355dce17825b2ed"
+  "desc_hash": "aabb9c97198d534b8350123d13ed1200"
  },
  "qol_gamepad_menu_focus_navigation_task.md": {
   "key": "SCRUM-813",
   "status": "К выполнению",
-  "desc_hash": "074160089bf7aae8e37152490039a582"
+  "desc_hash": "4387ff2028d3d72b7a0b20b2f30452fc"
  },
  "qol_gamepad_player_analog_movement_task.md": {
   "key": "SCRUM-814",
-  "status": "К выполнению",
-  "desc_hash": "b87461cb4fe77cfc55170ca7d016d18a"
+  "status": "Контроль качества",
+  "desc_hash": "5d502e9d2cc70d85e17d46321ee98c29"
  },
  "qol_gamepad_qa_navigation_smoke_task.md": {
   "key": "SCRUM-815",
   "status": "К выполнению",
-  "desc_hash": "a8b71f5686abe631af197e8d3d82d52d"
+  "desc_hash": "742f80e0cf5ee396ef014122319d540f"
  },
  "qol_gamepad_settings_rebind_ui_task.md": {
   "key": "SCRUM-816",
   "status": "К выполнению",
-  "desc_hash": "16672d45b889cfd280de264ba7a42d2e"
+  "desc_hash": "8e931417b8d5fe5c8fc4052782deeebb"
+ },
+ "minimal_metal_recolor_leather_brass_task.md": {
+  "key": "SCRUM-817",
+  "status": "К выполнению",
+  "desc_hash": "c446ed1da38c9ab8f6f6f99447b89ed2"
+ },
+ "overhaul_2k_kit_brass_line_task.md": {
+  "key": "SCRUM-818",
+  "status": "К выполнению",
+  "desc_hash": "5fd7eac29f370fabe7c2fe179b342fde"
+ },
+ "settings_gold_frames_restyle_task.md": {
+  "key": "SCRUM-819",
+  "status": "К выполнению",
+  "desc_hash": "806a9a55b7bca0325521beb1a0e4efbd"
+ },
+ "skill_tree_warm_frames_restyle_task.md": {
+  "key": "SCRUM-820",
+  "status": "К выполнению",
+  "desc_hash": "5b964dd846be52e4a487bf0bf85c4b69"
+ },
+ "yellow_buttons_levelup_accents_task.md": {
+  "key": "SCRUM-821",
+  "status": "К выполнению",
+  "desc_hash": "daf6634762fc7d9e5e5ba57b78d1b090"
  }
 }
