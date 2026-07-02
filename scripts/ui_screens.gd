@@ -9099,6 +9099,26 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
+
+	# SCRUM-808: длинное описание продавливало VBox за safe-зону фрейма (флаки матрицы
+	# на 1536×864 в зависимости от выпавших наград). Подбираем шрифт описания под
+	# фактически доступную высоту, остаток страхуем многоточием — полный текст
+	# всегда доступен в tooltip карточки.
+	var desc_area_w := display_size.x - margins.x - margins.z
+	var desc_font := desc_label.get_theme_font("font")
+	if desc_font != null and desc_area_w > 0.0:
+		var row_gap := float(3 if compact_attribute else 7)
+		var title_h := desc_font.get_multiline_string_size(title, HORIZONTAL_ALIGNMENT_CENTER, desc_area_w, title_label.get_theme_font_size("font_size")).y
+		var action_h := desc_font.get_height(action_label.get_theme_font_size("font_size"))
+		var desc_avail := display_size.y - margins.y - margins.w - title_h - action_h - 2.0 * row_gap
+		var desc_font_size := desc_label.get_theme_font_size("font_size")
+		while desc_font_size > 9 and desc_font.get_multiline_string_size(description, HORIZONTAL_ALIGNMENT_CENTER, desc_area_w, desc_font_size).y > desc_avail:
+			desc_font_size -= 1
+		desc_label.add_theme_font_size_override("font_size", desc_font_size)
+		var desc_line_h := desc_font.get_height(desc_font_size)
+		if desc_line_h > 0.0:
+			desc_label.max_lines_visible = maxi(1, int(floorf(desc_avail / desc_line_h)))
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	return button
 
 
