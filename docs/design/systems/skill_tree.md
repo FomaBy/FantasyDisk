@@ -1,55 +1,239 @@
-# Skill Tree
+# Skill Tree 3.0
 
-Обновлено: 2026-07-01, SCRUM-726.
+Обновлено: 2026-07-02, SCRUM-807 (мажорная редакция v3). Предыдущие: SCRUM-696
+(PoE-like граф), SCRUM-726 (per-hero keystones), v2 — 2026-07-01.
 
-Финальное мета-древо умений живет в `scripts/meta_progression.gd` и остается общим графом в стиле Path of Exile. UI/API SCRUM-696/698 сохранены: `node_list`, `node_by_id`, `entry_map`, `node_status`, `allocate_node` / `buy_skill_node`, `reset_skill_tree`, `earned_meta_points`, `available_meta_points`, `allocated_meta_points`, `global_level`, `skill_tree_total_cost`, `skill_modifiers`.
+Мета-древо умений живёт в двух файлах:
+- `scripts/meta_progression.gd` — экономика метаочков, сейв/лоад/миграция,
+  графовая аллокация и публичный API (**не менялся** в v3):
+  `node_list`, `node_by_id`, `entry_map`, `node_status`, `allocate_node` /
+  `buy_skill_node`, `reset_skill_tree`, `earned_meta_points`,
+  `available_meta_points`, `allocated_meta_points`, `global_level`,
+  `skill_tree_total_cost`, `skill_modifiers`, `skill_modifiers_for_class`.
+- `scripts/meta_progression_tree_data.gd` (**новый в v3**) — данные и конструктор
+  графа (лепестки, реестр атрибутов ветвей, per-class спеки, авто-генератор
+  описаний с числами). Вынесен, чтобы не раздувать `meta_progression.gd`.
 
-## Топология
+---
 
-- `TREE_SCHEMA_VERSION = 3`; старые schema 2 saves получают безопасный full respec дерева, а meta points пересчитываются из `ascension_levels` / `meta_point_awards`.
-- `META_POINTS_CAP = 100`; начисление за первый clear возвышения 0..5 осталось `1, 1, 2, 3, 4, 5`.
-- Полный граф: 107 узлов, суммарная стоимость 183 метаочка, поэтому игрок не может купить все дерево при cap 100.
-- Ядро: 7 нейтральных узлов, включая 4 account-wide keystone: `core_battle_cry`, `core_second_life`, `core_guild_ties`, `core_insight`.
-- 8 атрибутных лепестков: `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`. Каждый лепесток имеет gate, два minor `+1` к атрибуту и notable `+2` к атрибуту с малым профильным бонусом.
-- 17 class pods: у каждого playable class id есть `entry_<class>`, minor, notable и один уникальный `sig_<class>_keystone` с `class_affinity`.
+## Фаза 0 — Глубокий анализ
 
-## Применение Эффектов
+### 1. Роль дерева в игровом цикле
 
-`skill_modifiers(state)` возвращает только account-wide эффекты и игнорирует узлы с `class_affinity`. Для старта забега `main.apply_ascension_bonuses()` вызывает `skill_modifiers_for_class(meta_state, selected_character_id)`, поэтому эффекты class pod применяются только активному герою.
+Дерево — это ПЕРСИСТЕНТНЫЙ мета-слой поверх базы забега. Игрок открывает его из
+меню между забегами. Метаочки (`meta_points`) начисляются ТОЛЬКО за первый клир
+каждого уровня возвышения каждым классом: формула `[1,1,2,3,4,5]` (A0..A5), т.е.
+максимум 16 очков на класс, общий пул, потолок `META_POINTS_CAP = 100`
+(+3 за секретного босса). Экономика в v3 **не тронута**.
 
-Атрибутные эффекты используют ключи `strength_flat`, `agility_flat`, `intelligence_flat`, `perception_flat`, `energy_flat`, `knowledge_flat`, `endurance_flat`, `leadership_flat`. `Player.apply_meta_skill_modifiers()` добавляет их к `player.stats` до пересчета `ProgressionData.derived_parameters()`. Из-за разных `BASE_STATS` и class stat-growth scalars один и тот же путь по дереву дает разным героям разные боевые профили.
+Сколько очков «на руках» на этапах прогрессии:
+- 1 класс, до A5: до 16 очков → покупается ядро + 1–2 лепестка + начало своей
+  классовой ветви.
+- 3–5 классов, средние возвышения: ~30–50 очков → полное ядро, все лепестки,
+  своя классовая ветвь целиком + заход в чужую.
+- Много классов / близко к капу: 100 очков (клампится). На 100 очков покупается
+  ~35% графа стоимостью 285 (см. ниже) — «выбираешь путь, а не всё дерево».
 
-Поддержанные сигнатурные run-ключи SCRUM-726: `damage_mult`, `attack_speed_mult`, `move_speed_mult`, `max_health_mult`, `range_mult`, `aoe_radius_mult`, `aura_radius_mult`, `knockback_mult`, `crit_chance_flat`, `crit_damage_flat`, `defense_flat`, `regeneration_flat`, `dot_damage_flat`, `dot_speed_flat`, `summon_bonus`, `buff_power_flat`, `vampiric_chance_flat`, `vampiric_amount_flat`, `ultimate_flat`, `ult_charge_mult`, `low_hp_damage_bonus`, `lowhp_regen_bonus`, `money_gain_mult`, `elite_boss_damage_mult`.
+Что покупается на N очков (ориентиры):
+- **3 очка** — вход в лепесток + первые +1/+1 к базовой характеристике, ИЛИ
+  вход в свою классовую ветвь + первый профильный атрибут.
+- **10 очков** — своя классовая ветвь до первого notable + пара лепестков.
+- **30 очков** — полное ядро (15) + своя классовая ветвь целиком (14).
+- **100 очков** — полное ядро + все 8 лепестков (32) + своя ветвь (14) +
+  заметный задел в соседние (≈39 очков «на добор»).
 
-`ult_charge_mult` теперь реально влияет на `_gain_ultimate_charge()` через `run_modifiers.ult_charge_multiplier`.
+### 2. Аудит v2
 
-## Class Keystone Table
+v2: 107 узлов, суммарная стоимость 183. Слабость — тонкая классовая идентичность:
+- У каждого класса было всего **3** содержательных классовых нода (minor/notable/
+  keystone), и все три — ОДИН и тот же вектор эффектов (`CLASS_SKILL_SIGNATURES`),
+  масштабированный ×0.18 / ×0.36 / ×1.0. Изучение ветви за разных героев ощущалось
+  одинаково: «купи те же 3 узла».
+- 90% графа (ядро + атрибутные лепестки) общие; «атрибутные» ноды давали голые
+  `+1` к базовой характеристике без классового вкуса.
+- Полезность типов: минорные +1 — «наполнитель пути»; notable — умеренно полезны;
+  keystone — единственная выразительная точка на класс. Дерево «скучное», потому
+  что 3 из 3 классовых узлов = один и тот же множитель.
 
-| Class | Home petal | Keystone | Signature direction |
-| --- | --- | --- | --- |
-| `berserk` | strength | Кровавая жатва | Low-HP damage and regeneration pressure |
-| `soldier` | perception | Подавляющий огонь | Faster/ranged tactical pressure against dense or durable threats |
-| `thief` | agility | Большой куш | Money gain, crit chance, movement tempo |
-| `elementalist` | intelligence | Сверхновая | AoE radius, damage and ultimate power |
-| `sniper` | perception | Идеальный выстрел | Crit chance, crit damage and range |
-| `priest` | knowledge | Хор искупления | Vampiric sustain and aura reach |
-| `biologist` | knowledge | Эпидемия | DoT pressure plus one summon-support point |
-| `robot` | endurance | Овердрайв | Ultimate charge/power and defense |
-| `engineer` | leadership | Армия машин | Summon count, support power and defense |
-| `dark_mage` | intelligence | Запретное знание | High damage/DoT with max HP downside |
-| `guitarist` | leadership | Крещендо | Buff power, aura radius and knockback |
-| `assassin` | agility | Из тени | Crit damage, crit chance and movement |
-| `ranger` | perception | Град стрел | Attack speed, range and AoE reach |
-| `doctor` | knowledge | Триаж | Regeneration, HP and vampiric sustain |
-| `chemist` | knowledge | Каталитический распад | DoT damage, DoT speed and AoE reach |
-| `knight` | endurance | Несокрушимый | Defense and max HP with attack-speed tradeoff |
-| `druid` | leadership | Зов стаи | Summon count, aura radius and buff power |
+### 3. Сколько нодов нужно (обоснование размера)
 
-## Validation
+Цель — перенести центр тяжести в классовые ветви, сохранив компактное общее ядро.
+Итоговая структура v3:
 
-Focused gates for SCRUM-726:
+| Часть | Узлов | Стоимость |
+| --- | --- | --- |
+| Общее ядро (QoL/экономика/выживание) | 7 | 15 |
+| 8 атрибутных лепестков (8 базовых характеристик) | 32 | 32 |
+| 17 классовых ветвей (по 9: 1 entry + 5 атрибутных + 2 notable + 1 keystone) | 153 | 238 |
+| **Итого** | **192** | **285** |
 
-- `tests/meta_skill_tree_smoke_test.gd`: graph integrity, schema 3 migration, UI/API compatibility, economy and neutral capstones.
-- `tests/skill_tree_per_hero_test.gd`: 17 unique class keystones, `class_affinity` filtering, and different derived profiles from the same attribute petal set.
+- 192 узла — в целевом коридоре 150–250 (обоснование анализом, не постулат):
+  17 ветвей × 9 — минимально-достаточный размер, чтобы ветвь содержала все
+  primary-атрибуты класса + пару secondary + два notable + keystone.
+- Полная стоимость 285 при cap 100 → на 100 очков покупается ~35% графа; принцип
+  «всё дерево не купить» усилен (в v2 было 100/183 ≈ 55%).
+- Стоимость одной классовой ветви целиком — 14 очков (entry 1 + 5×1 + 2×2 + 4).
 
-Balance harnesses were not broadened for SCRUM-726 because this task changes meta-progression wiring and class-specific run modifiers, not weapon configs or class trio budgets. Follow-up balance playtests should look at high-investment class pods near the 100-point cap.
+### 4. Вклад дерева в силу (бюджет силы — числами)
+
+Дерево — **аддитивный слой поверх базы**. Ключевой факт: балансовые/anti-runaway
+гейты (`berserk_dps_runaway_gate`, `character_balance_csv`, comfort-band) НЕ
+прокачивают дерево (строят билд из level-up + артефактов), поэтому дерево не
+входит в их коридоры и не может их «сломать». Бюджет силы дерева фиксируется
+отдельным под-тестом `_test_realistic_build_power_budget`.
+
+Реалистичный сфокусированный билд (полное ядро + все лепестки + одна классовая
+ветвь целиком = 61 очко из 100):
+- **Классовая сила** (`skill_modifiers_for_class`): для берсерка `damage_mult`
+  складывается в **≈0.115** (минор 0.03 + notable 0.045 + keystone 0.04), плюс
+  low-HP механика keystone (+0.18 урона при низком HP, +0.18 регена). Итого
+  ветвь даёт классу ориентировочно **+12–20% эффективного DPS/EHP/utility** —
+  ощутимо, но ограниченно. Задокументированный коридор теста: `damage_mult` ∈
+  [0.08 .. 0.40].
+- **Аккаунтная сила** (`skill_modifiers`, affinity="") почти нейтральна: классовые
+  ноды affinity-gated и не считаются кросс-классово. `estimated_power_multiplier`
+  аккаунта держится <1.30 (тест).
+
+Как это помогает на A3–A5 (враги +hp/+dmg, −20% HP игрока на A5): дерево делает
+высокие возвышения ДОСТИЖИМЫМИ, но не тривиальными — см. §Прогрессия ниже.
+
+### 5. Классовая дифференциация (по ATTRIBUTE_RELEVANCE)
+
+Профильные (минорные) узлы каждой ветви — это primary/secondary атрибуты класса
+из `progression_data_characters.ATTRIBUTE_RELEVANCE` (матрица 24 атрибута × 17
+классов, инвариант 2 primary + 8 secondary + 7 optional на атрибут — **не тронут**).
+У каждого класса своя раскладка primary → у разных героев РАЗНЫЕ атрибуты в ветви
+и разный вкус изучения. `magic_focus` не имеет собственного run-ключа (магурон
+масштабируется `damage_mult`), поэтому magic-классы (dark_mage, elementalist)
+представляют его через `damage`.
+
+---
+
+## Фаза 1 — Дизайн Skill Tree 3.0
+
+### Что сохранено (инварианты)
+- Графовая аллокация (связность от точек входа), `class_affinity`-фильтрация.
+- «Всё дерево не купить»: полная стоимость 285 ≫ cap 100.
+- Экономика возвышений `[1,1,2,3,4,5]` и гейт `meta_points_per_ascension_test` —
+  **без изменений**.
+- Сейв-миграция по образцу 1→3: `TREE_SCHEMA_VERSION → 4`; старые купленные ноды
+  → полный респек (в `load_state` skill_nodes грузятся только при точном совпадении
+  схемы), очки пересчитываются из `meta_point_awards`/`ascension_levels` — **без
+  потери очков**.
+
+### Топология ядра и лепестков (компактное общее)
+- Ядро: 7 узлов, 4 account-wide keystone (`core_battle_cry` — старт-заряд ульты;
+  `core_second_life` — `death_save`; `core_guild_ties` — гарантированный редкий
+  товар + старт-золото; `core_insight` — гарантированная характеристика на 1-м
+  апе). QoL/экономика/выживание — общая часть, применяется всем героям.
+- 8 лепестков (`strength`…`leadership`) = 8 БАЗОВЫХ характеристик: gate + два
+  minor `+1` + notable `+2` с малым профильным бонусом. Якорят геометрию и служат
+  точками стыковки классовых ветвей.
+
+### Классовые ветви (главное новшество)
+У КАЖДОГО из 17 классов ≥8 классовых нодов (в v2 было 3–4):
+- **1 entry** (без эффекта, cost 1) — точка входа в домашнем лепестке, доступна
+  сразу.
+- **5 профильных атрибутных нодов** (minor, cost 1) — primary-first по
+  `ATTRIBUTE_RELEVANCE`, каждый = один атрибут из реестра ветвей
+  (`ATTR_EFFECT`), значение `unit`.
+- **2 notable** (cost 2) — каждый = сумма двух профильных атрибутов в `note`-объёме
+  (~1.5× unit); имена флейворные.
+- **1 keystone** (cost 4, `class_affinity`) — уникальный build-defining вектор
+  класса (не голый +X%): комбинация 2–3 сигнатурных ключей, **уникальная между
+  всеми классами** (проверяется тестом). Эффект спит у чужих классов.
+
+Цепочка ветви — единый путь `entry → a0 → a1 → n0 → a2 → a3 → n1 → a4 → key`
+(до keystone надо купить всю ветвь — «выбор пути»). Все эффекты используют ТОЛЬКО
+ключи, разведённые в `player.gd` (`META_SKILL_*_MAP`) — иначе эффект молча теряется.
+
+### Читаемость («ясно и понятно»)
+Описание каждого нода с эффектом авто-генерируется из его вектора эффектов
+(`_effects_desc`) как человекочитаемая строка С ЧИСЛАМИ: «+3% к урону»,
+«+0.8 периодического урона», «+18% к урону при низком здоровье». Внутренние токены
+(`_mult`/`_flat`) в текст не попадают (гейт целостности это проверяет; тест
+per-hero проверяет наличие числа во всех эффект-нодах).
+
+### Новые разведённые ключи (v3)
+Для полноты представления primary-атрибутов в `player.gd` добавлены 3 ключа,
+указывающие на те же run-модификаторы, что использует докачка уровней:
+`pickup_radius_flat`, `projectile_speed_flat`, `absorb_flat`. Новых боевых
+механик не вводилось — дерево остаётся аддитивным слоем поверх готового пайплайна.
+
+### Прогрессия по возвышениям (что покупать перед штурмом)
+- **Перед A2** — своя классовая ветвь до первого notable (профильный DPS/utility)
+  + ядро `core_battle_cry`/`core_insight` (быстрый старт).
+- **Перед A4** — keystone своей ветви (пик билда) + выживанческие лепестки/ноды
+  (endurance-лепесток, defense/max_health/regeneration профильных ветвей).
+- **Перед A5** (−20% HP игрока) — `core_second_life` (`death_save`), выживанческие
+  keystone-ы (knight «Несокрушимый», doctor «Триаж», priest «Хор искупления»),
+  max_health/absorb/regeneration ноды. Дерево делает A5 достижимым, но требует
+  осознанного выживанческого билда, а не просто «ещё урона».
+
+---
+
+## Классовые ветви — profile & keystone (17 классов)
+
+Профильные атрибуты — из `ATTRIBUTE_RELEVANCE` (primary выделены). Полные векторы
+эффектов keystone-ов — в `CLASS_BRANCH_SPECS` (`meta_progression_tree_data.gd`).
+
+| Класс | Лепесток | Профильные атрибуты ветви | Keystone | Механика keystone |
+| --- | --- | --- | --- | --- |
+| `berserk` | strength | **урон, отталкивание, вампиризм**, живучесть, урон крита | Кровавая жатва | урон + бонус урона/регена при низком HP |
+| `soldier` | perception | **урон, скор.атаки, снаряды**, дальность, шанс крита | Подавляющий огонь | скор.атаки + дальность + урон по элиткам/боссам |
+| `thief` | agility | **скорость, шанс крита, уклонение**, урон, подбор | Большой куш | добыча золота + шанс крита + скорость |
+| `elementalist` | intelligence | **область, ультимейт** (+ magic→урон), дальность, DoT | Сверхновая | область + урон + сила ультимейта |
+| `sniper` | perception | **шанс крита, урон крита, дальность**, урон, снаряды | Идеальный выстрел | крит-шанс + крит-урон + дальность |
+| `priest` | knowledge | **защита, аура, поддержка**, живучесть, регенерация | Хор искупления | вампиризм (шанс+лечение) + радиус ауры |
+| `biologist` | knowledge | **период.урон, скор.тиков**, призыв, область, реген | Эпидемия | DoT урон + скор.тиков + призыв |
+| `robot` | endurance | **живучесть, поглощение, подбор** (+ absorb), защита, ульт | Овердрайв | заряд+сила ультимейта + защита |
+| `engineer` | leadership | **призыв, поддержка, подбор**, защита, аура | Армия машин | сила призыва + поддержка + защита |
+| `dark_mage` | intelligence | **DoT** (+ magic→урон), область, скор.тиков, урон крита | Запретное знание | высокий урон + DoT ценой −8% макс.HP |
+| `guitarist` | leadership | **скор.атаки, отталкивание, ультимейт**, поддержка, аура | Крещендо | поддержка + радиус ауры + отталкивание |
+| `assassin` | agility | **урон крита, уклонение, шанс вампиризма**, скорость, крит-шанс | Из тени | крит-урон + крит-шанс + скорость |
+| `ranger` | perception | **дальность, скорость, снаряды**, урон, шанс крита | Град стрел | скор.атаки + дальность + область |
+| `doctor` | knowledge | **регенерация, вампиризм (лечение+шанс)**, живучесть, поддержка | Триаж | реген + макс.HP + шанс вампиризма |
+| `chemist` | knowledge | **область, скор.тиков**, период.урон, урон, дальность | Каталитический распад | DoT урон + скор.тиков + область |
+| `knight` | endurance | **живучесть, защита, поглощение**, аура, поддержка | Несокрушимый | защита + макс.HP ценой −6% скор.атаки |
+| `druid` | leadership | **аура, призыв, регенерация**, поддержка, период.урон | Зов стаи | призыв + радиус ауры + поддержка |
+
+---
+
+## Решения и трейд-оффы (автономно, зафиксировано)
+
+- **Ядро и лепестки сохранены как есть.** Перенос центра тяжести достигнут не
+  урезанием общего, а укрупнением классовых ветвей (3→8 нодов). Так сохранены все
+  инварианты ядра (capstone-флаги, экономика, скидки лавки, doc— attr-опции) и
+  минимизирован риск регрессий: гейты `meta_skill_tree_smoke`/`shop`/`attr` зелёные
+  без правок логики.
+- **Keystone-и = проверенные v2-сигнатуры (усилены до полноценной ветви).** Векторы
+  keystone уникальны и уже сбалансированы; они «build-defining» (low-HP берсерк,
+  drain-доктор, tank-рыцарь), а не голый +X%. Новые gameplay-флаги НЕ вводились —
+  17 новых механик несли бы высокий риск для одного автономного прогона.
+- **magic_focus без отдельного ключа.** Магурон в пайплайне = `magic_base ×
+  damage_multiplier`, отдельного `magic_*` run-ключа нет; вводить его = править
+  `derived_parameters`. Решение: magic-классы представляют magic_focus через
+  `damage_mult` (механически корректно — он усиливает и магурон).
+- **Балансовые скаляры классов не трогались** (`CLASS_BUDGET_PROFILES`, comfort-
+  веса) — дерево аддитивно. Blocked-семейство SCRUM-504/505/506/544 не затронуто.
+- **UI без радикального редизайна** (вне scope): экран дерева data-driven рисует
+  все 192 нода; добавлен фокус — ветвь выбранного героя яркая, чужие классовые
+  ветви видны, но «спят» (затемнены). Дальнейшая визуальная полировка раскладки
+  крупного графа — кандидат в follow-up.
+
+---
+
+## Validation (все через `tools/godot_gate.py`, зелёные)
+
+- `tests/meta_skill_tree_smoke_test.gd` — целостность графа v3 (192 нода, стоимость
+  285 > cap, нет дублей/висячих рёбер, симметрия), миграция схемы→4, save/load
+  roundtrip, потолок силы полного дерева (capstone-флаги), **новый под-тест бюджета
+  силы** 100-очкового билда (`_test_realistic_build_power_budget`), экономика,
+  скидки, attr-опции, capstone-эффекты.
+- `tests/skill_tree_per_hero_test.gd` — для всех 17 классов: ≥8 классовых нодов,
+  ≥2 notable, ровно 1 keystone; уникальность сигнатур keystone; primary-атрибуты
+  представлены в ветви; числа в описаниях; `class_affinity`-фильтрация; разные
+  per-hero профили от одних лепестков.
+- Зелёные без правок логики: `meta_points_per_ascension_test`,
+  `attribute_relevance_test`, `class_progression_test`, `runtime_smoke_test`,
+  `berserk_dps_runaway_gate` (20t=2253≤3600, 1t=514≤650 — дерево не влияет).

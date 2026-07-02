@@ -1,12 +1,20 @@
 extends SceneTree
 
+# SCRUM-696/726/807: per-hero контракт классовых ветвей Skill Tree 3.0.
+# У КАЖДОГО из 17 классов: ≥8 классовых (class_affinity) нодов, ≥2 notable,
+# ровно 1 уникальный keystone; профильные атрибуты ветви следуют матрице
+# релевантности (ATTRIBUTE_RELEVANCE primary); описания эффект-нодов содержат
+# числа; class_affinity фильтруется (эффект спит у чужих классов).
+
 const Meta := preload("res://scripts/meta_progression.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
+const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
 
 func _initialize() -> void:
 	_test_class_affinity_keystones_are_unique()
+	_test_class_branch_contract()
 	_test_class_affinity_effects_are_filtered()
 	await _test_attribute_nodes_create_different_profiles()
 	print("Skill tree per-hero test passed.")
@@ -18,16 +26,35 @@ func _fail(msg: String) -> void:
 	quit(1)
 
 
+func _has_digit(text: String) -> bool:
+	for ch in text:
+		if ch >= "0" and ch <= "9":
+			return true
+	return false
+
+
 func _test_class_affinity_keystones_are_unique() -> void:
 	var seen := {}
+	var signatures := {}
 	for node in Meta.node_list():
 		var node_data: Dictionary = node
 		if str(node_data.get("kind", "")) == "keystone" and str(node_data.get("class_affinity", "")) != "":
 			var class_id := str(node_data["class_affinity"])
 			seen[class_id] = int(seen.get(class_id, 0)) + 1
-			if not (node_data.get("effects", {}) is Dictionary) or (node_data.get("effects", {}) as Dictionary).is_empty():
+			var effects: Dictionary = node_data.get("effects", {})
+			if effects.is_empty():
 				_fail("Class keystone '%s' has no effects." % str(node_data.get("id", "")))
 				return
+			# Сигнатура эффектов keystone должна быть уникальной между классами.
+			var keys: Array = effects.keys()
+			keys.sort()
+			var sig := ""
+			for k in keys:
+				sig += "%s=%.4f;" % [str(k), float(effects[k])]
+			if signatures.has(sig):
+				_fail("Keystone '%s' shares effect signature with '%s'." % [str(node_data["id"]), str(signatures[sig])])
+				return
+			signatures[sig] = str(node_data["id"])
 	for class_id in CharacterData.CHARACTER_CONFIGS.keys():
 		var cid := str(class_id)
 		if int(seen.get(cid, 0)) != 1:
@@ -35,9 +62,67 @@ func _test_class_affinity_keystones_are_unique() -> void:
 			return
 
 
+func _test_class_branch_contract() -> void:
+	# Инвертируем матрицу релевантности → primary-атрибуты каждого класса.
+	var primaries := {}
+	for attr in CharacterData.ATTRIBUTE_RELEVANCE.keys():
+		for c in CharacterData.ATTRIBUTE_RELEVANCE[attr].get("primary", []):
+			var cid := str(c)
+			if not primaries.has(cid):
+				primaries[cid] = []
+			(primaries[cid] as Array).append(str(attr))
+	# Собираем классовые ноды по классу.
+	var affinity_count := {}
+	var notable_count := {}
+	var keystone_count := {}
+	var branch_keys := {}
+	for node in Meta.node_list():
+		var node_data: Dictionary = node
+		var aff := str(node_data.get("class_affinity", ""))
+		if aff == "":
+			continue
+		affinity_count[aff] = int(affinity_count.get(aff, 0)) + 1
+		var kind := str(node_data.get("kind", ""))
+		if kind == "notable":
+			notable_count[aff] = int(notable_count.get(aff, 0)) + 1
+		elif kind == "keystone":
+			keystone_count[aff] = int(keystone_count.get(aff, 0)) + 1
+		if not branch_keys.has(aff):
+			branch_keys[aff] = {}
+		var effects: Dictionary = node_data.get("effects", {})
+		for k in effects.keys():
+			(branch_keys[aff] as Dictionary)[str(k)] = true
+		# Описания эффект-нодов обязаны содержать число (мандат «ясно и понятно»).
+		if not effects.is_empty() and not _has_digit(str(node_data.get("desc", ""))):
+			_fail("Class node '%s' desc has no number: %s" % [str(node_data.get("id", "")), str(node_data.get("desc", ""))])
+			return
+	for class_id in CharacterData.CHARACTER_CONFIGS.keys():
+		var cid := str(class_id)
+		if int(affinity_count.get(cid, 0)) < 8:
+			_fail("Class '%s' has %d affinity nodes (<8)." % [cid, int(affinity_count.get(cid, 0))])
+			return
+		if int(notable_count.get(cid, 0)) < 2:
+			_fail("Class '%s' has %d notable nodes (<2)." % [cid, int(notable_count.get(cid, 0))])
+			return
+		if int(keystone_count.get(cid, 0)) != 1:
+			_fail("Class '%s' must have exactly 1 keystone, got %d." % [cid, int(keystone_count.get(cid, 0))])
+			return
+		# Каждый primary-атрибут с разведённым ключом представлен в ветви.
+		# (magic_focus не имеет собственного ключа — представлен через damage, см. дизайн.)
+		var keys_present: Dictionary = branch_keys.get(cid, {})
+		for attr in primaries.get(cid, []):
+			var a := str(attr)
+			if not TreeData.ATTR_EFFECT.has(a):
+				continue
+			var eff_key := str((TreeData.ATTR_EFFECT[a] as Dictionary)["key"])
+			if not keys_present.has(eff_key):
+				_fail("Class '%s' primary attr '%s' (%s) not represented in its branch." % [cid, a, eff_key])
+				return
+
+
 func _test_class_affinity_effects_are_filtered() -> void:
 	var state: Dictionary = Meta.default_state()
-	state["skill_nodes"] = ["sig_berserk_minor", "sig_berserk_notable", "sig_berserk_keystone"]
+	state["skill_nodes"] = ["berserk_a0", "berserk_n0", "berserk_key"]
 	var account_mods := Meta.skill_modifiers(state)
 	if not account_mods.is_empty():
 		_fail("Expected account skill_modifiers() to skip class-affinity nodes.")

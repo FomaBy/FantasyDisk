@@ -5,6 +5,18 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-807: Skill Tree 3.0 — настоящая классовая идентичность мета-древа. Граф
+  вырос до 192 узлов (стоимость 285 при неизменном cap 100): у каждого из 17
+  классов теперь ≥8 классовых нодов (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE`
+  + 2 notable + 1 уникальный keystone) вместо прежних 3 узлов одним вектором.
+  Данные/конструктор вынесены в новый `scripts/meta_progression_tree_data.gd`;
+  `TREE_SCHEMA_VERSION → 4` с авто-миграцией (полный респек без потери очков).
+  Описания нодов авто-генерируются с числами («+3% к урону»). Разведены ключи
+  `pickup_radius_flat`/`projectile_speed_flat`/`absorb_flat`. Экран дерева
+  подсвечивает ветвь выбранного героя, чужие классовые ветви «спят». Экономика
+  возвышений и балансовые гейты не тронуты (дерево — аддитивный слой). Канон:
+  `docs/design/systems/skill_tree.md` (v3). Бюджет силы: ~+12–20% DPS/EHP классу
+  за 100-очковый билд.
 - SCRUM-793: promoted accepted SCRUM-779 PixelLab boss candidates into live
   full-frame runtime rows for `disk_devourer`
   (`81b491db-7240-4513-bad5-263b7f81539d`) and `brood_mother`

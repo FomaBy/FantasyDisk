@@ -18,6 +18,7 @@ func _initialize() -> void:
 	_test_meta_point_formula_and_cap()
 	_test_save_migration_from_linear_tree()
 	_test_full_tree_power_cap()
+	_test_realistic_build_power_budget()
 	await _test_player_application()
 	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
@@ -347,15 +348,18 @@ func _fail(msg: String) -> void:
 
 
 func _test_tree_data_integrity() -> void:
+	# SCRUM-807 (Skill Tree 3.0): граф вырос с крупными классовыми ветвями. Полная
+	# стоимость по-прежнему заметно выше cap 100 (выбор пути сохраняется), число
+	# узлов в целевом коридоре 150–260 (7 ядро + 32 лепестка + 17×9 классовых).
 	var total := Meta.skill_tree_total_cost()
-	if total <= Meta.META_POINTS_CAP or total > 190:
-		_fail("Expected final skill tree budget to exceed cap 100 but stay compact, got %d." % total)
+	if total <= Meta.META_POINTS_CAP or total > 400:
+		_fail("Expected final skill tree budget to exceed cap 100 but stay bounded, got %d." % total)
 		return
 	if Meta.skill_tree_total_cost_capped() != Meta.META_POINTS_CAP:
 		_fail("Expected capped total cost facade to equal meta cap.")
 		return
-	if Meta.SKILL_TREE.size() < 95 or Meta.SKILL_TREE.size() > 120:
-		_fail("Expected final PoE-like graph to have 95-120 nodes, got %d." % Meta.SKILL_TREE.size())
+	if Meta.SKILL_TREE.size() < 150 or Meta.SKILL_TREE.size() > 260:
+		_fail("Expected final PoE-like graph to have 150-260 nodes, got %d." % Meta.SKILL_TREE.size())
 		return
 	var ids := {}
 	var keystones := 0
@@ -642,6 +646,46 @@ func _test_player_application() -> void:
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+func _test_realistic_build_power_budget() -> void:
+	# SCRUM-807 бюджет силы: реалистичный сфокусированный билд (полное ядро + все
+	# лепестки + одна классовая ветвь целиком ≈ 61 очко из 100) даёт КЛАССУ ощутимый,
+	# но ограниченный прирост, а АККАУНТНАЯ (кросс-классовая) сила почти нейтральна —
+	# классовые эффекты affinity-gated. Числа задокументированы в skill_tree.md v3.
+	var state: Dictionary = Meta.default_state()
+	var build := ["core_origin", "core_rewards", "core_craft", "core_battle_cry", "core_second_life", "core_guild_ties", "core_insight"]
+	for attr in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		build.append_array(["%s_gate" % attr, "%s_flow_1" % attr, "%s_flow_2" % attr, "%s_notable" % attr])
+	build.append_array(["entry_berserk", "berserk_a0", "berserk_a1", "berserk_n0", "berserk_a2", "berserk_a3", "berserk_n1", "berserk_a4", "berserk_key"])
+	state["skill_nodes"] = build
+	# Все id валидны и билд помещается в cap.
+	if Meta.purchased_nodes(state).size() != build.size():
+		_fail("Realistic build references unknown node ids.")
+		return
+	var cost := Meta.allocated_meta_points(state)
+	if cost > Meta.META_POINTS_CAP:
+		_fail("Expected realistic focused build to fit under cap 100 (got %d)." % cost)
+		return
+	# Классовая сила берсерка: damage_mult в задокументированном коридоре [0.08..0.40].
+	var berserk_mods := Meta.skill_modifiers_for_class(state, "berserk")
+	var class_dmg := float(berserk_mods.get("damage_mult", 0.0))
+	if class_dmg < 0.08 or class_dmg > 0.40:
+		_fail("Expected berserk class damage_mult in budget band 0.08..0.40, got %.3f." % class_dmg)
+		return
+	# Низкий-HP механика keystone действительно в классовых модах.
+	if float(berserk_mods.get("low_hp_damage_bonus", 0.0)) <= 0.0:
+		_fail("Expected berserk keystone low-HP mechanic in class mods.")
+		return
+	# Аккаунтная (affinity="") сила почти нейтральна: классовые ноды не считаются.
+	var account_mods := Meta.skill_modifiers(state)
+	if float(account_mods.get("damage_mult", 0.0)) >= class_dmg:
+		_fail("Expected account-wide damage_mult to be far below class damage_mult (affinity-gated).")
+		return
+	var account_power := Meta.estimated_power_multiplier(state)
+	if account_power >= 1.30:
+		_fail("Expected account-wide estimated power to stay bounded (<1.30), got %.3f." % account_power)
+		return
 
 
 func _test_full_tree_power_cap() -> void:

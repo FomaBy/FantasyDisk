@@ -2522,8 +2522,10 @@ func _show_skill_tree_screen() -> void:
 
 	# Предрасчёт мировых позиций узлов и список рёбер (дедуп по id).
 	var node_pos_map := {}
+	var node_affinity_map := {}  # SCRUM-807: id → class_affinity (для «спящих» чужих ветвей)
 	for node in game.META_PROGRESSION.node_list():
 		node_pos_map[str(node["id"])] = SKILL_TREE_WORLD_ORIGIN + (node["pos"] as Vector2)
+		node_affinity_map[str(node["id"])] = str((node as Dictionary).get("class_affinity", ""))
 	var edges: Array = []
 	for node in game.META_PROGRESSION.node_list():
 		var a_id := str(node["id"])
@@ -2590,7 +2592,7 @@ func _show_skill_tree_screen() -> void:
 		node_buttons.append(nb)
 
 	# --- Состояние камеры (пан/зум) ---
-	var view_state := {"zoom": float(SKILL_TREE_DEFAULT_ZOOM), "dragging": false}
+	var view_state := {"zoom": float(SKILL_TREE_DEFAULT_ZOOM), "dragging": false, "focus_class": str(game.selected_character_id)}
 	var apply_zoom := func(target_zoom: float, focus: Vector2) -> void:
 		var new_zoom := clampf(target_zoom, SKILL_TREE_MIN_ZOOM, SKILL_TREE_MAX_ZOOM)
 		var old_zoom: float = view_state["zoom"]
@@ -2640,6 +2642,7 @@ func _show_skill_tree_screen() -> void:
 	if class_selector.item_count > 0:
 		class_selector.select(selected_index)
 	var focus_class := func(cid: String) -> void:
+		view_state["focus_class"] = cid  # SCRUM-807: чужие классовые ветви «уснут» в refresh
 		var entry_id := str(entry_map.get(cid, ""))
 		if entry_id == "" or not node_pos_map.has(entry_id):
 			return
@@ -2726,6 +2729,11 @@ func _show_skill_tree_screen() -> void:
 						nb.modulate = Color(0.70, 0.72, 0.78, 0.82)
 			else:
 				nb.modulate = Color(0.72, 0.74, 0.80, 0.85) if status == "locked" else Color(1.0, 1.0, 1.0, 1.0)
+			# SCRUM-807: классовая ветвь ВЫБРАННОГО героя в фокусе; чужие классовые
+			# ветви видны, но явно «спят» (их эффекты не действуют этому герою).
+			var nb_aff := str(node_affinity_map.get(nid, ""))
+			if nb_aff != "" and nb_aff != str(view_state.get("focus_class", "")):
+				nb.modulate = Color(0.42, 0.44, 0.52, 0.42)
 		edge_layer.queue_redraw()
 
 	for nb in node_buttons:
@@ -2749,6 +2757,10 @@ func _show_skill_tree_screen() -> void:
 		refresh.call()
 	)
 
+	# SCRUM-807: смена класса в селекторе пере-подсвечивает ветви (чужие «спят»).
+	class_selector.item_selected.connect(func(_idx: int) -> void:
+		refresh.call()
+	)
 	refresh.call()
 	# Центрируем камеру на точке входа выбранного класса после первичной раскладки.
 	if class_selector.item_count > 0:

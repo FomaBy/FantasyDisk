@@ -362,14 +362,28 @@ event-множители) + `post_combat`.
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.
 
-### Древо умений (мета, SCRUM-726)
+### Древо умений (мета, SCRUM-726 → SCRUM-807 Skill Tree 3.0)
 
-- Канон: `docs/design/systems/skill_tree.md`.
-- Schema 3: общее PoE-like дерево на 107 узлов: центральное ядро, 8 атрибутных лепестков и 17 class pods. Полная стоимость 183 метаочка при неизменном `META_POINTS_CAP = 100`, поэтому полный выкуп невозможен.
+- Канон: `docs/design/systems/skill_tree.md`. Данные/конструктор графа вынесены в
+  `scripts/meta_progression_tree_data.gd` (v3).
+- **v3 (schema 4):** 192 узла, суммарная стоимость 285 при неизменном
+  `META_POINTS_CAP = 100` (на 100 очков покупается ~35% графа). Ядро 7 + 8 лепестков
+  (32) + 17 классовых ветвей по 9 нодов (238). У каждого класса ≥8 классовых нодов
+  (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE` + 2 notable + 1 уникальный
+  keystone) — настоящая классовая идентичность вместо одного вектора ×скаляр.
+- **Бюджет силы дерева:** аддитивный слой поверх базы; anti-runaway/comfort гейты
+  НЕ прокачивают дерево, поэтому оно вне их коридоров. Реалистичный 100-очковый
+  билд даёт классу ~+12–20% эффективного DPS/EHP (`damage_mult` в коридоре
+  0.08..0.40, под-тест `_test_realistic_build_power_budget`); аккаунтная сила
+  почти нейтральна (классовые эффекты affinity-gated).
+- Миграция schema 3→4: полный респек купленных узлов, очки пересчитываются из
+  возвышений (без потери).
+- (историческое) Schema 3: 107 узлов, стоимость 183 — тонкая классовая идентичность
+  (3 узла/класс одним вектором ×0.18/0.36/1.0).
 - Атрибутные узлы (`strength_flat`, `agility_flat`, `intelligence_flat`, `perception_flat`, `energy_flat`, `knowledge_flat`, `endurance_flat`, `leadership_flat`) добавляются к базовым stats героя до `ProgressionData.derived_parameters()`.
 - `class_affinity` узлы можно купить в общем графе, но их эффекты применяются только выбранному герою через `MetaProgression.skill_modifiers_for_class(meta_state, selected_character_id)`. `skill_modifiers(state)` оставлен для account-wide UI preview.
 - Нейтральные capstone ядра: «Боевой раж», «Вторая жизнь», «Связи в гильдии», «Озарение». У каждого из 17 героев есть ровно один сигнатурный keystone.
-- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd`. Фокусные проверки: `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
+- Экран древа доступен в главном меню; данные/состояние — `scripts/meta_progression.gd` (+ `meta_progression_tree_data.gd`). v3: ветвь выбранного героя в фокусе, чужие классовые ветви «спят» (затемнены). Фокусные проверки: `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
 
 ### Прогрессия По Классам (SCRUM-360)
 

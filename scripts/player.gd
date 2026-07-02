@@ -858,6 +858,11 @@ const META_SKILL_FLAT_MAP := {
 	"ultimate_flat": "ultimate_flat",
 	"low_hp_damage_bonus": "low_hp_damage_bonus",
 	"lowhp_regen_bonus": "lowhp_regen_bonus",
+	# SCRUM-807: разведены под классовые ветви Skill Tree 3.0 (те же run-ключи,
+	# что использует докачка уровней — progression_data.derived_parameters).
+	"pickup_radius_flat": "pickup_radius_flat",
+	"projectile_speed_flat": "projectile_speed_flat",
+	"absorb_flat": "absorb_flat",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",

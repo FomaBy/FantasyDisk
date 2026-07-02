@@ -5,13 +5,21 @@ extends RefCounted
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+# SCRUM-807: данные и конструктор графа умений вынесены в отдельный модуль
+# (Skill Tree 3.0 — большие классовые ветви раздували этот файл). Публичный API
+# ниже (node_list/allocate_node/skill_modifiers*/entry_map) не изменился.
+const TREE_DATA := preload("res://scripts/meta_progression_tree_data.gd")
 # SCRUM-516: лестница возвышений сжата 10→5 (короче и острее). Единый кап и для
 # дорожки сложности (ASCENSION_MODIFIERS), и для наградной лестницы
 # (ASCENSION_LEVELS). Старые сейвы с ascension>5 молча клампятся в [0..5] через
 # load_state/ascension_level/selectable_max — без краша.
 const MAX_ASCENSION_LEVEL := 5
 const SECTION := "meta"
-const TREE_SCHEMA_VERSION := 3
+# SCRUM-807: схема 4 (Skill Tree 3.0). load_state автоматически мигрирует старые
+# сейвы (schema<4 → полный респек купленных узлов, очки пересчитываются из
+# meta_point_awards/ascension_levels — тот же паттерн, что миграция 1→3). Очки НЕ
+# теряются: экономика возвышений не тронута.
+const TREE_SCHEMA_VERSION := 4
 const META_POINTS_CAP := 100
 const META_POINT_REWARDS_BY_ASCENSION := [1, 1, 2, 3, 4, 5]
 const SKILL_BRANCHES := ["core", "strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
@@ -46,40 +54,11 @@ const CLASS_ENTRY_NODES := {
 	"druid": "entry_druid",
 }
 
-const ATTRIBUTE_SKILL_PETALS := [
-	{"id": "strength", "title": "Сила", "short": "сила", "angle": 0.0, "effects": {"strength_flat": 1.0}, "notable_effects": {"strength_flat": 2.0, "damage_mult": 0.010}, "classes": ["berserk"]},
-	{"id": "agility", "title": "Ловкость", "short": "ловкость", "angle": 45.0, "effects": {"agility_flat": 1.0}, "notable_effects": {"agility_flat": 2.0, "crit_chance_flat": 0.010}, "classes": ["thief", "assassin"]},
-	{"id": "intelligence", "title": "Интеллект", "short": "интеллект", "angle": 90.0, "effects": {"intelligence_flat": 1.0}, "notable_effects": {"intelligence_flat": 2.0, "aoe_radius_mult": 0.015}, "classes": ["elementalist", "dark_mage"]},
-	{"id": "perception", "title": "Восприятие", "short": "восприятие", "angle": 135.0, "effects": {"perception_flat": 1.0}, "notable_effects": {"perception_flat": 2.0, "range_mult": 0.015}, "classes": ["soldier", "sniper", "ranger"]},
-	{"id": "energy", "title": "Энергия", "short": "энергия", "angle": 180.0, "effects": {"energy_flat": 1.0}, "notable_effects": {"energy_flat": 2.0, "ult_charge_mult": 0.030}, "classes": []},
-	{"id": "knowledge", "title": "Знание", "short": "знание", "angle": 225.0, "effects": {"knowledge_flat": 1.0}, "notable_effects": {"knowledge_flat": 2.0, "dot_damage_flat": 0.80, "attr_extra_options": 1.0}, "classes": ["chemist", "biologist", "doctor", "priest"]},
-	{"id": "endurance", "title": "Стойкость", "short": "стойкость", "angle": 270.0, "effects": {"endurance_flat": 1.0}, "notable_effects": {"endurance_flat": 2.0, "max_health_mult": 0.015}, "classes": ["knight", "robot"]},
-	{"id": "leadership", "title": "Лидерство", "short": "лидерство", "angle": 315.0, "effects": {"leadership_flat": 1.0}, "notable_effects": {"leadership_flat": 2.0, "aura_radius_mult": 0.015}, "classes": ["engineer", "druid", "guitarist"]},
-]
-
-const CLASS_SKILL_SIGNATURES := {
-	"berserk": {"title": "Ярость берсерка", "notable": "Железная хватка", "keystone": "Кровавая жатва", "effects": {"damage_mult": 0.040, "low_hp_damage_bonus": 0.18, "lowhp_regen_bonus": 0.18}},
-	"soldier": {"title": "Тактический строй", "notable": "Огневой порядок", "keystone": "Подавляющий огонь", "effects": {"attack_speed_mult": 0.060, "range_mult": 0.040, "elite_boss_damage_mult": 0.030}},
-	"thief": {"title": "Хватка вора", "notable": "Лёгкие пальцы", "keystone": "Большой куш", "effects": {"money_gain_mult": 0.160, "crit_chance_flat": 0.030, "move_speed_mult": 0.040}},
-	"elementalist": {"title": "Стихийная схема", "notable": "Разогретая формула", "keystone": "Сверхновая", "effects": {"aoe_radius_mult": 0.140, "damage_mult": 0.050, "ultimate_flat": 0.08}},
-	"sniper": {"title": "Прицел снайпера", "notable": "Спокойный выдох", "keystone": "Идеальный выстрел", "effects": {"crit_chance_flat": 0.050, "crit_damage_flat": 0.25, "range_mult": 0.100}},
-	"priest": {"title": "Священная печать", "notable": "Мягкий хор", "keystone": "Хор искупления", "effects": {"vampiric_chance_flat": 0.070, "vampiric_amount_flat": 0.65, "aura_radius_mult": 0.100}},
-	"biologist": {"title": "Живая гипотеза", "notable": "Споровый посев", "keystone": "Эпидемия", "effects": {"dot_damage_flat": 1.80, "dot_speed_flat": 0.16, "summon_bonus": 1.0}},
-	"robot": {"title": "Бронеконтур робота", "notable": "Тёплый реактор", "keystone": "Овердрайв", "effects": {"ult_charge_mult": 0.240, "ultimate_flat": 0.16, "defense_flat": 0.035}},
-	"engineer": {"title": "Мастерская инженера", "notable": "Сборочный приказ", "keystone": "Армия машин", "effects": {"summon_bonus": 2.0, "buff_power_flat": 0.060, "defense_flat": 0.020}},
-	"dark_mage": {"title": "Тёмная формула", "notable": "Тонкая завеса", "keystone": "Запретное знание", "effects": {"damage_mult": 0.140, "max_health_mult": -0.080, "dot_damage_flat": 1.20}},
-	"guitarist": {"title": "Сценический контракт", "notable": "Резонанс зала", "keystone": "Крещендо", "effects": {"buff_power_flat": 0.080, "aura_radius_mult": 0.140, "knockback_mult": 0.100}},
-	"assassin": {"title": "Тень ассасина", "notable": "Тихий выпад", "keystone": "Из тени", "effects": {"crit_damage_flat": 0.32, "crit_chance_flat": 0.035, "move_speed_mult": 0.060}},
-	"ranger": {"title": "След рейнджера", "notable": "Натянутая тетива", "keystone": "Град стрел", "effects": {"attack_speed_mult": 0.060, "range_mult": 0.060, "aoe_radius_mult": 0.050}},
-	"doctor": {"title": "Полевой трактат", "notable": "Срочная перевязка", "keystone": "Триаж", "effects": {"regeneration_flat": 0.22, "max_health_mult": 0.060, "vampiric_chance_flat": 0.040}},
-	"chemist": {"title": "Алхимический обмен", "notable": "Едкий ускоритель", "keystone": "Каталитический распад", "effects": {"dot_damage_flat": 2.20, "dot_speed_flat": 0.20, "aoe_radius_mult": 0.060}},
-	"knight": {"title": "Клятва рыцаря", "notable": "Щитовая выучка", "keystone": "Несокрушимый", "effects": {"defense_flat": 0.065, "max_health_mult": 0.120, "attack_speed_mult": -0.060}},
-	"druid": {"title": "Корни друида", "notable": "Голос чащи", "keystone": "Зов стаи", "effects": {"summon_bonus": 1.0, "aura_radius_mult": 0.120, "buff_power_flat": 0.050}},
-}
-
-# SCRUM-696: PoE-like shared passive graph. Nodes keep branch/tier for the
-# existing temporary UI, while allocation is graph-based through `adj`.
-static var SKILL_TREE: Array = _build_skill_tree()
+# SCRUM-696/807: PoE-like shared passive graph. Данные и сборщик — в
+# meta_progression_tree_data.gd; узлы хранят branch/tier для UI, аллокация —
+# графовая через `adj`. CLASS_ENTRY_NODES передаём сборщику как параметр
+# (стабильный интерфейс id точек входа; тесты/UI читают его как Meta.CLASS_ENTRY_NODES).
+static var SKILL_TREE: Array = TREE_DATA.build_tree(CLASS_ENTRY_NODES)
 
 # Secret boss endcap (SCRUM-541): after the normal Act 3 boss, only when the run
 # was launched at the maximum available Ascension level. Old SCRUM-619 low-damage
@@ -125,123 +104,6 @@ const CLASS_CHALLENGES := [
 	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+: +3% максимума HP.", "condition_metric": "best_ascension", "threshold": 3, "effects": {"class_max_health_mult": 0.03}},
 	{"id": "lone_wolf", "title": "Без посредников", "desc": "Победа без покупок в магазине: +3% скорости атаки.", "condition_metric": "no_shop_wins", "threshold": 1, "effects": {"class_attack_speed_mult": 0.03}},
 ]
-
-
-static func _add_skill_node(nodes: Array, index: Dictionary, id: String, branch: String, tier: int, cost: int, kind: String, title: String, desc: String, effects: Dictionary, pos: Vector2, class_affinity := "") -> void:
-	var node := {
-		"id": id,
-		"branch": branch,
-		"tier": tier,
-		"cost": cost,
-		"kind": kind,
-		"title": title,
-		"desc": desc,
-		"effects": effects,
-		"pos": pos,
-		"adj": [],
-	}
-	if str(class_affinity) != "":
-		node["class_affinity"] = str(class_affinity)
-	nodes.append(node)
-	index[id] = node
-
-
-static func _connect_skill_nodes(index: Dictionary, a: String, b: String) -> void:
-	if not index.has(a) or not index.has(b) or a == b:
-		return
-	var adj_a: Array = index[a]["adj"]
-	var adj_b: Array = index[b]["adj"]
-	if not adj_a.has(b):
-		adj_a.append(b)
-	if not adj_b.has(a):
-		adj_b.append(a)
-
-
-static func _build_skill_tree() -> Array:
-	var nodes := []
-	var index := {}
-	_add_skill_node(nodes, index, "core_origin", "core", 1, 1, "minor", "Искра Пути", "Центральный хаб общего дерева.", {}, Vector2(0, 0))
-	_add_skill_node(nodes, index, "core_rewards", "core", 2, 1, "minor", "Память дороги", "Опыт и золото за бои немного выше.", {"money_gain_mult": 0.006, "xp_gain_mult": 0.006}, Vector2(0, -92))
-	_add_skill_node(nodes, index, "core_craft", "core", 3, 1, "minor", "Тихий торг", "Лавка и докачка атрибутов немного дешевле.", {"shop_price_mult": -0.010, "attr_cost_mult": -0.010}, Vector2(0, 92))
-	_add_skill_node(nodes, index, "core_battle_cry", "core", 4, 3, "keystone", "Боевой раж", "Ультимейт начинает забег заряженным наполовину.", {"ult_start_charge": 0.5}, Vector2(135, -35))
-	_add_skill_node(nodes, index, "core_second_life", "core", 5, 3, "keystone", "Вторая жизнь", "Раз за забег смертельный удар оставляет героя на ногах.", {"death_save": 1.0}, Vector2(-135, -35))
-	_add_skill_node(nodes, index, "core_guild_ties", "core", 6, 3, "keystone", "Связи в гильдии", "В каждой лавке гарантированно есть редкий товар.", {"guaranteed_rare_shop": 1.0, "start_gold_flat": 15.0}, Vector2(0, 182))
-	_add_skill_node(nodes, index, "core_insight", "core", 7, 3, "keystone", "Озарение", "Первое повышение в забеге гарантированно даёт основную характеристику.", {"first_levelup_rare": 1.0}, Vector2(0, -182))
-	_connect_skill_nodes(index, "core_origin", "core_rewards")
-	_connect_skill_nodes(index, "core_origin", "core_craft")
-	_connect_skill_nodes(index, "core_rewards", "core_battle_cry")
-	_connect_skill_nodes(index, "core_rewards", "core_second_life")
-	_connect_skill_nodes(index, "core_rewards", "core_insight")
-	_connect_skill_nodes(index, "core_craft", "core_guild_ties")
-
-	var petal_notables := {}
-	var petal_gates := []
-	var radius_gate := 255.0
-	var radius_minor_a := 390.0
-	var radius_minor_b := 505.0
-	var radius_notable := 625.0
-	for petal_index in range(ATTRIBUTE_SKILL_PETALS.size()):
-		var spec: Dictionary = ATTRIBUTE_SKILL_PETALS[petal_index]
-		var attr := str(spec["id"])
-		var angle := deg_to_rad(float(spec["angle"]))
-		var dir := Vector2(cos(angle), sin(angle))
-		var tangent := Vector2(-dir.y, dir.x)
-		var gate_id := "%s_gate" % attr
-		var minor_a_id := "%s_flow_1" % attr
-		var minor_b_id := "%s_flow_2" % attr
-		var notable_id := "%s_notable" % attr
-		var title := str(spec["title"])
-		_add_skill_node(nodes, index, gate_id, attr, 1, 1, "minor", "%s: вход" % title, "Открывает атрибутный лепесток: %s." % str(spec["short"]), {}, dir * radius_gate)
-		_add_skill_node(nodes, index, minor_a_id, attr, 2, 1, "minor", "%s I" % title, "+1 к атрибуту %s." % str(spec["short"]), (spec["effects"] as Dictionary).duplicate(true), dir * radius_minor_a + tangent * 34.0)
-		_add_skill_node(nodes, index, minor_b_id, attr, 3, 1, "minor", "%s II" % title, "Ещё +1 к атрибуту %s." % str(spec["short"]), (spec["effects"] as Dictionary).duplicate(true), dir * radius_minor_b - tangent * 34.0)
-		_add_skill_node(nodes, index, notable_id, attr, 4, 1, "notable", "%s: мастерство" % title, "Крупный атрибутный узел и малый профильный бонус.", (spec["notable_effects"] as Dictionary).duplicate(true), dir * radius_notable)
-		petal_notables[attr] = notable_id
-		petal_gates.append(gate_id)
-		_connect_skill_nodes(index, "core_origin", gate_id)
-		_connect_skill_nodes(index, gate_id, minor_a_id)
-		_connect_skill_nodes(index, minor_a_id, minor_b_id)
-		_connect_skill_nodes(index, minor_b_id, notable_id)
-	for i in range(petal_gates.size()):
-		_connect_skill_nodes(index, str(petal_gates[i]), str(petal_gates[(i + 1) % petal_gates.size()]))
-
-	for petal_spec in ATTRIBUTE_SKILL_PETALS:
-		var attr := str((petal_spec as Dictionary)["id"])
-		var angle := deg_to_rad(float((petal_spec as Dictionary)["angle"]))
-		var dir := Vector2(cos(angle), sin(angle))
-		var tangent := Vector2(-dir.y, dir.x)
-		var class_ids: Array = (petal_spec as Dictionary).get("classes", [])
-		var count := maxi(class_ids.size(), 1)
-		for class_index in range(class_ids.size()):
-			var class_id := str(class_ids[class_index])
-			var sig: Dictionary = CLASS_SKILL_SIGNATURES[class_id]
-			var spread := (float(class_index) - float(count - 1) * 0.5) * 112.0
-			var entry_pos := dir * 780.0 + tangent * spread
-			var minor_pos := entry_pos + dir * 92.0 + tangent * 18.0
-			var notable_pos := entry_pos + dir * 184.0 - tangent * 18.0
-			var key_pos := entry_pos + dir * 292.0
-			var entry_id := str(CLASS_ENTRY_NODES[class_id])
-			var minor_id := "sig_%s_minor" % class_id
-			var notable_id := "sig_%s_notable" % class_id
-			var keystone_id := "sig_%s_keystone" % class_id
-			_add_skill_node(nodes, index, entry_id, attr, 10, 1, "entry", str(sig["title"]), "Стартовая точка класса в его домашнем лепестке.", {}, entry_pos)
-			_add_skill_node(nodes, index, minor_id, attr, 11, 1, "minor", "След класса", "Малый сигнатурный бонус действует только на этого героя.", _scaled_effects(sig["effects"], 0.18), minor_pos, class_id)
-			_add_skill_node(nodes, index, notable_id, attr, 12, 2, "notable", str(sig["notable"]), "Сигнатурный notable действует только на этого героя.", _scaled_effects(sig["effects"], 0.36), notable_pos, class_id)
-			_add_skill_node(nodes, index, keystone_id, attr, 13, 4, "keystone", str(sig["keystone"]), "Уникальный keystone героя: эффект спит у других классов.", (sig["effects"] as Dictionary).duplicate(true), key_pos, class_id)
-			_connect_skill_nodes(index, str(petal_notables[attr]), entry_id)
-			_connect_skill_nodes(index, entry_id, minor_id)
-			_connect_skill_nodes(index, minor_id, notable_id)
-			_connect_skill_nodes(index, notable_id, keystone_id)
-
-	for node in nodes:
-		(node["adj"] as Array).sort()
-	return nodes
-
-
-static func _scaled_effects(effects: Dictionary, scale: float) -> Dictionary:
-	var result := {}
-	for key in effects.keys():
-		result[key] = float(effects[key]) * scale
-	return result
 
 
 static func default_state() -> Dictionary:

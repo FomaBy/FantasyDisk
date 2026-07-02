@@ -1,6 +1,6 @@
 # Skill Tree 3.0: глубокий анализ и per-class деревья умений с классовой идентичностью
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end / Game Design (Claude)
 Версия: 0.1.8
@@ -233,3 +233,52 @@ SCRUM-726 «per-hero skill tree»), но классовая идентичнос
 - Если объём UI-работ превышает разумный для одного прогона — допустимо вынести
   ПОЛИРОВКУ экрана (не функциональность) в follow-up .md-задачу в
   `docs/tasks/` с тем же процессом, зафиксировав это в Result.
+
+## Result / Evidence
+
+Реализована Skill Tree 3.0. Граф: **192 узла, стоимость 285** (cap 100 → на 100
+очков ~35% графа), **21 keystone** (4 ядро + 17 классовых). У КАЖДОГО из 17
+классов **≥8 классовых нодов** (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE`
+primary-first + 2 notable + 1 уникальный keystone). Экономика возвышений и
+балансовые скаляры не тронуты — дерево аддитивный слой.
+
+**Бюджет силы (числа):** реалистичный 100-очковый билд даёт классу
+`damage_mult` ≈0.115 (коридор теста 0.08..0.40) + low-HP механика keystone;
+аккаунтная сила почти нейтральна (`estimated_power_multiplier` <1.30) —
+классовые эффекты affinity-gated. Anti-runaway/comfort гейты дерево не прокачивают.
+
+**Изменённые/новые файлы:**
+- `scripts/meta_progression_tree_data.gd` (**новый**) — данные + конструктор графа
+  (лепестки, реестр атрибутов ветвей `ATTR_EFFECT`, per-class `CLASS_BRANCH_SPECS`,
+  авто-генератор описаний с числами). +`.uid` сайдкар.
+- `scripts/meta_progression.gd` — `TREE_SCHEMA_VERSION → 4` (авто-миграция 3→4:
+  полный респек, очки из возвышений без потери); `SKILL_TREE = TREE_DATA.build_tree
+  (CLASS_ENTRY_NODES)`; удалён старый билдер/данные (вынесены).
+- `scripts/player.gd` — разведены `pickup_radius_flat`/`projectile_speed_flat`/
+  `absorb_flat` в `META_SKILL_FLAT_MAP`.
+- `scripts/ui_screens.gd` — фокус ветви выбранного героя; чужие классовые ветви
+  «спят» (затемнены); пере-подсветка при смене класса.
+- `tests/meta_skill_tree_smoke_test.gd` — коридоры v3 (150–260 нодов, cost>100) +
+  новый под-тест бюджета силы `_test_realistic_build_power_budget`.
+- `tests/skill_tree_per_hero_test.gd` — контракт v3 (≥8 нодов, ≥2 notable, 1
+  уникальный keystone, primary-атрибуты представлены, числа в описаниях).
+- `docs/design/systems/skill_tree.md` (**редакция v3**: анализ + полный дизайн +
+  per-class таблица + миграция + решения/трейд-оффы), `progression_balance.md`,
+  `CHANGELOG.md`.
+
+**Прогнанные гейты (все через `tools/godot_gate.py`, ЗЕЛЁНЫЕ):**
+- `meta_skill_tree_smoke_test` PASS (целостность 192/285, миграция→4, roundtrip,
+  бюджет силы, capstone-флаги, экономика/скидки/attr-опции).
+- `skill_tree_per_hero_test` PASS (17 классов, уникальные keystone, primary,
+  числа, affinity-фильтр).
+- `meta_points_per_ascension_test` PASS · `attribute_relevance_test` PASS ·
+  `class_progression_test` PASS · `runtime_smoke_test` PASS (14152 файлов) ·
+  `berserk_dps_runaway_gate` PASS (20t=2253≤3600, 1t=514≤650 — дерево не влияет).
+
+**Решения (подробно в дизайн-доке §Решения и трейд-оффы):** ядро+лепестки
+сохранены, центр тяжести перенесён укрупнением классовых ветвей; keystone-и =
+проверенные уникальные v2-векторы (build-defining, не голый +X%); magic_focus без
+отдельного ключа (представлен через `damage_mult`); новые gameplay-флаги не
+вводились (риск для одного прогона). UI — функциональный фокус без радикального
+редизайна (в scope); визуальная полировка раскладки крупного графа — кандидат в
+follow-up при необходимости.
