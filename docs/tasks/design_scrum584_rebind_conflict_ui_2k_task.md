@@ -1,7 +1,7 @@
 # SCRUM-584 Rebind Conflict UI 2K
 
 Jira: SCRUM-584
-Status: done
+Статус: done
 Executor: Codex
 Lane: Codex
 Role: Design/UI
@@ -143,3 +143,23 @@ remove disposable `.godot/` cache and worktree after push/Jira sync.
 
 - Фикс Bohr (6c5ba51f route rebind conflict buttons to rc frame + bd2361b3 sync map) был застрэнджен на codex/scrum-584-rc-btn-fix — QA забрал cherry-pick'ом на origin/dev (конфликтов 0).
 - Focused-гейты на чистом worktree после --import: ui_no_overlap_matrix_test PASS (0 ошибок, вкл. rebind), runtime_smoke_ui_test PASS.
+
+## QA-Вердикт (final re-check 2026-07-02, Codex QA)
+
+Статус: PASSED
+
+- Проверен интегрированный `origin/dev@60f90ae7` в изолированном worktree
+  `/tmp/FantasyDisk-QA-SCRUM-584-final`; SCRUM-584 fix присутствует в dev через
+  cherry-pick commits `424e047a` / `127db5ce`, с предыдущим QA evidence commit
+  `4d8ef831`.
+- Static inspect: `scripts/ui_screens.gd::_text_button_unique_id()` исключает
+  `RebindConflictRetryButton` / `RebindConflictBackButton` из text-unique
+  routing; `_apply_overhaul_2k_button_theme()` не short-circuit'ит `rc_btn`;
+  `tests/ui_no_overlap_matrix_test.gd::RC_BTN_2K_FRAME_PATH` asserts
+  `res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/display_resolution_test.gd`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`.
+- PASS: grep `.godot` for `SCRIPT ERROR` / `Parse Error` found no matches.
+- PASS: `git diff --check`.
+- Bugs: none for SCRUM-584.
