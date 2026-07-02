@@ -396,10 +396,12 @@ func _test_atlas_stays_non_combat() -> void:
 	if Meta.estimated_power_multiplier(state) >= 1.30:
 		_fail("Full Atlas account power must stay < 1.30.")
 		return
-	# Взвешенный вклад Атласа в class-power ≤10%: боевого там только наследные
-	# флаги (death_save/ult_start) и аптека; остальное — QoL-веса (подбор).
-	if Meta.estimated_class_power_multiplier(state, "berserk") - 1.0 > 0.10:
-		_fail("Full Atlas must add <= 10%% weighted class power.")
+	# Взвешенный вклад Атласа в class-power ≤10% (дельта от базлайна с одним
+	# ядром класса): боевого там только наследные флаги (death_save/ult_start)
+	# и аптека; остальное — QoL-веса (подбор).
+	var baseline := Meta.estimated_class_power_multiplier(Meta.default_state(), "berserk")
+	if Meta.estimated_class_power_multiplier(state, "berserk") - baseline > 0.10:
+		_fail("Full Atlas must add <= 10%% weighted class power over baseline.")
 		return
 	# Стоимость Атласа выше потолка пыли: «всё не купить».
 	if Meta.atlas_total_cost() <= Meta.STARDUST_CAP:
