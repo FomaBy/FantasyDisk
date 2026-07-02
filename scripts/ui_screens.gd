@@ -6,6 +6,7 @@ extends RefCounted
 var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
+var _settings_v5_icon_cache := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
@@ -156,6 +157,74 @@ const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
 const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(616.0, 286.0)
 const SETTINGS_TAB_SWITCHER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
 const SETTINGS_APPLY_BUTTON_SIZE := Vector2(240.0, 72.0)
+
+# --- Settings v5 (SCRUM-805, полный редизайн с нуля) ---------------------------
+# Дизайн-система «Оружейная драконьего замка»: все координаты заданы в
+# design-px модалки 1420×1060 при базовом вьюпорте 2560×1440 и скейлятся
+# единым коэффициентом s = modal_width/1420 (пропорция модалки фиксирована).
+const SETTINGS_V5_DIR := "res://assets/sprites/ui/frames/settings_v5/"
+const SETTINGS_V5_DESIGN_SIZE := Vector2(1420.0, 1060.0)
+const SETTINGS_V5_MODAL_WIDTH_RATIO := 0.555
+const SETTINGS_V5_MODAL_FRAME_PATH := SETTINGS_V5_DIR + "ui_settings_v5_modal_frame.png"
+const SETTINGS_V5_CONTENT_INSET_PATH := SETTINGS_V5_DIR + "ui_settings_v5_content_inset.png"
+const SETTINGS_V5_MEDALLION_PATH := SETTINGS_V5_DIR + "ui_settings_v5_medallion.png"
+const SETTINGS_V5_TAB_PATHS := {
+	"active": SETTINGS_V5_DIR + "ui_settings_v5_tab_active.png",
+	"hover": SETTINGS_V5_DIR + "ui_settings_v5_tab_hover.png",
+	"inactive": SETTINGS_V5_DIR + "ui_settings_v5_tab_inactive.png",
+}
+const SETTINGS_V5_TAB_ICON_PATHS := [
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_screen.png",
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_sound.png",
+	SETTINGS_V5_DIR + "ui_settings_v5_icon_controls.png",
+]
+const SETTINGS_V5_BTN_PATHS := {
+	"neutral": {
+		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_normal.png",
+		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_hover.png",
+		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_pressed.png",
+		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_disabled.png",
+	},
+	"primary": {
+		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_normal.png",
+		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_hover.png",
+		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_pressed.png",
+		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_disabled.png",
+	},
+}
+const SETTINGS_V5_FIELD_PATHS := {
+	"normal": SETTINGS_V5_DIR + "ui_settings_v5_field_normal.png",
+	"hover": SETTINGS_V5_DIR + "ui_settings_v5_field_hover.png",
+	"pressed": SETTINGS_V5_DIR + "ui_settings_v5_field_pressed.png",
+}
+const SETTINGS_V5_ARROW_PATH := SETTINGS_V5_DIR + "ui_settings_v5_arrow_socket.png"
+const SETTINGS_V5_CHECKBOX_ON_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_on.png"
+const SETTINGS_V5_CHECKBOX_OFF_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_off.png"
+const SETTINGS_V5_SLIDER_TRACK_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_track.png"
+const SETTINGS_V5_SLIDER_FILL_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_fill.png"
+const SETTINGS_V5_SLIDER_GEM_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_gem.png"
+const SETTINGS_V5_VALUE_CHIP_PATH := SETTINGS_V5_DIR + "ui_settings_v5_value_chip.png"
+# Геометрия (design-px @1420×1060): title/табы/панель/низ.
+const SETTINGS_V5_TITLE_RECT := Rect2(80.0, 56.0, 1260.0, 62.0)
+const SETTINGS_V5_TAB_SIZE := Vector2(340.0, 84.0)
+const SETTINGS_V5_TAB_GAP := 20.0
+const SETTINGS_V5_TAB_TOP := 150.0
+const SETTINGS_V5_CONTENT_RECT := Rect2(72.0, 258.0, 1276.0, 630.0)
+const SETTINGS_V5_CONTENT_PAD := Vector4(44.0, 34.0, 44.0, 30.0)
+const SETTINGS_V5_DIVIDER_Y := 910.0
+const SETTINGS_V5_ACTION_SIZE := Vector2(320.0, 80.0)
+const SETTINGS_V5_ACTION_GAP := 30.0
+const SETTINGS_V5_ACTION_TOP := 936.0
+const SETTINGS_V5_LABEL_COL := Vector2(380.0, 56.0)
+const SETTINGS_V5_CONTROL_SIZE := Vector2(560.0, 56.0)
+# Палитра v5.
+const SETTINGS_V5_TEXT := Color(0.949, 0.902, 0.761, 1.0)
+const SETTINGS_V5_TEXT_BRIGHT := Color(1.0, 0.96, 0.84, 1.0)
+const SETTINGS_V5_GOLD := Color(0.792, 0.643, 0.180, 1.0)
+const SETTINGS_V5_AMBER := Color(0.96, 0.78, 0.40, 1.0)
+const SETTINGS_V5_MUTED := Color(0.72, 0.68, 0.58, 1.0)
+const SETTINGS_V5_DISABLED := Color(0.48, 0.45, 0.40, 1.0)
+const SETTINGS_V5_BRONZE_LINE := Color(0.54, 0.42, 0.18, 0.55)
 const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
 const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
 const COMBAT_HUD_RESOURCE_PANEL_PATH := MINIMAL_HUD_STRIP_PATH
@@ -3692,72 +3761,78 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 
 
 func _settings_v2_modal_rect() -> Rect2:
-	# SCRUM-805 v4: узкая модалка вместо старой 80%-й «растянутой». Пользователь
-	# считал 80% (1536@1080 / 2048@1440) слишком широкой; референс-цель 55-60%.
-	# Ширина = 56% вьюпорта (clamp 960..1536), высота = width/1.22 (пропорция
-	# фиксирована так, чтобы контент вкладок «Экран»/«Звук» без скролла помещался
-	# в контент-панель на 1920/2560/3840 — проверено ui_no_overlap_matrix, фаза 7).
+	# SCRUM-805 v5: модалка 55.5% ширины вьюпорта, пропорция дизайн-листа
+	# 1420×1060 (≈1.34) зафиксирована — вся внутренняя геометрия скейлится
+	# единым s = width/1420 без искажений. Кап по высоте 87% вьюпорта.
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	var width := clampf(roundf(viewport_size.x * 0.56), 960.0, 1536.0)
-	var height := roundf(width / 1.22)
-	var max_height := roundf(viewport_size.y * 0.88)
+	var aspect := SETTINGS_V5_DESIGN_SIZE.x / SETTINGS_V5_DESIGN_SIZE.y
+	var width := clampf(roundf(viewport_size.x * SETTINGS_V5_MODAL_WIDTH_RATIO), 980.0, 1560.0)
+	var height := roundf(width / aspect)
+	var max_height := roundf(viewport_size.y * 0.87)
 	if height > max_height:
 		height = max_height
-		width = clampf(roundf(height * 1.22), 960.0, 1536.0)
+		width = roundf(height * aspect)
 	return Rect2(
 		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
 		Vector2(width, height)
 	)
 
 
-func _settings_v2_scaled_modal_rect(reference_rect: Rect2, modal_size: Vector2) -> Rect2:
-	var scale := modal_size / Vector2(1536.0, 924.0)
+func _settings_v5_scale(modal_size: Vector2) -> float:
+	return modal_size.x / SETTINGS_V5_DESIGN_SIZE.x
+
+
+func _settings_v5_rect(design_rect: Rect2, s: float) -> Rect2:
 	return Rect2(
-		Vector2(roundf(reference_rect.position.x * scale.x), roundf(reference_rect.position.y * scale.y)),
-		Vector2(roundf(reference_rect.size.x * scale.x), roundf(reference_rect.size.y * scale.y))
+		Vector2(roundf(design_rect.position.x * s), roundf(design_rect.position.y * s)),
+		Vector2(roundf(design_rect.size.x * s), roundf(design_rect.size.y * s))
 	)
 
 
-func _settings_v2_tab_switcher_size(modal_size: Vector2) -> Vector2:
-	var width := clampf(roundf(modal_size.x * 0.573), 640.0, 1100.0)
-	var height := roundf(width / 5.0)
-	return Vector2(width, height)
+func _settings_v5_font(design_px: float, s: float) -> int:
+	# Кегль скейлится вместе с сеткой (s), пол 12px. На 1080p (s=0.75)
+	# label 26 → 19.5px, статус 22 → 16.5px — читаемо по дизайн-инварианту.
+	return maxi(12, int(roundf(design_px * s)))
 
 
-func _settings_v2_switcher_top(modal_size: Vector2) -> float:
-	# Свитчер табов («Экран»/«Управление») ставится НИЖЕ заголовка «Настройки».
-	# Заголовок прибит к верхней safe-зоне рамки (mockup y=94 ≈ локально 78–118);
-	# раньше свитчер стоял на y≈40 и наезжал И на орнамент рамки, И на заголовок —
-	# «Настройки» висела в пустой середине таб-бара (SCRUM-468). Теперь под ним.
-	return roundf(maxf(112.0, modal_size.y * 0.172))
+func _settings_v5_icon(path: String, design_size: Vector2, s: float) -> Texture2D:
+	# Иконки тем (чекбоксы, граббер, стрелка, иконки табов) рендерятся Godot в
+	# НАТИВНОМ размере текстуры — заранее ресайзим под текущий масштаб сетки.
+	var target := Vector2i(maxi(1, int(roundf(design_size.x * s))), maxi(1, int(roundf(design_size.y * s))))
+	var key := "%s@%dx%d" % [path, target.x, target.y]
+	if _settings_v5_icon_cache.has(key):
+		return _settings_v5_icon_cache[key]
+	var texture: Texture2D = game._cached_texture(path)
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null:
+		return texture
+	image = image.duplicate()
+	image.resize(target.x, target.y, Image.INTERPOLATE_LANCZOS)
+	var scaled := ImageTexture.create_from_image(image)
+	_settings_v5_icon_cache[key] = scaled
+	return scaled
 
 
-func _settings_v2_content_panel_rect(modal_size: Vector2) -> Rect2:
-	var main_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, modal_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
-	var switcher_size := _settings_v2_tab_switcher_size(modal_size)
-	var switcher_top := _settings_v2_switcher_top(modal_size)
-	var top := switcher_top + switcher_size.y + roundf(maxf(18.0, modal_size.y * 0.028))
-	var back_top := modal_size.y - 64.0 - maxf(28.0, modal_size.y * 0.055)
-	var left := main_margins.x + 24.0
-	var right := main_margins.z + 24.0
-	var min_height := 180.0 if modal_size.y <= 590.0 else 248.0
-	var height := maxf(min_height, back_top - top - 24.0)
-	return Rect2(Vector2(left, top), Vector2(maxf(640.0, modal_size.x - left - right), height))
+func _settings_v5_texture_box(path: String, source_margins: Vector4, content: Vector4) -> StyleBox:
+	# margins — в px источника (углы рисуются 1:1, середина тянется);
+	# content — в экранных px (уже ×s у вызывающего).
+	return _global_texture_style(path, source_margins, Color.WHITE, content)
 
 
 func _settings_v2_main_modal_style(display_size: Vector2) -> StyleBox:
-	var texture_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(SETTINGS_V2_MAIN_SOURCE_SIZE, display_size, SETTINGS_V2_MAIN_CONTENT_MARGINS)
-	return _global_texture_style(SETTINGS_V2_MAIN_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
+	# Арт рамки в пропорции модалки (1420:1060) — рисуется целиком без
+	# 9-slice-растяжений орнамента (аспект rect == аспект текстуры при любом s).
+	var s := _settings_v5_scale(display_size)
+	var content := Vector4(72.0 * s, 130.0 * s, 72.0 * s, 44.0 * s)
+	return _settings_v5_texture_box(SETTINGS_V5_MODAL_FRAME_PATH, Vector4(12.0, 12.0, 12.0, 12.0), content)
 
 
 func _settings_v2_content_panel_style(display_size := Vector2.ZERO) -> StyleBox:
-	# SCRUM-792: v3 PixelLab content-panel 9-slice (был minimal "panel").
-	var size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else SETTINGS_V3_CONTENT_SOURCE_SIZE
-	var margins := _scaled_frame_margins_xy(SETTINGS_V3_CONTENT_SOURCE_SIZE, size, SETTINGS_V3_CONTENT_TEXTURE_MARGINS)
-	return _global_texture_style(SETTINGS_V3_CONTENT_PANEL_PATH, margins, Color(1.0, 1.0, 1.0, 0.98), Vector4.ZERO, true)
+	return _settings_v5_texture_box(SETTINGS_V5_CONTENT_INSET_PATH, Vector4(30.0, 30.0, 30.0, 30.0), Vector4.ZERO)
 
 
 func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
@@ -3849,6 +3924,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_apply_control_rect(modal, modal_rect)
 	root.add_child(modal)
 
+	var s := _settings_v5_scale(modal_rect.size)
+
 	var modal_frame := PanelContainer.new()
 	modal_frame.name = "SettingsV2MainModalFrame"
 	modal_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -3856,37 +3933,41 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	modal_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modal.add_child(modal_frame)
 
+	var medallion_texture: Texture2D = game._cached_texture(SETTINGS_V5_MEDALLION_PATH)
+	if medallion_texture != null:
+		var medallion := TextureRect.new()
+		medallion.name = "SettingsV5Medallion"
+		medallion.texture = medallion_texture
+		medallion.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		medallion.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_apply_control_rect(medallion, _settings_v5_rect(Rect2(620.0, -14.0, 180.0, 72.0), s))
+		modal.add_child(medallion)
+
 	var title := Label.new()
 	title.name = "SettingsV2Title"
-	title.text = "Настройки"
+	title.text = "НАСТРОЙКИ"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(34))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	_apply_control_rect(title, _settings_v2_scaled_modal_rect(Rect2(144.0, 94.0, 1248.0, 48.0), modal_rect.size))
+	title.add_theme_font_size_override("font_size", _settings_v5_font(46.0, s))
+	title.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
+	_apply_control_rect(title, _settings_v5_rect(SETTINGS_V5_TITLE_RECT, s))
 	modal.add_child(title)
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
-	tabs.custom_minimum_size = Vector2(700, 220)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
-	tabs.add_theme_font_size_override("font_size", _readable_font_size(17))
-	tabs.add_theme_color_override("font_selected_color", Color(0.98, 0.90, 0.50, 1.0))
-	tabs.add_theme_color_override("font_unselected_color", Color(0.73, 0.78, 0.84, 1.0))
 
-	var switcher_size := _settings_v2_tab_switcher_size(modal_rect.size)
-	var switcher := _make_settings_tab_switcher(tabs, switcher_size)
-	_apply_control_rect(switcher, Rect2(
-		Vector2(roundf((modal_rect.size.x - switcher_size.x) * 0.5), _settings_v2_switcher_top(modal_rect.size)),
-		switcher_size
-	))
+	var tab_bar_width := SETTINGS_V5_TAB_SIZE.x * 3.0 + SETTINGS_V5_TAB_GAP * 2.0
+	var switcher := _make_settings_tab_switcher(tabs, Vector2(tab_bar_width, SETTINGS_V5_TAB_SIZE.y) * s)
+	_apply_control_rect(switcher, _settings_v5_rect(
+		Rect2((SETTINGS_V5_DESIGN_SIZE.x - tab_bar_width) * 0.5, SETTINGS_V5_TAB_TOP, tab_bar_width, SETTINGS_V5_TAB_SIZE.y), s))
 	modal.add_child(switcher)
 
 	var content_panel := Panel.new()
 	content_panel.name = "SettingsContentPanel"
-	var content_panel_rect := _settings_v2_content_panel_rect(modal_rect.size)
+	var content_panel_rect := _settings_v5_rect(SETTINGS_V5_CONTENT_RECT, s)
 	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style(content_panel_rect.size))
 	content_panel.clip_contents = true
 	_apply_control_rect(content_panel, content_panel_rect)
@@ -3894,16 +3975,15 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var content_margin := MarginContainer.new()
 	content_margin.name = "SettingsContentSafe"
 	content_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content_margin.add_theme_constant_override("margin_left", 18)
-	content_margin.add_theme_constant_override("margin_top", 14)
-	content_margin.add_theme_constant_override("margin_right", 18)
-	content_margin.add_theme_constant_override("margin_bottom", 14)
+	content_margin.add_theme_constant_override("margin_left", int(roundf(SETTINGS_V5_CONTENT_PAD.x * s)))
+	content_margin.add_theme_constant_override("margin_top", int(roundf(SETTINGS_V5_CONTENT_PAD.y * s)))
+	content_margin.add_theme_constant_override("margin_right", int(roundf(SETTINGS_V5_CONTENT_PAD.z * s)))
+	content_margin.add_theme_constant_override("margin_bottom", int(roundf(SETTINGS_V5_CONTENT_PAD.w * s)))
 	content_panel.add_child(content_margin)
 	content_margin.add_child(tabs)
 
-	var screen_tab := _make_settings_tab("Экран")
+	var screen_tab := _make_settings_tab("Экран", s)
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
-	screen_box.add_theme_constant_override("separation", 8)
 	tabs.add_child(screen_tab)
 
 	var screen_count := DisplayServer.get_screen_count()
@@ -3911,11 +3991,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	if screen_count > 1:
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		# SCRUM-805 v4: фикс. ширина 420, без EXPAND_FILL (был баг «растянутости»
-		# на всю ширину ряда ~1000/1438px). Единая двухколоночная сетка label|control.
-		screen_options.custom_minimum_size = Vector2(420, 60)
-		screen_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		_apply_compact_button_theme(screen_options)
+		_settings_v5_apply_field_theme(screen_options, s)
 		for screen_index in range(screen_count):
 			var size := DisplayServer.screen_get_size(screen_index)
 			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
@@ -3925,13 +4001,11 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 			_clamp_pending_resolution_for_screen(index)
 			_show_settings_menu()
 		)
-		_add_settings_control_row(screen_box, "Монитор", screen_options)
+		_add_settings_control_row(screen_box, "Монитор", screen_options, s)
 
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	resolution_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
-	resolution_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_apply_compact_button_theme(resolution_options)
+	_settings_v5_apply_field_theme(resolution_options, s)
 	var usable_size := Vector2i(99999, 99999)
 	var screen_full_size := Vector2i(99999, 99999)
 	var screen_scale := 1.0
@@ -3956,13 +4030,11 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		settings_video_pending["resolution_index"] = index
 		_show_settings_menu()
 	)
-	_add_settings_control_row(screen_box, "Разрешение", resolution_options)
+	_add_settings_control_row(screen_box, "Разрешение", resolution_options, s)
 
 	var mode_options := OptionButton.new()
 	mode_options.name = "SettingsWindowModeOption"
-	mode_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
-	mode_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_apply_compact_button_theme(mode_options)
+	_settings_v5_apply_field_theme(mode_options, s)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
 	mode_options.selected = clampi(int(settings_video_pending.get("window_mode_index", game.selected_window_mode_index)), 0, game.WINDOW_MODE_OPTIONS.size() - 1)
@@ -3970,51 +4042,41 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		settings_video_pending["window_mode_index"] = index
 		_show_settings_menu()
 	)
-	_add_settings_control_row(screen_box, "Режим окна", mode_options)
+	_add_settings_control_row(screen_box, "Режим окна", mode_options, s)
 
-	var shake_row := HBoxContainer.new()
-	shake_row.name = "ScreenShakeRow"
-	shake_row.add_theme_constant_override("separation", 12)
-	screen_box.add_child(shake_row)
-	var shake_label := Label.new()
-	shake_label.text = "Тряска камеры"
-	shake_label.custom_minimum_size = Vector2(220, 36)
-	shake_label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.96, 1.0))
-	shake_row.add_child(shake_label)
 	var shake_toggle := CheckBox.new()
 	shake_toggle.name = "ScreenShakeToggle"
 	shake_toggle.button_pressed = game.screen_shake_enabled
-	_style_checkbox(shake_toggle)
+	shake_toggle.text = "Вкл." if shake_toggle.button_pressed else "Выкл."
+	_settings_v5_style_checkbox(shake_toggle, s)
 	shake_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.screen_shake_enabled = pressed
 		game.get_tree().root.set_meta("screen_shake", pressed)
+		shake_toggle.text = "Вкл." if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	shake_row.add_child(shake_toggle)
+	_add_settings_control_row(screen_box, "Тряска камеры", shake_toggle, s)
 
 	var pending_label := Label.new()
 	pending_label.name = "SettingsPendingLabel"
 	pending_label.text = "Есть непримененные изменения." if _settings_video_dirty() else "Экранные настройки применены."
-	pending_label.custom_minimum_size = Vector2(420, 30)
+	pending_label.custom_minimum_size = Vector2(roundf(600.0 * s), roundf(36.0 * s))
 	pending_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pending_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pending_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	pending_label.add_theme_color_override("font_color", Color(0.96, 0.80, 0.42, 1.0) if _settings_video_dirty() else Color(0.68, 0.76, 0.82, 1.0))
+	pending_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	pending_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER if _settings_video_dirty() else SETTINGS_V5_MUTED)
 	screen_box.add_child(pending_label)
 
-	var audio_tab := _make_settings_tab("Звук")
+	var audio_tab := _make_settings_tab("Звук", s)
 	var audio_box := audio_tab.get_child(0) as VBoxContainer
 	tabs.add_child(audio_tab)
-	_add_volume_row(audio_box, "Общая громкость", "master_volume", "")
-	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled")
-	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled")
-	var reset_audio_button := _make_button("Сбросить звук по умолчанию")
+	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
+	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled", s)
+	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled", s)
+	var reset_audio_button := _settings_v5_make_action_button("Сбросить звук", "neutral", s)
 	reset_audio_button.name = "SettingsResetAudioButton"
-	# SCRUM-805 v4: фикс. 420×64 + SHRINK_BEGIN — раньше кнопка тянулась на всю
-	# ширину контент-бокса (~1194/1632px) из-за FILL по умолчанию в VBox. 420 (не 360)
-	# — чтобы подпись «Сбросить звук по умолчанию» не переносилась на 2 строки.
-	_set_action_button_size(reset_audio_button, 420.0, 64.0)
 	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
@@ -4022,7 +4084,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	audio_box.add_child(reset_audio_button)
 
-	var controls_tab := _make_settings_tab("Управление")
+	var controls_tab := _make_settings_tab("Управление", s)
 	tabs.add_child(controls_tab)
 	# Вкладка «Управление» переполнялась (прицеливание + строка-ребинд на каждый
 	# INPUT_ACTION) — оборачиваем контент в вертикальный ScrollContainer, чтобы
@@ -4039,14 +4101,12 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var controls_box := VBoxContainer.new()
 	controls_box.name = "ControlsContent"
 	controls_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	controls_box.add_theme_constant_override("separation", 14)
+	controls_box.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	controls_scroll.add_child(controls_box)
 
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
-	aim_options.custom_minimum_size = Vector2(420, 60)  # SCRUM-805 v4: фикс, без EXPAND_FILL
-	aim_options.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_apply_compact_button_theme(aim_options)
+	_settings_v5_apply_field_theme(aim_options, s)
 	aim_options.add_item("Автонаводка на ближайшего")
 	aim_options.add_item("По курсору")
 	aim_options.selected = 1 if str(game.aim_mode) == "cursor" else 0
@@ -4055,77 +4115,58 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		game.get_tree().root.set_meta("aim_mode", game.aim_mode)
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Прицеливание", aim_options)
+	_add_settings_control_row(controls_box, "Прицеливание", aim_options, s)
 
 	var debug_toggle := CheckBox.new()
 	debug_toggle.name = "DebugModeToggle"
-	debug_toggle.custom_minimum_size = Vector2(300, 42)
 	debug_toggle.button_pressed = game.debug_mode_enabled
 	debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if debug_toggle.button_pressed else "Выкл."
 	debug_toggle.tooltip_text = "Дебаг: в бою ПКМ или Shift+ЛКМ задают точку движения, средняя кнопка телепортирует."
-	_style_checkbox(debug_toggle)
+	_settings_v5_style_checkbox(debug_toggle, s)
 	debug_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.debug_mode_enabled = pressed
 		game.get_tree().root.set_meta("debug_mode", pressed)
 		debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle)
+	_add_settings_control_row(controls_box, "Дебаг-режим", debug_toggle, s)
 
 	var feedback_toggle := CheckBox.new()
 	feedback_toggle.name = "CombatFeedbackToggle"
-	feedback_toggle.custom_minimum_size = Vector2(300, 42)
 	feedback_toggle.button_pressed = game.combat_feedback_enabled
 	feedback_toggle.text = "Вкл." if feedback_toggle.button_pressed else "Выкл."
 	feedback_toggle.tooltip_text = "Боевые цифры, крит-маркеры, вспышка попадания и зелёные числа лечения."
-	_style_checkbox(feedback_toggle)
+	_settings_v5_style_checkbox(feedback_toggle, s)
 	feedback_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.combat_feedback_enabled = pressed
 		game.get_tree().root.set_meta("combat_feedback", pressed)
 		feedback_toggle.text = "Вкл." if pressed else "Выкл."
 		game.save_game_settings()
 	)
-	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle)
+	_add_settings_control_row(controls_box, "Боевой фидбек", feedback_toggle, s)
 
 	for input_action in game.INPUT_ACTIONS:
 		var action_name: String = input_action["action"]
-		var row := HBoxContainer.new()
-		row.name = "BindingRow_%s" % action_name
-		row.alignment = BoxContainer.ALIGNMENT_BEGIN
-		row.add_theme_constant_override("separation", 12)
-		controls_box.add_child(row)
-
-		var label := Label.new()
-		label.text = input_action["label"]
-		label.custom_minimum_size = Vector2(200, 44)  # SCRUM-805 v4: колонка label ровнее
-		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
-		row.add_child(label)
-
-		var bind_button := _make_compact_button(_binding_text(action_name))
+		var bind_button := Button.new()
 		bind_button.name = "BindingButton_%s" % action_name
-		# SCRUM-805 v4: фикс. ширина 300, без EXPAND_FILL (кнопка ребинда тянулась
-		# на всю ширину ряда). Метка бинда 200 + кнопка 300 = аккуратная сетка.
-		bind_button.custom_minimum_size = Vector2(300, 58)
-		bind_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		_apply_compact_button_theme(bind_button)
+		bind_button.text = _binding_text(action_name)
+		bind_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		_settings_v5_apply_field_theme(bind_button, s)
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
 		)
-		row.add_child(bind_button)
+		var bind_row := _add_settings_control_row(controls_box, input_action["label"], bind_button, s)
+		bind_row.name = "BindingRow_%s" % action_name
 
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hint_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	hint_label.add_theme_color_override("font_color", Color(0.7, 0.76, 0.82, 1.0))
+	hint_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
+	hint_label.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
 	controls_box.add_child(hint_label)
 
-	var reset_button := _make_button("Сбросить управление по умолчанию")
+	var reset_button := _settings_v5_make_action_button("Сбросить управление", "neutral", s)
 	reset_button.name = "SettingsResetBindingsButton"
-	# SCRUM-805 v4: фикс. 480×64 + SHRINK_BEGIN — раньше тянулась на всю ширину бокса.
-	# 480 (длиннее «звук»-кнопки) — подпись из 32 символов в одну строку без переноса.
-	_set_action_button_size(reset_button, 480.0, 64.0)
 	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
@@ -4135,31 +4176,35 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var settings_back := func() -> void:
 		_return_from_settings()
+
+	var divider := ColorRect.new()
+	divider.name = "SettingsV5Divider"
+	divider.color = SETTINGS_V5_BRONZE_LINE
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_apply_control_rect(divider, _settings_v5_rect(Rect2(160.0, SETTINGS_V5_DIVIDER_Y, 1100.0, 2.0), s))
+	divider.custom_minimum_size.y = maxf(1.0, divider.custom_minimum_size.y)
+	modal.add_child(divider)
+
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
 	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_row.add_theme_constant_override("separation", 12)
-	var action_row_size := Vector2(784.0, SETTINGS_APPLY_BUTTON_SIZE.y)
-	_apply_control_rect(action_row, Rect2(
-		Vector2(roundf((modal_rect.size.x - action_row_size.x) * 0.5), roundf(modal_rect.size.y - action_row_size.y - maxf(28.0, modal_rect.size.y * 0.055))),
-		action_row_size
-	))
+	action_row.add_theme_constant_override("separation", int(roundf(SETTINGS_V5_ACTION_GAP * s)))
+	var action_row_width := SETTINGS_V5_ACTION_SIZE.x * 3.0 + SETTINGS_V5_ACTION_GAP * 2.0
+	_apply_control_rect(action_row, _settings_v5_rect(
+		Rect2((SETTINGS_V5_DESIGN_SIZE.x - action_row_width) * 0.5, SETTINGS_V5_ACTION_TOP, action_row_width, SETTINGS_V5_ACTION_SIZE.y), s))
 	modal.add_child(action_row)
-	var apply_button := _make_button("Применить")
+	var apply_button := _settings_v5_make_action_button("Применить", "primary", s)
 	apply_button.name = "SettingsApplyButton"
-	_set_action_button_size(apply_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
 	apply_button.disabled = not _settings_video_dirty()
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
-	var revert_button := _make_button("Отменить")
+	var revert_button := _settings_v5_make_action_button("Вернуть", "neutral", s)
 	revert_button.name = "SettingsRevertButton"
-	_set_action_button_size(revert_button, SETTINGS_APPLY_BUTTON_SIZE.x, SETTINGS_APPLY_BUTTON_SIZE.y)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
 	action_row.add_child(revert_button)
-	var back_button := _make_button("Назад")
+	var back_button := _settings_v5_make_action_button("Назад", "neutral", s)
 	back_button.name = "SettingsBackButton"
-	_set_action_button_size(back_button, 280.0, 64.0)
 	back_button.pressed.connect(settings_back)
 	action_row.add_child(back_button)
 	game.ui_escape_action = settings_back
@@ -4201,51 +4246,39 @@ func _return_from_settings() -> void:
 
 
 func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
+	# v5: три «листа-закладки» фиксированного размера 340×84×s с иконками,
+	# без общей рамки-подложки (арт каждого таба — самостоятельная пластина).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
-	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(640.0, 128.0)
+	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(1060.0, 84.0)
+	var s := actual_display_size.y / SETTINGS_V5_TAB_SIZE.y
 	switcher.custom_minimum_size = actual_display_size
 	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	var art := Panel.new()
-	art.name = "SettingsTabSwitcherFrame"
-	art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	# SCRUM-792: v3 PixelLab tab-switcher 9-slice (был minimal "field").
-	var switcher_margins := _scaled_frame_margins_xy(SETTINGS_V3_TAB_SWITCHER_SOURCE_SIZE, actual_display_size, SETTINGS_V3_TAB_SWITCHER_TEXTURE_MARGINS)
-	art.add_theme_stylebox_override("panel", _global_texture_style(SETTINGS_V3_TAB_SWITCHER_PATH, switcher_margins, Color.WHITE, Vector4.ZERO, true))
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	switcher.add_child(art)
-
 	var buttons: Array[Button] = []
 	var labels := ["Экран", "Звук", "Управление"]
-	var content_left := roundf(actual_display_size.x * SETTINGS_TAB_SWITCHER_CONTENT.x / SETTINGS_TAB_SWITCHER_BASE_SIZE.x)
-	var content_top := roundf(actual_display_size.y * SETTINGS_TAB_SWITCHER_CONTENT.y / SETTINGS_TAB_SWITCHER_BASE_SIZE.y)
-	var content_right := roundf(actual_display_size.x * SETTINGS_TAB_SWITCHER_CONTENT.z / SETTINGS_TAB_SWITCHER_BASE_SIZE.x)
-	var content_bottom := roundf(actual_display_size.y * SETTINGS_TAB_SWITCHER_CONTENT.w / SETTINGS_TAB_SWITCHER_BASE_SIZE.y)
-	var safe_rect := Rect2(
-		Vector2(content_left, content_top),
-		Vector2(
-			maxf(1.0, actual_display_size.x - content_left - content_right),
-			maxf(1.0, actual_display_size.y - content_top - content_bottom)
-		)
-	)
-	var tab_gap := maxf(6.0, roundf(actual_display_size.x * 0.014))
-	var tab_width := maxf(1.0, (safe_rect.size.x - tab_gap * 2.0) / 3.0)
+	var tab_width := roundf(SETTINGS_V5_TAB_SIZE.x * s)
+	var tab_gap := roundf(SETTINGS_V5_TAB_GAP * s)
 	for tab_index in range(labels.size()):
-		var tab_left := safe_rect.position.x + float(tab_index) * (tab_width + tab_gap)
+		var tab_left := float(tab_index) * (tab_width + tab_gap)
 		var button := Button.new()
 		button.name = "SettingsTabButton_%d" % tab_index
 		button.text = labels[tab_index]
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.focus_mode = Control.FOCUS_ALL
 		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		button.offset_left = roundf(tab_left)
-		button.offset_top = roundf(safe_rect.position.y)
-		button.offset_right = roundf(tab_left + tab_width)
-		button.offset_bottom = roundf(safe_rect.position.y + safe_rect.size.y)
-		button.add_theme_font_size_override("font_size", _readable_font_size(12))
+		button.offset_left = tab_left
+		button.offset_top = 0.0
+		button.offset_right = tab_left + tab_width
+		button.offset_bottom = actual_display_size.y
+		button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+		var icon := _settings_v5_icon(SETTINGS_V5_TAB_ICON_PATHS[tab_index], Vector2(44.0, 44.0), s)
+		if icon != null:
+			button.icon = icon
+			button.expand_icon = false
+			button.add_theme_constant_override("h_separation", int(roundf(12.0 * s)))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -4256,7 +4289,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 
 	var update_buttons := func(active_tab: int) -> void:
 		for button_index in range(buttons.size()):
-			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab)
+			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab, s)
 	update_buttons.call(tabs.current_tab)
 	tabs.tab_changed.connect(func(tab_index: int) -> void:
 		update_buttons.call(tab_index)
@@ -4264,99 +4297,82 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 	return switcher
 
 
-func _apply_settings_tab_button_theme(button: Button, selected: bool) -> void:
-	button.add_theme_stylebox_override("normal", _settings_tab_button_style(selected, false, false))
-	button.add_theme_stylebox_override("hover", _settings_tab_button_style(selected, true, false))
-	button.add_theme_stylebox_override("pressed", _settings_tab_button_style(selected, true, true))
-	button.add_theme_stylebox_override("focus", _settings_tab_button_style(selected, true, false))
-	button.add_theme_stylebox_override("disabled", _settings_tab_button_style(false, false, false))
-	button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.58, 1.0) if selected else Color(0.84, 0.86, 0.91, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.78, 1.0, 0.96, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+func _settings_v5_tab_stylebox(state: String, s: float) -> StyleBox:
+	# Арт таба 340×84 — точный дизайн-размер пластины (аспект rect == аспект арта).
+	var content := Vector4(18.0 * s, 10.0 * s, 18.0 * s, 12.0 * s)
+	return _settings_v5_texture_box(SETTINGS_V5_TAB_PATHS[state], Vector4(14.0, 12.0, 14.0, 12.0), content)
 
 
-func _settings_tab_button_style(selected: bool, hovered: bool, pressed: bool) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.035, 0.032, 0.040, 0.08)
-	style.border_color = Color(0.74, 0.80, 0.88, 0.14)
-	if selected:
-		style.bg_color = Color(0.22, 0.045, 0.035, 0.34)
-		style.border_color = Color(0.95, 0.82, 0.48, 0.42)
-	if hovered:
-		style.bg_color = Color(0.16, 0.16, 0.18, 0.38) if not selected else Color(0.28, 0.075, 0.060, 0.44)
-		style.border_color = Color(0.92, 0.94, 0.98, 0.56)
-	if pressed:
-		style.bg_color = Color(0.05, 0.12, 0.13, 0.46)
-		style.border_color = Color(0.72, 1.0, 0.96, 0.70)
-	style.set_corner_radius_all(8)
-	style.set_border_width_all(1)
-	style.content_margin_left = 6
-	style.content_margin_right = 6
-	style.content_margin_top = 4
-	style.content_margin_bottom = 4
-	return style
+func _apply_settings_tab_button_theme(button: Button, selected: bool, s := 1.0) -> void:
+	var normal_state := "active" if selected else "inactive"
+	var hover_state := "active" if selected else "hover"
+	button.add_theme_stylebox_override("normal", _settings_v5_tab_stylebox(normal_state, s))
+	button.add_theme_stylebox_override("hover", _settings_v5_tab_stylebox(hover_state, s))
+	button.add_theme_stylebox_override("pressed", _settings_v5_tab_stylebox("active", s))
+	button.add_theme_stylebox_override("focus", _settings_v5_tab_stylebox(hover_state, s))
+	button.add_theme_stylebox_override("disabled", _settings_v5_tab_stylebox("inactive", s))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if selected else SETTINGS_V5_MUTED)
+	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
 
 
-func _make_settings_tab(tab_name: String) -> MarginContainer:
+func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
 	var margin := MarginContainer.new()
 	margin.name = tab_name
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	margin.add_theme_constant_override("margin_left", 16)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_right", 16)
-	margin.add_theme_constant_override("margin_bottom", 12)
+	margin.add_theme_constant_override("margin_left", 0)
+	margin.add_theme_constant_override("margin_top", 0)
+	margin.add_theme_constant_override("margin_right", 0)
+	margin.add_theme_constant_override("margin_bottom", 0)
 	var page := VBoxContainer.new()
 	page.name = "%sContent" % tab_name
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 14)
+	page.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	margin.add_child(page)
 	return margin
 
 
-func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control) -> void:
-	# SCRUM-805 v4: единая двухколоночная сетка label|control. Колонка метки — фикс.
-	# 260, контрол — свой фикс. размер со SHRINK_BEGIN (не тянется на весь ряд).
+func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control, s := 1.0) -> HBoxContainer:
+	# v5: единая двухколоночная сетка label(380)|control — колонки выровнены по
+	# всем вкладкам, контролы фиксированных размеров, ничего не тянется.
 	var row := HBoxContainer.new()
 	row.name = "SettingsRow_%s" % title.replace(" ", "_")
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	row.add_theme_constant_override("separation", 18)
+	row.add_theme_constant_override("separation", int(roundf(24.0 * s)))
 	parent.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	# Колонка метки 240: label(240)+sep(18)+control(≤420)=678 < внутр. ширины контент-
-	# панели даже на минимальном модале 960px (~702) — с запасом, без клипа/overflow.
-	label.custom_minimum_size = Vector2(240, 60)
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(17))
-	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
 	row.add_child(label)
 	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(control)
+	return row
 
 
-func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String) -> void:
-	# SCRUM-805 v4: ряд-звук фиксированной суммарной ширины (метка 240 = сетка вкладок
-	# «Экран»/«Управление»; slider 220 + value 56 + toggle 108). 240+12+220+12+56+12+108=660
-	# < внутр. ширины контент-панели ~678 (пол clamp) → «Вкл.» больше НЕ вылазит за правый
-	# золочёный кант рамки (был баг: 170+420+58+108+seps=798 > 678). SHRINK_BEGIN — не тянется.
+func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enabled_key: String, s := 1.0) -> void:
 	var row := HBoxContainer.new()
 	row.name = "VolumeRow_%s" % volume_key
 	row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", int(roundf(16.0 * s)))
 	box.add_child(row)
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(240, 42)
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
 	row.add_child(label)
 
 	var slider := HSlider.new()
@@ -4364,10 +4380,12 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.min_value = 0.0
 	slider.max_value = 100.0
 	slider.step = 2.0
-	slider.custom_minimum_size = Vector2(220, 42)
+	# Высота 42×s — компактный sound-ряд (контракт SCRUM-674: ≤460×46).
+	slider.custom_minimum_size = Vector2(roundf(420.0 * s), roundf(42.0 * s))
 	slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slider.focus_mode = Control.FOCUS_ALL
-	_style_slider(slider)
+	_settings_v5_style_slider(slider, s)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
 		game.audio_settings[volume_key] = value / 100.0
@@ -4376,23 +4394,31 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	)
 	row.add_child(slider)
 
+	var chip := PanelContainer.new()
+	chip.name = "VolumeChip_%s" % volume_key
+	chip.custom_minimum_size = Vector2(roundf(96.0 * s), roundf(48.0 * s))
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _settings_v5_texture_box(
+		SETTINGS_V5_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
+	row.add_child(chip)
 	var value_label := Label.new()
-	value_label.custom_minimum_size = Vector2(56, 42)
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
-	value_label.add_theme_color_override("font_color", Color(0.95, 0.86, 0.45, 1.0))
+	value_label.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	value_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
 	slider.value_changed.connect(func(value: float) -> void:
 		value_label.text = "%d%%" % int(value)
 	)
-	row.add_child(value_label)
+	chip.add_child(value_label)
 
 	if enabled_key != "":
 		var toggle := CheckBox.new()
 		toggle.name = "VolumeToggle_%s" % enabled_key
-		toggle.custom_minimum_size = Vector2(108, 42)
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
 		toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
-		_style_checkbox(toggle)
+		toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_settings_v5_style_checkbox(toggle, s)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
@@ -4402,6 +4428,103 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 			game.save_game_settings()
 		)
 		row.add_child(toggle)
+
+
+func _settings_v5_apply_field_theme(button: Button, s: float) -> void:
+	# Врезное поле 560×56×s: дропдауны и кнопки биндингов. Арт — 9-slice
+	# источник 320×56 (углы 1:1, плоская середина тянется по ширине).
+	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_CONTROL_SIZE.x * s), roundf(SETTINGS_V5_CONTROL_SIZE.y * s))
+	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	var content := Vector4(24.0 * s, 6.0 * s, 24.0 * s, 6.0 * s)
+	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
+	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
+	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["pressed"], source_margins, content))
+	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+	if button is OptionButton:
+		var arrow := _settings_v5_icon(SETTINGS_V5_ARROW_PATH, Vector2(36.0, 36.0), s)
+		if arrow != null:
+			button.add_theme_icon_override("arrow", arrow)
+		var popup := (button as OptionButton).get_popup()
+		popup.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+		var popup_style := StyleBoxFlat.new()
+		popup_style.bg_color = Color(0.086, 0.063, 0.043, 0.98)
+		popup_style.border_color = SETTINGS_V5_GOLD
+		popup_style.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
+		popup_style.set_content_margin_all(roundf(10.0 * s))
+		popup.add_theme_stylebox_override("panel", popup_style)
+
+
+func _settings_v5_make_action_button(text: String, kind: String, s: float) -> Button:
+	# Кнопка 320×80×s с четырьмя состояниями из отдельных ассетов (без растяжений:
+	# арт 320×80 рисуется в точной пропорции, углы 9-slice 1:1).
+	var button := Button.new()
+	button.text = text
+	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_ACTION_SIZE.x * s), roundf(SETTINGS_V5_ACTION_SIZE.y * s))
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
+	var paths: Dictionary = SETTINGS_V5_BTN_PATHS[kind]
+	var content := Vector4(24.0 * s, 10.0 * s, 24.0 * s, 12.0 * s)
+	var source_margins := Vector4(30.0, 26.0, 30.0, 28.0)
+	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(paths["normal"], source_margins, content))
+	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(paths["hover"], source_margins, content))
+	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(paths["pressed"], source_margins, content))
+	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(paths["hover"], source_margins, content))
+	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(paths["disabled"], source_margins, content))
+	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if kind == "primary" else SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT)
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+	return button
+
+
+func _settings_v5_style_checkbox(toggle: CheckBox, s: float) -> void:
+	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	toggle.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+	var unchecked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
+	var checked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_ON_PATH, Vector2(52.0, 52.0), s)
+	if unchecked != null:
+		toggle.add_theme_icon_override("unchecked", unchecked)
+		toggle.add_theme_icon_override("unchecked_disabled", unchecked)
+	if checked != null:
+		toggle.add_theme_icon_override("checked", checked)
+		toggle.add_theme_icon_override("checked_disabled", checked)
+	toggle.add_theme_constant_override("h_separation", int(roundf(14.0 * s)))
+	toggle.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	toggle.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
+	toggle.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+
+
+func _settings_v5_style_slider(slider: HSlider, s: float) -> void:
+	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var groove_h := maxf(8.0, 9.0 * s)
+	var track := _settings_v5_texture_box(SETTINGS_V5_SLIDER_TRACK_PATH, Vector4(8.0, 5.0, 8.0, 5.0), Vector4.ZERO)
+	if track is StyleBoxTexture:
+		track.content_margin_top = groove_h
+		track.content_margin_bottom = groove_h
+	var fill := _settings_v5_texture_box(SETTINGS_V5_SLIDER_FILL_PATH, Vector4(6.0, 4.0, 6.0, 4.0), Vector4.ZERO)
+	if fill is StyleBoxTexture:
+		fill.content_margin_top = maxf(8.0, groove_h - 2.0 * s)
+		fill.content_margin_bottom = maxf(8.0, groove_h - 2.0 * s)
+	slider.add_theme_stylebox_override("slider", track)
+	slider.add_theme_stylebox_override("grabber_area", fill)
+	slider.add_theme_stylebox_override("grabber_area_highlight", fill)
+	slider.add_theme_constant_override("center_grabber", 1)
+	var gem := _settings_v5_icon(SETTINGS_V5_SLIDER_GEM_PATH, Vector2(36.0, 36.0), s)
+	if gem != null:
+		slider.add_theme_icon_override("grabber", gem)
+		slider.add_theme_icon_override("grabber_highlight", gem)
+		slider.add_theme_icon_override("grabber_disabled", gem)
 
 
 func _reset_audio_to_defaults() -> void:

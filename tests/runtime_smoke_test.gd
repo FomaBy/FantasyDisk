@@ -51,7 +51,8 @@ const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 # SCRUM-792 (supersedes SCRUM-448 for Settings v3): PixelLab 9-slice фрейм-семья настроек.
-const SETTINGS_V3_TAB_SWITCHER_TEXTURE := "res://assets/sprites/ui/frames/settings_v3/ui_frame_settings_v3_tab_switcher.png"
+const SETTINGS_V5_TAB_ACTIVE_TEXTURE := "res://assets/sprites/ui/frames/settings_v5/ui_settings_v5_tab_active.png"
+const SETTINGS_V5_TAB_INACTIVE_TEXTURE := "res://assets/sprites/ui/frames/settings_v5/ui_settings_v5_tab_inactive.png"
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
 # нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
 const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806: слим-кластер v2
@@ -5409,40 +5410,26 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
 	var tab_switcher := main.find_child("SettingsTabSwitcher", true, false) as Control
-	var tab_switcher_frame := main.find_child("SettingsTabSwitcherFrame", true, false) as Panel
-	if tab_switcher == null or tab_switcher_frame == null:
-		_fail("Expected settings screen to use the SettingsTabSwitcher frame panel.")
+	if tab_switcher == null:
+		_fail("Expected settings screen to expose the SettingsTabSwitcher container.")
 		return
-	var tab_switcher_frame_path := _stylebox_texture_path(tab_switcher_frame.get_theme_stylebox("panel"))
-	if tab_switcher_frame_path != SETTINGS_V3_TAB_SWITCHER_TEXTURE:
-		_fail("Expected settings screen to use the SCRUM-792 v3 tab switcher texture, got %s." % tab_switcher_frame_path)
+	if main.find_child("SettingsTabSwitcherFrame", true, false) != null:
+		_fail("Settings v5: obsolete v3 switcher frame panel should be gone (tabs are standalone plates).")
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
-	var base_size := Vector2(616.0, 286.0)
-	var content_margins := Vector4(59.0, 53.0, 59.0, 50.0)
-	var content_left := roundf(switcher_rect.size.x * content_margins.x / base_size.x)
-	var content_top := roundf(switcher_rect.size.y * content_margins.y / base_size.y)
-	var content_right := roundf(switcher_rect.size.x * content_margins.z / base_size.x)
-	var content_bottom := roundf(switcher_rect.size.y * content_margins.w / base_size.y)
-	var safe_rect := Rect2(
-		Vector2(content_left, content_top),
-		Vector2(
-			maxf(1.0, switcher_rect.size.x - content_left - content_right),
-			maxf(1.0, switcher_rect.size.y - content_top - content_bottom)
-		)
-	)
-	var tab_gap := maxf(6.0, roundf(switcher_rect.size.x * 0.014))
-	var tab_width := maxf(1.0, (safe_rect.size.x - tab_gap * 2.0) / 3.0)
+	# SCRUM-805 v5: 3 самостоятельных «листа-закладки» 340×84 (design-px), гэп 20,
+	# скейл s = высота свитчера / 84. Каждая кнопка обтянута своим v5-артом.
+	var v5_scale := switcher_rect.size.y / 84.0
+	var tab_width := roundf(340.0 * v5_scale)
+	var tab_gap := roundf(20.0 * v5_scale)
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
 		return
 	var settings_switcher_dump := PackedStringArray()
-	settings_switcher_dump.append("# SCRUM-448 Settings Minimal Runtime Layout")
+	settings_switcher_dump.append("# SCRUM-805 Settings v5 Runtime Layout")
 	settings_switcher_dump.append("")
-	settings_switcher_dump.append("- frame_path: `%s`" % tab_switcher_frame_path)
 	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
-	settings_switcher_dump.append("- base_size: `%s`" % str(base_size))
-	settings_switcher_dump.append("- display_size: `%s`" % str(switcher_rect.size))
+	settings_switcher_dump.append("- v5_scale: `%s`" % str(v5_scale))
 	var modal := main.find_child("SettingsV2Modal", true, false) as Control
 	var content_panel := main.find_child("SettingsContentPanel", true, false) as Control
 	if modal != null:
@@ -5450,7 +5437,7 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if content_panel != null:
 		settings_switcher_dump.append("- content_panel_rect: `%s`" % str(content_panel.get_global_rect()))
 	settings_switcher_dump.append("")
-	settings_switcher_dump.append("| tab | actual | expected scaled safe rect | source safe rect |")
+	settings_switcher_dump.append("| tab | actual | expected v5 plate rect | stylebox |")
 	settings_switcher_dump.append("| --- | --- | --- | --- |")
 	for tab_index in range(3):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
@@ -5458,13 +5445,18 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 			_fail("Expected SettingsTabButton_%d to exist." % tab_index)
 			return
 		var expected := Rect2(
-			switcher_rect.position + safe_rect.position + Vector2(float(tab_index) * (tab_width + tab_gap), 0.0),
-			Vector2(tab_width, safe_rect.size.y)
+			switcher_rect.position + Vector2(float(tab_index) * (tab_width + tab_gap), 0.0),
+			Vector2(tab_width, switcher_rect.size.y)
 		)
 		var actual := tab_button.get_global_rect()
-		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), str(safe_rect)])
+		var plate_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal"))
+		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), plate_path])
 		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
-			_fail("Expected SettingsTabButton_%d to stay inside its recorded safe rect. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
+			_fail("Expected SettingsTabButton_%d to sit on the v5 tab grid. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
+			return
+		var expected_plate := SETTINGS_V5_TAB_ACTIVE_TEXTURE if tabs.current_tab == tab_index else SETTINGS_V5_TAB_INACTIVE_TEXTURE
+		if plate_path != expected_plate:
+			_fail("Expected SettingsTabButton_%d to wear the v5 %s plate, got %s." % [tab_index, "active" if tabs.current_tab == tab_index else "inactive", plate_path])
 			return
 		tab_button.pressed.emit()
 		await process_frame
@@ -5639,12 +5631,19 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if slider.custom_minimum_size.x > 460.0 or slider.custom_minimum_size.y > 46.0:
 			_fail("Expected %s slider to use the shorter SCRUM-674 compact sound row size." % slider_id)
 			return
+		# SCRUM-805 v5: жёлоб/заполнение — текстурные (StyleBoxTexture, арт v5);
+		# смысл контракта SCRUM-674 сохранён: жёлоб видимой высоты (маржины ≥8)
+		# и видимое заполнение (непустая текстура или непрозрачный флэт).
 		var track := slider.get_theme_stylebox("slider")
 		var fill := slider.get_theme_stylebox("grabber_area")
-		if not (track is StyleBoxFlat) or track.content_margin_top < 8.0 or track.content_margin_bottom < 8.0:
-			_fail("Expected %s slider to have a visible non-zero-height track StyleBoxFlat." % slider_id)
+		var track_ok := (track is StyleBoxFlat or (track is StyleBoxTexture and (track as StyleBoxTexture).texture != null)) \
+			and track.content_margin_top >= 8.0 and track.content_margin_bottom >= 8.0
+		if not track_ok:
+			_fail("Expected %s slider to have a visible non-zero-height track stylebox." % slider_id)
 			return
-		if not (fill is StyleBoxFlat) or (fill as StyleBoxFlat).bg_color.a < 0.5:
+		var fill_ok := (fill is StyleBoxTexture and (fill as StyleBoxTexture).texture != null) \
+			or (fill is StyleBoxFlat and (fill as StyleBoxFlat).bg_color.a >= 0.5)
+		if not fill_ok:
 			_fail("Expected %s slider to have a visible filled track area." % slider_id)
 			return
 		if slider.step > 2.0 or slider.focus_mode != Control.FOCUS_ALL:
