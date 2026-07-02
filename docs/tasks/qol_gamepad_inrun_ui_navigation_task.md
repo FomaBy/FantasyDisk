@@ -86,3 +86,12 @@ Back-end (Claude lane). Мета-меню вне забега (главное м
 ## Самопроверка
 Headless свой тест + runtime_smoke_ui_test + main_state_pause_lifecycle_test
 через tools/godot_gate.py (один инстанс Godot, см. память про параллельные прогоны).
+
+## QA-Вердикт
+Статус: PASSED (2026-07-02, claude-qa/оркестратор)
+
+- Ancestry: 59bdc490 — merge-base ancestor origin/dev OK.
+- Worktree от origin/dev, cold --import: gamepad_inrun_ui_test PASSED,
+  gamepad_core_input_test PASSED (регресс ядра), runtime_smoke_test PASSED,
+  ui_no_overlap_matrix_test PASSED.
+- PNG нет — pairing не требуется; навигация покрыта новым тестом воркера (206 строк).
