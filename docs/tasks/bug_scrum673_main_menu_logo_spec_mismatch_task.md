@@ -71,3 +71,26 @@ duplicate main-menu bug.
 Баги: нет по SCRUM-680.
 
 Disk cleanup: removed disposable worktree `.godot`/QA script before final report; no persistent cache intended.
+
+## Release Refresh / Re-fix (2026-07-02, Codex)
+
+Статус: done → ready for QA re-check
+
+Причина: пользователь попросил перед релизом полностью обновить логотип главного
+экрана и снова опустить меню, потому что на 1920x1080 визуальный capture из
+SCRUM-700 всё ещё показывал наложение логотипа на кнопки.
+
+Сделано:
+- Новый runtime logo asset собран как `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, RGBA transparent).
+- PixelLab textless source/art layer: `docs/design/references/main_menu_logo_release_fix/pixellab_logo_art_source.png`, UI asset id `5e9501ff-3c55-45fe-873a-c6d5be4677c6`.
+- Generator updated: `tools/build_main_menu_title_logo.py` mirrors the PixelLab crest to place the disk on the left and renders exact text `Fantasy Disk` locally inside the declared content zone.
+- Mockup/spec/evidence: `docs/design/mockups/main_menu_logo_release_fix/`; previews: `docs/design/previews/main_menu_logo_release_fix/`.
+- Runtime layout: `MainMenuTitleLabel` now displays at `Rect2(56,44,720,270)`; `MainMenuActions` no longer uses full-height center alignment and instead starts below the logo with `80px` minimum source-space gap.
+- Focused regression test `tests/main_menu_title_no_overlap_test.gd` now checks `1920x1080`, `2560x1440`, and `1080x1920`.
+
+Verification to run:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/main_menu_title_no_overlap_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+
+Disk cleanup: none created outside committed previews/references.

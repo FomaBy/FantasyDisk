@@ -192,7 +192,7 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. SCRUM-560 refreshed the 2560x1440 runtime background with a calm left button-safe column, readable title area, and center-right/lower-right battle focus. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
 
 ## Route Map 2K Source
 

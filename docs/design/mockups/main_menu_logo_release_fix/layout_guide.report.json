@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title_text_zone",
+      "rect": [
+        320,
+        82,
+        600,
+        154
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

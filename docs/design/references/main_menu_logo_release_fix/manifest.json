@@ -1,0 +1,20 @@
+{
+  "task": "SCRUM-680 main menu logo release refresh",
+  "created_at": "2026-07-02",
+  "source_tool": "PixelLab MCP create_ui_asset",
+  "pixellab_ui_asset_id": "5e9501ff-3c55-45fe-873a-c6d5be4677c6",
+  "pixellab_name": "FantasyDisk release main menu logo crest 2026-07-02",
+  "source_path": "docs/design/references/main_menu_logo_release_fix/pixellab_logo_art_source.png",
+  "runtime_path": "assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png",
+  "generator": "tools/build_main_menu_title_logo.py",
+  "runtime_size": [960, 360],
+  "display_rect": [56, 44, 720, 270],
+  "title_text": "Fantasy Disk",
+  "title_content_zone": [318, 82, 602, 154],
+  "notes": [
+    "PixelLab generated the textless frame/crest layer.",
+    "The source layer is mirrored during generation so the disk sits on the left.",
+    "Exact title text is rendered locally to avoid AI text corruption.",
+    "Main menu action column is placed below the logo with an 80 px source-space minimum gap."
+  ]
+}

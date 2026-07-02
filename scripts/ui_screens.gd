@@ -111,6 +111,12 @@ const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
+const MAIN_MENU_BUTTON_COUNT := 6.0
+const MAIN_MENU_BUTTON_SEPARATION := 10.0
+const MAIN_MENU_ACTION_COLUMN_HEIGHT := STANDARD_ACTION_BUTTON_HEIGHT * MAIN_MENU_BUTTON_COUNT + MAIN_MENU_BUTTON_SEPARATION * (MAIN_MENU_BUTTON_COUNT - 1.0)
+const MAIN_MENU_LOGO_RECT := Rect2(56.0, 44.0, 720.0, 270.0)
+const MAIN_MENU_LOGO_ACTION_GAP := 80.0
+const MAIN_MENU_ACTION_BOTTOM_MARGIN := 10.0
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const READABILITY_FONT_SCALE_MIN := 1.32
@@ -678,18 +684,27 @@ func _init(game_ref) -> void:
 # (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
 # вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
 const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const MM_TITLE_2K := Rect2(640, 72, 1280, 150)
+const MM_TITLE_2K := Rect2(56, 44, 720, 270)
 # Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
-# 6 кнопок 380×104, separation 10 → высота 674, центр 1440 → top=383).
-const MM_BUTTON_COLUMN_2K := Rect2(72, 383, 380, 674)
-const MM_BTN_START_2K := Rect2(72, 383, 380, 104)
-const MM_BTN_SETTINGS_2K := Rect2(72, 497, 380, 104)
-const MM_BTN_SKILLTREE_2K := Rect2(72, 611, 380, 104)
-const MM_BTN_PATCHNOTES_2K := Rect2(72, 725, 380, 104)
-const MM_BTN_CODEX_2K := Rect2(72, 839, 380, 104)
-const MM_BTN_EXIT_2K := Rect2(72, 953, 380, 104)
+# 6 кнопок 380×104, separation 10 → высота 674; top рассчитывается ниже лого).
+const MM_BUTTON_COLUMN_2K := Rect2(72, 394, 380, 674)
+const MM_BTN_START_2K := Rect2(72, 394, 380, 104)
+const MM_BTN_SETTINGS_2K := Rect2(72, 508, 380, 104)
+const MM_BTN_SKILLTREE_2K := Rect2(72, 622, 380, 104)
+const MM_BTN_PATCHNOTES_2K := Rect2(72, 736, 380, 104)
+const MM_BTN_CODEX_2K := Rect2(72, 850, 380, 104)
+const MM_BTN_EXIT_2K := Rect2(72, 964, 380, 104)
 const MM_VERSION_LABEL_2K := Rect2(2440, 1406, 104, 24)  # якорь bottom-right
-const MM_SAFE_2K := Rect2(72, 383, 380, 674)  # фон обязан держать эту колонку пустой
+const MM_SAFE_2K := Rect2(72, 394, 380, 674)  # фон обязан держать эту колонку пустой
+
+
+func _main_menu_actions_top(viewport_size: Vector2, title_bottom: float) -> float:
+	var preferred_top := roundf((viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT) * 0.5)
+	var min_top := roundf(title_bottom + MAIN_MENU_LOGO_ACTION_GAP)
+	var max_top := roundf(viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT - MAIN_MENU_ACTION_BOTTOM_MARGIN)
+	if max_top >= min_top:
+		return clampf(maxf(preferred_top, min_top), min_top, max_top)
+	return maxf(0.0, max_top)
 
 
 func _show_main_menu() -> void:
@@ -739,25 +754,27 @@ func _show_main_menu() -> void:
 	title_logo.anchor_top = 0.0
 	title_logo.anchor_right = 0.0
 	title_logo.anchor_bottom = 0.0
-	title_logo.offset_left = 72.0
-	title_logo.offset_top = 56.0
-	title_logo.offset_right = 712.0
-	title_logo.offset_bottom = 323.0
+	title_logo.offset_left = MAIN_MENU_LOGO_RECT.position.x
+	title_logo.offset_top = MAIN_MENU_LOGO_RECT.position.y
+	title_logo.offset_right = MAIN_MENU_LOGO_RECT.position.x + MAIN_MENU_LOGO_RECT.size.x
+	title_logo.offset_bottom = MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y
 	title_logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	title_logo.texture = game._cached_texture("res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png")
 	title_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_logo)
 
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var action_top := _main_menu_actions_top(viewport_size, MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y)
 	var layout := MarginContainer.new()
 	layout.anchor_left = 0.0
 	layout.anchor_top = 0.0
 	layout.anchor_right = 0.0
-	layout.anchor_bottom = 1.0
+	layout.anchor_bottom = 0.0
 	layout.offset_left = 72.0
-	layout.offset_top = 0.0
+	layout.offset_top = action_top
 	layout.offset_right = 452.0
-	layout.offset_bottom = 0.0
+	layout.offset_bottom = action_top + MAIN_MENU_ACTION_COLUMN_HEIGHT
 	layout.add_theme_constant_override("margin_left", 0)
 	layout.add_theme_constant_override("margin_top", 0)
 	layout.add_theme_constant_override("margin_right", 0)
@@ -766,9 +783,9 @@ func _show_main_menu() -> void:
 
 	var action_box := VBoxContainer.new()
 	action_box.name = "MainMenuActions"
-	action_box.custom_minimum_size = Vector2(380, 0)
-	action_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_box.add_theme_constant_override("separation", 10)
+	action_box.custom_minimum_size = Vector2(380, MAIN_MENU_ACTION_COLUMN_HEIGHT)
+	action_box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	action_box.add_theme_constant_override("separation", int(MAIN_MENU_BUTTON_SEPARATION))
 	layout.add_child(action_box)
 
 	var start_button := _make_button("Начать новую игру")

@@ -1071,6 +1071,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_btn_red_gold_utility_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_utility.png` + hover/pressed/disabled | Compact utility 54x42 |
 | `ui_btn_red_gold_pause_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_pause.png` + hover/pressed/disabled | Pause menu 280x60 |
 | `ui_btn_red_gold_rebind_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_rebind.png` + hover/pressed/disabled | Keybinding/dropdown-style 420x62 controls |
+| `main_menu_title_fantasy_disk` | `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` | SCRUM-680 release refresh main menu logo/title, `960x360` RGBA transparent. PixelLab textless crest source and manifest live in `docs/design/references/main_menu_logo_release_fix/`; generator `tools/build_main_menu_title_logo.py` renders exact `Fantasy Disk` text and runtime displays the asset as `MainMenuTitleLabel` at `Rect2(56,44,720,270)`. |
 | `ui_df_button_primary/secondary/danger_*` | `assets/sprites/ui/frames/dark_fantasy/ui_df_button_*` | Superseded SCRUM-147 parchment/wax buttons; retained only as legacy/reference fallback |
 | `ui_df_panel_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_panel_frame.png` | Superseded SCRUM-229 panel fallback/reference |
 | `ui_df_shop_frame` | `assets/sprites/ui/frames/dark_fantasy/ui_df_shop_frame.png` | Superseded merchant/shop frame fallback/reference |

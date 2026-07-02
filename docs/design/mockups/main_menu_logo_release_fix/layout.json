@@ -1,0 +1,33 @@
+{
+  "canvas": {
+    "width": 960,
+    "height": 360
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Luminari.ttf",
+    "color": "#F6D987",
+    "stroke_fill": "#12070A",
+    "stroke_width": 5,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "Fantasy Disk"
+  },
+  "zones": [
+    {
+      "id": "title_text_zone",
+      "content_key": "title",
+      "role": "title",
+      "x": 320,
+      "y": 82,
+      "w": 600,
+      "h": 154,
+      "max_font": 118,
+      "min_font": 72,
+      "required": true,
+      "debug_color": "#55D0FF"
+    }
+  ]
+}
