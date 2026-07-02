@@ -1,13 +1,13 @@
 # ART Мета 4.0: UI-кит экрана «Атлас героев» + 17 гербов классов
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Design (Claude)
 Версия: 0.1.8
 Создано: 2026-07-02
 Jira: SCRUM-826
 Контур: Claude
-Owner: unassigned
+Owner: claude-designer
 Thread/Worker: n/a
 Locked paths: `assets/sprites/ui/meta40/`, `docs/design/previews/meta40_*`
 
@@ -59,3 +59,42 @@ Locked paths: `assets/sprites/ui/meta40/`, `docs/design/previews/meta40_*`
 PixelLab MCP (квоту проверить get_balance до батча); OpenAI images НЕ
 использовать (billing hard limit). Git: pull перед стартом, явный add, push
 сразу; полная автономия.
+
+## Выполнено (claude-designer, 2026-07-02)
+
+**26 продакшн-ассетов** в `assets/sprites/ui/meta40/` (все с прозрачным фоном +
+.import-пары в git-tree):
+
+- **17 гербов** `crest_<class>.png` (96×96, канон class_id): berserk, sniper,
+  biologist, knight, thief, druid, engineer, guitarist, priest, doctor, chemist,
+  dark_mage, elementalist, robot, soldier, assassin, ranger. Единый шаблон —
+  круглый бронзово-золотой медальон, тёмно-синий центр, классовый символ,
+  «no text», high detail. Читаемость на 46px проверена (LANCZOS-даунскейл).
+- **Фон-рама** `atlas_bg.png` (688×384) — звёздное небо в кожаной раме с золотым
+  кантом; edge-халоу вычищен border-connected flood-fill (0 полупрозрачных px,
+  размер не менялся).
+- **Сокеты** `socket_minor/notable/keystone/hidden.png` (нейтральные варианты,
+  тонировка состояний — в рантайме T3).
+- **Звезда аллокации** `star_alloc.png`; **активное кольцо keystone**
+  `keystone_ring.png` (сапфировое сияние).
+- **Валюты** `currency_emblem.png` (ромб-сигил) и `currency_stardust.png`
+  (4-конечная звёздочка, 48px).
+- **Контакт-лист**: `docs/design/previews/meta40_asset_contact.png`.
+
+**Решения (автономия):** фон/сокеты/звезда взяты из утверждённых PM-превью
+`meta40_*` (это и есть канон-стиль кита) и промоутнуты в продакшн с alpha-cleanup
++ свежими .import; регенерация 688px рамы дала бы худший/несогласованный результат.
+Новая арт-работа (17 гербов, hidden-сокет, keystone-кольцо, валюты) —
+свежая генерация PixelLab под единый шаблон. engineer/robot/ranger
+перегенерены v2 (первые версии теряли символ/рамку).
+
+**Evidence (PixelLab create_map_object id):** berserk `5a72b6a0`, sniper
+`a5cfe5a5`, biologist `314a7b34`, knight `e2230fff`, thief `98196109`, druid
+`4842554c`, engineer(v2) `45256985`, guitarist `8991392f`, priest `a549a610`,
+doctor `5a6912e1`, chemist `7b06e812`, dark_mage `a7c5fd9d`, elementalist
+`9e14a3b6`, robot(v2) `2f003aa7`, soldier `9dcc8db2`, assassin `c4235530`,
+ranger(v2) `43de0124`; socket_hidden `c1257da2`, keystone_ring `e84c15e2`,
+currency_emblem `20e8d0df`.
+
+**Гейт:** `godot_gate.py --import` (26/26 png↔import пар, uid-уникальность OK) +
+`tests/runtime_smoke_test.gd` → PASS (16311 файлов, duplicate-artifact guard OK).

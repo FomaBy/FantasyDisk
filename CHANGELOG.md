@@ -5,6 +5,19 @@
 ## [Unreleased] — ветка dev
 
 ### Added
+- SCRUM-826: ART Мета 4.0 «Атлас героев» — продакшн UI-кит созвездий
+  (`assets/sprites/ui/meta40/`, 26 ассетов, прозрачный фон, .import-пары в
+  коммите). 17 гербов классов (круглые бронзово-золотые медальоны, единая
+  палитра, «no text», читаемы на 46px): berserk/sniper/biologist/knight/thief/
+  druid/engineer/guitarist/priest/doctor/chemist/dark_mage/elementalist/robot/
+  soldier/assassin/ranger. UI-элементы: фон-рама `atlas_bg` (688×384, edge
+  flood-fill alpha-cleanup), сокеты minor/notable/keystone/hidden, звезда
+  аллокации `star_alloc`, сапфировое активное кольцо keystone `keystone_ring`,
+  валюты `currency_emblem` (ромб-сигил) и `currency_stardust` (звёздочка).
+  Контакт-лист `docs/design/previews/meta40_asset_contact.png`. Источник дизайна:
+  `docs/design/systems/meta_constellations.md` §7/прил. C. Генерация — PixelLab
+  MCP (create_map_object, high detail). Ассеты ждут разводки в экране «Атлас
+  героев» (T3, SCRUM-828).
 - SCRUM-807: Skill Tree 3.0 — настоящая классовая идентичность мета-древа. Граф
   вырос до 192 узлов (стоимость 285 при неизменном cap 100): у каждого из 17
   классов теперь ≥8 классовых нодов (5 профильных атрибутов по `ATTRIBUTE_RELEVANCE`
