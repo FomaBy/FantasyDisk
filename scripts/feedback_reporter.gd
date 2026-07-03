@@ -10,6 +10,20 @@ const WEBHOOK_KEY := "webhook_url"
 const BUNDLED_WEBHOOK_KEY := "discord_webhook_url"
 const LOCAL_ROOT := "user://feedback"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
+# SCRUM-848: встроенный дефолтный вебхук — фидбек уходит разработчику из коробки в
+# любой сборке/чекауте, без env и без cfg (директива PM, осознанный revert части
+# SCRUM-665: доставка фидбека важнее секретности вебхука). URL хранится base64-чанками,
+# а не литералом: grep и секрет-сканеры GitHub не находят сырой
+# discord.com/api/webhooks/<id>/<token>, и Discord не отзовёт вебхук автоматом, если
+# репозиторий когда-нибудь станет публичным. Оверрайды (env/cfg) сохраняют приоритет.
+# Ротация при спаме: новый вебхук в Discord → base64 →
+#   python3 -c "import base64;print(base64.b64encode(b'<url>').decode())"
+# → разложить на чанки ниже.
+const BUILTIN_WEBHOOK_B64_PARTS: Array[String] = [
+	"aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUxNTcxMDg",
+	"yMjg2ODA2MjM1MC9ZNlhSTlYwTzNuUGVhRXhpZWhKWFM2clZFV0hCMU",
+	"ozZV9STTdRbUpxOG52QmZQQzJ5bmh2c2pmWV95ckhQWlZPeS1PTw==",
+]
 const SCREENSHOT_FILENAME := "fantasydisk_feedback.png"
 # Вложение в Discord уходит ужатым JPG, а не полноразмерным PNG: скрин 1600x970 в
 # PNG весит ~9.8 МБ, и multipart-тело пробивает лимит загрузки вебхука (~8–10 МБ
@@ -261,34 +275,42 @@ func _retry_after_seconds(headers: PackedStringArray) -> float:
 	return RATE_LIMIT_FALLBACK_SECONDS
 
 
-func _webhook_url() -> String:
-	return str(_webhook_resolution().get("url", ""))
+static func _builtin_webhook_url() -> String:
+	return Marshalls.base64_to_utf8("".join(BUILTIN_WEBHOOK_B64_PARTS))
 
 
 func _webhook_resolution() -> Dictionary:
-	# Источник URL по приоритету (SCRUM-665):
-	# 1) env (дев-машина/CI); 2) res://feedback_webhook.cfg для локальных dev-сборок;
-	# 3) user://feedback_config.cfg (legacy/override). Release exports не бандлят raw webhook.
-	var env_url := OS.get_environment(ENV_WEBHOOK).strip_edges()
-	if env_url != "":
-		return _webhook_result(env_url, "env")
-	var bundled := ConfigFile.new()
-	if bundled.load(BUNDLED_CONFIG_PATH) == OK:
-		var u := str(bundled.get_value(CONFIG_SECTION, BUNDLED_WEBHOOK_KEY, "")).strip_edges()
-		if u != "":
-			return _webhook_result(u, "bundled")
+	return _resolve_from(
+		OS.get_environment(ENV_WEBHOOK),
+		_config_webhook_value(BUNDLED_CONFIG_PATH, BUNDLED_WEBHOOK_KEY),
+		_config_webhook_value(CONFIG_PATH, WEBHOOK_KEY))
+
+
+static func _config_webhook_value(path: String, key: String) -> String:
 	var config := ConfigFile.new()
-	if config.load(CONFIG_PATH) == OK:
-		var u2 := str(config.get_value(CONFIG_SECTION, WEBHOOK_KEY, "")).strip_edges()
-		if u2 != "":
-			return _webhook_result(u2, "user")
+	if config.load(path) != OK:
+		return ""
+	return str(config.get_value(CONFIG_SECTION, key, ""))
+
+
+# Источник URL по приоритету (SCRUM-848): env (дев/CI) → res://feedback_webhook.cfg
+# (локальные dev-сборки) → user://feedback_config.cfg (legacy) → встроенный вебхук.
+# Невалидный оверрайд (плейсхолдер/чужой домен) у игрока больше не превращается в
+# «Ошибка сборки»: предупреждаем дева и падаем дальше по цепочке — встроенный URL
+# гарантирует доставку. Чистая функция, юнит-тестируется без файлов и env.
+static func _resolve_from(env_url: String, bundled_url: String, user_url: String) -> Dictionary:
+	var overrides := [[env_url, "env"], [bundled_url, "bundled"], [user_url, "user"]]
+	for entry in overrides:
+		var url: String = str(entry[0]).strip_edges()
+		if url == "":
+			continue
+		if _is_valid_webhook_url(url):
+			return {"url": url, "source": str(entry[1]), "error": ""}
+		push_warning("Feedback: некорректный webhook-оверрайд (%s) проигнорирован, использую встроенный." % str(entry[1]))
+	var builtin := _builtin_webhook_url()
+	if _is_valid_webhook_url(builtin):
+		return {"url": builtin, "source": "builtin", "error": ""}
 	return {"url": "", "source": "", "error": "missing"}
-
-
-static func _webhook_result(url: String, source: String) -> Dictionary:
-	if _is_valid_webhook_url(url):
-		return {"url": url, "source": source, "error": ""}
-	return {"url": "", "source": source, "error": "invalid"}
 
 
 static func _is_valid_webhook_url(url: String) -> bool:

@@ -5833,16 +5833,18 @@ func _show_pause_menu(force := false) -> void:
 # Панель _pause_end_modal_display_size("pause"): source 986×900, высота клампится в
 # [520,820] → @2K = 898×820, CenterContainer центрирует. Content margins (74,94,74,86)
 # скейлятся ×0.911 → safe-area ≈ (67,86,67,78). Контент: заголовок, подзаголовок,
-# 5 кнопок 280×60 (separation 8). Всё внутри safe-area без наслоений.
+# 6 кнопок 280×60 (separation 8; SCRUM-848 добавил «Фидбек»). Столб контента 498px
+# центрирован в safe-area (низ 973 ≤ 1052) — всё внутри без наслоений.
 const PM_PANEL_2K := Rect2(831, 310, 898, 820)
 const PM_SAFE_2K := Rect2(898, 396, 764, 656)
-const PM_TITLE_2K := Rect2(898, 509, 764, 58)
-const PM_SUBTITLE_2K := Rect2(898, 575, 764, 24)
-const PM_BTN_CONTINUE_2K := Rect2(1140, 607, 280, 60)
-const PM_BTN_DOSSIER_2K := Rect2(1140, 675, 280, 60)
-const PM_BTN_SETTINGS_2K := Rect2(1140, 743, 280, 60)
-const PM_BTN_ENDRUN_2K := Rect2(1140, 811, 280, 60)
-const PM_BTN_MAINMENU_2K := Rect2(1140, 879, 280, 60)
+const PM_TITLE_2K := Rect2(898, 475, 764, 58)
+const PM_SUBTITLE_2K := Rect2(898, 541, 764, 24)
+const PM_BTN_CONTINUE_2K := Rect2(1140, 573, 280, 60)
+const PM_BTN_DOSSIER_2K := Rect2(1140, 641, 280, 60)
+const PM_BTN_SETTINGS_2K := Rect2(1140, 709, 280, 60)
+const PM_BTN_FEEDBACK_2K := Rect2(1140, 777, 280, 60)
+const PM_BTN_ENDRUN_2K := Rect2(1140, 845, 280, 60)
+const PM_BTN_MAINMENU_2K := Rect2(1140, 913, 280, 60)
 
 
 func _build_run_pause_menu() -> void:
@@ -5931,6 +5933,18 @@ func _build_run_pause_menu() -> void:
 		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
 	)
 	box.add_child(settings_button)
+
+	# SCRUM-848: фидбек доступен без знания хоткея P — видимая кнопка в паузе.
+	# Скриншот берём как у хоткея (последний отрисованный кадр вьюпорта, поверх
+	# будет меню паузы — это ок, игрок описывает момент, в котором остановился).
+	var feedback_button := _make_button("Фидбек")
+	feedback_button.name = "RunPauseFeedbackButton"
+	_set_action_button_size(feedback_button, 280.0, 60.0)
+	_apply_overhaul_2k_button_theme(feedback_button, "pm_btn", PM_BTN_FEEDBACK_2K.size)
+	feedback_button.pressed.connect(func() -> void:
+		_show_feedback_overlay(_capture_feedback_screenshot())
+	)
+	box.add_child(feedback_button)
 
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
@@ -9388,6 +9402,15 @@ const FB_SCREENSHOT_2K := Rect2(868, 648, 824, 240)
 const FB_STATUS_2K := Rect2(868, 934, 824, 36)
 const FB_BTN_SEND_2K := Rect2(1031, 980, 260, 64)
 const FB_BTN_CANCEL_2K := Rect2(1309, 980, 220, 64)
+
+
+# SCRUM-848: тот же захват, что у хоткея P в main.gd — последний отрисованный кадр
+# вьюпорта (в headless скриншота нет, форма покажет заглушку из _normalized_screenshot).
+func _capture_feedback_screenshot() -> Image:
+	if DisplayServer.get_name() == "headless":
+		return null
+	var viewport_texture: ViewportTexture = game.get_viewport().get_texture()
+	return viewport_texture.get_image() if viewport_texture != null else null
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:

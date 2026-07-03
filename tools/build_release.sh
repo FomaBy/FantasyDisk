@@ -48,9 +48,9 @@ fi
 
 echo "==> Feedback webhook"
 if [[ -f "${REPO_DIR}/feedback_webhook.cfg" || -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
-  echo "    raw Discord webhook больше не бандлится в player build; feedback уйдет в user:// fallback, пока нет server/proxy endpoint"
+  echo "    найден локальный webhook-оверрайд; player build его НЕ бандлит — клиент использует встроенный вебхук (SCRUM-848)"
 else
-  echo "    raw webhook не найден и не нужен для сборки; player feedback использует user:// fallback"
+  echo "    оверрайдов нет; клиент использует встроенный вебхук фидбека (SCRUM-848), ручная настройка не нужна"
 fi
 
 echo "==> Импорт ресурсов (headless)"
