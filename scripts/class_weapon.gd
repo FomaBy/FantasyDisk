@@ -89,6 +89,7 @@ const ATTACK_MODE_EXECUTORS := {
 @export var brace_duration := 0.34
 @export var suppression_width := 120.0
 @export var damage_falloff := 0.55
+@export var pierce_damage_falloff := 1.0
 @export var steal_money := 0
 @export var dodge_bonus := 0.0
 @export var smoke_duration := 1.8
@@ -187,6 +188,7 @@ func configure_weapon(config: Dictionary) -> void:
 	brace_duration = float(config.get("brace_duration", brace_duration))
 	suppression_width = float(config.get("suppression_width", suppression_width))
 	damage_falloff = float(config.get("damage_falloff", damage_falloff))
+	pierce_damage_falloff = float(config.get("pierce_damage_falloff", pierce_damage_falloff))
 	steal_money = int(config.get("steal_money", steal_money))
 	dodge_bonus = float(config.get("dodge_bonus", dodge_bonus))
 	smoke_duration = float(config.get("smoke_duration", smoke_duration))
@@ -692,7 +694,7 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 		if current_target != null:
 			current_weapon.call("_damage_enemy_with_dot", current_target, rolled, current_owner)
 		if aoe_radius > 0.0:
-			current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius * 0.72, rolled * 0.42)
+			current_weapon.call("_damage_enemies_in_circle_falloff", target_position, aoe_radius * 0.72, rolled * 0.42, current_weapon.get("damage_falloff"))
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius * 0.72, visual_color)
 	)
 	_register_effect(skull)
@@ -746,10 +748,11 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var damage_value := _rolled_damage(owner_node)
 	var hit_count := 0
 	var hit_limit := _effective_pierce_count()
+	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
 	for hit in hits:
 		if hit_count >= hit_limit:
 			break
-		_damage_enemy(hit["node"], damage_value)
+		_damage_enemy(hit["node"], damage_value * pow(falloff, float(hit_count)))
 		hit_count += 1
 
 
@@ -779,10 +782,11 @@ func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var damage_value := _rolled_damage(owner_node)
 	var hit_count := 0
 	var hit_limit := _effective_pierce_count()
+	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
 	for hit in hits:
 		if hit_count >= hit_limit:
 			break
-		_damage_enemy_with_dot(hit["node"], damage_value, owner_node)
+		_damage_enemy_with_dot(hit["node"], damage_value * pow(falloff, float(hit_count)), owner_node)
 		hit_count += 1
 
 
@@ -1041,23 +1045,31 @@ func _fire_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) 
 	_register_effect(grenade)
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
+	var grenade_id := grenade.get_instance_id()
+	var telegraph_id := telegraph.get_instance_id()
 	var tween := create_tween()
 	tween.tween_property(grenade, "global_position", target_position, maxf(grenade_delay * 0.55, 0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_interval(maxf(grenade_delay * 0.45, 0.04))
 	tween.tween_callback(func() -> void:
 		var current_weapon := instance_from_id(weapon_id) as Node
 		var current_owner := instance_from_id(owner_id) as Node2D
+		var current_grenade := instance_from_id(grenade_id) as Node
+		var current_telegraph := instance_from_id(telegraph_id) as Node
 		if current_weapon == null:
-			if is_instance_valid(grenade):
-				grenade.queue_free()
+			if current_grenade != null:
+				current_grenade.queue_free()
+			if current_telegraph != null:
+				current_telegraph.queue_free()
 			return
 		var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 		if current_owner != null:
 			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
 		current_weapon.call("_damage_enemies_in_circle_falloff", target_position, aoe_radius, explosion_damage, damage_falloff)
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
-		current_weapon.call("_release_effect", grenade)
-		current_weapon.call("_release_effect", telegraph)
+		if current_grenade != null:
+			current_weapon.call("_release_effect", current_grenade)
+		if current_telegraph != null:
+			current_weapon.call("_release_effect", current_telegraph)
 	)
 
 
@@ -1288,6 +1300,7 @@ func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 	_register_effect(telegraph)
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
+	var telegraph_id := telegraph.get_instance_id()
 	var rift_tween := create_tween()
 	rift_tween.tween_interval(maxf(grenade_delay, 0.12))
 	rift_tween.tween_callback(func() -> void:
@@ -1307,7 +1320,9 @@ func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 		current_weapon.call("_damage_enemies_in_segment", start_a, end_a, beam_width, damage_value * 0.62)
 		current_weapon.call("_damage_enemies_in_segment", start_b, end_b, beam_width, damage_value * 0.62)
 		current_weapon.call("_damage_enemies_in_circle", center, beam_width * 0.85, damage_value * 0.55)
-		current_weapon.call("_release_effect", telegraph)
+		var current_telegraph := instance_from_id(telegraph_id) as Node
+		if current_telegraph != null:
+			current_weapon.call("_release_effect", current_telegraph)
 	)
 
 
@@ -1323,6 +1338,7 @@ func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2)
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var meteor_id := meteor.get_instance_id()
+	var telegraph_id := telegraph.get_instance_id()
 	var meteor_tween := create_tween()
 	meteor_tween.tween_property(meteor, "global_position", center, maxf(grenade_delay, 0.12)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	meteor_tween.tween_callback(func() -> void:
@@ -1336,15 +1352,17 @@ func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2)
 		if current_owner != null:
 			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true, "shards": int(current_weapon.get("shard_count"))})
 		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-		current_weapon.call("_damage_enemies_in_circle", center, aoe_radius, damage_value * 0.72)
+		current_weapon.call("_damage_enemies_in_circle_falloff", center, aoe_radius, damage_value * 0.96, 0.50)
 		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), center, aoe_radius, visual_color)
 		var count: int = maxi(int(current_weapon.get("shard_count")), 1)
 		for shard_index in range(count):
 			var angle := TAU * float(shard_index) / float(count)
 			var shard_pos := center + Vector2.RIGHT.rotated(angle) * aoe_radius * 0.72
-			current_weapon.call("_damage_enemies_in_circle", shard_pos, current_weapon.get("beam_width") * 1.45, damage_value * 0.34)
+			current_weapon.call("_damage_enemies_in_circle_falloff", shard_pos, current_weapon.get("beam_width") * 1.45, damage_value * 0.28, 0.45)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), shard_pos, current_weapon.get("beam_width") * 1.45, current_weapon.get("visual_color"))
-		current_weapon.call("_release_effect", telegraph)
+		var current_telegraph := instance_from_id(telegraph_id) as Node
+		if current_telegraph != null:
+			current_weapon.call("_release_effect", current_telegraph)
 		if current_meteor != null:
 			current_weapon.call("_release_effect", current_meteor)
 	)
@@ -1451,17 +1469,21 @@ func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vec
 	var damage_value := _rolled_damage(owner_node)
 	_damage_enemy(first_target, damage_value)
 	var used := {first_target.get_instance_id(): true}
-	var split_targets: Array = _nearest_enemies_from(first_target.global_position, aoe_radius, maxi(split_count + _extra_projectiles(), 1), used)
-	for split_index in range(split_targets.size()):
-		var enemy_node := split_targets[split_index] as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var shard := AttackVfx.beam(_projectile_parent(), first_target.global_position, enemy_node.global_position, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
+	var shard_count := maxi(split_count + _extra_projectiles(), 1)
+	var shard_spread := deg_to_rad(42.0)
+	var shard_range := minf(attack_range * 0.42, maxf(aoe_radius, 220.0))
+	var pierce_limit := maxi(pierce_count, 1)
+	for split_index in range(shard_count):
+		var offset := 0.0
+		if shard_count > 1:
+			offset = lerpf(-shard_spread * 0.5, shard_spread * 0.5, float(split_index) / float(shard_count - 1))
+		var shard_direction := shot_direction.rotated(offset).normalized()
+		var shard_start := first_target.global_position + shard_direction * 10.0
+		var shard_finish := first_target.global_position + shard_direction * shard_range
+		var shard := AttackVfx.beam(_projectile_parent(), shard_start, shard_finish, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
 		_register_effect(shard)
-		_damage_enemy(enemy_node, damage_value * pow(damage_falloff, float(split_index + 1)))
-	if split_targets.is_empty():
-		var end_point: Vector2 = first_target.global_position + shot_direction * min(aoe_radius, 220.0)
-		_damage_enemies_in_segment(first_target.global_position, end_point, beam_width * 0.6, damage_value * damage_falloff)
+		var shard_damage := damage_value * pow(damage_falloff, float(split_index + 1))
+		_damage_split_shard_corridor(shard_start, shard_direction, beam_width * 0.62, shard_range, shard_damage, used, pierce_limit)
 
 
 func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1546,7 +1568,7 @@ func _fire_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Ve
 		_register_effect(tether)
 		_damage_enemy(current_target, damage_value * pow(damage_falloff, float(jump_index)))
 		previous_position = current_target.global_position
-		current_target = _find_nearest_enemy_from(previous_position, aoe_radius, used)
+		current_target = _find_prayer_chain_next(owner_node.global_position, previous_position, aoe_radius, used)
 	if owner_node != null and is_instance_valid(owner_node):
 		AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.42, Color(visual_color.r, visual_color.g, visual_color.b, 0.24))
 
@@ -2052,6 +2074,22 @@ func _nearest_enemies_from(origin: Vector2, range_limit: float, count: int, excl
 	return TARGET_QUERY.nearest_many(self, origin, range_limit, count, excluded_ids)
 
 
+func _find_prayer_chain_next(owner_position: Vector2, previous_position: Vector2, range_limit: float, excluded_ids: Dictionary) -> Node2D:
+	var best_enemy: Node2D = null
+	var best_score := INF
+	var range_squared := range_limit * range_limit
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if enemy_node == null or not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
+			continue
+		if previous_position.distance_squared_to(enemy_node.global_position) > range_squared:
+			continue
+		var score := owner_position.distance_squared_to(enemy_node.global_position) * 0.65 + previous_position.distance_squared_to(enemy_node.global_position) * 0.35
+		if score < best_score:
+			best_score = score
+			best_enemy = enemy_node
+	return best_enemy
+
+
 func _enemies_in_circle_sorted(origin: Vector2, radius: float, count: int) -> Array:
 	return _nearest_enemies_from(origin, radius, count)
 
@@ -2266,6 +2304,23 @@ func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, a
 		return
 	for enemy_node in TARGET_QUERY.in_segment(self, start, finish, width):
 		_damage_enemy(enemy_node, amount)
+
+
+func _damage_split_shard_corridor(origin: Vector2, direction: Vector2, width: float, range_limit: float, amount: float, excluded_ids: Dictionary, hit_limit: int) -> int:
+	var hit_count := 0
+	for hit in _enemies_in_corridor(origin, direction, width, range_limit):
+		if hit_count >= hit_limit:
+			break
+		var enemy_node := hit["node"] as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		var enemy_id := enemy_node.get_instance_id()
+		if excluded_ids.has(enemy_id):
+			continue
+		excluded_ids[enemy_id] = true
+		_damage_enemy(enemy_node, amount * pow(0.72, float(hit_count)))
+		hit_count += 1
+	return hit_count
 
 
 func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:

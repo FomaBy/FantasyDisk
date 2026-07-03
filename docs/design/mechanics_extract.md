@@ -140,20 +140,20 @@ SCRUM-854 уточнил runtime-контракты: weapon signature в ата�
 | Берсерк | Двуручный топор | `axe` | `sweep` | Сектор 180° радиуса 250 по ближайшему монстру, damage x0.85; `sector_multiplier` расширяет угол, Radius расширяет дальность |
 | Берсерк | Двуручный молот | `hammer` | `circle` | Круг 150px, damage x0.55; Radius увеличивает круг, `sector_multiplier` не влияет; плотные паки получают circle target diminishing |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
-| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
+| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Бросок/посадка без урона; damage только после fuse-телеграфа, с falloff к краю |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
 | Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим целям, урон убывает по цепи, первые попадания крадут немного золота |
 | Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и цепляет врагов рядом, не двигая героя |
 | Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Дымовая зона взрывается после короткой задержки, а Вор получает временный dodge-window |
 | Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбитальные стихийные сферы наносят короткие AoE-тики вокруг героя |
 | Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
-| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Отложенный метеорный удар и вторичные осколочные взрывы вокруг цели |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Long-cast метеор: крупный central impact с falloff и вторичные shard-зоны вокруг цели |
 | Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний луч по locked target и falloff по линии |
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий по врагам внутри |
-| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним целям с убывающим уроном |
+| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
 | Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько защитных ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
-| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain от нанесенного урона |
+| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal от нанесенного урона |
 | Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
 | Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
 | Биолог | Семя Симбионта | `biologist_symbiote_seed` | `bio_symbiote_web` | Первичная цель связывается с соседними врагами симбиотической сетью и делит биоурон |
@@ -164,8 +164,8 @@ SCRUM-854 уточнил runtime-контракты: weapon signature в ата�
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
-| Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и небольшой splash по области цели |
-| Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов) |
+| Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и decayed splash по области цели |
+| Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов), damage decays после каждой цели |
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
 | Гитарист | Усилитель | `sound_amp` | `amp` | Деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4) |
@@ -785,6 +785,14 @@ SCRUM-856 (2026-07-04) adds the class-trio identity audit in
 pair-level gates as a numeric baseline and routes SCRUM-857..860 toward
 mechanic-first fixes for delayed AoE, projectile/chain/split/pierce,
 melee/counter/tank, summon/deploy/turret and sustain scaling identities.
+
+SCRUM-857 (2026-07-04) implements the first projectile/chain/pierce pass without
+breaking the numeric gate: global damage smoke still passes with worst CCT
+`doctor/restore_potion/20` at +22%. Runtime contracts are covered by
+`tests/projectile_chain_pierce_identity_test.gd`: grenade damage waits for fuse,
+meteor uses a longer cast plus shard payoff, coin ricochet stays nearest-chain,
+sniper shatter uses fan trajectories with limited pierce, prayer chain prefers a
+sustain arc toward the owner, and dark curse/pierce damage decays.
 
 ### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
 

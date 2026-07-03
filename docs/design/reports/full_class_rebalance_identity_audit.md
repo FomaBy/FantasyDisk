@@ -161,6 +161,11 @@ runtime paths.
 1. SCRUM-857: projectile, chain, pierce and delayed AoE pass. Safe first if it
    limits itself to non-overlapping slices and explicitly re-checks shared
    `class_weapon` ownership before edits.
+   - Implementation update 2026-07-04: SCRUM-857 landed the first slice for
+     grenade fuse damage, meteor long-cast shards, ricochet vs fan split,
+     prayer sustain arc and dark pierce/curse decay. Remaining projectile-family
+     ideas such as reagent clouds, ranger charge/fan feel and poison ramp can be
+     picked up only through new scoped follow-ups.
 2. SCRUM-858: melee, counter, tank and risk-reward pass. Focus on Berserk,
    Soldier bayonet, Assassin daggers, Doctor saw, Knight and Robot. Re-check
    current Jira locks before editing shared `class_weapon` paths.

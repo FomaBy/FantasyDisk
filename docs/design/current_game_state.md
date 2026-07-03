@@ -1112,8 +1112,8 @@ SCRUM-241 добавил переключатель прицеливания: `n
 | Оружие | ID | Режим | Механика |
 | --- | --- | --- | --- |
 | Темная книга | `dark_book` | `aoe_projectile` | Два снаряда летят в две ближайшие цели и взрываются по области (`projectile_count: 2`) |
-| Проклятый череп | `cursed_skull` | `homing_curse` | Самонаводящееся проклятие, прямой урон, 5 DoT-тиков и небольшой splash по области цели |
-| Темный жезл | `dark_wand` | `beam` | Два pierce-луча веером (`beam_count: 2`, шаг 14 градусов), каждый пробивает несколько целей |
+| Проклятый череп | `cursed_skull` | `homing_curse` | Самонаводящееся проклятие, прямой урон, 5 DoT-тиков и decayed splash по области цели |
+| Темный жезл | `dark_wand` | `beam` | Два pierce-луча веером (`beam_count: 2`, шаг 14 градусов), каждый пробивает несколько целей с убывающей темной энергией |
 
 ## Оружие Гитариста
 
@@ -1140,20 +1140,20 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Класс | Оружие | ID | Режим | Механика |
 | --- | --- | --- | --- | --- |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 коротких выстрела по линии; основная цель полный урон, соседние цели reduced suppression damage |
-| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф ground-zone, короткая задержка и взрыв с falloff урона |
+| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Бросок/посадка без урона, затем fuse-телеграф и взрыв с falloff урона |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага за brace window + knockback |
 | Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим врагам, урон убывает по цепи, первые попадания крадут золото |
 | Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и малый splash рядом, не двигая героя |
 | Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Delayed AoE дыма плюс временный dodge-window |
 | Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбита стихийных сфер вокруг героя с несколькими AoE-тиками |
 | Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
-| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Отложенный удар метеора и вторичные осколочные взрывы рядом |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Long-cast метеор: крупный central impact с falloff и вторичные shard-зоны рядом |
 | Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний beam по locked target и falloff по линии |
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркированная kill-zone у ближайшей цели вызывает несколько точных sky-beam попаданий |
-| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним врагам с убывающим уроном |
+| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
 | Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
-| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain |
+| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal |
 | Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
 | Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
 | Биолог | Семя Симбионта | `biologist_symbiote_seed` | `bio_symbiote_web` | Первичная цель связывается с соседними врагами симбиотической сетью и делит биоурон |
@@ -1182,7 +1182,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT |
 | Друид | Вороний тотем | `raven_totem` | `amp` | `support_totem` pulses, Leadership-scaled deploy limit, малый support sustain |
 
-Новые backend modes/hooks: Soldier `suppression_burst`/`grenade_cook`/`bayonet_brace`, Thief `coin_ricochet`/`shadow_backstab`/`smoke_bomb`, Elementalist `elemental_orbit`/`prism_rift`/`meteor_shards`, Sniper `sniper_lockshot`/`sniper_kill_zone`/`sniper_split_round`, Priest `priest_sanctify`/`priest_ward`/`priest_prayer_chain`, Biologist `bio_spore_bloom`/`bio_sample_dart`/`bio_symbiote_web`, `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit shadow burst (`crit_shadow_burst_radius`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`. SCRUM-854 поднял active pool cap до 6 per weapon owner, поэтому новые acid/briar/cloud зоны не стирают предыдущую сразу и живут по собственному `pool_duration`.
+Новые backend modes/hooks: Soldier `suppression_burst`/`grenade_cook`/`bayonet_brace`, Thief `coin_ricochet`/`shadow_backstab`/`smoke_bomb`, Elementalist `elemental_orbit`/`prism_rift`/`meteor_shards`, Sniper `sniper_lockshot`/`sniper_kill_zone`/`sniper_split_round`, Priest `priest_sanctify`/`priest_ward`/`priest_prayer_chain`, Biologist `bio_spore_bloom`/`bio_sample_dart`/`bio_symbiote_web`, `stab_flurry`, `dot_beam`, `trap`, `drain_link`, ranger stance charge (`charge_seconds`/`charge_max_multiplier`), assassin crit shadow burst (`crit_shadow_burst_radius`), chemist cloud combos (`pool_element`/`combo_clouds`), knight block/counter (`block_reduction`/`counter_damage_multiplier`) и druid pet commands (`command_mode`, `command_target`). SCRUM-857 уточнил projectile/chain/pierce identities: grenade наносит damage только после fuse, meteor имеет более долгий impact+shards payoff, sniper split использует fan trajectories with pierce, priest chain выбирает sustain-arc target, а dark wand/curse применяют decay. Deploy/trap/totem/cloud visuals используют `WeaponVisual` или `AttackVfx`, регистрируются в `player_weapon_effects` для cleanup; химические облака дополнительно временно входят в `chemist_clouds`. SCRUM-854 поднял active pool cap до 6 per weapon owner, поэтому новые acid/briar/cloud зоны не стирают предыдущую сразу и живут по собственному `pool_duration`.
 
 SCRUM-152/157/254/357/854: `AllyMinion.tscn` больше не использует Polygon2D-placeholder, а показывает `assets/sprites/allies/ally_druid_beast.png` как безопасный fallback. Source-specific runtime mapping подключен: `summon_amulet` выбирает `ally_druid_beast.png` или `ally_druid_pack_spirit.png`, `homunculus_vial` использует `ally_homunculus.png`, будущий `leadership_echo` зарезервирован под `ally_leadership_echo.png`. Deployable mapping вынесен в weapon config: `sound_amp` ставит `deploy_sound_amp_field.png`, `raven_totem` ставит `deploy_raven_totem_field.png`. `AllyMinion` имеет runtime `max_health/health`, `take_damage()` и `set_combat_profile()`, чтобы призывы могли получать роль, выживаемость, темп, leash и splash от владельца. Mobile summons tag owner+weapon, стартуют с половиной текущего лимита и добирают остаток штатным summon interval. Cleanup groups (`allies`, `player_weapon_effects`, `deployed_sound_amps`) не менялись.
 
@@ -1839,7 +1839,7 @@ SCRUM-853 усиливает pressure curve поверх этих базовых
 ## Известные Ограничения
 
 - Исходный GDD упоминает автоскролл уровня вниз, но текущая реализация использует статичную арену с маршрутной картой.
-- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 51 пары класс+оружие (solo DPS, 5-target DPS, crowd-clear 5/10/20, EHP) и финальный отчет `build/balance_final_audit_0_1_5.md`. `tests/global_damage_balance_smoke_test.gd` проверяет combined DPS ±25%, solo DPS ±20% и 5/10/20 crowd-clear time ±30%; текущий SCRUM-262 результат PASS, худшее CCT +22.0% у `doctor/restore_potion` на 20 целях. SCRUM-856 добавляет class-trio identity audit в `docs/design/reports/full_class_rebalance_identity_audit.md`: волна SCRUM-857..860 должна чинить playfeel механикой оружий/китов, а не только числовыми множителями. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
+- Баланс классов и оружия теперь имеет измерительный слой: `tools/balance_harness.gd` генерирует `build/balance_report.md` для 51 пары класс+оружие (solo DPS, 5-target DPS, crowd-clear 5/10/20, EHP) и финальный отчет `build/balance_final_audit_0_1_5.md`. `tests/global_damage_balance_smoke_test.gd` проверяет combined DPS ±25%, solo DPS ±20% и 5/10/20 crowd-clear time ±30%; текущий SCRUM-857 recheck PASS, худшее CCT +22.0% у `doctor/restore_potion` на 20 целях. SCRUM-856 добавляет class-trio identity audit в `docs/design/reports/full_class_rebalance_identity_audit.md`: волна SCRUM-857..860 должна чинить playfeel механикой оружий/китов, а не только числовыми множителями. SCRUM-857 добавил focused gate `tests/projectile_chain_pierce_identity_test.gd` для delayed grenade, long-cast meteor, ricochet vs fan split, prayer sustain arc и dark pierce/curse decay. Playtest все еще нужен для ощущения темпа, но базовая численная сетка больше не держится только на ручной оценке.
 - Таблица механик остается долгосрочным источником формул, но код сейчас использует адаптированный слой формул.
 - Data-driven scene loading оружия в `scripts/player.gd` пока остается через `load()` на момент экипировки; это не hot path, но при большом расширении оружия можно вынести в общий PackedScene cache.
 - DOCX-документ может отставать от Markdown-документации, если его специально не регенерировали.

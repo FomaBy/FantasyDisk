@@ -486,6 +486,14 @@ event-множители) + `post_combat`.
   summon/DoT/sustain weapons). Следующие class-balance задачи должны сначала
   менять форму механики, target pattern, setup/payoff, deploy ownership,
   sustain window или control value, а не начинать с множителей.
+- SCRUM-857 (2026-07-04) выполнил первый projectile/chain/pierce pass:
+  `soldier_grenade` damage ждёт fuse, `elementalist_meteor_core` получил
+  долгий impact+shards payoff, `sniper_shatter_rounds` использует fan
+  trajectories with limited pierce, `priest_chime` выбирает sustain-arc target,
+  а `cursed_skull`/`dark_wand` получили damage decay. Recheck:
+  `tests/projectile_chain_pierce_identity_test.gd` PASS,
+  `tests/global_damage_balance_smoke_test.gd` PASS, худший CCT остался
+  `doctor/restore_potion/20` +22% в пределах +/-30%.
 
 ## Known Balance Risks
 
@@ -497,6 +505,9 @@ event-множители) + `post_combat`.
   (`druid/summon_amulet`, `chemist/homunculus_vial`, `assassin/venom_wire`) и
   cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
   `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
+  SCRUM-857 уже закрыл первую часть риска для grenade/meteor/ricochet/split/
+  prayer/dark pierce families; deploy/summon, melee/tank/counter and sustain
+  loops остаются для SCRUM-858..860.
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
