@@ -5665,6 +5665,14 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	# ~20px с каждого конца — текст держим строго в плоской зоне капсулы,
 	# иначе края длинных опций ложатся на кольцо.
 	var content := Vector4(76.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
+	if button is OptionButton:
+		# OptionButton резервирует справа зону стрелки (internal margin) и
+		# центрирует текст в остатке — центр уезжает влево, длинные опции
+		# ложатся на кольцо. Компенсируем слева (+20px к базе), справа держим
+		# 76, чтобы стрелка осталась внутри капсулы; вместе с кеглем 22 у
+		# самой длинной опции зазор до кольца ≥25px на 1080p/1440p.
+		content = Vector4(96.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
+		button.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
 	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
 	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
 	button.add_theme_stylebox_override("normal", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["normal"], source_margins, content))
@@ -5678,7 +5686,8 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	button.add_theme_color_override("font_focus_color", SETTINGS_V6_TEXT_BRIGHT)
 	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
 	if button is OptionButton:
-		var arrow := _settings_v6_icon(SETTINGS_V6_ARROW_PATH, Vector2(36.0, 36.0), s)
+		# 30px: меньший резерв стрелки оставляет длинным опциям запас от клипа.
+		var arrow := _settings_v6_icon(SETTINGS_V6_ARROW_PATH, Vector2(30.0, 30.0), s)
 		if arrow != null:
 			button.add_theme_icon_override("arrow", arrow)
 		var popup := (button as OptionButton).get_popup()
