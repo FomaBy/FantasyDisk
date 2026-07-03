@@ -68,7 +68,16 @@ link_skills "$REPO_ROOT/skills/codex" "$HOME/.codex/skills"
 printf 'Linking Claude skills...\n'
 link_skills "$REPO_ROOT/skills/claude" "$HOME/.claude/skills"
 
-# (4) Onboarding banner.
+# (4) Auto-land hook: каждый чат/агент сразу лендит зелёные коммиты в dev
+#     (локально + origin). core.hooksPath — per-repo config, поэтому ставим его
+#     в КАЖДОМ клоне/worktree при онбординге. Идемпотентно.
+if [ -x "$REPO_ROOT/.githooks/post-commit" ]; then
+  git -C "$REPO_ROOT" config core.hooksPath "$REPO_ROOT/.githooks"
+  printf 'Auto-land hook enabled (core.hooksPath -> %s/.githooks)\n' "$REPO_ROOT"
+  printf '  (отключить в этом клоне: git config --unset core.hooksPath  |  разово: FSD_NO_AUTOLAND=1)\n'
+fi
+
+# (5) Onboarding banner.
 cat <<'BANNER'
 
 ============================================================

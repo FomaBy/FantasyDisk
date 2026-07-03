@@ -164,6 +164,20 @@ Versioning:
 - All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
+Auto-land to dev (user directive, 2026-07-03):
+- КАЖДЫЙ чат/агент сразу лендит свой коммит в `dev` — локально И на `origin` —
+  но ТОЛЬКО если коммит зелёный (проходит `tests/runtime_smoke_test.gd`).
+- Механизм: repo-tracked `post-commit` хук `.githooks/post-commit`, включённый
+  через `core.hooksPath` (ставит `scripts/onboard.sh` в каждом клоне/worktree).
+  Хук фоновый: коммит агента возвращается мгновенно, smoke+ленд идут в фоне,
+  живую ветку чата НЕ трогают (ff-пуш или merge в одноразовом temp worktree).
+- Красный smoke → коммит НЕ лендится, остаётся на ветке чата до следующего
+  зелёного. Лог: `<git-common-dir>/autoland.log`.
+- Выключатели: `FSD_NO_AUTOLAND=1` (разово/сессионно), `git config --unset
+  core.hooksPath` (в клоне), `FSD_AUTOLAND_SKIP_SMOKE=1` (лендить без smoke).
+- Это НЕ отменяет QA-борд: смоук — минимальный green-gate, не полноценная
+  приёмка; статусы Jira/доски ведём как раньше.
+
 Full autonomy (user directive, 2026-06-12):
 - ALL agents (Claude chats, board workers, QA, Codex threads) work autonomously:
   do NOT ask the user questions, do NOT wait for user input or confirmation.
