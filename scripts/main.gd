@@ -1214,9 +1214,13 @@ func _process(delta: float) -> void:
 	# SCRUM-785: условия победы/поражения по типу боя.
 	var timer_expired := round_time_left <= 0.0
 	if boss_combat_active:
-		# Босс: убит — мгновенная победа; таймер вышел с живым боссом — поражение.
+		# Босс: убит — победа после короткой cinematic-задержки, чтобы death row
+		# не срезалась мгновенным _clear_world().
+		if combat.is_boss_victory_pending():
+			ui._update_hud()
+			return
 		if get_tree().get_nodes_in_group("bosses").is_empty():
-			combat._end_combat(true)
+			combat.request_boss_victory_after_death()
 		elif timer_expired:
 			combat._end_combat(false)
 	elif current_combat_type == "elite":

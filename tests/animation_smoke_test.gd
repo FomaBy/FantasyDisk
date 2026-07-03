@@ -911,21 +911,22 @@ func _test_enemy_sprite_paths() -> void:
 			_fail("Expected %s to use %s." % [scene_path, expected_paths[scene_path]])
 		enemy.queue_free()
 
-	var boss_scene := load("res://scenes/BossWarden.tscn") as PackedScene
-	var boss := boss_scene.instantiate()
-	root.add_child(boss)
-	var boss_body := boss.get_node("Sprite2D") as Sprite2D
-	if boss_body.texture == null or boss_body.texture.resource_path != "res://assets/sprites/bosses/boss_rift_warden.png":
-		_fail("Expected BossWarden to use res://assets/sprites/bosses/boss_rift_warden.png.")
-	boss.queue_free()
-
-	var disk_boss_scene := load("res://scenes/BossDiskDevourer.tscn") as PackedScene
-	var disk_boss := disk_boss_scene.instantiate()
-	root.add_child(disk_boss)
-	var disk_boss_body := disk_boss.get_node("Sprite2D") as Sprite2D
-	if disk_boss_body.texture == null or disk_boss_body.texture.resource_path != "res://assets/sprites/bosses/boss_disk_devourer.png":
-		_fail("Expected BossDiskDevourer to use res://assets/sprites/bosses/boss_disk_devourer.png.")
-	disk_boss.queue_free()
+	var expected_boss_paths := {
+		"res://scenes/BossWarden.tscn": "res://assets/sprites/bosses/boss_rift_warden.png",
+		"res://scenes/BossDiskDevourer.tscn": "res://assets/sprites/bosses/boss_disk_devourer.png",
+		"res://scenes/BossBoneArchon.tscn": "res://assets/sprites/bosses/boss_bone_archon.png",
+		"res://scenes/BossBroodMother.tscn": "res://assets/sprites/bosses/boss_brood_mother.png",
+		"res://scenes/BossAshenColossus.tscn": "res://assets/sprites/bosses/boss_ashen_colossus.png",
+		"res://scenes/BossBloodthornLion.tscn": "res://assets/sprites/bosses/boss_bloodthorn_lion.png",
+	}
+	for boss_scene_path in expected_boss_paths.keys():
+		var boss_scene := load(boss_scene_path) as PackedScene
+		var boss := boss_scene.instantiate()
+		root.add_child(boss)
+		var boss_body := boss.get_node("Sprite2D") as Sprite2D
+		if boss_body.texture == null or boss_body.texture.resource_path != expected_boss_paths[boss_scene_path]:
+			_fail("Expected %s to use %s." % [boss_scene_path, expected_boss_paths[boss_scene_path]])
+		boss.queue_free()
 
 
 func _test_druid_wolf_ally_animation() -> void:

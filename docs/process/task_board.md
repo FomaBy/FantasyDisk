@@ -91,6 +91,18 @@ tests/harnesses and relevant docs.
 | --- | --- | --- | --- |
 | SCRUM-853 | [Баланс: усилить плотность монстров и растянуть XP-кривую забега](../tasks/backend_monster_density_xp_progression_task.md) | codex/backend (done; ready_for_QA) | p1 |
 
+**Sprint intake 2026-07-04 (user request):** создана и сразу взята в работу
+Animator/Codex задача на полный PixelLab-first redraw всех live-боссов с
+movement/attack/death animations и задержкой перед victory/act transition после
+смерти босса. Jira: `SCRUM-865` в active sprint `Спринт 0.2.1`; owner
+`animator/codex-boss-pixellab-redraw-orchestrator`; locked paths:
+`assets/sprites/bosses/**`, boss full-frame assets, boss PixelLab references,
+boss animation docs/tests and focused runtime hooks.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-865 | [Bosses: PixelLab full redraw and animated attack/death packs](../tasks/animation_boss_pixellab_full_redraw_task.md) | codex/animator (in_progress; PixelLab jobs) | p1 |
+
 **Sprint intake 2026-07-04 (user request):** создана волна полного
 class-rebalance/class-identity audit + implementation в active sprint
 `Спринт 0.2.1`. Цель: все 17 классов и 51 оружие должны отличаться gameplay,

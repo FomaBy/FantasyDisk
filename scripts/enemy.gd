@@ -427,6 +427,7 @@ func _feedback_flash_body() -> CanvasItem:
 func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	# SCRUM-379: проигрываем death-кадры, отключив поведение/столкновения мёртвого
 	# врага, затем удаляем по длительности анимации. Геймплей-награды уже выданы.
+	var was_boss := is_in_group("bosses")
 	set_physics_process(false)
 	set_process(false)
 	velocity = Vector2.ZERO
@@ -446,7 +447,8 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	var frames := body.sprite_frames
 	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
 	var count: int = maxi(frames.get_frame_count("death"), 1)
-	var duration := clampf(float(count) / fps, 0.25, 1.2)
+	var max_duration := 2.4 if was_boss else 1.2
+	var duration := clampf(float(count) / fps, 0.25, max_duration)
 	if not is_inside_tree():
 		call_deferred("queue_free")
 		return

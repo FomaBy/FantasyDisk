@@ -3887,5 +3887,10 @@
   "key": "SCRUM-855",
   "status": "К выполнению",
   "desc_hash": "b465c535ae38e3e632a80a1cd7753587"
+ },
+ "animation_boss_pixellab_full_redraw_task.md": {
+  "key": "SCRUM-865",
+  "status": "В работе",
+  "desc_hash": "3873d7d1f2cc1543b1e81f70d5296181"
  }
 }

@@ -48,7 +48,14 @@ manifests переведены на native `512x512`, поэтому epic-scale 
 
 ## Bosses
 
-Boss node выбирает одного из доступных боссов: `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`. С SCRUM-135 первые два активных boss source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный `vortex` cutout part, `disk_devourer` остается single-torso rig. SCRUM-156 подготовил source sprites для трех новых боссов; runtime mechanics/scenes уже заведены, а полный art/cutout wiring остается отдельным content/animation scope.
+Live boss scenes exist for `rift_warden`, `disk_devourer`, `bone_archon`,
+`brood_mother`, `ashen_colossus`, and `bloodthorn_lion`. The random route boss
+pool still uses the QA-gated subset; `bloodthorn_lion` remains out of random
+rotation until its follow-up gate lands. С SCRUM-135 первые два активных boss
+source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный
+`vortex` cutout part, `disk_devourer` остается single-torso rig. SCRUM-156
+подготовил source sprites для трех новых боссов; runtime mechanics/scenes уже
+заведены, а полный art/cutout wiring остается отдельным content/animation scope.
 
 | Boss | Scene | Pattern |
 | --- | --- | --- |
@@ -94,7 +101,16 @@ mass before final runtime") stays source-only. Full-frame animation rows for
 `bloodthorn_lion` also remain an Animator follow-up (live scene uses the static
 sprite, mirroring the pre-animation state of the other bosses).
 
-SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
+**SCRUM-865 — full PixelLab boss redraw kickoff.** Animator/Codex queued new
+PixelLab MCP 8-direction `256x256` base-object jobs for all six live bosses,
+using the current mechanics/reference roster and short dark-fantasy prompts.
+Source IDs/prompts and current queue state are recorded in
+`docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`.
+The initial code slice also fixes static fallback PNGs for `bone_archon`,
+`brood_mother`, and `ashen_colossus`. Production animation integration remains
+pending until PixelLab completes the base objects and animation rows.
+
+SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. SCRUM-865 добавляет boss victory delay: после смерти босса `CombatDirector` чистит не-boss pressure, ждёт `2.0s`, затем завершает победу/переход акта, а boss full-frame death cleanup cap поднят до `2.4s`. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
 ## Mini-Elites
 
@@ -118,9 +134,9 @@ combat time до capped `0.12`; принудительные Ascension-тест�
 
 - boss fight завершает run;
 - boss имеет больше HP и несколько attack patterns;
-- victory screen появляется после смерти босса;
+- victory screen появляется после короткого boss-death playback delay;
 - defeat/death screen появляется при смерти игрока;
-- boss fight не использует обычный таймер боя.
+- boss fight использует kill-or-lose таймер, а не survival-таймер обычного боя.
 
 ## Balance Notes
 
@@ -134,7 +150,7 @@ combat time до capped `0.12`; принудительные Ascension-тест�
 
 `tests/runtime_smoke_test.gd` и `tests/runtime_smoke_boss_elite_test.gd`
 проверяют elite scenes, attack phases, boss pool, spawn bounds, wave pacing,
-mini/card elite/boss scale order и базовые combat flows.
+mini/card elite/boss scale order, boss death victory delay и базовые combat flows.
 
 ## SCRUM-541 Secret Ascension Boss
 

@@ -44,6 +44,8 @@ const ADVANCED_HEAVY_WEIGHT_STEP := 0.06
 const ADVANCED_SHOOTER_WEIGHT_MAX := 2.00
 const ADVANCED_SUMMONER_WEIGHT_MAX := 2.20
 const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
+const BOSS_DEATH_VICTORY_DELAY := 2.0
+const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectiles", "enemy_projectiles", "enemy_hazards"]
 
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
 # артефакта 1 из 3) гейтится этим флагом — победа по таймеру с ЖИВОЙ элиткой
@@ -53,6 +55,7 @@ const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
 # Живёт в боевом состоянии (не в сейве): при load элитного боя элитка
 # восстанавливается живой, поэтому флаг честно стартует с false.
 var _elite_defeated := false
+var _boss_victory_pending := false
 
 
 func _init(game_ref) -> void:
@@ -62,6 +65,35 @@ func _init(game_ref) -> void:
 # SCRUM-785: достоверный сигнал «элитка убита в этом бою» (для win-by-kill в _process).
 func is_elite_defeated() -> bool:
 	return _elite_defeated
+
+
+func is_boss_victory_pending() -> bool:
+	return _boss_victory_pending
+
+
+func request_boss_victory_after_death() -> void:
+	if _boss_victory_pending or not game.combat_active:
+		return
+	_boss_victory_pending = true
+	_clear_boss_victory_pressure()
+	var tree: SceneTree = game.get_tree()
+	if tree == null:
+		_end_combat(true)
+		return
+	var timer: SceneTreeTimer = tree.create_timer(BOSS_DEATH_VICTORY_DELAY, false, false, true)
+	timer.timeout.connect(func() -> void:
+		if not _boss_victory_pending or not game.combat_active:
+			return
+		_boss_victory_pending = false
+		_end_combat(true)
+	)
+
+
+func _clear_boss_victory_pressure() -> void:
+	for group_name in BOSS_VICTORY_PRESSURE_GROUPS:
+		for node in game.get_tree().get_nodes_in_group(group_name):
+			if is_instance_valid(node) and not node.is_in_group("bosses"):
+				node.queue_free()
 
 
 static func normal_spawn_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
@@ -119,6 +151,7 @@ static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_s
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	_boss_victory_pending = false
 	game.reset_run_ascension()
 	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
 	game._play_music("boss" if is_boss_fight else "combat")
@@ -219,6 +252,7 @@ func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 
+	_boss_victory_pending = false
 	var was_boss_fight = game.boss_combat_active
 	var was_elite_fight := str(game.current_combat_type) == "elite"
 	# SCRUM-528/785: артефакт-награда элитного узла — только если элитка реально убита.

@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-29
+Обновлено: 2026-07-04
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -66,6 +66,10 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   deaths: enemies with `FullFrameBody.death` play that row before delayed
   cleanup while leaving combat groups/collisions immediately after rewards are
   emitted; missing death rows keep the existing death-ghost fallback.
+- SCRUM-865 extends the boss death presentation slice: bosses with full-frame
+  `death` rows may remain visible for up to `2.4s`, and boss victory/act
+  transition waits `2.0s` after the boss leaves combat groups so large death
+  animations are not erased by immediate world cleanup.
 - SCRUM-380 (2026-06-14) provides the complete Design source pack for explicit
   full-frame `death` rows: 19 entities, 114 transparent frames, row sheets,
   manifest `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`
@@ -625,6 +629,13 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `bone_archon`, `ashen_colossus`, `secret_ascension_boss`, `skeletal_dragon`
   and `bloodthorn_lion` candidates remain source-only/revise-needed follow-ups.
   Evidence: `build/qa/scrum793_boss_pixellab_promotion/`.
+- SCRUM-865 (2026-07-04) starts the PixelLab-first full boss redraw pass for
+  all six live bosses (`rift_warden`, `disk_devourer`, `bone_archon`,
+  `brood_mother`, `ashen_colossus`, `bloodthorn_lion`). Six 8-direction
+  `256x256` base objects are queued in PixelLab MCP; prompts and object IDs live
+  in `docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`.
+  Animation row generation/integration remains pending until those base objects
+  complete.
 - SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
 
 ## Summon / Ally Motion

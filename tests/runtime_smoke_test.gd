@@ -3431,12 +3431,22 @@ func _test_boss_act_transition(main_scene: PackedScene) -> void:
 	boss.set("dodge_chance", 0.0)
 	boss.set("shield_active", false)
 	boss.take_damage(999999.0)
+	var saw_boss_victory_pending := false
+	for _attempt in range(120):
+		await process_frame
+		if act_main.combat.is_boss_victory_pending():
+			saw_boss_victory_pending = true
+			break
+	if not saw_boss_victory_pending:
+		_fail("Expected Act 1 boss death to enter a victory-delay window before advancing to Act 2.")
+		return
+	await create_timer(2.1, false, false, true).timeout
 	for _attempt in range(120):
 		await process_frame
 		if not bool(act_main.get("combat_active")) and int(act_main.get("current_act")) == 2:
 			break
 	if bool(act_main.get("combat_active")) or int(act_main.get("current_act")) != 2:
-		_fail("Expected Act 1 boss victory to advance to Act 2 instead of ending the run.")
+		_fail("Expected Act 1 boss victory to advance to Act 2 after the death-animation delay.")
 		return
 	if int(act_main.get("route_stage")) != 0:
 		_fail("Expected next act to reset act-local route_stage to 0.")
@@ -3515,13 +3525,23 @@ func _test_victory_flow(main: Node) -> void:
 		return
 	boss.take_damage(99999.0)
 	var victory_text := ""
+	var saw_boss_victory_pending := false
+	for _attempt in range(120):
+		await process_frame
+		if main.combat.is_boss_victory_pending():
+			saw_boss_victory_pending = true
+			break
+	if not saw_boss_victory_pending:
+		_fail("Expected boss death to enter a victory-delay window before clearing the world.")
+		return
+	await create_timer(2.1, false, false, true).timeout
 	for _attempt in range(120):
 		await process_frame
 		victory_text = _collect_label_text(main)
 		if not bool(main.get("combat_active")) and victory_text.contains("Победа"):
 			break
 	if bool(main.get("combat_active")):
-		_fail("Expected boss death to end combat.")
+		_fail("Expected boss death to end combat after the death-animation delay.")
 		return
 	if int(main.get("meta_points")) < 1 or not bool(main.get("berserk_ascension_unlocked")):
 		_fail("Expected boss victory to grant meta progress and Berserk Ascension 1.")

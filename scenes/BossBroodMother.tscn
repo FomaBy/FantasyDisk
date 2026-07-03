@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/boss.gd" id="1_boss_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/boss_disk_devourer.png" id="2_boss_texture"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/boss_brood_mother.png" id="2_boss_texture"]
 [ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="3_enemy_projectile"]
 [ext_resource type="PackedScene" path="res://scenes/EnemyBiter.tscn" id="4_summon_enemy"]
 
