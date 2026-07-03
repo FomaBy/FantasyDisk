@@ -5454,9 +5454,15 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 		button.add_theme_font_size_override("font_size", _settings_v6_font(26.0, s))
 		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(44.0, 44.0), s)
 		if icon != null:
-			button.icon = icon
-			button.expand_icon = false
-			button.add_theme_constant_override("h_separation", int(roundf(12.0 * s)))
+			# Иконка отдельной нодой в левом гнезде пластины — вне текстового
+			# лейаута кнопки, чтобы подпись центрировалась по капсуле без сдвига.
+			var icon_rect := TextureRect.new()
+			icon_rect.texture = icon
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			icon_rect.position = Vector2(roundf(12.0 * s), roundf((actual_display_size.y - icon.get_height()) * 0.5))
+			icon_rect.size = Vector2(icon.get_width(), icon.get_height())
+			button.add_child(icon_rect)
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -5489,10 +5495,21 @@ func _apply_settings_tab_button_theme(button: Button, selected: bool, s := 1.0) 
 	button.add_theme_stylebox_override("pressed", _settings_v6_tab_stylebox("active", s))
 	button.add_theme_stylebox_override("focus", _settings_v6_tab_stylebox(hover_state, s))
 	button.add_theme_stylebox_override("disabled", _settings_v6_tab_stylebox("inactive", s))
-	button.add_theme_color_override("font_color", SETTINGS_V6_TEXT_BRIGHT if selected else SETTINGS_V6_MUTED)
-	button.add_theme_color_override("font_hover_color", SETTINGS_V6_TEXT_BRIGHT)
-	button.add_theme_color_override("font_focus_color", SETTINGS_V6_TEXT_BRIGHT)
-	button.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT_BRIGHT)
+	# Контраст подписи под пластину состояния: на литом золоте active — тёмная
+	# кожа (светлый текст на золоте выцветал), на тёмных пластинах — пергамент.
+	var dark_on_gold := Color(0.18, 0.11, 0.04, 1.0)
+	if selected:
+		button.add_theme_color_override("font_color", dark_on_gold)
+		button.add_theme_color_override("font_hover_color", dark_on_gold)
+		button.add_theme_color_override("font_focus_color", dark_on_gold)
+		button.add_theme_color_override("font_pressed_color", dark_on_gold)
+	else:
+		button.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+		# hover/focus/pressed невыбранного таба носят золотистые пластины —
+		# текст на них тоже тёмный, светлый на бледном золоте выцветает.
+		button.add_theme_color_override("font_hover_color", dark_on_gold)
+		button.add_theme_color_override("font_focus_color", dark_on_gold)
+		button.add_theme_color_override("font_pressed_color", dark_on_gold)
 	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
 
 
@@ -5643,6 +5660,7 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
 	button.clip_text = true
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	# v6: у арта поля декоративные наконечники ~52px + золотое кольцо капсулы
 	# ~20px с каждого конца — текст держим строго в плоской зоне капсулы,
 	# иначе края длинных опций ложатся на кольцо.
@@ -5697,10 +5715,18 @@ func _settings_v6_make_action_button(text: String, kind: String, s: float) -> Bu
 	button.add_theme_stylebox_override("pressed", _settings_v6_texture_box(paths["pressed"], source_margins, content))
 	button.add_theme_stylebox_override("focus", _settings_v6_texture_box(paths["hover"], source_margins, content))
 	button.add_theme_stylebox_override("disabled", _settings_v6_texture_box(paths["disabled"], source_margins, content))
-	button.add_theme_color_override("font_color", SETTINGS_V6_TEXT_BRIGHT if kind == "primary" else SETTINGS_V6_TEXT)
-	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
-	button.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT)
-	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
+	if kind == "primary":
+		# Литое золото primary — тёмная кожа вместо светлого текста (выцветал).
+		var dark_on_gold := Color(0.18, 0.11, 0.04, 1.0)
+		button.add_theme_color_override("font_color", dark_on_gold)
+		button.add_theme_color_override("font_hover_color", dark_on_gold)
+		button.add_theme_color_override("font_pressed_color", dark_on_gold)
+		button.add_theme_color_override("font_focus_color", dark_on_gold)
+	else:
+		button.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+		button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
+		button.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT)
+		button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
 	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
 	return button
 
