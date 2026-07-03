@@ -2685,8 +2685,8 @@ func _test_arena_generation(main: Node, player: Node) -> void:
 		_fail("Expected shooter spawn weight to be lower than melee spawn weight.")
 		return
 	var early_cap := int(main.call("_active_enemy_cap"))
-	if early_cap < 12 or early_cap > 22:
-		_fail("Expected early active enemy cap to leave room for maneuver.")
+	if early_cap < 12 or early_cap > 28:
+		_fail("Expected early active enemy cap to increase density while leaving room for maneuver.")
 		return
 	main.set("spawn_wave_index", 8)
 	var later_cap := int(main.call("_active_enemy_cap"))

@@ -215,23 +215,23 @@ const MAP_NODE_DEFINITIONS := {
 const OBSTACLE_MAX_ATTEMPTS := 150
 const SPAWN_EDGE_PADDING := 72.0
 const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
-const SMALL_PACK_CHANCE := 0.22
+const SMALL_PACK_CHANCE := 0.28
 const WAVE_SETTINGS := {
-	"base_spawn_count": 4,
+	"base_spawn_count": 5,
 	"spawn_count_per_stage": 1,
 	"spawn_count_per_wave_step": 1,
 	"wave_step_size": 3,
-	"normal_spawn_limit": 8,
+	"normal_spawn_limit": 10,
 	"elite_spawn_limit": 3,
 	"boss_spawn_limit": 3,
-	"base_active_cap": 20,
-	"active_cap_per_stage": 5,
-	"active_cap_per_wave_step": 2,
+	"base_active_cap": 22,
+	"active_cap_per_stage": 6,
+	"active_cap_per_wave_step": 3,
 	"elite_active_cap": 12,
 	"boss_active_cap": 12,
-	"max_active_cap": 36,
-	"spawn_pause_min": 0.8,
-	"spawn_pause_max": 1.4,
+	"max_active_cap": 48,
+	"spawn_pause_min": 0.7,
+	"spawn_pause_max": 1.2,
 	"boss_spawn_pause_min": 2.0,
 	"boss_spawn_pause_max": 3.2,
 }

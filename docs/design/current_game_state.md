@@ -1277,7 +1277,7 @@ Status hooks SCRUM-245: weapon hit дополнительно может нал�
 
 Магазин показывает четыре случайных предложения inline поверх canonical shop backdrop `ui_backdrop_merchant_archive.png` в центральной свободной области экрана и позволяет купить несколько предметов за один визит, если хватает денег. Сток генерируется один раз на конкретный `shop`-узел маршрута и сохраняет purchased-состояние при повторном открытии того же экрана через меню/досье/FAB; новый `shop`-узел получает свежий набор. SCRUM-339 расширяет это на flow карты: выход из магазина возвращает на route map без продвижения `route_stage`, этот же shop-узел остается доступен для повторного входа, а узлы следующего ряда уже кликабельны. Выбор следующего route node считается точкой невозврата: только тогда старый shop stock/purchased state очищается и начинается следующий этап. Предметы висят без карточных рамок: прозрачная clickable area, предметная иконка, контактная тень и компактный ценник с иконкой монеты. Название, описание, цену, class restriction и причину недоступности игрок видит только в hover tooltip. Недоступные товары затемняются и получают красноватый ценник; купленные товары снимаются со стены и заменяются маленьким empty-hook состоянием «снято». Runtime smoke проверяет фактический центр группы товаров, no-overlap на 1280x720/2560x1440 и re-entry flow магазина до выбора следующего уровня; dump пишется в `build/qa/shop_wall_frameless_rects.md`.
 
-Экономика 0.1.4 (откалибровано SCRUM-507): магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner дают x1.3 XP / x1.6 золота, bruiser/shield около x1.75 XP и x2.2 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50% (теперь 47/40/49% по трём маршрутам) — ранние/средние бои перестали обесцениваться. Проверка SCRUM-188 (`build/route_economy_xp_model.md`) после калибровки: affordable offers выровнены в коридор ±25% (5.7/6.5/6.9, было 5.2 vs 9.0 = разброс 73%), покупательная способность high/high/healthy, XP-темп сохранён (20/25/20 level-up при XP-кривой SCRUM-527 `ceil(req*1.038+0.8)`).
+Экономика 0.1.4 + SCRUM-853 pacing: магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner дают x1.3 XP / x1.6 золота, bruiser/shield около x1.75 XP и x2.2 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-853 не режет per-monster drops: прогресс героя замедлен через XP-кривую `ceil(req*1.09+0.8)`. Фокусная 20-fight проекция `tests/monster_xp_pressure_pacing_test.gd`: Berserk/hammer — 726.5 kills, Act 1 lvl 14, Act 2 lvl 24, run lvl 32; Dark Mage/dark_book — 773.9 kills, Act 1 lvl 15, Act 2 lvl 24, run lvl 32. Старая кривая SCRUM-527 давала ~42-43 lvl на том же сценарии.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
 - 71 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent realistic epic D&D/tabletop fantasy raster magic items; SCRUM-340 regenerated the base set through `fantasydisk-asset-generator` / `gpt-image-2`; SCRUM-606/609 integrated 10 dedicated icons for `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, and SCRUM-619/623 tracks `rift_key`);
@@ -1657,15 +1657,22 @@ random route promotion and full-frame animation remain follow-ups. QA evidence:
 - с каждым этапом и волной растут HP, урон и количество врагов.
 
 Текущая базовая настройка:
-- base spawn count: 2;
-- normal active cap: 14;
+- base spawn count: 5;
+- normal active cap: 22 с ростом до global cap 48;
 - elite active cap: 12;
 - boss active cap: 12;
 - spawn edge padding: 72 пикселя от физической границы арены;
-- spawn safe radius around player/start: 340 пикселей;
-- глобальный потолок активных врагов: 30 (`max_active_cap`), включая поэтапный рост обычных и элитных боев;
-- normal spawn pause: 1.35-2.15 секунды;
+- spawn safe radius around player/start: 420 пикселей;
+- normal spawn limit: 10;
+- глобальный потолок активных врагов: 48 (`max_active_cap`), включая поэтапный рост обычных и элитных боев;
+- normal spawn pause: 0.7-1.2 секунды;
 - boss spawn pause: 2.0-3.2 секунды.
+
+SCRUM-853 усиливает pressure curve поверх этих базовых чисел: обычные волны
+стартуют плотнее, затем получают multipliers от `route_scaling_stage`, номера
+волны и elapsed time в бою; HP, контактная опасность/урон и cooldown спавна тоже
+растут по этим осям. В Act 2/3 чаще выбираются ranged/summoner/heavy архетипы,
+а обычные волны могут подмешивать mini-elites с шансом `0.015..0.12`.
 
 Спавн использует реальные границы 2560x1440: правый и нижний edge-spawn больше не ограничены старой областью 1600x900. Снаряды игрока и врагов удаляются только за пределами новой арены с cleanup margin 180 пикселей.
 

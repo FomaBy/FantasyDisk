@@ -345,11 +345,11 @@ const STAGE_SCALE_LINEAR := 0.075
 
 const ECONOMY_PRICE_MULTIPLIER := 1.10
 
-# SCRUM-527: XP-кривая перекалибрована — к боссу 1-го акта средний забег ~20 lvl
-# (было ~8-9). Множитель резко снижен (1.42→1.038): рост требуемого опыта плавный,
-# почти линейный (req ~5→10→20→30→44 к lvl20, макс. скачок ~3), без крутого
-# геометрического разгона. Подтверждено tools/route_economy_xp_model.gd.
-const XP_CURVE_MULTIPLIER := 1.038
+# SCRUM-853: XP-кривая растянута без урезания per-monster drops. Почти линейная
+# кривая SCRUM-527 (`1.038`, flat `0.8`) разгоняла 20-fight projection до ~43 lvl.
+# Мягкий геометрический шаг `1.09` держит Act 1 около 14-15, Act 2 около 23-24
+# и полный 20-fight run около 32 lvl.
+const XP_CURVE_MULTIPLIER := 1.09
 
 const XP_CURVE_FLAT := 0.8
 

@@ -129,12 +129,23 @@
 ## Spawn And Waves
 
 - Спавн использует bounds новой арены, active cap и wave pacing.
-- SCRUM-784: бой динамичен с первой секунды — `WAVE_SETTINGS` дают базовую волну
-  `4` врага (было 2), active cap `20`→`36`, паузы спавна `0.8–1.4с` (было 1.35–2.15),
-  первая волна почти мгновенно (`spawn_cooldown=0.1`). `_choose_wave_spawn_edges`:
-  минимум 2 края всегда, до 3–4 на поздних стадиях/волнах (босс держит 2). Без
-  читерского спавна в лицо — позиции вне `SPAWN_PLAYER_SAFE_RADIUS`.
-- На ранних stage плотность чуть ниже, дальше растут количество и сила врагов.
+- SCRUM-784/SCRUM-853: бой динамичен с первой секунды — `WAVE_SETTINGS` дают
+  базовую волну `5` врагов (было 4 после SCRUM-784), normal active cap
+  `22`→`48`, лимит обычной волны `10`, паузы спавна `0.7–1.2с` (было
+  0.8–1.4), первая волна почти мгновенно (`spawn_cooldown=0.1`).
+  `_choose_wave_spawn_edges`: минимум 2 края всегда, до 3–4 на поздних
+  стадиях/волнах (босс держит 2). Без читерского спавна в лицо — позиции вне
+  `SPAWN_PLAYER_SAFE_RADIUS`.
+- SCRUM-853 добавляет pressure multipliers поверх базовых волн: normal-spawn
+  pressure стартует с `1.14` на stage 0 (первый обычный raw wave фактически
+  становится ~6 врагов), растёт от `route_scaling_stage`, номера волны и elapsed
+  time и capped at `1.55`. HP pressure стартует с `1.05` и растёт до ~`1.37`;
+  contact/projectile damage pressure стартует с `1.03` и растёт до ~`1.23`.
+  Spawn cooldown получает дополнительное elapsed-time давление.
+- Act 2/3 получают более опасный mob mix: shooter/mage/spitter/bone-shaman,
+  summoner and heavy/shield/bruiser weights grow from route scaling stage 4.
+  Mini-elites can appear in ordinary waves from a base chance `0.015`, growing
+  by stage/wave/time to cap `0.12` before Ascension modifiers.
 - Для 3-актного забега combat scaling использует `route_scaling_stage()`, а не
   act-local `route_stage`: Act 2/3 стартуют с новым маршрутом, но без tutorial
   ослабления волн/экономики.

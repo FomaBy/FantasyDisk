@@ -79,6 +79,18 @@ SCRUM-480 (рантайм-интеграция минимал-UI).
 | SCRUM-849 | [Кодекс: object-first дизайн-пакет с крупными изображениями](../tasks/design_codex_object_first_redesign_task.md) | codex/design (review; ready_for_integration) | p1 |
 | SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | codex/backend (done; QA PASSED) | p1 |
 
+**Sprint intake 2026-07-04 (user request):** создана и сразу взята в работу
+backend/balance задача на усиление плотности/скейлинга монстров и растягивание
+XP-кривой забега. Jira: `SCRUM-853` в active sprint `Спринт 0.2.1`; execution
+lane `Codex`; owner `backend/codex-monster-xp-progression-orchestrator`; locked
+paths: `scripts/progression_data_balance.gd`, `scripts/progression_data_enemies.gd`,
+`scripts/combat_director.gd`, `scripts/player.gd`, focused balance/progression
+tests/harnesses and relevant docs.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-853 | [Баланс: усилить плотность монстров и растянуть XP-кривую забега](../tasks/backend_monster_density_xp_progression_task.md) | codex/backend (done; ready_for_QA) | p1 |
+
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
   done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —

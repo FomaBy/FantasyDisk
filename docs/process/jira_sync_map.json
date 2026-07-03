@@ -3827,5 +3827,10 @@
   "key": "SCRUM-852",
   "status": "Готово",
   "desc_hash": "19c8647269e7da87b2c5fe0a68b0f396"
+ },
+ "backend_monster_density_xp_progression_task.md": {
+  "key": "SCRUM-853",
+  "status": "В работе",
+  "desc_hash": "3518328a2a4a6d45341310a22f08d827"
  }
 }

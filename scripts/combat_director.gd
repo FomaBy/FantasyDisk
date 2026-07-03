@@ -21,6 +21,29 @@ const TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS := {
 	"attack_speed_multiplier": 1.35,
 	"move_speed_multiplier": 1.18,
 }
+const NORMAL_SPAWN_PRESSURE_BASE := 1.14
+const NORMAL_SPAWN_PRESSURE_STAGE_STEP := 0.018
+const NORMAL_SPAWN_PRESSURE_WAVE_STEP := 0.014
+const NORMAL_SPAWN_PRESSURE_ELAPSED_STEP := 0.16
+const NORMAL_SPAWN_PRESSURE_MAX := 1.55
+const ENEMY_HP_PRESSURE_BASE := 1.05
+const ENEMY_HP_PRESSURE_STAGE_STEP := 0.018
+const ENEMY_HP_PRESSURE_WAVE_STEP := 0.006
+const ENEMY_HP_PRESSURE_ELAPSED_STEP := 0.06
+const ENEMY_HP_PRESSURE_MAX := 1.38
+const ENEMY_DAMAGE_PRESSURE_BASE := 1.03
+const ENEMY_DAMAGE_PRESSURE_STAGE_STEP := 0.010
+const ENEMY_DAMAGE_PRESSURE_WAVE_STEP := 0.004
+const ENEMY_DAMAGE_PRESSURE_ELAPSED_STEP := 0.05
+const ENEMY_DAMAGE_PRESSURE_MAX := 1.24
+const SPAWN_COOLDOWN_ELAPSED_PRESSURE := 0.22
+const ADVANCED_MOB_ACT_STAGE := 4
+const ADVANCED_SHOOTER_WEIGHT_STEP := 0.10
+const ADVANCED_SUMMONER_WEIGHT_STEP := 0.12
+const ADVANCED_HEAVY_WEIGHT_STEP := 0.06
+const ADVANCED_SHOOTER_WEIGHT_MAX := 2.00
+const ADVANCED_SUMMONER_WEIGHT_MAX := 2.20
+const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
 
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
 # артефакта 1 из 3) гейтится этим флагом — победа по таймеру с ЖИВОЙ элиткой
@@ -39,6 +62,60 @@ func _init(game_ref) -> void:
 # SCRUM-785: достоверный сигнал «элитка убита в этом бою» (для win-by-kill в _process).
 func is_elite_defeated() -> bool:
 	return _elite_defeated
+
+
+static func normal_spawn_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := NORMAL_SPAWN_PRESSURE_BASE \
+		+ stage * NORMAL_SPAWN_PRESSURE_STAGE_STEP \
+		+ wave * NORMAL_SPAWN_PRESSURE_WAVE_STEP \
+		+ elapsed * NORMAL_SPAWN_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, NORMAL_SPAWN_PRESSURE_MAX)
+
+
+static func enemy_health_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := ENEMY_HP_PRESSURE_BASE \
+		+ stage * ENEMY_HP_PRESSURE_STAGE_STEP \
+		+ wave * ENEMY_HP_PRESSURE_WAVE_STEP \
+		+ elapsed * ENEMY_HP_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, ENEMY_HP_PRESSURE_MAX)
+
+
+static func enemy_damage_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := ENEMY_DAMAGE_PRESSURE_BASE \
+		+ stage * ENEMY_DAMAGE_PRESSURE_STAGE_STEP \
+		+ wave * ENEMY_DAMAGE_PRESSURE_WAVE_STEP \
+		+ elapsed * ENEMY_DAMAGE_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, ENEMY_DAMAGE_PRESSURE_MAX)
+
+
+static func mini_elite_pressure_chance(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var chance := 0.015 \
+		+ maxf(float(route_scaling_stage), 0.0) * 0.006 \
+		+ maxf(float(wave_index), 0.0) * 0.001 \
+		+ clampf(elapsed_ratio, 0.0, 1.0) * 0.025
+	return clampf(chance, 0.0, 0.12)
+
+
+static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_stage: int) -> float:
+	var act_pressure_stage := maxf(float(route_scaling_stage - ADVANCED_MOB_ACT_STAGE + 1), 0.0)
+	match enemy_kind:
+		"shooter":
+			return minf(1.0 + act_pressure_stage * ADVANCED_SHOOTER_WEIGHT_STEP, ADVANCED_SHOOTER_WEIGHT_MAX)
+		"summoner":
+			return minf(1.0 + act_pressure_stage * ADVANCED_SUMMONER_WEIGHT_STEP, ADVANCED_SUMMONER_WEIGHT_MAX)
+		"heavy":
+			return minf(1.0 + act_pressure_stage * ADVANCED_HEAVY_WEIGHT_STEP, ADVANCED_HEAVY_WEIGHT_MAX)
+		_:
+			return 1.0
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
@@ -159,7 +236,9 @@ func _end_combat(victory: bool) -> void:
 			var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
 			if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
 				game.current_player.heal_percent(room_clear_heal)
-			if not was_boss_fight:
+			if was_boss_fight:
+				_grant_boss_completion_rewards()
+			else:
 				_grant_combat_completion_rewards(event_combat)
 		# SCRUM-502: снять актуальные данные игрока (level/money/artifacts) ДО
 		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла
@@ -171,7 +250,6 @@ func _end_combat(victory: bool) -> void:
 
 	if victory:
 		if was_boss_fight:
-			_grant_boss_completion_rewards()
 			if game.advance_to_next_act():
 				game.current_combat_type = "battle"
 				game.route._show_battle_map()
@@ -267,6 +345,7 @@ func _spawn_weight_for_scene(scene: PackedScene) -> float:
 		base_weight *= 0.35
 	elif scaling_stage >= 2 and _is_shooter_scene(scene):
 		base_weight *= 1.25
+	base_weight *= advanced_spawn_weight_multiplier(_spawn_pressure_kind_for_scene(scene), scaling_stage)
 	if game.boss_combat_active and _is_shooter_scene(scene):
 		base_weight *= 0.6
 	return base_weight
@@ -288,7 +367,8 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 
 func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 	# Возвращает число занятых слотов (0 если не спавнили).
-	var chance := float(asc.get("mini_elite_chance", 0.0))
+	var asc_chance := float(asc.get("mini_elite_chance", 0.0))
+	var chance := 1.0 if asc_chance >= 1.0 else clampf(asc_chance + _base_mini_elite_pressure_chance(), 0.0, 0.18)
 	if chance <= 0.0 or remaining_slots < 2 or game.rng.randf() >= chance:
 		return 0
 	# Свита L7: вид мини-элитки выбирается случайно из data-driven ростера (6 видов).
@@ -384,6 +464,8 @@ func _spawn_enemy_wave() -> void:
 
 	var base_count = int(game.WAVE_SETTINGS["base_spawn_count"])
 	var scaling_stage: int = game.route_scaling_stage()
+	var elapsed_ratio := _combat_elapsed_ratio()
+	var elapsed_bonus := int(floor(elapsed_ratio * 3.0))
 	var stage_bonus = scaling_stage * int(game.WAVE_SETTINGS["spawn_count_per_stage"])
 	var wave_bonus = int(floor(float(game.spawn_wave_index) / float(game.WAVE_SETTINGS["wave_step_size"]))) * int(game.WAVE_SETTINGS["spawn_count_per_wave_step"])
 	var spawn_limit = int(game.WAVE_SETTINGS["normal_spawn_limit"])
@@ -404,7 +486,9 @@ func _spawn_enemy_wave() -> void:
 	var density := float(asc_spawn["spawn_count_mult"])
 	if float(asc_spawn["first_wave_boost"]) > 0.0 and game.spawn_wave_index <= 1 and not game.boss_combat_active:
 		density *= 1.5
-	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus) * density))
+	if not game.boss_combat_active and game.current_combat_type != "elite":
+		density *= normal_spawn_pressure_multiplier(scaling_stage, game.spawn_wave_index, elapsed_ratio)
+	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus + elapsed_bonus) * density))
 	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
 		var packed_scene := _random_enemy_scene()
@@ -439,7 +523,7 @@ func _active_enemy_cap() -> int:
 
 func _next_spawn_cooldown() -> float:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
-	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42
+	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42 + _combat_elapsed_ratio() * SPAWN_COOLDOWN_ELAPSED_PRESSURE
 	var cooldown_mult := float(game.ascension_difficulty()["spawn_cooldown_mult"])
 	if game.boss_combat_active:
 		return max(1.0, (game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35) * cooldown_mult)
@@ -476,10 +560,13 @@ func _choose_wave_spawn_edges() -> void:
 func _scale_enemy_for_current_wave(enemy: Node) -> void:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var wave_scale: float = float(game.spawn_wave_index)
+	var elapsed_ratio := _combat_elapsed_ratio()
 	var balance := _enemy_balance_for_node(enemy)
-	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.055)
-	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008)
+	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.065 + elapsed_ratio * 0.22)
+	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008 + elapsed_ratio * 0.04)
 	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + (stage_scale - 1.0) * 0.46 + wave_scale * 0.024)
+	health_multiplier *= enemy_health_pressure_multiplier(game.route_scaling_stage(), game.spawn_wave_index, elapsed_ratio)
+	damage_multiplier *= enemy_damage_pressure_multiplier(game.route_scaling_stage(), game.spawn_wave_index, elapsed_ratio)
 	if game.boss_combat_active:
 		health_multiplier *= 0.72
 		speed_multiplier *= 0.82
@@ -558,6 +645,17 @@ func _enemy_balance_for_node(enemy: Node) -> Dictionary:
 	if bool(enemy.get("is_flying")):
 		return game.ENEMY_BALANCE["flying"]
 	return game.ENEMY_BALANCE["default"]
+
+
+func _combat_elapsed_ratio() -> float:
+	var duration := maxf(_current_round_duration(), 0.001)
+	return clampf((duration - float(game.round_time_left)) / duration, 0.0, 1.0)
+
+
+func _base_mini_elite_pressure_chance() -> float:
+	if game.boss_combat_active or game.current_combat_type == "elite":
+		return 0.0
+	return mini_elite_pressure_chance(game.route_scaling_stage(), game.spawn_wave_index, _combat_elapsed_ratio())
 
 
 func _spawn_boss() -> void:
@@ -976,6 +1074,19 @@ func _is_shooter_scene(packed_scene: PackedScene) -> bool:
 		return false
 	var path := packed_scene.resource_path
 	return path.ends_with("EnemyShooter.tscn") or path.ends_with("EnemyMage.tscn") or path.ends_with("EnemySpitter.tscn") or path.ends_with("EnemyBoneShaman.tscn")
+
+
+func _spawn_pressure_kind_for_scene(packed_scene: PackedScene) -> String:
+	if packed_scene == null:
+		return "ordinary"
+	var path := packed_scene.resource_path
+	if _is_shooter_scene(packed_scene):
+		return "shooter"
+	if path.ends_with("EnemySummoner.tscn"):
+		return "summoner"
+	if path.ends_with("EnemyBruiser.tscn") or path.ends_with("EnemyShield.tscn"):
+		return "heavy"
+	return "ordinary"
 
 
 func _grant_combat_completion_rewards(event_combat := {}) -> void:

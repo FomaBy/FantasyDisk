@@ -167,6 +167,12 @@ UI обязан показывать эти интерпретации текс�
 - Враги могут дропать XP и money pickups.
 - Pickup radius — улучшаемый параметр.
 - HUD показывает HP/XP/money; детали билда находятся в Escape stats / rewards / tooltips.
+- SCRUM-853 растянул XP-кривую без урезания per-monster drops:
+  `next_xp_requirement = ceil(current_requirement * 1.09 + 0.8)`. Старый почти
+  линейный шаг SCRUM-527 (`1.038 + 0.8`) разгонял 20-fight projection до
+  ~42-43 уровня; новая кривая держит ориентиры пользователя: после 5-6 боев Act
+  1 около 14-15 уровня, после Act 2 около 24, после 20 боев полный забег около
+  32 уровня. Guard: `tests/monster_xp_pressure_pacing_test.gd`.
 
 ## Act Scaling
 
@@ -177,6 +183,9 @@ UI обязан показывать эти интерпретации текс�
   `route_scaling_stage() = route_stage + (current_act - 1) * 4`. This gives Act
   2/3 controlled pressure and reward growth without the runaway curve of treating
   all 33 route rows as one exponential stage chain.
+- SCRUM-853 enemy pressure also reads `route_scaling_stage()` plus wave index and
+  elapsed combat time, so Act 2/3 receive denser waves, tougher enemies and more
+  frequent advanced mobs without changing route reachability.
 - Autosave persists `current_act`, route nodes, selected route history, shop
   state and player snapshot. Continue restores Act 2/3 map checkpoints with the
   same build state.

@@ -1,6 +1,6 @@
 # Enemies, Elites And Bosses
 
-Обновлено: 2026-06-13 (0.1.5)
+Обновлено: 2026-07-04 (0.2.1)
 
 Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`. Data-driven enemy slices после SCRUM-198 находятся в `scripts/progression_data_enemies.gd` и экспортируются через `ProgressionData`.
 
@@ -25,7 +25,7 @@ SCRUM-260 развел размеры по data-driven профилям `Progres
 | Profile | Scale | Runtime meaning |
 | --- | ---: | --- |
 | `ordinary` | 1.25 | обычные враги, увеличены на +25% для читаемости в бою |
-| `mini_elite` | 1.31 | свита Возвышения L7: усиленный моб, больше обычного, меньше полноценной элитки |
+| `mini_elite` | 1.31 | усиленный моб: свита Возвышения и редкая pressure-добавка обычных волн, больше обычного, меньше полноценной элитки |
 | `elite` | 1.68 | карточная элитка узла маршрута, крупная и страшная |
 | `boss` | 1.90 | боссы, самые крупные сущности |
 
@@ -98,7 +98,7 @@ SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закры
 
 ## Mini-Elites
 
-`ProgressionData.MINI_ELITE_KINDS` содержит 6 видов L7-свиты Возвышения:
+`ProgressionData.MINI_ELITE_KINDS` содержит 6 видов mini-elite pressure-свиты:
 `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`,
 `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. Их source PNG из
 SCRUM-156 лежат в `assets/sprites/elites/`, но SCRUM-193 cleanup их не удалял:
@@ -109,6 +109,10 @@ legacy cleanup scope.
 добавлением в дерево получают meta `drop_class=mini_elite` и
 `epic_scale_profile=mini_elite`; поэтому визуально они читаются как усиленная
 свита, а не как полноценный route elite или босс.
+SCRUM-853 разрешает обычным волнам подмешивать mini-elites без Ascension: шанс
+начинается около `0.015` и растет от `route_scaling_stage`, wave index и elapsed
+combat time до capped `0.12`; принудительные Ascension-тесты с
+`mini_elite_chance = 1.0` сохраняют deterministic spawn.
 
 Минимальные правила:
 
