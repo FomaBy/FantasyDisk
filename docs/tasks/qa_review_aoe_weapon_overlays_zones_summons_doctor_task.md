@@ -25,7 +25,8 @@ QA gate для backend задачи `backend_aoe_weapon_overlays_zones_summons_d
 
 ## QA-Вердикт
 
-PASSED on 2026-07-04.
+Статус: PASSED
+Дата: 2026-07-04
 
 Evidence:
 - Backend mirror `docs/tasks/backend_aoe_weapon_overlays_zones_summons_doctor_task.md`
