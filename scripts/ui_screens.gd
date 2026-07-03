@@ -3569,9 +3569,8 @@ func _atlas_refresh_node_panel() -> void:
 
 func _atlas_node_pressed(node_id: String) -> void:
 	_atlas_skip_fog_ceremonies()
-	if str(_atlas.get("selected", "")) == node_id and str((_atlas.get("status", {}) as Dictionary).get(node_id, "")) == "available":
-		_atlas_buy_selected()
-		return
+	# SCRUM-838: clicking an Atlas cell is preview-only. Purchasing or keystone
+	# activation must go through the explicit action buttons in the right panel.
 	_atlas_select_node(node_id)
 
 

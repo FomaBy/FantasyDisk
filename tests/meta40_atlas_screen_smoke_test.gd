@@ -2,10 +2,11 @@ extends SceneTree
 
 # SCRUM-827: смок экрана «Атлас героев» (Мета 4.0, дизайн §7 + мокап
 # meta40_atlas_mockup). Headless-прогон по образцу meta_skill_tree_smoke_test:
-# открытие экрана, лента 17 классов и переключение класса, покупка узла через
-# панель («Вложить эмблему»), keystone-переключение (бесплатно, ≤1 активна),
-# вкладка «Гильдия» (Атлас на звёздной пыли), церемония рассеивания тумана
-# скрытой звезды (0.6с, скип кликом).
+# открытие экрана, лента 17 классов и переключение класса, click=preview-only
+# для class/guild/locked/hidden/keystone ячеек, покупка узла только через
+# панель («Вложить эмблему»), keystone-переключение только явной кнопкой
+# (бесплатно, ≤1 активна), вкладка «Гильдия» (Атлас на звёздной пыли),
+# церемония рассеивания тумана скрытой звезды (0.6с, скип кликом).
 
 const Meta := preload("res://scripts/meta_progression.gd")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
@@ -14,8 +15,12 @@ const MAIN_SCENE := preload("res://scenes/Main.tscn")
 func _initialize() -> void:
 	await _test_open_atlas_default()
 	await _test_class_strip_switch()
+	await _test_available_class_cell_click_is_preview_only()
+	await _test_locked_and_hidden_cell_clicks_are_preview_only()
 	await _test_purchase_flow()
+	await _test_available_keystone_click_is_preview_only()
 	await _test_keystone_toggle()
+	await _test_guild_locked_click_is_preview_only()
 	await _test_guild_tab()
 	await _test_hidden_star_fog_ceremony()
 	print("Meta40 atlas screen smoke test passed.")
@@ -35,6 +40,15 @@ func _spawn_main(state_patch: Dictionary = {}) -> Node:
 	state["skill_nodes"] = []
 	state["active_keystones"] = {}
 	state["meta_point_awards"] = {}
+	state["ascension_levels"] = {}
+	state["class_boss_wins"] = {}
+	state["class_challenge_progress"] = {}
+	state["class_challenges_done"] = {}
+	state["secret_boss_defeated"] = false
+	state["achievements"] = []
+	state["discovered_monsters"] = []
+	state["discovered_bosses"] = []
+	state["discovered_artifacts"] = []
 	for key in state_patch.keys():
 		state[key] = state_patch[key]
 	main.set("meta_state", state)
@@ -134,7 +148,88 @@ func _test_class_strip_switch() -> void:
 	await _teardown(main)
 
 
-# --- 3. Покупка узла: панель (титул/числа/цена) + «Вложить эмблему» ---
+# --- 3. Клик по ячейке: только предпросмотр; покупка — только кнопкой панели ---
+
+func _test_available_class_cell_click_is_preview_only() -> void:
+	var main := await _spawn_main({"meta_point_awards": {"berserk": [0, 1, 2, 3]}})
+	main.ui._show_atlas_screen()
+	await process_frame
+
+	var star := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	if star == null:
+		_fail("Preview-only: нет доступного узла berserk_m0.")
+		return
+	var before := _meta_snapshot(main, "berserk")
+	star.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: первый клик по доступной классовой звезде"):
+		return
+	if Meta.is_node_purchased(main.get("meta_state"), "berserk_m0"):
+		_fail("Preview-only: клик по доступной звезде не должен покупать berserk_m0.")
+		return
+	var title := main.find_child("AtlasNodeTitle", true, false) as Label
+	var price := main.find_child("AtlasNodePriceLabel", true, false) as Label
+	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	if title == null or title.text.strip_edges() == "":
+		_fail("Preview-only: клик обязан показать описание выбранной звезды.")
+		return
+	if price == null or not price.is_visible_in_tree() or not price.text.begins_with("Цена:"):
+		_fail("Preview-only: клик обязан показать цену выбранной звезды.")
+		return
+	if buy == null or not buy.visible or buy.disabled:
+		_fail("Preview-only: для доступной звезды action-кнопка должна быть активной, но отдельной от клика.")
+		return
+	star.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: повторный клик по уже выбранной звезде"):
+		return
+	await _teardown(main)
+
+
+func _test_locked_and_hidden_cell_clicks_are_preview_only() -> void:
+	var main := await _spawn_main()
+	main.ui._show_atlas_screen()
+	await process_frame
+
+	var locked := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	if locked == null:
+		_fail("Preview-only locked: нет узла berserk_m0.")
+		return
+	var locked_before := _meta_snapshot(main, "berserk")
+	locked.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, locked_before, "berserk", "Preview-only: клик по too-expensive/locked звезде"):
+		return
+	var locked_buy := main.find_child("AtlasBuyButton", true, false) as Button
+	var locked_condition := main.find_child("AtlasNodeCondition", true, false) as Label
+	if locked_buy == null or not locked_buy.visible or not locked_buy.disabled:
+		_fail("Preview-only locked: action-кнопка должна быть видимой, но disabled для недоступной звезды.")
+		return
+	if locked_condition == null or not locked_condition.is_visible_in_tree() or not locked_condition.text.contains("Не хватает"):
+		_fail("Preview-only locked: панель должна объяснить, почему звезда недоступна.")
+		return
+
+	var hidden := main.find_child("AtlasNode_berserk_h0", true, false) as TextureButton
+	if hidden == null:
+		_fail("Preview-only hidden: нет узла berserk_h0.")
+		return
+	var hidden_before := _meta_snapshot(main, "berserk")
+	hidden.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, hidden_before, "berserk", "Preview-only: клик по скрытой звезде"):
+		return
+	var hidden_buy := main.find_child("AtlasBuyButton", true, false) as Button
+	var hidden_condition := main.find_child("AtlasNodeCondition", true, false) as Label
+	if hidden_buy == null or hidden_buy.visible:
+		_fail("Preview-only hidden: скрытая звезда не должна показывать кнопку покупки.")
+		return
+	if hidden_condition == null or not hidden_condition.is_visible_in_tree() or not hidden_condition.text.contains("Прогресс:"):
+		_fail("Preview-only hidden: панель должна показать условие и прогресс скрытой звезды.")
+		return
+	await _teardown(main)
+
+
+# --- 4. Покупка узла: панель (титул/числа/цена) + «Вложить эмблему» ---
 
 func _test_purchase_flow() -> void:
 	var main := await _spawn_main({"meta_point_awards": {"berserk": [0, 1, 2, 3]}})
@@ -185,7 +280,43 @@ func _test_purchase_flow() -> void:
 	await _teardown(main)
 
 
-# --- 4. Keystone: переключение купленных бесплатно, активна ≤1 ---
+# --- 5. Keystone: клик preview-only; action-кнопки покупают/переключают ---
+
+func _test_available_keystone_click_is_preview_only() -> void:
+	var path_to_k0 := ["berserk_m0", "berserk_m1", "berserk_m2", "berserk_t0"]
+	var main := await _spawn_main({
+		"meta_point_awards": {"berserk": [0, 1, 2, 3, 4, 5]},
+		"skill_nodes": path_to_k0,
+	})
+	main.ui._show_atlas_screen()
+	await process_frame
+
+	var k0 := main.find_child("AtlasNode_berserk_k0", true, false) as TextureButton
+	if k0 == null:
+		_fail("Keystone preview-only: нет узла berserk_k0.")
+		return
+	var before := _meta_snapshot(main, "berserk")
+	k0.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: клик по доступной ключевой звезде"):
+		return
+	if Meta.is_node_purchased(main.get("meta_state"), "berserk_k0") or Meta.active_keystone(main.get("meta_state"), "berserk") != "":
+		_fail("Keystone preview-only: клик не должен покупать или активировать ключевую звезду.")
+		return
+	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	if buy == null or not buy.visible or buy.disabled or buy.text != "Вложить эмблему":
+		_fail("Keystone preview-only: доступная ключевая должна покупаться только action-кнопкой.")
+		return
+	buy.pressed.emit()
+	await process_frame
+	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_k0"):
+		_fail("Keystone action: кнопка должна купить ключевую звезду.")
+		return
+	if Meta.active_keystone(main.get("meta_state"), "berserk") != "berserk_k0":
+		_fail("Keystone action: первая купленная ключевая должна стать активной только после action-кнопки.")
+		return
+	await _teardown(main)
+
 
 func _test_keystone_toggle() -> void:
 	var path_to_k0 := ["berserk_m0", "berserk_m1", "berserk_m2", "berserk_t0", "berserk_k0"]
@@ -203,6 +334,10 @@ func _test_keystone_toggle() -> void:
 		return
 	k1.pressed.emit()
 	await process_frame
+	var after_click := _meta_snapshot(main, "berserk")
+	if str(after_click.get("active_keystone", "")) != "berserk_k0":
+		_fail("Keystone: клик по купленной ключевой не должен переключать активную звезду.")
+		return
 	var toggle := main.find_child("AtlasKeystoneToggle", true, false) as Button
 	if toggle == null or not toggle.visible or toggle.text != "Сделать активной":
 		_fail("Keystone: у купленной неактивной ключевой должен быть переключатель «Сделать активной».")
@@ -229,7 +364,37 @@ func _test_keystone_toggle() -> void:
 	await _teardown(main)
 
 
-# --- 5. Вкладка «Гильдия»: Атлас на звёздной пыли ---
+# --- 6. Вкладка «Гильдия»: клик preview-only, покупка на звёздной пыли ---
+
+func _test_guild_locked_click_is_preview_only() -> void:
+	var main := await _spawn_main()
+	main.ui._show_atlas_screen()
+	await process_frame
+	var guild_tab := main.find_child("AtlasTabGuild", true, false) as Button
+	if guild_tab == null:
+		_fail("Гильдия locked preview-only: нет вкладки.")
+		return
+	guild_tab.pressed.emit()
+	await process_frame
+	var m0 := main.find_child("AtlasNode_atlas_m0", true, false) as TextureButton
+	if m0 == null:
+		_fail("Гильдия locked preview-only: нет узла atlas_m0.")
+		return
+	var before := _meta_snapshot(main, "berserk")
+	m0.pressed.emit()
+	await process_frame
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: клик по недоступному узлу Гильдии"):
+		return
+	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	var condition := main.find_child("AtlasNodeCondition", true, false) as Label
+	if buy == null or not buy.visible or not buy.disabled or buy.text != "Вложить пыль":
+		_fail("Гильдия locked preview-only: action-кнопка должна быть disabled и работать с пылью.")
+		return
+	if condition == null or not condition.is_visible_in_tree() or not condition.text.contains("Не хватает"):
+		_fail("Гильдия locked preview-only: панель должна объяснить нехватку пыли.")
+		return
+	await _teardown(main)
+
 
 func _test_guild_tab() -> void:
 	# Первая победа классом даёт пыль (STARDUST_FIRST_WIN) — хватает на atlas_m0.
@@ -259,8 +424,14 @@ func _test_guild_tab() -> void:
 	if m0 == null:
 		_fail("Гильдия: нет раннего узла atlas_m0.")
 		return
+	var before := _meta_snapshot(main, "berserk")
 	m0.pressed.emit()
 	await process_frame
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: клик по доступному узлу Гильдии"):
+		return
+	if Meta.is_node_purchased(main.get("meta_state"), "atlas_m0"):
+		_fail("Гильдия: клик по atlas_m0 не должен покупать узел.")
+		return
 	var buy := main.find_child("AtlasBuyButton", true, false) as Button
 	if buy == null or not buy.visible or buy.text != "Вложить пыль":
 		_fail("Гильдия: кнопка покупки должна вкладывать пыль.")
@@ -280,7 +451,7 @@ func _test_guild_tab() -> void:
 	await _teardown(main)
 
 
-# --- 6. Скрытая звезда: туман «?», условие в панели, церемония 0.6с со скипом ---
+# --- 7. Скрытая звезда: туман «?», условие в панели, церемония 0.6с со скипом ---
 
 func _test_hidden_star_fog_ceremony() -> void:
 	# Сначала — заперта: туман «?» и условие с прогрессом.
@@ -295,8 +466,11 @@ func _test_hidden_star_fog_ceremony() -> void:
 	if qmark == null or not qmark.visible:
 		_fail("Скрытая: запертая звезда должна прятаться в тумане с «?».")
 		return
+	var locked_before := _meta_snapshot(locked_main, "berserk")
 	locked_node.pressed.emit()
 	await process_frame
+	if not _expect_meta_snapshot(locked_main, locked_before, "berserk", "Скрытая: клик по запертому туману"):
+		return
 	var condition := locked_main.find_child("AtlasNodeCondition", true, false) as Label
 	if condition == null or not condition.is_visible_in_tree() or not condition.text.contains("Прогресс:"):
 		_fail("Скрытая: панель должна показывать условие и прогресс подвига.")
@@ -327,8 +501,11 @@ func _test_hidden_star_fog_ceremony() -> void:
 	if star_overlay == null or not star_overlay.visible:
 		_fail("Скрытая: открытая подвигом звезда должна гореть золотом.")
 		return
+	var unlocked_before := _meta_snapshot(main, "berserk")
 	node.pressed.emit()
 	await process_frame
+	if not _expect_meta_snapshot(main, unlocked_before, "berserk", "Скрытая: клик по открытой скрытой звезде"):
+		return
 	var done_condition := main.find_child("AtlasNodeCondition", true, false) as Label
 	if done_condition == null or not done_condition.text.contains("Подвиг совершён"):
 		_fail("Скрытая: панель должна отметить совершённый подвиг.")
@@ -342,6 +519,31 @@ func _has_digit(text: String) -> bool:
 		if code >= 48 and code <= 57:
 			return true
 	return false
+
+
+func _meta_snapshot(main: Node, class_id: String) -> Dictionary:
+	var state: Dictionary = main.get("meta_state")
+	var raw_nodes = state.get("skill_nodes", [])
+	var nodes: Array = []
+	if raw_nodes is Array:
+		nodes = (raw_nodes as Array).duplicate()
+		nodes.sort()
+	return {
+		"skill_nodes": nodes,
+		"active_keystone": Meta.active_keystone(state, class_id),
+		"sigils": Meta.class_sigils_available(state, class_id),
+		"stardust": Meta.stardust_available(state),
+		"challenge_progress": str(state.get("class_challenge_progress", {})),
+	}
+
+
+func _expect_meta_snapshot(main: Node, before: Dictionary, class_id: String, context: String) -> bool:
+	var after := _meta_snapshot(main, class_id)
+	for key in before.keys():
+		if str(after.get(key)) != str(before.get(key)):
+			_fail("%s: клик по ячейке должен быть только preview; поле %s изменилось с %s на %s." % [context, str(key), str(before.get(key)), str(after.get(key))])
+			return false
+	return true
 
 
 func _first_node_circle_overlap(nodes: Array, tolerance_px: float) -> String:
