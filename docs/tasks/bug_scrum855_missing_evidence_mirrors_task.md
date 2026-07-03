@@ -77,16 +77,15 @@ clone/logs before this fix.
 Commit tested: `78b289836612000435addd76521c375d57a50253`.
 
 Independent re-QA confirmed fresh `origin/dev` contains repair commits
-`22c79652` and `78b28983`; both referenced mirror files exist, have git history,
-and contain final SCRUM-855/SCRUM-854 evidence. The repair commits are docs-only,
-so Godot smoke was not rerun in this pass; prior SCRUM-863 runtime smoke was
-PASS on `9dd4d8d118b5b2a2f1a73b2ef3f81af1f841a31f`.
+`22c79652` and `78b28983`. The backend mirror, QA review mirror, and this bug
+mirror all exist on `dev`, have committed git history, and contain final
+SCRUM-855/SCRUM-854 evidence. The QA review mirror is `Статус: done`, has all
+checklist items checked, and records `Статус: PASSED` under `QA-Вердикт`.
 
-Additional read-only QA subagent `Newton` independently verified a fresh
-`origin/dev` checkout: `22c79652` changed only the two SCRUM-855/SCRUM-863 task
-mirrors, the SCRUM-855 QA mirror is `Статус: done` with all checklist items
-checked and `QA-Вердикт: PASSED`, and the backend mirror records the SCRUM-854
-implementation/test evidence.
+The repair commits are docs-only, so Godot smoke was not rerun in the final
+re-QA pass. Prior SCRUM-863 runtime smoke was PASS on
+`9dd4d8d118b5b2a2f1a73b2ef3f81af1f841a31f`, and SCRUM-855/SCRUM-854 evidence
+records the full focused/runtime test set.
 
-Disk cleanup: re-QA removed `/private/tmp/fantasydisk-scrum863-reqa-f283b96`;
-Newton removed `/tmp/fantasydisk-scrum863-qa.rBobFV`; no QA logs remained.
+Disk cleanup: QA removed `/private/tmp/fantasydisk-scrum863-qa-2itic6` and
+`/private/tmp/fantasydisk-scrum863-reqa-f283b96`; no QA logs remained.
