@@ -63,6 +63,37 @@ Balance note: global damage remains green; worst CCT stays
 prints the pre-existing `_apply_dot_tick` CallbackTweener warnings from
 `player.gd`, but exits PASS.
 
-Disk cleanup: pending final commit cleanup; remove generated `.godot/`,
-untracked `.uid`, ignored `.import` sidecars and transient failure reports before
-marking Jira QA-ready.
+Disk cleanup: removed generated `.godot/`, untracked `.uid`, ignored `.import`
+sidecars and transient failure reports before marking Jira QA-ready.
+
+## QA-Вердикт 2026-07-04
+
+Статус: PASSED
+
+Evidence:
+- Verified live `origin/dev` commit
+  `b0ca6cd3342a7a87be540841a3fbe18b56336612`.
+- Main-thread landing validation PASSed on an equivalent duplicate patch tree
+  (`3abae00d`); `git diff origin/dev..3abae00d` was empty, so the duplicate was
+  not pushed.
+- Independent read-only QA subagent `Heisenberg` confirmed the live commit and
+  reran the required set with `FSD_GODOT_SLOTS=1`:
+  - `tests/projectile_chain_pierce_identity_test.gd`
+  - `tools/balance_harness.gd`
+  - `tests/weapon_identity_diversity_test.gd`
+  - `tests/global_damage_balance_smoke_test.gd`
+  - `tests/weapon_integrity_test.gd`
+  - `tests/weapon_scene_integrity_test.gd`
+  - `tests/runtime_smoke_weapon_mechanics_test.gd`
+  - `tests/global_survivability_balance_smoke_test.gd`
+  - `tests/runtime_smoke_test.gd`
+- Balance final audit PASS: 51 pairs checked; worst solo `-0.1%`
+  `druid/summon_amulet`; worst CCT `+22.0%`
+  `doctor/restore_potion/20`, within the `±30%` gate.
+- Runtime smoke still logs the known pre-existing `_apply_dot_tick`
+  CallbackTweener warnings, but exits 0 and reports PASS.
+
+Disk cleanup: removed `/private/tmp/fantasydisk-scrum857-land.jZBw4Y`,
+`/private/tmp/fantasydisk-scrum857-logs`, `/private/tmp/scrum857-b0ca6cd3.patch`
+and `/private/tmp/fantasydisk-scrum857-land.path`; QA subagent created no temp
+clone/logs.

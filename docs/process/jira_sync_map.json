@@ -3840,8 +3840,8 @@
  },
  "backend_full_class_rebalance_projectile_chain_pierce_task.md": {
   "key": "SCRUM-857",
-  "status": "Контроль качества",
-  "desc_hash": "8691735efe9fc8f560ec75c77790df0b"
+  "status": "Готово",
+  "desc_hash": "f7da8429d3340c7f704892e5ca526aa9"
  },
  "backend_full_class_rebalance_melee_counter_tank_task.md": {
   "key": "SCRUM-858",
