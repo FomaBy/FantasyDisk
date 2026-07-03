@@ -277,10 +277,13 @@ const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const LEVEL_UP_MOD_DISPLAY := {
 	"damage_multiplier": "damage",
+	"magic_damage_multiplier": "magic_damage",
+	"sound_damage_multiplier": "sound_wave_damage",
 	"attack_speed_multiplier": "attack_speed",
 	"max_health_flat": "health_point",
 	"move_speed_multiplier": "move_speed",
-	"aoe_radius_multiplier": "aoe_radius",
+	"sector_multiplier": "aoe_radius",
+	"aoe_radius_multiplier": "aura_radius",
 	"pickup_radius_flat": "pickup_radius",
 	"defense_flat": "defense",
 	"range_multiplier": "attack_range",

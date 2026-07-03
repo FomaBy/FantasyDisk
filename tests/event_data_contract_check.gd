@@ -8,7 +8,8 @@ const EventData := preload("res://scripts/event_data.gd")
 
 # Валидные mod-id из player.gd:run_modifiers (несуществующий = мёртвое поле).
 const VALID_MODS := [
-	"damage_multiplier", "attack_speed_multiplier", "range_multiplier", "aoe_radius_multiplier",
+	"damage_multiplier", "magic_damage_multiplier", "sound_damage_multiplier",
+	"attack_speed_multiplier", "range_multiplier", "aoe_radius_multiplier", "sector_multiplier",
 	"move_speed_multiplier", "max_health_multiplier", "summon_bonus", "damage_flat",
 	"max_health_flat", "pickup_radius_flat", "defense_flat", "crit_chance_flat",
 	"crit_damage_flat", "dodge_flat", "xp_gain_multiplier", "money_gain_multiplier",

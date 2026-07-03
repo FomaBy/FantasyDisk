@@ -43,6 +43,7 @@ func _initialize() -> void:
 
 	_check_attribute_isolation(errors)
 	_check_non_owner_attributes_inert(errors)
+	_check_run_modifier_isolation(errors)
 
 	if not errors.is_empty():
 		for e in errors:
@@ -100,3 +101,32 @@ func _check_non_owner_attributes_inert(errors: Array) -> void:
 			if absf(bumped_values[t] - base_values[t]) > EPS:
 				errors.append("неурочный атрибут '%s' изменил тип урона '%s' (%.4f -> %.4f)" % [
 					attribute, t, base_values[t], bumped_values[t]])
+
+
+func _damage_values_with_mods(run_modifiers: Dictionary) -> Dictionary:
+	var params := PD.derived_parameters(BASE_STATS, run_modifiers, {})
+	var out := {}
+	for t in DAMAGE_TYPES:
+		out[t] = float(params.get(t, 0.0))
+	return out
+
+
+func _check_run_modifier_isolation(errors: Array) -> void:
+	var base_values := _damage_values_with_mods({})
+	var modifier_owns := {
+		"magic_damage_multiplier": "magic_damage",
+		"sound_damage_multiplier": "sound_wave_damage",
+	}
+	for modifier_id in modifier_owns:
+		var owned_type: String = modifier_owns[modifier_id]
+		var modified_values := _damage_values_with_mods({modifier_id: 1.5})
+		if not (modified_values[owned_type] > base_values[owned_type] + EPS):
+			errors.append("модификатор '%s' не увеличил свой тип '%s' (%.4f -> %.4f)" % [
+				modifier_id, owned_type, base_values[owned_type], modified_values[owned_type]])
+		for other_type in DAMAGE_TYPES:
+			if other_type == owned_type:
+				continue
+			if absf(modified_values[other_type] - base_values[other_type]) > EPS:
+				errors.append("модификатор '%s' (тип '%s') протек в чужой тип '%s' (%.4f -> %.4f)" % [
+					modifier_id, owned_type, other_type,
+					base_values[other_type], modified_values[other_type]])

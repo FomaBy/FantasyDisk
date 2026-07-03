@@ -15,6 +15,8 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 @export var aoe_radius := 190.0
 @export var max_aoe_radius := 0.0
 @export var sweep_degrees := 70.0
+@export var circle_full_targets := 0
+@export var circle_target_diminish := 0.0
 @export var windup_time := 0.06
 @export var swing_time := 0.14
 @export var recover_time := 0.08
@@ -54,6 +56,8 @@ func configure_weapon(config: Dictionary) -> void:
 	aoe_radius = float(config.get("aoe_radius", aoe_radius))
 	max_aoe_radius = float(config.get("max_aoe_radius", max_aoe_radius))
 	sweep_degrees = float(config.get("sweep_degrees", sweep_degrees))
+	circle_full_targets = int(config.get("circle_full_targets", circle_full_targets))
+	circle_target_diminish = float(config.get("circle_target_diminish", circle_target_diminish))
 	windup_time = float(config.get("windup_time", windup_time))
 	swing_time = float(config.get("swing_time", swing_time))
 	recover_time = float(config.get("recover_time", recover_time))
@@ -188,18 +192,38 @@ func _animate_hammer_slam(direction: Vector2) -> void:
 
 func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 	_show_hit_area(owner_node, attack_direction)
+	var candidates: Array = []
 	for enemy_node in TARGET_QUERY.enemies(self):
 		if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
 			continue
 		if not _is_enemy_inside_attack(owner_node, enemy_node, attack_direction):
 			continue
 		if enemy_node.has_method("take_damage"):
-			_hit_targets.append(enemy_node)
-			var dealt := _rolled_damage(owner_node)
-			_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
-			if owner_node.has_method("on_weapon_hit"):
-				owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
-			_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
+			candidates.append(enemy_node)
+	if attack_shape == "circle" and circle_target_diminish > 0.0 and candidates.size() > 1:
+		candidates.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+			return owner_node.global_position.distance_squared_to(a.global_position) < owner_node.global_position.distance_squared_to(b.global_position)
+		)
+	for index in range(candidates.size()):
+		_damage_target(owner_node, candidates[index] as Node2D, attack_direction, _circle_damage_factor(index))
+
+
+func _damage_target(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount_multiplier := 1.0) -> void:
+	_hit_targets.append(enemy_node)
+	var dealt := _rolled_damage(owner_node) * amount_multiplier
+	_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
+	if owner_node.has_method("on_weapon_hit"):
+		owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
+	_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
+
+
+func _circle_damage_factor(target_index: int) -> float:
+	if attack_shape != "circle" or circle_target_diminish <= 0.0:
+		return 1.0
+	var full_targets := maxi(circle_full_targets, 1)
+	if target_index < full_targets:
+		return 1.0
+	return 1.0 / (1.0 + float(target_index - full_targets + 1) * circle_target_diminish)
 
 
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount: float) -> void:

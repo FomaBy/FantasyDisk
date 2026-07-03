@@ -192,9 +192,12 @@ var _debug_move_target := Vector2.ZERO
 static func _default_run_modifiers() -> Dictionary:
 	return {
 		"damage_multiplier": 1.0,
+		"magic_damage_multiplier": 1.0,
+		"sound_damage_multiplier": 1.0,
 		"attack_speed_multiplier": 1.0,
 		"range_multiplier": 1.0,
 		"aoe_radius_multiplier": 1.0,
+		"sector_multiplier": 1.0,
 		"move_speed_multiplier": 1.0,
 		"max_health_multiplier": 1.0,
 		"summon_bonus": 0.0,
@@ -2241,6 +2244,11 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	if weapon.get("aoe_radius") != null:
 		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context))
 
+	if weapon.get("sweep_degrees") != null and (weapon.get("attack_shape") == null or str(weapon.get("attack_shape")) != "circle"):
+		var base_sweep_degrees := float(weapon.get_meta("base_sweep_degrees", weapon.get("sweep_degrees")))
+		var sector_multiplier := float(derived_parameters.get("sector_multiplier", 1.0))
+		weapon.set("sweep_degrees", clampf(base_sweep_degrees * sector_multiplier, 1.0, 360.0))
+
 	if weapon.get("projectile_speed") != null:
 		weapon.set("projectile_speed", float(derived_parameters.get("projectile_speed", weapon.get_meta("base_projectile_speed", 520.0))))
 
@@ -2301,6 +2309,8 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_attack_range", weapon.get("attack_range"))
 	if weapon.get("aoe_radius") != null and not weapon.has_meta("base_aoe_radius"):
 		weapon.set_meta("base_aoe_radius", weapon.get("aoe_radius"))
+	if weapon.get("sweep_degrees") != null and not weapon.has_meta("base_sweep_degrees"):
+		weapon.set_meta("base_sweep_degrees", weapon.get("sweep_degrees"))
 	if weapon.get("inner_width") != null and not weapon.has_meta("base_inner_width"):
 		weapon.set_meta("base_inner_width", weapon.get("inner_width"))
 	if weapon.get("outer_width") != null and not weapon.has_meta("base_outer_width"):

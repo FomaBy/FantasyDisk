@@ -353,6 +353,7 @@ func _build_levelups(character_id: String, archetype: String, ideal: bool, rng: 
 # застаканить knockback и обнулить одиночный урон).
 func _dps_score(reward: Dictionary, archetype: String) -> float:
 	var multi := ["aoe", "aura", "summon"].has(archetype)
+	var melee := archetype == "melee"
 	var score := 0.0
 	var stats: Dictionary = reward.get("stats", {})
 	for stat_id in stats.keys():
@@ -372,6 +373,8 @@ func _dps_score(reward: Dictionary, archetype: String) -> float:
 					score += 18.0 * value
 				"aoe_radius_multiplier":
 					score += (42.0 if multi else 10.0) * (value - 1.0)
+				"sector_multiplier":
+					score += (36.0 if multi else (22.0 if melee else 8.0)) * (value - 1.0)
 				"range_multiplier":
 					score += (26.0 if multi else 8.0) * (value - 1.0)
 				"dot_speed_flat":

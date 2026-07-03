@@ -671,8 +671,8 @@ func _initialize() -> void:
 		_fail("Expected axe runtime base geometry to match the current ProgressionData config.")
 		return
 	var sword_config: Dictionary = ProgressionData.weapon("berserk", "sword")
-	if str(sword_config.get("attack_shape")) != "frustum" or float(sword_config.get("cone_degrees")) != 90.0 or float(sword_config.get("attack_range")) != 600.0 or float(sword_config.get("damage_multiplier")) != 1.15:
-		_fail("Expected sword to be the current 90-degree 600px frustum with 1.15 damage.")
+	if str(sword_config.get("attack_shape")) != "sweep" or float(sword_config.get("sweep_degrees")) != 100.0 or float(sword_config.get("attack_range")) != 350.0 or float(sword_config.get("damage_multiplier")) != 1.15:
+		_fail("Expected sword to be the current 100-degree 350px sweep with 1.15 damage.")
 		return
 	var hammer_config: Dictionary = ProgressionData.weapon("berserk", "hammer")
 	if float(hammer_config.get("damage_multiplier")) != 0.55 or float(hammer_config.get("upgrade_aoe_exponent", 1.0)) <= 1.0 or float(hammer_config.get("upgrade_damage_exponent", 1.0)) <= 1.0:
@@ -751,8 +751,8 @@ func _initialize() -> void:
 	if absf(float(enemy_health_bar.get("value")) - float(contact_enemy.get("health"))) > 0.01:
 		_fail("Expected enemy health bar value to match current enemy health after damage.")
 		return
-	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("max_aoe_radius", -1.0)) != 115.0:
-		_fail("Expected hammer starting radius/range to use the current 100px base with 115px cap.")
+	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 150.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 150.0 or float(ProgressionData.weapon("berserk", "hammer").get("max_aoe_radius", -1.0)) != 0.0:
+		_fail("Expected hammer starting radius/range to be uncapped 150px.")
 		return
 	if float(contact_enemy.get("contact_range")) <= 34.0:
 		_fail("Expected contact range to auto-fit the visible sprite size.")
@@ -3066,7 +3066,7 @@ func _test_stat_artifact_recording() -> void:
 func _test_berserk_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
-		"sword": {"shape": "frustum", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
+		"sword": {"shape": "sweep", "scene": "TwoHandedSword", "sprite": "res://assets/sprites/weapons/two_handed_sword.png"},
 		"axe": {"shape": "sweep", "scene": "TwoHandedAxe", "sprite": "res://assets/sprites/weapons/two_handed_axe.png"},
 		"hammer": {"shape": "circle", "scene": "TwoHandedHammer", "sprite": "res://assets/sprites/weapons/two_handed_hammer.png"},
 	}
@@ -4191,10 +4191,11 @@ func _test_universal_attribute_interpretations() -> void:
 	var rewards := ProgressionData.level_up_rewards("berserk")
 	var derived_icons_seen := {}
 	var mod_display := {
-		"dot_damage_flat": "dot_damage",
-		"dot_speed_flat": "dot_speed",
-		"projectile_speed_flat": "projectile_speed",
-		"aura_radius_flat": "aura_radius",
+			"dot_damage_flat": "dot_damage",
+			"dot_speed_flat": "dot_speed",
+			"projectile_speed_flat": "projectile_speed",
+			"aoe_radius_multiplier": "aura_radius",
+			"aura_radius_flat": "aura_radius",
 		"buff_power_flat": "buff_power",
 		"summon_bonus": "summon_amount",
 		"absorb_flat": "absorb",
@@ -5971,9 +5972,8 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
-	# Skill Tree 3.0 intentionally keeps magic_focus without its own run key:
-	# it is represented through generic damage_multiplier and previewed as the
-	# active class damage parameter.
+	# Skill Tree 3.0 keeps magic focus visible to Berserk, but routes it through
+	# an isolated magic channel so physical melee damage is unchanged.
 	var berserk_magic_focus_reward: Dictionary = {}
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
@@ -5982,17 +5982,17 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected magic focus upgrade to remain available to berserk as a low-value universal pool card.")
 		return
 	var magic_focus_mods: Dictionary = berserk_magic_focus_reward.get("mods", {}) as Dictionary
-	if float(magic_focus_mods.get("damage_multiplier", 1.0)) <= 1.0:
-		_fail("Expected magic focus to map to the documented generic damage multiplier.")
+	if float(magic_focus_mods.get("magic_damage_multiplier", 1.0)) <= 1.0:
+		_fail("Expected magic focus to map to the isolated magic damage multiplier.")
 		return
 	var berserk_weapon: Dictionary = ProgressionData.weapon("berserk", "hammer")
 	var berserk_base_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), {}, berserk_weapon)
 	var berserk_magic_focus_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), magic_focus_mods, berserk_weapon)
-	if float(berserk_magic_focus_damage.get("damage", 0.0)) <= float(berserk_base_damage.get("damage", 0.0)):
-		_fail("Expected magic focus's generic damage mapping to increase Berserk physical hammer damage.")
+	if absf(float(berserk_magic_focus_damage.get("damage", 0.0)) - float(berserk_base_damage.get("damage", 0.0))) > 0.0001:
+		_fail("Expected magic focus not to increase Berserk physical hammer damage.")
 		return
 	if float(berserk_magic_focus_damage.get("magic_damage", 0.0)) <= float(berserk_base_damage.get("magic_damage", 0.0)):
-		_fail("Expected magic focus's generic damage mapping to keep scaling magic damage too.")
+		_fail("Expected magic focus to increase only the magic damage channel.")
 		return
 	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):

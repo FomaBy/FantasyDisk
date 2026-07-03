@@ -449,21 +449,16 @@ event-множители) + `post_combat`.
   только к очкам выше базовых статов класса перед расчётом derived-параметров.
   Base lvl1 не меняется, а три оружия класса сохраняют свои разные
   `budget_tuning`, геометрию, target-pattern и темп.
-- SCRUM-503 срезал live runaway Берсерка с молотом в
-  `tools/character_balance_csv.gd`: стартовый lvl1 молот не менялся, но
-  `upgrade_aoe_exponent` снижен до 1.25, а `upgrade_damage_exponent` до 1.15.
-  Регенерированный `build/character_balance_dps.csv` даёт `berserk/hammer`
-  lvl20 optimum 2925.81 DPS на 1 цели и 61199.86 DPS на 20 целях вместо
-  прежних ~7636 / ~184k; max class-best 20-target DPS теперь 68574.57 при
-  class-best median gate 74785.73.
-- SCRUM-545/SCRUM-602 дополнили это геометрическим cap'ом молота: `BerserkWeapon`
-  поддерживает `max_aoe_radius`, а `berserk/hammer` ограничен close-ring radius
-  115px. SCRUM-602 restart также сжал late-game upgrade growth до
-  `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05`, чтобы 8s live
-  gate не флапал около старого 20-target потолка. Это не трогает меч/топор.
-  Focused live gate: `tests/berserk_dps_runaway_gate.gd` требует
-  `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`; rollback к старым
-  radius/exponent значениям снова выводит 20t в красную зону.
+- SCRUM-503/SCRUM-602 срезали live runaway Берсерка с молотом через soft-cap
+  забеговых множителей и поздние upgrade-экспоненты (`upgrade_aoe_exponent=1.08`,
+  `upgrade_damage_exponent=1.05`).
+- SCRUM-852 (2026-07-03) обновил геометрию Берсерка: молот стартует кругом
+  150px без старого close-ring cap 115px, Radius scaling честно увеличивает круг,
+  а плотные паки ограничены `circle_full_targets=4` и
+  `circle_target_diminish=0.57`. Меч стал сектором 100°/350px, топор —
+  сектором 180°/250px. Focused live gate
+  `tests/berserk_dps_runaway_gate.gd` требует `lvl20_ideal_20t <= 3600` и
+  `lvl20_ideal_1t <= 650`; текущий прогон: 20t=3469, 1t=474.
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.

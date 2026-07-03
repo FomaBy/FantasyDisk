@@ -609,9 +609,9 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 
 | ID | Игровое имя | Класс | Роль | Источник | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `sword` | Двуручный меч | Берсерк | Усеченный замах 90 градусов, радиус 600, base width 150 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
-| `axe` | Двуручный топор | Берсерк | Широкая дуга 140 градусов радиуса 320 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
-| `hammer` | Двуручный молот | Берсерк | Круговой AoE: слабый старт, усиленный рост от апгрейдов | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `sword` | Двуручный меч | Берсерк | Узкий сектор 100 градусов радиуса 350 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `axe` | Двуручный топор | Берсерк | Широкий сектор 180 градусов радиуса 250 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `hammer` | Двуручный молот | Берсерк | Круговой AoE 150px с Radius scaling и diminishing по плотной толпе | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `soldier_rifle` | Аркебуза строя | Солдат | Suppression burst: 3 коротких выстрела по линии; основная цель полный урон, соседи reduced damage | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierRifle.tscn` | Реализовано |
 | `soldier_grenade` | Граната с фитилем | Солдат | Delayed ground explosion: телеграф, короткий фитиль, falloff урона к краю | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierGrenade.tscn` | Реализовано |
 | `soldier_bayonet` | Штык-стойка | Солдат | Defensive brace corridor: каждый враг в стойке получает один укол и knockback | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierBayonet.tscn` | Реализовано |

@@ -86,7 +86,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 
 | Класс | Главный атрибут | Уникальная идентичность | Внутренняя логика оружий |
 | --- | --- | --- | --- |
-| Берсерк | Сила | Телесный напор: тяжелый melee press, фронтальные зоны и контроль толпы | Меч = длинный frustum, топор = широкая ближняя дуга, молот = центральный AoE slam |
+| Берсерк | Сила | Телесный напор: тяжелый melee press, фронтальные зоны и контроль толпы | Меч = узкий сектор 100°/350px, топор = сектор 180°/250px, молот = круговой slam 150px |
 | Солдат | Восприятие | Тактическая линия огня: сектор, дистанция, подавление и удержание позиции | Винтовка = линия подавления, граната = delayed explosive, штык = brace-стойка |
 | Вор | Ловкость | Уловка и темп: рикошеты, фантомный backstab, дым и экономические трюки | Монеты = ricochet, плащ = shadow backstab без смещения героя, дым = control/evasion zone |
 | Элементалист | Интеллект | Стихийная формула: орбиты, разломы и отложенные стихийные удары | Орбы = orbit ticks, призма = rift control, метеор = delayed shard impacts |
@@ -120,12 +120,12 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Защита | `defense` | Снижает получаемый урон; с 0.1.5 использует diminishing returns и cap 62%. |
 | Максимальное здоровье | `health_point` | Max HP игрока |
 | Дальность атаки | `attack_range` | Дистанция поиска и поражения целей |
-| Радиус AoE | `aoe_radius` | Размер круговых и взрывных зон |
+| Ширина сектора | `aoe_radius` | Ширина/угол направленных area-атак; не расширяет круговые удары |
 | Радиус подбора | `pickup_radius` | Магнит опыта и денег |
 | Урон DoT | `dot_damage` | Урон тиков |
 | Скорость DoT | `dot_speed` | Частота / темп тиков |
 | Скорость снарядов | `projectile_speed` | Скорость projectile-оружия |
-| Радиус ауры | `aura_radius` | Размер аур и зон поддержки |
+| Радиус | `aura_radius` | Радиус атак, зон, аур и поддержки |
 | Сила баффов | `buff_power` | Мощность эффектов поддержки |
 | Сила отталкивания | `knockback_power` | Knockback от звуковых и силовых атак |
 | Количество призывов | `summon_amount` | Сила призывов/устройств: количество, урон, живучесть и темп summon-role оружия |
@@ -134,9 +134,9 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 
 | Класс | Оружие | ID | Тип атаки | Ключевая механика |
 | --- | --- | --- | --- | --- |
-| Берсерк | Двуручный меч | `sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
-| Берсерк | Двуручный топор | `axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
-| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.25 (AoE) / 1.15 (damage), фактическая круговая зона capped at 145 px — сильный ближний AoE без экранного AFK-радиуса |
+| Берсерк | Двуручный меч | `sword` | `sweep` | Сектор 100°, радиус 350, interval 0.58, damage x1.15; `sector_multiplier` расширяет угол, Radius расширяет дальность |
+| Берсерк | Двуручный топор | `axe` | `sweep` | Сектор 180° радиуса 250 по ближайшему монстру, damage x0.85; `sector_multiplier` расширяет угол, Radius расширяет дальность |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Круг 150px, damage x0.55; Radius увеличивает круг, `sector_multiplier` не влияет; плотные паки получают circle target diminishing |
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
@@ -600,13 +600,13 @@ Escape открывает крупное меню характеристик:
 
 | Атрибут / параметр | Универсальная интерпретация |
 | --- | --- |
-| `intelligence` / `magic_damage` | Физические классы получают зачарование удара: часть магического урона повторяется splash-взрывом вокруг цели. |
+| `intelligence` / `magic_damage` | Магический канал изолирован: Magic Focus усиливает только `magic_damage` и не повышает физические удары. |
 | `sound_wave_damage` / `aura_radius` | Не-гитаристы получают боевой клич: периодическая волна отталкивания рядом с героем; радиус и сила берутся из sound/aura параметров. |
 | `knowledge` / `dot_damage` / `dot_speed` | Не-DoT классы добавляют малое bleed/burn/poison послевкусие к обычным ударам. |
 | `leadership` / `summon_amount` | Не-саммонеры получают эхо-оружие/фантом/сокол/знамя: каждые несколько ударов происходит повторный echo hit. Друид продолжает скейлить питомцев напрямую. |
 | `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit shadow burst ассасина, block/counter рыцаря, battle shout и будущие ultimates. |
 | `strength` / `damage` | Магам/контроллерам дает физическую весомость: прямой урон, knockback и устойчивость снарядов/ударов. |
-| `perception` / `attack_range` / `aoe_radius` / `pickup_radius` | Универсально расширяет дистанцию, зоны, magnet и читаемость buildcraft. |
+| `perception` / `attack_range` / `aura_radius` / `pickup_radius` | Универсально расширяет дистанцию, радиус атак/зон, magnet и читаемость buildcraft. |
 | `endurance` / `defense` / `absorb` / `health_point` | Универсальная выживаемость; блоки и контратаки дополнительно используют эти значения у танковых билдов. |
 
 SCRUM-243 закрепил карту «атрибут × архетип оружия» в
@@ -639,20 +639,20 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 
 | Параметр | Формула (актуальная истина) | Реализация | Статус |
 | --- | --- | --- | --- |
-| damage | `(15*Str/10 + Int*0.18 + Per*0.10 + Energy*0.12 + Know*0.09 + End*0.08 + Lead*0.10) * weapon_mult * damage_mult * archetype_mult + flat` | derived_parameters -> физическое оружие + универсальный impact | работает |
-| magic_damage | `(14*Int/10 + Energy*0.65 + Str*0.16 + Agi*0.08 + Per*0.12 + Know*0.14 + End*0.06 + Lead*0.10) * ...` | derived -> магия/зачарование | работает |
-| sound_wave_damage | `(12*(Per+Energy)/12 + Lead*0.45 + Str*0.08 + Agi*0.08 + Int*0.09 + Know*0.10 + End*0.05) * ...` | derived -> звук/боевой клич | работает |
+| damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic/Sound modifiers не протекают в physical | работает |
+| magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование; не повышает physical/sound | работает |
+| sound_wave_damage | `(Per+Energy) * weapon_mult * damage_mult * sound_damage_multiplier + flat` | derived -> звук/боевой клич; не повышает physical/magic | работает |
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), cap 0.55; mult = clamp(1.30+Agi*0.055+flat*0.75, 1.0, 2.75) | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
 | dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
 | defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
-| attack_range / aoe_radius | `(weapon + Per*2.5/3.5 + малые Int/Know/End/Lead cross-бонусы) * mult` | derived -> оружия | работает |
+| attack_range / aoe_radius | `(weapon + профильные добавки) * range/radius mult`; для Берсерка геометрический рост считается от delta статов, а Radius может расширять melee-секторы/круг | derived -> оружия | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
 | dot_damage / dot_speed | `(4+Know*0.65 + Int/Str/Per/Energy/Lead small cross)*mult`; speed = `0.65+Know*0.08+Energy/Agi small` | cursed_skull + universal DoT hook | работает |
 | projectile_speed | `weapon + Per*18 + Agi*9 + Energy*4 + Know*2` | derived -> снаряды | работает |
-| aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * mult` | derived (ампы/зоны/боевой клич) | работает |
+| aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * Radius mult` | derived (атаки/зоны/ампы/боевой клич) | работает |
 | buff_power | `1 + Lead*0.025 + Know*0.006 + Energy*0.004` | derived; потребители — события/бафф-эффекты | работает |
 | knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
 | summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | max_summons/echo weapons/support | работает |

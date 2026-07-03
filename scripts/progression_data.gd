@@ -292,8 +292,14 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "max_health"
 			"move_speed_multiplier":
 				return "move_speed"
-			"aoe_radius_multiplier":
+			"sector_multiplier":
 				return "aoe_radius"
+			"aoe_radius_multiplier":
+				return "aura_radius"
+			"magic_damage_multiplier":
+				return "magic_focus"
+			"sound_damage_multiplier":
+				return "sound_wave_damage"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
@@ -1066,8 +1072,12 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# Тождественно при множителе 1.0 (пустые run_modifiers формульного гейта) → база и
 	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
 	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
+	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
+	var run_sound_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("sound_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
+	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("magic_damage_multiplier", 1.0))
+	var sound_damage_multiplier := pow(run_sound_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("sound_damage_multiplier", 1.0))
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
 	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
@@ -1090,6 +1100,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
 	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
+	var sector_multiplier := float(run_modifiers.get("sector_multiplier", 1.0)) * float(passive_mods.get("sector_multiplier", 1.0))
 	var knockback_multiplier := float(run_modifiers.get("knockback_multiplier", 1.0)) * float(passive_mods.get("knockback_multiplier", 1.0))
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
 	var absorb_flat := float(run_modifiers.get("absorb_flat", 0.0)) + float(passive_mods.get("absorb_flat", 0.0))
@@ -1127,11 +1138,33 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var sound_base := perception + energy
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
+	var range_perception := perception
+	var range_intelligence := intelligence
+	var range_endurance := endurance
+	var range_leadership := leadership
+	var radius_perception := perception
+	var radius_intelligence := intelligence
+	var radius_knowledge := knowledge
+	var radius_leadership := leadership
+	if bool(weapon_config.get("geometry_stat_growth_from_delta", false)) and not base_for_growth.is_empty():
+		range_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
+		range_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
+		range_endurance = maxf(0.0, endurance - float(base_for_growth.get("endurance", 0.0)))
+		range_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
+		radius_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
+		radius_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
+		radius_knowledge = maxf(0.0, knowledge - float(base_for_growth.get("knowledge", 0.0)))
+		radius_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
+	var range_intelligence_weight := float(weapon_config.get("attack_range_intelligence_weight", 0.35))
+	var aoe_intelligence_weight := float(weapon_config.get("aoe_radius_intelligence_weight", 0.45))
+	var attack_range_multiplier := range_multiplier
+	if bool(weapon_config.get("range_scales_with_aoe_radius", false)):
+		attack_range_multiplier *= aoe_radius_multiplier
 
 	return {
 		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
-		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
-		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat,
+		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier * sound_damage_multiplier + universal_damage_flat,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
 		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
@@ -1139,8 +1172,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0))),
 		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
-		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5 + intelligence * 0.35 + endurance * 0.25 + leadership * 0.35) * range_multiplier,
-		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5 + intelligence * 0.45 + knowledge * 0.35 + leadership * 0.30) * aoe_radius_multiplier,
+		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + range_perception * 2.5 + range_intelligence * range_intelligence_weight + range_endurance * 0.25 + range_leadership * 0.35) * attack_range_multiplier,
+		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier,
 		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
 		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
@@ -1160,6 +1193,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
 		"range_multiplier": range_multiplier,
+		"sector_multiplier": sector_multiplier,
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}

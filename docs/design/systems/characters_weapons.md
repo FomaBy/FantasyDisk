@@ -1,6 +1,6 @@
 # Characters And Weapons
 
-Обновлено: 2026-06-13
+Обновлено: 2026-07-03
 
 Канонические данные персонажей и оружия доступны через compatibility facade `scripts/progression_data.gd`; после SCRUM-198 исходные домены живут в `scripts/progression_data_characters.gd` и `scripts/progression_data_weapons.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
 
@@ -8,7 +8,7 @@
 
 | Character ID | Role |
 | --- | --- |
-| `berserk` | melee AoE/frustum fighter, высокий риск рядом с толпой |
+| `berserk` | melee sector/circle fighter, высокий риск рядом с толпой |
 | `soldier` | tactical physical fighter: suppression burst, delayed grenade, bayonet brace |
 | `thief` | agile trickster: coin ricochet, shadow backstab, smoke dodge window |
 | `elementalist` | elemental AoE caster: orbit ticks, prism rifts, meteor shards |
@@ -32,9 +32,9 @@
 
 | Class | Weapon ID | Name | Scene | Backend Mode | Gameplay Identity |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `frustum` | Широкий усеченный замах 90 градусов, радиус 600, надежно достает врагов рядом |
-| `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкая дуга, контроль ближней толпы |
-| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Малый стартовый круг с close-ring cap 115px; late-game AoE stays local instead of screen-wide |
+| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `sweep` | Узкий дальний сектор 100 градусов радиуса 350; секторные бонусы расширяют угол, Radius расширяет дальность |
+| `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкий сектор 180 градусов радиуса 250 по ближайшему монстру |
+| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Круговой slam радиуса 150; Radius увеличивает круг, секторные бонусы не влияют, плотные паки получают target diminishing |
 | `soldier` | `soldier_rifle` | Аркебуза строя | `SoldierRifle.tscn` | `suppression_burst` | Три коротких выстрела по линии: primary full damage, соседние цели reduced suppression damage |
 | `soldier` | `soldier_grenade` | Граната с фитилем | `SoldierGrenade.tscn` | `grenade_cook` | Телеграф ground-zone, задержка фитиля, взрыв с falloff |
 | `soldier` | `soldier_bayonet` | Штык-стойка | `SoldierBayonet.tscn` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага и knockback |
