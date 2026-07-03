@@ -120,3 +120,30 @@ Post-rebase verification:
 
 Disk cleanup: generated `.godot/`, untracked Godot `.import`/`.uid` sidecars
 and Python `__pycache__` directories are removed before final handoff.
+
+## QA-Вердикт (2026-07-03)
+
+Статус: PASSED
+QA owner: Codex QA / Confucius subagent
+Checked ref: `origin/dev` / `99175f5c7fe94b72674e8931632223a6767f08f0`
+
+Verification:
+
+- Confirmed integration commit `07a77935990aa8280d1857d553cbf9b87917df92` is on `origin/dev`.
+- Confirmed evidence commit `99175f5c7fe94b72674e8931632223a6767f08f0` is on `origin/dev`.
+- Confirmed original branch commit `229bf6fce33e0274a78744b902846ea10285f401`
+  is not an ancestor after cherry-pick, as expected; `07a77935` is the integrated equivalent.
+- `docs/process/jira_sync_map.json` contains `SCRUM-847`, `SCRUM-845`, and `SCRUM-844`.
+- `tools/godot_gate.py` has no silent timeout bypass; timeout bypass requires
+  explicit `FSD_GODOT_BYPASS_ON_TIMEOUT=1`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/gamepad_settings_rebind_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/boss_outgoing_damage_multiplier_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/take_damage_feedback_signature_test.gd` PASS.
+
+Concerns: none.
+Disk cleanup: removed disposable QA worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa-scrum-844-full-review`
+after clearing generated `.godot/`, `.import`/`.uid` sidecars, ignored build
+artifacts, and `__pycache__` directories.
