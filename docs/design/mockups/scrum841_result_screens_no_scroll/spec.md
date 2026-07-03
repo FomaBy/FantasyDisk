@@ -13,7 +13,12 @@ the frame safe-zone and never cover the decorative border.
 
 - PixelLab UI reference job: `d53f1789-4586-423d-90e6-8006dc92aacb` failed
   externally with `Generation stalled and was automatically failed`.
-- PixelLab retry job: `7ae80417-b175-41c0-bb79-34c87e84dc28`.
+- PixelLab retry job: `7ae80417-b175-41c0-bb79-34c87e84dc28` completed.
+- Reference PNG:
+  `docs/design/mockups/scrum841_result_screens_no_scroll/result_no_scroll_layout_reference.png`
+- Note: the PixelLab reference contains decorative placeholder glyphs/text despite
+  the no-text prompt. It is reference-only for frame/content-zone composition and
+  is not used as runtime UI art.
 - Runtime assets: existing victory minimal-metal modal, death `result_panel`,
   existing `ui_crest_victory.png` / `ui_crest_defeat.png`, existing text-button
   family. No new runtime bitmap asset is required for this backend layout fix.
