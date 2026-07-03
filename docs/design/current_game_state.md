@@ -1464,7 +1464,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
 | Отдых | Лечение или защитный бонус поверх canonical system/campfire backdrop `ui_backdrop_system_cathedral.png`; описание бонуса находится внутри SCRUM-437 wide economy choice-card content-zone |
-| Pause menu / stats | В активном бою Escape сразу открывает досье/доску персонажа с левыми кнопками управления забегом; старое standalone run menu не появляется поверх или вместо доски. На небоевых run-экранах компактное run menu остаётся оболочкой с Continue/Досье/Settings/End Run/Main Menu. Досье показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах; SCRUM-330 Design kit готовит modal frame с safe-zone, runtime wiring передан Back-end |
+| Pause menu / stats | В активном бою Escape сразу открывает досье/доску персонажа с левыми кнопками управления забегом; старое standalone run menu не появляется поверх или вместо доски. На небоевых run-экранах компактное run menu остаётся оболочкой с Continue/Досье/Settings/End Run/Main Menu. Досье показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах; SCRUM-839 закрепляет увеличенные readable rows/chips/icons внутри существующей SCRUM-580/SCRUM-486 safe-zone без новых bitmap frame assets |
 | Смерть | Завершение забега; SCRUM-330 result crest/modal kit подготовлен как Design package |
 | Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды; SCRUM-330 result crest/modal kit подготовлен как Design package |
 
@@ -1497,8 +1497,8 @@ Game cursor asset-ready:
 
 Escape stats menu layout:
 - `RunControls` слева содержит кнопки управления (`Продолжить`, `Настройки`, `Завершить забег`, `Выйти в главное меню`).
-- `BaseStatsList` находится под кнопками и показывает базовые характеристики компактными строками: иконка, русское имя, значение.
-- `DerivedStatsGroups` справа группирует производные параметры в `physical_damage`, `magic_damage`, `sound_control`, `dot_poison`, `survival`, `summons_support`.
+- `BaseStatsList` находится под кнопками и показывает базовые характеристики readable-строками: иконка, русское имя, значение. SCRUM-839 runtime minimum: строка 44px+, имя 17px+, значение 18px+, иконка 44px+.
+- `DerivedStatsGroups` справа группирует производные параметры в `physical_damage`, `magic_damage`, `sound_control`, `dot_poison`, `survival`, `summons_support`; SCRUM-839 chips используют минимум 236x54px, 15px+ name text, 17px+ value text и 46px+ иконки.
 - Каждый `BaseStatRow_<stat_id>` и `DerivedStatChip_<stat_id>` имеет hover tooltip с описанием, формулой и влияниями из `scripts/stat_formulas.gd`.
 - Fantasy visual kit для `EscapeStatsPanelFrame`, кнопок, stat rows, groups, chips, divider и tooltip подключен через `StyleBoxTexture` / `TextureRect` из `assets/sprites/ui/frames/escape/`; точные paths, colors, margins и spacing описаны в `docs/design/escape_stats_visual_kit.md`.
 - Custom tooltip создается в `scripts/pause_stats_menu.gd::_make_custom_tooltip()` и ограничен целевой шириной 430px, чтобы Godot мог удерживать его внутри viewport.

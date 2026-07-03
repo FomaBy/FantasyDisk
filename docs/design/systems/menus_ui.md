@@ -636,6 +636,17 @@ route/shop/event/level-up/reward contexts, but it must not appear over or instea
 of the character board for clean active gameplay. Resume, Settings Back, and
 repeated Escape preserve the same run state and pause-stack semantics.
 
+SCRUM-839 is a runtime readability pass on the accepted SCRUM-580/SCRUM-486
+pause dossier @2K layout. No new bitmap frames were generated: `pd_panel`,
+`pause_280x60`, stat row/chip frames, and tooltip frames remain the source of
+truth. `scripts/pause_stats_menu.gd` now uses viewport-aware readable minimums:
+base stat rows are at least 44px high with 17/18px name/value text, derived stat
+chips are at least 236x54px with 15/17px name/value text, and stat icons render
+at 44px+ for base attributes and 46px+ for derived attributes. Long Russian stat
+names are clipped with ellipsis or wrapped only inside their existing containers;
+content remains inside the frame safe-zone. The update note lives in
+`docs/design/mockups/scrum839_pause_dossier_readability/spec.md`.
+
 ## Feedback Overlay
 
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call

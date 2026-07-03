@@ -488,6 +488,31 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if card_error != "":
 				return card_error
 	match screen_id:
+		"pause_menu", "pause_stats":
+			var strength_row := main.find_child("BaseStatRow_strength", true, false) as Control
+			var strength_name := main.find_child("BaseStatName_strength", true, false) as Label
+			var strength_value := main.find_child("BaseStatValue_strength", true, false) as Label
+			var strength_icon := main.find_child("UIIcon_strength", true, false) as Control
+			var damage_chip := main.find_child("DerivedStatChip_damage", true, false) as Control
+			var damage_name := main.find_child("DerivedStatName_damage", true, false) as Label
+			var damage_value := main.find_child("DerivedStatValue_damage", true, false) as Label
+			var damage_icon := main.find_child("UIIcon_damage", true, false) as Control
+			if strength_row == null or strength_name == null or strength_value == null or strength_icon == null:
+				return "%s: expected readable base stat controls for SCRUM-839." % context
+			if damage_chip == null or damage_name == null or damage_value == null or damage_icon == null:
+				return "%s: expected readable derived stat chip controls for SCRUM-839." % context
+			if strength_row.custom_minimum_size.y < 44.0:
+				return "%s: expected base stat row min height >= 44px for SCRUM-839 readability." % context
+			if strength_name.get_theme_font_size("font_size") < 17 or strength_value.get_theme_font_size("font_size") < 18:
+				return "%s: expected base stat label/value font sizes >= 17/18 for SCRUM-839 readability." % context
+			if strength_icon.custom_minimum_size.x < 44.0 or strength_icon.custom_minimum_size.y < 44.0:
+				return "%s: expected base stat icons >= 44px for SCRUM-839 readability." % context
+			if damage_chip.custom_minimum_size.x < 236.0 or damage_chip.custom_minimum_size.y < 54.0:
+				return "%s: expected derived stat chips >= 236x54px for SCRUM-839 readability." % context
+			if damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17:
+				return "%s: expected derived stat label/value font sizes >= 15/17 for SCRUM-839 readability." % context
+			if damage_icon.custom_minimum_size.x < 46.0 or damage_icon.custom_minimum_size.y < 46.0:
+				return "%s: expected derived stat icons >= 46px for SCRUM-839 readability." % context
 		"combat_hud":
 			if main.find_child("CharacterStatsHud", true, false) != null:
 				return "%s: SCRUM-671 essential-only HUD must not show CharacterStatsHud." % context

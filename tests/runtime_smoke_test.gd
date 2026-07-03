@@ -1191,6 +1191,21 @@ func _initialize() -> void:
 		_fail("Expected custom stat tooltip label width to fit the SCRUM-586 safe rect.")
 		return
 	tooltip.queue_free()
+	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
+	var strength_value := pause_menu.find_child("BaseStatValue_strength", true, false) as Label
+	var strength_icon := pause_menu.find_child("UIIcon_strength", true, false) as Control
+	var damage_name := pause_menu.find_child("DerivedStatName_damage", true, false) as Label
+	var damage_value := pause_menu.find_child("DerivedStatValue_damage", true, false) as Label
+	var damage_icon := pause_menu.find_child("UIIcon_damage", true, false) as Control
+	if strength_name == null or strength_value == null or strength_icon == null or damage_name == null or damage_value == null or damage_icon == null:
+		_fail("Expected pause stats readable label/icon nodes for base and derived values.")
+		return
+	if strength_row.custom_minimum_size.y < 44.0 or strength_name.get_theme_font_size("font_size") < 17 or strength_value.get_theme_font_size("font_size") < 18 or strength_icon.custom_minimum_size.x < 44.0:
+		_fail("Expected base stat rows to use SCRUM-839 readable row/icon/text sizing.")
+		return
+	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
+		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
+		return
 	var stat_icons := pause_menu.find_children("UIIcon_*", "Control", true, false)
 	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + UIIconRegistry.DERIVED_ATTRIBUTE_IDS.size():
 		_fail("Expected pause stats menu to show icons for base stats and derived attributes.")

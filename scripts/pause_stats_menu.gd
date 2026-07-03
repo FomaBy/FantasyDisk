@@ -116,6 +116,29 @@ const PD_LEFT_COLUMN_2K := Rect2(135, 165, 330, 1123)
 const PD_RIGHT_AREA_2K := Rect2(483, 165, 1942, 1123)
 const PD_BTN_2K := Rect2(0, 0, 280, 60)  # шаблон-размер кнопки управления
 const PD_STAT_GROUP_2K := Rect2(0, 0, 430, 0)  # шаблон-ширина панели группы статов
+const READABILITY_BASE_VIEWPORT := Vector2(1280.0, 720.0)
+const READABILITY_MAX_SCALE := 1.18
+const READABLE_BASE_ROW_HEIGHT := 44.0
+const READABLE_BASE_ICON_SIZE := 30.0
+const READABLE_CHIP_HEIGHT := 54.0
+const READABLE_CHIP_WIDTH := 236.0
+const READABLE_CHIP_ICON_SIZE := 32.0
+const READABLE_GROUP_WIDTH := 520.0
+
+
+func _readability_scale() -> float:
+	var viewport := get_viewport_rect().size
+	if viewport.x <= 0.0 or viewport.y <= 0.0:
+		return 1.0
+	return clampf(
+		minf(viewport.x / READABILITY_BASE_VIEWPORT.x, viewport.y / READABILITY_BASE_VIEWPORT.y),
+		1.0,
+		READABILITY_MAX_SCALE
+	)
+
+
+func _readable_px(base_size: float) -> int:
+	return int(roundf(base_size * _readability_scale()))
 
 
 func _build_layout() -> void:
@@ -154,13 +177,13 @@ func _build_layout() -> void:
 	layout.name = "EscapeStatsLayout"
 	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 18)
+	layout.add_theme_constant_override("separation", _readable_px(18.0))
 	safe_scroll.add_child(layout)
 
 	var left_column := VBoxContainer.new()
 	left_column.name = "RunControls"
-	left_column.custom_minimum_size = Vector2(300 if get_viewport_rect().size.x < 1500.0 else 330, 0)
-	left_column.add_theme_constant_override("separation", 10)
+	left_column.custom_minimum_size = Vector2(320 if get_viewport_rect().size.x < 1500.0 else 360, 0)
+	left_column.add_theme_constant_override("separation", _readable_px(10.0))
 	layout.add_child(left_column)
 
 	_build_left_controls(left_column)
@@ -170,7 +193,7 @@ func _build_layout() -> void:
 	var right_column := VBoxContainer.new()
 	right_column.name = "DerivedStatsPanel"
 	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_column.add_theme_constant_override("separation", 12)
+	right_column.add_theme_constant_override("separation", _readable_px(12.0))
 	layout.add_child(right_column)
 
 	var header := HBoxContainer.new()
@@ -181,14 +204,14 @@ func _build_layout() -> void:
 	var stats_title := Label.new()
 	stats_title.text = "Боевые параметры"
 	stats_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stats_title.add_theme_font_size_override("font_size", 30)
+	stats_title.add_theme_font_size_override("font_size", _readable_px(30.0))
 	stats_title.add_theme_color_override("font_color", Color(0.95, 0.97, 1.0, 1.0))
 	header.add_child(stats_title)
 
 	var stats_hint := Label.new()
 	stats_hint.text = "Наведи на параметр для деталей"
 	stats_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	stats_hint.add_theme_font_size_override("font_size", 15)
+	stats_hint.add_theme_font_size_override("font_size", _readable_px(15.0))
 	stats_hint.add_theme_color_override("font_color", Color(0.62, 0.70, 0.78, 1.0))
 	header.add_child(stats_hint)
 
@@ -203,8 +226,8 @@ func _build_layout() -> void:
 	_derived_groups_container.name = "DerivedStatsGroups"
 	_derived_groups_container.columns = 1 if get_viewport_rect().size.x < 1800.0 else 2
 	_derived_groups_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_derived_groups_container.add_theme_constant_override("h_separation", 12)
-	_derived_groups_container.add_theme_constant_override("v_separation", 12)
+	_derived_groups_container.add_theme_constant_override("h_separation", _readable_px(12.0))
+	_derived_groups_container.add_theme_constant_override("v_separation", _readable_px(12.0))
 	scroll.add_child(_derived_groups_container)
 
 
@@ -245,7 +268,9 @@ func _refresh_dossier() -> void:
 	var title := Label.new()
 	title.name = "PauseDossierTitle"
 	title.text = str(config.get("title", "Герой"))
-	title.add_theme_font_size_override("font_size", 18)
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.add_theme_font_size_override("font_size", _readable_px(19.0))
 	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
 	text_box.add_child(title)
 
@@ -258,14 +283,14 @@ func _refresh_dossier() -> void:
 		int(_player.get("xp_to_next")),
 	]
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	details.add_theme_font_size_override("font_size", 13)
+	details.add_theme_font_size_override("font_size", _readable_px(14.0))
 	details.add_theme_color_override("font_color", TEXT_SECONDARY)
 	text_box.add_child(details)
 
 	var asc := Label.new()
 	asc.name = "PauseDossierAscension"
 	asc.text = "Возвышение %d" % int(_player.get_parent().get("selected_ascension_level") if _player.get_parent() != null and _player.get_parent().get("selected_ascension_level") != null else 0)
-	asc.add_theme_font_size_override("font_size", 12)
+	asc.add_theme_font_size_override("font_size", _readable_px(13.0))
 	asc.add_theme_color_override("font_color", Color(0.78, 0.88, 1.0, 1.0))
 	text_box.add_child(asc)
 
@@ -274,7 +299,7 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	var title := Label.new()
 	title.name = "PauseStatsTitle"
 	title.text = "Пауза"
-	title.add_theme_font_size_override("font_size", 38)
+	title.add_theme_font_size_override("font_size", _readable_px(38.0))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	left_column.add_child(title)
 
@@ -282,13 +307,13 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	subtitle.name = "PauseStatsSubtitle"
 	subtitle.text = "Управление забегом и текущий билд"
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_font_size_override("font_size", _readable_px(16.0))
 	subtitle.add_theme_color_override("font_color", Color(0.72, 0.78, 0.84, 1.0))
 	left_column.add_child(subtitle)
 
 	var button_box := VBoxContainer.new()
 	button_box.name = "PauseControlButtons"
-	button_box.add_theme_constant_override("separation", 8)
+	button_box.add_theme_constant_override("separation", _readable_px(8.0))
 	left_column.add_child(button_box)
 
 	# SCRUM-580: 4 кнопки управления досье-паузы переодеты в выделенный pd_btn @2K-фрейм.
@@ -336,13 +361,13 @@ func _build_base_stats_block(left_column: VBoxContainer) -> void:
 	var section_title := Label.new()
 	section_title.name = "BaseStatsTitle"
 	section_title.text = "Базовые характеристики"
-	section_title.add_theme_font_size_override("font_size", 19)
+	section_title.add_theme_font_size_override("font_size", _readable_px(22.0))
 	section_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	left_column.add_child(section_title)
 
 	_base_stats_container = VBoxContainer.new()
 	_base_stats_container.name = "BaseStatsList"
-	_base_stats_container.add_theme_constant_override("separation", 4)
+	_base_stats_container.add_theme_constant_override("separation", _readable_px(5.0))
 	left_column.add_child(_base_stats_container)
 
 	_build_artifacts_block(left_column)
@@ -355,7 +380,7 @@ func _build_base_stats_block(left_column: VBoxContainer) -> void:
 	hint.name = "PauseStatsHint"
 	hint.text = "Esc закрывает меню."
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 14)
+	hint.add_theme_font_size_override("font_size", _readable_px(14.0))
 	hint.add_theme_color_override("font_color", Color(0.58, 0.65, 0.72, 1.0))
 	left_column.add_child(hint)
 
@@ -366,7 +391,7 @@ func _build_artifacts_block(left_column: VBoxContainer) -> void:
 	var section_title := Label.new()
 	section_title.name = "ArtifactsTitle"
 	section_title.text = "Артефакты"
-	section_title.add_theme_font_size_override("font_size", 19)
+	section_title.add_theme_font_size_override("font_size", _readable_px(21.0))
 	section_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	left_column.add_child(section_title)
 
@@ -387,7 +412,7 @@ func _refresh_artifacts() -> void:
 		var empty_label := Label.new()
 		empty_label.name = "ArtifactsEmptyLabel"
 		empty_label.text = "Пока не найдено"
-		empty_label.add_theme_font_size_override("font_size", 14)
+		empty_label.add_theme_font_size_override("font_size", _readable_px(15.0))
 		empty_label.add_theme_color_override("font_color", Color(0.58, 0.65, 0.72, 1.0))
 		_artifacts_container.add_child(empty_label)
 		return
@@ -470,7 +495,7 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	var is_priority := ProgressionData.attribute_priorities(character_id).has(stat_id)
 	var row := PanelContainer.new()
 	row.name = "BaseStatRow_%s" % stat_id
-	row.custom_minimum_size = Vector2(0, 36)
+	row.custom_minimum_size = Vector2(0, _readable_px(READABLE_BASE_ROW_HEIGHT))
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	row.tooltip_text = _tooltip_for_entry(entry)
@@ -485,10 +510,11 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", _readable_px(9.0))
 	row.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(28, 28))
+	var icon_size := _readable_px(READABLE_BASE_ICON_SIZE)
+	var icon := UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(icon_size, icon_size))
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
 
@@ -497,7 +523,9 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	name_label.text = str(entry.get("name_ru", ""))
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 15)
+	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", _readable_px(17.0))
 	name_label.add_theme_color_override("font_color", Color(0.90, 0.94, 1.0, 1.0))
 	line.add_child(name_label)
 
@@ -506,17 +534,19 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 		badge.name = "PriorityBadge_%s" % stat_id
 		badge.text = "★"
 		badge.tooltip_text = ProgressionData.attribute_priority_reason(character_id, stat_id)
-		badge.add_theme_font_size_override("font_size", 14)
+		badge.add_theme_font_size_override("font_size", _readable_px(17.0))
 		badge.add_theme_color_override("font_color", Color(1.0, 0.82, 0.25, 1.0))
 		line.add_child(badge)
 
 	var value_label := Label.new()
 	value_label.name = "BaseStatValue_%s" % str(entry.get("id", ""))
 	value_label.text = _compact_value_text(entry)
-	value_label.custom_minimum_size = Vector2(48, 0)
+	value_label.custom_minimum_size = Vector2(_readable_px(58.0), 0)
+	value_label.clip_text = true
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value_label.add_theme_font_size_override("font_size", 16)
+	value_label.add_theme_font_size_override("font_size", _readable_px(18.0))
 	value_label.add_theme_color_override("font_color", _value_color(entry))
 	line.add_child(value_label)
 	return row
@@ -525,20 +555,20 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Control:
 	var group_panel := PanelContainer.new()
 	group_panel.name = "DerivedStatGroup_%s" % str(group.get("id", ""))
-	group_panel.custom_minimum_size = Vector2(430, 0)
+	group_panel.custom_minimum_size = Vector2(_readable_px(READABLE_GROUP_WIDTH), 0)
 	group_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group_panel.add_theme_stylebox_override("panel", _group_style(group.get("accent", Color(0.95, 0.78, 0.32, 1.0))))
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", _readable_px(9.0))
 	group_panel.add_child(box)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 8)
+	header.add_theme_constant_override("separation", _readable_px(9.0))
 	box.add_child(header)
 
 	var accent := ColorRect.new()
-	accent.custom_minimum_size = Vector2(5, 26)
+	accent.custom_minimum_size = Vector2(_readable_px(5.0), _readable_px(30.0))
 	accent.color = group.get("accent", Color(0.95, 0.78, 0.32, 1.0))
 	header.add_child(accent)
 
@@ -549,14 +579,16 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 
 	var title := Label.new()
 	title.text = str(group.get("title", "Группа"))
-	title.add_theme_font_size_override("font_size", 18)
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.add_theme_font_size_override("font_size", _readable_px(20.0))
 	title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	title_box.add_child(title)
 
 	var description := Label.new()
 	description.text = str(group.get("description", ""))
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.add_theme_font_size_override("font_size", 12)
+	description.add_theme_font_size_override("font_size", _readable_px(13.0))
 	description.add_theme_color_override("font_color", Color(0.62, 0.70, 0.78, 1.0))
 	title_box.add_child(description)
 
@@ -564,8 +596,8 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	chips.name = "DerivedStatChips_%s" % str(group.get("id", ""))
 	chips.columns = 2
 	chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	chips.add_theme_constant_override("h_separation", 7)
-	chips.add_theme_constant_override("v_separation", 7)
+	chips.add_theme_constant_override("h_separation", _readable_px(8.0))
+	chips.add_theme_constant_override("v_separation", _readable_px(8.0))
 	box.add_child(chips)
 
 	for stat_id in group.get("stats", []):
@@ -577,7 +609,7 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 func _make_stat_chip(entry: Dictionary) -> Control:
 	var chip := PanelContainer.new()
 	chip.name = "DerivedStatChip_%s" % str(entry.get("id", ""))
-	chip.custom_minimum_size = Vector2(200, 44)
+	chip.custom_minimum_size = Vector2(_readable_px(READABLE_CHIP_WIDTH), _readable_px(READABLE_CHIP_HEIGHT))
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_STOP
 	chip.tooltip_text = _tooltip_for_entry(entry)
@@ -590,10 +622,11 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 7)
+	line.add_theme_constant_override("separation", _readable_px(8.0))
 	chip.add_child(line)
 
-	line.add_child(UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(30, 30)))
+	var icon_size := _readable_px(READABLE_CHIP_ICON_SIZE)
+	line.add_child(UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(icon_size, icon_size)))
 
 	var text_box := VBoxContainer.new()
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -601,9 +634,11 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	line.add_child(text_box)
 
 	var name_label := Label.new()
+	name_label.name = "DerivedStatName_%s" % str(entry.get("id", ""))
 	name_label.text = str(entry.get("name_ru", ""))
 	name_label.clip_text = true
-	name_label.add_theme_font_size_override("font_size", 13)
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", _readable_px(15.0))
 	name_label.add_theme_color_override("font_color", Color(0.86, 0.91, 0.96, 1.0))
 	text_box.add_child(name_label)
 
@@ -611,7 +646,8 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	value_label.name = "DerivedStatValue_%s" % str(entry.get("id", ""))
 	value_label.text = _compact_value_text(entry)
 	value_label.clip_text = true
-	value_label.add_theme_font_size_override("font_size", 15)
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value_label.add_theme_font_size_override("font_size", _readable_px(17.0))
 	value_label.add_theme_color_override("font_color", _value_color(entry))
 	text_box.add_child(value_label)
 	return chip
