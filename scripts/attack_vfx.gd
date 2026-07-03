@@ -31,6 +31,9 @@ const INTENSITY_RGB_MULT := 0.88
 const INTENSITY_SATURATION := 0.78
 const INTENSITY_ALPHA_MULT := 0.62
 const MAX_ATTACK_VFX_ALPHA := 0.68
+const WEAPON_SIGNATURE_BODY_ALPHA := 0.60
+const WEAPON_SIGNATURE_SHADOW_ALPHA := 0.34
+const WEAPON_SIGNATURE_RIM_ALPHA := 0.20
 const BEAM_VISUAL_WIDTH_MULT := 1.15
 const PARTICLE_DENSITY_MULT := 0.7
 
@@ -42,6 +45,13 @@ static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	sprite.material = material
 	sprite.modulate = _calmed_color(color)
+	return sprite
+
+
+static func _normal_sprite(texture: Texture2D, color: Color) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.modulate = color
 	return sprite
 
 
@@ -71,16 +81,19 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	holder.rotation = rotation
 
 	var shadow := Sprite2D.new()
+	shadow.name = "WeaponSignatureShadow"
 	shadow.texture = texture
-	shadow.modulate = Color(0.02, 0.015, 0.012, 0.24)
+	shadow.modulate = Color(0.02, 0.015, 0.012, WEAPON_SIGNATURE_SHADOW_ALPHA)
 	shadow.scale = Vector2.ONE * 0.90
 	shadow.z_index = -1
 	holder.add_child(shadow)
 
-	var sprite := _additive_sprite(texture, Color(color.r, color.g, color.b, 0.72))
+	var sprite := _normal_sprite(texture, Color(color.r, color.g, color.b, WEAPON_SIGNATURE_BODY_ALPHA))
+	sprite.name = "WeaponSignatureBody"
 	holder.add_child(sprite)
 
-	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, 0.14))
+	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, WEAPON_SIGNATURE_RIM_ALPHA))
+	rim.name = "WeaponSignatureRim"
 	rim.scale = Vector2.ONE * 1.02
 	rim.z_index = 1
 	holder.add_child(rim)

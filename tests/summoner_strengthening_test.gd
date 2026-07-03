@@ -44,6 +44,8 @@ func _initialize() -> void:
 	var errors: Array = []
 	await _test_summon_configs(errors)
 	await _test_summon_profile_scales_with_leadership(errors)
+	await _test_summon_prefill_and_scoped_limit(errors)
+	await _test_summon_limit_uses_leadership(errors)
 	await _test_ally_minion_profile_and_lifecycle(errors)
 	await _test_summon_group_target_distribution(errors)
 	await _test_ally_attack_splash(errors)
@@ -144,6 +146,7 @@ func _test_summon_group_target_distribution(errors: Array) -> void:
 		holder.add_child(ally)
 		ally.global_position = player.global_position + Vector2(-32.0 + index * 32.0, 34.0)
 		ally.set("owner_node", player)
+		ally.set_meta("summon_weapon_owner", weapon.get_instance_id())
 		ally.call("set_combat_profile", {
 			"damage": 18.0,
 			"attack_range": 36.0,
@@ -170,6 +173,90 @@ func _test_summon_group_target_distribution(errors: Array) -> void:
 			assigned_ids[target.get_instance_id()] = true
 	if assigned_ids.size() < 2:
 		errors.append("Expected summon target assignment to split 3 allies across at least 2 enemies, got %d unique targets." % assigned_ids.size())
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_summon_prefill_and_scoped_limit(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(500, 420)
+	await process_frame
+	player.call("configure_character", "druid", "summon_amulet")
+	var weapon: Node = player.get("equipped_weapon")
+	if weapon == null:
+		errors.append("Expected Druid summon weapon for prefill test.")
+		holder.queue_free()
+		await process_frame
+		return
+	weapon.set_process(false)
+	weapon.set("max_summons", 5)
+	weapon.call("_prefill_starting_summons")
+	await process_frame
+
+	var active: Array = weapon.call("_active_weapon_summons", player)
+	if active.size() != 3:
+		errors.append("Expected starting prefill to create ceil(5/2)=3 summons, got %d." % active.size())
+	for _index in range(5):
+		weapon.call("_summon", false)
+		await process_frame
+	active = weapon.call("_active_weapon_summons", player)
+	if active.size() != 5:
+		errors.append("Expected summon cap to stop at 5 owned summons, got %d." % active.size())
+
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var foreign_ally := ally_scene.instantiate()
+	holder.add_child(foreign_ally)
+	foreign_ally.set("owner_node", player)
+	foreign_ally.global_position = player.global_position + Vector2(80, 0)
+	await process_frame
+	active = weapon.call("_active_weapon_summons", player)
+	if active.size() != 5:
+		errors.append("Expected unscoped/foreign ally not to count against this weapon limit, got %d." % active.size())
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_summon_limit_uses_leadership(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	await process_frame
+	player.call("configure_character", "druid", "summon_amulet")
+	var weapon: Node = player.get("equipped_weapon")
+	if weapon == null:
+		errors.append("Expected Druid summon weapon for Leadership limit test.")
+		holder.queue_free()
+		await process_frame
+		return
+	weapon.set_process(false)
+
+	var base_max := int(weapon.get_meta("base_max_summons"))
+	var stats: Dictionary = player.get("stats")
+	stats["leadership"] = 0.0
+	stats["knowledge"] = 40.0
+	stats["intelligence"] = 0.0
+	stats["energy"] = 0.0
+	player.set("stats", stats)
+	player.call("_apply_stat_scaling", false, player.get("max_health"))
+	player.call("_apply_weapon_scaling", weapon)
+	if int(weapon.get("max_summons")) != base_max:
+		errors.append("Expected Knowledge-derived summon_amount not to raise max_summons above base %d, got %d." % [base_max, int(weapon.get("max_summons"))])
+	stats["leadership"] = 12.0
+	stats["knowledge"] = 0.0
+	player.set("stats", stats)
+	player.call("_apply_stat_scaling", false, player.get("max_health"))
+	player.call("_apply_weapon_scaling", weapon)
+	var expected_min := base_max + 3
+	if int(weapon.get("max_summons")) < expected_min:
+		errors.append("Expected Leadership to raise max_summons to at least %d, got %d." % [expected_min, int(weapon.get("max_summons"))])
 
 	holder.queue_free()
 	await process_frame

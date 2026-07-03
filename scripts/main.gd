@@ -1035,7 +1035,7 @@ func apply_ascension_bonuses(player: Node) -> void:
 	# SCRUM-618: стартовый боон забега — мелкие mods в том же ключевом словаре (damage_mult,
 	# *_flat и т.п.). Складываем с накопленными (множители суммируются как доли, эффект 1.0+sum;
 	# плоские — сложением), как и древо/класс. "" = без боона (тождественность).
-	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id)
+	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id, selected_character_id)
 	for boon_key in boon_mods:
 		skill_mods[boon_key] = float(skill_mods.get(boon_key, 0.0)) + float(boon_mods[boon_key])
 	if player.has_method("apply_meta_skill_modifiers"):

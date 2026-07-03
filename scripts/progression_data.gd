@@ -128,8 +128,14 @@ static func canonical_start_boon_id(boon_id: String) -> String:
 			return boon_id
 
 
-static func start_boons() -> Array:
-	return START_BOONS
+static func start_boons(character_id := "") -> Array:
+	if character_id == "":
+		return START_BOONS
+	var boons := []
+	for boon in START_BOONS:
+		if is_reward_relevant(boon, character_id):
+			boons.append((boon as Dictionary).duplicate(true))
+	return boons
 
 
 static func start_boon_definition(boon_id: String) -> Dictionary:
@@ -141,11 +147,13 @@ static func start_boon_definition(boon_id: String) -> Dictionary:
 
 
 # Mods выбранного боона (пустой dict, если боон не выбран/неизвестен — тождественность).
-static func start_boon_mods(boon_id: String) -> Dictionary:
+static func start_boon_mods(boon_id: String, character_id := "") -> Dictionary:
 	if boon_id == "":
 		return {}
 	var boon := start_boon_definition(boon_id)
 	if boon.is_empty():
+		return {}
+	if character_id != "" and not is_reward_relevant(boon, character_id):
 		return {}
 	return (boon.get("mods", {}) as Dictionary).duplicate(true)
 
@@ -158,7 +166,54 @@ static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
 	return true
 
 
+const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
+	"regeneration": true,
+	"vampiric_amount": true,
+	"vampiric_chance": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS := {
+	"leech_heart": true,
+	"leech_fang": true,
+	"field_kit": true,
+	"vital_siphon": true,
+	"breather_totem": true,
+	"soul_harvest": true,
+	"second_wind": true,
+	"swiftfoot": true,
+	"shop_heal": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS := {
+	"regeneration_flat": true,
+	"vampiric_chance_flat": true,
+	"vampiric_amount_flat": true,
+	"vampiric_heal_per_second_cap": true,
+	"kill_heal_percent": true,
+	"room_clear_heal_percent": true,
+	"kill_streak_heal_every": true,
+	"lowhp_regen_bonus": true,
+	"heal_percent": true,
+}
+
+
+static func _is_doctor_forbidden_sustain_reward(reward: Dictionary) -> bool:
+	var reward_id := str(reward.get("id", ""))
+	if DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS.has(reward_id):
+		return true
+	var attr_id := str(reward.get("attr", ""))
+	if DOCTOR_FORBIDDEN_SUSTAIN_ATTRS.has(attr_id):
+		return true
+	var mods: Dictionary = reward.get("mods", {}) as Dictionary
+	for key in mods.keys():
+		if DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(str(key)):
+			return true
+	if reward.has("heal_percent"):
+		return true
+	return false
+
+
 static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
+	if character_id == "doctor" and _is_doctor_forbidden_sustain_reward(reward):
+		return false
 	return true
 
 
@@ -1208,6 +1263,8 @@ static func reward_pool(character_id := "") -> Array:
 		stat_reward["kind"] = "stat"
 		rewards.append(stat_reward)
 	for artifact in ARTIFACTS:
+		if character_id != "" and not is_reward_relevant(artifact, character_id):
+			continue
 		var artifact_reward: Dictionary = artifact.duplicate(true)
 		artifact_reward["kind"] = "artifact"
 		artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
@@ -1282,13 +1339,17 @@ static func unique_encounter_patterns() -> Dictionary:
 	return UNIQUE_ENCOUNTER_PATTERNS.duplicate(true)
 
 
-static func shop_items(route_stage := 0) -> Array:
+static func shop_items(route_stage := 0, character_id := "") -> Array:
 	var items := []
 	for item in SHOP_ITEMS:
+		if character_id != "" and not is_reward_relevant(item, character_id):
+			continue
 		var shop_item: Dictionary = item.duplicate(true)
 		shop_item["cost"] = stage_scaled_cost(int(shop_item.get("cost", 0)), route_stage)
 		items.append(shop_item)
 	for artifact in ARTIFACTS:
+		if character_id != "" and not is_reward_relevant(artifact, character_id):
+			continue
 		var shop_artifact: Dictionary = artifact.duplicate(true)
 		shop_artifact["cost"] = stage_scaled_cost(int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30))), route_stage)
 		shop_artifact["kind"] = "artifact"
@@ -1297,10 +1358,12 @@ static func shop_items(route_stage := 0) -> Array:
 	return items
 
 
-static func elite_artifact_choices(route_stage: int, count := 3) -> Array:
+static func elite_artifact_choices(route_stage: int, count := 3, character_id := "") -> Array:
 	var pool := []
 	var scale := stage_scale(route_stage)
 	for artifact in ARTIFACTS:
+		if character_id != "" and not is_reward_relevant(artifact, character_id):
+			continue
 		var candidate: Dictionary = artifact.duplicate(true)
 		var tier := int(candidate.get("tier", 1))
 		var depth_weight := 1.0

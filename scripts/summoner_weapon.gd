@@ -28,6 +28,7 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 
 var _cooldown := 0.0
 var _command_refresh := 0.0
+var _initial_prefill_done := false
 var ally_visual_ids: Array[String] = []
 
 
@@ -67,6 +68,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_cooldown -= delta
 	_command_refresh -= delta
+	if not _initial_prefill_done:
+		_prefill_starting_summons()
 	if _command_refresh <= 0.0:
 		_command_existing_summons()
 		_command_refresh = 0.25
@@ -77,19 +80,28 @@ func _process(delta: float) -> void:
 	_cooldown = summon_interval
 
 
-func _summon() -> void:
-	if ally_scene == null:
-		return
-
-	var active_summons := get_tree().get_nodes_in_group("allies").filter(func(ally: Node) -> bool:
-		return ally != null and is_instance_valid(ally) and not ally.is_queued_for_deletion()
-	)
-	if active_summons.size() >= max_summons:
-		return
-
+func _prefill_starting_summons() -> void:
+	_initial_prefill_done = true
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return
+	var target_count := maxi(int(ceil(float(max_summons) * 0.5)), 1)
+	while _active_weapon_summons(owner_node).size() < mini(target_count, max_summons):
+		if not _summon(false):
+			break
+	_cooldown = summon_interval
+
+
+func _summon(play_cast_animation := true) -> bool:
+	if ally_scene == null:
+		return false
+
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return false
+
+	if _active_weapon_summons(owner_node).size() >= max_summons:
+		return false
 
 	var ally := ally_scene.instantiate() as Node2D
 	var parent := owner_node.get_tree().current_scene
@@ -100,6 +112,7 @@ func _summon() -> void:
 
 	parent.add_child(ally)
 	ally.add_to_group("player_weapon_effects")
+	ally.set_meta("summon_weapon_owner", get_instance_id())
 	var selected_visual_id := _selected_ally_visual_id()
 	if ally.has_method("set_visual_id"):
 		ally.call("set_visual_id", selected_visual_id)
@@ -117,9 +130,10 @@ func _summon() -> void:
 			if ally.get(str(key)) != null:
 				ally.set(str(key), profile[key])
 
-	if owner_node.has_method("play_action_animation"):
+	if play_cast_animation and owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", ally.global_position - owner_node.global_position)
 	_command_existing_summons()
+	return true
 
 
 func _summon_profile(owner_node: Node) -> Dictionary:
@@ -202,7 +216,7 @@ func _command_existing_summons() -> void:
 		var ally_node := ally as Node2D
 		if ally_node == null or not is_instance_valid(ally_node):
 			continue
-		if ally_node.get("owner_node") != owner_node:
+		if not _is_owned_weapon_summon(ally_node, owner_node):
 			continue
 		_command_ally(ally_node, owner_node, targets, assigned_damage)
 
@@ -225,9 +239,28 @@ func _owned_allies(owner_node: Node2D) -> Array[Node2D]:
 		var ally_node := ally as Node2D
 		if ally_node == null or not is_instance_valid(ally_node):
 			continue
-		if ally_node.get("owner_node") == owner_node:
+		if _is_owned_weapon_summon(ally_node, owner_node):
 			result.append(ally_node)
 	return result
+
+
+func _active_weapon_summons(owner_node: Node2D) -> Array[Node2D]:
+	var result: Array[Node2D] = []
+	for ally in get_tree().get_nodes_in_group("allies"):
+		var ally_node := ally as Node2D
+		if ally_node == null or not is_instance_valid(ally_node) or ally_node.is_queued_for_deletion():
+			continue
+		if _is_owned_weapon_summon(ally_node, owner_node):
+			result.append(ally_node)
+	return result
+
+
+func _is_owned_weapon_summon(ally_node: Node2D, owner_node: Node2D) -> bool:
+	if ally_node.get("owner_node") != owner_node:
+		return false
+	if not ally_node.has_meta("summon_weapon_owner"):
+		return false
+	return int(ally_node.get_meta("summon_weapon_owner")) == get_instance_id()
 
 
 func _target_candidates(owner_node: Node2D, count: int) -> Array:
