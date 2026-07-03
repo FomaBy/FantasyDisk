@@ -647,6 +647,17 @@ names are clipped with ellipsis or wrapped only inside their existing containers
 content remains inside the frame safe-zone. The update note lives in
 `docs/design/mockups/scrum839_pause_dossier_readability/spec.md`.
 
+SCRUM-840 unifies global hover tooltip behavior without generating new bitmap
+assets. Generic `tooltip_text` controls inherit the existing minimal-metal
+`tooltip` frame (`66/44/66/40` content margins), while glossary keeps
+`gt_panel` and pause dossier stat details keep `stat_tooltip`. The shared
+runtime helper in `scripts/ui/global_tooltip.gd` builds opaque framed panels
+with word wrap, `MOUSE_FILTER_IGNORE`, 460px generic width / 430px stat width,
+16px viewport clamp and 18px cursor/anchor gap. Generic tooltip panels carry a
+small positioning script that re-places the Godot tooltip away from the cursor
+after instantiation; glossary uses the same clamp/flip helper against the term
+button anchor. Spec note: `docs/design/mockups/scrum840_global_tooltips/spec.md`.
+
 ## Feedback Overlay
 
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call

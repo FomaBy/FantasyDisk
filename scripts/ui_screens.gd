@@ -7,6 +7,7 @@ var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
 var _settings_v6_icon_cache := {}
+var _global_tooltip_theme: Theme = null
 # SCRUM-816: живая строка статуса геймпада на вкладке «Управление» + флаг режима
 # прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
 var _gamepad_status_label: Label = null
@@ -25,6 +26,8 @@ const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd"
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
+const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
 
@@ -682,6 +685,7 @@ func _show_main_menu() -> void:
 	root.name = "MainMenuScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var background := TextureRect.new()
 	background.name = "MainMenuBackground"
@@ -843,6 +847,7 @@ func _show_quit_confirmation_dialog() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.z_index = 500
 	game.ui_layer.add_child(overlay)
+	_prepare_global_tooltips(overlay)
 
 	var dim := ColorRect.new()
 	dim.name = "QuitConfirmationDim"
@@ -983,6 +988,7 @@ func _show_continue_run_dialog() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.z_index = 520
 	game.ui_layer.add_child(overlay)
+	_prepare_global_tooltips(overlay)
 
 	var dim := ColorRect.new()
 	dim.name = "ContinueRunDim"
@@ -1420,6 +1426,7 @@ func _build_character_select_v4() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var vp: Vector2 = root.get_viewport_rect().size
 	if vp.x <= 0.0 or vp.y <= 0.0:
@@ -2257,6 +2264,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	root.name = "AttributeShopScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "meta_progression")
 
 	var shade := ColorRect.new()
@@ -2522,6 +2530,7 @@ func _show_atlas_screen() -> void:
 	root.name = "AtlasScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_atlas["root"] = root
 
 	# Ночное небо — фулскрин-ассет кита, без общего фона/шейда.
@@ -3870,6 +3879,7 @@ func _show_patch_notes_screen() -> void:
 	root.name = "PatchNotesScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "codex")
 
 	# SCRUM-576: полноэкранная панель-фрейм @2K (PN_PANEL_2K 2464×1388), нарисована per-слот
@@ -3949,6 +3959,7 @@ func _show_codex_screen() -> void:
 	root.name = "CodexScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	# SCRUM-684: весь кодекс — pixel-art; nearest наследуется на все панели/
 	# карточки/иконки/фон, чтобы апскейл вьюпорта был хрустящим без блюра.
@@ -4562,7 +4573,7 @@ func _glossary_tooltip_text(term_id: String) -> String:
 const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контенту (шаблон ~140)
 const GT_PANEL_CONTENT_2K := Vector4(66, 44, 66, 40)
 const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
-const GT_ANCHOR_GAP_2K := 8.0  # зазор от низа якоря до верха тултипа
+const GT_ANCHOR_GAP_2K := 18.0  # SCRUM-840: stable gap from cursor/anchor, avoids hover flicker.
 const GT_TITLE_FONT_SIZE := 16
 const GT_DESC_FONT_SIZE := 13
 const GT_TEXT_SEPARATION := 4
@@ -4586,15 +4597,18 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	# stay inside this zone and never cover the corner claws, ruby pins or metal rails.
 	tooltip.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("gt_panel", GT_PANEL_2K.size))
 	var box := VBoxContainer.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_theme_constant_override("separation", GT_TEXT_SEPARATION)
 	tooltip.add_child(box)
 	var title := Label.new()
 	title.text = str(definition.get("name", term_id))
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title.add_theme_font_size_override("font_size", _readable_font_size(GT_TITLE_FONT_SIZE))
 	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
 	box.add_child(title)
 	var desc := Label.new()
 	desc.text = str(definition.get("desc", ""))
+	desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.add_theme_font_size_override("font_size", _readable_font_size(GT_DESC_FONT_SIZE))
 	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
@@ -4602,12 +4616,11 @@ func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
 	game.ui_layer.add_child(tooltip)
 	var anchor_rect := anchor.get_global_rect()
 	var viewport_size := anchor.get_viewport_rect().size
-	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + GT_ANCHOR_GAP_2K)
+	tooltip.position = anchor_rect.end + Vector2(GT_ANCHOR_GAP_2K, GT_ANCHOR_GAP_2K)
 	tooltip.size = Vector2(GT_PANEL_2K.size.x, 0)
 	await game.get_tree().process_frame
-	var rect := tooltip.get_global_rect()
-	tooltip.position.x = clampf(tooltip.position.x, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.x - rect.size.x - GT_VIEWPORT_MARGIN_2K))
-	tooltip.position.y = clampf(tooltip.position.y, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.y - rect.size.y - GT_VIEWPORT_MARGIN_2K))
+	tooltip.size = Vector2(GT_PANEL_2K.size.x, tooltip.get_combined_minimum_size().y)
+	GlobalTooltip.place_near_anchor(tooltip, anchor_rect, viewport_size, GT_ANCHOR_GAP_2K, GT_VIEWPORT_MARGIN_2K)
 
 
 func _hide_glossary_tooltip() -> void:
@@ -4928,6 +4941,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "settings")
 
 	var modal_rect := _settings_v6_modal_rect()
@@ -5848,6 +5862,7 @@ func _build_run_pause_menu() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.pause_overlay_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var panel := PanelContainer.new()
 	panel.name = "RunPauseMenuPanel"
@@ -6629,6 +6644,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "elite_reward")
 
 	var shade := ColorRect.new()
@@ -6997,6 +7013,7 @@ func _show_shop_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	_add_screen_background(root, "shop")
 	_create_menu_run_hud()
@@ -8972,6 +8989,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "settings")
 
 	var panel := Panel.new()
@@ -9389,6 +9407,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	game.feedback_overlay_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var dim := ColorRect.new()
 	dim.name = "FeedbackDim"
@@ -9591,6 +9610,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	if screen_background_id != "":
 		_add_screen_background(root, screen_background_id)
@@ -9818,6 +9838,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	root.name = "LevelUpOverlay"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "level_up")
 
 	var dim := ColorRect.new()
@@ -11077,6 +11098,36 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	return style
 
 
+func _prepare_global_tooltips(root: Control) -> void:
+	if root == null:
+		return
+	if _global_tooltip_theme == null:
+		_global_tooltip_theme = GlobalTooltip.make_theme()
+	root.theme = _global_tooltip_theme
+	if not bool(root.get_meta("global_tooltip_child_hook", false)):
+		root.set_meta("global_tooltip_child_hook", true)
+		root.child_entered_tree.connect(func(_child: Node) -> void:
+			_schedule_global_tooltip_install(root)
+		)
+	_schedule_global_tooltip_install(root)
+
+
+func _schedule_global_tooltip_install(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	if bool(root.get_meta("global_tooltip_install_pending", false)):
+		return
+	root.set_meta("global_tooltip_install_pending", true)
+	call_deferred("_install_global_tooltips_for_root", root)
+
+
+func _install_global_tooltips_for_root(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	root.set_meta("global_tooltip_install_pending", false)
+	GlobalTooltip.install_on_tree(root, GlobalTooltipControl)
+
+
 func _style_slider(slider: HSlider) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	slider.add_theme_stylebox_override("slider", _slider_track_style(Color(0.035, 0.045, 0.065, 0.96), Color(0.55, 0.42, 0.18, 0.85)))
@@ -11116,6 +11167,7 @@ func _create_hud() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	_create_resource_hud_panel(root, Vector2(20, 18), true)
 	_create_combat_timer_panel(root)
@@ -11595,6 +11647,7 @@ func _create_menu_run_hud() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_create_resource_hud_panel(root, Vector2(18, 10))
 	_update_hud()
 	_update_level_up_button()

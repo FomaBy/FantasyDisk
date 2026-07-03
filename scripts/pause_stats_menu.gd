@@ -7,6 +7,8 @@ signal main_menu_requested
 
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
+const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
 const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
 const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
 const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
@@ -95,7 +97,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	theme = GlobalTooltip.make_theme()
 	_build_layout()
+	call_deferred("_install_global_tooltip_skin")
 
 
 func setup(player: Node) -> void:
@@ -103,6 +107,7 @@ func setup(player: Node) -> void:
 	_refresh_dossier()
 	_refresh_stats()
 	_refresh_artifacts()
+	call_deferred("_install_global_tooltip_skin")
 
 
 # SCRUM-484: координатная спека @2560×1440 — пауза-досье (двухколоночная модалка).
@@ -680,20 +685,19 @@ const ST_LABEL_CONTENT_2K := Vector4(44.0, 42.0, 44.0, 42.0)
 
 
 func _make_custom_tooltip(for_text: String) -> Object:
-	var tooltip := PanelContainer.new()
-	tooltip.name = "StatTooltipPanel"
-	tooltip.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH, 0.0)
-	tooltip.add_theme_stylebox_override("panel", _tooltip_style())
+	return GlobalTooltip.make_text_panel(
+		for_text,
+		_tooltip_style(),
+		TOOLTIP_MAX_WIDTH,
+		"StatTooltipPanel",
+		"StatTooltipLabel",
+		14,
+		TEXT_PRIMARY
+	)
 
-	var label := Label.new()
-	label.name = "StatTooltipLabel"
-	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - ST_LABEL_CONTENT_2K.x - ST_LABEL_CONTENT_2K.z, 0.0)
-	label.text = for_text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", 14)
-	label.add_theme_color_override("font_color", TEXT_PRIMARY)
-	tooltip.add_child(label)
-	return tooltip
+
+func _install_global_tooltip_skin() -> void:
+	GlobalTooltip.install_on_tree(self, GlobalTooltipControl)
 
 
 func _tooltip_for_entry(entry: Dictionary) -> String:

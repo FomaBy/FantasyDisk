@@ -15,6 +15,7 @@ const Glossary := preload("res://scripts/glossary.gd")
 const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
+const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
@@ -1179,6 +1180,9 @@ func _initialize() -> void:
 	if tooltip == null or not (tooltip.get_theme_stylebox("panel") is StyleBoxTexture) or tooltip.custom_minimum_size.x > 430.0:
 		_fail("Expected custom stat tooltip to use Design frame and stay clamped to target width.")
 		return
+	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected custom stat tooltip to ignore mouse input and avoid hover flicker.")
+		return
 	var tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxTexture
 	if _stylebox_texture_path(tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
 		_fail("Expected custom stat tooltip to use the SCRUM-586 2K stat tooltip frame.")
@@ -1189,6 +1193,9 @@ func _initialize() -> void:
 	var tooltip_label := tooltip.find_child("StatTooltipLabel", true, false) as Label
 	if tooltip_label == null or tooltip_label.custom_minimum_size.x > 342.0:
 		_fail("Expected custom stat tooltip label width to fit the SCRUM-586 safe rect.")
+		return
+	if tooltip_label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected custom stat tooltip label to ignore mouse input.")
 		return
 	tooltip.queue_free()
 	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
@@ -1379,11 +1386,52 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
 		_fail("Expected glossary hover to create a tooltip panel with the term name.")
 		return
+	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected glossary tooltip to ignore mouse input and avoid hover flicker.")
+		return
 	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != GLOSSARY_TOOLTIP_TEXTURE_2K:
 		_fail("Expected glossary tooltip to use the SCRUM-486 @2K gt_panel frame texture.")
 		return
+	if tooltip.get_global_rect().intersects(button.get_global_rect()):
+		_fail("Expected glossary tooltip to keep a stable offset and avoid overlapping its anchor.")
+		return
 	main.ui._hide_glossary_tooltip()
 	button.queue_free()
+	await process_frame
+	var generic_button := Button.new()
+	generic_button.name = "GenericTooltipProbe"
+	generic_button.tooltip_text = "Непрозрачная глобальная подсказка с переносом слов"
+	(main.get("ui_layer") as CanvasLayer).add_child(generic_button)
+	main.ui._prepare_global_tooltips(generic_button)
+	await process_frame
+	if not bool(generic_button.get_meta("global_tooltip_skin", false)):
+		_fail("Expected generic tooltip_text controls to receive the global tooltip skin.")
+		return
+	if str(generic_button.get_meta("global_tooltip_install_mode", "")) != "custom_tooltip_script" or not (generic_button is Button) or not generic_button.has_signal("pressed"):
+		_fail("Expected global tooltip skin to attach conservatively without breaking native Button behavior.")
+		return
+	var generic_tooltip := generic_button.call("_make_custom_tooltip", generic_button.tooltip_text) as PanelContainer
+	if generic_tooltip == null or generic_tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE or generic_tooltip.custom_minimum_size.x > 460.0:
+		_fail("Expected generic tooltip_text controls to produce clamped mouse-ignoring tooltips.")
+		return
+	var generic_style := generic_tooltip.get_theme_stylebox("panel") as StyleBoxTexture
+	if generic_style == null or _stylebox_texture_path(generic_style) != MINIMAL_TOOLTIP_TEXTURE:
+		_fail("Expected generic tooltip_text controls to use the minimal-metal tooltip frame.")
+		return
+	var generic_label := generic_tooltip.find_child("GlobalTooltipLabel", true, false) as Label
+	if generic_label == null or generic_label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+		_fail("Expected generic tooltip_text controls to wrap tooltip copy inside the global frame.")
+		return
+	(main.get("ui_layer") as CanvasLayer).add_child(generic_tooltip)
+	main.get_viewport().warp_mouse(Vector2(120, 120))
+	await process_frame
+	await process_frame
+	var cursor_rect := GlobalTooltip.cursor_anchor_rect(generic_tooltip)
+	if generic_tooltip.get_global_rect().intersects(cursor_rect):
+		_fail("Expected generic global tooltip panel to keep a stable offset from the cursor.")
+		return
+	generic_tooltip.queue_free()
+	generic_button.queue_free()
 	await process_frame
 
 
