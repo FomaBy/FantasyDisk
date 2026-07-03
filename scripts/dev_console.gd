@@ -2,9 +2,9 @@ extends CanvasLayer
 # SCRUM-831: внутриигровая дев-консоль в стиле Slay the Spire 2.
 # Тоггл — физическая клавиша слева от «1» (` / ~ на ANSI, § на Mac ISO, Ё на русской
 # раскладке), Esc — закрыть, Tab — автодополнение, Up/Down — история команд.
-# Пока консоль открыта, игра стоит на паузе (push_pause "dev_console"), а Main._input
-# отдаёт консоли весь ввод (ранний return), чтобы буквы команд не дёргали хоткеи
-# (P-фидбек, Space-докачка, F12 и т.п.).
+# Пока консоль открыта, Main._input отдаёт ей весь ввод (ранний return), чтобы
+# буквы команд не дёргали хоткеи (P-фидбек, Space-докачка, F12 и т.п.). Сам бой
+# при этом не ставится на паузу: консоль должна быть live-overlay для отладки.
 # Команды не заводят параллельной логики: идут через те же публичные пути, что и
 # обычный геймплей (apply_reward/gain_xp/take_damage/_start_combat/_end_combat).
 
@@ -77,7 +77,7 @@ func open_console() -> void:
 	if visible:
 		return
 	visible = true
-	game.push_pause(PAUSE_REASON)
+	_release_legacy_pause_reason()
 	_history_index = -1
 	_input_line.clear()
 	_input_line.grab_focus.call_deferred()
@@ -88,11 +88,18 @@ func close_console() -> void:
 		return
 	visible = false
 	_input_line.release_focus()
-	game.pop_pause(PAUSE_REASON)
+	_release_legacy_pause_reason()
 
 
 func get_output_text() -> String:
 	return _output.get_parsed_text()
+
+
+func _release_legacy_pause_reason() -> void:
+	# SCRUM-845: before this bugfix the console pushed a gameplay pause reason.
+	# Keep a small cleanup hook so a hot-reloaded/dev session cannot stay frozen.
+	if game != null and game.has_method("_has_pause_reason") and game._has_pause_reason(PAUSE_REASON):
+		game.pop_pause(PAUSE_REASON)
 
 
 func _process(_delta: float) -> void:

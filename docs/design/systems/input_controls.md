@@ -1,6 +1,6 @@
 # Input Controls
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-03
 
 Этот документ фиксирует runtime-контракт управления игроком. Настройки и UI
 описаны в `docs/design/systems/menus_ui.md`, а фактический snapshot игры — в
@@ -161,6 +161,12 @@ UI-навигация (все экраны/попапы):
 
 Экранная карта фокуса — `docs/design/systems/menus_ui.md` (мета-меню SCRUM-813,
 внутризабеговые SCRUM-812).
+
+## Dev Console
+
+- Runtime console (`scripts/dev_console.gd`, SCRUM-831/SCRUM-845) toggles on the physical key left of `1`: `KEY_QUOTELEFT` (`/~`/`Ё`) or `KEY_SECTION` (`§` on Mac ISO).
+- While open, `main._input` returns early so console typing does not fire unrelated global hotkeys such as feedback, level-up, F12 or run pause.
+- The console is not a pause source. It must not add `dev_console` to `pause_reasons` and must not set `SceneTree.paused`; active combat, enemies, timer and player movement continue under the overlay.
 
 ## Исправленные gamepad regression bugs (2026-07-02)
 

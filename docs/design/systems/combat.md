@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-06-30 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-07-03 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -154,10 +154,12 @@
 - Причины паузы: `escape_menu`, `level_up`.
 - При паузе `get_tree().paused = true`, UI продолжает работать, gameplay objects/tweens заморожены.
 - Level-up всегда ставит бой на паузу до выбора награды.
+- Dev console (`scripts/dev_console.gd`, SCRUM-845) не является gameplay pause reason: открытая консоль остаётся live overlay, перехватывает командный ввод, но не замораживает бой, таймер, движение игрока или врагов.
 
 ## Tests
 
 - Зонтичный smoke: `tests/runtime_smoke_test.gd` (полный прогон).
+- Dev console smoke: `tests/dev_console_smoke_test.gd` проверяет, что открытая консоль не ставит бой на паузу и не останавливает таймер/движение.
 - Фокус-сьюты (SCRUM-202, split зонтика): `tests/runtime_smoke_combat_test.gd`, `runtime_smoke_boss_elite_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_ui_test.gd`.
 - Targeting-specific smoke: `tests/melee_weapon_targeting_test.gd`.
 - Weapon integrity gate (SCRUM-277): `tests/weapon_integrity_test.gd` проверяет все 51 оружие 17 классов от `ProgressionData.weapon_ids()` до реальной scene/equipped visual, чтобы сцена не показывала чужой proxy-спрайт или пассивный item вместо выбранного оружия.
