@@ -1,6 +1,6 @@
 # Progression And Balance
 
-Обновлено: 2026-06-28 (0.1.7)
+Обновлено: 2026-07-04 (0.2.1 rebalance wave)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -478,10 +478,25 @@ event-множители) + `post_combat`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
 - Финальный 0.1.5 numeric audit: `tools/balance_harness.gd` также пишет `build/balance_final_audit_0_1_5.md`; `tests/global_damage_balance_smoke_test.gd` проверяет solo DPS ±20% и crowd-clear 5/10/20 ±30% для всех 51 class+weapon pairs.
+- SCRUM-856 (2026-07-04) добавил class-trio identity audit:
+  `docs/design/reports/full_class_rebalance_identity_audit.md`. Это
+  pre-implementation baseline для SCRUM-857..860: pair-level числа зелёные, но
+  audit фиксирует mechanic-first долги, скрытые `budget_damage_multiplier`
+  (`2.800` cap-pinned слабое сырьё и `0.280..0.624` over-hitter clamp у
+  summon/DoT/sustain weapons). Следующие class-balance задачи должны сначала
+  менять форму механики, target pattern, setup/payoff, deploy ownership,
+  sustain window или control value, а не начинать с множителей.
 
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.
+- SCRUM-856 зафиксировал identity/playfeel риск поверх зелёных numeric gates:
+  delayed AoE, AoE projectile, chain/split/pierce, deploy/summon и sustain
+  семейства должны быть разведены механиками. Особенно важны `doctor/restore_potion`
+  (текущий худший 20-target CCT +22%, но PASS), hard-clamped summons/DoT
+  (`druid/summon_amulet`, `chemist/homunculus_vial`, `assassin/venom_wire`) и
+  cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
+  `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные

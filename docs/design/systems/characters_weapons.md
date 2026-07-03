@@ -1,6 +1,6 @@
 # Characters And Weapons
 
-Обновлено: 2026-07-03
+Обновлено: 2026-07-04
 
 Канонические данные персонажей и оружия доступны через compatibility facade `scripts/progression_data.gd`; после SCRUM-198 исходные домены живут в `scripts/progression_data_characters.gd` и `scripts/progression_data_weapons.gd`. Этот файл описывает игровую идентичность, сцены и текущие backend-режимы.
 
@@ -29,6 +29,13 @@
 ## Weapon Matrix
 
 У каждого класса ровно 3 выбираемых стартовых оружия. Все варианты выбираются через `ProgressionData.WEAPONS_BY_CLASS` и передаются в `Player.configure_character(character_id, weapon_id)`.
+
+SCRUM-856 закрепляет class-trio identity audit как baseline для полной rebalance
+волны: `docs/design/reports/full_class_rebalance_identity_audit.md`. Численные
+гейты по 51 паре класс+оружие сейчас PASS, но downstream SCRUM-857..860 должны
+разводить похожие оружия механикой кита (дистанция/риск, геометрия, задержка,
+chain/split/pierce, deploy/summon поведение, sustain/defense окно), а не только
+множителями урона.
 
 | Class | Weapon ID | Name | Scene | Backend Mode | Gameplay Identity |
 | --- | --- | --- | --- | --- | --- |

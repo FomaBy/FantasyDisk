@@ -778,7 +778,13 @@ Generated reports:
 - `build/global_damage_balance_report.md` — focused gate output with solo/combined DPS and 5/10/20 CCT per pair.
 - `build/balance_final_audit_0_1_5.md` — final audit summary, class viability table, crowd-clear table and standard budget table.
 
-Current final result: PASS. All 51 class+weapon pairs stay inside solo and crowd-clear corridors. Worst solo deviation: -0.1% (`doctor/plague_syringe`). Worst crowd-clear deviation: +22.0% (`doctor/plague_syringe`, 20 targets), within the +/-30% gate. Every class has at least one viable crowd-clear weapon.
+Current final result: PASS. All 51 class+weapon pairs stay inside solo and crowd-clear corridors. Worst solo deviation: -0.1% (`doctor/plague_syringe`). Worst crowd-clear deviation: +22.0% (`doctor/restore_potion`, 20 targets), within the +/-30% gate. Every class has at least one viable crowd-clear weapon.
+
+SCRUM-856 (2026-07-04) adds the class-trio identity audit in
+`docs/design/reports/full_class_rebalance_identity_audit.md`. It treats the green
+pair-level gates as a numeric baseline and routes SCRUM-857..860 toward
+mechanic-first fixes for delayed AoE, projectile/chain/split/pierce,
+melee/counter/tank, summon/deploy/turret and sustain scaling identities.
 
 ### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
 
