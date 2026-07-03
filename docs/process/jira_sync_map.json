@@ -3782,5 +3782,10 @@
   "key": "SCRUM-843",
   "status": "Готово",
   "desc_hash": "025b7852c117e1a0834fda8e573dd53b"
+ },
+ "design_settings_v6_atlas_restyle_task.md": {
+  "key": "SCRUM-847",
+  "status": "В работе",
+  "desc_hash": "fbc640d5d3c47c7196894e281e166f8d"
  }
 }
