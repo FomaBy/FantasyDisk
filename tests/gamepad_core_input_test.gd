@@ -154,9 +154,32 @@ func _run() -> void:
 	mgr.set_gamepad_bindings({"ultimate": {"buttons": [JOY_BUTTON_X], "axes": []}})
 	_check(_action_has_button("ultimate", JOY_BUTTON_X), "кастомный бинд X не применился")
 	_check(not _action_has_button("ultimate", JOY_BUTTON_Y), "кастомный бинд не заместил дефолтный Y")
+	mgr.set_gamepad_bindings({"ultimate": {"buttons": [], "axes": []}})
+	_check(_action_has_button("ultimate", JOY_BUTTON_Y),
+		"SCRUM-846: пустой saved ultimate должен вернуть дефолтный Y")
+	_check(not _action_has_button("ultimate", JOY_BUTTON_X),
+		"SCRUM-846: пустой saved ultimate не должен оставлять stale X")
+	mgr.set_gamepad_bindings({"ultimate": {"buttons": [JOY_BUTTON_X], "axes": []}})
+	_check(_action_has_button("ultimate", JOY_BUTTON_X), "повторный кастомный бинд X не применился")
 	mgr.reset_gamepad_bindings_to_defaults()
 	_check(_action_has_button("ultimate", JOY_BUTTON_Y), "reset не вернул дефолтный Y")
 	_check(not _action_has_button("ultimate", JOY_BUTTON_X), "reset не убрал кастомный X")
+
+	# 6b) SCRUM-846: пустые/битые сохранённые бинды не должны стирать дефолт.
+	mgr.set_gamepad_bindings({
+		"ui_accept": {"buttons": [JOY_BUTTON_X], "axes": []},
+		"move_right": {"buttons": [], "axes": []},
+		"feedback": {"buttons": "bad", "axes": [{}]},
+	})
+	_check(_action_has_button("ui_accept", JOY_BUTTON_A),
+		"SCRUM-846: saved ui_accept не должен переопределять канон A")
+	_check(not _action_has_button("ui_accept", JOY_BUTTON_X),
+		"SCRUM-846: saved ui_accept не должен добавлять X вместо A")
+	_check(_action_has_axis("move_right", JOY_AXIS_LEFT_X, 1.0),
+		"SCRUM-846: пустой saved move_right не должен стирать стик вправо")
+	_check(_action_has_button("feedback", JOY_BUTTON_BACK),
+		"SCRUM-846: битый saved feedback не должен стирать Back/Select")
+	mgr.reset_gamepad_bindings_to_defaults()
 
 	# 7) Hot-plug: device_changed эмитится РОВНО при смене active_kind.
 	#    QA 2026-07-02 regression: connect не должен эмитить (устройство

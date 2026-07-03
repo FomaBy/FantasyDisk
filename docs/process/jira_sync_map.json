@@ -3802,5 +3802,10 @@
   "key": "SCRUM-848",
   "status": "Готово",
   "desc_hash": "3d1cc4aa52ed2eb87be2b1fc5f52ee9c"
+ },
+ "bug_gamepad_global_input_actions_codex_task.md": {
+  "key": "SCRUM-846",
+  "status": "В работе",
+  "desc_hash": "7dbbdfac4f3c279e4746f42e85328782"
  }
 }

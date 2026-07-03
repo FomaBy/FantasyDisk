@@ -32,8 +32,11 @@
 - API для потребителей пакета: `active_kind()`, `gamepad_connected()`,
   `gamepad_name()`, `binding_text(action)` (читаемое имя биндинга активного
   устройства), `set_input_mode()`, `set_gamepad_bindings()` (формат — как
-  `DEFAULT_GAMEPAD_BINDINGS`; joypad-часть экшена замещается, клавиатурная не
-  трогается), `reset_gamepad_bindings_to_defaults()` — всё для SCRUM-816.
+  `DEFAULT_GAMEPAD_BINDINGS`; кастомизируются только игровые actions из этого
+  словаря, а `ui_accept/ui_cancel/ui_up/down/left/right` всегда остаются
+  канон-раскладкой A/B/стик/крестовина; пустые/битые saved entries игнорируются
+  и не стирают дефолт), `reset_gamepad_bindings_to_defaults()` — всё для
+  SCRUM-816/SCRUM-846.
 - Персистенс (в `user://settings.cfg` через `scripts/game_settings.gd`):
   `input_mode` (`auto`), `gamepad_bindings` (`{}`), `gamepad_deadzone` (`0.25`,
   кламп `0.05..0.5`), `gamepad_vibration` (`true`). Владелец UI сохранения —
@@ -85,6 +88,12 @@
 читает и валидирует их, зеркаля deadzone/vibration в root-мету. Старый
 `settings.cfg` без новых ключей грузится с дефолтами без ошибок.
 
+SCRUM-846 усилил этот контракт: если старый или вручную повреждённый
+`settings.cfg` содержит пустой saved binding (`buttons=[]`, `axes=[]`), неверные
+типы или попытку переопределить `ui_accept`, менеджер отбрасывает такую запись и
+оставляет канон. Это защищает A/confirm, B/cancel и левый стик от сценария
+«фокус ходит, но выбрать/двигаться нельзя».
+
 ## Движение Игрока
 
 - Боевое движение живет в `scripts/player.gd`.
@@ -123,17 +132,19 @@
   игнор, клавиша → keyboard) + сигнал `device_changed`; режимы фиксируют
   `active_kind()` без блокировки физического ввода в InputMap; `binding_text`
   для обоих устройств; кастомные бинды замещают joypad-часть и сбрасываются к
-  канону; отключение пада возвращает keyboard; settings-ключи валидны.
+  канону; SCRUM-846 проверяет fallback с пустых/битых saved bindings и запрет
+  saved override для `ui_accept`; отключение пада возвращает keyboard;
+  settings-ключи валидны.
 - `tests/gamepad_menu_focus_test.gd` (SCRUM-813): фокус мета-меню + LB/RB вкладки/секции.
 - `tests/gamepad_inrun_ui_test.gd` (SCRUM-812): фокус внутризабеговых экранов + карта маршрута.
 - `tests/gamepad_full_flow_smoke_test.gd` (SCRUM-815): сквозной joypad-only сценарий
-  «игра проходима с геймпада» a–g (меню→герой→бой→движение стиком→пауза→level-up→
-  смерть→настройки LB/RB→детект устройства). После SCRUM-824/SCRUM-825 Start→пауза
-  и RB→level-up являются строгими проверками, не soft-дефектами. Гейт приёмки любых
-  UI/ввод-задач.
-- `tests/gamepad_combat_actions_test.gd` (SCRUM-824/SCRUM-825): focused battle
-  regression для synthetic `InputEventJoypadButton` Start/RB и клавиатурной
-  паритетности Escape/Space.
+  «игра проходима с геймпада» a–h (меню→герой→бой→движение стиком→пауза→feedback
+  Back/B/Start→level-up→смерть→настройки LB/RB→детект устройства). После
+  SCRUM-824/SCRUM-825/SCRUM-846 Start→пауза, RB→level-up и Back→feedback являются
+  строгими проверками, не soft-дефектами. Гейт приёмки любых UI/ввод-задач.
+- `tests/gamepad_combat_actions_test.gd` (SCRUM-824/SCRUM-825/SCRUM-846): focused
+  battle regression для synthetic `InputEventJoypadButton` Start/RB/Back и
+  клавиатурной паритетности Escape/Space/P.
 
 ## Карта управления (клавиатура + геймпад)
 
@@ -168,7 +179,7 @@ UI-навигация (все экраны/попапы):
 - While open, `main._input` returns early so console typing does not fire unrelated global hotkeys such as feedback, level-up, F12 or run pause.
 - The console is not a pause source. It must not add `dev_console` to `pause_reasons` and must not set `SceneTree.paused`; active combat, enemies, timer and player movement continue under the overlay.
 
-## Исправленные gamepad regression bugs (2026-07-02)
+## Исправленные gamepad regression bugs (2026-07-02/2026-07-03)
 
 - **SCRUM-824 / Start→пауза в бою**: `main._input` больше не гейтит `pause` только
   на `InputEventKey`; общий helper `_is_fresh_action_press()` принимает
@@ -182,3 +193,11 @@ UI-навигация (все экраны/попапы):
   `action_erase_events`: клавиатурный ребинд/сброс больше не стирают joypad-часть
   экшена (`_apply_keycodes_to_action`/`_handle_rebind_input` трогают только
   `InputEventKey`).
+- **SCRUM-846 / глобальные gamepad actions**: `feedback` теперь открывается
+  через общий action helper, поэтому Back/Select работает так же, как клавиша P;
+  открытый feedback закрывается B (`ui_cancel`) или Start/Esc (`pause`). Helper
+  также принимает `InputEventJoypadMotion` для axis-rebind игровых actions.
+- **SCRUM-846 / битые saved bindings**: `InputDeviceManager` нормализует
+  `gamepad_bindings`, игнорирует пустые/невалидные entries и не позволяет
+  saved config переопределять `ui_*` actions. Если ранее кастомный игровой бинд
+  стал пустым, stale joypad-события удаляются и возвращается дефолт.

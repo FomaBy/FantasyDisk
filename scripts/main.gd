@@ -1049,6 +1049,9 @@ func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
 		return button_event.pressed and button_event.is_action_pressed(action)
+	if event is InputEventJoypadMotion:
+		var motion_event := event as InputEventJoypadMotion
+		return absf(motion_event.axis_value) > 0.5 and motion_event.is_action_pressed(action)
 	if event is InputEventAction:
 		var action_event := event as InputEventAction
 		return action_event.pressed and action_event.is_action_pressed(action)
@@ -1067,9 +1070,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
-		# SCRUM-812: закрытие фидбек-оверлея с клавиши (Esc/pause) ИЛИ геймпада (B/ui_cancel).
-		var close_feedback: bool = (event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause")) \
-			or (not (event is InputEventKey) and event.is_action_pressed("ui_cancel"))
+		# SCRUM-846: закрытие фидбек-оверлея идет через actions, чтобы Esc/Start/B
+		# и возможный joypad-axis rebind работали одним путем.
+		var close_feedback: bool = _is_fresh_action_press(event, &"pause") \
+			or _is_fresh_action_press(event, &"ui_cancel")
 		if close_feedback:
 			ui._close_feedback_overlay()
 			get_viewport().set_input_as_handled()
