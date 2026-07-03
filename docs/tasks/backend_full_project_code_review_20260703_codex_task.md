@@ -88,3 +88,35 @@ Deferred/follow-up:
 ## Disk Cleanup
 
 Removed generated `.godot/`, ignored `build/*` smoke/import outputs, Python `__pycache__` under `tools/`, and untracked Godot `.import` sidecars under `docs/design/mockups/main_menu_logo_release_fix/` and `docs/design/previews/main_menu_logo_release_fix/`. Remaining `build/` size is tracked repository evidence, not disposable cache.
+
+## Dev Integration Result (2026-07-03)
+
+QA returned the first branch-only result because `229bf6fc` was not an ancestor
+of current `origin/dev`. Integrated the SCRUM-844 review/fix result onto current
+`origin/dev` in `codex/scrum-844-dev-integration`:
+
+- Cherry-picked `229bf6fc fix: address full project review findings`.
+- Resolved the only conflict in `docs/process/jira_sync_map.json` by keeping
+  current `SCRUM-847`, `SCRUM-845`, and restored `SCRUM-844` entries.
+- Rebasing onto `8146d6e8` after SCRUM-847 landed completed without conflicts.
+- Current integration commit: `07a77935 fix: address full project review findings`.
+
+Verification before the SCRUM-847 rebase:
+
+- Full Godot regression set from this task: 15/15 PASS.
+- `python3 -m py_compile` for artifact icon tools and `tools/godot_gate.py` PASS.
+- `bash -n tools/build_release.sh` PASS.
+- Split-data parser smoke: `71 7 split parser ok`.
+
+Post-rebase verification:
+
+- `git diff --check origin/dev..HEAD` PASS.
+- `python3 -m json.tool docs/process/jira_sync_map.json` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/gamepad_settings_rebind_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/boss_outgoing_damage_multiplier_test.gd` PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/take_damage_feedback_signature_test.gd` PASS.
+
+Disk cleanup: generated `.godot/`, untracked Godot `.import`/`.uid` sidecars
+and Python `__pycache__` directories are removed before final handoff.
