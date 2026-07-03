@@ -3880,8 +3880,8 @@
  },
  "backend_aoe_weapon_overlays_zones_summons_doctor_task.md": {
   "key": "SCRUM-854",
-  "status": "Контроль качества",
-  "desc_hash": "d43fc5f99b034875a9b93e522469ea5e"
+  "status": "Готово",
+  "desc_hash": "405c5feda9ac992cb93c2a366cf18990"
  },
  "qa_review_aoe_weapon_overlays_zones_summons_doctor_task.md": {
   "key": "SCRUM-855",

@@ -80,3 +80,30 @@ Doctor sustain слишком сильный, если поверх его со�
 - 2026-07-04: Implemented backend/runtime changes, focused tests, balance checks,
   docs, subagent review fixes, and final runtime smoke. Backend scope is ready
   for QA after commit, push, and Jira transition to `Контроль качества`.
+
+## QA-Вердикт 2026-07-04
+
+Статус: PASSED
+
+Evidence:
+- Verified `origin/dev` at `7a9912da98e03975e9c2b1dfa1bca945b73130a3`
+  contains `c6634fac` and `6228eac2`.
+- Main-thread validation PASS:
+  - `tests/attack_vfx_smoke_test.gd`
+  - `tests/persistent_hazard_contract_test.gd`
+  - `tests/summoner_strengthening_test.gd`
+  - `tests/doctor_drain_softcap_test.gd`
+  - `tests/attribute_relevance_test.gd`
+  - `tests/start_boons_test.gd`
+  - `tools/balance_harness.gd`
+  - `tests/global_damage_balance_smoke_test.gd`
+  - `tests/global_survivability_balance_smoke_test.gd`
+  - `tests/runtime_smoke_test.gd`
+- Independent read-only QA subagent `Godel` reran the same required set with
+  `FSD_GODOT_SLOTS=1` and returned PASS.
+- Residual non-blocking note: runtime smoke still logs the known Godot
+  CallbackTweener `_apply_dot_tick` conversion errors, but exits 0 and reports
+  `Runtime smoke test passed`.
+
+Disk cleanup: main-thread temporary QA logs removed after final sync/commit;
+subagent created no disposable clone/cache.
