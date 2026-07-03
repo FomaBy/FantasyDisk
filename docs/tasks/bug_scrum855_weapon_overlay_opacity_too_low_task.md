@@ -62,3 +62,17 @@ Actual:
 - Verification:
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
   - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+Commit tested: `eafc280fc6520db9e56692f1027b4d1ef6763c8a` (`6228eac2` ancestor).
+
+Independent read-only QA confirmed:
+- `scripts/berserk_weapon.gd` exact-zone overlay alpha is `0.60`.
+- `tests/attack_vfx_smoke_test.gd` asserts `WeaponSignatureBody` alpha `0.60`
+  and Berserk exact-zone alpha `0.60`.
+- PASS: `tests/attack_vfx_smoke_test.gd`.
+- PASS: `tests/runtime_smoke_test.gd`; known non-blocking `_apply_dot_tick`
+  CallbackTweener stderr only.
+
+Disk cleanup: QA removed `/private/tmp/fantasydisk-scrum864-qa-902067`.

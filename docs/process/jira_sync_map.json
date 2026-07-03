@@ -3875,8 +3875,8 @@
  },
  "bug_scrum855_weapon_overlay_opacity_too_low_task.md": {
   "key": "SCRUM-864",
-  "status": "Контроль качества",
-  "desc_hash": "e5f425231718969f7538e83093a1346a"
+  "status": "Готово",
+  "desc_hash": "ca8ebd69c9776dbfa37725274390aa8e"
  },
  "backend_aoe_weapon_overlays_zones_summons_doctor_task.md": {
   "key": "SCRUM-854",
