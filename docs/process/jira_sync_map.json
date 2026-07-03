@@ -3792,5 +3792,10 @@
   "key": "SCRUM-845",
   "status": "Готово",
   "desc_hash": "5e6e1a176ccb53497248c7fe486367fb"
+ },
+ "backend_full_project_code_review_20260703_codex_task.md": {
+  "key": "SCRUM-844",
+  "status": "Контроль качества",
+  "desc_hash": "3b4f3757b3860c5dd0f9f9694ea9b5c2"
  }
 }

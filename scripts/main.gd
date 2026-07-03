@@ -761,7 +761,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 
 	selected_character_id = str(state.get("selected_character_id", selected_character_id))
 	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
-	selected_start_boon_id = str(state.get("selected_start_boon_id", ""))
+	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(state.get("selected_start_boon_id", "")))
 	selected_ascension_level = int(state.get("selected_ascension_level", 0))
 	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
 	route_stage = maxi(0, int(state.get("route_stage", 0)))
@@ -1075,7 +1075,7 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
+	if _is_fresh_action_press(event, &"feedback"):
 		var screenshot: Image = null
 		if DisplayServer.get_name() != "headless":
 			var viewport_texture := get_viewport().get_texture()
@@ -1107,7 +1107,11 @@ func _input(event: InputEvent) -> void:
 	# остаётся свободным под геймплей (dodge и т.п., ядро раскладки — SCRUM-811/814).
 	# Клавиатурный путь «pause» (Esc) ниже не меняется.
 	if not (event is InputEventKey) and event.is_action_pressed("ui_cancel"):
-		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+		if ui.has_method("_is_settings_screen_open") and ui._is_settings_screen_open() and ui_escape_action.is_valid():
+			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
+			return
+		elif ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
 			get_viewport().set_input_as_handled()
 			return
@@ -1128,7 +1132,10 @@ func _input(event: InputEvent) -> void:
 				return
 
 	if _is_fresh_action_press(event, &"pause"):
-		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+		if ui.has_method("_is_settings_screen_open") and ui._is_settings_screen_open() and ui_escape_action.is_valid():
+			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
+		elif ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
 			get_viewport().set_input_as_handled()
 		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():

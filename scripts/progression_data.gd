@@ -120,13 +120,22 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 
 # --- Стартовые бооны забега (SCRUM-618) ---
 
+static func canonical_start_boon_id(boon_id: String) -> String:
+	match boon_id:
+		"glass_edge":
+			return "boon_glass_edge"
+		_:
+			return boon_id
+
+
 static func start_boons() -> Array:
 	return START_BOONS
 
 
 static func start_boon_definition(boon_id: String) -> Dictionary:
+	var canonical_id := canonical_start_boon_id(boon_id)
 	for boon in START_BOONS:
-		if str(boon.get("id", "")) == boon_id:
+		if str(boon.get("id", "")) == canonical_id:
 			return boon
 	return {}
 

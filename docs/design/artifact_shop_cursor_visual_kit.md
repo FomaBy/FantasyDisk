@@ -94,6 +94,7 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `berserk_totem` | Тотем берсерка | `assets/sprites/ui/icons/artifacts/artifact_berserk_totem.png` |
 | `focus_lens` | Линза фокуса | `assets/sprites/ui/icons/artifacts/artifact_focus_lens.png` |
 | `stone_hide` | Каменная шкура | `assets/sprites/ui/icons/artifacts/artifact_stone_hide.png` |
+| `rift_key` | Ключ Разлома | `assets/sprites/ui/icons/artifacts/artifact_rift_key.png` |
 
 ## Shop-Only Icon Mapping
 

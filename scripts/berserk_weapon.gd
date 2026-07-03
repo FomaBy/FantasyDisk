@@ -298,7 +298,12 @@ func _take_damage_accepts_feedback(enemy: Node) -> bool:
 	for method in enemy.get_method_list():
 		if str(method.get("name", "")) == "take_damage":
 			var args: Array = method.get("args", [])
-			return args.size() >= 2
+			if args.size() < 2:
+				return false
+			var script: Script = enemy.get_script()
+			if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
+				return true
+			return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
 	return false
 
 

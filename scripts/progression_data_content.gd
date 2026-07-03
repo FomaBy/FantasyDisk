@@ -144,7 +144,7 @@ const ARTIFACTS := [
 # сила» каждого боона держится в пределах +10% (тест start_boons_test); много
 # утилити-боонов (золото/опыт/подбор/скорость) с ~нулевым боевым весом.
 const START_BOONS := [
-	{"id": "glass_edge", "title": "Хрупкое Лезвие",
+	{"id": "boon_glass_edge", "title": "Хрупкое Лезвие",
 	 "description": "+8% урона, но −5% максимального HP. Бей сильнее, живи осторожнее.",
 	 "mods": {"damage_mult": 0.08, "max_health_mult": -0.05}},
 	{"id": "zealot", "title": "Фанатик",

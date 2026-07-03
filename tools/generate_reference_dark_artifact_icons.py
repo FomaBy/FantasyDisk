@@ -59,11 +59,14 @@ def darken(color: tuple[int, int, int, int], amount: int) -> tuple[int, int, int
 
 
 def parse_artifacts() -> list[dict]:
-    text = (ROOT / "scripts" / "progression_data.gd").read_text(encoding="utf-8")
-    block = text.split("const ARTIFACTS := [", 1)[1].split("]\n\nconst LEVEL_UP_REWARDS", 1)[0]
+    text = (ROOT / "scripts" / "progression_data_content.gd").read_text(encoding="utf-8")
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     artifacts: list[dict] = []
     for raw in re.findall(r"\{[^\n]+\}", block):
         safe = re.sub(r"Color\([^)]+\)", '"Color"', raw)
+        safe = re.sub(r"\btrue\b", "True", safe)
+        safe = re.sub(r"\bfalse\b", "False", safe)
+        safe = re.sub(r"\bnull\b", "None", safe)
         artifacts.append(ast.literal_eval(safe))
     return artifacts
 

@@ -22,6 +22,9 @@ const MainScript := preload("res://scripts/main.gd")
 # Зеркало route_map_screen.gd::_random_boss_route_node() (акт-боссы маршрута).
 # Если там добавится/переименуется босс — реверс-проверка ниже поймает рассинхрон.
 const ACT_BOSS_IDS := ["rift_warden", "disk_devourer", "bone_archon", "brood_mother", "ashen_colossus"]
+const NON_ROUTE_CODEX_BOSS_IDS := {
+	"bloodthorn_lion": true,
+}
 
 
 func _initialize() -> void:
@@ -105,12 +108,13 @@ func _check_no_dead_codex_monsters(errors: Array) -> void:
 		var monster_id := str((entry as Dictionary).get("id", ""))
 		if not reachable.has(monster_id):
 			errors.append("codex-monster '%s' недостижим рантаймом (мёртвая запись или отсутствует источник открытия)." % monster_id)
-	# Реверс для боссов: codex-боссы == акт-роумтер (секретный босс — отдельный кейс ниже).
-	for entry in CodexData.monsters():
-		if str((entry as Dictionary).get("kind", "")) != "boss":
+	# Реверс для боссов: codex-боссы == акт-роутер, кроме явно
+	# задокументированных runtime-ready non-route bosses.
+	for boss_entry in CodexData.monsters():
+		if str((boss_entry as Dictionary).get("kind", "")) != "boss":
 			continue
-		var boss_id := str((entry as Dictionary).get("id", ""))
-		if not ACT_BOSS_IDS.has(boss_id):
+		var boss_id := str((boss_entry as Dictionary).get("id", ""))
+		if not ACT_BOSS_IDS.has(boss_id) and not NON_ROUTE_CODEX_BOSS_IDS.has(boss_id):
 			errors.append("codex-boss '%s' не входит в акт-роутер маршрута (рассинхрон бой/кодекс)." % boss_id)
 
 

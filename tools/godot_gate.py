@@ -13,7 +13,8 @@ Env:
     FSD_GODOT_SLOTS   число слотов (по умолчанию 3)
     GODOT_BIN         путь к бинарю (по умолчанию ~/Downloads/Godot.app/Contents/MacOS/Godot)
     FSD_GODOT_SEM_DIR каталог lock-файлов (по умолчанию /tmp/fsd_godot_sem)
-    FSD_GODOT_MAXWAIT макс. ожидание слота в секундах (по умолчанию 2400; потом гонит всё равно)
+    FSD_GODOT_MAXWAIT макс. ожидание слота в секундах (по умолчанию 2400)
+    FSD_GODOT_BYPASS_ON_TIMEOUT=1 явный аварийный запуск без слота после таймаута
 """
 from __future__ import annotations
 
@@ -88,9 +89,17 @@ def main() -> int:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
                 f.close()
         if time.time() > deadline:
-            # антидедлок: ждали слишком долго — запускаем без слота
-            sys.stderr.write("godot_gate: превышено ожидание слота, запуск без гейта\n")
-            return subprocess.call([GODOT] + args)
+            if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
+                sys.stderr.write("godot_gate: превышено ожидание слота, FSD_GODOT_BYPASS_ON_TIMEOUT=1 — запуск без гейта\n")
+                import_code = _ensure_import_cache(args)
+                if import_code != 0:
+                    return import_code
+                return subprocess.call([GODOT] + args)
+            sys.stderr.write(
+                "godot_gate: превышено ожидание слота; запуск без семафора запрещён "
+                "(для ручного аварийного bypass задай FSD_GODOT_BYPASS_ON_TIMEOUT=1)\n"
+            )
+            return 124
         time.sleep(1.5)
 
 

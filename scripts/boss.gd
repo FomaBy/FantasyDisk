@@ -305,7 +305,7 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 		HazardVfx.detonate(m, radius, color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(m.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(projectile_damage * (0.82 + float(boss_phase - 1) * 0.18), "secret_sector_ring")
+			player.take_damage(_outgoing_damage(projectile_damage * (0.82 + float(boss_phase - 1) * 0.18)), "secret_sector_ring")
 	)
 	tween.tween_interval(0.45)
 	tween.tween_callback(marker.queue_free)
@@ -409,7 +409,7 @@ func _spawn_secret_directional_zone(kind: String, dir: Vector2, texture: Texture
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.has_method("take_damage") \
 				and directional_hit(kind, m.global_position, dir, length_world, half_extent_world, player.global_position):
-			player.take_damage(projectile_damage * (0.80 + float(boss_phase - 1) * 0.16), "secret_" + kind)
+			player.take_damage(_outgoing_damage(projectile_damage * (0.80 + float(boss_phase - 1) * 0.16)), "secret_" + kind)
 	)
 	tween.tween_interval(0.5)
 	tween.tween_callback(marker.queue_free)
@@ -448,7 +448,7 @@ func _spawn_gravity_well(target_position: Vector2) -> void:
 		if to_center.length_squared() > 0.001:
 			player.global_position = _clamp_to_arena(player.global_position + to_center.normalized() * minf(92.0, to_center.length() * 0.45))
 		if player.has_method("take_damage"):
-			player.take_damage(projectile_damage * (0.65 + float(boss_phase - 1) * 0.12), "gravity_well")
+			player.take_damage(_outgoing_damage(projectile_damage * (0.65 + float(boss_phase - 1) * 0.12)), "gravity_well")
 	)
 	tween.tween_interval(0.55)
 	tween.tween_callback(well.queue_free)
@@ -481,7 +481,7 @@ func _spawn_vampiric_bite(player: Node2D) -> void:
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player == null or current_player.global_position.distance_to(b.global_position) > radius:
 			return
-		var bite_damage: float = contact_damage * (1.05 + float(boss_phase - 1) * 0.14)
+		var bite_damage: float = _outgoing_damage(contact_damage * (1.05 + float(boss_phase - 1) * 0.14))
 		if current_player.has_method("take_damage") and current_player.take_damage(bite_damage, "devourer_vampiric_bite"):
 			health = minf(max_health, health + bite_damage * 0.55)
 			_update_health_bar()
@@ -529,7 +529,7 @@ func _spawn_molten_armor_pulse() -> void:
 		HazardVfx.detonate(p, radius, pulse_color)
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player != null and current_player.global_position.distance_to(p.global_position) <= radius and current_player.has_method("take_damage"):
-			current_player.take_damage(contact_damage * 0.75, "molten_armor")
+			current_player.take_damage(_outgoing_damage(contact_damage * 0.75), "molten_armor")
 	)
 	tween.tween_interval(0.55)
 	tween.tween_callback(pulse.queue_free)
@@ -565,7 +565,7 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 		HazardVfx.detonate(r, radius, thorn_color)
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player != null and current_player.global_position.distance_to(r.global_position) <= radius and current_player.has_method("take_damage"):
-			current_player.take_damage(thorn_damage, "bloodthorn_spike")
+			current_player.take_damage(_outgoing_damage(thorn_damage), "bloodthorn_spike")
 	)
 	tween.tween_interval(0.5)
 	tween.tween_callback(ring.queue_free)
@@ -635,7 +635,7 @@ func _fire_radial_burst() -> void:
 
 		projectile_parent.add_child(projectile)
 		if projectile.has_method("setup"):
-			projectile.setup(global_position, target_position, projectile_damage, projectile_speed)
+			projectile.setup(global_position, target_position, _outgoing_damage(projectile_damage), projectile_speed)
 
 
 func _fire_targeted_volley(player: Node2D) -> void:
@@ -660,7 +660,7 @@ func _fire_targeted_volley(player: Node2D) -> void:
 		var projectile := projectile_scene.instantiate()
 		projectile_parent.add_child(projectile)
 		if projectile.has_method("setup"):
-			projectile.setup(global_position, global_position + shot_direction * 160.0, projectile_damage, projectile_speed)
+			projectile.setup(global_position, global_position + shot_direction * 160.0, _outgoing_damage(projectile_damage), projectile_speed)
 
 
 func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
@@ -699,7 +699,7 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 		HazardVfx.detonate(z, radius, zone_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(zone_damage, "rift_zone")
+			player.take_damage(_outgoing_damage(zone_damage), "rift_zone")
 	)
 	zone_tween.tween_interval(1.45)
 	zone_tween.tween_callback(zone.queue_free)
@@ -737,7 +737,7 @@ func _spawn_disk_slam() -> void:
 		HazardVfx.detonate(s, radius, slam_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(s.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(slam_damage, "disk_slam")
+			player.take_damage(_outgoing_damage(slam_damage), "disk_slam")
 		# Пепельный Колосс: после удара остаётся тлеющая зона (наказывает стояние).
 		if boss_behavior == "ashen_colossus" or boss_behavior == "secret_ascension_boss":
 			_spawn_ember_zone(s.global_position, radius * 0.62)
@@ -778,7 +778,7 @@ func _spawn_web_zone(target_position: Vector2) -> void:
 			if player.has_method("apply_web_slow"):
 				player.apply_web_slow(2.2, 0.55)
 			if player.has_method("take_damage"):
-				player.take_damage(web_damage, "brood_web")
+				player.take_damage(_outgoing_damage(web_damage), "brood_web")
 	)
 	tween.tween_interval(1.1)
 	tween.tween_callback(zone.queue_free)
@@ -809,7 +809,7 @@ func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
 				return
 			var player := get_tree().get_first_node_in_group("player") as Node2D
 			if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-				player.take_damage(ember_damage, "ash_ember")
+				player.take_damage(_outgoing_damage(ember_damage), "ash_ember")
 		)
 	tween.tween_callback(zone.queue_free)
 
@@ -965,7 +965,7 @@ func _spawn_phase_transition_hazard() -> void:
 		HazardVfx.detonate(z, radius, phase_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25), "boss_phase")
+			player.take_damage(_outgoing_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25)), "boss_phase")
 	)
 	tween.tween_interval(0.70)
 	tween.tween_callback(zone.queue_free)

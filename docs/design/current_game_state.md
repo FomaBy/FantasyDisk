@@ -1272,14 +1272,14 @@ Status hooks SCRUM-245: weapon hit дополнительно может нал�
 Экономика 0.1.4 (откалибровано SCRUM-507): магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner дают x1.3 XP / x1.6 золота, bruiser/shield около x1.75 XP и x2.2 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50% (теперь 47/40/49% по трём маршрутам) — ранние/средние бои перестали обесцениваться. Проверка SCRUM-188 (`build/route_economy_xp_model.md`) после калибровки: affordable offers выровнены в коридор ±25% (5.7/6.5/6.9, было 5.2 vs 9.0 = разброс 73%), покупательная способность high/high/healthy, XP-темп сохранён (20/25/20 level-up при XP-кривой SCRUM-527 `ceil(req*1.038+0.8)`).
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
-- 70 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent realistic epic D&D/tabletop fantasy raster magic items; SCRUM-340 regenerated the base set through `fantasydisk-asset-generator` / `gpt-image-2`; SCRUM-606/609 integrated 10 dedicated icons for `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`);
+- 71 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent realistic epic D&D/tabletop fantasy raster magic items; SCRUM-340 regenerated the base set through `fantasydisk-asset-generator` / `gpt-image-2`; SCRUM-606/609 integrated 10 dedicated icons for `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, and SCRUM-619/623 tracks `rift_key`);
 - 7 shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`;
 - полный mapping: `docs/design/artifact_shop_cursor_visual_kit.md`;
 - artifact icon source references/manifest: `docs/design/references/icons/artifacts/artifact_<id>_source.png` and `docs/design/references/icons/artifacts/artifact_icons_scrum340_manifest.json`; previous raster extraction scripts are superseded for active icons.
 - shop/cursor generator: `tools/generate_artifact_shop_cursor_assets.py`;
 - active QA preview: `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png` (large and 40px checks for every active artifact).
 
-После пользовательского фидбэка artifact icons закреплены как красивые растровые предметы, а не пентаграммы/плоские символы: один законченный D&D-style magic item на файл, bbox с запасом от краев, без пьедесталов, фоновых тайлов, осколков, частиц и текста. SCRUM-340 (2026-06-14) пересоздал базовый набор через `fantasydisk-asset-generator`, а SCRUM-606/609 (2026-06-28) довели новые expected artifact IDs до runtime-ready PNG/import/source refs, сохранив стабильные runtime paths `artifact_<id>.png`, transparent alpha и читаемость 40px. Образ каждого предмета привязан к названию и эффекту из `ProgressionData.ARTIFACTS`; предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления заменены. Shop assets остаются в FantasyDisk fantasy-medallion style; cursor assets заменены в SCRUM-223 на dragon/claw/fire pointer.
+После пользовательского фидбэка artifact icons закреплены как красивые растровые предметы, а не пентаграммы/плоские символы: один законченный D&D-style magic item на файл, bbox с запасом от краев, без пьедесталов, фоновых тайлов, осколков, частиц и текста. SCRUM-340 (2026-06-14) пересоздал базовый набор через `fantasydisk-asset-generator`, SCRUM-606/609 (2026-06-28) довели новые expected artifact IDs до runtime-ready PNG/import/source refs, а `rift_key` теперь documented как runtime artifact для secret encounter flow. Runtime paths остаются стабильными `artifact_<id>.png`, transparent alpha и читаемость 40px. Образ каждого предмета привязан к названию и эффекту из `ProgressionData.ARTIFACTS`; предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления заменены. Shop assets остаются в FantasyDisk fantasy-medallion style; cursor assets заменены в SCRUM-223 на dragon/claw/fire pointer.
 
 Back-end integration complete: `scripts/ui_screens.gd` сначала ищет финальные PNG по mapping из visual kit, а если их нет, временно использует осмысленный fallback через `scripts/ui_icon_registry.gd` по эффекту предмета. На 2026-06-11 фактические artifact/shop/cursor PNG готовы и импортированы, поэтому fallback остается только fail-safe.
 
@@ -1598,7 +1598,7 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
 ## Боссы
 
-Босс выбирается случайно на финальном узле маршрута.
+Босс выбирается случайно на финальном узле маршрута из QA-gated live rotation; `bloodthorn_lion` runtime-ready, но пока вне случайной route-ротации до отдельного QA-gated follow-up.
 
 | Босс | ID | Сцена | Спрайт | Паттерны |
 | --- | --- | --- | --- | --- |
@@ -1607,8 +1607,8 @@ Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 | Bone Archon | `bone_archon` | `scenes/BossBoneArchon.tscn` | `boss_bone_archon.png` | Скелеты, веер черепов, bone prison/wall с проходом |
 | Brood Mother | `brood_mother` | `scenes/BossBroodMother.tscn` | `boss_brood_mother.png`; SCRUM-793 PixelLab full-frame rows | Выводок, web slow zones, дополнительный web pressure, phase-3 lunge |
 | Ashen Colossus | `ashen_colossus` | `scenes/BossAshenColossus.tscn` | `boss_ashen_colossus.png` | Slam-волны, ember fields, molten armor pulse, enrage |
+| Кровавый Шипастый Лев | `bloodthorn_lion` | `scenes/BossBloodthornLion.tscn` | `boss_bloodthorn_lion.png`; static fallback from SCRUM-779 PixelLab candidate | Dash-pounce, radial thorn burst, bloodthorn spike ring, bleed-style rift zones, enrage; runtime implemented, not route-rotation yet |
 | Костяной Дракон | `skeletal_dragon` | TBD | Design-source candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned flying skeletal boss; gameplay, scene and balance not implemented |
-| Шипастый Кровавый Лев | `bloodthorn_lion` | TBD | Design-source candidates under `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion*/` | Planned fast blood-thorn predator; gameplay, scene and balance not implemented |
 
 Боссы используют `scripts/boss.gd`, который расширяет логику обычного врага. Обновление 2026-06-12: каждый босс имеет 3 HP-фазы (`100-66%`, `66-33%`, `33-0%`), фазовые метки в meta/HP-bar, ускорение атак на фазах и danger-zone при переходе. Обновление SCRUM-259: boss-specific mechanics создают telegraph nodes (`BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `BossMoltenArmorPulse`) и закреплены в `ProgressionData.UNIQUE_ENCOUNTER_PATTERNS`. HP/урон боссов масштабируются через ту же `stage_scale`, что и экономика.
 
@@ -1626,10 +1626,11 @@ PNGs — в `assets/sprites/bosses/pixellab_candidates/`, previews — в
 `disk_devourer` PixelLab source `81b491db-7240-4513-bad5-263b7f81539d` and
 `brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf` now populate the
 existing live full-frame runtime rows while preserving SpriteFrames state names,
-frame counts and boss gameplay callbacks. `secret_ascension_boss`, single-view
-`bloodthorn_lion`, `rift_warden`, `bone_archon`, `ashen_colossus`,
-`skeletal_dragon` and 8-dir `bloodthorn_lion` remain source-only or
-revise-needed follow-up material. QA evidence:
+frame counts and boss gameplay callbacks. `secret_ascension_boss`,
+`rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` and 8-dir
+`bloodthorn_lion` remain source-only or revise-needed follow-up material. The
+single-view `bloodthorn_lion` static sprite is live through SCRUM-794, while
+random route promotion and full-frame animation remain follow-ups. QA evidence:
 `build/qa/scrum793_boss_pixellab_promotion/`.
 
 ## Спавн И Волны

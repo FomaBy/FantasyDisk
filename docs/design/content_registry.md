@@ -527,7 +527,7 @@ SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный r
 
 SCRUM-756 attack VFX targeted redraw 2026-07-01: `vfx_weapon_priest_reliquary.png` заменен через PixelLab MCP / `fantasydisk-asset-generator` как отдельная полупрозрачная sanctify-seal пластина с ghost-силуэтом `assets/sprites/weapons/priest_reliquary.png`. Runtime path, размер `256x256`, alpha/RGBA контракт, gameplay timing, damage, healing, targeting, formulas и Back-end runtime logic не менялись. Evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/manifest.json`, preview `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`.
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (70 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (71 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs, SCRUM-619/623 добавили `rift_key`). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -776,7 +776,6 @@ Data-driven ростер `scripts/progression_data_enemies.gd::MINI_ELITE_KINDS`
 | `bloodthorn_lion` | Кровавый Шипастый Лев | `scenes/BossBloodthornLion.tscn` | Новый боссовый хищник (SCRUM-794, design SCRUM-779) | Live static `assets/sprites/bosses/boss_bloodthorn_lion.png` (upscale 256→512 из single-view кандидата `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`); full-frame rows — Animator follow-up | Прыжки-рывки (dash-pounce), radial burst шипов, колючие `BossRiftZone` bleed-зоны, уникальная `BloodthornSpikeRing` (кольцо с проходом), enrage <35% HP. Визуально пока static-sprite fallback | Runtime реализован (SCRUM-794); **вне случайной route-ротации** до QA-gated follow-up; full-frame анимация — Animator |
 | `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
 | `skeletal_dragon` | Костяной Дракон | TBD | Planned flying skeletal dragon boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/skeletal_dragon_concept_openai.png`; PixelLab candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned: flying skeletal pressure, bone/necromancy hazards, wing-safe telegraphs. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
-| `bloodthorn_lion` | Шипастый Кровавый Лев | TBD | Planned fast predatory blood-thorn boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/bloodthorn_lion_concept_openai.png`; PixelLab candidates `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`, `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion_8dir/bloodthorn_lion_pixellab_south.png` | Planned: leap/pounce pressure, thorn bursts, blood-crystal trail. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
 
 SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
 `assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
@@ -1273,6 +1272,7 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `powder_charge` | Пороховой заряд | Active on kill: 10% corpse explosion chance |
 | `bulwark_echo` | Эхо бастиона | Active on hit: 16% pulse chance |
 | `duelist_spur` | Шпора дуэлянта | Active on crit: +22% move speed burst |
+| `rift_key` | Ключ Разлома | +4 Perception, +4 Knowledge; opens the secret Act 3 route |
 
 ## Тиры Артефактов
 
@@ -1289,10 +1289,11 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 | `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP |
 | `thorn_pact` | Договор Шипов | Полученный урон отражается x2 во врагов рядом |
 | `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с |
+| `rift_key` | Ключ Разлома | Открывает тайную тропу в конце Акта 3; +4 Perception, +4 Knowledge |
 
 - `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
 - Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
-- Иконки всех tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) пересозданы как уникальные SCRUM-340 magic-item PNG; временные копии больше не используются.
+- Иконки tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`, `soul_harvest`, `rift_key`) существуют как уникальные magic-item PNG; временные копии больше не используются.
 
 ### Триггерные (активные) артефакты — под-класс `active` (SCRUM-500)
 
@@ -1389,7 +1390,7 @@ remain authoritative.
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 70 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`, SCRUM-606/609 contact `docs/design/previews/artifact_icons_606_609_contact.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-606/609 icon integration 2026-06-28) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 71 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`, SCRUM-606/609 contact `docs/design/previews/artifact_icons_606_609_contact.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-606/609 icon integration 2026-06-28; `rift_key` documented SCRUM-844) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |

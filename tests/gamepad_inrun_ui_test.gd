@@ -129,6 +129,25 @@ func _test_pause_menu_focus_and_cancel(main) -> bool:
 	if not main.ui._is_run_pause_overlay_open():
 		_fail("SCRUM-812: пауза-оверлей должен быть открыт.")
 		return false
+	main.ui._show_settings_menu("run_pause")
+	await process_frame
+	await process_frame
+	if not main.ui._is_settings_screen_open():
+		_fail("SCRUM-844: настройки из паузы должны открывать SettingsV2Root.")
+		return false
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.physical_keycode = KEY_ESCAPE
+	escape.pressed = true
+	main.call("_input", escape)
+	await process_frame
+	await process_frame
+	if main.ui._is_settings_screen_open():
+		_fail("SCRUM-844: Esc из Settings должен вернуться к pause, а не оставить настройки поверх.")
+		return false
+	if not main.ui._is_run_pause_overlay_open():
+		_fail("SCRUM-844: Esc из Settings, открытых из паузы, должен восстановить pause overlay.")
+		return false
 	# B (joypad) через main._input закрывает паузу (ui_cancel → _resume_game).
 	var cancel := InputEventJoypadButton.new()
 	cancel.button_index = JOY_BUTTON_B

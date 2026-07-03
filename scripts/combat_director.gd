@@ -5,6 +5,23 @@ extends RefCounted
 
 var game
 
+const TRANSIENT_RUN_MODIFIER_KEYS := [
+	"dodge_rush_active",
+	"low_hp_active",
+	"crit_speed_burst_active",
+	"rush_window_active",
+	"hurt_active",
+	"stance_active",
+	"swarm_fraction",
+	"riff_streak_active",
+	"reactor_heat_active",
+	"ultimate_berserk_active",
+]
+const TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS := {
+	"attack_speed_multiplier": 1.35,
+	"move_speed_multiplier": 1.18,
+}
+
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
 # артефакта 1 из 3) гейтится этим флагом — победа по таймеру с ЖИВОЙ элиткой
 # награду не выдаёт. Сбрасывается в начале каждого боя (_start_combat),
@@ -997,13 +1014,17 @@ func _snapshot_player_for_menu() -> Node:
 
 
 func _store_player_snapshot(player: Node) -> void:
-	# SCRUM-500: снапшот тащит run_modifiers целиком между узлами. Временные *_active-флаги
-	# триггерных/уворотных баффов НЕ должны «застывать» как постоянный бонус в следующем бою.
-	# Обнуляем их в копии перед сохранением (источник истины — игрок, тут только сериализация).
+	# SCRUM-500/SCRUM-844: снапшот тащит run_modifiers целиком между узлами.
+	# Runtime-only active/fraction гейты и timed ultimate overlays не должны
+	# «застывать» как постоянный бонус после замены player node между боями.
 	var run_modifiers_snapshot := (player.get("run_modifiers") as Dictionary).duplicate(true)
-	for transient_flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
+	var berserk_ultimate_active := float(run_modifiers_snapshot.get("ultimate_berserk_active", 0.0)) > 0.0
+	for transient_flag in TRANSIENT_RUN_MODIFIER_KEYS:
 		if run_modifiers_snapshot.has(transient_flag):
 			run_modifiers_snapshot[transient_flag] = 0.0
+	if berserk_ultimate_active:
+		for multiplier_key in TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS.keys():
+			run_modifiers_snapshot[multiplier_key] = float(run_modifiers_snapshot.get(multiplier_key, 1.0)) / float(TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS[multiplier_key])
 	var artifacts_raw = player.get("artifacts")
 	var artifacts_snapshot: Array = []
 	if artifacts_raw is Array:

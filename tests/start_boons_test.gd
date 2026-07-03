@@ -41,6 +41,11 @@ func _initialize() -> void:
 	_cleanup()
 
 	var boons := ProgressionData.start_boons()
+	var artifact_ids := {}
+	for artifact in ProgressionData.ARTIFACTS:
+		var artifact_id := str((artifact as Dictionary).get("id", ""))
+		if artifact_id != "":
+			artifact_ids[artifact_id] = true
 
 	# 1. Каталог: количество, уникальность id, непустые mods, валидные ключи.
 	if boons.size() < 6 or boons.size() > 8:
@@ -55,6 +60,8 @@ func _initialize() -> void:
 		if seen.has(bid):
 			errors.append("дублирующийся id боона '%s'" % bid)
 		seen[bid] = true
+		if artifact_ids.has(bid):
+			errors.append("id боона '%s' конфликтует с artifact id" % bid)
 		var mods: Dictionary = bd.get("mods", {})
 		if mods.is_empty():
 			errors.append("боон '%s' без mods" % bid)
@@ -88,6 +95,11 @@ func _initialize() -> void:
 		sample_mods["damage_mult"] = 999.0
 		if float(ProgressionData.start_boon_mods(sample_id).get("damage_mult", 0.0)) == 999.0:
 			errors.append("start_boon_mods вернул ссылку на каталог (мутация просочилась)")
+		var legacy_glass := ProgressionData.start_boon_definition("glass_edge")
+		if str(legacy_glass.get("id", "")) != "boon_glass_edge":
+			errors.append("legacy boon id glass_edge должен мигрировать в boon_glass_edge")
+		if ProgressionData.start_boon_mods("glass_edge") != ProgressionData.start_boon_mods("boon_glass_edge"):
+			errors.append("legacy boon id glass_edge должен давать те же mods, что boon_glass_edge")
 
 	# 4. Персистентность: selected_start_boon_id переживает RunAutosave save/load.
 	var boon_to_save := str((boons[0] as Dictionary).get("id", "")) if not boons.is_empty() else "glass_edge"

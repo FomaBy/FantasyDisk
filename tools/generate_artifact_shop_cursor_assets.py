@@ -728,9 +728,10 @@ SHOP_ACCENTS = {
 
 
 def ids_from_progression() -> tuple[list[str], list[str]]:
-    text = (ROOT / "scripts" / "progression_data.gd").read_text(encoding="utf-8")
-    artifacts_block = text.split("const ARTIFACTS := [", 1)[1].split("]\n\nconst LEVEL_UP_REWARDS", 1)[0]
-    shop_block = text.split("const SHOP_ITEMS := [", 1)[1].split("]\n\n\nstatic func base_stats", 1)[0]
+    artifacts_text = (ROOT / "scripts" / "progression_data_content.gd").read_text(encoding="utf-8")
+    shop_text = (ROOT / "scripts" / "progression_data_shop.gd").read_text(encoding="utf-8")
+    artifacts_block = artifacts_text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
+    shop_block = shop_text.split("const SHOP_ITEMS := [", 1)[1].split("]\n", 1)[0]
     artifacts = re.findall(r'"id":\s*"([^"]+)"', artifacts_block)
     shop = re.findall(r'"id":\s*"([^"]+)"', shop_block)
     return artifacts, shop

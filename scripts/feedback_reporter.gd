@@ -267,8 +267,8 @@ func _webhook_url() -> String:
 
 func _webhook_resolution() -> Dictionary:
 	# Источник URL по приоритету (SCRUM-665):
-	# 1) env (дев-машина/CI); 2) res://feedback_webhook.cfg, который release-сборка
-	# генерирует из секрета и бандлит; 3) user://feedback_config.cfg (legacy/override).
+	# 1) env (дев-машина/CI); 2) res://feedback_webhook.cfg для локальных dev-сборок;
+	# 3) user://feedback_config.cfg (legacy/override). Release exports не бандлят raw webhook.
 	var env_url := OS.get_environment(ENV_WEBHOOK).strip_edges()
 	if env_url != "":
 		return _webhook_result(env_url, "env")

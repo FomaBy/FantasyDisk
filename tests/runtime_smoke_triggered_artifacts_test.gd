@@ -246,14 +246,28 @@ func _test_transient_flags_not_frozen_in_snapshot() -> void:
 	rm["dodge_rush_active"] = 1.0
 	rm["low_hp_active"] = 1.0
 	rm["crit_speed_burst_active"] = 1.0
+	rm["rush_window_active"] = 1.0
+	rm["hurt_active"] = 1.0
+	rm["stance_active"] = 1.0
+	rm["swarm_fraction"] = 1.0
+	rm["riff_streak_active"] = 1.0
+	rm["reactor_heat_active"] = 1.0
+	rm["ultimate_berserk_active"] = 1.0
+	rm["attack_speed_multiplier"] = 1.25 * 1.35
+	rm["move_speed_multiplier"] = 1.20 * 1.18
 	player.set("run_modifiers", rm)
 	main.call("_store_player_snapshot", player)
 	var snap_rm: Dictionary = main.get("run_player_snapshot").get("run_modifiers", {})
-	for flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
+	for flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active", "rush_window_active", "hurt_active", "stance_active", "swarm_fraction", "riff_streak_active", "reactor_heat_active", "ultimate_berserk_active"]:
 		if float(snap_rm.get(flag, 0.0)) != 0.0:
 			_fail("Transient flag %s must be zeroed in player snapshot (no balance drift across nodes)." % flag)
 			player.queue_free(); main.queue_free()
 			return
+	if not is_equal_approx(float(snap_rm.get("attack_speed_multiplier", 0.0)), 1.25) \
+			or not is_equal_approx(float(snap_rm.get("move_speed_multiplier", 0.0)), 1.20):
+		_fail("Timed Berserk ultimate multipliers must be removed from snapshot without erasing persistent run multipliers.")
+		player.queue_free(); main.queue_free()
+		return
 	player.queue_free()
 	main.queue_free()
 	await process_frame

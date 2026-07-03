@@ -643,7 +643,7 @@ func take_damage(amount: float, _source := "") -> bool:
 	_play_hit_feedback()
 	_play_sfx("player_hit")
 	_trigger_gamepad_vibration(0.6, 0.0, 0.25)
-	damaged.emit(amount)
+	damaged.emit(final_damage)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
 	# SCRUM-500 (on_take_hit): «Контр-волна» — шанс выпустить отталкивающую волну.

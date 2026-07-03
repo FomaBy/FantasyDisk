@@ -5311,6 +5311,28 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		await process_frame
 		return
 
+	var feedback_pad_event := InputEventJoypadButton.new()
+	feedback_pad_event.button_index = JOY_BUTTON_BACK
+	feedback_pad_event.pressed = true
+	feedback_main.call("_input", feedback_pad_event)
+	await process_frame
+	overlay = feedback_main.get("feedback_overlay_layer") as CanvasLayer
+	if overlay == null or not is_instance_valid(overlay):
+		_fail("Expected gamepad Back/Select to open FeedbackOverlayLayer.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var cancel_pad_event := InputEventJoypadButton.new()
+	cancel_pad_event.button_index = JOY_BUTTON_B
+	cancel_pad_event.pressed = true
+	feedback_main.call("_input", cancel_pad_event)
+	await process_frame
+	if feedback_main.get("feedback_overlay_layer") != null:
+		_fail("Expected gamepad B to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+
 	var screenshot := Image.create(32, 18, false, Image.FORMAT_RGBA8)
 	screenshot.fill(Color(0.12, 0.18, 0.24, 1.0))
 	var local_path := FeedbackReporter.save_local_report("Smoke feedback fallback", screenshot, {
@@ -5699,6 +5721,18 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	if str(ui.call("_binding_conflict_action", "ultimate", KEY_W)) != "move_up":
 		_fail("Expected rebinding ultimate to W to report a move_up conflict.")
+		return
+	main.set("pending_rebind_action", "ultimate")
+	var conflict_rebind_event := InputEventKey.new()
+	conflict_rebind_event.keycode = KEY_W
+	conflict_rebind_event.pressed = true
+	ui.call("_handle_rebind_input", conflict_rebind_event)
+	await process_frame
+	if str(main.get("pending_rebind_action")) != "":
+		_fail("Expected keyboard rebind conflict dialog to suspend pending_rebind_action.")
+		return
+	if main.find_child("RebindConflictDialog", true, false) == null:
+		_fail("Expected keyboard rebind conflict dialog to remain open after conflict.")
 		return
 	main.set("pending_rebind_action", "ultimate")
 	var rebind_event := InputEventKey.new()

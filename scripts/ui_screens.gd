@@ -617,9 +617,9 @@ const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SIZE := Vector2(300.0, 430.0)
 const REWARD_ELITE_CARD_SIZE := Vector2(320.0, 430.0)
 const REWARD_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_CARD_SOURCE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
+const REWARD_CARD_SOURCE_CONTENT := Vector4(48.0, 60.0, 48.0, 62.0)
 const REWARD_ELITE_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_ELITE_CARD_SOURCE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
+const REWARD_ELITE_CARD_SOURCE_CONTENT := Vector4(48.0, 60.0, 48.0, 62.0)
 
 
 func _init(game_ref) -> void:
@@ -5934,6 +5934,12 @@ func _is_run_pause_overlay_open() -> bool:
 	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
 
 
+func _is_settings_screen_open() -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	return game.ui_layer.find_child("SettingsV2Root", true, false) != null
+
+
 func _should_open_pause_dossier_first() -> bool:
 	if not game.combat_active:
 		return false
@@ -5946,6 +5952,8 @@ func _should_open_pause_dossier_first() -> bool:
 
 
 func _can_open_pause_dossier() -> bool:
+	if _is_settings_screen_open():
+		return false
 	if game.combat_active:
 		return true
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
@@ -8917,6 +8925,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
 	var key_name := OS.get_keycode_string(keycode)
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -9169,6 +9179,8 @@ func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, 
 	# про кнопку/ось геймпада. «Выбрать другую» перезапускает прослушивание.
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	var box := _create_menu_box("Кнопка занята",
 		"%s занята: «%s». Для «%s» выбери другую." % [binding_desc, conflict_label, target_label], "settings")
 
@@ -9185,6 +9197,8 @@ func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, 
 		_cancel_gamepad_rebind()
 	)
 	box.add_child(back_button)
+	_wire_run_ui_focus([retry_button, back_button], true, [], retry_button)
+	game.ui_escape_action = _cancel_gamepad_rebind
 
 
 func _reset_gamepad_bindings_to_defaults() -> void:
@@ -10913,6 +10927,7 @@ func _apply_reward_card_theme(button: Button, elite := false) -> void:
 func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
 	var margins := _reward_card_content_margins(elite)
 	var content := VBoxContainer.new()
+	content.clip_contents = true
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = margins.x

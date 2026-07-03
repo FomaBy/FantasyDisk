@@ -36,8 +36,8 @@ def muted(color: tuple[int, int, int, int], amount: float = 0.38) -> tuple[int, 
 
 
 def artifact_ids() -> list[str]:
-    text = (ROOT / "scripts" / "progression_data.gd").read_text(encoding="utf-8")
-    block = text.split("const ARTIFACTS := [", 1)[1].split("]\n\nconst LEVEL_UP_REWARDS", 1)[0]
+    text = (ROOT / "scripts" / "progression_data_content.gd").read_text(encoding="utf-8")
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     return re.findall(r'"id":\s*"([^"]+)"', block)
 
 

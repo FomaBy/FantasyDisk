@@ -20,7 +20,7 @@ import validate_artifact_icons as validator
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_DIR = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifacts"
-PROGRESSION_DATA = ROOT / "scripts" / "progression_data.gd"
+PROGRESSION_DATA = ROOT / "scripts" / "progression_data_content.gd"
 TASK_FILE = ROOT / "docs" / "tasks" / "codex_design_artifact_icons_per_item_regen_task.md"
 SIZE = 256
 SCALE = 4
@@ -41,7 +41,7 @@ PALETTES = {
 
 def parse_artifacts() -> list[dict[str, object]]:
     text = PROGRESSION_DATA.read_text(encoding="utf-8")
-    block = text.split("const ARTIFACTS :=", 1)[1].split("const LEVEL_UP_REWARDS", 1)[0]
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     artifacts: list[dict[str, object]] = []
     for line in block.splitlines():
         if '"id":' not in line:

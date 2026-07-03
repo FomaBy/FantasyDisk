@@ -20,11 +20,6 @@ REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
 RELEASE_DIR="${REPO_DIR}/releases/${TAG}"
 
-PROJECT_VERSION="$(grep 'config/version' "${REPO_DIR}/project.godot" | cut -d'"' -f2)"
-if [[ "${PROJECT_VERSION}" != "${VERSION}" ]]; then
-  echo "ВНИМАНИЕ: config/version в dev = ${PROJECT_VERSION}, собираем тег ${TAG} (это нормально для ретро-сборки)."
-fi
-
 echo "==> Worktree из тега ${TAG}"
 git -C "${REPO_DIR}" worktree add --detach "${WORKTREE_DIR}" "${TAG}"
 cleanup() {
@@ -36,43 +31,36 @@ echo "==> Перенос свежей сборочной инфраструкт�
 cp "${REPO_DIR}/export_presets.cfg" "${WORKTREE_DIR}/export_presets.cfg"
 mkdir -p "${WORKTREE_DIR}/assets"
 cp "${REPO_DIR}/assets/icon.ico" "${WORKTREE_DIR}/assets/icon.ico"
-# Бандлим gitignored секрет вебхука фидбека в билд (иначе на чужих ПК «вебхук не
-# настроен» → локальное сохранение). include_filter в export_presets.cfg его включает.
-# URL не пишется в git и не печатается в лог; при CI/чистой машине используем env.
-if [[ -f "${REPO_DIR}/feedback_webhook.cfg" ]]; then
-  if ! grep -Eq 'discord_webhook_url="https://(discord\.com|discordapp\.com)/api/webhooks/[^"]+"' "${REPO_DIR}/feedback_webhook.cfg" \
-      || grep -Eq 'XXXX|YYYY|\.\.\.' "${REPO_DIR}/feedback_webhook.cfg"; then
-    echo "    ERROR: feedback_webhook.cfg найден, но не содержит валидный Discord webhook URL"
-    exit 2
-  fi
-  cp "${REPO_DIR}/feedback_webhook.cfg" "${WORKTREE_DIR}/feedback_webhook.cfg"
-  echo "    feedback_webhook.cfg скопирован в worktree (фидбек заработает на тестерских ПК)"
-elif [[ -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
-  case "${FANTASYDISK_FEEDBACK_WEBHOOK}" in
-    https://discord.com/api/webhooks/*|https://discordapp.com/api/webhooks/*) ;;
-    *)
-      echo "    ERROR: FANTASYDISK_FEEDBACK_WEBHOOK задан, но не похож на Discord webhook URL"
-      exit 2
-      ;;
-  esac
-  if [[ "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *\"* || "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *$'\n'* || "${FANTASYDISK_FEEDBACK_WEBHOOK}" == *$'\r'* ]]; then
-    echo "    ERROR: FANTASYDISK_FEEDBACK_WEBHOOK содержит недопустимые символы для ConfigFile"
-    exit 2
-  fi
-  cat > "${WORKTREE_DIR}/feedback_webhook.cfg" <<EOF
-[feedback]
-discord_webhook_url="${FANTASYDISK_FEEDBACK_WEBHOOK}"
-EOF
-  echo "    feedback_webhook.cfg сгенерирован из FANTASYDISK_FEEDBACK_WEBHOOK (секрет не печатается)"
-else
-  echo "    ERROR: нет feedback_webhook.cfg и FANTASYDISK_FEEDBACK_WEBHOOK — player-build feedback не сможет отправлять в Discord"
+
+echo "==> Проверка версии тега и export presets"
+TAG_PROJECT_VERSION="$(grep 'config/version' "${WORKTREE_DIR}/project.godot" | cut -d'"' -f2)"
+if [[ "${TAG_PROJECT_VERSION}" != "${VERSION}" ]]; then
+  echo "    ERROR: config/version в теге ${TAG} = ${TAG_PROJECT_VERSION}, ожидали ${VERSION}"
+  exit 2
+fi
+if ! grep -q "application/short_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -q "application/version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -q "application/product_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -q "application/file_version=\"${VERSION}.0\"" "${WORKTREE_DIR}/export_presets.cfg"; then
+  echo "    ERROR: export_presets.cfg версии не совпадают с ${VERSION}"
   exit 2
 fi
 
-echo "==> Импорт ресурсов (headless)"
-"${GODOT}" --headless --import --path "${WORKTREE_DIR}" >/dev/null 2>&1 || true
+echo "==> Feedback webhook"
+if [[ -f "${REPO_DIR}/feedback_webhook.cfg" || -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
+  echo "    raw Discord webhook больше не бандлится в player build; feedback уйдет в user:// fallback, пока нет server/proxy endpoint"
+else
+  echo "    raw webhook не найден и не нужен для сборки; player feedback использует user:// fallback"
+fi
 
+echo "==> Импорт ресурсов (headless)"
 mkdir -p "${RELEASE_DIR}" "${WORKTREE_DIR}/build"
+IMPORT_LOG="${WORKTREE_DIR}/build/godot_import.log"
+if ! "${GODOT}" --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&1; then
+  echo "    ERROR: headless import failed; tail ${IMPORT_LOG}:"
+  tail -80 "${IMPORT_LOG}" || true
+  exit 2
+fi
 
 echo "==> Экспорт macOS (dmg, ad-hoc подпись)"
 "${GODOT}" --headless --path "${WORKTREE_DIR}" \

@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = ROOT / "scripts/progression_data.gd"
+DATA_PATH = ROOT / "scripts/progression_data_content.gd"
 OUT_DIR = ROOT / "assets/sprites/ui/icons/artifacts"
 PREVIEW_PATH = ROOT / "assets/sprites/ui/icons/artifact_realistic_dnd_preview.png"
 
@@ -28,7 +28,7 @@ def _mix(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[in
 
 def _parse_artifacts() -> list[dict[str, str]]:
     text = DATA_PATH.read_text(encoding="utf-8")
-    block = text[text.index("const ARTIFACTS") : text.index("const LEVEL_UP_REWARDS")]
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     artifacts: list[dict[str, str]] = []
     for line in block.splitlines():
         if '{"id":' not in line:
