@@ -119,3 +119,41 @@ Runtime scripts, unrelated assets and the stale branch's unrelated history were
 not touched. Disk cleanup: no `.godot`, `__pycache__`, import cache or temp
 render cache was created in the task worktree; the disposable worktree cleanup is
 reported in the final Jira comment after push.
+
+## QA-Вердикт (2026-07-03)
+
+Статус: PASSED
+
+Проверено:
+- Current `origin/dev` HEAD after pre-commit fast-forward is `d636814e`; tests
+  were run at `03d9657e`, and the fast-forward to `d636814e` changed only
+  docs/process/task metadata outside SCRUM-571 mockup/runtime paths. This is not
+  the stranded feature branch: commits `7f999ed5` and `7a093b3d` are ancestors
+  of HEAD.
+- `python3 skills/codex/content-zone-image-compositor/scripts/validate_ui_layout_plan.py --plan docs/design/mockups/scrum571_reward_2k/ui_plan.json --guide-output build/qa/scrum571_reqacheck_20260703/ui_plan_guide.png --report build/qa/scrum571_reqacheck_20260703/ui_plan_report.json` passed with `ok=true`, `decision=ready_for_image`.
+- `python3 skills/codex/content-zone-image-compositor/scripts/render_content_zones.py --layout docs/design/mockups/scrum571_reward_2k/layout.json --guide-output build/qa/scrum571_reqacheck_20260703/layout_guide.png --report build/qa/scrum571_reqacheck_20260703/layout_guide_report.json` passed with `ok=true`.
+- `python3 skills/codex/content-zone-image-compositor/scripts/render_content_zones.py --input docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png --layout docs/design/mockups/scrum571_reward_2k/layout.json --output build/qa/scrum571_reqacheck_20260703/reward_ordinary_2k_mockup.png --debug-output build/qa/scrum571_reqacheck_20260703/reward_ordinary_2k_mockup_debug.png --report build/qa/scrum571_reqacheck_20260703/reward_ordinary_2k_mockup_report.json` passed with `ok=true` for all 15 zones.
+- Regenerated final/debug PNGs are byte-identical to committed evidence (`cmp=0`);
+  PNG audit confirms base, final, debug and preview files are `2560x1440`.
+- Manual final/debug inspection confirms subtitle, card body, footer and button
+  labels stay inside dark interiors or intentional button interiors; decorative
+  rails, gems, separators, frame bars and bottom ornaments remain unobstructed.
+- Independent read-only subagent audit also returned PASS for the SCRUM-648
+  frame-rule defect. Non-blocking note: the declared title zone is wide, but the
+  actual title glyphs are centered away from side ornaments.
+- `git diff --check -- docs/design/mockups/scrum571_reward_2k docs/design/previews docs/tasks/design_scrum571_reward_ui_2k_mockup_task.md` passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/meta_progression_smoke_test.gd` passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/melee_weapon_targeting_test.gd` passed.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` passed.
+
+Краевые случаи:
+- Re-QA проверяет именно current dev after integration, not the previously
+  stranded `origin/codex/scrum648-reward-zones-fix` branch.
+- Content-zone regeneration is deterministic/idempotent against committed
+  evidence.
+- Frame-rule acceptance checked visually against both final and debug overlays,
+  including the previously failing subtitle/body/footer areas.
+
+Баги: нет.

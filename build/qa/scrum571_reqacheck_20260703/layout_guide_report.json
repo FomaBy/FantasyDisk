@@ -1,0 +1,170 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        600,
+        188,
+        1360,
+        92
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        620,
+        342,
+        1320,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon1",
+      "rect": [
+        580,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_title",
+      "rect": [
+        500,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_body",
+      "rect": [
+        486,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card1_button",
+      "rect": [
+        530,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon2",
+      "rect": [
+        1200,
+        486,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_title",
+      "rect": [
+        1120,
+        672,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_body",
+      "rect": [
+        1106,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card2_button",
+      "rect": [
+        1150,
+        988,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "icon3",
+      "rect": [
+        1820,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_title",
+      "rect": [
+        1740,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_body",
+      "rect": [
+        1726,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card3_button",
+      "rect": [
+        1770,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        780,
+        1258,
+        1000,
+        38
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_background",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_modal_frame",
+      "kind": "panel",
+      "rect": [
+        250,
+        120,
+        2060,
+        1180
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "rect": [
+        600,
+        188,
+        1360,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 78
+    },
+    {
+      "id": "subtitle_zone",
+      "kind": "text",
+      "rect": [
+        620,
+        342,
+        1320,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "card_1_frame",
+      "kind": "panel",
+      "rect": [
+        410,
+        410,
+        500,
+        650
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_icon_zone",
+      "kind": "icon",
+      "rect": [
+        580,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_title_zone",
+      "kind": "text",
+      "rect": [
+        500,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_1_body_zone",
+      "kind": "text",
+      "rect": [
+        486,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_1_button_frame",
+      "kind": "button",
+      "rect": [
+        530,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_2_frame",
+      "kind": "panel",
+      "rect": [
+        1030,
+        380,
+        500,
+        690
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_icon_zone",
+      "kind": "icon",
+      "rect": [
+        1200,
+        486,
+        160,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_title_zone",
+      "kind": "text",
+      "rect": [
+        1120,
+        672,
+        320,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_2_body_zone",
+      "kind": "text",
+      "rect": [
+        1106,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_2_button_frame",
+      "kind": "button",
+      "rect": [
+        1150,
+        988,
+        260,
+        76
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_3_frame",
+      "kind": "panel",
+      "rect": [
+        1650,
+        410,
+        500,
+        650
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_icon_zone",
+      "kind": "icon",
+      "rect": [
+        1820,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_title_zone",
+      "kind": "text",
+      "rect": [
+        1740,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_3_body_zone",
+      "kind": "text",
+      "rect": [
+        1726,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "card_3_button_frame",
+      "kind": "button",
+      "rect": [
+        1770,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "footer_zone",
+      "kind": "text",
+      "rect": [
+        780,
+        1258,
+        1000,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    }
+  ]
+}

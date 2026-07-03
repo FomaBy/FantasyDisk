@@ -1,0 +1,323 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        600,
+        188,
+        1360,
+        92
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 78,
+      "lines": [
+        "НАГРАДА"
+      ],
+      "text_bbox": [
+        1096,
+        196,
+        368,
+        75
+      ]
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        620,
+        342,
+        1320,
+        44
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 26,
+      "lines": [
+        "Выберите один трофей перед возвращением на маршрут"
+      ],
+      "text_bbox": [
+        930,
+        348,
+        699,
+        31
+      ]
+    },
+    {
+      "id": "icon1",
+      "rect": [
+        580,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "DEF"
+      ],
+      "text_bbox": [
+        620,
+        563,
+        81,
+        34
+      ]
+    },
+    {
+      "id": "card1_title",
+      "rect": [
+        500,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Стальной оберег"
+      ],
+      "text_bbox": [
+        536,
+        686,
+        247,
+        35
+      ]
+    },
+    {
+      "id": "card1_body",
+      "rect": [
+        486,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "+1 к броне",
+        "Редкий защитный бонус"
+      ],
+      "text_bbox": [
+        523,
+        891,
+        274,
+        64
+      ]
+    },
+    {
+      "id": "card1_button",
+      "rect": [
+        530,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        585,
+        1004,
+        150,
+        28
+      ]
+    },
+    {
+      "id": "icon2",
+      "rect": [
+        1200,
+        486,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "DMG"
+      ],
+      "text_bbox": [
+        1232,
+        549,
+        95,
+        34
+      ]
+    },
+    {
+      "id": "card2_title",
+      "rect": [
+        1120,
+        672,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Руна удара"
+      ],
+      "text_bbox": [
+        1197,
+        679,
+        166,
+        34
+      ]
+    },
+    {
+      "id": "card2_body",
+      "rect": [
+        1106,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "+8% к урону оружия",
+        "Усиливает текущий билд"
+      ],
+      "text_bbox": [
+        1138,
+        892,
+        284,
+        63
+      ]
+    },
+    {
+      "id": "card2_button",
+      "rect": [
+        1150,
+        988,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        1205,
+        1012,
+        150,
+        28
+      ]
+    },
+    {
+      "id": "icon3",
+      "rect": [
+        1820,
+        500,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "XP"
+      ],
+      "text_bbox": [
+        1872,
+        563,
+        56,
+        34
+      ]
+    },
+    {
+      "id": "card3_title",
+      "rect": [
+        1740,
+        680,
+        320,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Искра опыта"
+      ],
+      "text_bbox": [
+        1808,
+        687,
+        184,
+        34
+      ]
+    },
+    {
+      "id": "card3_body",
+      "rect": [
+        1726,
+        882,
+        348,
+        82
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 23,
+      "lines": [
+        "+18 опыта",
+        "Быстрее к следующему уровню"
+      ],
+      "text_bbox": [
+        1726,
+        892,
+        347,
+        62
+      ]
+    },
+    {
+      "id": "card3_button",
+      "rect": [
+        1770,
+        980,
+        260,
+        76
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        1825,
+        1004,
+        150,
+        28
+      ]
+    },
+    {
+      "id": "footer",
+      "rect": [
+        780,
+        1258,
+        1000,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Esc: пауза | выбор обязателен"
+      ],
+      "text_bbox": [
+        1120,
+        1264,
+        319,
+        27
+      ]
+    }
+  ]
+}
