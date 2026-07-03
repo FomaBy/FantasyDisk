@@ -96,6 +96,33 @@ are not committed; disposable task worktrees are removed after push and recorded
 in the Jira final comment. Screenshot evidence is preserved in the main checkout
 under `build/qa/codex_object_first/`.
 
+## QA-Вердикт 2026-07-03
+
+Статус: PASSED
+QA worker: Hooke (`019f2964-cdb9-7101-bbaa-d81851c01ee3`)
+
+Independent QA verified SCRUM-850 from a fresh clone of `origin/dev` at
+`19d54b25` and did not use the dirty main checkout for test execution.
+
+Verification PASS:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/codex_data_smoke_test.gd`
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+
+Screenshot evidence was present in
+`/Users/sergeyfomin/Documents/AI Agent/build/qa/codex_object_first/` for
+characters and artifacts at 1280x720, 1920x1080 and 2560x1440, with dimensions
+verified by `sips`.
+
+Non-blocking visual notes: the center summary parchment can look sparse in
+captures, and character detail art is limited by transparent full-frame source
+bounds, so it does not visually grow as much as artifact icons. No frame-overlap
+or runtime acceptance blocker found.
+
+Disk cleanup: QA disposable clone
+`/private/tmp/fantasydisk-scrum850-qa-20260703-221200` removed by QA worker.
+
 ## Заметки Для Исполнителя
 
 Это Back-end runtime-задача. Если при интеграции выяснится, что не хватает
