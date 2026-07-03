@@ -42,7 +42,7 @@ Doctor sustain слишком сильный, если поверх его со�
 
 - Code:
   - `scripts/attack_vfx.gd`: weapon signature now has a normal body sprite at alpha `0.60`, shadow alpha `0.34`, subtle rim alpha `0.20`.
-  - `scripts/berserk_weapon.gd`: exact `sweep` overlay is named and asserted as an outward wedge with alpha `0.40`.
+  - `scripts/berserk_weapon.gd`: exact `sweep` overlay is named and asserted as an outward wedge with alpha `0.60`.
   - `scripts/class_weapon.gd`: damage pools keep up to 6 active instances with `pool_duration`/tick metadata; Engineer pressure mines persist for lifetime and tick enemies inside instead of disappearing on first trigger.
   - `scripts/summoner_weapon.gd`: summon cap remains the existing Leadership-driven `Player` contract; `summon_amount` scales profile strength/tempo/lifetime/splash, summon weapons prefill about half the current cap at battle start and scope owned minions by weapon owner.
   - `scripts/progression_data.gd`, `scripts/ui_screens.gd`, `scripts/main.gd`: Doctor rolls filter external regeneration/vampiric/lifesteal sustain from level-up, artifacts, shop, elite choices, and start boons while preserving weapon self-sustain.

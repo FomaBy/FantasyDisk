@@ -143,8 +143,8 @@ func _test_berserk_sweep_geometry() -> void:
 	if overlay == null:
 		push_error("Expected Berserk exact attack zone overlay.")
 		quit(1)
-	if absf(overlay.color.a - 0.40) > 0.01:
-		push_error("Expected Berserk exact attack zone alpha 0.40, got %.3f." % overlay.color.a)
+	if absf(overlay.color.a - 0.60) > 0.01:
+		push_error("Expected Berserk exact attack zone alpha 0.60, got %.3f." % overlay.color.a)
 		quit(1)
 	owner.queue_free()
 	weapon.queue_free()
