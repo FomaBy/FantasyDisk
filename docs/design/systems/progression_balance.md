@@ -486,6 +486,13 @@ event-множители) + `post_combat`.
   summon/DoT/sustain weapons). Следующие class-balance задачи должны сначала
   менять форму механики, target pattern, setup/payoff, deploy ownership,
   sustain window или control value, а не начинать с множителей.
+- SCRUM-858 (2026-07-04) закрыл первый tank/melee slice class-trio rebalance:
+  Knight counter стал incoming-based с radius/arc/target caps. `tower_shield`
+  теперь главный guard/counter/front-control вариант, `long_spear` остается
+  reach/pierce с легкой узкой ответкой, `holy_flail` держит broad circular
+  control. Фокус-тест `tests/melee_unique_mechanics_test.gd` валидирует, что
+  5 incoming damage через щит убивает часть 24 HP contact pack, но не бьет
+  цель за спиной или вне радиуса.
 
 ## Known Balance Risks
 
@@ -496,7 +503,9 @@ event-множители) + `post_combat`.
   (текущий худший 20-target CCT +22%, но PASS), hard-clamped summons/DoT
   (`druid/summon_amulet`, `chemist/homunculus_vial`, `assassin/venom_wire`) и
   cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
-  `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
+  `elementalist_meteor_core`, `dark_book` и др.). SCRUM-858 снял первый
+  documented risk для Knight shield/flail не множителями, а разнесением
+  block/counter геометрии и target caps.
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
