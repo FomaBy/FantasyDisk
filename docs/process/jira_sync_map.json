@@ -3790,7 +3790,7 @@
  },
  "bug_win_dev_console_freezes_combat_task.md": {
   "key": "SCRUM-845",
-  "status": "Контроль качества",
-  "desc_hash": "da65962da2b8f690bbd6b10e53cae8e3"
+  "status": "Готово",
+  "desc_hash": "5e6e1a176ccb53497248c7fe486367fb"
  }
 }
