@@ -71,7 +71,7 @@ const BERSERK_WEAPONS := {
 		"max_aoe_radius": 0.0,
 		"sweep_degrees": 360.0,
 		"circle_full_targets": 4,
-		"circle_target_diminish": 0.57,
+		"circle_target_diminish": 0.62,
 		"geometry_stat_growth_from_delta": true,
 		"range_scales_with_aoe_radius": true,
 		"attack_range_intelligence_weight": 0.0,

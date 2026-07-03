@@ -1100,7 +1100,7 @@ SCRUM-241 добавил переключатель прицеливания: `n
 | --- | --- | --- | --- |
 | Меч | Сектор 100 градусов, радиус 350 | interval 0.58, damage x1.15 | +10% урон (пассив); `sector_multiplier` расширяет угол, Radius расширяет дальность |
 | Топор | Сектор 180 градусов, радиус 250 | interval 1.06, damage x0.85 | -10% урон (пассив); `sector_multiplier` расширяет угол, Radius расширяет дальность |
-| Молот | Круг радиуса 150 | interval 1.25, damage x0.55 | Radius scaling без fixed cap; `circle_full_targets=4`, `circle_target_diminish=0.57`; `upgrade_aoe_exponent=1.08`, `upgrade_damage_exponent=1.05` |
+| Молот | Круг радиуса 150 | interval 1.25, damage x0.55 | Radius scaling без fixed cap; `circle_full_targets=4`, `circle_target_diminish=0.62`; `upgrade_aoe_exponent=1.08`, `upgrade_damage_exponent=1.05` |
 
 Видимая VFX-зона каждой атаки совпадает с фактической зоной урона: художественный VFX (AttackVfx) дополняется полупрозрачным оверлеем точной геометрии зоны (`_show_exact_zone_overlay`).
 
@@ -1803,7 +1803,7 @@ random route promotion and full-frame animation remain follow-ups. QA evidence:
 - SCRUM-497: попадания по врагам показывают короткие floating damage numbers, красный hit-outline/flash и отдельный `!` marker на critical hits; лечение игрока и vampirism/drain показывают зелёное `+N` над игроком. Это visual-only layer с persisted toggle `combat_feedback` и global caps для плотных AoE; урон, тайминги и targeting не менялись.
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - SCRUM-521: при HP игрока ниже 30% боевой HUD показывает мягкую красную виньетку по краям (`LowHpVignetteOverlay`) с прозрачным центром, чтобы не закрывать бой и HUD. Виньетка гаснет после восстановления до 34%+ HP, уважает persisted toggle `combat_feedback`, не перехватывает ввод и рисуется за HUD-карточками.
-- SCRUM-852 (2026-07-03): стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.57`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены; live-гейт `tests/berserk_dps_runaway_gate.gd` держит `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`.
+- SCRUM-852 (2026-07-03): стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.62`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены; live-гейт `tests/berserk_dps_runaway_gate.gd` держит `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`.
 
 ## Runtime И Performance Hygiene
 

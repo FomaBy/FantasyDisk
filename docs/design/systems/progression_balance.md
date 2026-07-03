@@ -455,10 +455,11 @@ event-множители) + `post_combat`.
 - SCRUM-852 (2026-07-03) обновил геометрию Берсерка: молот стартует кругом
   150px без старого close-ring cap 115px, Radius scaling честно увеличивает круг,
   а плотные паки ограничены `circle_full_targets=4` и
-  `circle_target_diminish=0.57`. Меч стал сектором 100°/350px, топор —
+  `circle_target_diminish=0.62`. Меч стал сектором 100°/350px, топор —
   сектором 180°/250px. Focused live gate
   `tests/berserk_dps_runaway_gate.gd` требует `lvl20_ideal_20t <= 3600` и
-  `lvl20_ideal_1t <= 650`; текущий прогон: 20t=3469, 1t=474.
+  `lvl20_ideal_1t <= 650`; проверка после dense-pack margin fix:
+  20t=3427/3456, 1t=504/564 в повторных прогонах.
 - Живой DPS/TTK: `tools/live_combat_harness.gd` + гейт `tests/live_balance_simulation_test.gd`.
 - Выживаемость профилей: `tools/survivability_harness.gd` + гейт `tests/survivability_scenario_test.gd`.
 - Применение бюджет-тюнинга на рантайме: `tests/weapon_tuning_application_test.gd`. Экономика/XP маршрута: `tools/route_economy_xp_model.gd`.
