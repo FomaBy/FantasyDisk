@@ -63,6 +63,31 @@ Actual:
   weapon-owned sustain remains allowed.
 - Fix commit: `c6634fac`; verified as ancestor of tested `origin/dev`.
 
+## Повторный backend fix 2026-07-04
+
+Reopened in Codex lane after an explorer pass found one remaining bypass:
+`CombatDirector._grant_boss_completion_rewards()` built its tier-3 boss reward
+pool directly from raw `ARTIFACTS`, so Doctor could still receive forbidden
+tier-3 sustain artifacts such as `leech_heart` or `soul_harvest` after a boss.
+
+Implemented:
+- Added `ProgressionData.boss_completion_artifact_rewards(character_id)` as the
+  character-filtered tier-3 boss completion reward source.
+- Updated `CombatDirector._grant_boss_completion_rewards()` to sample from that
+  filtered source instead of raw `ARTIFACTS`.
+- Extended `tests/doctor_drain_softcap_test.gd` to cover Doctor boss completion
+  rewards, preserve non-Doctor tier-3 sustain availability, and guard the boss
+  reward path against future raw-pool regressions.
+- Updated progression/balance docs to state that Doctor's external sustain ban
+  also covers boss completion rewards.
+
+Verification after the backend fix:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/doctor_drain_softcap_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_progression_economy_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS; known non-blocking `_apply_dot_tick` CallbackTweener stderr only.
+
+Disk cleanup: none created.
+
 ## QA-Вердикт 2026-07-04
 Статус: PASSED
 Commit tested: `1924f6e3e8c404dfbba8e0fda0af4a829aa1d15e`.

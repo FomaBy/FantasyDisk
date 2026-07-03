@@ -878,13 +878,9 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 func _grant_boss_completion_rewards() -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
-	var tier3 := []
-	for artifact in game.PROGRESSION_DATA.ARTIFACTS:
-		if int(artifact.get("tier", 1)) >= 3:
-			tier3.append(artifact)
-	if not tier3.is_empty():
-		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
-		reward["kind"] = "artifact"
+	var artifact_rewards: Array = game.PROGRESSION_DATA.boss_completion_artifact_rewards(game.selected_character_id)
+	if not artifact_rewards.is_empty():
+		var reward: Dictionary = artifact_rewards[game.rng.randi_range(0, artifact_rewards.size() - 1)].duplicate(true)
 		game.current_player.apply_reward(reward)
 		game.record_codex_artifact_discovery(reward)
 	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_scaling_stage(), game.spawn_wave_index)

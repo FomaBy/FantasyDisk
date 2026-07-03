@@ -183,7 +183,9 @@ func _test_doctor_external_sustain_reward_filter(errors: Array) -> void:
 	_assert_no_doctor_external_sustain(ProgressionData.reward_pool("doctor"), "reward_pool", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.shop_items(0, "doctor"), "shop_items", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.elite_artifact_choices(8, 20, "doctor"), "elite_artifact_choices", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.boss_completion_artifact_rewards("doctor"), "boss_completion_artifact_rewards", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.start_boons("doctor"), "start_boons", errors)
+	_assert_boss_completion_reward_path_filters_doctor(errors)
 	if not ProgressionData.start_boon_mods("swiftfoot", "doctor").is_empty():
 		errors.append("Doctor start_boon_mods('swiftfoot') must be empty.")
 	if ProgressionData.start_boon_mods("swiftfoot", "berserk").is_empty():
@@ -195,6 +197,11 @@ func _test_doctor_external_sustain_reward_filter(errors: Array) -> void:
 	var berserk_pool: Array = ProgressionData.reward_pool("berserk")
 	if not _contains_reward_id(berserk_pool, "leech_fang"):
 		errors.append("Expected non-doctor artifact pool to keep leech_fang.")
+	var berserk_boss_pool: Array = ProgressionData.boss_completion_artifact_rewards("berserk")
+	if not _contains_reward_id(berserk_boss_pool, "leech_heart"):
+		errors.append("Expected non-doctor boss completion pool to keep leech_heart.")
+	if not _contains_reward_id(berserk_boss_pool, "soul_harvest"):
+		errors.append("Expected non-doctor boss completion pool to keep soul_harvest.")
 
 
 func _assert_no_doctor_external_sustain(rewards: Array, source_name: String, errors: Array) -> void:
@@ -223,3 +230,15 @@ func _contains_reward_id(rewards: Array, reward_id: String) -> bool:
 		if str((reward as Dictionary).get("id", "")) == reward_id:
 			return true
 	return false
+
+
+func _assert_boss_completion_reward_path_filters_doctor(errors: Array) -> void:
+	var source := FileAccess.get_file_as_string("res://scripts/combat_director.gd")
+	var start := source.find("func _grant_boss_completion_rewards()")
+	if start < 0:
+		errors.append("CombatDirector missing _grant_boss_completion_rewards.")
+		return
+	var next_func := source.find("\nfunc ", start + 1)
+	var body := source.substr(start, next_func - start if next_func > start else source.length() - start)
+	if not body.contains("boss_completion_artifact_rewards"):
+		errors.append("Boss completion reward path must use character-filtered boss_completion_artifact_rewards().")

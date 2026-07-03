@@ -227,7 +227,7 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
 - Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
-- SCRUM-854: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` filters Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
+- SCRUM-854/SCRUM-862: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` and boss-completion artifact selection filter Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices, boss completion rewards, and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
 - SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в
   tooltip. Для базовых характеристик preview строится от текущего snapshot
   статов и `STAT_DERIVED_PREVIEW` / `ProgressionData.derived_parameters()`;

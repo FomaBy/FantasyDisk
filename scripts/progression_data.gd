@@ -1392,6 +1392,19 @@ static func elite_artifact_choices(route_stage: int, count := 3, character_id :=
 	return choices
 
 
+static func boss_completion_artifact_rewards(character_id := "") -> Array:
+	var rewards := []
+	for artifact in ARTIFACTS:
+		if int(artifact.get("tier", 1)) < 3:
+			continue
+		if character_id != "" and not is_reward_relevant(artifact, character_id):
+			continue
+		var reward: Dictionary = artifact.duplicate(true)
+		reward["kind"] = "artifact"
+		rewards.append(reward)
+	return rewards
+
+
 static func display_stats(stats: Dictionary) -> String:
 	var parts := []
 	for stat_id in STAT_NAMES.keys():
