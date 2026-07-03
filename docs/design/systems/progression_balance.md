@@ -513,10 +513,10 @@ event-множители) + `post_combat`.
   cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
   `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
   SCRUM-857 уже закрыл первую часть риска для grenade/meteor/ricochet/split/
-  prayer/dark pierce families; SCRUM-858 снял documented risk для Knight
-  shield/flail не множителями, а разнесением block/counter геометрии и target
-  caps. Deploy/summon and sustain loops covered by follow-up SCRUM-859/SCRUM-860
-  evidence above.
+  prayer/dark pierce families. SCRUM-858 снял первый documented risk для
+  Knight shield/flail не множителями, а разнесением block/counter геометрии и
+  target caps. Deploy/summon и sustain loops остаются для SCRUM-859..860 после
+  снятия overlap-блокера.
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
