@@ -65,14 +65,23 @@ Actual:
 
 ## QA-Вердикт 2026-07-04
 Статус: PASSED
-Commit tested: `eafc280fc6520db9e56692f1027b4d1ef6763c8a` (`6228eac2` ancestor).
+Commit tested: `eafc280fc6520db9e56692f1027b4d1ef6763c8a`.
 
-Independent read-only QA confirmed:
-- `scripts/berserk_weapon.gd` exact-zone overlay alpha is `0.60`.
+Independent QA subagent `Peirce` verified a fresh `origin/dev` checkout:
+- `6228eac2` is an ancestor of tested `origin/dev`.
+- `scripts/berserk_weapon.gd` uses `EXACT_ZONE_OVERLAY_ALPHA := 0.60` for
+  `BerserkExactAttackZone`; the old `minf(visual_color.a * 0.55, 0.22)`
+  behavior is absent.
 - `tests/attack_vfx_smoke_test.gd` asserts `WeaponSignatureBody` alpha `0.60`
   and Berserk exact-zone alpha `0.60`.
-- PASS: `tests/attack_vfx_smoke_test.gd`.
-- PASS: `tests/runtime_smoke_test.gd`; known non-blocking `_apply_dot_tick`
-  CallbackTweener stderr only.
+- `docs/tasks/bug_scrum855_weapon_overlay_opacity_too_low_task.md` records the
+  result and verification commands.
 
-Disk cleanup: QA removed `/private/tmp/fantasydisk-scrum864-qa-902067`.
+Verification in disposable fresh clone:
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`; known non-blocking `_apply_dot_tick` CallbackTweener stderr appeared.
+
+Disk cleanup: removed `/tmp/FantasyDisk-QA-SCRUM-864.aSVtBe`, including the
+generated `.godot` import cache (~4.9G); prior QA cleanup also removed
+`/private/tmp/fantasydisk-scrum864-qa-902067`. Main thread created no
+disposable clone.
