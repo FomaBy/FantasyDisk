@@ -371,7 +371,7 @@ const CHEMIST_WEAPONS := {
 const KNIGHT_WEAPONS := {
 	"long_spear": {
 		"id": "long_spear", "title": "Копье",
-		"description": "Длинный точечный выпад: узкая полоса 90 x 540, медленно и тяжело. Пассив: +5% защиты.",
+		"description": "Длинный точечный выпад: узкая полоса 90 x 540, медленно и тяжело. Пассив: +5% защиты и легкий single-target block/counter.",
 		"scene_path": "res://scenes/LongSpear.tscn",
 		"attack_shape": "strip", "cone_degrees": 24.0,
 		"attack_range": 540.0, "start_distance": 0.0,
@@ -380,11 +380,11 @@ const KNIGHT_WEAPONS := {
 		"melee_execute_threshold": 0.36, "melee_execute_multiplier": 1.20,
 		"melee_stagger_knockback_multiplier": 0.35,
 		"visual_color": Color(0.80, 0.86, 0.95, 0.36),
-		"passive_mods": {"defense_flat": 0.05, "block_reduction": 0.45, "counter_damage_multiplier": 0.55, "counter_cooldown": 2.6},
+		"passive_mods": {"defense_flat": 0.05, "block_reduction": 0.38, "counter_damage_multiplier": 0.32, "counter_incoming_multiplier": 2.4, "counter_cap_multiplier": 0.60, "counter_radius": 145.0, "counter_arc_degrees": 60.0, "counter_target_cap": 2, "counter_full_targets": 1, "counter_target_diminish": 1.10, "counter_cooldown": 2.8, "counter_knockback": 120.0, "counter_stagger_duration": 0.55},
 	},
 	"tower_shield": {
 		"id": "tower_shield", "title": "Башенный щит",
-		"description": "Короткий фронтальный bash: меньше урона, сильная защита и отбрасывающая зона перед Рыцарем.",
+		"description": "Короткий фронтальный bash: меньше урона, сильная защита и мощная block/counter ответка по контактной стае.",
 		"scene_path": "res://scenes/TowerShield.tscn",
 		"attack_shape": "sweep", "cone_degrees": 95.0,
 		"attack_range": 215.0, "start_distance": 0.0,
@@ -393,11 +393,11 @@ const KNIGHT_WEAPONS := {
 		"melee_close_bonus_radius": 185.0, "melee_close_damage_multiplier": 1.08,
 		"melee_stagger_knockback_multiplier": 1.15,
 		"visual_color": Color(0.74, 0.78, 0.92, 0.36),
-		"passive_mods": {"defense_flat": 0.08, "max_health_multiplier": 1.08, "block_reduction": 0.58, "counter_damage_multiplier": 0.42, "counter_cooldown": 2.2},
+		"passive_mods": {"defense_flat": 0.08, "max_health_multiplier": 1.08, "block_reduction": 0.62, "counter_damage_multiplier": 0.55, "counter_incoming_multiplier": 5.0, "counter_cap_multiplier": 1.45, "counter_radius": 195.0, "counter_arc_degrees": 135.0, "counter_target_cap": 4, "counter_full_targets": 3, "counter_target_diminish": 0.55, "counter_cooldown": 1.7, "counter_knockback": 230.0, "counter_stagger_duration": 0.85},
 	},
 	"holy_flail": {
 		"id": "holy_flail", "title": "Освященный кистень",
-		"description": "Тяжелый круговой замах средней дальности: медленнее щита, но лучше чистит толпу вокруг.",
+		"description": "Тяжелый круговой замах средней дальности: медленнее щита, зато держит holy-control круг и мягкую круговую ответку.",
 		"scene_path": "res://scenes/HolyFlail.tscn",
 		"attack_shape": "circle", "cone_degrees": 360.0,
 		"attack_range": 235.0, "start_distance": 0.0,
@@ -406,7 +406,7 @@ const KNIGHT_WEAPONS := {
 		"melee_arc_followup_radius": 175.0, "melee_arc_followup_multiplier": 0.16,
 		"melee_stagger_knockback_multiplier": 0.45,
 		"visual_color": Color(1.0, 0.84, 0.32, 0.34),
-		"passive_mods": {"knockback_multiplier": 1.20, "block_reduction": 0.34, "counter_damage_multiplier": 0.72, "counter_cooldown": 2.9},
+		"passive_mods": {"knockback_multiplier": 1.20, "block_reduction": 0.30, "counter_damage_multiplier": 0.48, "counter_incoming_multiplier": 3.2, "counter_cap_multiplier": 1.15, "counter_radius": 215.0, "counter_arc_degrees": 360.0, "counter_target_cap": 6, "counter_full_targets": 4, "counter_target_diminish": 0.45, "counter_cooldown": 2.8, "counter_knockback": 165.0, "counter_stagger_duration": 0.65},
 	},
 }
 

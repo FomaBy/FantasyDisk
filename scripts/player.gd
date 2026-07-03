@@ -249,6 +249,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_lowhp_guard_cooldown_left = 0.0
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
+	_knight_counter_cooldown_left = 0.0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
 	_reactor_heat = 0.0
 	_reactor_heat_active = false
@@ -704,21 +705,88 @@ func _try_knight_counter(incoming_amount: float) -> float:
 	var passive_mods: Dictionary = weapon_config.get("passive_mods", {})
 	var block_reduction := float(passive_mods.get("block_reduction", 0.0))
 	var counter_multiplier := float(passive_mods.get("counter_damage_multiplier", 0.0))
-	if block_reduction <= 0.0 and counter_multiplier <= 0.0:
+	var incoming_counter_multiplier := float(passive_mods.get("counter_incoming_multiplier", 0.0))
+	if block_reduction <= 0.0 and counter_multiplier <= 0.0 and incoming_counter_multiplier <= 0.0:
 		return incoming_amount
 	var energy := float(stats.get("energy", 0.0))
 	_knight_counter_cooldown_left = maxf(float(passive_mods.get("counter_cooldown", 2.4)) / (1.0 + energy * 0.03), 0.2)
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
-	AttackVfx.ring_pulse(parent, global_position, 150.0, Color(0.92, 0.96, 1.0, 0.45), true)
-	if counter_multiplier > 0.0:
-		var counter_damage := float(derived_parameters.get("damage", 10.0)) * counter_multiplier
-		for enemy in get_tree().get_nodes_in_group("enemies"):
-			var enemy_node := enemy as Node2D
-			if enemy_node == null or not is_instance_valid(enemy_node):
-				continue
-			if global_position.distance_squared_to(enemy_node.global_position) <= 170.0 * 170.0 and enemy_node.has_method("take_damage"):
-				enemy_node.take_damage(counter_damage)
+	var counter_radius := maxf(float(passive_mods.get("counter_radius", 170.0)), 32.0)
+	AttackVfx.ring_pulse(parent, global_position, maxf(counter_radius, 150.0), Color(0.92, 0.96, 1.0, 0.45), true)
+	if counter_multiplier > 0.0 or incoming_counter_multiplier > 0.0:
+		_apply_knight_counter_damage(incoming_amount, passive_mods, counter_radius)
 	return incoming_amount * clampf(1.0 - block_reduction, 0.15, 1.0)
+
+
+func _apply_knight_counter_damage(incoming_amount: float, passive_mods: Dictionary, counter_radius: float) -> void:
+	var counter_damage := _knight_counter_damage(incoming_amount, passive_mods)
+	if counter_damage <= 0.0:
+		return
+	var targets := TARGET_QUERY.in_radius(self, global_position, counter_radius)
+	targets.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position)
+	)
+	var full_targets := maxi(int(passive_mods.get("counter_full_targets", 2)), 1)
+	var target_cap := int(passive_mods.get("counter_target_cap", 0))
+	var diminish := maxf(float(passive_mods.get("counter_target_diminish", 0.0)), 0.0)
+	var knockback := maxf(float(passive_mods.get("counter_knockback", 0.0)), 0.0)
+	var stagger_duration := maxf(float(passive_mods.get("counter_stagger_duration", 0.65)), 0.0)
+	var hit_count := 0
+	for index in range(targets.size()):
+		var enemy_node := targets[index] as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node) or not enemy_node.has_method("take_damage"):
+			continue
+		if target_cap > 0 and hit_count >= target_cap:
+			break
+		if not _is_inside_knight_counter_arc(enemy_node, passive_mods):
+			continue
+		var factor := 1.0
+		if hit_count >= full_targets:
+			factor = 1.0 / (1.0 + float(hit_count - full_targets + 1) * diminish)
+		_deal_knight_counter_hit(enemy_node, counter_damage * factor)
+		hit_count += 1
+		var away := enemy_node.global_position - global_position
+		if knockback > 0.0 and away.length_squared() > 0.001 and enemy_node.has_method("apply_knockback"):
+			enemy_node.apply_knockback(away.normalized() * knockback)
+		if stagger_duration > 0.0:
+			StatusEffects.apply_status(enemy_node, "knight_counter_stagger", {
+				"duration": stagger_duration,
+				"speed_multiplier": 0.86,
+				"marker_color": Color(0.82, 0.90, 1.0, 1.0),
+			})
+
+
+func _is_inside_knight_counter_arc(enemy_node: Node2D, passive_mods: Dictionary) -> bool:
+	var arc_degrees := float(passive_mods.get("counter_arc_degrees", 360.0))
+	if arc_degrees >= 359.0:
+		return true
+	var to_enemy := enemy_node.global_position - global_position
+	if to_enemy.length_squared() <= 0.001:
+		return true
+	var direction := _facing_direction
+	if direction.length_squared() <= 0.001:
+		direction = Vector2.RIGHT
+	var angle_to_enemy := absf(wrapf(direction.normalized().angle_to(to_enemy.normalized()), -PI, PI))
+	return angle_to_enemy <= deg_to_rad(arc_degrees * 0.5) + 0.001
+
+
+func _knight_counter_damage(incoming_amount: float, passive_mods: Dictionary) -> float:
+	var base_damage := maxf(float(derived_parameters.get("damage", 10.0)), 1.0)
+	var weapon_scaled := base_damage * maxf(float(passive_mods.get("counter_damage_multiplier", 0.0)), 0.0)
+	var incoming_scaled := incoming_amount * maxf(float(passive_mods.get("counter_incoming_multiplier", 0.0)), 0.0)
+	var result := maxf(weapon_scaled, incoming_scaled)
+	result = maxf(result, float(passive_mods.get("counter_min_damage", 0.0)))
+	var cap_multiplier := float(passive_mods.get("counter_cap_multiplier", 0.0))
+	if cap_multiplier > 0.0:
+		result = minf(result, base_damage * cap_multiplier)
+	return maxf(result, 0.0)
+
+
+func _deal_knight_counter_hit(enemy_node: Node2D, amount: float) -> void:
+	if _take_damage_accepts_feedback(enemy_node):
+		enemy_node.take_damage(amount, {"damage_type": "physical"})
+	else:
+		enemy_node.take_damage(amount)
 
 
 func _trigger_thorn_reflect(received_damage: float) -> void:

@@ -125,6 +125,10 @@
   при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
+- Knight block/counter uses weapon passive data on `Player.take_damage()`:
+  incoming damage reduction, incoming-scaled retaliation, `counter_radius`,
+  `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.
+  This keeps tank identity reactive without permanent immunity.
 - Support/Leadership classes (`guitarist`, `druid`, `engineer`, `priest`) обновляют class aura примерно раз в 0.55с. Союзники получают `command_aura`, враги в радиусе — `command_pressure`, Priest получает мягкий self-support tick.
 - Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 

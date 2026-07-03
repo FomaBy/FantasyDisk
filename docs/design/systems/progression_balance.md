@@ -494,6 +494,13 @@ event-множители) + `post_combat`.
   `tests/projectile_chain_pierce_identity_test.gd` PASS,
   `tests/global_damage_balance_smoke_test.gd` PASS, худший CCT остался
   `doctor/restore_potion/20` +22% в пределах +/-30%.
+- SCRUM-858 (2026-07-04) закрыл первый tank/melee slice class-trio rebalance:
+  Knight counter стал incoming-based с radius/arc/target caps. `tower_shield`
+  теперь главный guard/counter/front-control вариант, `long_spear` остается
+  reach/pierce с легкой узкой ответкой, `holy_flail` держит broad circular
+  control. Фокус-тест `tests/melee_unique_mechanics_test.gd` валидирует, что
+  5 incoming damage через щит убивает часть 24 HP contact pack, но не бьет
+  цель за спиной или вне радиуса.
 
 ## Known Balance Risks
 
@@ -506,8 +513,10 @@ event-множители) + `post_combat`.
   cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
   `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
   SCRUM-857 уже закрыл первую часть риска для grenade/meteor/ricochet/split/
-  prayer/dark pierce families; deploy/summon, melee/tank/counter and sustain
-  loops остаются для SCRUM-858..860.
+  prayer/dark pierce families; SCRUM-858 снял documented risk для Knight
+  shield/flail не множителями, а разнесением block/counter геометрии и target
+  caps. Deploy/summon and sustain loops covered by follow-up SCRUM-859/SCRUM-860
+  evidence above.
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные

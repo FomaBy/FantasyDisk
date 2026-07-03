@@ -3997,9 +3997,13 @@ func _test_unique_class_identity_patterns() -> void:
 	holder.add_child(knight)
 	knight.global_position = Vector2(1300, 700)
 	await process_frame
-	knight.call("configure_character", "knight", "long_spear")
+	knight.call("configure_character", "knight", "tower_shield")
+	var knight_weapon: Node = knight.get("equipped_weapon")
+	knight_weapon.set_process(false)
 	var knight_parameters: Dictionary = knight.get("derived_parameters")
 	knight_parameters["dodge"] = 0.0
+	knight_parameters["defense"] = 0.0
+	knight_parameters["absorb"] = 0.0
 	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
 	holder.add_child(knight_enemy)
@@ -4007,13 +4011,14 @@ func _test_unique_class_identity_patterns() -> void:
 	knight_enemy.set("health", 100000.0)
 	knight_enemy.global_position = knight.global_position + Vector2(80, 0)
 	await process_frame
+	knight.set("_knight_counter_cooldown_left", 0.0)
 	var knight_hp_before := float(knight.get("health"))
 	var knight_enemy_hp_before := float(knight_enemy.get("health"))
 	knight.call("take_damage", 20.0, "test_counter")
 	await process_frame
 	var knight_damage_taken := knight_hp_before - float(knight.get("health"))
 	if knight_damage_taken >= 20.0 or float(knight_enemy.get("health")) >= knight_enemy_hp_before:
-		_fail("Expected Knight block to reduce damage and counter nearby enemies.")
+		_fail("Expected Knight tower shield block to reduce damage and counter frontal enemies.")
 		return
 
 	var druid := player_scene.instantiate()
