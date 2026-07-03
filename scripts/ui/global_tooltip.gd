@@ -3,13 +3,15 @@ extends RefCounted
 
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 
-const DEFAULT_PANEL_NAME := "GlobalTooltipPanel"
 const DEFAULT_LABEL_NAME := "GlobalTooltipLabel"
+# Единственную рамку тултипа рисует движковый попап стилем "TooltipPanel" из make_theme();
+# кастомный контент — голый Label (make_tooltip_label), иначе получается рамка в рамке.
 const DEFAULT_MAX_WIDTH := 460.0
-const DEFAULT_FONT_SIZE := 14
+const WIDE_MAX_WIDTH := 620.0
+const WIDE_TEXT_THRESHOLD := 360
+const DEFAULT_FONT_SIZE := 20
 const DEFAULT_GAP := 18.0
 const DEFAULT_VIEWPORT_MARGIN := 16.0
-const POSITIONING_PANEL_SCRIPT := preload("res://scripts/ui/global_tooltip_panel.gd")
 
 
 static func make_minimal_metal_style(tint := Color.WHITE) -> StyleBox:
@@ -58,38 +60,42 @@ static func make_theme() -> Theme:
 	return theme
 
 
-static func make_text_panel(
+static func make_tooltip_label(
 	for_text: String,
-	style: StyleBox,
-	max_width := DEFAULT_MAX_WIDTH,
-	panel_name := DEFAULT_PANEL_NAME,
 	label_name := DEFAULT_LABEL_NAME,
 	font_size := DEFAULT_FONT_SIZE,
 	font_color := Color(0.94, 0.90, 0.78, 1.0)
-) -> PanelContainer:
-	var tooltip := PanelContainer.new()
-	tooltip.set_script(POSITIONING_PANEL_SCRIPT)
-	tooltip.name = panel_name
-	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
-	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.custom_minimum_size = Vector2(max_width, 0.0)
-	tooltip.add_theme_stylebox_override("panel", style)
-	tooltip.set_meta("global_tooltip_gap", DEFAULT_GAP)
-	tooltip.set_meta("global_tooltip_viewport_margin", DEFAULT_VIEWPORT_MARGIN)
-
+) -> Label:
 	var label := Label.new()
 	label.name = label_name
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.custom_minimum_size = Vector2(maxf(40.0, max_width - _style_horizontal_content(style)), 0.0)
 	label.text = for_text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", font_color)
 	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.92))
 	label.add_theme_constant_override("shadow_offset_x", 1)
 	label.add_theme_constant_override("shadow_offset_y", 1)
-	tooltip.add_child(label)
-	return tooltip
+	var wrap_width := wrap_width_for_text(for_text, font_size)
+	if wrap_width > 0.0:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.custom_minimum_size = Vector2(wrap_width, 0.0)
+	return label
+
+
+# Короткий текст живёт в окне по своему размеру; длинный переносится на 460 px,
+# «супердетали» получают широкое окно 620 px — не мельчить шрифтом, а растить окно.
+static func wrap_width_for_text(for_text: String, font_size := DEFAULT_FONT_SIZE) -> float:
+	var font := ThemeDB.fallback_font
+	if font == null:
+		return DEFAULT_MAX_WIDTH
+	var text_width := font.get_multiline_string_size(
+		for_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size
+	).x
+	if text_width <= DEFAULT_MAX_WIDTH:
+		return 0.0
+	if for_text.length() >= WIDE_TEXT_THRESHOLD or text_width >= DEFAULT_MAX_WIDTH * 2.5:
+		return WIDE_MAX_WIDTH
+	return DEFAULT_MAX_WIDTH
 
 
 static func install_on_tree(root: Node, tooltip_script: Script) -> void:
@@ -169,12 +175,6 @@ static func _clamp_position(position: Vector2, size: Vector2, viewport_size: Vec
 		clampf(position.x, margin, maxf(margin, viewport_size.x - size.x - margin)),
 		clampf(position.y, margin, maxf(margin, viewport_size.y - size.y - margin))
 	)
-
-
-static func _style_horizontal_content(style: StyleBox) -> float:
-	if style == null:
-		return 0.0
-	return maxf(0.0, style.content_margin_left) + maxf(0.0, style.content_margin_right)
 
 
 static func _is_supported_tooltip_control(control: Control) -> bool:

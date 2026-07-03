@@ -85,8 +85,8 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_fill := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
-		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
-			_fail("Expected rich stat line bar tooltip for %s at %s." % [stat_id, context])
+		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
+			_fail("Expected concise stat line bar tooltip for %s at %s." % [stat_id, context])
 			return
 	for relevance in ["primary", "secondary", "optional"]:
 		var label := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label

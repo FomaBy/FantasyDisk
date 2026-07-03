@@ -3816,6 +3816,11 @@
  "design_codex_object_first_redesign_task.md": {
   "key": "SCRUM-849",
   "status": "В работе",
-  "desc_hash": "4085804a48ec3f58ad5697c16127c8f5"
+  "desc_hash": "d877e6784535365c56173a977eda16a2"
+ },
+ "ui_tooltip_single_frame_rework_task.md": {
+  "key": "SCRUM-851",
+  "status": "К выполнению",
+  "desc_hash": "60e5ce6f4f9133af8b8b941d0f28b8d7"
  }
 }

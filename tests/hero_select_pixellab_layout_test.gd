@@ -96,8 +96,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
-		if stat_button == null or stat_bar == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
-			_fail("Expected line bar + rich hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
+		if stat_button == null or stat_bar == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
+			_fail("Expected line bar + concise hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
 			return
 	for relevance in ["primary", "secondary", "optional"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
