@@ -55,3 +55,28 @@ Verification:
 - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
 
 Disk cleanup: none created.
+
+## QA-Вердикт
+
+Статус: PASSED
+Дата: 2026-07-03
+QA owner: qa/codex-scrum-852-verification
+Проверено на: `origin/dev` commit `411f1f1ff814c3198c2d1381996b593403f3aa0e`.
+
+Acceptance verified:
+- `berserk/sword`: `attack_shape=sweep`, `sweep_degrees=100`, `attack_range=350`, closest-enemy aiming covered by `tests/melee_weapon_targeting_test.gd`.
+- `berserk/axe`: `attack_shape=sweep`, `sweep_degrees=180`, `attack_range=250`.
+- `berserk/hammer`: circular hit area starts at `aoe_radius=150`, `max_aoe_radius=0`, radius scaling grows the circle, and sector upgrades do not grow it.
+- Physical Berserk hits are isolated from `magic_damage` and `sound_wave_damage` modifiers.
+
+QA commands:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/melee_weapon_targeting_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/damage_type_isolation_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/event_data_contract_check.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/berserk_dps_runaway_gate.gd` — PASS (`lvl20_ideal`: 20t=3537 <= 3600, 1t=504 <= 650).
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/global_damage_balance_smoke_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tools/balance_harness.gd` — PASS / reports regenerated in `build/`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/weapon_integrity_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS.
+
+Note: an earlier independent QA clone checked stale `origin/dev` at `7f45b6ff` and correctly reported the SCRUM-852 implementation missing there. Remote `dev` was refreshed to `411f1f1f`; this verdict covers the updated remote commit.

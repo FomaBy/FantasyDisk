@@ -3813,7 +3813,7 @@
   "status": "Готово",
   "desc_hash": "e424f201c0fee2ca394838dc72268c5a"
  },
-"design_codex_object_first_redesign_task.md": {
+ "design_codex_object_first_redesign_task.md": {
   "key": "SCRUM-849",
   "status": "В работе",
   "desc_hash": "d877e6784535365c56173a977eda16a2"
@@ -3825,7 +3825,7 @@
  },
  "backend_berserk_geometry_radius_stat_split_task.md": {
   "key": "SCRUM-852",
-  "status": "Контроль качества",
-  "desc_hash": "0f68bb24ad01b8e6bb20b5e4ad46b372"
+  "status": "Готово",
+  "desc_hash": "004d130a51904ff449f411d92fa49f45"
  }
 }
