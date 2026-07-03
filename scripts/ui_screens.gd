@@ -535,23 +535,28 @@ const CODEX_TAB_CONTENT := Vector4(24.0, 14.0, 24.0, 14.0)
 const CODEX_V2_BASE_SIZE := Vector2(1920.0, 1080.0)
 # SCRUM-684: поля вокруг всей кодекс-композиции, чтобы рамка не клипалась краем экрана.
 const CODEX_V2_SCREEN_INSET := Vector2.ZERO
-# SCRUM-725: layout_map.md geometry from the accepted Codex redesign mockup.
+# SCRUM-850: object-first geometry from the SCRUM-849 accepted Codex mockup.
 # The composition scales uniformly from 1920x1080 and centers in letterbox space;
 # the backdrop cover-crops separately, so no UI frame is one-axis stretched.
-const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 24.0, 1872.0, 1032.0)
-const CODEX_V2_HEADER_TITLE_SAFE := Rect2(190.0, 32.0, 557.0, 130.0)
-const CODEX_V2_HEADER_SUBTITLE_SAFE := Rect2(720.0, 54.0, 520.0, 90.0)
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(24.0, 24.0, 96.0, 120.0)
-const CODEX_V2_NAV_PANEL_RECT := Rect2(24.0, 192.0, 384.0, 864.0)
-const CODEX_V2_NAV_SAFE := Rect2(64.0, 284.0, 304.0, 724.0)
-const CODEX_V2_LIST_PANEL_RECT := Rect2(426.0, 192.0, 517.0, 864.0)
-const CODEX_V2_DETAIL_PANEL_RECT := Rect2(964.0, 192.0, 932.0, 864.0)
-const CODEX_V2_PORTRAIT_SAFE := Rect2(1070.0, 274.0, 720.0, 300.0)
-const CODEX_V2_CHIP_ROW_SAFE := Rect2(1048.0, 602.0, 760.0, 72.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 150.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
-const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(68.0, 68.0)
-const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(304.0, 102.0)
+const CODEX_V2_OUTER_FRAME_RECT := Rect2(72.0, 54.0, 1776.0, 972.0)
+const CODEX_V2_HEADER_TITLE_SAFE := Rect2(360.0, 72.0, 420.0, 96.0)
+const CODEX_V2_HEADER_SUBTITLE_SAFE := Rect2(780.0, 88.0, 780.0, 64.0)
+const CODEX_V2_BACK_BUTTON_SAFE := Rect2(126.0, 820.0, 240.0, 66.0)
+const CODEX_V2_NAV_PANEL_RECT := Rect2(96.0, 210.0, 300.0, 700.0)
+const CODEX_V2_NAV_SAFE := Rect2(126.0, 250.0, 240.0, 522.0)
+const CODEX_V2_LIST_PANEL_RECT := Rect2(438.0, 210.0, 490.0, 700.0)
+const CODEX_V2_CENTER_OBJECT_SAFE := Rect2(510.0, 264.0, 346.0, 292.0)
+const CODEX_V2_CENTER_SUMMARY_SAFE := Rect2(500.0, 590.0, 366.0, 128.0)
+const CODEX_V2_CENTER_LIST_SAFE := Rect2(500.0, 742.0, 366.0, 118.0)
+const CODEX_V2_DETAIL_PANEL_RECT := Rect2(960.0, 210.0, 840.0, 700.0)
+const CODEX_V2_DETAIL_TITLE_SAFE := Rect2(1050.0, 222.0, 660.0, 36.0)
+const CODEX_V2_PORTRAIT_SAFE := Rect2(1080.0, 258.0, 600.0, 360.0)
+const CODEX_V2_CHIP_ROW_SAFE := Rect2(1110.0, 642.0, 540.0, 64.0)
+const CODEX_V2_DETAIL_TEXT_SAFE := Rect2(1050.0, 730.0, 660.0, 134.0)
+const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(366.0, 92.0)
+const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(16.0, 16.0, 16.0, 16.0)
+const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(46.0, 46.0)
+const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(240.0, 72.0)
 const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 48.0, 48.0, 48.0)
 const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
 const CODEX_V2_NAV_PANEL_CONTENT := Vector4(56.0, 72.0, 56.0, 64.0)
@@ -4018,15 +4023,69 @@ func _show_codex_screen() -> void:
 	content.add_theme_stylebox_override("panel", _codex_v2_list_panel_style())
 	root.add_child(content)
 
+	var center_object_stage := Control.new()
+	center_object_stage.name = "CodexCenterObjectStage"
+	center_object_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(center_object_stage)
+	var center_object_texture := TextureRect.new()
+	center_object_texture.name = "CodexCenterObjectTexture"
+	center_object_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	center_object_texture.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center_object_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	center_object_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_codex_pl_make_nearest(center_object_texture)
+	center_object_stage.add_child(center_object_texture)
+
+	var center_summary_panel := PanelContainer.new()
+	center_summary_panel.name = "CodexCenterSummaryPanel"
+	center_summary_panel.add_theme_stylebox_override("panel", _codex_parchment_style())
+	root.add_child(center_summary_panel)
+	var center_summary_box := VBoxContainer.new()
+	center_summary_box.name = "CodexCenterSummaryBox"
+	center_summary_box.add_theme_constant_override("separation", int(round(5.0 * _codex_v2_scale())))
+	center_summary_panel.add_child(center_summary_box)
+	var center_summary_title := Label.new()
+	center_summary_title.name = "CodexCenterSummaryTitle"
+	center_summary_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	center_summary_title.clip_text = true
+	center_summary_title.max_lines_visible = 1
+	center_summary_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	center_summary_title.add_theme_font_size_override("font_size", _codex_font_size(21, 14, 28))
+	center_summary_title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
+	center_summary_box.add_child(center_summary_title)
+	var center_summary_body := Label.new()
+	center_summary_body.name = "CodexCenterSummaryBody"
+	center_summary_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	center_summary_body.clip_text = true
+	center_summary_body.max_lines_visible = 3
+	center_summary_body.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	center_summary_body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
+	center_summary_body.add_theme_color_override("font_color", CODEX_PL_CARD_BODY_COLOR)
+	center_summary_box.add_child(center_summary_body)
+
+	var center_list_host := Control.new()
+	center_list_host.name = "CodexCenterListHost"
+	center_list_host.clip_contents = true
+	root.add_child(center_list_host)
+
 	var detail_panel := PanelContainer.new()
 	detail_panel.name = "CodexDetailPanel"
 	detail_panel.add_theme_stylebox_override("panel", _codex_v2_detail_panel_style())
 	root.add_child(detail_panel)
+	var detail_overlay := Control.new()
+	detail_overlay.name = "CodexDetailOverlay"
+	detail_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(detail_overlay)
+	detail_panel.set_meta("codex_detail_overlay", detail_overlay)
 
 	content.set_meta("codex_detail_panel", detail_panel)
 	content.set_meta("codex_header_title", title)
 	content.set_meta("codex_header_subtitle", subtitle)
 	content.set_meta("codex_tabs", tabs_row)
+	content.set_meta("codex_center_object_texture", center_object_texture)
+	content.set_meta("codex_center_summary_title", center_summary_title)
+	content.set_meta("codex_center_summary_body", center_summary_body)
+	content.set_meta("codex_section_host", center_list_host)
 	content.set_meta("codex_active_section", "characters")
 
 	var layout_entries: Array = []
@@ -4037,7 +4096,11 @@ func _show_codex_screen() -> void:
 	_codex_v2_register_rect(layout_entries, nav_panel, CODEX_V2_NAV_PANEL_RECT)
 	_codex_v2_register_rect(layout_entries, tabs_row, CODEX_V2_NAV_SAFE)
 	_codex_v2_register_rect(layout_entries, content, CODEX_V2_LIST_PANEL_RECT)
+	_codex_v2_register_rect(layout_entries, center_object_stage, CODEX_V2_CENTER_OBJECT_SAFE)
+	_codex_v2_register_rect(layout_entries, center_summary_panel, CODEX_V2_CENTER_SUMMARY_SAFE)
+	_codex_v2_register_rect(layout_entries, center_list_host, CODEX_V2_CENTER_LIST_SAFE)
 	_codex_v2_register_rect(layout_entries, detail_panel, CODEX_V2_DETAIL_PANEL_RECT)
+	_codex_v2_register_rect(layout_entries, detail_overlay, CODEX_V2_DETAIL_PANEL_RECT)
 
 	for section in CODEX_SECTIONS:
 		var section_id := str(section["id"])
@@ -4082,20 +4145,24 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	var header_title := content.get_meta("codex_header_title", null) as Label
 	var header_subtitle := content.get_meta("codex_header_subtitle", null) as Label
 	var tabs_row := content.get_meta("codex_tabs", null) as Control
+	var section_host := content.get_meta("codex_section_host", content) as Control
+	if section_host == null:
+		section_host = content
 	if header_title != null:
 		header_title.text = "Кодекс"
 	if header_subtitle != null:
 		header_subtitle.text = "Раздел: %s" % _codex_section_title(section_id)
 	content.set_meta("codex_active_section", section_id)
 	_codex_update_tab_selection(tabs_row, section_id)
-	for child in content.get_children():
+	for child in section_host.get_children():
 		child.visible = false
-	var existing := content.get_node_or_null("CodexSection_%s" % section_id)
+	var existing := section_host.get_node_or_null("CodexSection_%s" % section_id)
 	if existing != null:
 		existing.visible = true
 		var default_detail: Dictionary = existing.get_meta("codex_default_detail", {})
 		if detail_panel != null and not default_detail.is_empty():
 			_codex_update_detail(detail_panel, default_detail)
+			_codex_update_center_overview(content, default_detail)
 		return
 
 	var scroll := ScrollContainer.new()
@@ -4104,13 +4171,16 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	# SCRUM-813: скролл секции следует за сфокусированной карточкой (крестовина/стик).
 	scroll.follow_focus = true
-	content.add_child(scroll)
+	section_host.add_child(scroll)
 
 	var list := VBoxContainer.new()
+	list.name = "CodexSectionList_%s" % section_id
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 12)
+	list.custom_minimum_size.x = _codex_v2_scaled_rect(CODEX_V2_CENTER_LIST_SAFE).size.x
+	list.add_theme_constant_override("separation", maxi(5, int(round(8.0 * _codex_v2_scale()))))
 	list.set_meta("codex_detail_panel", detail_panel)
 	list.set_meta("codex_section_scroll", scroll)
+	list.set_meta("codex_content_panel", content)
 	scroll.add_child(list)
 
 	match section_id:
@@ -4129,6 +4199,7 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
 		_codex_update_detail(detail_panel, default_detail)
+		_codex_update_center_overview(content, default_detail)
 
 
 func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer:
@@ -4290,6 +4361,11 @@ func _codex_v2_scaled_rect(base_rect: Rect2, viewport_size := Vector2.ZERO) -> R
 	)
 
 
+func _codex_v2_scaled_local_rect(base_rect: Rect2, parent_base_rect: Rect2) -> Rect2:
+	var scale := _codex_v2_scale()
+	return Rect2((base_rect.position - parent_base_rect.position) * scale, base_rect.size * scale)
+
+
 func _codex_v2_register_rect(entries: Array, control: Control, base_rect: Rect2) -> void:
 	entries.append({"control": control, "rect": base_rect})
 
@@ -4366,8 +4442,11 @@ func _codex_rebuild_current_section(content: PanelContainer) -> void:
 	if content == null or not is_instance_valid(content):
 		return
 	var section_id := str(content.get_meta("codex_active_section", "characters"))
-	for child in content.get_children():
-		content.remove_child(child)
+	var section_host := content.get_meta("codex_section_host", content) as Control
+	if section_host == null:
+		section_host = content
+	for child in section_host.get_children():
+		section_host.remove_child(child)
 		child.queue_free()
 	_show_codex_section(content, section_id)
 
@@ -4420,6 +4499,7 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 	var button := row.get_meta("entry_button", null) as Button
 	var detail_panel := list.get_meta("codex_detail_panel", null) as PanelContainer
 	var scroll := list.get_meta("codex_section_scroll", null) as ScrollContainer
+	var content := list.get_meta("codex_content_panel", null) as PanelContainer
 	if scroll != null and not scroll.has_meta("codex_default_detail"):
 		scroll.set_meta("codex_default_detail", detail_data)
 	if button == null or detail_panel == null:
@@ -4427,55 +4507,86 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 	button.set_meta("codex_detail_data", detail_data)
 	button.pressed.connect(func() -> void:
 		_codex_update_detail(detail_panel, detail_data)
+		_codex_update_center_overview(content, detail_data)
 	)
+
+
+func _codex_update_center_overview(content: PanelContainer, detail_data: Dictionary) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var texture_rect := content.get_meta("codex_center_object_texture", null) as TextureRect
+	if texture_rect != null:
+		texture_rect.texture = detail_data.get("texture", null) as Texture2D
+		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var title := content.get_meta("codex_center_summary_title", null) as Label
+	if title != null:
+		title.text = str(detail_data.get("title", ""))
+		title.add_theme_font_size_override("font_size", _codex_font_size(21, 14, 28))
+	var body := content.get_meta("codex_center_summary_body", null) as Label
+	if body != null:
+		var summary := str(detail_data.get("summary", ""))
+		if summary == "":
+			var lines: Array = detail_data.get("body_lines", [])
+			if not lines.is_empty():
+				summary = str(lines[0])
+		body.text = summary
+		body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
 	if detail_panel == null or not is_instance_valid(detail_panel):
 		return
-	for child in detail_panel.get_children():
+	var detail_root := detail_panel.get_meta("codex_detail_overlay", detail_panel) as Control
+	if detail_root == null or not is_instance_valid(detail_root):
+		detail_root = detail_panel
+	for child in detail_root.get_children():
 		child.queue_free()
-	var box := VBoxContainer.new()
+	var box := Control.new()
 	box.name = "CodexDetailContent"
-	box.add_theme_constant_override("separation", int(round(12.0 * _codex_v2_scale())))
-	detail_panel.add_child(box)
+	box.set_anchors_preset(Control.PRESET_FULL_RECT)
+	detail_root.add_child(box)
 
 	var title := Label.new()
 	title.name = "CodexDetailTitle"
 	title.text = str(detail_data.get("title", ""))
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _codex_font_size(34, 22, 44))
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.add_theme_font_size_override("font_size", _codex_font_size(26, 18, 34))
 	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
 	box.add_child(title)
+	_apply_control_rect(title, _codex_v2_scaled_local_rect(CODEX_V2_DETAIL_TITLE_SAFE, CODEX_V2_DETAIL_PANEL_RECT))
 
 	var texture := detail_data.get("texture", null) as Texture2D
 	if texture != null:
 		var portrait_slot := PanelContainer.new()
 		portrait_slot.name = "CodexDetailPortraitSlot"
-		var portrait_size := _codex_v2_scaled_rect(CODEX_V2_PORTRAIT_SAFE).size
+		var portrait_rect := _codex_v2_scaled_local_rect(CODEX_V2_PORTRAIT_SAFE, CODEX_V2_DETAIL_PANEL_RECT)
+		var portrait_size := portrait_rect.size
 		portrait_slot.custom_minimum_size = portrait_size
-		portrait_slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		portrait_slot.add_theme_stylebox_override("panel", _codex_portrait_slot_style())
 		box.add_child(portrait_slot)
+		_apply_control_rect(portrait_slot, portrait_rect)
 		var portrait := TextureRect.new()
 		portrait.name = "CodexDetailPortraitTexture"
-		portrait.custom_minimum_size = Vector2(maxf(portrait_size.x - 36.0 * _codex_v2_scale(), 48.0), maxf(portrait_size.y - 36.0 * _codex_v2_scale(), 48.0))
 		portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if bool(detail_data.get("covered_portrait", false)) else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		portrait.texture = texture
 		portrait_slot.add_child(portrait)
 
 	var chips: Array = detail_data.get("chips", [])
-	if not chips.is_empty():
+	var term_id := str(detail_data.get("term_id", ""))
+	if not chips.is_empty() or term_id != "":
 		var chip_row := HBoxContainer.new()
 		chip_row.name = "CodexDetailChipRow"
 		chip_row.alignment = BoxContainer.ALIGNMENT_CENTER
-		chip_row.custom_minimum_size = Vector2(0.0, _codex_v2_scaled_rect(CODEX_V2_CHIP_ROW_SAFE).size.y)
 		chip_row.add_theme_constant_override("separation", int(round(8.0 * _codex_v2_scale())))
 		box.add_child(chip_row)
+		_apply_control_rect(chip_row, _codex_v2_scaled_local_rect(CODEX_V2_CHIP_ROW_SAFE, CODEX_V2_DETAIL_PANEL_RECT))
 		var chip_limit := mini(4, chips.size())
 		for chip_index in range(chip_limit):
 			var chip_text = chips[chip_index]
@@ -4490,13 +4601,11 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip_label.add_theme_font_size_override("font_size", _codex_font_size(15, 11, 20))
 			chip_label.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
 			chip.add_child(chip_label)
-
-	var term_id := str(detail_data.get("term_id", ""))
-	if term_id != "":
-		var glossary_button := _make_glossary_term_button(term_id, false)
-		glossary_button.name = "CodexDetailGlossaryTerm_%s" % term_id
-		glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		box.add_child(glossary_button)
+		if term_id != "":
+			var glossary_button := _make_glossary_term_button(term_id, false)
+			glossary_button.name = "CodexDetailGlossaryTerm_%s" % term_id
+			glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			chip_row.add_child(glossary_button)
 
 	var parchment := PanelContainer.new()
 	parchment.name = "CodexDetailParchmentInset"
@@ -4504,10 +4613,12 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	parchment.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	parchment.add_theme_stylebox_override("panel", _codex_parchment_style())
 	box.add_child(parchment)
+	_apply_control_rect(parchment, _codex_v2_scaled_local_rect(CODEX_V2_DETAIL_TEXT_SAFE, CODEX_V2_DETAIL_PANEL_RECT))
 	var text_scroll := ScrollContainer.new()
 	text_scroll.name = "CodexDetailTextScroll"
 	text_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	text_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	parchment.add_child(text_scroll)
 	var text_box := VBoxContainer.new()
 	text_box.name = "CodexDetailTextBody"
@@ -4652,6 +4763,7 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			texture = game._cached_texture(str(character["sprite"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(character["title"]),
+			"summary": str(character["playstyle"]),
 			"texture": texture,
 			"covered_portrait": true,
 			"chips": ["Герой", str(character.get("id", ""))],
@@ -4669,7 +4781,6 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
-		_codex_label(list, str(kind_titles[kind]), 24, CODEX_PL_TEXT_GOLD)
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
 				continue
@@ -4681,6 +4792,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				texture = game._cached_texture(str(monster["sprite"]))
 			var row := _codex_entry_panel(list, {
 				"title": str(monster["title"]),
+				"summary": str(monster["behavior"]),
 				"texture": texture,
 				"covered_portrait": false,
 				"chips": [str(kind_titles[kind]), str(monster["id"])],
@@ -4711,12 +4823,13 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(artifact["title"]),
+			"summary": str(artifact["description"]),
 			"texture": icon_texture,
 			"covered_portrait": false,
 			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
 			"body_lines": body_lines,
 		})
-		_codex_icon_slot(row, icon_texture, Vector2(62, 62) * _codex_v2_scale(), "CodexArtifactIconSlot")
+		_codex_icon_slot(row, icon_texture, CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -4725,11 +4838,10 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
-	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 24, CODEX_PL_TEXT_GOLD)
-	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for entry in CODEX_DATA.ascensions():
 		var row := _codex_entry_panel(list, {
 			"title": "%d. %s" % [entry["level"], entry["title"]],
+			"summary": str(entry["description"]),
 			"chips": ["Возвышение", "ур. %d" % entry["level"]],
 			"body_lines": [str(entry["description"])],
 		})
@@ -4743,12 +4855,12 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 func _build_codex_stats(list: VBoxContainer) -> void:
 	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
 	for stat_type in ["base", "derived"]:
-		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 24, CODEX_PL_TEXT_GOLD)
 		for stat in CODEX_DATA.stats():
 			if str(stat["type"]) != stat_type:
 				continue
 			var row := _codex_entry_panel(list, {
 				"title": str(stat["title"]),
+				"summary": str(stat["description"]),
 				"chips": [str(type_titles.get(stat_type, stat_type)), str(stat["id"])],
 				"body_lines": [
 					str(stat["description"]),
@@ -4764,12 +4876,11 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 
 
 func _build_codex_glossary(list: VBoxContainer) -> void:
-	_codex_label(list, "Глоссарий терминов", 24, CODEX_PL_TEXT_GOLD)
-	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for term_id in GLOSSARY.term_ids():
 		var definition: Dictionary = GLOSSARY.definition(term_id)
 		var row := _codex_entry_panel(list, {
 			"title": str(definition.get("name", term_id)),
+			"summary": str(definition.get("desc", "")),
 			"term_id": str(term_id),
 			"chips": ["Глоссарий", str(term_id)],
 			"body_lines": [str(definition.get("desc", ""))],

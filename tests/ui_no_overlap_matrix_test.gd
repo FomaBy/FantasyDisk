@@ -75,7 +75,8 @@ func _initialize() -> void:
 			"RebindConflictRetryButton", "RebindConflictBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
-			"CodexBackButton", "CodexTabs", "CodexContent", "CodexDetailPanel",
+			"CodexBackButton", "CodexTabs", "CodexCenterObjectStage",
+			"CodexCenterSummaryPanel", "CodexCenterListHost", "CodexDetailPanel",
 		], dump_lines, errors, false)
 		# SCRUM-827: экран дерева заменён «Атласом героев» (шапка-валюты/вкладки,
 		# лента классов, холст созвездия, панель узла, низ с респеком и легендой).
@@ -691,6 +692,35 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var back_button := main.find_child("CodexBackButton", true, false) as Button
 			if back_button == null or _stylebox_texture_path(back_button.get_theme_stylebox("normal")) != CODEX_BACK_BTN_2K_FRAME_PATH:
 				return "%s: expected CodexBackButton to use codex_back_btn @2K frame." % context
+			var center_panel := main.find_child("CodexContent", true, false) as Control
+			var center_stage := main.find_child("CodexCenterObjectStage", true, false) as Control
+			var center_texture := main.find_child("CodexCenterObjectTexture", true, false) as TextureRect
+			var center_summary := main.find_child("CodexCenterSummaryPanel", true, false) as Control
+			var center_list := main.find_child("CodexCenterListHost", true, false) as Control
+			var detail_panel := main.find_child("CodexDetailPanel", true, false) as Control
+			var detail_portrait := main.find_child("CodexDetailPortraitSlot", true, false) as Control
+			var detail_texture := main.find_child("CodexDetailPortraitTexture", true, false) as TextureRect
+			var detail_chips := main.find_child("CodexDetailChipRow", true, false) as Control
+			var detail_text := main.find_child("CodexDetailParchmentInset", true, false) as Control
+			for required in [center_panel, center_stage, center_texture, center_summary, center_list, detail_panel, detail_portrait, detail_texture, detail_chips, detail_text]:
+				var required_control := required as Control
+				if required_control == null or not required_control.get_global_rect().has_area():
+					var required_name := str(required_control.name) if required_control != null else "<missing>"
+					return "%s: expected SCRUM-850 Codex object-first zone %s to be visible." % [context, required_name]
+			var center_rect := center_panel.get_global_rect().grow(1.0)
+			for child in [center_stage, center_summary, center_list]:
+				var child_control := child as Control
+				if not center_rect.encloses(child_control.get_global_rect()):
+					return "%s: expected %s to stay inside CodexContent safe panel." % [context, str(child_control.name)]
+			var detail_rect := detail_panel.get_global_rect().grow(1.0)
+			for child in [detail_portrait, detail_chips, detail_text]:
+				var child_control := child as Control
+				if not detail_rect.encloses(child_control.get_global_rect()):
+					return "%s: expected %s to stay inside CodexDetailPanel safe panel." % [context, str(child_control.name)]
+			if center_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED or detail_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+				return "%s: expected SCRUM-850 Codex object art to use contained centered scaling." % context
+			if detail_portrait.get_global_rect().size.x <= center_stage.get_global_rect().size.x:
+				return "%s: expected SCRUM-850 right detail object stage to be wider than the center selected-object stage." % context
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button

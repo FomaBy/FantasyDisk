@@ -664,12 +664,15 @@ func _initialize() -> void:
 	if axe_visual == null or axe_visual.texture == null or axe_visual.texture.resource_path != "res://assets/sprites/weapons/two_handed_axe.png":
 		_fail("Expected axe weapon to use the two-handed axe sprite.")
 		return
-	if str(melee_weapon.get("attack_shape")) != "sweep" or float(melee_weapon.get("sweep_degrees")) != 140.0 or float(melee_weapon.get("attack_range")) < 320.0:
-		_fail("Expected axe to use a wide 140-degree sweep arc.")
+	var axe_config: Dictionary = ProgressionData.weapon("berserk", "axe")
+	if str(melee_weapon.get("attack_shape")) != str(axe_config.get("attack_shape")) \
+			or float(melee_weapon.get("sweep_degrees")) != float(axe_config.get("sweep_degrees")) \
+			or absf(float(melee_weapon.get_meta("base_attack_range", 0.0)) - float(axe_config.get("attack_range"))) > 0.01:
+		_fail("Expected axe runtime base geometry to match the current ProgressionData config.")
 		return
 	var sword_config: Dictionary = ProgressionData.weapon("berserk", "sword")
-	if str(sword_config.get("attack_shape")) != "frustum" or float(sword_config.get("inner_width")) != 150.0 or float(sword_config.get("outer_width")) != 1200.0 or float(sword_config.get("attack_range")) != 600.0 or float(sword_config.get("damage_multiplier")) != 1.15:
-		_fail("Expected sword to be a 90-degree 600px frustum with 150px base and 1.15 damage.")
+	if str(sword_config.get("attack_shape")) != "frustum" or float(sword_config.get("cone_degrees")) != 90.0 or float(sword_config.get("attack_range")) != 600.0 or float(sword_config.get("damage_multiplier")) != 1.15:
+		_fail("Expected sword to be the current 90-degree 600px frustum with 1.15 damage.")
 		return
 	var hammer_config: Dictionary = ProgressionData.weapon("berserk", "hammer")
 	if float(hammer_config.get("damage_multiplier")) != 0.55 or float(hammer_config.get("upgrade_aoe_exponent", 1.0)) <= 1.0 or float(hammer_config.get("upgrade_damage_exponent", 1.0)) <= 1.0:
@@ -748,8 +751,8 @@ func _initialize() -> void:
 	if absf(float(enemy_health_bar.get("value")) - float(contact_enemy.get("health"))) > 0.01:
 		_fail("Expected enemy health bar value to match current enemy health after damage.")
 		return
-	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 100.0:
-		_fail("Expected hammer starting radius and range to be nerfed to 100.")
+	if float(ProgressionData.weapon("berserk", "hammer").get("aoe_radius", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("attack_range", 0.0)) != 100.0 or float(ProgressionData.weapon("berserk", "hammer").get("max_aoe_radius", -1.0)) != 115.0:
+		_fail("Expected hammer starting radius/range to use the current 100px base with 115px cap.")
 		return
 	if float(contact_enemy.get("contact_range")) <= 34.0:
 		_fail("Expected contact range to auto-fit the visible sprite size.")
@@ -5968,12 +5971,28 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		return
 
 	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
-	var berserk_has_magic_focus := false
+	# Skill Tree 3.0 intentionally keeps magic_focus without its own run key:
+	# it is represented through generic damage_multiplier and previewed as the
+	# active class damage parameter.
+	var berserk_magic_focus_reward: Dictionary = {}
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
-			berserk_has_magic_focus = true
-	if not berserk_has_magic_focus:
-		_fail("Expected magic focus upgrade to be available to berserk as weapon enchantment.")
+			berserk_magic_focus_reward = reward
+	if berserk_magic_focus_reward.is_empty():
+		_fail("Expected magic focus upgrade to remain available to berserk as a low-value universal pool card.")
+		return
+	var magic_focus_mods: Dictionary = berserk_magic_focus_reward.get("mods", {}) as Dictionary
+	if float(magic_focus_mods.get("damage_multiplier", 1.0)) <= 1.0:
+		_fail("Expected magic focus to map to the documented generic damage multiplier.")
+		return
+	var berserk_weapon: Dictionary = ProgressionData.weapon("berserk", "hammer")
+	var berserk_base_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), {}, berserk_weapon)
+	var berserk_magic_focus_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), magic_focus_mods, berserk_weapon)
+	if float(berserk_magic_focus_damage.get("damage", 0.0)) <= float(berserk_base_damage.get("damage", 0.0)):
+		_fail("Expected magic focus's generic damage mapping to increase Berserk physical hammer damage.")
+		return
+	if float(berserk_magic_focus_damage.get("magic_damage", 0.0)) <= float(berserk_base_damage.get("magic_damage", 0.0)):
+		_fail("Expected magic focus's generic damage mapping to keep scaling magic damage too.")
 		return
 	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):
@@ -6728,9 +6747,9 @@ func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
 		_fail("Expected codex v2 back button to exist.")
 		return false
 	var rect := button.get_global_rect()
-	var expected := _codex_v2_expected_rect(Rect2(24, 24, 96, 120), button.get_viewport_rect().size)
+	var expected := _codex_v2_expected_rect(Rect2(126, 820, 240, 66), button.get_viewport_rect().size)
 	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected codex v2 compact back button to sit inside SCRUM-725 safe rect %s, got %s." % [str(expected), str(rect)])
+		_fail("Expected SCRUM-850 codex v2 back button to sit inside object-first nav safe rect %s, got %s." % [str(expected), str(rect)])
 		return false
 	if button.text != "←":
 		_fail("Expected codex v2 compact back button to use icon text, got `%s`." % button.text)
@@ -6925,18 +6944,26 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_screen == null:
 		_fail("Expected the Codex screen to open from the main menu.")
 		return
+
 	var codex_main_panel := codex_main.find_child("CodexMainPanel", true, false) as PanelContainer
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
 	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
+	var codex_center_object_stage := codex_main.find_child("CodexCenterObjectStage", true, false) as Control
+	var codex_center_object_texture := codex_main.find_child("CodexCenterObjectTexture", true, false) as TextureRect
+	var codex_center_summary := codex_main.find_child("CodexCenterSummaryPanel", true, false) as PanelContainer
+	var codex_center_list := codex_main.find_child("CodexCenterListHost", true, false) as Control
 	var codex_detail := codex_main.find_child("CodexDetailPanel", true, false) as PanelContainer
 	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
 	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as Control
 	var default_portrait := codex_main.find_child("CodexPortraitSlot", true, false) as PanelContainer
 	var detail_portrait := codex_main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
-	if codex_main_panel == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null:
-		_fail("Expected SCRUM-438 Codex runtime layout to include main/nav/list/detail panels, tabs, entry card, and portrait slots.")
+	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
+	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
+	if codex_main_panel == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_object_stage == null or codex_center_object_texture == null or codex_center_summary == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
+		_fail("Expected SCRUM-850 object-first Codex layout to include main/nav/center/detail panels, object stages, tabs, entry card, and portrait slots.")
 		return
+
 	var expected_codex_textures := {
 		"CodexMainPanel": CODEX_MAIN_TEXTURE_2K,
 		"CodexNavPanel": CODEX_NAV_TEXTURE_2K,
@@ -6953,24 +6980,35 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if actual_path != str(expected_codex_textures[node_name]):
 			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
 			return
+
 	# SCRUM-684: строковый портрет-слот больше НЕ чёрный MINIMAL_FIELD-бокс —
 	# это лёгкая parchment-inset StyleBoxFlat-подложка (без texture-стиля).
-	if default_portrait != null:
-		var slot_style := default_portrait.get_theme_stylebox("panel")
-		if not (slot_style is StyleBoxFlat):
-			_fail("Expected SCRUM-684 Codex entry portrait slot to use a parchment inset StyleBoxFlat, not a dark field texture.")
-			return
+	var slot_style := default_portrait.get_theme_stylebox("panel")
+	if not (slot_style is StyleBoxFlat):
+		_fail("Expected SCRUM-684 Codex entry portrait slot to use a parchment inset StyleBoxFlat, not a dark field texture.")
+		return
 	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_TEXTURE_2K:
 		_fail("Expected SCRUM-574 Codex list cards to use the Codex @2K entry card frame.")
 		return
+
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
 	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
 		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
 		return
-	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
-		_fail("Expected Codex character detail portrait to preserve SCRUM-417 covered scaling.")
+	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+		_fail("Expected SCRUM-850 Codex detail object art to use contained scaling, not cover-crop.")
 		return
+	if codex_center_object_texture.texture == null or codex_center_object_texture.texture.resource_path != expected_default_portrait:
+		_fail("Expected SCRUM-850 Codex center selected-object stage to mirror the default character portrait.")
+		return
+	if codex_center_object_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+		_fail("Expected SCRUM-850 Codex center selected-object art to preserve aspect with centered scaling.")
+		return
+	if detail_portrait.get_global_rect().size.x <= codex_center_object_stage.get_global_rect().size.x:
+		_fail("Expected SCRUM-850 right detail object stage to be wider than the center selected-object stage.")
+		return
+
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
 	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != CODEX_TAB_BUTTON_TEXTURE_2K:
 		_fail("Expected SCRUM-574 Codex tabs to use the Codex @2K tab frame.")
@@ -6979,11 +7017,20 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_back_button == null or _stylebox_texture_path(codex_back_button.get_theme_stylebox("normal")) != CODEX_BACK_BUTTON_TEXTURE_2K:
 		_fail("Expected SCRUM-574 Codex back button to use the Codex @2K back button frame.")
 		return
+
 	var expected_layout := {
-		"CodexMainPanel": Rect2(24, 24, 1872, 1032),
-		"CodexTabs": Rect2(64, 284, 304, 724),
-		"CodexContent": Rect2(426, 192, 517, 864),
-		"CodexDetailPanel": Rect2(964, 192, 932, 864),
+		"CodexMainPanel": Rect2(72, 54, 1776, 972),
+		"CodexNavPanel": Rect2(96, 210, 300, 700),
+		"CodexBackButton": Rect2(126, 820, 240, 66),
+		"CodexTabs": Rect2(126, 250, 240, 522),
+		"CodexContent": Rect2(438, 210, 490, 700),
+		"CodexCenterObjectStage": Rect2(510, 264, 346, 292),
+		"CodexCenterSummaryPanel": Rect2(500, 590, 366, 128),
+		"CodexCenterListHost": Rect2(500, 742, 366, 118),
+		"CodexDetailPanel": Rect2(960, 210, 840, 700),
+		"CodexDetailPortraitSlot": Rect2(1080, 258, 600, 360),
+		"CodexDetailChipRow": Rect2(1110, 642, 540, 64),
+		"CodexDetailParchmentInset": Rect2(1050, 730, 660, 134),
 	}
 	var codex_viewport_size := codex_screen.get_viewport_rect().size
 	for node_name in expected_layout.keys():
@@ -6991,14 +7038,15 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		var expected_rect := _codex_v2_expected_rect(expected_layout[node_name], codex_viewport_size)
 		var actual_rect := control.get_global_rect()
 		if actual_rect.position.distance_to(expected_rect.position) > 2.0 or actual_rect.size.distance_to(expected_rect.size) > 2.0:
-			_fail("Expected SCRUM-438 %s rect near %s, got %s." % [node_name, str(expected_rect), str(actual_rect)])
+			_fail("Expected SCRUM-850 %s rect near %s, got %s." % [node_name, str(expected_rect), str(actual_rect)])
 			return
+
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
 	dump_lines.append("")
-	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_detail, default_entry, default_portrait, detail_portrait]:
+	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait, detail_chip_row, detail_text_safe]:
 		var control_node := control as Control
 		var texture_path := ""
 		if control_node is PanelContainer:
@@ -7006,21 +7054,23 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		elif control_node is Button:
 			texture_path = _stylebox_texture_path((control_node as Button).get_theme_stylebox("normal"))
 		dump_lines.append("- `%s`: `%s`, texture `%s`" % [control_node.name, str(control_node.get_global_rect()), texture_path])
-	dump_lines.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	dump_lines.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)
 	var dump_file := FileAccess.open("%s/codex_texture_runtime_dump.md" % qa_dir, FileAccess.WRITE)
 	if dump_file != null:
 		dump_file.store_string("\n".join(dump_lines))
 		dump_file.close()
+
 	var scrum416_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum416")
 	DirAccess.make_dir_recursive_absolute(scrum416_qa_dir)
 	var scrum416_codex_dump := PackedStringArray()
 	scrum416_codex_dump.append("# SCRUM-416 Codex Character Portrait Runtime Paths")
 	scrum416_codex_dump.append("")
-	scrum416_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	scrum416_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)
 	var scrum416_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_paths.md" % scrum416_qa_dir, FileAccess.WRITE)
 	if scrum416_codex_file != null:
 		scrum416_codex_file.store_string("\n".join(scrum416_codex_dump))
 		scrum416_codex_file.close()
+
 	var scrum417_codex_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum417")
 	DirAccess.make_dir_recursive_absolute(scrum417_codex_qa_dir)
 	var scrum417_codex_dump := PackedStringArray()
@@ -7031,24 +7081,39 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	scrum417_codex_dump.append("- `CodexDetailPortraitTextureRect`: `%s`" % str(codex_portrait_texture.get_global_rect()))
 	scrum417_codex_dump.append("- `CodexDetailPortraitMinimumSize`: `%s`" % str(codex_portrait_texture.custom_minimum_size))
 	scrum417_codex_dump.append("- `CodexDetailPortraitStretch`: `%s`" % str(codex_portrait_texture.stretch_mode))
-	scrum417_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	scrum417_codex_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)
 	var scrum417_codex_file := FileAccess.open("%s/codex_character_portrait_runtime_dump.md" % scrum417_codex_qa_dir, FileAccess.WRITE)
 	if scrum417_codex_file != null:
 		scrum417_codex_file.store_string("\n".join(scrum417_codex_dump))
 		scrum417_codex_file.close()
+
 	var scrum438_qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum438")
 	DirAccess.make_dir_recursive_absolute(scrum438_qa_dir)
 	var scrum438_dump := PackedStringArray()
 	scrum438_dump.append("# SCRUM-438 Codex V2 Runtime Dump")
 	scrum438_dump.append("")
-	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_detail, default_entry, default_portrait, detail_portrait]:
+	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait]:
 		var c := control as Control
 		scrum438_dump.append("- `%s`: `%s`" % [c.name, str(c.get_global_rect())])
-	scrum438_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % codex_portrait_texture.texture.resource_path)
+	scrum438_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)
 	var scrum438_file := FileAccess.open("%s/codex_v2_runtime_dump.md" % scrum438_qa_dir, FileAccess.WRITE)
 	if scrum438_file != null:
 		scrum438_file.store_string("\n".join(scrum438_dump))
 		scrum438_file.close()
+
+	var artifact_tab := codex_main.find_child("CodexTab_artifacts", true, false) as Button
+	if artifact_tab == null:
+		_fail("Expected SCRUM-850 Codex to keep the artifacts category tab.")
+		return
+	artifact_tab.pressed.emit()
+	await process_frame
+	var artifact_section := codex_main.find_child("CodexSection_artifacts", true, false) as Control
+	if artifact_section == null or not artifact_section.visible:
+		_fail("Expected SCRUM-850 Codex to lazy-build and show the artifacts section.")
+		return
+	if codex_center_object_texture.texture == null or not codex_center_object_texture.texture.resource_path.contains("/artifacts/"):
+		_fail("Expected SCRUM-850 Codex artifacts section to show a canonical artifact icon in the center object stage.")
+		return
 
 	# Полнота данных кодекса.
 	var codex_data := load("res://scripts/codex_data.gd")

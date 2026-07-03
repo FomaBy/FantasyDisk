@@ -535,15 +535,22 @@ single clamped title-summary block so text stays readable inside the empty card
 zone without touching the red diamond ornament or 9-slice rails. Full description
 text remains in `CodexDetailParchmentInset`.
 
-SCRUM-849 prepares the next object-first Codex design package for SCRUM-850.
-The package shifts the design target away from text-first list density toward a
-large right-side object stage, a concise center selected/list area, and a quiet
-left category rail. Source/spec: `docs/design/mockups/codex_object_first_redesign/spec.md`
-and `layout_zones.json`; PixelLab preview:
-`docs/design/previews/codex_object_first_redesign_contact_v1.png`. This is not
-live runtime behavior yet: SCRUM-850 must preserve all existing sections,
-data-driven sources, glossary tooltips, mouse/keyboard/gamepad navigation, and
-strict frame-safe content placement while integrating the new geometry.
+SCRUM-849 prepared the object-first Codex design package, and SCRUM-850 makes it
+live in runtime. The current screen shifts away from text-first list density
+toward a large right-side object stage, a concise center selected/list area, and
+a quiet left category rail. Source/spec:
+`docs/design/mockups/codex_object_first_redesign/spec.md` and
+`layout_zones.json`; PixelLab preview:
+`docs/design/previews/codex_object_first_redesign_contact_v1.png`. Runtime base
+rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700;
+`CodexContent` 438,210,490,700; and `CodexDetailPanel` 960,210,840,700. The
+center column contains `CodexCenterObjectStage`, contained
+`CodexCenterObjectTexture`, short selected summary and cached compact section
+lists; the right detail overlay contains the larger contained
+`CodexDetailPortraitSlot`, chip row and `CodexDetailParchmentInset`. All
+existing sections, data-driven sources, glossary tooltips,
+mouse/keyboard/gamepad navigation and strict frame-safe content placement are
+preserved. Screenshot evidence: `build/qa/codex_object_first/`.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.

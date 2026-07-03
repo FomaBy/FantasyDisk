@@ -77,7 +77,7 @@ SCRUM-480 (рантайм-интеграция минимал-UI).
 | Jira | Задача | Lane | Prio |
 | --- | --- | --- | --- |
 | SCRUM-849 | [Кодекс: object-first дизайн-пакет с крупными изображениями](../tasks/design_codex_object_first_redesign_task.md) | codex/design (review; ready_for_integration) | p1 |
-| SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | claude/backend, after SCRUM-849 | p1 |
+| SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | codex/backend (done; ready for QA) | p1 |
 
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
