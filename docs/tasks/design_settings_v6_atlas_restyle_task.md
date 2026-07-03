@@ -1,7 +1,7 @@
 # UI: Настройки v6 — полный редизайн в стиле Атласа (OpenAI + PixelLab)
 
 Роль: design · Контур: claude · Приоритет: P1 · foma
-Статус: in_progress
+Статус: done
 Создано: 2026-07-03
 Автор: Claude (прямое поручение пользователя, полный автоном)
 Исполнитель: Claude / основной чат
@@ -63,14 +63,14 @@ PixelLab MCP (иконки, эмблема, чекбоксы, гем слайд�
 
 ## Acceptance Criteria
 
-- [ ] Новый кит settings_v6 сгенерирован (OpenAI + PixelLab), старый v5 удалён.
-- [ ] Контент только в пустой зоне рамки (safe-area), не на орнаменте.
-- [ ] No-overlap матрица settings: PASS на 1920×1080, 2560×1440, 3840×2160.
-- [ ] Весь текст помещается (лейблы, дропдауны, кнопки, хинты) на обоих
+- [x] Новый кит settings_v6 сгенерирован (OpenAI + PixelLab), старый v5 удалён.
+- [x] Контент только в пустой зоне рамки (safe-area), не на орнаменте.
+- [x] No-overlap матрица settings: PASS на 1920×1080, 2560×1440, 3840×2160.
+- [x] Весь текст помещается (лейблы, дропдауны, кнопки, хинты) на обоих
       базовых разрешениях; скриншоты 3 вкладок приложены.
-- [ ] Смоуки настроек зелёные: game_settings, video_settings_apply,
+- [x] Смоуки настроек зелёные: game_settings, video_settings_apply,
       gamepad_settings_rebind, runtime_smoke (settings-часть).
-- [ ] .import сайдкары закоммичены вместе с PNG; пуш в origin/dev.
+- [x] .import сайдкары закоммичены вместе с PNG; пуш в origin/dev.
 
 ## Files / точки входа
 
@@ -89,3 +89,33 @@ PixelLab MCP (иконки, эмблема, чекбоксы, гем слайд�
 - Параллельные headless Godot только через tools/godot_gate.py.
 - OpenAI-путь для крупных панелей — явное указание пользователя (override
   PixelLab-first из AGENTS.md), зафиксировано в Jira-комментарии.
+
+## Result — 2026-07-03
+
+Коммит: 5ad58b3d в origin/dev (design(SCRUM-847)). Кит settings_v6 — 27 PNG +
+.import; сырцы в docs/design/references/settings_v6/ (openai raw + pixellab);
+контакт-лист в docs/design/previews/settings_v6_contact.png; генератор
+tools/generate_settings_v6_openai.py (SPEC + PIL-деривативы состояний +
+сборка PixelLab-частей). Легаси настроек v1–v5 удалено (ассеты, константы,
+мёртвый v3-маршрут, старые capture-тулы). Иконки/эмблема/гем/розетка —
+PixelLab MCP в целевых размерах; панели/кнопки/поля/табы — OpenAI gpt-image-2
+(прямое указание пользователя = override PixelLab-first для этих слотов).
+
+## QA-Вердикт (2026-07-03)
+
+Статус: PASSED
+Проверено:
+- runtime_smoke_test — PASS ×2 (включая v6-ассерты пластин табов и сетки
+  340×84/гэп 20, duplicate-artifact guard 14618 файлов после удаления легаси);
+- game_settings_smoke_test, video_settings_apply_test,
+  gamepad_settings_rebind_test — PASS;
+- ui_no_overlap_matrix_test — PASS на 7 разрешениях (1152×648…3840×2160),
+  settings-ноды без пересечений;
+- capture_settings_v6 (rect-дамп 1920/2560 + 6 скриншотов 3 вкладки × 2
+  разрешения) — визуальная приёмка: контент в safe-area, текст в капсулах
+  полей (fix: content-margins 56px + clip_text), фокусная вкладка тусклее
+  активной (fix: hover-дериватив 0.76/0.52), primary_disabled честно погашен
+  (fix: 0.48/0.28), content_inset с полной рамкой (перегенерация 1536×1024).
+Краевые случаи: 1152×648 (минимум матрицы), 3840×2160, вкладка «Управление»
+со скроллом и 3 секциями, disabled-состояния Применить/Вернуть без изменений.
+Баги: нет.
