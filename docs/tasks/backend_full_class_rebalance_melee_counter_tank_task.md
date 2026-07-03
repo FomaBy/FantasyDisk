@@ -34,3 +34,19 @@ Jira: SCRUM-858
 - Обновлены docs: `docs/design/systems/characters_weapons.md`, `docs/design/systems/combat.md`, `docs/design/systems/progression_balance.md`, `docs/design/current_game_state.md`.
 - Тесты: `melee_unique_mechanics_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `survivability_scenario_test.gd`, `global_survivability_balance_smoke_test.gd`, `global_damage_balance_smoke_test.gd`, `runtime_smoke_test.gd`, `tools/survivability_harness.gd`.
 - Disk cleanup: removed `.godot` import cache and temporary Godot `.uid` sidecars created by smoke tests.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+Commit tested: `39cbb181aaf1f50da941a0fa2b9b5f32c783f699` (`c37a7b95`/`f300900b` ancestors).
+
+Проверки через `tools/godot_gate.py`:
+- `tests/melee_unique_mechanics_test.gd` — PASS.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` — PASS.
+- `tests/survivability_scenario_test.gd` — PASS.
+- `tests/global_survivability_balance_smoke_test.gd` — PASS.
+- `tests/global_damage_balance_smoke_test.gd` — PASS.
+- `tools/survivability_harness.gd` — PASS.
+- `tools/balance_harness.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS; known non-blocking `_apply_dot_tick` CallbackTweener stderr only.
+
+Disk cleanup: QA removed `/private/tmp/fd858qa-021619` and `/private/tmp/fd858qa-021619-logs`; dispatcher removed SCRUM-858 landing temp clone/logs.

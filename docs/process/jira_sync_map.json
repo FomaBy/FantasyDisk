@@ -3845,8 +3845,8 @@
  },
  "backend_full_class_rebalance_melee_counter_tank_task.md": {
   "key": "SCRUM-858",
-  "status": "Контроль качества",
-  "desc_hash": "cfb5d01eeff433b0a3d706863d7b0953"
+  "status": "Готово",
+  "desc_hash": "be6c434710bb38b21511c7b4a78fb05d"
  },
  "backend_full_class_rebalance_summon_deploy_turret_task.md": {
   "key": "SCRUM-859",
