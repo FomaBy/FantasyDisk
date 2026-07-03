@@ -79,7 +79,9 @@ SPEC: dict[str, tuple[str, str, tuple[int, int], str]] = {
         "ui_settings_v6_btn_neutral_normal.png", "1536x1024", (320, 80),
         f"{STYLE}; secondary action button plate: dark bronze and tooled "
         "leather surface, slim brass border with corner rivets, calm and "
-        "muted{WIDE}"),
+        "muted; the middle of the plate is a PLAIN EMPTY flat leather field "
+        "reserved for a text label — NO central medallion, NO emblem, NO "
+        "circle, NO ornament in the center{WIDE}"),
     "field_normal": (
         "ui_settings_v6_field_normal.png", "1536x1024", (560, 56),
         f"{STYLE}; recessed value socket bar for a dropdown field: very dark "

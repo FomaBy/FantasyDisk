@@ -4957,6 +4957,22 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		_apply_control_rect(medallion, _settings_v6_rect(Rect2(620.0, -14.0, 180.0, 72.0), s))
 		modal.add_child(medallion)
 
+	# v6: капсула-плашка под титулом — фронтон рамки несёт плотный узор, текст
+	# кладём на чистое тёмное поле (чип-стиль Атласа), а не на орнамент.
+	var title_backing := Panel.new()
+	title_backing.name = "SettingsV2TitleBacking"
+	title_backing.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title_backing_style := StyleBoxFlat.new()
+	title_backing_style.bg_color = Color(0.063, 0.049, 0.038, 0.82)
+	title_backing_style.border_color = Color(0.52, 0.41, 0.24, 0.65)
+	title_backing_style.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
+	title_backing_style.set_corner_radius_all(int(roundf(14.0 * s)))
+	title_backing.add_theme_stylebox_override("panel", title_backing_style)
+	_apply_control_rect(title_backing, _settings_v6_rect(Rect2(470.0, 52.0, 480.0, 70.0), s))
+	modal.add_child(title_backing)
+	# Плашка сразу над рамкой: эмблема и титул рисуются поверх неё.
+	modal.move_child(title_backing, 1)
+
 	var title := Label.new()
 	title.name = "SettingsV2Title"
 	title.text = "НАСТРОЙКИ"
@@ -5627,9 +5643,10 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
 	button.clip_text = true
-	# v6: у арта поля декоративные наконечники ~52px с каждого конца — текст
-	# держим в чистой капсуле между ними, иначе длинные опции лезут на орнамент.
-	var content := Vector4(56.0 * s, 6.0 * s, 56.0 * s, 6.0 * s)
+	# v6: у арта поля декоративные наконечники ~52px + золотое кольцо капсулы
+	# ~20px с каждого конца — текст держим строго в плоской зоне капсулы,
+	# иначе края длинных опций ложатся на кольцо.
+	var content := Vector4(76.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
 	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
 	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
 	button.add_theme_stylebox_override("normal", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["normal"], source_margins, content))
