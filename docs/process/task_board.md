@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-07-03
+Обновлено: 2026-07-04
 Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
 `SCRUM` является authoritative task queue/status/owner source. Эта доска
 показывает активную работу, review/QA gates и важные recent rows только для
@@ -90,6 +90,23 @@ tests/harnesses and relevant docs.
 | Jira | Задача | Lane | Prio |
 | --- | --- | --- | --- |
 | SCRUM-853 | [Баланс: усилить плотность монстров и растянуть XP-кривую забега](../tasks/backend_monster_density_xp_progression_task.md) | codex/backend (done; ready_for_QA) | p1 |
+
+**Sprint intake 2026-07-04 (user request):** создана волна полного
+class-rebalance/class-identity audit + implementation в active sprint
+`Спринт 0.2.1`. Цель: все 17 классов и 51 оружие должны отличаться gameplay,
+геометрией, cadence/setup-payoff, defensive/sustain utility и scaling hooks, а не
+только цифрами. `SCRUM-859` зависит от live overlapping scope `SCRUM-854`
+(AOE/zones/summons/Doctor sustain) и не должен стартовать runtime edits, пока
+locked paths не разведены.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-856 | [Full Class Rebalance: Identity Audit And Trio Matrix](../tasks/backend_full_class_rebalance_identity_audit_task.md) | codex/backend | p0 |
+| SCRUM-857 | [Full Class Rebalance: Projectile, Chain, Pierce, And Delayed AoE Pass](../tasks/backend_full_class_rebalance_projectile_chain_pierce_task.md) | codex/backend | p1 |
+| SCRUM-858 | [Full Class Rebalance: Melee, Counter, Tank, And Risk-Reward Pass](../tasks/backend_full_class_rebalance_melee_counter_tank_task.md) | codex/backend | p1 |
+| SCRUM-859 | [Full Class Rebalance: Summon, Deploy, Turret, And Zone Ownership Pass](../tasks/backend_full_class_rebalance_summon_deploy_turret_task.md) | codex/backend | p1 |
+| SCRUM-860 | [Full Class Rebalance: Kill-Scaling, Sustain, And Attribute Growth Pass](../tasks/backend_full_class_rebalance_growth_sustain_task.md) | codex/backend | p1 |
+| SCRUM-861 | [QA Review: Full Class Rebalance And Class Identity](../tasks/qa_review_full_class_rebalance_identity_task.md) | codex/qa (blocked until backend wave ready) | p1 |
 
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
