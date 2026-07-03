@@ -218,6 +218,7 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
 - Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
+- SCRUM-854: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` filters Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
 - SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в
   tooltip. Для базовых характеристик preview строится от текущего snapshot
   статов и `STAT_DERIVED_PREVIEW` / `ProgressionData.derived_parameters()`;
@@ -242,7 +243,9 @@ weapon-числа), а не здесь, чтобы не пересекать dam
   They use only supported runtime mod keys and are available through the normal
   reward/shop artifact paths.
 - Route `chest` node (SCRUM-537) использует тот же weighted artifact sampler, что
-  elite reward: `ProgressionData.elite_artifact_choices(route_scaling_stage(), 3)`.
+  elite reward: `ProgressionData.elite_artifact_choices(route_scaling_stage(), 3, selected_character_id)`,
+  поэтому class-specific exclusions, включая Doctor external sustain filter,
+  применяются и к chest/elite-style выборам.
   Выбор всегда содержит 3 разных artifact IDs, выбранный артефакт применяется к
   run snapshot через общий reward path, затем маршрут продвигается на следующий row.
 
@@ -250,10 +253,11 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 
 - `summon_amount = Leadership + Knowledge * 0.18 + Intelligence * 0.12 + Energy * 0.10`.
 - Мобильные summons используют `SummonerWeapon._summon_profile()`:
-  - damage = base derived damage * `summon_damage_multiplier` * role multiplier * Leadership multiplier `1 + min(Leadership * 0.020, 0.42)` * attribute multiplier `1 + min(summon_amount * 0.014 + Knowledge * 0.004 + Intelligence * 0.003 + Energy * 0.003, 0.34)`;
+  - damage = base derived damage * `summon_damage_multiplier` * role multiplier * Leadership multiplier `1 + min(Leadership * 0.060, 1.15)` * attribute multiplier `1 + min(summon_amount * 0.016 + Knowledge * 0.004 + Intelligence * 0.004 + Energy * 0.003, 0.40)`;
   - attack interval получает haste `min(summon_amount * 0.014 + Leadership * 0.006, 0.30)`;
   - max HP получает bulk `min(Leadership * 0.045 + summon_amount * 0.010, 0.75)`;
   - move speed/lifetime/splash radius также мягко растут от Leadership/`summon_amount`.
+- SCRUM-854: runtime summon cap uses `base_max_summons + floor(Leadership / 4) + summon_bonus`; `summon_amount` continues to scale summon strength, tempo, bulk, lifetime and splash rather than the count cap. Mobile summon weapons start battle with `ceil(max_summons / 2)` owned minions and then continue summoning on their normal interval.
 - **Crowd-clear scaling (SCRUM-505):** мобильные summons (`summon_amulet`, `homunculus_vial`)
   на 20-target оси были «мёртвыми слотами»: per-summon урон зажат budget-флором
   (`budget_damage_multiplier` = floor 0.28), поэтому 20t-throughput нельзя поднять через
@@ -286,6 +290,7 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 ## Shop
 
 - Shop items берутся из `ProgressionData.SHOP_ITEMS` и artifact pool.
+- `ProgressionData.shop_items(route_stage, character_id)` optionally filters class-specific forbidden rewards; UI passes `selected_character_id`, so Doctor does not see external sustain items in shop rolls.
 - Каждая generated route map содержит ровно два `shop` узла: один в первой
   половине non-boss рядов и один во второй половине. Placement задаёт только
   доступность магазина на маршруте; цены, ассортимент, скидки и EV событий не

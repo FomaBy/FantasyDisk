@@ -239,8 +239,8 @@ const CHARACTER_CONFIGS := {
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
-		"description": "Лечение через урон.",
-		"strengths": "восстановление, яд, стабильность.",
+		"description": "Лечение только через собственный drain-урон.",
+		"strengths": "drain, яд, стабильность без внешнего вампиризма.",
 		"weaknesses": "низкий взрывной урон.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	},
@@ -434,8 +434,8 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"doctor": {
 		"main_attribute": "knowledge",
 		"identity_title": "Клинический drain",
-		"summary": "Знание связывает урон и лечение: доктор выживает через drain-link, чуму и хирургический ближний риск.",
-		"mechanic_tags": ["drain_link", "lifesteal", "plague", "surgical_melee"],
+		"summary": "Знание связывает урон и лечение: доктор выживает через собственный drain-link, чуму и хирургический ближний риск, но не роллит внешние реген/вампиризм.",
+		"mechanic_tags": ["drain_link", "self_sustain_only", "plague", "surgical_melee"],
 		"weapon_identities": {
 			"restore_potion": "лечащая drain-связь",
 			"plague_syringe": "чумная DoT-связь",

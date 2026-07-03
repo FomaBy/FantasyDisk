@@ -539,6 +539,8 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	_register_effect(pool)
 	pool.add_to_group("chemist_clouds")
 	pool.set_meta("pool_weapon_owner", get_instance_id())
+	pool.set_meta("pool_duration", pool_duration)
+	pool.set_meta("pool_tick_interval", pool_tick_interval)
 	if pool_element != "":
 		pool.set_meta("pool_element", pool_element)
 	# SCRUM-553: наземная декаль — пул рисуется ПОД всеми боевыми сущностями
@@ -1864,6 +1866,9 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 	var mine := Node2D.new()
 	mine.name = "EngineerPressureMine"
 	mine.add_to_group("engineer_devices")
+	mine.set_meta("pool_duration", pool_duration)
+	mine.set_meta("pool_tick_interval", pool_tick_interval)
+	mine.set_meta("persistent_hazard", true)
 	mine.z_index = 6
 	var visual := Sprite2D.new()
 	visual.texture = _weapon_visual_texture()
@@ -1874,9 +1879,9 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 	_register_effect(mine)
 	mine.global_position = mine_position
 	AttackVfx.ring_pulse(_projectile_parent(), mine_position, aoe_radius * 0.52, visual_color, true)
-	var state := {"triggered": false}
+	var state := {"trigger_count": 0}
 	var check_interval := maxf(pool_tick_interval, 0.10)
-	var check_count := maxi(int(floor(pool_duration / check_interval)), 1)
+	var check_count := maxi(int(floor(pool_duration / check_interval)) + 1, 1)
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var mine_id := mine.get_instance_id()
@@ -1888,27 +1893,30 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_owner := instance_from_id(owner_id) as Node2D
 			var current_mine := instance_from_id(mine_id) as Node2D
-			if current_weapon == null or current_mine == null or bool(state["triggered"]):
+			if current_weapon == null or current_mine == null:
 				return
 			if not current_weapon.call("_has_enemy_in_circle", current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.62):
 				return
-			state["triggered"] = true
+			state["trigger_count"] = int(state["trigger_count"]) + 1
 			if current_owner != null:
 				current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
 			var mine_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
 			mine_damage *= pow(float(current_weapon.get("damage_falloff")), float(mine_index) * 0.35)
 			current_weapon.call("_damage_enemies_in_circle_falloff", current_mine.global_position, float(current_weapon.get("aoe_radius")), mine_damage, float(current_weapon.get("damage_falloff")))
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
-			current_weapon.call("_release_effect", current_mine)
 		)
+	var elapsed_checks := float(check_count - 1) * check_interval
+	var remaining_lifetime := maxf(pool_duration - elapsed_checks, 0.0)
+	if remaining_lifetime > 0.001:
+		mine_tween.tween_interval(remaining_lifetime)
 	mine_tween.tween_callback(func() -> void:
 		var current_weapon := instance_from_id(weapon_id) as Node
 		var current_mine := instance_from_id(mine_id) as Node
 		if current_mine == null:
 			return
-		if current_weapon != null and not bool(state["triggered"]):
+		if current_weapon != null:
 			current_weapon.call("_release_effect", current_mine)
-		elif current_mine != null:
+		else:
 			current_mine.queue_free()
 	)
 
@@ -2177,7 +2185,7 @@ func _damage_aoe_projectile_explosion(origin: Vector2, radius: float, amount: fl
 # оружием, но плотная толпа больше не умножает один тик почти на весь экран.
 const POOL_FULL_TARGETS := 1
 const POOL_TARGET_DIMINISH := 1.5
-const MAX_ACTIVE_DAMAGE_POOLS := 1
+const MAX_ACTIVE_DAMAGE_POOLS := 6
 const AOE_PROJECTILE_FULL_TARGETS := 5
 const AOE_PROJECTILE_TARGET_DIMINISH := 2.0
 const POOL_PROJECTILE_FULL_TARGETS := 1

@@ -6378,7 +6378,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 # между выбором оружия и стартом забега. Выбор → game.selected_start_boon_id + автосейв
 # + карта. «Без боона» завершает выбор тождественно (selected_start_boon_id="").
 func _show_start_boon_select() -> void:
-	var all_boons: Array = game.PROGRESSION_DATA.start_boons()
+	var all_boons: Array = game.PROGRESSION_DATA.start_boons(game.selected_character_id)
 	# Случайная выборка 3 без повторов (детерминирована текущим состоянием game.rng).
 	var pool: Array = all_boons.duplicate()
 	for i in range(pool.size() - 1, 0, -1):
@@ -6830,7 +6830,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3)
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id)
 	var reward_cards: Array[Button] = []
 	for reward in choices:
 		var reward_data: Dictionary = reward
@@ -8292,7 +8292,7 @@ func _random_level_up_rewards(count: int) -> Array:
 
 func _random_shop_items(count: int) -> Array:
 	var scaling_stage: int = game.route_scaling_stage()
-	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage), count)
+	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -8312,7 +8312,7 @@ func _random_shop_items(count: int) -> Array:
 				has_rare = true
 				break
 		if not has_rare:
-			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage) as Array).filter(
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id) as Array).filter(
 				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
 			if not rares.is_empty():
 				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)

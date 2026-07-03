@@ -2,7 +2,7 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-14
+Обновлено: 2026-07-04
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -104,6 +104,8 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Рыцарь | Выносливость | Щитовая клятва: блок, контратака и удержание линии | Копье = long strip, щит = frontal bash/block, кистень = circular holy control |
 | Друид | Лидерство | Командование стаей: питомцы, тернии и тотемы под приказами | Амулет = commanded pets, посох = briar zone, тотем = support pulses |
 
+SCRUM-854 уточнил runtime-контракты: weapon signature в атаках читается как 60% alpha body layer; точная зона Берсерк-sweep рисуется outward wedge от персонажа; persistent pools и pressure mines живут свой duration и не заменяются новой атакой; summon limit использует Leadership, `summon_amount` усиливает профиль призывов, а бой стартует примерно с половиной лимита; Доктор больше не роллит внешние regeneration/vampirism/lifesteal rewards, лечится только собственными drain-оружиями.
+
 ### Производные Параметры
 
 | Параметр | ID в коде | Что делает |
@@ -128,7 +130,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Радиус | `aura_radius` | Радиус атак, зон, аур и поддержки |
 | Сила баффов | `buff_power` | Мощность эффектов поддержки |
 | Сила отталкивания | `knockback_power` | Knockback от звуковых и силовых атак |
-| Количество призывов | `summon_amount` | Сила призывов/устройств: количество, урон, живучесть и темп summon-role оружия |
+| Количество призывов | `summon_amount` | Сила призывов/устройств: урон, живучесть, темп, lifetime и splash summon-role оружия; count-cap идет от Leadership |
 
 ### Оружие
 
@@ -591,7 +593,7 @@ Escape открывает крупное меню характеристик:
 ### Универсальная Полезность Атрибутов (2026-06-12)
 
 - Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage -> magic_damage, guitarist -> sound_wave_damage).
-- Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды.
+- Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды, кроме явных class-specific исключений вроде SCRUM-854 Doctor external sustain filter.
 - Все базовые и производные параметры могут появляться у любого класса. Если параметр не является «родным» для текущего оружия, он получает runtime-интерпретацию через `ProgressionData.CLASS_INTERPRETATIONS` и hooks в `Player`/`ClassWeapon`.
 - Превью изменений урона по-прежнему показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
 - Фиксация наборов (анти-реролл): набор level-up генерируется один раз на полученный уровень (`level_up_offer`), пара атрибутов и счетчик rerolls — в `attribute_offer`/`attribute_rerolls_left`, сбрасываются только победным флоу нового боя; ассортимент магазина уже фиксировался до ухода с узла.
@@ -655,7 +657,7 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * Radius mult` | derived (атаки/зоны/ампы/боевой клич) | работает |
 | buff_power | `1 + Lead*0.025 + Know*0.006 + Energy*0.004` | derived; потребители — события/бафф-эффекты | работает |
 | knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
-| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | max_summons/echo weapons/support | работает |
+| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | summon profile/echo weapons/support; `max_summons` count-cap идет от Leadership | работает |
 | **absorb** | End*0.16 + softened flat; срез удара до защиты (мин. 35% проходит) | Player.take_damage | работает |
 | **regeneration** | (0.22 + positive_flat*0.45) * (0.45 + Know/12) HP/с | Player._apply_regeneration | работает |
 | **vampiric_chance** | награды, cap 0.22; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |

@@ -4,6 +4,7 @@ extends SceneTree
 ## weapons fire through the new textured effects pipeline.
 
 const AttackVfxScript := preload("res://scripts/attack_vfx.gd")
+const BerserkWeaponScript := preload("res://scripts/berserk_weapon.gd")
 
 
 func _initialize() -> void:
@@ -58,6 +59,19 @@ func _test_vfx_helpers() -> void:
 	if _count_textured_sprites(ring_node, "music_note.png") > 2:
 		push_error("Expected ring pulse VFX to limit note clutter.")
 		quit(1)
+	var signature_node := nodes[8] as Node2D
+	var signature_body := signature_node.get_node_or_null("WeaponSignatureBody") as Sprite2D
+	if signature_body == null:
+		push_error("Expected weapon signature to expose a dedicated body sprite.")
+		quit(1)
+	if absf(signature_body.modulate.a - 0.60) > 0.01:
+		push_error("Expected weapon signature body alpha to be 0.60, got %.3f." % signature_body.modulate.a)
+		quit(1)
+	var body_material := signature_body.material as CanvasItemMaterial
+	if body_material != null and body_material.blend_mode == CanvasItemMaterial.BLEND_MODE_ADD:
+		push_error("Expected weapon signature body to stay non-additive for readable 60%% opacity.")
+		quit(1)
+	_test_berserk_sweep_geometry()
 	_write_scrum457_dump(slash_node, beam_sprite, sound_wave_node, ring_node)
 	host.queue_free()
 
@@ -100,6 +114,40 @@ func _has_vfx_node(node_name: String) -> bool:
 		if child.name == node_name:
 			return true
 	return false
+
+
+func _test_berserk_sweep_geometry() -> void:
+	var weapon := BerserkWeaponScript.new()
+	weapon.attack_range = 240.0
+	weapon.sweep_degrees = 100.0
+	var points: PackedVector2Array = weapon.call("_sweep_zone_points", Vector2.RIGHT)
+	if points.size() < 5:
+		push_error("Expected Berserk sweep to produce a wedge polygon.")
+		quit(1)
+	if points[0].distance_to(Vector2.ZERO) > 0.001:
+		push_error("Expected Berserk sweep apex to stay at the character.")
+		quit(1)
+	for index in range(1, points.size()):
+		if points[index].x <= 0.0:
+			push_error("Expected Berserk sweep arc points to extend outward from the character, got %s." % points[index])
+			quit(1)
+	var middle := points[int(points.size() / 2)]
+	if middle.distance_to(Vector2.RIGHT * weapon.attack_range) > 1.0:
+		push_error("Expected Berserk sweep centerline to point along attack direction, got %s." % middle)
+		quit(1)
+	var owner := Node2D.new()
+	root.add_child(owner)
+	weapon.visual_color = Color(0.62, 0.82, 1.0, 0.30)
+	weapon.call("_show_exact_zone_overlay", owner, points)
+	var overlay := owner.get_node_or_null("BerserkExactAttackZone") as Polygon2D
+	if overlay == null:
+		push_error("Expected Berserk exact attack zone overlay.")
+		quit(1)
+	if absf(overlay.color.a - 0.40) > 0.01:
+		push_error("Expected Berserk exact attack zone alpha 0.40, got %.3f." % overlay.color.a)
+		quit(1)
+	owner.queue_free()
+	weapon.queue_free()
 
 
 func _max_additive_alpha(node: Node) -> float:

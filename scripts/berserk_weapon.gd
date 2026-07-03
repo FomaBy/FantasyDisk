@@ -2,6 +2,7 @@ class_name BerserkWeapon
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const EXACT_ZONE_OVERLAY_ALPHA := 0.40
 
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"
@@ -402,7 +403,8 @@ func _strip_zone_points(direction: Vector2) -> PackedVector2Array:
 func _show_exact_zone_overlay(owner_node: Node2D, points: PackedVector2Array) -> void:
 	# Полупрозрачный контур фактической зоны урона поверх художественного VFX.
 	var overlay := Polygon2D.new()
-	overlay.color = Color(visual_color.r, visual_color.g, visual_color.b, minf(visual_color.a * 0.55, 0.22))
+	overlay.name = "BerserkExactAttackZone"
+	overlay.color = Color(visual_color.r, visual_color.g, visual_color.b, EXACT_ZONE_OVERLAY_ALPHA)
 	overlay.polygon = points
 	overlay.z_index = 9
 	owner_node.add_child(overlay)

@@ -79,6 +79,18 @@ SCRUM-480 (рантайм-интеграция минимал-UI).
 | SCRUM-849 | [Кодекс: object-first дизайн-пакет с крупными изображениями](../tasks/design_codex_object_first_redesign_task.md) | codex/design (review; ready_for_integration) | p1 |
 | SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | codex/backend (done; QA PASSED) | p1 |
 
+**Sprint intake 2026-07-04 (user request):** создана пачка задач на читаемые
+weapon overlays в атаках, логичную AOE-геометрию, persistent zones/mines,
+Leadership-scaled summons и нерф внешнего sustain-roll для Doctor. Jira:
+`SCRUM-854`, `SCRUM-855`; основной runtime scope должен идти одним backend
+owner из-за общих locked paths `class_weapon.gd`, `berserk_weapon.gd`,
+`summoner_weapon.gd`, `ally_minion.gd`, `progression_data_*`.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-854 | [AOE Weapon Overlays, Persistent Zones, Summons, And Doctor Sustain](../tasks/backend_aoe_weapon_overlays_zones_summons_doctor_task.md) | codex/backend (done; ready for QA after push) | p1 |
+| SCRUM-855 | [QA Review: AOE Weapon Overlays, Persistent Zones, Summons, And Doctor Sustain](../tasks/qa_review_aoe_weapon_overlays_zones_summons_doctor_task.md) | codex/qa (new, after backend) | p1 |
+
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
   done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —

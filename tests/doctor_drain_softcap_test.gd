@@ -26,6 +26,35 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const Surv := preload("res://tools/survivability_harness.gd")
 
 const EPS := 0.01
+const DOCTOR_FORBIDDEN_SUSTAIN_IDS := {
+	"regeneration_up": true,
+	"vampiric_amount_up": true,
+	"vampiric_chance_up": true,
+	"leech_heart": true,
+	"leech_fang": true,
+	"field_kit": true,
+	"vital_siphon": true,
+	"breather_totem": true,
+	"soul_harvest": true,
+	"second_wind": true,
+	"swiftfoot": true,
+	"shop_heal": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
+	"regeneration": true,
+	"vampiric_amount": true,
+	"vampiric_chance": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS := {
+	"regeneration_flat": true,
+	"vampiric_chance_flat": true,
+	"vampiric_amount_flat": true,
+	"vampiric_heal_per_second_cap": true,
+	"kill_heal_percent": true,
+	"room_clear_heal_percent": true,
+	"kill_streak_heal_every": true,
+	"lowhp_regen_bonus": true,
+}
 
 
 func _initialize() -> void:
@@ -40,6 +69,8 @@ func _initialize() -> void:
 	var drain_cap_default := float(ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_DEFAULT)
 	var drain_cap_hard := float(ProgressionData.BalanceData.DRAIN_HEAL_PER_SECOND_CAP_HARD)
 	var vampiric_default := float(ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT)
+
+	_test_doctor_external_sustain_reward_filter(errors)
 
 	# --- C. Идентичность: drain-cap должен быть заметно выше вампирного дефолта ---
 	if not (drain_cap_default > vampiric_default * 2.0):
@@ -145,3 +176,50 @@ func _initialize() -> void:
 		return
 	print("Doctor drain softcap test passed: drain capped per-second, Доктор смертен под плотной толпой, sustain-идентичность сохранена.")
 	quit(0)
+
+
+func _test_doctor_external_sustain_reward_filter(errors: Array) -> void:
+	_assert_no_doctor_external_sustain(ProgressionData.level_up_rewards("doctor"), "level_up_rewards", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.reward_pool("doctor"), "reward_pool", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.shop_items(0, "doctor"), "shop_items", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.elite_artifact_choices(8, 20, "doctor"), "elite_artifact_choices", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.start_boons("doctor"), "start_boons", errors)
+	if not ProgressionData.start_boon_mods("swiftfoot", "doctor").is_empty():
+		errors.append("Doctor start_boon_mods('swiftfoot') must be empty.")
+	if ProgressionData.start_boon_mods("swiftfoot", "berserk").is_empty():
+		errors.append("Non-doctor classes should keep swiftfoot start boon available.")
+
+	var berserk_level_rewards: Array = ProgressionData.level_up_rewards("berserk")
+	if not _contains_reward_id(berserk_level_rewards, "vampiric_amount_up"):
+		errors.append("Expected non-doctor level-up pool to keep vampiric_amount_up.")
+	var berserk_pool: Array = ProgressionData.reward_pool("berserk")
+	if not _contains_reward_id(berserk_pool, "leech_fang"):
+		errors.append("Expected non-doctor artifact pool to keep leech_fang.")
+
+
+func _assert_no_doctor_external_sustain(rewards: Array, source_name: String, errors: Array) -> void:
+	for reward in rewards:
+		var reward_dict := reward as Dictionary
+		if _is_forbidden_external_sustain(reward_dict):
+			errors.append("Doctor %s still contains forbidden sustain reward '%s'." % [source_name, reward_dict.get("id", "?")])
+
+
+func _is_forbidden_external_sustain(reward: Dictionary) -> bool:
+	if DOCTOR_FORBIDDEN_SUSTAIN_IDS.has(str(reward.get("id", ""))):
+		return true
+	if DOCTOR_FORBIDDEN_SUSTAIN_ATTRS.has(str(reward.get("attr", ""))):
+		return true
+	var mods: Dictionary = reward.get("mods", {}) as Dictionary
+	for key in mods.keys():
+		if DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(str(key)):
+			return true
+	if reward.has("heal_percent"):
+		return true
+	return false
+
+
+func _contains_reward_id(rewards: Array, reward_id: String) -> bool:
+	for reward in rewards:
+		if str((reward as Dictionary).get("id", "")) == reward_id:
+			return true
+	return false
