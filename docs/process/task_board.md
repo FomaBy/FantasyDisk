@@ -67,6 +67,17 @@ QA-пройден (стартовая разведка читала старый
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
 SCRUM-480 (рантайм-интеграция минимал-UI).
 
+**Backlog intake 2026-07-03 (user request):** создана пара задач на следующий
+редизайн внутриигрового Кодекса в стиле Atlas/Settings v6: object-first,
+крупные изображения, краткая центральная область, подробная правая область и
+минимум рамок без смысловой нагрузки. Задачи оставлены в Jira backlog без
+active sprint assignment; брать только после PM/dispatcher dispatch.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-849 | [Кодекс: object-first дизайн-пакет с крупными изображениями](../tasks/design_codex_object_first_redesign_task.md) | claude/design | p1 |
+| SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | claude/backend, after SCRUM-849 | p1 |
+
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
   done/QA; SCRUM-253 авто-движение — done; SCRUM-259 скилы элиток/боссов —

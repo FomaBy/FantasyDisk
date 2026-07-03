@@ -3807,5 +3807,15 @@
   "key": "SCRUM-846",
   "status": "В работе",
   "desc_hash": "1be93c700c33cdc196d58cebd56309ea"
+ },
+ "backend_codex_object_first_runtime_integration_task.md": {
+  "key": "SCRUM-850",
+  "status": "К выполнению",
+  "desc_hash": "7f5a6a3fdf2c86986365985635c3a28d"
+ },
+ "design_codex_object_first_redesign_task.md": {
+  "key": "SCRUM-849",
+  "status": "К выполнению",
+  "desc_hash": "fb42aacbc7070a600496f4b1f5f248a5"
  }
 }
