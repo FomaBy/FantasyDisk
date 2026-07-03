@@ -278,6 +278,21 @@ keeps runtime PNGs textless, alpha-clean and confined to the SCRUM-725
 9-slice margin bands. Runtime preview:
 `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
 
+SCRUM-849 adds the next Codex design-source package for an object-first layout
+without changing live runtime assets yet. The PixelLab UI-panel mockup and
+safe-zone contract live under
+`docs/design/mockups/codex_object_first_redesign/`; preview/contact evidence is
+`docs/design/previews/codex_object_first_redesign_mockup_v1.png`,
+`docs/design/previews/codex_object_first_redesign_mockup_v1_1920.png`,
+`docs/design/previews/codex_object_first_redesign_safe_zones_v1.png`, and
+`docs/design/previews/codex_object_first_redesign_contact_v1.png`. The design
+keeps only meaningful frame regions: left category rail, center selected/list
+overview, and right detail panel with the largest object image stage. Runtime
+integration is intentionally deferred to SCRUM-850 and should reuse existing
+Codex/Settings-family assets where they satisfy the declared content margins;
+new production sprites are optional only if integration cannot meet the
+object-first safe-zone contract with existing assets.
+
 SCRUM-584 adds the live rebind-conflict 2K frame pair under
 `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and
 `ui_frame_2k_rc_btn.png`. Slots are `rc_panel` and `rc_btn`, registered in

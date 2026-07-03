@@ -1,16 +1,21 @@
 # UI: Кодекс — object-first дизайн-пакет с крупными изображениями
 
-Статус: new
+Статус: review
 Приоритет: P1
 Роль: Design
-Контур: Claude
-Owner: unassigned
-Thread/Worker: n/a
+Контур: Codex
+Owner: design/codex-scrum-849-object-first-design
+Thread/Worker: current Codex control thread + subagents as needed
 Jira: SCRUM-849
 Версия: 0.2.1
 Создано: 2026-07-03
 Автор: Codex PM по прямому запросу пользователя
 Locked paths: `docs/design/mockups/codex_object_first_redesign/`, `docs/design/references/codex_object_first_redesign/`, `docs/design/previews/codex_object_first_redesign_*`, `assets/sprites/ui/frames/codex_object_first/` если будут production assets
+
+Claim note 2026-07-03: Jira current-sprint labels include `codex`, issue was
+returned by the Codex lane helper, and PM cleanup moved the task into active
+sprint. Mirror updated from the original `Контур: Claude` draft to live Codex
+ownership after Jira claim-first.
 
 ## Контекст
 
@@ -73,3 +78,42 @@ Locked paths: `docs/design/mockups/codex_object_first_redesign/`, `docs/design/r
 
 Это Design-задача. Runtime-интеграция выделена отдельно в SCRUM-850 /
 `backend_codex_object_first_runtime_integration_task.md`.
+
+## Result 2026-07-03 — ready_for_integration
+
+Owner: design/codex-scrum-849-object-first-design
+Thread/Worker: current Codex control thread + Confucius read-only inventory
+subagent
+
+Delivered:
+- PixelLab MCP mockup: `docs/design/mockups/codex_object_first_redesign/pixellab_mockup_v1.png`
+  (`e55602bb-9328-4427-bbad-f3df60aa1e82`, `688x384` UI panel).
+- Spec: `docs/design/mockups/codex_object_first_redesign/spec.md`
+  (`Status: ready_for_integration`).
+- Machine-readable zones:
+  `docs/design/mockups/codex_object_first_redesign/layout_zones.json`.
+- Prompt/provenance:
+  `docs/design/mockups/codex_object_first_redesign/pixellab_prompt.md`.
+- Handoff for SCRUM-850:
+  `docs/design/mockups/codex_object_first_redesign/handoff_to_scrum850.md`.
+- Previews:
+  `docs/design/previews/codex_object_first_redesign_mockup_v1.png`,
+  `docs/design/previews/codex_object_first_redesign_mockup_v1_1920.png`,
+  `docs/design/previews/codex_object_first_redesign_safe_zones_v1.png`,
+  `docs/design/previews/codex_object_first_redesign_contact_v1.png`.
+
+Design decisions:
+- No new production frame/button sprites are promoted in this Design task.
+  SCRUM-850 should first reuse existing Codex/Settings-family assets and only
+  generate a targeted production sprite follow-up if those cannot preserve the
+  safe-zone contract.
+- Right detail object stage is the largest image zone; center area stays concise
+  and must not duplicate full body text.
+- Monster/boss image quality issues are follow-ups, not layout workarounds.
+
+Verification:
+- PixelLab MCP generation completed and preview was shown in chat.
+- JSON layout validates with `python3 -m json.tool`.
+- Preview dimensions validated with PIL.
+- Disk cleanup: none created beyond committed package files; transient `.import`
+  and `.uid` sidecars from prior Godot runs were removed before work.

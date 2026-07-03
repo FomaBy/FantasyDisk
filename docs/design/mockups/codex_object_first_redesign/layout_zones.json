@@ -1,0 +1,34 @@
+{
+  "task": "SCRUM-849",
+  "status": "draft",
+  "base_resolution": [1920, 1080],
+  "responsive_targets": [[1280, 720], [1920, 1080], [2560, 1440]],
+  "mockup_asset_id": "e55602bb-9328-4427-bbad-f3df60aa1e82",
+  "zones": {
+    "screen_shell": {"rect": [72, 54, 1776, 972], "content_margin": [48, 48, 48, 48], "role": "background shell"},
+    "title_strip": {"rect": [360, 72, 1200, 96], "content_margin": [32, 18, 32, 18], "role": "screen title"},
+    "left_category_panel": {"rect": [96, 210, 300, 700], "content_margin": [30, 30, 30, 30], "role": "category navigation"},
+    "category_button_1": {"rect": [126, 250, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "category_button_2": {"rect": [126, 340, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "category_button_3": {"rect": [126, 430, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "category_button_4": {"rect": [126, 520, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "category_button_5": {"rect": [126, 610, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "category_button_6": {"rect": [126, 700, 240, 72], "content_margin": [34, 16, 34, 16], "role": "category button"},
+    "back_button": {"rect": [126, 820, 240, 66], "content_margin": [34, 14, 34, 14], "role": "back action"},
+    "center_overview_panel": {"rect": [438, 210, 490, 700], "content_margin": [34, 34, 34, 34], "role": "selected/list overview"},
+    "center_object_stage": {"rect": [510, 264, 346, 292], "content_margin": [28, 28, 28, 28], "role": "selected object preview"},
+    "center_title_summary": {"rect": [500, 590, 366, 128], "content_margin": [24, 20, 24, 20], "role": "title and one short summary"},
+    "center_list_strip": {"rect": [500, 742, 366, 118], "content_margin": [22, 18, 22, 18], "role": "compact entry list/selector"},
+    "right_detail_panel": {"rect": [960, 210, 840, 700], "content_margin": [44, 44, 44, 44], "role": "full detail"},
+    "right_object_stage": {"rect": [1080, 258, 600, 360], "content_margin": [36, 36, 36, 36], "role": "largest object image"},
+    "right_chip_row": {"rect": [1110, 642, 540, 64], "content_margin": [20, 14, 20, 14], "role": "2-4 concise metadata chips"},
+    "right_text_scroll": {"rect": [1050, 730, 660, 134], "content_margin": [28, 20, 34, 20], "role": "scroll-safe full detail text"}
+  },
+  "forbidden_content_zones": [
+    "screen shell outer border and dragon corners",
+    "panel borders, bevels, gems, claws and brass separators",
+    "category button rivets/end caps",
+    "right object stage border ornament",
+    "scrollbar gutter outside right_text_scroll content margin"
+  ]
+}
