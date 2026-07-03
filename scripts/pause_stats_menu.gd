@@ -39,7 +39,6 @@ const VALUE_NEUTRAL := Color(0.914, 0.863, 0.655, 1.0)
 const VALUE_EFFECTIVE := Color(1.0, 0.863, 0.361, 1.0)
 const TEXT_PRIMARY := Color(0.937, 0.886, 0.698, 1.0)
 const TEXT_SECONDARY := Color(0.592, 0.647, 0.722, 1.0)
-const TOOLTIP_MAX_WIDTH := 430.0
 
 const DERIVED_GROUPS := [
 	{
@@ -98,6 +97,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	theme = GlobalTooltip.make_theme()
+	# Единственная рамка тултипа — на движковом попапе: своя SCRUM-586 stat_tooltip
+	# рамка вместо общей, контент внутри — голый Label (см. _make_custom_tooltip).
+	theme.set_stylebox("panel", "TooltipPanel", _tooltip_style())
 	_build_layout()
 	call_deferred("_install_global_tooltip_skin")
 
@@ -676,22 +678,14 @@ func _show_end_run_confirm() -> void:
 	dialog.popup_centered(Vector2i(360, 140))
 
 
-# SCRUM-593: координатная спека @2560×1440 — тултип статов (транзиентный).
-# Плавающая панель шириной TOOLTIP_MAX_WIDTH=430, высота по контенту (label autowrap,
-# content margins 44/42/44/42 from SCRUM-586 safe-zone spec). Позиция у курсора/слота
-# стандартным tooltip Godot клампится в экран движком.
-const ST_PANEL_2K := Rect2(0, 0, 430, 0)  # w фикс (TOOLTIP_MAX_WIDTH), h по контенту
-const ST_LABEL_CONTENT_2K := Vector4(44.0, 42.0, 44.0, 42.0)
-
-
+# SCRUM-593/SCRUM-851: тултип статов — движковый попап с рамкой stat_tooltip из темы
+# ("TooltipPanel" override в _ready), внутри голый Label: ширина/перенос считаются
+# GlobalTooltip.make_tooltip_label, позицию и кламп в экран даёт сам Godot.
 func _make_custom_tooltip(for_text: String) -> Object:
-	return GlobalTooltip.make_text_panel(
+	return GlobalTooltip.make_tooltip_label(
 		for_text,
-		_tooltip_style(),
-		TOOLTIP_MAX_WIDTH,
-		"StatTooltipPanel",
 		"StatTooltipLabel",
-		14,
+		GlobalTooltip.DEFAULT_FONT_SIZE,
 		TEXT_PRIMARY
 	)
 
@@ -700,14 +694,13 @@ func _install_global_tooltip_skin() -> void:
 	GlobalTooltip.install_on_tree(self, GlobalTooltipControl)
 
 
+# SCRUM-851: тултип краткий — имя, значение, одно описание; формулы и списки
+# производных — справочная вода, им место в кодексе.
 func _tooltip_for_entry(entry: Dictionary) -> String:
-	return "%s: %s\nЗначение: %s\n\n%s\n\nФормула: %s\nВлияет: %s" % [
+	return "%s — %s\n%s" % [
 		str(entry.get("name_ru", "")),
-		str(entry.get("name_en", "")),
 		str(entry.get("value_text", "N/A")),
 		str(entry.get("description", "")),
-		str(entry.get("formula", "Формула пока не подключена.")),
-		str(entry.get("influences", "")),
 	]
 
 

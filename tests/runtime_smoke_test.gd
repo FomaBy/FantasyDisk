@@ -379,8 +379,8 @@ func _initialize() -> void:
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
-		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
-			_fail("Expected SCRUM-798 line bar + rich tooltip for stat %s." % stat_id)
+		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
+			_fail("Expected SCRUM-851 line bar + concise tooltip for stat %s." % stat_id)
 			return
 	for relevance in ["primary", "secondary", "optional"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
@@ -1176,28 +1176,32 @@ func _initialize() -> void:
 	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
 		_fail("Expected base rows, derived chips, and derived groups to use Design StyleBoxTexture frames.")
 		return
-	var tooltip := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as PanelContainer
-	if tooltip == null or not (tooltip.get_theme_stylebox("panel") is StyleBoxTexture) or tooltip.custom_minimum_size.x > 430.0:
-		_fail("Expected custom stat tooltip to use Design frame and stay clamped to target width.")
+	# SCRUM-851: single-frame tooltip — custom content is a bare Label (no second
+	# PanelContainer frame); the only frame comes from the popup's TooltipPanel style.
+	if strength_row.tooltip_text.contains("Формула:") or not strength_row.tooltip_text.contains(" — "):
+		_fail("Expected concise pause stat tooltip text (name — value + description).")
 		return
-	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		_fail("Expected custom stat tooltip to ignore mouse input and avoid hover flicker.")
-		return
-	var tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxTexture
-	if _stylebox_texture_path(tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
-		_fail("Expected custom stat tooltip to use the SCRUM-586 2K stat tooltip frame.")
-		return
-	if tooltip_style.content_margin_left < 44.0 or tooltip_style.content_margin_top < 42.0 or tooltip_style.content_margin_right < 44.0 or tooltip_style.content_margin_bottom < 42.0:
-		_fail("Expected custom stat tooltip content margins to keep text inside the SCRUM-586 safe zone.")
-		return
-	var tooltip_label := tooltip.find_child("StatTooltipLabel", true, false) as Label
-	if tooltip_label == null or tooltip_label.custom_minimum_size.x > 342.0:
-		_fail("Expected custom stat tooltip label width to fit the SCRUM-586 safe rect.")
+	var tooltip_label := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as Label
+	if tooltip_label == null:
+		_fail("Expected custom stat tooltip content to be a bare Label (single frame).")
 		return
 	if tooltip_label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		_fail("Expected custom stat tooltip label to ignore mouse input.")
 		return
-	tooltip.queue_free()
+	if tooltip_label.get_theme_font_size("font_size") < 20:
+		_fail("Expected custom stat tooltip label to use the enlarged SCRUM-851 font.")
+		return
+	if tooltip_label.custom_minimum_size.x > 620.0:
+		_fail("Expected custom stat tooltip wrap width to stay within the SCRUM-851 wide cap.")
+		return
+	var popup_tooltip_style := pause_menu.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxTexture
+	if popup_tooltip_style == null or _stylebox_texture_path(popup_tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
+		_fail("Expected pause tooltip popup frame to use the SCRUM-586 2K stat tooltip texture.")
+		return
+	if popup_tooltip_style.content_margin_left < 44.0 or popup_tooltip_style.content_margin_top < 42.0 or popup_tooltip_style.content_margin_right < 44.0 or popup_tooltip_style.content_margin_bottom < 42.0:
+		_fail("Expected pause tooltip popup content margins to keep text inside the SCRUM-586 safe zone.")
+		return
+	tooltip_label.queue_free()
 	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
 	var strength_value := pause_menu.find_child("BaseStatValue_strength", true, false) as Label
 	var strength_icon := pause_menu.find_child("UIIcon_strength", true, false) as Control
@@ -1400,7 +1404,7 @@ func _test_glossary_terms(main: Node) -> void:
 	await process_frame
 	var generic_button := Button.new()
 	generic_button.name = "GenericTooltipProbe"
-	generic_button.tooltip_text = "Непрозрачная глобальная подсказка с переносом слов"
+	generic_button.tooltip_text = "Непрозрачная глобальная подсказка с переносом слов, достаточно длинная, чтобы гарантированно не поместиться в одну строку тултипа"
 	(main.get("ui_layer") as CanvasLayer).add_child(generic_button)
 	main.ui._prepare_global_tooltips(generic_button)
 	await process_frame
@@ -1410,27 +1414,32 @@ func _test_glossary_terms(main: Node) -> void:
 	if str(generic_button.get_meta("global_tooltip_install_mode", "")) != "custom_tooltip_script" or not (generic_button is Button) or not generic_button.has_signal("pressed"):
 		_fail("Expected global tooltip skin to attach conservatively without breaking native Button behavior.")
 		return
-	var generic_tooltip := generic_button.call("_make_custom_tooltip", generic_button.tooltip_text) as PanelContainer
-	if generic_tooltip == null or generic_tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE or generic_tooltip.custom_minimum_size.x > 460.0:
-		_fail("Expected generic tooltip_text controls to produce clamped mouse-ignoring tooltips.")
+	# SCRUM-851: кастомный контент — голый Label; единственная рамка приходит от
+	# движкового попапа через стиль "TooltipPanel" темы, которую ставит
+	# _prepare_global_tooltips. Рамка в рамке (PanelContainer в попапе) запрещена.
+	var generic_label := generic_button.call("_make_custom_tooltip", generic_button.tooltip_text) as Label
+	if generic_label == null or generic_label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected generic tooltip content to be a bare mouse-ignoring Label (single frame).")
 		return
-	var generic_style := generic_tooltip.get_theme_stylebox("panel") as StyleBoxTexture
+	if generic_label.autowrap_mode == TextServer.AUTOWRAP_OFF or generic_label.custom_minimum_size.x < 400.0 or generic_label.custom_minimum_size.x > 620.0:
+		_fail("Expected long generic tooltip copy to wrap inside the SCRUM-851 width band.")
+		return
+	if generic_label.get_theme_font_size("font_size") < 20:
+		_fail("Expected generic tooltip label to use the enlarged SCRUM-851 font.")
+		return
+	var generic_style := generic_button.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxTexture
 	if generic_style == null or _stylebox_texture_path(generic_style) != MINIMAL_TOOLTIP_TEXTURE:
-		_fail("Expected generic tooltip_text controls to use the minimal-metal tooltip frame.")
+		_fail("Expected the popup TooltipPanel style to use the minimal-metal tooltip frame.")
 		return
-	var generic_label := generic_tooltip.find_child("GlobalTooltipLabel", true, false) as Label
-	if generic_label == null or generic_label.autowrap_mode == TextServer.AUTOWRAP_OFF:
-		_fail("Expected generic tooltip_text controls to wrap tooltip copy inside the global frame.")
+	var frame_image := generic_style.texture.get_image()
+	if frame_image == null:
+		_fail("Expected the tooltip frame texture to expose image data for the opacity check.")
 		return
-	(main.get("ui_layer") as CanvasLayer).add_child(generic_tooltip)
-	main.get_viewport().warp_mouse(Vector2(120, 120))
-	await process_frame
-	await process_frame
-	var cursor_rect := GlobalTooltip.cursor_anchor_rect(generic_tooltip)
-	if generic_tooltip.get_global_rect().intersects(cursor_rect):
-		_fail("Expected generic global tooltip panel to keep a stable offset from the cursor.")
+	var frame_center := frame_image.get_pixel(frame_image.get_width() / 2, frame_image.get_height() / 2)
+	if frame_center.a < 0.93:
+		_fail("Expected the tooltip frame background to be near-opaque (SCRUM-851), got alpha %.3f." % frame_center.a)
 		return
-	generic_tooltip.queue_free()
+	generic_label.queue_free()
 	generic_button.queue_free()
 	await process_frame
 
@@ -7774,8 +7783,8 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := hero_main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_fill := hero_main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
-		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
-			_fail("Expected Hero Select stat line bar with rich tooltip for %s at %s." % [stat_id, context])
+		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
+			_fail("Expected Hero Select stat line bar with concise tooltip for %s at %s." % [stat_id, context])
 			return
 	var min_expected_thumb_width := HERO_SELECT_MINIMAL_SLOT_MIN_SIZE - 12.0
 	var first_thumb_visual := first_thumb.find_child("HS4CarouselPortrait_*", false, false) as Control

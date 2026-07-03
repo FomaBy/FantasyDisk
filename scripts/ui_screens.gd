@@ -1339,16 +1339,15 @@ func _apply_hs4_minimal_button_theme(button: Button, selected := false) -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.48, 0.52, 1.0))
 
 
-func _hs4_stat_tooltip(stat_id: String, value: float, character_id: String) -> String:
+# SCRUM-851: тултип стата краткий — «Имя — значение» + человеческое описание.
+# Формулы, тех-листинги производных и классовые интерпретации — в кодекс, не в ховер.
+func _hs4_stat_tooltip(stat_id: String, value: float, _character_id: String) -> String:
 	var definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
 	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
-	return "%s\nЗначение: %d\n\n%s\n\nВлияет на: %s\nФормула: %s\nИнтерпретация класса: %s" % [
+	return "%s — %d\n%s" % [
 		stat_name,
 		int(round(value)),
 		str(definition.get("description", "")),
-		str(definition.get("influences", "")),
-		str(definition.get("formula", "")),
-		game.PROGRESSION_DATA.class_interpretation_text(character_id, stat_id),
 	]
 
 
@@ -2415,10 +2414,9 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
 		offer_button.modulate = Color(0.5, 0.5, 0.55, 0.85) if offer_button.disabled else Color(1.0, 1.0, 1.0, 1.0)
-		offer_button.tooltip_text = "%s +1\n%s" % [stat_title, interpretation]
-		# SCRUM-525: в тултип — на что влияет атрибут и живой предпросмотр производных при +1.
-		# Подробности держим в tooltip_text (Godot клампит его в экран сам), тело карточки
-		# оставляем компактным, чтобы не ловить overflow на 720p (ui_no_overlap_matrix_test).
+		# SCRUM-525/SCRUM-851: тултип краткий и по делу — на что влияет атрибут и живой
+		# предпросмотр производных при +1; интерпретация класса уже написана на карточке.
+		offer_button.tooltip_text = "%s +1" % stat_title
 		var influence_text := _attribute_influence_text(stat_id)
 		if influence_text != "":
 			offer_button.tooltip_text += "\nВлияет на: %s" % influence_text
@@ -4579,8 +4577,9 @@ const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контент�
 const GT_PANEL_CONTENT_2K := Vector4(66, 44, 66, 40)
 const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
 const GT_ANCHOR_GAP_2K := 18.0  # SCRUM-840: stable gap from cursor/anchor, avoids hover flicker.
-const GT_TITLE_FONT_SIZE := 16
-const GT_DESC_FONT_SIZE := 13
+# SCRUM-851: тултип-шрифты укрупнены — 20/16 против прежних 16/13, мелкий текст не читался.
+const GT_TITLE_FONT_SIZE := 20
+const GT_DESC_FONT_SIZE := 16
 const GT_TEXT_SEPARATION := 4
 
 

@@ -3817,5 +3817,10 @@
   "key": "SCRUM-849",
   "status": "Контроль качества",
   "desc_hash": "d211d6b64b48947b9d97cb4f484f1096"
+ },
+ "ui_tooltip_single_frame_rework_task.md": {
+  "key": "SCRUM-851",
+  "status": "К выполнению",
+  "desc_hash": "60e5ce6f4f9133af8b8b941d0f28b8d7"
  }
 }
