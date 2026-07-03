@@ -1,6 +1,6 @@
 # BUG: SCRUM-855 referenced backend and QA task mirrors are missing from dev
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end / QA
 Версия: 0.2.1
@@ -49,3 +49,25 @@ Actual:
   any screenshots/reports.
 - Add the SCRUM-855 evidence bundle or update Jira to point to the correct
   committed evidence paths.
+
+## Результат 2026-07-04
+
+SCRUM-863 initial bug condition is resolved on `dev`:
+- Backend mirror exists and is committed:
+  `docs/tasks/backend_aoe_weapon_overlays_zones_summons_doctor_task.md`.
+- QA review mirror exists and is committed:
+  `docs/tasks/qa_review_aoe_weapon_overlays_zones_summons_doctor_task.md`.
+- Backend mirror records implementation summary, locked paths, focused tests,
+  runtime smoke, docs touched, QA verdict, and disk cleanup.
+- QA mirror was repaired from pending template to final `PASSED` evidence with
+  the SCRUM-854/SCRUM-864 commits, focused test list, runtime smoke note,
+  independent QA subagent result, and SCRUM-863 recheck cleanup.
+
+Verification:
+- `git log --all -- docs/tasks/backend_aoe_weapon_overlays_zones_summons_doctor_task.md docs/tasks/qa_review_aoe_weapon_overlays_zones_summons_doctor_task.md` shows committed history for both paths.
+- SCRUM-863 QA recheck on fresh `origin/dev` confirmed the files exist; the
+  remaining failure was only the pending QA mirror content, fixed here.
+- No runtime code changed in the SCRUM-863 repair.
+
+Disk cleanup: none created by the repair pass; QA recheck removed its disposable
+clone/logs before this fix.
