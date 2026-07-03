@@ -286,6 +286,11 @@ weapon-числа), а не здесь, чтобы не пересекать dam
   турелей `max_summons`, шотов `projectile_count` по разным ближайшим целям, быстрее пульс,
   мягче `damage_falloff`) плюс `upgrade_damage_exponent`, чтобы рост был lvl20/progression,
   а не flat-buff на старте.
+- SCRUM-859 caps ClassWeapon deploy counts after Leadership scaling: `sound_amp` and
+  `raven_totem` cap at 3 active devices, while `engineer_sentry_wrench` caps at 5.
+  Engineer sentry also gets per-cycle target memory and small `sentry_splash_*` knobs
+  (`82px`, x0.24, cap 2) so turret gameplay clears crowds without turning every beam
+  into an uncapped AoE.
 - Уровень 0 сохраняет базовый баланс: все множители начинаются с 1.0, caps ограничивают high-stat runaway.
 - **Принцип «summon не дед-слот» (SCRUM-505, согласован с comfort-полосой SCRUM-544/546):**
   цель — поднять каждое summon-оружие минимум к **0.5x профильной summon-медианы** на 20t-оси

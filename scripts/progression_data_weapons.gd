@@ -191,6 +191,8 @@ const GUITARIST_WEAPONS := {
 		"amp_lifetime": 7.0,
 		"amp_pulse_interval": 1.1,
 		"max_summons": 1,
+		"max_summons_cap": 3,
+		"deploy_role": "stage_pulse",
 		"deploy_texture_path": "res://assets/sprites/allies/deploy_sound_amp_field.png",
 		"visual_color": Color(1.0, 0.35, 0.72, 0.35),
 		"passive_mods": {"pickup_radius_flat": 30.0},
@@ -460,6 +462,8 @@ const DRUID_WEAPONS := {
 		"damage_multiplier": 0.66, "fire_interval": 2.35,
 		"attack_range": 470.0, "aoe_radius": 255.0, "knockback": 70.0,
 		"amp_lifetime": 6.5, "amp_pulse_interval": 0.95, "max_summons": 1,
+		"max_summons_cap": 3,
+		"deploy_role": "support_totem",
 		"summon_role": "support_totem",
 		"summon_role_damage_multiplier": 1.08,
 		"summon_support_heal_percent": 0.004,
@@ -764,9 +768,14 @@ const ENGINEER_WEAPONS := {
 		# шоты на lvl20 идут от run_modifiers.extra_projectile (level-карты).
 		"beam_width": 34.0, "projectile_count": 8,  # SCRUM-505: +шоты/цикл (было 4)
 		"amp_lifetime": 3.6, "amp_pulse_interval": 0.28, "max_summons": 2,  # SCRUM-505: 2 турели, быстрее пульс (было 2.8/0.42/1)
+		"max_summons_cap": 5,
 		"damage_falloff": 0.94, "knockback": 42.0,  # SCRUM-505: мягче спад урона по шотам (было 0.72)
+		"deploy_role": "turret_dps",
 		"summon_role": "engineer_sentry",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)
+		"sentry_splash_radius": 82.0,
+		"sentry_splash_damage_multiplier": 0.24,
+		"sentry_splash_target_cap": 2,
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
 		"passive_mods": {"summon_bonus": 1.0},
 	},
@@ -779,6 +788,7 @@ const ENGINEER_WEAPONS := {
 		"attack_range": 540.0, "aoe_radius": 260.0,
 		"beam_width": 30.0, "projectile_count": 4,
 		"damage_falloff": 0.68, "heal_percent_of_damage": 0.045,
+		"deploy_role": "repair_chain",
 		"summon_role": "support_drone",
 		"summon_role_damage_multiplier": 0.92,
 		"summon_support_heal_percent": 0.006,
@@ -794,6 +804,7 @@ const ENGINEER_WEAPONS := {
 		"attack_range": 390.0, "aoe_radius": 125.0,
 		"projectile_count": 3, "pool_duration": 3.0, "pool_tick_interval": 0.16,
 		"damage_falloff": 0.62, "knockback": 82.0,
+		"deploy_role": "mine_grid",
 		"visual_color": Color(1.0, 0.54, 0.24, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.05},
 	},

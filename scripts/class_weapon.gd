@@ -101,6 +101,7 @@ const ATTACK_MODE_EXECUTORS := {
 @export var amp_lifetime := 7.0
 @export var amp_pulse_interval := 1.1
 @export var max_summons := 0
+@export var max_summons_cap := 0
 @export var heal_percent_on_attack := 0.0
 @export var heal_percent_of_damage := 0.0
 @export var leaves_pool := false
@@ -124,6 +125,9 @@ const ATTACK_MODE_EXECUTORS := {
 @export var summon_role_damage_multiplier := 1.0
 @export var summon_support_heal_percent := 0.0
 @export var summon_control_knockback := 0.0
+@export var sentry_splash_radius := 0.0
+@export var sentry_splash_damage_multiplier := 0.0
+@export var sentry_splash_target_cap := 0
 @export var deploy_texture_path := ""
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
@@ -200,6 +204,7 @@ func configure_weapon(config: Dictionary) -> void:
 	amp_lifetime = float(config.get("amp_lifetime", amp_lifetime))
 	amp_pulse_interval = float(config.get("amp_pulse_interval", amp_pulse_interval))
 	max_summons = int(config.get("max_summons", max_summons))
+	max_summons_cap = int(config.get("max_summons_cap", max_summons_cap))
 	heal_percent_on_attack = float(config.get("heal_percent_on_attack", heal_percent_on_attack))
 	heal_percent_of_damage = float(config.get("heal_percent_of_damage", heal_percent_of_damage))
 	leaves_pool = bool(config.get("leaves_pool", leaves_pool))
@@ -223,6 +228,9 @@ func configure_weapon(config: Dictionary) -> void:
 	summon_role_damage_multiplier = float(config.get("summon_role_damage_multiplier", summon_role_damage_multiplier))
 	summon_support_heal_percent = float(config.get("summon_support_heal_percent", summon_support_heal_percent))
 	summon_control_knockback = float(config.get("summon_control_knockback", summon_control_knockback))
+	sentry_splash_radius = float(config.get("sentry_splash_radius", sentry_splash_radius))
+	sentry_splash_damage_multiplier = float(config.get("sentry_splash_damage_multiplier", sentry_splash_damage_multiplier))
+	sentry_splash_target_cap = int(config.get("sentry_splash_target_cap", sentry_splash_target_cap))
 	deploy_texture_path = str(config.get("deploy_texture_path", deploy_texture_path))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
@@ -1787,6 +1795,7 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 	var sentry_id := sentry.get_instance_id()
 	var shot_count := maxi(projectile_count + _extra_projectiles(), 1)
 	var sentry_tween := sentry.create_tween()
+	var used_targets: Dictionary = {}
 	for shot_index in range(shot_count):
 		if shot_index > 0:
 			sentry_tween.tween_interval(maxf(amp_pulse_interval, 0.12))
@@ -1797,14 +1806,18 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 			if current_weapon == null or current_owner == null or current_sentry == null:
 				return
 			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("amp_pulse_interval")), 0.12), direction, {"index": shot_index, "count": shot_count})
-			var used: Dictionary = {}
-			var target_enemy: Node2D = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used)
+			var target_enemy: Node2D = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used_targets)
+			if target_enemy == null and not used_targets.is_empty():
+				used_targets.clear()
+				target_enemy = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used_targets)
 			if target_enemy == null:
 				return
+			used_targets[target_enemy.get_instance_id()] = true
 			var beam := AttackVfx.beam(current_weapon.call("_projectile_parent"), current_sentry.global_position, target_enemy.global_position, float(current_weapon.get("beam_width")), current_weapon.get("visual_color"))
 			current_weapon.call("_register_effect", beam)
 			var shot_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) * pow(float(current_weapon.get("damage_falloff")), float(shot_index))
 			current_weapon.call("_damage_enemy", target_enemy, shot_damage)
+			current_weapon.call("_damage_engineer_sentry_splash", target_enemy, shot_damage)
 		)
 	sentry_tween.tween_interval(maxf(amp_lifetime - float(shot_count) * maxf(amp_pulse_interval, 0.12), 0.08))
 	sentry_tween.tween_callback(func() -> void:
@@ -1819,6 +1832,21 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 		else:
 			current_sentry.queue_free()
 	)
+
+
+func _damage_engineer_sentry_splash(primary_target: Node2D, shot_damage: float) -> void:
+	if primary_target == null or not is_instance_valid(primary_target):
+		return
+	if sentry_splash_radius <= 0.0 or sentry_splash_damage_multiplier <= 0.0 or sentry_splash_target_cap <= 0:
+		return
+	var excluded := {primary_target.get_instance_id(): true}
+	var splash_targets := TARGET_QUERY.nearest_many(self, primary_target.global_position, sentry_splash_radius, sentry_splash_target_cap, excluded)
+	for index in range(splash_targets.size()):
+		var splash_target := splash_targets[index] as Node2D
+		if splash_target == null or not is_instance_valid(splash_target):
+			continue
+		var factor := sentry_splash_damage_multiplier / (1.0 + float(index) * 0.75)
+		_damage_enemy(splash_target, shot_damage * factor, false, _weapon_damage_type(), false)
 
 
 func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:

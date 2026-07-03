@@ -1,33 +1,65 @@
 # Full Class Rebalance: Summon, Deploy, Turret, And Zone Ownership Pass
-Статус: blocked
+Статус: done
 Версия: 0.2.1
 Контур: Codex
-Owner: released; blocked by active SCRUM-858 overlap
-Thread/Worker: class-rebalance-backend-Mill release note
-Locked paths: `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd`, `scripts/class_weapon.gd`, `scripts/progression_data_weapons.gd`, `scripts/progression_data_balance.gd`, summon/deploy tests, relevant docs
+Owner: Main Codex class-balance worker
+Thread/Worker: current Codex thread after Faraday shutdown
+Locked paths: `scripts/class_weapon.gd`, `scripts/player.gd`, `scripts/progression_data_weapons.gd`, `tests/summoner_strengthening_test.gd`, summon/deploy docs
 Jira: SCRUM-859
 Исполнитель: Codex
+Branch: `codex/scrum859-summon-deploy-turret`
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum859-summon-deploy-turret`
 
 ## Контекст
 Пользователь отдельно отметил, что summons сейчас играются отвратительно, и хочет персонажа с турельками, вокруг которых он бегает. В проекте уже есть Druid pets, Chemist homunculus, Engineer sentry/repair drone/mines, Guitarist amp и active `SCRUM-854` по persistent zones/summons. Этот pass должен идти после или поверх результата `SCRUM-854`, не параллельно в тех же файлах.
 
 ## Требования
 - [x] Не начинать runtime edits, пока `SCRUM-854` не завершен/не released или dispatcher явно не развел locked paths.
-- [ ] Engineer sentry gameplay сделать основным turret loop: несколько temporary sentries, autonomous target choice, player kites around them, Leadership scales count/cadence without AFK runaway.
-- [ ] Druid pets, Chemist homunculus, Engineer sentry, Engineer repair drone, Guitarist amp and Druid totem must each have different summon/deploy role: pack, tank/control, turret DPS, repair chain, stage pulse, support/control.
-- [ ] Summons should start combat near half-quota where appropriate, then refill toward Leadership-scaled cap at readable cadence.
-- [ ] Minion/deploy hits need small AoE or target distribution so they are not dead slots in crowd fights, but must keep caps/falloff.
-- [ ] Persistent zones/mines/totems should own lifetime independently; new attack should not delete all previous effects unless a documented cap is exceeded.
-- [ ] Update summon/deploy tests and docs.
+- [x] Engineer sentry gameplay сделать основным turret loop: несколько temporary sentries, autonomous target choice, player kites around them, Leadership scales count/cadence without AFK runaway.
+- [x] Druid pets, Chemist homunculus, Engineer sentry, Engineer repair drone, Guitarist amp and Druid totem must each have different summon/deploy role: pack, tank/control, turret DPS, repair chain, stage pulse, support/control.
+- [x] Summons should start combat near half-quota where appropriate, then refill toward Leadership-scaled cap at readable cadence.
+- [x] Minion/deploy hits need small AoE or target distribution so they are not dead slots in crowd fights, but must keep caps/falloff.
+- [x] Persistent zones/mines/totems should own lifetime independently; new attack should not delete all previous effects unless a documented cap is exceeded.
+- [x] Update summon/deploy tests and docs.
 
 ## Acceptance Criteria
-- [ ] Engineer can be played as "place turrets and move around them" without replacing every class summon fantasy.
-- [ ] Druid/Engineer/Chemist/Guitarist deploy mechanics are visibly and mechanically distinct.
-- [ ] Summon/deploy floor tests and class balance reports pass or list documented residual risk.
-- [ ] `summon_weapon_crowd_floor_test.gd`, `global_damage_balance_smoke_test.gd`, relevant live combat/summon tests, and `runtime_smoke_test.gd` pass via `tools/godot_gate.py`.
-- [ ] Jira result explicitly references how this task integrated or waited for `SCRUM-854`.
+- [x] Engineer can be played as "place turrets and move around them" without replacing every class summon fantasy.
+- [x] Druid/Engineer/Chemist/Guitarist deploy mechanics are visibly and mechanically distinct.
+- [x] Summon/deploy floor tests and class balance reports pass or list documented residual risk.
+- [x] `summon_weapon_crowd_floor_test.gd`, `global_damage_balance_smoke_test.gd`, relevant live combat/summon tests, and `runtime_smoke_test.gd` pass via `tools/godot_gate.py`.
+- [x] Jira result explicitly references how this task integrated or waited for `SCRUM-854`.
 
-## Результат
+## Ход Работ
+2026-07-04: claimed in Jira as `В работе` by Faraday /
+`019f2a46-535b-7370-8c36-44f0966ad81f` after SCRUM-858 landed on `origin/dev`
+(`5039ba0e`/`f300900b`, docs follow-up `39cbb181`). Scope guard: do not touch
+SCRUM-860 kill-scaling/sustain; keep edits to summon/deploy/turret ownership,
+focused tests, and relevant docs.
+
+2026-07-04: Faraday was stopped before source/test edits after no progress
+heartbeat; main Codex continued in this worktree. Implemented `max_summons_cap`
+for ClassWeapon deploy count, capped Guitarist amp and Druid raven totem at 3,
+capped Engineer sentry at 5, added explicit `deploy_role` markers, and turned
+Engineer sentry into a turret loop with per-cycle target memory plus small capped
+splash. `SCRUM-854` integration is preserved: mobile summon prefill/scoped caps
+remain unchanged, pressure mines keep independent lifetime, and this pass only
+adds deploy caps/roles and sentry target distribution on top of the landed
+SCRUM-854 runtime contract.
+
+2026-07-04 result: ready for QA after local green gates. Evidence:
+`tests/summoner_strengthening_test.gd` passed; `tests/summon_weapon_crowd_floor_test.gd`
+passed (`druid/summon_amulet` lvl20 621.7, `chemist/homunculus_vial` lvl20 611.6,
+`engineer/engineer_sentry_wrench` lvl20 648.5); `tests/weapon_integrity_test.gd`
+passed (17 classes, 51 weapons); `tests/weapon_scene_integrity_test.gd` passed
+(51 weapon scenes, 35/35 attack modes); `tests/runtime_smoke_weapon_mechanics_test.gd`
+passed; `tests/global_damage_balance_smoke_test.gd` passed (combined +/-25%,
+solo +/-20%, CCT +/-30%, worst CCT +22% doctor/restore_potion/20);
+`tools/balance_harness.gd` passed and wrote local build reports; final
+`tests/runtime_smoke_test.gd` passed cleanly. While validating, Player universal
+DoT callback was also moved from a delayed enemy object bind to `instance_id`
+resolution to remove green-smoke ERROR noise from freed enemies.
+
+## История / Previous Blocker
 Blocked/released 2026-07-04 by `class-rebalance-backend-Mill` before runtime edits.
 `SCRUM-854` is `Готово` and landed, but `SCRUM-858` is actively `В работе` and
 locks/edits overlapping backend balance paths: `scripts/class_weapon.gd`,

@@ -160,15 +160,15 @@ SCRUM-854/SCRUM-862 уточнили runtime-контракты: weapon signatur
 | Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
-| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
-| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
-| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps`: временные турели распределяют beam shots по целям, дают малый capped splash и имеют Leadership cap |
+| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
 | Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и decayed splash по области цели |
 | Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов), damage decays после каждой цели |
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
-| Гитарист | Усилитель | `sound_amp` | `amp` | Деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4) |
+| Гитарист | Усилитель | `sound_amp` | `amp` | `stage_pulse`: деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4), cap 3 |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор туда/обратно; crit-friendly, критовые попадания запускают неподвижный теневой всплеск у цели |
 | Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям, высокий crit + теневой burst у цели |
 | Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT и теневым всплеском на крите |
@@ -186,7 +186,7 @@ SCRUM-854/SCRUM-862 уточнили runtime-контракты: weapon signatur
 | Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing, сильнее counter damage |
 | Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack `pack_damage`: быстрые питомцы от Leadership, команды attack_target/guard |
 | Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
-| Друид | Вороний тотем | `raven_totem` | `amp` | Totem `support_totem`: пульсы контроля/поддержки, Leadership-scaled deploy limit |
+| Друид | Вороний тотем | `raven_totem` | `amp` | Totem `support_totem`: пульсы контроля/поддержки, Leadership-scaled deploy limit, cap 3 |
 
 ### Summon / Deploy Roles
 
@@ -202,6 +202,13 @@ SCRUM-254 усилил призывателей через data-driven поля 
 | `support_totem` | `druid/raven_totem` | Тотем-поддержка: deploy-пульсы, контроль и малый sustain |
 | `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель: автономные beam shots, роль считается summon archetype |
 | `support_drone` | `engineer/engineer_repair_drone` | Support chain: ремонт от урона + малый дополнительный sustain |
+
+SCRUM-859 добавил отдельный `deploy_role` для ClassWeapon-deploys: `stage_pulse`
+для Guitarist amp, `support_totem` для Druid raven, `turret_dps` для Engineer
+sentry, `repair_chain` для Engineer drone и `mine_grid` для Engineer mines.
+`max_summons_cap` применяется после Leadership scaling: amp/totem cap 3, sentry
+cap 5. Sentry shots now keep a per-cycle target memory and add small capped splash
+around the primary target.
 
 `ProgressionData.weapon_archetype()` считает оружие с `summon_role` как `summon`.
 Чистые summon-оружия (`summon_damage_multiplier` без `attack_mode`) в budget harness

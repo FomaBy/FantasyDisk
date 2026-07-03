@@ -1966,18 +1966,17 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 		return
 	var tick_damage := dot_damage * (0.22 if character_id in ["doctor", "chemist", "dark_mage", "assassin", "druid"] else 0.14)
 	var dot_tween := create_tween()
+	var enemy_id := enemy.get_instance_id()
 	for tick_index in range(2):
 		dot_tween.tween_interval(1.0 / dot_speed)
-		# SCRUM-551: bound-метод вместо лямбды с захватом локалов `enemy`/`tick_damage`.
-		# Захват в lambda-callable интермиттентно «освобождался» под быстрым create/free
-		# игрока и врагов в balance-CSV (ERROR: Lambda capture at index 1 was freed,
-		# gdscript_lambda_callable.cpp:110) и валил прогон. Callable.bind держит self
-		# (живёт пока жив tween, привязанный к ноде игрока) + value-args; гвард внутри метода.
-		dot_tween.tween_callback(Callable(self, "_apply_dot_tick").bind(enemy, tick_damage))
+		# Store an instance id instead of the enemy object; runtime smoke can free
+		# enemies before a delayed tick fires, and CallbackTweener rejects dead objects.
+		dot_tween.tween_callback(Callable(self, "_apply_dot_tick").bind(enemy_id, tick_damage))
 
 
-func _apply_dot_tick(enemy: Node2D, tick_damage: float) -> void:
-	if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+func _apply_dot_tick(enemy_id: int, tick_damage: float) -> void:
+	var enemy := instance_from_id(enemy_id) as Node
+	if enemy != null and enemy.has_method("take_damage"):
 		enemy.take_damage(tick_damage)
 
 
@@ -2352,7 +2351,10 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("max_summons") != null:
 		var base_max_summons := int(weapon.get_meta("base_max_summons"))
-		weapon.set("max_summons", base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0)))
+		var scaled_max_summons := base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0))
+		if weapon.get("max_summons_cap") != null and int(weapon.get("max_summons_cap")) > 0:
+			scaled_max_summons = mini(scaled_max_summons, int(weapon.get("max_summons_cap")))
+		weapon.set("max_summons", scaled_max_summons)
 
 
 func _equipped_weapons() -> Array:

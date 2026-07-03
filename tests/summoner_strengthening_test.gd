@@ -46,6 +46,8 @@ func _initialize() -> void:
 	await _test_summon_profile_scales_with_leadership(errors)
 	await _test_summon_prefill_and_scoped_limit(errors)
 	await _test_summon_limit_uses_leadership(errors)
+	await _test_deploy_role_configs(errors)
+	await _test_engineer_sentry_loop_distribution(errors)
 	await _test_ally_minion_profile_and_lifecycle(errors)
 	await _test_summon_group_target_distribution(errors)
 	await _test_ally_attack_splash(errors)
@@ -78,6 +80,26 @@ func _test_summon_configs(errors: Array) -> void:
 			errors.append("Expected %s to be counted as summon archetype." % key)
 		if float(config.get("summon_role_damage_multiplier", 0.0)) <= 0.0:
 			errors.append("Expected %s to define summon_role_damage_multiplier." % key)
+
+
+func _test_deploy_role_configs(errors: Array) -> void:
+	var expected := {
+		"guitarist/sound_amp": "stage_pulse",
+		"druid/raven_totem": "support_totem",
+		"engineer/engineer_sentry_wrench": "turret_dps",
+		"engineer/engineer_repair_drone": "repair_chain",
+		"engineer/engineer_pressure_mines": "mine_grid",
+	}
+	for key in expected:
+		var parts := str(key).split("/")
+		var config: Dictionary = ProgressionData.weapon(str(parts[0]), str(parts[1]))
+		if str(config.get("deploy_role", "")) != str(expected[key]):
+			errors.append("Expected %s deploy_role=%s, got %s." % [key, expected[key], config.get("deploy_role", "")])
+	var sentry: Dictionary = ProgressionData.weapon("engineer", "engineer_sentry_wrench")
+	if int(sentry.get("max_summons_cap", 0)) < 4:
+		errors.append("Expected Engineer sentry to define a Leadership cap high enough for turret play.")
+	if float(sentry.get("sentry_splash_radius", 0.0)) <= 0.0 or float(sentry.get("sentry_splash_damage_multiplier", 0.0)) <= 0.0:
+		errors.append("Expected Engineer sentry to define small capped splash knobs.")
 
 
 func _test_summon_profile_scales_with_leadership(errors: Array) -> void:
@@ -173,6 +195,80 @@ func _test_summon_group_target_distribution(errors: Array) -> void:
 			assigned_ids[target.get_instance_id()] = true
 	if assigned_ids.size() < 2:
 		errors.append("Expected summon target assignment to split 3 allies across at least 2 enemies, got %d unique targets." % assigned_ids.size())
+
+	holder.queue_free()
+	await process_frame
+
+
+func _test_engineer_sentry_loop_distribution(errors: Array) -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(520, 420)
+	await process_frame
+	player.call("configure_character", "engineer", "engineer_sentry_wrench")
+	var weapon: Node = player.get("equipped_weapon")
+	if weapon == null:
+		errors.append("Expected Engineer sentry weapon for turret loop distribution test.")
+		holder.queue_free()
+		await process_frame
+		return
+	weapon.set_process(false)
+	weapon.set("projectile_count", 5)
+	weapon.set("amp_pulse_interval", 0.03)
+	weapon.set("amp_lifetime", 0.45)
+	weapon.set("damage_falloff", 1.0)
+	weapon.set("sentry_splash_radius", 0.0)
+	weapon.set("sentry_splash_damage_multiplier", 0.0)
+	var params: Dictionary = player.get("derived_parameters")
+	params["damage"] = 10.0
+	player.set("derived_parameters", params)
+
+	var enemies: Array = []
+	for index in range(4):
+		var enemy := TestEnemy.new()
+		holder.add_child(enemy)
+		enemy.add_to_group("enemies")
+		enemy.health = 120.0
+		enemy.max_health = 120.0
+		enemy.global_position = player.global_position + Vector2(130.0 + index * 34.0, -28.0 + index * 18.0)
+		enemies.append(enemy)
+	await process_frame
+
+	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
+	for _frame in range(45):
+		await process_frame
+	var damaged_targets := 0
+	for enemy in enemies:
+		if float(enemy.damage_taken) > 0.01:
+			damaged_targets += 1
+	if damaged_targets < 3:
+		errors.append("Expected Engineer sentry cycle to distribute shots across at least 3 targets, damaged %d." % damaged_targets)
+
+	var primary := TestEnemy.new()
+	var nearby := TestEnemy.new()
+	var far := TestEnemy.new()
+	holder.add_child(primary)
+	holder.add_child(nearby)
+	holder.add_child(far)
+	for enemy in [primary, nearby, far]:
+		enemy.add_to_group("enemies")
+	primary.global_position = Vector2(900, 500)
+	nearby.global_position = primary.global_position + Vector2(42, 0)
+	far.global_position = primary.global_position + Vector2(130, 0)
+	await process_frame
+	weapon.set("sentry_splash_radius", 70.0)
+	weapon.set("sentry_splash_damage_multiplier", 0.25)
+	weapon.set("sentry_splash_target_cap", 1)
+	weapon.call("_damage_engineer_sentry_splash", primary, 20.0)
+	if primary.damage_taken > 0.01:
+		errors.append("Expected sentry splash helper not to re-hit the primary target, got %.2f." % primary.damage_taken)
+	if absf(nearby.damage_taken - 5.0) > 0.01:
+		errors.append("Expected sentry splash to hit one nearby target for 25%% damage, got %.2f." % nearby.damage_taken)
+	if far.damage_taken > 0.01:
+		errors.append("Expected sentry splash target cap/radius to leave far target unharmed, got %.2f." % far.damage_taken)
 
 	holder.queue_free()
 	await process_frame
