@@ -3830,8 +3830,8 @@
  },
  "backend_monster_density_xp_progression_task.md": {
   "key": "SCRUM-853",
-  "status": "В работе",
-  "desc_hash": "3518328a2a4a6d45341310a22f08d827"
+  "status": "Контроль качества",
+  "desc_hash": "9b5d765760c3f975f39244ce0de25818"
  },
  "backend_full_class_rebalance_identity_audit_task.md": {
   "key": "SCRUM-856",
