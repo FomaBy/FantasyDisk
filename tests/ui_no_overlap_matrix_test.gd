@@ -18,6 +18,7 @@ const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
+const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png"
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
 const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
@@ -586,16 +587,34 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected ContinueRunPanel to use cr_panel @2K frame." % context
 			if str(continue_panel.get_meta("continue_run_slot", "")) != "cr_panel":
 				return "%s: expected ContinueRunPanel slot metadata to be cr_panel." % context
-			if Vector4(continue_panel.get_meta("continue_run_content_margins", Vector4.ZERO)) != Vector4(58, 72, 58, 66):
-				return "%s: expected ContinueRunPanel strict SCRUM-582 content margins." % context
-			if (continue_panel.get_meta("continue_run_content_rect", Rect2()) as Rect2) != Rect2(58, 72, 564, 242):
-				return "%s: expected ContinueRunPanel safe rect to match CR_SAFE_2K." % context
+			if not _vector2_approx(continue_panel.get_global_rect().size, Vector2(840, 380), 1.0):
+				return "%s: expected SCRUM-842 widened ContinueRunPanel 840x380, got %s." % [context, str(continue_panel.get_global_rect().size)]
+			var expected_cr_margins := Vector4(58.0 * 840.0 / 680.0, 72.0, 58.0 * 840.0 / 680.0, 66.0)
+			var cr_margins := Vector4(continue_panel.get_meta("continue_run_content_margins", Vector4.ZERO))
+			if not _vector4_approx(cr_margins, expected_cr_margins, 1.0):
+				return "%s: expected ContinueRunPanel SCRUM-842 scaled content margins, got %s." % [context, str(cr_margins)]
+			var expected_cr_safe := Rect2(
+				Vector2(expected_cr_margins.x, expected_cr_margins.y),
+				Vector2(840.0 - expected_cr_margins.x - expected_cr_margins.z, 380.0 - expected_cr_margins.y - expected_cr_margins.w)
+			)
+			var cr_safe := continue_panel.get_meta("continue_run_content_rect", Rect2()) as Rect2
+			if not _rect2_approx(cr_safe, expected_cr_safe, 1.0):
+				return "%s: expected ContinueRunPanel safe rect to match widened SCRUM-842 content area, got %s." % [context, str(cr_safe)]
+			var cr_global_safe := Rect2(continue_panel.get_global_rect().position + cr_safe.position, cr_safe.size).grow(1.0)
 			for button_name in ["ContinueRunButton", "ContinueRunNewGameButton"]:
 				var cr_button := main.find_child(button_name, true, false) as Button
 				if cr_button == null:
 					return "%s: expected %s in ContinueRunPanel." % [context, button_name]
-				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != CR_BTN_2K_FRAME_PATH:
-					return "%s: expected %s to use cr_btn @2K frame." % [context, button_name]
+				if not cr_global_safe.encloses(cr_button.get_global_rect()):
+					return "%s: expected %s to stay inside ContinueRunPanel safe rect %s, got %s." % [context, button_name, str(cr_global_safe), str(cr_button.get_global_rect())]
+				var expected_button_path := CR_BTN_CONTINUE_LONG_FRAME_PATH if button_name == "ContinueRunButton" else CR_BTN_2K_FRAME_PATH
+				if _stylebox_texture_path(cr_button.get_theme_stylebox("normal")) != expected_button_path:
+					return "%s: expected %s to use %s." % [context, button_name, expected_button_path]
+				if button_name == "ContinueRunButton":
+					for state in ["normal", "hover", "focus", "pressed", "disabled"]:
+						var fit_error := _button_label_content_fit_error(cr_button, state, context)
+						if fit_error != "":
+							return fit_error
 		"rebind_conflict":
 			var rebind_panel := main.find_child("RebindConflictPanel", true, false) as Control
 			if rebind_panel == null or not rebind_panel.visible or not rebind_panel.get_global_rect().has_area():
@@ -1036,12 +1055,48 @@ func _text_control_needed_size(control: Control) -> Vector2:
 	return control.get_combined_minimum_size()
 
 
+func _button_label_content_fit_error(button: Button, state: String, context: String) -> String:
+	var style := button.get_theme_stylebox(state) as StyleBoxTexture
+	if style == null:
+		return "%s: expected %s %s style to be StyleBoxTexture." % [context, button.name, state]
+	var rect := button.get_global_rect()
+	var content_rect := Rect2(
+		rect.position + Vector2(style.content_margin_left, style.content_margin_top),
+		Vector2(
+			maxf(0.0, rect.size.x - style.content_margin_left - style.content_margin_right),
+			maxf(0.0, rect.size.y - style.content_margin_top - style.content_margin_bottom)
+		)
+	)
+	var font := button.get_theme_font("font")
+	var font_size := button.get_theme_font_size("font_size")
+	if font == null:
+		return ""
+	var text_size := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_CENTER, -1.0, font_size)
+	if text_size.x > content_rect.size.x + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: expected %s label '%s' to fit %s content width %.1f, needs %.1f." % [context, button.name, button.text, state, content_rect.size.x, text_size.x]
+	if text_size.y > content_rect.size.y + TEXT_OVERFLOW_TOLERANCE:
+		return "%s: expected %s label '%s' to fit %s content height %.1f, needs %.1f." % [context, button.name, button.text, state, content_rect.size.y, text_size.y]
+	return ""
+
+
 func _text_control_wraps(control: Control) -> bool:
 	if control is Label:
 		return (control as Label).autowrap_mode != TextServer.AUTOWRAP_OFF
 	if control is RichTextLabel:
 		return bool((control as RichTextLabel).fit_content)
 	return false
+
+
+func _vector2_approx(a: Vector2, b: Vector2, tolerance := 0.5) -> bool:
+	return absf(a.x - b.x) <= tolerance and absf(a.y - b.y) <= tolerance
+
+
+func _vector4_approx(a: Vector4, b: Vector4, tolerance := 0.5) -> bool:
+	return absf(a.x - b.x) <= tolerance and absf(a.y - b.y) <= tolerance and absf(a.z - b.z) <= tolerance and absf(a.w - b.w) <= tolerance
+
+
+func _rect2_approx(a: Rect2, b: Rect2, tolerance := 0.5) -> bool:
+	return _vector2_approx(a.position, b.position, tolerance) and _vector2_approx(a.size, b.size, tolerance)
 
 
 func _append_texture_stretch_errors(root_node: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:

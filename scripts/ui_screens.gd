@@ -875,7 +875,7 @@ func _show_quit_confirmation_dialog() -> void:
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 16)
+	box.add_theme_constant_override("separation", 12)
 	panel.add_child(box)
 
 	var title_label := Label.new()
@@ -944,17 +944,16 @@ func _cancel_quit_confirmation_dialog() -> void:
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
 
-# SCRUM-484: координатная спека @2560×1440 — продолжить забег (модалка).
-# Панель (offset ±340×±190 → 680×380), _panel_style margins (58,72,58,66) → safe-area.
-# Контент: заголовок, подзаголовок (2 строки, autowrap), ряд из двух кнопок 240×72
-# (separation 18). Текст в рамках, кнопки не уезжают за нижний край.
+# SCRUM-484/SCRUM-842: координатная спека @2560×1440 — продолжить забег (модалка).
+# Панель расширена до 840×380, чтобы long-кнопка «Продолжить» 420×72 и «Новая игра»
+# 240×72 с gap 18 оставались внутри safe-area и не клепали текст по орнаменту.
 const CR_DIM_2K := Rect2(0, 0, 2560, 1440)
-const CR_PANEL_2K := Rect2(940, 530, 680, 380)
-const CR_SAFE_2K := Rect2(998, 602, 564, 242)
-const CR_TITLE_2K := Rect2(998, 614, 564, 44)
-const CR_SUBTITLE_2K := Rect2(998, 674, 564, 66)
-const CR_BTN_CONTINUE_2K := Rect2(1031, 758, 240, 72)
-const CR_BTN_NEWGAME_2K := Rect2(1289, 758, 240, 72)
+const CR_PANEL_2K := Rect2(860, 530, 840, 380)
+const CR_SAFE_2K := Rect2(932, 602, 696, 242)
+const CR_TITLE_2K := Rect2(932, 614, 696, 44)
+const CR_SUBTITLE_2K := Rect2(932, 674, 696, 66)
+const CR_BTN_CONTINUE_2K := Rect2(942, 758, 420, 72)
+const CR_BTN_NEWGAME_2K := Rect2(1380, 758, 240, 72)
 
 # SCRUM-584: координатная спека @2560x1440 — конфликт переназначения клавиши.
 # Mockup/art source: docs/design/references/scrum584_rebind_conflict_2k/.
@@ -1003,16 +1002,22 @@ func _show_continue_run_dialog() -> void:
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -340.0
-	panel.offset_top = -190.0
-	panel.offset_right = 340.0
-	panel.offset_bottom = 190.0
+	var panel_size := CR_PANEL_2K.size
+	var panel_half_size := panel_size * 0.5
+	panel.offset_left = -panel_half_size.x
+	panel.offset_top = -panel_half_size.y
+	panel.offset_right = panel_half_size.x
+	panel.offset_bottom = panel_half_size.y
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-486: @2K per-слот фрейм (cr_panel 680×380, ровно размер панели).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", Vector2(680.0, 380.0)))
+	# SCRUM-842: cr_panel 9-slice расширен по X под long continue button.
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", panel_size))
 	panel.set_meta("continue_run_slot", "cr_panel")
-	panel.set_meta("continue_run_content_margins", _overhaul_2k_content_margins("cr_panel", CR_PANEL_2K.size))
-	panel.set_meta("continue_run_content_rect", Rect2(CR_SAFE_2K.position - CR_PANEL_2K.position, CR_SAFE_2K.size))
+	var content_margins := _overhaul_2k_content_margins("cr_panel", panel_size)
+	panel.set_meta("continue_run_content_margins", content_margins)
+	panel.set_meta("continue_run_content_rect", Rect2(
+		Vector2(content_margins.x, content_margins.y),
+		Vector2(panel_size.x - content_margins.x - content_margins.z, panel_size.y - content_margins.y - content_margins.w)
+	))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -1053,13 +1058,13 @@ func _show_continue_run_dialog() -> void:
 	var button_row := HBoxContainer.new()
 	button_row.name = "ContinueRunButtons"
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	button_row.custom_minimum_size = Vector2(0.0, 76.0)
+	button_row.custom_minimum_size = Vector2(0.0, CR_BTN_CONTINUE_2K.size.y)
 	button_row.add_theme_constant_override("separation", 18)
 	box.add_child(button_row)
 
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "ContinueRunButton"
-	_set_action_button_size(continue_button, 240.0, 72.0)
+	_set_action_button_size(continue_button, CR_BTN_CONTINUE_2K.size.x, CR_BTN_CONTINUE_2K.size.y)
 	_apply_overhaul_2k_button_theme(continue_button, "cr_btn", CR_BTN_CONTINUE_2K.size)
 	continue_button.pressed.connect(func() -> void:
 		if game.load_run_autosave():
