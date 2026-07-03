@@ -2,7 +2,7 @@ class_name BerserkWeapon
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
-const EXACT_ZONE_OVERLAY_ALPHA := 0.40
+const EXACT_ZONE_OVERLAY_ALPHA := 0.60
 
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"

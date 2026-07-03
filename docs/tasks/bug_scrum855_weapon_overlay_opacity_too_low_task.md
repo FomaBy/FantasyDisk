@@ -1,6 +1,6 @@
 # BUG: SCRUM-855 weapon overlays are far below requested 60% opacity
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end
 Версия: 0.2.1
@@ -52,3 +52,13 @@ Actual:
   strong.
 - Add a focused test/evidence dump for `_show_exact_zone_overlay` so the generic
   VFX smoke cannot miss this acceptance point.
+
+## Result
+
+- Raised `scripts/berserk_weapon.gd` exact attack-zone overlay alpha to `0.60`.
+- Updated `tests/attack_vfx_smoke_test.gd` to assert `WeaponSignatureBody` alpha
+  `0.60` and Berserk exact-zone alpha `0.60`.
+- Updated SCRUM-854 backend evidence and current-state docs.
+- Verification:
+  - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/attack_vfx_smoke_test.gd`
+  - PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
