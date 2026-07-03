@@ -1,6 +1,6 @@
 # BUG: SCRUM-855 Doctor still receives external regeneration/vampirism rewards
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end
 Версия: 0.2.1
@@ -55,3 +55,26 @@ Actual:
 - Add a focused reward-pool regression test asserting that Doctor cannot roll
   `regeneration_up`, `vampiric_amount_up`, `vampiric_chance_up`, or matching
   shop/artifact sustain entries if those are in scope.
+
+## Результат
+
+- Исправлено в рамках backend land для `SCRUM-854`: Doctor external sustain
+  rewards filtered from level-up/shop/artifact/start-boon paths while Doctor
+  weapon-owned sustain remains allowed.
+- Fix commit: `c6634fac`; verified as ancestor of tested `origin/dev`.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+Commit tested: `1924f6e3e8c404dfbba8e0fda0af4a829aa1d15e`.
+
+Проверки через `tools/godot_gate.py`:
+- `tests/doctor_drain_softcap_test.gd` — PASS.
+- `tests/attribute_relevance_test.gd` — PASS.
+- `tests/start_boons_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS; known non-blocking `_apply_dot_tick` CallbackTweener stderr only.
+
+Focused check: Doctor reward pools exclude `regeneration_up`, `vampiric_amount_up`,
+`vampiric_chance_up`, and external sustain shop/artifact/start-boon rewards;
+Doctor weapon sustain via `restore_potion` / `plague_syringe` remains allowed.
+
+Disk cleanup: QA removed `/private/tmp/fantasydisk-scrum862-qa-40e0a657`.
