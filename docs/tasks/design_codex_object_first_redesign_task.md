@@ -56,21 +56,21 @@ ownership after Jira claim-first.
 
 ## Acceptance Criteria
 
-- [ ] Mockup/spec package лежит в
+- [x] Mockup/spec package лежит в
       `docs/design/mockups/codex_object_first_redesign/` с base geometry
       1920x1080 или 2560x1440 и targets 1280x720, 1920x1080, 2560x1440.
-- [ ] Preview/contact PNGs сохранены в `docs/design/previews/`, включая полный
+- [x] Preview/contact PNGs сохранены в `docs/design/previews/`, включая полный
       экран и safe-zone/debug overlay.
-- [ ] Левое меню покрывает все существующие секции: Персонажи, Монстры,
+- [x] Левое меню покрывает все существующие секции: Персонажи, Монстры,
       Артефакты, Характеристики, Глоссарий, Возвышения.
-- [ ] Центральная область содержит только краткий контент выбранной/list записи:
+- [x] Центральная область содержит только краткий контент выбранной/list записи:
       image + title + one short summary, без дубля длинного body-текста.
-- [ ] Правая область содержит full detail text и самое крупное изображение
+- [x] Правая область содержит full detail text и самое крупное изображение
       объекта на экране; длинный текст имеет явную scroll-зону и не перекрывает
       изображение.
-- [ ] Не добавлены бессмысленные extra frames; визуальная плотность ближе к
+- [x] Не добавлены бессмысленные extra frames; визуальная плотность ближе к
       Atlas/Settings v6, чем к текущему ornate Codex.
-- [ ] Каждый generated frame/button/background asset textless там, где текст
+- [x] Каждый generated frame/button/background asset textless там, где текст
       рисует runtime, имеет documented margins и держит контент только в пустой
       safe-area.
 
@@ -117,3 +117,24 @@ Verification:
 - Preview dimensions validated with PIL.
 - Disk cleanup: none created beyond committed package files; transient `.import`
   and `.uid` sidecars from prior Godot runs were removed before work.
+
+## QA-Вердикт 2026-07-03
+
+Статус: PASSED
+
+Evidence:
+- Jira QA comment verified `origin/dev` contained required design commits
+  `676fc3cf` and `6759ecac`.
+- `docs/design/mockups/codex_object_first_redesign/spec.md` is
+  `ready_for_integration`.
+- `layout_zones.json` validates as JSON and defines the 1920x1080 base plus
+  responsive zones.
+- `handoff_to_scrum850.md` exists and is ready for runtime integration.
+- PixelLab mockup and previews exist with expected dimensions: mockup 688x384,
+  1920 preview 1920x1080, safe overlay 1920x1080, contact sheet 1920x620.
+- Visual inspection confirms the left category rail, center concise overview,
+  and right larger object/detail stage; the safe overlay keeps runtime content
+  zones off ornaments and borders.
+- Godot runtime was not run by scope: this was design-source QA only.
+
+Disk cleanup: no QA worktree/cache created.
