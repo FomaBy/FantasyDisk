@@ -71,3 +71,22 @@ Verification:
 
 Disk cleanup: none created by the repair pass; QA recheck removed its disposable
 clone/logs before this fix.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+Commit tested: `78b289836612000435addd76521c375d57a50253`.
+
+Independent re-QA confirmed fresh `origin/dev` contains repair commits
+`22c79652` and `78b28983`; both referenced mirror files exist, have git history,
+and contain final SCRUM-855/SCRUM-854 evidence. The repair commits are docs-only,
+so Godot smoke was not rerun in this pass; prior SCRUM-863 runtime smoke was
+PASS on `9dd4d8d118b5b2a2f1a73b2ef3f81af1f841a31f`.
+
+Additional read-only QA subagent `Newton` independently verified a fresh
+`origin/dev` checkout: `22c79652` changed only the two SCRUM-855/SCRUM-863 task
+mirrors, the SCRUM-855 QA mirror is `Статус: done` with all checklist items
+checked and `QA-Вердикт: PASSED`, and the backend mirror records the SCRUM-854
+implementation/test evidence.
+
+Disk cleanup: re-QA removed `/private/tmp/fantasydisk-scrum863-reqa-f283b96`;
+Newton removed `/tmp/fantasydisk-scrum863-qa.rBobFV`; no QA logs remained.
