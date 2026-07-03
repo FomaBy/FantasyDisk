@@ -58,8 +58,9 @@ Domain docs для подробностей по областям:
     убийства, урон по врагам / полученный урон, собранное золото, финальный уровень,
     набранные артефакты и причину исхода (имя босса/категория). Метрики собираются в
     `game.run_metrics` по ходу боёв (`reset_run_metrics` на старте забега; НЕ персистятся
-    в autosave), рендерятся через `_add_run_summary_rows` в pause-end модалке поверх
-    мета-текста, и обнуляются при возврате в меню / новом забеге.
+    в autosave), рендерятся через `_add_run_summary_rows` в компактной колонке
+    no-scroll result-модалки поверх мета-текста, и обнуляются при возврате в меню /
+    новом забеге.
 
 Бой длится по таймеру (SCRUM-785): обычный бой `60 + 3 * route_stage` секунд (максимум 90, ×множитель Возвышения) — выжил до конца = победа. Элитка и Босс — фиксированный 5-минутный (`300с`, `ELITE_BOSS_ROUND_DURATION`, без множителя Возвышения) таймер «убей или проиграл»: победа = убить цель до истечения; таймаут с живой целью = поражение. Таймер тикает и в боссовом бою.
 В 3-актном забеге `route_stage` остаётся локальным для карты акта, а длительность,
@@ -1312,9 +1313,11 @@ Result crests `ui_crest_victory.png` / `ui_crest_defeat.png` остаются
 декоративными header assets. SCRUM-407 подключил этот kit в runtime: меню паузы,
 pause dossier/stats, victory и death screens используют
 `ui_frame_pause_end_modal.png` как масштабируемый modal `StyleBoxTexture` с
-Design safe/content margins; длинное dossier/stats содержимое живет внутри
-scroll safe-zone, а victory/death crest и action button адаптивно уменьшаются на
-720p без попадания на орнамент. QA dump:
+Design safe/content margins; длинное pause dossier/stats содержимое живет внутри
+scroll safe-zone. SCRUM-841 переводит victory/death на no-scroll result layout:
+`ResultContent_*` лежит напрямую в panel safe-zone, `ResultBody_*` делит середину
+на decorative crest slot и компактную `RunSummaryColumn_*`, а action button всегда
+остаётся видимой в нижнем safe-слоте на 1152x648/1280x720/1080p/2K/4K. QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
 Level-up показывает 3 фиксированных варианта на каждый полученный уровень: обычные улучшения оружия/параметров и очень редкие основные характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) с визуальной rare-пометкой. Вес обычных наград (SCRUM-695) считается напрямую от матрицы релевантности `CharacterData.ATTRIBUTE_RELEVANCE` (24 каноничных атрибута × 17 классов, инвариант 2 primary / 8 secondary / 7 optional на атрибут): primary выпадает чаще secondary, secondary чаще optional, но у каждого варианта есть floor (optional держится выше 0.3, чтобы атрибут не выпадал из пула). Набор из 3 вариантов подчиняется правилу релевантности — не более 1 `optional`-атрибута и всегда минимум 1 primary/secondary (никогда только необязательные); редкий main-stat слот и capstone «Озарение» считаются не-optional. Каждый атрибут описан человекочитаемыми единицами, согласованными с глоссарием. `ATTRIBUTE_PRIORITIES` (8 базовых характеристик) остаётся источником веса только для редкого main-stat слота и pause-stats tooltips. Один уровень дает ровно один выбор; если накопилось несколько уровней, окна открываются последовательно. Окно можно закрыть через «Позже» без потери выбора: тот же набор остается в `level_up_offer`, а нижняя SCRUM-390 plus-кнопка с pending-бейджем возвращает игрока к сохраненному пику. SCRUM-683 подключил live runtime для SCRUM-682 Level Up package: крупная `1720x1040` панель, три `470x560` reward cards, увеличенный портрет/иконки, dedicated `Позже` button art и framed visible effect-preview внутри каждой карточки. Effect-preview показывает before/after deltas из текущих статов, активных модификаторов, `ProgressionData.derived_parameters()` и выбранных героя/оружия; tooltip остается только overflow/backstop, а не единственным объяснением выбора. Runtime сохраняет SCRUM-465 viewport-aware поведение на 720p и держит весь контент внутри safe zones; SCRUM-683 focused evidence пишется в `build/qa/scrum683/level_up_no_overlap_matrix.md`. Level-up и докачка атрибутов показывают иконки через `UIIconRegistry` и добавляют текст «Интерпретация» для выбранного героя. Артефакты с `class_affinity` больше не считаются нерабочими для чужого класса: affinity теперь описывает тематику, а `affinity_mods` применяются через интерпретацию текущего героя.

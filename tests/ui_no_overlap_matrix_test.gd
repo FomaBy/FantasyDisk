@@ -622,6 +622,34 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s button." % [context, button_name]
 				if _stylebox_texture_path(rebind_button.get_theme_stylebox("normal")) != RC_BTN_2K_FRAME_PATH:
 					return "%s: expected %s to use rc_btn @2K button frame." % [context, button_name]
+		"victory", "death":
+			var result_panel := main.find_child("PauseEndModalPanel_%s" % screen_id, true, false) as PanelContainer
+			if result_panel == null or not result_panel.visible or not result_panel.get_global_rect().has_area():
+				return "%s: expected visible result panel." % context
+			if main.find_child("PauseEndModalScroll_%s" % screen_id, true, false) != null:
+				return "%s: SCRUM-841 result screens must not use PauseEndModalScroll_%s." % [context, screen_id]
+			var result_content := main.find_child("ResultContent_%s" % screen_id, true, false) as Control
+			var result_body := main.find_child("ResultBody_%s" % screen_id, true, false) as Control
+			var summary_column := main.find_child("RunSummaryColumn_%s" % screen_id, true, false) as Control
+			if result_content == null or result_body == null or summary_column == null:
+				return "%s: expected SCRUM-841 no-scroll result content/body/summary nodes." % context
+			var content_rect: Rect2 = result_panel.get_meta("pause_end_content_rect", Rect2()) as Rect2
+			var display_size: Vector2 = result_panel.get_meta("pause_end_display_size", result_panel.get_global_rect().size) as Vector2
+			if not content_rect.has_area():
+				return "%s: expected result panel to expose pause_end_content_rect metadata." % context
+			var scaled_safe := _scaled_source_rect(result_panel.get_global_rect(), display_size, content_rect).grow(1.0)
+			var content_safe := result_content.get_global_rect().grow(1.0)
+			if not scaled_safe.encloses(result_content.get_global_rect()):
+				return "%s: expected ResultContent_%s to match result frame safe rect %s, got %s." % [context, screen_id, str(scaled_safe), str(result_content.get_global_rect())]
+			var result_button_name := "DeathRetryButton"
+			if screen_id == "victory":
+				result_button_name = "VictoryNewRunButton"
+			for child_name in ["ResultBody_%s" % screen_id, "RunSummaryStats", result_button_name]:
+				var child := main.find_child(child_name, true, false) as Control
+				if child == null or not child.visible or not child.get_global_rect().has_area():
+					return "%s: expected visible %s inside result panel." % [context, child_name]
+				if not content_safe.encloses(child.get_global_rect()):
+					return "%s: expected %s to stay inside ResultContent safe rect %s, got %s." % [context, child_name, str(content_safe), str(child.get_global_rect())]
 		"codex":
 			var expected_panels := {
 				"CodexMainPanel": CODEX_MAIN_2K_FRAME_PATH,

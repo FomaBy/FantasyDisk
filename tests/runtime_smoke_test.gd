@@ -3526,6 +3526,14 @@ func _test_victory_flow(main: Node) -> void:
 	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
 		_fail("Expected victory screen to use the SCRUM-448 minimal modal frame.")
 		return
+	if main.find_child("PauseEndModalScroll_victory", true, false) != null:
+		_fail("Expected victory result screen to fit without PauseEndModalScroll_victory.")
+		return
+	var victory_button := main.find_child("VictoryNewRunButton", true, false) as Control
+	var victory_summary := main.find_child("RunSummaryStats", true, false) as Control
+	if not _result_child_inside_pause_end_safe(victory_panel, victory_button) or not _result_child_inside_pause_end_safe(victory_panel, victory_summary):
+		_fail("Expected victory action and run summary to stay inside result modal safe zone.")
+		return
 
 
 func _test_elite_flow(main_scene: PackedScene) -> void:
@@ -8106,6 +8114,21 @@ func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: R
 	)
 
 
+func _result_child_inside_pause_end_safe(panel: PanelContainer, child: Control) -> bool:
+	if panel == null or child == null:
+		return false
+	var screen_id := str(panel.name).trim_prefix("PauseEndModalPanel_")
+	var result_content := panel.find_child("ResultContent_%s" % screen_id, true, false) as Control
+	if result_content != null and result_content.visible and result_content.get_global_rect().has_area():
+		return result_content.get_global_rect().grow(1.0).encloses(child.get_global_rect())
+	var content_rect: Rect2 = panel.get_meta("pause_end_content_rect", Rect2()) as Rect2
+	var display_size: Vector2 = panel.get_meta("pause_end_display_size", panel.get_global_rect().size) as Vector2
+	if not content_rect.has_area():
+		return false
+	var safe_rect := _scaled_source_rect(panel.get_global_rect(), display_size, content_rect).grow(1.0)
+	return safe_rect.encloses(child.get_global_rect())
+
+
 func _collect_label_text(node: Node) -> String:
 	var parts := []
 	if node is Label:
@@ -8207,6 +8230,14 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
 	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != RESULT_PANEL_TEXTURE_2K:
 		_fail("Expected death screen to use the SCRUM-578 @2K result modal frame.")
+		return
+	if death_main.find_child("PauseEndModalScroll_death", true, false) != null:
+		_fail("Expected death result screen to fit without PauseEndModalScroll_death.")
+		return
+	var death_button := death_main.find_child("DeathRetryButton", true, false) as Control
+	var death_summary := death_main.find_child("RunSummaryStats", true, false) as Control
+	if not _result_child_inside_pause_end_safe(death_panel, death_button) or not _result_child_inside_pause_end_safe(death_panel, death_summary):
+		_fail("Expected death action and run summary to stay inside result modal safe zone.")
 		return
 	death_main.queue_free()
 

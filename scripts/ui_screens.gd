@@ -4779,6 +4779,8 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
+	if control == null or not is_instance_valid(control):
+		return
 	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	control.offset_left = rect.position.x
 	control.offset_top = rect.position.y
@@ -7709,22 +7711,18 @@ func _show_event_screen(route_node: Dictionary) -> void:
 
 
 # SCRUM-489: координатная спека @2560×1440 — блок «Результаты» (Победа / Поражение).
-# Геометрия победы и поражения идентична: обе — pause/end-модалки через _create_menu_box
-# (_is_pause_end_screen_background → ["pause","victory","death"]). Размер панели из
-# _pause_end_modal_display_size("victory"/"death"): source 986×900, height clamp [520,820]
-# упирается в 820 → @2K = 898×820, CenterContainer центрирует → top-left (831,310).
-# Content-margins PAUSE_END_MODAL_CONTENT (74,94,74,86) скейлятся ×0.911 → (67,86,67,78) →
-# safe-area (898,396,764,656) — идентична PM_SAFE_2K. Контент в ScrollContainer→VBox
-# (alignment center, separation 12): crest 176×176 → title 42px → subtitle 17px (autowrap,
-# до ~8 строк у победы) → кнопка 420×104. Все элементы по центру safe-x; Y — фиксированные
-# слоты в safe 396..1052 (длинный subtitle победы при переполнении уходит в вертикальный
-# скролл — дизайн-инвариант «помещается до скролла» держится при 2K).
+# Геометрия победы и поражения использует pause/end-модалку, но с SCRUM-841 result
+# screens больше не кладутся в ScrollContainer: title/subtitle занимают верх safe-зоны,
+# body делит середину на crest-slot и компактную run-summary column, а action button
+# всегда остаётся в нижнем safe-слоте. Pause screen сохраняет scroll-контракт отдельно.
 const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
 const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
-const RESULT_CREST_2K := Rect2(1192, 401, 176, 176)      # x = 898 + (764-176)/2
-const RESULT_TITLE_2K := Rect2(898, 589, 764, 54)        # crest_bottom 577 + sep 12
-const RESULT_SUBTITLE_2K := Rect2(898, 655, 764, 220)    # до ~8 строк автопереноса
+const RESULT_TITLE_2K := Rect2(898, 396, 764, 42)
+const RESULT_SUBTITLE_2K := Rect2(898, 448, 764, 128)
+const RESULT_BODY_2K := Rect2(898, 586, 764, 352)
+const RESULT_CREST_2K := Rect2(899, 678, 168, 168)
+const RESULT_SUMMARY_2K := Rect2(1086, 586, 576, 352)
 const VS_BTN_NEWRUN_2K := Rect2(1070, 948, 420, 104)     # x = 898 + (764-420)/2; нижний слот safe
 const DS_BTN_RETRY_2K := Rect2(1070, 948, 420, 104)      # геометрия = VS_BTN_NEWRUN_2K
 
@@ -7745,9 +7743,9 @@ func _show_victory_screen() -> void:
 		skill_points_total,
 		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
 	]
-	var box = _create_menu_box("Победа", subtitle, "victory")
-	_add_result_crest(box, "victory")
-	_add_run_summary_rows(box, true)  # SCRUM-502: сводка прогона
+	var result_layout := _create_result_menu_box("Победа", subtitle, "victory")
+	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "victory")
+	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, true, true)  # SCRUM-502: сводка прогона
 	var finish_run := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -7764,7 +7762,7 @@ func _show_victory_screen() -> void:
 	restart_button.name = "VictoryNewRunButton"
 	_set_action_button_size(restart_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
 	restart_button.pressed.connect(finish_run)
-	box.add_child(restart_button)
+	(result_layout["button_slot"] as Control).add_child(restart_button)
 	game.ui_escape_action = finish_run
 	# SCRUM-812: стартовый фокус на основной кнопке; B/Esc = основная кнопка (finish_run),
 	# «пустого» закрытия нет.
@@ -7776,9 +7774,9 @@ func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
-	var box := _create_menu_box("Поражение", subtitle, "death")
-	_add_result_crest(box, "death")
-	_add_run_summary_rows(box, false)  # SCRUM-502: сводка прогона
+	var result_layout := _create_result_menu_box("Поражение", subtitle, "death")
+	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "death")
+	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, false, true)  # SCRUM-502: сводка прогона
 	var back_to_menu := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -7795,18 +7793,22 @@ func _show_death_screen(reason := "") -> void:
 	retry_button.name = "DeathRetryButton"
 	_set_action_button_size(retry_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
 	retry_button.pressed.connect(back_to_menu)
-	box.add_child(retry_button)
+	(result_layout["button_slot"] as Control).add_child(retry_button)
 	game.ui_escape_action = back_to_menu
 	# SCRUM-812: стартовый фокус на «Начать заново»; B/Esc = основная кнопка, без «пустого» закрытия.
 	_wire_run_ui_focus([retry_button], false, [], retry_button)
 
 
-# SCRUM-502: блок сводки прогона на экранах победы/смерти. Кладётся в box (VBox внутри
-# PauseEndModalScroll_*) после crest/subtitle, до кнопки. Все строки MOUSE_FILTER_IGNORE,
-# чтобы не перехватывать клик кнопки и Escape. Стабильные имена узлов — для matrix-теста.
-func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
+# SCRUM-502/SCRUM-841: блок сводки прогона на экранах победы/смерти. В старом
+# контейнерном пути он кладётся в box; в no-scroll result layout — в компактную
+# RunSummaryColumn. Все строки MOUSE_FILTER_IGNORE, чтобы не перехватывать клик
+# кнопки и Escape. Стабильные имена узлов — для matrix-теста.
+func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact := false) -> void:
 	var metrics: Dictionary = game.run_metrics if not game.run_metrics.is_empty() else {}
 	var outcome := str(metrics.get("outcome_reason", ""))
+	var summary_parent := _result_summary_parent(box)
+	var target: VBoxContainer = summary_parent if summary_parent != null else box
+	var compact := force_compact or summary_parent != null
 
 	if outcome != "":
 		var outcome_label := Label.new()
@@ -7814,19 +7816,19 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(17))
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 0, 22))
 		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(outcome_label)
+		target.add_child(outcome_label)
 
 	var grid := GridContainer.new()
 	grid.name = "RunSummaryStats"
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 28)
-	grid.add_theme_constant_override("v_separation", 6)
-	grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	grid.add_theme_constant_override("h_separation", 14 if compact else 28)
+	grid.add_theme_constant_override("v_separation", 2 if compact else 6)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact else Control.SIZE_SHRINK_CENTER
 	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(grid)
+	target.add_child(grid)
 
 	var artifacts: Array = metrics.get("artifacts", []) as Array
 	var rows := [
@@ -7844,7 +7846,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 0, 20))
 		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
@@ -7852,7 +7854,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 0, 20))
 		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
@@ -7866,13 +7868,31 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 				names.append(str(artifact))
 		var artifacts_label := Label.new()
 		artifacts_label.name = "RunSummaryArtifacts"
-		artifacts_label.text = ", ".join(names)
+		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(14))
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 0, 18))
 		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(artifacts_label)
+		target.add_child(artifacts_label)
+
+
+func _result_summary_parent(box: VBoxContainer) -> VBoxContainer:
+	if box == null or not bool(box.get_meta("result_no_scroll_layout", false)):
+		return null
+	var screen_id := str(box.get_meta("result_screen_id", ""))
+	if screen_id == "":
+		return null
+	return box.find_child("RunSummaryColumn_%s" % screen_id, true, false) as VBoxContainer
+
+
+func _compact_result_artifact_names(names: Array) -> String:
+	if names.size() <= 3:
+		return ", ".join(names)
+	var visible_names := []
+	for index in range(mini(3, names.size())):
+		visible_names.append(str(names[index]))
+	return "%s + ещё %d" % [", ".join(visible_names), names.size() - visible_names.size()]
 
 
 func _format_run_duration(total_seconds: float) -> String:
@@ -9646,6 +9666,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	panel.anchor_bottom = 0.5
 	var economy_panel := _is_economy_screen_background(screen_background_id)
 	var pause_end_panel := _is_pause_end_screen_background(screen_background_id)
+	var result_panel := _is_result_screen_background(screen_background_id)
 	var display_size := _pause_end_modal_display_size(screen_background_id) if pause_end_panel else Vector2.ZERO
 	var half_size := panel_display_size * 0.5 if panel_display_size != Vector2.ZERO else (display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0)))
 	panel.offset_left = -half_size.x
@@ -9655,6 +9676,9 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	if pause_end_panel:
 		panel.name = "PauseEndModalPanel_%s" % screen_background_id
 		panel.clip_contents = true
+		panel.set_meta("pause_end_display_size", display_size)
+		panel.set_meta("pause_end_content_margins", _pause_end_modal_content_margins(display_size, screen_background_id))
+		panel.set_meta("pause_end_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
 		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
 	elif panel_style_override != null:
 		panel.add_theme_stylebox_override("panel", panel_style_override)
@@ -9666,8 +9690,8 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", 12 if pause_end_panel else (16 if economy_panel else 14))
-	if pause_end_panel:
+	box.add_theme_constant_override("separation", (8 if result_panel and display_size.y < 660.0 else 10) if result_panel else (12 if pause_end_panel else (16 if economy_panel else 14)))
+	if pause_end_panel and not result_panel:
 		var scroll := ScrollContainer.new()
 		scroll.name = "PauseEndModalScroll_%s" % screen_background_id
 		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -9676,6 +9700,17 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		scroll.follow_focus = true
 		panel.add_child(scroll)
 		scroll.add_child(box)
+	elif result_panel:
+		var result_shell := Control.new()
+		result_shell.name = "ResultShell_%s" % screen_background_id
+		result_shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		result_shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		result_shell.clip_contents = true
+		panel.add_child(result_shell)
+		result_shell.add_child(box)
+		box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		box.custom_minimum_size = Vector2.ZERO
+		box.clip_contents = true
 	elif economy_panel:
 		var scroll := ScrollContainer.new()
 		scroll.name = "EconomyMenuScroll_%s" % screen_background_id
@@ -9706,17 +9741,252 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
+	if result_panel:
+		_configure_result_menu_layout(box, screen_background_id, display_size)
 
 	return box
 
 
+func _create_result_menu_box(title: String, subtitle: String, screen_background_id: String) -> Dictionary:
+	game._clear_ui()
+
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, screen_background_id)
+
+	var display_size := _pause_end_modal_display_size(screen_background_id)
+	var panel := PanelContainer.new()
+	panel.name = "PauseEndModalPanel_%s" % screen_background_id
+	panel.clip_contents = true
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	var half_size := display_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y
+	panel.set_meta("pause_end_display_size", display_size)
+	panel.set_meta("pause_end_content_margins", _pause_end_modal_content_margins(display_size, screen_background_id))
+	panel.set_meta("pause_end_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
+	root.add_child(panel)
+
+	var content := Control.new()
+	content.name = "ResultContent_%s" % screen_background_id
+	content.clip_contents = true
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.custom_minimum_size = Vector2.ZERO
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.set_meta("result_no_scroll_layout", true)
+	content.set_meta("result_screen_id", screen_background_id)
+	content.set_meta("result_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
+	panel.add_child(content)
+
+	var title_label := Label.new()
+	title_label.name = "MenuTitle_%s" % screen_background_id
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.clip_text = true
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(title_label)
+
+	var subtitle_label := Label.new()
+	subtitle_label.name = "MenuSubtitle_%s" % screen_background_id
+	subtitle_label.text = subtitle
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.clip_text = true
+	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	subtitle_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(subtitle_label)
+
+	var body := Control.new()
+	body.name = "ResultBody_%s" % screen_background_id
+	body.clip_contents = true
+	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(body)
+
+	var crest_slot := CenterContainer.new()
+	crest_slot.name = "ResultCrestSlot_%s" % screen_background_id
+	crest_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	body.add_child(crest_slot)
+
+	var summary_column := VBoxContainer.new()
+	summary_column.name = "RunSummaryColumn_%s" % screen_background_id
+	summary_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	summary_column.clip_contents = true
+	summary_column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	summary_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(summary_column)
+
+	var button_slot := CenterContainer.new()
+	button_slot.name = "ResultButtonSlot_%s" % screen_background_id
+	button_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(button_slot)
+
+	content.resized.connect(func() -> void:
+		_layout_result_content(content, screen_background_id)
+	)
+	_layout_result_content(content, screen_background_id)
+	call_deferred("_layout_result_content", content, screen_background_id)
+
+	return {
+		"content": content,
+		"crest_slot": crest_slot,
+		"summary_column": summary_column,
+		"button_slot": button_slot,
+	}
+
+
+func _layout_result_content(content: Control, screen_background_id: String) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var size := content.size
+	if size.x <= 1.0 or size.y <= 1.0:
+		return
+	var compact := size.y < 520.0 or float(game.get_viewport().get_visible_rect().size.y) < 760.0
+	var gap := 6.0 if compact else 10.0
+	var button_height := minf(_pause_end_result_button_height(), maxf(56.0, size.y * 0.20))
+	var available_height := maxf(1.0, size.y - button_height - gap * 3.0)
+	var title_height := clampf(available_height * 0.12, 28.0 if compact else 34.0, 42.0)
+	var subtitle_height := clampf(available_height * (0.23 if compact else 0.25), 76.0 if compact else 104.0, 112.0 if compact else 128.0)
+	var body_height := maxf(1.0, available_height - title_height - subtitle_height)
+	var minimum_body := 162.0 if compact else 220.0
+	if body_height < minimum_body:
+		var deficit := minimum_body - body_height
+		subtitle_height = maxf(58.0 if compact else 82.0, subtitle_height - deficit)
+		body_height = maxf(1.0, available_height - title_height - subtitle_height)
+
+	var title := content.get_node_or_null("MenuTitle_%s" % screen_background_id) as Label
+	var subtitle := content.get_node_or_null("MenuSubtitle_%s" % screen_background_id) as Label
+	var body := content.get_node_or_null("ResultBody_%s" % screen_background_id) as Control
+	var button_slot := content.get_node_or_null("ResultButtonSlot_%s" % screen_background_id) as Control
+
+	_apply_control_rect(title, Rect2(0.0, 0.0, size.x, title_height))
+	_apply_control_rect(subtitle, Rect2(0.0, title_height + gap, size.x, subtitle_height))
+	_apply_control_rect(body, Rect2(0.0, title_height + gap + subtitle_height + gap, size.x, body_height))
+	_apply_control_rect(button_slot, Rect2(0.0, maxf(0.0, size.y - button_height), size.x, button_height))
+
+	if title != null:
+		title.add_theme_font_size_override("font_size", _readable_font_size(26 if compact else 34, 0, 42))
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 13, 0, 18))
+	if body == null:
+		return
+
+	var crest_slot := body.get_node_or_null("ResultCrestSlot_%s" % screen_background_id) as Control
+	var summary_column := body.get_node_or_null("RunSummaryColumn_%s" % screen_background_id) as VBoxContainer
+	var body_gap := 10.0 if compact else 18.0
+	var crest_width := clampf(size.x * 0.26, 92.0 if compact else 112.0, 168.0)
+	var summary_x := crest_width + body_gap
+	var summary_width := maxf(1.0, size.x - summary_x)
+	_apply_control_rect(crest_slot, Rect2(0.0, 0.0, crest_width, body_height))
+	_apply_control_rect(summary_column, Rect2(summary_x, 0.0, summary_width, body_height))
+	if summary_column != null:
+		summary_column.add_theme_constant_override("separation", 2 if compact else 4)
+
+
+func _configure_result_menu_layout(box: VBoxContainer, screen_background_id: String, display_size: Vector2) -> void:
+	var content_rect := _pause_end_modal_content_rect(display_size, screen_background_id)
+	var content_size := content_rect.size
+	var compact := display_size.y < 660.0
+	box.name = "ResultContent_%s" % screen_background_id
+	box.set_meta("result_no_scroll_layout", true)
+	box.set_meta("result_screen_id", screen_background_id)
+	box.set_meta("result_content_rect", content_rect)
+	box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	box.custom_minimum_size = Vector2.ZERO
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 8 if compact else 10)
+
+	var title_label := box.find_child("MenuTitle_%s" % screen_background_id, false, false) as Label
+	if title_label != null:
+		title_label.custom_minimum_size = Vector2(content_size.x, 30.0 if compact else 42.0)
+		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(28 if compact else 36, 0, 48))
+
+	var subtitle_label := box.find_child("MenuSubtitle_%s" % screen_background_id, false, false) as Label
+	if subtitle_label != null:
+		subtitle_label.custom_minimum_size = Vector2(content_size.x, 112.0 if compact else 128.0)
+		subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 0, 21))
+
+	var body := HBoxContainer.new()
+	body.name = "ResultBody_%s" % screen_background_id
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 12 if compact else 18)
+	box.add_child(body)
+
+	var crest_column := VBoxContainer.new()
+	crest_column.name = "ResultCrestColumn_%s" % screen_background_id
+	crest_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	crest_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var crest_column_width := clampf(content_size.x * 0.28, 112.0, 170.0)
+	crest_column.custom_minimum_size = Vector2(crest_column_width, 0.0)
+	body.add_child(crest_column)
+
+	var crest_slot := CenterContainer.new()
+	crest_slot.name = "ResultCrestSlot_%s" % screen_background_id
+	var crest_size := _pause_end_result_crest_size()
+	crest_slot.custom_minimum_size = Vector2(crest_column_width, crest_size)
+	crest_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	crest_column.add_child(crest_slot)
+
+	var summary_column := VBoxContainer.new()
+	summary_column.name = "RunSummaryColumn_%s" % screen_background_id
+	summary_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	summary_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	summary_column.add_theme_constant_override("separation", 4 if compact else 6)
+	body.add_child(summary_column)
+
+
 func _add_result_crest(box: VBoxContainer, kind: String) -> void:
+	var slot := box.find_child("ResultCrestSlot_%s" % kind, true, false) as Control
+	if slot != null:
+		_add_result_crest_to_slot(slot, kind)
+		return
+	# Аддитивная геральдическая эмблема-кольцо над заголовком экранов победы/поражения
+	# (D&D Dark Fantasy Dragon, fantasydisk-asset-generator). SCRUM-330.
+	var crest := _make_result_crest(kind)
+	if crest == null:
+		return
+	box.add_child(crest)
+	box.move_child(crest, 0)
+
+
+func _add_result_crest_to_slot(slot: Control, kind: String) -> void:
+	if slot == null or not is_instance_valid(slot):
+		return
+	var crest := _make_result_crest(kind)
+	if crest == null:
+		return
+	slot.add_child(crest)
+
+
+func _make_result_crest(kind: String) -> TextureRect:
 	# Аддитивная геральдическая эмблема-кольцо над заголовком экранов победы/поражения
 	# (D&D Dark Fantasy Dragon, fantasydisk-asset-generator). SCRUM-330.
 	var slug := "victory" if kind == "victory" else "defeat"
 	var tex: Texture2D = game._cached_texture("res://assets/sprites/ui/result_crests/ui_crest_%s.png" % slug)
 	if tex == null:
-		return
+		return null
 	var crest := TextureRect.new()
 	crest.name = "ResultCrest"
 	crest.texture = tex
@@ -9726,13 +9996,14 @@ func _add_result_crest(box: VBoxContainer, kind: String) -> void:
 	crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	crest.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(crest)
-	box.move_child(crest, 0)
+	return crest
 
 
 func _pause_end_result_crest_size() -> float:
 	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
-	return clampf(viewport_height * 0.17, 112.0, 176.0)
+	if viewport_height < 760.0:
+		return clampf(viewport_height * 0.15, 88.0, 112.0)
+	return clampf(viewport_height * 0.16, 112.0, 168.0)
 
 
 func _pause_end_result_button_height() -> float:
@@ -10437,6 +10708,10 @@ func _is_pause_end_screen_background(screen_background_id: String) -> bool:
 	return ["pause", "victory", "death"].has(screen_background_id)
 
 
+func _is_result_screen_background(screen_background_id: String) -> bool:
+	return ["victory", "death"].has(screen_background_id)
+
+
 func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
 	var max_width := viewport_size.x * 0.84
@@ -10452,6 +10727,20 @@ func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 		width = max_width
 		height = width / source_aspect
 	return Vector2(roundf(width), roundf(height))
+
+
+func _pause_end_modal_content_margins(display_size: Vector2, screen_background_id: String) -> Vector4:
+	if screen_background_id == "death":
+		return _overhaul_2k_content_margins("result_panel", display_size)
+	return _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+
+
+func _pause_end_modal_content_rect(display_size: Vector2, screen_background_id: String) -> Rect2:
+	var margins := _pause_end_modal_content_margins(display_size, screen_background_id)
+	return Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, display_size.x - margins.x - margins.z), maxf(1.0, display_size.y - margins.y - margins.w))
+	)
 
 
 func _economy_menu_panel_half_size(screen_background_id: String) -> Vector2:

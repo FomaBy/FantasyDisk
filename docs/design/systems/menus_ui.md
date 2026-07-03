@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-06-14
+Обновлено: 2026-07-03
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -623,10 +623,15 @@ Rules:
 Runtime connection is implemented in SCRUM-407: `scripts/ui_screens.gd` uses the
 modal frame for pause, victory and death menu boxes, while
 `scripts/pause_stats_menu.gd` uses the same frame for the pause dossier/stats
-overlay. Long stats content scrolls inside the modal safe-zone; result crests
-remain decorative header art and 720p result actions use smaller crest/button
-sizes so labels and click/focus zones stay off the border ornaments. QA dump:
-`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
+overlay. Long pause/dossier stats content scrolls inside the modal safe-zone;
+SCRUM-841 makes victory/death result screens no-scroll: `ResultContent_*` is a
+direct panel child, `ResultBody_*` splits the middle safe-zone into a decorative
+crest slot and compact `RunSummaryColumn_*`, and the primary action button stays
+visible in the bottom safe-zone at 1152x648 through 4K. Result crests remain
+decorative art, not text containers. QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`; current regression gate:
+`tests/ui_no_overlap_matrix_test.gd` fails if `PauseEndModalScroll_victory` or
+`PauseEndModalScroll_death` returns.
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly

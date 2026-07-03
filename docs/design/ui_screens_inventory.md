@@ -435,16 +435,20 @@ center-align) помечены «—» (auto) с шаблонным `w×h`; дл
 ### 1–2. Победа / Поражение — `_show_victory_screen` / `_show_death_screen` · `RESULT_*` / `VS_*` / `DS_*`
 Pause/end-модалки (через `_create_menu_box`). Геометрия победы и поражения **идентична**
 (`_pause_end_modal_display_size` для "victory"/"death" → один 898×820, height упирается в
-clamp 820). Контент в ScrollContainer→VBox (center, sep 12): crest→title→subtitle→кнопка.
-Длинный subtitle победы (~8 строк) при переполнении уходит в скролл.
+clamp 820). С SCRUM-841 эти result-экраны не используют `PauseEndModalScroll_*`:
+контент лежит напрямую в safe-area как `ResultContent_*`, верх отдан title/subtitle,
+середина — `ResultBody_*` с crest-slot слева и компактной `RunSummaryColumn_*` справа,
+а action-кнопка всегда видима в нижнем safe-слоте.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
 | Панель модалки | `RESULT_PANEL_2K` | 831 | 310 | 898 | 820 |
 | Safe-area | `RESULT_SAFE_2K` | 898 | 396 | 764 | 656 |
-| Эмблема-кольцо (crest) | `RESULT_CREST_2K` | 1192 | 401 | 176 | 176 |
-| Заголовок (42px) | `RESULT_TITLE_2K` | 898 | 589 | 764 | 54 |
-| Подзаголовок (17px, autowrap) | `RESULT_SUBTITLE_2K` | 898 | 655 | 764 | 220 |
+| Заголовок | `RESULT_TITLE_2K` | 898 | 396 | 764 | 42 |
+| Подзаголовок (autowrap) | `RESULT_SUBTITLE_2K` | 898 | 448 | 764 | 128 |
+| Body: crest + summary | `RESULT_BODY_2K` | 898 | 586 | 764 | 352 |
+| Эмблема-кольцо (crest) | `RESULT_CREST_2K` | 899 | 678 | 168 | 168 |
+| Сводка забега | `RESULT_SUMMARY_2K` | 1086 | 586 | 576 | 352 |
 | Кнопка «Новый забег» (победа) | `VS_BTN_NEWRUN_2K` | 1070 | 948 | 420 | 104 |
 | Кнопка «Начать заново» (смерть) | `DS_BTN_RETRY_2K` | 1070 | 948 | 420 | 104 |
 
