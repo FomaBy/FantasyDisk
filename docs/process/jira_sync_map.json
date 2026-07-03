@@ -3862,5 +3862,20 @@
   "key": "SCRUM-861",
   "status": "К выполнению",
   "desc_hash": "398720c23c768a5ae459b3ea6410a477"
+ },
+ "bug_scrum855_doctor_external_sustain_rewards_task.md": {
+  "key": "SCRUM-862",
+  "status": "К выполнению",
+  "desc_hash": "b1d8b4aadec11f3586e6c32585285670"
+ },
+ "bug_scrum855_missing_evidence_mirrors_task.md": {
+  "key": "SCRUM-863",
+  "status": "К выполнению",
+  "desc_hash": "d0c17be06c822cb1d5ac7c78acf7bfbf"
+ },
+ "bug_scrum855_weapon_overlay_opacity_too_low_task.md": {
+  "key": "SCRUM-864",
+  "status": "К выполнению",
+  "desc_hash": "ec4c49847dfe678b22bc00b75090dcb9"
  }
 }
