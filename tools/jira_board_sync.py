@@ -247,11 +247,16 @@ def parse_task(path: str) -> dict:
     if jira_key is None:
         file_key = re.match(r"^(SCRUM-\d+)[_-]", name, re.I)
         jira_key = file_key.group(1).upper() if file_key else None
+    explicit_backlog = bool(
+        re.search(r"^(Backlog|Sprint|Спринт):\s*(backlog|future|next|hold|бэклог|будущ)", text, re.M | re.I)
+        or re.search(r"^(Labels|Метки):.*\b(backlog|future-release|next-release|deferred)\b", text, re.M | re.I)
+    )
     return {"file": name, "title": title[:250], "status": status,
             "role": role, "itype": itype, "excerpt": excerpt, "desc_hash": desc_hash,
             "blocked": raw_status.startswith("blocked"),
             "task_version": task_version if not name.startswith("bug_") else None,
-            "executor": executor, "jira_key": jira_key}
+            "executor": executor, "jira_key": jira_key,
+            "explicit_backlog": explicit_backlog}
 
 
 def adf(text: str) -> dict:
@@ -332,11 +337,10 @@ def main():
     sprint_queue = []
     for path in sorted(glob.glob(TASKS_GLOB)):
         t = parse_task(path)
-        # Задача будущей версии (не текущего спринта-релиза) -> бэклог:
-        # fixVersion целевой версии есть, active sprint assignment нет. Задачи
-        # текущей версии добавляются в active sprint даже если Jira issue уже
-        # было создано ранее как backlog.
-        t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
+        # User directive 2026-07-03: all chat-added work goes into the live
+        # active sprint by default. Keep an issue out of the sprint only when
+        # the local spec explicitly marks it as backlog/future/hold.
+        t["next_version"] = bool(t["explicit_backlog"])
         target_status = STATUS_TARGET[t["status"]]
         entry = mapping.get(t["file"])
         labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
@@ -362,10 +366,10 @@ def main():
                     "description": adf(f"Файл: docs/tasks/{t['file']}\n\n" + t["excerpt"]),
                 }
                 if t["next_version"] and t["task_version"]:
-                    # Фриз: будущая версия -> бэклог с fixVersion целевой версии,
-                    # вне активного спринта.
+                    # Explicit backlog/freeze marker: keep the issue outside the
+                    # active sprint with its requested future fixVersion.
                     fields["fixVersions"] = [{"name": t["task_version"]}]
-                elif fix_version and not t["next_version"]:
+                elif fix_version:
                     fields["fixVersions"] = [{"name": fix_version}]
                 # Аджайл: привязать новый тикет к parent-эпику (кроме самих эпиков).
                 if t["itype"] != "Эпик":
@@ -381,7 +385,7 @@ def main():
                 if not t["next_version"]:
                     sprint_queue.append(key)  # текущий release scope -> active sprint
                 print(f"created {key}: {t['file']}")
-        elif t["task_version"] and fix_version and t["task_version"] == fix_version:
+        elif not t["next_version"]:
             sprint_queue.append(entry["key"])
         # Описание в Jira держим в синхроне с .md: при изменении контента (хэш)
         # переписываем description, чтобы текст «Статус: blocked» и т.п. не устаревал.
@@ -446,7 +450,10 @@ def safe_main():
         if not in_scope(path, t, entry, task_filters, issue_filters):
             continue
         scanned += 1
-        t["next_version"] = bool(t["task_version"] and fix_version and t["task_version"] != fix_version)
+        # User directive 2026-07-03: all chat-added work goes into the live
+        # active sprint by default. A different task Version is not enough to
+        # leave it in backlog; backlog/future scope must be explicit.
+        t["next_version"] = bool(t["explicit_backlog"])
         target_status = STATUS_TARGET[t["status"]]
         labels = ["fantasydisk", t["role"], t["executor"]] + (["blocked"] if t["blocked"] else [])
 
@@ -478,7 +485,7 @@ def safe_main():
                 }
                 if t["next_version"] and t["task_version"]:
                     fields["fixVersions"] = [{"name": t["task_version"]}]
-                elif fix_version and not t["next_version"]:
+                elif fix_version:
                     fields["fixVersions"] = [{"name": fix_version}]
                 ep = EPICS.get(epic_for(t["file"], t["title"]))
                 if ep:
@@ -492,7 +499,7 @@ def safe_main():
                 if needs_live_sprint and not t["next_version"]:
                     sprint_queue.append(key)
                 print(f"created {key}: {t['file']}")
-        elif needs_live_sprint and t["task_version"] and fix_version and t["task_version"] == fix_version:
+        elif needs_live_sprint and not t["next_version"]:
             sprint_queue.append(entry["key"])
 
         if not dry and not broad_status_guard and entry.get("desc_hash") != t["desc_hash"]:

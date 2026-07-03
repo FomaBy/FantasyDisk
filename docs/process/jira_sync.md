@@ -1,6 +1,6 @@
 # Jira Sync — FantasyDisk
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-03
 
 ## Назначение
 
@@ -26,11 +26,17 @@ source для FantasyDisk. Это нужно, чтобы AI-агенты мог�
 - Site: `https://fantasydisk.atlassian.net`
 - Project key: `SCRUM`
 - Board: `1`
-- Current active sprint: Jira board `1` active sprint (`Спринт 0.2.0` on
-  2026-07-02; check live Jira before dispatch/claim if the numeric id matters).
+- Current active sprint: Jira board `1` live active sprint (`Спринт 0.2.1` on
+  2026-07-03; check live Jira before dispatch/claim if the numeric id matters).
+- User directive 2026-07-03: every task added by the user in any chat is
+  current-sprint work by default. Create it in the live active Jira sprint and
+  use the active sprint/release fixVersion unless a PM freeze/hold marker
+  explicitly says otherwise.
 - `0.1.8` and `0.1.9` are skipped/superseded planning versions. New local task
   mirrors, Jira fixVersions, sprint notes and release/freeze notes must target
-  `0.2.0` or the later SemVer patch line (`0.2.1`, `0.2.2`, ...).
+  the live active sprint/release (`0.2.1` on 2026-07-03) or later SemVer patch
+  line (`0.2.2`, `0.2.3`, ...) only when explicitly scheduled beyond the current
+  sprint.
 - Feature block: v0.1.5 freeze is lifted by the v0.1.5 release (2026-06-15).
   Current-sprint Jira issues may be claimed/dispatched in dependency order after
   duplicate and active-owner audit. The freeze mechanism remains for the next
@@ -115,7 +121,10 @@ released, создаётся следующая. Игровые патч-ноу�
 
 1. Новые задачи создаются сначала в Jira. PM/другая LLM/dispatcher формирует
    Jira issue с summary, role, lane, owner/unassigned state, locked paths,
-   acceptance criteria и sprint/release context.
+   acceptance criteria и live active sprint/release context. По директиве
+   2026-07-03 все задачи, добавленные пользователем в любых чатах, сразу
+   добавляются в активный Jira sprint; backlog допускается только при явном
+   PM freeze/hold marker.
 2. Локальный `.md` task-файл создаётся или обновляется только после появления
    Jira key и служит подробной спецификацией/evidence mirror. Нельзя создавать
    исполнимую задачу только в `docs/tasks/` без Jira issue.
@@ -148,10 +157,9 @@ released, создаётся следующая. Игровые патч-ноу�
    Design pool workers must use `--required-label design-main` or
    `--required-label designer2` so Design main and Designer 2 do not race for a
    generic `design` issue.
-6. Во время будущего feature block задачи текущей версии остаются current-sprint
-   work только если они уже есть на board или являются bug/QA defect/regression/
-   release blocker. Новые не-баговые задачи получают следующую `Версия` и
-   остаются без active sprint assignment до PM override.
+6. Во время будущего feature block PM должен явно записать freeze/hold marker,
+   если новую не-баговую задачу нужно оставить вне active sprint. Без такого
+   marker sync/dispatcher добавляет задачу в live active sprint.
 7. В `.md` task-файле рядом с метаданными добавить строку:
 
    ```text
@@ -168,7 +176,8 @@ released, создаётся следующая. Игровые патч-ноу�
    главные locked paths, если они не очевидны из названия задачи.
 
 9. При изменении статуса сначала обновить Jira, затем локальные mirrors:
-   - `new` — issue создана и находится в backlog/sprint To Do.
+   - `new` — issue создана и находится в live active sprint To Do, кроме
+     явно hold/backlog-marked задач.
    - `in_progress` — перевести issue в In Progress, если переход доступен.
    - `review` — перевести в review/QA статус, если такой статус есть; иначе оставить
      In Progress и добавить comment.
@@ -214,7 +223,7 @@ Dispatcher при регулярной сверке обязан искать д
 - одинаковый task-файл или source task path;
 - одинаковый Jira summary/почти одинаковая формулировка проблемы;
 - две активные задачи на одни и те же файлы, ассеты, экран или баг;
-- backlog-задача будущей версии, случайно продублированная в active sprint.
+- явно hold/backlog-marked задача, случайно продублированная в active sprint.
 
 Если найден дубль, dispatcher не раздает его исполнителю. Нужно оставить один
 canonical Jira issue, а остальные пометить `duplicate` или `superseded`, добавить
@@ -224,7 +233,7 @@ canonical Jira issue, а остальные пометить `duplicate` или 
 ## Feature Block / Sprint Policy
 
 Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Сейчас активен live Jira sprint
-на board 1 (`Спринт 0.2.0` на 2026-07-02).
+на board 1 (`Спринт 0.2.1` на 2026-07-03).
 Агенты и dispatcher обязаны:
 
 1. Проверять тип задачи перед dispatch.
@@ -233,9 +242,11 @@ canonical Jira issue, а остальные пометить `duplicate` или 
 3. Маршрутизировать/current-sprint claim обычным порядком только после проверки
    дублей, зависимостей и active owner.
 4. Если PM включает новый freeze перед релизом, новые не-баговые задачи
-   следующей версии остаются в backlog без dispatch до PM override.
-5. Для багов, QA-дефектов, регрессий и release blockers текущего scope
-   использовать текущий sprint и обычный QA flow.
+   остаются в backlog без dispatch до PM override только при явном
+   freeze/hold marker.
+5. Для багов, QA-дефектов, регрессий, release blockers и любых новых задач,
+   добавленных пользователем в чатах, использовать текущий sprint и обычный
+   QA flow, если нет явного freeze/hold marker.
 
 ## Jira Description Минимум
 

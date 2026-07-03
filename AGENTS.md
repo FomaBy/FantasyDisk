@@ -44,7 +44,7 @@ Role boundaries:
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, update Jira status/comment first, then set local mirror `Статус: in_progress` if a task file exists; when finishing, update Jira and set local mirror `done` (or `review`) with a short result summary so PM/dispatcher can sync mirrors.
-- Jira is mandatory and authoritative for task tracking. Follow `docs/process/jira_sync.md`: every task starts as a Jira issue (`SCRUM-*`), belongs to the current sprint/backlog there, and only then may have a local `.md` spec/evidence mirror. Jira status/comment/assignee/labels must match reality. Never store Jira API tokens in the repository.
+- Jira is mandatory and authoritative for task tracking. Follow `docs/process/jira_sync.md`: every task starts as a Jira issue (`SCRUM-*`), belongs to the live current sprint by default, and only then may have a local `.md` spec/evidence mirror. Jira status/comment/assignee/labels must match reality. Never store Jira API tokens in the repository.
 
 **ЖИВАЯ СИНХРОНИЗАЦИЯ JIRA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13).**
 Пользователь управляет разработкой по Jira, поэтому Jira ВСЕГДА должна отражать
@@ -199,14 +199,17 @@ Full autonomy (user directive, 2026-06-12):
   are out of scope for executors anyway.
 
 Feature block:
-- **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Активен текущий Jira sprint на board 1
-  (`Спринт 0.2.0` на 2026-07-02; всегда проверяй live Jira active sprint перед
-  auto-pull/dispatch). Current-sprint Jira issues берутся обычным порядком через
-  Jira-pull claim-first. Плановые версии `0.1.8` и `0.1.9` отменены/superseded:
-  новые tasks/fixVersions/sprint notes должны использовать `0.2.0`, далее
-  SemVer patch-линия `0.2.1`, `0.2.2`, ...
+- **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Пользовательская директива
+  2026-07-03: все задачи, добавляемые пользователем в любые чаты, сразу
+  заводятся в live active Jira sprint на board 1 и получают fixVersion активного
+  спринта/релиза. На 2026-07-03 live sprint: `Спринт 0.2.1`; всегда проверяй
+  live Jira active sprint перед auto-pull/dispatch. Current-sprint Jira issues
+  берутся обычным порядком через Jira-pull claim-first. Плановые версии `0.1.8`
+  и `0.1.9` отменены/superseded; далее используется SemVer patch-линия
+  `0.2.1`, `0.2.2`, ...
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
-  фриз (новые не-баги → `Версия: <следующая>`, sync держит их в бэклоге).
+  фриз явной директивой/hold-marker; без такого marker sync держит новые задачи
+  в активном спринте, а не в бэклоге.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.

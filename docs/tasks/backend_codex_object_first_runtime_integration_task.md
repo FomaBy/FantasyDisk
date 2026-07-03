@@ -7,6 +7,7 @@
 Owner: unassigned
 Thread/Worker: n/a
 Jira: SCRUM-850
+Версия: 0.2.1
 Создано: 2026-07-03
 Автор: Codex PM по прямому запросу пользователя
 Depends on: SCRUM-849 / `design_codex_object_first_redesign_task.md`

@@ -1,6 +1,6 @@
 # PM Workflow — FantasyDisk
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-03
 
 Этот документ описывает работу PM-чата (проджект-менеджер) и правила, по которым формируются и выдаются задачи чатам `Design`, `Back-end` и `Animator`.
 
@@ -35,8 +35,9 @@ PM-чат:
 
 1. Принимает пожелания и требования от пользователя в свободной форме.
 2. Превращает их в четкие, проверяемые требования.
-3. Создает задачу в Jira проекте `SCRUM`; локальный `.md` создаётся/обновляется
-   только как spec/evidence mirror после появления Jira key.
+3. Создает задачу в Jira проекте `SCRUM` и сразу добавляет ее в live active
+   sprint; локальный `.md` создаётся/обновляется только как spec/evidence mirror
+   после появления Jira key.
 4. Назначает каждую задачу правильному исполнителю (Design / Back-end / Animator).
 5. Ведет Jira board как источник очереди и статусов; локальную доску
    `docs/process/task_board.md` держит как read-only dashboard/cache.
@@ -124,9 +125,14 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 ## Feature Freeze / Sprint Policy
 
 Фриз 0.1.5 снят релизом v0.1.5 (2026-06-15). Активен live Jira sprint
-на board 1 (`Спринт 0.2.0` на 2026-07-02). Плановые версии `0.1.8` и `0.1.9`
-отменены/superseded; PM/dispatcher не создают новые tasks, fixVersions или
-sprint notes под эти номера.
+на board 1 (`Спринт 0.2.1` на 2026-07-03; всегда проверять live Jira перед
+dispatch/claim). Плановые версии `0.1.8` и `0.1.9` отменены/superseded;
+PM/dispatcher не создают новые tasks, fixVersions или sprint notes под эти
+номера.
+Директива пользователя 2026-07-03: все задачи, которые пользователь добавляет
+в любые чаты, считаются текущим sprint scope и сразу добавляются в active sprint
+с fixVersion активного sprint/release. Backlog используется только при явной
+freeze/hold директиве.
 Задачи текущего sprint можно брать в работу обычным порядком через Jira-pull
 claim-first, если они не заблокированы, не ждут PM/QA acceptance и не имеют
 активного владельца. Перед стабилизацией следующего релиза PM снова включает
@@ -185,20 +191,21 @@ reuse of an accepted existing source, or PixelLab unavailable. Такое иск
 Codex Documentation dispatcher может создавать/sync'ить current-sprint Jira
 issues по обычному порядку только после lane/owner/locked-path audit.
 Если перед будущим релизом PM снова включает freeze, новые не-баговые feature
-requests уходят в backlog следующей версии. При dispatch, блокировке, review,
-done и QA verdict dispatcher обновляет соответствующие Jira issue status/comment
-и task/board строки.
+requests уходят в backlog следующей версии только при явной freeze/hold
+директиве. При dispatch, блокировке, review, done и QA verdict dispatcher
+обновляет соответствующие Jira issue status/comment и task/board строки.
 
 Полный регламент: `docs/process/jira_sync.md`.
 
 ## Feature Block / Freeze
 
-На 2026-07-02 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
-board 1 (`Спринт 0.2.0`). Если
+На 2026-07-03 feature block 0.1.5 снят; текущий активный sprint берётся из Jira
+board 1 (`Спринт 0.2.1` на момент обновления). Если
 PM включает новый freeze перед релизом, dispatcher и role agents возвращаются к
 режиму: только уже заведённые rows, баги, QA defects, regressions, release
 blockers и owner nudges; новые не-баговые запросы уходят в backlog следующей
-версии без dispatch до PM override.
+версии без dispatch до PM override только если PM явно поставил freeze/hold
+marker.
 
 ## Локальные Зеркала Jira (с 2026-06-12)
 

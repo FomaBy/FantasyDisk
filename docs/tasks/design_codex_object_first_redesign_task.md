@@ -7,6 +7,7 @@
 Owner: unassigned
 Thread/Worker: n/a
 Jira: SCRUM-849
+Версия: 0.2.1
 Создано: 2026-07-03
 Автор: Codex PM по прямому запросу пользователя
 Locked paths: `docs/design/mockups/codex_object_first_redesign/`, `docs/design/references/codex_object_first_redesign/`, `docs/design/previews/codex_object_first_redesign_*`, `assets/sprites/ui/frames/codex_object_first/` если будут production assets
