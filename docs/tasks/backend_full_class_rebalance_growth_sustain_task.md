@@ -84,3 +84,14 @@ dispatcher explicitly narrows SCRUM-860 to a non-overlapping scope.
 
 Tests: not run for SCRUM-860 because no runtime/source changes were made.
 Disk cleanup: none created for SCRUM-860.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+
+Verified by SCRUM-861 full class rebalance QA gate on dev commit `7fb0dec1`.
+The gate reran and passed `tests/kill_scaling_identity_test.gd`,
+`tests/doctor_drain_softcap_test.gd`, `tests/priest_sustain_softcap_test.gd`,
+`tests/global_survivability_balance_smoke_test.gd`,
+`tests/survivability_scenario_test.gd`, `tests/global_damage_balance_smoke_test.gd`,
+`tests/runtime_smoke_test.gd`, `tools/balance_harness.gd`, and the full
+17-class/51-weapon identity suite. No SCRUM-860 blocker remains.

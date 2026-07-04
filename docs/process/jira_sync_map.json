@@ -3855,7 +3855,7 @@
  },
  "backend_full_class_rebalance_growth_sustain_task.md": {
   "key": "SCRUM-860",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "e2695293031401dd860b3b117e020217"
  },
  "qa_review_full_class_rebalance_identity_task.md": {
@@ -3892,5 +3892,10 @@
   "key": "SCRUM-865",
   "status": "В работе",
   "desc_hash": "3873d7d1f2cc1543b1e81f70d5296181"
+ },
+ "bug_scrum860_gdd_eol_diff_check_blocker_task.md": {
+  "key": "SCRUM-866",
+  "status": "Контроль качества",
+  "desc_hash": "f8b51f339b4aa20b431fd5edd402e0f8"
  }
 }
