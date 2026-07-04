@@ -74,3 +74,36 @@ to non-overlapping `scripts/summoner_weapon.gd` + `scripts/ally_minion.gd` scope
 
 Tests: not run for SCRUM-859 because no runtime/source changes were made.
 Disk cleanup: none created for SCRUM-859.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+Commit tested: `b179527fefdae8ba698d08d0eccdb9bf545fd0f1` (`8fb46083` and `54d15d7c` ancestors).
+
+Independent class-balance QA confirmed:
+- Engineer sentry has `turret_dps`, target memory/distribution, and capped splash
+  `82px / x0.24 / cap 2`.
+- Deploy caps apply after Leadership scaling: `sound_amp=3`, `raven_totem=3`,
+  Engineer sentry `5`.
+- Deploy role markers exist for `stage_pulse`, `support_totem`, `turret_dps`,
+  `repair_chain`, and `mine_grid`.
+- SCRUM-854 contracts for pressure-mine independent lifetime and scoped mobile
+  summon caps remain intact.
+
+Godot-gate checks all exited 0:
+- `tests/summoner_strengthening_test.gd` — PASS.
+- `tests/summon_weapon_crowd_floor_test.gd` — PASS.
+- `tests/weapon_integrity_test.gd` — PASS.
+- `tests/weapon_scene_integrity_test.gd` — PASS.
+- `tests/runtime_smoke_weapon_mechanics_test.gd` — PASS.
+- `tests/global_damage_balance_smoke_test.gd` — PASS.
+- `tools/balance_harness.gd` — PASS.
+- `tests/global_survivability_balance_smoke_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS.
+
+Reports: `balance_report` max combined deviation `0.1%`; global damage worst
+CCT `+22% doctor/restore_potion/20` is outside SCRUM-859 scope and within gate;
+SCRUM-859 rows are around `+20%` at 20-target CCT and within the `+30%` gate;
+global survivability PASS with no immortal profile.
+
+Disk cleanup: QA removed `/private/tmp/fantasydisk-scrum859-qa-lG1cGr` including
+`.godot`, `build`, `qa_logs`, `.uid/import` sidecars and ran `git worktree prune`.
