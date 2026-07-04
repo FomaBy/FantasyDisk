@@ -114,6 +114,23 @@ comment proves current ownership.
 5. Force push, destructive reset/checkout и переписывание чужой истории запрещены
    без явной пользовательской команды.
 
+**ПУШ СРАЗУ В DEV, БЕЗ ВЕТОК-ХВОСТОВ (директива пользователя 2026-07-04, все lane).**
+Готовая работа НЕ хранится в дополнительных ветках — она сразу уезжает в `dev`:
+1. Зелёный green-gate → немедленно `git push origin HEAD:dev` (при расхождении —
+   merge/rebase от свежего `origin/dev`, повторный gate, push). Не копить готовые
+   коммиты в `claude/*`/`codex/*` ветках «на потом».
+2. После влития своей работы в `origin/dev` агент обязан убрать за собой:
+   удалить свою рабочую ветку на origin (`git push origin --delete <branch>`,
+   если она пушилась), локальную ветку в основном чекауте (`git branch -d`),
+   и свой worktree с диска (`git worktree remove` + `git worktree prune`;
+   собственный текущий cwd — в конце сессии или следующим прогоном).
+3. Периодическая уборка хвостов разрешена и желательна: remote-ветки, полностью
+   влитые в dev (`git branch -r --merged origin/dev`), локальные merged-ветки и
+   worktree с чистым статусом, HEAD которых — ancestor `origin/dev`. ЖИВЫЕ
+   (dirty tree / невлитые коммиты / активный владелец) ветки и worktree НЕ трогать.
+4. `dev` и `main` не удалять никогда; это правило дополняет DISK HYGIENE ниже,
+   не заменяет его гарды.
+
 **DISK HYGIENE — MANDATORY (user directive 2026-06-28).**
 Agents must clean up their own temporary disk usage before reporting a task as
 done, blocked, or handed off. Disk space is part of task completion.
