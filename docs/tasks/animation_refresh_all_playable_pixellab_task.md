@@ -1,7 +1,7 @@
 # Refresh All Playable Character Animations From PixelLab
 
 Jira: SCRUM-869
-Статус: new (QA RED 2026-07-04 final recheck → fix required)
+Статус: done (RED fix ready for QA 2026-07-04)
 Контур: Codex
 Исполнитель: Codex
 Owner: Animator/Codex
@@ -124,6 +124,48 @@ Git/Jira:
 PixelLab pack bbox normalization или явное обновление устаревшего test contract,
 если product owner решит, что эти exact bbox gates больше не являются
 acceptance. Evidence: `build/qa/pixellab_character_animation_refresh/qa_red_scrum869_final_20260704.md`.
+
+## RED Fix — 2026-07-04
+
+Статус: READY FOR QA / `Контроль качества`.
+
+Исполнитель: `codex-anim-fix-scrum869-bbox-20260704` в worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704`.
+
+Что исправлено:
+
+- `tools/update_pixellab_character_animations.py` теперь нормализует runtime
+  full-frame PNG по фактическому PixelLab alpha bbox, масштабируя только
+  видимую область исходного PixelLab кадра и вставляя её в `512x512` canvas с
+  заданным bottom padding. Видимый арт не дорисовывался и не заменялся.
+- Импортёр читает вложенные параметры `manifest.normalization.*`, включая
+  `target_visible_height`, `bottom_padding` и `alpha_threshold`.
+- Добавлен режим `--normalize-existing` для точечной пересборки runtime frames
+  из уже принятых PixelLab source frames без нового download/refresh.
+- Пересобраны только runtime/full-frame PNG и `alpha_bbox_report.json` для
+  `biologist` и `dark_mage`; PixelLab source frames остались source of truth.
+
+Проверка bbox после фикса:
+
+- `biologist_idle_south.png`: было `244`, стало `159x245`; все 56 Biologist
+  runtime frames имеют height `245`.
+- `dark_mage_idle_south.png`: было `(228,244)`, стало `230x246`; все 56 Dark
+  Mage runtime frames имеют height `246`.
+
+Tests:
+
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/dark_mage_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/hero_select_dark_mage_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum869_bbox_fix_20260704 --script res://tests/runtime_smoke_test.gd` (`texture_2d_get` warning in Weapon Select screenshot helper is non-fatal; exit code 0 and `Runtime smoke test passed`).
+
+Legacy/manual fallback: not used.
+
+Jira target: return SCRUM-869 to `Контроль качества` for separate QA verdict,
+not `Готово`.
 
 ## QA-Вердикт (2026-07-04, superseded by RED final recheck above)
 
