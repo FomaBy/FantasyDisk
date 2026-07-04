@@ -3917,5 +3917,20 @@
   "key": "SCRUM-870",
   "status": "К выполнению",
   "desc_hash": "3ec7da9ec8a12cdd30a021d0403a7e2a"
+ },
+ "backend_ultimate_charge_persist_between_rounds_task.md": {
+  "key": "SCRUM-872",
+  "status": "К выполнению",
+  "desc_hash": "5bde1d7efaaafde55eff3f240554f2b6"
+ },
+ "ui_boss_act_reward_choice_heal_task.md": {
+  "key": "SCRUM-873",
+  "status": "К выполнению",
+  "desc_hash": "52ecb00e5a157f11cfe0068ec8326aad"
+ },
+ "ui_boss_elite_hud_health_bar_task.md": {
+  "key": "SCRUM-874",
+  "status": "К выполнению",
+  "desc_hash": "718d3e278d9e7840fb774372881a010d"
  }
 }
