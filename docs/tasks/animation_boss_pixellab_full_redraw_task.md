@@ -139,6 +139,16 @@ SpriteFrames/callback states, create PixelLab jobs, and record source IDs.
   `docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`.
 - Current PixelLab status: all six base objects are queued/pending; animation
   jobs cannot be started until PixelLab completes or exposes review candidates.
+- 03:48 EEST retry: PixelLab later marked all six original `256x256`
+  8-direction base objects as failed because the service currently caps output
+  frames at `168x168`. Retried all six bosses at supported `168x168`
+  low-top-down canvas and recorded active object IDs in the manifest:
+  `rift_warden` `ab1c7701-3ee7-4c7c-8842-22a7def87f08`,
+  `disk_devourer` `2df47b9e-a5f8-4f4a-b423-4aca73d8c3b3`,
+  `bone_archon` `0335a72f-9905-4a18-ba1e-e91d2a9de9bc`,
+  `brood_mother` `0f0db439-9b79-4b25-8951-988319c5e821`,
+  `ashen_colossus` `eb2bfa56-9406-4855-96e6-dc05c9272494`,
+  `bloodthorn_lion` `1b923d8c-e83e-48a1-970e-4681f63ead0a`.
 - Added boss-death victory delay: boss kill now clears immediate combat
   pressure, waits `2.0s`, then completes victory/act transition so the death
   row is visible.
