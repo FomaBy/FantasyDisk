@@ -199,4 +199,21 @@ SpriteFrames/callback states, create PixelLab jobs, and record source IDs.
 
 Implementation result is ready for Jira QA with the PixelLab manifest, runtime
 preview and task-owned boss rows committed together. Jira is in
-`Контроль качества`; final `Готово` remains gated by a QA PASSED verdict.
+`Готово` after the QA PASSED verdict below.
+
+## QA-Вердикт (2026-07-04, origin/dev @ 96145d2a)
+Статус: PASSED
+
+- Commit head: `96145d2ac5beb9a7bfbfb75eeeb9bdd23d245437` on `origin/dev`.
+- Scope verified: all six live boss PixelLab full-frame rows load; `bloodthorn_lion`
+  registry entry and skill visual states load; boss/elite runtime mechanics still
+  pass smoke checks.
+- Gates:
+  - `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` PASS
+  - `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/full_frame_registry_integrity_test.gd` PASS
+  - `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd` PASS
+  - `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS
+- Disk cleanup: removed `build/qa/scrum865_boss_pixellab_full_redraw`;
+  no `/tmp/fantasydisk_scrum865*` or `tools/__pycache__` remained; `.godot` in
+  the main checkout was retained because an active Godot editor process was open
+  on this project.
