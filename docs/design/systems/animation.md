@@ -18,6 +18,24 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   and animate playable-character Hero Select previews with clockwise direction
   rotation. Historical full-frame audits remain valid as evidence, but the old
   rig/sprite-sheet animation-director skill is retired.
+- SCRUM-869 (2026-07-04) adds the repo importer
+  `tools/update_pixellab_character_animations.py` for playable-character PixelLab
+  refreshes. It reads `ProgressionData.character_ids()`, downloads the manifest
+  `pixellab_character_id` package from PixelLab, requires 8 idle rotations and
+  6+ movement frames for every direction before touching a character, normalizes
+  runtime PNGs to `512x512`, rebuilds generic and directional `SpriteFrames`,
+  updates manifests/alpha-bbox reports, and records blockers under
+  `build/qa/pixellab_character_animation_refresh/report.json`. The SCRUM-869
+  pass refreshed Assassin, Biologist, Chemist, Dark Mage, Druid, Guitarist,
+  Knight, Priest, Ranger, Robot and Thief. Current PixelLab blockers are:
+  Berserk missing south movement row completeness, Soldier missing south and
+  north-east movement row completeness, Elementalist manifest ID
+  `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f` returning 404/not found, Sniper
+  missing south and north-west movement row completeness, Engineer missing north
+  movement row completeness, and Doctor missing north movement row completeness.
+  Those blocked characters stay on their already-valid live runtime packs until
+  PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
+  source.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse

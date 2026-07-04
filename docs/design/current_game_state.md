@@ -36,6 +36,13 @@ Domain docs для подробностей по областям:
 - Иконка приложения: `icon.svg`, подключена через `project.godot` `application/config/icon` и оформлена как fantasy disk emblem с золотым ободом и фиолетовым разломом.
 - Главный игрок: `scenes/Player.tscn`, логика в `scripts/player.gd`.
 - Smoke tests: `tests/runtime_smoke_test.gd` остается umbrella-проверкой полного core loop. Для быстрых регрессий SCRUM-202 добавил focused suites: `tests/runtime_smoke_ui_test.gd`, `tests/runtime_smoke_combat_test.gd`, `tests/runtime_smoke_progression_economy_test.gd`, `tests/runtime_smoke_weapon_mechanics_test.gd`, `tests/runtime_smoke_boss_elite_test.gd`. Дополнительно используются `tests/animation_smoke_test.gd` и `tests/meta_progression_smoke_test.gd`.
+- Playable animation snapshot SCRUM-869: all 17 playable classes still expose
+  the 8-direction idle + 6-frame directional `move/walk` contract for runtime and
+  Hero Select previews. The latest PixelLab refresh re-imported complete packs
+  for Assassin, Biologist, Chemist, Dark Mage, Druid, Guitarist, Knight, Priest,
+  Ranger, Robot and Thief; Berserk, Soldier, Elementalist, Sniper, Engineer and
+  Doctor keep their current valid runtime packs until PixelLab source packages
+  expose complete directional movement rows or a valid manifest download.
 
 ## Основной Поток Игры
 

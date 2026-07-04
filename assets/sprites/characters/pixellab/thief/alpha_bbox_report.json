@@ -1,0 +1,1410 @@
+{
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "frames": [
+    {
+      "source": "thief_idle_south.png",
+      "runtime": "thief_idle_south.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        84,
+        63,
+        166,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_00.png",
+      "runtime": "thief_move_south_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        62,
+        158,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_01.png",
+      "runtime": "thief_move_south_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        90,
+        63,
+        158,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_02.png",
+      "runtime": "thief_move_south_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        62,
+        159,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_03.png",
+      "runtime": "thief_move_south_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        64,
+        163,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_04.png",
+      "runtime": "thief_move_south_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        89,
+        64,
+        160,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south_05.png",
+      "runtime": "thief_move_south_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        89,
+        65,
+        161,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_south-east.png",
+      "runtime": "thief_idle_south-east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        83,
+        65,
+        163,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_00.png",
+      "runtime": "thief_move_south-east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        85,
+        65,
+        154,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_01.png",
+      "runtime": "thief_move_south-east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        86,
+        63,
+        161,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_02.png",
+      "runtime": "thief_move_south-east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        87,
+        63,
+        156,
+        177
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_03.png",
+      "runtime": "thief_move_south-east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        83,
+        63,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_04.png",
+      "runtime": "thief_move_south-east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        82,
+        64,
+        157,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-east_05.png",
+      "runtime": "thief_move_south-east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        82,
+        64,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_east.png",
+      "runtime": "thief_idle_east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        84,
+        67,
+        156,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_east_00.png",
+      "runtime": "thief_move_east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        67,
+        143,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_east_01.png",
+      "runtime": "thief_move_east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        88,
+        67,
+        157,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        330,
+        479
+      ]
+    },
+    {
+      "source": "thief_move_east_02.png",
+      "runtime": "thief_move_east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        67,
+        151,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        318,
+        479
+      ]
+    },
+    {
+      "source": "thief_move_east_03.png",
+      "runtime": "thief_move_east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        94,
+        68,
+        143,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_east_04.png",
+      "runtime": "thief_move_east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        68,
+        148,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_east_05.png",
+      "runtime": "thief_move_east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        95,
+        68,
+        148,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_north-east.png",
+      "runtime": "thief_idle_north-east.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        83,
+        67,
+        145,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_00.png",
+      "runtime": "thief_move_north-east_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        103,
+        69,
+        150,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_01.png",
+      "runtime": "thief_move_north-east_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        98,
+        70,
+        155,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_02.png",
+      "runtime": "thief_move_north-east_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        100,
+        70,
+        154,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_03.png",
+      "runtime": "thief_move_north-east_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        69,
+        145,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_04.png",
+      "runtime": "thief_move_north-east_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        90,
+        69,
+        147,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        107
+      ],
+      "scale": 2.289719626168224,
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-east_05.png",
+      "runtime": "thief_move_north-east_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        69,
+        144,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        199,
+        235,
+        314,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_north.png",
+      "runtime": "thief_idle_north.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        86,
+        66,
+        164,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_00.png",
+      "runtime": "thief_move_north_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        66,
+        156,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_01.png",
+      "runtime": "thief_move_north_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        67,
+        154,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_02.png",
+      "runtime": "thief_move_north_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        93,
+        67,
+        157,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_03.png",
+      "runtime": "thief_move_north_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        86,
+        66,
+        155,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_04.png",
+      "runtime": "thief_move_north_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        68,
+        157,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        111
+      ],
+      "scale": 2.2072072072072073,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north_05.png",
+      "runtime": "thief_move_north_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        93,
+        68,
+        156,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        111
+      ],
+      "scale": 2.2072072072072073,
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_north-west.png",
+      "runtime": "thief_idle_north-west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        85,
+        63,
+        163,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_00.png",
+      "runtime": "thief_move_north-west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        64,
+        148,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        196,
+        235,
+        316,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_01.png",
+      "runtime": "thief_move_north-west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        94,
+        66,
+        156,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_02.png",
+      "runtime": "thief_move_north-west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        95,
+        66,
+        158,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_03.png",
+      "runtime": "thief_move_north-west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        90,
+        64,
+        161,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_04.png",
+      "runtime": "thief_move_north-west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        90,
+        65,
+        157,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_north-west_05.png",
+      "runtime": "thief_move_north-west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        91,
+        65,
+        156,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_west.png",
+      "runtime": "thief_idle_west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        95,
+        67,
+        165,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_west_00.png",
+      "runtime": "thief_move_west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        103,
+        67,
+        150,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        205,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_west_01.png",
+      "runtime": "thief_move_west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        89,
+        67,
+        150,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_west_02.png",
+      "runtime": "thief_move_west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        97,
+        67,
+        154,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_west_03.png",
+      "runtime": "thief_move_west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        105,
+        67,
+        152,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        479
+      ]
+    },
+    {
+      "source": "thief_move_west_04.png",
+      "runtime": "thief_move_west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        99,
+        67,
+        148,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_west_05.png",
+      "runtime": "thief_move_west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        101,
+        67,
+        147,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "thief_idle_south-west.png",
+      "runtime": "thief_idle_south-west.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        92,
+        67,
+        163,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_00.png",
+      "runtime": "thief_move_south-west_00.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        98,
+        66,
+        164,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_01.png",
+      "runtime": "thief_move_south-west_01.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        94,
+        67,
+        162,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_02.png",
+      "runtime": "thief_move_south-west_02.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        96,
+        66,
+        164,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_03.png",
+      "runtime": "thief_move_south-west_03.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        104,
+        66,
+        164,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_04.png",
+      "runtime": "thief_move_south-west_04.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        101,
+        67,
+        163,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "thief_move_south-west_05.png",
+      "runtime": "thief_move_south-west_05.png",
+      "source_size": [
+        248,
+        248
+      ],
+      "source_alpha_bbox": [
+        105,
+        67,
+        164,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        479
+      ]
+    }
+  ]
+}

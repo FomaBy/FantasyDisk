@@ -11,10 +11,7 @@
     252,
     252
   ],
-  "runtime_canvas": [
-    512,
-    512
-  ],
+  "runtime_canvas": "512x512",
   "runtime_scale": 2,
   "runtime_bottom_padding": 32,
   "normalization": "trim transparent padding only, nearest-neighbor scale, centered x, bottom-aligned y; no character pixels cropped",
@@ -55,11 +52,109 @@
     "south-west": "5853947e-8dbf-45ba-984a-810c1af907fd"
   },
   "source_files": {
-    "idle": "assets/sprites/characters/pixellab/priest/priest_idle_<dir>.png",
-    "move": "assets/sprites/characters/pixellab/priest/priest_move_<dir>_<00-05>.png"
+    "idle": {
+      "south": "priest_idle_south.png",
+      "south-east": "priest_idle_south-east.png",
+      "east": "priest_idle_east.png",
+      "north-east": "priest_idle_north-east.png",
+      "north": "priest_idle_north.png",
+      "north-west": "priest_idle_north-west.png",
+      "west": "priest_idle_west.png",
+      "south-west": "priest_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "priest_move_south_00.png",
+        "priest_move_south_01.png",
+        "priest_move_south_02.png",
+        "priest_move_south_03.png",
+        "priest_move_south_04.png",
+        "priest_move_south_05.png"
+      ],
+      "south-east": [
+        "priest_move_south-east_00.png",
+        "priest_move_south-east_01.png",
+        "priest_move_south-east_02.png",
+        "priest_move_south-east_03.png",
+        "priest_move_south-east_04.png",
+        "priest_move_south-east_05.png"
+      ],
+      "east": [
+        "priest_move_east_00.png",
+        "priest_move_east_01.png",
+        "priest_move_east_02.png",
+        "priest_move_east_03.png",
+        "priest_move_east_04.png",
+        "priest_move_east_05.png"
+      ],
+      "north-east": [
+        "priest_move_north-east_00.png",
+        "priest_move_north-east_01.png",
+        "priest_move_north-east_02.png",
+        "priest_move_north-east_03.png",
+        "priest_move_north-east_04.png",
+        "priest_move_north-east_05.png"
+      ],
+      "north": [
+        "priest_move_north_00.png",
+        "priest_move_north_01.png",
+        "priest_move_north_02.png",
+        "priest_move_north_03.png",
+        "priest_move_north_04.png",
+        "priest_move_north_05.png"
+      ],
+      "north-west": [
+        "priest_move_north-west_00.png",
+        "priest_move_north-west_01.png",
+        "priest_move_north-west_02.png",
+        "priest_move_north-west_03.png",
+        "priest_move_north-west_04.png",
+        "priest_move_north-west_05.png"
+      ],
+      "west": [
+        "priest_move_west_00.png",
+        "priest_move_west_01.png",
+        "priest_move_west_02.png",
+        "priest_move_west_03.png",
+        "priest_move_west_04.png",
+        "priest_move_west_05.png"
+      ],
+      "south-west": [
+        "priest_move_south-west_00.png",
+        "priest_move_south-west_01.png",
+        "priest_move_south-west_02.png",
+        "priest_move_south-west_03.png",
+        "priest_move_south-west_04.png",
+        "priest_move_south-west_05.png"
+      ]
+    }
   },
-  "runtime_dir": "assets/sprites/characters/full_frame/priest_pixellab/",
+  "runtime_dir": "assets/sprites/characters/full_frame/priest_pixellab",
   "spriteframes": "assets/sprites/characters/priest_spriteframes.tres",
   "prompt_spec": "D&D dark fantasy holy sustain support caster, white-gold robes, halo, empty hands, no weapon/held object, transparent background, no text/UI.",
-  "notes": "PixelLab bundle endpoint returned HTTP 423 because stale failed job records remained after successful per-direction retry; completed frame URLs were downloaded directly from get_character output. One north-east attempt failed, then a retry completed successfully."
+  "notes": "PixelLab bundle endpoint returned HTTP 423 because stale failed job records remained after successful per-direction retry; completed frame URLs were downloaded directly from get_character output. One north-east attempt failed, then a retry completed successfully.",
+  "scrum869_refresh": {
+    "task": "SCRUM-869",
+    "refreshed_at": "2026-07-04T08:10:30+00:00",
+    "pixellab_download_export_date": "2026-07-04T08:10:30.290955",
+    "pixellab_export_version": "3.0",
+    "selected_animation_folders": {
+      "south": "animating-3d20e3e8",
+      "south-east": "animating-424388ea",
+      "east": "animating",
+      "north-east": "animating-6dcb8a09",
+      "north": "animating-3d20e3e8",
+      "north-west": "animating-6dcb8a09",
+      "west": "animating",
+      "south-west": "animating-424388ea"
+    },
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "runtime_visible_height_target": 245,
+    "runtime_bottom_padding": 32,
+    "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
+  }
 }

@@ -1,0 +1,347 @@
+{
+  "task": "SCRUM-869",
+  "generated_at": "2026-07-04T08:10:23+00:00",
+  "dry_run": false,
+  "characters_requested": [
+    "berserk",
+    "soldier",
+    "thief",
+    "elementalist",
+    "sniper",
+    "priest",
+    "biologist",
+    "robot",
+    "engineer",
+    "dark_mage",
+    "guitarist",
+    "assassin",
+    "ranger",
+    "doctor",
+    "chemist",
+    "knight",
+    "druid"
+  ],
+  "results": [
+    {
+      "character": "berserk",
+      "status": "blocked",
+      "pixellab_character_id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
+      "pixellab_name": "FantasyDisk Berserk SCRUM-703 240px unarmed",
+      "reason": "missing 6f movement rows: south"
+    },
+    {
+      "character": "soldier",
+      "status": "blocked",
+      "pixellab_character_id": "72b487d3-feea-4012-b39f-b59ba24f7f11",
+      "pixellab_name": "FantasyDisk Soldier SCRUM-434",
+      "reason": "missing 6f movement rows: south, north-east"
+    },
+    {
+      "character": "thief",
+      "status": "refreshed",
+      "pixellab_character_id": "02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f",
+      "pixellab_name": "Remove the visible w",
+      "pixellab_export_date": "2026-07-04T08:10:27.480166",
+      "selected_animation_folders": {
+        "south": "animating-1ce42ae9",
+        "south-east": "animating-1ce42ae9",
+        "east": "animating-1ce42ae9",
+        "north-east": "animating-3b5a3b8b",
+        "north": "animating-3b5a3b8b",
+        "north-west": "animating",
+        "west": "animating-b07f9bd9",
+        "south-west": "animating"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/thief",
+      "runtime_dir": "assets/sprites/characters/full_frame/thief_pixellab",
+      "spriteframes": "assets/sprites/characters/thief_spriteframes.tres"
+    },
+    {
+      "character": "elementalist",
+      "status": "blocked",
+      "pixellab_character_id": "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f",
+      "reason": "download HTTP 404"
+    },
+    {
+      "character": "sniper",
+      "status": "blocked",
+      "pixellab_character_id": "74c4f7db-ed7f-4b6a-b9b3-bc18e417563c",
+      "pixellab_name": "FantasyDisk Sniper SCRUM-433 240px empty hands",
+      "reason": "missing 6f movement rows: south, north-west"
+    },
+    {
+      "character": "priest",
+      "status": "refreshed",
+      "pixellab_character_id": "ed7db59e-0845-4218-b178-a56f948254b5",
+      "pixellab_name": "FantasyDisk priest SCRUM-431",
+      "pixellab_export_date": "2026-07-04T08:10:30.290955",
+      "selected_animation_folders": {
+        "south": "animating-3d20e3e8",
+        "south-east": "animating-424388ea",
+        "east": "animating",
+        "north-east": "animating-6dcb8a09",
+        "north": "animating-3d20e3e8",
+        "north-west": "animating-6dcb8a09",
+        "west": "animating",
+        "south-west": "animating-424388ea"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/priest",
+      "runtime_dir": "assets/sprites/characters/full_frame/priest_pixellab",
+      "spriteframes": "assets/sprites/characters/priest_spriteframes.tres"
+    },
+    {
+      "character": "biologist",
+      "status": "refreshed",
+      "pixellab_character_id": "cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4",
+      "pixellab_name": "FantasyDisk Biologist PixelLab SCRUM-421 2026-06-30",
+      "pixellab_export_date": "2026-07-04T08:10:31.607773",
+      "selected_animation_folders": {
+        "south": "animating-9a485e8a",
+        "south-east": "animating",
+        "east": "animating-9a485e8a",
+        "north-east": "animating",
+        "north": "animating-9a485e8a",
+        "north-west": "animating",
+        "west": "animating-9a485e8a",
+        "south-west": "animating"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/biologist",
+      "runtime_dir": "assets/sprites/characters/full_frame/biologist_pixellab",
+      "spriteframes": "assets/sprites/characters/biologist_spriteframes.tres"
+    },
+    {
+      "character": "robot",
+      "status": "refreshed",
+      "pixellab_character_id": "37c6ccf2-ab40-4c89-83a3-db8365f85257",
+      "pixellab_name": "Remove all visible f",
+      "pixellab_export_date": "2026-07-04T08:10:32.605169",
+      "selected_animation_folders": {
+        "south": "walking-737cbf59",
+        "south-east": "walking",
+        "east": "walking",
+        "north-east": "walking",
+        "north": "walking",
+        "north-west": "walking",
+        "west": "walking",
+        "south-west": "walking"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/robot",
+      "runtime_dir": "assets/sprites/characters/full_frame/robot_pixellab",
+      "spriteframes": "assets/sprites/characters/robot_spriteframes.tres"
+    },
+    {
+      "character": "engineer",
+      "status": "blocked",
+      "pixellab_character_id": "c5bd9766-e7de-4316-ace6-e687c951e621",
+      "pixellab_name": "FantasyDisk Engineer PixelLab SCRUM-428 2026-06-30",
+      "reason": "missing 6f movement rows: north"
+    },
+    {
+      "character": "dark_mage",
+      "status": "refreshed",
+      "pixellab_character_id": "9bb0eca8-5afe-49d4-8e56-7115a45efdcc",
+      "pixellab_name": "FantasyDisk SCRUM-704 Dark Mage 240 empty hands",
+      "pixellab_export_date": "2026-07-04T08:10:40.903399",
+      "selected_animation_folders": {
+        "south": "animating",
+        "south-east": "animating-dcbe35d8",
+        "east": "animating-dcbe35d8",
+        "north-east": "animating-dcbe35d8",
+        "north": "animating-dcbe35d8",
+        "north-west": "animating-dcbe35d8",
+        "west": "animating-dcbe35d8",
+        "south-west": "animating-dcbe35d8"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/dark_mage",
+      "runtime_dir": "assets/sprites/characters/full_frame/dark_mage_pixellab",
+      "spriteframes": "assets/sprites/characters/dark_mage_spriteframes.tres"
+    },
+    {
+      "character": "guitarist",
+      "status": "refreshed",
+      "pixellab_character_id": "d278e753-9885-4550-82ff-81ee3bef297d",
+      "pixellab_name": "FantasyDisk SCRUM-706 Guitarist 240 empty hands",
+      "pixellab_export_date": "2026-07-04T08:10:42.094644",
+      "selected_animation_folders": {
+        "south": "animating",
+        "south-east": "animating",
+        "east": "animating",
+        "north-east": "animating",
+        "north": "animating",
+        "north-west": "animating",
+        "west": "animating",
+        "south-west": "animating"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/guitarist",
+      "runtime_dir": "assets/sprites/characters/full_frame/guitarist_pixellab",
+      "spriteframes": "assets/sprites/characters/guitarist_spriteframes.tres"
+    },
+    {
+      "character": "assassin",
+      "status": "refreshed",
+      "pixellab_character_id": "ec73da27-b704-4336-9275-74c8e3e578df",
+      "pixellab_name": "FantasyDisk Assassin SCRUM-803 empty open hands retry",
+      "pixellab_export_date": "2026-07-04T08:10:43.282123",
+      "selected_animation_folders": {
+        "south": "animating-ed160325",
+        "south-east": "animating",
+        "east": "animating-ed160325",
+        "north-east": "animating-ed160325",
+        "north": "animating-ed160325",
+        "north-west": "animating-ed160325",
+        "west": "animating-ed160325",
+        "south-west": "animating"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/assassin",
+      "runtime_dir": "assets/sprites/characters/full_frame/assassin_pixellab",
+      "spriteframes": "assets/sprites/characters/assassin_spriteframes.tres"
+    },
+    {
+      "character": "ranger",
+      "status": "refreshed",
+      "pixellab_character_id": "1646d83c-f570-4bdd-9065-cb1b46bf13f7",
+      "pixellab_name": "FantasyDisk Ranger SCRUM-804 empty hands",
+      "pixellab_export_date": "2026-07-04T08:10:44.415624",
+      "selected_animation_folders": {
+        "south": "animating",
+        "south-east": "animating",
+        "east": "animating",
+        "north-east": "animating",
+        "north": "animating-ef8097a7",
+        "north-west": "animating-ef8097a7",
+        "west": "animating-ef8097a7",
+        "south-west": "animating"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/ranger",
+      "runtime_dir": "assets/sprites/characters/full_frame/ranger_pixellab",
+      "spriteframes": "assets/sprites/characters/ranger_spriteframes.tres"
+    },
+    {
+      "character": "doctor",
+      "status": "blocked",
+      "pixellab_character_id": "3e0a2b30-308e-48a8-a5a6-bb28a5038ca9",
+      "pixellab_name": "FantasyDisk Doctor SCRUM-705 240px",
+      "reason": "missing 6f movement rows: north"
+    },
+    {
+      "character": "chemist",
+      "status": "refreshed",
+      "pixellab_character_id": "c7fe44d3-1f15-45a1-b762-b2862833b151",
+      "pixellab_name": "FantasyDisk Chemist PixelLab SCRUM-423 2026-06-30",
+      "pixellab_export_date": "2026-07-04T08:10:46.960905",
+      "selected_animation_folders": {
+        "south": "animating-94564e61",
+        "south-east": "animating-564ff697",
+        "east": "animating",
+        "north-east": "animating-d9b3a385",
+        "north": "animating-ab10f07a",
+        "north-west": "animating-d9b3a385",
+        "west": "animating",
+        "south-west": "animating-b43b105e"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/chemist",
+      "runtime_dir": "assets/sprites/characters/full_frame/chemist_pixellab",
+      "spriteframes": "assets/sprites/characters/chemist_spriteframes.tres"
+    },
+    {
+      "character": "knight",
+      "status": "refreshed",
+      "pixellab_character_id": "c1a7d633-7353-4861-aea3-8d937b601cba",
+      "pixellab_name": "FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30",
+      "pixellab_export_date": "2026-07-04T08:10:47.907258",
+      "selected_animation_folders": {
+        "south": "animating-201f5261",
+        "south-east": "animating-59e5cb6d",
+        "east": "animating-ac2f8738",
+        "north-east": "animating",
+        "north": "animating-4f95e1b1",
+        "north-west": "animating-c3975217",
+        "west": "animating-ac2f8738",
+        "south-west": "animating-59e5cb6d"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/knight",
+      "runtime_dir": "assets/sprites/characters/full_frame/knight_pixellab",
+      "spriteframes": "assets/sprites/characters/knight_spriteframes.tres"
+    },
+    {
+      "character": "druid",
+      "status": "refreshed",
+      "pixellab_character_id": "4078113b-fece-4087-a035-9ed3714a6514",
+      "pixellab_name": "FantasyDisk SCRUM-426 druid",
+      "pixellab_export_date": "2026-07-04T08:10:48.892129",
+      "selected_animation_folders": {
+        "south": "walking_with_soft_ritual_druid_steps_gentle_robe_a-64c86341",
+        "south-east": "walking_with_soft_ritual_druid_steps_gentle_robe_a-e87da37e",
+        "east": "walking_with_soft_ritual_druid_steps_gentle_robe_a-e9b1f3f6",
+        "north-east": "walking_with_soft_ritual_druid_steps_gentle_robe_a-aebe42ab",
+        "north": "walking_with_soft_ritual_druid_steps_gentle_robe_a-cbf105fc",
+        "north-west": "walking_with_soft_ritual_druid_steps_gentle_robe_a",
+        "west": "walking_with_soft_ritual_druid_steps_gentle_robe_a-bf10f477",
+        "south-west": "walking_with_soft_ritual_druid_steps_gentle_robe_a-37ec7128"
+      },
+      "source_dir": "assets/sprites/characters/pixellab/druid",
+      "runtime_dir": "assets/sprites/characters/full_frame/druid_pixellab",
+      "spriteframes": "assets/sprites/characters/druid_spriteframes.tres"
+    }
+  ],
+  "summary": {
+    "refreshed_or_ready_count": 11,
+    "blocked_count": 6,
+    "refreshed_or_ready": [
+      "thief",
+      "priest",
+      "biologist",
+      "robot",
+      "dark_mage",
+      "guitarist",
+      "assassin",
+      "ranger",
+      "chemist",
+      "knight",
+      "druid"
+    ],
+    "blocked": [
+      {
+        "character": "berserk",
+        "status": "blocked",
+        "pixellab_character_id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
+        "pixellab_name": "FantasyDisk Berserk SCRUM-703 240px unarmed",
+        "reason": "missing 6f movement rows: south"
+      },
+      {
+        "character": "soldier",
+        "status": "blocked",
+        "pixellab_character_id": "72b487d3-feea-4012-b39f-b59ba24f7f11",
+        "pixellab_name": "FantasyDisk Soldier SCRUM-434",
+        "reason": "missing 6f movement rows: south, north-east"
+      },
+      {
+        "character": "elementalist",
+        "status": "blocked",
+        "pixellab_character_id": "7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f",
+        "reason": "download HTTP 404"
+      },
+      {
+        "character": "sniper",
+        "status": "blocked",
+        "pixellab_character_id": "74c4f7db-ed7f-4b6a-b9b3-bc18e417563c",
+        "pixellab_name": "FantasyDisk Sniper SCRUM-433 240px empty hands",
+        "reason": "missing 6f movement rows: south, north-west"
+      },
+      {
+        "character": "engineer",
+        "status": "blocked",
+        "pixellab_character_id": "c5bd9766-e7de-4316-ace6-e687c951e621",
+        "pixellab_name": "FantasyDisk Engineer PixelLab SCRUM-428 2026-06-30",
+        "reason": "missing 6f movement rows: north"
+      },
+      {
+        "character": "doctor",
+        "status": "blocked",
+        "pixellab_character_id": "3e0a2b30-308e-48a8-a5a6-bb28a5038ca9",
+        "pixellab_name": "FantasyDisk Doctor SCRUM-705 240px",
+        "reason": "missing 6f movement rows: north"
+      }
+    ]
+  }
+}

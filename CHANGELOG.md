@@ -9,6 +9,7 @@
 
 ### Changed
 - Экран «Настройки» полностью перерисован с нуля (v6, SCRUM-847) в едином стиле с «Атласом героев»: латунь/золото, тёмная кожа, сапфировые акценты; новый арт-кит (OpenAI + PixelLab) — орнаментная модальная рамка с крылатой эмблемой, золотые вкладки-закладки с пиксель-иконками, кнопки с драконьей чешуёй, поля-пазы, сапфировый гем слайдера, чекбоксы-розетки со звездой; золотые заголовки секций с латунными линиями, голубые подсказки, тёмные выпадающие списки и видимые фокус-кольца для геймпада. Геометрия и раскладка элементов сохранены, легаси-ассеты настроек v1–v5 удалены.
+- SCRUM-869 обновляет playable PixelLab animation refresh pipeline: добавлен безопасный импортёр `tools/update_pixellab_character_animations.py`, заново скачаны и нормализованы завершённые PixelLab-паки для Assassin, Biologist, Chemist, Dark Mage, Druid, Guitarist, Knight, Priest, Ranger, Robot и Thief, пересобраны их `512x512` runtime frames и SpriteFrames с 8 idle-направлениями и 6-frame `move/walk` rows. Berserk, Soldier, Elementalist, Sniper, Engineer и Doctor сохранены на текущих runtime assets с точными PixelLab blockers в отчёте, без legacy/manual fallback для refreshed source.
 
 ### Fixed
 - Пока пусто.

@@ -1,0 +1,1410 @@
+{
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 24,
+  "frames": [
+    {
+      "source": "druid_idle_south.png",
+      "runtime": "druid_idle_south.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        81,
+        62,
+        163,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        172,
+        243,
+        340,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_00.png",
+      "runtime": "druid_move_south_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        83,
+        62,
+        162,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        176,
+        243,
+        336,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_01.png",
+      "runtime": "druid_move_south_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        83,
+        62,
+        160,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        178,
+        243,
+        334,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_02.png",
+      "runtime": "druid_move_south_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        84,
+        62,
+        161,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        178,
+        243,
+        334,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_03.png",
+      "runtime": "druid_move_south_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        85,
+        61,
+        161,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        179,
+        242,
+        333,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_04.png",
+      "runtime": "druid_move_south_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        85,
+        63,
+        159,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        180,
+        243,
+        332,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south_05.png",
+      "runtime": "druid_move_south_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        85,
+        62,
+        160,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        179,
+        243,
+        333,
+        487
+      ]
+    },
+    {
+      "source": "druid_idle_south-east.png",
+      "runtime": "druid_idle_south-east.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        84,
+        62,
+        159,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        180,
+        243,
+        332,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south-east_00.png",
+      "runtime": "druid_move_south-east_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        88,
+        61,
+        157,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        187,
+        243,
+        325,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south-east_01.png",
+      "runtime": "druid_move_south-east_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        86,
+        62,
+        159,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        181,
+        243,
+        331,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south-east_02.png",
+      "runtime": "druid_move_south-east_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        87,
+        62,
+        161,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        180,
+        243,
+        332,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south-east_03.png",
+      "runtime": "druid_move_south-east_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        86,
+        62,
+        152,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        190,
+        243,
+        322,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-east_04.png",
+      "runtime": "druid_move_south-east_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        86,
+        63,
+        156,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        186,
+        243,
+        326,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-east_05.png",
+      "runtime": "druid_move_south-east_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        86,
+        63,
+        154,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        188,
+        243,
+        324,
+        488
+      ]
+    },
+    {
+      "source": "druid_idle_east.png",
+      "runtime": "druid_idle_east.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        79,
+        62,
+        148,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        186,
+        243,
+        326,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_east_00.png",
+      "runtime": "druid_move_east_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        78,
+        64,
+        142,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        192,
+        243,
+        320,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_east_01.png",
+      "runtime": "druid_move_east_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        79,
+        65,
+        158,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        175,
+        243,
+        336,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_east_02.png",
+      "runtime": "druid_move_east_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        77,
+        65,
+        149,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        182,
+        243,
+        332,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_east_03.png",
+      "runtime": "druid_move_east_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        86,
+        63,
+        140,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        124
+      ],
+      "scale": 1.9758064516129032,
+      "runtime_alpha_bbox": [
+        202,
+        243,
+        309,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_east_04.png",
+      "runtime": "druid_move_east_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        74,
+        65,
+        153,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        174,
+        243,
+        337,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_east_05.png",
+      "runtime": "druid_move_east_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        76,
+        65,
+        146,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        185,
+        243,
+        328,
+        488
+      ]
+    },
+    {
+      "source": "druid_idle_north-east.png",
+      "runtime": "druid_idle_north-east.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        63,
+        61,
+        147,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        171,
+        242,
+        342,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north-east_00.png",
+      "runtime": "druid_move_north-east_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        65,
+        63,
+        148,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        171,
+        243,
+        340,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-east_01.png",
+      "runtime": "druid_move_north-east_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        68,
+        64,
+        151,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        170,
+        243,
+        341,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north-east_02.png",
+      "runtime": "druid_move_north-east_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        67,
+        63,
+        148,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        174,
+        243,
+        338,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-east_03.png",
+      "runtime": "druid_move_north-east_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        69,
+        63,
+        143,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        179,
+        243,
+        333,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-east_04.png",
+      "runtime": "druid_move_north-east_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        70,
+        62,
+        153,
+        177
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        167,
+        243,
+        344,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-east_05.png",
+      "runtime": "druid_move_north-east_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        72,
+        62,
+        148,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        177,
+        243,
+        336,
+        488
+      ]
+    },
+    {
+      "source": "druid_idle_north.png",
+      "runtime": "druid_idle_north.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        61,
+        62,
+        159,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        155,
+        243,
+        358,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north_00.png",
+      "runtime": "druid_move_north_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        91,
+        63,
+        155,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        188,
+        243,
+        323,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north_01.png",
+      "runtime": "druid_move_north_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        89,
+        63,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        187,
+        243,
+        325,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north_02.png",
+      "runtime": "druid_move_north_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        89,
+        64,
+        154,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        187,
+        243,
+        325,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north_03.png",
+      "runtime": "druid_move_north_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        90,
+        66,
+        157,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        184,
+        243,
+        328,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north_04.png",
+      "runtime": "druid_move_north_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        89,
+        66,
+        156,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        185,
+        243,
+        327,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north_05.png",
+      "runtime": "druid_move_north_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        90,
+        66,
+        157,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        183,
+        243,
+        328,
+        488
+      ]
+    },
+    {
+      "source": "druid_idle_north-west.png",
+      "runtime": "druid_idle_north-west.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        87,
+        61,
+        153,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        188,
+        243,
+        324,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north-west_00.png",
+      "runtime": "druid_move_north-west_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        92,
+        61,
+        149,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        198,
+        242,
+        314,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north-west_01.png",
+      "runtime": "druid_move_north-west_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        92,
+        63,
+        149,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        316,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-west_02.png",
+      "runtime": "druid_move_north-west_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        95,
+        63,
+        151,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        197,
+        243,
+        315,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-west_03.png",
+      "runtime": "druid_move_north-west_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        97,
+        60,
+        149,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        203,
+        242,
+        309,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_north-west_04.png",
+      "runtime": "druid_move_north-west_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        89,
+        60,
+        153,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        192,
+        243,
+        320,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_north-west_05.png",
+      "runtime": "druid_move_north-west_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        90,
+        61,
+        152,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        194,
+        242,
+        318,
+        488
+      ]
+    },
+    {
+      "source": "druid_idle_west.png",
+      "runtime": "druid_idle_west.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        104,
+        61,
+        175,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        185,
+        242,
+        328,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_west_00.png",
+      "runtime": "druid_move_west_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        104,
+        63,
+        178,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        180,
+        243,
+        332,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_west_01.png",
+      "runtime": "druid_move_west_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        88,
+        63,
+        178,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        163,
+        243,
+        348,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_west_02.png",
+      "runtime": "druid_move_west_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        97,
+        63,
+        179,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        172,
+        243,
+        339,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_west_03.png",
+      "runtime": "druid_move_west_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        108,
+        63,
+        179,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        185,
+        243,
+        328,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_west_04.png",
+      "runtime": "druid_move_west_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        91,
+        63,
+        179,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        168,
+        243,
+        344,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_west_05.png",
+      "runtime": "druid_move_west_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        98,
+        63,
+        179,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        172,
+        243,
+        338,
+        487
+      ]
+    },
+    {
+      "source": "druid_idle_south-west.png",
+      "runtime": "druid_idle_south-west.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        89,
+        61,
+        175,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        170,
+        242,
+        342,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-west_00.png",
+      "runtime": "druid_move_south-west_00.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        99,
+        63,
+        152,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        202,
+        243,
+        310,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-west_01.png",
+      "runtime": "druid_move_south-west_01.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        93,
+        64,
+        156,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        191,
+        243,
+        321,
+        487
+      ]
+    },
+    {
+      "source": "druid_move_south-west_02.png",
+      "runtime": "druid_move_south-west_02.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        97,
+        63,
+        172,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        180,
+        243,
+        333,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-west_03.png",
+      "runtime": "druid_move_south-west_03.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        91,
+        62,
+        171,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        176,
+        243,
+        336,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-west_04.png",
+      "runtime": "druid_move_south-west_04.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        87,
+        63,
+        173,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        167,
+        243,
+        345,
+        488
+      ]
+    },
+    {
+      "source": "druid_move_south-west_05.png",
+      "runtime": "druid_move_south-west_05.png",
+      "source_size": [
+        244,
+        244
+      ],
+      "source_alpha_bbox": [
+        92,
+        63,
+        174,
+        181
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        171,
+        243,
+        342,
+        488
+      ]
+    }
+  ]
+}

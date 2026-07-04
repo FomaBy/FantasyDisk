@@ -96,6 +96,25 @@ historical/fallback asset references and are not the live static portrait source
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
 
+SCRUM-869 refreshes the playable PixelLab source/runtime packs from the live
+PixelLab manifests without changing canonical character IDs or portrait paths.
+The refreshed complete packs are `assassin`
+(`ec73da27-b704-4336-9275-74c8e3e578df`), `biologist`
+(`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`), `chemist`
+(`c7fe44d3-1f15-45a1-b762-b2862833b151`), `dark_mage`
+(`9bb0eca8-5afe-49d4-8e56-7115a45efdcc`), `druid`
+(`4078113b-fece-4087-a035-9ed3714a6514`), `guitarist`
+(`d278e753-9885-4550-82ff-81ee3bef297d`), `knight`
+(`c1a7d633-7353-4861-aea3-8d937b601cba`), `priest`
+(`ed7db59e-0845-4218-b178-a56f948254b5`), `ranger`
+(`1646d83c-f570-4bdd-9065-cb1b46bf13f7`), `robot`
+(`37c6ccf2-ab40-4c89-83a3-db8365f85257`) and `thief`
+(`02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f`). `berserk`, `soldier`,
+`elementalist`, `sniper`, `engineer` and `doctor` remain on their existing live
+runtime packs because the SCRUM-869 PixelLab audit found incomplete/404 source
+packages; exact blockers are recorded in
+`build/qa/pixellab_character_animation_refresh/report.json` and the task mirror.
+
 SCRUM-423 promotes Chemist to the PixelLab directional runtime contract:
 PixelLab character `c7fe44d3-1f15-45a1-b762-b2862833b151` provides 8 static
 idle rotations and `walking-6-frames` movement rows for all directions. Source
