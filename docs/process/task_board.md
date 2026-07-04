@@ -40,11 +40,11 @@ HP при переходе в следующий акт; (3) накопленн�
 раундами (переносить через `run_player_snapshot`). Анти-коллизия: SCRUM-873 и SCRUM-872 оба
 трогают `scripts/combat_director.gd`, SCRUM-874 и SCRUM-873 оба трогают `scripts/ui_screens.gd`
 — один исполнитель Claude за раз, не параллелить правку общих файлов. Спеки в docs/tasks/.
-| Jira | Задача | Lane | Prio |
-| --- | --- | --- | --- |
-| SCRUM-874 | [HUD-боссбар босса/элитки сверху экрана](../tasks/ui_boss_elite_hud_health_bar_task.md) | claude/backend | p1 |
-| SCRUM-873 | [Награда за акт-босса: выбор 1 из 3 суперредких + отхил 60–80%](../tasks/ui_boss_act_reward_choice_heal_task.md) | claude/backend | p1 |
-| SCRUM-872 | [Ульта: не сбрасывать шкалу между раундами](../tasks/backend_ultimate_charge_persist_between_rounds_task.md) | claude/backend | p1 |
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-874 | [HUD-боссбар босса/элитки сверху экрана](../tasks/ui_boss_elite_hud_health_bar_task.md) | claude/backend | p1 | done; ready_for_QA |
+| SCRUM-873 | [Награда за акт-босса: выбор 1 из 3 суперредких + отхил 70%](../tasks/ui_boss_act_reward_choice_heal_task.md) | claude/backend | p1 | done; ready_for_QA |
+| SCRUM-872 | [Ульта: не сбрасывать шкалу между раундами](../tasks/backend_ultimate_charge_persist_between_rounds_task.md) | claude/backend | p1 | done; ready_for_QA |
 
 **Пачка «Полная поддержка геймпада» 2026-07-02 (PM, foma, label=gamepad):** прямой
 запрос пользователя: играбельность на геймпаде целиком — все экраны/попапы навигируемы

@@ -3920,17 +3920,17 @@
  },
  "backend_ultimate_charge_persist_between_rounds_task.md": {
   "key": "SCRUM-872",
-  "status": "К выполнению",
-  "desc_hash": "5bde1d7efaaafde55eff3f240554f2b6"
+  "status": "Контроль качества",
+  "desc_hash": "c6450fbfea84fa7df1cf32d1930bc1da"
  },
  "ui_boss_act_reward_choice_heal_task.md": {
   "key": "SCRUM-873",
-  "status": "К выполнению",
-  "desc_hash": "52ecb00e5a157f11cfe0068ec8326aad"
+  "status": "Контроль качества",
+  "desc_hash": "bf89bd35eda89617df48fb1d3021b32b"
  },
  "ui_boss_elite_hud_health_bar_task.md": {
   "key": "SCRUM-874",
-  "status": "К выполнению",
-  "desc_hash": "718d3e278d9e7840fb774372881a010d"
+  "status": "Контроль качества",
+  "desc_hash": "3835cc8f73c28387455b4c031f07bb2c"
  }
 }
