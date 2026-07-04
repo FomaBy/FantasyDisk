@@ -467,10 +467,27 @@ rims, or badges.
   both axes gets the gold «ЛУЧШИЙ ВЫБОР» ribbon (`ui_badge_lu_best_both.png`);
   zero/negative gains award no badge. Ribbons are PixelLab textless assets with
   runtime labels constrained to each ribbon's empty field
-  (`LU_BADGE_META.label_zone`); card tooltips list the full delta set and explain
-  the badge with the computed gain percent. Damage-type isolation (SCRUM-524)
-  keeps foreign damage types out of card deltas. Mockup/spec:
-  `docs/design/mockups/level_up_advisor/`; gate: `tests/level_up_advisor_test.gd`.
+  (`LU_BADGE_META.label_zone` — фактические поля риббонов, замеренные по
+  пикселям низкодисперсным раном в средней полосе PNG; поле у всех риббонов в
+  ВЕРХНЕЙ части с эмблемой слева, подпись центрируется в поле по вертикали с
+  учётом кламппа минимальной высоты Label); card tooltips list the full delta
+  set and explain the badge with the computed gain percent. Damage-type
+  isolation (SCRUM-524) keeps foreign damage types out of card deltas.
+  Mockup/spec: `docs/design/mockups/level_up_advisor/`;
+  gate: `tests/level_up_advisor_test.gd`.
+- SCRUM-876 unifies the run resource HUD: `_create_menu_run_hud()` now builds
+  the SAME SCRUM-806 combat slim cluster (HP/XP/ULT pixel-icon bars + gold,
+  `ui_hud_v2_cluster_bg`) on every run menu screen — route map, level-up,
+  rewards, shops, events, upgrade — via the shared `_create_resource_hud_panel`
+  (combat-only layout param removed) + `_layout_combat_hud` responsive pass.
+  The route map keeps its custom anchor below `RouteMapHeader` through
+  `_layout_menu_resource_hud(root, origin)` (inner zones are laid out against
+  the combat rect because `_hud_v2_place_in_panel` subtracts the panel
+  position). The legacy card-style menu HUD (`_hud_panel_style`,
+  `_add_hud_resource_card`, `_add_hud_money_card`, `_hud_bar_fill_style`) is
+  deleted; `RouteMapHeader` uses the same `chud_resource_panel` @2K frame
+  directly. Combat-only elements (timer, boss bar, ascension pips) stay
+  combat-exclusive. Evidence: `build/qa/scrum876/route_map_hud_1920x1080.png`.
 - SCRUM-683 is the live runtime wiring for the SCRUM-682 Level Up package.
   Source geometry lives under `docs/design/mockups/level_up_scrum682/spec.md`,
   and runtime scales it from 2560x1440 while keeping hero header, portrait,

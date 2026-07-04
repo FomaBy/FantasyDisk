@@ -341,10 +341,14 @@ const LU_EFFECT_FIELD_SOURCE_SIZE := Vector2(354.0, 132.0)
 const LU_EFFECT_FIELD_CONTENT_MARGINS := Vector4(30.0, 20.0, 30.0, 18.0)
 # Бейджи-риббоны рекомендаций: подпись и label-зона (доли ширины/высоты PNG,
 # по фактическим полям каждого риббона — эмблема слева, поле правее).
+# label_zone — фактическое пустое поле каждого риббона, замеренное по пикселям
+# (scratch measure_badge_fields: низкодисперсный ран в средней полосе PNG),
+# с ~2% воздуха от краёв. Поле у всех риббонов в ВЕРХНЕЙ части (хвосты ниже),
+# эмблема слева — подпись центрируется именно в поле, не в bbox риббона.
 const LU_BADGE_META := {
-	"dps": {"frame": "badge_dps", "text": "ЛУЧШИЙ УРОН", "label_zone": Rect2(0.38, 0.14, 0.54, 0.72), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
-	"surv": {"frame": "badge_surv", "text": "ВЫЖИВАНИЕ", "label_zone": Rect2(0.36, 0.18, 0.54, 0.64), "text_color": Color(0.93, 0.88, 0.63, 1.0)},
-	"both": {"frame": "badge_both", "text": "ЛУЧШИЙ ВЫБОР", "label_zone": Rect2(0.34, 0.20, 0.52, 0.60), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
+	"dps": {"frame": "badge_dps", "text": "ЛУЧШИЙ УРОН", "label_zone": Rect2(0.33, 0.23, 0.46, 0.29), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
+	"surv": {"frame": "badge_surv", "text": "ВЫЖИВАНИЕ", "label_zone": Rect2(0.36, 0.26, 0.51, 0.50), "text_color": Color(0.93, 0.88, 0.63, 1.0)},
+	"both": {"frame": "badge_both", "text": "ЛУЧШИЙ ВЫБОР", "label_zone": Rect2(0.33, 0.31, 0.45, 0.35), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
 }
 
 # #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
@@ -7480,9 +7484,14 @@ func _add_level_up_badge(content: Control, badge_kind: String, card_scale: Vecto
 	badge_label.clip_text = true
 	badge_label.max_lines_visible = 1
 	badge_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	var zone_height := ribbon_size.y * label_zone.size.y
 	badge_label.position = ribbon_position + Vector2(ribbon_size.x * label_zone.position.x, ribbon_size.y * label_zone.position.y)
-	badge_label.size = Vector2(ribbon_size.x * label_zone.size.x, ribbon_size.y * label_zone.size.y)
-	_shrink_label_font_to_width(badge_label, _readable_font_size(maxi(6, int(roundf(13.0 * card_scale.y))), 0, 16), badge_label.size.x - 2.0, 6)
+	badge_label.size = Vector2(ribbon_size.x * label_zone.size.x, zone_height)
+	_shrink_label_font_to_width(badge_label, _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 15), badge_label.size.x - 2.0, 6)
+	# Мелкая зона поля может быть ниже минимума Label (size клампится вверх и
+	# текст уезжал бы вниз с поля) — держим подпись по вертикальному центру поля.
+	if badge_label.size.y > zone_height:
+		badge_label.position.y -= (badge_label.size.y - zone_height) * 0.5
 	badge_label.add_theme_color_override("font_color", badge_meta["text_color"])
 	content.add_child(badge_label)
 
@@ -12140,7 +12149,7 @@ func _create_hud() -> void:
 	game.hud_layer.add_child(root)
 	_prepare_global_tooltips(root)
 
-	_create_resource_hud_panel(root, Vector2(20, 18), true)
+	_create_resource_hud_panel(root, Vector2(20, 18))
 	_create_combat_timer_panel(root)
 	_create_boss_health_panel(root)
 	_create_damage_flash_overlay(root)
@@ -12341,6 +12350,25 @@ func _apply_chud_rect(control: Control, rect: Rect2, meta_key := "") -> void:
 	control.size = rect.size
 	if meta_key != "":
 		control.set_meta(meta_key, rect)
+
+
+# SCRUM-876: разложить боевой ресурс-кластер на меню-экране с кастомной точкой
+# привязки (карта держит его ПОД своим заголовком). Размер/содержимое — тот же
+# скейл и лейаут, что в бою.
+func _layout_menu_resource_hud(root: Control, origin: Vector2) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	var scale := _scrum666_hud_scale(root)
+	# Внутренние зоны кластера (_hud_v2_place_in_panel) заданы в абсолютных
+	# боевых 2K-координатах и вычитают позицию панели — раскладываем содержимое
+	# относительно БОЕВОГО ректа, а саму панель ставим на кастомный origin.
+	var combat_rect := _scrum666_scaled_rect(HUD_V2_CLUSTER_2K, scale)
+	_apply_chud_rect(resource, Rect2(origin, combat_rect.size), "scrum666_frame_rect")
+	resource.add_theme_stylebox_override("panel", _hud_v2_cluster_style(combat_rect.size))
+	_layout_hud_v2_cluster(resource, combat_rect, scale)
 
 
 func _layout_combat_hud(root: Control) -> void:
@@ -12707,42 +12735,42 @@ func _create_menu_run_hud() -> void:
 	game.add_child(game.hud_layer)
 
 	var root := Control.new()
+	root.name = "MenuRunHudRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
 	_prepare_global_tooltips(root)
-	_create_resource_hud_panel(root, Vector2(18, 10))
+	# SCRUM-876: меню-экраны забега (карта/level-up/награды/магазины/события)
+	# показывают ТОТ ЖЕ боевой ресурс-кластер SCRUM-806 (HP/XP/ULT + золото),
+	# что и бой — один вид HUD во всех местах. Боевые-only элементы (таймер,
+	# боссбар, ascension-пипсы) здесь не создаются; _layout_combat_hud null-safe.
+	_create_resource_hud_panel(root, Vector2(20, 18))
+	root.resized.connect(func() -> void:
+		_layout_combat_hud(root)
+	)
+	_layout_combat_hud(root)
+	call_deferred("_layout_combat_hud", root)
 	_update_hud()
 	_update_level_up_button()
 
 
-func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layout := false) -> void:
+func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
+	# SCRUM-806 боевой HUD v2 (слим-бары с пиксель-иконками); с SCRUM-876 —
+	# единственный вид ресурс-панели: и бой, и все меню-экраны забега.
 	game._last_hud_snapshot.clear()
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size if combat_layout else Vector2(690, 72)
-	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size) if combat_layout else _hud_panel_style())
+	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size
+	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size))
 	parent.add_child(panel)
 
-	if combat_layout:
-		# SCRUM-806: боевой HUD v2 — слим-бары с пиксель-иконками вместо карточек.
-		var content := Control.new()
-		content.name = "RunResourceHudContent"
-		content.set_anchors_preset(Control.PRESET_FULL_RECT)
-		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		panel.add_child(content)
-		_build_hud_v2_cluster(content)
-		return
-
-	var row := HBoxContainer.new()
-	row.name = "RunResourceHudContent"
-	row.add_theme_constant_override("separation", 6)
-	panel.add_child(row)
-	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
-	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
-	_add_hud_money_card(row)
-	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+	var content := Control.new()
+	content.name = "RunResourceHudContent"
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(content)
+	_build_hud_v2_cluster(content)
 
 
 func _build_hud_v2_cluster(content: Control) -> void:
@@ -12895,81 +12923,6 @@ func _hud_stat_value_color(entry: Dictionary) -> Color:
 	return Color(0.44, 0.95, 0.65, 1.0) if value >= 8.0 else Color(0.91, 0.86, 0.65, 1.0)
 
 
-func _add_hud_resource_card(parent: Control, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
-	var card := PanelContainer.new()
-	card.name = "Hud%sCard" % label_text
-	card.custom_minimum_size = Vector2(132, 48)
-	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id))
-	parent.add_child(card)
-
-	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
-	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(24, 24)))
-
-	var value_box := VBoxContainer.new()
-	value_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	value_box.add_theme_constant_override("separation", 3)
-	line.add_child(value_box)
-
-	var value_label := Label.new()
-	value_label.name = "Hud%sLabel" % label_text
-	value_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	value_label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
-	value_box.add_child(value_label)
-	if icon_id == "hp":
-		game.health_label = value_label
-	elif icon_id == "xp":
-		game.xp_label = value_label
-	elif icon_id == "ultimate_multiplier":
-		game.ultimate_label = value_label
-
-	var bar := ProgressBar.new()
-	bar.name = "Hud%sBar" % label_text
-	bar.custom_minimum_size = Vector2(58, 8)
-	bar.show_percentage = false
-	bar.add_theme_stylebox_override("background", _bar_style(Color(0.06, 0.07, 0.09, 0.94)))
-	bar.add_theme_stylebox_override("fill", _hud_bar_fill_style(icon_id, fill_color))
-	value_box.add_child(bar)
-	return bar
-
-
-func _add_hud_money_card(parent: Control) -> void:
-	var card := PanelContainer.new()
-	card.name = "HudMoneyCard"
-	card.custom_minimum_size = Vector2(104, 48)
-	card.add_theme_stylebox_override("panel", _hud_card_style("money"))
-	parent.add_child(card)
-
-	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
-	card.add_child(line)
-	var money_icon := TextureRect.new()
-	money_icon.name = "UIIcon_money"
-	money_icon.custom_minimum_size = Vector2(24, 24)
-	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	money_icon.texture = game._cached_texture(COMBAT_HUD_GOLD_MEDALLION_PATH)
-	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	line.add_child(money_icon)
-
-	game.money_label = Label.new()
-	game.money_label.name = "HudMoneyLabel"
-	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
-	line.add_child(game.money_label)
-
-
-func _hud_panel_style(display_size := Vector2(820.0, 84.0), zero_content := false) -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка ресурс-панели (SCRUM666_CHUD_RESOURCE_PANEL_2K=820×84) — узкие
-	# верт. бордюры (hud_resource), плоский центр под HP/XP/Gold/ULT-карточки, орнамент не мылится.
-	var style := _overhaul_2k_frame_style("chud_resource_panel", display_size)
-	if zero_content:
-		_apply_stylebox_content_margins(style, Vector4.ZERO)
-	return style
-
-
 func _hud_v2_cluster_style(display_size := Vector2(640.0, 122.0)) -> StyleBox:
 	# SCRUM-806: лёгкая кожаная подложка с тонкой латунной линией (768×256, OpenAI),
 	# полупрозрачная, чтобы кластер не выглядел тяжёлой плитой поверх арены.
@@ -13005,13 +12958,6 @@ func _hud_card_style(icon_id := "hp", display_size := Vector2.ZERO) -> StyleBox:
 	var texture_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_MARGINS)
 	var content_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_CONTENT)
 	return _global_texture_style(path, texture_margins, Color.WHITE, content_margins, true)
-
-
-func _hud_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
-	var path := str(COMBAT_HUD_BAR_FILL_PATHS.get(icon_id, ""))
-	if path != "" and ResourceLoader.exists(path):
-		return _global_texture_style(path, Vector4(4, 4, 4, 4), Color.WHITE, Vector4.ZERO)
-	return _bar_style(fallback_color)
 
 
 func _run_resource_values() -> Dictionary:

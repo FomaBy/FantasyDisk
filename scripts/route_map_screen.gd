@@ -105,7 +105,9 @@ func _show_battle_map() -> void:
 	header.offset_right = -game.ROUTE_MAP_SCREEN_MARGIN
 	header.offset_bottom = game.ROUTE_MAP_HEADER_HEIGHT - 12.0
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_theme_stylebox_override("panel", game.ui._hud_panel_style())
+	# SCRUM-876: бывший _hud_panel_style — тонкая обёртка над этой @2K-рамкой;
+	# обёртка удалена вместе со старым карточным меню-худом, вид заголовка прежний.
+	header.add_theme_stylebox_override("panel", game.ui._overhaul_2k_frame_style("chud_resource_panel", Vector2(820.0, 84.0)))
 	root.add_child(header)
 
 	var header_row := HBoxContainer.new()
@@ -179,6 +181,13 @@ func _show_battle_map() -> void:
 	_draw_map_connections(map_area, node_positions)
 	_draw_route_nodes(map_area, node_positions)
 	game.ui._create_resource_hud_panel(root, Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0))
+	# SCRUM-876: единый боевой ресурс-кластер и на карте — скейл и раскладка
+	# внутренних баров те же, что в бою; точка привязки — под заголовком карты.
+	var hud_origin := Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0)
+	game.ui._layout_menu_resource_hud(root, hud_origin)
+	root.resized.connect(func() -> void:
+		game.ui._layout_menu_resource_hud(root, hud_origin)
+	)
 	game.ui._create_upgrade_fab(root, _show_battle_map)
 	game.ui._update_hud()
 	game.route_map_pan_active = false

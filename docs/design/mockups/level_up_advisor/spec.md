@@ -38,9 +38,9 @@ best_both=8f5ae959-2857-4e84-841b-48535eb96c65; кит панели/карточ
 
 | Frame ID | Asset path | Asset size | Label/content zone | 9-slice |
 | --- | --- | --- | --- | --- |
-| badge_dps | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_dps.png | 468x78 | текст x 40%..90%, y 12%..88% | нет (KEEP_ASPECT) |
-| badge_surv | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_surv.png | 472x98 | текст x 38%..88% | нет |
-| badge_both | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_both.png | 474x102 | текст x 36%..84% | нет |
+| badge_dps | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_dps.png | 468x78 | поле (пиксели): x 148..377, y 17..42 → зона x 33%..79%, y 23%..52% | нет (KEEP_ASPECT) |
+| badge_surv | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_surv.png | 472x98 | поле x 164..419, y 23..77 → зона x 36%..87%, y 26%..76% | нет |
+| badge_both | assets/sprites/ui/frames/level_up_scrum682/ui_badge_lu_best_both.png | 474x102 | поле x 149..376, y 30..69 → зона x 33%..78%, y 31%..66% | нет |
 | deltas_frame | ui_frame_lu682_effect_preview.png | 330x64 | texture margins 22/18/22/18, content 32/22/32/22 | да |
 
 Карточка/панель/кнопка «Позже» — прежние SCRUM-682 фреймы и margins.
