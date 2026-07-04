@@ -1828,7 +1828,7 @@ SCRUM-853 усиливает pressure curve поверх этих базовых
 - Враги кэшируют ссылки на свой Body-спрайт, RigRoot и AudioManager (`_body_sprite()`, `_cutout_rig()`, `_cached_audio`) — без `get_node_or_null` в каждом физическом кадре/попадании; игрок кэширует AudioManager аналогично.
 - Ежекадровый HUD-снапшот использует дешевый `_player_artifact_count()`; нормализация списка артефактов выполняется только при фактической перестройке ряда иконок.
 - Удален мертвый код: `scenes/MeleeWeapon.tscn` + `scripts/melee_weapon.gd` и `scenes/Weapon.tscn` + `scripts/weapon.gd` (нигде не инстанцировались; перенесены в `build/unused_assets_backup/`), неиспользуемые константы `ROUTE_MAP_CANVAS_SIZE`, `ACTIVE_ENEMY_CAP_*`, `SHOP_INLINE_AREA_SIZE`.
-- `scenes/SummonerWeapon.tscn` / `AllyMinion.tscn` и их скрипты сохранены как заготовка summon-механики (`summon_amount`), хотя сейчас не инстанцируются из конфигов.
+- `scenes/SummonerWeapon.tscn` / `AllyMinion.tscn` и их скрипты теперь используются для source-specific summon/deploy runtime: mobile summon weapons инстанцируют `AllyMinion`, а `ClassWeapon`-deploys держат отдельные role/cap правила для amp/totem/sentry/drone/mines.
 - Консоль чистая: headless-запуск игры и все три smoke-теста проходят без ошибок, warnings и debug-print.
 
 Основные runtime-правила после performance/code quality review:

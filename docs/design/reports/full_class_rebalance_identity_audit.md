@@ -175,7 +175,9 @@ runtime paths.
 4. SCRUM-860: kill-scaling, sustain and attribute growth pass. Should run after
    mechanic shapes are stable; otherwise sustain/kill growth will amplify the
    wrong mechanics.
-5. SCRUM-861 QA gate: blocked until SCRUM-857..860 post evidence.
+5. SCRUM-861 QA gate: completed after SCRUM-857..860 posted evidence. Final
+   closeout lives in
+   `build/qa/full_class_rebalance/final_class_trio_qa_report.md`.
 
 ## User-Idea Coverage
 
