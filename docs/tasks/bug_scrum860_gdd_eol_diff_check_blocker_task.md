@@ -54,8 +54,9 @@ Verification:
 - `tests/runtime_smoke_test.gd` PASS.
 
 Disk cleanup: removed `/private/tmp/fantasydisk-scrum866-origincheck`,
-`/private/tmp/fantasydisk-scrum866-logs`, and
-`/private/tmp/fantasydisk-scrum866-verify.a3hsxf`; ran `git worktree prune`.
+`/private/tmp/fantasydisk-scrum866-logs`,
+`/private/tmp/fantasydisk-scrum866-verify.a3hsxf`, and
+`/private/tmp/fantasydisk-scrum866-qa-e0b3c45b`; ran `git worktree prune`.
 
 ## QA-Вердикт 2026-07-04
 Статус: PASSED
