@@ -69,3 +69,22 @@ Screenshot capture: attempted from `tests/runtime_smoke_test.gd`; headless dummy
 Commit/push evidence: SCRUM-868 implementation commit on `codex/scrum868-weapon-select-runtime-20260704103131`, pushed to `origin/dev`; exact commit hash recorded in the Jira final comment.
 
 Disk cleanup: no task-owned caches or sidecars committed; disposable worktree removal and `git worktree prune` are performed after push and recorded in the Jira final comment.
+
+## QA Verdict (2026-07-04)
+
+Status: PASSED
+
+Verified by `codex-qa-scrum868-20260704110240` from clean QA worktree `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240`.
+
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240 --script res://tests/runtime_smoke_ui_test.gd` - PASS (`Runtime UI smoke suite passed.`)
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240 --script res://tests/ui_no_overlap_matrix_test.gd` - PASS (`UI no-overlap matrix test passed.`)
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240 --script res://tests/runtime_smoke_test.gd` - PASS (`Runtime smoke test passed.`)
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240 --script res://tests/gamepad_menu_focus_test.gd` - PASS (`Gamepad menu focus navigation test passed.`)
+- Runtime evidence: `scripts/ui_screens.gd` instantiates `WeaponSelectPixelLabRuntimeLayer` from `res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`; runtime smoke asserts the layer path, live 150x150 icons, `Отличие:` identity labels, role/stats labels, and Back button.
+- Responsive evidence: `build/qa/ui_no_overlap_matrix.md` and `build/qa/scrum489/results_block_no_overlap_matrix.md` cover 1152x648, 1280x720, 1536x864, 1600x900, 1920x1080, 2560x1440, and 3840x2160. Weapon Select reports three live `WeaponOption_*` controls and `text controls checked: 18` per viewport without overlap failures.
+- Clean layout evidence: `build/qa/weapon_select_clean_layout.md` covers all playable classes and confirms the three SCRUM-867 card content rects at 2K source-space `[P: (443.0, 398.0), S: (1674.0, 240.0)]`, `[P: (443.0, 652.0), S: (1674.0, 240.0)]`, and `[P: (443.0, 906.0), S: (1674.0, 240.0)]`.
+- Mouse/keyboard/gamepad flow and Back behavior remained covered by the runtime UI, runtime, and gamepad focus smokes.
+
+Note: headless dummy renderer still blocks screenshot capture with `viewport image unavailable` / `Parameter "t" is null`; this is non-blocking because rect, layer, content, and focus assertions passed.
+
+Bugs: none.
