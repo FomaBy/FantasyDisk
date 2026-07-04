@@ -3902,5 +3902,15 @@
   "key": "SCRUM-867",
   "status": "Контроль качества",
   "desc_hash": "a8b34558d6a664ef2b9921ca9af8b2a8"
+ },
+ "codex_weapon_select_pixellab_runtime_apply_task.md": {
+  "key": "SCRUM-868",
+  "status": "К выполнению",
+  "desc_hash": "f9757fed8cfe61a1886c7ec9c38ef2ec"
+ },
+ "animation_refresh_all_playable_pixellab_task.md": {
+  "key": "SCRUM-869",
+  "status": "К выполнению",
+  "desc_hash": "24dd35cc04c0d84733352a211a6bf78f"
  }
 }
