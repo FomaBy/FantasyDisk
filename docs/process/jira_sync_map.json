@@ -3900,8 +3900,8 @@
  },
  "codex_design_weapon_select_full_redraw_task.md": {
   "key": "SCRUM-867",
-  "status": "Контроль качества",
-  "desc_hash": "a8b34558d6a664ef2b9921ca9af8b2a8"
+  "status": "Готово",
+  "desc_hash": "f4451af23292a25a1928e80a74c5a2c8"
  },
  "codex_weapon_select_pixellab_runtime_apply_task.md": {
   "key": "SCRUM-868",
@@ -3910,7 +3910,12 @@
  },
  "animation_refresh_all_playable_pixellab_task.md": {
   "key": "SCRUM-869",
-  "status": "К выполнению",
-  "desc_hash": "24dd35cc04c0d84733352a211a6bf78f"
+  "status": "Контроль качества",
+  "desc_hash": "5c4194721990b5477a7fcf7a3db40ddb"
+ },
+ "ui_levelup_advisor_redesign_scrum871_task.md": {
+  "key": "SCRUM-871",
+  "status": "Контроль качества",
+  "desc_hash": null
  }
 }
