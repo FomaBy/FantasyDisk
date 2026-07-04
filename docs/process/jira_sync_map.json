@@ -3912,5 +3912,10 @@
   "key": "SCRUM-869",
   "status": "Готово",
   "desc_hash": "7419e632d03c0201e1b05d95fb4aa27c"
+ },
+ "codex_weapon_select_redraw_from_scratch_task.md": {
+  "key": "SCRUM-870",
+  "status": "К выполнению",
+  "desc_hash": "3ec7da9ec8a12cdd30a021d0403a7e2a"
  }
 }
