@@ -70,9 +70,9 @@ Commit/push evidence: SCRUM-868 implementation commit on `codex/scrum868-weapon-
 
 Disk cleanup: no task-owned caches or sidecars committed; disposable worktree removal and `git worktree prune` are performed after push and recorded in the Jira final comment.
 
-## QA Verdict (2026-07-04)
+## QA-Вердикт (2026-07-04)
 
-Status: PASSED
+Статус: PASSED
 
 Verified by `codex-qa-scrum868-20260704110240` from clean QA worktree `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum868_20260704110240`.
 
