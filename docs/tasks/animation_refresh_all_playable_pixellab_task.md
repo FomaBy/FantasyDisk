@@ -1,7 +1,7 @@
 # Refresh All Playable Character Animations From PixelLab
 
 Jira: SCRUM-869
-Статус: done
+Статус: done (QA PASSED → Готово)
 Контур: Codex
 Исполнитель: Codex
 Owner: Animator/Codex
@@ -88,3 +88,38 @@ Git/Jira:
 - Jira target status after push: `Контроль качества`.
 - Disk cleanup: remove task `.godot`, temporary download probes and Python
   caches before final report.
+
+## QA-Вердикт (2026-07-04)
+
+Статус: PASSED
+
+Проверено:
+
+- Live Jira перед стартом: `SCRUM-869` был в `Контроль качества`; QA claim добавлен в Jira с owner/worker/lane/worktree/locked paths.
+- PixelLab MCP blocker audit:
+  - `berserk` `8486ce45-f749-4c63-9a6d-f0477d619c2d`: 8 rotations есть, 6f movement rows есть для 7 направлений; `south` отсутствует.
+  - `soldier` `72b487d3-feea-4012-b39f-b59ba24f7f11`: 8 rotations есть, 6f movement rows отсутствуют для `south`, `north-east`.
+  - `elementalist` accepted manifest ID `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f`: PixelLab MCP `get_character` returns not found. Candidate `3068581d-2ff2-4203-ba5e-37c56edefdc6` is technically complete but local manifest explicitly marks it as rejected predecessor due baked hand/orb props, so it is not a valid substitute for this refresh.
+  - `sniper` `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`: 8 rotations есть, 6f movement rows отсутствуют для `south`, `north-west`.
+  - `engineer` `c5bd9766-e7de-4316-ace6-e687c951e621`: 8 rotations есть, 6f movement row отсутствует для `north`.
+  - `doctor` `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`: 8 rotations есть, 6f movement row отсутствует для `north`.
+- Static pack audit: all 17 playable characters have source/runtime directional frame files, `SpriteFrames` animation rows, and valid south `sprite_path`; 11 refreshed packs have manifest + `alpha_bbox_report.json`; blocked characters' existing runtime packs remain valid.
+- Importer safety audit: `tools/update_pixellab_character_animations.py` refuses partial packs before touching assets, uses temp dirs, writes deterministic filenames/resources, and contains no token/Authorization secret markers. The implementation commit contains no `.godot`, zip/tmp/log, token, secret, or auth sidecars.
+
+Tests:
+
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_berserk_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_ranger_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` (`texture_2d_get` warning in Weapon Select screenshot helper is non-fatal; exit code 0 and `Runtime smoke test passed`).
+
+Краевые случаи:
+
+- Rejected Elementalist predecessor was verified as complete but intentionally not accepted because the repo manifest records a visual rejection.
+- Blocked characters were checked as current-valid runtime packs, not as newly refreshed packs.
+- First Godot run generated local import cache/sidecars in the disposable QA worktree; `.godot` and generated untracked `.uid/.import` files were removed before verdict/commit.
+
+Баги: нет.
+
+Evidence: `build/qa/pixellab_character_animation_refresh/qa_verdict_scrum869_20260704.md`.

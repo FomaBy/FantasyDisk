@@ -278,25 +278,34 @@ func _end_combat(victory: bool) -> void:
 		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла
 		# (на смерти особенно критично: иначе снапшот остался бы от предыдущего узла).
 		_store_player_snapshot(game.current_player)
+	game.boss_hud_target = null  # SCRUM-874: узел закончился — боссбар гаснет
 	game._clear_world()
 	game._clear_hud()
 	game.pending_event_combat.clear()
 
 	if victory:
 		if was_boss_fight:
-			if game.advance_to_next_act():
-				game.current_combat_type = "battle"
-				game.route._show_battle_map()
-			elif game.should_start_secret_boss_after_act3():
-				game.current_combat_type = "boss"
-				game.start_secret_boss_encounter()
+			var proceed_after_boss := func() -> void:
+				if game.advance_to_next_act():
+					game.current_combat_type = "battle"
+					game.route._show_battle_map()
+				elif game.should_start_secret_boss_after_act3():
+					game.current_combat_type = "boss"
+					game.start_secret_boss_encounter()
+				else:
+					# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
+					game.capture_run_metrics_finals(game.run_player_snapshot)
+					var final_boss_name := str(game.run_metrics.get("last_boss_name", "финальный босс"))
+					game.run_metrics["outcome_reason"] = "Повержен финальный босс: %s" % final_boss_name
+					game.record_boss_victory()
+					game.ui._show_victory_screen()
+			# SCRUM-873: выбор 1 из 3 суперредких артефактов за акт-босса — только
+			# пока забег продолжается (следующий акт или секретный босс). После
+			# финального босса выбор бессмыслен — сразу экран победы.
+			if game.current_act < game.ACT_COUNT or game.should_start_secret_boss_after_act3():
+				game.ui._show_boss_artifact_reward(proceed_after_boss)
 			else:
-				# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
-				game.capture_run_metrics_finals(game.run_player_snapshot)
-				var final_boss_name := str(game.run_metrics.get("last_boss_name", "финальный босс"))
-				game.run_metrics["outcome_reason"] = "Повержен финальный босс: %s" % final_boss_name
-				game.record_boss_victory()
-				game.ui._show_victory_screen()
+				proceed_after_boss.call()
 		else:
 			game.route_stage += 1
 			game.current_combat_type = "battle"
@@ -700,6 +709,7 @@ func _spawn_boss() -> void:
 	var boss := selected_boss_scene.instantiate() as Node2D
 	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
+	game.boss_hud_target = boss  # SCRUM-874: цель HUD-боссбара сверху экрана
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
 	game.record_codex_enemy_discovery(boss)
@@ -757,6 +767,7 @@ func _spawn_elite_enemy() -> void:
 	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
+	game.boss_hud_target = elite  # SCRUM-874: цель HUD-боссбара сверху экрана
 	elite.global_position = game.ARENA_CENTER + Vector2(0, -250)
 	if use_fallback_modifier:
 		_apply_elite_modifier(elite)
@@ -878,11 +889,9 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 func _grant_boss_completion_rewards() -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
-	var artifact_rewards: Array = game.PROGRESSION_DATA.boss_completion_artifact_rewards(game.selected_character_id)
-	if not artifact_rewards.is_empty():
-		var reward: Dictionary = artifact_rewards[game.rng.randi_range(0, artifact_rewards.size() - 1)].duplicate(true)
-		game.current_player.apply_reward(reward)
-		game.record_codex_artifact_discovery(reward)
+	# SCRUM-873: артефакт больше НЕ выдаётся молча — игрок выбирает 1 из 3
+	# суперредких на экране _show_boss_artifact_reward (см. _end_combat).
+	# Здесь остаются только XP/деньги за босса.
 	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_scaling_stage(), game.spawn_wave_index)
 	game.current_player.gain_xp(int(boss_rewards.get("xp", 1)))
 	game.current_player.gain_money(int(boss_rewards.get("money", 1)))
@@ -1182,6 +1191,9 @@ func _store_player_snapshot(player: Node) -> void:
 		"xp_to_next": player.get("xp_to_next"),
 		"level": player.get("level"),
 		"money": player.get("money"),
+		# SCRUM-872: накопленная шкала ульты переносится между узлами/раундами.
+		# Активная ульта (_ultimate_active/timed-overlay) — runtime-only, НЕ переносится.
+		"ultimate_charge": player.get("ultimate_charge"),
 	}
 
 
@@ -1201,6 +1213,10 @@ func _restore_player_snapshot(player: Node) -> void:
 	elif player.has_method("_apply_stat_scaling"):
 		player.call("_apply_stat_scaling", true)
 	player.set("health", min(float(game.run_player_snapshot.get("health", player.get("max_health"))), float(player.get("max_health"))))
+	# SCRUM-872: восстановить накопленную ульту ПОСЛЕ configure/equip (перерасчёт
+	# деривативов) с clamp по максимуму — заряд не должен превышать шкалу.
+	var ultimate_max := maxf(float(player.get("ultimate_max_charge")), 0.0)
+	player.set("ultimate_charge", clampf(float(game.run_player_snapshot.get("ultimate_charge", 0.0)), 0.0, ultimate_max))
 
 
 func _current_round_duration() -> float:

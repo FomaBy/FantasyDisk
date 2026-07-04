@@ -3910,8 +3910,28 @@
  },
  "animation_refresh_all_playable_pixellab_task.md": {
   "key": "SCRUM-869",
+  "status": "Готово",
+  "desc_hash": "7419e632d03c0201e1b05d95fb4aa27c"
+ },
+ "codex_weapon_select_redraw_from_scratch_task.md": {
+  "key": "SCRUM-870",
+  "status": "Готово",
+  "desc_hash": "abd8fe3a9b7ed31be75a149ea876fdca"
+ },
+ "backend_ultimate_charge_persist_between_rounds_task.md": {
+  "key": "SCRUM-872",
   "status": "Контроль качества",
-  "desc_hash": "5c4194721990b5477a7fcf7a3db40ddb"
+  "desc_hash": "c6450fbfea84fa7df1cf32d1930bc1da"
+ },
+ "ui_boss_act_reward_choice_heal_task.md": {
+  "key": "SCRUM-873",
+  "status": "Контроль качества",
+  "desc_hash": "bf89bd35eda89617df48fb1d3021b32b"
+ },
+ "ui_boss_elite_hud_health_bar_task.md": {
+  "key": "SCRUM-874",
+  "status": "Контроль качества",
+  "desc_hash": "3835cc8f73c28387455b4c031f07bb2c"
  },
  "ui_levelup_advisor_redesign_scrum871_task.md": {
   "key": "SCRUM-871",

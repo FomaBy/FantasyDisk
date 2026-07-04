@@ -44,7 +44,6 @@ const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
-const WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
@@ -3442,12 +3441,28 @@ func _test_boss_act_transition(main_scene: PackedScene) -> void:
 		_fail("Expected Act 1 boss death to enter a victory-delay window before advancing to Act 2.")
 		return
 	await create_timer(2.1, false, false, true).timeout
+	# SCRUM-873: после победы над акт-боссом — обязательный экран выбора 1 из 3
+	# суперредких артефактов; переход в акт 2 происходит после выбора.
+	var reward_row: Node = null
+	for _attempt in range(120):
+		await process_frame
+		reward_row = act_main.find_child("BossArtifactRewardRow", true, false)
+		if reward_row != null:
+			break
+	if reward_row == null or reward_row.get_child_count() != 3:
+		_fail("Expected Act 1 boss victory to show a 3-card boss artifact reward screen.")
+		return
+	(reward_row.get_child(0) as Button).emit_signal("pressed")
 	for _attempt in range(120):
 		await process_frame
 		if not bool(act_main.get("combat_active")) and int(act_main.get("current_act")) == 2:
 			break
 	if bool(act_main.get("combat_active")) or int(act_main.get("current_act")) != 2:
-		_fail("Expected Act 1 boss victory to advance to Act 2 after the death-animation delay.")
+		_fail("Expected Act 1 boss victory to advance to Act 2 after the reward pick.")
+		return
+	var reward_snapshot: Dictionary = act_main.get("run_player_snapshot")
+	if (reward_snapshot.get("artifacts", []) as Array).is_empty():
+		_fail("Expected boss artifact pick to land in the run snapshot.")
 		return
 	if int(act_main.get("route_stage")) != 0:
 		_fail("Expected next act to reset act-local route_stage to 0.")
@@ -3491,19 +3506,32 @@ func _test_victory_flow(main: Node) -> void:
 	if float(boss.get("shield_damage_reduction")) >= 1.0 or float(boss.get("dodge_chance")) <= 0.0:
 		_fail("Expected boss to expose shield and dodge mechanics.")
 		return
-	var boss_health_bar := boss.get_node_or_null("HealthBar")
-	if boss_health_bar == null:
-		_fail("Expected boss to carry an overhead health bar node.")
+	# SCRUM-874: у босса больше НЕТ плавающей полосы над спрайтом — HP показывает
+	# HUD-боссбар (BossHudBar) по центру верха экрана.
+	if boss.get_node_or_null("HealthBar") != null:
+		_fail("Expected boss to have no overhead health bar node (HUD boss bar instead).")
 		return
-	if absf(float(boss_health_bar.get("max_value")) - float(boss.get("max_health"))) > 0.01:
-		_fail("Expected boss health bar max value to match scaled boss max health.")
+	if main.get("boss_hud_target") != boss:
+		_fail("Expected boss to be registered as the HUD boss bar target.")
+		return
+	main.ui._update_hud()
+	var boss_hud_bar: ProgressBar = main.get("boss_hud_bar")
+	if boss_hud_bar == null or not is_instance_valid(boss_hud_bar):
+		_fail("Expected combat HUD to expose a BossHudBar for the boss fight.")
+		return
+	if not (boss_hud_bar.get_parent() as Control).visible:
+		_fail("Expected HUD boss bar to be visible during the boss fight.")
+		return
+	var boss_hud_name: Label = main.get("boss_hud_name_label")
+	if boss_hud_name == null or not boss_hud_name.visible or boss_hud_name.text.strip_edges() == "":
+		_fail("Expected HUD boss bar to show the boss name.")
+		return
+	if absf(float(boss_hud_bar.max_value) - float(boss.get("max_health"))) > 0.01:
+		_fail("Expected HUD boss bar max value to match scaled boss max health.")
 		return
 	var boss_phase_markers: Array = boss.get_meta("boss_phase_markers", [])
-	if boss_phase_markers.size() < 2 or not boss_health_bar.has_meta("phase_markers"):
+	if boss_phase_markers.size() < 2:
 		_fail("Expected boss to expose HP phase markers for the uber-boss encounter.")
-		return
-	if not _assert_health_bar_visible_when_near_viewport_top(boss, boss_health_bar, "boss"):
-		_fail("Expected boss health bar to stay visible when the large boss sprite reaches the viewport top edge.")
 		return
 	boss.set("health", float(boss.get("max_health")) * 0.64)
 	boss.call("_update_boss_phase")
@@ -3518,11 +3546,12 @@ func _test_victory_flow(main: Node) -> void:
 	boss.set("dodge_chance", 0.0)
 	boss.set("shield_active", false)
 	boss.take_damage(25.0)
-	if float(boss_health_bar.get("value")) >= float(boss_health_bar.get("max_value")):
-		_fail("Expected boss health bar to decrease after damage.")
+	main.ui._update_hud()
+	if float(boss_hud_bar.value) >= float(boss_hud_bar.max_value):
+		_fail("Expected HUD boss bar to decrease after damage.")
 		return
-	if absf(float(boss_health_bar.get("value")) - float(boss.get("health"))) > 0.01:
-		_fail("Expected boss health bar value to match current boss health after damage.")
+	if absf(float(boss_hud_bar.value) - float(boss.get("health"))) > 0.01:
+		_fail("Expected HUD boss bar value to match current boss health after damage.")
 		return
 	boss.take_damage(99999.0)
 	var victory_text := ""
@@ -3591,22 +3620,32 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	if float(elite_enemy.get("max_health")) <= 70.0:
 		_fail("Expected elite enemy to be roughly an order of magnitude tougher than normal enemies.")
 		return
-	var elite_health_bar := elite_enemy.get_node_or_null("HealthBar")
-	if elite_health_bar == null:
-		_fail("Expected elite enemies to carry an overhead health bar node.")
+	# SCRUM-874: у элитки узла больше НЕТ плавающей полосы — HP показывает
+	# HUD-боссбар (BossHudBar) по центру верха экрана.
+	if elite_enemy.get_node_or_null("HealthBar") != null:
+		_fail("Expected elite node target to have no overhead health bar node (HUD boss bar instead).")
 		return
-	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
-		_fail("Expected elite health bar max value to match scaled elite max health.")
+	if elite_main.get("boss_hud_target") != elite_enemy:
+		_fail("Expected elite enemy to be registered as the HUD boss bar target.")
 		return
-	if not _assert_health_bar_visible_when_near_viewport_top(elite_enemy, elite_health_bar, "elite"):
-		_fail("Expected elite health bar to stay visible when the large elite sprite reaches the viewport top edge.")
+	elite_main.ui._update_hud()
+	var elite_hud_bar: ProgressBar = elite_main.get("boss_hud_bar")
+	if elite_hud_bar == null or not is_instance_valid(elite_hud_bar):
+		_fail("Expected combat HUD to expose a BossHudBar for the elite fight.")
+		return
+	if not (elite_hud_bar.get_parent() as Control).visible:
+		_fail("Expected HUD boss bar to be visible during the elite fight.")
+		return
+	if absf(float(elite_hud_bar.max_value) - float(elite_enemy.get("max_health"))) > 0.01:
+		_fail("Expected HUD boss bar max value to match scaled elite max health.")
 		return
 	elite_enemy.call("take_damage", 10.0)
-	if float(elite_health_bar.get("value")) >= float(elite_health_bar.get("max_value")):
-		_fail("Expected elite health bar to decrease after damage.")
+	elite_main.ui._update_hud()
+	if float(elite_hud_bar.value) >= float(elite_hud_bar.max_value):
+		_fail("Expected HUD boss bar to decrease after elite damage.")
 		return
-	if absf(float(elite_health_bar.get("value")) - float(elite_enemy.get("health"))) > 0.01:
-		_fail("Expected elite health bar value to match current elite health after damage.")
+	if absf(float(elite_hud_bar.value) - float(elite_enemy.get("health"))) > 0.01:
+		_fail("Expected HUD boss bar value to match current elite health after damage.")
 		return
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
 	if elite_body == null or elite_body.texture == null or not elite_body.texture.resource_path.begins_with("res://assets/sprites/elites/"):
@@ -7527,14 +7566,16 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		await process_frame
 		dump_lines.append("## `%s`" % character_id)
 		var pixellab_layer := weapon_main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
-		if pixellab_layer == null or pixellab_layer.texture == null:
-			_fail("Expected weapon select to render the SCRUM-868 PixelLab runtime layer for %s." % character_id)
+		if pixellab_layer != null:
+			_fail("SCRUM-870: Weapon Select must not render the rejected SCRUM-868 PixelLab runtime layer for %s." % character_id)
 			return
-		if pixellab_layer.texture.resource_path != WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER:
-			_fail("Expected weapon select PixelLab layer %s, got %s." % [WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER, pixellab_layer.texture.resource_path])
+		var panel := weapon_main.find_child("MenuPanel_weapon_select", true, false) as PanelContainer
+		if panel == null:
+			_fail("Expected SCRUM-870 weapon select panel for %s." % character_id)
 			return
-		if pixellab_layer.stretch_mode != TextureRect.STRETCH_SCALE:
-			_fail("Expected weapon select PixelLab full-screen layer to fill the 16:9 viewport for %s." % character_id)
+		var panel_style := panel.get_theme_stylebox("panel")
+		if not panel_style is StyleBoxFlat or (panel_style as StyleBoxFlat).bg_color.a < 0.80:
+			_fail("Expected SCRUM-870 weapon select panel to be a readable dark live panel for %s." % character_id)
 			return
 		var weapon_ids: Array = ProgressionData.weapon_ids(character_id)
 		if weapon_ids.is_empty():
@@ -7555,18 +7596,22 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 			var normal_style := button.get_theme_stylebox("normal")
 			var hover_style := button.get_theme_stylebox("hover")
 			if not normal_style is StyleBoxFlat or not hover_style is StyleBoxFlat:
-				_fail("Expected weapon select card %s/%s to use SCRUM-868 transparent hit-area styles over PixelLab art." % [character_id, weapon_id])
+				_fail("Expected weapon select card %s/%s to use SCRUM-870 live dark card styles." % [character_id, weapon_id])
 				return
-			if (normal_style as StyleBoxFlat).bg_color.a > 0.01:
-				_fail("Expected weapon select card %s/%s normal style to stay transparent over PixelLab art." % [character_id, weapon_id])
+			if (normal_style as StyleBoxFlat).bg_color.a < 0.80:
+				_fail("Expected weapon select card %s/%s normal style to be opaque enough for readable text." % [character_id, weapon_id])
+				return
+			var icon_well := button.find_child("WeaponSelectIconWell_%s" % weapon_id, true, false) as PanelContainer
+			if icon_well == null or icon_well.custom_minimum_size.x < 200.0 or icon_well.custom_minimum_size.y < 200.0:
+				_fail("Expected weapon select card %s/%s to include a large framed icon well." % [character_id, weapon_id])
 				return
 			var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
 			var expected_sprite := _expected_weapon_sprite_path(config)
 			if sprite == null or sprite.texture == null or sprite.texture.resource_path != expected_sprite:
 				_fail("Expected weapon select card %s/%s to show sprite %s." % [character_id, weapon_id, expected_sprite])
 				return
-			if sprite.custom_minimum_size.x < 150.0 or sprite.custom_minimum_size.y < 150.0:
-				_fail("Expected weapon select card %s/%s to use enlarged weapon sprite >=150px." % [character_id, weapon_id])
+			if sprite.custom_minimum_size.x < 176.0 or sprite.custom_minimum_size.y < 176.0:
+				_fail("Expected weapon select card %s/%s to use enlarged weapon sprite >=176px." % [character_id, weapon_id])
 				return
 			var identity := button.find_child("WeaponSelectIdentity_%s" % weapon_id, true, false) as Label
 			if identity == null or not identity.text.contains("Отличие:") or identity.text.length() < 18:
@@ -7580,13 +7625,17 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 			if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
 				_fail("Expected weapon select card %s/%s to show Russian stat labels." % [character_id, weapon_id])
 				return
+			var stats_panel := button.find_child("WeaponSelectStatsPanel_%s" % weapon_id, true, false) as PanelContainer
+			if stats_panel == null or stats_panel.custom_minimum_size.x < 300.0:
+				_fail("Expected weapon select card %s/%s to use a separate compact stats panel." % [character_id, weapon_id])
+				return
 		var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
 		if back_button == null:
-			_fail("Expected SCRUM-867 weapon select back button for %s." % character_id)
+			_fail("Expected SCRUM-870 weapon select back button for %s." % character_id)
 			return
 		var back_style := back_button.get_theme_stylebox("normal")
-		if not back_style is StyleBoxFlat or (back_style as StyleBoxFlat).bg_color.a > 0.01:
-			_fail("Expected weapon select back button to be a transparent live control over the PixelLab lower button art for %s." % character_id)
+		if back_style == null:
+			_fail("Expected weapon select back button to keep a visible live button style for %s." % character_id)
 			return
 		if character_id == "berserk":
 			dump_lines.append("- screenshot capture: %s" % _try_capture_weapon_select_screenshot(weapon_main))

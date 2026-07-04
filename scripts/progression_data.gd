@@ -1408,6 +1408,21 @@ static func boss_completion_artifact_rewards(character_id := "") -> Array:
 	return rewards
 
 
+static func boss_completion_artifact_choices(count := 3, character_id := "") -> Array:
+	# SCRUM-873: награда за акт-босса — выбор 1 из `count` СУПЕРРЕДКИХ артефактов.
+	# «Суперредкие» = верхний тир пула (tier >= 3, boss-only оффер); внутри тира
+	# выборка равновероятная и БЕЗ дублей. Пул уже отфильтрован по релевантности
+	# классу в boss_completion_artifact_rewards; нейтральные артефакты добивают
+	# набор до count естественно (они проходят is_reward_relevant для всех).
+	var pool := boss_completion_artifact_rewards(character_id)
+	var choices := []
+	while choices.size() < count and not pool.is_empty():
+		var index := randi_range(0, pool.size() - 1)
+		choices.append(pool[index])
+		pool.remove_at(index)
+	return choices
+
+
 static func display_stats(stats: Dictionary) -> String:
 	var parts := []
 	for stat_id in STAT_NAMES.keys():

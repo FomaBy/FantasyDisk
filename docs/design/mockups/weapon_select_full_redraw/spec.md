@@ -1,8 +1,8 @@
 # UI Mockup Spec - Weapon Select Full Redraw
 
-Status: implemented
+Status: historical, superseded by SCRUM-870 for live runtime
 Role owner: Design + Back-end combined Codex scope
-Task: `docs/tasks/codex_design_weapon_select_full_redraw_task.md`; runtime apply: `docs/tasks/codex_weapon_select_pixellab_runtime_apply_task.md`
+Task: `docs/tasks/codex_design_weapon_select_full_redraw_task.md`; runtime apply: `docs/tasks/codex_weapon_select_pixellab_runtime_apply_task.md`; superseding live redraw: `docs/tasks/codex_weapon_select_redraw_from_scratch_task.md`
 Jira: SCRUM-867; SCRUM-868
 Base resolution: 2560x1440
 Responsive targets: 1152x648, 1280x720, 1536x864, 1920x1080, 2560x1440, 3840x2160
@@ -10,6 +10,12 @@ Mockup PNG: `docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_selec
 Preview PNG: `docs/design/previews/weapon_select_full_redraw_pixellab_mockup.png`
 Runtime layer PNG: `docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`
 Generated with: PixelLab MCP `create_ui_asset`; source UI asset ID: `67e5f56a-aaa6-4216-814a-7f5301132fea`
+
+SCRUM-870 note: this full-screen runtime-layer approach was rejected after live
+review because text became unreadable over the art layer. The files in this
+folder remain provenance/evidence only; active runtime no longer creates
+`WeaponSelectPixelLabRuntimeLayer` and uses
+`docs/design/mockups/weapon_select_redraw_from_scratch/` as the current contract.
 
 ## Source Request
 
@@ -40,11 +46,11 @@ Fully redraw Weapon Select for every character: make the interface larger, make 
 | `ws_card` | `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png` | `1564x190` | `1674x240` | source `32,42,32,40`, scaled by runtime size | source `48,35,48,32`, scaled by runtime size | card border/corners/gems | yes |
 | `ws_btn_back` | text-button family `pause_280x60` | `280x60` | `280x60` | metadata from `TEXT_BUTTON_UNIQUE_MARGINS` | metadata from `TEXT_BUTTON_UNIQUE_CONTENT` | button bevel/border | yes |
 
-SCRUM-868 runtime note: the visible `ws_panel`, `ws_card`, and lower Back
-ornament are now supplied by `WeaponSelectPixelLabRuntimeLayer`. The
-`MenuPanel_weapon_select`, `WeaponOption_*`, and `WeaponSelectBackButton`
-controls use transparent StyleBoxFlat hit areas with hover/focus/pressed tint
-overlays to avoid double-framing. The 9-slice assets listed above remain the
+Historical SCRUM-868 runtime note: this spec formerly supplied the visible
+`ws_panel`, `ws_card`, and lower Back ornament through
+`WeaponSelectPixelLabRuntimeLayer`. SCRUM-870 removed that node from live
+Weapon Select after review, so the layer and transparent hit-area approach must
+not be reused for active runtime. The 9-slice assets listed above remain the
 SCRUM-867 geometry/source reference and are still used by other/shared flows
 where explicitly routed.
 
@@ -53,7 +59,7 @@ where explicitly routed.
 | Asset ID | Path | Purpose | Size | Alpha | Texture margins | Content margins | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `pixellab_weapon_select_mockup` | `docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_mockup.png` | page mockup / visual direction | `688x384` | transparent background | n/a | visible empty zones | PixelLab UI asset source `67e5f56a-aaa6-4216-814a-7f5301132fea`; not a runtime asset |
-| `pixellab_weapon_select_runtime_layer` | `docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png` | live textless runtime layer | `2560x1440` | transparent background | n/a | same `WS_*_2K` content zones | SCRUM-868 derived only from accepted PixelLab mockup; no non-PixelLab fallback |
+| `pixellab_weapon_select_runtime_layer` | `docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png` | historical SCRUM-868 textless runtime layer | `2560x1440` | transparent background | n/a | same `WS_*_2K` content zones | Superseded by SCRUM-870; not active runtime |
 
 ## Responsive Rules
 
@@ -73,8 +79,9 @@ where explicitly routed.
 
 - Godot scene/script: `scripts/ui_screens.gd`.
 - Runtime keeps `_show_weapon_select()` flow and `_wire_run_ui_focus()` behavior.
-- Runtime text is not baked into the PixelLab art. SCRUM-868 renders the
-  derived textless PixelLab layer behind live labels/icons/buttons.
+- Runtime text is not baked into the PixelLab art. Historical SCRUM-868 rendered
+  the derived textless PixelLab layer behind live labels/icons/buttons; SCRUM-870
+  removed that layer from active runtime.
 - Distinctive weapon copy is data-driven through `ProgressionData.weapon_mechanic_identity(character_id, weapon_id)`.
 - Stats copy is concise and always includes range/radius and cooldown, plus a final context line for summon limit, control or damage multiplier.
 
@@ -92,7 +99,6 @@ where explicitly routed.
 ## Deviations
 
 - The PixelLab MCP UI generator exported a 688x384 mockup layer for this aspect
-  ratio. SCRUM-868 derives a 2560x1440 runtime layer from that accepted PNG so
-  the live screen visibly uses the PixelLab panel/card art while retaining the
-  exact SCRUM-867 source-space geometry documented above.
+  ratio. SCRUM-868 derived a 2560x1440 runtime layer from that accepted PNG; the
+  resulting live screen was superseded by SCRUM-870 and is no longer active.
 - First PixelLab pass `0b72096d-9f7a-44ef-b29e-f9ad75193e4c` was rejected because it baked readable text into the mockup. Final source `67e5f56a-aaa6-4216-814a-7f5301132fea` is the textless accepted pass.

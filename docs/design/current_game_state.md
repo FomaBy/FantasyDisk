@@ -59,8 +59,15 @@ Domain docs для подробностей по областям:
 9. Возврат на карту.
 10. Boss текущего акта.
 11. После boss Act 1/2 — после короткой задержки на проигрывание смерти босса
-    переход к новой карте следующего акта с сохранением билда; после boss Act 3
-    — победа. Смерть завершает забег в любом акте.
+    показывается **экран трофея босса (SCRUM-873)**: обязательный выбор 1 из 3
+    СУПЕРРЕДКИХ артефактов (верхний тир, `boss_completion_artifact_choices`, без
+    дублей, с учётом класса; Escape не закрывает), затем переход к новой карте
+    следующего акта с сохранением билда. При переходе в следующий акт герой
+    **отхиливается на 70% max HP** (`ACT_TRANSITION_HEAL_PERCENT`, лечение с
+    clamp по максимуму, применяется к `run_player_snapshot` в
+    `advance_to_next_act`). После boss Act 3 — победа (экран выбора не
+    показывается: забег завершён; при активном секретном боссе выбор есть).
+    Смерть завершает забег в любом акте.
     Финальная победа и смерть (включая ручное «Завершить забег») показывают **экран
     итогов забега (run summary, SCRUM-502)**: время забега (MM:SS), достигнутый этап,
     убийства, урон по врагам / полученный урон, собранное золото, финальный уровень,
@@ -1336,10 +1343,19 @@ Level-up показывает 3 фиксированных варианта на
 
 ## Ультимейты
 
-У каждого из 17 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается.
+У каждого из 17 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается. SCRUM-872: накопленная шкала ПЕРСИСТИТ между раундами/узлами и актами — заряд переносится через `run_player_snapshot` (`ultimate_charge` в `_store_player_snapshot`/`_restore_player_snapshot`, clamp по `ultimate_max_charge`); обнуление происходит только при активации ульты и при старте нового забега/смене персонажа. Активная ульта (timed overlay) между узлами не переносится.
 
 Боевой HUD содержит clean essential-only набор SCRUM-671/SCRUM-666: HP, XP,
 money, ULT, таймер, бейдж Возвышения и bottom-right level-up plus/count control.
+SCRUM-874: в боссовом и элитном бою добавляется **HUD-боссбар** по центру верха
+(`BossHudNameLabel` + `BossHudTrack/BossHudBar`, зоны `HUD_V2_BOSS_NAME_2K`/
+`HUD_V2_BOSS_BAR_2K` ниже кластера и таймера): имя цели + крупная полоса HP,
+ведётся `_update_boss_hud_bar()` по `game.boss_hud_target` (ставит
+`combat_director` в `_spawn_boss`/`_spawn_elite_enemy`, снимает `_end_combat`).
+У акт-босса и элитки узла (профили `boss`/`elite`) плавающая полоса над спрайтом
+НЕ создаётся (`enemy._uses_hud_boss_bar`); мини-элитки волн и обычные мобы
+остаются с плавающей полосой. На смерти цели полоса доводится в ноль на время
+death-анимации, затем панель гаснет; вне босс/элит боя панель скрыта.
 Старые `ArtifactHudRow` и `CharacterStatsHud` в боевом overlay больше не
 создаются. Tooltip ULT показывает текущую клавишу и состояние готовности.
 `ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус,
@@ -1478,7 +1494,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Fullscreen minimal black SCRUM-798: слева крупное responsive rotating selected hero preview, под ним Возвышение + старт, справа scroll-safe dossier with strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance, снизу enlarged carousel slots with arrow scrolling |
-| Выбор оружия | SCRUM-868 live PixelLab textless layer behind three transparent live weapon-card controls: 150px weapon sprite, title, `Отличие:`, description, role/scale and русские статы «Дальность/Радиус/Перезарядка» stay editable Godot text/icons; hover/focus/pressed are tint overlays, not duplicate frames |
+| Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
 | Level-up | Геройский экран выбора 1 из 3 наград с портретом персонажа, частицами, редким main-stat акцентом и отложенным выбором через нижнюю кнопку; SCRUM-683 использует SCRUM-682 Level Up frame package, крупные cards/icons/portrait и visible formula-driven effect-preview внутри каждой safe-zone, при этом вся карточка остается кликабельна |

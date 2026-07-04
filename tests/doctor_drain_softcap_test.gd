@@ -184,6 +184,7 @@ func _test_doctor_external_sustain_reward_filter(errors: Array) -> void:
 	_assert_no_doctor_external_sustain(ProgressionData.shop_items(0, "doctor"), "shop_items", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.elite_artifact_choices(8, 20, "doctor"), "elite_artifact_choices", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.boss_completion_artifact_rewards("doctor"), "boss_completion_artifact_rewards", errors)
+	_assert_no_doctor_external_sustain(ProgressionData.boss_completion_artifact_choices(3, "doctor"), "boss_completion_artifact_choices", errors)
 	_assert_no_doctor_external_sustain(ProgressionData.start_boons("doctor"), "start_boons", errors)
 	_assert_boss_completion_reward_path_filters_doctor(errors)
 	if not ProgressionData.start_boon_mods("swiftfoot", "doctor").is_empty():
@@ -233,12 +234,17 @@ func _contains_reward_id(rewards: Array, reward_id: String) -> bool:
 
 
 func _assert_boss_completion_reward_path_filters_doctor(errors: Array) -> void:
-	var source := FileAccess.get_file_as_string("res://scripts/combat_director.gd")
-	var start := source.find("func _grant_boss_completion_rewards()")
+	# SCRUM-873: артефакт-путь босса переехал из _grant_boss_completion_rewards
+	# (combat_director) в экран выбора _show_boss_artifact_reward (ui_screens),
+	# который обязан использовать character-filtered boss_completion_artifact_choices.
+	var source := FileAccess.get_file_as_string("res://scripts/ui_screens.gd")
+	var start := source.find("func _show_boss_artifact_reward(")
 	if start < 0:
-		errors.append("CombatDirector missing _grant_boss_completion_rewards.")
+		errors.append("ui_screens missing _show_boss_artifact_reward.")
 		return
 	var next_func := source.find("\nfunc ", start + 1)
 	var body := source.substr(start, next_func - start if next_func > start else source.length() - start)
-	if not body.contains("boss_completion_artifact_rewards"):
-		errors.append("Boss completion reward path must use character-filtered boss_completion_artifact_rewards().")
+	if not body.contains("boss_completion_artifact_choices"):
+		errors.append("Boss reward screen must use character-filtered boss_completion_artifact_choices().")
+	if not body.contains("selected_character_id"):
+		errors.append("Boss reward screen must pass selected_character_id into the pool.")
