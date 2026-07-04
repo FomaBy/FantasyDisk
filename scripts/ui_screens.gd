@@ -21,6 +21,8 @@ var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
+# SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
+const LevelUpAdvisor := preload("res://scripts/level_up_advisor.gd")
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
@@ -324,10 +326,22 @@ const LU_SUBTITLE_RECT := Rect2(292.0, 100.0, 920.0, 44.0)
 const LU_REWARDS_ROW_RECT := Rect2(63.0, 175.0, 1410.0, 560.0)
 const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 76.0)
 const LU_CARD_CONTENT_RECT := Rect2(58.0, 70.0, 354.0, 426.0)
-const LU_CARD_ICON_RECT := Rect2(97.0, 21.0, 160.0, 160.0)
-const LU_CARD_TITLE_RECT := Rect2(12.0, 201.0, 330.0, 46.0)
-const LU_CARD_DESCRIPTION_RECT := Rect2(12.0, 265.0, 330.0, 92.0)
-const LU_CARD_EFFECT_RECT := Rect2(12.0, 362.0, 330.0, 64.0)
+# SCRUM-871 раскладка карточки (координаты внутри контент-зоны 354x426):
+# бейдж-слот сверху, иконка 120, титул, описание, крупный блок «до -> после».
+const LU_CARD_BADGE_RECT := Rect2(27.0, 0.0, 300.0, 46.0)
+const LU_CARD_ICON_RECT := Rect2(117.0, 54.0, 120.0, 120.0)
+const LU_CARD_TITLE_RECT := Rect2(6.0, 180.0, 342.0, 42.0)
+const LU_CARD_DESCRIPTION_RECT := Rect2(10.0, 226.0, 334.0, 62.0)
+const LU_CARD_EFFECT_RECT := Rect2(0.0, 294.0, 354.0, 132.0)
+const LU_EFFECT_FIELD_SOURCE_SIZE := Vector2(354.0, 132.0)
+const LU_EFFECT_FIELD_CONTENT_MARGINS := Vector4(30.0, 20.0, 30.0, 18.0)
+# Бейджи-риббоны рекомендаций: подпись и label-зона (доли ширины/высоты PNG,
+# по фактическим полям каждого риббона — эмблема слева, поле правее).
+const LU_BADGE_META := {
+	"dps": {"frame": "badge_dps", "text": "ЛУЧШИЙ УРОН", "label_zone": Rect2(0.38, 0.14, 0.54, 0.72), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
+	"surv": {"frame": "badge_surv", "text": "ВЫЖИВАНИЕ", "label_zone": Rect2(0.36, 0.18, 0.54, 0.64), "text_color": Color(0.93, 0.88, 0.63, 1.0)},
+	"both": {"frame": "badge_both", "text": "ЛУЧШИЙ ВЫБОР", "label_zone": Rect2(0.34, 0.20, 0.52, 0.60), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
+}
 
 # #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
 const RWD_PANEL_2K := Rect2(720, 390, 1120, 660)
@@ -6844,9 +6858,12 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
 	if game.level_up_offer.is_empty():
 		game.level_up_offer = _random_level_up_rewards(3)
+	# SCRUM-871: прогноз «до -> после» и бейджи «Лучший урон»/«Выживание» на весь
+	# набор — один раз на построение экрана, от живых статов игрока.
+	var advice := _level_up_offer_advice(game.level_up_offer)
 	var reward_buttons: Array[Button] = []
 	for reward in game.level_up_offer:
-		var button := _make_level_up_reward_button(reward, layout)
+		var button := _make_level_up_reward_button(reward, layout, advice, reward_buttons.size())
 		button.name = "LevelUpRewardButton%d" % reward_buttons.size()
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_active_run(reward)
@@ -6874,6 +6891,18 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		)
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
+
+	# Типографика: авто-подбор мог дать титулам разный размер — выравниваем ряд
+	# по минимальному, чтобы карточки читались как одна линейка.
+	var title_labels: Array = []
+	var min_title_font := 999
+	for button in reward_buttons:
+		var reward_title := button.find_child("LevelUpRewardTitle", true, false) as Label
+		if reward_title != null:
+			title_labels.append(reward_title)
+			min_title_font = mini(min_title_font, reward_title.get_theme_font_size("font_size"))
+	for reward_title in title_labels:
+		(reward_title as Label).add_theme_font_size_override("font_size", min_title_font)
 
 	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space/A выбирают.
 	# Полная разводка (карточки + «Позже») ставится ниже, после создания later_button.
@@ -7018,11 +7047,20 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	game._play_sfx("level_up")
 
 
-func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
+func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}, reward_index := -1) -> Button:
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]
 	var card_size: Vector2 = layout.get("card_size", Vector2(245, 364))
 	var card_scale := _level_up_xy_scale(LU_CARD_2K.size, card_size)
+	# SCRUM-871: прогноз этой карточки и её бейдж из общего advice набора.
+	var forecast: Dictionary = {}
+	var badge_kind := ""
+	var forecasts: Array = advice.get("forecasts", [])
+	var badges: Array = advice.get("badges", [])
+	if reward_index >= 0 and reward_index < forecasts.size():
+		forecast = forecasts[reward_index]
+	if reward_index >= 0 and reward_index < badges.size():
+		badge_kind = str(badges[reward_index])
 	var button := Button.new()
 	button.text = ""
 	button.custom_minimum_size = card_size
@@ -7031,7 +7069,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = false
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = _format_level_up_reward_text(reward)
+	button.tooltip_text = _level_up_card_tooltip(reward, forecast, badge_kind, advice)
 	button.set_meta("level_up_text_field_card", true)
 	_apply_level_up_card_2k_theme(button, card_size, is_rare)
 	button.add_theme_color_override("font_color", Color.TRANSPARENT)
@@ -7047,6 +7085,9 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	content.custom_minimum_size = content.size
 	button.add_child(content)
 
+	if badge_kind != "" and LU_BADGE_META.has(badge_kind):
+		_add_level_up_badge(content, badge_kind, card_scale)
+
 	var icon_size := _level_up_scaled_size(LU_CARD_ICON_RECT, card_scale)
 	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size) as Control
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7056,6 +7097,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	content.add_child(icon)
 
 	var title_label := Label.new()
+	title_label.name = "LevelUpRewardTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Upgrade"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -7063,7 +7105,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	title_label.clip_text = true
 	title_label.max_lines_visible = 1
 	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, card_scale)
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26))
+	_shrink_label_font_to_width(title_label, _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26), title_label.size.x - 4.0, 8)
 	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
 	content.add_child(title_label)
 
@@ -7080,6 +7122,8 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	description_label.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
 	content.add_child(description_label)
 
+	# SCRUM-871: блок «до -> после» — до 3 строк реально пересчитанных дельт
+	# производных статов; полный список — в тултипе карточки.
 	var effect_panel := PanelContainer.new()
 	effect_panel.name = "LevelUpRewardEffectPreview"
 	effect_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7087,19 +7131,173 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	effect_panel.add_theme_stylebox_override("panel", _level_up_effect_preview_style(effect_panel.size))
 	content.add_child(effect_panel)
 
-	var effect_label := Label.new()
-	effect_label.name = "LevelUpRewardEffectText"
-	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_label.text = _level_up_reward_preview(reward)
-	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.clip_text = true
-	effect_label.max_lines_visible = 1
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
-	effect_label.add_theme_color_override("font_color", Color(0.84, 0.97, 1.0, 1.0))
-	effect_panel.add_child(effect_label)
+	# Хост строк — обычный Control с нулевым minimum size: PanelContainer не
+	# растёт от текста, дельта-блок гарантированно остаётся в контент-зоне
+	# карточки (гейт ui_no_overlap_matrix). Строки позиционируются вручную по
+	# расчётной content-зоне стиля.
+	var effect_rows := Control.new()
+	effect_rows.name = "LevelUpRewardEffectRows"
+	effect_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	effect_rows.clip_contents = true
+	effect_panel.add_child(effect_rows)
+
+	var effect_content_margins := _scaled_frame_margins_xy(LU_EFFECT_FIELD_SOURCE_SIZE, effect_panel.size, LU_EFFECT_FIELD_CONTENT_MARGINS)
+	var rows_size := Vector2(
+		maxf(effect_panel.size.x - effect_content_margins.x - effect_content_margins.z, 8.0),
+		maxf(effect_panel.size.y - effect_content_margins.y - effect_content_margins.w, 8.0)
+	)
+	var delta_lines := _level_up_delta_lines(reward, forecast)
+	var row_height := rows_size.y / float(maxi(delta_lines.size(), 1))
+	var effect_font := _readable_font_size(maxi(6, int(roundf(13.0 * card_scale.y))), 0, 17)
+	var has_forecast_deltas: bool = not (forecast.get("deltas", []) as Array).is_empty()
+	# Раскладка по фактическому minimum size строк: юзерский масштаб шрифта может
+	# сделать строку выше расчётного ряда — не влезающие в зону строки отбрасываем
+	# (кроме первой: контракт смоук/матрицы «LevelUpRewardEffectText с '->'»),
+	# вместо того чтобы дать им выйти за контент-зону.
+	var used_height := 0.0
+	for line_index in range(delta_lines.size()):
+		var line_label := Label.new()
+		line_label.name = "LevelUpRewardEffectText" if line_index == 0 else "LevelUpRewardEffectText%d" % (line_index + 1)
+		line_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		line_label.text = str(delta_lines[line_index])
+		line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		line_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		line_label.clip_text = true
+		line_label.max_lines_visible = 1
+		_shrink_label_font_to_width(line_label, effect_font, rows_size.x - 4.0)
+		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
+		var line_height := maxf(row_height, line_label.get_minimum_size().y)
+		if line_index > 0 and used_height + line_height > rows_size.y + 0.5:
+			line_label.free()
+			continue
+		line_label.position = Vector2(0.0, used_height)
+		line_label.size = Vector2(rows_size.x, line_height)
+		effect_rows.add_child(line_label)
+		used_height += line_height
 	return button
+
+
+# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
+# fallback на базу класса) + актуальный weapon_config (боевой или собранный по
+# выбранному классу/оружию тем же ProgressionData.weapon путём).
+func _level_up_offer_advice(rewards: Array) -> Dictionary:
+	var weapon_config = {}
+	if game.current_player != null and is_instance_valid(game.current_player):
+		weapon_config = game.current_player.get("weapon_config")
+	if not (weapon_config is Dictionary) or (weapon_config as Dictionary).is_empty():
+		weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
+	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), weapon_config)
+
+
+# SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
+# юзерский масштаб шрифта (readability) может раздуть текст шире слота, а
+# клип срезал бы края подписи. Вызывать после присвоения label.text.
+func _shrink_label_font_to_width(label: Label, base_font_size: int, max_width: float, min_font_size := 7, fit_ratio := 0.62) -> void:
+	# Внешняя мерка Font.get_string_size детерминирована, но фактический рендер
+	# строки в окне шире мерки до ~1.5x (font oversampling/DPI), а внутренняя
+	# мерка Label.get_minimum_size в этом же окружении флачит. Поэтому меряем
+	# внешне и держим жёсткий запас fit_ratio 0.62 (~1/1.6): подпись гарантированно
+	# помещается на всех целевых разрешениях, клип/ellipsis остаются страховкой.
+	var font: Font = label.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var font_size := base_font_size
+	if font != null:
+		var fit_width := maxf(max_width, 8.0) * fit_ratio
+		while font_size > min_font_size and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
+			font_size -= 1
+	label.add_theme_font_size_override("font_size", font_size)
+
+
+# Строки блока изменений карточки: топ-3 дельты прогноза; без измеримых дельт —
+# прежнее SCRUM-525 превью (спец-эффекты вроде призывов), затем краткий фолбэк.
+func _level_up_delta_lines(reward: Dictionary, forecast: Dictionary) -> Array:
+	var lines: Array = []
+	for delta in (forecast.get("deltas", []) as Array):
+		lines.append(LevelUpAdvisor.delta_line(delta))
+		if lines.size() >= 3:
+			break
+	if lines.is_empty():
+		lines = _level_up_effect_preview_lines(reward, 2)
+	if lines.is_empty():
+		lines.append(_level_up_reward_preview(reward))
+	return lines
+
+
+func _format_level_up_gain_percent(gain: float) -> String:
+	var percent := gain * 100.0
+	return "%.1f%%" % percent if absf(percent) < 10.0 else "%d%%" % int(roundf(percent))
+
+
+# Тултип карточки: название, описание, полный список изменений, классовая
+# интерпретация и объяснение бейджа рекомендации.
+func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind: String, advice := {}) -> String:
+	var parts: Array = [str(reward.get("title", "Upgrade"))]
+	var description := str(reward.get("description", "")).strip_edges()
+	if description != "":
+		parts.append(description)
+	var deltas: Array = forecast.get("deltas", [])
+	if not deltas.is_empty():
+		var delta_lines: Array = []
+		for delta in deltas:
+			delta_lines.append("  %s" % LevelUpAdvisor.delta_line(delta))
+		parts.append("Изменения:\n%s" % "\n".join(delta_lines))
+	else:
+		parts.append(_level_up_reward_preview(reward))
+	var interpretation := _reward_interpretation_text(reward)
+	if interpretation != "":
+		parts.append(interpretation)
+	match badge_kind:
+		"dps":
+			parts.append("Метка «Лучший урон»: наибольший прирост урона в секунду (+%s) для твоего класса и оружия." % _format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))))
+		"surv":
+			parts.append("Метка «Выживание»: наибольший прирост живучести (+%s) — здоровье, защита, уклонение, поглощение и лечение." % _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0))))
+		"both":
+			parts.append("Метка «Лучший выбор»: сильнейший рост и урона (+%s), и живучести (+%s)." % [_format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))), _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0)))])
+	return "\n".join(parts)
+
+
+# Бейдж-риббон рекомендации: PixelLab-текстура KEEP_ASPECT в слоте сверху
+# карточки, подпись — рантайм-Label в пустом поле риббона (label-зона в долях
+# фактического прямоугольника риббона; на орнамент эмблемы текст не заходит).
+func _add_level_up_badge(content: Control, badge_kind: String, card_scale: Vector2) -> void:
+	var badge_meta: Dictionary = LU_BADGE_META[badge_kind]
+	var texture = game._cached_texture(str(LEVEL_UP_SCRUM682_FRAME_PATHS[badge_meta["frame"]]))
+	if texture == null:
+		return
+	var slot_position := _level_up_scaled_position(LU_CARD_BADGE_RECT, card_scale)
+	var slot_size := _level_up_scaled_size(LU_CARD_BADGE_RECT, card_scale)
+	var badge := TextureRect.new()
+	badge.name = "LevelUpRewardBadge"
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.texture = texture
+	badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	badge.position = slot_position
+	badge.size = slot_size
+	badge.custom_minimum_size = slot_size
+	content.add_child(badge)
+
+	var texture_size: Vector2 = texture.get_size()
+	var ribbon_scale := minf(slot_size.x / maxf(texture_size.x, 1.0), slot_size.y / maxf(texture_size.y, 1.0))
+	var ribbon_size := texture_size * ribbon_scale
+	var ribbon_position := slot_position + (slot_size - ribbon_size) * 0.5
+	var label_zone: Rect2 = badge_meta["label_zone"]
+	var badge_label := Label.new()
+	badge_label.name = "LevelUpRewardBadgeLabel"
+	badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_label.text = str(badge_meta["text"])
+	badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge_label.clip_text = true
+	badge_label.max_lines_visible = 1
+	badge_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	badge_label.position = ribbon_position + Vector2(ribbon_size.x * label_zone.position.x, ribbon_size.y * label_zone.position.y)
+	badge_label.size = Vector2(ribbon_size.x * label_zone.size.x, ribbon_size.y * label_zone.size.y)
+	_shrink_label_font_to_width(badge_label, _readable_font_size(maxi(6, int(roundf(13.0 * card_scale.y))), 0, 16), badge_label.size.x - 2.0, 6)
+	badge_label.add_theme_color_override("font_color", badge_meta["text_color"])
+	content.add_child(badge_label)
 
 
 func _make_battle_reward_card(reward: Dictionary) -> Button:
@@ -10954,12 +11152,15 @@ func _level_up_portrait_style(display_size: Vector2) -> StyleBox:
 
 
 func _level_up_effect_preview_style(display_size: Vector2) -> StyleBox:
+	# SCRUM-871: source-фрейм пересобран в родной аспект дельта-блока 354x132
+	# (офлайн 9-slice из прежней 330x64 полосы) — стиль снова 1:1 @2K, границы
+	# орнамента не растягиваются, полям хватает места на 3 строки текста.
 	return _level_up_scrum682_style(
 		str(LEVEL_UP_SCRUM682_FRAME_PATHS["effect_preview"]),
-		Vector2(330.0, 64.0),
+		LU_EFFECT_FIELD_SOURCE_SIZE,
 		display_size,
 		Vector4(22.0, 18.0, 22.0, 18.0),
-		Vector4(32.0, 22.0, 32.0, 22.0)
+		LU_EFFECT_FIELD_CONTENT_MARGINS
 	)
 
 

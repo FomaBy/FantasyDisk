@@ -172,7 +172,7 @@ const START_BOONS := [
 const LEVEL_UP_REWARDS := [
 	{"id": "damage_up", "attr": "damage", "title": "+Урон", "description": "+15% к урону.", "kind": "upgrade", "mods": {"damage_multiplier": 1.15}},
 	{"id": "attack_speed_up", "attr": "attack_speed", "title": "+Скорость атаки", "description": "+12% к скорости атаки.", "kind": "upgrade", "mods": {"attack_speed_multiplier": 1.12}},
-	{"id": "max_hp_up", "attr": "max_health", "title": "+Максимальное здоровье", "description": "+18 к максимальному здоровью.", "kind": "upgrade", "mods": {"max_health_flat": 18.0}},
+	{"id": "max_hp_up", "attr": "max_health", "title": "+Макс. здоровье", "description": "+18 к максимальному здоровью.", "kind": "upgrade", "mods": {"max_health_flat": 18.0}},
 	{"id": "move_speed_up", "attr": "move_speed", "title": "+Скорость движения", "description": "+10% к скорости движения.", "kind": "upgrade", "mods": {"move_speed_multiplier": 1.10}},
 	{"id": "aoe_radius_up", "attr": "aoe_radius", "title": "+Ширина сектора", "description": "+15% к ширине сектора.", "kind": "upgrade", "mods": {"sector_multiplier": 1.15}},
 	{"id": "pickup_radius_up", "attr": "pickup_radius", "title": "+Радиус подбора", "description": "+45 к радиусу подбора опыта и золота.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},

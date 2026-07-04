@@ -84,6 +84,10 @@ const LEVEL_UP_SCRUM682_FRAME_PATHS := {
 	"later_button": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later.png",
 	"later_button_hover": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later_hover.png",
 	"later_button_pressed": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_btn_lu682_later_pressed.png",
+	# SCRUM-871: риббон-бейджи рекомендаций (PixelLab, textless — подпись рантаймом).
+	"badge_dps": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_badge_lu_best_dps.png",
+	"badge_surv": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_badge_lu_best_surv.png",
+	"badge_both": LEVEL_UP_SCRUM682_FRAME_DIR + "ui_badge_lu_best_both.png",
 }
 const OVERHAUL_2K_FRAME_PATHS := {
 	"qc_panel": OVERHAUL_2K_FRAME_DIR + "ui_frame_2k_qc_panel.png",

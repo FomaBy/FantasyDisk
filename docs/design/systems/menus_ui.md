@@ -452,6 +452,27 @@ rims, or badges.
   states, portrait frame, effect-preview field, and dedicated `Позже` button
   states. The screen still presents exactly 3 variants and preserves deferred
   choice through `level_up_offer`.
+- SCRUM-871 (Level Up 3.0 Advisor) rebuilds the card information architecture on
+  top of the SCRUM-682 kit: each card shows a top recommendation ribbon slot
+  (`LU_CARD_BADGE_RECT`), a 120px icon, title, short description, and a large
+  «до -> после» delta field (`LU_CARD_EFFECT_RECT` 354x132) that replaces the
+  old single-line effect preview with up to 3 recalculated derived-stat lines
+  (`LevelUpRewardEffectText`, `...Text2/3`) inside the same 9-slice
+  `ui_frame_lu682_effect_preview` frame. `scripts/level_up_advisor.gd` dry-runs
+  every offered reward against live player stats/run_modifiers/weapon_config via
+  `ProgressionData.derived_parameters` and scores a DPS proxy
+  (class damage_parameter × attack_speed × crit expectation + DoT track) and an
+  EHP survivability model mirroring combat `take_damage` (absorb → defense →
+  dodge + regen/vampiric window). The best positive DPS gain card gets the red
+  «ЛУЧШИЙ УРОН» ribbon (`ui_badge_lu_best_dps.png`), the best survivability gain
+  the green «ВЫЖИВАНИЕ» ribbon (`ui_badge_lu_best_surv.png`), one card winning
+  both axes gets the gold «ЛУЧШИЙ ВЫБОР» ribbon (`ui_badge_lu_best_both.png`);
+  zero/negative gains award no badge. Ribbons are PixelLab textless assets with
+  runtime labels constrained to each ribbon's empty field
+  (`LU_BADGE_META.label_zone`); card tooltips list the full delta set and explain
+  the badge with the computed gain percent. Damage-type isolation (SCRUM-524)
+  keeps foreign damage types out of card deltas. Mockup/spec:
+  `docs/design/mockups/level_up_advisor/`; gate: `tests/level_up_advisor_test.gd`.
 - SCRUM-683 is the live runtime wiring for the SCRUM-682 Level Up package.
   Source geometry lives under `docs/design/mockups/level_up_scrum682/spec.md`,
   and runtime scales it from 2560x1440 while keeping hero header, portrait,
