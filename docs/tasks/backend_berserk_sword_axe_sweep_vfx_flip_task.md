@@ -69,3 +69,40 @@ quarantined to ignored `tmp/preexisting_duplicate_artifacts/` so Godot duplicate
 artifact guard can pass without deleting them.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт
+
+Статус: PASSED
+Дата: 2026-07-04
+Owner: codex-qa-scrum875-20260704
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum875_20260704`
+
+Acceptance verified against `origin/dev` commit `5683ee22` containing
+implementation commit `cb7d6d28`:
+
+- Sword/axe keep `sweep` damage geometry/targeting/cooldowns/balance: code review
+  confirms SCRUM-875 changed only `_show_sweep_area()` VFX call and
+  `AttackVfx.slash()` sprite rotation, while `_is_enemy_inside_sweep()`,
+  `_sweep_zone_points()`, weapon configs, cooldowns and damage math are
+  unchanged.
+- Sword/axe no longer spawn visible `BerserkExactAttackZone` sector overlay:
+  focused smoke asserts no overlay node after `_show_sweep_area()`.
+- Visible crescent slash is flipped by 180 degrees: focused smoke asserts all
+  slash sprites have `PI` rotation.
+- Hammer/circle behavior unchanged: code review confirms `_show_circle_area()`
+  still calls `AttackVfx.hammer_slam()` unchanged, and melee targeting smoke
+  verifies hammer circle radius/hit rejection and sector upgrades do not affect
+  hammer radius.
+- Combat/current-state/mechanics docs contain the SCRUM-875 visual-only rule.
+
+QA verification:
+
+- PASS: `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum875_20260704 --script res://tests/attack_vfx_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum875_20260704 --script res://tests/melee_weapon_targeting_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum875_20260704 --script res://tests/runtime_smoke_test.gd`
+  - Non-fatal existing headless warning observed:
+    `Parameter "t" is null` in `_try_capture_weapon_select_screenshot`; test
+    still printed `Runtime smoke test passed.`
+
+Disk cleanup: pending after scoped Jira sync; disposable Godot import artifacts
+will be removed before final report.
