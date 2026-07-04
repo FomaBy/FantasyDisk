@@ -278,6 +278,16 @@ keeps runtime PNGs textless, alpha-clean and confined to the SCRUM-725
 9-slice margin bands. Runtime preview:
 `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
 
+SCRUM-868 applies the accepted SCRUM-867 Weapon Select PixelLab UI mockup to
+runtime without a non-PixelLab fallback. The source mockup remains
+`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_mockup.png`
+(PixelLab UI asset `67e5f56a-aaa6-4216-814a-7f5301132fea`), and the live
+derived 2560x1440 textless layer is
+`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`.
+`scripts/ui_screens.gd` renders it as `WeaponSelectPixelLabRuntimeLayer`; the
+panel, cards and Back ornament come from this layer while weapon icons, labels,
+focus/click states and Back behavior remain live Godot controls.
+
 SCRUM-849 adds the next Codex design-source package for an object-first layout
 without changing live runtime assets yet. The PixelLab UI-panel mockup and
 safe-zone contract live under

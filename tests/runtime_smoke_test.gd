@@ -44,6 +44,7 @@ const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
+const WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
@@ -7525,6 +7526,16 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		await process_frame
 		await process_frame
 		dump_lines.append("## `%s`" % character_id)
+		var pixellab_layer := weapon_main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
+		if pixellab_layer == null or pixellab_layer.texture == null:
+			_fail("Expected weapon select to render the SCRUM-868 PixelLab runtime layer for %s." % character_id)
+			return
+		if pixellab_layer.texture.resource_path != WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER:
+			_fail("Expected weapon select PixelLab layer %s, got %s." % [WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER, pixellab_layer.texture.resource_path])
+			return
+		if pixellab_layer.stretch_mode != TextureRect.STRETCH_SCALE:
+			_fail("Expected weapon select PixelLab full-screen layer to fill the 16:9 viewport for %s." % character_id)
+			return
 		var weapon_ids: Array = ProgressionData.weapon_ids(character_id)
 		if weapon_ids.is_empty():
 			_fail("Expected weapon select options for %s." % character_id)
@@ -7543,12 +7554,11 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 				return
 			var normal_style := button.get_theme_stylebox("normal")
 			var hover_style := button.get_theme_stylebox("hover")
-			if not normal_style is StyleBoxTexture or not hover_style is StyleBoxTexture:
-				_fail("Expected weapon select card %s/%s to use SCRUM-867 2K frame textures." % [character_id, weapon_id])
+			if not normal_style is StyleBoxFlat or not hover_style is StyleBoxFlat:
+				_fail("Expected weapon select card %s/%s to use SCRUM-868 transparent hit-area styles over PixelLab art." % [character_id, weapon_id])
 				return
-			var normal_texture := (normal_style as StyleBoxTexture).texture
-			if normal_texture == null or normal_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png":
-				_fail("Expected weapon select card %s/%s to use ws_card frame texture." % [character_id, weapon_id])
+			if (normal_style as StyleBoxFlat).bg_color.a > 0.01:
+				_fail("Expected weapon select card %s/%s normal style to stay transparent over PixelLab art." % [character_id, weapon_id])
 				return
 			var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
 			var expected_sprite := _expected_weapon_sprite_path(config)
@@ -7575,13 +7585,11 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 			_fail("Expected SCRUM-867 weapon select back button for %s." % character_id)
 			return
 		var back_style := back_button.get_theme_stylebox("normal")
-		if not back_style is StyleBoxTexture:
-			_fail("Expected weapon select back button to use SCRUM-867 2K frame texture for %s." % character_id)
+		if not back_style is StyleBoxFlat or (back_style as StyleBoxFlat).bg_color.a > 0.01:
+			_fail("Expected weapon select back button to be a transparent live control over the PixelLab lower button art for %s." % character_id)
 			return
-		var back_texture := (back_style as StyleBoxTexture).texture
-		if back_texture == null or back_texture.resource_path != TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png":
-			_fail("Expected weapon select back button to use SCRUM-657 pause_280x60 text-button texture for %s." % character_id)
-			return
+		if character_id == "berserk":
+			dump_lines.append("- screenshot capture: %s" % _try_capture_weapon_select_screenshot(weapon_main))
 		var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
 		first_button.pressed.emit()
 		await process_frame
@@ -7597,6 +7605,27 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		file.close()
 	weapon_main.queue_free()
 	await process_frame
+
+
+func _try_capture_weapon_select_screenshot(weapon_main: Node) -> String:
+	var viewport := weapon_main.get_viewport()
+	if viewport == null:
+		return "blocked: viewport unavailable"
+	var viewport_texture := viewport.get_texture()
+	if viewport_texture == null:
+		return "blocked: viewport texture unavailable"
+	var image := viewport_texture.get_image()
+	if image == null:
+		return "blocked: viewport image unavailable"
+	if image.get_width() <= 0 or image.get_height() <= 0:
+		return "blocked: viewport image unavailable (%dx%d)" % [image.get_width(), image.get_height()]
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum868_weapon_select_runtime")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var output_path := "%s/weapon_select_berserk_2560x1440.png" % qa_dir
+	var error := image.save_png(output_path)
+	if error != OK:
+		return "blocked: save_png failed (%s)" % str(error)
+	return "`build/qa/scrum868_weapon_select_runtime/weapon_select_berserk_2560x1440.png`"
 
 
 func _expected_weapon_sprite_path(config: Dictionary) -> String:

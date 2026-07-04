@@ -6245,6 +6245,7 @@ const WS_SUBTITLE_2K := Rect2(443, 314, 1674, 32)
 const WS_CARD_2K := Rect2(443, 374, 1674, 240)
 const WS_CARD_STEP_2K := 254.0
 const WS_BTN_BACK_2K := Rect2(1140, 1234, 280, 60)
+const WS_PIXELLAB_RUNTIME_LAYER_PATH := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
 
 
 func _show_weapon_select() -> void:
@@ -6253,9 +6254,11 @@ func _show_weapon_select() -> void:
 		"Выбор оружия",
 		"%s: выбери стартовое оружие." % str(character_config["title"]),
 		"weapon_select",
-		_overhaul_2k_frame_style("ws_panel", WS_PANEL_2K.size),
+		_weapon_select_transparent_content_style("ws_panel", WS_PANEL_2K.size),
 		WS_PANEL_2K.size
 	)
+	_add_weapon_select_pixellab_layer(box)
+	_style_weapon_select_header(box)
 	box.add_theme_constant_override("separation", 14)
 	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
@@ -6276,7 +6279,7 @@ func _show_weapon_select() -> void:
 	back_button.name = "WeaponSelectBackButton"
 	back_button.custom_minimum_size = WS_BTN_BACK_2K.size
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_overhaul_2k_button_theme(back_button, "ws_btn_back", WS_BTN_BACK_2K.size)
+	_apply_weapon_select_transparent_button_theme(back_button)
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
@@ -6303,11 +6306,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 		_weapon_select_identity_text(character_id, weapon_id),
 		str(config.get("description", "")),
 	]
-	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size))
-	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.58, 0.58, 0.58, 0.82)))
+	_apply_weapon_select_transparent_button_theme(button)
 
 	var row := HBoxContainer.new()
 	row.name = "WeaponOptionContent_%s" % weapon_id
@@ -6347,7 +6346,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	title_label.max_lines_visible = 1
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_font_size_override("font_size", _readable_font_size(24, 0, 34))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.add_theme_color_override("font_color", Color(0.12, 0.08, 0.04, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
@@ -6358,7 +6357,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	identity_label.max_lines_visible = 2
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 23))
-	identity_label.add_theme_color_override("font_color", Color(0.98, 0.78, 0.42, 1.0))
+	identity_label.add_theme_color_override("font_color", Color(0.33, 0.16, 0.05, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(identity_label)
 
@@ -6369,7 +6368,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.max_lines_visible = 2
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 20))
-	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.add_theme_color_override("font_color", Color(0.16, 0.11, 0.07, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
@@ -6379,7 +6378,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	role_label.max_lines_visible = 1
 	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
-	role_label.add_theme_color_override("font_color", Color(0.72, 0.88, 1.0, 1.0))
+	role_label.add_theme_color_override("font_color", Color(0.16, 0.21, 0.28, 1.0))
 	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(role_label)
 
@@ -6390,10 +6389,74 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stats_label.text = _weapon_select_stats_text(config)
 	stats_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
-	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	stats_label.add_theme_color_override("font_color", Color(0.12, 0.10, 0.08, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
 	return button
+
+
+func _add_weapon_select_pixellab_layer(box: Control) -> void:
+	var panel := box.get_parent() as Control
+	if panel == null:
+		return
+	var root := panel.get_parent() as Control
+	if root == null:
+		return
+	var layer := TextureRect.new()
+	layer.name = "WeaponSelectPixelLabRuntimeLayer"
+	layer.texture = game._cached_texture(WS_PIXELLAB_RUNTIME_LAYER_PATH)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	layer.stretch_mode = TextureRect.STRETCH_SCALE
+	layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.set_meta("pixellab_runtime_layer_path", WS_PIXELLAB_RUNTIME_LAYER_PATH)
+	layer.set_meta("pixellab_source_ui_asset_id", "67e5f56a-aaa6-4216-814a-7f5301132fea")
+	root.add_child(layer)
+	root.move_child(layer, panel.get_index())
+	panel.set_meta("pixellab_runtime_layer_path", WS_PIXELLAB_RUNTIME_LAYER_PATH)
+
+
+func _style_weapon_select_header(box: Control) -> void:
+	var title := box.find_child("MenuTitle_weapon_select", false, false) as Label
+	if title != null:
+		title.add_theme_color_override("font_color", Color(0.11, 0.08, 0.05, 1.0))
+	var subtitle := box.find_child("MenuSubtitle_weapon_select", false, false) as Label
+	if subtitle != null:
+		subtitle.add_theme_color_override("font_color", Color(0.18, 0.13, 0.08, 1.0))
+
+
+func _weapon_select_transparent_content_style(slot: String, display_size: Vector2) -> StyleBox:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0)
+	var margins := _overhaul_2k_content_margins(slot, display_size)
+	style.content_margin_left = margins.x
+	style.content_margin_top = margins.y
+	style.content_margin_right = margins.z
+	style.content_margin_bottom = margins.w
+	return style
+
+
+func _weapon_select_interaction_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	return style
+
+
+func _apply_weapon_select_transparent_button_theme(button: Button) -> void:
+	button.add_theme_stylebox_override("normal", _weapon_select_interaction_style(Color(0, 0, 0, 0)))
+	button.add_theme_stylebox_override("hover", _weapon_select_interaction_style(Color(1.0, 0.78, 0.32, 0.12)))
+	button.add_theme_stylebox_override("pressed", _weapon_select_interaction_style(Color(0.16, 0.10, 0.04, 0.20)))
+	button.add_theme_stylebox_override("focus", _weapon_select_interaction_style(Color(0.98, 0.72, 0.28, 0.18)))
+	button.add_theme_stylebox_override("disabled", _weapon_select_interaction_style(Color(0.04, 0.04, 0.05, 0.32)))
+	button.add_theme_color_override("font_color", Color(0.95, 0.84, 0.52, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.66, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.92, 0.66, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.84, 0.72, 0.42, 1.0))
 
 
 func _weapon_select_identity_text(character_id: String, weapon_id: String) -> String:

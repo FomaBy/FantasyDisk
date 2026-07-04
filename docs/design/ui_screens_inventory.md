@@ -470,13 +470,17 @@ clamp 820). С SCRUM-841 эти result-экраны не используют `P
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
 SCRUM-867 active live pass supersedes the SCRUM-562 `190px` card contract.
-Weapon Select now uses a larger centered panel and taller cards so the player
-always sees what makes each weapon different. Runtime still reuses the
-`ws_panel`, `ws_card`, and `ws_btn_back` assets from
-`assets/sprites/ui/frames/overhaul_2k/`, but displays them through 9-slice at the
-larger bounds below. The start-boon picker keeps the old shared
-`weapon_select` menu box, and SCRUM-563 route-map layout is not part of this
-scope.
+SCRUM-868 applies the accepted textless PixelLab visual layer in-game:
+`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`
+is rendered as `WeaponSelectPixelLabRuntimeLayer` behind the live controls.
+Weapon Select still uses the larger centered panel and taller card geometry so
+the player always sees what makes each weapon different, but
+`MenuPanel_weapon_select`, `WeaponOption_*`, and `WeaponSelectBackButton` are now
+transparent hit areas with hover/focus/pressed tint overlays. This avoids
+double-framing: the visible panel/card/back art comes from the PixelLab layer,
+while text, icons, focus, click and Back behavior remain editable Godot
+controls. The start-boon picker keeps the old shared `weapon_select` menu box,
+and SCRUM-563 route-map layout is not part of this scope.
 
 Each `WeaponOption_*` card contains:
 - `WeaponSelectSprite_*` at minimum `150x150`;

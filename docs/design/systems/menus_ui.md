@@ -210,10 +210,16 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
 
 - SCRUM-798 keeps the 2026-06-30 user-requested minimal black Hero Select direction, not the older ornate/Pixellab frame layout, but rebuilds the live sizing and information hierarchy. `_show_character_select()` / `_build_character_select_v4()` builds `HeroSelectScreen` over `HS4BlackBackground`; no title frame, no PixelLab backdrop, no compass rose, and no `HeroStatRadar` are active. The selected `HS4Portrait` is now the dominant left-column object (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `660x660` on tall screens) and keeps SCRUM-416/SCRUM-687 directional SpriteFrame rotation when available. `HS4AscensionFrame` is directly below the preview with `-`/`+`, max clamping, modifier text/tooltip and `HS4ChooseButton`. The right `HS4DossierFrame` is scroll-safe and contains class title, description, strengths, weaknesses, weapon names, class identity, eight base characteristics as hoverable Line Bars with rich `StatFormulas.STAT_DEFINITIONS` + class interpretation tooltips, and data-driven build guidance sections `Основные атрибуты`, `Второстепенные атрибуты`, `Дополнительные атрибуты` from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive `HS4CarouselSlot_*` buttons (`~203px` at 720p, `~305px` at 1080p, capped near `320px`), larger arrows, cyclic paging and default focus on the selected visible slot. Since SCRUM-421 follow-up, carousel portraits are also alpha-bottom aligned inside clipped slots so PixelLab classes with different transparent canvas padding share one visible baseline. SCRUM-822 now positions both the large preview and carousel portraits by cached alpha bounding boxes, so transparent side padding is ignored, visible bodies are centered/bottom-aligned, and each carousel slot reserves a bottom `HS4CarouselLabel_*` name strip from the character title. Evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`, `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
 - SCRUM-867 supersedes the SCRUM-562 live Weapon Select geometry for the active
-  runtime while reusing the same `ws_panel`, `ws_card`, and `ws_btn_back` frame
-  textures. `_show_weapon_select()` now uses an enlarged `WS_PANEL_2K`
+  runtime, and SCRUM-868 applies the accepted textless PixelLab layer in-game as
+  `WeaponSelectPixelLabRuntimeLayer`
+  (`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`).
+  `_show_weapon_select()` now uses an enlarged `WS_PANEL_2K`
   `Rect2(360,120,1840,1200)` with `WS_SAFE_2K` `Rect2(443,229,1674,1016)`.
-  Each `WeaponOption_*` card is `1674x240`, uses a larger `150x150`
+  The panel, weapon cards, and lower Back ornament are visible from that
+  PixelLab-derived runtime layer; `MenuPanel_weapon_select`,
+  `WeaponOption_*`, and `WeaponSelectBackButton` are transparent live controls
+  with hover/focus/pressed tint overlays to avoid double-framing. Each
+  `WeaponOption_*` card is `1674x240`, uses a larger `150x150`
   `WeaponSelectSprite_*`, and must show five player-facing text zones:
   title, `WeaponSelectIdentity_*` (`Отличие:` from
   `ProgressionData.weapon_mechanic_identity`), description,
