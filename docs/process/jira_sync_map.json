@@ -3942,5 +3942,10 @@
   "key": "SCRUM-875",
   "status": "Готово",
   "desc_hash": "8bacc6764302b39c5580c608377d2e73"
+ },
+ "ui_unified_combat_hud_run_screens_scrum876_task.md": {
+  "key": "SCRUM-876",
+  "status": "Контроль качества",
+  "desc_hash": null
  }
 }
