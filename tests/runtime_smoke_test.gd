@@ -3442,12 +3442,28 @@ func _test_boss_act_transition(main_scene: PackedScene) -> void:
 		_fail("Expected Act 1 boss death to enter a victory-delay window before advancing to Act 2.")
 		return
 	await create_timer(2.1, false, false, true).timeout
+	# SCRUM-873: после победы над акт-боссом — обязательный экран выбора 1 из 3
+	# суперредких артефактов; переход в акт 2 происходит после выбора.
+	var reward_row: Node = null
+	for _attempt in range(120):
+		await process_frame
+		reward_row = act_main.find_child("BossArtifactRewardRow", true, false)
+		if reward_row != null:
+			break
+	if reward_row == null or reward_row.get_child_count() != 3:
+		_fail("Expected Act 1 boss victory to show a 3-card boss artifact reward screen.")
+		return
+	(reward_row.get_child(0) as Button).emit_signal("pressed")
 	for _attempt in range(120):
 		await process_frame
 		if not bool(act_main.get("combat_active")) and int(act_main.get("current_act")) == 2:
 			break
 	if bool(act_main.get("combat_active")) or int(act_main.get("current_act")) != 2:
-		_fail("Expected Act 1 boss victory to advance to Act 2 after the death-animation delay.")
+		_fail("Expected Act 1 boss victory to advance to Act 2 after the reward pick.")
+		return
+	var reward_snapshot: Dictionary = act_main.get("run_player_snapshot")
+	if (reward_snapshot.get("artifacts", []) as Array).is_empty():
+		_fail("Expected boss artifact pick to land in the run snapshot.")
 		return
 	if int(act_main.get("route_stage")) != 0:
 		_fail("Expected next act to reset act-local route_stage to 0.")

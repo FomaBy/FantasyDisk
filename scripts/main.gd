@@ -31,6 +31,9 @@ const ROUTE_STEPS_TO_BOSS := 8
 # можно поднять до 2 (ранняя + поздняя).
 const CHEST_LINE_ROWS := 1
 const ACT_COUNT := 3
+# SCRUM-873: отхил при переходе в следующий акт — 70% max HP (запрошенный
+# диапазон 60–80%). Лечение (clamp по max), не установка HP в фикс. значение.
+const ACT_TRANSITION_HEAL_PERCENT := 0.7
 const ACT_SCALING_STAGE_OFFSET := 4
 const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
@@ -864,6 +867,13 @@ func advance_to_next_act() -> bool:
 	if current_act >= ACT_COUNT:
 		return false
 	current_act += 1
+	# SCRUM-873: отхил на переходе акта. Игрок между узлами живёт в
+	# run_player_snapshot (снят в _end_combat ДО этого вызова) — лечим снапшот,
+	# HP «переезжает» в первый бой нового акта через _restore_player_snapshot.
+	if not run_player_snapshot.is_empty():
+		var snapshot_max := maxf(float(run_player_snapshot.get("max_health", 0.0)), 0.0)
+		var snapshot_health := float(run_player_snapshot.get("health", snapshot_max))
+		run_player_snapshot["health"] = minf(snapshot_max, snapshot_health + snapshot_max * ACT_TRANSITION_HEAL_PERCENT)
 	route_stage = 0
 	route_nodes = route._generate_route()
 	route_selected_indices.clear()

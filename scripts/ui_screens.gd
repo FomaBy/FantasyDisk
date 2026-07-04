@@ -7018,6 +7018,113 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	game._play_sfx("level_up")
 
 
+func _show_boss_artifact_reward(on_done: Callable) -> void:
+	# SCRUM-873: награда за акт-босса — выбор 1 из 3 СУПЕРРЕДКИХ артефактов
+	# (верхний тир, boss-only оффер). Паттерн и карточки — как у трофея элитки.
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "BossArtifactRewardScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, "elite_reward")
+
+	var shade := ColorRect.new()
+	shade.name = "BossArtifactRewardShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.02, 0.015, 0.025, 0.76)
+	root.add_child(shade)
+
+	var center := CenterContainer.new()
+	center.name = "BossArtifactRewardCenter"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(center)
+
+	var panel := PanelContainer.new()
+	panel.name = "BossArtifactRewardPanel"
+	panel.custom_minimum_size = Vector2(1140, 640)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	center.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 20)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(box)
+
+	var title := Label.new()
+	title.name = "BossArtifactRewardTitle"
+	title.text = "Трофей босса"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
+	title.add_theme_color_override("font_color", TIER_COLORS[3])
+	box.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.name = "BossArtifactRewardSubtitle"
+	subtitle.text = "Акт пройден! Выбери 1 из 3 суперредких артефактов."
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
+	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	box.add_child(subtitle)
+
+	var rewards_row := HBoxContainer.new()
+	rewards_row.name = "BossArtifactRewardRow"
+	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_ELITE_CARD_SIZE.y)
+	rewards_row.add_theme_constant_override("separation", 22)
+	box.add_child(rewards_row)
+
+	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id)
+	var reward_cards: Array[Button] = []
+	for reward in choices:
+		var reward_data: Dictionary = reward
+		var button := _make_elite_artifact_card(reward_data)
+		button.name = "BossArtifactRewardButton%d" % rewards_row.get_child_count()
+		button.pressed.connect(func() -> void:
+			_apply_reward_to_run(reward_data)
+			game._clear_ui()
+			if on_done.is_valid():
+				on_done.call()
+		)
+		rewards_row.add_child(button)
+		reward_cards.append(button)
+
+	# Пул пуст (теоретический случай) — не запирать игрока на экране без карт.
+	if reward_cards.is_empty():
+		push_warning("Boss artifact reward: пул суперредких пуст — экран пропущен.")
+		game._clear_ui()
+		if on_done.is_valid():
+			on_done.call()
+		return
+
+	# Клавиатура/геймпад: стрелки двигают фокус по кругу, Enter/Space выбирают.
+	for index in range(reward_cards.size()):
+		var card := reward_cards[index]
+		var left := reward_cards[(index - 1 + reward_cards.size()) % reward_cards.size()]
+		var right := reward_cards[(index + 1) % reward_cards.size()]
+		card.focus_neighbor_left = left.get_path()
+		card.focus_neighbor_right = right.get_path()
+		card.focus_neighbor_top = card.get_path()
+		card.focus_neighbor_bottom = card.get_path()
+	reward_cards[0].grab_focus()
+
+	# Выбор обязателен: Escape ничего не закрывает.
+	game.ui_escape_action = Callable()
+	game._play_sfx("level_up")
+
+
 func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]

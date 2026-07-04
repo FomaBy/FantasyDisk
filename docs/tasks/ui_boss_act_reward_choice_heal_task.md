@@ -1,6 +1,6 @@
 # Награда за акт-босса: выбор 1 из 3 суперредких артефактов + отхил 60–80% HP при переходе в акт
 
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end
 Контур: Claude
@@ -127,4 +127,48 @@ if not artifact_rewards.is_empty():
 
 ## Result
 
-Pending.
+2026-07-04, Claude (pm-chat, worktree dreamy-bun-6a51c0):
+
+**A. Выбор 1 из 3 суперредких:**
+- `scripts/progression_data.gd`: новая `boss_completion_artifact_choices(count, character_id)` —
+  равновероятная выборка БЕЗ дублей из существующего top-tier пула
+  `boss_completion_artifact_rewards` (tier >= 3, 8 артефактов, 7 нейтральных — на любой класс
+  хватает 3 уникальных). Решение: «суперредкие» = верхний тир как boss-only оффер; новый tier 4
+  контент НЕ вводился (при желании — отдельная design/balance задача).
+- `scripts/combat_director.gd` `_grant_boss_completion_rewards()`: артефакт больше не выдаётся
+  молча — остались XP/деньги (`drop_class_rewards("boss", ...)`).
+- `scripts/combat_director.gd` `_end_combat()` boss-victory: флоу обёрнут в
+  `proceed_after_boss`; экран выбора показывается когда забег продолжается (следующий акт или
+  секретный босс); после финального босса — сразу экран победы (выбор бессмыслен, забег
+  завершён).
+- `scripts/ui_screens.gd`: новый `_show_boss_artifact_reward(on_done)` по паттерну
+  `_show_elite_artifact_reward` (панель 1140×640, карточки `_make_elite_artifact_card`,
+  титул «Трофей босса» в TIER_COLORS[3], фокус-навигация стрелками/геймпадом по кругу,
+  Escape не закрывает, guard на пустой пул). Применение через `_apply_reward_to_run`
+  (снапшот) + кодекс.
+
+**B. Отхил при переходе акта:**
+- `scripts/main.gd`: `ACT_TRANSITION_HEAL_PERCENT := 0.7` (зафиксировано 70%, середина
+  запрошенного диапазона 60–80). В `advance_to_next_act()` лечится
+  `run_player_snapshot["health"]` (+70% max, clamp по max) — HP переезжает в первый бой
+  нового акта. После финального акта функция возвращает false до отхила — не хилим.
+
+**Тесты:**
+- Новый `tests/boss_act_reward_heal_test.gd`: пул choices (3, уникальные, tier>=3, для 5
+  классов включая doctor), отхил 20→90, clamp 60→100, финальный акт без отхила, UI-флоу
+  (3 карточки, клик → артефакт в снапшоте из суперредкого пула, on_done, экран закрыт).
+- `tests/runtime_smoke_test.gd` `_test_boss_act_transition`: контракт обновлён — после
+  победы над акт-боссом ждём 3-карточный экран, кликаем, затем акт 2 + артефакт в снапшоте.
+- `tests/doctor_drain_softcap_test.gd`: source-scan перенацелен на
+  `_show_boss_artifact_reward` (character-filtered choices) + прямой фильтр-чек
+  `boss_completion_artifact_choices(3, "doctor")`.
+
+Validation:
+- `boss_act_reward_heal_test.gd` — PASS; `doctor_drain_softcap_test.gd` — PASS;
+  `runtime_smoke_test.gd` — PASS; `runtime_smoke_ui_test.gd` — PASS;
+  `monster_xp_pressure_pacing_test.gd` — PASS (все через godot_gate).
+
+Docs updated: `docs/design/current_game_state.md` (основной поток п.11 — экран трофея босса +
+отхил 70%).
+
+Disk cleanup: none created.
