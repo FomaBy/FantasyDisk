@@ -138,14 +138,19 @@ func _test_berserk_sweep_geometry() -> void:
 	var owner := Node2D.new()
 	root.add_child(owner)
 	weapon.visual_color = Color(0.62, 0.82, 1.0, 0.30)
-	weapon.call("_show_exact_zone_overlay", owner, points)
+	weapon.call("_show_sweep_area", owner, Vector2.RIGHT)
 	var overlay := owner.get_node_or_null("BerserkExactAttackZone") as Polygon2D
-	if overlay == null:
-		push_error("Expected Berserk exact attack zone overlay.")
+	if overlay != null:
+		push_error("Expected Berserk sweep VFX to hide the exact sector overlay.")
 		quit(1)
-	if absf(overlay.color.a - 0.60) > 0.01:
-		push_error("Expected Berserk exact attack zone alpha 0.60, got %.3f." % overlay.color.a)
+	var slash := owner.get_node_or_null("SlashVfx") as Node2D
+	if slash == null:
+		push_error("Expected Berserk sweep to spawn slash VFX.")
 		quit(1)
+	for child in slash.get_children():
+		if child is Sprite2D and absf(absf((child as Sprite2D).rotation) - PI) > 0.01:
+			push_error("Expected Berserk sweep crescent sprites to be rotated 180 degrees.")
+			quit(1)
 	owner.queue_free()
 	weapon.queue_free()
 

@@ -3937,5 +3937,10 @@
   "key": "SCRUM-871",
   "status": "Контроль качества",
   "desc_hash": null
+ },
+ "backend_berserk_sword_axe_sweep_vfx_flip_task.md": {
+  "key": "SCRUM-875",
+  "status": "Контроль качества",
+  "desc_hash": "b3f6537cb74eacc7be2dafbd7ca11a53"
  }
 }

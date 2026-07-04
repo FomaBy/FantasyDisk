@@ -418,8 +418,7 @@ func _show_frustum_area(owner_node: Node2D, attack_direction: Vector2) -> void:
 
 
 func _show_sweep_area(owner_node: Node2D, attack_direction: Vector2) -> void:
-	AttackVfx.slash(owner_node, attack_direction, attack_range, visual_color)
-	_show_exact_zone_overlay(owner_node, _sweep_zone_points(attack_direction.normalized()))
+	AttackVfx.slash(owner_node, attack_direction, attack_range, visual_color, PI)
 
 
 func _sweep_zone_points(direction: Vector2) -> PackedVector2Array:

@@ -111,7 +111,7 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	return holder
 
 
-static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color) -> Node2D:
+static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0) -> Node2D:
 	var holder := Node2D.new()
 	holder.name = "SlashVfx"
 	holder.z_index = 11
@@ -121,6 +121,7 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var body := Sprite2D.new()
 	body.texture = SLASH_TEXTURE
 	body.position = Vector2(SLASH_TEXTURE.get_width() * 0.5 - SLASH_ORIGIN_X, 0.0)
+	body.rotation = sprite_rotation
 	body.modulate = _calmed_color(Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.44))
 	body.z_index = -1
 	holder.add_child(body)
@@ -128,10 +129,12 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var tint := Color(color.r, color.g, color.b, 0.9)
 	var sprite := _additive_sprite(SLASH_TEXTURE, tint)
 	sprite.position = body.position
+	sprite.rotation = sprite_rotation
 	holder.add_child(sprite)
 
 	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.28))
 	ghost.position = sprite.position
+	ghost.rotation = sprite_rotation
 	ghost.scale = Vector2(0.92, 1.06)
 	holder.add_child(ghost)
 
