@@ -1,6 +1,6 @@
 # Animation Task: Boss PixelLab Full Redraw And Animated Packs
 
-Статус: review
+Статус: done
 Приоритет: P1
 Роль: Animator
 Контур: Codex
@@ -198,4 +198,5 @@ SpriteFrames/callback states, create PixelLab jobs, and record source IDs.
 - `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS
 
 Implementation result is ready for Jira QA with the PixelLab manifest, runtime
-preview and task-owned boss rows committed together.
+preview and task-owned boss rows committed together. Jira is in
+`Контроль качества`; final `Готово` remains gated by a QA PASSED verdict.
