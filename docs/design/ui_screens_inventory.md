@@ -469,37 +469,38 @@ clamp 820). С SCRUM-841 эти result-экраны не используют `P
 | Прокрутка карусели | `HS4CarouselPrevButton` / `HS4CarouselNextButton`; visible slot count is computed from available width |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
-SCRUM-867 active live pass supersedes the SCRUM-562 `190px` card contract.
-SCRUM-868 applies the accepted textless PixelLab visual layer in-game:
-`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`
-is rendered as `WeaponSelectPixelLabRuntimeLayer` behind the live controls.
-Weapon Select still uses the larger centered panel and taller card geometry so
-the player always sees what makes each weapon different, but
-`MenuPanel_weapon_select`, `WeaponOption_*`, and `WeaponSelectBackButton` are now
-transparent hit areas with hover/focus/pressed tint overlays. This avoids
-double-framing: the visible panel/card/back art comes from the PixelLab layer,
-while text, icons, focus, click and Back behavior remain editable Godot
-controls. The start-boon picker keeps the old shared `weapon_select` menu box,
-and SCRUM-563 route-map layout is not part of this scope.
+SCRUM-870 is the active live contract and supersedes the SCRUM-868 full-screen
+PixelLab layer. `_show_weapon_select()` must not create or render
+`WeaponSelectPixelLabRuntimeLayer`; the SCRUM-867/868 mockup/runtime-layer files
+remain historical evidence only. Weapon Select now uses native Godot controls
+with opaque high-contrast surfaces: a dark centered `MenuPanel_weapon_select`,
+three large framed `WeaponOption_*` cards, live labels/icons, live focus states,
+and the normal fantasy `WeaponSelectBackButton`. The start-boon picker keeps the
+old shared `weapon_select` menu box, and SCRUM-563 route-map layout is not part
+of this scope.
 
 Each `WeaponOption_*` card contains:
-- `WeaponSelectSprite_*` at minimum `150x150`;
+- `WeaponSelectIconWell_*` at minimum `204x204`;
+- `WeaponSelectSprite_*` at minimum `176x176`;
 - `WeaponSelectTitle_*`;
 - `WeaponSelectIdentity_*` with `Отличие:` from
   `ProgressionData.weapon_mechanic_identity(character_id, weapon_id)`;
-- `WeaponSelectDescription_*`;
+- `WeaponSelectDescription_*` with a concise mechanic summary that fits the
+  card instead of a clipped paragraph;
 - `WeaponSelectRole_*` with archetype/mode/class scaling;
-- `WeaponSelectStats_*` with archetype, range/radius, cooldown and one context
-  line for summon limit, control or damage.
+- `WeaponSelectStatsPanel_*` with `WeaponSelectStats_*`: archetype, range/radius,
+  cooldown and one context line for summon limit, control or damage.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
 | Панель (фрейм) | `WS_PANEL_2K` | 360 | 120 | 1840 | 1200 |
 | Safe-area | `WS_SAFE_2K` | 443 | 229 | 1674 | 1016 |
-| Заголовок | `WS_TITLE_2K` | 443 | 242 | 1674 | 60 |
-| Подзаголовок | `WS_SUBTITLE_2K` | 443 | 314 | 1674 | 32 |
-| Карточка оружия (шаблон; шаг Y=254) | `WS_CARD_2K` | 443 | 374 | 1674 | 240 |
-| Кнопка «Назад» | `WS_BTN_BACK_2K` | 1140 | 1234 | 280 | 60 |
+| Заголовок | `WS_TITLE_2K` | 443 | 218 | 1674 | 62 |
+| Подзаголовок | `WS_SUBTITLE_2K` | 443 | 288 | 1674 | 34 |
+| Карточка оружия (шаблон; шаг Y=274) | `WS_CARD_2K` | 443 | 350 | 1674 | 260 |
+| Иконка оружия | `WS_ICON_WELL_SIZE_2K` / `WS_ICON_SIZE_2K` | — | — | 204 / 176 | 204 / 176 |
+| Панель статов | `WS_STATS_PANEL_SIZE_2K` | — | — | 310 | 204 |
+| Кнопка «Назад» | `WS_BTN_BACK_2K` | 1140 | 1238 | 280 | 60 |
 
 ### 5. Карта маршрута — `_show_battle_map` · `RM_*_2K` (**scripts/route_map_screen.gd**)
 

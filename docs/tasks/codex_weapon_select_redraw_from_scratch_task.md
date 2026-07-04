@@ -1,12 +1,12 @@
 # Weapon Select Redraw From Scratch
 
 Jira: SCRUM-870
-Статус: new
+Статус: done
 Контур: Codex
-Owner: unassigned
-Thread: n/a
-Worktree: n/a
-Branch: dev
+Owner: codex-ui-redraw-scrum870
+Thread: user-facing Codex control thread / local worker codex-ui-redraw-scrum870
+Worktree: /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum870_weapon_select_redraw_20260704
+Branch: codex/scrum870-weapon-select-redraw-20260704
 Locked paths: scripts/ui_screens.gd; tests/runtime_smoke_test.gd; tests/runtime_smoke_ui_test.gd; tests/ui_no_overlap_matrix_test.gd; tests/gamepad_menu_focus_test.gd; docs/design/mockups/weapon_select_redraw_from_scratch/; docs/design/previews/weapon_select_redraw_from_scratch_*; docs/design/systems/menus_ui.md; docs/design/systems/visual_style_assets.md; docs/design/ui_screens_inventory.md; docs/design/current_game_state.md
 
 ## Source Request
@@ -56,8 +56,44 @@ Context: SCRUM-867/SCRUM-868 made the Weapon Select screen larger and applied a 
 
 ## Result
 
-Pending.
+Implemented SCRUM-870 as a from-scratch live Weapon Select redraw:
+
+- Created PixelLab MCP textless reference package:
+  `docs/design/mockups/weapon_select_redraw_from_scratch/` and preview
+  `docs/design/previews/weapon_select_redraw_from_scratch_pixellab_mockup.png`
+  from PixelLab UI asset `ecd9f24e-b8a6-4a54-a824-f0f4d5a59505`.
+- Removed the rejected SCRUM-868 `WeaponSelectPixelLabRuntimeLayer` from live
+  `_show_weapon_select()`; tests now fail if that node appears again.
+- Rebuilt the runtime screen with native opaque Godot UI surfaces: readable dark
+  shell, three large `1674x260` `WeaponOption_*` cards, `204x204` icon wells,
+  larger `176x176` weapon sprites, concise mechanic summaries, `Отличие:`
+  identity copy, role/scaling copy, and right-side stat panels.
+- Preserved mouse/keyboard/gamepad flow, card activation, Back behavior, and
+  character -> weapon -> next-run-screen navigation.
+- Updated UI/current-state/mockup docs so SCRUM-870 is the active live contract
+  and SCRUM-867/SCRUM-868 full-layer files are historical evidence only.
+
+Commit/push evidence: recorded in the final Jira comment after Git sync.
+
+Disk cleanup: transient Godot sidecars/import cache cleaned before final report;
+disposable implementation worktree removal is recorded in the final Jira comment
+after push.
 
 ## Verification
 
-Pending.
+Passed:
+
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum870_weapon_select_redraw_20260704 --script res://tests/runtime_smoke_ui_test.gd`
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum870_weapon_select_redraw_20260704 --script res://tests/ui_no_overlap_matrix_test.gd`
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum870_weapon_select_redraw_20260704 --script res://tests/gamepad_menu_focus_test.gd`
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum870_weapon_select_redraw_20260704 --script res://tests/runtime_smoke_test.gd`
+
+Note: headless screenshot capture still logs the known dummy-renderer
+`texture_2d_get` warning from `_try_capture_weapon_select_screenshot`, but the
+UI smoke and full runtime smoke suites pass.
+
+## QA-Вердикт
+
+Статус: PASSED
+Проверено: SCRUM-870 live Weapon Select redraw, no-overlap/style assertions,
+gamepad focus, and full runtime smoke.

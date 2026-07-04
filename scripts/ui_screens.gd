@@ -6234,18 +6234,20 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 		stats_label.text = stats_text
 
 
-# SCRUM-867: координатная спека @2560×1440 — Weapon Select full redraw.
-# Экран намеренно больше старого SCRUM-562 pass: панель и карточки расширены, чтобы
-# влезали отличия оружия, описание, архетип/скейл и параметры без налезания на рамку.
+# SCRUM-870: Weapon Select redraw from scratch.
+# SCRUM-868's full-screen PixelLab layer became a bad live UI surface: text was
+# drawn over baked art. Runtime now uses real dark cards and native labels.
 const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 const WS_PANEL_2K := Rect2(360, 120, 1840, 1200)
 const WS_SAFE_2K := Rect2(443, 229, 1674, 1016)
-const WS_TITLE_2K := Rect2(443, 242, 1674, 60)
-const WS_SUBTITLE_2K := Rect2(443, 314, 1674, 32)
-const WS_CARD_2K := Rect2(443, 374, 1674, 240)
-const WS_CARD_STEP_2K := 254.0
-const WS_BTN_BACK_2K := Rect2(1140, 1234, 280, 60)
-const WS_PIXELLAB_RUNTIME_LAYER_PATH := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
+const WS_TITLE_2K := Rect2(443, 218, 1674, 62)
+const WS_SUBTITLE_2K := Rect2(443, 288, 1674, 34)
+const WS_CARD_2K := Rect2(443, 350, 1674, 260)
+const WS_CARD_STEP_2K := 274.0
+const WS_ICON_WELL_SIZE_2K := Vector2(204, 204)
+const WS_ICON_SIZE_2K := Vector2(176, 176)
+const WS_STATS_PANEL_SIZE_2K := Vector2(310, 204)
+const WS_BTN_BACK_2K := Rect2(1140, 1238, 280, 60)
 
 
 func _show_weapon_select() -> void:
@@ -6254,12 +6256,11 @@ func _show_weapon_select() -> void:
 		"Выбор оружия",
 		"%s: выбери стартовое оружие." % str(character_config["title"]),
 		"weapon_select",
-		_weapon_select_transparent_content_style("ws_panel", WS_PANEL_2K.size),
+		_weapon_select_panel_style(),
 		WS_PANEL_2K.size
 	)
-	_add_weapon_select_pixellab_layer(box)
 	_style_weapon_select_header(box)
-	box.add_theme_constant_override("separation", 14)
+	box.add_theme_constant_override("separation", 12)
 	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
@@ -6279,7 +6280,7 @@ func _show_weapon_select() -> void:
 	back_button.name = "WeaponSelectBackButton"
 	back_button.custom_minimum_size = WS_BTN_BACK_2K.size
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_weapon_select_transparent_button_theme(back_button)
+	_apply_fantasy_button_theme(back_button)
 	back_button.pressed.connect(_show_character_select)
 	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
@@ -6306,38 +6307,47 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 		_weapon_select_identity_text(character_id, weapon_id),
 		str(config.get("description", "")),
 	]
-	_apply_weapon_select_transparent_button_theme(button)
+	_apply_weapon_select_card_theme(button)
 
 	var row := HBoxContainer.new()
 	row.name = "WeaponOptionContent_%s" % weapon_id
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var card_content := _overhaul_2k_content_margins("ws_card", WS_CARD_2K.size)
+	var card_content := _weapon_select_card_content_margins()
 	row.offset_left = card_content.x
 	row.offset_top = card_content.y
 	row.offset_right = -card_content.z
 	row.offset_bottom = -card_content.w
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 28)
+	row.add_theme_constant_override("separation", 24)
 	button.add_child(row)
+
+	var icon_well := PanelContainer.new()
+	icon_well.name = "WeaponSelectIconWell_%s" % weapon_id
+	icon_well.custom_minimum_size = WS_ICON_WELL_SIZE_2K
+	icon_well.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon_well.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_well.add_theme_stylebox_override("panel", _weapon_select_icon_well_style())
+	row.add_child(icon_well)
 
 	var sprite := TextureRect.new()
 	sprite.name = "WeaponSelectSprite_%s" % weapon_id
-	sprite.custom_minimum_size = Vector2(150, 150)
-	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sprite.custom_minimum_size = WS_ICON_SIZE_2K
+	sprite.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sprite.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sprite.texture = game._cached_texture(_weapon_sprite_path(config))
-	row.add_child(sprite)
+	icon_well.add_child(sprite)
 
 	var text_box := VBoxContainer.new()
 	text_box.name = "WeaponSelectText_%s" % weapon_id
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	text_box.add_theme_constant_override("separation", 4)
+	text_box.add_theme_constant_override("separation", 6)
 	row.add_child(text_box)
 
 	var title_label := Label.new()
@@ -6345,8 +6355,8 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	title_label.text = str(config.get("title", weapon_id))
 	title_label.max_lines_visible = 1
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(24, 0, 34))
-	title_label.add_theme_color_override("font_color", Color(0.12, 0.08, 0.04, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(26, 0, 36))
+	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.52, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
@@ -6356,19 +6366,19 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity_label.max_lines_visible = 2
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 23))
-	identity_label.add_theme_color_override("font_color", Color(0.33, 0.16, 0.05, 1.0))
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 23))
+	identity_label.add_theme_color_override("font_color", Color(1.0, 0.68, 0.36, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(identity_label)
 
 	var desc_label := Label.new()
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
-	desc_label.text = str(config.get("description", ""))
+	desc_label.text = _weapon_select_mechanic_summary(config)
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.max_lines_visible = 2
-	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 20))
-	desc_label.add_theme_color_override("font_color", Color(0.16, 0.11, 0.07, 1.0))
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 21))
+	desc_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
@@ -6378,85 +6388,123 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	role_label.max_lines_visible = 1
 	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
-	role_label.add_theme_color_override("font_color", Color(0.16, 0.21, 0.28, 1.0))
+	role_label.add_theme_color_override("font_color", Color(0.62, 0.76, 0.90, 1.0))
 	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(role_label)
 
+	var stats_panel := PanelContainer.new()
+	stats_panel.name = "WeaponSelectStatsPanel_%s" % weapon_id
+	stats_panel.custom_minimum_size = WS_STATS_PANEL_SIZE_2K
+	stats_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	stats_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stats_panel.add_theme_stylebox_override("panel", _weapon_select_stats_panel_style())
+	row.add_child(stats_panel)
+
 	var stats_label := Label.new()
 	stats_label.name = "WeaponSelectStats_%s" % weapon_id
-	stats_label.custom_minimum_size = Vector2(350, 0)
+	stats_label.custom_minimum_size = Vector2(280, 0)
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stats_label.text = _weapon_select_stats_text(config)
-	stats_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
-	stats_label.add_theme_color_override("font_color", Color(0.12, 0.10, 0.08, 1.0))
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 17))
+	stats_label.add_theme_color_override("font_color", Color(0.95, 0.88, 0.66, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(stats_label)
+	stats_panel.add_child(stats_label)
 	return button
-
-
-func _add_weapon_select_pixellab_layer(box: Control) -> void:
-	var panel := box.get_parent() as Control
-	if panel == null:
-		return
-	var root := panel.get_parent() as Control
-	if root == null:
-		return
-	var layer := TextureRect.new()
-	layer.name = "WeaponSelectPixelLabRuntimeLayer"
-	layer.texture = game._cached_texture(WS_PIXELLAB_RUNTIME_LAYER_PATH)
-	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	layer.stretch_mode = TextureRect.STRETCH_SCALE
-	layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	layer.set_meta("pixellab_runtime_layer_path", WS_PIXELLAB_RUNTIME_LAYER_PATH)
-	layer.set_meta("pixellab_source_ui_asset_id", "67e5f56a-aaa6-4216-814a-7f5301132fea")
-	root.add_child(layer)
-	root.move_child(layer, panel.get_index())
-	panel.set_meta("pixellab_runtime_layer_path", WS_PIXELLAB_RUNTIME_LAYER_PATH)
 
 
 func _style_weapon_select_header(box: Control) -> void:
 	var title := box.find_child("MenuTitle_weapon_select", false, false) as Label
 	if title != null:
-		title.add_theme_color_override("font_color", Color(0.11, 0.08, 0.05, 1.0))
+		title.add_theme_font_size_override("font_size", _readable_font_size(38, 0, 56))
+		title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
+		title.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.85))
+		title.add_theme_constant_override("shadow_offset_x", 2)
+		title.add_theme_constant_override("shadow_offset_y", 2)
 	var subtitle := box.find_child("MenuSubtitle_weapon_select", false, false) as Label
 	if subtitle != null:
-		subtitle.add_theme_color_override("font_color", Color(0.18, 0.13, 0.08, 1.0))
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 24))
+		subtitle.add_theme_color_override("font_color", Color(0.88, 0.82, 0.66, 1.0))
 
 
-func _weapon_select_transparent_content_style(slot: String, display_size: Vector2) -> StyleBox:
+func _weapon_select_panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0, 0)
-	var margins := _overhaul_2k_content_margins(slot, display_size)
-	style.content_margin_left = margins.x
-	style.content_margin_top = margins.y
-	style.content_margin_right = margins.z
-	style.content_margin_bottom = margins.w
+	style.bg_color = Color(0.030, 0.034, 0.044, 0.94)
+	style.border_color = Color(0.74, 0.56, 0.24, 0.90)
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(12)
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.55)
+	style.shadow_size = 18
+	style.content_margin_left = 56
+	style.content_margin_top = 44
+	style.content_margin_right = 56
+	style.content_margin_bottom = 40
 	return style
 
 
-func _weapon_select_interaction_style(color: Color) -> StyleBoxFlat:
+func _weapon_select_card_content_margins() -> Vector4:
+	return Vector4(22, 18, 22, 18)
+
+
+func _weapon_select_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = color
-	style.corner_radius_top_left = 8
-	style.corner_radius_top_right = 8
-	style.corner_radius_bottom_left = 8
-	style.corner_radius_bottom_right = 8
+	style.bg_color = Color(0.055, 0.047, 0.066, 0.94)
+	style.border_color = Color(0.52, 0.40, 0.22, 0.88)
+	if hovered:
+		style.bg_color = Color(0.078, 0.060, 0.070, 0.98)
+		style.border_color = Color(0.98, 0.74, 0.28, 1.0)
+	if pressed:
+		style.bg_color = Color(0.035, 0.032, 0.045, 1.0)
+	if disabled:
+		style.bg_color = Color(0.030, 0.032, 0.040, 0.62)
+		style.border_color = Color(0.30, 0.30, 0.32, 0.74)
+	style.set_corner_radius_all(8)
+	style.set_border_width_all(2)
+	style.content_margin_left = 22
+	style.content_margin_top = 18
+	style.content_margin_right = 22
+	style.content_margin_bottom = 18
 	return style
 
 
-func _apply_weapon_select_transparent_button_theme(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _weapon_select_interaction_style(Color(0, 0, 0, 0)))
-	button.add_theme_stylebox_override("hover", _weapon_select_interaction_style(Color(1.0, 0.78, 0.32, 0.12)))
-	button.add_theme_stylebox_override("pressed", _weapon_select_interaction_style(Color(0.16, 0.10, 0.04, 0.20)))
-	button.add_theme_stylebox_override("focus", _weapon_select_interaction_style(Color(0.98, 0.72, 0.28, 0.18)))
-	button.add_theme_stylebox_override("disabled", _weapon_select_interaction_style(Color(0.04, 0.04, 0.05, 0.32)))
-	button.add_theme_color_override("font_color", Color(0.95, 0.84, 0.52, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.66, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.92, 0.66, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.84, 0.72, 0.42, 1.0))
+func _apply_weapon_select_card_theme(button: Button) -> void:
+	button.add_theme_stylebox_override("normal", _weapon_select_card_style(false))
+	button.add_theme_stylebox_override("hover", _weapon_select_card_style(true))
+	button.add_theme_stylebox_override("pressed", _weapon_select_card_style(true, true))
+	button.add_theme_stylebox_override("focus", _weapon_select_card_style(true))
+	button.add_theme_stylebox_override("disabled", _weapon_select_card_style(false, false, true))
+	button.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.72, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.94, 0.72, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.86, 0.78, 0.56, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.44, 0.44, 0.46, 1.0))
+
+
+func _weapon_select_icon_well_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.028, 0.030, 0.040, 0.98)
+	style.border_color = Color(0.88, 0.62, 0.24, 0.92)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(8)
+	style.content_margin_left = 12
+	style.content_margin_top = 12
+	style.content_margin_right = 12
+	style.content_margin_bottom = 12
+	return style
+
+
+func _weapon_select_stats_panel_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.030, 0.035, 0.046, 0.92)
+	style.border_color = Color(0.62, 0.48, 0.24, 0.78)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(7)
+	style.content_margin_left = 12
+	style.content_margin_top = 8
+	style.content_margin_right = 12
+	style.content_margin_bottom = 8
+	return style
 
 
 func _weapon_select_identity_text(character_id: String, weapon_id: String) -> String:
@@ -6472,6 +6520,34 @@ func _weapon_select_role_text(character_id: String, config: Dictionary) -> Strin
 	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attribute, main_attribute))
 	var mode_label := _weapon_select_mode_label(config)
 	return "Роль: %s · %s · Скейл: %s" % [archetype, mode_label, stat_name]
+
+
+func _weapon_select_mechanic_summary(config: Dictionary) -> String:
+	var archetype := _weapon_select_archetype_label(config)
+	var mode_label := _weapon_select_mode_label(config)
+	var attack_range := float(config.get("attack_range", 0.0))
+	var radius := float(config.get("aoe_radius", 0.0))
+	if int(config.get("max_summons", 0)) > 0:
+		return "Призывает до %d союзн.; держит давление сам, лучше раскрывается через Leadership." % int(config.get("max_summons", 0))
+	match mode_label:
+		"сектор":
+			return "Направленный сектор: важно позиционирование. Дуга/радиус растут от секторных усилений."
+		"круг":
+			return "Круговая зона вокруг героя: стабильная зачистка рядом, радиус раскрывает контроль толпы."
+		"траектория":
+			return "Траектория/линия: сильнее по выбранному направлению, ценит дальность и точное наведение."
+		"взрыв":
+			return "Взрывная зона: короткое окно урона по группе, радиус повышает число задетых целей."
+		"установка":
+			return "Ставит объект/ловушку: контроль пространства, заранее покрывает подходы врагов."
+		"цепь":
+			return "Цепная атака: перескакивает между целями и лучше работает в плотной группе."
+		_:
+			if archetype == "область" or radius >= attack_range * 0.75:
+				return "Зональная атака: держит область под контролем и хорошо чистит ближнюю толпу."
+			if attack_range >= 420.0:
+				return "Дальняя атака: безопаснее открывает бой и сильнее отыгрывает дистанцию."
+	return "Уникальная схема атаки: отличается формой удара, темпом и способом контроля целей."
 
 
 func _weapon_select_archetype_label(config: Dictionary) -> String:
@@ -6516,7 +6592,7 @@ func _weapon_select_mode_label(config: Dictionary) -> String:
 func _weapon_select_stats_text(config: Dictionary) -> String:
 	var lines := PackedStringArray()
 	lines.append("Архетип: %s" % _weapon_select_archetype_label(config))
-	lines.append("Дальность %.0f · Радиус %.0f" % [
+	lines.append("Дальность %.0f / радиус %.0f" % [
 		float(config.get("attack_range", 0.0)),
 		float(config.get("aoe_radius", 0.0)),
 	])

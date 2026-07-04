@@ -44,7 +44,6 @@ const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
-const WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
@@ -7527,14 +7526,16 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		await process_frame
 		dump_lines.append("## `%s`" % character_id)
 		var pixellab_layer := weapon_main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
-		if pixellab_layer == null or pixellab_layer.texture == null:
-			_fail("Expected weapon select to render the SCRUM-868 PixelLab runtime layer for %s." % character_id)
+		if pixellab_layer != null:
+			_fail("SCRUM-870: Weapon Select must not render the rejected SCRUM-868 PixelLab runtime layer for %s." % character_id)
 			return
-		if pixellab_layer.texture.resource_path != WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER:
-			_fail("Expected weapon select PixelLab layer %s, got %s." % [WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER, pixellab_layer.texture.resource_path])
+		var panel := weapon_main.find_child("MenuPanel_weapon_select", true, false) as PanelContainer
+		if panel == null:
+			_fail("Expected SCRUM-870 weapon select panel for %s." % character_id)
 			return
-		if pixellab_layer.stretch_mode != TextureRect.STRETCH_SCALE:
-			_fail("Expected weapon select PixelLab full-screen layer to fill the 16:9 viewport for %s." % character_id)
+		var panel_style := panel.get_theme_stylebox("panel")
+		if not panel_style is StyleBoxFlat or (panel_style as StyleBoxFlat).bg_color.a < 0.80:
+			_fail("Expected SCRUM-870 weapon select panel to be a readable dark live panel for %s." % character_id)
 			return
 		var weapon_ids: Array = ProgressionData.weapon_ids(character_id)
 		if weapon_ids.is_empty():
@@ -7555,18 +7556,22 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 			var normal_style := button.get_theme_stylebox("normal")
 			var hover_style := button.get_theme_stylebox("hover")
 			if not normal_style is StyleBoxFlat or not hover_style is StyleBoxFlat:
-				_fail("Expected weapon select card %s/%s to use SCRUM-868 transparent hit-area styles over PixelLab art." % [character_id, weapon_id])
+				_fail("Expected weapon select card %s/%s to use SCRUM-870 live dark card styles." % [character_id, weapon_id])
 				return
-			if (normal_style as StyleBoxFlat).bg_color.a > 0.01:
-				_fail("Expected weapon select card %s/%s normal style to stay transparent over PixelLab art." % [character_id, weapon_id])
+			if (normal_style as StyleBoxFlat).bg_color.a < 0.80:
+				_fail("Expected weapon select card %s/%s normal style to be opaque enough for readable text." % [character_id, weapon_id])
+				return
+			var icon_well := button.find_child("WeaponSelectIconWell_%s" % weapon_id, true, false) as PanelContainer
+			if icon_well == null or icon_well.custom_minimum_size.x < 200.0 or icon_well.custom_minimum_size.y < 200.0:
+				_fail("Expected weapon select card %s/%s to include a large framed icon well." % [character_id, weapon_id])
 				return
 			var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
 			var expected_sprite := _expected_weapon_sprite_path(config)
 			if sprite == null or sprite.texture == null or sprite.texture.resource_path != expected_sprite:
 				_fail("Expected weapon select card %s/%s to show sprite %s." % [character_id, weapon_id, expected_sprite])
 				return
-			if sprite.custom_minimum_size.x < 150.0 or sprite.custom_minimum_size.y < 150.0:
-				_fail("Expected weapon select card %s/%s to use enlarged weapon sprite >=150px." % [character_id, weapon_id])
+			if sprite.custom_minimum_size.x < 176.0 or sprite.custom_minimum_size.y < 176.0:
+				_fail("Expected weapon select card %s/%s to use enlarged weapon sprite >=176px." % [character_id, weapon_id])
 				return
 			var identity := button.find_child("WeaponSelectIdentity_%s" % weapon_id, true, false) as Label
 			if identity == null or not identity.text.contains("Отличие:") or identity.text.length() < 18:
@@ -7580,13 +7585,17 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 			if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
 				_fail("Expected weapon select card %s/%s to show Russian stat labels." % [character_id, weapon_id])
 				return
+			var stats_panel := button.find_child("WeaponSelectStatsPanel_%s" % weapon_id, true, false) as PanelContainer
+			if stats_panel == null or stats_panel.custom_minimum_size.x < 300.0:
+				_fail("Expected weapon select card %s/%s to use a separate compact stats panel." % [character_id, weapon_id])
+				return
 		var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
 		if back_button == null:
-			_fail("Expected SCRUM-867 weapon select back button for %s." % character_id)
+			_fail("Expected SCRUM-870 weapon select back button for %s." % character_id)
 			return
 		var back_style := back_button.get_theme_stylebox("normal")
-		if not back_style is StyleBoxFlat or (back_style as StyleBoxFlat).bg_color.a > 0.01:
-			_fail("Expected weapon select back button to be a transparent live control over the PixelLab lower button art for %s." % character_id)
+		if back_style == null:
+			_fail("Expected weapon select back button to keep a visible live button style for %s." % character_id)
 			return
 		if character_id == "berserk":
 			dump_lines.append("- screenshot capture: %s" % _try_capture_weapon_select_screenshot(weapon_main))
