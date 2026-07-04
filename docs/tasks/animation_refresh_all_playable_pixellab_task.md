@@ -1,7 +1,7 @@
 # Refresh All Playable Character Animations From PixelLab
 
 Jira: SCRUM-869
-Статус: done (RED fix ready for QA 2026-07-04)
+Статус: done (QA PASSED after RED fix 2026-07-04)
 Контур: Codex
 Исполнитель: Codex
 Owner: Animator/Codex
@@ -166,6 +166,30 @@ Legacy/manual fallback: not used.
 
 Jira target: return SCRUM-869 to `Контроль качества` for separate QA verdict,
 not `Готово`.
+
+## QA-Вердикт After RED Fix (2026-07-04 14:25)
+
+Статус: PASSED
+
+Проверено на `origin/dev` / `cb7d6d28392becad5c103bee1047505f99ba4da8`
+(содержит RED fix `3cee661841da66b361683c7b7e318fc3c6f2448e`) в чистом QA worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704`.
+
+Проверка закрывает RED из final recheck: focused bbox gates для Biologist и
+Dark Mage теперь проходят на зафиксированной нормализации runtime full-frame
+PNG.
+
+Tests:
+
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/biologist_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/dark_mage_pixellab_pack_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/animation_smoke_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/hero_select_biologist_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/hero_select_dark_mage_pixellab_preview_test.gd`
+- PASS `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum869_after_bbox_fix_20260704 --script res://tests/runtime_smoke_test.gd` (`texture_2d_get` warning in Weapon Select screenshot helper is non-fatal; exit code 0 and `Runtime smoke test passed`).
+
+Вердикт: SCRUM-869 можно переводить в `Готово`.
 
 ## QA-Вердикт (2026-07-04, superseded by RED final recheck above)
 
