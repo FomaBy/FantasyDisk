@@ -542,7 +542,7 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	_play_boss_skill_visual("", "cast", center - global_position)
+	_play_boss_skill_visual("skill_spike_ring", "cast", center - global_position)
 	var ring := Node2D.new()
 	ring.name = "BloodthornSpikeRing"
 	ring.add_to_group("enemy_hazards")
@@ -857,7 +857,7 @@ func _play_boss_skill_visual(skill_state: String, fallback_action: String, direc
 
 
 func _boss_rift_zone_skill_state() -> String:
-	if boss_behavior == "rift_warden" or boss_behavior == "disk_devourer" or boss_behavior == "secret_ascension_boss":
+	if boss_behavior == "rift_warden" or boss_behavior == "disk_devourer" or boss_behavior == "bloodthorn_lion" or boss_behavior == "secret_ascension_boss":
 		return "skill_rift_zone"
 	return ""
 

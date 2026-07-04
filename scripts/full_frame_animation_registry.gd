@@ -196,6 +196,12 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -94.0),
 			"source_faces_left": true,
 		},
+		"bloodthorn_lion": {
+			"frames": "res://assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres",
+			"scale": Vector2(0.78, 0.78),
+			"position": Vector2(0.0, -88.0),
+			"source_faces_left": true,
+		},
 	},
 	"hero": {},
 }

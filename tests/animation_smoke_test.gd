@@ -1324,6 +1324,15 @@ func _test_full_frame_animation_registry() -> void:
 			"hook_args": ["skill_molten_slam", "attack", Vector2.RIGHT],
 			"hook_expected": "skill_molten_slam",
 		},
+		"bloodthorn_lion": {
+			"path": "res://scenes/BossBloodthornLion.tscn",
+			"skill_states": ["skill_spike_ring", "skill_rift_zone"],
+			"phase_state": "bloodthorn_lion:spike_ring:windup",
+			"phase_resolved": "skill_spike_ring",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_spike_ring", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_spike_ring",
+		},
 	}
 	for boss_id in boss_full_frame_scenes.keys():
 		var boss_info: Dictionary = boss_full_frame_scenes[boss_id]

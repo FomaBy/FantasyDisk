@@ -1,6 +1,6 @@
 # Animation Task: Boss PixelLab Full Redraw And Animated Packs
 
-Статус: in_progress
+Статус: review
 Приоритет: P1
 Роль: Animator
 Контур: Codex
@@ -161,3 +161,41 @@ SpriteFrames/callback states, create PixelLab jobs, and record source IDs.
   - `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS
 - Disk cleanup: removed `/tmp/fantasydisk_boss_pixellab_refs` and
   `/tmp/fantasydisk_boss_refs_contact.png`.
+
+## Integration Result
+
+2026-07-04:
+
+- PixelLab completed the retry pass as `170x170` 8-direction base objects for
+  all six live bosses. The first `256x256` attempt is retained in the manifest
+  as failed evidence because PixelLab currently caps 8-direction output frame
+  size at `168x168`.
+- Imported west-facing 6-frame runtime rows into the current Godot boss
+  full-frame contract for `rift_warden`, `disk_devourer`, `bone_archon`,
+  `brood_mother`, `ashen_colossus`, and `bloodthorn_lion`: `move`,
+  `attack`/`attack_primary`, `death`, two `skill_*` rows and matching
+  `attack_*` aliases.
+- Added `bloodthorn_lion` to `FullFrameAnimationRegistry` and wired its
+  `BloodthornSpikeRing` / rift-zone visuals to request `skill_spike_ring` and
+  `skill_rift_zone` rows while preserving gameplay timings, damage, route-pool
+  status and boss mechanics.
+- Added `tools/import_pixellab_boss_rows.py` to make the PixelLab zip to Godot
+  row import reproducible. It normalizes transparent frames to the existing
+  `512x512` boss runtime canvas and writes the SpriteFrames resource.
+- Preview evidence:
+  `docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
+
+## Verification
+
+2026-07-04 implementation verification:
+
+- `python3 -m json.tool docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json` PASS
+- `python3 -m py_compile tools/import_pixellab_boss_rows.py` PASS
+- `git diff --check` PASS
+- `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd` PASS
+- `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/full_frame_registry_integrity_test.gd` PASS
+- `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd` PASS
+- `FSD_GODOT_MAXWAIT=86400 python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` PASS
+
+Implementation result is ready for Jira QA with the PixelLab manifest, runtime
+preview and task-owned boss rows committed together.

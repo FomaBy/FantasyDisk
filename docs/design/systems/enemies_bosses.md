@@ -72,15 +72,14 @@ the live boss node rotation. Current boss redraw candidates, the special
 live under `assets/sprites/bosses/pixellab_candidates/` with source manifest
 `docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
 OpenAI image generation was used only for new-boss concept references; PixelLab
-MCP produced the production sprite candidates. SCRUM-793 promotes only the
-accepted current-boss PixelLab candidates into live full-frame rows:
-`disk_devourer` source `81b491db-7240-4513-bad5-263b7f81539d` and
-`brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`. Existing
-SpriteFrames resources, visual state names, frame counts and gameplay callbacks
-are preserved. `secret_ascension_boss`, single-view `bloodthorn_lion`,
-`rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` and 8-dir
-`bloodthorn_lion` remain source-only/revise-needed follow-up material.
-Promotion QA evidence lives in `build/qa/scrum793_boss_pixellab_promotion/`.
+MCP produced the production sprite candidates. SCRUM-793 promoted only the
+accepted `disk_devourer` and `brood_mother` candidates into live rows. SCRUM-865
+then replaced the live full-frame rows for all six live bosses from PixelLab MCP
+8-direction source objects and imported west-facing runtime rows into the
+existing Godot contract. Existing boss gameplay callbacks, damage, cooldowns,
+route-pool status and encounter mechanics are preserved. `skeletal_dragon`
+remains source-only/planned. Evidence:
+`docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
 
 **SCRUM-794 — `bloodthorn_lion` runtime integration.** Back-end promoted the
 `bloodthorn_lion` new-boss candidate to a live-runtime boss: single-view
@@ -97,18 +96,22 @@ resolution, and a Codex boss entry. Covered by `_test_bloodthorn_lion_boss` in
 QA are ready"):* `bloodthorn_lion` is intentionally **NOT** in the random route
 pool `route_map_screen._random_boss_route_node` — the QA-gated rotation hookup is
 a follow-up. The remaining `skeletal_dragon` candidate ("needs more epic boss
-mass before final runtime") stays source-only. Full-frame animation rows for
-`bloodthorn_lion` also remain an Animator follow-up (live scene uses the static
-sprite, mirroring the pre-animation state of the other bosses).
+mass before final runtime") stays source-only. SCRUM-865 added
+`bloodthorn_lion` full-frame SpriteFrames and visual hooks for
+`skill_spike_ring` and `skill_rift_zone`; the random route pool is still
+unchanged.
 
-**SCRUM-865 — full PixelLab boss redraw kickoff.** Animator/Codex queued new
-PixelLab MCP 8-direction `256x256` base-object jobs for all six live bosses,
-using the current mechanics/reference roster and short dark-fantasy prompts.
-Source IDs/prompts and current queue state are recorded in
+**SCRUM-865 — full PixelLab boss redraw integration.** Animator/Codex generated
+new PixelLab MCP 8-direction source objects for all six live bosses and imported
+west-facing 6-frame runtime rows for `move`, `attack`/`attack_primary`, `death`
+and two `skill_*` states per boss. The first `256x256` attempt failed because
+PixelLab caps 8-direction output at `168x168`; the completed supported pass
+landed as `170x170` source objects and normalized `512x512` Godot runtime rows.
+Source IDs/prompts are recorded in
 `docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`.
-The initial code slice also fixes static fallback PNGs for `bone_archon`,
-`brood_mother`, and `ashen_colossus`. Production animation integration remains
-pending until PixelLab completes the base objects and animation rows.
+The runtime slice also fixes static fallback PNGs for `bone_archon`,
+`brood_mother`, and `ashen_colossus`, registers `bloodthorn_lion` in the
+full-frame registry, and keeps gameplay mechanics unchanged.
 
 SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. SCRUM-865 добавляет boss victory delay: после смерти босса `CombatDirector` чистит не-boss pressure, ждёт `2.0s`, затем завершает победу/переход акта, а boss full-frame death cleanup cap поднят до `2.4s`. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
