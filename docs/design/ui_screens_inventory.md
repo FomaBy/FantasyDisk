@@ -469,19 +469,33 @@ clamp 820). С SCRUM-841 эти result-экраны не используют `P
 | Прокрутка карусели | `HS4CarouselPrevButton` / `HS4CarouselNextButton`; visible slot count is computed from available width |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
-SCRUM-562 live 2K pass: Weapon Select now has a dedicated frame contract instead of the old generic `1120x660` economy panel. Runtime uses `WS_PANEL_2K = Rect2(420,190,1720,1060)`, `WS_SAFE_2K = Rect2(498,286,1564,898)`, `WS_CARD_2K = Rect2(498,446,1564,190)` with step `218`, and `WS_BTN_BACK_2K = Rect2(1140,1120,280,60)`. The `ws_panel`, `ws_card`, and `ws_btn_back` assets are generated in `assets/sprites/ui/frames/overhaul_2k/`; content margins keep all title/card/button text and weapon sprites inside the empty frame interiors. The start-boon picker keeps the old shared `weapon_select` panel, and SCRUM-563 route-map layout is not part of this scope.
-Economy-панель 1120×660 по центру. Карточки оружия (фикс высота 173, EXPAND_FILL по ширине
-safe) в ScrollContainer→VBox (sep 16). Берсерк = 3 оружия влезают; персонажи с 4 оружиями
-уходят в вертикальный скролл (дизайн-инвариант сохранён через скролл).
+SCRUM-867 active live pass supersedes the SCRUM-562 `190px` card contract.
+Weapon Select now uses a larger centered panel and taller cards so the player
+always sees what makes each weapon different. Runtime still reuses the
+`ws_panel`, `ws_card`, and `ws_btn_back` assets from
+`assets/sprites/ui/frames/overhaul_2k/`, but displays them through 9-slice at the
+larger bounds below. The start-boon picker keeps the old shared
+`weapon_select` menu box, and SCRUM-563 route-map layout is not part of this
+scope.
+
+Each `WeaponOption_*` card contains:
+- `WeaponSelectSprite_*` at minimum `150x150`;
+- `WeaponSelectTitle_*`;
+- `WeaponSelectIdentity_*` with `Отличие:` from
+  `ProgressionData.weapon_mechanic_identity(character_id, weapon_id)`;
+- `WeaponSelectDescription_*`;
+- `WeaponSelectRole_*` with archetype/mode/class scaling;
+- `WeaponSelectStats_*` with archetype, range/radius, cooldown and one context
+  line for summon limit, control or damage.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
-| Панель (фрейм) | `WS_PANEL_2K` | 720 | 390 | 1120 | 660 |
-| Safe-area | `WS_SAFE_2K` | 778 | 462 | 1004 | 522 |
-| Заголовок | `WS_TITLE_2K` | 778 | 462 | 1004 | 54 |
-| Подзаголовок | `WS_SUBTITLE_2K` | 778 | 532 | 1004 | 24 |
-| Карточка оружия (шаблон; шаг Y=189) | `WS_CARD_2K` | 778 | 572 | 1004 | 173 |
-| Кнопка «Назад» | `WS_BTN_BACK_2K` | 940 | 880 | 280 | 60 |
+| Панель (фрейм) | `WS_PANEL_2K` | 360 | 120 | 1840 | 1200 |
+| Safe-area | `WS_SAFE_2K` | 443 | 229 | 1674 | 1016 |
+| Заголовок | `WS_TITLE_2K` | 443 | 242 | 1674 | 60 |
+| Подзаголовок | `WS_SUBTITLE_2K` | 443 | 314 | 1674 | 32 |
+| Карточка оружия (шаблон; шаг Y=254) | `WS_CARD_2K` | 443 | 374 | 1674 | 240 |
+| Кнопка «Назад» | `WS_BTN_BACK_2K` | 1140 | 1234 | 280 | 60 |
 
 ### 5. Карта маршрута — `_show_battle_map` · `RM_*_2K` (**scripts/route_map_screen.gd**)
 

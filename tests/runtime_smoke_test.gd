@@ -7514,62 +7514,81 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 	var weapon_main := main_scene.instantiate()
 	root.add_child(weapon_main)
 	await process_frame
-	weapon_main.set("selected_character_id", "berserk")
-	weapon_main.call("_show_weapon_select")
-	await process_frame
-	await process_frame
 
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# Weapon Select Clean Layout Dump")
 	dump_lines.append("")
-	var weapon_ids: Array = ProgressionData.weapon_ids("berserk")
-	for weapon_id_value in weapon_ids:
-		var weapon_id := str(weapon_id_value)
-		var button := weapon_main.find_child("WeaponOption_%s" % weapon_id, true, false) as Button
-		if button == null:
-			_fail("Expected weapon select card for %s." % weapon_id)
+	for character_id_value in ProgressionData.character_ids():
+		var character_id := str(character_id_value)
+		weapon_main.set("selected_character_id", character_id)
+		weapon_main.call("_show_weapon_select")
+		await process_frame
+		await process_frame
+		dump_lines.append("## `%s`" % character_id)
+		var weapon_ids: Array = ProgressionData.weapon_ids(character_id)
+		if weapon_ids.is_empty():
+			_fail("Expected weapon select options for %s." % character_id)
 			return
-		var rect := button.get_global_rect()
-		dump_lines.append("- `%s`: `%s`" % [button.name, str(rect)])
-		if rect.size.y < 110.0:
-			_fail("Expected weapon select card %s to keep readable row height, got %s." % [weapon_id, rect])
+		for weapon_id_value in weapon_ids:
+			var weapon_id := str(weapon_id_value)
+			var config: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+			var button := weapon_main.find_child("WeaponOption_%s" % weapon_id, true, false) as Button
+			if button == null:
+				_fail("Expected weapon select card for %s/%s." % [character_id, weapon_id])
+				return
+			var rect := button.get_global_rect()
+			dump_lines.append("- `%s`: `%s`" % [button.name, str(rect)])
+			if rect.size.y < 110.0:
+				_fail("Expected weapon select card %s/%s to keep readable row height, got %s." % [character_id, weapon_id, rect])
+				return
+			var normal_style := button.get_theme_stylebox("normal")
+			var hover_style := button.get_theme_stylebox("hover")
+			if not normal_style is StyleBoxTexture or not hover_style is StyleBoxTexture:
+				_fail("Expected weapon select card %s/%s to use SCRUM-867 2K frame textures." % [character_id, weapon_id])
+				return
+			var normal_texture := (normal_style as StyleBoxTexture).texture
+			if normal_texture == null or normal_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png":
+				_fail("Expected weapon select card %s/%s to use ws_card frame texture." % [character_id, weapon_id])
+				return
+			var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
+			var expected_sprite := _expected_weapon_sprite_path(config)
+			if sprite == null or sprite.texture == null or sprite.texture.resource_path != expected_sprite:
+				_fail("Expected weapon select card %s/%s to show sprite %s." % [character_id, weapon_id, expected_sprite])
+				return
+			if sprite.custom_minimum_size.x < 150.0 or sprite.custom_minimum_size.y < 150.0:
+				_fail("Expected weapon select card %s/%s to use enlarged weapon sprite >=150px." % [character_id, weapon_id])
+				return
+			var identity := button.find_child("WeaponSelectIdentity_%s" % weapon_id, true, false) as Label
+			if identity == null or not identity.text.contains("Отличие:") or identity.text.length() < 18:
+				_fail("Expected weapon select card %s/%s to show a distinctive identity line." % [character_id, weapon_id])
+				return
+			var role := button.find_child("WeaponSelectRole_%s" % weapon_id, true, false) as Label
+			if role == null or not role.text.contains("Роль:") or not role.text.contains("Скейл:"):
+				_fail("Expected weapon select card %s/%s to show role/archetype and scaling line." % [character_id, weapon_id])
+				return
+			var stats := button.find_child("WeaponSelectStats_%s" % weapon_id, true, false) as Label
+			if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
+				_fail("Expected weapon select card %s/%s to show Russian stat labels." % [character_id, weapon_id])
+				return
+		var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
+		if back_button == null:
+			_fail("Expected SCRUM-867 weapon select back button for %s." % character_id)
 			return
-		var normal_style := button.get_theme_stylebox("normal")
-		var hover_style := button.get_theme_stylebox("hover")
-		if not normal_style is StyleBoxTexture or not hover_style is StyleBoxTexture:
-			_fail("Expected weapon select card %s to use SCRUM-562 2K frame textures." % weapon_id)
+		var back_style := back_button.get_theme_stylebox("normal")
+		if not back_style is StyleBoxTexture:
+			_fail("Expected weapon select back button to use SCRUM-867 2K frame texture for %s." % character_id)
 			return
-		var normal_texture := (normal_style as StyleBoxTexture).texture
-		if normal_texture == null or normal_texture.resource_path != "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png":
-			_fail("Expected weapon select card %s to use ws_card frame texture." % weapon_id)
+		var back_texture := (back_style as StyleBoxTexture).texture
+		if back_texture == null or back_texture.resource_path != TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png":
+			_fail("Expected weapon select back button to use SCRUM-657 pause_280x60 text-button texture for %s." % character_id)
 			return
-		var sprite := button.find_child("WeaponSelectSprite_%s" % weapon_id, true, false) as TextureRect
-		var expected_sprite := _expected_weapon_sprite_path(weapon_id)
-		if sprite == null or sprite.texture == null or sprite.texture.resource_path != expected_sprite:
-			_fail("Expected weapon select card %s to show sprite %s." % [weapon_id, expected_sprite])
+		var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
+		first_button.pressed.emit()
+		await process_frame
+		if str(weapon_main.get("selected_weapon_id")) != str(weapon_ids[0]):
+			_fail("Expected weapon select card click to select %s/%s." % [character_id, str(weapon_ids[0])])
 			return
-		var stats := button.find_child("WeaponSelectStats_%s" % weapon_id, true, false) as Label
-		if stats == null or not stats.text.contains("Дальность") or not stats.text.contains("Перезарядка"):
-			_fail("Expected weapon select card %s to show Russian stat labels." % weapon_id)
-			return
-	var back_button := weapon_main.find_child("WeaponSelectBackButton", true, false) as Button
-	if back_button == null:
-		_fail("Expected SCRUM-562 weapon select back button.")
-		return
-	var back_style := back_button.get_theme_stylebox("normal")
-	if not back_style is StyleBoxTexture:
-		_fail("Expected weapon select back button to use SCRUM-562 2K frame texture.")
-		return
-	var back_texture := (back_style as StyleBoxTexture).texture
-	if back_texture == null or back_texture.resource_path != TEXT_BUTTON_DIR + "ui_btn_text_unique_pause_280x60_normal.png":
-		_fail("Expected weapon select back button to use SCRUM-657 pause_280x60 text-button texture.")
-		return
-	var first_button := weapon_main.find_child("WeaponOption_%s" % str(weapon_ids[0]), true, false) as Button
-	first_button.pressed.emit()
-	await process_frame
-	if str(weapon_main.get("selected_weapon_id")) != str(weapon_ids[0]):
-		_fail("Expected weapon select card click to select %s." % str(weapon_ids[0]))
-		return
+		dump_lines.append("")
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var file := FileAccess.open("%s/weapon_select_clean_layout.md" % qa_dir, FileAccess.WRITE)
@@ -7580,7 +7599,12 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 	await process_frame
 
 
-func _expected_weapon_sprite_path(weapon_id: String) -> String:
+func _expected_weapon_sprite_path(config: Dictionary) -> String:
+	for key in ["icon_path", "sprite_path", "weapon_sprite_path"]:
+		var configured_path := str(config.get(key, ""))
+		if configured_path != "" and ResourceLoader.exists(configured_path):
+			return configured_path
+	var weapon_id := str(config.get("id", ""))
 	var aliases := {
 		"sword": "two_handed_sword",
 		"axe": "two_handed_axe",

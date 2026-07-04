@@ -6234,23 +6234,17 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 		stats_label.text = stats_text
 
 
-# SCRUM-489: координатная спека @2560×1440 — экран «Выбор оружия» (economy-панель).
-# Панель из _economy_menu_panel_half_size("weapon_select"): нет match-ветки → дефолт
-# target 1120×660, clamp по viewport (2K не режет) → 1120×660 центр → top-left (720,390).
-# Рамка _economy_panel_style() = minimal-metal "panel"; content-margins (58,72,58,66, абс. px,
-# не скейлятся) → safe-area (778,462,1004,522). Контент в ScrollContainer→VBox (separation 16):
-# title 42px → subtitle 17px → N карточек оружия (custom_min 860×173, EXPAND_FILL → ширина по
-# safe 1004) → кнопка «Назад». Карточка — фикс высота 173, шаг = 173 + 16 = 189.
-# РИСК overflow по высоте: title+subtitle+(до 4 карточек×189)+back > 522 → ScrollContainer
-# скрывает вылет (берсерк = 3 оружия влезают; персонажи с 4 оружиями уходят в скролл).
+# SCRUM-867: координатная спека @2560×1440 — Weapon Select full redraw.
+# Экран намеренно больше старого SCRUM-562 pass: панель и карточки расширены, чтобы
+# влезали отличия оружия, описание, архетип/скейл и параметры без налезания на рамку.
 const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const WS_PANEL_2K := Rect2(420, 190, 1720, 1060)
-const WS_SAFE_2K := Rect2(498, 286, 1564, 898)
-const WS_TITLE_2K := Rect2(498, 296, 1564, 64)
-const WS_SUBTITLE_2K := Rect2(498, 376, 1564, 42)
-const WS_CARD_2K := Rect2(498, 446, 1564, 190)
-const WS_CARD_STEP_2K := 218.0
-const WS_BTN_BACK_2K := Rect2(1140, 1120, 280, 60)
+const WS_PANEL_2K := Rect2(360, 120, 1840, 1200)
+const WS_SAFE_2K := Rect2(443, 229, 1674, 1016)
+const WS_TITLE_2K := Rect2(443, 242, 1674, 60)
+const WS_SUBTITLE_2K := Rect2(443, 314, 1674, 32)
+const WS_CARD_2K := Rect2(443, 374, 1674, 240)
+const WS_CARD_STEP_2K := 254.0
+const WS_BTN_BACK_2K := Rect2(1140, 1234, 280, 60)
 
 
 func _show_weapon_select() -> void:
@@ -6262,7 +6256,7 @@ func _show_weapon_select() -> void:
 		_overhaul_2k_frame_style("ws_panel", WS_PANEL_2K.size),
 		WS_PANEL_2K.size
 	)
-	box.add_theme_constant_override("separation", 24)
+	box.add_theme_constant_override("separation", 14)
 	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
@@ -6295,6 +6289,7 @@ func _show_weapon_select() -> void:
 
 func _make_weapon_select_card(config: Dictionary) -> Button:
 	var weapon_id := str(config.get("id", ""))
+	var character_id := str(config.get("character_id", game.selected_character_id))
 	var button := Button.new()
 	button.name = "WeaponOption_%s" % weapon_id
 	button.set_meta("weapon_id", weapon_id)
@@ -6303,7 +6298,11 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = "%s\n%s" % [str(config.get("title", weapon_id)), str(config.get("description", ""))]
+	button.tooltip_text = "%s\n%s\n%s" % [
+		str(config.get("title", weapon_id)),
+		_weapon_select_identity_text(character_id, weapon_id),
+		str(config.get("description", "")),
+	]
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size))
 	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.90, 0.84, 0.76, 1.0)))
@@ -6319,12 +6318,13 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	row.offset_top = card_content.y
 	row.offset_right = -card_content.z
 	row.offset_bottom = -card_content.w
-	row.add_theme_constant_override("separation", 34)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 28)
 	button.add_child(row)
 
 	var sprite := TextureRect.new()
 	sprite.name = "WeaponSelectSprite_%s" % weapon_id
-	sprite.custom_minimum_size = Vector2(120, 120)
+	sprite.custom_minimum_size = Vector2(150, 150)
 	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -6337,41 +6337,134 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	text_box.name = "WeaponSelectText_%s" % weapon_id
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 5)
+	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	text_box.add_theme_constant_override("separation", 4)
 	row.add_child(text_box)
 
 	var title_label := Label.new()
 	title_label.name = "WeaponSelectTitle_%s" % weapon_id
 	title_label.text = str(config.get("title", weapon_id))
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(28))
+	title_label.max_lines_visible = 1
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(24, 0, 34))
 	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
+
+	var identity_label := Label.new()
+	identity_label.name = "WeaponSelectIdentity_%s" % weapon_id
+	identity_label.text = "Отличие: %s" % _weapon_select_identity_text(character_id, weapon_id)
+	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	identity_label.max_lines_visible = 2
+	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 23))
+	identity_label.add_theme_color_override("font_color", Color(0.98, 0.78, 0.42, 1.0))
+	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(identity_label)
 
 	var desc_label := Label.new()
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
 	desc_label.text = str(config.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(20))
+	desc_label.max_lines_visible = 2
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 20))
 	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
+	var role_label := Label.new()
+	role_label.name = "WeaponSelectRole_%s" % weapon_id
+	role_label.text = _weapon_select_role_text(character_id, config)
+	role_label.max_lines_visible = 1
+	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
+	role_label.add_theme_color_override("font_color", Color(0.72, 0.88, 1.0, 1.0))
+	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(role_label)
+
 	var stats_label := Label.new()
 	stats_label.name = "WeaponSelectStats_%s" % weapon_id
-	stats_label.custom_minimum_size = Vector2(360, 0)
+	stats_label.custom_minimum_size = Vector2(350, 0)
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	stats_label.text = "Дальность %.0f\nРадиус %.0f\nПерезарядка %.2fс" % [
-		float(config.get("attack_range", 0.0)),
-		float(config.get("aoe_radius", 0.0)),
-		float(config.get("fire_interval", 0.0)),
-	]
-	stats_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	stats_label.text = _weapon_select_stats_text(config)
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
 	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(stats_label)
 	return button
+
+
+func _weapon_select_identity_text(character_id: String, weapon_id: String) -> String:
+	var identity := str(game.PROGRESSION_DATA.weapon_mechanic_identity(character_id, weapon_id))
+	if identity.strip_edges() == "":
+		return "уникальный стиль атаки этого оружия"
+	return identity
+
+
+func _weapon_select_role_text(character_id: String, config: Dictionary) -> String:
+	var archetype := _weapon_select_archetype_label(config)
+	var main_attribute := str(game.PROGRESSION_DATA.class_main_attribute(character_id))
+	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attribute, main_attribute))
+	var mode_label := _weapon_select_mode_label(config)
+	return "Роль: %s · %s · Скейл: %s" % [archetype, mode_label, stat_name]
+
+
+func _weapon_select_archetype_label(config: Dictionary) -> String:
+	match str(game.PROGRESSION_DATA.weapon_archetype(config)):
+		"melee":
+			return "ближний бой"
+		"beam":
+			return "луч/линия"
+		"aoe":
+			return "область"
+		"summon":
+			return "призыв/устройство"
+		"aura":
+			return "аура"
+		"projectile":
+			return "снаряд"
+	return "особая атака"
+
+
+func _weapon_select_mode_label(config: Dictionary) -> String:
+	var mode := str(config.get("attack_mode", config.get("attack_shape", "")))
+	match mode:
+		"cone", "sweep":
+			return "сектор"
+		"circle", "slam", "aura":
+			return "круг"
+		"beam", "line", "pierce":
+			return "траектория"
+		"burst", "explosion":
+			return "взрыв"
+		"deploy", "trap", "mine":
+			return "установка"
+		"chain":
+			return "цепь"
+		"single":
+			return "точечная цель"
+	if str(config.get("summon_role", "")) != "" or int(config.get("max_summons", 0)) > 0:
+		return "союзники"
+	return "механика"
+
+
+func _weapon_select_stats_text(config: Dictionary) -> String:
+	var lines := PackedStringArray()
+	lines.append("Архетип: %s" % _weapon_select_archetype_label(config))
+	lines.append("Дальность %.0f · Радиус %.0f" % [
+		float(config.get("attack_range", 0.0)),
+		float(config.get("aoe_radius", 0.0)),
+	])
+	lines.append("Перезарядка %.2fс" % float(config.get("fire_interval", 0.0)))
+	if int(config.get("max_summons", 0)) > 0:
+		lines.append("Лимит: %d" % int(config.get("max_summons", 0)))
+	elif float(config.get("knockback", 0.0)) > 0.0:
+		lines.append("Контроль: %.0f" % float(config.get("knockback", 0.0)))
+	else:
+		lines.append("Урон x%.2f" % float(config.get("damage_multiplier", 1.0)))
+	return "\n".join(lines)
 
 
 # SCRUM-618: пикер стартового боона. Показывает 3 случайных боона (карточный паттерн)

@@ -3897,5 +3897,10 @@
   "key": "SCRUM-866",
   "status": "Готово",
   "desc_hash": "d328d1258ab44ef65406939b1be8cca8"
+ },
+ "codex_design_weapon_select_full_redraw_task.md": {
+  "key": "SCRUM-867",
+  "status": "Контроль качества",
+  "desc_hash": "a8b34558d6a664ef2b9921ca9af8b2a8"
  }
 }
