@@ -1039,7 +1039,18 @@ func _fit_contact_range_to_sprite() -> void:
 	contact_range = maxf(contact_range, visible_radius * 0.82 + PLAYER_CONTACT_PADDING)
 
 
+func _uses_hud_boss_bar() -> bool:
+	# SCRUM-874: у акт-босса и элитки узла HP показывает общий HUD-боссбар сверху
+	# экрана (ui_screens._update_boss_hud_bar) — плавающая полоса над спрайтом не
+	# создаётся. Мини-элитки волн (профиль mini_elite) и обычные мобы остаются с
+	# обычной плавающей полосой.
+	var profile := str(get_meta(EPIC_SCALE_PROFILE_META, ""))
+	return profile == "boss" or profile == "elite"
+
+
 func _create_health_bar() -> void:
+	if _uses_hud_boss_bar():
+		return
 	if get_node_or_null("HealthBar") != null:
 		return
 	var bar := Node2D.new()

@@ -1347,6 +1347,15 @@ Level-up показывает 3 фиксированных варианта на
 
 Боевой HUD содержит clean essential-only набор SCRUM-671/SCRUM-666: HP, XP,
 money, ULT, таймер, бейдж Возвышения и bottom-right level-up plus/count control.
+SCRUM-874: в боссовом и элитном бою добавляется **HUD-боссбар** по центру верха
+(`BossHudNameLabel` + `BossHudTrack/BossHudBar`, зоны `HUD_V2_BOSS_NAME_2K`/
+`HUD_V2_BOSS_BAR_2K` ниже кластера и таймера): имя цели + крупная полоса HP,
+ведётся `_update_boss_hud_bar()` по `game.boss_hud_target` (ставит
+`combat_director` в `_spawn_boss`/`_spawn_elite_enemy`, снимает `_end_combat`).
+У акт-босса и элитки узла (профили `boss`/`elite`) плавающая полоса над спрайтом
+НЕ создаётся (`enemy._uses_hud_boss_bar`); мини-элитки волн и обычные мобы
+остаются с плавающей полосой. На смерти цели полоса доводится в ноль на время
+death-анимации, затем панель гаснет; вне босс/элит боя панель скрыта.
 Старые `ArtifactHudRow` и `CharacterStatsHud` в боевом overlay больше не
 создаются. Tooltip ULT показывает текущую клавишу и состояние готовности.
 `ultimate_multiplier` больше не зарезервирован: он усиливает урон, радиус,

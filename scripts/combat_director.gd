@@ -278,6 +278,7 @@ func _end_combat(victory: bool) -> void:
 		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла
 		# (на смерти особенно критично: иначе снапшот остался бы от предыдущего узла).
 		_store_player_snapshot(game.current_player)
+	game.boss_hud_target = null  # SCRUM-874: узел закончился — боссбар гаснет
 	game._clear_world()
 	game._clear_hud()
 	game.pending_event_combat.clear()
@@ -708,6 +709,7 @@ func _spawn_boss() -> void:
 	var boss := selected_boss_scene.instantiate() as Node2D
 	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
+	game.boss_hud_target = boss  # SCRUM-874: цель HUD-боссбара сверху экрана
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
 	game.record_codex_enemy_discovery(boss)
@@ -765,6 +767,7 @@ func _spawn_elite_enemy() -> void:
 	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
+	game.boss_hud_target = elite  # SCRUM-874: цель HUD-боссбара сверху экрана
 	elite.global_position = game.ARENA_CENTER + Vector2(0, -250)
 	if use_fallback_modifier:
 		_apply_elite_modifier(elite)

@@ -292,6 +292,10 @@ const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
 const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
 const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
 const HUD_V2_TIMER_ICON_2K := Rect2(1194, 70, 32, 32)
+# SCRUM-874: HUD-боссбар цели узла (акт-босс/элитка) — центр верха, ниже
+# кластера ресурсов (36..158) и таймера (40..132), чтобы не пересекаться с ними.
+const HUD_V2_BOSS_NAME_2K := Rect2(880, 168, 800, 40)
+const HUD_V2_BOSS_BAR_2K := Rect2(880, 212, 800, 46)
 # Ряд эмблем возвышения: правый край/верх/размер пипа/зазор @2K (ширина = от уровня).
 const HUD_V2_ASCENSION_RIGHT_2K := 2524.0
 const HUD_V2_ASCENSION_TOP_2K := 52.0
@@ -11861,6 +11865,7 @@ func _create_hud() -> void:
 
 	_create_resource_hud_panel(root, Vector2(20, 18), true)
 	_create_combat_timer_panel(root)
+	_create_boss_health_panel(root)
 	_create_damage_flash_overlay(root)
 	_create_low_hp_vignette(root)
 	_create_threat_indicator_overlay(root)
@@ -11920,6 +11925,82 @@ func _create_combat_timer_panel(root: Control) -> void:
 	timer_icon.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	timer_icon.custom_minimum_size = Vector2(28, 28)
 	root.add_child(timer_icon)
+
+
+func _create_boss_health_panel(root: Control) -> void:
+	# SCRUM-874: общий HUD-боссбар цели узла (акт-босс/элитка) — крупная полоса HP
+	# с именем цели по центру верха экрана. Создаётся скрытым; видимость и значения
+	# ведёт _update_boss_hud_bar() по game.boss_hud_target (ставит combat_director
+	# в _spawn_boss/_spawn_elite_enemy, снимает _end_combat). Плавающая полоса над
+	# спрайтом у таких целей не создаётся (enemy._uses_hud_boss_bar).
+	var name_label := Label.new()
+	name_label.name = "BossHudNameLabel"
+	name_label.visible = false
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.clip_text = true
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(24))
+	name_label.add_theme_color_override("font_color", Color(1.0, 0.42, 0.34, 1.0))
+	name_label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
+	name_label.add_theme_constant_override("outline_size", 4)
+	root.add_child(name_label)
+
+	var track := PanelContainer.new()
+	track.name = "BossHudTrack"
+	track.visible = false
+	track.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style())
+	root.add_child(track)
+
+	var bar := ProgressBar.new()
+	bar.name = "BossHudBar"
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.06, 0.08, 0.85)))
+	bar.add_theme_stylebox_override("fill", _hud_v2_bar_fill_style("hp", Color(0.86, 0.20, 0.16, 0.95)))
+	track.add_child(bar)
+
+	game.boss_hud_name_label = name_label
+	game.boss_hud_bar = bar
+
+
+func _update_boss_hud_bar() -> void:
+	var bar := game.boss_hud_bar as ProgressBar
+	var name_label := game.boss_hud_name_label as Label
+	if bar == null or not is_instance_valid(bar) or name_label == null or not is_instance_valid(name_label):
+		return
+	var track := bar.get_parent() as Control
+	# ВАЖНО: не кастовать boss_hud_target до is_instance_valid — после free цели
+	# `as Node2D` на freed-объекте даёт script error «Trying to cast a freed object».
+	if game.boss_hud_target == null or not is_instance_valid(game.boss_hud_target):
+		game.boss_hud_target = null
+		if track != null:
+			track.visible = false
+		name_label.visible = false
+		return
+	var target: Node2D = game.boss_hud_target
+	if not target.is_inside_tree():
+		if track != null:
+			track.visible = false
+		name_label.visible = false
+		return
+	var max_hp := maxf(_number_value(target.get("max_health"), 1.0), 1.0)
+	# Смерть цели: hp клампится в 0 — полоса доводится в ноль на время
+	# death-анимации (SCRUM-865, ~2s), затем узел освобождается и панель гаснет.
+	var hp := clampf(_number_value(target.get("health"), 0.0), 0.0, max_hp)
+	bar.max_value = max_hp
+	bar.value = hp
+	var display_name = target.get("boss_display_name")
+	var target_name := str(display_name) if display_name != null else ""
+	if target_name == "":
+		target_name = str(target.get("enemy_type_name"))
+	name_label.text = target_name
+	if track != null:
+		track.visible = true
+	name_label.visible = true
 
 
 func _timer_panel_style(alarm: bool, display_size := Vector2(264.0, 92.0), content_margins := Vector4.ZERO) -> StyleBox:
@@ -12009,6 +12090,21 @@ func _layout_combat_hud(root: Control) -> void:
 		var timer_icon := root.find_child("CombatTimerIcon", true, false) as TextureRect
 		if timer_icon != null:
 			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
+
+	# SCRUM-874: HUD-боссбар — центр верха, ниже кластера/таймера.
+	var boss_track := root.find_child("BossHudTrack", true, false) as PanelContainer
+	if boss_track != null:
+		var boss_rect := _scrum666_scaled_rect(HUD_V2_BOSS_BAR_2K, scale)
+		_apply_chud_rect(boss_track, boss_rect, "scrum666_frame_rect")
+		var boss_inset := maxf(2.0, roundf(4.0 * scale))
+		boss_track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(boss_rect.size, boss_inset))
+		var boss_bar := boss_track.find_child("BossHudBar", true, false) as ProgressBar
+		if boss_bar != null:
+			boss_bar.custom_minimum_size = Vector2(0.0, maxf(4.0, boss_rect.size.y - boss_inset * 2.0))
+		var boss_name := root.find_child("BossHudNameLabel", true, false) as Label
+		if boss_name != null:
+			_apply_chud_rect(boss_name, _scrum666_scaled_rect(HUD_V2_BOSS_NAME_2K, scale))
+			boss_name.add_theme_font_size_override("font_size", maxi(14, int(roundf(32.0 * scale))))
 
 	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
 	if asc_row != null:
@@ -12694,6 +12790,10 @@ func _int_value(value, fallback: int = 0) -> int:
 func _update_hud() -> void:
 	if game.health_bar == null or game.health_label == null:
 		return
+
+	# SCRUM-874: боссбар обновляется ДО дедуп-гарда _last_hud_snapshot ниже —
+	# HP цели меняется независимо от ресурсов игрока.
+	_update_boss_hud_bar()
 
 	var values: Dictionary = _run_resource_values()
 	var max_hp: float = max(float(values["max_hp"]), 1.0)

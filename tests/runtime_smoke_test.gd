@@ -3507,19 +3507,32 @@ func _test_victory_flow(main: Node) -> void:
 	if float(boss.get("shield_damage_reduction")) >= 1.0 or float(boss.get("dodge_chance")) <= 0.0:
 		_fail("Expected boss to expose shield and dodge mechanics.")
 		return
-	var boss_health_bar := boss.get_node_or_null("HealthBar")
-	if boss_health_bar == null:
-		_fail("Expected boss to carry an overhead health bar node.")
+	# SCRUM-874: у босса больше НЕТ плавающей полосы над спрайтом — HP показывает
+	# HUD-боссбар (BossHudBar) по центру верха экрана.
+	if boss.get_node_or_null("HealthBar") != null:
+		_fail("Expected boss to have no overhead health bar node (HUD boss bar instead).")
 		return
-	if absf(float(boss_health_bar.get("max_value")) - float(boss.get("max_health"))) > 0.01:
-		_fail("Expected boss health bar max value to match scaled boss max health.")
+	if main.get("boss_hud_target") != boss:
+		_fail("Expected boss to be registered as the HUD boss bar target.")
+		return
+	main.ui._update_hud()
+	var boss_hud_bar: ProgressBar = main.get("boss_hud_bar")
+	if boss_hud_bar == null or not is_instance_valid(boss_hud_bar):
+		_fail("Expected combat HUD to expose a BossHudBar for the boss fight.")
+		return
+	if not (boss_hud_bar.get_parent() as Control).visible:
+		_fail("Expected HUD boss bar to be visible during the boss fight.")
+		return
+	var boss_hud_name: Label = main.get("boss_hud_name_label")
+	if boss_hud_name == null or not boss_hud_name.visible or boss_hud_name.text.strip_edges() == "":
+		_fail("Expected HUD boss bar to show the boss name.")
+		return
+	if absf(float(boss_hud_bar.max_value) - float(boss.get("max_health"))) > 0.01:
+		_fail("Expected HUD boss bar max value to match scaled boss max health.")
 		return
 	var boss_phase_markers: Array = boss.get_meta("boss_phase_markers", [])
-	if boss_phase_markers.size() < 2 or not boss_health_bar.has_meta("phase_markers"):
+	if boss_phase_markers.size() < 2:
 		_fail("Expected boss to expose HP phase markers for the uber-boss encounter.")
-		return
-	if not _assert_health_bar_visible_when_near_viewport_top(boss, boss_health_bar, "boss"):
-		_fail("Expected boss health bar to stay visible when the large boss sprite reaches the viewport top edge.")
 		return
 	boss.set("health", float(boss.get("max_health")) * 0.64)
 	boss.call("_update_boss_phase")
@@ -3534,11 +3547,12 @@ func _test_victory_flow(main: Node) -> void:
 	boss.set("dodge_chance", 0.0)
 	boss.set("shield_active", false)
 	boss.take_damage(25.0)
-	if float(boss_health_bar.get("value")) >= float(boss_health_bar.get("max_value")):
-		_fail("Expected boss health bar to decrease after damage.")
+	main.ui._update_hud()
+	if float(boss_hud_bar.value) >= float(boss_hud_bar.max_value):
+		_fail("Expected HUD boss bar to decrease after damage.")
 		return
-	if absf(float(boss_health_bar.get("value")) - float(boss.get("health"))) > 0.01:
-		_fail("Expected boss health bar value to match current boss health after damage.")
+	if absf(float(boss_hud_bar.value) - float(boss.get("health"))) > 0.01:
+		_fail("Expected HUD boss bar value to match current boss health after damage.")
 		return
 	boss.take_damage(99999.0)
 	var victory_text := ""
@@ -3607,22 +3621,32 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	if float(elite_enemy.get("max_health")) <= 70.0:
 		_fail("Expected elite enemy to be roughly an order of magnitude tougher than normal enemies.")
 		return
-	var elite_health_bar := elite_enemy.get_node_or_null("HealthBar")
-	if elite_health_bar == null:
-		_fail("Expected elite enemies to carry an overhead health bar node.")
+	# SCRUM-874: у элитки узла больше НЕТ плавающей полосы — HP показывает
+	# HUD-боссбар (BossHudBar) по центру верха экрана.
+	if elite_enemy.get_node_or_null("HealthBar") != null:
+		_fail("Expected elite node target to have no overhead health bar node (HUD boss bar instead).")
 		return
-	if absf(float(elite_health_bar.get("max_value")) - float(elite_enemy.get("max_health"))) > 0.01:
-		_fail("Expected elite health bar max value to match scaled elite max health.")
+	if elite_main.get("boss_hud_target") != elite_enemy:
+		_fail("Expected elite enemy to be registered as the HUD boss bar target.")
 		return
-	if not _assert_health_bar_visible_when_near_viewport_top(elite_enemy, elite_health_bar, "elite"):
-		_fail("Expected elite health bar to stay visible when the large elite sprite reaches the viewport top edge.")
+	elite_main.ui._update_hud()
+	var elite_hud_bar: ProgressBar = elite_main.get("boss_hud_bar")
+	if elite_hud_bar == null or not is_instance_valid(elite_hud_bar):
+		_fail("Expected combat HUD to expose a BossHudBar for the elite fight.")
+		return
+	if not (elite_hud_bar.get_parent() as Control).visible:
+		_fail("Expected HUD boss bar to be visible during the elite fight.")
+		return
+	if absf(float(elite_hud_bar.max_value) - float(elite_enemy.get("max_health"))) > 0.01:
+		_fail("Expected HUD boss bar max value to match scaled elite max health.")
 		return
 	elite_enemy.call("take_damage", 10.0)
-	if float(elite_health_bar.get("value")) >= float(elite_health_bar.get("max_value")):
-		_fail("Expected elite health bar to decrease after damage.")
+	elite_main.ui._update_hud()
+	if float(elite_hud_bar.value) >= float(elite_hud_bar.max_value):
+		_fail("Expected HUD boss bar to decrease after elite damage.")
 		return
-	if absf(float(elite_health_bar.get("value")) - float(elite_enemy.get("health"))) > 0.01:
-		_fail("Expected elite health bar value to match current elite health after damage.")
+	if absf(float(elite_hud_bar.value) - float(elite_enemy.get("health"))) > 0.01:
+		_fail("Expected HUD boss bar value to match current elite health after damage.")
 		return
 	var elite_body := elite_enemy.get_node_or_null("Body") as Sprite2D
 	if elite_body == null or elite_body.texture == null or not elite_body.texture.resource_path.begins_with("res://assets/sprites/elites/"):

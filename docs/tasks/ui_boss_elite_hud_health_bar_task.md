@@ -1,6 +1,6 @@
 # HUD-полоса здоровья босса/элитки сверху экрана (вместо полосы над мобом)
 
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end
 Контур: Claude
@@ -107,4 +107,40 @@ Labels: backend, claude, fantasydisk, foma, p1
 
 ## Result
 
-Pending.
+2026-07-04, Claude (pm-chat, worktree dreamy-bun-6a51c0):
+
+- `scripts/ui_screens.gd`:
+  - Новые 2K-зоны `HUD_V2_BOSS_NAME_2K := Rect2(880,168,800,40)` и
+    `HUD_V2_BOSS_BAR_2K := Rect2(880,212,800,46)` — центр верха, ниже кластера ресурсов
+    (36..158) и таймера (40..132), пересечений нет (no-overlap matrix зелёный).
+  - `_create_boss_health_panel(root)` в `_create_hud()`: `BossHudNameLabel` (имя цели,
+    красный акцент, outline) + `BossHudTrack` (стиль `_hud_v2_bar_track_style`) +
+    `BossHudBar` (ProgressBar, hp-филл `_hud_v2_bar_fill_style("hp")`); создаётся скрытым.
+  - `_layout_combat_hud()`: масштабирование зон через `_scrum666_scaled_rect`/`_apply_chud_rect`.
+  - `_update_boss_hud_bar()` — вызывается в начале `_update_hud()` (ДО дедуп-гарда
+    `_last_hud_snapshot`): показывает/обновляет полосу по `game.boss_hud_target`; на смерти
+    цели HP клампится в 0 (доводка в ноль на время death-анимации SCRUM-865), после free
+    цели/конца узла панель гаснет. Guard: `is_instance_valid` ДО каста (freed-cast fix).
+- `scripts/main.gd`: поля `boss_hud_target/boss_hud_bar/boss_hud_name_label` + обнуление
+  UI-ссылок в `_clear_hud()`.
+- `scripts/combat_director.gd`: `_spawn_boss`/`_spawn_elite_enemy` ставят
+  `game.boss_hud_target`; `_end_combat` снимает.
+- `scripts/enemy.gd`: `_uses_hud_boss_bar()` — по мета `epic_scale_profile` in
+  {boss, elite} плавающая полоса НЕ создаётся. Мини-элитки волн (`mini_elite`) и обычные
+  мобы — с плавающей полосой как раньше. Мульти-целей нет: боссбар ведёт цель узла
+  (задокументированный выбор).
+- `tests/runtime_smoke_test.gd`: контракты `_test_victory_flow` (босс) и `_test_elite_flow`
+  обновлены — нет overhead HealthBar, есть видимый BossHudBar с именем, max/value трекают
+  HP цели после урона.
+
+Validation (godot_gate, single-instance):
+- `runtime_smoke_test.gd` — PASS; `runtime_smoke_ui_test.gd` — PASS;
+  `ui_no_overlap_matrix_test.gd` — PASS; `runtime_smoke_combat_test.gd` — PASS;
+  `enemy_health_bar_smoke_test.gd` — PASS; `boss_elite_ttk_gate.gd` — PASS;
+  `gamepad_menu_focus_test.gd` — PASS; регресс `boss_act_reward_heal_test.gd` и
+  `ultimate_charge_persist_test.gd` — PASS.
+
+Docs updated: `docs/design/current_game_state.md` (раздел Ультимейты/HUD — контракт
+HUD-боссбара).
+
+Disk cleanup: none created.

@@ -410,6 +410,10 @@ var ultimate_bar: ProgressBar = null
 var ultimate_label: Label = null
 var artifact_label: Label = null
 var level_up_button: Button = null
+# SCRUM-874: HUD-боссбар сверху экрана — цель узла (акт-босс/элитка) и её UI-ноды.
+var boss_hud_target: Node2D = null
+var boss_hud_bar: ProgressBar = null
+var boss_hud_name_label: Label = null
 var pause_stats_menu: Control = null
 var route_nodes := []
 var current_route_choice := ""
@@ -1391,6 +1395,8 @@ func _clear_hud() -> void:
 	money_label = null
 	artifact_label = null
 	level_up_button = null
+	boss_hud_bar = null
+	boss_hud_name_label = null
 	_last_hud_snapshot.clear()
 
 
