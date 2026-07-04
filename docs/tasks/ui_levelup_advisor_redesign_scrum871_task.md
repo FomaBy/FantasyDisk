@@ -1,7 +1,7 @@
 # Level Up 3.0 — прогноз статов и подсказки лучшего выбора
 
 Jira: SCRUM-871
-Статус: review
+Статус: done
 Контур: Claude
 Owner: claude-busy-taussig-7e019f (user-directed chat)
 Thread: current Claude worker
@@ -126,3 +126,23 @@ worktree .godot-кэш остаётся до закрытия ветки чат�
 surv (0.36, 0.26, 0.51, 0.50), both (0.33, 0.31, 0.45, 0.35); подпись держится
 по вертикальному центру поля с учётом кламппа минимальной высоты Label; базовый
 шрифт 12 (cap 15). Гейты и капчи перегнаны — зелёные.
+
+### QA PASSED 2026-07-04 (Codex QA)
+
+QA worktree: `/Users/sergeyfomin/Documents/FantasyDisk_QA_SCRUM-871`,
+branch `codex/qa-scrum-871`, base `origin/dev` `11df0b0f`.
+
+Checks:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/level_up_advisor_test.gd` - PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` - PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` - PASSED; observed existing non-fatal Weapon Select screenshot warning `Parameter "t" is null`, gate exited 0 with `Runtime smoke test passed`.
+- `python3 tools/godot_gate.py --path . --script res://tools/capture_level_up_advisor.gd` - PASSED; renderer-capable screenshots and rect dump written under ignored `build/qa/scrum871/`.
+
+Acceptance verdict:
+- Cards show visible before/after deltas, up to 3 lines, inside the effect-preview frame; focused capture shows DPS card lines `DoT/тик: 7.3 -> 8.3 (+15%)` and `Урон: 14.0 -> 16.1 (+15%)`, survival card `Макс. HP: 87.5 -> 106 (+21%)`, and utility card `Подбор: 140 -> 185 (+32%)`.
+- `ЛУЧШИЙ УРОН` and `ВЫЖИВАНИЕ` badges appear on the expected damage and max-HP cards; utility card receives no badge.
+- `LevelUpAdvisor` uses dry-run copies of stats/run_modifiers plus `ProgressionData.derived_parameters`; UI advice uses live `current_player.weapon_config` when present, otherwise selected class/weapon fallback, and `_active_stats_snapshot()` / `_active_modifiers_snapshot()`.
+- Tooltip construction includes full delta list, class interpretation, and badge explanation.
+- `ui_no_overlap_matrix` validates level-up panel/card safe rects, card content, effect-preview frame, visible `->` deltas, text overflow, viewport fit, and peer overlap across 1152x648, 1280x720, 1536x864, 1600x900, 1920x1080, 2560x1440, and 3840x2160. Visual spot-check of `level_up_advisor_1280x720.png` and `level_up_advisor_1920x1080.png` found no content overlapping decorative frame ornament.
+
+Disk cleanup: temporary QA worktree/cache removed after Jira sync and push; no implementation files changed by QA.
