@@ -172,3 +172,31 @@ Docs updated: `docs/design/current_game_state.md` (основной поток �
 отхил 70%).
 
 Disk cleanup: none created.
+
+## QA-Вердикт PASSED
+
+2026-07-04, Codex QA (`codex-qa-scrum873-20260704-1020`), worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020`.
+
+Commit under test: `6ea4c62003192d04dbec02c244e485ae0c0c1eeb` (`origin/dev`;
+includes implementation commit `206208ec`; retested after rebase onto latest dev).
+
+Acceptance verified:
+- Act boss victory offers exactly 3 tier>=3 artifact choices, without duplicate ids.
+- Boss reward choice applies through run snapshot and records codex discovery path.
+- Boss XP/money reward path remains in `_grant_boss_completion_rewards()`.
+- Act transition heals `run_player_snapshot["health"]` by fixed 70% max HP, clamped,
+  and final act `advance_to_next_act()` returns false without healing.
+- Mouse/button flow and keyboard/gamepad focus graph are present on the reward cards;
+  runtime UI smoke covers the screen path.
+
+Tests:
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020 --script res://tests/boss_act_reward_heal_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020 --script res://tests/doctor_drain_softcap_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020 --script res://tests/monster_xp_pressure_pacing_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020 --script res://tests/runtime_smoke_ui_test.gd` — PASS
+  (dummy-renderer `texture_2d_get` screenshot warning, exit 0).
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum873_20260704_1020 --script res://tests/runtime_smoke_test.gd` — PASS
+  (same dummy-renderer screenshot warning, exit 0).
+
+Disk cleanup: remove QA `.godot` import cache and generated `.import/.uid` sidecars before final report.
