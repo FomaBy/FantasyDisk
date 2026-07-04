@@ -3835,8 +3835,8 @@
  },
  "backend_full_class_rebalance_identity_audit_task.md": {
   "key": "SCRUM-856",
-  "status": "Контроль качества",
-  "desc_hash": "1fee674f66ac4b2c268cf34adc0cb778"
+  "status": "Готово",
+  "desc_hash": "cff78b49fcc9ee27694b285bed422499"
  },
  "backend_full_class_rebalance_projectile_chain_pierce_task.md": {
   "key": "SCRUM-857",

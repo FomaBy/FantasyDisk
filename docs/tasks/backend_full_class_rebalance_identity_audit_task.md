@@ -49,3 +49,14 @@ Checks:
 Disk cleanup: removed task-created `.godot/`, untracked test `.uid` files, ignored
 Godot `.import` sidecars and transient `build/qa/runtime_smoke_last_failure.md`;
 no Python `__pycache__` directories were present.
+
+## QA-Вердикт 2026-07-04
+Статус: PASSED
+
+Independent Codex QA on live `origin/dev` passed for SCRUM-856. Jira comments
+record the disposable clone verification at `origin/dev` containing commit
+`044de7e2 docs(SCRUM-856): audit class rebalance identities` plus later baseline
+fixes, with `balance_harness.gd`, global damage/survivability smokes,
+`survivability_harness.gd`, `survivability_scenario_test.gd`, and
+`tests/runtime_smoke_test.gd` all PASS. QA cleanup removed the disposable clone,
+logs, path marker, and patch scratch files; no SCRUM-856 QA temp clone remained.
