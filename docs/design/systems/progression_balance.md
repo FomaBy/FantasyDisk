@@ -228,6 +228,7 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - Level-up UI использует icon mapping через `UIIconRegistry`.
 - Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
 - SCRUM-854/SCRUM-862: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` and boss-completion artifact selection filter Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices, boss completion rewards, and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
+- SCRUM-860: kill-growth is a tempo hook, not generic sustain. `assassin/shadow_daggers` and `assassin/venom_wire` define `kill_growth_role = "shadow_momentum"`; normal non-boss/non-elite kills add/refresh up to 6 stacks for 6 seconds, capped at +12% attack speed and +9% crit damage through `kill_momentum_*` run modifiers. The hook never heals and clears on expiry or weapon swap, while Doctor/Priest/Knight sustain stays on their own drain, prayer/ward, and block/counter lanes.
 - SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в
   tooltip. Для базовых характеристик preview строится от текущего snapshot
   статов и `STAT_DERIVED_PREVIEW` / `ProgressionData.derived_parameters()`;
@@ -520,8 +521,9 @@ event-множители) + `post_combat`.
   SCRUM-857 уже закрыл первую часть риска для grenade/meteor/ricochet/split/
   prayer/dark pierce families. SCRUM-858 снял первый documented risk для
   Knight shield/flail не множителями, а разнесением block/counter геометрии и
-  target caps. Deploy/summon и sustain loops остаются для SCRUM-859..860 после
-  снятия overlap-блокера.
+  target caps. SCRUM-859 split stationary deploy/summon loops into stage pulse,
+  support totem, turret DPS, repair chain, and mine grid. SCRUM-860 added
+  Assassin-only capped kill-growth without adding a new vampirism/sustain loop.
 - SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
   `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
   `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные

@@ -3855,8 +3855,8 @@
  },
  "backend_full_class_rebalance_growth_sustain_task.md": {
   "key": "SCRUM-860",
-  "status": "К выполнению",
-  "desc_hash": "4d05f6eb142ca8b87d34a3ebb4654f1c"
+  "status": "Контроль качества",
+  "desc_hash": "e2695293031401dd860b3b117e020217"
  },
  "qa_review_full_class_rebalance_identity_task.md": {
   "key": "SCRUM-861",

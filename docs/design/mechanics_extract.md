@@ -104,7 +104,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Рыцарь | Выносливость | Щитовая клятва: блок, контратака и удержание линии | Копье = long strip, щит = frontal bash/block, кистень = circular holy control |
 | Друид | Лидерство | Командование стаей: питомцы, тернии и тотемы под приказами | Амулет = commanded pets, посох = briar zone, тотем = support pulses |
 
-SCRUM-854/SCRUM-862 уточнили runtime-контракты: weapon signature в атаках читается как 60% alpha body layer; точная зона Берсерк-sweep рисуется outward wedge от персонажа; persistent pools и pressure mines живут свой duration и не заменяются новой атакой; summon limit использует Leadership, `summon_amount` усиливает профиль призывов, а бой стартует примерно с половиной лимита; Доктор больше не роллит внешние regeneration/vampirism/lifesteal rewards, включая boss completion tier-3 artifact reward, и лечится только собственными drain-оружиями.
+SCRUM-854/SCRUM-862/SCRUM-860 уточнили runtime-контракты: weapon signature в атаках читается как 60% alpha body layer; точная зона Берсерк-sweep рисуется outward wedge от персонажа; persistent pools и pressure mines живут свой duration и не заменяются новой атакой; summon limit использует Leadership, `summon_amount` усиливает профиль призывов, а бой стартует примерно с половиной лимита; Доктор больше не роллит внешние regeneration/vampirism/lifesteal rewards, включая boss completion tier-3 artifact reward, и лечится только собственными drain-оружиями; Assassin `shadow_daggers`/`venom_wire` получают capped non-healing kill-growth `shadow_momentum`.
 
 ### Производные Параметры
 
@@ -170,8 +170,8 @@ SCRUM-854/SCRUM-862 уточнили runtime-контракты: weapon signatur
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
 | Гитарист | Усилитель | `sound_amp` | `amp` | `stage_pulse`: деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4), cap 3 |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор туда/обратно; crit-friendly, критовые попадания запускают неподвижный теневой всплеск у цели |
-| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям, высокий crit + теневой burst у цели |
-| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT и теневым всплеском на крите |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs, высокий crit + теневой burst; normal kills дают capped `shadow_momentum` |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT; normal kills refresh capped `shadow_momentum` |
 | Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
 | Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей, line control |
 | Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; stance charge усиливает подготовку |
@@ -588,6 +588,12 @@ Escape открывает крупное меню характеристик:
   обнуляются в `_store_player_snapshot`, чтобы бафф не «застывал» между узлами; латчи/кулдауны
   (`_lowhp_guard_used` и т.п.) сбрасываются в `configure_character`. Пометка «⚡ Активный» вшита в
   `description` (карточка не правилась). Покрытие: `tests/runtime_smoke_triggered_artifacts_test.gd`.
+
+- **SCRUM-860 kill-growth:** `shadow_momentum` is weapon-configured only on
+  `assassin/shadow_daggers` and `assassin/venom_wire`. Normal non-boss/non-elite
+  kills add/refresh up to 6 stacks for 6 seconds. Caps: +12% attack speed and
+  +9% crit damage; it never heals, never counts boss/elite kills, clears on
+  expiry/weapon swap, and leaves Doctor/Priest/Knight sustain lanes unchanged.
 - **SCRUM-606 active artifacts**: `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`
   add tier-2/cost55 variants on existing hooks with `room_clear_heal_percent`, `kill_heal_percent`,
   `kill_explosion_chance`, `take_hit_pulse_chance`, and `crit_speed_burst`.

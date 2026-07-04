@@ -1133,6 +1133,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("magic_damage_multiplier", 1.0))
 	var sound_damage_multiplier := pow(run_sound_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("sound_damage_multiplier", 1.0))
+	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
+	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
 	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
@@ -1144,6 +1146,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		+ float(run_modifiers.get("rush_damage_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) \
 		+ float(run_modifiers.get("swarm_damage_bonus", 0.0)) * float(run_modifiers.get("swarm_fraction", 0.0))
 	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
+	attack_speed_multiplier *= 1.0 + kill_momentum_attack_speed_bonus
 	# SCRUM-834a: условный keystone «стойка → скорострельность» (soldier «Шквал»).
 	# Гейт stance_active ставит player._update_conditional_keystones; спит вне стойки.
 	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0))
@@ -1173,7 +1176,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# rush_window_active ставит player._trigger_rush_window; 0 вне окна. Проходит
 	# ту же CRIT_FLAT_EFFECTIVENESS, что и базовый крит-шанс (тождество весов).
 	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(run_modifiers.get("rush_crit_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
-	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
+	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + kill_momentum_crit_damage_bonus + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):
 		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
 	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.

@@ -164,6 +164,8 @@ var _take_hit_pulse_cooldown_left := 0.0 # «Контр-волна»: перез
 var _kill_streak_counter := 0            # «Сбор Душ»: счётчик убийств до лечения
 var _doctor_ult_absorb_total := 0.0      # SCRUM-595: суммарный absorb от ульты Доктора за забег (капится)
 var _assassin_crit_shadow_cooldown_left := 0.0
+var _kill_growth_stacks := 0
+var _kill_growth_time_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _battle_shout_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
@@ -207,6 +209,9 @@ static func _default_run_modifiers() -> Dictionary:
 		"defense_flat": 0.0,
 		"crit_chance_flat": 0.0,
 		"crit_damage_flat": 0.0,
+		"kill_momentum_stacks": 0.0,
+		"kill_momentum_attack_speed_bonus": 0.0,
+		"kill_momentum_crit_damage_bonus": 0.0,
 		"dodge_flat": 0.0,
 		"xp_gain_multiplier": 1.0,
 		"money_gain_multiplier": 1.0,
@@ -249,6 +254,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_lowhp_guard_cooldown_left = 0.0
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
+	_kill_growth_stacks = 0
+	_kill_growth_time_left = 0.0
 	_knight_counter_cooldown_left = 0.0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
 	_reactor_heat = 0.0
@@ -325,6 +332,7 @@ func equip_weapon(new_weapon_id: String) -> void:
 	weapon_id = str(config["id"])
 	weapon_config = config
 	var old_max_health := max_health
+	_clear_kill_growth(false)
 	_apply_stat_scaling(false, old_max_health)
 	_attach_weapon_scene(weapon_scene, weapon_config)
 
@@ -432,6 +440,7 @@ func _physics_process(_delta: float) -> void:
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
 	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
 	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
+	_update_kill_growth(_delta)
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down", _gamepad_deadzone())
 	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
@@ -2118,6 +2127,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 # Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
 func on_enemy_killed(enemy: Node2D) -> void:
 	_apply_dot_death_spread(enemy)
+	_trigger_kill_growth(enemy)
 	# «Цепная Искра»: шанс взрыва по области у трупа.
 	var explosion_chance := clampf(float(run_modifiers.get("kill_explosion_chance", 0.0)), 0.0, 1.0)
 	if explosion_chance > 0.0 and enemy != null and is_instance_valid(enemy) and is_inside_tree() and randf() < explosion_chance:
@@ -2137,6 +2147,61 @@ func on_enemy_killed(enemy: Node2D) -> void:
 		if _kill_streak_counter >= streak_every:
 			_kill_streak_counter = 0
 			heal_percent(0.03)
+
+
+func _trigger_kill_growth(enemy: Node2D) -> void:
+	if character_id != "assassin" or str(weapon_config.get("kill_growth_role", "")) == "":
+		return
+	if not _is_non_elite_enemy(enemy):
+		return
+	var max_stacks := maxi(int(weapon_config.get("kill_growth_max_stacks", 0)), 0)
+	if max_stacks <= 0:
+		return
+	_kill_growth_stacks = mini(_kill_growth_stacks + 1, max_stacks)
+	_kill_growth_time_left = maxf(float(weapon_config.get("kill_growth_duration", 0.0)), 0.0)
+	_refresh_kill_growth_modifiers()
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 76.0 + float(_kill_growth_stacks) * 5.0, Color(0.72, 0.24, 1.0, 0.30), false)
+
+
+func _update_kill_growth(delta: float) -> void:
+	if _kill_growth_stacks <= 0:
+		return
+	if str(weapon_config.get("kill_growth_role", "")) == "":
+		_clear_kill_growth()
+		return
+	_kill_growth_time_left = maxf(_kill_growth_time_left - delta, 0.0)
+	if _kill_growth_time_left <= 0.0:
+		_clear_kill_growth()
+
+
+func _clear_kill_growth(refresh_stats := true) -> void:
+	if _kill_growth_stacks == 0 and float(run_modifiers.get("kill_momentum_stacks", 0.0)) <= 0.0:
+		return
+	_kill_growth_stacks = 0
+	_kill_growth_time_left = 0.0
+	_refresh_kill_growth_modifiers(refresh_stats)
+
+
+func _refresh_kill_growth_modifiers(refresh_stats := true) -> void:
+	var attack_bonus := 0.0
+	var crit_bonus := 0.0
+	if _kill_growth_stacks > 0 and str(weapon_config.get("kill_growth_role", "")) != "":
+		attack_bonus = minf(
+			float(weapon_config.get("kill_growth_attack_speed_per_stack", 0.0)) * float(_kill_growth_stacks),
+			float(weapon_config.get("kill_growth_attack_speed_cap", 0.12))
+		)
+		crit_bonus = minf(
+			float(weapon_config.get("kill_growth_crit_damage_per_stack", 0.0)) * float(_kill_growth_stacks),
+			float(weapon_config.get("kill_growth_crit_damage_cap", 0.09))
+		)
+	run_modifiers["kill_momentum_stacks"] = float(_kill_growth_stacks)
+	run_modifiers["kill_momentum_attack_speed_bonus"] = attack_bonus
+	run_modifiers["kill_momentum_crit_damage_bonus"] = crit_bonus
+	if refresh_stats:
+		_apply_stat_scaling(false, max_health)
+		for weapon in _equipped_weapons():
+			_apply_weapon_scaling(weapon)
 
 
 func _apply_dot_death_spread(enemy: Node2D) -> void:
