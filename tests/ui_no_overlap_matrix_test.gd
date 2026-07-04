@@ -16,7 +16,6 @@ const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
 const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
 const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
-const WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER := "res://docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png"
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
 const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png"
@@ -493,18 +492,25 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 	match screen_id:
 		"weapon_select":
 			var layer := main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
-			if layer == null or layer.texture == null or layer.texture.resource_path != WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER:
-				return "%s: expected live Weapon Select PixelLab runtime layer %s." % [context, WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER]
+			if layer != null:
+				return "%s: SCRUM-870 forbids the rejected WeaponSelectPixelLabRuntimeLayer." % context
 			var panel := main.find_child("MenuPanel_weapon_select", true, false) as Control
-			if panel == null or str(panel.get_meta("pixellab_runtime_layer_path", "")) != WEAPON_SELECT_PIXELLAB_RUNTIME_LAYER:
-				return "%s: expected weapon select panel metadata to reference the PixelLab runtime layer." % context
+			if panel == null:
+				return "%s: expected live SCRUM-870 Weapon Select panel." % context
+			var panel_style := panel.get_theme_stylebox("panel")
+			if not panel_style is StyleBoxFlat or (panel_style as StyleBoxFlat).bg_color.a < 0.80:
+				return "%s: expected Weapon Select panel to be an opaque readable dark live panel." % context
 			for node in main.find_children("WeaponOption_*", "Button", true, false):
 				var button := node as Button
 				if button == null:
 					continue
 				var normal := button.get_theme_stylebox("normal")
-				if not normal is StyleBoxFlat or (normal as StyleBoxFlat).bg_color.a > 0.01:
-					return "%s: expected %s normal style to stay transparent over PixelLab card art." % [context, button.name]
+				if not normal is StyleBoxFlat or (normal as StyleBoxFlat).bg_color.a < 0.80:
+					return "%s: expected %s normal style to be an opaque readable SCRUM-870 card." % [context, button.name]
+				if button.find_child("WeaponSelectIconWell_*", true, false) == null:
+					return "%s: expected %s to contain a framed weapon icon well." % [context, button.name]
+				if button.find_child("WeaponSelectStatsPanel_*", true, false) == null:
+					return "%s: expected %s to contain a compact stats panel." % [context, button.name]
 		"pause_menu", "pause_stats":
 			var strength_row := main.find_child("BaseStatRow_strength", true, false) as Control
 			var strength_name := main.find_child("BaseStatName_strength", true, false) as Label

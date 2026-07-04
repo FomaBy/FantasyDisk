@@ -3915,8 +3915,8 @@
  },
  "codex_weapon_select_redraw_from_scratch_task.md": {
   "key": "SCRUM-870",
-  "status": "К выполнению",
-  "desc_hash": "3ec7da9ec8a12cdd30a021d0403a7e2a"
+  "status": "Готово",
+  "desc_hash": "abd8fe3a9b7ed31be75a149ea876fdca"
  },
  "backend_ultimate_charge_persist_between_rounds_task.md": {
   "key": "SCRUM-872",
