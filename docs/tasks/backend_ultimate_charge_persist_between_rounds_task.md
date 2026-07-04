@@ -1,6 +1,6 @@
 # Ультимейт: не сбрасывать накопленную шкалу при завершении/старте раунда
 
-Статус: new
+Статус: done
 Приоритет: P1
 Роль: Back-end
 Контур: Claude
@@ -94,4 +94,23 @@ Labels: backend, claude, fantasydisk, foma, p1
 
 ## Result
 
-Pending.
+2026-07-04, Claude (pm-chat, worktree dreamy-bun-6a51c0):
+
+- `scripts/combat_director.gd` `_store_player_snapshot()`: снапшот теперь сохраняет
+  `"ultimate_charge"` (комментарий SCRUM-872; активная ульта/overlay по-прежнему runtime-only,
+  не переносится).
+- `scripts/combat_director.gd` `_restore_player_snapshot()`: восстановление заряда ПОСЛЕ
+  `configure_character`/`equip_weapon` с `clampf(value, 0.0, ultimate_max_charge)`; дефолт 0.0
+  при отсутствии ключа (легаси-снапшоты).
+- `activate_ultimate()` (сброс при активации) и run-reset (`player.gd:248`) не тронуты —
+  поведение сохранено.
+- Новый тест `tests/ultimate_charge_persist_test.gd` (stub-паттерн как в
+  `null_artifacts_snapshot_test.gd`): store сохраняет 63.5; restore переносит на свежего
+  игрока; clamp 150→100; отсутствие ключа→0.0.
+
+Validation:
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ultimate_charge_persist_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASS
+  (texture_2d_get null — известный шум dummy-рендера headless-скриншота, не фейл).
+
+Disk cleanup: none created.

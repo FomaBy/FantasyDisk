@@ -1182,6 +1182,9 @@ func _store_player_snapshot(player: Node) -> void:
 		"xp_to_next": player.get("xp_to_next"),
 		"level": player.get("level"),
 		"money": player.get("money"),
+		# SCRUM-872: накопленная шкала ульты переносится между узлами/раундами.
+		# Активная ульта (_ultimate_active/timed-overlay) — runtime-only, НЕ переносится.
+		"ultimate_charge": player.get("ultimate_charge"),
 	}
 
 
@@ -1201,6 +1204,10 @@ func _restore_player_snapshot(player: Node) -> void:
 	elif player.has_method("_apply_stat_scaling"):
 		player.call("_apply_stat_scaling", true)
 	player.set("health", min(float(game.run_player_snapshot.get("health", player.get("max_health"))), float(player.get("max_health"))))
+	# SCRUM-872: восстановить накопленную ульту ПОСЛЕ configure/equip (перерасчёт
+	# деривативов) с clamp по максимуму — заряд не должен превышать шкалу.
+	var ultimate_max := maxf(float(player.get("ultimate_max_charge")), 0.0)
+	player.set("ultimate_charge", clampf(float(game.run_player_snapshot.get("ultimate_charge", 0.0)), 0.0, ultimate_max))
 
 
 func _current_round_duration() -> float:
