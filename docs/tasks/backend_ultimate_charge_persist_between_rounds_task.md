@@ -114,3 +114,26 @@ Validation:
   (texture_2d_get null — известный шум dummy-рендера headless-скриншота, не фейл).
 
 Disk cleanup: none created.
+
+## QA-Вердикт
+
+2026-07-04, Codex QA (`codex-qa-scrum872-20260704-0959`), worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum872_20260704_0959`,
+commit under test `cc15ccfe` (`origin/dev`): **PASSED**.
+
+Acceptance verified:
+- `run_player_snapshot` stores and restores `ultimate_charge`; restore runs after
+  configure/equip and clamps by `ultimate_max_charge`.
+- `activate_ultimate()` still resets charge to `0`.
+- `configure_character()` / fresh run reset still clears charge.
+- Headless runtime smoke stayed green.
+
+QA tests:
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum872_20260704_0959 --script res://tests/ultimate_charge_persist_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum872_20260704_0959 --script res://tests/player_configure_reset_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum872_20260704_0959 --script res://tests/character_ultimate_config_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum872_20260704_0959 --script res://tests/runtime_smoke_test.gd` — PASS
+  (`texture_2d_get null` dummy-render warning printed, test exited green).
+
+Disk cleanup: generated `.godot`, `.uid`, `.import` artifacts removed after QA;
+disposable worktree removed after commit/push.
