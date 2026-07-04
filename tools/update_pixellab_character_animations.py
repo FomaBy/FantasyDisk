@@ -160,27 +160,65 @@ def copy_source_files(
     return source_files
 
 
-def alpha_bbox(image: Image.Image) -> tuple[int, int, int, int] | None:
-    return image.getchannel("A").getbbox()
+def alpha_bbox(image: Image.Image, threshold: int = 0) -> tuple[int, int, int, int] | None:
+    alpha = image.getchannel("A")
+    if threshold <= 0:
+        return alpha.getbbox()
+    mask = alpha.point(lambda value: 255 if value > threshold else 0)
+    return mask.getbbox()
+
+
+def manifest_int(value: object) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(round(value))
+    if isinstance(value, list) and value:
+        numeric = [int(round(v)) for v in value if isinstance(v, (int, float)) and not isinstance(v, bool)]
+        if numeric:
+            return int(round(sum(numeric) / len(numeric)))
+    return None
 
 
 def visible_height_target(manifest: dict, default: int) -> int:
     for key in ("runtime_visible_height_target", "runtime_visible_height_px"):
-        value = manifest.get(key)
-        if isinstance(value, int):
+        value = manifest_int(manifest.get(key))
+        if value is not None:
             return value
-        if isinstance(value, list) and value:
-            numeric = [int(v) for v in value if isinstance(v, (int, float))]
-            if numeric:
-                return int(round(sum(numeric) / len(numeric)))
+    normalization = manifest.get("normalization")
+    if isinstance(normalization, dict):
+        for key in ("target_visible_height", "runtime_visible_height_target", "runtime_visible_height_px"):
+            value = manifest_int(normalization.get(key))
+            if value is not None:
+                return value
     return default
 
 
 def bottom_padding(manifest: dict, default: int) -> int:
     for key in ("runtime_bottom_padding", "bottom_padding_px"):
-        value = manifest.get(key)
-        if isinstance(value, int):
+        value = manifest_int(manifest.get(key))
+        if value is not None:
             return value
+    normalization = manifest.get("normalization")
+    if isinstance(normalization, dict):
+        for key in ("bottom_padding", "runtime_bottom_padding", "bottom_padding_px"):
+            value = manifest_int(normalization.get(key))
+            if value is not None:
+                return value
+    return default
+
+
+def alpha_threshold(manifest: dict, default: int = 0) -> int:
+    value = manifest_int(manifest.get("alpha_threshold"))
+    if value is not None:
+        return max(0, value)
+    normalization = manifest.get("normalization")
+    if isinstance(normalization, dict):
+        value = manifest_int(normalization.get("alpha_threshold"))
+        if value is not None:
+            return max(0, value)
     return default
 
 
@@ -191,34 +229,40 @@ def normalize_frame(
     cell_size: int,
     target_visible_height: int,
     bottom_pad: int,
+    threshold: int,
 ) -> dict:
     image = Image.open(source_path).convert("RGBA")
-    bbox = alpha_bbox(image)
+    bbox = alpha_bbox(image, threshold)
     if bbox is None:
         raise RuntimeError(f"{source_path} has no visible alpha")
     bbox_width = bbox[2] - bbox[0]
     bbox_height = bbox[3] - bbox[1]
     scale = target_visible_height / float(bbox_height)
-    scaled_size = (max(1, round(image.width * scale)), max(1, round(image.height * scale)))
-    resized = image.resize(scaled_size, Image.Resampling.NEAREST)
-    scaled_bbox = tuple(round(v * scale) for v in bbox)
-    visible_center_x = (scaled_bbox[0] + scaled_bbox[2]) / 2.0
-    paste_x = round((cell_size / 2.0) - visible_center_x)
-    paste_y = round((cell_size - bottom_pad) - scaled_bbox[3])
-    if paste_x < -scaled_size[0] or paste_y < -scaled_size[1]:
+    scaled_visible_size = (max(1, round(bbox_width * scale)), target_visible_height)
+    resized_visible = image.crop(bbox).resize(scaled_visible_size, Image.Resampling.NEAREST)
+    paste_x = round((cell_size - scaled_visible_size[0]) / 2.0)
+    paste_y = cell_size - bottom_pad - scaled_visible_size[1]
+    if (
+        paste_x < 0
+        or paste_y < 0
+        or paste_x + scaled_visible_size[0] > cell_size
+        or paste_y + scaled_visible_size[1] > cell_size
+    ):
         raise RuntimeError(f"{source_path} normalized outside canvas")
     canvas = Image.new("RGBA", (cell_size, cell_size), (0, 0, 0, 0))
-    canvas.alpha_composite(resized, (paste_x, paste_y))
+    canvas.alpha_composite(resized_visible, (paste_x, paste_y))
     dest_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(dest_path)
-    runtime_bbox = alpha_bbox(canvas)
+    runtime_bbox = alpha_bbox(canvas, threshold)
     return {
         "source": source_path.name,
         "runtime": dest_path.name,
         "source_size": list(image.size),
         "source_alpha_bbox": list(bbox),
         "source_alpha_bbox_size": [bbox_width, bbox_height],
+        "alpha_threshold": threshold,
         "scale": scale,
+        "resized_visible_size": list(scaled_visible_size),
         "runtime_alpha_bbox": list(runtime_bbox) if runtime_bbox else None,
     }
 
@@ -235,10 +279,12 @@ def normalize_character(
 ) -> dict:
     target_height = visible_height_target(manifest, default_visible_height)
     bottom_pad = bottom_padding(manifest, default_bottom_padding)
+    threshold = alpha_threshold(manifest)
     report = {
         "runtime_canvas": [cell_size, cell_size],
         "target_visible_height": target_height,
         "bottom_padding": bottom_pad,
+        "alpha_threshold": threshold,
         "frames": [],
     }
     runtime_dir.mkdir(parents=True, exist_ok=True)
@@ -252,6 +298,7 @@ def normalize_character(
                 cell_size=cell_size,
                 target_visible_height=target_height,
                 bottom_pad=bottom_pad,
+                threshold=threshold,
             )
         )
         for index in range(move_frame_count):
@@ -264,6 +311,7 @@ def normalize_character(
                     cell_size=cell_size,
                     target_visible_height=target_height,
                     bottom_pad=bottom_pad,
+                    threshold=threshold,
                 )
             )
     return report
@@ -385,6 +433,51 @@ def refresh_character(project_root: Path, character_id: str, args: argparse.Name
     if not character_uuid:
         return {"character": character_id, "status": "blocked", "reason": "manifest has no PixelLab UUID"}
 
+    if args.normalize_existing:
+        result = {
+            "character": character_id,
+            "status": "dry_run" if args.dry_run else "normalized_existing",
+            "pixellab_character_id": character_uuid,
+        }
+        if args.dry_run:
+            return result
+        try:
+            runtime_dir = project_root / "assets/sprites/characters/full_frame" / f"{character_id}_pixellab"
+            normalize_report = normalize_character(
+                source_dir,
+                runtime_dir,
+                character_id,
+                manifest,
+                args.move_frame_count,
+                args.cell_size,
+                args.visible_height,
+                args.bottom_padding,
+            )
+            spriteframes_path = project_root / "assets/sprites/characters" / f"{character_id}_spriteframes.tres"
+            write_spriteframes(
+                spriteframes_path,
+                runtime_dir,
+                project_root,
+                character_id,
+                args.move_frame_count,
+                args.move_speed,
+            )
+            write_json(source_dir / "alpha_bbox_report.json", normalize_report)
+        except Exception as exc:
+            return {
+                "character": character_id,
+                "status": "blocked",
+                "pixellab_character_id": character_uuid,
+                "reason": str(exc),
+            }
+        result["source_dir"] = str(source_dir.relative_to(project_root))
+        result["runtime_dir"] = str(runtime_dir.relative_to(project_root))
+        result["spriteframes"] = str(spriteframes_path.relative_to(project_root))
+        result["target_visible_height"] = normalize_report["target_visible_height"]
+        result["bottom_padding"] = normalize_report["bottom_padding"]
+        result["alpha_threshold"] = normalize_report["alpha_threshold"]
+        return result
+
     with tempfile.TemporaryDirectory(prefix=f"scrum869_{character_id}_") as tmp:
         tmp_path = Path(tmp)
         zip_path = tmp_path / f"{character_id}.zip"
@@ -462,6 +555,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--character", action="append", help="Character id to refresh; repeatable")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--normalize-existing",
+        action="store_true",
+        help="Rebuild runtime full-frame PNGs from existing PixelLab source files without downloading a new pack",
+    )
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
     parser.add_argument("--report", type=Path, default=Path("build/qa/pixellab_character_animation_refresh/report.json"))
     parser.add_argument("--move-frame-count", type=int, default=6)
@@ -484,7 +582,11 @@ def main() -> int:
         result = refresh_character(project_root, character_id, args)
         report["results"].append(result)
         print(f"{character_id}: {result['status']} - {result.get('reason', result.get('pixellab_character_id', ''))}")
-    refreshed = [r["character"] for r in report["results"] if r["status"] in {"refreshed", "dry_run"}]
+    refreshed = [
+        r["character"]
+        for r in report["results"]
+        if r["status"] in {"refreshed", "normalized_existing", "dry_run"}
+    ]
     blocked = [r for r in report["results"] if r["status"] == "blocked"]
     report["summary"] = {
         "refreshed_or_ready_count": len(refreshed),

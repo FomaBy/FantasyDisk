@@ -3911,7 +3911,7 @@
  "animation_refresh_all_playable_pixellab_task.md": {
   "key": "SCRUM-869",
   "status": "Готово",
-  "desc_hash": "7419e632d03c0201e1b05d95fb4aa27c"
+  "desc_hash": "367469b936121e3c227d585a377b0c4b"
  },
  "codex_weapon_select_redraw_from_scratch_task.md": {
   "key": "SCRUM-870",
@@ -3937,5 +3937,10 @@
   "key": "SCRUM-871",
   "status": "Контроль качества",
   "desc_hash": null
+ },
+ "backend_berserk_sword_axe_sweep_vfx_flip_task.md": {
+  "key": "SCRUM-875",
+  "status": "Готово",
+  "desc_hash": "8bacc6764302b39c5580c608377d2e73"
  }
 }
