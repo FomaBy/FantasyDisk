@@ -144,3 +144,22 @@ Docs updated: `docs/design/current_game_state.md` (раздел Ультимей
 HUD-боссбара).
 
 Disk cleanup: none created.
+
+## QA-Вердикт PASSED
+
+2026-07-04 13:35 EEST, Codex QA (`codex-qa-scrum874-20260704-1035`).
+
+Commit under test: `6cc1d133aecd9c0e9d2f01d7bd284f386dd9a066` (`origin/dev`).
+
+Acceptance verified:
+- Boss/elite node fights expose top HUD `BossHudBar`/`BossHudNameLabel` with HP max/value tracking target health.
+- Boss and elite node targets do not create overhead `HealthBar`; ordinary enemies still keep overhead health bars.
+- Boss/elite HUD layout passes no-overlap/safe-area gates across the matrix viewports; resource HUD/timer/gamepad UI flows are unaffected by the required smoke coverage.
+
+Validation:
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum874_20260704_1035 --script res://tests/runtime_smoke_boss_elite_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum874_20260704_1035 --script res://tests/runtime_smoke_ui_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum874_20260704_1035 --script res://tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `python3 tools/godot_gate.py --headless --path /Users/sergeyfomin/Documents/FantasyDisk_worktrees/qa_scrum874_20260704_1035 --script res://tests/runtime_smoke_test.gd` — PASS. Godot dummy renderer emitted a non-fatal `Parameter "t" is null` screenshot-helper warning; process exit code was 0 and the suite printed `Runtime smoke test passed.`
+
+Disk cleanup: generated `.godot/` cache and untracked Godot `.import/.uid` sidecars removed before final cleanup; disposable QA worktree removed after commit/push.
