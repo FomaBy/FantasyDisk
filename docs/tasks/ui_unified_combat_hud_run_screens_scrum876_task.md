@@ -1,7 +1,7 @@
 # Единый боевой HUD на всех экранах забега
 
 Jira: SCRUM-876
-Статус: review
+Статус: done
 Контур: Claude
 Owner: claude-busy-taussig-7e019f (user-directed chat)
 Thread: current Claude worker
@@ -62,3 +62,43 @@ Evidence: build/qa/scrum876/route_map_hud_1920x1080.png (кластер под
 заголовком карты), build/qa/scrum871/level_up_advisor_*.png (кластер на
 level-up).
 Disk cleanup: none created (переиспользован worktree чата).
+
+## QA-Вердикт (2026-07-04 15:14 EEST)
+
+Статус: PASSED
+
+Проверено:
+- Source inspection: `_create_menu_run_hud()` builds the shared SCRUM-806
+  `RunResourceHud` cluster through `_create_resource_hud_panel()` +
+  `_layout_combat_hud()`, calls `_update_hud()`, and does not create
+  `CombatTimerPanel`, `BossHudTrack`/`BossHudBar`, or `AscensionHudRow`.
+- Source inspection: route map uses `_create_resource_hud_panel()` plus
+  `_layout_menu_resource_hud()` under `RouteMapHeader`; reward, non-combat
+  level-up, shop, rest, upgrade, event, and level-up toast fallback call
+  `_create_menu_run_hud()`.
+- Source inspection: legacy menu HUD branch is absent; `_hud_panel_style`,
+  `_add_hud_resource_card`, `_add_hud_money_card`, `_hud_bar_fill_style`,
+  `HudHPCard`, `HudXPCard`, `HudMoneyCard`, and `HudULTCard` are not present in
+  runtime code.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+  PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`
+  PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/dark_fantasy_ui_theme_test.gd`
+  PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`
+  PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_combat_test.gd`
+  PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tools/capture_route_map_hud.gd`
+  PASSED; route-map `RunResourceHud` rect `[P: (28.0, 148.0), S: (480.0, 92.0)]`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/gamepad_inrun_ui_test.gd`
+  PASSED.
+
+Баги: нет.
+
+Примечание: отдельного dedicated test только для "menu run HUD cluster on every
+run menu screen" нет; QA relied on source inspection, runtime/UI matrix/HUD
+smokes, and the route-map capture helper. Godot headless emitted a non-fatal
+dummy renderer warning (`Parameter "t" is null`) during weapon-select screenshot
+capture in runtime smokes; both suites exited 0 and printed PASSED.
