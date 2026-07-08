@@ -36,6 +36,12 @@ var command_target: Node2D = null
 var health := 18.0
 var _death_lifecycle_started := false
 var _death_tween: Tween = null
+# SCRUM-961 «Гомункул-танк»: периодическая провокация (по образцу bastion_taunt).
+var taunt_pulse := false
+var _taunt_pulse_left := 0.0
+
+const TAUNT_PULSE_INTERVAL := 1.4
+const TAUNT_PULSE_RADIUS := 210.0
 
 
 func _ready() -> void:
@@ -64,6 +70,7 @@ func set_combat_profile(profile: Dictionary) -> void:
 	aoe_radius = maxf(float(profile.get("aoe_radius", aoe_radius)), 0.0)
 	aoe_damage_multiplier = clampf(float(profile.get("aoe_damage_multiplier", aoe_damage_multiplier)), 0.0, 1.0)
 	leash_radius = maxf(float(profile.get("leash_radius", leash_radius)), 120.0)
+	taunt_pulse = bool(profile.get("taunt_pulse", taunt_pulse))
 
 
 func take_damage(amount: float) -> void:
@@ -72,6 +79,31 @@ func take_damage(amount: float) -> void:
 	health -= maxf(amount, 0.0)
 	if health <= 0.0:
 		_begin_death_lifecycle()
+
+
+# SCRUM-961 «Гомункул-танк»: периодический taunt-пульс — враги рядом грызут
+# гомункула, а не Химика (bastion_taunt с taunt_owner = этот юнит; enemy
+# ._taunt_target уже резолвит владельца статуса по instance id).
+func _update_taunt_pulse(delta: float) -> void:
+	if not taunt_pulse or _death_lifecycle_started:
+		return
+	_taunt_pulse_left -= delta
+	if _taunt_pulse_left > 0.0:
+		return
+	_taunt_pulse_left = TAUNT_PULSE_INTERVAL
+	if not is_inside_tree():
+		return
+	AttackVfx.ring_pulse(get_parent(), global_position, TAUNT_PULSE_RADIUS * 0.62, Color(0.95, 0.75, 0.35, 0.30), false)
+	for enemy in TARGET_QUERY.in_radius(self, global_position, TAUNT_PULSE_RADIUS):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		StatusEffects.apply_status(enemy_node, "bastion_taunt", {
+			"duration": 1.5,
+			"speed_multiplier": 1.04,
+			"marker_color": Color(0.95, 0.80, 0.45, 1.0),
+			"taunt_owner": get_instance_id(),
+		})
 
 
 func _apply_visual() -> void:
@@ -105,6 +137,7 @@ func _physics_process(delta: float) -> void:
 	if lifetime <= 0.0:
 		queue_free()
 		return
+	_update_taunt_pulse(delta)
 
 	var target := _commanded_target()
 	if target == null:

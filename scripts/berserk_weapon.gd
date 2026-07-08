@@ -38,6 +38,20 @@ var _hit_targets := []
 var _swing_tween: Tween = null
 var _swing_timing_tween: Tween = null
 var _last_attack_crit := false
+# SCRUM-961 «Святая цепь»: раскрутка спирали кистеня (касты подряд, сброс паузой).
+var _flail_spiral_casts := 0
+var _flail_last_cast_ms := 0
+
+
+# SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
+func _owner_mod(key: String, default_value := 0.0) -> float:
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return default_value
+	var mods = owner_node.get("run_modifiers")
+	if mods is Dictionary:
+		return float((mods as Dictionary).get(key, default_value))
+	return default_value
 
 
 func _ready() -> void:
@@ -100,6 +114,7 @@ func _start_swing(immediate_damage := false) -> void:
 	_swinging = true
 	_hit_targets.clear()
 	_cooldown = fire_interval
+	_update_flail_spiral()
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("attack", _last_direction)
@@ -208,6 +223,58 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		)
 	for index in range(candidates.size()):
 		_damage_target(owner_node, candidates[index] as Node2D, attack_direction, _circle_damage_factor(index))
+	# SCRUM-961 «Тройной укол»: копьё колет тремя полосами (центр уже отработал).
+	if attack_shape == "strip" and _owner_mod("spear_triple_thrust") > 0.0:
+		_damage_triple_thrust_sides(owner_node, attack_direction)
+	# SCRUM-961 «Призрачный топор»: видимый спектральный повтор взмаха.
+	if melee_arc_followup_radius > 0.0 and _owner_mod("spectral_followup_bonus") > 0.0 and not candidates.is_empty():
+		_show_spectral_followup(owner_node, attack_direction)
+
+
+# SCRUM-961 «Тройной укол»: боковые быстрые уколы ±14° (55% урона) закрывают
+# слабость узкой полосы копья против веера врагов; дедуп через _hit_targets.
+func _damage_triple_thrust_sides(owner_node: Node2D, attack_direction: Vector2) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		scene = get_tree().root
+	for side in [-1.0, 1.0]:
+		var side_direction := attack_direction.rotated(deg_to_rad(14.0) * float(side))
+		AttackVfx.beam(scene, owner_node.global_position + side_direction * start_distance, owner_node.global_position + side_direction * attack_range, inner_width * 0.7, Color(visual_color.r, visual_color.g, visual_color.b, 0.22))
+		for enemy_node in TARGET_QUERY.enemies(self):
+			if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
+				continue
+			if not _is_enemy_inside_frustum(owner_node, enemy_node, side_direction):
+				continue
+			if enemy_node.has_method("take_damage"):
+				_damage_target(owner_node, enemy_node, side_direction, 0.55)
+
+
+# SCRUM-961 «Призрачный топор»: полупрозрачный призрачный взмах-афтеримидж
+# по той же дуге с короткой задержкой (существующий slash-VFX, без новых ассетов).
+func _show_spectral_followup(owner_node: Node2D, attack_direction: Vector2) -> void:
+	var owner_id := owner_node.get_instance_id()
+	var ghost_tween := create_tween()
+	ghost_tween.tween_interval(0.12)
+	ghost_tween.tween_callback(func() -> void:
+		var current_owner := instance_from_id(owner_id) as Node2D
+		if current_owner == null or not is_instance_valid(current_owner):
+			return
+		var ghost := AttackVfx.slash(current_owner, attack_direction, attack_range, Color(0.55, 0.82, 1.0, 0.30), PI, _sweep_visual_lateral_scale(), _sweep_visual_degrees())
+		if ghost != null:
+			ghost.add_to_group("player_weapon_effects")
+	)
+
+
+# SCRUM-961 «Святая цепь»: последовательные касты раскручивают спираль кистеня
+# (+12% радиуса за каст после первого, кап +36%); пауза 3с сбрасывает раскрутку.
+func _update_flail_spiral() -> void:
+	if weapon_id != "holy_flail" or _owner_mod("flail_spiral_growth") <= 0.0:
+		return
+	var now := Time.get_ticks_msec()
+	if now - _flail_last_cast_ms > 3000:
+		_flail_spiral_casts = 0
+	_flail_last_cast_ms = now
+	_flail_spiral_casts = mini(_flail_spiral_casts + 1, 4)
 
 
 func _damage_target(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount_multiplier := 1.0) -> void:
@@ -223,9 +290,15 @@ func _circle_damage_factor(target_index: int) -> float:
 	if attack_shape != "circle" or circle_target_diminish <= 0.0:
 		return 1.0
 	var full_targets := maxi(circle_full_targets, 1)
+	var diminish := circle_target_diminish
+	# SCRUM-961 «Вес молота»: слэм полновесно накрывает больше целей (4→6),
+	# хвост толпы гаснет по спеке (0.62→0.78); одиночный DPS не трогается.
+	if weapon_id == "hammer" and _owner_mod("hammer_slam_focus") > 0.0:
+		full_targets += 2
+		diminish += 0.16
 	if target_index < full_targets:
 		return 1.0
-	return 1.0 / (1.0 + float(target_index - full_targets + 1) * circle_target_diminish)
+	return 1.0 / (1.0 + float(target_index - full_targets + 1) * diminish)
 
 
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount: float) -> void:
@@ -247,8 +320,13 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 			push_direction = attack_direction
 		if enemy_node.has_method("apply_knockback"):
 			enemy_node.apply_knockback(push_direction.normalized() * 260.0 * melee_stagger_knockback_multiplier)
-	if melee_arc_followup_radius > 0.0 and melee_arc_followup_multiplier > 0.0:
-		var splash_damage := amount * melee_arc_followup_multiplier
+	# SCRUM-961 «Призрачный топор»: спектральный повтор усиливает followup-дугу
+	# (0.12→0.37 у топора); работает только на оружии с followup-геометрией.
+	var followup_multiplier := melee_arc_followup_multiplier
+	if melee_arc_followup_radius > 0.0:
+		followup_multiplier += _owner_mod("spectral_followup_bonus")
+	if melee_arc_followup_radius > 0.0 and followup_multiplier > 0.0:
+		var splash_damage := amount * followup_multiplier
 		for nearby in TARGET_QUERY.in_radius(self, enemy_node.global_position, melee_arc_followup_radius):
 			if nearby == enemy_node:
 				continue
@@ -484,9 +562,16 @@ func _show_circle_area(owner_node: Node2D) -> void:
 
 
 func _effective_circle_radius() -> float:
+	var radius := aoe_radius
 	if max_aoe_radius > 0.0:
-		return minf(aoe_radius, max_aoe_radius)
-	return aoe_radius
+		radius = minf(aoe_radius, max_aoe_radius)
+	# SCRUM-961 «Вес молота»: слэм ложится шире (+12%).
+	if weapon_id == "hammer" and _owner_mod("hammer_slam_focus") > 0.0:
+		radius *= 1.12
+	# SCRUM-961 «Святая цепь»: спираль раскручена от последовательных кастов.
+	if weapon_id == "holy_flail" and _owner_mod("flail_spiral_growth") > 0.0:
+		radius *= 1.0 + 0.12 * float(maxi(_flail_spiral_casts - 1, 0))
+	return radius
 
 
 func _owner_node() -> CharacterBody2D:
