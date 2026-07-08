@@ -3962,5 +3962,10 @@
   "key": "SCRUM-880",
   "status": "Готово",
   "desc_hash": "d3619ea401b1d2d74025ff999e523125"
+ },
+ "design_codex_center_compact_wide_dossier_task.md": {
+  "key": "SCRUM-881",
+  "status": "К выполнению",
+  "desc_hash": "e2121a7cc6de9f33d36e21ee238bb5f0"
  }
 }
