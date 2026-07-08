@@ -7919,8 +7919,8 @@ func _show_shop_screen() -> void:
 	var subtitle := Label.new()
 	subtitle.text = "Выбери предмет. Описание появляется при наведении."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16, 12))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	title_box.add_child(subtitle)
 
 	# Товары лежат в центральной свободной зоне shop backdrop как предметы
@@ -8015,11 +8015,9 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.offset_top = 4.0
 			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			button.add_child(note_label)
-	button.add_theme_stylebox_override("normal", _shop_wall_button_style(false))
-	button.add_theme_stylebox_override("hover", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("pressed", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("focus", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("disabled", _shop_wall_button_style(false))
+	# SCRUM-883: слот товара — чип-ряд Атласа (StyleBoxFlat, hover — золотой кант);
+	# внутренности слота (иконка, пергамент-плашка, ценник) сохранены.
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(SHOP_INLINE_SLOT_SIZE))
 	button.pressed.connect(func() -> void:
 		_buy_shop_item_at(index)
 	)
@@ -8150,8 +8148,8 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(18, 12))
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
 	if not affordable:
@@ -8297,21 +8295,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	return "artifact"
 
 
-func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.90, 0.76, 0.38, 0.08) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.border_color = Color(1.0, 0.86, 0.42, 0.38) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.set_border_width_all(1 if is_hovered else 0)
-	style.set_corner_radius_all(18)
-	style.content_margin_left = 0
-	style.content_margin_top = 0
-	style.content_margin_right = 0
-	style.content_margin_bottom = 0
-	style.shadow_color = Color(1.0, 0.70, 0.24, 0.18) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.shadow_size = 12 if is_hovered else 0
-	return style
-
-
 func _shop_item_shadow_style() -> StyleBox:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.035, 0.025, 0.016, 0.38)
@@ -8437,7 +8420,9 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
+	# SCRUM-883: панель улучшения — чип Атласа (экономический фолбэк) вместо
+	# upgrade_panel @2K-рамки; карточки — чип-ряды общей фабрики.
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
 	var upgrade_card_size := _economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
@@ -11729,8 +11714,9 @@ func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
+# SCRUM-883: панели экономических экранов маршрута (костёр и фолбэк) — чип Атласа.
 func _economy_panel_style() -> StyleBox:
-	return _minimal_frame_style("panel")
+	return _atlas_chip_style(0.94, 18.0)
 
 
 # SCRUM-565: Событие @2K. Панель и карточки выбора используют per-слот overhaul_2k-рамки
@@ -11774,15 +11760,6 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
 		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
-
-
-# SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
-# (upgrade_panel 1720×730), нарисованная РОВНО в свой пиксельный размер → на 2K 1:1,
-# на 1080p/4K юниформ-скейл вьюпортом без растяжения орнамента. Карточки выбора —
-# общий economy-choice-арт (как остальные economy-экраны кроме события).
-func _upgrade_panel_2k_style() -> StyleBox:
-	var display_size := _economy_menu_panel_half_size("upgrade") * 2.0
-	return _overhaul_2k_frame_style("upgrade_panel", display_size)
 
 
 # SCRUM-565/568 → SCRUM-883: чип-карточка держит контент собственными симметричными
