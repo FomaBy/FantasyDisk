@@ -66,6 +66,14 @@ func _test_triggered_artifacts_present_in_data() -> void:
 		"counterwave_sigil": "on_take_hit",
 		"soul_harvest": "on_kill",
 		"second_wind": "on_low_hp",
+		# SCRUM-961: классовые активные артефакты (+ новый триггер on_battle_start).
+		"shadow_twin": "on_crit",
+		"blood_roar": "on_take_hit",
+		"last_onslaught": "on_low_hp",
+		"triage_protocol": "on_low_hp",
+		"martyr_shroud": "on_low_hp",
+		"repair_subroutine": "on_take_hit",
+		"prayer_beads": "on_battle_start",
 	}
 	var found := {}
 	var triggers_seen := {}
