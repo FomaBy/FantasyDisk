@@ -1176,7 +1176,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Якорь на ближайшей цели стягивает врагов к центру и бьет импульсом |
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки и сжимают врагов к оси |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг |
-| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps`: временные турели сами выбирают цели, распределяют лучи по уже не пораженным врагам в цикле и дают малый capped splash; Leadership cap 5 |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные стационарные турели (жёсткий кап 2, старейшая заменяется с мини-VFX) автострельбой бьют залпом по разным ближайшим целям с малым capped splash; урон/темп — от Лидерства |
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером лежат свой duration и тикают урон по врагам внутри, а не исчезают после первого касания |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают теневой всплеск у цели без смещения героя |
