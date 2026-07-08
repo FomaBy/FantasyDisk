@@ -4020,7 +4020,12 @@
  },
  "design_levelup_atlas_beautify_task.md": {
   "key": "SCRUM-892",
-  "status": "К выполнению",
-  "desc_hash": "06ba1f6d45b98f46aeae2f4e499f30c0"
+  "status": "Готово",
+  "desc_hash": "5ebcfe64f9363396274ee761c84e70fb"
+ },
+ "design_dossier_v2_full_art_task.md": {
+  "key": "SCRUM-893",
+  "status": "Готово",
+  "desc_hash": "e7b267f57f539bad070ca74eb2e26561"
  }
 }
