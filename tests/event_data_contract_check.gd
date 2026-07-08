@@ -18,6 +18,12 @@ const VALID_MODS := [
 ]
 const VALID_STATS := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
 
+# SCRUM-995: post_combat применяется рантаймом через Player.apply_reward +
+# отдельный shop-хук (combat_director._grant_combat_completion_rewards /
+# _combat_victory_map_continuation) — money/random_artifact там МОЛЧА
+# игнорируются. Гард против мёртвых наградных ключей в новом паке.
+const POST_COMBAT_ALLOWED_KEYS := ["stats", "mods", "heal_percent", "shop_after", "shop_discount"]
+
 var _failed := false
 
 
@@ -61,6 +67,10 @@ func _scan_outcome(branch: Dictionary, ctx: String) -> void:
 		if branch.has(sub_key):
 			_check_mods(branch.get(sub_key, {}), "%s.%s" % [ctx, sub_key])
 			_check_outcome_extras(branch.get(sub_key, {}), "%s.%s" % [ctx, sub_key])
+			if sub_key == "post_combat":
+				for post_key in (branch.get(sub_key, {}) as Dictionary).keys():
+					if not POST_COMBAT_ALLOWED_KEYS.has(str(post_key)):
+						_fail("post_combat key '%s' is dead at runtime (apply_reward ignores it) in %s" % [post_key, ctx])
 	for outcome in (branch.get("random_outcomes", []) as Array):
 		_scan_outcome(outcome, "%s.random_outcomes" % ctx)
 
@@ -91,8 +101,8 @@ func _hidden_choice_reveals_honestly(choice: Dictionary) -> bool:
 
 func _initialize() -> void:
 	var events: Array = EventData.RANDOM_EVENTS
-	if events.size() != 29:  # SCRUM-610: +1 sacrifice_altar; SCRUM-608: +1 sudden_fork; SCRUM-605: +5 risk/reward (18→23); SCRUM-501: +5 класс-реактивных (23→28)
-		_fail("expected pool size 29, got %d" % events.size())
+	if events.size() != 12:  # SCRUM-995: полированный стартовый пак — ровно 12 закреплённых событий (легаси-пул из 29 удалён)
+		_fail("expected pool size 12, got %d" % events.size())
 
 	var ids := {}
 	var combat_outcomes := 0
@@ -100,6 +110,7 @@ func _initialize() -> void:
 	var rest_outcomes := 0
 	var check_outcomes := 0
 	var class_reactive := 0
+	var hidden_events := 0
 
 	for event in events:
 		var event_id := str(event.get("id", ""))
@@ -109,6 +120,10 @@ func _initialize() -> void:
 		if str(event.get("title", "")) == "" or str(event.get("story", "")).length() < 40:
 			_fail("event %s missing title or story>=40" % event_id)
 		# SCRUM-996: event-level tags {acts: Array[int 1..3], biomes: Array[String]}.
+		# SCRUM-995: структура tags ОБЯЗАТЕЛЬНА у каждого события пака (пустые
+		# массивы = любой акт; наполнение придёт с актами).
+		if not event.has("tags"):
+			_fail("event %s missing mandatory tags structure (SCRUM-995)" % event_id)
 		if event.has("tags"):
 			var tags_value = event["tags"]
 			if not (tags_value is Dictionary):
@@ -129,9 +144,11 @@ func _initialize() -> void:
 						if not (biome is String) or str(biome).strip_edges() == "":
 							_fail("tags.biomes entries must be non-empty String in %s" % event_id)
 		var choices: Array = event.get("choices", [])
-		if choices.size() < 2:
-			_fail("event %s has <2 choices" % event_id)
+		# SCRUM-995 AC: ровно 3 выбора с различимым интентом у каждого события пака.
+		if choices.size() != 3:
+			_fail("event %s must have exactly 3 choices (SCRUM-995), got %d" % [event_id, choices.size()])
 		var check_stats := {}
+		var has_hidden_choice := false
 		for choice in choices:
 			var ctx := "%s/%s" % [event_id, str(choice.get("id", ""))]
 			_scan_outcome(choice, ctx)
@@ -140,8 +157,10 @@ func _initialize() -> void:
 				_fail("hidden must be bool in %s" % ctx)
 			if choice.has("unknown_hint") and (not (choice["unknown_hint"] is String) or str(choice["unknown_hint"]).strip_edges() == ""):
 				_fail("unknown_hint must be a non-empty String in %s" % ctx)
-			if bool(choice.get("hidden", false)) and not _hidden_choice_reveals_honestly(choice):
-				_fail("hidden choice must carry outcome_text on every non-combat terminal outcome in %s" % ctx)
+			if bool(choice.get("hidden", false)):
+				has_hidden_choice = true
+				if not _hidden_choice_reveals_honestly(choice):
+					_fail("hidden choice must carry outcome_text on every non-combat terminal outcome in %s" % ctx)
 			if choice.has("combat") or _nested_has(choice, "combat"):
 				combat_outcomes += 1
 			if choice.has("random_artifact") or choice.has("reward") or choice.has("money") or _nested_has(choice, "random_artifact"):
@@ -161,11 +180,17 @@ func _initialize() -> void:
 					_fail("duplicate 'Риск:' prefix in %s" % ctx)
 		if check_stats.size() >= 2:
 			class_reactive += 1
+		if has_hidden_choice:
+			hidden_events += 1
 
 	if combat_outcomes < 3 or reward_outcomes < 3 or rest_outcomes < 1 or check_outcomes < 2:
 		_fail("outcome coverage low: combat=%d reward=%d rest=%d check=%d" % [combat_outcomes, reward_outcomes, rest_outcomes, check_outcomes])
 	if class_reactive < 2:
 		_fail("class-reactive events <2: %d" % class_reactive)
+	# SCRUM-995 AC: скрытые исходы минимум в 3 событиях пака (cursed_chapel /
+	# gilded_gambler / old_well), честность раскрытия проверена выше.
+	if hidden_events < 3:
+		_fail("events with hidden choices <3: %d" % hidden_events)
 
 	# non-repeat picker over full pool
 	var rng := RandomNumberGenerator.new()
@@ -182,7 +207,7 @@ func _initialize() -> void:
 		print("[event_data_contract] FAILED")
 		quit(1)
 	else:
-		print("[event_data_contract] PASSED — pool=%d combat=%d reward=%d rest=%d check=%d class_reactive=%d" % [events.size(), combat_outcomes, reward_outcomes, rest_outcomes, check_outcomes, class_reactive])
+		print("[event_data_contract] PASSED — pool=%d combat=%d reward=%d rest=%d check=%d class_reactive=%d hidden_events=%d" % [events.size(), combat_outcomes, reward_outcomes, rest_outcomes, check_outcomes, class_reactive, hidden_events])
 		quit(0)
 
 

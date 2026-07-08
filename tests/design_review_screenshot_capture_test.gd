@@ -129,7 +129,8 @@ func _open_screen(main: Node, screen_id: String) -> void:
 			_prepare_run_state(main)
 			main.ui._show_event_screen({
 				"name": "Design review event",
-				"event_id": "cursed_altar",
+				# SCRUM-995: флагман нового пака (3 карточки, самые длинные тексты).
+				"event_id": "caravan_bandits",
 			})
 		"pause_menu":
 			_prepare_run_state(main)

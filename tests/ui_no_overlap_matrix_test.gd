@@ -417,7 +417,9 @@ func _open_event(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.ui._show_event_screen({
 		"name": "Тестовое событие",
-		"event_id": "cursed_altar",
+		# SCRUM-995: флагман нового пака (3 карточки, самые длинные тексты) —
+		# детерминированный стресс лейаута вместо удалённого cursed_altar.
+		"event_id": "caravan_bandits",
 	})
 
 

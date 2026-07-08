@@ -21,6 +21,16 @@ extends SceneTree
 #   combat             : base money*mult + base xp*mult - (risk_base[type] + (ehm-1)*RISK_DAMAGE_GOLD)
 #   random_outcomes    : среднее по исходам (равновероятны)
 #   check              : P_SUCCESS*success + (1-P_SUCCESS)*failure
+#
+# SCRUM-995 (новый пак из 12): модель расширена ключами схемы SCRUM-996 —
+#   damage_flat        : - dmg * DAMAGE_FLAT_GOLD (1 HP ≈ 0.3 GV: консистентно
+#                        с HEAL_FULL_GOLD=30 за 100% HP при ~100 HP ранней базы)
+#   shop_after         : + SHOP_ACCESS_GOLD (доступ к магазину посреди маршрута)
+#   shop_discount      : + discount * SHOP_DISCOUNT_GOLD (скидка на средний чек)
+#   post_combat        : полный учёт поддерживаемых рантаймом ключей
+#                        (stats/mods/heal + shop_after/shop_discount), а не только
+#                        stats+mods — иначе награда «лавка со скидкой за победу»
+#                        (caravan_bandits) занижалась бы до нуля.
 
 const EventData := preload("res://scripts/event_data.gd")
 
@@ -37,6 +47,9 @@ const RISK_DAMAGE_GOLD := 40.0
 const RISK_BASE := {"battle": 6.0, "elite": 12.0}
 const P_SUCCESS := 0.6
 const EPSILON := 0.01
+const DAMAGE_FLAT_GOLD := 0.3
+const SHOP_ACCESS_GOLD := 8.0
+const SHOP_DISCOUNT_GOLD := 50.0
 
 const PCT_MODS := [
 	"attack_speed_multiplier", "damage_multiplier", "xp_gain_multiplier",
@@ -131,13 +144,12 @@ func _is_risk(choice: Dictionary) -> bool:
 		if (o as Dictionary).get("combat") is Dictionary:
 			return true
 	# SCRUM-494: ветка с ЧИСТЫМ штрафом-модом (enemy_health_multiplier > 1.0) и БЕЗ
-	# боевой/артефактной/статовой добычи (напр. hot_spring/full_rest) — это НЕ
-	# рисковый выбор «риск ради апсайда», а безопасный хил с побочкой. После нерфа
-	# full_rest до штрафа 1.25 (SCRUM-494 AC) он сознательно слабее clean-хила
-	# quick_dip, поэтому не должен считаться «рисковой» веткой инварианта SCRUM-508
-	# (иначе безопасная пара hot_spring ложно проваливает risk>=safe). Зеркалит
-	# реконсиляцию в tools/route_economy_xp_model.gd::_branch_is_risk.
-	# Настоящие рисковые ветки уже помечены risk:true или несут combat.
+	# боевой/артефактной/статовой добычи — это НЕ рисковый выбор «риск ради
+	# апсайда», а безопасный хил с побочкой (исторический пример — hot_spring/
+	# full_rest легаси-пула; в паке SCRUM-995 таких веток нет, правило оставлено
+	# защитным). Зеркалит реконсиляцию в tools/route_economy_xp_model.gd::
+	# _branch_is_risk. Настоящие рисковые ветки уже помечены risk:true или несут
+	# combat (в т.ч. внутри random_outcomes).
 	return false
 
 
@@ -171,21 +183,40 @@ func _combat_gold(c: Dictionary) -> float:
 	return money + xp - risk
 
 
+# SCRUM-995: gold-value событийного магазина (shop_after открывает лавку посреди
+# маршрута; скидка удешевляет средний чек ~50 золота пропорционально).
+func _shop_gold(o: Dictionary) -> float:
+	if not bool(o.get("shop_after", false)):
+		return 0.0
+	return SHOP_ACCESS_GOLD + float(o.get("shop_discount", 0.0)) * SHOP_DISCOUNT_GOLD
+
+
+# SCRUM-995: post_combat учитывается по ВСЕМ поддерживаемым рантаймом ключам
+# (контракт event_data_contract_check: stats/mods/heal_percent/shop_after/
+# shop_discount; money/random_artifact в post_combat — мёртвые, их не моделируем).
+func _post_combat_gold(post: Dictionary) -> float:
+	var g := _stats_gold(post.get("stats", {}))
+	g += _mods_gold(post.get("mods", {}))
+	g += minf(float(post.get("heal_percent", 0.0)), HEAL_CAP) * HEAL_FULL_GOLD
+	g += _shop_gold(post)
+	return g
+
+
 func _outcome_gold(o: Dictionary) -> float:
 	var g := 0.0
 	g += float(o.get("money", 0.0))
 	g -= float(o.get("cost_money", 0.0))
 	g += minf(float(o.get("heal_percent", 0.0)), HEAL_CAP) * HEAL_FULL_GOLD
 	g -= float(o.get("health_percent_cost", 0.0)) * HEAL_FULL_GOLD
+	g -= float(o.get("damage_flat", 0.0)) * DAMAGE_FLAT_GOLD
 	g += _stats_gold(o.get("stats", {}))
 	g += _mods_gold(o.get("mods", {}))
+	g += _shop_gold(o)
 	if bool(o.get("random_artifact", false)):
 		g += ARTIFACT_GOLD
 	if o.get("combat") is Dictionary:
 		g += _combat_gold(o.get("combat"))
-		var post: Dictionary = o.get("post_combat", {})
-		g += _stats_gold(post.get("stats", {}))
-		g += _mods_gold(post.get("mods", {}))
+		g += _post_combat_gold(o.get("post_combat", {}))
 	return g
 
 
@@ -195,15 +226,15 @@ func _branch_ev(choice: Dictionary) -> float:
 	g += float(choice.get("money", 0.0))
 	g += minf(float(choice.get("heal_percent", 0.0)), HEAL_CAP) * HEAL_FULL_GOLD
 	g -= float(choice.get("health_percent_cost", 0.0)) * HEAL_FULL_GOLD
+	g -= float(choice.get("damage_flat", 0.0)) * DAMAGE_FLAT_GOLD
 	g += _stats_gold(choice.get("stats", {}))
 	g += _mods_gold(choice.get("mods", {}))
+	g += _shop_gold(choice)
 	if bool(choice.get("random_artifact", false)):
 		g += ARTIFACT_GOLD
 	if choice.get("combat") is Dictionary:
 		g += _combat_gold(choice.get("combat"))
-		var post: Dictionary = choice.get("post_combat", {})
-		g += _stats_gold(post.get("stats", {}))
-		g += _mods_gold(post.get("mods", {}))
+		g += _post_combat_gold(choice.get("post_combat", {}))
 	var ros: Array = choice.get("random_outcomes", [])
 	if not ros.is_empty():
 		var sum_ev := 0.0

@@ -2064,7 +2064,9 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	route_main.set("route_stage", 0)
 	route_main.set("route_nodes", [
 		[
-			{"type": "event", "name": "Event 1: Test Stone", "event_id": "hot_spring", "row": 0, "branch": 0, "next_branches": [0]},
+			# SCRUM-995: sudden_fork — первый выбор (safe_detour) мгновенный (без
+			# reveal-шага), allow_skip нет → Back задизейблен, как требует тест ниже.
+			{"type": "event", "name": "Event 1: Test Stone", "event_id": "sudden_fork", "row": 0, "branch": 0, "next_branches": [0]},
 			{"type": "battle", "name": "Battle 1: Test Road", "row": 0, "branch": 1, "next_branches": [0]},
 		],
 		[
@@ -2651,14 +2653,16 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	poor_event_player.set("money", 0)
 	event_main.combat._store_player_snapshot(poor_event_player)
 	poor_event_player.queue_free()
-	event_main.ui._show_event_screen({"name": "Недоступная лотерея", "event_id": "goblin_lottery"})
+	# SCRUM-995: платный первый выбор нового пула — night_market/pay_entry
+	# (легаси goblin_lottery удалён вместе со старым пулом).
+	event_main.ui._show_event_screen({"name": "Ночной рынок без гроша", "event_id": "night_market"})
 	await process_frame
 	var paid_event_choice := event_main.find_child("EventChoiceButton0", true, false) as Button
 	if paid_event_choice == null or not paid_event_choice.disabled or not paid_event_choice.tooltip_text.contains("Недостаточно золота"):
 		_fail("Expected unaffordable event choices to be disabled with an insufficient-gold tooltip.")
 		event_main.queue_free()
 		return
-	var lottery_event: Dictionary = EventData.event_by_id("goblin_lottery")
+	var lottery_event: Dictionary = EventData.event_by_id("night_market")
 	var lottery_choices: Array = lottery_event.get("choices", [])
 	if lottery_choices.is_empty() or bool(event_main.ui._apply_event_choice(lottery_choices[0])):
 		_fail("Expected direct activation of an unaffordable paid event choice to fail safely.")
@@ -2775,7 +2779,9 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	reveal_player.set("stats", reveal_stats)
 	reveal_main.combat._store_player_snapshot(reveal_player)
 	reveal_player.queue_free()
-	reveal_main.ui._show_event_screen({"name": "Тест reveal", "event_id": "training_dummies"})
+	# SCRUM-995: check-первый выбор нового пула — stone_guardian/hold_the_gate
+	# (легаси training_dummies удалён вместе со старым пулом).
+	reveal_main.ui._show_event_screen({"name": "Тест reveal", "event_id": "stone_guardian"})
 	await process_frame
 	var reveal_choice := reveal_main.find_child("EventChoiceButton0", true, false) as Button
 	if reveal_choice == null:
