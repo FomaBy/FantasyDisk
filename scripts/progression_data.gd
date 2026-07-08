@@ -262,10 +262,19 @@ static func _is_doctor_forbidden_sustain_reward(reward: Dictionary) -> bool:
 	return false
 
 
-static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
+static func is_reward_relevant(reward: Dictionary, character_id: String, ascension_level := 0, cross_class_ids: Array = []) -> bool:
 	if character_id == "doctor" and _is_doctor_forbidden_sustain_reward(reward):
 		return false
-	return true
+	# SCRUM-961 (artifact_system_matrix §1.4): классовые артефакты заперты гейтом
+	# «свой класс И мета-Возвышение >= requires_ascension». Пустой class_affinity =
+	# универсал (гейта нет). cross_class_ids — run-исключение «Украденного герба»
+	# (§5): перечисленные id проходят сквозь гейт независимо от класса/возвышения.
+	var affinity: Array = reward.get("class_affinity", []) as Array
+	if affinity.is_empty():
+		return true
+	if cross_class_ids.has(str(reward.get("id", ""))):
+		return true
+	return character_id in affinity and ascension_level >= int(reward.get("requires_ascension", 0))
 
 
 static func class_interpretation_text(character_id: String, stat_or_parameter_id: String) -> String:
@@ -1326,16 +1335,16 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	}
 
 
-static func reward_pool(character_id := "") -> Array:
+static func reward_pool(character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var rewards := []
 	for reward in STAT_REWARDS:
-		if character_id != "" and not is_reward_relevant(reward, character_id):
+		if character_id != "" and not is_reward_relevant(reward, character_id, ascension_level, cross_class_ids):
 			continue
 		var stat_reward: Dictionary = reward.duplicate(true)
 		stat_reward["kind"] = "stat"
 		rewards.append(stat_reward)
 	for artifact in ARTIFACTS:
-		if character_id != "" and not is_reward_relevant(artifact, character_id):
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
 			continue
 		var artifact_reward: Dictionary
 		if bool(artifact.get("rarity_scaling", false)):
@@ -1418,16 +1427,16 @@ static func unique_encounter_patterns() -> Dictionary:
 	return UNIQUE_ENCOUNTER_PATTERNS.duplicate(true)
 
 
-static func shop_items(route_stage := 0, character_id := "") -> Array:
+static func shop_items(route_stage := 0, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var items := []
 	for item in SHOP_ITEMS:
-		if character_id != "" and not is_reward_relevant(item, character_id):
+		if character_id != "" and not is_reward_relevant(item, character_id, ascension_level, cross_class_ids):
 			continue
 		var shop_item: Dictionary = item.duplicate(true)
 		shop_item["cost"] = stage_scaled_cost(int(shop_item.get("cost", 0)), route_stage)
 		items.append(shop_item)
 	for artifact in ARTIFACTS:
-		if character_id != "" and not is_reward_relevant(artifact, character_id):
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
 			continue
 		var shop_artifact: Dictionary
 		if bool(artifact.get("rarity_scaling", false)):
@@ -1453,11 +1462,11 @@ static func _elite_tier_depth_weight(tier: int, route_stage: int, scale: float) 
 	return 1.0
 
 
-static func elite_artifact_choices(route_stage: int, count := 3, character_id := "") -> Array:
+static func elite_artifact_choices(route_stage: int, count := 3, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var pool := []
 	var scale := stage_scale(route_stage)
 	for artifact in ARTIFACTS:
-		if character_id != "" and not is_reward_relevant(artifact, character_id):
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
 			continue
 		var candidate: Dictionary
 		if bool(artifact.get("rarity_scaling", false)):
@@ -1495,7 +1504,7 @@ static func elite_artifact_choices(route_stage: int, count := 3, character_id :=
 	return choices
 
 
-static func boss_completion_artifact_rewards(character_id := "") -> Array:
+static func boss_completion_artifact_rewards(character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var rewards := []
 	for artifact in ARTIFACTS:
 		var is_family := bool(artifact.get("rarity_scaling", false))
@@ -1503,7 +1512,7 @@ static func boss_completion_artifact_rewards(character_id := "") -> Array:
 		# плоские записи — как раньше, только tier >= 3.
 		if not is_family and int(artifact.get("tier", 1)) < 3:
 			continue
-		if character_id != "" and not is_reward_relevant(artifact, character_id):
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
 			continue
 		var reward: Dictionary = materialize_family_offer(artifact, 3) if is_family else artifact.duplicate(true)
 		reward["kind"] = "artifact"
@@ -1511,13 +1520,13 @@ static func boss_completion_artifact_rewards(character_id := "") -> Array:
 	return rewards
 
 
-static func boss_completion_artifact_choices(count := 3, character_id := "") -> Array:
+static func boss_completion_artifact_choices(count := 3, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	# SCRUM-873: награда за акт-босса — выбор 1 из `count` СУПЕРРЕДКИХ артефактов.
 	# «Суперредкие» = верхний тир пула (tier >= 3, boss-only оффер); внутри тира
 	# выборка равновероятная и БЕЗ дублей. Пул уже отфильтрован по релевантности
 	# классу в boss_completion_artifact_rewards; нейтральные артефакты добивают
 	# набор до count естественно (они проходят is_reward_relevant для всех).
-	var pool := boss_completion_artifact_rewards(character_id)
+	var pool := boss_completion_artifact_rewards(character_id, ascension_level, cross_class_ids)
 	var choices := []
 	while choices.size() < count and not pool.is_empty():
 		var index := randi_range(0, pool.size() - 1)
