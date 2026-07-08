@@ -80,3 +80,16 @@ Verification:
 - PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` (Godot dummy renderer emitted a non-fatal texture warning during screenshot capture; umbrella smoke printed `Runtime smoke test passed.`)
 
 Disk cleanup: transient Godot import cache removed before final report; task worktree removed after push to `origin/dev`.
+
+## QA-Вердикт
+Статус: PASSED
+Проверил: Claude QA (claude-qa-scrum886-20260708), 2026-07-08.
+Метод: холодный worktree от origin/dev (--import), фокус-смоуки через godot_gate.py (fdengine, SLOTS=1).
+Результат:
+- PASS contact_stuck_attack_deadzone_test.gd (2/2 прогона, стабильно зелёный — ключевой регресс)
+- PASS combat_target_query_cache_test.gd
+- PASS melee_weapon_targeting_test.gd
+- PASS runtime_smoke_weapon_mechanics_test.gd
+- PASS global_damage_balance_smoke_test.gd (51 пара; combined ±25%/solo ±20%/CCT ±30%, худшее CCT +22%)
+- PASS runtime_smoke_test.gd (изолированный --user-data-dir; единственный ERROR — известный non-fatal dummy-renderer screenshot warning, тест завершился "passed")
+Коммиты 4c0acbd8, 59060201 — ancestor origin/dev. Вердикт: PASS.
