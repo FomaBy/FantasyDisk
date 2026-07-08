@@ -16,6 +16,10 @@ const TRANSIENT_RUN_MODIFIER_KEYS := [
 	"riff_streak_active",
 	"reactor_heat_active",
 	"ultimate_berserk_active",
+	# SCRUM-961: runtime-гейты классовых артефактов (молитва/стаки ярости).
+	"prayer_opening_active",
+	"rage_hit_damage_bonus",
+	"rage_hit_attack_speed_bonus",
 ]
 const TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS := {
 	"attack_speed_multiplier": 1.35,
@@ -182,6 +186,11 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 			game.apply_ascension_bonuses(game.current_player)
 		else:
 			_restore_player_snapshot(game.current_player)
+
+	# SCRUM-961 (on_battle_start): триггеры старта боя (prayer_beads) — диспетчеризация
+	# по образцу on_room_clear/_on_enemy_died; player сам проверяет свои ключи.
+	if game.current_player.has_method("on_battle_start"):
+		game.current_player.on_battle_start()
 
 	if game.current_player.has_signal("died"):
 		game.current_player.died.connect(func() -> void:

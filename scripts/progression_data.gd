@@ -1210,9 +1210,17 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("magic_damage_multiplier", 1.0))
+	# SCRUM-961 «Четки молитвы»: открывающий бафф первых секунд боя усиливает
+	# магический канал (prayer_opening_active ставит player.on_battle_start).
+	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0))
 	var sound_damage_multiplier := pow(run_sound_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("sound_damage_multiplier", 1.0))
 	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
 	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
+	# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары — пишет player
+	# ._refresh_rage_hit_modifiers по образцу kill_momentum; капы = пик 5 стаков.
+	var rage_hit_damage_bonus := clampf(float(run_modifiers.get("rage_hit_damage_bonus", 0.0)), 0.0, 0.10)
+	var rage_hit_attack_speed_bonus := clampf(float(run_modifiers.get("rage_hit_attack_speed_bonus", 0.0)), 0.0, 0.075)
+	damage_multiplier *= 1.0 + rage_hit_damage_bonus
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
 	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
@@ -1225,9 +1233,13 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		+ float(run_modifiers.get("swarm_damage_bonus", 0.0)) * float(run_modifiers.get("swarm_fraction", 0.0))
 	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
 	attack_speed_multiplier *= 1.0 + kill_momentum_attack_speed_bonus
+	attack_speed_multiplier *= 1.0 + rage_hit_attack_speed_bonus
 	# SCRUM-834a: условный keystone «стойка → скорострельность» (soldier «Шквал»).
 	# Гейт stance_active ставит player._update_conditional_keystones; спит вне стойки.
 	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0))
+	# SCRUM-961 «Медиатор овердрайва»: темп-бонус активной рифф-серии (riff_streak_active
+	# ставит player._update_meta_keystone_runtime; урон-бонус серии — в meta_damage_multiplier).
+	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) * float(run_modifiers.get("riff_streak_active", 0.0))
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))

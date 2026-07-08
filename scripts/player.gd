@@ -155,6 +155,11 @@ const SWARM_SCAN_INTERVAL := 0.2          # период скана «гущи �
 const SWARM_RADIUS := 240.0               # радиус подсчёта врагов «рядом»
 const SWARM_CAP := 8                       # врагов до пика бонуса «гуща боя»
 const RUSH_WINDOW_TIME := 2.0             # длительность окна урона после уклонения, сек
+# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары (+2% урона, +1.5% темпа за стак).
+const RAGE_HIT_MAX_STACKS := 5
+const RAGE_HIT_STACK_DURATION := 4.0
+const RAGE_HIT_DAMAGE_PER_STACK := 0.02
+const RAGE_HIT_ATTACK_SPEED_PER_STACK := 0.015
 # SCRUM-500: триггерные артефакты — латчи/кулдауны/счётчики (не часть run_modifiers,
 # поэтому сбрасываются явно в configure_character и при run-start).
 var _crit_burst_tween: Tween = null      # «Импульс Крита»: tween снятия бафа скорости
@@ -174,6 +179,13 @@ var _reactor_heat_active := false
 var _shadow_invisible_left := 0.0
 var _riff_streak_time := 0.0
 var _riff_streak_active := false
+# SCRUM-961: латчи классовых артефактов (не run_modifiers — сброс в configure_character).
+var _rage_hit_stacks := 0                # «Багровая рукоять»: стаки ярости за melee-удары
+var _rage_hit_time_left := 0.0           # окно жизни стаков ярости
+var _repair_charge := 0.0                # «Ремонтная подпрограмма»: накопленный поглощённый урон
+var _triage_primed := false              # «Протокол триажа»: заряжен следующий лечащий импульс
+var _triage_cooldown_left := 0.0         # перезаряд триажа
+var _prayer_opening_tween: Tween = null  # «Четки молитвы»: твин снятия открывающего баффа
 var _vampiric_heal_budget := 0.0
 # SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
 # drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
@@ -263,6 +275,15 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_shadow_invisible_left = 0.0
 	_riff_streak_time = 0.0
 	_riff_streak_active = false
+	# SCRUM-961: сброс латчей классовых артефактов.
+	_rage_hit_stacks = 0
+	_rage_hit_time_left = 0.0
+	_repair_charge = 0.0
+	_triage_primed = false
+	_triage_cooldown_left = 0.0
+	if _prayer_opening_tween != null and _prayer_opening_tween.is_valid():
+		_prayer_opening_tween.kill()
+	_prayer_opening_tween = null
 	# SCRUM-834: сброс гейтов условных keystone.
 	_hurt_active = false
 	_stance_active = false
@@ -440,6 +461,9 @@ func _physics_process(_delta: float) -> void:
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
 	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
 	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
+	# SCRUM-961: перезаряд триажа + окно стаков ярости.
+	_triage_cooldown_left = max(_triage_cooldown_left - _delta, 0.0)
+	_update_rage_hit_stacks(_delta)
 	_update_kill_growth(_delta)
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down", _gamepad_deadzone())
 	var manual_direction := direction
@@ -646,10 +670,15 @@ func take_damage(amount: float, _source := "") -> bool:
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
 		defense = clampf(defense + float(run_modifiers.get("bastion_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше (общий кэп).
+	if _low_hp_active and float(run_modifiers.get("lowhp_defense_bonus", 0.0)) > 0.0:
+		defense = clampf(defense + float(run_modifiers.get("lowhp_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
 	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
 	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
+	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
+	_charge_repair_subroutine(defended_amount - absorbed_amount)
 	var final_damage := absorbed_amount * (1.0 - defense)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
@@ -702,6 +731,14 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	var radius := maxf(burst_radius, 42.0)
 	AttackVfx.ring_pulse(parent, target.global_position, radius, Color(0.70, 0.20, 1.0, 0.38), false)
 	AttackVfx.slash(parent, (target.global_position - global_position).normalized(), minf(radius * 1.4, 180.0), Color(0.72, 0.22, 1.0, 0.34)).global_position = target.global_position
+	# SCRUM-961 «Теневой двойник»: при ключе > 0 росчерк двойника добивает область
+	# долей derived damage (без ключа бурст остаётся чистым VFX, как раньше).
+	var echo_ratio := float(run_modifiers.get("crit_shadow_echo_damage", 0.0))
+	if echo_ratio > 0.0:
+		var echo_damage := maxf(float(derived_parameters.get("damage", 10.0)) * echo_ratio, 1.0)
+		for other_node in TARGET_QUERY.in_radius(self, target.global_position, radius):
+			if other_node.has_method("take_damage"):
+				other_node.take_damage(echo_damage)
 	var invis_time := float(run_modifiers.get("shadow_burst_invisibility_time", 0.0))
 	if invis_time > 0.0:
 		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
@@ -903,9 +940,18 @@ func _update_meta_keystone_runtime(delta: float) -> void:
 		_shadow_invisible_left = maxf(_shadow_invisible_left - delta, 0.0)
 	if _riff_streak_time > 0.0:
 		_riff_streak_time = maxf(_riff_streak_time - delta * 0.62, 0.0)
-	var riff_active := _riff_streak_time >= 1.0 and float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0
+	var riff_active := _riff_streak_time >= 1.0 and (float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) > 0.0)
+	var riff_flipped := riff_active != _riff_streak_active
 	_riff_streak_active = riff_active
 	run_modifiers["riff_streak_active"] = 1.0 if riff_active else 0.0
+	# SCRUM-961 «Медиатор овердрайва»: темп-бонус серии живёт в derived attack_speed —
+	# при смене состояния серии пересчитываем скейл и интервалы оружия (урон-бонус
+	# консюмится в meta_damage_multiplier на лету и пересчёта не требует).
+	if riff_flipped and float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) > 0.0:
+		_apply_stat_scaling(false, max_health)
+		for weapon in _equipped_weapons():
+			_apply_weapon_scaling(weapon)
 	if float(run_modifiers.get("reactor_heat_damage_bonus", 0.0)) <= 0.0:
 		_reactor_heat = 0.0
 		_reactor_heat_active = false
@@ -1004,7 +1050,26 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	if float(run_modifiers.get("surgical_close_damage_bonus", 0.0)) > 0.0 and mode == "stab_flurry" and enemy != null and is_instance_valid(enemy):
 		if global_position.distance_squared_to(enemy.global_position) <= 132.0 * 132.0:
 			multiplier *= 1.0 + float(run_modifiers.get("surgical_close_damage_bonus", 0.0))
+	# SCRUM-961 «Метка охотника»: обездвиженные (root/stagger) и отброшенные
+	# (активный нокбэк) враги получают дополнительный урон.
+	if float(run_modifiers.get("hunter_mark_bonus", 0.0)) > 0.0 and enemy != null and is_instance_valid(enemy) and _is_enemy_hunter_marked(enemy):
+		multiplier *= 1.0 + float(run_modifiers.get("hunter_mark_bonus", 0.0))
+	# SCRUM-961 «Дальнобойный прицел»: +3% урона за каждые 100px до цели, кап +30%.
+	if float(run_modifiers.get("longshot_scaling", 0.0)) > 0.0 and enemy != null and is_instance_valid(enemy):
+		var longshot_bonus := minf(global_position.distance_to(enemy.global_position) / 100.0 * 0.03, 0.30)
+		multiplier *= 1.0 + longshot_bonus * float(run_modifiers.get("longshot_scaling", 0.0))
 	return multiplier
+
+
+# SCRUM-961 «Метка охотника»: цель считается меченой при жёстком контроле
+# (статус со speed_multiplier <= 0.5 — root/паралич, мягкие слоу не в счёт)
+# или пока по ней ещё гуляет импульс нокбэка (синергия impact_string/root_snare).
+func _is_enemy_hunter_marked(enemy: Node2D) -> bool:
+	for status in StatusEffects.snapshot(enemy).values():
+		if float((status as Dictionary).get("speed_multiplier", 1.0)) <= 0.5:
+			return true
+	var knockback_raw = enemy.get("_knockback_velocity")
+	return knockback_raw is Vector2 and (knockback_raw as Vector2).length_squared() > 40.0 * 40.0
 
 
 func meta_extra_projectiles(context := {}) -> int:
@@ -1199,13 +1264,19 @@ func _update_low_hp_state() -> void:
 	# но и «Второму Дыханию» (lowhp_regen_bonus). Трекаем порог, если есть любой low-HP флаг.
 	var has_low_hp_artifact := float(run_modifiers.get("low_hp_damage_bonus", 0.0)) > 0.0 \
 		or float(run_modifiers.get("lowhp_regen_bonus", 0.0)) > 0.0 \
-		or float(run_modifiers.get("lowhp_guard", 0.0)) > 0.0
+		or float(run_modifiers.get("lowhp_guard", 0.0)) > 0.0 \
+		or float(run_modifiers.get("lowhp_defense_bonus", 0.0)) > 0.0 \
+		or float(run_modifiers.get("triage_heal_burst", 0.0)) > 0.0
 	var active := has_low_hp_artifact and health < max_health * 0.3
 	# Перевооружаем одноразовый щит «Рубеж Стража», когда HP поднялось выше порога.
 	if not active and max_health > 0.0 and health >= max_health * 0.3:
 		_lowhp_guard_used = false
 	if active == _low_hp_active:
 		return
+	# SCRUM-961 «Протокол триажа»: падение ниже порога заряжает следующий лечащий
+	# импульс оружия (консюм в apply_drain_heal), перезаряд 12с.
+	if active and float(run_modifiers.get("triage_heal_burst", 0.0)) > 0.0 and _triage_cooldown_left <= 0.0:
+		_triage_primed = true
 	_low_hp_active = active
 	run_modifiers["low_hp_active"] = 1.0 if active else 0.0
 	_apply_stat_scaling(false, max_health)
@@ -1421,7 +1492,7 @@ func _apply_regeneration(delta: float) -> void:
 		regeneration += float(run_modifiers.get("lowhp_regen_bonus", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
-	health = minf(health + regeneration * float(run_modifiers.get("healing_multiplier", 1.0)) * delta, max_health)
+	health = minf(health + regeneration * _effective_healing_multiplier() * delta, max_health)
 
 
 func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_context := {}) -> void:
@@ -1436,7 +1507,7 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * ProgressionData.VAMPIRIC_DAMAGE_HEAL_RATIO
 		var vampiric_heal := minf(raw_heal, _vampiric_heal_budget)
 		_vampiric_heal_budget -= vampiric_heal
-		health = minf(health + vampiric_heal * float(run_modifiers.get("healing_multiplier", 1.0)), max_health)
+		health = minf(health + vampiric_heal * _effective_healing_multiplier(), max_health)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)
@@ -1462,8 +1533,14 @@ func _apply_meta_keystone_hit_effects(enemy: Node2D, dealt_damage: float, contex
 		_apply_meta_crit_execute(enemy, context)
 	if _is_robot_context(context) and dealt_damage > 0.0 and float(run_modifiers.get("reactor_heat_damage_bonus", 0.0)) > 0.0:
 		_reactor_heat = clampf(_reactor_heat + 0.16, 0.0, 1.0)
-	if bool(context.get("is_sound", false)) and dealt_damage > 0.0 and float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0:
+	if bool(context.get("is_sound", false)) and dealt_damage > 0.0 and (float(run_modifiers.get("riff_streak_damage_bonus", 0.0)) > 0.0 \
+			or float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) > 0.0):
 		_riff_streak_time = minf(_riff_streak_time + 0.52, 1.8)
+	# SCRUM-961 «Багровая рукоять»: melee-удары копят стаки ярости (кап 5, окно 4с).
+	if dealt_damage > 0.0 and float(run_modifiers.get("rage_hit_stacks", 0.0)) > 0.0 and _is_melee_hit_context(context):
+		_rage_hit_stacks = mini(_rage_hit_stacks + 1, RAGE_HIT_MAX_STACKS)
+		_rage_hit_time_left = RAGE_HIT_STACK_DURATION
+		_refresh_rage_hit_modifiers()
 
 
 func _apply_meta_crit_execute(enemy: Node2D, context: Dictionary) -> void:
@@ -1521,9 +1598,15 @@ func _is_robot_context(context: Dictionary) -> bool:
 func apply_drain_heal(amount: float) -> float:
 	if amount <= 0.0 or health <= 0.0 or _drain_heal_budget <= 0.0:
 		return 0.0
+	# SCRUM-961 «Протокол триажа»: примированный после падения за порог лечащий
+	# импульс усилен ×(1 + triage_heal_burst); бюджет drain-канала уважается.
+	if _triage_primed:
+		_triage_primed = false
+		_triage_cooldown_left = 12.0
+		amount *= 1.0 + float(run_modifiers.get("triage_heal_burst", 0.0))
 	var allowed := minf(amount, _drain_heal_budget)
 	var before := health
-	var combat_healing_mult := float(run_modifiers.get("healing_multiplier", 1.0)) * maxf(0.05, 1.0 + float(run_modifiers.get("medkit_healing_mult", 0.0)))
+	var combat_healing_mult := _effective_healing_multiplier() * maxf(0.05, 1.0 + float(run_modifiers.get("medkit_healing_mult", 0.0)))
 	health = minf(health + allowed * combat_healing_mult, max_health)
 	var healed := health - before
 	# Списываем из бюджета по «сырому» allowed (до healing_multiplier и до клампа об
@@ -2211,6 +2294,98 @@ func _refresh_kill_growth_modifiers(refresh_stats := true) -> void:
 			_apply_weapon_scaling(weapon)
 
 
+# SCRUM-961 «Багровая рукоять»: melee = удары berserk_weapon (хиты без attack_mode
+# в контексте) и ближние режимы class_weapon (колющий веер / рывок со спины).
+func _is_melee_hit_context(context: Dictionary) -> bool:
+	var mode := str(context.get("attack_mode", ""))
+	return mode == "" or mode in ["stab_flurry", "shadow_backstab"]
+
+
+# SCRUM-961 «Багровая рукоять»: консюм по образцу kill_momentum_* — player пишет
+# готовые бонусы в run_modifiers, derived_parameters клампит и применяет.
+func _refresh_rage_hit_modifiers(refresh_stats := true) -> void:
+	var stacks := _rage_hit_stacks if float(run_modifiers.get("rage_hit_stacks", 0.0)) > 0.0 else 0
+	run_modifiers["rage_hit_damage_bonus"] = float(stacks) * RAGE_HIT_DAMAGE_PER_STACK
+	run_modifiers["rage_hit_attack_speed_bonus"] = float(stacks) * RAGE_HIT_ATTACK_SPEED_PER_STACK
+	if refresh_stats:
+		_apply_stat_scaling(false, max_health)
+		for weapon in _equipped_weapons():
+			_apply_weapon_scaling(weapon)
+
+
+func _update_rage_hit_stacks(delta: float) -> void:
+	if _rage_hit_stacks <= 0:
+		return
+	_rage_hit_time_left = maxf(_rage_hit_time_left - delta, 0.0)
+	if _rage_hit_time_left > 0.0:
+		return
+	_rage_hit_stacks = 0
+	_refresh_rage_hit_modifiers()
+
+
+# SCRUM-961 «Ремонтная подпрограмма»: 50% (repair_charge_ratio) реально поглощённого
+# absorb'ом урона копится; при заряде 8% max HP — +3 absorb на 5с (по образцу
+# meta_apply_priest_ward: флет в run_modifiers + твин снятия по owner_id).
+func _charge_repair_subroutine(absorbed: float) -> void:
+	var ratio := float(run_modifiers.get("repair_charge_ratio", 0.0))
+	if ratio <= 0.0 or absorbed <= 0.0 or max_health <= 0.0:
+		return
+	_repair_charge += absorbed * ratio
+	if _repair_charge < max_health * 0.08:
+		return
+	_repair_charge = 0.0
+	var added_absorb := 3.0
+	run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + added_absorb
+	_apply_stat_scaling(false, max_health)
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 130.0, Color(0.55, 0.95, 1.0, 0.50), false)
+	var owner_id := get_instance_id()
+	var repair_tween := create_tween()
+	repair_tween.tween_interval(5.0)
+	repair_tween.tween_callback(func() -> void:
+		var current_owner := instance_from_id(owner_id) as Node
+		if current_owner == null:
+			return
+		var modifiers_raw = current_owner.get("run_modifiers")
+		if modifiers_raw is Dictionary:
+			var modifiers: Dictionary = modifiers_raw
+			modifiers["absorb_flat"] = maxf(0.0, float(modifiers.get("absorb_flat", 0.0)) - added_absorb)
+		if current_owner.has_method("_apply_stat_scaling"):
+			current_owner.call("_apply_stat_scaling", false, current_owner.get("max_health"))
+	)
+
+
+# SCRUM-961 (on_battle_start): «Четки молитвы» — открывающий бафф первых 6с боя
+# (+магический урон и +исходящее лечение через prayer_opening_active-гейт).
+# Диспетчеризуется combat_director._start_combat по образцу on_room_clear/on_kill.
+func on_battle_start() -> void:
+	if float(run_modifiers.get("prayer_opening_power", 0.0)) <= 0.0:
+		return
+	run_modifiers["prayer_opening_active"] = 1.0
+	_apply_stat_scaling(false, max_health)
+	for weapon in _equipped_weapons():
+		_apply_weapon_scaling(weapon)
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 160.0, Color(1.0, 0.95, 0.62, 0.45), false)
+	if _prayer_opening_tween != null and _prayer_opening_tween.is_valid():
+		_prayer_opening_tween.kill()
+	_prayer_opening_tween = create_tween()
+	_prayer_opening_tween.tween_interval(6.0)
+	_prayer_opening_tween.tween_callback(func() -> void:
+		run_modifiers["prayer_opening_active"] = 0.0
+		_apply_stat_scaling(false, max_health)
+		for weapon in _equipped_weapons():
+			_apply_weapon_scaling(weapon)
+	)
+
+
+# SCRUM-961: множитель исходящего лечения = healing_multiplier забега × открывающая
+# молитва (prayer_beads, активна только первые секунды боя).
+func _effective_healing_multiplier() -> float:
+	return float(run_modifiers.get("healing_multiplier", 1.0)) \
+		* (1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0)))
+
+
 func _apply_dot_death_spread(enemy: Node2D) -> void:
 	var extra_duration := float(run_modifiers.get("dot_death_spread_duration", 0.0))
 	if extra_duration <= 0.0 or enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
@@ -2293,7 +2468,7 @@ func spend_money(amount: int) -> bool:
 
 func heal_percent(percent: float) -> void:
 	var before := health
-	health = min(max_health, health + max_health * percent * float(run_modifiers.get("healing_multiplier", 1.0)))
+	health = min(max_health, health + max_health * percent * _effective_healing_multiplier())
 	if health > before + 0.01:
 		_show_heal_vfx()
 		var healed := health - before
