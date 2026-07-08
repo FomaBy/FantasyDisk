@@ -1,7 +1,7 @@
 # Унификация UI под стиль «Атласа героев»: выбор персонажа, настройки, кодекс, релиз-ноты
 
 - Jira: SCRUM-879
-- Статус: in_progress
+- Статус: done
 - Контур: Claude
 - Owner: Claude Fable 5 (интерактивный чат пользователя)
 - Thread: claude-fable5-ui-unify-20260708
@@ -105,3 +105,35 @@ patch_notes smoke); прогнать runtime_smoke + ui_no_overlap_matrix + focu
 ## Прогресс
 
 - 2026-07-08: разведка (3 Explore-агента), спека, план параллелизации — Claude Fable 5.
+- 2026-07-08: кит atlas_style сгенерирован (OpenAI 4 фона 2560×1440 + PixelLab пьедестал/
+  разделитель/3 эмблемы, alpha-cleanup); фундамент `_unified_*` влит (b87bbaf8).
+- 2026-07-08: 4 параллельных субагента в worktree; ветки влиты последовательно:
+  релиз-ноты (31c25b64), выбор героя (8ea9f197+338ece20), настройки v1 (1c4d2a63+89e41ee1),
+  кодекс (0eec5f12..e669fdf8; −700 строк мёртвого v2-движка).
+- 2026-07-08: фидбек пользователя «настройки/кодекс не обновлены» → вторая итерация
+  настроек (c248ab84): v6-модалка удалена целиком, полноэкранный атлас-шелл
+  (safe-зона, кожаная контент-панель, шапка чип+Назад, ряд табов, футер Применить/
+  Вернуть, полая рама поверх); кодекс был уже готов в ветке — влит.
+- 2026-07-08: полный QA на объединённом dev + windowed-превью (build/qa/scrum879/,
+  копии в docs/design/previews/atlas_style_*). Всё запушено в origin/dev.
+
+## QA-Вердикт
+
+- Статус: PASSED
+- Дата: 2026-07-08, судья: Claude Fable 5 (оркестратор SCRUM-879)
+- Прогоны на объединённом dev (все через tools/godot_gate.py, EXIT=0):
+  runtime_smoke_test PASS; ui_no_overlap_matrix_test PASS (7 вьюпортов
+  1152×648…3840×2160); hero_select_pixellab_layout_test PASS (5 вьюпортов,
+  15 классов направленных превью); gamepad_settings_rebind_test PASS;
+  patch_notes_smoke_test PASS; gamepad_menu_focus_test PASS;
+  runtime_smoke_ui_test PASS; codex_data_smoke_test PASS. В ветках агентов
+  дополнительно: video_settings_apply_test, game_settings_smoke_test,
+  gamepad_full_flow_smoke_test — PASS.
+- Визуальная приёмка скриншотов 2560×1440: рама не перекрыта контентом,
+  растяжек нет (нативы кита/9-slice/KEEP_ASPECT), кнопки — единый глобальный
+  кит, поля/бинды/чекбоксы/слайдеры v6 — санкционированное исключение.
+- Превью: docs/design/previews/atlas_style_{hero_select,settings,codex,patch_notes}_2560x1440.png,
+  ректы: build/qa/scrum879/atlas_style_rects.md.
+- Disk cleanup: removed /private/tmp/fsd_wt_scrum879/{hero,settings,codex,notes,settings2}
+  (worktree + ветки после влития), удалены 7 Finder-дублей « 2.*»; .godot-кэши
+  worktree удалены вместе с ними.
