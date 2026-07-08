@@ -37,6 +37,11 @@ const SCREENS := [
 		"nodes": ["PatchNotesScreen", "PatchNotesTitleChip", "PatchNotesPanel",
 			"PatchNotesBackButton", "PatchNotesFrame", "UnifiedBackground_patch_notes"],
 	},
+	{
+		"slug": "atlas",
+		"nodes": ["AtlasScreen", "AtlasHeader", "AtlasTabConstellation", "AtlasEmblemBadge",
+			"AtlasTabGuild", "AtlasStardustBadge", "AtlasBackButton", "AtlasFrame"],
+	},
 ]
 
 
@@ -66,6 +71,8 @@ func _show_screen(main: Node, slug: String) -> void:
 			main.get("ui").call("_show_codex_screen")
 		"patch_notes":
 			main.get("ui").call("_show_patch_notes_screen")
+		"atlas":
+			main.get("ui").call("_show_atlas_screen")
 
 
 func _capture_at_size(viewport_size: Vector2i, qa_dir: String, dump_lines: PackedStringArray) -> void:
