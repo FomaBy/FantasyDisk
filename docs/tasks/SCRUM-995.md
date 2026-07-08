@@ -1,6 +1,6 @@
 # Events Content: полированный стартовый пак событий вместо легаси-пула
 
-Статус: in_progress
+Статус: done
 Приоритет: p1
 Роль: Back-end (контент/баланс)
 Версия: 0.2.1
@@ -93,3 +93,63 @@ runtime_smoke «≥10»). Состав пака закреплён оркест�
 ## Definition of Done
 
 Зелёный гейт → push в origin/dev → Jira «Контроль качества» + комментарий → зеркало done.
+
+## Итог
+
+Пак из 12 событий целиком заменил легаси-пул из 29; запушено в origin/dev тремя
+коммитами: **036a71d7** (пул `scripts/event_data.gd`), **436ebbe6** (тесты),
+**a9e912ec** (баланс-док).
+
+**Состав пака (все id из закреплённой таблицы, у всех `tags {acts:[], biomes:[]}`,
+ровно 3 выбора):**
+- `caravan_bandits` — флагман: вступиться (бой 1.15 → +1 Лид + `shop_after` со
+  скидкой 25%), встать за бандитов (бой 1.22, золото ×1.75 → +1 Сила + проклятие
+  +6% HP врагов), ограбить (чек Лов 7: успех +45 зол без боя / провал
+  `damage_flat` 10 + бой);
+- `sudden_fork` (hazard-узел) — обход (золото+хил) / срез (бой) / чек Воспр 6;
+- `sacrifice_altar` (altar-узел, `allow_skip: true`) — кровь/плоть (HP → статы+моды)
+  и золотой выкуп (26 зол → статы+защита);
+- `night_market` — `shop_after` без боя: платный вход 20 зол, чек Воспр 7
+  (магазин + подарок + скидка 15% / `damage_flat` 8), уйти;
+- `cursed_chapel` — hidden-молитва (2 честных исхода), чек Сила 8 (артефакт /
+  проклятие+бой), безопасный обыск;
+- `gilded_gambler` — 2 из 3 выборов hidden (ставки 10/25 зол, 50/50 c честными
+  `outcome_text`, «ничего» при провале), чек Воспр 8;
+- `wounded_mercenary` — мораль: помочь (18 зол → Лид+призыв), обобрать
+  (+26 зол, −1 Знание), пройти мимо (ничего);
+- `stone_guardian` — класс-реактив №1: чеки Вынос 7 / Инт 7 / Сила 9, бой при
+  провале любого;
+- `heroes_graveyard` — риск/`random_outcomes`: артефакт vs урон+бой(post_combat
+  +1 Вынос), почтение, чек Знание 7;
+- `old_well` — hidden-монетка (золото/хил/«ничего»), вода (хил), чек Лов 8 →
+  артефакт;
+- `war_drums_camp` — elite-бой 1.12 (зол ×1.6, xp ×1.3) c `post_combat` (+1 Сила,
+  +1 Лид, +6% урона), обход с потерей 6% HP, чек-диверсия Лов 8;
+- `fallen_star` — класс-реактив №2 (Инт 7 / Сила 8), осколок-артефакт, статы за
+  HP-цену.
+
+Hidden-выборы в 3 событиях (chapel/gambler×2/well), у всех исходов веток check —
+`outcome_text`, difficulty 6–9, mods только из VALID_MODS, весь копирайт русский
+в лимитах спеки.
+
+**EV-сводка (модель `event_risk_reward_ev_test`, расширена damage_flat/shop/
+post_combat):** инвариант risk ≥ safe на 4 парах — caravan +23.9, fork +33.8,
+graveyard +12.8, war_drums +39.0 GV (0 нарушений); smoke-инвариант апсайда —
+6 пар. Полная таблица 36 выборов × EV × риск-уровень —
+`progression_balance.md` §Random Events EV.
+
+**Тесты:** contract_check — пул 12, ровно 3 выбора, обязательные tags, счётчик
+hidden ≥3, гард post_combat на мёртвые ключи (money/random_artifact рантайм
+игнорирует); пороги покрытия НЕ ослаблены (combat 11≥3, reward 8≥3, rest 3≥1,
+check 13≥2, class_reactive 2≥2). event_data_smoke — hidden-карточки валидируются
+по `unknown_hint` (его показывает UI вместо description). runtime_smoke —
+минимальные правки событийного блока: легаси-id → night_market (платный первый
+выбор), stone_guardian (reveal-чек), sudden_fork (мгновенный первый выбор);
+матрица и design_review-капчер → caravan_bandits. Схема-коммент event_data
+уточнён: post_combat поддерживает только stats/mods/heal_percent (+shop_after/
+shop_discount).
+
+**Гейт:** event_data_contract_check ✓, event_data_smoke ✓, event_risk_reward_ev ✓,
+event_outcomes_runtime ✓, runtime_smoke ✓✓ (два чистых подряд; один
+промежуточный FAIL — известный нагрузочный флейк автосейв-блока под параллельным
+флотом, вне событийного кода), ui_no_overlap_matrix ✓ (трогался — прогнан).
