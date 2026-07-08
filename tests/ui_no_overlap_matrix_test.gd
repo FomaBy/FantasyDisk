@@ -78,11 +78,13 @@ func _initialize() -> void:
 		# id сохранены ради непрерывности дампов scrum330/design-review.
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
-			"PauseEndRunButton", "HeroCard", "BaseStatsList", "DerivedStatsGroups",
+			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
+			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
-			"PauseEndRunButton", "HeroCard", "BaseStatsList", "DerivedStatsGroups",
+			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
+			"DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
 			"HS4PortraitFrame", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",
@@ -546,6 +548,16 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected derived stat label/value font sizes >= 15/17 for SCRUM-839 readability." % context
 			if damage_icon.custom_minimum_size.x < 46.0 or damage_icon.custom_minimum_size.y < 46.0:
 				return "%s: expected derived stat icons >= 46px for SCRUM-839 readability." % context
+			# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс)
+			# с тултипом; ряд призывов только у призывного кита (berserk+sword — нет).
+			var survival_hp := main.find_child("SurvivalStatRow_health_point", true, false) as Control
+			if survival_hp == null or survival_hp.tooltip_text == "":
+				return "%s: expected the hero card Survival block to expose the HP row with a tooltip (SCRUM-890)." % context
+			var survival_hp_value := main.find_child("SurvivalStatValue_health_point", true, false) as Label
+			if survival_hp_value == null or not survival_hp_value.text.contains("/"):
+				return "%s: expected the Survival HP row to show current/max HP." % context
+			if main.find_child("SurvivalStatRow_summon_amount", true, false) != null:
+				return "%s: expected no summon row for a non-summoning kit (berserk+sword)." % context
 		"combat_hud":
 			if main.find_child("CharacterStatsHud", true, false) != null:
 				return "%s: SCRUM-671 essential-only HUD must not show CharacterStatsHud." % context

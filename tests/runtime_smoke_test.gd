@@ -1127,6 +1127,30 @@ func _initialize() -> void:
 	if base_stats_list.get_child_count() != UIIconRegistry.BASE_STAT_IDS.size():
 		_fail("Expected the hero card to list one compact row per base stat.")
 		return
+	# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс),
+	# Защита, Уворот, Регенерация; ряд «Призывы» ТОЛЬКО у призывного кита
+	# (berserk+sword — не призыватель, канон: ProgressionData.weapon_archetype).
+	var survival_list := pause_menu.find_child("SurvivalStatsList", true, false) as VBoxContainer
+	var survival_title := pause_menu.find_child("SurvivalTitle", true, false) as Label
+	if survival_list == null or survival_title == null:
+		_fail("Expected the hero card Survival block (title + rows, SCRUM-890).")
+		return
+	if survival_list.get_child_count() != 4:
+		_fail("Expected 4 Survival rows for a non-summoning kit, got %d." % survival_list.get_child_count())
+		return
+	if pause_menu.find_child("SurvivalStatRow_summon_amount", true, false) != null:
+		_fail("Expected no summon row in Survival for berserk+sword.")
+		return
+	var survival_hp_row := pause_menu.find_child("SurvivalStatRow_health_point", true, false) as Control
+	var survival_hp_value := pause_menu.find_child("SurvivalStatValue_health_point", true, false) as Label
+	if survival_hp_row == null or survival_hp_row.tooltip_text == "" or survival_hp_value == null or not survival_hp_value.text.contains("/"):
+		_fail("Expected the Survival HP row to show current/max HP with a tooltip.")
+		return
+	for survival_row_name in ["SurvivalStatRow_defense", "SurvivalStatRow_dodge", "SurvivalStatRow_regeneration"]:
+		var survival_row := pause_menu.find_child(survival_row_name, true, false) as Control
+		if survival_row == null or survival_row.tooltip_text == "":
+			_fail("Expected Survival row %s with a hover tooltip." % survival_row_name)
+			return
 	# SCRUM-890 вариант Б: ровно 4 секции боевых параметров в сетке 2×2 (1 колонка
 	# на компактных вьюпортах).
 	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() != 4:
@@ -1247,11 +1271,11 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
-	# SCRUM-890 вариант Б: 8 базовых + 16 производных в 4 секциях (выживаемость/
-	# саммоны-производные ушли из досье ради плотности — их место HUD и кодекс).
+	# SCRUM-890 вариант Б + доработка: 8 базовых + 16 производных в 4 секциях
+	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
 	var stat_icons := pause_menu.find_children("UIIcon_*", "Control", true, false)
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 16:
-		_fail("Expected pause stats menu to show icons for base stats and the 4 combat sections.")
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 20:
+		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
 	if paused or main.get("pause_stats_menu") != null or main.find_child("RunPauseMenuRoot", true, false) != null:

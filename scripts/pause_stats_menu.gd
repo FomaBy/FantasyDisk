@@ -82,8 +82,14 @@ var end_run_confirm_handler := Callable()
 
 var _base_stats_container: VBoxContainer = null
 var _derived_groups_container: GridContainer = null
+var _survival_stats_container: VBoxContainer = null
 var _hero_card_container: VBoxContainer = null
 var _player: Node = null
+
+# SCRUM-890 (доработка): derived-статы выживания живут в карточке героя
+# компактным блоком под базовыми статами; «Призывы» добавляются одной строкой
+# только у призывного кита (канон: ProgressionData.weapon_archetype == "summon").
+const SURVIVAL_STAT_IDS := ["health_point", "defense", "dodge", "regeneration"]
 
 
 func _ready() -> void:
@@ -311,7 +317,7 @@ func _build_body(layout: VBoxContainer, s: float) -> void:
 	layout.add_child(body)
 
 	# ЛЕВО — карточка героя: портрет, класс, оружие/уровень/возвышение, 8 базовых
-	# статов плотными chip-рядами.
+	# статов плотными chip-рядами и компактный блок «Выживание».
 	var hero_card := PanelContainer.new()
 	hero_card.name = "HeroCard"
 	hero_card.custom_minimum_size = Vector2(clampf(430.0 * s, 320.0, 460.0), 0.0)
@@ -319,10 +325,21 @@ func _build_body(layout: VBoxContainer, s: float) -> void:
 	hero_card.add_theme_stylebox_override("panel", _chip_style(0.90, maxf(5.0, roundf(12.0 * s))))
 	body.add_child(hero_card)
 
+	# SCRUM-890 (доработка): на компакт-высотах контент карточки длиннее панели —
+	# вертикальный скролл; на ≥1920×1080 контент помещается и скролл не активен.
+	var hero_scroll := ScrollContainer.new()
+	hero_scroll.name = "HeroCardScroll"
+	hero_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	hero_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hero_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	hero_scroll.follow_focus = true
+	hero_card.add_child(hero_scroll)
+
 	_hero_card_container = VBoxContainer.new()
 	_hero_card_container.name = "HeroCardContent"
+	_hero_card_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hero_card_container.add_theme_constant_override("separation", 6)
-	hero_card.add_child(_hero_card_container)
+	hero_scroll.add_child(_hero_card_container)
 
 	# ПРАВО — «Боевые параметры»: 4 секции кожаными чипами в сетке 2×2.
 	var right_column := VBoxContainer.new()
@@ -378,6 +395,7 @@ func _refresh_hero_card() -> void:
 	for child in _hero_card_container.get_children():
 		child.queue_free()
 	_base_stats_container = null
+	_survival_stats_container = null
 	if _player == null or not is_instance_valid(_player):
 		return
 
@@ -447,6 +465,20 @@ func _refresh_hero_card() -> void:
 	_base_stats_container.add_theme_constant_override("separation", 2)
 	_hero_card_container.add_child(_base_stats_container)
 
+	# SCRUM-890 (доработка): блок «Выживание» — оборонительные derived-статы
+	# под базовыми (правые 4 секции остались атакующими).
+	var survival_title := Label.new()
+	survival_title.name = "SurvivalTitle"
+	survival_title.text = "Выживание"
+	survival_title.add_theme_font_size_override("font_size", _readable_px(15.0))
+	survival_title.add_theme_color_override("font_color", COLOR_KIND)
+	_hero_card_container.add_child(survival_title)
+
+	_survival_stats_container = VBoxContainer.new()
+	_survival_stats_container.name = "SurvivalStatsList"
+	_survival_stats_container.add_theme_constant_override("separation", 2)
+	_hero_card_container.add_child(_survival_stats_container)
+
 
 func _add_identity_row(parent: VBoxContainer, row_name: String, kind_text: String, value_text: String) -> void:
 	var row := HBoxContainer.new()
@@ -480,6 +512,9 @@ func _refresh_stats() -> void:
 		child.queue_free()
 	for child in _derived_groups_container.get_children():
 		child.queue_free()
+	if _survival_stats_container != null:
+		for child in _survival_stats_container.get_children():
+			child.queue_free()
 
 	if _player == null or not is_instance_valid(_player):
 		return
@@ -504,6 +539,80 @@ func _refresh_stats() -> void:
 	var derived_entries_by_id := _entries_by_id(sections.get("derived", []))
 	for group in DERIVED_GROUPS:
 		_derived_groups_container.add_child(_make_derived_group(group, derived_entries_by_id))
+	_refresh_survival_rows(derived_entries_by_id)
+
+
+# SCRUM-890 (доработка): плотные ряды «Выживания» в карточке героя — ОЗ (тек/макс),
+# Защита, Уворот, Регенерация; «Призывы» одной строкой только у призывного кита.
+func _refresh_survival_rows(entries_by_id: Dictionary) -> void:
+	if _survival_stats_container == null or _player == null or not is_instance_valid(_player):
+		return
+	for stat_id in SURVIVAL_STAT_IDS:
+		if not entries_by_id.has(stat_id):
+			continue
+		var entry: Dictionary = entries_by_id[stat_id]
+		var display_name := ""
+		var value_override := ""
+		if stat_id == "health_point":
+			display_name = "ОЗ"
+			var current_hp: Variant = _player.get("health")
+			var max_hp: Variant = entry.get("value", null)
+			if current_hp != null and max_hp != null:
+				value_override = "%d/%d" % [int(round(clampf(float(current_hp), 0.0, float(max_hp)))), int(round(float(max_hp)))]
+		_survival_stats_container.add_child(_make_survival_stat_row(entry, display_name, value_override))
+	var weapon: Dictionary = ProgressionData.weapon(str(_player.get("character_id")), str(_player.get("weapon_id")))
+	if ProgressionData.weapon_archetype(weapon) == "summon" and entries_by_id.has("summon_amount"):
+		_survival_stats_container.add_child(_make_survival_stat_row(entries_by_id["summon_amount"], "Призывы"))
+
+
+# Мини-ряд выживания: иконка 24 (реестр → 35) + имя + значение, высота ~40;
+# тултип и hover — как у параметров правой зоны.
+func _make_survival_stat_row(entry: Dictionary, display_name := "", value_override := "") -> Control:
+	var stat_id := str(entry.get("id", ""))
+	var row := PanelContainer.new()
+	row.name = "SurvivalStatRow_%s" % stat_id
+	row.custom_minimum_size = Vector2(0, 40.0)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.mouse_filter = Control.MOUSE_FILTER_STOP
+	row.tooltip_text = _tooltip_for_entry(entry)
+	row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	row.mouse_entered.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(true))
+	)
+	row.mouse_exited.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	)
+
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 8)
+	row.add_child(line)
+
+	var icon := UIIconRegistry.make_icon(stat_id, Vector2(24, 24))
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.add_child(icon)
+
+	var name_label := Label.new()
+	name_label.name = "SurvivalStatName_%s" % stat_id
+	name_label.text = display_name if display_name != "" else str(entry.get("name_ru", ""))
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", _readable_px(15.0))
+	name_label.add_theme_color_override("font_color", COLOR_BODY)
+	line.add_child(name_label)
+
+	var value_label := Label.new()
+	value_label.name = "SurvivalStatValue_%s" % stat_id
+	value_label.text = value_override if value_override != "" else _compact_value_text(entry)
+	value_label.clip_text = true
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	value_label.add_theme_font_size_override("font_size", _readable_px(16.0))
+	value_label.add_theme_color_override("font_color", _value_color(entry))
+	line.add_child(value_label)
+	return row
 
 
 func _entries_by_id(entries: Array) -> Dictionary:
@@ -683,10 +792,10 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 
 # Чип-ряд контента (0.62, hover 0.82) — язык рядов Атласа
 # (числа = ui_screens._unified_apply_row_theme normal/hover).
-# На компакт-высотах (<760) вертикальный pad 1px: 8 рядов с иконками 44
-# держат карточку героя внутри панели на 1152×648.
+# На компакт-высотах (<1000) вертикальный pad 1px: базовые ряды + блок
+# «Выживание» держат карточку героя без скролла вплоть до 1600×900.
 func _stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFlat:
-	var row_pad_v := 1.0 if get_viewport_rect().size.y < 760.0 else 4.0
+	var row_pad_v := 1.0 if get_viewport_rect().size.y < 1000.0 else 4.0
 	var style := _chip_style(0.82 if is_hovered else 0.62, row_pad_v)
 	style.content_margin_left = 10.0
 	style.content_margin_right = 10.0
