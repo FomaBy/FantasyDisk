@@ -1,6 +1,6 @@
 # ANIM: Обновить PixelLab-анимации рыцаря
 
-- Статус: review
+- Статус: done
 - Jira: SCRUM-885
 - Контур: Codex
 - Owner: Codex Animator
@@ -78,3 +78,15 @@
   comment records the pushed commit.
 - Disk cleanup: disposable `.godot/` cache and worktree removed after push; no
   task-owned temporary checkout retained.
+
+## QA-Вердикт
+Статус: PASSED
+Проверил: Claude QA (claude-qa-scrum885-20260708), 2026-07-08.
+Метод: холодный worktree от origin/dev, полный cold --import (2 прохода, exit 0, ноль ошибок по knight-путям), фокус-смоуки через godot_gate.py (fdengine, SLOTS=1).
+Целостность ассетов: 56/56 PNG↔.import спарены; выборка 8 knight-PNG — 512x512 RGBA с реальной альфой (0–255); knight_spriteframes.tres = 27 анимаций (base idle/move/walk + полный 8-направленный набор idle_*/move_*/walk_*).
+Тесты:
+- PASS playable_character_directional_spriteframes_test.gd (2/2, "audit passed (17 characters)" — ключевой)
+- PASS animation_smoke_test.gd
+- PASS hero_select_pixellab_layout_test.gd (knight включён)
+- PASS runtime_smoke_test.gd (изолир. user-data-dir; единственный ERROR — известный non-fatal dummy-renderer screenshot warning, тест passed)
+Коммиты bf6046f3, b4d4fe7b — ancestor origin/dev. Вердикт: PASS.
