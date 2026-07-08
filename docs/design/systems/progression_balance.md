@@ -239,10 +239,35 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 
 ## Artifacts
 
-- `player.artifacts` хранит `{id, title}` с совместимостью со старым title-only форматом.
+- SCRUM-960: универсальный пул = **32 семьи с роллом редкости** (`rarity_scaling: true`)
+  + 37 сохранённых плоских записей. Полный контракт значений —
+  `docs/design/systems/artifact_system_matrix.md` (§1-2), реестр — `content_registry.md`.
+- **Тир-канон:** tier 1 = обычный (cost 30), tier 2 = редкий (cost 55),
+  tier 3 = эпический (cost 95); `COST_BY_TIER`/`TIER_WEIGHTS` в
+  `progression_data_balance.gd`. Отдельного поля `rarity` нет — tier и есть редкость.
+- **Модель семьи:** запись несёт `tiers {1,2,3}` (description + stats|mods на тир);
+  корень записи = т1-база (tier/cost/description/stats|mods зеркалят `tiers[1]`)
+  для legacy-читателей (`artifact_definition`, кодекс, балансовые тулзы).
+- **Ролл на выдаче (offer-time):** сэмплер, встретив семью, роллит тир и
+  материализует оффер `ProgressionData.materialize_family_offer(family, tier)`
+  → плоская запись `{id, title, tier, cost=COST_BY_TIER[tier], description,
+  stats|mods, rarity_scaling}`; дальше пайплайн (карточки, магазин, `apply_reward`)
+  работает без изменений. Вес самой семьи в пуле = 1.0.
+- **Распределение ролла:** `reward_pool`/`shop_items`/события — нормализованные
+  `TIER_WEIGHTS` (≈ 0.64/0.29/0.08); элитка/сундук (`elite_artifact_choices`) —
+  `TIER_WEIGHTS × depth_weight` (глубже по маршруту — чаще т2/т3);
+  босс (`boss_completion_*`) — семьи фиксированно тиром 3.
+- **Единое правило скейла семьи (§1.2):** базовый стат +2/+4/+7; процентный
+  атрибут ×1.10/×1.18/×1.30; долевой флет +0.10/+0.18/+0.30; плоский флет
+  ≈0.75×/1.25×/2.0× значения level-up карточки. Ключ эффекта семьи = ключ
+  level-up карточки атрибута. Гейт: `tests/artifact_family_roll_test.gd`.
+- `player.artifacts` хранит `{id, title[, tier]}` с совместимостью со старым
+  title-only форматом; `tier` пишется из материализованного оффера (SCRUM-960),
+  старые записи без tier валидны (читатели берут `.get("tier", 0)`).
 - HUD показывает artifact icons в `ArtifactHudRow`.
 - Pause stats menu имеет отдельный блок «Артефакты».
-- Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`.
+- Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`
+  (иконки 15 новых семей SCRUM-960 — placeholder-копии до пака SCRUM-962).
 - `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
 - SCRUM-606 adds five tier-2/cost55 active artifacts on existing hooks:
   `field_kit` (`room_clear_heal_percent`), `vital_siphon` (`kill_heal_percent`),

@@ -1235,88 +1235,127 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 ## Артефакты
 
-Текущие артефакты определены в `ProgressionData.ARTIFACTS`. Если артефакт переименовывается для UI, его `id` должен остаться стабильным или миграция должна быть явно описана в задаче.
+SCRUM-960: универсальный пул переехал на **семьи с роллом редкости** (`rarity_scaling: true`;
+контракт — `docs/design/systems/artifact_system_matrix.md` §1-2). Тир-канон: **т1 = обычный
+(cost 30), т2 = редкий (55), т3 = эпический (95)**. Тир семьи роллится при выдаче
+(`ProgressionData.materialize_family_offer`): reward/shop/события — нормализованные
+`TIER_WEIGHTS` (≈0.64/0.29/0.08), элитка/сундук — с depth-весом глубины, босс — фиксированно т3.
+Корень записи семьи = т1-база для legacy-читателей. Если артефакт переименовывается для UI,
+его `id` должен остаться стабильным или миграция должна быть явно описана в задаче.
 
-| ID | Текущее имя | Роль |
+### Универсальные семьи (32, rarity_scaling)
+
+8 семей базовых статов (+2/+4/+7):
+
+| ID | Имя | Стат |
 | --- | --- | --- |
-| `warrior_charm` | Warrior Charm | +2 Сила |
-| `fox_boots` | Fox Boots | +2 Ловкость |
-| `glass_orb` | Glass Orb | +2 Интеллект |
-| `hawk_lens` | Hawk Lens | +2 Восприятие |
-| `ember_core` | Ember Core | +2 Энергия |
-| `old_codex` | Old Codex | +2 Знание |
-| `stone_heart` | Stone Heart | +2 Выносливость |
-| `banner_seed` | Banner Seed | +2 Лидерство |
-| `red_whetstone` | Red Whetstone | +1 Сила, +1 Ловкость |
-| `star_compass` | Star Compass | +1 Восприятие, +1 Знание |
-| `living_root` | Living Root | +1 Выносливость, +1 Энергия |
-| `captains_coin` | Captain's Coin | +1 Лидерство, +1 Сила |
-| `quickstring` | Quickstring | +15% attack speed |
-| `heavy_totem` | Heavy Totem | +25% max HP, -5% move speed |
-| `splinter_gloves` | Splinter Gloves | +20% damage |
-| `wide_sigil` | Wide Sigil | +20% attack range |
-| `swift_ink` | Swift Ink | +12% move speed |
-| `summoners_bell` | Summoner's Bell | +1 maximum summon |
+| `warrior_charm` | Оберег воина | Сила |
+| `fox_boots` | Лисьи сапоги | Ловкость |
+| `glass_orb` | Стеклянная сфера | Интеллект |
+| `hawk_lens` | Линза ястреба | Восприятие |
+| `ember_core` | Тлеющее ядро | Энергия |
+| `old_codex` | Ветхий кодекс | Знание |
+| `stone_heart` | Каменное сердце | Выносливость |
+| `banner_seed` | Семя знамени | Лидерство |
+
+24 семьи производных атрибутов (ключ эффекта = ключ level-up карточки):
+
+| ID | Имя | Ключ эффекта | т1 / т2 / т3 |
+| --- | --- | --- | --- |
+| `splinter_gloves` | Перчатки осколков | `damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `quickstring` | Быстрая струна | `attack_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `sturdy_amulet` | Крепкий амулет | `max_health_flat` | +15 / +25 / +40 |
+| `fast_boots` | Быстрые сапоги | `move_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `battle_fan` | Боевой веер | `sector_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `magnetic_buckle` | Магнитная пряжка | `pickup_radius_flat` | +35 / +55 / +90 |
+| `iron_scale` | Железная чешуя | `defense_flat` | +0.10 / +0.18 / +0.30 |
+| `arcane_prism` | Чародейская призма | `magic_damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `ram_horn` | Рог тарана | `knockback_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
+| `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
+| `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
+| `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
+| `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
+| `falcon_feather` | Перо сокола | `projectile_speed_flat` | +70 / +110 / +180 |
+| `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
+| `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |
+| `aegis_shard` | Осколок эгиды | `absorb_flat` | +3 / +5 / +8 |
+| `troll_blood` | Кровь тролля | `regeneration_flat` | +1.0 / +1.6 / +2.6 |
+| `leech_fang` | Клык Пиявки | `vampiric_amount_flat` + `vampiric_heal_per_second_cap` | +0.75 / +1.25 / +2.0 (оба ключа) |
+| `thirsty_ruby` | Жаждущий рубин | `vampiric_chance_flat` | +0.10 / +0.18 / +0.30 |
+| `overcharge_rune` | Руна перегрузки | `ultimate_flat` | +0.10 / +0.18 / +0.30 |
+
+Иконки 15 новых семей (battle_fan, iron_scale, arcane_prism, ram_horn, executioner_edge,
+ghost_ribbon, venom_vial, plague_metronome, falcon_feather, wide_halo, war_banner, aegis_shard,
+troll_blood, thirsty_ruby, overcharge_rune) — placeholder-копии существующих до пака SCRUM-962.
+`swift_ink` удалён (полный дубль семьи `fast_boots`, поглощён ею — matrix §1.6).
+
+### Сохранённые универсалы (37, без изменений)
+
+| ID | Имя | Роль | Тир |
+| --- | --- | --- | --- |
+| `red_whetstone` | Red Whetstone | +3 Сила, +3 Ловкость | 1 |
+| `star_compass` | Star Compass | +3 Восприятие, +3 Знание | 1 |
+| `living_root` | Living Root | +3 Выносливость, +3 Энергия | 1 |
+| `captains_coin` | Captain's Coin | +3 Лидерство, +3 Сила | 1 |
+| `silver_coin` | Серебряная монета | +62% золота | 1 |
+| `survival_manual` | Учебник выживания | +55% опыта | 1 |
+| `heavy_totem` | Heavy Totem | +62% max HP, −5% скорости движения | 2 |
+| `cracked_shield` | Треснувший щит | +30% защиты, −6% скорости движения | 2 |
+| `cursed_crown` | Проклятая корона | +75% урона, −18% max HP | 2 |
+| `fragile_heart` | Хрупкое сердце | +62% скорости атаки, −10% защиты | 2 |
+| `greedy_purse` | Жадный кошелек | +112% золота, враги +37% HP | 2 |
+| `burning_shard` | Горящий осколок | +50% радиуса атак и зон, −20% лечения | 2 |
+| `golden_route_mark` | Золотая метка пути | +37% опыта и +37% золота | 2 |
+| `glass_edge` | Стеклянная кромка | +50% урона крита, −8 max HP | 2 |
+| `sacrifice_seal` | Печать жертвы | +30% шанса крита, −22% max HP | 2 |
+| `hungry_amulet` | Голодный амулет | +85% золота, −35% лечения | 2 |
+| `berserk_totem` | Тотем берсерка | +60% урона, −20% скорости движения | 2 |
+| `focus_lens` | Линза фокуса | +70% дальности, −25% радиуса атак и зон | 2 |
+| `stone_hide` | Каменная шкура | +40% защиты, −25% скорости атаки | 2 |
+| `echo_core` | Эхо Разлома | Каждый 5-й удар — эхо-взрыв 80% урона по области | 3 |
+| `blood_pact` | Кровавый Рубеж | HP ниже 30% — +50% урона | 3 |
+| `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP | 3 |
+| `thorn_pact` | Договор Шипов | Полученный урон отражается ×2 во врагов рядом | 3 |
+| `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с | 3 |
+| `rift_key` | Ключ Разлома | +4 Восприятие, +4 Знание; тайная тропа Акта 3 | 3 |
+
+Плюс 12 триггерных (`field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`,
+`guardian_bulwark`, `chain_spark`, `crit_impulse`, `breather_totem`, `counterwave_sigil`,
+`soul_harvest` (т3), `second_wind`) — канон в таблице «Триггерные» ниже.
+
+### Легаси классовые (16 — удаляются в SCRUM-961)
+
+Старые class_affinity-артефакты; заменяются классовыми китами Возвышения-5
+(matrix §4). До SCRUM-961 остаются в данных и пулах как есть.
+
+| ID | Имя | Роль |
+| --- | --- | --- |
 | `blood_sigil` | Кровавая печать | Берсерк: damage и max HP |
-| `void_ink` | Чернила пустоты | Темный маг: magic damage и AoE |
-| `echo_pick` | Медиатор эха | Гитарист: attack speed и knockback |
-| `sturdy_amulet` | Крепкий амулет | +24 max HP |
-| `fast_boots` | Быстрые сапоги | +10% move speed |
-| `magnetic_buckle` | Магнитная пряжка | +55 pickup radius |
-| `silver_coin` | Серебряная монета | +25% money gain |
-| `survival_manual` | Учебник выживания | +22% XP gain |
-| `cracked_shield` | Треснувший щит | +12% defense, -6% move speed |
-| `sharp_talisman` | Острый талисман | +8% crit chance |
 | `jagged_blade` | Зазубренное лезвие | Берсерк: melee damage |
 | `heavy_grip` | Тяжелая рукоять | Берсерк: knockback, меньше attack speed |
 | `war_belt` | Боевой ремень | Берсерк: AoE radius |
 | `warriors_rage` | Ярость воина | Берсерк: damage, меньше max HP |
+| `void_ink` | Чернила пустоты | Темный маг: magic damage и AoE |
 | `dark_crystal` | Темный кристалл | Темный маг: magic damage |
 | `ash_page` | Пепельная страница | Темный маг: AoE radius и damage |
 | `skull_resonator` | Черепной резонатор | Темный маг: attack range |
 | `ink_candle` | Чернильная свеча | Темный маг: damage, меньше move speed |
+| `echo_pick` | Медиатор эха | Гитарист: attack speed и knockback |
 | `copper_string` | Медная струна | Гитарист: sound damage |
 | `broken_pick` | Сломанный медиатор | Гитарист: crit chance |
 | `loud_amp` | Громкий усилитель | Гитарист: aura/AoE radius |
 | `bass_cable` | Басовый кабель | Гитарист: knockback и AoE |
-| `cursed_crown` | Проклятая корона | +30% damage, -18% max HP |
-| `fragile_heart` | Хрупкое сердце | +25% attack speed, -10% defense |
-| `greedy_purse` | Жадный кошелек | +45% money gain, enemies +15% HP |
-| `burning_shard` | Горящий осколок | +20% AoE radius, -20% healing |
-| `golden_route_mark` | Золотая метка пути | +15% XP gain и money gain |
-| `glass_edge` | Стеклянная кромка | +20% crit damage, -8 max HP |
-| `sacrifice_seal` | Печать жертвы | +30% crit chance, -22% max HP |
-| `hungry_amulet` | Голодный амулет | +85% money gain, -35% healing |
-| `berserk_totem` | Тотем берсерка | +60% damage, -20% move speed |
-| `focus_lens` | Линза фокуса | +70% range, -25% AoE radius |
-| `stone_hide` | Каменная шкура | +40% defense, -25% attack speed |
-| `field_kit` | Полевой набор | Active on room clear: heal 5% max HP |
-| `vital_siphon` | Живой сифон | Active on kill: heal 1% max HP |
-| `powder_charge` | Пороховой заряд | Active on kill: 10% corpse explosion chance |
-| `bulwark_echo` | Эхо бастиона | Active on hit: 16% pulse chance |
-| `duelist_spur` | Шпора дуэлянта | Active on crit: +22% move speed burst |
-| `rift_key` | Ключ Разлома | +4 Perception, +4 Knowledge; opens the secret Act 3 route |
+| `split_core` | Ядро Расщепления | Темный маг/Гитарист: +1 снаряд и луч (т3) |
 
 ## Тиры Артефактов
 
-Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS` — третья арт-итерация рисует иконки «круче = сильнее» по этому полю. Поле `class_affinity` задает классовую привязку (пустой список = универсальный).
-
-- **Tier 2 (редкие, 26 шт.)**: `heavy_totem`, `blood_sigil`, `void_ink`, `echo_pick`, `cracked_shield`, `heavy_grip`, `warriors_rage`, `ash_page`, `ink_candle`, `bass_cable`, `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`.
-- **Tier 3 (легендарные, билдообразующие)**:
-
-| ID | Игровое имя | Механика |
-| --- | --- | --- |
-| `echo_core` | Эхо Разлома | Каждый 5-й удар — взрыв 80% урона по области вокруг цели |
-| `split_core` | Ядро Расщепления | Темный маг/Гитарист: +1 снаряд и луч всем атакам |
-| `blood_pact` | Кровавый Рубеж | HP ниже 30% — +50% урона |
-| `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP |
-| `thorn_pact` | Договор Шипов | Полученный урон отражается x2 во врагов рядом |
-| `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с |
-| `rift_key` | Ключ Разлома | Открывает тайную тропу в конце Акта 3; +4 Perception, +4 Knowledge |
-
-- `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
-- Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
-- Иконки tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`, `soul_harvest`, `rift_key`) существуют как уникальные magic-item PNG; временные копии больше не используются.
+Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS`; канон имён:
+**обычный / редкий / эпический** (UI-лейблы приводит SCRUM-963). У семей корневой
+`tier: 1` — фактический тир оффера роллится при выдаче (см. выше). `class_affinity`
+задает классовую привязку (пустой список = универсальный).
 
 ### Триггерные (активные) артефакты — под-класс `active` (SCRUM-500)
 
