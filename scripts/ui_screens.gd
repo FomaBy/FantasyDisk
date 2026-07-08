@@ -12177,6 +12177,31 @@ func _event_dialog_metrics() -> Dictionary:
 	}
 
 
+# SCRUM-997: титул события — autowrap по словам, но шрифт ужимается так, чтобы
+# самое ДЛИННОЕ слово гарантированно влезало в контент-ширину панели (иначе
+# WORD_SMART рвёт слово посреди: «жертвоприношени/й»). Мерка внешняя +
+# жёсткий запас fit_ratio 0.62 — как _shrink_label_font_to_width (оконный
+# рендер строки до ~1.5x шире Font.get_string_size, память проекта).
+func _shrink_event_title_font(title_label: Label, base_font_size: int, max_width: float) -> void:
+	if title_label == null:
+		return
+	var longest := ""
+	for word in title_label.text.split(" ", false):
+		if word.length() > longest.length():
+			longest = word
+	if longest == "":
+		longest = title_label.text
+	var font: Font = title_label.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var font_size := base_font_size
+	if font != null:
+		var fit_width := maxf(max_width, 8.0) * 0.62
+		while font_size > 18 and font.get_string_size(longest, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
+			font_size -= 1
+	title_label.add_theme_font_size_override("font_size", font_size)
+
+
 # SCRUM-997: корень экрана события (EventScreen) от контент-бокса: box → scroll →
 # MenuPanel_event → root. Null-safe для ранних вызовов/деградаций.
 func _event_screen_root(box: VBoxContainer) -> Control:
@@ -12236,8 +12261,11 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		title_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
-		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 34, 0, 44))
 		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+		# Длинные слова («жертвоприношений») не должны рваться посреди строки:
+		# ужимаем шрифт под самое длинное слово (канон fit_ratio 0.62 — оконный
+		# рендер строк шире мерки, память проекта), autowrap доносит остальное.
+		_shrink_event_title_font(title_label, _readable_font_size(30 if compact else 34, 0, 44), content_size.x - 14.0)
 		# Латунная отчёркивающая линия под титулом (спека §2).
 		if box.find_child("EventTitleRule", false, false) == null:
 			var rule := ColorRect.new()
