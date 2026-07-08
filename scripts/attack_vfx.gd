@@ -65,7 +65,18 @@ static func _calmed_color(color: Color, alpha_multiplier := 1.0) -> Color:
 	)
 
 
-static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String, radius: float, color: Color, rotation := 0.0) -> Node2D:
+static func weapon_signature(
+	scene: Node,
+	global_pos: Vector2,
+	weapon_id: String,
+	radius: float,
+	color: Color,
+	rotation := 0.0,
+	weapon_texture: Texture2D = null,
+	weapon_rotation := 0.0,
+	weapon_scale := 0.58,
+	weapon_offset := Vector2.ZERO
+) -> Node2D:
 	var texture_path := WEAPON_SIGNATURE_PATH % weapon_id
 	if not ResourceLoader.exists(texture_path):
 		return null
@@ -98,6 +109,18 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	rim.z_index = 1
 	holder.add_child(rim)
 
+	var actual_weapon: Sprite2D = null
+	if weapon_texture != null:
+		actual_weapon = Sprite2D.new()
+		actual_weapon.name = "WeaponSignatureActualWeapon"
+		actual_weapon.texture = weapon_texture
+		actual_weapon.modulate = Color(1.0, 0.94, 0.82, 0.82)
+		actual_weapon.position = weapon_offset
+		actual_weapon.rotation = weapon_rotation
+		actual_weapon.scale = Vector2.ONE * weapon_scale
+		actual_weapon.z_index = 2
+		holder.add_child(actual_weapon)
+
 	var base_scale := maxf(radius, 70.0) / 176.0
 	holder.scale = Vector2.ONE * clampf(base_scale, 0.38, 1.55)
 
@@ -107,14 +130,18 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.22).set_delay(0.08)
 	tween.tween_property(rim, "modulate:a", 0.0, 0.18).set_delay(0.06)
 	tween.tween_property(shadow, "modulate:a", 0.0, 0.18).set_delay(0.10)
+	if actual_weapon != null:
+		tween.tween_property(actual_weapon, "modulate:a", 0.0, 0.20).set_delay(0.10)
 	tween.chain().tween_callback(holder.queue_free)
 	return holder
 
 
-static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0) -> Node2D:
+static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0, lateral_scale := 1.0, visual_sweep_degrees := 0.0) -> Node2D:
 	var holder := Node2D.new()
 	holder.name = "SlashVfx"
 	holder.z_index = 11
+	holder.set_meta("visual_lateral_scale", lateral_scale)
+	holder.set_meta("visual_sweep_degrees", visual_sweep_degrees)
 	owner_node.add_child(holder)
 
 	# Непрозрачный подслой дает дуге контраст на светлом фоне.
@@ -142,12 +169,12 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var figure_scale: float = max(reach, 60.0) / SLASH_REACH
 	# Дуга вылетает из героя вдоль направления удара и заполняет зону поражения.
 	holder.rotation = base_angle - 0.16
-	holder.scale = Vector2(figure_scale * 0.45, figure_scale * 0.75)
+	holder.scale = Vector2(figure_scale * 0.45, figure_scale * 0.75 * maxf(lateral_scale, 0.1))
 
 	var tween := holder.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(holder, "rotation", base_angle + 0.10, 0.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale), 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale * maxf(lateral_scale, 0.1)), 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.17).set_delay(0.09)
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.13).set_delay(0.12)
 	tween.tween_property(body, "modulate:a", 0.0, 0.15).set_delay(0.10)

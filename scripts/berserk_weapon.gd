@@ -373,7 +373,28 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 	elif attack_shape == "strip":
 		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
 		radius = maxf(inner_width * 2.0, 96.0)
-	var signature := AttackVfx.weapon_signature(scene, center, weapon_id, radius, visual_color, direction.angle())
+	var weapon_texture: Texture2D = null
+	var weapon_rotation := 0.0
+	var weapon_scale := 0.58
+	var weapon_offset := Vector2.ZERO
+	if weapon_id == "axe":
+		var weapon_visual := get_node_or_null("WeaponVisual") as Sprite2D
+		if weapon_visual != null and weapon_visual.texture != null:
+			weapon_texture = weapon_visual.texture
+			weapon_scale = 0.62
+			weapon_offset = Vector2(10.0, -2.0)
+	var signature := AttackVfx.weapon_signature(
+		scene,
+		center,
+		weapon_id,
+		radius,
+		visual_color,
+		direction.angle(),
+		weapon_texture,
+		weapon_rotation,
+		weapon_scale,
+		weapon_offset
+	)
 	if signature != null:
 		signature.add_to_group("player_weapon_effects")
 
@@ -418,7 +439,29 @@ func _show_frustum_area(owner_node: Node2D, attack_direction: Vector2) -> void:
 
 
 func _show_sweep_area(owner_node: Node2D, attack_direction: Vector2) -> void:
-	AttackVfx.slash(owner_node, attack_direction, attack_range, visual_color, PI)
+	var slash := AttackVfx.slash(
+		owner_node,
+		attack_direction,
+		attack_range,
+		visual_color,
+		PI,
+		_sweep_visual_lateral_scale(),
+		_sweep_visual_degrees()
+	)
+	if slash != null:
+		slash.add_to_group("player_weapon_effects")
+
+
+func _sweep_visual_lateral_scale() -> float:
+	if weapon_id != "axe":
+		return 1.0
+	return clampf(sweep_degrees / 110.0, 1.0, 1.75)
+
+
+func _sweep_visual_degrees() -> float:
+	if weapon_id != "axe":
+		return 0.0
+	return sweep_degrees
 
 
 func _sweep_zone_points(direction: Vector2) -> PackedVector2Array:

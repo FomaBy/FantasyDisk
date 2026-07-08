@@ -38,6 +38,18 @@ files read-only.
 | --- | --- | --- | --- | --- |
 | SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; ready_for_QA |
 
+**Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
+Codex/Animator задача на исправление читаемости атаки топором Берсерка: во время
+атаки должен быть виден actual two-handed axe weapon layer, а основной visible
+sweep должен примерно соответствовать live зоне `axe` — 180° / 250px без
+изменения damage geometry, cooldowns или баланса. Jira: `SCRUM-880`; owner
+`animator/codex-berserk-axe-attack-visual`; worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-berserk-axe-attack-visual`.
+
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-880 | [Берсерк: топор в атаке и 180° sweep visual](../tasks/animation_berserk_axe_attack_visual_task.md) | codex/animator | p1 | done; ready_for_QA |
+
 **Backlog review 2026-06-30 (PM):** беклог вычищен. Закрыты как superseded (висели в
 «Контроль качества» с 12.06, новое UI-направление, работа в игре): SCRUM-111, SCRUM-118.
 Перенесены из беклога в активный спринт 0.2.0 (правило: новое — в спринт, не в беклог):
