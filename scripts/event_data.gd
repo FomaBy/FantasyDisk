@@ -1,5 +1,64 @@
 extends RefCounted
 
+# ============================================================================
+# СХЕМА СОБЫТИЯ (контракт SCRUM-996 для пака SCRUM-995 и UI SCRUM-997).
+# Все ключи, кроме id/title/story/choices, ОПЦИОНАЛЬНЫ; старые события без
+# новых ключей работают как раньше (мгновенный переход без reveal-шага).
+#
+# Событие (элемент RANDOM_EVENTS):
+#   id: String            — уникальный id события.
+#   title: String         — заголовок экрана.
+#   story: String         — вводный текст (>= 40 символов).
+#   allow_skip: bool      — «Назад» на карту без исхода (по умолчанию false).
+#   tags: Dictionary      — future-ready теги отбора (SCRUM-996):
+#       {"acts": Array[int], "biomes": Array[String]}
+#     acts: событие допустимо только в перечисленных актах, ЕСЛИ pick_event
+#       получил context.act; пустой массив/нет ключа = любой акт.
+#     biomes: зарезервировано под биомный отбор (фильтр пока не применяется).
+#   choices: Array[Dictionary] — 2+ выборов.
+#
+# Выбор (choice) — сам является исходом-корнем (см. «Исход» ниже) плюс:
+#   id: String, title: String, description: String — карточка выбора.
+#   risk: bool            — префикс «Риск:» в описании карточки.
+#   hidden: bool          — загадочный выбор (SCRUM-996): карточка НЕ раскрывает
+#     исход — вместо description показывается unknown_hint (или «Исход
+#     неизвестен…»), action-текст кнопки — «Рискнуть». Исходы hidden-выбора
+#     обязаны нести outcome_text (честное раскрытие ПОСЛЕ выбора).
+#     NB: цена cost_money у hidden-выбора не видна на кнопке — упоминай её
+#     в unknown_hint.
+#   unknown_hint: String  — «загадочное» описание для hidden-карточки.
+#   check: {"stat": String, "difficulty": int 1..12} — детерминированная
+#     проверка стата (порог: stat >= difficulty), ветвит success/failure.
+#   success / failure: Dictionary — исход-ветка проверки (мержится в корень).
+#   random_outcomes: Array[Dictionary] — случайный исход (мержится в корень).
+#
+# Исход (choice-корень / success / failure / элемент random_outcomes):
+#   outcome_text: String  — рус. текст «что произошло» (SCRUM-996). Если исход
+#     имеет outcome_text ЛИБО выбор hidden ЛИБО была check-проверка — экран
+#     события показывает reveal-шаг (текст исхода + кнопка «В путь») вместо
+#     мгновенного перехода на карту. Обязателен для hidden-исходов и веток
+#     check в новом паке (SCRUM-995).
+#   money: int            — выдать золото.
+#   cost_money: int       — цена (масштабируется по этапу маршрута).
+#   stats: {stat_id: int} — перманентные статы забега.
+#   mods: {mod_id: float} — перманентные моды забега (VALID_MODS контракта).
+#   heal_percent: float   — лечение долей от max HP (0..1).
+#   health_percent_cost: float — цена HP долей от max HP (пол 1 HP, не летально).
+#   damage_flat: int      — прямой урон HP (SCRUM-996; пол 1 HP, не летально).
+#     Не путать с mods.damage_flat (плоский бонус урона атак игрока).
+#   random_artifact: bool — случайный артефакт (пустой пул → золотая компенсация).
+#   reward: Dictionary    — готовый reward-объект (apply_reward).
+#   shop_after: true      — после применения исхода (и reveal-подтверждения)
+#     открыть магазин; выход из него ведёт к штатному advance маршрута
+#     (SCRUM-996). Работает и внутри post_combat (магазин после победы).
+#   shop_discount: float  — скидка 0..0.9 на товары событийного магазина
+#     (применяется к ценам стока один раз при открытии; SCRUM-996).
+#   combat: {"type": "battle"|"elite", "enemy_health_multiplier": float,
+#            "money_multiplier": float, "xp_multiplier": float}
+#     — исход-бой (reveal-шаг не показывается: исход боя — сам бой).
+#   post_combat: Dictionary — награда за победу в исходе-бое (stats/mods/
+#     random_artifact/... + опц. shop_after/shop_discount).
+# ============================================================================
 const RANDOM_EVENTS := [
 	{
 		# SCRUM-608: «Опасная развилка» — узел типа hazard на маршруте. Безопасный
@@ -311,16 +370,40 @@ static func event_by_id(event_id: String) -> Dictionary:
 	return {}
 
 
-static func pick_event(used_ids: Array, rng: RandomNumberGenerator) -> Dictionary:
-	var available := []
+# SCRUM-996: context — опциональный контекст отбора ({"act": int, ...}).
+# Событие с непустым tags.acts допустимо только при совпадении context.act;
+# события без тегов (весь текущий пул) и вызовы без context работают как раньше.
+static func pick_event(used_ids: Array, rng: RandomNumberGenerator, context: Dictionary = {}) -> Dictionary:
+	var pool := []
 	for event in RANDOM_EVENTS:
+		if _event_allowed_in_context(event, context):
+			pool.append(event)
+	if pool.is_empty():
+		# Ни одно событие не подходит под контекст (например, все act-теги чужие) —
+		# безопасный фолбэк на весь пул: событие лучше пустого экрана.
+		pool = RANDOM_EVENTS.duplicate()
+	var available := []
+	for event in pool:
 		if not used_ids.has(str(event.get("id", ""))):
 			available.append(event)
 	if available.is_empty():
 		used_ids.clear()
-		for event in RANDOM_EVENTS:
-			available.append(event)
+		available = pool.duplicate()
 	var index := 0
 	if rng != null and available.size() > 1:
 		index = rng.randi_range(0, available.size() - 1)
 	return (available[index] as Dictionary).duplicate(true)
+
+
+# SCRUM-996: фильтр контекста отбора. Пустые теги = событие всюду допустимо.
+# tags.biomes зарезервировано (фильтр по биому пока не применяется).
+static func _event_allowed_in_context(event: Dictionary, context: Dictionary) -> bool:
+	if context.is_empty():
+		return true
+	var tags_raw = event.get("tags", {})
+	if not (tags_raw is Dictionary):
+		return true
+	var acts_raw = (tags_raw as Dictionary).get("acts", [])
+	if context.has("act") and acts_raw is Array and not (acts_raw as Array).is_empty():
+		return (acts_raw as Array).has(int(context.get("act", 0)))
+	return true
