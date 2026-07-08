@@ -144,30 +144,13 @@ const SETTINGS_V6_MODAL_WIDTH_RATIO := 0.555
 const SETTINGS_V6_MODAL_FRAME_PATH := SETTINGS_V6_DIR + "ui_settings_v6_modal_frame.png"
 const SETTINGS_V6_CONTENT_INSET_PATH := SETTINGS_V6_DIR + "ui_settings_v6_content_inset.png"
 const SETTINGS_V6_MEDALLION_PATH := SETTINGS_V6_DIR + "ui_settings_v6_medallion.png"
-const SETTINGS_V6_TAB_PATHS := {
-	"active": SETTINGS_V6_DIR + "ui_settings_v6_tab_active.png",
-	"hover": SETTINGS_V6_DIR + "ui_settings_v6_tab_hover.png",
-	"inactive": SETTINGS_V6_DIR + "ui_settings_v6_tab_inactive.png",
-}
 const SETTINGS_V6_TAB_ICON_PATHS := [
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_screen.png",
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_sound.png",
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_controls.png",
 ]
-const SETTINGS_V6_BTN_PATHS := {
-	"neutral": {
-		"normal": SETTINGS_V6_DIR + "ui_settings_v6_btn_neutral_normal.png",
-		"hover": SETTINGS_V6_DIR + "ui_settings_v6_btn_neutral_hover.png",
-		"pressed": SETTINGS_V6_DIR + "ui_settings_v6_btn_neutral_pressed.png",
-		"disabled": SETTINGS_V6_DIR + "ui_settings_v6_btn_neutral_disabled.png",
-	},
-	"primary": {
-		"normal": SETTINGS_V6_DIR + "ui_settings_v6_btn_primary_normal.png",
-		"hover": SETTINGS_V6_DIR + "ui_settings_v6_btn_primary_hover.png",
-		"pressed": SETTINGS_V6_DIR + "ui_settings_v6_btn_primary_pressed.png",
-		"disabled": SETTINGS_V6_DIR + "ui_settings_v6_btn_primary_disabled.png",
-	},
-}
+# SCRUM-879: пластины табов и кнопок-действий v6 (ui_settings_v6_tab_*/btn_*)
+# выведены — табы и действия носят глобальный кит (_make_button, как Атлас).
 const SETTINGS_V6_FIELD_PATHS := {
 	"normal": SETTINGS_V6_DIR + "ui_settings_v6_field_normal.png",
 	"hover": SETTINGS_V6_DIR + "ui_settings_v6_field_hover.png",
@@ -5242,7 +5225,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
 	_prepare_global_tooltips(root)
-	_add_screen_background(root, "settings")
+	# SCRUM-879: фон — единый атлас-стиль (bg_sanctum, COVERED без растяжки осей)
+	# с лёгким шейдом 0.30: поверх фона лежит модалка, сильное затемнение не нужно.
+	_unified_add_background(root, "settings", 0.30)
 
 	var modal_rect := _settings_v6_modal_rect()
 	var modal := Control.new()
@@ -5271,16 +5256,12 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		modal.add_child(medallion)
 
 	# v6: капсула-плашка под титулом — фронтон рамки несёт плотный узор, текст
-	# кладём на чистое тёмное поле (чип-стиль Атласа), а не на орнамент.
+	# кладём на чистое тёмное поле, а не на орнамент. SCRUM-879: сам стиль — чип
+	# Атласа (_atlas_chip_style), как панели экрана «Атлас героев».
 	var title_backing := Panel.new()
 	title_backing.name = "SettingsV2TitleBacking"
 	title_backing.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var title_backing_style := StyleBoxFlat.new()
-	title_backing_style.bg_color = Color(0.063, 0.049, 0.038, 0.82)
-	title_backing_style.border_color = Color(0.52, 0.41, 0.24, 0.65)
-	title_backing_style.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
-	title_backing_style.set_corner_radius_all(int(roundf(14.0 * s)))
-	title_backing.add_theme_stylebox_override("panel", title_backing_style)
+	title_backing.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(14.0 * s)))
 	_apply_control_rect(title_backing, _settings_v6_rect(Rect2(470.0, 52.0, 480.0, 70.0), s))
 	modal.add_child(title_backing)
 	# Плашка сразу над рамкой: эмблема и титул рисуются поверх неё.
@@ -5305,10 +5286,16 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
 
-	var tab_bar_width := SETTINGS_V6_TAB_SIZE.x * 3.0 + SETTINGS_V6_TAB_GAP * 2.0
-	var switcher := _make_settings_tab_switcher(tabs, Vector2(tab_bar_width, SETTINGS_V6_TAB_SIZE.y) * s)
-	_apply_control_rect(switcher, _settings_v6_rect(
-		Rect2((SETTINGS_V6_DESIGN_SIZE.x - tab_bar_width) * 0.5, SETTINGS_V6_TAB_TOP, tab_bar_width, SETTINGS_V6_TAB_SIZE.y), s))
+	# SCRUM-879: табы — кнопки глобального кита фиксированных px-размеров (не
+	# дизайн-сетка ×s): свитчер центрируется в слоте табов (150..234 design-px),
+	# на малых вьюпортах прижимается вверх, чтобы не наехать на контент-панель.
+	var switcher := _make_settings_tab_switcher(tabs, s)
+	var switcher_size := switcher.custom_minimum_size
+	var switcher_y := roundf(SETTINGS_V6_TAB_TOP * s + (SETTINGS_V6_TAB_SIZE.y * s - switcher_size.y) * 0.5)
+	switcher_y = minf(switcher_y, roundf((SETTINGS_V6_CONTENT_RECT.position.y - 2.0) * s - switcher_size.y))
+	_apply_control_rect(switcher, Rect2(
+		Vector2(roundf((SETTINGS_V6_DESIGN_SIZE.x * s - switcher_size.x) * 0.5), switcher_y),
+		switcher_size))
 	modal.add_child(switcher)
 
 	var content_panel := Panel.new()
@@ -5421,8 +5408,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
 	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled", s)
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled", s)
-	var reset_audio_button := _settings_v6_make_action_button("Сбросить звук", "neutral", s)
-	reset_audio_button.name = "SettingsResetAudioButton"
+	# SCRUM-879: кит-натив standard_420x104 (маппинг по имени кнопки).
+	var reset_audio_button := _settings_v6_make_action_button("Сбросить звук", "SettingsResetAudioButton", 420.0, 104.0)
 	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
@@ -5568,8 +5555,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	hint_label.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(hint_label)
 
-	var reset_button := _settings_v6_make_action_button("Сбросить управление", "neutral", s)
-	reset_button.name = "SettingsResetBindingsButton"
+	# SCRUM-879: кит-натив wide_440x104 (маппинг по имени кнопки).
+	var reset_button := _settings_v6_make_action_button("Сбросить управление", "SettingsResetBindingsButton", 440.0, 104.0)
 	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
@@ -5645,8 +5632,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	_add_settings_control_row(controls_box, "Вибрация", vibration_toggle, s)
 
-	var gp_reset := _settings_v6_make_action_button("Сбросить геймпад", "neutral", s)
-	gp_reset.name = "SettingsResetGamepadButton"
+	# SCRUM-879: кит-натив standard_420x104 (по size-маппингу): у minimal_metal
+	# высоты 72 глобальный seal-инвариант SCRUM-450 требует 104 — берём натив,
+	# единый с «Сбросить звук».
+	var gp_reset := _settings_v6_make_action_button("Сбросить геймпад", "SettingsResetGamepadButton", 420.0, 104.0)
 	gp_reset.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	gp_reset.pressed.connect(func() -> void:
 		_reset_gamepad_bindings_to_defaults()
@@ -5667,25 +5656,35 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
 	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_row.add_theme_constant_override("separation", int(roundf(SETTINGS_V6_ACTION_GAP * s)))
-	var action_row_width := SETTINGS_V6_ACTION_SIZE.x * 3.0 + SETTINGS_V6_ACTION_GAP * 2.0
-	_apply_control_rect(action_row, _settings_v6_rect(
-		Rect2((SETTINGS_V6_DESIGN_SIZE.x - action_row_width) * 0.5, SETTINGS_V6_ACTION_TOP, action_row_width, SETTINGS_V6_ACTION_SIZE.y), s))
+	# SCRUM-879: нижний ряд — кнопки глобального кита. При s>=0.8 все три носят
+	# НАТИВНУЮ пластину settings_back_280x64 (280×64): Back — по имени, Apply и
+	# Revert — по size-маппингу кита (y<=66, 240<=x<360). На меньших вьюпортах
+	# слот ряда (80×s) ниже 64px — даунскейлим равномерно с сохранением аспекта
+	# 280:64 (пропорции арта не искажаются; Apply/Revert при ширине <240 кит
+	# штатно переводит на 9-slice minimal_metal).
+	var action_height := minf(64.0, floorf(SETTINGS_V6_ACTION_SIZE.y * s))
+	var action_width := roundf(action_height * 280.0 / 64.0)
+	var action_gap := maxf(12.0, roundf(SETTINGS_V6_ACTION_GAP * s))
+	action_row.add_theme_constant_override("separation", int(action_gap))
+	var action_row_width := action_width * 3.0 + action_gap * 2.0
+	_apply_control_rect(action_row, Rect2(
+		Vector2(
+			roundf((SETTINGS_V6_DESIGN_SIZE.x * s - action_row_width) * 0.5),
+			roundf(SETTINGS_V6_ACTION_TOP * s + (SETTINGS_V6_ACTION_SIZE.y * s - action_height) * 0.5)),
+		Vector2(action_row_width, action_height)))
 	modal.add_child(action_row)
-	var apply_button := _settings_v6_make_action_button("Применить", "primary", s)
-	apply_button.name = "SettingsApplyButton"
+	var apply_button := _settings_v6_make_action_button("Применить", "SettingsApplyButton", action_width, action_height)
 	apply_button.disabled = not _settings_video_dirty()
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
-	var revert_button := _settings_v6_make_action_button("Вернуть", "neutral", s)
-	revert_button.name = "SettingsRevertButton"
+	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", action_width, action_height)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
 	action_row.add_child(revert_button)
-	var back_button := _settings_v6_make_action_button("Назад", "neutral", s)
-	back_button.name = "SettingsBackButton"
+	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", action_width, action_height)
 	back_button.pressed.connect(settings_back)
 	action_row.add_child(back_button)
+	_settings_fit_kit_row([apply_button, revert_button, back_button], action_width, action_height)
 	game.ui_escape_action = settings_back
 
 	# SCRUM-813: стартовый фокус — первая вкладка настроек; LB/RB листают вкладки
@@ -5735,47 +5734,39 @@ func _return_from_settings() -> void:
 	_show_main_menu()
 
 
-func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
-	# v6: три «листа-закладки» фиксированного размера 340×84×s с иконками,
-	# без общей рамки-подложки (арт каждого таба — самостоятельная пластина;
-	# active — литое золото, inactive/hover — PIL-деривативы той же пластины).
+func _make_settings_tab_switcher(tabs: TabContainer, s: float) -> Control:
+	# SCRUM-879: табы настроек — обычные кнопки глобального кита, как вкладки
+	# «Атласа героев» (_show_atlas_screen), актив/неактив — модуляцией
+	# (_atlas_apply_tab_state), иконки v6 остаются. Размер ФИКСИРОВАННЫЙ
+	# (220,72) — нативный маппинг кита quit_220x72 (Правило 1: уникальные
+	# текстуры только 1:1); это единственный натив, чей ряд из трёх входит во
+	# внутреннюю ширину модалки даже на 1152×648 (гэп дожимается до 6px).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
-	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(1060.0, 84.0)
-	var s := actual_display_size.y / SETTINGS_V6_TAB_SIZE.y
-	switcher.custom_minimum_size = actual_display_size
-	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var modal_inner_width := (SETTINGS_V6_DESIGN_SIZE.x - 144.0) * s
+	var tab_width := 220.0
+	var tab_height := 72.0
+	var tab_gap := maxf(6.0, minf(roundf(SETTINGS_V6_TAB_GAP * s), floorf((modal_inner_width - tab_width * 3.0) / 2.0)))
+	switcher.custom_minimum_size = Vector2(tab_width * 3.0 + tab_gap * 2.0, tab_height)
 
 	var buttons: Array[Button] = []
 	var labels := ["Экран", "Звук", "Управление"]
-	var tab_width := roundf(SETTINGS_V6_TAB_SIZE.x * s)
-	var tab_gap := roundf(SETTINGS_V6_TAB_GAP * s)
 	for tab_index in range(labels.size()):
-		var tab_left := float(tab_index) * (tab_width + tab_gap)
-		var button := Button.new()
+		var button := _make_button(labels[tab_index])
 		button.name = "SettingsTabButton_%d" % tab_index
-		button.text = labels[tab_index]
-		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button.focus_mode = Control.FOCUS_ALL
+		_set_action_button_size(button, tab_width, tab_height)
+		var tab_left := float(tab_index) * (tab_width + tab_gap)
 		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		button.offset_left = tab_left
 		button.offset_top = 0.0
 		button.offset_right = tab_left + tab_width
-		button.offset_bottom = actual_display_size.y
-		button.add_theme_font_size_override("font_size", _settings_v6_font(26.0, s))
-		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(44.0, 44.0), s)
+		button.offset_bottom = tab_height
+		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(36.0, 36.0), minf(1.0, tab_height / 66.0))
 		if icon != null:
-			# Иконка отдельной нодой в левом гнезде пластины — вне текстового
-			# лейаута кнопки, чтобы подпись центрировалась по капсуле без сдвига.
-			var icon_rect := TextureRect.new()
-			icon_rect.texture = icon
-			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			icon_rect.position = Vector2(roundf(12.0 * s), roundf((actual_display_size.y - icon.get_height()) * 0.5))
-			icon_rect.size = Vector2(icon.get_width(), icon.get_height())
-			button.add_child(icon_rect)
+			button.icon = icon
+			button.expand_icon = false
+			button.add_theme_constant_override("icon_max_width", 36)
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -5783,10 +5774,14 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 		)
 		switcher.add_child(button)
 		buttons.append(button)
+	_settings_fit_kit_row(buttons, tab_width, tab_height, 28.0)
 
 	var update_buttons := func(active_tab: int) -> void:
+		# Актив/неактив — модуляцией, теми же тонами, что _atlas_apply_tab_state.
+		var active_tint := Color(1.0, 0.94, 0.74)
+		var idle_tint := Color(0.74, 0.76, 0.84, 0.92)
 		for button_index in range(buttons.size()):
-			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab, s)
+			buttons[button_index].modulate = active_tint if button_index == active_tab else idle_tint
 	update_buttons.call(tabs.current_tab)
 	tabs.tab_changed.connect(func(tab_index: int) -> void:
 		update_buttons.call(tab_index)
@@ -5794,36 +5789,66 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 	return switcher
 
 
-func _settings_v6_tab_stylebox(state: String, s: float) -> StyleBox:
-	# Арт таба 340×84 — точный дизайн-размер пластины (аспект rect == аспект арта).
-	var content := Vector4(18.0 * s, 10.0 * s, 18.0 * s, 12.0 * s)
-	return _settings_v6_texture_box(SETTINGS_V6_TAB_PATHS[state], Vector4(14.0, 12.0, 14.0, 12.0), content)
-
-
-func _apply_settings_tab_button_theme(button: Button, selected: bool, s := 1.0) -> void:
-	var normal_state := "active" if selected else "inactive"
-	var hover_state := "active" if selected else "hover"
-	button.add_theme_stylebox_override("normal", _settings_v6_tab_stylebox(normal_state, s))
-	button.add_theme_stylebox_override("hover", _settings_v6_tab_stylebox(hover_state, s))
-	button.add_theme_stylebox_override("pressed", _settings_v6_tab_stylebox("active", s))
-	button.add_theme_stylebox_override("focus", _settings_v6_tab_stylebox(hover_state, s))
-	button.add_theme_stylebox_override("disabled", _settings_v6_tab_stylebox("inactive", s))
-	# Контраст подписи под пластину состояния: на литом золоте active — тёмная
-	# кожа (светлый текст на золоте выцветал), на тёмных пластинах — пергамент.
-	var dark_on_gold := Color(0.18, 0.11, 0.04, 1.0)
-	if selected:
-		button.add_theme_color_override("font_color", dark_on_gold)
-		button.add_theme_color_override("font_hover_color", dark_on_gold)
-		button.add_theme_color_override("font_focus_color", dark_on_gold)
-		button.add_theme_color_override("font_pressed_color", dark_on_gold)
-	else:
-		button.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
-		# hover/focus/pressed невыбранного таба носят золотистые пластины —
-		# текст на них тоже тёмный, светлый на бледном золоте выцветает.
-		button.add_theme_color_override("font_hover_color", dark_on_gold)
-		button.add_theme_color_override("font_focus_color", dark_on_gold)
-		button.add_theme_color_override("font_pressed_color", dark_on_gold)
-	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
+func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0) -> void:
+	# SCRUM-879: кит-кнопки в фиксированных слотах модалки (табы 84×s, нижний
+	# ряд 80×s). Пластины кита не искажаем (те же текстуры, 9-slice-раскрой),
+	# но контент доводим под слот: подпись одной строкой (autowrap раздувает
+	# min-height Button двухстрочным переносом и распирает кнопку за слот —
+	# матрица ловит наезд на соседей), ЕДИНЫЙ для ряда кегль по самой длинной
+	# подписи, вертикальные content-margins дозируем от высоты слота; клип —
+	# страховка оконного рендера (строка в окне до ×1.5 шире headless-мерки).
+	# side_pad > 0 переопределяет боковые поля контента (левое гнездо иконки
+	# у табов), 0 — родные поля пластины кита.
+	if row_buttons.is_empty():
+		return
+	var first := row_buttons[0] as Button
+	if first == null:
+		return
+	var font := first.get_theme_font("font")
+	var font_size := _readable_font_size(16)
+	var side_left := side_pad
+	var side_right := side_pad
+	if side_pad <= 0.0:
+		var base_style := first.get_theme_stylebox("normal")
+		side_left = base_style.content_margin_left if base_style != null else 45.0
+		side_right = base_style.content_margin_right if base_style != null else 45.0
+	var icon_span := 0.0
+	var icon_height := 0.0
+	for entry in row_buttons:
+		var entry_icon := (entry as Button).icon
+		if entry_icon != null:
+			icon_span = maxf(icon_span, minf(36.0, float(entry_icon.get_width())) + 4.0)
+			icon_height = maxf(icon_height, float(entry_icon.get_height()))
+	if font != null:
+		var avail := button_width - side_left - side_right - icon_span
+		var widest := 0.0
+		for entry in row_buttons:
+			widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+		while font_size > 11 and widest > avail:
+			font_size -= 1
+			widest = 0.0
+			for entry in row_buttons:
+				widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+	var line_height := 22.0
+	if font != null:
+		line_height = font.get_height(font_size)
+	var v_pad := clampf((button_height - maxf(line_height, icon_height)) * 0.5, 4.0, 16.0)
+	for entry in row_buttons:
+		var button := entry as Button
+		button.autowrap_mode = TextServer.AUTOWRAP_OFF
+		button.clip_text = true
+		button.add_theme_font_size_override("font_size", font_size)
+		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+			var state_style := button.get_theme_stylebox(state)
+			if state_style == null:
+				continue
+			var fitted: StyleBox = state_style.duplicate()
+			if side_pad > 0.0:
+				fitted.content_margin_left = side_pad
+				fitted.content_margin_right = side_pad
+			fitted.content_margin_top = v_pad
+			fitted.content_margin_bottom = v_pad
+			button.add_theme_stylebox_override(state, fitted)
 
 
 func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
@@ -6021,35 +6046,15 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 		popup.add_theme_color_override("font_hover_color", SETTINGS_V6_TEXT_BRIGHT)
 
 
-func _settings_v6_make_action_button(text: String, kind: String, s: float) -> Button:
-	# Кнопка 320×80×s с четырьмя состояниями из отдельных ассетов (без растяжений:
-	# арт 320×80 рисуется в точной пропорции, углы 9-slice 1:1).
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(roundf(SETTINGS_V6_ACTION_SIZE.x * s), roundf(SETTINGS_V6_ACTION_SIZE.y * s))
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _settings_v6_font(26.0, s))
-	var paths: Dictionary = SETTINGS_V6_BTN_PATHS[kind]
-	var content := Vector4(24.0 * s, 10.0 * s, 24.0 * s, 12.0 * s)
-	var source_margins := Vector4(30.0, 26.0, 30.0, 28.0)
-	button.add_theme_stylebox_override("normal", _settings_v6_texture_box(paths["normal"], source_margins, content))
-	button.add_theme_stylebox_override("hover", _settings_v6_texture_box(paths["hover"], source_margins, content))
-	button.add_theme_stylebox_override("pressed", _settings_v6_texture_box(paths["pressed"], source_margins, content))
-	button.add_theme_stylebox_override("focus", _settings_v6_texture_box(paths["hover"], source_margins, content))
-	button.add_theme_stylebox_override("disabled", _settings_v6_texture_box(paths["disabled"], source_margins, content))
-	if kind == "primary":
-		# Литое золото primary — тёмная кожа вместо светлого текста (выцветал).
-		var dark_on_gold := Color(0.18, 0.11, 0.04, 1.0)
-		button.add_theme_color_override("font_color", dark_on_gold)
-		button.add_theme_color_override("font_hover_color", dark_on_gold)
-		button.add_theme_color_override("font_pressed_color", dark_on_gold)
-		button.add_theme_color_override("font_focus_color", dark_on_gold)
-	else:
-		button.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
-		button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
-		button.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT)
-		button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
-	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
+func _settings_v6_make_action_button(text: String, button_name: String, width: float, height: float) -> Button:
+	# SCRUM-879: кнопки-действия настроек — глобальный кит (Правило 2, как экран
+	# «Атлас героев»): _make_button + _set_action_button_size. Имя ставим ДО
+	# применения размера: маппинг текстур кита (_text_button_unique_id /
+	# _button_asset_type) читает name+size. Прежние ui_settings_v6_btn_* стили
+	# не используются; disabled-состояние (Apply) кит поддерживает.
+	var button := _make_button(text)
+	button.name = button_name
+	_set_action_button_size(button, width, height)
 	return button
 
 
