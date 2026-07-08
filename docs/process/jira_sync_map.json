@@ -3950,8 +3950,8 @@
  },
  "codex_backend_character_weapon_mechanics_review_table_task.md": {
   "key": "SCRUM-878",
-  "status": "Контроль качества",
-  "desc_hash": "21a57bc30ca41f75679af8141aaa9435"
+  "status": "Готово",
+  "desc_hash": "2b59fe5ba5d098c57aa8f3963d41af71"
  },
  "design_ui_atlas_style_unify_screens_task.md": {
   "key": "SCRUM-879",
