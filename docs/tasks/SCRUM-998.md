@@ -1,6 +1,6 @@
 # Events Art: уникальные фоны для стартового пака событий
 
-Статус: in_progress
+Статус: done
 Приоритет: p1
 Роль: Design (арт-генерация)
 Версия: 0.2.1
@@ -96,3 +96,22 @@ Locked paths: `assets/backgrounds/events/` (новая папка), `docs/design
 
 Ассеты+манифест+превью → зелёный smoke → push в origin/dev → Jira «Контроль
 качества» + комментарий с контакт-листом → зеркало done.
+
+## Итог
+
+Сгенерены **все 12 из 12 фонов** (blocked нет; квота OpenAI жива, проверена
+одиночным prio-1 фоном до батча). Пайплайн: `tools/generate_scrum998_event_backgrounds.py`
+(gpt-image-2, 1536x1024 → crop 16:9 → LANCZOS 2560x1440, painterly dark fantasy,
+safe-зоны в каждом промпте, ретраи транзиентов, стоп на billing).
+
+- Runtime: `assets/backgrounds/events/event_bg_<id>.png` — 12 шт., 2560x1440 RGB,
+  3.0-4.3 МБ, каждый png с `.png.import` парой в одном коммите.
+- Референсы + манифест: `docs/design/references/events_backgrounds_pack/`
+  (`manifest.json`: 12 записей, все `status: done`, `safe_zones_ok: true`).
+- Превью: контакт-лист `docs/design/previews/scrum998_event_backgrounds_contact.png`,
+  safe-зонные оверлеи `scrum998_event_bg_safezones_720.png` / `_1440.png`
+  (панель 38% и карты 24% ложатся на тёмные спокойные зоны, сюжет не перекрыт).
+- Smoke: `runtime_smoke_test.gd` через godot_gate — passed («Parameter t is null»
+  — известный шум headless dummy-рендерера).
+- Коммиты в origin/dev: 288f1dd9 (генератор), 6d0957fa (caravan_bandits),
+  312bdc04 (волна 1: 5 фонов), 47d352c6 (волна 2: 6 фонов), 79240899 (превью+манифест).
