@@ -2623,17 +2623,25 @@ func _show_atlas_screen() -> void:
 	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
-	var medallion_px := roundf(clampf(112.0 * s, 64.0, 132.0))
+	# Фидбек 2026-07-08 (SCRUM-884): все 17 героев видимы разом — сетка в 2
+	# столбца; размер медальона считается от высоты тела (9 рядов), скролл
+	# остаётся только страховкой для карликовых окон (пол 44px).
+	var strip_rows := ceili(float(game.META_PROGRESSION.constellation_class_ids().size()) / 2.0)
+	var strip_sep := int(roundf(6.0 * s))
+	var vp_h: float = game.get_viewport().get_visible_rect().size.y
+	var medallion_px := roundf(clampf(vp_h * 0.55 / float(maxi(strip_rows, 1)) - float(strip_sep), 44.0, 112.0))
 	var strip := ScrollContainer.new()
 	strip.name = "AtlasClassStrip"
 	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	strip.custom_minimum_size = Vector2(medallion_px + roundf(26.0 * s), 0.0)
+	strip.custom_minimum_size = Vector2(medallion_px * 2.0 + float(strip_sep) + roundf(14.0 * s), 0.0)
 	strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(strip)
 	_atlas["strip"] = strip
-	var strip_box := VBoxContainer.new()
+	var strip_box := GridContainer.new()
 	strip_box.name = "AtlasClassStripBox"
-	strip_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	strip_box.columns = 2
+	strip_box.add_theme_constant_override("h_separation", strip_sep)
+	strip_box.add_theme_constant_override("v_separation", strip_sep)
 	strip.add_child(strip_box)
 	for raw_cid in game.META_PROGRESSION.constellation_class_ids():
 		var cid := str(raw_cid)
