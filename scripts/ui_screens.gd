@@ -5202,13 +5202,20 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	# (_unified_add_frame последним). Строки контента (поля/бинды/чекбоксы/
 	# слайдеры v6) сохранены — их масштаб s считается ниже.
 	var s_ui := _atlas_ui_scale()
-	# Масштаб v6-строк: детерминированно от вьюпорта ДО построения строк —
-	# ширина контент-зоны safe-области (минус запас на поля чипа) к дизайн-листу
-	# 1420; кламп держит строки читаемыми на 648p и не даёт распухнуть на 4K.
+	# SCRUM-882 (фидбек): строки настроек — колонка ФИКСИРОВАННОЙ ширины по
+	# центру контент-панели, элементы внутри колонки выровнены влево.
+	# Детерминированно от вьюпорта ДО построения строк: ширина контент-зоны
+	# safe-области (минус запас на поля чипа) задаёт column_w, а масштаб строк s
+	# считается уже от column_w к самой широкой строке дизайна (~1276: volume-ряд
+	# label 380 + слайдер 420 + чип 96 + toggle с зазорами + запас) — ряды
+	# гарантированно уже колонки, переполнений нет; клампы держат строки
+	# читаемыми на 648p и не дают распухнуть на 4K.
 	var vp: Vector2 = game.get_viewport().get_visible_rect().size
 	var safe_m := _unified_safe_margins()
 	var content_w := vp.x - safe_m.x - safe_m.z - roundf(44.0 * s_ui) * 2.0
-	var s := clampf(content_w / SETTINGS_V6_DESIGN_SIZE.x, 0.55, 1.05)
+	var s_fit := clampf(content_w / SETTINGS_V6_DESIGN_SIZE.x, 0.55, 1.05)
+	var settings_column_w := clampf(roundf(920.0 * s_fit), 560.0, 980.0)
+	var s := clampf(settings_column_w / 1276.0, 0.55, 1.05)
 
 	var safe := _unified_make_safe_area(root, "Settings")
 	var layout := VBoxContainer.new()
@@ -5261,7 +5268,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
 
-	# --- Ряд 2: свитчер табов — кнопки глобального кита, фикс-сетка 3×220×72 ---
+	# --- Ряд 2: свитчер табов — кнопки глобального кита на плите «Назад»,
+	# фикс-сетка 3×260×_atlas_action_button_height() (SCRUM-882) ---
 	var switcher_row := HBoxContainer.new()
 	switcher_row.name = "SettingsSwitcherRow"
 	switcher_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -5286,7 +5294,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	content_panel.add_child(content_margin)
 	content_margin.add_child(tabs)
 
-	var screen_tab := _make_settings_tab("Экран", s)
+	var screen_tab := _make_settings_tab("Экран", s, settings_column_w)
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
 	tabs.add_child(screen_tab)
 
@@ -5373,7 +5381,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	pending_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER if _settings_video_dirty() else SETTINGS_V6_MUTED)
 	screen_box.add_child(pending_label)
 
-	var audio_tab := _make_settings_tab("Звук", s)
+	var audio_tab := _make_settings_tab("Звук", s, settings_column_w)
 	var audio_box := audio_tab.get_child(0) as VBoxContainer
 	tabs.add_child(audio_tab)
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
@@ -5388,7 +5396,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	audio_box.add_child(reset_audio_button)
 
-	var controls_tab := _make_settings_tab("Управление", s)
+	var controls_tab := _make_settings_tab("Управление", s, settings_column_w)
 	tabs.add_child(controls_tab)
 	# Вкладка «Управление» переполнялась (прицеливание + строка-ребинд на каждый
 	# INPUT_ACTION) — оборачиваем контент в вертикальный ScrollContainer, чтобы
@@ -5682,17 +5690,18 @@ func _return_from_settings() -> void:
 
 
 func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
-	# SCRUM-879: табы настроек — обычные кнопки глобального кита, как вкладки
-	# «Атласа героев» (_show_atlas_screen), актив/неактив — модуляцией,
-	# иконки v6 остаются. Размер ФИКСИРОВАННЫЙ (220,72) — нативный маппинг кита
-	# quit_220x72 (Правило 1: уникальные текстуры только 1:1); гэп фикс 24 —
-	# фулскрин-шелл (итерация 2) даёт сетке 708×72 запас даже в самой узкой
-	# safe-зоне рамы (912px на 1152×648).
+	# SCRUM-882 (фидбек к SCRUM-879): табы настроек — тот же стиль, что у кнопки
+	# «Назад»: 260×_atlas_action_button_height(); на высоте 104 size-маппинг кита
+	# даёт ту же НАТИВНУЮ плиту back_260x104, что носит SettingsBackButton, на
+	# компакт-высотах 88/72 кит штатно уходит в 9-slice-ветки (как табы Атласа).
+	# Актив/неактив — модуляцией, иконки v6 остаются (32px — чтобы текст с
+	# иконкой помещались в плоское поле плиты); гэп фикс 24 — сетка 828px
+	# помещается даже в самой узкой safe-зоне рамы (912px на 1152×648).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tab_width := 220.0
-	var tab_height := 72.0
+	var tab_width := 260.0
+	var tab_height := _atlas_action_button_height()
 	var tab_gap := 24.0
 	switcher.custom_minimum_size = Vector2(tab_width * 3.0 + tab_gap * 2.0, tab_height)
 
@@ -5708,11 +5717,11 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 		button.offset_top = 0.0
 		button.offset_right = tab_left + tab_width
 		button.offset_bottom = tab_height
-		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(36.0, 36.0), minf(1.0, tab_height / 66.0))
+		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(32.0, 32.0), minf(1.0, tab_height / 104.0))
 		if icon != null:
 			button.icon = icon
 			button.expand_icon = false
-			button.add_theme_constant_override("icon_max_width", 36)
+			button.add_theme_constant_override("icon_max_width", 32)
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -5720,7 +5729,11 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 		)
 		switcher.add_child(button)
 		buttons.append(button)
-	_settings_fit_kit_row(buttons, tab_width, tab_height, 28.0)
+	# Плоское поле плиты back_260x104 — x∈[48,212] (по бокам драконьи головы
+	# орнамента, промер арта): боковые поля контента 48; headless-мерку строки
+	# держим с запасом ×0.72 — оконный рантайм рисует строку до ~1.4 шире
+	# headless-мерки, а фидбек требует, чтобы текст и иконка помещались целиком.
+	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 0.72)
 
 	var update_buttons := func(active_tab: int) -> void:
 		# Актив/неактив — модуляцией, теми же тонами, что _atlas_apply_tab_state.
@@ -5735,7 +5748,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	return switcher
 
 
-func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0) -> void:
+func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0, fit_ratio := 1.0) -> void:
 	# SCRUM-879: кит-кнопки в фиксированных слотах модалки (табы 84×s, нижний
 	# ряд 80×s). Пластины кита не искажаем (те же текстуры, 9-slice-раскрой),
 	# но контент доводим под слот: подпись одной строкой (autowrap раздувает
@@ -5744,7 +5757,9 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 	# подписи, вертикальные content-margins дозируем от высоты слота; клип —
 	# страховка оконного рендера (строка в окне до ×1.5 шире headless-мерки).
 	# side_pad > 0 переопределяет боковые поля контента (левое гнездо иконки
-	# у табов), 0 — родные поля пластины кита.
+	# у табов), 0 — родные поля пластины кита. fit_ratio < 1 — страховка
+	# оконного рендера (строка в окне до ~1.4-1.5 шире headless-мерки): кегль
+	# подбирается под долю доступной ширины, чтобы буквы не клипались в окне.
 	if row_buttons.is_empty():
 		return
 	var first := row_buttons[0] as Button
@@ -5766,7 +5781,7 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 			icon_span = maxf(icon_span, minf(36.0, float(entry_icon.get_width())) + 4.0)
 			icon_height = maxf(icon_height, float(entry_icon.get_height()))
 	if font != null:
-		var avail := button_width - side_left - side_right - icon_span
+		var avail := (button_width - side_left - side_right - icon_span) * clampf(fit_ratio, 0.1, 1.0)
 		var widest := 0.0
 		for entry in row_buttons:
 			widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
@@ -5797,7 +5812,7 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 			button.add_theme_stylebox_override(state, fitted)
 
 
-func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
+func _make_settings_tab(tab_name: String, s := 1.0, column_w := 0.0) -> MarginContainer:
 	var margin := MarginContainer.new()
 	margin.name = tab_name
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -5808,8 +5823,14 @@ func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
 	margin.add_theme_constant_override("margin_bottom", 0)
 	var page := VBoxContainer.new()
 	page.name = "%sContent" % tab_name
-	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# SCRUM-882 (фидбек): страница таба — колонка фикс-ширины column_w по ЦЕНТРУ
+	# панели (SHRINK_CENTER внутри margin-обёртки), строки внутри колонки
+	# остаются с левым выравниванием (у самих строк SIZE_SHRINK_BEGIN). Ширины
+	# строк считаются от s = column_w/1276 — уже колонки по построению.
+	page.size_flags_horizontal = Control.SIZE_SHRINK_CENTER if column_w > 0.0 else Control.SIZE_EXPAND_FILL
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	if column_w > 0.0:
+		page.custom_minimum_size = Vector2(roundf(column_w), 0.0)
 	page.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	margin.add_child(page)
 	return margin
