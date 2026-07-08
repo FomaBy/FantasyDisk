@@ -1373,7 +1373,7 @@ func _test_glossary_terms(main: Node) -> void:
 	# глоссария упразднены — термины живут обычными карточками раздела кодекса
 	# (см. _test_codex_screen), определение показывает правое досье.
 	if main.ui.has_method("_make_glossary_term_button") or main.ui.has_method("_show_glossary_tooltip"):
-		_fail("Expected SCRUM-884 to remove glossary term buttons and tooltip popups from ui_screens.")
+		_fail("Expected SCRUM-889 to keep glossary term buttons and tooltip popups out of ui_screens.")
 		return
 	var generic_button := Button.new()
 	generic_button.name = "GenericTooltipProbe"
@@ -7349,63 +7349,21 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-884 Codex artifacts section to show the canonical artifact icon in the right dossier.")
 		return
 
-	# SCRUM-884: глоссарий — обычный раздел со списком карточек-рядов: первая
-	# карточка подсвечена selected при входе, клик по карточке обновляет правое
-	# досье определением, всплывающих подсказок терминов нет.
+	# SCRUM-889: глоссарий удалён из live Codex по прямой просьбе пользователя.
 	var glossary_tab := codex_main.find_child("CodexTab_glossary", true, false) as Button
-	if glossary_tab == null:
-		_fail("Expected Codex to keep the glossary category tab.")
+	if glossary_tab != null:
+		_fail("Expected SCRUM-889 Codex to remove the glossary category tab.")
 		return
-	glossary_tab.pressed.emit()
-	await process_frame
 	var glossary_section := codex_main.find_child("CodexSection_glossary", true, false) as Control
-	if glossary_section == null or not glossary_section.visible:
-		_fail("Expected SCRUM-884 Codex to lazy-build and show the glossary section.")
+	if glossary_section != null:
+		_fail("Expected SCRUM-889 Codex to remove the glossary section.")
 		return
 	var glossary_list := codex_main.find_child("CodexSectionList_glossary", true, false) as VBoxContainer
-	if glossary_list == null:
-		_fail("Expected SCRUM-884 glossary section to host a plain entry list.")
-		return
-	var glossary_cards: Array = []
-	for glossary_child in glossary_list.get_children():
-		if glossary_child is Button:
-			glossary_cards.append(glossary_child)
-	if glossary_cards.size() < 5:
-		_fail("Expected SCRUM-884 glossary to list >= 5 entry card rows, got %d." % glossary_cards.size())
-		return
-	var glossary_default_card := glossary_cards[0] as Button
-	if codex_content.get_meta("codex_selected_entry", null) != glossary_default_card:
-		_fail("Expected SCRUM-884 glossary default entry card to be selected on section open.")
-		return
-	var glossary_selected_style := glossary_default_card.get_theme_stylebox("normal") as StyleBoxFlat
-	if glossary_selected_style == null or glossary_selected_style.get_border_width(SIDE_LEFT) < 3:
-		_fail("Expected SCRUM-884 selected glossary card to use the highlighted (3px border) leather row style.")
-		return
-	var glossary_detail_title := codex_main.find_child("CodexDetailTitle", true, false) as Label
-	if glossary_detail_title == null or glossary_detail_title.text.strip_edges() == "":
-		_fail("Expected SCRUM-884 glossary dossier title to be filled on section open.")
-		return
-	var glossary_second_card := glossary_cards[1] as Button
-	glossary_second_card.pressed.emit()
-	await process_frame
-	if codex_content.get_meta("codex_selected_entry", null) != glossary_second_card:
-		_fail("Expected SCRUM-884 clicking a glossary card to move the selected highlight.")
-		return
-	glossary_detail_title = codex_main.find_child("CodexDetailTitle", true, false) as Label
-	var glossary_second_detail: Dictionary = glossary_second_card.get_meta("codex_detail_data", {})
-	if glossary_detail_title == null or glossary_detail_title.text != str(glossary_second_detail.get("title", "")):
-		_fail("Expected SCRUM-884 glossary dossier to show the clicked term definition.")
-		return
-	var glossary_definition_heading_found := false
-	for glossary_heading in codex_main.find_children("CodexDetailSectionHeading_*", "Label", true, false):
-		if (glossary_heading as Label).text == "Определение":
-			glossary_definition_heading_found = true
-			break
-	if not glossary_definition_heading_found:
-		_fail("Expected SCRUM-884 glossary dossier to include the definition section from _codex_glossary_sections.")
+	if glossary_list != null:
+		_fail("Expected SCRUM-889 Codex to remove the glossary entry list.")
 		return
 	if codex_main.find_child("GlossaryTooltipPanel", true, false) != null:
-		_fail("Expected SCRUM-884 glossary section to work without tooltip popups.")
+		_fail("Expected SCRUM-889 Codex to keep glossary tooltip popups removed.")
 		return
 
 	# Полнота данных кодекса.

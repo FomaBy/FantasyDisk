@@ -58,18 +58,17 @@
 | 24 | Форма фидбэка | `FeedbackOverlay` / `FeedbackPanel` | `_show_feedback_overlay` | ui_screens.gd:5940 |
 | 25 | Конфликт переназначения клавиш | `RebindConflictPanel` | `_show_rebind_conflict` (в настройках) | ui_screens.gd:6131 |
 
-## C. Тултипы / транзиентные баннеры (5)
+## C. Тултипы / транзиентные баннеры (4)
 
 | # | Элемент | Корневая нода | Вход | Файл |
 |---|---|---|---|---|
-| 26 | Тултип глоссария | `GlossaryTooltipPanel` | `_show_glossary_tooltip` | ui_screens.gd:2722 |
-| 27 | Тултип статов | `StatTooltipPanel` | — | ui_screens.gd |
-| 28 | Тост повышения уровня | — | `_show_level_up_toast` | ui_screens.gd:5361 |
-| 29 | Баннер заголовка боя | — | `_show_combat_title_banner` | ui_screens.gd:5396 |
-| 30 | Баннер победы | — | `_show_victory_banner` | ui_screens.gd:1686 |
+| 26 | Тултип статов | `StatTooltipPanel` | — | ui_screens.gd |
+| 27 | Тост повышения уровня | — | `_show_level_up_toast` | ui_screens.gd:5361 |
+| 28 | Баннер заголовка боя | — | `_show_combat_title_banner` | ui_screens.gd:5396 |
+| 29 | Баннер победы | — | `_show_victory_banner` | ui_screens.gd:1686 |
 
 ## Итого
-**30 уникальных UI-состояний:** 19 полноэкранных + 6 модалок/пауз + 5 тултипов/баннеров.
+**29 уникальных UI-состояний:** 19 полноэкранных + 6 модалок/пауз + 4 тултипа/баннера.
 
 ## Координатная спека @2560×1440 — блок Меню/Навигация (SCRUM-484)
 

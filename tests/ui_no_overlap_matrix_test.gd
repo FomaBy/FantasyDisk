@@ -772,23 +772,19 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var dossier_headings := main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
 			if dossier_headings.size() < 3:
 				return "%s: expected SCRUM-881 structured dossier sections (>= 3) for the default entry, got %d." % [context, dossier_headings.size()]
-			# SCRUM-884: глоссарий — обычный раздел со списком карточек-рядов;
-			# всплывающие подсказки терминов упразднены.
+			# SCRUM-889: глоссарий удалён из live Codex; всплывающие подсказки
+			# терминов тоже остаются упразднёнными.
 			var glossary_tab := main.find_child("CodexTab_glossary", true, false) as Button
-			if glossary_tab == null:
-				return "%s: expected CodexTab_glossary section tab." % context
-			glossary_tab.pressed.emit()
+			if glossary_tab != null:
+				return "%s: expected SCRUM-889 Codex to remove CodexTab_glossary." % context
+			var glossary_section := main.find_child("CodexSection_glossary", true, false) as Control
+			if glossary_section != null:
+				return "%s: expected SCRUM-889 Codex to remove CodexSection_glossary." % context
 			var glossary_list := main.find_child("CodexSectionList_glossary", true, false) as VBoxContainer
-			if glossary_list == null:
-				return "%s: expected SCRUM-884 glossary section to build a plain entry list." % [context]
-			var glossary_card_count := 0
-			for glossary_child in glossary_list.get_children():
-				if glossary_child is Button:
-					glossary_card_count += 1
-			if glossary_card_count < 5:
-				return "%s: expected SCRUM-884 glossary to list >= 5 entry card rows, got %d." % [context, glossary_card_count]
+			if glossary_list != null:
+				return "%s: expected SCRUM-889 Codex to remove CodexSectionList_glossary." % context
 			if main.find_child("GlossaryTooltipPanel", true, false) != null:
-				return "%s: expected SCRUM-884 glossary tooltip popups to be removed." % context
+				return "%s: expected SCRUM-889 glossary tooltip popups to remain removed." % context
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button

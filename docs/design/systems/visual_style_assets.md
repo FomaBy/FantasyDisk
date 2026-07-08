@@ -535,13 +535,14 @@ modal safe zone. Runtime QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
 SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
-encyclopedia and glossary tooltip. Assets live in
-`assets/sprites/ui/frames/codex/` and are wired only to Codex runtime surfaces:
-`CodexMainPanel`, `CodexContent`, `CodexTab_*`, Codex entry cards,
-portrait/artifact icon slots and `GlossaryTooltipPanel`. Safe-zone metadata is
-canonical in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`;
-runtime uses those content margins instead of placing labels, icons, portraits
-or click/focus areas on dragon/metal/gem ornament. QA dump:
+encyclopedia. Assets live in `assets/sprites/ui/frames/codex/` and are wired
+only to Codex runtime surfaces: `CodexMainPanel`, `CodexContent`, `CodexTab_*`,
+Codex entry cards and portrait/artifact icon slots. SCRUM-889 removes the live
+glossary tab/list/tooltip from Codex; historical glossary tooltip art is kept as
+reference material only. Safe-zone metadata is canonical in
+`docs/design/references/codex/codex_ui_texture_kit_metadata.json`; runtime uses
+those content margins instead of placing labels, icons, portraits or click/focus
+areas on dragon/metal/gem ornament. QA dump:
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 
 These are live UI paths for the combat HUD after

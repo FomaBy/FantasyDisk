@@ -502,7 +502,6 @@ const CODEX_PL_ICONS := {
 	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
 	"artifacts": CODEX_PL_FRAME_DIR + "codex_pl_icon_artifacts.png",
 	"stats": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
-	"glossary": CODEX_PL_FRAME_DIR + "codex_pl_icon_glossary.png",
 	"ascensions": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
 }
 # SCRUM-883: карточки наград — чип-ряды Атласа; display-размеры слотов сохранены.
@@ -2190,7 +2189,6 @@ const CODEX_SECTIONS := [
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
 	{"id": "stats", "title": "Характеристики"},
-	{"id": "glossary", "title": "Глоссарий"},
 	{"id": "ascensions", "title": "Возвышения"},
 ]
 
@@ -4354,8 +4352,6 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_artifacts(list)
 		"stats":
 			_build_codex_stats(list)
-		"glossary":
-			_build_codex_glossary(list)
 		"ascensions":
 			_build_codex_ascensions(list)
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
@@ -4623,11 +4619,6 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 					_codex_label(text_box, str(line), 15, Color(0.88, 0.92, 0.98, 0.96))
 
 
-# SCRUM-884 (фидбек юзера): всплывающие подсказки глоссария и отдельные
-# term-кнопки упразднены — термины стали обычными карточками списка кодекса,
-# определение показывает правое досье (_codex_glossary_sections).
-
-
 # --- SCRUM-881: секции глубокого досье. СТРОГО существующие данные из
 # codex_data/ProgressionData/StatFormulas/GLOSSARY; пустое поле = секция/строка
 # пропускается (никаких заглушек). Формат: [{heading, lines:[String|{title,text}]}].
@@ -4852,23 +4843,6 @@ func _codex_stat_sections(stat: Dictionary) -> Array:
 	return sections
 
 
-func _codex_glossary_sections(term_id: String, definition: Dictionary) -> Array:
-	var sections := []
-	if str(definition.get("desc", "")) != "":
-		sections.append({"heading": "Определение", "lines": [str(definition["desc"])]})
-	# Связанная характеристика: термин с тем же id в реестре статов.
-	var stat_definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(term_id, {})
-	if not stat_definition.is_empty():
-		var stat_lines := []
-		if str(stat_definition.get("description", "")) != "":
-			stat_lines.append(str(stat_definition["description"]))
-		if str(stat_definition.get("influences", "")) != "":
-			stat_lines.append("Влияет на: %s" % str(stat_definition["influences"]))
-		if not stat_lines.is_empty():
-			sections.append({"heading": "Связанная характеристика", "lines": stat_lines})
-	return sections
-
-
 func _codex_ascension_sections(entry: Dictionary) -> Array:
 	var sections := []
 	if str(entry.get("description", "")) != "":
@@ -5012,29 +4986,6 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(text_box)
 			_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
-
-
-func _build_codex_glossary(list: VBoxContainer) -> void:
-	# SCRUM-884: термин — обычная карточка списка (тот же чип-ряд, что у прочих
-	# разделов): имя золотом + краткое определение; клик показывает полное
-	# определение в правом досье (_codex_glossary_sections). Тултипы упразднены.
-	for term_id in GLOSSARY.term_ids():
-		var definition: Dictionary = GLOSSARY.definition(term_id)
-		var row := _codex_entry_panel(list, {
-			"title": str(definition.get("name", term_id)),
-			"summary": str(definition.get("desc", "")),
-			"chips": ["Глоссарий", str(term_id)],
-			"body_lines": [str(definition.get("desc", ""))],
-			"sections": _codex_glossary_sections(str(term_id), definition),
-		})
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 4)
-		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		row.add_child(box)
-		var term_name := _codex_label(box, str(definition.get("name", term_id)), 12, Color(0.96, 0.90, 0.68, 1.0), 1)
-		term_name.name = "GlossaryTermName_%s" % term_id
-		_codex_label(box, str(definition.get("desc", "")), 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:

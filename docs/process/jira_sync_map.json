@@ -4007,5 +4007,10 @@
   "key": "SCRUM-890",
   "status": "К выполнению",
   "desc_hash": "440207edc36f0116d999fb651d5d7fd1"
+ },
+ "backend_remove_codex_glossary_task.md": {
+  "key": "SCRUM-889",
+  "status": "Контроль качества",
+  "desc_hash": "b5ade3674f70f09406f4f526fd9ac91e"
  }
 }

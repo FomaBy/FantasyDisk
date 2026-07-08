@@ -333,15 +333,13 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   exceptions. Runtime content must use only each frame's `content_rect_xywh`;
   QA evidence is in `build/qa/scrum451_minimal_metal_rollout/`.
 
-- SCRUM-585 refreshes the `GlossaryTooltipPanel` as an isolated 2K tooltip
-  frame. Runtime keeps the existing dynamic placement contract (`460` fixed
-  width, content-driven height, `8px` anchor gap, `16px` viewport clamp) and now
-  uses the regenerated `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`
-  with strict content margins `Vector4(66, 44, 66, 40)`. Generated mockup/spec
-  and safe-zone evidence live under
-  `docs/design/mockups/scrum585_glossary_tooltip/` and
-  `docs/design/previews/scrum585_glossary_tooltip_*`. Runtime text stays inside
-  the empty center and never covers the metal rails, ruby pins, or corner claws.
+- SCRUM-585 historically refreshed the `GlossaryTooltipPanel` as an isolated 2K
+  tooltip frame (`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`,
+  content margins `Vector4(66, 44, 66, 40)`). Generated mockup/spec and
+  safe-zone evidence live under `docs/design/mockups/scrum585_glossary_tooltip/`
+  and `docs/design/previews/scrum585_glossary_tooltip_*`. SCRUM-889 removes the
+  live glossary section from the in-game Codex, so this panel is no longer
+  created by `scripts/ui_screens.gd`.
 
 - SCRUM-588 refreshes the transient `LevelUpToast` as an isolated generated @2K
   frame asset. Runtime uses
@@ -531,9 +529,10 @@ SCRUM-345 adds a Design-ready Codex-specific texture kit under
 `entry_card_hover`, `portrait_slot`, `tooltip`, and `tab` states. Safe content
 rects live in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`.
 Runtime Codex content must stay inside those rects; portraits, descriptions,
-tabs, glossary tooltips and click/focus hitboxes must not sit on decorative
-dragon/metal/gem borders. SCRUM-403 wires the kit into `_show_codex_screen`,
-Codex tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`.
+tabs and click/focus hitboxes must not sit on decorative dragon/metal/gem
+borders. SCRUM-403 historically wired the kit into `_show_codex_screen`, Codex
+tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`; SCRUM-889
+removes the live glossary section and tooltip panel from the in-game Codex.
 Runtime smoke asserts the actual StyleBoxTexture paths and writes
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 SCRUM-417 increases character portrait density by rendering character
@@ -549,9 +548,8 @@ body text. Uniform-scale rects come from
 1280x720 / 1920x1080 / 2560x1440. The full mockup PNG is not wired as a runtime
 atlas; the existing SCRUM-345/SCRUM-403 Codex frame kit remains the component
 frame material. Entry cards are focusable buttons, sections still lazy-build
-and cache, Escape/back returns to main menu, glossary tooltips keep the Codex
-tooltip frame, and character detail portraits keep SCRUM-416 full-frame
-`sprite_path` plus SCRUM-417 covered scaling. QA dumps:
+and cache, Escape/back returns to main menu, and character detail portraits keep
+SCRUM-416 full-frame `sprite_path` plus SCRUM-417 covered scaling. QA dumps:
 `build/qa/scrum438/codex_v2_runtime_dump.md` and
 `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
@@ -601,10 +599,12 @@ rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700;
 center column contains `CodexCenterObjectStage`, contained
 `CodexCenterObjectTexture`, short selected summary and cached compact section
 lists; the right detail overlay contains the larger contained
-`CodexDetailPortraitSlot`, chip row and `CodexDetailParchmentInset`. All
-existing sections, data-driven sources, glossary tooltips,
-mouse/keyboard/gamepad navigation and strict frame-safe content placement are
-preserved. Screenshot evidence: `build/qa/codex_object_first/`.
+`CodexDetailPortraitSlot`, chip row and `CodexDetailParchmentInset`. Data-driven
+sections, mouse/keyboard/gamepad navigation and strict frame-safe content
+placement are preserved. SCRUM-889 removes the live `Глоссарий` section from
+the category rail, so the active Codex shows Персонажи, Монстры, Артефакты,
+Характеристики and Возвышения only. Screenshot evidence:
+`build/qa/codex_object_first/`.
 
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
@@ -725,14 +725,13 @@ content remains inside the frame safe-zone. The update note lives in
 
 SCRUM-840 unifies global hover tooltip behavior without generating new bitmap
 assets. Generic `tooltip_text` controls inherit the existing minimal-metal
-`tooltip` frame (`66/44/66/40` content margins), while glossary keeps
-`gt_panel` and pause dossier stat details keep `stat_tooltip`. The shared
+`tooltip` frame (`66/44/66/40` content margins), while pause dossier stat
+details keep `stat_tooltip`. The shared
 runtime helper in `scripts/ui/global_tooltip.gd` builds opaque framed panels
 with word wrap, `MOUSE_FILTER_IGNORE`, 460px generic width / 430px stat width,
 16px viewport clamp and 18px cursor/anchor gap. Generic tooltip panels carry a
 small positioning script that re-places the Godot tooltip away from the cursor
-after instantiation; glossary uses the same clamp/flip helper against the term
-button anchor. Spec note: `docs/design/mockups/scrum840_global_tooltips/spec.md`.
+after instantiation. Spec note: `docs/design/mockups/scrum840_global_tooltips/spec.md`.
 
 ## Feedback Overlay
 
@@ -983,7 +982,8 @@ B→ui_cancel, крестовину/стик к ui_*) и общий хелпер
 - Патч-ноуты (`_show_patch_notes_screen`): старт — «Назад в меню»; контент read-only
   (колесо/перетаскивание).
 - Кодекс (`_show_codex_screen`): старт — первая вкладка; карточки записей фокусируемы,
-  секция-скролл `follow_focus`. **LB/RB листают секции** (`_cycle_codex_section`).
+  секция-скролл `follow_focus`; live-раздела `Глоссарий` нет. **LB/RB листают
+  секции** (`_cycle_codex_section`).
 - Настройки (`_show_settings_menu`): старт — первая вкладка; слайдеры/OptionButton/
   CheckBox фокусируемы (ui_left/right меняют значение из коробки). **LB/RB листают
   вкладки** (`_cycle_settings_tab`).
