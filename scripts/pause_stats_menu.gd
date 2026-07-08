@@ -683,8 +683,11 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 
 # Чип-ряд контента (0.62, hover 0.82) — язык рядов Атласа
 # (числа = ui_screens._unified_apply_row_theme normal/hover).
+# На компакт-высотах (<760) вертикальный pad 1px: 8 рядов с иконками 44
+# держат карточку героя внутри панели на 1152×648.
 func _stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFlat:
-	var style := _chip_style(0.82 if is_hovered else 0.62, 4.0)
+	var row_pad_v := 1.0 if get_viewport_rect().size.y < 760.0 else 4.0
+	var style := _chip_style(0.82 if is_hovered else 0.62, row_pad_v)
 	style.content_margin_left = 10.0
 	style.content_margin_right = 10.0
 	if is_hovered:
