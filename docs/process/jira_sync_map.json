@@ -3976,22 +3976,22 @@
  "design_inrun_ui_atlas_style_task.md": {
   "key": "SCRUM-883",
   "status": "К выполнению",
-  "desc_hash": "c461c55d6c63c0e26f18c6a5df9c3a2f"
+  "desc_hash": "7d39d17143c52372b149682df99fe4c0"
  },
  "design_codex_list_center_atlas_two_columns_task.md": {
   "key": "SCRUM-884",
   "status": "К выполнению",
-  "desc_hash": "c2f52fdc0807e745487d46204e5906e0"
+  "desc_hash": "f9740dc1e6a2c5f14b0daa05a3610fa3"
  },
  "design_hero_dossier_stats_column_descriptions_task.md": {
   "key": "SCRUM-887",
   "status": "К выполнению",
-  "desc_hash": "efac25ea45abfc3eff1dd820a01a5938"
+  "desc_hash": "b98e12d2c540d3b10114f62d725fcb05"
  },
  "backend_engineer_sentry_wrench_turrets_task.md": {
   "key": "SCRUM-888",
   "status": "К выполнению",
-  "desc_hash": "8a3459e97cc169d8a01decb5b8913107"
+  "desc_hash": "16040faab46f7c9c9f54590336f43806"
  },
  "animation_knight_pixellab_refresh_task.md": {
   "key": "SCRUM-885",

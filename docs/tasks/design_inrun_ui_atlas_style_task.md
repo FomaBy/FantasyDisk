@@ -1,7 +1,7 @@
 # Ин-ран UI под атлас-стиль: оружие, level-up, награды, пауза, эвенты + шрифт-аудит
 
 - Jira: SCRUM-883
-- Статус: in_progress
+- Статус: done
 - Контур: Claude
 - Owner: Claude Fable 5 (интерактивный чат пользователя)
 - Thread: claude-fable5-ui-unify-20260708
@@ -62,3 +62,25 @@ Esc в игре, так же все меню которые отвечают з�
 ## Прогресс
 
 - 2026-07-08: разведка (Explore), спека — Claude Fable 5.
+- 2026-07-08: фундамент-2 (шрифт-полы) влит; 5 субагентов волны влиты последовательно:
+  w3/weapon (7b53eac3), w3/levelup (b0d852eb), w3/rewards (7 коммитов, 4c5b8e73),
+  w3/events (ceebedba, + новая EndRunConfirm-модалка по доп-фидбеку), w3/fonts
+  (f3f26c9e). Конфликты только в const-блоках тестов (взаимные удаления) —
+  разрешены объединением.
+
+## QA-Вердикт
+
+- Статус: PASSED
+- Дата: 2026-07-08, судья: Claude Fable 5 (оркестратор)
+- Финальные гейты объединённого dev (godot_gate, EXIT=0): runtime_smoke (полный),
+  ui_no_overlap_matrix ×7 вьюпортов (включая viewport-fit level_up/economy*/event);
+  по веткам агентов: gamepad_inrun_ui, gamepad_menu_focus, level_up_advisor,
+  event_data_smoke, event_choices_empty_pool, hero_select_pixellab_layout,
+  route-map focused ×2 — PASS.
+- Визуальная приёмка design_review-капчера 2560×1440 (weapon_select, level_up,
+  pause_menu/pause_stats, event, attribute_shop): атлас-язык целостен, растяжек
+  нет, кегли ≥12, легаси-киты overhaul_2k/lu682 в зонах волны не используются.
+- Превью: docs/design/previews/atlas_style_{weapon_select,level_up,event,pause_menu,attribute_shop,victory}_2560x1440.png
+  + полный сет build/qa/design_review/ (24 состояния ×3 вьюпорта).
+- Disk cleanup: removed /private/tmp/fsd_wt_w3_{weapon,levelup,rewards,events,fonts}
+  (+ .godot-кэши), ветки w3/* удалены после влития.

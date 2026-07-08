@@ -1,7 +1,7 @@
 # Выбор героя: колонка характеристик справа в досье + переписанные описания классов
 
 - Jira: SCRUM-887
-- Статус: in_progress
+- Статус: done
 - Контур: Claude
 - Owner: Claude Fable 5 (интерактивный чат пользователя)
 - Thread: claude-fable5-ui-unify-20260708
@@ -44,3 +44,18 @@
 ## Прогресс
 
 - 2026-07-08: спека по фидбеку — Claude Fable 5.
+- 2026-07-08: субагент hero-dossier влит (2647d214 лейаут + b6a59f88 тексты):
+  правая колонка 8 полос (компакт/ультра-компакт по высоте), строка «Основные
+  атрибуты» из данных, переписаны description/strengths/weaknesses/identity
+  всех 17 классов (≤131/≤111 симв., по механикам, без англицизмов).
+
+## QA-Вердикт
+
+- Статус: PASSED
+- Дата: 2026-07-08, судья: Claude Fable 5 (оркестратор)
+- Гейты (godot_gate, EXIT=0): hero_select_pixellab_layout ×5 вьюпортов (новые
+  ассерты колонки/атрибутов), codex_data_smoke, content_registry_consistency,
+  ui_no_overlap_matrix ×7, runtime_smoke (полный).
+- Кодекс подхватил новые тексты автоматически (та же дата-база).
+- Disk cleanup: removed /private/tmp/fsd_wt_hero3 (+ .godot-кэш), ветка
+  hero-dossier удалена после влития.

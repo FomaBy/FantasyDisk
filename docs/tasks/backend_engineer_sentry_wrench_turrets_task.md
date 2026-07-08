@@ -1,7 +1,7 @@
 # Инженер: «Ключ Часового» — переосмысление в разворачиваемые турели
 
 - Jira: SCRUM-888
-- Статус: in_progress
+- Статус: done
 - Контур: Claude
 - Owner: Claude Fable 5 (интерактивный чат пользователя)
 - Thread: claude-fable5-ui-unify-20260708
@@ -46,3 +46,22 @@ ID и название оружия сохраняются (сейв-совме�
 ## Прогресс
 
 - 2026-07-08: спека, спрайт турели PixelLab — Claude Fable 5.
+- 2026-07-08: субагент engineer-turrets влит (b9e71076+db052a77): sentry_turret.gd
+  + сцена, развёртка 2.7с/лимит 2 (замена старейшей), залп 2 по разным целям
+  (×0.55^i), скейл от Лидерства, чистка через player_weapon_effects; бюджет-модель
+  переписана 1:1, residual-пара тюнера сохранена (±0.2% к старому оружию),
+  comfort-веса 1.03 подтверждены; identity «развёртка стационарных турелей
+  и удержание зоны».
+
+## QA-Вердикт
+
+- Статус: PASSED
+- Дата: 2026-07-08, судья: Claude Fable 5 (оркестратор)
+- Гейты (godot_gate, EXIT=0): НОВЫЙ engineer_turret_test (deploy/limit/nearest/
+  scale/cleanup — прогнан и после влития в dev), summoner_strengthening,
+  comfort_band cross-class (153 замера, 0 нарушений), global damage balance
+  smoke (51 пар), content_registry_consistency, codex_data_smoke, animation
+  smoke, runtime_smoke (полный). pool_dot_runaway_gate пропущен осознанно
+  (чужие тяжёлые прогоны; правило одиночного запуска).
+- Disk cleanup: removed /private/tmp/fsd_wt_turrets (+ .godot-кэш), ветка
+  engineer-turrets удалена после влития.
