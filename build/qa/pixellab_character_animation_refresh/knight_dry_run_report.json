@@ -1,0 +1,35 @@
+{
+  "task": "SCRUM-869",
+  "generated_at": "2026-07-08T15:55:24+00:00",
+  "dry_run": true,
+  "characters_requested": [
+    "knight"
+  ],
+  "results": [
+    {
+      "character": "knight",
+      "status": "dry_run",
+      "pixellab_character_id": "c1a7d633-7353-4861-aea3-8d937b601cba",
+      "pixellab_name": "FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30",
+      "pixellab_export_date": "2026-07-08T15:55:27.915811",
+      "selected_animation_folders": {
+        "south": "animating-201f5261",
+        "south-east": "animating-59e5cb6d",
+        "east": "animating-ac2f8738",
+        "north-east": "animating",
+        "north": "animating-4f95e1b1",
+        "north-west": "animating-c3975217",
+        "west": "animating-ac2f8738",
+        "south-west": "animating-59e5cb6d"
+      }
+    }
+  ],
+  "summary": {
+    "refreshed_or_ready_count": 1,
+    "blocked_count": 0,
+    "refreshed_or_ready": [
+      "knight"
+    ],
+    "blocked": []
+  }
+}

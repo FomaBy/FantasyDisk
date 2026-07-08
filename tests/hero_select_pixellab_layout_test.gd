@@ -32,6 +32,7 @@ func _initialize() -> void:
 	await _assert_directional_preview("elementalist")
 	await _assert_directional_preview("engineer")
 	await _assert_directional_preview("guitarist")
+	await _assert_directional_preview("knight")
 	await _assert_directional_preview("robot")
 	await _assert_directional_preview("ranger")
 	await _assert_directional_preview("sniper")
