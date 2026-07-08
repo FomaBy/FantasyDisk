@@ -1071,6 +1071,12 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s to expose a reward/check hint line (SCRUM-997)." % [context, event_button.name]
 				if event_hint != null and not event_button.get_global_rect().grow(1.0).encloses(event_hint.get_global_rect()):
 					return "%s: event hint %s escapes its card safe content rect." % [context, event_hint.name]
+				# SCRUM-997: титул и action-строка тоже не выходят за чип (двухстрочный
+				# титул выталкивал «Выбрать» за нижний край — ловим весь класс).
+				for extra_name in ["%sTitle" % event_button.name, "%sAction" % event_button.name]:
+					var extra_label := event_button.find_child(str(extra_name), true, false) as Label
+					if extra_label != null and not event_button.get_global_rect().grow(1.0).encloses(extra_label.get_global_rect()):
+						return "%s: event card label %s escapes its card safe content rect." % [context, str(extra_name)]
 			if visible_event_choices < 2:
 				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
 			var event_back := main.find_child("EventBackButton", true, false) as Button

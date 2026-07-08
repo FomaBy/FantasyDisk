@@ -9094,6 +9094,8 @@ func _event_choice_hint_text(event_choice: Dictionary) -> String:
 	var parts: Array[String] = []
 	if event_choice.has("health_percent_cost"):
 		parts.append("−%d%% HP" % int(roundf(float(event_choice["health_percent_cost"]) * 100.0)))
+	if event_choice.has("damage_flat"):
+		parts.append("−%d HP" % int(roundf(float(event_choice["damage_flat"]))))
 	if event_choice.has("money"):
 		parts.append("+%d зол." % int(event_choice["money"]))
 	if event_choice.has("heal_percent"):
@@ -9103,12 +9105,16 @@ func _event_choice_hint_text(event_choice: Dictionary) -> String:
 		parts.append("%+d %s" % [int(stats[stat_id]), str(game.PROGRESSION_DATA.STAT_NAMES.get(str(stat_id), str(stat_id)))])
 	if bool(event_choice.get("random_artifact", false)):
 		parts.append("Случайный артефакт")
+	if bool(event_choice.get("shop_after", false)):
+		parts.append("Лавка торговца")
 	if not (event_choice.get("mods", {}) as Dictionary).is_empty():
 		parts.append("Бонус забега")
 	if event_choice.has("reward"):
 		parts.append("Награда")
 	if parts.is_empty():
-		return ""
+		# Выбор без цены и исхода («Пройти мимо») — честный нейтральный хинт,
+		# карточка не остаётся без строки (контракт матрицы SCRUM-997).
+		return "Без последствий"
 	return " · ".join(PackedStringArray(parts.slice(0, 3)))
 
 
@@ -9139,6 +9145,73 @@ func _add_event_choice_hint_line(button: Button, event_choice: Dictionary, card_
 	# После title (0) и description (1), перед action-строкой.
 	content.move_child(hint_label, mini(2, content.get_child_count() - 1))
 	button.tooltip_text = "%s\n%s" % [button.tooltip_text, hint]
+	# Событийный пост-фит ОТЛОЖЕННО (после первого лейаута): ready-мерка врёт —
+	# autowrap-лейблы при ещё нулевой ширине завышают мин-высоту, и базовый
+	# фиттер премature-ужимает контент даже в просторных карточках. Deferred-фит
+	# сбрасывает эти ужимки и меряет по реальной ширине.
+	button.ready.connect(func() -> void:
+		_fit_event_choice_card_content.call_deferred(button)
+	, CONNECT_ONE_SHOT)
+
+
+# SCRUM-997: честная доводка карточки события по высоте ПОСЛЕ первого лейаута.
+# Сброс premature-ужимок ready-фиттера (шрифты/строки к базе спеки §2), жёсткий
+# минимум «одна строка описания» (единственный EXPAND_FILL-ребёнок при плотном
+# бюджете сжимается ниже строки и рисует 0 строк — описание «исчезает»), при
+# оверфлоу ужимка: шрифт описания → титул → hint; в конце max_lines описания
+# по фактическому остатку бюджета (честный ellipsis). Полные тексты — в tooltip.
+func _fit_event_choice_card_content(button: Button) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	if content == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var avail_h: float = button.custom_minimum_size.y - margins.y - margins.w
+	if avail_h <= 0.0:
+		return
+	var title_label := button.find_child("%sTitle" % button.name, true, false) as Label
+	var desc_label := button.find_child("%sDescription" % button.name, true, false) as Label
+	var hint_label := button.find_child("%sHint" % button.name, true, false) as Label
+	var desc_font_obj: Font = null
+	if desc_label != null:
+		desc_font_obj = desc_label.get_theme_font("font")
+		if desc_font_obj == null:
+			desc_font_obj = ThemeDB.fallback_font
+	if title_label != null:
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+	var desc_font := 0
+	if desc_label != null:
+		desc_font = _readable_font_size(13, 12, 20)
+		desc_label.max_lines_visible = -1
+		desc_label.add_theme_font_size_override("font_size", desc_font)
+		if desc_font_obj != null:
+			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
+	if hint_label != null:
+		hint_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 18))
+	if desc_label != null and desc_font_obj != null:
+		while desc_font > 12 and content.get_combined_minimum_size().y > avail_h:
+			desc_font -= 1
+			desc_label.add_theme_font_size_override("font_size", desc_font)
+			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
+	if title_label != null:
+		var title_font := title_label.get_theme_font_size("font_size")
+		while title_font > 13 and content.get_combined_minimum_size().y > avail_h:
+			title_font -= 1
+			title_label.add_theme_font_size_override("font_size", title_font)
+	if hint_label != null:
+		var hint_font := hint_label.get_theme_font_size("font_size")
+		while hint_font > 11 and content.get_combined_minimum_size().y > avail_h:
+			hint_font -= 1
+			hint_label.add_theme_font_size_override("font_size", hint_font)
+	if desc_label != null and desc_font_obj != null:
+		# Сколько строк описания реально помещается в остаток бюджета.
+		var line_h := ceilf(desc_font_obj.get_height(desc_font))
+		var others := content.get_combined_minimum_size().y - desc_label.custom_minimum_size.y
+		var lines_fit := maxi(1, int(floorf((avail_h - others) / maxf(line_h, 1.0))))
+		var lines_shown := mini(lines_fit, maxi(desc_label.get_line_count(), 1))
+		desc_label.max_lines_visible = lines_shown
+		desc_label.custom_minimum_size = Vector2(0.0, line_h * float(lines_shown) + 2.0)
 
 
 # Обратная совместимость (rest-экран, dev-фасад main._apply_event_choice, старые

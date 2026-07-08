@@ -21,32 +21,10 @@ const RECT_NODES := [
 	"EventBackButton", "EventContinueButton", "ScreenBackground_event",
 ]
 
-# Синтетика для hidden-состояния (пул SCRUM-995 ещё едет параллельно):
-# id = sacrifice_altar → родной арт пака SCRUM-998.
-const HIDDEN_EVENT := {
-	"id": "sacrifice_altar",
-	"title": "Алтарь жертвоприношений",
-	"story": "Чёрный монолит дышит холодом. Багровые руны на его гранях просыпаются, когда ты подходишь ближе, и воздух наполняется запахом железа. Алтарь ждёт подношения — и шёпот обещает силу тем, кто не торгуется.",
-	"allow_skip": true,
-	"choices": [
-		{"id": "offer_blood", "title": "Отдать кровь", "description": "Полоснуть ладонь над рунами и позволить алтарю пить.", "health_percent_cost": 0.18, "stats": {"strength": 2}, "mods": {"damage_multiplier": 1.08}},
-		{"id": "whisper_name", "title": "Прошептать имя", "hidden": true, "unknown_hint": "Алтарь хочет услышать имя. Чьё — он не говорит, и цену тоже.", "outcome_text": "Ты называешь имя старого врага. Руны вспыхивают, и тяжесть уходит из плеч.", "money": 30},
-		{"id": "scrape_runes", "title": "Соскоблить руны", "description": "Попробовать унести частицу силы с собой.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}}, "failure": {"health_percent_cost": 0.10}},
-	],
-}
-
-# Синтетика для reveal-состояния: check + outcome_text (полный формат раскрытия),
-# id = cursed_chapel → родной арт пака.
-const REVEAL_EVENT := {
-	"id": "cursed_chapel",
-	"title": "Проклятая часовня",
-	"story": "Лунный свет льётся сквозь разбитый витраж на заваленные скамьи. Из-под опечатанной двери крипты сочится фиолетовое свечение.",
-	"choices": [
-		{"id": "break_seal", "title": "Сорвать печать", "description": "Цепи стары, а свечение манит.", "check": {"stat": "strength", "difficulty": 7}, "success": {"outcome_text": "Цепи лопаются, и из крипты выкатывается ларец с монетами старой чеканки. Свечение гаснет — что бы там ни жило, оно ушло раньше тебя.", "money": 40}, "failure": {"outcome_text": "Цепи держат.", "health_percent_cost": 0.10}},
-		{"id": "pray", "title": "Помолиться", "description": "Слова старой молитвы сами приходят на язык.", "heal_percent": 0.25},
-		{"id": "leave", "title": "Уйти тихо", "description": "Не всякую дверь стоит открывать.", "money": 5},
-	],
-}
+# Состояния — на живом пуле SCRUM-995 (12×3):
+# normal — sudden_fork (награда+бой+чек), hidden — gilded_gambler (две hidden-
+# ставки с unknown_hint), reveal — caravan_bandits.rob_and_run (чек Ловкость 7
+# при статах 12 → успех: outcome_text + строка проверки). Все три — родной арт.
 
 
 func _initialize() -> void:
@@ -98,14 +76,12 @@ func _capture_state(viewport_size: Vector2i, state: String, out_dir: String, dum
 		"normal":
 			main.ui._show_event_screen({"type": "event", "name": "Событие", "event_id": "sudden_fork"})
 		"hidden":
-			main.set("current_event_definition", HIDDEN_EVENT.duplicate(true))
-			main.ui._show_event_screen({"type": "event", "name": "Событие"})
+			main.ui._show_event_screen({"type": "event", "name": "Событие", "event_id": "gilded_gambler"})
 		"reveal":
-			main.set("current_event_definition", REVEAL_EVENT.duplicate(true))
-			main.ui._show_event_screen({"type": "event", "name": "Событие"})
+			main.ui._show_event_screen({"type": "event", "name": "Событие", "event_id": "caravan_bandits"})
 			for _i in range(4):
 				await process_frame
-			var check_card := main.find_child("EventChoiceButton0", true, false) as Button
+			var check_card := main.find_child("EventChoiceButton2", true, false) as Button
 			if check_card != null:
 				check_card.pressed.emit()
 	for _i in range(10):
