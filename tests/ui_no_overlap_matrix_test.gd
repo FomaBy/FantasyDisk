@@ -24,12 +24,6 @@ const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_fra
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
 const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
-const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_panel.png"
-const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card.png"
-const LEVEL_UP_CARD_HOVER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_hover.png"
-const LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_selected.png"
-const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_effect_preview.png"
-const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 # SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
@@ -840,53 +834,71 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if not pn_safe.grow(2.0).encloses(pn_panel.get_global_rect()):
 				return "%s: expected PatchNotesPanel %s inside frame safe rect %s." % [context, str(pn_panel.get_global_rect()), str(pn_safe)]
 		"level_up":
+			# SCRUM-883: оверлей на едином атлас-стиле — плотный чип StyleBoxFlat
+			# поверх дима (полноэкранной рамы нет), карточки = чип-ряды с золотым
+			# hover-кантом, «Позже» = глобальный кнопочный кит. Safe-ректы считаются
+			# от фактических content margins чип-стилей.
 			var level_panel := main.find_child("LevelUpPanel", true, false) as Control
 			if level_panel == null or not level_panel.visible or not level_panel.get_global_rect().has_area():
 				return "%s: expected visible LevelUpPanel." % context
-			if _stylebox_texture_path(level_panel.get_theme_stylebox("panel")) != LEVEL_UP_PANEL_2K_FRAME_PATH:
-				return "%s: expected LevelUpPanel to use level_up_panel @2K frame." % context
+			var level_style := level_panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if level_style == null or level_style.bg_color.a < 0.9:
+				return "%s: expected LevelUpPanel to use a dense StyleBoxFlat chip (bg alpha >= 0.9)." % context
 			if str(level_panel.get_meta("level_up_slot", "")) != "level_up_panel":
 				return "%s: expected LevelUpPanel slot metadata to be level_up_panel." % context
-			var level_safe: Rect2 = level_panel.get_meta("level_up_content_rect", Rect2()) as Rect2
-			if not level_safe.has_area():
-				return "%s: expected LevelUpPanel to expose content safe rect metadata." % context
-			var scaled_level_safe := _scaled_source_rect(level_panel.get_global_rect(), Vector2(1720, 1040), level_safe).grow(1.0)
+			var level_rect := level_panel.get_global_rect()
+			var scaled_level_safe := Rect2(
+				level_rect.position + Vector2(level_style.content_margin_left, level_style.content_margin_top),
+				level_rect.size - Vector2(
+					level_style.content_margin_left + level_style.content_margin_right,
+					level_style.content_margin_top + level_style.content_margin_bottom
+				)
+			).grow(1.0)
 			for child_name in ["LevelUpHeroHeader", "LevelUpTitle", "LevelUpSubtitle", "LevelUpRewardsRow", "LevelUpLaterButton"]:
 				var child := main.find_child(child_name, true, false) as Control
 				if child == null or not child.visible or not child.get_global_rect().has_area():
 					return "%s: expected visible %s." % [context, child_name]
 				if not scaled_level_safe.encloses(child.get_global_rect()):
 					return "%s: expected %s to stay inside LevelUpPanel safe rect %s." % [context, child_name, str(scaled_level_safe)]
+			var hero_frame := main.find_child("LevelUpHeroFrame", true, false) as Control
+			if hero_frame == null or not (hero_frame.get_theme_stylebox("panel") is StyleBoxFlat):
+				return "%s: expected LevelUpHeroFrame to use a translucent StyleBoxFlat portrait slot." % context
 			var later_button := main.find_child("LevelUpLaterButton", true, false) as Button
-			if later_button == null or _stylebox_texture_path(later_button.get_theme_stylebox("normal")) != LEVEL_UP_LATER_2K_FRAME_PATH:
-				return "%s: expected LevelUpLaterButton to use SCRUM-682 later button art." % context
+			var later_path := _stylebox_texture_path(later_button.get_theme_stylebox("normal")) if later_button != null else ""
+			if later_button == null or not (later_path.contains("text_buttons_unique/") or later_path.contains("minimal_metal_buttons/")):
+				return "%s: expected LevelUpLaterButton to use the global button kit, got %s." % [context, later_path]
 			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
 				var reward_button := node as Button
 				if reward_button == null:
 					continue
-				var normal_path := _stylebox_texture_path(reward_button.get_theme_stylebox("normal"))
-				if normal_path != LEVEL_UP_CARD_2K_FRAME_PATH and normal_path != LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH:
-					return "%s: expected %s to use SCRUM-682 level-up card frame, got %s." % [context, reward_button.name, normal_path]
-				if _stylebox_texture_path(reward_button.get_theme_stylebox("hover")) != LEVEL_UP_CARD_HOVER_2K_FRAME_PATH:
-					return "%s: expected %s hover StyleBox to use SCRUM-682 hover card." % [context, reward_button.name]
+				var card_normal := reward_button.get_theme_stylebox("normal") as StyleBoxFlat
+				if card_normal == null or card_normal.bg_color.a < 0.8:
+					return "%s: expected %s to use a dense StyleBoxFlat chip (bg alpha >= 0.8)." % [context, reward_button.name]
+				var card_hover := reward_button.get_theme_stylebox("hover") as StyleBoxFlat
+				if card_hover == null or card_hover.border_color.get_luminance() <= card_normal.border_color.get_luminance():
+					return "%s: expected %s hover border to be brighter than normal (golden highlight)." % [context, reward_button.name]
 				if str(reward_button.get_meta("level_up_card_slot", "")) != "level_up_card":
 					return "%s: expected %s slot metadata to be level_up_card." % [context, reward_button.name]
-				var card_safe: Rect2 = reward_button.get_meta("level_up_card_content_rect", Rect2()) as Rect2
-				if not card_safe.has_area():
-					return "%s: expected %s to expose content safe rect." % [context, reward_button.name]
-				var scaled_card_safe := _scaled_source_rect(reward_button.get_global_rect(), reward_button.custom_minimum_size, card_safe).grow(1.0)
+				var card_rect := reward_button.get_global_rect()
+				var scaled_card_safe := Rect2(
+					card_rect.position + Vector2(card_normal.content_margin_left, card_normal.content_margin_top),
+					card_rect.size - Vector2(
+						card_normal.content_margin_left + card_normal.content_margin_right,
+						card_normal.content_margin_top + card_normal.content_margin_bottom
+					)
+				).grow(1.0)
 				var content := reward_button.find_child("LevelUpRewardContent", true, false) as Control
 				if content == null or not scaled_card_safe.encloses(content.get_global_rect()):
-					return "%s: expected %s content to stay inside card safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
+					return "%s: expected %s content to stay inside card chip safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
 				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
 					var child := reward_button.find_child(child_name, true, false) as Control
 					if child == null or not child.visible or not child.get_global_rect().has_area():
 						return "%s: expected visible %s inside %s." % [context, child_name, reward_button.name]
 					if not scaled_card_safe.encloses(child.get_global_rect()):
-						return "%s: expected %s to stay inside scaled card safe rect %s." % [context, child_name, str(scaled_card_safe)]
+						return "%s: expected %s to stay inside card chip safe rect %s." % [context, child_name, str(scaled_card_safe)]
 				var effect_panel := reward_button.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
-				if effect_panel == null or _stylebox_texture_path(effect_panel.get_theme_stylebox("panel")) != LEVEL_UP_EFFECT_2K_FRAME_PATH:
-					return "%s: expected %s effect preview field to use SCRUM-682 effect frame." % [context, reward_button.name]
+				if effect_panel == null or not (effect_panel.get_theme_stylebox("panel") is StyleBoxFlat):
+					return "%s: expected %s effect preview field to use an atlas chip StyleBoxFlat." % [context, reward_button.name]
 				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
 				if effect_text == null or not effect_text.text.contains("->"):
 					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]

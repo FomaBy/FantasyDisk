@@ -97,7 +97,6 @@ const OVERHAUL_2K_FRAME_PATHS := UIThemePaths.OVERHAUL_2K_FRAME_PATHS
 const OVERHAUL_2K_FRAME_SOURCE_SIZE := UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE
 const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS
 const OVERHAUL_2K_FRAME_CONTENT := UIThemePaths.OVERHAUL_2K_FRAME_CONTENT
-const LEVEL_UP_SCRUM682_FRAME_PATHS := UIThemePaths.LEVEL_UP_SCRUM682_FRAME_PATHS
 const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
@@ -288,40 +287,36 @@ const UPGRADE_PANEL_2K := Rect2(420, 355, 1720, 730)        # MenuPanel_upgrade 
 const UPGRADE_SAFE_2K := Rect2(478, 427, 1604, 592)         # safe = панель − content 58/72/58/66
 
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
+# SCRUM-883: оверлей на едином атлас-стиле (эталон SCRUM-879) — панель/карточки/
+# поля = чипы StyleBoxFlat (_atlas_chip_style/_atlas_translucent_style), «Позже» —
+# глобальный кит (имя LevelUpLaterButton мапится на later_260x72). Дизайн-база
+# 2K 1720×1040; контент-зона панели = фактические margins чипа (pad 20 → 28/20 @2K,
+# зона 1664×1000), внутренние ректы заданы в этой зоне и скейлятся ×scale.
 const LU_PANEL_2K := Rect2(420, 205, 1720, 1040)
-const LU_SAFE_2K := Rect2(512, 315, 1536, 835)
-const LU_CARD_2K := Rect2(0, 0, 470, 560)                   # LevelUpRewardButton{0..2} (3 в ряд, gap 0)
-const LU_LATER_BUTTON_2K := Rect2(0, 0, 300, 82)            # LevelUpLaterButton
-const LU_PANEL_SOURCE_SIZE := Vector2(1720.0, 1040.0)
-const LU_PANEL_CONTENT_2K := Vector4(92.0, 110.0, 92.0, 96.0)
-const LU_PANEL_CONTENT_SIZE_2K := Vector2(1536.0, 834.0)
-const LU_HERO_HEADER_RECT := Rect2(98.0, 20.0, 1290.0, 140.0)
-const LU_HERO_FRAME_RECT := Rect2(98.0, 20.0, 140.0, 140.0)
-const LU_HERO_PORTRAIT_RECT := Rect2(118.0, 40.0, 100.0, 100.0)
-const LU_TITLE_RECT := Rect2(292.0, 30.0, 880.0, 60.0)
-const LU_SUBTITLE_RECT := Rect2(292.0, 100.0, 920.0, 44.0)
-const LU_REWARDS_ROW_RECT := Rect2(63.0, 175.0, 1410.0, 560.0)
-const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 76.0)
-const LU_CARD_CONTENT_RECT := Rect2(58.0, 70.0, 354.0, 426.0)
-# SCRUM-871 раскладка карточки (координаты внутри контент-зоны 354x426):
-# бейдж-слот сверху, иконка 120, титул, описание, крупный блок «до -> после».
-const LU_CARD_BADGE_RECT := Rect2(27.0, 0.0, 300.0, 46.0)
-const LU_CARD_ICON_RECT := Rect2(117.0, 54.0, 120.0, 120.0)
-const LU_CARD_TITLE_RECT := Rect2(6.0, 180.0, 342.0, 42.0)
-const LU_CARD_DESCRIPTION_RECT := Rect2(10.0, 226.0, 334.0, 62.0)
-const LU_CARD_EFFECT_RECT := Rect2(0.0, 294.0, 354.0, 132.0)
-const LU_EFFECT_FIELD_SOURCE_SIZE := Vector2(354.0, 132.0)
-const LU_EFFECT_FIELD_CONTENT_MARGINS := Vector4(30.0, 20.0, 30.0, 18.0)
-# Бейджи-риббоны рекомендаций: подпись и label-зона (доли ширины/высоты PNG,
-# по фактическим полям каждого риббона — эмблема слева, поле правее).
-# label_zone — фактическое пустое поле каждого риббона, замеренное по пикселям
-# (scratch measure_badge_fields: низкодисперсный ран в средней полосе PNG),
-# с ~2% воздуха от краёв. Поле у всех риббонов в ВЕРХНЕЙ части (хвосты ниже),
-# эмблема слева — подпись центрируется именно в поле, не в bbox риббона.
+const LU_PANEL_CHIP_PAD_2K := 20.0
+const LU_CARD_2K := Rect2(0, 0, 470, 560)                   # LevelUpRewardButton{0..2} (3 в ряд)
+const LU_CARD_GAP_2K := 24.0
+const LU_CARD_CHIP_PAD_2K := 12.0
+const LU_HERO_HEADER_RECT := Rect2(40.0, 8.0, 1584.0, 160.0)
+const LU_HERO_FRAME_RECT := Rect2(60.0, 16.0, 146.0, 146.0)
+const LU_TITLE_RECT := Rect2(260.0, 20.0, 1144.0, 64.0)
+const LU_SUBTITLE_RECT := Rect2(260.0, 94.0, 1144.0, 48.0)
+const LU_REWARDS_ROW_TOP_2K := 180.0
+const LU_LATER_BUTTON_WIDTH := 260.0
+# Раскладка карточки: контент-зона чипа (card 470×560 − pad 12 → 436.4×536);
+# бейдж-плашка сверху, иконка, титул, описание, крупный блок «до -> после».
+const LU_CARD_CONTENT_SOURCE := Vector2(436.4, 536.0)
+const LU_CARD_BADGE_RECT := Rect2(58.0, 2.0, 320.0, 50.0)
+const LU_CARD_ICON_RECT := Rect2(159.0, 60.0, 118.0, 118.0)
+const LU_CARD_TITLE_RECT := Rect2(8.0, 196.0, 420.0, 48.0)
+const LU_CARD_DESCRIPTION_RECT := Rect2(12.0, 250.0, 412.0, 84.0)
+const LU_CARD_EFFECT_RECT := Rect2(16.0, 346.0, 404.0, 174.0)
+# Бейджи советника: плашка _atlas_translucent_style(0.7, 6) + подпись цветом
+# типа (PNG-риббоны lu682 сняты; тёмная плашка → светлые акцентные цвета).
 const LU_BADGE_META := {
-	"dps": {"frame": "badge_dps", "text": "ЛУЧШИЙ УРОН", "label_zone": Rect2(0.33, 0.23, 0.46, 0.29), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
-	"surv": {"frame": "badge_surv", "text": "ВЫЖИВАНИЕ", "label_zone": Rect2(0.36, 0.26, 0.51, 0.50), "text_color": Color(0.93, 0.88, 0.63, 1.0)},
-	"both": {"frame": "badge_both", "text": "ЛУЧШИЙ ВЫБОР", "label_zone": Rect2(0.33, 0.31, 0.45, 0.35), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
+	"dps": {"text": "ЛУЧШИЙ УРОН", "text_color": Color(1.0, 0.76, 0.34, 1.0)},
+	"surv": {"text": "ВЫЖИВАНИЕ", "text_color": Color(0.64, 0.94, 0.66, 1.0)},
+	"both": {"text": "ЛУЧШИЙ ВЫБОР", "text_color": Color(0.98, 0.87, 0.42, 1.0)},
 }
 
 # #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
@@ -7230,6 +7225,9 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			game.save_run_autosave("level_up_deferred")
 			game.route._show_battle_map()
 
+	# SCRUM-883: «Позже» — Button-контрол действия, только глобальный кит (имя узла
+	# LevelUpLaterButton мапится на текстуры later_260x72; _set_action_button_size
+	# переприменяет тему кита после установки размера).
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
 	var later_button_size: Vector2 = layout.get("later_button_size", Vector2(260.0, 72.0))
@@ -7237,7 +7235,6 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	later_button.position = layout.get("later_button_position", Vector2.ZERO)
 	later_button.size = later_button_size
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
-	_apply_level_up_later_button_theme(later_button, later_button_size)
 	later_button.pressed.connect(defer_choice)
 	box.add_child(later_button)
 	game.ui_escape_action = defer_choice
@@ -7460,7 +7457,6 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]
 	var card_size: Vector2 = layout.get("card_size", Vector2(245, 364))
-	var card_scale := _level_up_xy_scale(LU_CARD_2K.size, card_size)
 	# SCRUM-871: прогноз этой карточки и её бейдж из общего advice набора.
 	var forecast: Dictionary = {}
 	var badge_kind := ""
@@ -7480,27 +7476,34 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = _level_up_card_tooltip(reward, forecast, badge_kind, advice)
 	button.set_meta("level_up_text_field_card", true)
-	_apply_level_up_card_2k_theme(button, card_size, is_rare)
+	_apply_level_up_card_atlas_theme(button, card_size, is_rare)
 	button.add_theme_color_override("font_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 
+	# Контент-зона = фактические content margins чип-стиля карточки; внутренние
+	# ректы заданы в 2K-зоне LU_CARD_CONTENT_SOURCE и скейлятся на её факт-размер.
+	var card_margins: Vector4 = button.get_meta("level_up_card_content_margins", Vector4.ZERO)
 	var content := Control.new()
 	content.name = "LevelUpRewardContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.clip_contents = true
-	content.position = _level_up_scaled_position(LU_CARD_CONTENT_RECT, card_scale)
-	content.size = _level_up_scaled_size(LU_CARD_CONTENT_RECT, card_scale)
+	content.position = Vector2(card_margins.x, card_margins.y)
+	content.size = Vector2(
+		maxf(card_size.x - card_margins.x - card_margins.z, 8.0),
+		maxf(card_size.y - card_margins.y - card_margins.w, 8.0)
+	)
 	content.custom_minimum_size = content.size
 	button.add_child(content)
+	var content_scale := _level_up_xy_scale(LU_CARD_CONTENT_SOURCE, content.size)
 
 	if badge_kind != "" and LU_BADGE_META.has(badge_kind):
-		_add_level_up_badge(content, badge_kind, card_scale)
+		_add_level_up_badge(content, badge_kind, content_scale)
 
-	var icon_size := _level_up_scaled_size(LU_CARD_ICON_RECT, card_scale)
+	var icon_size := _level_up_scaled_size(LU_CARD_ICON_RECT, content_scale)
 	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size) as Control
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.position = _level_up_scaled_position(LU_CARD_ICON_RECT, card_scale)
+	icon.position = _level_up_scaled_position(LU_CARD_ICON_RECT, content_scale)
 	icon.size = icon_size
 	icon.custom_minimum_size = icon_size
 	content.add_child(icon)
@@ -7513,9 +7516,12 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.clip_text = true
 	title_label.max_lines_visible = 1
-	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, card_scale)
-	_shrink_label_font_to_width(title_label, _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26), title_label.size.x - 4.0, 8)
-	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, content_scale)
+	# Фидбек читаемости SCRUM-883: пол кегля 12 (было 8) — длинные титулы уходят
+	# в ellipsis, но не в нечитаемый микрошрифт.
+	_shrink_label_font_to_width(title_label, _readable_font_size(maxi(12, int(roundf(18.0 * content_scale.y))), 0, 26), title_label.size.x - 4.0, 12)
+	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 
 	var description_label := Label.new()
@@ -7526,9 +7532,10 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.clip_text = true
 	description_label.max_lines_visible = 2
-	_level_up_place_card_child(description_label, LU_CARD_DESCRIPTION_RECT, card_scale)
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
-	description_label.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
+	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_level_up_place_card_child(description_label, LU_CARD_DESCRIPTION_RECT, content_scale)
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(roundf(13.0 * content_scale.y))), 0, 18))
+	description_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(description_label)
 
 	# SCRUM-871: блок «до -> после» — до 3 строк реально пересчитанных дельт
@@ -7536,28 +7543,34 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	var effect_panel := PanelContainer.new()
 	effect_panel.name = "LevelUpRewardEffectPreview"
 	effect_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_level_up_place_card_child(effect_panel, LU_CARD_EFFECT_RECT, card_scale)
-	effect_panel.add_theme_stylebox_override("panel", _level_up_effect_preview_style(effect_panel.size))
+	_level_up_place_card_child(effect_panel, LU_CARD_EFFECT_RECT, content_scale)
+	var effect_style := _atlas_chip_style(0.62, maxf(5.0, roundf(10.0 * content_scale.y)))
+	effect_panel.add_theme_stylebox_override("panel", effect_style)
 	content.add_child(effect_panel)
 
 	# Хост строк — обычный Control с нулевым minimum size: PanelContainer не
 	# растёт от текста, дельта-блок гарантированно остаётся в контент-зоне
 	# карточки (гейт ui_no_overlap_matrix). Строки позиционируются вручную по
-	# расчётной content-зоне стиля.
+	# content-зоне чип-стиля.
 	var effect_rows := Control.new()
 	effect_rows.name = "LevelUpRewardEffectRows"
 	effect_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	effect_rows.clip_contents = true
 	effect_panel.add_child(effect_rows)
 
-	var effect_content_margins := _scaled_frame_margins_xy(LU_EFFECT_FIELD_SOURCE_SIZE, effect_panel.size, LU_EFFECT_FIELD_CONTENT_MARGINS)
+	var effect_content_margins := Vector4(
+		effect_style.content_margin_left,
+		effect_style.content_margin_top,
+		effect_style.content_margin_right,
+		effect_style.content_margin_bottom
+	)
 	var rows_size := Vector2(
 		maxf(effect_panel.size.x - effect_content_margins.x - effect_content_margins.z, 8.0),
 		maxf(effect_panel.size.y - effect_content_margins.y - effect_content_margins.w, 8.0)
 	)
 	var delta_lines := _level_up_delta_lines(reward, forecast)
 	var row_height := rows_size.y / float(maxi(delta_lines.size(), 1))
-	var effect_font := _readable_font_size(maxi(6, int(roundf(13.0 * card_scale.y))), 0, 17)
+	var effect_font := _readable_font_size(maxi(12, int(roundf(15.0 * content_scale.y))), 0, 20)
 	var has_forecast_deltas: bool = not (forecast.get("deltas", []) as Array).is_empty()
 	# Раскладка по фактическому minimum size строк: юзерский масштаб шрифта может
 	# сделать строку выше расчётного ряда — не влезающие в зону строки отбрасываем
@@ -7574,6 +7587,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		line_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 		line_label.clip_text = true
 		line_label.max_lines_visible = 1
+		line_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		_shrink_label_font_to_width(line_label, effect_font, rows_size.x - 4.0)
 		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
 		var line_height := maxf(row_height, line_label.get_minimum_size().y)
@@ -7667,32 +7681,18 @@ func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind
 	return "\n".join(parts)
 
 
-# Бейдж-риббон рекомендации: PixelLab-текстура KEEP_ASPECT в слоте сверху
-# карточки, подпись — рантайм-Label в пустом поле риббона (label-зона в долях
-# фактического прямоугольника риббона; на орнамент эмблемы текст не заходит).
-func _add_level_up_badge(content: Control, badge_kind: String, card_scale: Vector2) -> void:
+# SCRUM-883: бейдж рекомендации советника — полупрозрачная плашка атласа
+# (_atlas_translucent_style) в слоте сверху карточки, подпись цветом типа
+# бейджа. Механика выбора kind (BADGE_DPS/SURV/BOTH) — в LevelUpAdvisor.
+func _add_level_up_badge(content: Control, badge_kind: String, content_scale: Vector2) -> void:
 	var badge_meta: Dictionary = LU_BADGE_META[badge_kind]
-	var texture = game._cached_texture(str(LEVEL_UP_SCRUM682_FRAME_PATHS[badge_meta["frame"]]))
-	if texture == null:
-		return
-	var slot_position := _level_up_scaled_position(LU_CARD_BADGE_RECT, card_scale)
-	var slot_size := _level_up_scaled_size(LU_CARD_BADGE_RECT, card_scale)
-	var badge := TextureRect.new()
+	var badge := PanelContainer.new()
 	badge.name = "LevelUpRewardBadge"
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	badge.texture = texture
-	badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	badge.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	badge.position = slot_position
-	badge.size = slot_size
-	badge.custom_minimum_size = slot_size
+	badge.add_theme_stylebox_override("panel", _atlas_translucent_style(0.7, 6.0))
+	_level_up_place_card_child(badge, LU_CARD_BADGE_RECT, content_scale)
 	content.add_child(badge)
 
-	var texture_size: Vector2 = texture.get_size()
-	var ribbon_scale := minf(slot_size.x / maxf(texture_size.x, 1.0), slot_size.y / maxf(texture_size.y, 1.0))
-	var ribbon_size := texture_size * ribbon_scale
-	var ribbon_position := slot_position + (slot_size - ribbon_size) * 0.5
-	var label_zone: Rect2 = badge_meta["label_zone"]
 	var badge_label := Label.new()
 	badge_label.name = "LevelUpRewardBadgeLabel"
 	badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7702,16 +7702,11 @@ func _add_level_up_badge(content: Control, badge_kind: String, card_scale: Vecto
 	badge_label.clip_text = true
 	badge_label.max_lines_visible = 1
 	badge_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	var zone_height := ribbon_size.y * label_zone.size.y
-	badge_label.position = ribbon_position + Vector2(ribbon_size.x * label_zone.position.x, ribbon_size.y * label_zone.position.y)
-	badge_label.size = Vector2(ribbon_size.x * label_zone.size.x, zone_height)
-	_shrink_label_font_to_width(badge_label, _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 15), badge_label.size.x - 2.0, 6)
-	# Мелкая зона поля может быть ниже минимума Label (size клампится вверх и
-	# текст уезжал бы вниз с поля) — держим подпись по вертикальному центру поля.
-	if badge_label.size.y > zone_height:
-		badge_label.position.y -= (badge_label.size.y - zone_height) * 0.5
+	# Фидбек читаемости SCRUM-883: пол кегля 12 (было 6) — плашка тянется на всю
+	# ширину слота, подпись всегда читаемая.
+	_shrink_label_font_to_width(badge_label, _readable_font_size(maxi(12, int(roundf(13.0 * content_scale.y))), 0, 16), badge.size.x - 8.0, 12)
 	badge_label.add_theme_color_override("font_color", badge_meta["text_color"])
-	content.add_child(badge_label)
+	badge.add_child(badge_label)
 
 
 func _make_battle_reward_card(reward: Dictionary) -> Button:
@@ -10945,33 +10940,48 @@ func _level_up_layout_metrics() -> Dictionary:
 		viewport_size = game.get_viewport().get_visible_rect().size
 	var scale := maxf(0.5, minf(viewport_size.x / 2560.0, viewport_size.y / 1440.0))
 	var compact := scale <= 0.52
-	var panel_size := LU_PANEL_2K.size * scale
-	var content_position := Vector2(LU_PANEL_CONTENT_2K.x, LU_PANEL_CONTENT_2K.y) * scale
-	var content_size := LU_PANEL_CONTENT_SIZE_2K * scale
+	var xy := Vector2(scale, scale)
+	var panel_size := Vector2(roundf(LU_PANEL_2K.size.x * scale), roundf(LU_PANEL_2K.size.y * scale))
+	# Контент-зона = фактические content margins чипа панели (_atlas_chip_style:
+	# по горизонтали pad*1.4) — PanelContainer сам ставит бокс ровно в эту зону.
+	var panel_pad := roundf(LU_PANEL_CHIP_PAD_2K * scale)
+	var content_position := Vector2(panel_pad * 1.4, panel_pad)
+	var content_size := panel_size - Vector2(panel_pad * 2.8, panel_pad * 2.0)
+	var card_size := _level_up_scaled_size(LU_CARD_2K, xy)
+	var card_gap := roundf(LU_CARD_GAP_2K * scale)
+	var rewards_row_size := Vector2(card_size.x * 3.0 + card_gap * 2.0, card_size.y)
+	var rewards_row_position := Vector2(roundf((content_size.x - rewards_row_size.x) * 0.5), roundf(LU_REWARDS_ROW_TOP_2K * scale))
+	# «Позже» — фикс-размер глобального кита (высота от вьюпорта, не от scale):
+	# прижата к низу контент-зоны, по центру; между рядом карточек и кнопкой
+	# остаётся ≥50px при любом scale (проверено на матрице 648..2160).
+	var later_size := Vector2(LU_LATER_BUTTON_WIDTH, _atlas_action_button_height())
+	var later_position := Vector2(
+		roundf((content_size.x - later_size.x) * 0.5),
+		content_size.y - later_size.y - maxf(8.0, roundf(12.0 * scale))
+	)
 	return {
 		"scale": scale,
-		"panel_size": Vector2(roundf(panel_size.x), roundf(panel_size.y)),
-		"content_position": Vector2(roundf(content_position.x), roundf(content_position.y)),
-		"content_size": Vector2(roundf(content_size.x), roundf(content_size.y)),
-		"hero_header_position": _level_up_scaled_position(LU_HERO_HEADER_RECT, Vector2(scale, scale)),
-		"hero_header_size": _level_up_scaled_size(LU_HERO_HEADER_RECT, Vector2(scale, scale)),
-		"hero_frame_position": _level_up_scaled_position(LU_HERO_FRAME_RECT, Vector2(scale, scale)),
-		"hero_size": _level_up_scaled_size(LU_HERO_FRAME_RECT, Vector2(scale, scale)),
-		"hero_portrait_position": _level_up_scaled_position(LU_HERO_PORTRAIT_RECT, Vector2(scale, scale)),
-		"hero_portrait_size": _level_up_scaled_size(LU_HERO_PORTRAIT_RECT, Vector2(scale, scale)),
-		"title_position": _level_up_scaled_position(LU_TITLE_RECT, Vector2(scale, scale)),
-		"title_size": _level_up_scaled_size(LU_TITLE_RECT, Vector2(scale, scale)),
-		"subtitle_position": _level_up_scaled_position(LU_SUBTITLE_RECT, Vector2(scale, scale)),
-		"subtitle_size": _level_up_scaled_size(LU_SUBTITLE_RECT, Vector2(scale, scale)),
-		"rewards_row_position": _level_up_scaled_position(LU_REWARDS_ROW_RECT, Vector2(scale, scale)),
-		"rewards_row_size": _level_up_scaled_size(LU_REWARDS_ROW_RECT, Vector2(scale, scale)),
-		"card_size": _level_up_scaled_size(LU_CARD_2K, Vector2(scale, scale)),
-		"card_gap": 0,
-		"later_button_position": _level_up_scaled_position(LU_LATER_BUTTON_RECT, Vector2(scale, scale)),
-		"later_button_size": _level_up_scaled_size(LU_LATER_BUTTON_RECT, Vector2(scale, scale)),
+		"panel_size": panel_size,
+		"panel_pad": panel_pad,
+		"content_position": content_position,
+		"content_size": content_size,
+		"hero_header_position": _level_up_scaled_position(LU_HERO_HEADER_RECT, xy),
+		"hero_header_size": _level_up_scaled_size(LU_HERO_HEADER_RECT, xy),
+		"hero_frame_position": _level_up_scaled_position(LU_HERO_FRAME_RECT, xy),
+		"hero_size": _level_up_scaled_size(LU_HERO_FRAME_RECT, xy),
+		"title_position": _level_up_scaled_position(LU_TITLE_RECT, xy),
+		"title_size": _level_up_scaled_size(LU_TITLE_RECT, xy),
+		"subtitle_position": _level_up_scaled_position(LU_SUBTITLE_RECT, xy),
+		"subtitle_size": _level_up_scaled_size(LU_SUBTITLE_RECT, xy),
+		"rewards_row_position": rewards_row_position,
+		"rewards_row_size": rewards_row_size,
+		"card_size": card_size,
+		"card_gap": card_gap,
+		"later_button_position": later_position,
+		"later_button_size": later_size,
 		"title_font": maxi(16, int(roundf(38.0 * scale))),
 		"title_scale": Vector2.ONE,
-		"subtitle_font": maxi(8, int(roundf(18.0 * scale))),
+		"subtitle_font": maxi(12, int(roundf(18.0 * scale))),
 		"compact": compact,
 	}
 
@@ -11011,8 +11021,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	var panel := PanelContainer.new()
 	panel.name = "LevelUpPanel"
 	var panel_size: Vector2 = layout.get("panel_size", Vector2(1120, 660))
-	var panel_source_size := LU_PANEL_SOURCE_SIZE
-	var panel_source_content := LU_PANEL_CONTENT_2K
+	var panel_pad: float = layout.get("panel_pad", 14.0)
 	var panel_content_position: Vector2 = layout.get("content_position", Vector2(46.0, 55.0))
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
@@ -11030,15 +11039,17 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	panel.modulate.a = 0.0
 	panel.custom_minimum_size = panel_size
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_2k_style(panel_size))
+	# SCRUM-883: плотная кожа атласа поверх замороженного боя (дим ниже остаётся).
+	var panel_style := _atlas_chip_style(0.96, panel_pad)
+	panel.add_theme_stylebox_override("panel", panel_style)
 	panel.set_meta("level_up_slot", "level_up_panel")
-	panel.set_meta("level_up_content_margins", panel_source_content)
-	panel.set_meta("level_up_content_rect", Rect2(
-		panel_source_content.x,
-		panel_source_content.y,
-		panel_source_size.x - panel_source_content.x - panel_source_content.z,
-		panel_source_size.y - panel_source_content.y - panel_source_content.w
+	panel.set_meta("level_up_content_margins", Vector4(
+		panel_style.content_margin_left,
+		panel_style.content_margin_top,
+		panel_style.content_margin_right,
+		panel_style.content_margin_bottom
 	))
+	panel.set_meta("level_up_content_rect", Rect2(panel_content_position, layout.get("content_size", Vector2(768.0, 417.0))))
 	root.add_child(panel)
 
 	var box := Control.new()
@@ -11061,7 +11072,8 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	hero_frame.position = layout.get("hero_frame_position", Vector2.ZERO)
 	hero_frame.custom_minimum_size = hero_size
 	hero_frame.size = hero_size
-	hero_frame.add_theme_stylebox_override("panel", _level_up_portrait_style(hero_size))
+	# SCRUM-883: портрет-слот — полупрозрачный чип атласа (как слоты Атласа героев).
+	hero_frame.add_theme_stylebox_override("panel", _atlas_translucent_style(0.55, 10.0))
 	box.add_child(hero_frame)
 
 	var hero_portrait := TextureRect.new()
@@ -11069,9 +11081,6 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	hero_portrait.texture = game._cached_texture(str(game.PROGRESSION_DATA.character_config(game.selected_character_id).get("sprite_path", "")))
 	hero_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	hero_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	hero_portrait.position = layout.get("hero_portrait_position", Vector2(10.0, 10.0)) - hero_frame.position
-	hero_portrait.size = layout.get("hero_portrait_size", hero_size - Vector2(20.0, 20.0))
-	hero_portrait.custom_minimum_size = hero_portrait.size
 	hero_frame.add_child(hero_portrait)
 
 	var title_label := Label.new()
@@ -11084,7 +11093,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
 	title_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("title_font", 50)), 0, 72))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.30, 1.0))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
 	var subtitle_label := Label.new()
@@ -11096,7 +11105,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.position = layout.get("subtitle_position", Vector2.ZERO)
 	subtitle_label.size = layout.get("subtitle_size", Vector2(460.0, 22.0))
 	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("subtitle_font", 17)), 0, 26))
-	subtitle_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
+	subtitle_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	box.add_child(subtitle_label)
 
 	return box
@@ -11534,33 +11543,6 @@ func _level_up_panel_style() -> StyleBox:
 	return _minimal_frame_style("panel", Color(1.06, 1.03, 1.08, 1.0))
 
 
-func _level_up_panel_2k_style(display_size: Vector2) -> StyleBox:
-	return _overhaul_2k_frame_style("level_up_panel", display_size, Color(1.06, 1.03, 1.08, 1.0))
-
-
-func _level_up_portrait_style(display_size: Vector2) -> StyleBox:
-	return _level_up_scrum682_style(
-		str(LEVEL_UP_SCRUM682_FRAME_PATHS["portrait"]),
-		Vector2(320.0, 320.0),
-		display_size,
-		Vector4(34.0, 34.0, 34.0, 34.0),
-		Vector4(44.0, 44.0, 44.0, 44.0)
-	)
-
-
-func _level_up_effect_preview_style(display_size: Vector2) -> StyleBox:
-	# SCRUM-871: source-фрейм пересобран в родной аспект дельта-блока 354x132
-	# (офлайн 9-slice из прежней 330x64 полосы) — стиль снова 1:1 @2K, границы
-	# орнамента не растягиваются, полям хватает места на 3 строки текста.
-	return _level_up_scrum682_style(
-		str(LEVEL_UP_SCRUM682_FRAME_PATHS["effect_preview"]),
-		LU_EFFECT_FIELD_SOURCE_SIZE,
-		display_size,
-		Vector4(22.0, 18.0, 22.0, 18.0),
-		LU_EFFECT_FIELD_CONTENT_MARGINS
-	)
-
-
 func _card_hover_style() -> StyleBox:
 	return _minimal_frame_style("card", BUTTON_NEUTRAL_HOVER_TINT)
 
@@ -11719,12 +11701,6 @@ func _codex_pl_make_nearest(node: CanvasItem) -> void:
 		node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
-func _level_up_scrum682_style(path: String, source_size: Vector2, display_size: Vector2, texture_margins: Vector4, content_margins := Vector4.ZERO, tint := Color.WHITE) -> StyleBox:
-	var scaled_texture := _scaled_frame_margins_xy(source_size, display_size, texture_margins)
-	var scaled_content := _scaled_frame_margins_xy(source_size, display_size, content_margins)
-	return _global_texture_style(path, scaled_texture, tint, scaled_content, false)
-
-
 func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector4:
 	if not OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
 		return Vector4.ZERO
@@ -11838,15 +11814,32 @@ func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
 
 
-func _apply_level_up_card_2k_theme(button: Button, display_size: Vector2, is_rare := false) -> void:
-	var accent := Color(1.08, 1.04, 1.12, 1.0) if is_rare else Color.WHITE
-	var normal_content := Vector4(58.0, 70.0, 58.0, 64.0)
-	button.add_theme_stylebox_override("normal", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), normal_content, accent))
-	button.add_theme_stylebox_override("hover", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_hover"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_selected"]), LU_CARD_2K.size, display_size, Vector4(46.0, 58.0, 46.0, 54.0), Vector4(62.0, 74.0, 62.0, 68.0), Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_hover"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), Color(0.58, 0.58, 0.58, 0.82)))
-	var content_margins := _scaled_frame_margins_xy(LU_CARD_2K.size, display_size, normal_content)
+# SCRUM-883: карточка награды = кожаный чип-ряд атласа (база — _unified_apply_
+# row_theme) с поднятой плотностью поверх замороженного боя: normal 0.88,
+# hover/focus — золотой кант ярче, pressed — толстый золотой борт (селект).
+func _apply_level_up_card_atlas_theme(button: Button, display_size: Vector2, is_rare := false) -> void:
+	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * display_size.y / LU_CARD_2K.size.y))
+	_unified_apply_row_theme(button, pad)
+	var normal := _atlas_chip_style(0.88, pad)
+	if is_rare:
+		normal.border_color = Color(0.80, 0.62, 0.30, 0.95)
+	var hover := _atlas_chip_style(0.92, pad)
+	hover.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	var focus := _atlas_chip_style(0.90, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	var pressed := _atlas_chip_style(0.96, pad)
+	pressed.border_color = Color(0.98, 0.84, 0.46, 1.0)
+	pressed.set_border_width_all(3)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("focus", focus)
+	button.add_theme_stylebox_override("pressed", pressed)
+	var content_margins := Vector4(
+		normal.content_margin_left,
+		normal.content_margin_top,
+		normal.content_margin_right,
+		normal.content_margin_bottom
+	)
 	button.set_meta("level_up_card_slot", "level_up_card")
 	button.set_meta("level_up_card_content_margins", content_margins)
 	button.set_meta("level_up_card_content_rect", Rect2(
@@ -11855,20 +11848,6 @@ func _apply_level_up_card_2k_theme(button: Button, display_size: Vector2, is_rar
 		display_size.x - content_margins.x - content_margins.z,
 		display_size.y - content_margins.y - content_margins.w
 	))
-
-
-func _apply_level_up_later_button_theme(button: Button, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0)))
-	button.add_theme_stylebox_override("hover", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_hover"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("focus", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_hover"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_pressed"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("disabled", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.60, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))), 0, 22))
-	var label_safe := Rect2(Vector2(54.0, 28.0), Vector2(192.0, 26.0))
-	button.set_meta("level_up_later_content_rect", label_safe)
 
 
 func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
