@@ -3995,8 +3995,8 @@
  },
  "animation_knight_pixellab_refresh_task.md": {
   "key": "SCRUM-885",
-  "status": "Контроль качества",
-  "desc_hash": "2c5a77b565eba9edb03a89179fb951f9"
+  "status": "Готово",
+  "desc_hash": "de6bd19e1688c8f15762840ed6591dee"
  },
  "backend_contact_stuck_enemy_attack_deadzone_task.md": {
   "key": "SCRUM-886",

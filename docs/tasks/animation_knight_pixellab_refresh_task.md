@@ -80,6 +80,7 @@
   task-owned temporary checkout retained.
 
 ## QA-Вердикт
+
 Статус: PASSED
 Проверил: Claude QA (claude-qa-scrum885-20260708), 2026-07-08.
 Метод: холодный worktree от origin/dev, полный cold --import (2 прохода, exit 0, ноль ошибок по knight-путям), фокус-смоуки через godot_gate.py (fdengine, SLOTS=1).
@@ -90,3 +91,17 @@
 - PASS hero_select_pixellab_layout_test.gd (knight включён)
 - PASS runtime_smoke_test.gd (изолир. user-data-dir; единственный ERROR — известный non-fatal dummy-renderer screenshot warning, тест passed)
 Коммиты bf6046f3, b4d4fe7b — ancestor origin/dev. Вердикт: PASS.
+
+Codex QA rerun, 2026-07-08:
+
+- QA tested implementation commits `bf6046f3` and `b4d4fe7b` on fresh
+  `origin/dev` `00aa2e88`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/playable_character_directional_spriteframes_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/hero_select_pixellab_layout_test.gd`
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+  (exit 0; fresh `dev` emitted non-fatal SCRUM-888 `sentry_turret.png` import
+  errors and the known dummy renderer screenshot warning before
+  `Runtime smoke test passed`).
+- QA disk cleanup: disposable QA worktree `/private/tmp/fsd_qa_scrum885_codex`
+  removed after mirror commit/push; no remote QA branch retained.
