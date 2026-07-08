@@ -1,0 +1,86 @@
+[
+  {
+    "id": "caravan_bandits",
+    "file": "assets/backgrounds/events/event_bg_caravan_bandits.png",
+    "prompt": "a burning merchant caravan ambushed on a dusty trade road at dusk: two overturned wagons with spilled crates and barrels burning on the left, embers and thick smoke rising, dark silhouettes of bandits with drawn blades closing in from the middle distance, a panicked draft horse rearing, warm orange firelight against a deep twilight sky; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "sudden_fork",
+    "file": "assets/backgrounds/events/event_bg_sudden_fork.png",
+    "prompt": "a fork in a dirt road deep inside a cursed forest: two diverging paths split around a huge gnarled dead tree on the left, cold grey fog crawling low over the ground, twisted black trunks with clawing branches, faint violet witch-lights glimmering far between the trees, thin pale moonlight from above; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "sacrifice_altar",
+    "file": "assets/backgrounds/events/event_bg_sacrifice_altar.png",
+    "prompt": "a black stone sacrificial altar in an underground shrine: the altar slab on the left glistening dark red, carved runes glowing faint violet along its sides, clusters of guttering candles with warm flames, a looming shadowed stone idol behind it, thin ritual smoke curling upward into the vaulted dark; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "night_market",
+    "file": "assets/backgrounds/events/event_bg_night_market.png",
+    "prompt": "a smugglers' night market hidden in a narrow city alley: canvas stalls and tents on the left glowing with warm golden lanterns, hooded traders as dim silhouettes haggling over crates, exotic wares and rolled carpets, strings of small paper lamps overhead, deep blue night shadows swallowing the far end of the alley; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "cursed_chapel",
+    "file": "assets/backgrounds/events/event_bg_cursed_chapel.png",
+    "prompt": "the interior of a ruined chapel at night: a tall shattered stained-glass window on the left pouring pale moonlight over broken pews and rubble, a heavy sealed crypt door bound with rusted chains in the wall beneath it, drifting dust motes in the light beams, a faint violet glow seeping from under the crypt door; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "gilded_gambler",
+    "file": "assets/backgrounds/events/event_bg_gilded_gambler.png",
+    "prompt": "a candlelit gambling table in a dark tavern corner: scattered ivory dice, stacked gold coins and worn cards on green felt on the left, across the table sits a ghostly translucent gambler in a deep hood with faint golden glowing eyes, candle flames reflecting warm gold off the coins; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "wounded_mercenary",
+    "file": "assets/backgrounds/events/event_bg_wounded_mercenary.png",
+    "prompt": "a wounded mercenary slumped against a broken cart wheel beside a muddy trade road in grey pouring rain: his cracked shield and notched sword lying in the mud on the left, blood-stained bandages, dull grey daylight, a distant treeline lost in rain haze; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "stone_guardian",
+    "file": "assets/backgrounds/events/event_bg_stone_guardian.png",
+    "prompt": "a colossal ancient stone golem standing guard before massive carved gates: the guardian rising to full height on the left, moss and deep cracks over rune-etched granite, its chest core and the gate runes glowing faint violet, broken pillars at its feet emphasizing its scale; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "heroes_graveyard",
+    "file": "assets/backgrounds/events/event_bg_heroes_graveyard.png",
+    "prompt": "a graveyard of fallen heroes on a foggy hillside at night: rows of weathered graves each marked by a sword thrust into the earth on the left, ragged faded banners, black ravens perched on the sword hilts, low creeping mist, cold moonlight breaking through torn clouds; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "old_well",
+    "file": "assets/backgrounds/events/event_bg_old_well.png",
+    "prompt": "an old moss-covered stone wishing well in a forest clearing on a moonlit night: the well with its wooden crossbeam and hanging bucket standing on the left, swarms of tiny green-gold fireflies drifting around it, soft silver moonlight, dark encircling trees at the clearing edge; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "war_drums_camp",
+    "file": "assets/backgrounds/events/event_bg_war_drums_camp.png",
+    "prompt": "a distant war camp of a savage horde behind a ridge, seen from a dark hilltop: dozens of campfires and torch lines glowing warm orange across the valley on the left, crude totems and spiked banners as black silhouettes, columns of smoke rising into a starless night sky; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  },
+  {
+    "id": "fallen_star",
+    "file": "assets/backgrounds/events/event_bg_fallen_star.png",
+    "prompt": "a smoking impact crater in a dark night field: at its heart on the left a jagged fallen star shard glowing white-violet, molten cracks radiating outward through scorched earth and burnt grass, drifting sparks, a faint glowing smoke trail arcing up into the night sky; composition rule: the main subject and all important detail sit in the left 55 percent of the frame and the upper 70 percent of the frame; the right third and the bottom quarter of the image are kept dark, calm and low-detail — plain shadow, mist, empty ground or dim sky — so translucent UI panels overlay cleanly there; painterly dark fantasy illustration, detailed digital oil painting in the style of a Dungeons and Dragons rulebook scene, dramatic cinematic lighting, dark moody base palette with warm gold and firelight accents and subtle violet arcane glow, rich brushwork, NOT pixel art, not 8-bit, no text, no letters, no words, no frame, no border, no watermark, no game interface elements, 16:9 full-screen game background",
+    "status": "done",
+    "safe_zones_ok": true
+  }
+]
