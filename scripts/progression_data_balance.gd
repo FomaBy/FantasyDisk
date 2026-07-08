@@ -75,7 +75,7 @@ const COMFORT_WEIGHTS := {
 const COMFORT_WEIGHT_OVERRIDES := {
 	"druid/summon_amulet": 0.96,
 	"druid/raven_totem": 0.96,
-	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
+	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id; SCRUM-888: пересчитан под турели — implied 1.033 (raw/median по 1/5/20), оставлен
 	"engineer/engineer_repair_drone": 1.03,
 	"chemist/homunculus_vial": 1.43,
 	"guitarist/sound_amp": 1.25,
@@ -136,6 +136,8 @@ const COMFORT_BAND_SLICE_OVERRIDES := {
 	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
 	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
 	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
+	# SCRUM-888 (турели): аналитические raw новой механики = старым ±0.2% по всем
+	# срезам (residual-пара тюнера сохранена 0.389/0.774/1.29) — CSV-веса валидны.
 	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
 	"guitarist/sound_amp": {"ideal_20": 1.142},
 }

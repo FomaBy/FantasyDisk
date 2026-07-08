@@ -382,7 +382,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 		"summary": "Лидерство управляет устройствами: турельные связи, ремонтные дроны и минные сети работают как команда.",
 		"mechanic_tags": ["deployable_network", "device_command", "repair_support", "minefield"],
 		"weapon_identities": {
-			"engineer_sentry_wrench": "sentry link и фокус турели",
+			"engineer_sentry_wrench": "развёртка стационарных турелей и удержание зоны",
 			"engineer_repair_drone": "repair drone с поддержкой",
 			"engineer_pressure_mines": "pressure mines для контроля маршрутов",
 		},
