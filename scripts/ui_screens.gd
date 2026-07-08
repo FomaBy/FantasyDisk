@@ -1339,41 +1339,80 @@ func _build_character_select_v4() -> void:
 	back_button.position = Vector2(content_rect.end.x - 260.0, content_rect.position.y)
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
-	# «Выбрать» — главный CTA в шапке (паттерн Атласа: действия в верхней полосе;
-	# в узкую колонну возвышения 720p кит hero_confirm по ширине не помещается).
-	var select_button := _make_button("Выбрать")
-	select_button.name = "HS4ChooseButton"
-	_set_action_button_size(select_button, 320.0, action_h)
-	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
-	select_button.position = Vector2(back_button.position.x - 12.0 - 320.0, content_rect.position.y)
-	root.add_child(select_button)
-	# Реальная высота шапки: у кит-кнопок 9-slice минимум выше компактного
-	# action_h (контент-маргины ассета) — меряем фактические минимумы.
-	var header_h := maxf(maxf(back_button.get_combined_minimum_size().y, select_button.get_combined_minimum_size().y), action_h)
+	# Реальная высота шапки: у кит-кнопки 9-slice минимум выше компактного
+	# action_h (контент-маргины ассета) — меряем фактический минимум.
+	var header_h := maxf(back_button.get_combined_minimum_size().y, action_h)
 
-	# Геометрия: слева колонна-витрина (портрет на пьедестале + возвышение) на всю
-	# высоту safe-зоны, справа досье и карусель под ним. На 720p полноширинная
-	# нижняя лента не помещается в safe-зону вместе с портретом 320px, поэтому
-	# карусель живёт в правой колонке на всех вьюпортах.
+	# Геометрия (SCRUM-882): единая шапка (чип-титул слева, «Назад» справа) над
+	# ОБЕИМИ колоннами; ниже слева колонна-витрина (портрет на пьедестале →
+	# возвышение → CTA «Выбрать» у низа safe-зоны), справа досье строго вровень
+	# с портретом и карусель под ним.
 	var column_gap := clampf(content_rect.size.x * 0.012, 8.0, 16.0)
 	var vgap := clampf(content_rect.size.y * 0.010, 4.0, 10.0)
-	var header_band := title_chip.get_combined_minimum_size().y + 4.0
+	var header_band := maxf(title_chip.get_combined_minimum_size().y + 4.0, header_h)
 	var carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
 	var carousel_h := carousel_slot_size + clampf(content_rect.size.y * 0.012, 6.0, 14.0)
-	var ascension_reserved_h := 64.0 + clampf(content_rect.size.y * 0.08, 36.0, 52.0)
-	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
 	var carousel_min_w := 2.0 * 54.0 + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
-	var portrait_size := clampf(
-		minf(content_rect.size.x * 0.34, content_rect.size.y - header_band - vgap * 2.0 - ascension_reserved_h),
-		preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
-	portrait_size = floorf(maxf(minf(portrait_size, content_rect.size.x - column_gap - carousel_min_w), preview_floor))
+	# CTA «Выбрать» — плита кнопок главного меню 380×104 (Правило 1: только
+	# пропорциональный даунскейл под ширину колонны, аспект не ломаем).
+	var choose_aspect := 104.0 / 380.0
+	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
+	var asc_min_h := 42.0 + ascension_pad * 2.0
+	var asc_target_h := maxf(asc_min_h, clampf(content_rect.size.y * 0.115, 52.0, 100.0))
+	# Вертикальный бюджет колонны: portrait + vgap + возвышение + vgap + CTA.
+	# На коротких вьюпортах превью ужимается ниже прежнего пола 320 — CTA и
+	# степпер возвышения (кнопки ≥42px, seal-контракт) важнее пары строк портрета.
+	var preview_floor := HS4_MINIMAL_PREVIEW_MIN_SIZE
+	if vp.y < 720.0:
+		preview_floor = 240.0
+	elif vp.y < 800.0:
+		preview_floor = 270.0
 	var left_x := content_rect.position.x
 	var left_top := content_rect.position.y + header_band + vgap
+	var column_budget := content_rect.end.y - left_top
+	var portrait_size := (column_budget - vgap * 2.0 - asc_target_h) / (1.0 + choose_aspect)
+	if portrait_size > MAX_ACTION_BUTTON_VISUAL_WIDTH:
+		# Плита CTA шире 560 не растёт (глобальный кап кита) — высота фиксируется.
+		portrait_size = column_budget - vgap * 2.0 - asc_target_h - roundf(MAX_ACTION_BUTTON_VISUAL_WIDTH * choose_aspect)
+	portrait_size = minf(portrait_size, content_rect.size.x * 0.34)
+	portrait_size = minf(portrait_size, content_rect.size.x - column_gap - carousel_min_w)
+	portrait_size = floorf(clampf(portrait_size, preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE))
+	var choose_w := minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH)
+	var choose_h := maxf(roundf(choose_w * choose_aspect), 68.0)
+	var choose_top := content_rect.end.y - choose_h
 	var dossier_x := left_x + portrait_size + column_gap
 	var dossier_w := content_rect.end.x - dossier_x
-	var dossier_y := content_rect.position.y + header_h + vgap
+	# Фидбек SCRUM-882: top досье == top портрет-фрейма (одна линия под шапкой).
+	var dossier_y := left_top
 	var carousel_y := content_rect.end.y - carousel_h
-	var dossier_h := carousel_y - vgap - dossier_y
+
+	# Счётчик карусели «N–M из K» — полупрозрачный чип над правым краем карусели.
+	# Создаётся до досье: его высота резервирует полосу между досье и каруселью.
+	var carousel_counter := PanelContainer.new()
+	carousel_counter.name = "HS4CarouselCounter"
+	var counter_style := _atlas_translucent_style(0.55, 8.0)
+	counter_style.content_margin_left = 12.0
+	counter_style.content_margin_right = 12.0
+	counter_style.content_margin_top = 4.0
+	counter_style.content_margin_bottom = 4.0
+	carousel_counter.add_theme_stylebox_override("panel", counter_style)
+	carousel_counter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var carousel_counter_label := Label.new()
+	carousel_counter_label.name = "HS4CarouselCounterLabel"
+	carousel_counter_label.text = "88–88 из 88"
+	carousel_counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	carousel_counter_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	carousel_counter_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 18))
+	carousel_counter_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.72, 1.0))
+	carousel_counter.add_child(carousel_counter_label)
+	root.add_child(carousel_counter)
+	var counter_band := carousel_counter.get_combined_minimum_size().y
+
+	# Досье чуть ниже по высоте (фидбек): низ поднят минимум на 10% высоты полосы,
+	# освобождённая полоса — воздуху и счётчику карусели.
+	var dossier_full_h := carousel_y - vgap - dossier_y
+	var dossier_lift := maxf(roundf(dossier_full_h * 0.10), counter_band + 12.0)
+	var dossier_h := dossier_full_h - dossier_lift
 
 	var portrait_panel := Panel.new()
 	portrait_panel.name = "HS4PortraitFrame"
@@ -1670,29 +1709,42 @@ func _build_character_select_v4() -> void:
 		dossier_content.add_child(guide_label)
 		guidance_labels[relevance] = guide_label
 
+	# Возвышение занимает полосу между портретом и CTA (кап 132px — лишний воздух
+	# уходит между возвышением и кнопкой, а не растягивает панель). Хост — обычный
+	# Panel с ручным лейаутом: PanelContainer растёт от min-size детей и ломает
+	# фикс-геометрию колонны (грабли SCRUM-876, см. memory).
 	var ascension_top := left_top + portrait_size + vgap
-	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
-	var ascension_panel := PanelContainer.new()
+	var ascension_h := maxf(asc_min_h, minf(choose_top - vgap - ascension_top, 132.0))
+	var ascension_panel := Panel.new()
 	ascension_panel.name = "HS4AscensionFrame"
 	ascension_panel.position = Vector2(left_x, ascension_top)
-	ascension_panel.size = Vector2(portrait_size, maxf(action_h + 20.0, content_rect.end.y - ascension_top))
+	ascension_panel.size = Vector2(portrait_size, ascension_h)
 	ascension_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, ascension_pad))
 	ascension_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(ascension_panel)
-	var ascension_box := VBoxContainer.new()
-	ascension_box.name = "HS4AscensionBox"
-	ascension_box.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
-	ascension_panel.add_child(ascension_box)
+	# Вертикальный бюджет контента: степпер + (если влезает) строка модификаторов.
+	var asc_content_h := ascension_h - ascension_pad * 2.0
+	var asc_mods_font := _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16)
+	var asc_mods_line_h := roundf(float(asc_mods_font) * 1.5)
+	var asc_row_gap := 4.0
+	var asc_button_px := clampf(asc_content_h - asc_mods_line_h - asc_row_gap, 42.0, 56.0)
+	var asc_button_size := Vector2(asc_button_px, asc_button_px)
+	var asc_mods_fits := asc_content_h - asc_button_px - asc_row_gap >= asc_mods_line_h - 0.5
+	var asc_used_h := asc_button_px + ((asc_row_gap + asc_mods_line_h) if asc_mods_fits else 0.0)
+	var asc_row_y := ascension_pad + maxf(0.0, roundf((asc_content_h - asc_used_h) * 0.5))
 
+	# SCRUM-882: компакт-панель между портретом и CTA — титул всегда в тултипе
+	# панели, вертикальный бюджет уходит степперу и строке модификаторов.
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.custom_minimum_size = Vector2(0.0, maxf(20.0, 26.0 * layout_scale))
 	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
 	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	asc_label.visible = vp.y >= 1200.0
-	ascension_box.add_child(asc_label)
+	asc_label.visible = false
+	asc_label.position = Vector2(ascension_pad * 1.4, ascension_pad)
+	asc_label.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), 0.0)
+	ascension_panel.add_child(asc_label)
 
 	var asc_intro := Label.new()
 	asc_intro.name = "HS4AscensionIntro"
@@ -1703,20 +1755,18 @@ func _build_character_select_v4() -> void:
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	ascension_box.add_child(asc_intro)
+	asc_intro.position = Vector2(ascension_pad * 1.4, ascension_pad)
+	asc_intro.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), 0.0)
+	ascension_panel.add_child(asc_intro)
 
-	var asc_action_row := HBoxContainer.new()
-	asc_action_row.name = "HS4AscensionActionRow"
-	asc_action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_action_row.add_theme_constant_override("separation", maxi(6, int(round(9.0 * layout_scale))))
-	ascension_box.add_child(asc_action_row)
 	var asc_box := HBoxContainer.new()
+	asc_box.name = "HS4AscensionActionRow"
 	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
-	asc_action_row.add_child(asc_box)
+	ascension_panel.add_child(asc_box)
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
-	var asc_button_size := Vector2(56.0, 56.0)
+	# Степпер ≥42px — seal-контракт runtime_smoke.
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
 	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_minus)
@@ -1733,21 +1783,36 @@ func _build_character_select_v4() -> void:
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
 	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_plus)
+	# Ручное центрирование ряда степпера в фикс-панели.
+	asc_box.size = asc_box.get_combined_minimum_size()
+	asc_box.position = Vector2(roundf((portrait_size - asc_box.size.x) * 0.5), asc_row_y)
 
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 1 if vp.y < 1200.0 else 2
-	asc_mods.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	asc_mods.max_lines_visible = 1
 	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_mods.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	asc_mods.add_theme_font_size_override("font_size", asc_mods_font)
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	ascension_box.add_child(asc_mods)
-	# Компакт-страховка: если контент возвышения не влезает по высоте (узкие
-	# вьюпорты), строка модификаторов уходит в тултип панели.
-	if ascension_panel.get_combined_minimum_size().y > ascension_panel.size.y:
-		asc_mods.visible = false
+	# Компакт-страховка: если строка модификаторов не помещается под степпером,
+	# она уходит в тултип панели (бюджет решается арифметикой, не min-size).
+	asc_mods.visible = asc_mods_fits
+	asc_mods.position = Vector2(ascension_pad * 1.4, asc_row_y + asc_button_px + asc_row_gap)
+	asc_mods.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), asc_mods_line_h)
+	ascension_panel.add_child(asc_mods)
+
+	# Фидбек SCRUM-882: CTA «Выбрать» — под превью и возвышением, прижат к низу
+	# safe-зоны, на плите кнопок главного меню (main_menu_380x104 через
+	# _text_button_unique_id) во всю ширину колонны. Шрифт — базовый кнопочный
+	# (как в главном меню), без кастомных override.
+	var select_button := _make_button("Выбрать")
+	select_button.name = "HS4ChooseButton"
+	_set_action_button_size(select_button, choose_w, choose_h)
+	select_button.clip_text = true
+	select_button.position = Vector2(left_x + roundf((portrait_size - choose_w) * 0.5), choose_top)
+	root.add_child(select_button)
 
 	var carousel_panel := Panel.new()
 	carousel_panel.name = "HS4CarouselFrame"
@@ -1777,16 +1842,21 @@ func _build_character_select_v4() -> void:
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
 
-	var left_arrow := _make_button("<")
+	# SCRUM-882: стрелки несут число скрытых героев («‹N» / «M›», 0 → просто
+	# стрелка); размер плиты 54×42 фиксирован (seal-контракт), поэтому шрифт
+	# компактный фиксированный + clip_text-страховка.
+	var left_arrow := _make_button("‹")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
-	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 22))
+	left_arrow.add_theme_font_size_override("font_size", 14)
+	left_arrow.clip_text = true
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
-	var right_arrow := _make_button(">")
+	var right_arrow := _make_button("›")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
-	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 22))
+	right_arrow.add_theme_font_size_override("font_size", 14)
+	right_arrow.clip_text = true
 	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
 
@@ -1879,8 +1949,10 @@ func _build_character_select_v4() -> void:
 		asc_plus.focus_neighbor_right = asc_minus.get_path()
 		asc_plus.focus_neighbor_top = back_button.get_path()
 		asc_plus.focus_neighbor_bottom = select_button.get_path()
+		# SCRUM-882: CTA внизу левой колонны — сверху степпер возвышения,
+		# справа вход в ряд карусели.
 		select_button.focus_neighbor_left = asc_minus.get_path()
-		select_button.focus_neighbor_right = asc_plus.get_path()
+		select_button.focus_neighbor_right = left_arrow.get_path()
 		select_button.focus_neighbor_top = asc_minus.get_path()
 		select_button.focus_neighbor_bottom = default_focus.get_path()
 		if grab_default:
@@ -1970,6 +2042,19 @@ func _build_character_select_v4() -> void:
 				slot.visible = false
 				slot_portrait.texture = null
 				slot_label.text = ""
+		# SCRUM-882: явный счётчик карусели — «N–M из K» + число скрытых на стрелках.
+		var roster_total: int = roster.size()
+		var window_first: int = mini(off + 1, roster_total)
+		var window_last: int = mini(off + visible_slot_count, roster_total)
+		carousel_counter_label.text = "%d–%d из %d" % [window_first, window_last, roster_total]
+		carousel_counter.size = carousel_counter.get_combined_minimum_size()
+		carousel_counter.position = Vector2(
+			content_rect.end.x - carousel_counter.size.x,
+			carousel_y - 4.0 - carousel_counter.size.y)
+		var hidden_left: int = off
+		var hidden_right: int = maxi(0, roster_total - off - visible_slot_count)
+		left_arrow.text = "‹" if hidden_left <= 0 else "‹%d" % hidden_left
+		right_arrow.text = "›" if hidden_right <= 0 else "%d›" % hidden_right
 		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:

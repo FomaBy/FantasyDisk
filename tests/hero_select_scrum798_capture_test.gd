@@ -67,7 +67,9 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 		if not viewport_rect.encloses(rect):
 			_fail("Expected %s to stay in viewport at %s, got %s." % [(control as Control).name, context, rect])
 			return
-	if portrait_rect.size.x < PREVIEW_MIN_SIZE or portrait_rect.size.y < PREVIEW_MIN_SIZE:
+	# SCRUM-882: на 720p портрет делит колонну с плитой CTA и степпером — пол 270.
+	var preview_min := PREVIEW_MIN_SIZE if viewport_size.y >= 864 else 270.0
+	if portrait_rect.size.x < preview_min or portrait_rect.size.y < preview_min:
 		_fail("Expected enlarged preview at %s, got %s." % [context, portrait_rect])
 		return
 	var slots := _visible_slots(carousel)
