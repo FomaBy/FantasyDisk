@@ -7966,7 +7966,10 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 			if a.get_global_rect().grow(-2.0).intersects(b.get_global_rect().grow(-2.0)):
 				_fail("Expected native hero select v4 controls not to overlap at %s: %s %s intersects %s %s." % [context, a.name, a.get_global_rect(), b.name, b.get_global_rect()])
 				return
-	if portrait_image_rect.size.x < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE or portrait_image_rect.size.y < HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE:
+	# SCRUM-882: CTA «Выбрать» живёт в левой колонне — на 720p портрет делит
+	# вертикаль с плитой CTA и степпером возвышения (≥42px), пол ужат до 270.
+	var hero_preview_floor := HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE if viewport_size.y >= 864 else 270.0
+	if portrait_image_rect.size.x < hero_preview_floor or portrait_image_rect.size.y < hero_preview_floor:
 		_fail("Expected selected hero portrait to use enlarged SCRUM-798 footprint at %s, got %s." % [context, portrait_image_rect])
 		return
 	if first_thumb_rect.size.x < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE or first_thumb_rect.size.y < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE:

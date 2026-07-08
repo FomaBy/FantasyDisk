@@ -8,7 +8,11 @@ const VIEWPORTS := [
 	Vector2i(2560, 1440),
 ]
 const PREVIEW_MIN_SIZE := 320.0
+# SCRUM-882: CTA «Выбрать» переехал в низ левой колонны — на 720p вертикальный
+# бюджет делится с плитой CTA и степпером возвышения (≥42px), портрет ужимается.
+const PREVIEW_MIN_SIZE_720 := 270.0
 const SLOT_MIN_SIZE := 180.0
+const CHOOSE_PLATE_RATIO := 380.0 / 104.0
 const SLOT_BASELINE_TOLERANCE := 3.0
 const PREVIEW_VISIBLE_MIN_RATIO := 0.68
 const SLOT_VISIBLE_HEIGHT_MIN_RATIO := 0.48
@@ -92,7 +96,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		_fail("Expected HS4PortraitFrame at %s." % str(viewport_size))
 		return
 	var portrait_frame_rect := portrait_frame.get_global_rect()
-	if portrait_frame_rect.size.x < PREVIEW_MIN_SIZE or portrait_frame_rect.size.y < PREVIEW_MIN_SIZE:
+	var preview_min := PREVIEW_MIN_SIZE if viewport_size.y >= 864 else PREVIEW_MIN_SIZE_720
+	if portrait_frame_rect.size.x < preview_min or portrait_frame_rect.size.y < preview_min:
 		_fail("Expected HS4PortraitFrame to use enlarged footprint at %s, got %s." % [str(viewport_size), str(portrait_frame_rect.size)])
 		return
 	var portrait_visible_rect := _visible_alpha_global_rect(portrait)
@@ -189,10 +194,86 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	var dossier_rect := (main.find_child("HS4DossierFrame", true, false) as Control).get_global_rect()
 	var asc_rect := ascension.get_global_rect()
 	var carousel_rect := carousel.get_global_rect()
-	for pair in [[portrait_rect, dossier_rect], [dossier_rect, asc_rect], [portrait_rect, carousel_rect], [asc_rect, carousel_rect]]:
-		if (pair[0] as Rect2).grow(-2.0).intersects((pair[1] as Rect2).grow(-2.0)):
-			_fail("Expected major Hero Select zones not to overlap at %s." % str(viewport_size))
+	var choose_rect := choose.get_global_rect()
+	var counter := main.find_child("HS4CarouselCounter", true, false) as Control
+	if counter == null:
+		_fail("Expected HS4CarouselCounter chip at %s." % str(viewport_size))
+		return
+	var counter_rect := counter.get_global_rect()
+	for pair in [
+		["portrait", portrait_rect, "dossier", dossier_rect], ["dossier", dossier_rect, "ascension", asc_rect],
+		["portrait", portrait_rect, "carousel", carousel_rect], ["ascension", asc_rect, "carousel", carousel_rect],
+		["ascension", asc_rect, "choose", choose_rect], ["choose", choose_rect, "carousel", carousel_rect],
+		["portrait", portrait_rect, "choose", choose_rect], ["choose", choose_rect, "dossier", dossier_rect],
+		["counter", counter_rect, "dossier", dossier_rect], ["counter", counter_rect, "carousel", carousel_rect],
+		["counter", counter_rect, "choose", choose_rect],
+	]:
+		if (pair[1] as Rect2).grow(-2.0).intersects((pair[3] as Rect2).grow(-2.0)):
+			_fail("Expected major Hero Select zones not to overlap at %s: %s %s vs %s %s." % [str(viewport_size), pair[0], str(pair[1]), pair[2], str(pair[3])])
 			return
+
+	# SCRUM-882: CTA «Выбрать» — в левой колонне под возвышением, во всю ширину
+	# колонны (плита main_menu 380×104, только пропорциональный даунскейл),
+	# прижат к низу safe-зоны.
+	if choose_rect.position.x < portrait_rect.position.x - 2.0 or choose_rect.end.x > portrait_rect.end.x + 2.0:
+		_fail("Expected HS4ChooseButton to stay inside the left column at %s, got %s vs portrait %s." % [str(viewport_size), str(choose_rect), str(portrait_rect)])
+		return
+	if choose_rect.position.y < asc_rect.end.y - 2.0:
+		_fail("Expected HS4ChooseButton below HS4AscensionFrame at %s, got %s vs ascension %s." % [str(viewport_size), str(choose_rect), str(asc_rect)])
+		return
+	if choose_rect.size.x < portrait_rect.size.x * 0.9:
+		_fail("Expected HS4ChooseButton width >= 0.9x portrait column at %s, got %s vs portrait %s." % [str(viewport_size), str(choose_rect.size), str(portrait_rect.size)])
+		return
+	if choose_rect.size.y <= 0.0 or absf(choose_rect.size.x / choose_rect.size.y - CHOOSE_PLATE_RATIO) > CHOOSE_PLATE_RATIO * 0.04:
+		_fail("Expected HS4ChooseButton to keep the 380:104 main-menu plate aspect at %s, got %s." % [str(viewport_size), str(choose_rect.size)])
+		return
+	# SCRUM-882: досье вровень с портретом (одна верхняя линия), его низ поднят —
+	# между досье и каруселью остаётся воздух под счётчик.
+	if absf(dossier_rect.position.y - portrait_rect.position.y) > 2.0:
+		_fail("Expected HS4DossierFrame top to align with HS4PortraitFrame top at %s, got %.1f vs %.1f." % [str(viewport_size), dossier_rect.position.y, portrait_rect.position.y])
+		return
+	if carousel_rect.position.y - dossier_rect.end.y < dossier_rect.size.y * 0.08:
+		_fail("Expected >=8%% air between dossier bottom and carousel top at %s, got gap %.1f for dossier %s." % [str(viewport_size), carousel_rect.position.y - dossier_rect.end.y, str(dossier_rect)])
+		return
+	# SCRUM-882: счётчик карусели «N–M из K» + число скрытых героев на стрелках.
+	var counter_label := main.find_child("HS4CarouselCounterLabel", true, false) as Label
+	if counter_label == null:
+		_fail("Expected HS4CarouselCounterLabel at %s." % str(viewport_size))
+		return
+	var counter_regex := RegEx.new()
+	counter_regex.compile("^(\\d+)–(\\d+) из (\\d+)$")
+	var counter_match := counter_regex.search(counter_label.text)
+	if counter_match == null:
+		_fail("Expected carousel counter to match 'N–M из K' at %s, got '%s'." % [str(viewport_size), counter_label.text])
+		return
+	var total_classes: int = ProgressionData.character_ids().size()
+	if int(counter_match.get_string(3)) != total_classes:
+		_fail("Expected carousel counter K == %d playable classes at %s, got '%s'." % [total_classes, str(viewport_size), counter_label.text])
+		return
+	var window_first := int(counter_match.get_string(1))
+	var window_last := int(counter_match.get_string(2))
+	if window_first < 1 or window_last < window_first or window_last > total_classes:
+		_fail("Expected sane carousel counter window at %s, got '%s'." % [str(viewport_size), counter_label.text])
+		return
+	var prev_arrow := main.find_child("HS4CarouselPrevButton", true, false) as Button
+	var next_arrow := main.find_child("HS4CarouselNextButton", true, false) as Button
+	if prev_arrow == null or next_arrow == null:
+		_fail("Expected carousel arrows at %s." % str(viewport_size))
+		return
+	var expected_prev := "‹" if window_first <= 1 else "‹%d" % (window_first - 1)
+	var expected_next := "›" if window_last >= total_classes else "%d›" % (total_classes - window_last)
+	if prev_arrow.text != expected_prev or next_arrow.text != expected_next:
+		_fail("Expected arrows to show hidden hero counts at %s: want '%s'/'%s', got '%s'/'%s'." % [str(viewport_size), expected_prev, expected_next, prev_arrow.text, next_arrow.text])
+		return
+	# Листание Next двигает окно — счётчик обновляется.
+	var counter_before := counter_label.text
+	for i in range(total_classes + 1):
+		next_arrow.pressed.emit()
+		if counter_label.text != counter_before:
+			break
+	if counter_label.text == counter_before:
+		_fail("Expected carousel counter to change after paging Next at %s, stuck at '%s'." % [str(viewport_size), counter_before])
+		return
 
 	# SCRUM-879: весь контент — строго в safe-зоне рамы (маргины 160px от базы
 	# 1536x1024, масштабированные к вьюпорту; допуск 2px).
@@ -209,6 +290,7 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		"HS4Carousel": carousel_rect,
 		"HS4BackButton": back_button.get_global_rect(),
 		"HS4ChooseButton": choose.get_global_rect(),
+		"HS4CarouselCounter": counter.get_global_rect(),
 	}
 	for zone_name in safe_zone_entries:
 		if not safe_rect.encloses(safe_zone_entries[zone_name] as Rect2):
