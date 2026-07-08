@@ -1,7 +1,7 @@
 # Character/Weapon Mechanics Review Table
 
-Дата: 2026-07-08  
-Jira: SCRUM-878  
+Дата: 2026-07-08
+Jira: SCRUM-878
 Scope: documentation/review artifact only. Gameplay, balance numbers, visuals and runtime files were not changed.
 
 ## Sources
