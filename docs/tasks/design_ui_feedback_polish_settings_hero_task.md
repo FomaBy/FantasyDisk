@@ -1,7 +1,7 @@
 # UI-полировка по фидбеку: табы настроек, выравнивание, hover, CTA и карусель выбора героя
 
 - Jira: SCRUM-882
-- Статус: in_progress
+- Статус: done
 - Контур: Claude
 - Owner: Claude Fable 5 (интерактивный чат пользователя)
 - Thread: claude-fable5-ui-unify-20260708
@@ -51,3 +51,24 @@
 ## Прогресс
 
 - 2026-07-08: глобальные правки (hover, маппинг CTA) влиты оркестратором; спека — Claude Fable 5.
+- 2026-07-08: ветки settings-polish (70314d65) и hero-polish (64c32cb2) влиты в dev:
+  табы настроек на плите back_260x104 с фитом текста+иконки, колонка 920·s по
+  центру с левым выравниванием; CTA «Выбрать» на плите main_menu под возвышением
+  (ширина колонны, аспект 380:104), досье top == portrait top (0px), высота −10%,
+  счётчик карусели «N–M из 17» + числа скрытых на стрелках; hover +12% поверх
+  hover-арта. Дополнительно: единый «Назад» 260×h везде + шапка атласа
+  (Созвездие+эмблемы слева, Гильдия+пыль по центру).
+
+## QA-Вердикт
+
+- Статус: PASSED
+- Дата: 2026-07-08, судья: Claude Fable 5 (оркестратор)
+- Прогоны на объединённом dev (godot_gate, EXIT=0): runtime_smoke (полный),
+  ui_no_overlap_matrix (7 вьюпортов), hero_select_pixellab_layout (5 вьюпортов),
+  gamepad_settings_rebind, gamepad_full_flow_smoke; в ветках агентов
+  дополнительно те же наборы — PASS.
+- Визуальная приёмка скриншотов 2560×1440 (герой/настройки/кодекс/атлас):
+  все пункты фидбека выполнены, растяжек нет, контент в safe-зоне.
+- Превью: docs/design/previews/atlas_style_{hero_select,settings,codex,atlas}_2560x1440.png.
+- Disk cleanup: removed /private/tmp/fsd_wt_{settings3,hero2} (+ .godot-кэши),
+  ветки settings-polish/hero-polish удалены после влития.
