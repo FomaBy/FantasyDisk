@@ -1159,8 +1159,6 @@ const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
 const HS4_MINIMAL_PREVIEW_MAX_SIZE := 660.0
 const HS4_MINIMAL_SLOT_MIN_SIZE := 180.0
 const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
-const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
-const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Выбор героя v4» (полноэкранный).
 # ВАЖНО: билдер _build_character_select_v4 НЕ использует нормализованные доли HS4_* (выше,
