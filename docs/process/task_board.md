@@ -36,7 +36,7 @@ files read-only.
 
 | Jira | Задача | Lane | Prio | Статус |
 | --- | --- | --- | --- | --- |
-| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; ready_for_QA |
+| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; QA PASSED; Jira `Готово` |
 
 **Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
 Codex/Animator задача на исправление читаемости атаки топором Берсерка: во время

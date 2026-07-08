@@ -50,3 +50,15 @@ Verification:
 Docs/mirrors: report added; task mirror and local task board updated. Jira final
 comment/status and commit hashes are recorded after push in the Jira comments.
 Disk cleanup: none created.
+
+## QA
+
+QA PASSED 2026-07-08:
+- Jira moved to `Готово`.
+- Verified report coverage against `scripts/progression_data_weapons.gd`: 17/17
+  playable classes, 51/51 weapon configs, no extra or missing class/weapon rows.
+- `git diff --check` — PASS after whitespace cleanup.
+- QA fix commit: `0d2eee12` removed trailing spaces from report metadata lines.
+- Runtime smoke not rerun for the whitespace-only QA fix; the earlier sync gate
+  passed `tests/runtime_smoke_test.gd` before push.
+Disk cleanup: none created.
