@@ -2515,10 +2515,13 @@ func _show_atlas_screen() -> void:
 	var safe := MarginContainer.new()
 	safe.name = "AtlasSafeArea"
 	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Фидбек 2026-07-08: шапку чуть выше, футер чуть ниже (band рамы имеет тёмный
+	# внутренний отступ — 14% захода визуально остаются в пустой зоне), телу
+	# достаётся больше высоты под 2 колонки эмблем без скролла.
 	safe.add_theme_constant_override("margin_left", int(frame_margins.x))
-	safe.add_theme_constant_override("margin_top", int(frame_margins.y))
+	safe.add_theme_constant_override("margin_top", int(frame_margins.y * 0.86))
 	safe.add_theme_constant_override("margin_right", int(frame_margins.z))
-	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w))
+	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w * 0.86))
 	root.add_child(safe)
 
 	var layout := VBoxContainer.new()
@@ -2583,7 +2586,12 @@ func _show_atlas_screen() -> void:
 	var strip_rows := ceili(float(game.META_PROGRESSION.constellation_class_ids().size()) / 2.0)
 	var strip_sep := int(roundf(6.0 * s))
 	var vp_h: float = game.get_viewport().get_visible_rect().size.y
-	var medallion_px := roundf(clampf(vp_h * 0.55 / float(maxi(strip_rows, 1)) - float(strip_sep), 44.0, 112.0))
+	# Фидбек 2026-07-08: размер медальона от ФАКТИЧЕСКОЙ высоты тела (вьюпорт минус
+	# ужатые маргины рамы, шапка, футер, сепараторы) — на 1080p и 1440p все 9 рядов
+	# видимы без скролла; пол 44 — только страховка карликовых окон.
+	var atlas_body_h := vp_h - frame_margins.y * 0.86 - frame_margins.w * 0.86 \
+		- atlas_action_h * 2.0 - roundf(10.0 * s) * 2.0 - 8.0
+	var medallion_px := roundf(clampf(atlas_body_h / float(maxi(strip_rows, 1)) - float(strip_sep), 44.0, 112.0))
 	var strip := ScrollContainer.new()
 	strip.name = "AtlasClassStrip"
 	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2787,14 +2795,16 @@ func _show_atlas_screen() -> void:
 	panel_box.add_child(hidden_hint)
 	_atlas["panel_hidden_hint"] = hidden_hint
 
-	# --- Низ: «Респек — бесплатно» + легенда состояний ---
+	# --- Низ: «Сброс умений» (бесплатный респек — в тултипе) + легенда состояний ---
 	var footer := HBoxContainer.new()
 	footer.name = "AtlasFooter"
 	footer.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(footer)
-	var respec_button := _make_button("Респек — бесплатно")
+	# Фидбек 2026-07-08: «Сброс умений» на нативной плите 260 (без растяжки 330).
+	var respec_button := _make_button("Сброс умений")
 	respec_button.name = "AtlasRespecButton"
-	_set_action_button_size(respec_button, 330.0, atlas_action_h)
+	respec_button.tooltip_text = "Сбросить все купленные узлы — бесплатно."
+	_set_action_button_size(respec_button, 260.0, atlas_action_h)
 	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
 	footer.add_child(respec_button)
 	_atlas["respec_button"] = respec_button
@@ -3762,7 +3772,7 @@ func _atlas_apply_tab_state() -> void:
 		emblem_badge.visible = not on_guild
 	var respec_button := _atlas.get("respec_button") as Button
 	if respec_button != null and is_instance_valid(respec_button):
-		respec_button.text = "Респек Атласа — бесплатно" if on_guild else "Респек — бесплатно"
+		respec_button.text = "Сброс умений Атласа" if on_guild else "Сброс умений"
 
 
 func _atlas_buy_selected() -> void:

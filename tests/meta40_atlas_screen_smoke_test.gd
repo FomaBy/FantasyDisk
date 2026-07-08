@@ -101,8 +101,8 @@ func _test_open_atlas_default() -> void:
 		_fail("Атлас: шапка должна показывать звёздную пыль.")
 		return
 	var respec := main.find_child("AtlasRespecButton", true, false) as Button
-	if respec == null or not respec.text.contains("бесплатно"):
-		_fail("Атлас: внизу должна быть кнопка «Респек — бесплатно».")
+	if respec == null or not respec.text.contains("Сброс умений"):
+		_fail("Атлас: внизу должна быть кнопка «Сброс умений».")
 		return
 	if main.find_child("AtlasLegend", true, false) == null:
 		_fail("Атлас: внизу должна быть легенда состояний.")
