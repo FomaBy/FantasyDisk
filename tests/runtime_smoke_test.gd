@@ -6839,8 +6839,9 @@ func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
 	codex_button.pressed.emit()
 	await process_frame
 	var codex_back_button := back_main.find_child("CodexBackButton", true, false) as Button
-	# SCRUM-879: кнопка «Назад» кодекса — стандартная кит-кнопка шапки (180×atlas-h).
-	if not _assert_back_button_frame_safe(codex_back_button, "codex", 180.0, checked):
+	# SCRUM-881: кнопка «Назад» кодекса унифицирована с остальными экранами —
+	# 260×atlas-h, кит мапит на нативную плиту back_260x104.
+	if not _assert_back_button_frame_safe(codex_back_button, "codex", 260.0, checked):
 		return
 
 	_write_back_button_qa_dump(back_main, checked)
@@ -7076,6 +7077,28 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 	if detail_portrait.get_global_rect().size.x <= codex_center_object_stage.get_global_rect().size.x:
 		_fail("Expected SCRUM-850 right detail object stage to be wider than the center selected-object stage.")
+		return
+	# SCRUM-881 (директива юзера, суперсидит object-first пропорции SCRUM-850):
+	# досье ×2 — панель минимум в 1.8 раза шире компактной центральной сцены.
+	if codex_detail.get_global_rect().size.x < 1.8 * codex_center_object_stage.get_global_rect().size.x:
+		_fail("Expected SCRUM-881 dossier panel to be at least 1.8x wider than the compact center object stage, got %.0f vs %.0f." % [codex_detail.get_global_rect().size.x, codex_center_object_stage.get_global_rect().size.x])
+		return
+	# SCRUM-881: центральный объект КОМПАКТЕН — сцена не выше ~35% колонки
+	# (абсолютный пол 165px на малых вьюпортах, clamp-минимум сцены 150).
+	var codex_column_height := codex_content.get_global_rect().size.y
+	if codex_center_object_stage.get_global_rect().size.y > maxf(0.35 * codex_column_height, 165.0):
+		_fail("Expected SCRUM-881 compact center object stage (<= ~35 percent of column height), got %.0f of %.0f." % [codex_center_object_stage.get_global_rect().size.y, codex_column_height])
+		return
+	# SCRUM-881: сводка у объекта очень краткая — максимум 2 строки с эллипсисом.
+	var codex_summary_body := codex_main.find_child("CodexCenterSummaryBody", true, false) as Label
+	if codex_summary_body == null or codex_summary_body.max_lines_visible > 2 or codex_summary_body.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS:
+		_fail("Expected SCRUM-881 center summary body to stay very short (<= 2 lines with ellipsis).")
+		return
+	# SCRUM-881: глубокое досье — у выбранного (дефолтного) персонажа минимум
+	# 3 структурные секции с бронзовыми заголовками.
+	var dossier_headings := codex_main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
+	if dossier_headings.size() < 3:
+		_fail("Expected SCRUM-881 character dossier to expose at least 3 structured sections, got %d." % dossier_headings.size())
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
