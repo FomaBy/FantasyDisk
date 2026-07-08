@@ -5276,13 +5276,14 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.tabs_visible = false
 
 	# SCRUM-879: табы — кнопки глобального кита фиксированных px-размеров (не
-	# дизайн-сетка ×s), свитчер центрируется в слоте табов (150..234 design-px).
+	# дизайн-сетка ×s): свитчер центрируется в слоте табов (150..234 design-px),
+	# на малых вьюпортах прижимается вверх, чтобы не наехать на контент-панель.
 	var switcher := _make_settings_tab_switcher(tabs, s)
 	var switcher_size := switcher.custom_minimum_size
+	var switcher_y := roundf(SETTINGS_V6_TAB_TOP * s + (SETTINGS_V6_TAB_SIZE.y * s - switcher_size.y) * 0.5)
+	switcher_y = minf(switcher_y, roundf((SETTINGS_V6_CONTENT_RECT.position.y - 2.0) * s - switcher_size.y))
 	_apply_control_rect(switcher, Rect2(
-		Vector2(
-			roundf((SETTINGS_V6_DESIGN_SIZE.x * s - switcher_size.x) * 0.5),
-			roundf(SETTINGS_V6_TAB_TOP * s + (SETTINGS_V6_TAB_SIZE.y * s - switcher_size.y) * 0.5)),
+		Vector2(roundf((SETTINGS_V6_DESIGN_SIZE.x * s - switcher_size.x) * 0.5), switcher_y),
 		switcher_size))
 	modal.add_child(switcher)
 
@@ -5620,8 +5621,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	_add_settings_control_row(controls_box, "Вибрация", vibration_toggle, s)
 
-	# SCRUM-879: (420,72) — произвольный размер, кит даёт 9-slice minimal_metal.
-	var gp_reset := _settings_v6_make_action_button("Сбросить геймпад", "SettingsResetGamepadButton", 420.0, 72.0)
+	# SCRUM-879: кит-натив standard_420x104 (по size-маппингу): у minimal_metal
+	# высоты 72 глобальный seal-инвариант SCRUM-450 требует 104 — берём натив,
+	# единый с «Сбросить звук».
+	var gp_reset := _settings_v6_make_action_button("Сбросить геймпад", "SettingsResetGamepadButton", 420.0, 104.0)
 	gp_reset.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	gp_reset.pressed.connect(func() -> void:
 		_reset_gamepad_bindings_to_defaults()
@@ -5723,18 +5726,17 @@ func _return_from_settings() -> void:
 func _make_settings_tab_switcher(tabs: TabContainer, s: float) -> Control:
 	# SCRUM-879: табы настроек — обычные кнопки глобального кита, как вкладки
 	# «Атласа героев» (_show_atlas_screen), актив/неактив — модуляцией
-	# (_atlas_apply_tab_state), иконки v6 остаются. Размер держится в
-	# minimal_metal-зоне маппинга кита (ширина <240, высота <=66): произвольный
-	# размер законен только для 9-slice (Правило 1 — уникальные текстуры не
-	# растягиваем), а в слот табов модалки (84×s) кит-кнопки входят на всех
-	# вьюпортах матрицы.
+	# (_atlas_apply_tab_state), иконки v6 остаются. Размер ФИКСИРОВАННЫЙ
+	# (220,72) — нативный маппинг кита quit_220x72 (Правило 1: уникальные
+	# текстуры только 1:1); это единственный натив, чей ряд из трёх входит во
+	# внутреннюю ширину модалки даже на 1152×648 (гэп дожимается до 6px).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tab_gap := maxf(10.0, roundf(SETTINGS_V6_TAB_GAP * s))
 	var modal_inner_width := (SETTINGS_V6_DESIGN_SIZE.x - 144.0) * s
-	var tab_width := minf(236.0, floorf((modal_inner_width - 2.0 * tab_gap) / 3.0))
-	var tab_height := minf(66.0, floorf(SETTINGS_V6_TAB_SIZE.y * s))
+	var tab_width := 220.0
+	var tab_height := 72.0
+	var tab_gap := maxf(6.0, minf(roundf(SETTINGS_V6_TAB_GAP * s), floorf((modal_inner_width - tab_width * 3.0) / 2.0)))
 	switcher.custom_minimum_size = Vector2(tab_width * 3.0 + tab_gap * 2.0, tab_height)
 
 	var buttons: Array[Button] = []

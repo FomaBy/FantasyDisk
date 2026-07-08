@@ -52,8 +52,9 @@ const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 # SCRUM-879 (supersedes SCRUM-847 tab plates): табы настроек носят глобальный
-# кит (minimal_metal 9-slice), актив/неактив — модуляцией, как вкладки Атласа.
-const SETTINGS_TAB_KIT_PLATE_PREFIX := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
+# кит — нативную пластину quit_220x72 (220×72, все состояния), актив/неактив —
+# модуляцией, как вкладки Атласа.
+const SETTINGS_TAB_KIT_PLATE_PREFIX := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72"
 const SETTINGS_TAB_ACTIVE_TINT := Color(1.0, 0.94, 0.74)
 const SETTINGS_TAB_IDLE_TINT := Color(0.74, 0.76, 0.84, 0.92)
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
@@ -5604,17 +5605,17 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Settings v6: obsolete v3 switcher frame panel should be gone (tabs are standalone plates).")
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
-	# SCRUM-879: табы — кнопки глобального кита (minimal_metal 9-slice) в сетке
-	# 3×(w+gap) от слота модалки: gap=max(10, 20×s), h=min(66, 84×s),
-	# w=min(236, (внутр. ширина модалки − 2×gap)/3), s = ширина модалки / 1420.
+	# SCRUM-879: табы — кнопки глобального кита с НАТИВНОЙ пластиной quit_220x72:
+	# фикс (220,72), сетка 3×(220+gap), gap = max(6, min(20×s, дожим по
+	# внутренней ширине модалки)), s = ширина модалки / 1420.
 	var modal := main.find_child("SettingsV2Modal", true, false) as Control
 	if modal == null:
 		_fail("Expected SettingsV2Modal to exist for the settings tab grid check.")
 		return
 	var v6_scale := modal.get_global_rect().size.x / 1420.0
-	var tab_gap := maxf(10.0, roundf(20.0 * v6_scale))
-	var tab_height := minf(66.0, floorf(84.0 * v6_scale))
-	var tab_width := minf(236.0, floorf(((1420.0 - 144.0) * v6_scale - 2.0 * tab_gap) / 3.0))
+	var tab_width := 220.0
+	var tab_height := 72.0
+	var tab_gap := maxf(6.0, minf(roundf(20.0 * v6_scale), floorf(((1420.0 - 144.0) * v6_scale - tab_width * 3.0) / 2.0)))
 	if absf(switcher_rect.size.x - (tab_width * 3.0 + tab_gap * 2.0)) > 3.0 or absf(switcher_rect.size.y - tab_height) > 3.0:
 		_fail("Expected SettingsTabSwitcher to size from the SCRUM-879 kit grid, got %s." % str(switcher_rect.size))
 		return
