@@ -4027,5 +4027,10 @@
   "key": "SCRUM-893",
   "status": "Готово",
   "desc_hash": "e7b267f57f539bad070ca74eb2e26561"
+ },
+ "design_main_menu_logo_v2_task.md": {
+  "key": "SCRUM-978",
+  "status": "Готово",
+  "desc_hash": "47f8a1b12d030a90251d499cd187812e"
  }
 }
