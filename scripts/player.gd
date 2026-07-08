@@ -2600,7 +2600,14 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var base_max_summons := int(weapon.get_meta("base_max_summons"))
 		var scaled_max_summons := base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0))
 		if weapon.get("max_summons_cap") != null and int(weapon.get("max_summons_cap")) > 0:
-			scaled_max_summons = mini(scaled_max_summons, int(weapon.get("max_summons_cap")))
+			var summons_cap := int(weapon.get("max_summons_cap"))
+			# SCRUM-961 «Сценический усилитель»: потолок amp-деплоя выше (3→4);
+			# «Полевой чертеж»: +1 к капу deploy-устройств за каждые 6 Лидерства.
+			if str(weapon.get("attack_mode")) == "amp":
+				summons_cap += int(run_modifiers.get("amp_cap_bonus", 0.0))
+			if float(run_modifiers.get("blueprint_leadership_scaling", 0.0)) > 0.0 and bool(meta_context.get("is_device", false)):
+				summons_cap += int(floor(float(stats.get("leadership", 0.0)) / 6.0))
+			scaled_max_summons = mini(scaled_max_summons, summons_cap)
 		weapon.set("max_summons", scaled_max_summons)
 
 
