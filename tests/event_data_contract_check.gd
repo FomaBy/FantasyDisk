@@ -37,13 +37,56 @@ func _check_mods(branch: Dictionary, ctx: String) -> void:
 			_fail("unknown stat-id '%s' in %s" % [stat_id, ctx])
 
 
+# SCRUM-996: типы новых опциональных ключей уровня исхода (choice-корень /
+# success / failure / элемент random_outcomes / post_combat).
+func _check_outcome_extras(branch: Dictionary, ctx: String) -> void:
+	if branch.has("outcome_text") and (not (branch["outcome_text"] is String) or str(branch["outcome_text"]).strip_edges() == ""):
+		_fail("outcome_text must be a non-empty String in %s" % ctx)
+	if branch.has("damage_flat"):
+		var dmg = branch["damage_flat"]
+		if not ((dmg is int) or (dmg is float)) or float(dmg) <= 0.0:
+			_fail("damage_flat must be a positive number in %s" % ctx)
+	if branch.has("shop_after") and not (branch["shop_after"] is bool):
+		_fail("shop_after must be bool in %s" % ctx)
+	if branch.has("shop_discount"):
+		var discount = branch["shop_discount"]
+		if not ((discount is int) or (discount is float)) or float(discount) <= 0.0 or float(discount) > 0.9:
+			_fail("shop_discount must be in (0, 0.9] in %s" % ctx)
+
+
 func _scan_outcome(branch: Dictionary, ctx: String) -> void:
 	_check_mods(branch, ctx)
+	_check_outcome_extras(branch, ctx)
 	for sub_key in ["success", "failure", "post_combat"]:
 		if branch.has(sub_key):
 			_check_mods(branch.get(sub_key, {}), "%s.%s" % [ctx, sub_key])
+			_check_outcome_extras(branch.get(sub_key, {}), "%s.%s" % [ctx, sub_key])
 	for outcome in (branch.get("random_outcomes", []) as Array):
 		_scan_outcome(outcome, "%s.random_outcomes" % ctx)
+
+
+# SCRUM-996: hidden-выбор обязан честно раскрываться ПОСЛЕ выбора — каждый его
+# терминальный исход несёт outcome_text (корень выбора или каждая ветка/вариант).
+func _hidden_choice_reveals_honestly(choice: Dictionary) -> bool:
+	var root_text := str(choice.get("outcome_text", "")).strip_edges()
+	if root_text != "":
+		return true
+	var terminal_branches: Array = []
+	if choice.has("check"):
+		terminal_branches.append(choice.get("success", {}))
+		terminal_branches.append(choice.get("failure", {}))
+	elif choice.has("random_outcomes"):
+		for outcome in (choice.get("random_outcomes", []) as Array):
+			terminal_branches.append(outcome)
+	else:
+		return false  # без outcome_text в корне и без веток раскрывать нечем
+	for branch in terminal_branches:
+		# Ветка-бой раскрывается самим боем; остальным нужен текст.
+		if (branch as Dictionary).has("combat"):
+			continue
+		if str((branch as Dictionary).get("outcome_text", "")).strip_edges() == "":
+			return false
+	return true
 
 
 func _initialize() -> void:
@@ -65,6 +108,26 @@ func _initialize() -> void:
 		ids[event_id] = true
 		if str(event.get("title", "")) == "" or str(event.get("story", "")).length() < 40:
 			_fail("event %s missing title or story>=40" % event_id)
+		# SCRUM-996: event-level tags {acts: Array[int 1..3], biomes: Array[String]}.
+		if event.has("tags"):
+			var tags_value = event["tags"]
+			if not (tags_value is Dictionary):
+				_fail("tags must be a Dictionary in %s" % event_id)
+			else:
+				var acts_value = (tags_value as Dictionary).get("acts", [])
+				if not (acts_value is Array):
+					_fail("tags.acts must be an Array in %s" % event_id)
+				else:
+					for act in (acts_value as Array):
+						if not (act is int) or int(act) < 1 or int(act) > 3:
+							_fail("tags.acts entries must be int 1..3 in %s, got %s" % [event_id, str(act)])
+				var biomes_value = (tags_value as Dictionary).get("biomes", [])
+				if not (biomes_value is Array):
+					_fail("tags.biomes must be an Array in %s" % event_id)
+				else:
+					for biome in (biomes_value as Array):
+						if not (biome is String) or str(biome).strip_edges() == "":
+							_fail("tags.biomes entries must be non-empty String in %s" % event_id)
 		var choices: Array = event.get("choices", [])
 		if choices.size() < 2:
 			_fail("event %s has <2 choices" % event_id)
@@ -72,6 +135,13 @@ func _initialize() -> void:
 		for choice in choices:
 			var ctx := "%s/%s" % [event_id, str(choice.get("id", ""))]
 			_scan_outcome(choice, ctx)
+			# SCRUM-996: hidden/unknown_hint — типы и честность раскрытия.
+			if choice.has("hidden") and not (choice["hidden"] is bool):
+				_fail("hidden must be bool in %s" % ctx)
+			if choice.has("unknown_hint") and (not (choice["unknown_hint"] is String) or str(choice["unknown_hint"]).strip_edges() == ""):
+				_fail("unknown_hint must be a non-empty String in %s" % ctx)
+			if bool(choice.get("hidden", false)) and not _hidden_choice_reveals_honestly(choice):
+				_fail("hidden choice must carry outcome_text on every non-combat terminal outcome in %s" % ctx)
 			if choice.has("combat") or _nested_has(choice, "combat"):
 				combat_outcomes += 1
 			if choice.has("random_artifact") or choice.has("reward") or choice.has("money") or _nested_has(choice, "random_artifact"):

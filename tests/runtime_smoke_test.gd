@@ -2745,6 +2745,82 @@ func _test_random_event_data_and_outcomes(main_scene: PackedScene) -> void:
 	event_main.queue_free()
 	await process_frame
 
+	# SCRUM-996: reveal-шаг — check-выбор показывает «что произошло» (строку
+	# результата проверки), карточки прячутся, и только EventContinueButton
+	# завершает событие (advance + карта). Докликиваем reveal-кнопку.
+	var reveal_main := main_scene.instantiate()
+	root.add_child(reveal_main)
+	await process_frame
+	reveal_main.set("selected_character_id", "berserk")
+	reveal_main.set("selected_weapon_id", "sword")
+	reveal_main.set("route_stage", 0)
+	reveal_main.set("route_nodes", [
+		[
+			{"type": "event", "name": "Event 1: Reveal", "row": 0, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "battle", "name": "Battle 2: Reveal", "row": 1, "branch": 0, "next_branches": [0]},
+		],
+		[
+			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 2, "branch": 0},
+		],
+	])
+	var reveal_player := player_scene.instantiate()
+	root.add_child(reveal_player)
+	reveal_player.configure_character("berserk", "sword")
+	reveal_player.set("money", 500)
+	var reveal_stats: Dictionary = reveal_player.get("stats")
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		reveal_stats[stat_id] = 12
+	reveal_player.set("stats", reveal_stats)
+	reveal_main.combat._store_player_snapshot(reveal_player)
+	reveal_player.queue_free()
+	reveal_main.ui._show_event_screen({"name": "Тест reveal", "event_id": "training_dummies"})
+	await process_frame
+	var reveal_choice := reveal_main.find_child("EventChoiceButton0", true, false) as Button
+	if reveal_choice == null:
+		_fail("Expected the reveal-flow event screen to expose a choice card (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	reveal_choice.pressed.emit()
+	await process_frame
+	var reveal_continue := reveal_main.find_child("EventContinueButton", true, false) as Button
+	if reveal_continue == null:
+		_fail("Expected a check-based event choice to enter the reveal state with EventContinueButton (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	var reveal_story := reveal_main.find_child("EventStory", true, false) as Label
+	if reveal_story == null or not reveal_story.text.contains("Проверка"):
+		_fail("Expected the reveal story to include the check result line (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	var reveal_choice_row := reveal_main.find_child("EventChoiceRow", true, false) as CanvasItem
+	if reveal_choice_row == null or reveal_choice_row.visible:
+		_fail("Expected event choice cards to hide in the reveal state (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	var reveal_focus := reveal_main.get_viewport().gui_get_focus_owner()
+	if reveal_focus != reveal_continue:
+		_fail("Expected the reveal state to focus EventContinueButton for keyboard/gamepad (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	if int(reveal_main.get("route_stage")) != 0:
+		_fail("Expected the route to stay put until the reveal is confirmed (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	reveal_continue.pressed.emit()
+	await process_frame
+	if int(reveal_main.get("route_stage")) != 1 or reveal_main.find_child("RouteMapScreen", true, false) == null:
+		_fail("Expected confirming the reveal to advance the route back to the map (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	if not (reveal_main.get("current_event_definition") as Dictionary).is_empty():
+		_fail("Expected current_event_definition to clear after confirming the reveal (SCRUM-996).")
+		reveal_main.queue_free()
+		return
+	reveal_main.queue_free()
+	await process_frame
+
 
 func _choice_nested_outcome_has(choice: Dictionary, key: String) -> bool:
 	for branch_id in ["success", "failure", "post_combat"]:
