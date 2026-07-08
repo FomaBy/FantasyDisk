@@ -51,9 +51,30 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	await process_frame
 	await process_frame
 
-	var bg := main.find_child("HS4BlackBackground", true, false) as ColorRect
-	if bg == null or bg.color != Color.BLACK:
-		_fail("Expected Hero Select to use a pure black background at %s." % str(viewport_size))
+	# SCRUM-879: единый атлас-стиль — фон-зал героев вместо чёрной заливки.
+	var bg := main.find_child("UnifiedBackground_hero_select", true, false) as TextureRect
+	if bg == null or bg.texture == null:
+		_fail("Expected Hero Select to use the unified hero hall background at %s." % str(viewport_size))
+		return
+	if bg.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or bg.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
+		_fail("Expected unified Hero Select background to cover the viewport without axis stretch at %s." % str(viewport_size))
+		return
+	if main.find_child("HS4BlackBackground", true, false) != null:
+		_fail("Hero Select must not keep the legacy pure black backdrop at %s." % str(viewport_size))
+		return
+	var unified_frame := main.find_child("HeroSelectFrame", true, false) as Panel
+	if unified_frame == null:
+		_fail("Expected HeroSelectFrame hollow border overlay at %s." % str(viewport_size))
+		return
+	var unified_frame_style := unified_frame.get_theme_stylebox("panel") as StyleBoxTexture
+	if unified_frame_style == null or unified_frame_style.texture == null:
+		_fail("Expected HeroSelectFrame to use a StyleBoxTexture border at %s." % str(viewport_size))
+		return
+	if unified_frame_style.draw_center:
+		_fail("Expected HeroSelectFrame border to keep draw_center disabled at %s." % str(viewport_size))
+		return
+	if not unified_frame_style.texture.resource_path.ends_with("meta40/frame_border.png"):
+		_fail("Expected HeroSelectFrame to use the meta40 frame_border asset at %s, got %s." % [str(viewport_size), unified_frame_style.texture.resource_path])
 		return
 	if main.find_child("HS4Radar", true, false) != null or main.find_child("HS4RadarFrame", true, false) != null:
 		_fail("Hero Select must not render the old stat radar/windrose at %s." % str(viewport_size))
@@ -81,9 +102,23 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	if not portrait_frame_rect.grow(4.0).encloses(portrait_visible_rect):
 		_fail("Expected selected preview visible silhouette to stay inside clipped frame at %s, got visible %s frame %s." % [str(viewport_size), str(portrait_visible_rect), str(portrait_frame_rect)])
 		return
-	var preview_expected_bottom := portrait_frame_rect.end.y - maxf(6.0, roundf(portrait_frame_rect.size.y * 0.025))
+	# SCRUM-879: пьедестал-подиум под героем — аспект-бокс 676:148 у низа фрейма,
+	# герой floor-align на верхнюю площадку (верх бокса + 22% высоты).
+	var pedestal := main.find_child("HS4Pedestal", true, false) as TextureRect
+	if pedestal == null or pedestal.texture == null:
+		_fail("Expected HS4Pedestal dais under the hero portrait at %s." % str(viewport_size))
+		return
+	var pedestal_rect := pedestal.get_global_rect()
+	var pedestal_expected_ratio := 676.0 / 148.0
+	if pedestal_rect.size.y <= 0.0 or absf(pedestal_rect.size.x / pedestal_rect.size.y - pedestal_expected_ratio) > pedestal_expected_ratio * 0.02:
+		_fail("Expected HS4Pedestal box to keep the 676:148 dais aspect at %s, got %s." % [str(viewport_size), str(pedestal_rect.size)])
+		return
+	if not portrait_frame_rect.grow(2.0).encloses(pedestal_rect):
+		_fail("Expected HS4Pedestal to stay inside the portrait frame at %s, got %s in %s." % [str(viewport_size), str(pedestal_rect), str(portrait_frame_rect)])
+		return
+	var preview_expected_bottom := pedestal_rect.position.y + roundf(pedestal_rect.size.y * 0.22)
 	if absf(portrait_visible_rect.end.y - preview_expected_bottom) > 4.0:
-		_fail("Expected selected preview visible bottom alignment at %s; got %.2f vs %.2f." % [str(viewport_size), portrait_visible_rect.end.y, preview_expected_bottom])
+		_fail("Expected selected preview visible bottom to sit on the pedestal top platform at %s; got %.2f vs %.2f." % [str(viewport_size), portrait_visible_rect.end.y, preview_expected_bottom])
 		return
 
 	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
@@ -157,6 +192,27 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	for pair in [[portrait_rect, dossier_rect], [dossier_rect, asc_rect], [portrait_rect, carousel_rect], [asc_rect, carousel_rect]]:
 		if (pair[0] as Rect2).grow(-2.0).intersects((pair[1] as Rect2).grow(-2.0)):
 			_fail("Expected major Hero Select zones not to overlap at %s." % str(viewport_size))
+			return
+
+	# SCRUM-879: весь контент — строго в safe-зоне рамы (маргины 160px от базы
+	# 1536x1024, масштабированные к вьюпорту; допуск 2px).
+	var back_button := main.find_child("HS4BackButton", true, false) as Button
+	if back_button == null:
+		_fail("Expected HS4BackButton at %s." % str(viewport_size))
+		return
+	var safe_margin := Vector2(roundf(160.0 * float(viewport_size.x) / 1536.0), roundf(160.0 * float(viewport_size.y) / 1024.0))
+	var safe_rect := Rect2(safe_margin, Vector2(viewport_size) - safe_margin * 2.0).grow(2.0)
+	var safe_zone_entries := {
+		"HS4PortraitFrame": portrait_rect,
+		"HS4DossierFrame": dossier_rect,
+		"HS4AscensionFrame": asc_rect,
+		"HS4Carousel": carousel_rect,
+		"HS4BackButton": back_button.get_global_rect(),
+		"HS4ChooseButton": choose.get_global_rect(),
+	}
+	for zone_name in safe_zone_entries:
+		if not safe_rect.encloses(safe_zone_entries[zone_name] as Rect2):
+			_fail("Expected %s to stay inside the unified frame safe margins at %s, got %s vs safe %s." % [zone_name, str(viewport_size), str(safe_zone_entries[zone_name]), str(safe_rect)])
 			return
 
 	main.queue_free()
