@@ -30,13 +30,14 @@ Codex/backend documentation задача на review-friendly таблицу в�
 characters/classes и их оружия с отличительными механиками. Jira: `SCRUM-878` в
 active sprint; owner `backend/codex-character-weapon-mechanics-review-table`;
 locked paths: `docs/design/reports/character_weapon_mechanics_review_table.md`,
+`docs/design/reports/character_weapon_mechanics_review_table.xlsx`,
 `docs/tasks/codex_backend_character_weapon_mechanics_review_table_task.md`,
 `docs/process/jira_sync_map.json`, `docs/process/task_board.md`. Runtime/gameplay
 files read-only.
 
 | Jira | Задача | Lane | Prio | Статус |
 | --- | --- | --- | --- | --- |
-| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; QA PASSED; Jira `Готово` |
+| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; Excel follow-up ready for QA; Jira `Контроль качества` |
 
 **Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
 Codex/Animator задача на исправление читаемости атаки топором Берсерка: во время
