@@ -7096,7 +7096,7 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id)
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
 	var reward_cards: Array[Button] = []
 	for reward in choices:
 		var reward_data: Dictionary = reward
@@ -7197,7 +7197,7 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 	rewards_row.add_theme_constant_override("separation", 22)
 	box.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id)
+	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
 	var reward_cards: Array[Button] = []
 	for reward in choices:
 		var reward_data: Dictionary = reward
@@ -8956,7 +8956,7 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 			"heal_percent": outcome.get("heal_percent", 0.0),
 		})
 	if bool(outcome.get("random_artifact", false)):
-		var artifacts := _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id).filter(func(reward: Dictionary) -> bool:
+		var artifacts := _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()).filter(func(reward: Dictionary) -> bool:
 			return str(reward.get("kind", "")) == "artifact"
 		), 1)
 		if not artifacts.is_empty():
@@ -8976,7 +8976,29 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 
 
 func _random_rewards(count: int) -> Array:
-	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id), count)
+	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()), count)
+
+
+# SCRUM-961: аргументы классового гейта артефактов (artifact_system_matrix §1.4)
+# для всех сэмплеров. Возвышение — МЕТОВОЕ (макс. достигнутый уровень класса,
+# main.ascension_level_for), не выбранный на забег: прогресс-награда класса не
+# должна пропадать при игре на низкой сложности.
+func _run_ascension_level() -> int:
+	return game.ascension_level_for(game.selected_character_id)
+
+
+# SCRUM-961 (§5): активные cross-class слоты «Украденного герба» текущего забега.
+# Вне боя игрока нет — Array живёт в run_player_snapshot.run_modifiers.
+func _run_cross_class_artifact_ids() -> Array:
+	var modifiers := {}
+	if game.current_player != null and is_instance_valid(game.current_player):
+		var live_raw = game.current_player.get("run_modifiers")
+		if live_raw is Dictionary:
+			modifiers = live_raw
+	else:
+		modifiers = game.run_player_snapshot.get("run_modifiers", {}) as Dictionary
+	var ids = modifiers.get("cross_class_artifact_ids", [])
+	return (ids as Array).duplicate() if ids is Array else []
 
 
 func _weighted_sample(pool: Array, count: int) -> Array:
@@ -9029,7 +9051,7 @@ func _random_level_up_rewards(count: int) -> Array:
 
 func _random_shop_items(count: int) -> Array:
 	var scaling_stage: int = game.route_scaling_stage()
-	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id), count)
+	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -9049,7 +9071,7 @@ func _random_shop_items(count: int) -> Array:
 				has_rare = true
 				break
 		if not has_rare:
-			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id) as Array).filter(
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()) as Array).filter(
 				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
 			if not rares.is_empty():
 				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)
