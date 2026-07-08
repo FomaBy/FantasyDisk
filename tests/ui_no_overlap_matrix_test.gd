@@ -69,8 +69,7 @@ func _initialize() -> void:
 			"RebindConflictRetryButton", "RebindConflictBackButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "codex", Callable(self, "_open_codex"), [
-			"CodexBackButton", "CodexTabs", "CodexCenterObjectStage",
-			"CodexCenterSummaryPanel", "CodexCenterListHost", "CodexDetailPanel",
+			"CodexBackButton", "CodexTabs", "CodexCenterListHost", "CodexDetailPanel",
 		], dump_lines, errors, false)
 		# SCRUM-827: экран дерева заменён «Атласом героев» (шапка-валюты/вкладки,
 		# лента классов, холст созвездия, панель узла, низ с респеком и легендой).
@@ -724,46 +723,60 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if tab_button == null or not _stylebox_texture_path(tab_button.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
 				return "%s: expected CodexTab_characters to use the global codex_tab kit button." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control
-			var center_stage := main.find_child("CodexCenterObjectStage", true, false) as Control
-			var center_texture := main.find_child("CodexCenterObjectTexture", true, false) as TextureRect
-			var center_summary := main.find_child("CodexCenterSummaryPanel", true, false) as Control
 			var center_list := main.find_child("CodexCenterListHost", true, false) as Control
 			var detail_panel := main.find_child("CodexDetailPanel", true, false) as Control
 			var detail_portrait := main.find_child("CodexDetailPortraitSlot", true, false) as Control
 			var detail_texture := main.find_child("CodexDetailPortraitTexture", true, false) as TextureRect
 			var detail_chips := main.find_child("CodexDetailChipRow", true, false) as Control
 			var detail_text := main.find_child("CodexDetailParchmentInset", true, false) as Control
-			for required in [center_panel, center_stage, center_texture, center_summary, center_list, detail_panel, detail_portrait, detail_texture, detail_chips, detail_text]:
+			for required in [center_panel, center_list, detail_panel, detail_portrait, detail_texture, detail_chips, detail_text]:
 				var required_control := required as Control
 				if required_control == null or not required_control.get_global_rect().has_area():
 					var required_name := str(required_control.name) if required_control != null else "<missing>"
-					return "%s: expected SCRUM-850 Codex object-first zone %s to be visible." % [context, required_name]
+					return "%s: expected SCRUM-884 Codex list/dossier zone %s to be visible." % [context, required_name]
+			# SCRUM-884 (фидбек юзера): центральный предпросмотр упразднён — в центре
+			# только список карточек, арт и полное описание живут в правом досье.
+			for absent_name in ["CodexCenterOverviewRow", "CodexCenterObjectStage", "CodexCenterObjectTexture", "CodexCenterSummaryPanel", "CodexCenterSummaryBody"]:
+				if main.find_child(str(absent_name), true, false) != null:
+					return "%s: expected SCRUM-884 codex center preview node %s to be removed." % [context, str(absent_name)]
 			var center_rect := center_panel.get_global_rect().grow(1.0)
-			for child in [center_stage, center_summary, center_list]:
-				var child_control := child as Control
-				if not center_rect.encloses(child_control.get_global_rect()):
-					return "%s: expected %s to stay inside CodexContent safe panel." % [context, str(child_control.name)]
+			if not center_rect.encloses(center_list.get_global_rect()):
+				return "%s: expected CodexCenterListHost to stay inside CodexContent safe panel." % context
+			# SCRUM-884: освобождённая высота уходит списку — лента занимает >= 90%
+			# внутренней (за content-margins чипа) зоны центральной колонки.
+			var center_style := (center_panel as PanelContainer).get_theme_stylebox("panel")
+			var center_inner_height := center_panel.get_global_rect().size.y
+			if center_style != null:
+				center_inner_height -= center_style.get_content_margin(SIDE_TOP) + center_style.get_content_margin(SIDE_BOTTOM)
+			if center_list.get_global_rect().size.y < 0.9 * center_inner_height:
+				return "%s: expected SCRUM-884 CodexCenterListHost to fill >= 90 percent of the CodexContent inner zone, got %.0f of %.0f." % [context, center_list.get_global_rect().size.y, center_inner_height]
 			var detail_rect := detail_panel.get_global_rect().grow(1.0)
 			for child in [detail_portrait, detail_chips, detail_text]:
 				var child_control := child as Control
 				if not detail_rect.encloses(child_control.get_global_rect()):
 					return "%s: expected %s to stay inside CodexDetailPanel safe panel." % [context, str(child_control.name)]
-			if center_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED or detail_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
-				return "%s: expected SCRUM-850 Codex object art to use contained centered scaling." % context
-			if detail_portrait.get_global_rect().size.x <= center_stage.get_global_rect().size.x:
-				return "%s: expected SCRUM-850 right detail object stage to be wider than the center selected-object stage." % context
-			# SCRUM-881 (директива юзера, суперсидит object-first пропорции SCRUM-850):
-			# компактный центральный объект + досье ×2 по ширине.
-			if detail_panel.get_global_rect().size.x < 1.8 * center_stage.get_global_rect().size.x:
-				return "%s: expected SCRUM-881 dossier panel to be at least 1.8x wider than the compact center stage, got %.0f vs %.0f." % [context, detail_panel.get_global_rect().size.x, center_stage.get_global_rect().size.x]
-			if center_stage.get_global_rect().size.y > maxf(0.35 * center_panel.get_global_rect().size.y, 165.0):
-				return "%s: expected SCRUM-881 compact center object stage (<= ~35 percent of column height / 165px floor), got %.0f of %.0f." % [context, center_stage.get_global_rect().size.y, center_panel.get_global_rect().size.y]
-			var center_summary_body := main.find_child("CodexCenterSummaryBody", true, false) as Label
-			if center_summary_body == null or center_summary_body.max_lines_visible > 2 or center_summary_body.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS:
-				return "%s: expected SCRUM-881 center summary body to stay very short (<= 2 lines with ellipsis)." % context
+			if detail_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+				return "%s: expected Codex dossier object art to use contained centered scaling." % context
 			var dossier_headings := main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
 			if dossier_headings.size() < 3:
 				return "%s: expected SCRUM-881 structured dossier sections (>= 3) for the default entry, got %d." % [context, dossier_headings.size()]
+			# SCRUM-884: глоссарий — обычный раздел со списком карточек-рядов;
+			# всплывающие подсказки терминов упразднены.
+			var glossary_tab := main.find_child("CodexTab_glossary", true, false) as Button
+			if glossary_tab == null:
+				return "%s: expected CodexTab_glossary section tab." % context
+			glossary_tab.pressed.emit()
+			var glossary_list := main.find_child("CodexSectionList_glossary", true, false) as VBoxContainer
+			if glossary_list == null:
+				return "%s: expected SCRUM-884 glossary section to build a plain entry list." % [context]
+			var glossary_card_count := 0
+			for glossary_child in glossary_list.get_children():
+				if glossary_child is Button:
+					glossary_card_count += 1
+			if glossary_card_count < 5:
+				return "%s: expected SCRUM-884 glossary to list >= 5 entry card rows, got %d." % [context, glossary_card_count]
+			if main.find_child("GlossaryTooltipPanel", true, false) != null:
+				return "%s: expected SCRUM-884 glossary tooltip popups to be removed." % context
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
