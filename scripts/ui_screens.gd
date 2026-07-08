@@ -512,6 +512,7 @@ func _show_main_menu() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.shop_reentry_pending = false
 	game.shop_reentry_route_stage = -1
@@ -2087,6 +2088,7 @@ func _show_character_select() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.run_used_shop = false
 	game.shop_reentry_pending = false
 	game.shop_reentry_route_stage = -1
@@ -6165,6 +6167,7 @@ func _quit_current_run() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game.run_used_shop = false
@@ -6192,6 +6195,7 @@ func _end_current_run_by_player() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game._clear_world()
@@ -7983,7 +7987,15 @@ func _show_shop_screen() -> void:
 	skip_button.offset_bottom = -58.0
 	_set_action_button_size(skip_button, 360.0)
 	var leave_shop := func() -> void:
-		game.route._return_to_map_after_shop_visit()
+		# SCRUM-996: событийный магазин (shop_after) продолжает событийный путь
+		# (advance/пост-боевой возврат с автосейвом); обычный узел-магазин —
+		# прежний выход с возможностью повторного входа на узел.
+		if game.event_shop_exit_action.is_valid():
+			var exit_action: Callable = game.event_shop_exit_action
+			game.event_shop_exit_action = Callable()
+			exit_action.call()
+		else:
+			game.route._return_to_map_after_shop_visit()
 	skip_button.pressed.connect(leave_shop)
 	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
@@ -8466,7 +8478,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		# / старт боя), поэтому непустое значение здесь = тот же незавершённый узел-событие.
 		event_definition = game.current_event_definition.duplicate(true)
 	if event_definition.is_empty():
-		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng)
+		# SCRUM-996: контекст отбора — act-теги нового пака (SCRUM-995) фильтруются
+		# по текущему акту; события без тегов (весь текущий пул) допустимы всюду.
+		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng, {"act": int(game.current_act)})
 	var event_id := str(event_definition.get("id", ""))
 	if event_id != "" and not game.used_event_ids.has(event_id):
 		game.used_event_ids.append(event_id)
@@ -8513,10 +8527,23 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		button.pressed.connect(func() -> void:
 			if not _event_choice_is_affordable(event_choice):
 				return
-			var starts_combat := _apply_event_choice(event_choice)
-			if not starts_combat:
+			var resolution := _apply_event_choice_resolved(event_choice)
+			if bool(resolution.get("starts_combat", false)):
+				return  # бой стартовал, экран уже сменён; reveal не показывается — исход боя = сам бой
+			var outcome: Dictionary = resolution.get("outcome", {})
+			if not bool(resolution.get("applied", false)):
+				# Гонка оплаты (spend_money не прошёл несмотря на предпроверку) —
+				# прежняя семантика: событие завершается без исхода и без магазина.
 				game.current_event_definition.clear()
 				game.route._advance_route_after_noncombat()
+				return
+			# SCRUM-996: исходы с outcome_text / hidden-выбора / check-проверки показывают
+			# reveal-шаг («что произошло» + кнопка продолжения); остальные — прежний
+			# мгновенный переход на карту.
+			if _event_outcome_needs_reveal(event_choice, outcome):
+				_show_event_outcome_reveal(box, outcome)
+			else:
+				_finish_event_and_continue(outcome)
 		)
 		index += 1
 	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите back_260x104, 260×action-height.
@@ -8606,6 +8633,7 @@ func _show_victory_screen() -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.event_shop_exit_action = Callable()  # SCRUM-996
 		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
@@ -8637,6 +8665,7 @@ func _show_death_screen(reason := "") -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.event_shop_exit_action = Callable()  # SCRUM-996
 		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
@@ -8847,11 +8876,24 @@ func _random_event_choices() -> Array:
 	return choices
 
 
+# SCRUM-996: дефолт «загадочного» описания hidden-выбора без unknown_hint.
+const EVENT_HIDDEN_CHOICE_FALLBACK_HINT := "Исход неизвестен…"
+
+
 func _event_choice_description_text(event_choice: Dictionary) -> String:
+	# SCRUM-996: скрытый выбор не раскрывает исход — вместо описания показываем
+	# «загадочный» hint (unknown_hint или дефолт), без «Риск:»-префикса.
+	if bool(event_choice.get("hidden", false)):
+		var hint := str(event_choice.get("unknown_hint", "")).strip_edges()
+		return hint if hint != "" else EVENT_HIDDEN_CHOICE_FALLBACK_HINT
 	return _event_choice_risk_description(str(event_choice.get("description", "")), bool(event_choice.get("risk", false)))
 
 
 func _event_choice_action_text(event_choice: Dictionary) -> String:
+	# SCRUM-996: hidden-карточка зовёт «Рискнуть» (цену, если она есть, обязан
+	# упоминать unknown_hint — см. контракт схемы в event_data.gd).
+	if bool(event_choice.get("hidden", false)):
+		return "Рискнуть"
 	var cost := _event_choice_scaled_cost(event_choice)
 	if cost > 0:
 		return "%d зол." % cost
@@ -8878,7 +8920,18 @@ func _event_choice_risk_description(description: String, is_risk: bool) -> Strin
 	return "Риск: %s" % text
 
 
+# Обратная совместимость (rest-экран, dev-фасад main._apply_event_choice, старые
+# тесты): bool = «стартовал бой». Полная резолюция — _apply_event_choice_resolved.
 func _apply_event_choice(event_choice: Dictionary) -> bool:
+	return bool(_apply_event_choice_resolved(event_choice).get("starts_combat", false))
+
+
+# SCRUM-996: применяет выбор события и возвращает полную резолюцию для reveal-шага:
+# {"applied": bool — исход применён (false = не прошла оплата cost_money),
+#  "starts_combat": bool — стартовал бой (экран уже сменён),
+#  "outcome": Dictionary — развёрнутый исход (random_outcomes/check уже слиты,
+#   check_passed проставлен) — источник outcome_text/shop_after для reveal}.
+func _apply_event_choice_resolved(event_choice: Dictionary) -> Dictionary:
 	var temp_player = game.player_scene.instantiate()
 	game.add_child(temp_player)
 	if game.run_player_snapshot.is_empty():
@@ -8889,7 +8942,7 @@ func _apply_event_choice(event_choice: Dictionary) -> bool:
 	var outcome := _resolve_event_choice_outcome(event_choice, temp_player)
 	if not _apply_event_outcome_to_player(outcome, temp_player):
 		temp_player.queue_free()
-		return false
+		return {"applied": false, "starts_combat": false, "outcome": outcome}
 	var combat_payload: Dictionary = outcome.get("combat", {})
 
 	game.combat._store_player_snapshot(temp_player)
@@ -8902,8 +8955,8 @@ func _apply_event_choice(event_choice: Dictionary) -> bool:
 		game.current_event_definition.clear()
 		var combat_type := str(combat_payload.get("type", "battle"))
 		game.combat._start_combat(false, "elite" if combat_type == "elite" else "battle")
-		return true
-	return false
+		return {"applied": true, "starts_combat": true, "outcome": outcome}
+	return {"applied": true, "starts_combat": false, "outcome": outcome}
 
 
 func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) -> Dictionary:
@@ -8972,7 +9025,118 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 	if outcome.has("health_percent_cost"):
 		var cost := float(temp_player.get("max_health")) * float(outcome["health_percent_cost"])
 		temp_player.set("health", max(1.0, float(temp_player.get("health")) - cost))
+	if outcome.has("damage_flat"):
+		# SCRUM-996: прямой урон события; как и health_percent_cost — не летален
+		# (пол 1 HP). Не путать с mods.damage_flat (бонус урона атак игрока).
+		var flat_damage := maxf(0.0, float(outcome["damage_flat"]))
+		temp_player.set("health", max(1.0, float(temp_player.get("health")) - flat_damage))
 	return true
+
+
+# SCRUM-996: исходу нужен reveal-шаг, если есть текст «что произошло», выбор был
+# скрытым или была check-проверка — игрок обязан увидеть результат до карты.
+# Исходы-бои сюда не попадают (starts_combat обрывает обработчик раньше).
+func _event_outcome_needs_reveal(event_choice: Dictionary, outcome: Dictionary) -> bool:
+	if bool(event_choice.get("hidden", false)):
+		return true
+	if str(outcome.get("outcome_text", "")).strip_edges() != "":
+		return true
+	return outcome.has("check_passed")
+
+
+# SCRUM-996: текст раскрытия исхода: outcome_text + строка результата проверки
+# («Проверка Сила 7 — пройдена/провалена»). Для старых событий без outcome_text
+# остаётся хотя бы строка проверки; совсем пустой reveal получает нейтральный текст.
+func _event_outcome_reveal_text(outcome: Dictionary) -> String:
+	var lines: Array[String] = []
+	var outcome_text := str(outcome.get("outcome_text", "")).strip_edges()
+	if outcome_text != "":
+		lines.append(outcome_text)
+	if outcome.has("check_passed"):
+		var check: Dictionary = outcome.get("check", {})
+		var stat_id := str(check.get("stat", ""))
+		var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		lines.append("Проверка %s %d — %s." % [stat_name, int(check.get("difficulty", 0)), "пройдена" if bool(outcome.get("check_passed", false)) else "провалена"])
+	if lines.is_empty():
+		lines.append("Выбор сделан — последствия уже с тобой.")
+	return "\n".join(lines)
+
+
+# SCRUM-996: reveal-состояние экрана события — story-текст заменяется текстом
+# исхода, карточки выбора и «Назад» прячутся, остаётся одна кнопка продолжения
+# EventContinueButton («В путь»). Только она завершает событие (clear + advance,
+# либо событийный магазин при shop_after). Никакого визуального редизайна:
+# те же панель/кнопки (визуальный слой — SCRUM-997).
+func _show_event_outcome_reveal(box: VBoxContainer, outcome: Dictionary) -> void:
+	if box == null or not is_instance_valid(box):
+		return
+	var story_label := box.find_child("EventStory", false, false) as Label
+	if story_label != null:
+		story_label.text = _event_outcome_reveal_text(outcome)
+	var choices_row := box.find_child("EventChoiceRow", false, false) as CanvasItem
+	if choices_row != null:
+		choices_row.visible = false
+	var back_button := box.find_child("EventBackButton", false, false) as Button
+	if back_button != null:
+		back_button.visible = false
+	var continue_button := _make_button("В путь")
+	continue_button.name = "EventContinueButton"
+	continue_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_set_action_button_size(continue_button, 260.0, _atlas_action_button_height())
+	continue_button.tooltip_text = "Принять исход и продолжить маршрут."
+	continue_button.pressed.connect(func() -> void:
+		_finish_event_and_continue(outcome)
+	)
+	box.add_child(continue_button)
+	# Фокус-цепь SCRUM-477: в reveal-состоянии единственная цель — кнопка
+	# продолжения; замыкаем её на себя, чтобы стрелки/стик не роняли фокус.
+	continue_button.focus_neighbor_left = continue_button.get_path()
+	continue_button.focus_neighbor_right = continue_button.get_path()
+	continue_button.focus_neighbor_top = continue_button.get_path()
+	continue_button.focus_neighbor_bottom = continue_button.get_path()
+	continue_button.grab_focus()
+	# Исход уже применён к снапшоту — меню-HUD (HP/золото) показывает честные цифры.
+	_update_hud()
+
+
+# SCRUM-996: единая точка завершения события без боя. shop_after открывает
+# событийный магазин, выход из которого ведёт к штатному advance маршрута
+# (route_stage+1 + автосейв) вместо обычного shop-узлового возврата на карту.
+func _finish_event_and_continue(outcome: Dictionary) -> void:
+	game.current_event_definition.clear()
+	if bool(outcome.get("shop_after", false)):
+		_open_event_shop(Callable(game.route, "_advance_route_after_noncombat"), float(outcome.get("shop_discount", 0.0)))
+		return
+	game.route._advance_route_after_noncombat()
+
+
+# SCRUM-996: верхняя граница событийной скидки — цены не бывают ниже 10% базы.
+const EVENT_SHOP_DISCOUNT_MAX := 0.9
+
+
+# SCRUM-996: магазин из событийного пути (shop_after исхода события или
+# post_combat победы событийного боя). Сток генерируется заново под этот визит
+# (узел — не shop, старый сток был очищен при входе на узел), опциональная
+# скидка применяется к ценам один раз (сток и цены живут в автосейв-полях,
+# повторный вход через level-up FAB их не пересчитывает). exit_action
+# подменяет штатный выход магазина и вызывается один раз при выходе.
+func _open_event_shop(exit_action: Callable, discount := 0.0) -> void:
+	_clear_current_shop_stock()
+	_ensure_shop_stock_for_current_node()
+	_apply_event_shop_discount(discount)
+	game.event_shop_exit_action = exit_action
+	_show_shop_screen()
+
+
+# SCRUM-996: скидка событийного магазина — умножает цены текущего стока,
+# clamp 0..EVENT_SHOP_DISCOUNT_MAX, пол цены 1 золото.
+func _apply_event_shop_discount(discount: float) -> void:
+	var clamped := clampf(discount, 0.0, EVENT_SHOP_DISCOUNT_MAX)
+	if clamped <= 0.0:
+		return
+	for item in game.current_shop_items:
+		if item is Dictionary and (item as Dictionary).has("cost"):
+			item["cost"] = maxi(1, int(round(float((item as Dictionary).get("cost", 0)) * (1.0 - clamped))))
 
 
 func _random_rewards(count: int) -> Array:

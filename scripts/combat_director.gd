@@ -322,16 +322,14 @@ func _end_combat(victory: bool) -> void:
 			# Новый бой = новое окно докачки: набор и rerolls легально сбрасываются.
 			game.attribute_offer = []
 			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
-			var return_to_route_map := func() -> void:
-				game.save_run_autosave("combat_node")
-				game.route._show_battle_map()
+			var proceed_to_map := _combat_victory_map_continuation(event_combat)
 			game.ui._show_victory_banner(func() -> void:
 				if grant_elite_reward:
 					game.ui._show_elite_artifact_reward(func() -> void:
-						game.ui._show_attribute_shop(return_to_route_map)
+						game.ui._show_attribute_shop(proceed_to_map)
 					)
 				else:
-					game.ui._show_attribute_shop(return_to_route_map)
+					game.ui._show_attribute_shop(proceed_to_map)
 			)
 	else:
 		# SCRUM-502: смерть — снять метрики-финалы из обновлённого снапшота + причину исхода.
@@ -1160,6 +1158,27 @@ func _grant_combat_completion_rewards(event_combat := {}) -> void:
 	if not event_combat.is_empty() and event_combat.has("post_combat"):
 		game.current_player.apply_reward(event_combat["post_combat"])
 		game.record_codex_artifact_discovery(event_combat["post_combat"])
+
+
+# SCRUM-996: продолжение победного флоу обычного/элитного боя после докачки
+# атрибутов. Штатно — автосейв + карта. Если событийный бой нёс
+# post_combat.shop_after — сначала событийный магазин (опц. shop_discount),
+# выход из которого ведёт к тому же штатному возврату. route_stage уже сдвинут
+# в _end_combat, поэтому advance здесь НЕ повторяется.
+func _combat_victory_map_continuation(event_combat: Dictionary) -> Callable:
+	var return_to_route_map := func() -> void:
+		game.save_run_autosave("combat_node")
+		game.route._show_battle_map()
+	if event_combat.is_empty():
+		return return_to_route_map
+	var post_combat_raw = event_combat.get("post_combat", {})
+	if not (post_combat_raw is Dictionary):
+		return return_to_route_map
+	var post_combat := post_combat_raw as Dictionary
+	if not bool(post_combat.get("shop_after", false)):
+		return return_to_route_map
+	return func() -> void:
+		game.ui._open_event_shop(return_to_route_map, float(post_combat.get("shop_discount", 0.0)))
 
 
 func _snapshot_player_for_menu() -> Node:

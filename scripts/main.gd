@@ -428,6 +428,14 @@ var route_selected_indices := []
 var used_event_ids := []
 var current_event_definition := {}
 var pending_event_combat := {}
+# SCRUM-996: отложенный выход из «событийного» магазина (shop_after у исхода
+# события или post_combat победы событийного боя). Непустой Callable подменяет
+# штатный выход магазина (_return_to_map_after_shop_visit) на продолжение
+# событийного пути (advance/возврат с автосейвом). Живёт только в памяти и НЕ
+# сохраняется: выход из игры до завершения пути = откат к последнему автосейву
+# (норма, см. docs/design/systems/persistence.md), поэтому рестор/новый забег
+# обязаны сбрасывать поле.
+var event_shop_exit_action := Callable()
 var level_up_return_to_map := false
 # SCRUM-530: level-up, открытый с узла-события, должен вернуть на ТО ЖЕ событие, а не на
 # карту (иначе для случайного события происходит «тихий рерол» исходного набора опций).
@@ -794,6 +802,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	used_event_ids = _autosave_array(state.get("used_event_ids", []))
 	current_event_definition = _autosave_dictionary(state.get("current_event_definition", {}))
 	pending_event_combat.clear()
+	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не переживает рестор
 	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
 	current_shop_items = _autosave_array(state.get("current_shop_items", []))
 	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
@@ -888,6 +897,7 @@ func advance_to_next_act() -> bool:
 	secret_boss_active = false
 	current_node_seed = 0
 	pending_event_combat.clear()
+	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не тянется между актами
 	level_up_return_to_map = false
 	level_up_return_to_event = false
 	shop_reentry_pending = false
