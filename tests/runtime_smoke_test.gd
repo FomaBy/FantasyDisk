@@ -40,7 +40,6 @@ const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_f
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
-const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
@@ -1376,8 +1375,10 @@ func _test_glossary_terms(main: Node) -> void:
 	button.position = Vector2(24, 120)
 	(main.get("ui_layer") as CanvasLayer).add_child(button)
 	await process_frame
-	if button.find_child("GlossaryDottedUnderline", true, false) == null:
-		_fail("Expected glossary terms to expose a dotted underline marker.")
+	# SCRUM-879: термин — «кожаный ряд» единого чип-языка (StyleBoxFlat),
+	# пунктирная flat-ссылка упразднена вместе с китом codex_pl.
+	if not (button.get_theme_stylebox("normal") is StyleBoxFlat):
+		_fail("Expected glossary terms to use the unified leather row StyleBoxFlat.")
 		return
 	if not button.tooltip_text.contains("Критический удар"):
 		_fail("Expected normal-screen glossary term to expose hover tooltip text.")
@@ -1391,8 +1392,9 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		_fail("Expected glossary tooltip to ignore mouse input and avoid hover flicker.")
 		return
-	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != GLOSSARY_TOOLTIP_TEXTURE_2K:
-		_fail("Expected glossary tooltip to use the SCRUM-486 @2K gt_panel frame texture.")
+	var glossary_tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxFlat
+	if glossary_tooltip_style == null or glossary_tooltip_style.bg_color.a < 0.9 or glossary_tooltip_style.bg_color.v > 0.35:
+		_fail("Expected glossary tooltip to use the near-opaque dark atlas chip StyleBoxFlat.")
 		return
 	if tooltip.get_global_rect().intersects(button.get_global_rect()):
 		_fail("Expected glossary tooltip to keep a stable offset and avoid overlapping its anchor.")
