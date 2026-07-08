@@ -360,63 +360,90 @@ weapon-числа), а не здесь, чтобы не пересекать dam
   очищает его stock/purchased state.
 - Shop-only icons: `assets/sprites/ui/icons/shop/shop_<shop_item_id>.png`.
 
-## Random Events EV (SCRUM-494)
+## Random Events EV (SCRUM-995)
 
-Случайные события (`scripts/event_data.gd`, применение в
-`ui_screens._apply_event_choice/_resolve_event_choice_outcome`,
+Стартовый пак — ровно **12 полированных событий × 3 выбора**
+(`scripts/event_data.gd`; применение — `ui_screens._apply_event_choice_resolved/`
+`_resolve_event_choice_outcome`, reveal-шаг и event-магазин — SCRUM-996,
 наградные множители боя — `combat_director._grant_combat_completion_rewards`).
-EV-ребаланс свёл каждую опцию к `EV = P(успех) × награда − стоимость/штраф`.
+id закреплены (фоны SCRUM-998, UI SCRUM-997); `sudden_fork`/`sacrifice_altar`
+дополнительно штампуются узлами hazard/altar (`route_map_screen.gd`). Легаси-пул
+из 29 событий удалён и не выбирается.
 
-**Принцип:** рискованные/платные опции дают заметно больший апсайд (статы,
-артефакты, run-long моды), безопасные — скромную гарантию (мелкое золото/хил).
-Награды-статы/артефакты/моды предпочтительны для риск-опций, т.к. их
-gold-equivalent растёт вместе с экономикой; плоское `money` со стадией не
-масштабируется (а `cost_money` — масштабируется через `stage_scaled_cost`),
-поэтому крупное плоское золото на риск-опции не вешаем.
+**Принцип:** у каждого события 3 различимых интента (безопасный / рискованный /
+умный-чековый либо моральная альтернатива). EV-инвариант «риск ≥ безопасно» в
+золото-эквиваленте держит `tests/event_risk_reward_ev_test.gd`; апсайд-инвариант
+«рисковое/платное не слабее бесплатного» — `tests/event_data_smoke_test.gd`.
+Рисковые опции платят статами/артефактами/модами (их ценность растёт с
+экономикой), безопасные — мелким золотом/хилом.
 
-**Шкала ценности (gold-value, GV, ранний забег):** 1 GV = 1 золото; 1 стат ≈
-20 GV (цена покупки атрибута stage0 ≈ `ceil(18×1.10)`); random_artifact ≈ 45 GV
-(взвешенное среднее `COST_BY_TIER` {1:30,2:55,3:95} по `TIER_WEIGHTS`);
-run-long damage/attack_speed ≈ 3 GV/1%; xp_gain ≈ 1.5 GV/1%; heal ≈ 0.35 GV/1%
-(контекстно); −HP ≈ 0.45 GV/1%. P(check) ≈ 0.55 при difficulty 7, ≈ 0.45 при 8
-(база раннего забега). combat-опции дают полный лут боя + completion-бонус
-(`elite`: 10+stage×4 зол / 7+stage×2 xp; `battle`: 4+stage×2 / 3+stage, ×
-event-множители) + `post_combat`.
+**Модель (gold-value, GV)** — зеркало `event_risk_reward_ev_test.gd`
+(SCRUM-995 расширил её ключами SCRUM-996): 1 стат = 14; артефакт = 28; хил =
+30×доля (кап 50%); −HP = −30×доля; `damage_flat` = −0.3/HP; %-мод = 1.5/1%;
+`summon_bonus` = 14; `defense_flat` = 150×значение; `enemy_health_multiplier`
+как проклятие = −40×(m−1); событийный магазин: `shop_after` = +8,
+`shop_discount` = +50×скидка; бой = 20×money_mult + 10×xp_mult − (6 battle /
+12 elite + 40×(ehm−1)) + post_combat (только stats/mods/heal/shop — контракт);
+чек = 0.6×успех + 0.4×провал; random_outcomes — среднее.
 
-| Событие / опция | Тип | Cost/Risk | Reward (GV) | EV (GV) |
-| --- | --- | --- | --- | --- |
-| bard / pay_ballad | платная | 18 зол | +12% atk_speed (36) | +16 |
-| bard / sing_yourself | проверка kn7 | −1 Знание при провале | +1 Зн/Воспр/Лид (60) | +24 |
-| bard / walk_away | безопасная | — | 6 зол +4% xp (12) | +12 |
-| altar / blood_price | платная (HP) | −30% HP (−14) | артефакт (45) | +31 |
-| altar / defile | риск (elite) | элита 1.12 HP | элит-лут +50% зол/+25% xp +Сила/Вынос (40) | топ-риск |
-| altar / quiet_prayer | безопасная | −10% HP (−5) | +1 Выносливость (20) | +15 |
-| ambush / stand_ground | риск (battle) | бой 1.18 HP | бой-лут +50% зол +Сила (20) | риск+ |
-| ambush / break_through | проверка agi8 | −15% HP при провале | +1 Лов +6% atk_spd (38) | +13 |
-| well / throw_coin | платная (рандом) | 8 зол | хил30%/28 зол/бой (avg ~19) | +10 |
-| well / listen | проверка per7 | провал +5 зол | +1 Восприятие (20) | +13 |
-| mercenary / help | платная | 20 зол | +1 Лид +1 призыв (35) | +13 |
-| mercenary / loot | безопасная (жадная) | −1 Знание (−20) | 30 зол | +10 |
-| mercenary / bind_wounds | проверка end7 | −6 зол при провале | defense_flat 0.06 (18) | +7 |
-| goblin / buy_bag | риск+платная | 12 зол | артефакт/8 зол/мимик (avg ~25) | +13 |
-| goblin / haggle | проверка per8 | −10 зол при провале | 30 зол | +7 |
-| hot_spring / full_rest | безопасная (трейд) | след. бой 1.25 HP (−15) | полный хил (35) | +20 (контекст) |
-| hot_spring / quick_dip | безопасная | — | хил 35% (12) | +12 |
-| mirror / duel | риск (elite) | элита 1.05 HP | элит-лут +30% зол +Инт +8% урон (44) | топ-риск |
-| mirror / study | проверка int8 | −12% HP при провале | +1 Инт +8% урон (44) | +17 |
-| guardian / answer_riddle | проверка kn8 | бой при провале | артефакт (45) | +26 |
-| guardian / fight_guardian | риск (battle) | бой 1.25 HP | бой-лут +30% зол +Сила/Вынос (40) | риск+ |
-| graveyard / dig | риск (рандом) | бой 1.22 HP | артефакт ИЛИ бой+Вынос (avg ~33) | +33 |
-| graveyard / pay_respects | безопасная | — | +1 Вынос +хил15% (24) | +24 |
-| star / take_shard | платная (HP) | −12% HP (−5) | +2 Энергия (40) | +35 |
-| star / observe | проверка int7 | −8% HP при провале | +1 Энергия +1 Знание (40) | +20 |
-| dummies / speed_trial | проверка agi7 | −10% HP при провале | +1 Лов +8% atk_spd (44) | +22 |
-| dummies / power_trial | проверка str7 | −10% HP при провале | +1 Сила +8% урон (44) | +22 |
+| Событие / выбор | Механика | Цена / риск | Награда | EV (GV) | Риск |
+| --- | --- | --- | --- | --- | --- |
+| caravan_bandits / defend_caravan | бой 1.15, зол ×1.3 | бой с бандитами | +1 Лид, лавка торговца со скидкой 25% | +58.5 | high |
+| caravan_bandits / join_bandits | бой 1.22, зол ×1.75, xp ×1.2 | бой с охраной; дурная слава | +1 Сила; проклятие +6% HP врагов | +43.8 | high |
+| caravan_bandits / rob_and_run | чек Лов 7 | провал: 10 урона + бой 1.15 | успех: +45 зол без боя | +34.6 | high |
+| sudden_fork / safe_detour | безопасно | — | +12 зол, хил 15% | +16.5 | low |
+| sudden_fork / risky_shortcut | бой 1.16, зол ×1.5 | бой в теснине | +1 Сила, +6% урона | +50.6 | high |
+| sudden_fork / scout_ahead | чек Воспр 6 | провал: −10% HP | успех: +16 зол, +1 Воспр | +16.8 | mid |
+| sacrifice_altar / offer_blood | платно (HP) | −18% макс. HP | навсегда +2 Сила, +8% урона | +34.6 | mid |
+| sacrifice_altar / offer_flesh | платно (HP) | −28% макс. HP | навсегда +2 Лов, +12% скор. атаки | +37.6 | mid |
+| sacrifice_altar / offer_gold | платно | −26 зол | навсегда +1 Вынос, +1 Энергия, +4% защиты | +8.0 | low |
+| night_market / pay_entry | платно → магазин | −20 зол | event-магазин (ценность в GV консервативна) | −12.0 | low |
+| night_market / find_gap | чек Воспр 7 | провал: 8 урона | успех: +12 зол, магазин со скидкой 15% | +15.5 | mid |
+| night_market / walk_on | безопасно | — | ничего | 0.0 | low |
+| cursed_chapel / whisper_prayer | hidden, 2 исхода | урон 6 в плохом исходе | +1 Вынос + хил 20% ИЛИ +8% xp | +15.1 | mid |
+| cursed_chapel / break_crypt | чек Сила 8 | провал: проклятие +5% HP врагов + бой 1.2 | успех: артефакт | +24.4 | high |
+| cursed_chapel / search_nave | безопасно | — | +14 зол | +14.0 | low |
+| gilded_gambler / small_bet | hidden-ставка | −10 зол | 50/50: +30 зол или ничего | +5.0 | mid |
+| gilded_gambler / big_bet | hidden-ставка | −25 зол | 50/50: +75 зол или ничего | +12.5 | high |
+| gilded_gambler / catch_the_hand | чек Воспр 8 | провал: 6 урона | успех: +30 зол | +17.3 | mid |
+| wounded_mercenary / patch_him_up | платно (мораль) | −18 зол | +1 Лид, +1 призыв | +10.0 | low |
+| wounded_mercenary / rob_him | мораль | −1 Знание | +26 зол | +12.0 | low |
+| wounded_mercenary / pass_by | безопасно | — | ничего | 0.0 | low |
+| stone_guardian / hold_the_gate | чек Вынос 7 | провал: бой 1.2 | успех: +1 Вынос, +6% защиты | +22.2 | high |
+| stone_guardian / read_the_glyphs | чек Инт 7 | провал: бой 1.2 | успех: +1 Инт, +6% урона | +22.2 | high |
+| stone_guardian / test_of_arms | чек Сила 9 | провал: бой 1.25 | успех: артефакт | +24.8 | high |
+| heroes_graveyard / dig_the_grave | риск, random | 8 урона + бой 1.2 в плохом исходе | артефакт ИЛИ бой (зол ×1.35, +1 Вынос) | +31.3 | high |
+| heroes_graveyard / honor_the_fallen | безопасно | — | +1 Вынос, хил 15% | +18.5 | low |
+| heroes_graveyard / read_epitaphs | чек Знание 7 | провал: 6 урона | успех: +1 Знание, +6% xp | +13.1 | mid |
+| old_well / toss_a_coin | hidden, 3 исхода | −6 зол | +24 зол / хил 30% / ничего | +5.0 | mid |
+| old_well / draw_water | безопасно | — | хил 25% | +7.5 | low |
+| old_well / dive_down | чек Лов 8 | провал: 9 урона | успех: артефакт | +15.7 | mid |
+| war_drums_camp / storm_the_camp | элита 1.12, зол ×1.6, xp ×1.3 | элитный бой | +1 Сила, +1 Лид, +6% урона | +65.2 | high |
+| war_drums_camp / slip_past | безопасно (цена) | −6% HP | ничего | −1.8 | low |
+| war_drums_camp / cut_the_drums | чек Лов 8 | провал: 10 урона + бой 1.15 | успех: +22 зол, +6% xp | +26.2 | high |
+| fallen_star / grab_the_shard | платно (HP) | −12% HP | +2 Энергия | +24.4 | mid |
+| fallen_star / study_the_light | чек Инт 7 | провал: 7 урона | успех: +1 Энергия, +1 Знание | +16.0 | mid |
+| fallen_star / pry_it_loose | чек Сила 8 | провал: 8 урона | успех: артефакт | +15.8 | mid |
 
-Разнообразие исходов сохранено (статы, артефакты, моды, хил, золото, бои) —
-не всё сведено к золоту. Тултипы в `event_data.gd` синхронизированы с
-фактическими эффектами; `event_data_smoke_test.gd` + балансные/economy смоуки
-зелёные.
+Риск-уровни: **low** — нет проигрышного исхода (или фиксированная скромная
+цена), **mid** — возможна потеря HP/золота либо ставка/чек без боя, **high** —
+бой/элита (в т.ч. при провале чека) или крупная ставка.
+
+EV-инвариант `risk ≥ safe` проверяется на 4 событиях с парой риск/безопасно:
+caravan_bandits +23.9, sudden_fork +33.8, heroes_graveyard +12.8,
+war_drums_camp +39.0 (0 нарушений); апсайд-инвариант smoke — на 6 событиях.
+Отрицательный EV `pay_entry` — сознательный: модель ценит сам доступ к
+магазину консервативно (+8 GV), фактическая ценность — ассортимент под билд.
+
+Покрытие наград по паку: золото, статы, урон (`damage_flat`)/HP-цена, магазин
+(night_market, caravan_bandits post_combat), артефакт (крипта/страж/колодец/
+звезда/могила), бои battle и elite с post_combat, «ничего» при провале (ставки
+шулера, глухая монета колодца). Скрытые исходы — в 3 событиях (cursed_chapel,
+gilded_gambler ×2, old_well), каждый с честным `outcome_text`; difficulty
+чеков 6–9; class-reactive ветвление — stone_guardian (Вынос/Инт/Сила) и
+fallen_star (Инт/Сила). Гейты: `event_data_contract_check` (12 событий, 3
+выбора, tags, гард post_combat), `event_data_smoke_test`,
+`event_risk_reward_ev_test`, `event_outcomes_runtime_test`, `runtime_smoke`.
 
 ## Meta Progression
 
