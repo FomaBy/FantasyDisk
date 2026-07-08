@@ -3982,5 +3982,10 @@
   "key": "SCRUM-884",
   "status": "К выполнению",
   "desc_hash": "c2f52fdc0807e745487d46204e5906e0"
+ },
+ "design_hero_dossier_stats_column_descriptions_task.md": {
+  "key": "SCRUM-887",
+  "status": "К выполнению",
+  "desc_hash": "efac25ea45abfc3eff1dd820a01a5938"
  }
 }
