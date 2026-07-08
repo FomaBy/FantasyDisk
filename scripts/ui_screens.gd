@@ -4049,6 +4049,8 @@ func _atlas_wire_focus() -> void:
 func _show_patch_notes_screen() -> void:
 	# SCRUM-159: экран «Что нового» из главного меню — data-driven патч-ноуты
 	# по версиям (новейшая первой), только пользовательский русский текст.
+	# SCRUM-879: единый атлас-стиль — тихий фон-хроника COVERED, контент в
+	# safe-зоне рамы, кожаная панель _atlas_chip_style, полая рама поверх.
 	const PatchNotesData := preload("res://scripts/patch_notes_data.gd")
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
@@ -4060,39 +4062,27 @@ func _show_patch_notes_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
 	_prepare_global_tooltips(root)
-	_add_screen_background(root, "codex")
+	_unified_add_background(root, "patch_notes")
 
-	# SCRUM-576: полноэкранная панель-фрейм @2K (PN_PANEL_2K 2464×1388), нарисована per-слот
-	# рисующим пайплайном (9-slice-safe, орнамент в margin-band). Контент — внутри content-зоны
-	# панели (58/72/58/66 source→display); хедер + скролл версий не лезут на рамку.
-	var panel := PanelContainer.new()
-	panel.name = "PatchNotesPanel"
-	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = PN_PANEL_2K.position.x
-	panel.offset_top = PN_PANEL_2K.position.y
-	panel.offset_right = -(2560.0 - PN_PANEL_2K.end.x)
-	panel.offset_bottom = -(1440.0 - PN_PANEL_2K.end.y)
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pn_panel", PN_PANEL_2K.size))
-	root.add_child(panel)
-
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "PatchNotes")
 	var layout := VBoxContainer.new()
-	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 12)
-	panel.add_child(layout)
+	layout.name = "PatchNotesLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 18)
+	header.name = "PatchNotesHeader"
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
-	var title := Label.new()
-	title.text = "Что нового"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", _readable_font_size(38))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	header.add_child(title)
+	header.add_child(_unified_header_chip("PatchNotes", "Что нового", "patch_notes", s))
+	var header_spacer := Control.new()
+	header_spacer.name = "PatchNotesHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
 	var back_button := _make_button("Назад в меню")
 	back_button.name = "PatchNotesBackButton"
-	_set_action_button_size(back_button, 260.0)
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -4102,31 +4092,45 @@ func _show_patch_notes_screen() -> void:
 	_ensure_run_ui_gamepad_bindings()
 	back_button.call_deferred("grab_focus")
 
+	var panel := PanelContainer.new()
+	panel.name = "PatchNotesPanel"
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(18.0 * s)))
+	layout.add_child(panel)
+
 	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.name = "PatchNotesScroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	layout.add_child(scroll)
+	panel.add_child(scroll)
 	var content := VBoxContainer.new()
 	content.name = "PatchNotesContent"
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 14)
+	content.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	scroll.add_child(content)
 
-	for entry in PatchNotesData.all_entries():
-		var entry_data: Dictionary = entry
+	var entries := PatchNotesData.all_entries()
+	for i in entries.size():
+		var entry_data: Dictionary = entries[i]
+		var version := str(entry_data.get("version", ""))
 		var version_label := Label.new()
-		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
-		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
+		version_label.name = "PatchNotesVersion_%s" % version.replace(".", "_")
+		version_label.text = "Версия %s  (%s)" % [version, str(entry_data.get("date", ""))]
 		version_label.add_theme_font_size_override("font_size", _readable_font_size(24))
-		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
+		version_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 		content.add_child(version_label)
 		for line in (entry_data.get("highlights", []) as Array):
 			var bullet := Label.new()
 			bullet.text = "•  %s" % str(line)
 			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			bullet.add_theme_font_size_override("font_size", _readable_font_size(16))
-			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
+			bullet.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
 			content.add_child(bullet)
+		if i < entries.size() - 1:
+			_unified_add_divider(content, s, "_" + version)
+
+	# Рама — ПОСЛЕДНЕЙ: полый 9-slice поверх контента (контент в safe-зоне).
+	_unified_add_frame(root, "PatchNotes")
 
 
 func _show_codex_screen() -> void:
