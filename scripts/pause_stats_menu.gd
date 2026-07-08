@@ -743,7 +743,8 @@ func _make_button(text: String) -> Button:
 	button.custom_minimum_size = Vector2(280, 60)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", 16)
+	# SCRUM-883: 16 фикс → файловый readable-хелпер (16…19 по вьюпорту, ниже 16 не падает).
+	button.add_theme_font_size_override("font_size", _readable_px(16.0))
 	return button
 
 
