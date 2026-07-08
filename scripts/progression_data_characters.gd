@@ -135,134 +135,136 @@ const BASE_STATS := {
 }
 
 const CHARACTER_CONFIGS := {
+	# SCRUM-887: описания = что ожидать от геймплея (дистанция, темп, риск, за
+	# счет чего убивает/выживает); сильные/слабые — только правда по механикам.
 	"berserk": {
 		"id": "berserk",
 		"title": "Берсерк",
-		"description": "Ближний бой по области и высокий риск.",
-		"strengths": "урон, здоровье, толпа.",
-		"weaknesses": "нужна близость.",
+		"description": "Ближний рубака: тяжелые двуручные замахи кладут толпу вокруг. Живет в гуще боя — риск велик, но и запас крови огромен.",
+		"strengths": "тяжелый урон по толпе, большой запас здоровья, широкие дуги ударов.",
+		"weaknesses": "должен подойти вплотную, дальних ответов нет.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png",
 	},
 	"soldier": {
 		"id": "soldier",
 		"title": "Солдат",
-		"description": "Тактика, залпы и контроль позиции.",
-		"strengths": "дальность, стабильность, контроль.",
-		"weaknesses": "нужна линия огня.",
+		"description": "Стрелок средней дистанции: держит строй, кладет залпы по линии и рвет скопления гранатами. Ровный темп без лишнего риска.",
+		"strengths": "ровный урон с дистанции, залпы по линии, гранаты по скоплениям, штыковая оборона.",
+		"weaknesses": "нужна линия огня, по боссу залпы слабее.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
 	},
 	"thief": {
 		"id": "thief",
 		"title": "Вор",
-		"description": "Уловки, рывки и карманная экономика.",
-		"strengths": "мобильность, крит, золото.",
-		"weaknesses": "мало здоровья.",
+		"description": "Быстрый плут: монеты скачут рикошетом по толпе, тень бьет в спину, дым укрывает. Хрупок, но верток — и по пути набивает кошель.",
+		"strengths": "высокий темп и криты, удары в спину, рикошеты по толпе, добыча золота.",
+		"weaknesses": "мало здоровья, ошибку вплотную не прощает.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
 	},
 	"elementalist": {
 		"id": "elementalist",
 		"title": "Элементалист",
-		"description": "Смена стихий, орбиты и разломы.",
-		"strengths": "области поражения, контроль зон, взрывной урон.",
-		"weaknesses": "хрупкий, требует позицию.",
+		"description": "Маг зон: орбиты стихий жгут вокруг, разломы и метеоры накрывают области. Смертоносен, пока враг в его зонах, — и хрупок вне их.",
+		"strengths": "взрывной урон по области, контроль зон, орбиты вокруг себя.",
+		"weaknesses": "хрупкий, требует позиции и расчета.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/elementalist_pixellab/elementalist_idle_south.png",
 	},
 	"sniper": {
 		"id": "sniper",
 		"title": "Снайпер",
-		"description": "Точные выстрелы, метки и зоны поражения.",
-		"strengths": "дальность, одиночные цели, фокус элиток.",
-		"weaknesses": "слабее против плотной толпы рядом.",
+		"description": "Дальнобойный ликвидатор: выцеливает жертву, пробивает ее насквозь и размечает зоны смерти. Смертелен издали, беззащитен вплотную.",
+		"strengths": "огромная дальность, тяжелые точные выстрелы, криты, фокус элит.",
+		"weaknesses": "слаб против толпы вплотную.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_idle_south.png",
 	},
 	"priest": {
 		"id": "priest",
 		"title": "Священник",
-		"description": "Благословения, печати и священное восстановление.",
-		"strengths": "лечение, защита, стабильность.",
-		"weaknesses": "меньше взрывного урона по одиночной цели.",
+		"description": "Боевой пастырь: печати и молитвы жгут нечисть на средней дистанции, а часть причиненной боли возвращается ему лечением.",
+		"strengths": "постоянное самолечение, защитные волны, цепные молитвы, ровный урон.",
+		"weaknesses": "нет взрывного урона по одной цели.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/priest_pixellab/priest_idle_south.png",
 	},
 	"biologist": {
 		"id": "biologist",
 		"title": "Биолог",
-		"description": "Образцы, споры и симбиотические реакции.",
-		"strengths": "контроль биомассой, периодический урон, адаптация.",
-		"weaknesses": "нужны цели для цепных реакций.",
+		"description": "Испытатель плоти: засевает врагов спорами, берет образцы и вяжет их в зараженные сети. Урон тикает и расползается по толпе.",
+		"strengths": "урон со временем, цепные заражения, давление по группам.",
+		"weaknesses": "медленный разгон, нужны цели для цепей.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png",
 	},
 	"robot": {
 		"id": "robot",
 		"title": "Робот",
-		"description": "Тяжелая броня, магнитный контроль и реакторные выбросы.",
-		"strengths": "выживаемость, контроль, стабильный урон.",
-		"weaknesses": "медленный, зависит от позиционирования.",
+		"description": "Ходячая крепость: стягивает врагов магнитом, давит прессом и жжет выбросами реактора. Медлителен, зато почти неубиваем.",
+		"strengths": "огромная живучесть, стягивание врагов, контроль толпы, ровный урон.",
+		"weaknesses": "медлителен, любит верную позицию.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/robot_pixellab/robot_idle_south.png",
 	},
 	"engineer": {
 		"id": "engineer",
 		"title": "Инженер",
-		"description": "Мастерская устройств, дронов и минных сеток.",
-		"strengths": "устройства, зона контроля, поддержка.",
-		"weaknesses": "нужно заранее ставить позицию.",
+		"description": "Мастер расстановки: турели бьют сами, дроны чинят, мины стерегут подходы. Побеждает подготовкой поля, а не собственной рукой.",
+		"strengths": "самостоятельные турели, ремонт на ходу, минный контроль подходов.",
+		"weaknesses": "слаб, пока устройства не расставлены.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/engineer_pixellab/engineer_idle_south.png",
 	},
 	"dark_mage": {
 		"id": "dark_mage",
 		"title": "Темный маг",
-		"description": "Области поражения, лучи и проклятия.",
-		"strengths": "площадь, периодический урон, пробивание.",
-		"weaknesses": "хрупкий.",
+		"description": "Стеклянная пушка: книги, лучи и проклятия выжигают целые области издали. Убивает раньше, чем до него дойдут, — иначе умрет сам.",
+		"strengths": "мощный урон по области, пробивающие лучи, проклятия со временем.",
+		"weaknesses": "самый хрупкий, вблизи обречен.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
 	},
 	"guitarist": {
 		"id": "guitarist",
 		"title": "Гитарист",
-		"description": "Ритм, волны и контроль.",
-		"strengths": "отталкивание, области поражения, темп.",
-		"weaknesses": "слабее по боссам.",
+		"description": "Заклинатель звука: волны бьют вперед, бас расталкивает кольцом, усилители гремят сами. Держит толпу на расстоянии рева.",
+		"strengths": "отталкивание толпы, волны по области, усилители-помощники, темп.",
+		"weaknesses": "по боссам заметно слабее.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png",
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",
-		"description": "Криты, скорость и яд.",
-		"strengths": "криты, уворот, темп.",
-		"weaknesses": "мало здоровья.",
+		"description": "Хладнокровный резчик: чакрамы режут коридор туда и обратно, кинжалы шинкуют в упор, струна душит ядом. Живет критами и уворотом.",
+		"strengths": "частые криты, высокий темп ударов, уворот, яд.",
+		"weaknesses": "мало здоровья, промах стоит крови.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png",
 	},
 	"ranger": {
 		"id": "ranger", "title": "Рейнджер",
-		"description": "Дальние линии и ловушки.",
-		"strengths": "дальность, пробивание.",
-		"weaknesses": "плох вблизи.",
+		"description": "Терпеливый охотник: стоит на месте — выстрел заряжается и пробивает ряд насквозь. Капканы стерегут тех, кто подберется.",
+		"strengths": "дальние пробивающие выстрелы, награда за стойку, капканы.",
+		"weaknesses": "вблизи и на бегу заметно слабее.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/ranger_pixellab/ranger_idle_south.png",
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
-		"description": "Лечение только через собственный drain-урон.",
-		"strengths": "drain, яд, стабильность без внешнего вампиризма.",
-		"weaknesses": "низкий взрывной урон.",
+		"description": "Врач без жалости: тянет жизнь из пациентов зельем, чумой и пилой. Каждая рана врага — его лекарство; не бьет — не лечится.",
+		"strengths": "лечение собственным уроном, яд, живучесть в затяжном бою.",
+		"weaknesses": "низкий разовый урон, без ударов не лечится.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",
-		"description": "Взрывы и ядовитые зоны.",
-		"strengths": "зоны, периодический урон, области поражения.",
-		"weaknesses": "хрупкий.",
+		"description": "Алхимик выжженной земли: взрывы, кислотные лужи и ядовитые облака превращают арену в отраву. Хрупок — пусть работает химия.",
+		"strengths": "едкие зоны, урон со временем, взрывы по области, гомункул-помощник.",
+		"weaknesses": "хрупкий, урону нужно время.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
 	},
 	"knight": {
 		"id": "knight", "title": "Рыцарь",
-		"description": "Танк, копье и щит.",
-		"strengths": "здоровье, защита, контроль.",
-		"weaknesses": "медленный.",
+		"description": "Латная стена: держит удар щитом, отвечает контрударом и достает копьем через ряд. Медленный, зато почти не продавливается.",
+		"strengths": "отличная защита и здоровье, блок с контрударом, контроль строя.",
+		"weaknesses": "медленный, догоняет плохо.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/knight_pixellab/knight_idle_south.png",
 	},
 	"druid": {
 		"id": "druid", "title": "Друид",
-		"description": "Стая, тернии и тотемы.",
-		"strengths": "призывы, зоны.",
-		"weaknesses": "слаб один.",
+		"description": "Пастырь дикой стаи: звери рвут добычу по его слову, тернии и тотемы стерегут землю. Сам слаб — сила в своре и корнях.",
+		"strengths": "стая зверей, терновые зоны, тотемы поддержки.",
+		"weaknesses": "без стаи почти беспомощен.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png",
 	},
 }
@@ -291,7 +293,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"berserk": {
 		"main_attribute": "strength",
 		"identity_title": "Телесный напор",
-			"summary": "Сила превращается в тяжелые ближние замахи, контроль толпы и рискованное удержание дистанции рядом с врагами.",
+			"summary": "Сила наливает двуручные замахи весом: чем она выше, тем шире и смертоноснее каждый удар по толпе.",
 			"mechanic_tags": ["melee_geometry", "frontal_pressure", "crowd_control", "echo_weapon"],
 			"weapon_identities": {
 				"sword": "длинный узкий сектор 100 градусов для позиционирования",
@@ -302,7 +304,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"soldier": {
 		"main_attribute": "perception",
 		"identity_title": "Тактическая линия огня",
-		"summary": "Восприятие задает линии, дистанции и боевой порядок: солдат выбирает сектор, подавляет толпу и держит позицию.",
+		"summary": "Восприятие задает линию огня: солдат видит дальше, бьет точнее и держит позицию, пока враг не дрогнет.",
 		"mechanic_tags": ["line_control", "suppression", "telegraphed_explosive", "brace"],
 		"weapon_identities": {
 			"soldier_rifle": "подавляющий burst по линии",
@@ -313,7 +315,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"thief": {
 		"main_attribute": "agility",
 		"identity_title": "Уловка и темп",
-		"summary": "Ловкость дает быстрые решения: рикошеты, backstab-окна, дым и экономические трюки вместо прямой силы.",
+		"summary": "Ловкость — его монета: чем быстрее руки, тем чаще криты, увороты и трюки, на которые враг не успевает ответить.",
 		"mechanic_tags": ["mobility", "ricochet", "backstab", "smoke_evasion"],
 		"weapon_identities": {
 			"thief_coin_pouch": "золотой рикошет по нескольким целям",
@@ -324,7 +326,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"elementalist": {
 		"main_attribute": "intelligence",
 		"identity_title": "Стихийная формула",
-		"summary": "Интеллект собирает разные стихии в контролируемые схемы: орбиты, разломы и метеорные очереди.",
+		"summary": "Интеллект складывает стихии в формулы: чем он выше, тем злее горят орбиты, разломы и метеорные зоны.",
 		"mechanic_tags": ["element_cycle", "orbit", "rift", "area_combo"],
 		"weapon_identities": {
 			"elementalist_orb_ring": "вращающиеся стихийные орбиты",
@@ -335,7 +337,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"sniper": {
 		"main_attribute": "perception",
 		"identity_title": "Точная ликвидация",
-		"summary": "Восприятие превращает бой в выбор правильной цели: дальность, метки, зоны смерти и пробивающие траектории.",
+		"summary": "Восприятие — его прицел: чем зорче глаз, тем дальше бьет винтовка и тем шире зона, где врагу не выжить.",
 		"mechanic_tags": ["precision", "marking", "long_range", "kill_zone"],
 		"weapon_identities": {
 			"sniper_deadeye_rifle": "дальний lockshot по приоритетной цели",
@@ -346,7 +348,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"priest": {
 		"main_attribute": "knowledge",
 		"identity_title": "Священная формула",
-		"summary": "Знание управляет молитвами, печатями, лечением и наказанием: устойчивый магический sustain вместо взрывного бурста.",
+		"summary": "Знание — его псалтырь: чем оно глубже, тем крепче печати, злее кара и щедрее лечение от каждого удара.",
 		"mechanic_tags": ["sanctify", "ward", "heal_conversion", "holy_chain"],
 		"weapon_identities": {
 			"priest_reliquary": "освящение зоны вокруг цели",
@@ -357,7 +359,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"biologist": {
 		"main_attribute": "knowledge",
 		"identity_title": "Биореакция",
-		"summary": "Знание превращает врагов в материал эксперимента: споры, анализ образцов и симбиотические сети.",
+		"summary": "Знание превращает врага в подопытного: чем оно выше, тем злее споры, точнее анализ и живучее зараза.",
 		"mechanic_tags": ["sample_analysis", "spores", "biomass", "adaptive_dot"],
 		"weapon_identities": {
 			"biologist_spore_lens": "spore bloom зона с тиками",
@@ -368,7 +370,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"robot": {
 		"main_attribute": "endurance",
 		"identity_title": "Бронеконтур",
-		"summary": "Выносливость питает тяжелую машину: магнитное удержание, компрессия и реакторные выбросы под давлением.",
+		"summary": "Выносливость питает броню и реактор: чем крепче корпус, тем дольше машина держит натиск и давит в ответ.",
 		"mechanic_tags": ["armor_loop", "magnet", "compression", "reactor_heat"],
 		"weapon_identities": {
 			"robot_magnetic_anchor": "магнитный якорь, стягивающий цель",
@@ -379,7 +381,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"engineer": {
 		"main_attribute": "leadership",
 		"identity_title": "Мастерская приказов",
-		"summary": "Лидерство управляет устройствами: турельные связи, ремонтные дроны и минные сети работают как команда.",
+		"summary": "Лидерство командует железом: чем тверже рука мастера, тем больше турелей, дронов и мин служат ему разом.",
 		"mechanic_tags": ["deployable_network", "device_command", "repair_support", "minefield"],
 		"weapon_identities": {
 			"engineer_sentry_wrench": "sentry link и фокус турели",
@@ -390,7 +392,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"dark_mage": {
 		"main_attribute": "intelligence",
 		"identity_title": "Темная формула",
-		"summary": "Интеллект усиливает проклятия, лучи, взрывы и DoT-зоны: маг контролирует пространство через распад.",
+		"summary": "Интеллект кормит тьму: чем острее ум, тем шире области распада и глубже вгрызаются проклятия.",
 		"mechanic_tags": ["curse", "beam", "dot", "aoe_burst"],
 		"weapon_identities": {
 			"dark_book": "двойной AoE projectile",
@@ -401,7 +403,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"guitarist": {
 		"main_attribute": "leadership",
 		"identity_title": "Сценический контроль",
-		"summary": "Лидерство превращает ритм в контроль сцены: волны, пульсы, deploy-усилители и отталкивание.",
+		"summary": "Лидерство собирает толпу на его концерт: чем громче имя, тем тяжелее волны и чаще гремят усилители.",
 		"mechanic_tags": ["rhythm", "knockback", "aura", "deploy_amp"],
 		"weapon_identities": {
 			"electric_guitar": "направленная звуковая волна",
@@ -412,7 +414,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"assassin": {
 		"main_attribute": "agility",
 		"identity_title": "Критический танец",
-		"summary": "Ловкость дает критовые окна, возвращающиеся клинки, теневые всплески и ядовитые линии без автоперемещения.",
+		"summary": "Ловкость — его клинок: чем быстрее руки, тем плотнее ложатся криты и тем труднее его задеть.",
 		"mechanic_tags": ["crit_window", "boomerang", "flurry", "poison_line", "shadow_burst"],
 		"weapon_identities": {
 			"chakrams": "boomerang-коридор туда и обратно",
@@ -423,7 +425,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"ranger": {
 		"main_attribute": "perception",
 		"identity_title": "Охотничья стойка",
-		"summary": "Восприятие награждает дальность, подготовку и выбор траектории: заряженные выстрелы и ловушки.",
+		"summary": "Восприятие — взгляд охотника: чем он острее, тем дальше летит болт и тем глубже пробивает строй.",
 		"mechanic_tags": ["stance_charge", "long_range", "trap", "piercing_shot"],
 		"weapon_identities": {
 			"moon_crossbow": "заряжаемый одиночный piercing shot",
@@ -434,7 +436,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"doctor": {
 		"main_attribute": "knowledge",
 		"identity_title": "Клинический drain",
-		"summary": "Знание связывает урон и лечение: доктор выживает через собственный drain-link, чуму и хирургический ближний риск, но не роллит внешние реген/вампиризм.",
+		"summary": "Знание сшивает урон и лечение: чем глубже познания, тем больше чужой боли возвращается к нему здоровьем.",
 		"mechanic_tags": ["drain_link", "self_sustain_only", "plague", "surgical_melee"],
 		"weapon_identities": {
 			"restore_potion": "лечащая drain-связь",
@@ -445,7 +447,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"chemist": {
 		"main_attribute": "intelligence",
 		"identity_title": "Алхимическая цепь",
-		"summary": "Интеллект комбинирует реагенты: взрывы, кислотные pools и гомункулы создают зоны и цепные реакции.",
+		"summary": "Интеллект смешивает реагенты без промаха: чем яснее расчет, тем злее взрывы и едче кислотные лужи.",
 		"mechanic_tags": ["cloud_combo", "acid_pool", "explosion", "homunculus"],
 		"weapon_identities": {
 			"blast_powder": "взрывная пыль и spark cloud",
@@ -456,7 +458,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"knight": {
 		"main_attribute": "endurance",
 		"identity_title": "Щитовая клятва",
-		"summary": "Выносливость превращается в блок, контратаку и тяжелый контроль: рыцарь держит линию вместо ухода.",
+		"summary": "Выносливость — его клятва: чем крепче рыцарь, тем тверже блок и тяжелее ответный удар.",
 		"mechanic_tags": ["block", "counter", "frontal_control", "tank_pressure"],
 		"weapon_identities": {
 			"long_spear": "длинный strip-контроль копьем",
@@ -467,7 +469,7 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"druid": {
 		"main_attribute": "leadership",
 		"identity_title": "Командование стаей",
-		"summary": "Лидерство управляет зверями и природными зонами: друид дает приказы питомцам, терниям и тотемам.",
+		"summary": "Лидерство — голос леса: чем тверже воля друида, тем больше зверей идет на зов и злее рвет добычу.",
 		"mechanic_tags": ["commanded_pets", "briar_zone", "totem", "pack_support"],
 		"weapon_identities": {
 			"summon_amulet": "commanded pet attack target",

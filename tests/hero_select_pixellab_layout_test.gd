@@ -133,12 +133,70 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		_fail("Expected visible ascension chooser with description at %s." % str(viewport_size))
 		return
 
+	# SCRUM-887: 8 полос характеристик — вертикальная фикс-колонна у правого края
+	# досье (без скролла), текстовая колонна со скроллом — слева от неё.
+	var dossier_frame := main.find_child("HS4DossierFrame", true, false) as Control
+	if dossier_frame == null:
+		_fail("Expected HS4DossierFrame at %s." % str(viewport_size))
+		return
+	var dossier_frame_rect := dossier_frame.get_global_rect()
+	var stats_column := main.find_child("HS4StatsColumn", true, false) as Control
+	if stats_column == null:
+		_fail("Expected HS4StatsColumn right stats column at %s." % str(viewport_size))
+		return
+	var stats_column_rect := stats_column.get_global_rect()
+	if stats_column_rect.size.x < 200.0 or stats_column_rect.size.x > 340.0:
+		_fail("Expected stats column width within [200, 340] at %s, got %s." % [str(viewport_size), str(stats_column_rect.size)])
+		return
+	if stats_column_rect.end.x > dossier_frame_rect.end.x or dossier_frame_rect.end.x - stats_column_rect.end.x > 64.0:
+		_fail("Expected stats column flush to the dossier right edge at %s, got column %s dossier %s." % [str(viewport_size), str(stats_column_rect), str(dossier_frame_rect)])
+		return
+	if stats_column_rect.position.x < dossier_frame_rect.position.x + dossier_frame_rect.size.x * 0.45:
+		_fail("Expected stats column in the right part of the dossier at %s, got column %s dossier %s." % [str(viewport_size), str(stats_column_rect), str(dossier_frame_rect)])
+		return
+	var dossier_text_scroll := main.find_child("HS4DossierScroll", true, false) as Control
+	if dossier_text_scroll == null or dossier_text_scroll.get_global_rect().end.x > stats_column_rect.position.x + 2.0:
+		_fail("Expected scrollable text column left of the stats column at %s." % str(viewport_size))
+		return
+	var prev_stat_bottom := -INF
+	var stat_column_left := INF
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
 		if stat_button == null or stat_bar == null or stat_button.tooltip_text.strip_edges() == "" or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected line bar + concise hover tooltip for base stat %s at %s." % [stat_id, str(viewport_size)])
 			return
+		if not stat_button.is_visible_in_tree() or not stat_bar.is_visible_in_tree():
+			_fail("Expected all 8 stat bars visible without scrolling at %s, %s hidden." % [str(viewport_size), stat_id])
+			return
+		var stat_rect := stat_button.get_global_rect()
+		if not dossier_frame_rect.grow(2.0).encloses(stat_rect):
+			_fail("Expected stat row %s inside the dossier at %s, got %s dossier %s." % [stat_id, str(viewport_size), str(stat_rect), str(dossier_frame_rect)])
+			return
+		if not stats_column_rect.grow(2.0).encloses(stat_rect):
+			_fail("Expected stat row %s inside the stats column at %s, got %s column %s." % [stat_id, str(viewport_size), str(stat_rect), str(stats_column_rect)])
+			return
+		if stat_rect.position.y < prev_stat_bottom - 1.0:
+			_fail("Expected stat rows stacked vertically (one column) at %s, %s overlaps previous row." % [str(viewport_size), stat_id])
+			return
+		prev_stat_bottom = stat_rect.end.y
+		if stat_column_left == INF:
+			stat_column_left = stat_rect.position.x
+		elif absf(stat_rect.position.x - stat_column_left) > 2.0:
+			_fail("Expected stat rows aligned in one vertical column at %s, %s misaligned." % [str(viewport_size), stat_id])
+			return
+	# SCRUM-887: строка «Основные атрибуты: <A>, <B>» из данных — после слабых сторон.
+	var main_attrs := main.find_child("HS4MainAttributes", true, false) as Label
+	if main_attrs == null or not main_attrs.text.begins_with("Основные атрибуты:"):
+		_fail("Expected the 'Основные атрибуты:' data line in the dossier text column at %s." % str(viewport_size))
+		return
+	var listed_stat_names := 0
+	for stat_name in ProgressionData.STAT_NAMES.values():
+		if main_attrs.text.contains(str(stat_name)):
+			listed_stat_names += 1
+	if listed_stat_names < 2:
+		_fail("Expected >=2 base stat names in the main attributes line at %s, got '%s'." % [str(viewport_size), main_attrs.text])
+		return
 	for relevance in ["primary", "secondary", "optional"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
