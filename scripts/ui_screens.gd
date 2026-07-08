@@ -4130,6 +4130,9 @@ func _show_codex_screen() -> void:
 	center_summary_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	center_summary_title.add_theme_font_size_override("font_size", _codex_font_size(21, 14, 28))
 	center_summary_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	# Autowrap-лейблы почти не заявляют min height — резервируем 1/3 строки явно,
+	# иначе панель сводки схлопывается и текст уходит под клип.
+	center_summary_title.custom_minimum_size.y = ceilf(float(_codex_font_size(21, 14, 28)) * 1.4)
 	center_summary_box.add_child(center_summary_title)
 	var center_summary_body := Label.new()
 	center_summary_body.name = "CodexCenterSummaryBody"
@@ -4139,6 +4142,7 @@ func _show_codex_screen() -> void:
 	center_summary_body.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	center_summary_body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
 	center_summary_body.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.96))
+	center_summary_body.custom_minimum_size.y = ceilf(float(_codex_font_size(13, 10, 18)) * 3.0 * 1.3)
 	center_summary_box.add_child(center_summary_body)
 
 	var center_list_host := Control.new()
@@ -4174,8 +4178,18 @@ func _show_codex_screen() -> void:
 		tab_button.custom_minimum_size = Vector2(0.0, tab_height)
 		_apply_fantasy_button_theme(tab_button)
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		# Однострочная подпись с clip/ellipsis (Label рендерит шире мерки) и
+		# вертикальные content-margins кит-стиля, сжатые под высоту плитки —
+		# иначе фикс-32px маргины кита распирают вертикальный стек за safe-зону.
+		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = true
+		tab_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		tab_button.add_theme_font_size_override("font_size", _readable_font_size(15))
+		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
+			var tab_style := tab_button.get_theme_stylebox(tab_state)
+			if tab_style != null:
+				tab_style.content_margin_top = maxf(12.0, roundf(32.0 * s))
+				tab_style.content_margin_bottom = maxf(12.0, roundf(32.0 * s))
 		var icon_path := str(CODEX_PL_ICONS.get(section_id, ""))
 		if icon_path != "" and ResourceLoader.exists(icon_path):
 			tab_button.icon = game._cached_texture(icon_path)
