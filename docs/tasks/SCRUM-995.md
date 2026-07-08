@@ -94,6 +94,19 @@ runtime_smoke «≥10»). Состав пака закреплён оркест�
 
 Зелёный гейт → push в origin/dev → Jira «Контроль качества» + комментарий → зеркало done.
 
+## QA-Вердикт
+
+Статус: PASSED
+Проверил: claude-fable-orchestrator, 2026-07-09.
+Независимая верификация на HEAD основного чекаута (8a4d05a6): contract_check
+(pool=12, ровно 3 выбора, hidden_events=3, tags у всех, пороги combat 11/reward 8/
+rest 3/check 13/class_reactive 2), event_data_smoke (EV-пары 6), risk_reward_ev
+(4 пары, 0 нарушений, дифф до +39 GV), event_outcomes_runtime, runtime_smoke —
+все PASSED. Выборочная вычитка копирайта (флагман, sudden_fork): русский язык,
+лимиты длин, честные outcome_text — ок. Проверено, что «проклятие молвы»
+enemy_health_multiplier — живой мод (player.gd:235 → combat_director.gd:629,1261-1268),
+не мёртвый ключ. hazard/altar id на месте. AC закрыты все семь.
+
 ## Итог
 
 Пак из 12 событий целиком заменил легаси-пул из 29; запушено в origin/dev тремя
