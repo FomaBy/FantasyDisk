@@ -5369,11 +5369,16 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	layout.add_child(switcher_row)
 	switcher_row.add_child(_make_settings_tab_switcher(tabs, s))
 
-	# --- Ряд 3: контент-панель — чип Атласа (как AtlasNodePanel), табы внутри ---
+	# --- Ряд 3: контент-панель — чип Атласа (как AtlasNodePanel), табы внутри.
+	# Фидбек 2026-07-08: панель ОБЖИМАЕТ контент по ширине (колонка + поля чипа),
+	# а не тянется на всю safe-зону — пустых боков во фрейме нет.
 	var content_panel := PanelContainer.new()
 	content_panel.name = "SettingsContentPanel"
-	content_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(16.0 * s_ui)))
-	content_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var content_chip_pad := roundf(16.0 * s_ui)
+	content_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, content_chip_pad))
+	var settings_panel_w := settings_column_w + (content_chip_pad * 1.4 + 8.0 * s_ui) * 2.0 + 24.0
+	content_panel.custom_minimum_size = Vector2(settings_panel_w, 0.0)
+	content_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content_panel.clip_contents = true
 	layout.add_child(content_panel)
@@ -5721,6 +5726,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	action_row.name = "SettingsBottomActions"
 	action_row.alignment = BoxContainer.ALIGNMENT_END
 	action_row.add_theme_constant_override("separation", int(14.0 * s_ui))
+	# Футер той же ширины, что панель: кнопки прижаты к её правому краю.
+	action_row.custom_minimum_size = Vector2(settings_panel_w, 0.0)
+	action_row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	layout.add_child(action_row)
 	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
