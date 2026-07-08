@@ -25,6 +25,19 @@ target release; `0.1.8` и `0.1.9` больше не используются к
 заводятся в active Jira sprint с fixVersion активного sprint/release. Backlog
 используется только при явном freeze/hold marker. Доска — локальный кэш.
 
+**Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
+Codex/backend documentation задача на review-friendly таблицу всех playable
+characters/classes и их оружия с отличительными механиками. Jira: `SCRUM-878` в
+active sprint; owner `backend/codex-character-weapon-mechanics-review-table`;
+locked paths: `docs/design/reports/character_weapon_mechanics_review_table.md`,
+`docs/tasks/codex_backend_character_weapon_mechanics_review_table_task.md`,
+`docs/process/jira_sync_map.json`, `docs/process/task_board.md`. Runtime/gameplay
+files read-only.
+
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; ready_for_QA |
+
 **Backlog review 2026-06-30 (PM):** беклог вычищен. Закрыты как superseded (висели в
 «Контроль качества» с 12.06, новое UI-направление, работа в игре): SCRUM-111, SCRUM-118.
 Перенесены из беклога в активный спринт 0.2.0 (правило: новое — в спринт, не в беклог):
