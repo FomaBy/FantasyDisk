@@ -7081,7 +7081,8 @@ func _cycle_codex_section(dir: int) -> bool:
 
 
 func _show_reward_screen() -> void:
-	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
+	# SCRUM-883: панель награды — чип Атласа (карточки внутри — чип-ряды).
+	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward", _atlas_chip_style(0.94, 18.0))
 	_create_menu_run_hud()
 	var rewards_row := HBoxContainer.new()
 	rewards_row.name = "BattleRewardCardsRow"
@@ -7257,7 +7258,8 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	# SCRUM-883: панель трофея — чип Атласа; дим-фон сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -7272,15 +7274,15 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	title.text = "Трофей элитки"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
-	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.name = "EliteArtifactRewardSubtitle"
 	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	box.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
@@ -7357,7 +7359,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	# SCRUM-883: панель трофея босса — чип Атласа; дим-фон сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -7379,8 +7382,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 	subtitle.name = "BossArtifactRewardSubtitle"
 	subtitle.text = "Акт пройден! Выбери 1 из 3 суперредких артефактов."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	box.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
@@ -7719,8 +7722,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 22))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 22))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 
 	var preview_label := Label.new()
@@ -7729,8 +7732,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 16))
-	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 16))
+	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(preview_label)
 
 	var description_label := Label.new()
@@ -7741,8 +7744,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.max_lines_visible = 2
 	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 14))
-	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 14))
+	description_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	content.add_child(description_label)
 
 	var spacer := Control.new()
@@ -7755,8 +7758,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 16))
-	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 16))
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
 	content.add_child(action_label)
@@ -7819,8 +7822,8 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_label.max_lines_visible = 2
 	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 15))
-	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 15))
+	effect_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(effect_label)
 
 	var interpretation := _reward_interpretation_text(reward)
@@ -7833,8 +7836,8 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		interp_label.max_lines_visible = 1
 		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 0, 14))
-		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
+		interp_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		content.add_child(interp_label)
 
 	return button
