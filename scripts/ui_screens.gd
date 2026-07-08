@@ -6474,33 +6474,85 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 		stats_label.text = stats_text
 
 
-# SCRUM-870: Weapon Select redraw from scratch.
-# SCRUM-868's full-screen PixelLab layer became a bad live UI surface: text was
-# drawn over baked art. Runtime now uses real dark cards and native labels.
-const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const WS_PANEL_2K := Rect2(360, 120, 1840, 1200)
-const WS_SAFE_2K := Rect2(443, 229, 1674, 1016)
-const WS_TITLE_2K := Rect2(443, 218, 1674, 62)
-const WS_SUBTITLE_2K := Rect2(443, 288, 1674, 34)
-const WS_CARD_2K := Rect2(443, 350, 1674, 260)
-const WS_CARD_STEP_2K := 274.0
-const WS_ICON_WELL_SIZE_2K := Vector2(204, 204)
-const WS_ICON_SIZE_2K := Vector2(176, 176)
-const WS_STATS_PANEL_SIZE_2K := Vector2(310, 204)
-const WS_BTN_BACK_2K := Rect2(1140, 1238, 280, 60)
+# SCRUM-883: экраны выбора оружия и стартового буна на едином атлас-стиле
+# (эталон SCRUM-879): фон-зал героев COVERED (продолжение флоу выбора героя),
+# контент в safe-зоне полой рамы meta40, панели/карточки — чипы StyleBoxFlat,
+# кнопки — глобальный кит. Геометрия адаптивная от _atlas_ui_scale(): на базе
+# 2560×1440 держит смоук-контракты (колодец ≥200, спрайт ≥176, статс ≥300),
+# на малых вьюпортах матрицы пропорционально ужимается в safe-зону.
+
+
+# Общий полноэкранный корень пре-ран экранов оружия/буна: чистка UI, слой,
+# root на весь экран, глобальные тултипы. Фон/safe/рама добавляются звонящим.
+func _weapon_flow_shell_root(screen_name: String) -> Control:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+	var root := Control.new()
+	root.name = screen_name
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	return root
+
+
+# Шапка атлас-экрана: чип-титул слева, «Назад» на глобальном ките справа
+# (единый возврат 2026-07-08: плита 260 × action-height на всех экранах).
+func _weapon_flow_header(layout: VBoxContainer, prefix: String, title: String, s: float, back_action: Callable) -> Button:
+	var header := HBoxContainer.new()
+	header.name = "%sHeader" % prefix
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	layout.add_child(header)
+	header.add_child(_unified_header_chip(prefix, title, "hero_select", s))
+	var spacer := Control.new()
+	spacer.name = "%sHeaderSpacer" % prefix
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(spacer)
+	var back_button := _make_button("Назад")
+	back_button.name = "%sBackButton" % prefix
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
+	back_button.pressed.connect(back_action)
+	header.add_child(back_button)
+	return back_button
 
 
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
-	var box := _create_menu_box(
-		"Выбор оружия",
-		"%s: выбери стартовое оружие." % str(character_config["title"]),
-		"weapon_select",
-		_weapon_select_panel_style(),
-		WS_PANEL_2K.size
-	)
-	_style_weapon_select_header(box)
-	box.add_theme_constant_override("separation", 12)
+	var root := _weapon_flow_shell_root("WeaponSelectScreen")
+	_unified_add_background(root, "hero_select")
+
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "WeaponSelect")
+	var layout := VBoxContainer.new()
+	layout.name = "WeaponSelectLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
+	var back_button := _weapon_flow_header(layout, "WeaponSelect", "Выбор оружия", s, _show_character_select)
+
+	# Плита карточек: узел MenuPanel_weapon_select — тест-контракт (смоук/матрица:
+	# PanelContainer + StyleBoxFlat alpha >= 0.80), стиль — атлас-чип.
+	var panel := PanelContainer.new()
+	panel.name = "MenuPanel_weapon_select"
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _weapon_select_panel_style())
+	layout.add_child(panel)
+	var box := VBoxContainer.new()
+	box.name = "WeaponSelectCards"
+	box.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(box)
+
+	var subtitle := Label.new()
+	subtitle.name = "WeaponSelectSubtitle"
+	subtitle.text = "%s: выбери стартовое оружие." % str(character_config["title"])
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	box.add_child(subtitle)
+
 	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
@@ -6516,17 +6568,12 @@ func _show_weapon_select() -> void:
 		box.add_child(button)
 		weapon_cards.append(button)
 
-	var back_button := _make_button("Назад")
-	back_button.name = "WeaponSelectBackButton"
-	back_button.custom_minimum_size = WS_BTN_BACK_2K.size
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_fantasy_button_theme(back_button)
-	back_button.pressed.connect(_show_character_select)
-	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
+	# Полая рама атласа — ПОСЛЕДНЕЙ, поверх контента.
+	_unified_add_frame(root, "WeaponSelect")
 
-	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» ниже; A выбирает,
-	# B/Esc возвращает к выбору героя. Старт — первая карточка.
+	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» в шапке; A
+	# выбирает, B/Esc возвращает к выбору героя. Старт — первая карточка.
 	_wire_run_ui_focus(weapon_cards, false, [back_button],
 		weapon_cards[0] if not weapon_cards.is_empty() else back_button)
 
@@ -6534,12 +6581,16 @@ func _show_weapon_select() -> void:
 func _make_weapon_select_card(config: Dictionary) -> Button:
 	var weapon_id := str(config.get("id", ""))
 	var character_id := str(config.get("character_id", game.selected_character_id))
+	var s := _atlas_ui_scale()
 	var button := Button.new()
 	button.name = "WeaponOption_%s" % weapon_id
 	button.set_meta("weapon_id", weapon_id)
 	button.text = ""
-	button.custom_minimum_size = WS_CARD_2K.size
+	# Пол min-высоты держит карточку читаемой на малых вьюпортах; на базе карточки
+	# растягиваются EXPAND_FILL и делят плиту (фактически ~260, смоук требует >=110).
+	button.custom_minimum_size = Vector2(0.0, roundf(maxf(200.0 * s, 96.0)))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s\n%s" % [
@@ -6547,7 +6598,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 		_weapon_select_identity_text(character_id, weapon_id),
 		str(config.get("description", "")),
 	]
-	_apply_weapon_select_card_theme(button)
+	_weapon_card_theme(button, roundf(12.0 * s))
 
 	var row := HBoxContainer.new()
 	row.name = "WeaponOptionContent_%s" % weapon_id
@@ -6559,12 +6610,13 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	row.offset_right = -card_content.z
 	row.offset_bottom = -card_content.w
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 24)
+	row.add_theme_constant_override("separation", int(roundf(24.0 * s)))
 	button.add_child(row)
 
 	var icon_well := PanelContainer.new()
 	icon_well.name = "WeaponSelectIconWell_%s" % weapon_id
-	icon_well.custom_minimum_size = WS_ICON_WELL_SIZE_2K
+	# База 2560: 204×204 (смоук-контракт >=200); на малых вьюпортах ужимается.
+	icon_well.custom_minimum_size = Vector2(roundf(204.0 * s), roundf(204.0 * s))
 	icon_well.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon_well.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	icon_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -6573,7 +6625,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 
 	var sprite := TextureRect.new()
 	sprite.name = "WeaponSelectSprite_%s" % weapon_id
-	sprite.custom_minimum_size = WS_ICON_SIZE_2K
+	sprite.custom_minimum_size = Vector2(roundf(176.0 * s), roundf(176.0 * s))
 	sprite.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sprite.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -6587,7 +6639,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	text_box.add_theme_constant_override("separation", 6)
+	text_box.add_theme_constant_override("separation", int(roundf(6.0 * s)))
 	row.add_child(text_box)
 
 	var title_label := Label.new()
@@ -6595,8 +6647,8 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	title_label.text = str(config.get("title", weapon_id))
 	title_label.max_lines_visible = 1
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(26, 0, 36))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.52, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(26, 12, 36))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
@@ -6606,8 +6658,8 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity_label.max_lines_visible = 2
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 23))
-	identity_label.add_theme_color_override("font_color", Color(1.0, 0.68, 0.36, 1.0))
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 23))
+	identity_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(identity_label)
 
@@ -6617,8 +6669,8 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.max_lines_visible = 2
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 21))
-	desc_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.78, 1.0))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 21))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
@@ -6627,14 +6679,15 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	role_label.text = _weapon_select_role_text(character_id, config)
 	role_label.max_lines_visible = 1
 	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 18))
-	role_label.add_theme_color_override("font_color", Color(0.62, 0.76, 0.90, 1.0))
+	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 18))
+	role_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(role_label)
 
 	var stats_panel := PanelContainer.new()
 	stats_panel.name = "WeaponSelectStatsPanel_%s" % weapon_id
-	stats_panel.custom_minimum_size = WS_STATS_PANEL_SIZE_2K
+	# База 2560: 310×204 (смоук-контракт min.x >= 300).
+	stats_panel.custom_minimum_size = Vector2(roundf(310.0 * s), roundf(204.0 * s))
 	stats_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	stats_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -6643,108 +6696,42 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 
 	var stats_label := Label.new()
 	stats_label.name = "WeaponSelectStats_%s" % weapon_id
-	stats_label.custom_minimum_size = Vector2(280, 0)
+	stats_label.custom_minimum_size = Vector2(roundf(280.0 * s), 0)
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stats_label.text = _weapon_select_stats_text(config)
-	stats_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 17))
-	stats_label.add_theme_color_override("font_color", Color(0.95, 0.88, 0.66, 1.0))
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 17))
+	stats_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stats_panel.add_child(stats_label)
 	return button
 
 
-func _style_weapon_select_header(box: Control) -> void:
-	var title := box.find_child("MenuTitle_weapon_select", false, false) as Label
-	if title != null:
-		title.add_theme_font_size_override("font_size", _readable_font_size(38, 0, 56))
-		title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.42, 1.0))
-		title.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.85))
-		title.add_theme_constant_override("shadow_offset_x", 2)
-		title.add_theme_constant_override("shadow_offset_y", 2)
-	var subtitle := box.find_child("MenuSubtitle_weapon_select", false, false) as Label
-	if subtitle != null:
-		subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 24))
-		subtitle.add_theme_color_override("font_color", Color(0.88, 0.82, 0.66, 1.0))
-
-
+# SCRUM-883: плита экрана — атлас-чип (тест-контракт: StyleBoxFlat, alpha >= 0.80).
 func _weapon_select_panel_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.030, 0.034, 0.044, 0.94)
-	style.border_color = Color(0.74, 0.56, 0.24, 0.90)
-	style.set_border_width_all(3)
-	style.set_corner_radius_all(12)
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.55)
-	style.shadow_size = 18
-	style.content_margin_left = 56
-	style.content_margin_top = 44
-	style.content_margin_right = 56
-	style.content_margin_bottom = 40
-	return style
+	return _atlas_chip_style(0.90, roundf(12.0 * _atlas_ui_scale()))
 
 
 func _weapon_select_card_content_margins() -> Vector4:
-	return Vector4(22, 18, 22, 18)
+	var s := _atlas_ui_scale()
+	return Vector4(roundf(22.0 * s), roundf(18.0 * s), roundf(22.0 * s), roundf(18.0 * s))
 
 
-func _weapon_select_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.055, 0.047, 0.066, 0.94)
-	style.border_color = Color(0.52, 0.40, 0.22, 0.88)
-	if hovered:
-		style.bg_color = Color(0.078, 0.060, 0.070, 0.98)
-		style.border_color = Color(0.98, 0.74, 0.28, 1.0)
-	if pressed:
-		style.bg_color = Color(0.035, 0.032, 0.045, 1.0)
-	if disabled:
-		style.bg_color = Color(0.030, 0.032, 0.040, 0.62)
-		style.border_color = Color(0.30, 0.30, 0.32, 0.74)
-	style.set_corner_radius_all(8)
-	style.set_border_width_all(2)
-	style.content_margin_left = 22
-	style.content_margin_top = 18
-	style.content_margin_right = 22
-	style.content_margin_bottom = 18
-	return style
+# SCRUM-883: тема карточек оружия/буна — «кожаный ряд» атласа (hover/pressed/
+# focus/disabled от row-theme) с поднятым normal-чипом: row-normal 0.72 ниже
+# смоук-контракта прозрачности (>=0.80), карточкам нужен фон плотнее.
+func _weapon_card_theme(button: Button, pad := 12.0) -> void:
+	_unified_apply_row_theme(button, pad)
+	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
 
 
-func _apply_weapon_select_card_theme(button: Button) -> void:
-	button.add_theme_stylebox_override("normal", _weapon_select_card_style(false))
-	button.add_theme_stylebox_override("hover", _weapon_select_card_style(true))
-	button.add_theme_stylebox_override("pressed", _weapon_select_card_style(true, true))
-	button.add_theme_stylebox_override("focus", _weapon_select_card_style(true))
-	button.add_theme_stylebox_override("disabled", _weapon_select_card_style(false, false, true))
-	button.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.72, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.94, 0.72, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.86, 0.78, 0.56, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.44, 0.44, 0.46, 1.0))
-
-
+# Колодец иконки: тихая полупрозрачная подложка без канта (арт не спорит с рамой).
 func _weapon_select_icon_well_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.028, 0.030, 0.040, 0.98)
-	style.border_color = Color(0.88, 0.62, 0.24, 0.92)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.content_margin_left = 12
-	style.content_margin_top = 12
-	style.content_margin_right = 12
-	style.content_margin_bottom = 12
-	return style
+	return _atlas_translucent_style(0.55, 10.0)
 
 
 func _weapon_select_stats_panel_style() -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.030, 0.035, 0.046, 0.92)
-	style.border_color = Color(0.62, 0.48, 0.24, 0.78)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(7)
-	style.content_margin_left = 12
-	style.content_margin_top = 8
-	style.content_margin_right = 12
-	style.content_margin_bottom = 8
-	return style
+	return _atlas_chip_style(0.62, roundf(10.0 * _atlas_ui_scale()))
 
 
 func _weapon_select_identity_text(character_id: String, weapon_id: String) -> String:
@@ -6849,6 +6836,7 @@ func _weapon_select_stats_text(config: Dictionary) -> String:
 # SCRUM-618: пикер стартового боона. Показывает 3 случайных боона (карточный паттерн)
 # между выбором оружия и стартом забега. Выбор → game.selected_start_boon_id + автосейв
 # + карта. «Без боона» завершает выбор тождественно (selected_start_boon_id="").
+# SCRUM-883: тот же атлас-шелл, что у выбора оружия (фон-зал/safe/чип-шапка/рама).
 func _show_start_boon_select() -> void:
 	var all_boons: Array = game.PROGRESSION_DATA.start_boons(game.selected_character_id)
 	# Случайная выборка 3 без повторов (детерминирована текущим состоянием game.rng).
@@ -6860,7 +6848,37 @@ func _show_start_boon_select() -> void:
 		pool[j] = tmp
 	var offered: Array = pool.slice(0, mini(3, pool.size()))
 
-	var box := _create_menu_box("Стартовый боон", "Выбери одно благословение на этот забег.", "weapon_select")
+	var root := _weapon_flow_shell_root("StartBoonScreen")
+	_unified_add_background(root, "hero_select")
+
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "StartBoon")
+	var layout := VBoxContainer.new()
+	layout.name = "StartBoonLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
+	var back_button := _weapon_flow_header(layout, "StartBoon", "Стартовый боон", s, _show_weapon_select)
+
+	var panel := PanelContainer.new()
+	panel.name = "StartBoonPanel"
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _weapon_select_panel_style())
+	layout.add_child(panel)
+	var box := VBoxContainer.new()
+	box.name = "StartBoonCards"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(box)
+
+	var subtitle := Label.new()
+	subtitle.name = "StartBoonSubtitle"
+	subtitle.text = "Выбери одно благословение на этот забег."
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	box.add_child(subtitle)
+
 	var boon_cards: Array = []
 	for boon in offered:
 		var boon_dict: Dictionary = boon
@@ -6876,6 +6894,7 @@ func _show_start_boon_select() -> void:
 	# «Без боона» — пропустить (тождественность). Возможность не брать ничего.
 	var skip_button := _make_button("Без боона")
 	skip_button.name = "StartBoonSkipButton"
+	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	skip_button.pressed.connect(func() -> void:
 		game.selected_start_boon_id = ""
 		game.save_run_autosave("start_boon")
@@ -6883,45 +6902,47 @@ func _show_start_boon_select() -> void:
 	)
 	box.add_child(skip_button)
 	game.ui_escape_action = _show_weapon_select
+	_unified_add_frame(root, "StartBoon")
 
-	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже; A выбирает,
-	# B/Esc возвращает к выбору оружия. Старт — первый боон.
-	_wire_run_ui_focus(boon_cards, false, [skip_button],
+	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже, «Назад» в
+	# шапке; A выбирает, B/Esc возвращает к выбору оружия. Старт — первый боон.
+	_wire_run_ui_focus(boon_cards, false, [skip_button, back_button],
 		boon_cards[0] if not boon_cards.is_empty() else skip_button)
 
 
 func _make_start_boon_card(boon: Dictionary) -> Button:
 	var boon_id := str(boon.get("id", ""))
+	var s := _atlas_ui_scale()
 	var button := Button.new()
 	button.name = "StartBoonOption_%s" % boon_id
 	button.set_meta("boon_id", boon_id)
 	button.text = ""
-	button.custom_minimum_size = Vector2(860, 116)
+	button.custom_minimum_size = Vector2(0.0, roundf(maxf(116.0 * s, 84.0)))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(boon.get("title", boon_id)), str(boon.get("description", ""))]
-	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
-	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
-	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
-	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
+	_weapon_card_theme(button, roundf(10.0 * s))
 
 	var text_box := VBoxContainer.new()
 	text_box.name = "StartBoonText_%s" % boon_id
 	text_box.set_anchors_preset(Control.PRESET_FULL_RECT)
-	text_box.offset_left = 22.0
-	text_box.offset_top = 12.0
-	text_box.offset_right = -22.0
-	text_box.offset_bottom = -12.0
+	text_box.offset_left = roundf(22.0 * s)
+	text_box.offset_top = roundf(12.0 * s)
+	text_box.offset_right = -roundf(22.0 * s)
+	text_box.offset_bottom = -roundf(12.0 * s)
+	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	text_box.add_theme_constant_override("separation", 6)
+	text_box.add_theme_constant_override("separation", int(roundf(6.0 * s)))
 	button.add_child(text_box)
 
 	var title_label := Label.new()
 	title_label.name = "StartBoonTitle_%s" % boon_id
 	title_label.text = str(boon.get("title", boon_id))
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(21))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.max_lines_visible = 1
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(21, 12, 30))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
@@ -6929,8 +6950,10 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	desc_label.name = "StartBoonDescription_%s" % boon_id
 	desc_label.text = str(boon.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.max_lines_visible = 3
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 20))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 	return button
@@ -11444,8 +11467,9 @@ func _text_button_unique_id(button: Button) -> String:
 		return "rebind_420x62"
 	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
 		return ""
-	if button_name == "WeaponSelectBackButton":
-		return "pause_280x60"
+	if button_name in ["WeaponSelectBackButton", "StartBoonBackButton"]:
+		# SCRUM-883: единый возврат (фидбек 2026-07-08) — нативная плита back_260x104.
+		return "back_260x104"
 	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
 		return "back_260x104"
 	if button_name in ["AttributeRerollButton", "AttributeSkipButton", "VictoryNewRunButton", "DeathRetryButton"]:
@@ -11482,27 +11506,6 @@ func _apply_compact_button_theme(button: Button) -> void:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
-func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.055, 0.060, 0.074, 0.82)
-	style.border_color = Color(0.50, 0.42, 0.25, 0.72)
-	if hovered:
-		style.bg_color = Color(0.085, 0.075, 0.060, 0.92)
-		style.border_color = Color(0.92, 0.72, 0.30, 0.96)
-	if pressed:
-		style.bg_color = Color(0.045, 0.050, 0.060, 0.96)
-	if disabled:
-		style.bg_color = Color(0.04, 0.045, 0.055, 0.55)
-		style.border_color = Color(0.22, 0.23, 0.25, 0.65)
-	style.set_corner_radius_all(10)
-	style.set_border_width_all(1)
-	style.content_margin_left = 14
-	style.content_margin_top = 10
-	style.content_margin_right = 14
-	style.content_margin_bottom = 10
-	return style
 
 
 func _level_up_text_field_style(hovered := false, rare := false, pressed := false, disabled := false) -> StyleBoxFlat:
