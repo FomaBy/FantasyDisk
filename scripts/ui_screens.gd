@@ -3244,7 +3244,7 @@ func _atlas_build_canvas() -> void:
 			qmark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			qmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			qmark.text = "?"
-			qmark.add_theme_font_size_override("font_size", int(maxf(12.0, disp * 0.40)))
+			qmark.add_theme_font_size_override("font_size", int(maxf(14.0, disp * 0.40)))
 			qmark.add_theme_color_override("font_color", Color(0.82, 0.90, 1.0, 0.92))
 			nb.add_child(qmark)
 			var fog := _atlas_add_overlay(nb, "Fog", str(META40_SOCKET_TEXTURES["hidden"]), 1.0, Color.WHITE)
@@ -7602,7 +7602,7 @@ func _level_up_offer_advice(rewards: Array) -> Dictionary:
 # SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
 # юзерский масштаб шрифта (readability) может раздуть текст шире слота, а
 # клип срезал бы края подписи. Вызывать после присвоения label.text.
-func _shrink_label_font_to_width(label: Label, base_font_size: int, max_width: float, min_font_size := 7, fit_ratio := 0.62) -> void:
+func _shrink_label_font_to_width(label: Label, base_font_size: int, max_width: float, min_font_size := 12, fit_ratio := 0.62) -> void:
 	# Внешняя мерка Font.get_string_size детерминирована, но фактический рендер
 	# строки в окне шире мерки до ~1.5x (font oversampling/DPI), а внутренняя
 	# мерка Label.get_minimum_size в этом же окружении флачит. Поэтому меряем
@@ -12023,7 +12023,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.name = "%sAction" % button.name
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 0, 14))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 12, 22))
 	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
@@ -12050,7 +12050,7 @@ func _fit_economy_choice_card_content(button: Button) -> void:
 	if avail_h <= 0.0:
 		return
 	var font_size := desc_label.get_theme_font_size("font_size")
-	while font_size > 9 and content.get_combined_minimum_size().y > avail_h:
+	while font_size > 12 and content.get_combined_minimum_size().y > avail_h:
 		font_size -= 1
 		desc_label.add_theme_font_size_override("font_size", font_size)
 	var guard := desc_label.get_line_count()
@@ -12565,7 +12565,7 @@ func _layout_combat_hud(root: Control) -> void:
 		var boss_name := root.find_child("BossHudNameLabel", true, false) as Label
 		if boss_name != null:
 			_apply_chud_rect(boss_name, _scrum666_scaled_rect(HUD_V2_BOSS_NAME_2K, scale))
-			boss_name.add_theme_font_size_override("font_size", maxi(14, int(roundf(32.0 * scale))))
+			boss_name.add_theme_font_size_override("font_size", maxi(16, int(roundf(32.0 * scale))))
 
 	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
 	if asc_row != null:
@@ -12616,7 +12616,7 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
-		money_label.add_theme_font_size_override("font_size", maxi(11, int(roundf(24.0 * scale))))
+		money_label.add_theme_font_size_override("font_size", maxi(14, int(roundf(24.0 * scale))))
 	var bar_labels := {
 		"HudHPLabel": [HUD_V2_HP_BAR_2K, 20.0],
 		"HudXPLabel": [HUD_V2_XP_BAR_2K, 17.0],
@@ -12626,7 +12626,7 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 		var label := resource.find_child(str(label_name), true, false) as Label
 		if label == null:
 			continue
-		label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_labels[label_name][1]) * scale))))
+		label.add_theme_font_size_override("font_size", maxi(12, int(roundf(float(bar_labels[label_name][1]) * scale))))
 		label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
 		_hud_v2_place_in_panel(label, bar_labels[label_name][0], panel_rect, scale)
 		# Шрифт может требовать больше высоты, чем слим-бар: расширяем рект лейбла

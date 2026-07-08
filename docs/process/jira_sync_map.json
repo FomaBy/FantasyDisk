@@ -3972,5 +3972,10 @@
   "key": "SCRUM-882",
   "status": "К выполнению",
   "desc_hash": "ec5fe930755db40d3f5030241b5dbb0e"
+ },
+ "design_inrun_ui_atlas_style_task.md": {
+  "key": "SCRUM-883",
+  "status": "К выполнению",
+  "desc_hash": "c461c55d6c63c0e26f18c6a5df9c3a2f"
  }
 }
