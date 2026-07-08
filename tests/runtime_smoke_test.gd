@@ -35,7 +35,6 @@ const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
 const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
-const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png"
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
@@ -61,8 +60,6 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v
 const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
 const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
-# SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
-const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
 # SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
 # StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
@@ -3591,8 +3588,10 @@ func _test_victory_flow(main: Node) -> void:
 			_fail("Expected victory screen text to include '%s'." % expected)
 			return
 	var victory_panel := main.find_child("PauseEndModalPanel_victory", true, false) as PanelContainer
-	if victory_panel == null or _stylebox_texture_path(victory_panel.get_theme_stylebox("panel")) != MINIMAL_MODAL_TEXTURE:
-		_fail("Expected victory screen to use the SCRUM-448 minimal modal frame.")
+	# SCRUM-883: итоговая модалка победы — чип Атласа (StyleBoxFlat 0.96).
+	var victory_chip := victory_panel.get_theme_stylebox("panel") as StyleBoxFlat if victory_panel != null else null
+	if victory_panel == null or victory_chip == null or victory_chip.bg_color.a < 0.9 or victory_chip.bg_color.v > 0.35:
+		_fail("Expected victory screen to use the SCRUM-883 dark atlas chip result modal.")
 		return
 	if main.find_child("PauseEndModalScroll_victory", true, false) != null:
 		_fail("Expected victory result screen to fit without PauseEndModalScroll_victory.")
@@ -8530,8 +8529,10 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 		_fail("Expected player death to end combat.")
 		return
 	var death_panel := death_main.find_child("PauseEndModalPanel_death", true, false) as PanelContainer
-	if death_panel == null or _stylebox_texture_path(death_panel.get_theme_stylebox("panel")) != RESULT_PANEL_TEXTURE_2K:
-		_fail("Expected death screen to use the SCRUM-578 @2K result modal frame.")
+	# SCRUM-883: итоговая модалка поражения — чип Атласа (StyleBoxFlat 0.96).
+	var death_chip := death_panel.get_theme_stylebox("panel") as StyleBoxFlat if death_panel != null else null
+	if death_panel == null or death_chip == null or death_chip.bg_color.a < 0.9 or death_chip.bg_color.v > 0.35:
+		_fail("Expected death screen to use the SCRUM-883 dark atlas chip result modal.")
 		return
 	if death_main.find_child("PauseEndModalScroll_death", true, false) != null:
 		_fail("Expected death result screen to fit without PauseEndModalScroll_death.")

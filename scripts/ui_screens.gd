@@ -8575,6 +8575,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 # screens больше не кладутся в ScrollContainer: title/subtitle занимают верх safe-зоны,
 # body делит середину на crest-slot и компактную run-summary column, а action button
 # всегда остаётся в нижнем safe-слоте. Pause screen сохраняет scroll-контракт отдельно.
+# SCRUM-883: модалка итогов — чип Атласа с симметричным чип-пэддингом.
+const RESULT_MODAL_CHIP_PAD := 24.0
 const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
 const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
@@ -8676,8 +8678,8 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 0, 22))
-		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 12, 22))
+		outcome_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(outcome_label)
 
@@ -8706,16 +8708,16 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 0, 20))
-		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 12, 20))
+		name_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
 		var value_label := Label.new()
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 0, 20))
-		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 12, 20))
+		value_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
 
@@ -8731,8 +8733,8 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 0, 18))
-		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 12, 18))
+		artifacts_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(artifacts_label)
 
@@ -11576,8 +11578,9 @@ func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 
 
 func _pause_end_modal_content_margins(display_size: Vector2, screen_background_id: String) -> Vector4:
-	if screen_background_id == "death":
-		return _overhaul_2k_content_margins("result_panel", display_size)
+	# SCRUM-883: у результ-чипа контент держат симметричные чип-пэддинги.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_content_margins(RESULT_MODAL_CHIP_PAD)
 	return _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 
 
@@ -11843,11 +11846,11 @@ func _apply_level_up_later_button_theme(button: Button, display_size: Vector2) -
 
 
 func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
-	# SCRUM-578: экран «Смерть» (end-модалка результата) получает per-слот @2K-рамку
-	# result_panel (RESULT_PANEL_2K 898×820), нарисованную РОВНО в свой размер → резкий
-	# орнамент на 1080p/2K/4K. Победа/пауза пока на общем PAUSE_END_MODAL_PATH (свои таски).
-	if screen_background_id == "death":
-		return _overhaul_2k_frame_style("result_panel", display_size)
+	# SCRUM-883: итоги забега (Победа/Поражение) — модалка-чип Атласа 0.96 вместо
+	# текстурных рам (result_panel @2K у смерти, minimal-modal у победы). Пауза —
+	# чужая зона: остаётся на общем PAUSE_END_MODAL_PATH.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_style(0.96, RESULT_MODAL_CHIP_PAD)
 	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
 	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 	return _global_texture_style(PAUSE_END_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
