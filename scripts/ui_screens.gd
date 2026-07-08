@@ -127,6 +127,9 @@ const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const READABILITY_FONT_SCALE_MIN := 1.32
 const READABILITY_FONT_SCALE_TARGET := 1.45
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
+# Фидбек 2026-07-08: hover заметнее (но «не сильно») — мягкий множитель ПОВЕРХ
+# запечённого hover-арта пластин кита (unique + minimal_metal).
+const BUTTON_HOVER_EXTRA_TINT := Color(1.12, 1.12, 1.12, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const SETTINGS_RETURN_MAIN_MENU := "main_menu"
@@ -10969,10 +10972,15 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 		var text_path := str(text_textures.get(texture_state, text_textures["normal"]))
 		var text_margins: Vector4 = TEXT_BUTTON_UNIQUE_MARGINS.get(text_button_id, TEXT_BUTTON_UNIQUE_MARGINS["standard_420x104"])
 		var text_content: Vector4 = TEXT_BUTTON_UNIQUE_CONTENT.get(text_button_id, TEXT_BUTTON_UNIQUE_CONTENT["standard_420x104"])
-		return _global_texture_style(text_path, text_margins, tint, text_content)
+		var text_tint := tint
+		if texture_state == "hover" and tint == Color.WHITE:
+			text_tint = BUTTON_HOVER_EXTRA_TINT
+		return _global_texture_style(text_path, text_margins, text_tint, text_content)
 	var suffix := "" if texture_state == "normal" else "_%s" % texture_state
 	var path := "%sui_btn_minimal_metal_%s%s.png" % [MINIMAL_METAL_BUTTON_DIR, button_type, suffix]
 	var final_tint := tint
+	if texture_state == "hover" and tint == Color.WHITE:
+		final_tint = BUTTON_HOVER_EXTRA_TINT
 	var margins: Vector4 = MINIMAL_METAL_BUTTON_MARGINS.get(button_type, MINIMAL_METAL_BUTTON_MARGINS["standard"])
 	var content: Vector4 = MINIMAL_METAL_BUTTON_CONTENT.get(button_type, MINIMAL_METAL_BUTTON_CONTENT["standard"])
 	return _global_texture_style(path, margins, final_tint, content)
@@ -10989,6 +10997,9 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
 		return ""
 	if button_name.begins_with("MainMenu"):
+		return "main_menu_380x104"
+	if button_name == "HS4ChooseButton":
+		# Фидбек 2026-07-08: CTA «Выбрать» — на плите кнопок главного меню.
 		return "main_menu_380x104"
 	if button_name.begins_with("RunPause"):
 		return "pause_280x60"
