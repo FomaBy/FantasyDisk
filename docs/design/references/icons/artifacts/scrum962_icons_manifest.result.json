@@ -1,0 +1,481 @@
+{
+ "generated": [
+  {
+   "id": "aegis_shard",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_aegis_shard.png",
+   "source": "docs/design/references/icons/artifacts/aegis_shard/aegis_shard_source.png",
+   "alpha_bbox": [
+    77,
+    29,
+    179,
+    228
+   ],
+   "padding": [
+    77,
+    29,
+    77,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "85c0b58ccded"
+  },
+  {
+   "id": "arcane_prism",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_arcane_prism.png",
+   "source": "docs/design/references/icons/artifacts/arcane_prism/arcane_prism_source.png",
+   "alpha_bbox": [
+    73,
+    29,
+    182,
+    227
+   ],
+   "padding": [
+    73,
+    29,
+    74,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "2ddabc211e1c"
+  },
+  {
+   "id": "battle_fan",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_battle_fan.png",
+   "source": "docs/design/references/icons/artifacts/battle_fan/battle_fan_source.png",
+   "alpha_bbox": [
+    33,
+    29,
+    224,
+    227
+   ],
+   "padding": [
+    33,
+    29,
+    32,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "52b3ac67cc27"
+  },
+  {
+   "id": "blood_roar",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_blood_roar.png",
+   "source": "docs/design/references/icons/artifacts/blood_roar/blood_roar_source.png",
+   "alpha_bbox": [
+    31,
+    29,
+    226,
+    227
+   ],
+   "padding": [
+    31,
+    29,
+    30,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "8e267af9028a"
+  },
+  {
+   "id": "crimson_grip",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_crimson_grip.png",
+   "source": "docs/design/references/icons/artifacts/crimson_grip/crimson_grip_source.png",
+   "alpha_bbox": [
+    84,
+    28,
+    171,
+    227
+   ],
+   "padding": [
+    84,
+    28,
+    85,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "0d9db928c133"
+  },
+  {
+   "id": "evasion_shroud",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_evasion_shroud.png",
+   "source": "docs/design/references/icons/artifacts/evasion_shroud/evasion_shroud_source.png",
+   "alpha_bbox": [
+    60,
+    29,
+    196,
+    227
+   ],
+   "padding": [
+    60,
+    29,
+    60,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "d010fff24f04"
+  },
+  {
+   "id": "executioner_edge",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_executioner_edge.png",
+   "source": "docs/design/references/icons/artifacts/executioner_edge/executioner_edge_source.png",
+   "alpha_bbox": [
+    54,
+    28,
+    202,
+    228
+   ],
+   "padding": [
+    54,
+    28,
+    54,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "5142dfd9bdc4"
+  },
+  {
+   "id": "falcon_feather",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_falcon_feather.png",
+   "source": "docs/design/references/icons/artifacts/falcon_feather/falcon_feather_source.png",
+   "alpha_bbox": [
+    28,
+    29,
+    227,
+    227
+   ],
+   "padding": [
+    28,
+    29,
+    29,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "0a896a4d3ed3"
+  },
+  {
+   "id": "ghost_ribbon",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_ghost_ribbon.png",
+   "source": "docs/design/references/icons/artifacts/ghost_ribbon/ghost_ribbon_source.png",
+   "alpha_bbox": [
+    73,
+    29,
+    181,
+    227
+   ],
+   "padding": [
+    73,
+    29,
+    75,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "febca835b1f0"
+  },
+  {
+   "id": "hammer_weight",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_hammer_weight.png",
+   "source": "docs/design/references/icons/artifacts/hammer_weight/hammer_weight_source.png",
+   "alpha_bbox": [
+    51,
+    29,
+    204,
+    227
+   ],
+   "padding": [
+    51,
+    29,
+    52,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "9ab602c81c4b"
+  },
+  {
+   "id": "iron_scale",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_iron_scale.png",
+   "source": "docs/design/references/icons/artifacts/iron_scale/iron_scale_source.png",
+   "alpha_bbox": [
+    63,
+    29,
+    193,
+    228
+   ],
+   "padding": [
+    63,
+    29,
+    63,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "de7a86b4d84c"
+  },
+  {
+   "id": "last_onslaught",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_last_onslaught.png",
+   "source": "docs/design/references/icons/artifacts/last_onslaught/last_onslaught_source.png",
+   "alpha_bbox": [
+    35,
+    28,
+    221,
+    227
+   ],
+   "padding": [
+    35,
+    28,
+    35,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "5ad2c60869a6"
+  },
+  {
+   "id": "overcharge_rune",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_overcharge_rune.png",
+   "source": "docs/design/references/icons/artifacts/overcharge_rune/overcharge_rune_source.png",
+   "alpha_bbox": [
+    68,
+    28,
+    188,
+    228
+   ],
+   "padding": [
+    68,
+    28,
+    68,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "3c0c4ffa924b"
+  },
+  {
+   "id": "perfect_edge",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_perfect_edge.png",
+   "source": "docs/design/references/icons/artifacts/perfect_edge/perfect_edge_source.png",
+   "alpha_bbox": [
+    103,
+    29,
+    154,
+    227
+   ],
+   "padding": [
+    103,
+    29,
+    102,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "b1e5bea21430"
+  },
+  {
+   "id": "plague_metronome",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_plague_metronome.png",
+   "source": "docs/design/references/icons/artifacts/plague_metronome/plague_metronome_source.png",
+   "alpha_bbox": [
+    62,
+    29,
+    192,
+    228
+   ],
+   "padding": [
+    62,
+    29,
+    64,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "dd501fecd107"
+  },
+  {
+   "id": "ram_horn",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_ram_horn.png",
+   "source": "docs/design/references/icons/artifacts/ram_horn/ram_horn_source.png",
+   "alpha_bbox": [
+    74,
+    28,
+    181,
+    227
+   ],
+   "padding": [
+    74,
+    28,
+    75,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "1f3f21138c69"
+  },
+  {
+   "id": "return_arc_rune",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_return_arc_rune.png",
+   "source": "docs/design/references/icons/artifacts/return_arc_rune/return_arc_rune_source.png",
+   "alpha_bbox": [
+    44,
+    29,
+    211,
+    227
+   ],
+   "padding": [
+    44,
+    29,
+    45,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "15ad5e5b0e3e"
+  },
+  {
+   "id": "shadow_twin",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_shadow_twin.png",
+   "source": "docs/design/references/icons/artifacts/shadow_twin/shadow_twin_source.png",
+   "alpha_bbox": [
+    48,
+    29,
+    208,
+    227
+   ],
+   "padding": [
+    48,
+    29,
+    48,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "09a32f74505f"
+  },
+  {
+   "id": "spectral_axe",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_spectral_axe.png",
+   "source": "docs/design/references/icons/artifacts/spectral_axe/spectral_axe_source.png",
+   "alpha_bbox": [
+    72,
+    29,
+    184,
+    227
+   ],
+   "padding": [
+    72,
+    29,
+    72,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "89c3343555e9"
+  },
+  {
+   "id": "thirsty_ruby",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_thirsty_ruby.png",
+   "source": "docs/design/references/icons/artifacts/thirsty_ruby/thirsty_ruby_source.png",
+   "alpha_bbox": [
+    68,
+    29,
+    188,
+    227
+   ],
+   "padding": [
+    68,
+    29,
+    68,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "a9064e4c5b15"
+  },
+  {
+   "id": "troll_blood",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_troll_blood.png",
+   "source": "docs/design/references/icons/artifacts/troll_blood/troll_blood_source.png",
+   "alpha_bbox": [
+    69,
+    29,
+    186,
+    227
+   ],
+   "padding": [
+    69,
+    29,
+    70,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "5a40b2e54904"
+  },
+  {
+   "id": "venom_spool",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_venom_spool.png",
+   "source": "docs/design/references/icons/artifacts/venom_spool/venom_spool_source.png",
+   "alpha_bbox": [
+    54,
+    28,
+    201,
+    227
+   ],
+   "padding": [
+    54,
+    28,
+    55,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "66253f441aa0"
+  },
+  {
+   "id": "venom_vial",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_venom_vial.png",
+   "source": "docs/design/references/icons/artifacts/venom_vial/venom_vial_source.png",
+   "alpha_bbox": [
+    66,
+    29,
+    189,
+    227
+   ],
+   "padding": [
+    66,
+    29,
+    67,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "40c651f9a18c"
+  },
+  {
+   "id": "war_banner",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_war_banner.png",
+   "source": "docs/design/references/icons/artifacts/war_banner/war_banner_source.png",
+   "alpha_bbox": [
+    79,
+    29,
+    177,
+    228
+   ],
+   "padding": [
+    79,
+    29,
+    79,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "16b94606ce2b"
+  },
+  {
+   "id": "wide_halo",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_wide_halo.png",
+   "source": "docs/design/references/icons/artifacts/wide_halo/wide_halo_source.png",
+   "alpha_bbox": [
+    60,
+    29,
+    195,
+    227
+   ],
+   "padding": [
+    60,
+    29,
+    61,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "79c99db79ac5"
+  }
+ ],
+ "failures": [],
+ "duplicates": {}
+}
