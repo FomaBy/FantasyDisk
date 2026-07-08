@@ -221,7 +221,8 @@ static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Contr
 	label.text = str(ICON_ABBREVIATIONS.get(icon_id, icon_id.substr(0, min(3, icon_id.length())).to_upper()))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 18 if display_size.x >= 55.0 else 14)
+	# SCRUM-883: пол фолбэк-бейджа 14 → 16 (аббревиатура ≤3 букв читаема и в мелком слоте).
+	label.add_theme_font_size_override("font_size", 18 if display_size.x >= 55.0 else 16)
 	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	panel.add_child(label)
 	return panel
