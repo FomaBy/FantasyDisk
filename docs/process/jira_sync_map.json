@@ -4005,8 +4005,8 @@
  },
  "design_pause_dossier_atlas_esc_unify_task.md": {
   "key": "SCRUM-890",
-  "status": "К выполнению",
-  "desc_hash": "440207edc36f0116d999fb651d5d7fd1"
+  "status": "Готово",
+  "desc_hash": "65d1536f2574140ae7f009a56efaa96d"
  },
  "backend_remove_codex_glossary_task.md": {
   "key": "SCRUM-889",
