@@ -49,8 +49,14 @@ class StubGame extends RefCounted:
 	var selected_character_id: String = "berserk"
 	var rng := RandomNumberGenerator.new()
 	var PROGRESSION_DATA := StubProgression.new()
+	# Кодекс-открытия: ui_screens.gd:8964 зовёт record_codex_artifact_discovery
+	# при выдаче артефакта события (добавлено 2026-06-28, ПОСЛЕ написания гейта) —
+	# стаб обязан нести этот контракт game, иначе непустой пул падает.
+	var codex_discoveries: Array = []
 	func route_scaling_stage() -> int:
 		return 0
+	func record_codex_artifact_discovery(reward: Dictionary) -> void:
+		codex_discoveries.append(reward)
 
 
 func _initialize() -> void:

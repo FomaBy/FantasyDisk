@@ -1227,7 +1227,14 @@ func apply_reward(reward: Dictionary) -> void:
 
 	if reward.get("kind", "") == "artifact":
 		# Храним id и title: id нужен для иконок HUD/паузы, title — для текстов.
-		artifacts.append({"id": str(reward.get("id", "")), "title": str(reward.get("title", ""))})
+		# SCRUM-960: + опциональный tier материализованного оффера (редкость для UI).
+		# Старые записи {id, title} без tier остаются валидными — читатели берут
+		# tier через .get("tier", 0), 0 = не показывать.
+		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", ""))}
+		var reward_tier := int(reward.get("tier", 0))
+		if reward_tier > 0:
+			artifact_entry["tier"] = reward_tier
+		artifacts.append(artifact_entry)
 
 	_apply_stat_scaling(false, old_max_health)
 

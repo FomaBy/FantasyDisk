@@ -109,6 +109,8 @@ const ELITE_ATTACK_CONFIGS := EnemyData.ELITE_ATTACK_CONFIGS
 const UNIQUE_ENCOUNTER_PATTERNS := EnemyData.UNIQUE_ENCOUNTER_PATTERNS
 
 static func artifact_definition(artifact_id: String) -> Dictionary:
+	# SCRUM-960: для семьи (rarity_scaling) возвращает запись КАК ЕСТЬ (корень =
+	# т1-база + tiers) — материализация оффера происходит только в сэмплерах.
 	for artifact in ARTIFACTS:
 		if str(artifact.get("id", "")) == artifact_id:
 			return artifact
@@ -116,6 +118,55 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 		if str(item.get("id", "")) == artifact_id:
 			return item
 	return {}
+
+
+# --- SCRUM-960: универсальные семьи артефактов с роллом редкости ---
+# Семья (rarity_scaling:true, artifact_system_matrix §1.3) хранит tiers{1,2,3};
+# тир роллится ПРИ ВЫДАЧЕ (offer-time) по нормализованным весам, оффер
+# материализуется в плоскую запись — дальше пайплайн (карточки, магазин,
+# apply_reward) работает без изменений. Вес самой семьи в пуле = 1.0.
+
+# Ролл тира семьи. Пустой аргумент = канонические TIER_WEIGHTS (нормализация
+# даёт ≈0.64/0.29/0.08); кастомные веса — для depth-логики элиток/сундуков.
+static func roll_artifact_family_tier(weights: Dictionary = {}) -> int:
+	var tier_weights: Dictionary = weights if not weights.is_empty() else TIER_WEIGHTS
+	var tiers: Array = tier_weights.keys()
+	tiers.sort()
+	var total := 0.0
+	for tier in tiers:
+		total += maxf(float(tier_weights[tier]), 0.0)
+	if total <= 0.0:
+		return 1
+	var roll := randf() * total
+	var cursor := 0.0
+	for tier in tiers:
+		cursor += maxf(float(tier_weights[tier]), 0.0)
+		if roll <= cursor:
+			return int(tier)
+	return int(tiers.back())
+
+
+# Материализация оффера семьи на выбранном тире: плоская запись
+# {id, title, tier, cost=COST_BY_TIER[tier], description, stats|mods,
+#  rarity_scaling:true} — эффект тира ЗАМЕЩАЕТ корневой (т1-базовый).
+# kind/weight не ставятся здесь — их добавляет вызывающий сэмплер.
+static func materialize_family_offer(family: Dictionary, tier: int) -> Dictionary:
+	var tiers: Dictionary = family.get("tiers", {}) as Dictionary
+	var tier_key := tier if tiers.has(tier) else 1
+	var tier_data: Dictionary = tiers.get(tier_key, {}) as Dictionary
+	var offer: Dictionary = family.duplicate(true)
+	offer.erase("tiers")
+	offer.erase("stats")
+	offer.erase("mods")
+	offer["tier"] = tier_key
+	offer["cost"] = int(COST_BY_TIER.get(tier_key, int(family.get("cost", 30))))
+	offer["description"] = str(tier_data.get("description", family.get("description", "")))
+	if tier_data.has("stats"):
+		offer["stats"] = (tier_data.get("stats") as Dictionary).duplicate(true)
+	if tier_data.has("mods"):
+		offer["mods"] = (tier_data.get("mods") as Dictionary).duplicate(true)
+	offer["rarity_scaling"] = true
+	return offer
 
 
 # --- Стартовые бооны забега (SCRUM-618) ---
@@ -1286,9 +1337,16 @@ static func reward_pool(character_id := "") -> Array:
 	for artifact in ARTIFACTS:
 		if character_id != "" and not is_reward_relevant(artifact, character_id):
 			continue
-		var artifact_reward: Dictionary = artifact.duplicate(true)
+		var artifact_reward: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — ролл тира по нормализованным TIER_WEIGHTS,
+			# в пул входит материализованный оффер с весом семьи (1.0).
+			artifact_reward = materialize_family_offer(artifact, roll_artifact_family_tier())
+			artifact_reward["weight"] = 1.0
+		else:
+			artifact_reward = artifact.duplicate(true)
+			artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
 		artifact_reward["kind"] = "artifact"
-		artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
 		rewards.append(artifact_reward)
 	return rewards
 
@@ -1371,12 +1429,28 @@ static func shop_items(route_stage := 0, character_id := "") -> Array:
 	for artifact in ARTIFACTS:
 		if character_id != "" and not is_reward_relevant(artifact, character_id):
 			continue
-		var shop_artifact: Dictionary = artifact.duplicate(true)
+		var shop_artifact: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — ролл тира (нормализованные TIER_WEIGHTS), цена
+			# материализованного тира затем масштабируется глубиной как обычно.
+			shop_artifact = materialize_family_offer(artifact, roll_artifact_family_tier())
+			shop_artifact["weight"] = 1.0
+		else:
+			shop_artifact = artifact.duplicate(true)
+			shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		shop_artifact["cost"] = stage_scaled_cost(int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30))), route_stage)
 		shop_artifact["kind"] = "artifact"
-		shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		items.append(shop_artifact)
 	return items
+
+
+static func _elite_tier_depth_weight(tier: int, route_stage: int, scale: float) -> float:
+	# Существующая depth-формула элиток/сундуков: глубже по маршруту — чаще т2/т3.
+	if tier == 2:
+		return 0.75 + scale * 0.25
+	elif tier == 3:
+		return 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+	return 1.0
 
 
 static func elite_artifact_choices(route_stage: int, count := 3, character_id := "") -> Array:
@@ -1385,13 +1459,21 @@ static func elite_artifact_choices(route_stage: int, count := 3, character_id :=
 	for artifact in ARTIFACTS:
 		if character_id != "" and not is_reward_relevant(artifact, character_id):
 			continue
-		var candidate: Dictionary = artifact.duplicate(true)
+		var candidate: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — тир роллится по TIER_WEIGHTS × depth_weight
+			# (существующая формула глубины), вес семьи в пуле = 1.0.
+			var depth_weights := {}
+			for tier_key in TIER_WEIGHTS:
+				depth_weights[tier_key] = float(TIER_WEIGHTS[tier_key]) * _elite_tier_depth_weight(int(tier_key), route_stage, scale)
+			candidate = materialize_family_offer(artifact, roll_artifact_family_tier(depth_weights))
+			candidate["kind"] = "artifact"
+			candidate["weight"] = 1.0
+			pool.append(candidate)
+			continue
+		candidate = artifact.duplicate(true)
 		var tier := int(candidate.get("tier", 1))
-		var depth_weight := 1.0
-		if tier == 2:
-			depth_weight = 0.75 + scale * 0.25
-		elif tier == 3:
-			depth_weight = 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+		var depth_weight := _elite_tier_depth_weight(tier, route_stage, scale)
 		candidate["kind"] = "artifact"
 		candidate["weight"] = maxf(TIER_WEIGHTS.get(tier, 1.0) * depth_weight, 0.05)
 		pool.append(candidate)
@@ -1416,11 +1498,14 @@ static func elite_artifact_choices(route_stage: int, count := 3, character_id :=
 static func boss_completion_artifact_rewards(character_id := "") -> Array:
 	var rewards := []
 	for artifact in ARTIFACTS:
-		if int(artifact.get("tier", 1)) < 3:
+		var is_family := bool(artifact.get("rarity_scaling", false))
+		# SCRUM-960: семьи попадают в boss-пул ФИКСИРОВАННО тиром 3 (эпический);
+		# плоские записи — как раньше, только tier >= 3.
+		if not is_family and int(artifact.get("tier", 1)) < 3:
 			continue
 		if character_id != "" and not is_reward_relevant(artifact, character_id):
 			continue
-		var reward: Dictionary = artifact.duplicate(true)
+		var reward: Dictionary = materialize_family_offer(artifact, 3) if is_family else artifact.duplicate(true)
 		reward["kind"] = "artifact"
 		rewards.append(reward)
 	return rewards
