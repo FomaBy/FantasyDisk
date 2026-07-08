@@ -40,7 +40,6 @@ const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_f
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
-const GLOSSARY_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png"
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
@@ -65,15 +64,10 @@ const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
 # SCRUM-578: экран «Смерть» — per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820).
 const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_result_panel.png"
-# SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab); рамки берутся из
-# codex_pl/fit/ (обрезанные по орнаменту 9-slice копии).
-const CODEX_MAIN_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_main_shell.png"
-const CODEX_NAV_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_nav_panel.png"
-const CODEX_LIST_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_grid_panel.png"
-const CODEX_DETAIL_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_detail_panel.png"
-const CODEX_ENTRY_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_entry_card.png"
-const CODEX_TAB_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_category_button.png"
-const CODEX_BACK_BUTTON_TEXTURE_2K := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_back_button.png"
+# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
+# StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
+const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
+const CODEX_TAB_KIT_TEXTURE_PART := "minimal_metal_codex_tab"
 const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
 const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
 const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
@@ -1384,8 +1378,10 @@ func _test_glossary_terms(main: Node) -> void:
 	button.position = Vector2(24, 120)
 	(main.get("ui_layer") as CanvasLayer).add_child(button)
 	await process_frame
-	if button.find_child("GlossaryDottedUnderline", true, false) == null:
-		_fail("Expected glossary terms to expose a dotted underline marker.")
+	# SCRUM-879: термин — «кожаный ряд» единого чип-языка (StyleBoxFlat),
+	# пунктирная flat-ссылка упразднена вместе с китом codex_pl.
+	if not (button.get_theme_stylebox("normal") is StyleBoxFlat):
+		_fail("Expected glossary terms to use the unified leather row StyleBoxFlat.")
 		return
 	if not button.tooltip_text.contains("Критический удар"):
 		_fail("Expected normal-screen glossary term to expose hover tooltip text.")
@@ -1399,8 +1395,9 @@ func _test_glossary_terms(main: Node) -> void:
 	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		_fail("Expected glossary tooltip to ignore mouse input and avoid hover flicker.")
 		return
-	if _stylebox_texture_path(tooltip.get_theme_stylebox("panel")) != GLOSSARY_TOOLTIP_TEXTURE_2K:
-		_fail("Expected glossary tooltip to use the SCRUM-486 @2K gt_panel frame texture.")
+	var glossary_tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxFlat
+	if glossary_tooltip_style == null or glossary_tooltip_style.bg_color.a < 0.9 or glossary_tooltip_style.bg_color.v > 0.35:
+		_fail("Expected glossary tooltip to use the near-opaque dark atlas chip StyleBoxFlat.")
 		return
 	if tooltip.get_global_rect().intersects(button.get_global_rect()):
 		_fail("Expected glossary tooltip to keep a stable offset and avoid overlapping its anchor.")
@@ -6822,44 +6819,13 @@ func _test_back_button_frame_safety(main_scene: PackedScene) -> void:
 	codex_button.pressed.emit()
 	await process_frame
 	var codex_back_button := back_main.find_child("CodexBackButton", true, false) as Button
-	if not _assert_codex_v2_back_button_safe(codex_back_button, checked):
+	# SCRUM-879: кнопка «Назад» кодекса — стандартная кит-кнопка шапки (180×atlas-h).
+	if not _assert_back_button_frame_safe(codex_back_button, "codex", 180.0, checked):
 		return
 
 	_write_back_button_qa_dump(back_main, checked)
 	back_main.queue_free()
 	await process_frame
-
-
-func _assert_codex_v2_back_button_safe(button: Button, checked: Array) -> bool:
-	if button == null:
-		_fail("Expected codex v2 back button to exist.")
-		return false
-	var rect := button.get_global_rect()
-	var expected := _codex_v2_expected_rect(Rect2(126, 820, 240, 66), button.get_viewport_rect().size)
-	if rect.position.distance_to(expected.position) > 2.0 or rect.size.distance_to(expected.size) > 2.0:
-		_fail("Expected SCRUM-850 codex v2 back button to sit inside object-first nav safe rect %s, got %s." % [str(expected), str(rect)])
-		return false
-	if button.text != "←":
-		_fail("Expected codex v2 compact back button to use icon text, got `%s`." % button.text)
-		return false
-	var normal_style := button.get_theme_stylebox("normal")
-	if normal_style == null:
-		_fail("Expected codex v2 back button to have a themed normal stylebox.")
-		return false
-	var content_width := rect.size.x - normal_style.get_content_margin(SIDE_LEFT) - normal_style.get_content_margin(SIDE_RIGHT)
-	var content_height := rect.size.y - normal_style.get_content_margin(SIDE_TOP) - normal_style.get_content_margin(SIDE_BOTTOM)
-	if content_width < 20.0 or content_height < 34.0:
-		_fail("Expected codex v2 back arrow to fit inside content zone, got %.1fx%.1f." % [content_width, content_height])
-		return false
-	checked.append({
-		"context": "codex_v2",
-		"name": button.name,
-		"text": button.text,
-		"rect": rect,
-		"min_size": button.custom_minimum_size,
-		"content_size": Vector2(content_width, content_height),
-	})
-	return true
 
 
 func _hero_select_v4_expected_rect(zone: Rect2, viewport_size: Vector2) -> Rect2:
@@ -6890,16 +6856,6 @@ func _visible_hero_carousel_slot_buttons(parent: Node) -> Array:
 		if button != null and button.visible and str(button.name).begins_with("HS4CarouselSlot") and button.get_global_rect().has_area():
 			buttons.append(button)
 	return buttons
-
-
-func _codex_v2_expected_rect(base_rect: Rect2, viewport_size: Vector2) -> Rect2:
-	var base_size := Vector2(1920.0, 1080.0)
-	# SCRUM-725: the base layout map already includes its 24px outer inset.
-	var screen_inset := Vector2.ZERO
-	var avail := viewport_size - screen_inset * 2.0
-	var scale := minf(avail.x / base_size.x, avail.y / base_size.y)
-	var offset := (viewport_size - base_size * scale) * 0.5
-	return Rect2(offset + base_rect.position * scale, base_rect.size * scale)
 
 
 func _assert_back_button_frame_safe(button: Button, context: String, min_width: float, checked: Array) -> bool:
@@ -7033,7 +6989,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected the Codex screen to open from the main menu.")
 		return
 
-	var codex_main_panel := codex_main.find_child("CodexMainPanel", true, false) as PanelContainer
+	var codex_background := codex_main.find_child("UnifiedBackground_codex", true, false) as TextureRect
+	var codex_frame := codex_main.find_child("CodexFrame", true, false) as Panel
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
 	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
@@ -7048,35 +7005,39 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var detail_portrait := codex_main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
 	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
 	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
-	if codex_main_panel == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_object_stage == null or codex_center_object_texture == null or codex_center_summary == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
-		_fail("Expected SCRUM-850 object-first Codex layout to include main/nav/center/detail panels, object stages, tabs, entry card, and portrait slots.")
+	if codex_background == null or codex_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_object_stage == null or codex_center_object_texture == null or codex_center_summary == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
+		_fail("Expected SCRUM-879 atlas-style Codex layout to include background/frame, nav/center/detail panels, object stages, tabs, entry card, and portrait slots.")
 		return
 
-	var expected_codex_textures := {
-		"CodexMainPanel": CODEX_MAIN_TEXTURE_2K,
-		"CodexNavPanel": CODEX_NAV_TEXTURE_2K,
-		"CodexContent": CODEX_LIST_TEXTURE_2K,
-		"CodexDetailPanel": CODEX_DETAIL_TEXTURE_2K,
-		"CodexDetailPortraitSlot": MINIMAL_FIELD_TEXTURE,
-	}
-	for node_name in expected_codex_textures.keys():
-		var panel := codex_main.find_child(str(node_name), true, false) as PanelContainer
-		if panel == null:
-			_fail("Expected Codex panel %s to exist." % node_name)
-			return
-		var actual_path := _stylebox_texture_path(panel.get_theme_stylebox("panel"))
-		if actual_path != str(expected_codex_textures[node_name]):
-			_fail("Expected %s to use `%s`, got `%s`." % [node_name, expected_codex_textures[node_name], actual_path])
+	# SCRUM-879: слои атлас-стиля — COVERED-фон без осевого stretch и полая
+	# рама meta40 (draw_center=false) поверх контента.
+	if codex_background.texture == null or codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
+		_fail("Expected UnifiedBackground_codex to cover the viewport without axis stretch.")
+		return
+	var codex_frame_style := codex_frame.get_theme_stylebox("panel") as StyleBoxTexture
+	if codex_frame_style == null or codex_frame_style.draw_center:
+		_fail("Expected hollow CodexFrame (StyleBoxTexture, draw_center=false).")
+		return
+	if codex_frame_style.texture == null or not codex_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
+		_fail("Expected CodexFrame to use the meta40 frame_border 9-slice.")
+		return
+	# Панели колонок — тёмные чипы Атласа (StyleBoxFlat, alpha >= 0.8).
+	for codex_panel in [codex_nav_panel, codex_content, codex_detail]:
+		var codex_chip := (codex_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
+		if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
+			_fail("Expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % str((codex_panel as Control).name))
 			return
 
-	# SCRUM-684: строковый портрет-слот больше НЕ чёрный MINIMAL_FIELD-бокс —
-	# это лёгкая parchment-inset StyleBoxFlat-подложка (без texture-стиля).
+	# Слоты портретов — полупрозрачные StyleBoxFlat-подложки (без texture-стиля).
 	var slot_style := default_portrait.get_theme_stylebox("panel")
 	if not (slot_style is StyleBoxFlat):
-		_fail("Expected SCRUM-684 Codex entry portrait slot to use a parchment inset StyleBoxFlat, not a dark field texture.")
+		_fail("Expected Codex entry portrait slot to use a translucent StyleBoxFlat, not a dark field texture.")
 		return
-	if _stylebox_texture_path(default_entry.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_TEXTURE_2K:
-		_fail("Expected SCRUM-574 Codex list cards to use the Codex @2K entry card frame.")
+	if not (detail_portrait.get_theme_stylebox("panel") is StyleBoxFlat):
+		_fail("Expected SCRUM-879 Codex detail portrait slot to use a translucent StyleBoxFlat.")
+		return
+	if not ((default_entry as Button).get_theme_stylebox("normal") is StyleBoxFlat):
+		_fail("Expected SCRUM-879 Codex list cards to use the unified leather row StyleBoxFlat.")
 		return
 
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
@@ -7098,35 +7059,36 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or _stylebox_texture_path(character_tab.get_theme_stylebox("normal")) != CODEX_TAB_BUTTON_TEXTURE_2K:
-		_fail("Expected SCRUM-574 Codex tabs to use the Codex @2K tab frame.")
+	if character_tab == null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains(CODEX_TAB_KIT_TEXTURE_PART):
+		_fail("Expected SCRUM-879 Codex tabs to use the global codex_tab kit button.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
-	if codex_back_button == null or _stylebox_texture_path(codex_back_button.get_theme_stylebox("normal")) != CODEX_BACK_BUTTON_TEXTURE_2K:
-		_fail("Expected SCRUM-574 Codex back button to use the Codex @2K back button frame.")
+	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):
+		_fail("Expected SCRUM-879 Codex back button to use the global minimal-metal kit.")
 		return
 
-	var expected_layout := {
-		"CodexMainPanel": Rect2(72, 54, 1776, 972),
-		"CodexNavPanel": Rect2(96, 210, 300, 700),
-		"CodexBackButton": Rect2(126, 820, 240, 66),
-		"CodexTabs": Rect2(126, 250, 240, 522),
-		"CodexContent": Rect2(438, 210, 490, 700),
-		"CodexCenterObjectStage": Rect2(510, 264, 346, 292),
-		"CodexCenterSummaryPanel": Rect2(500, 590, 366, 128),
-		"CodexCenterListHost": Rect2(500, 742, 366, 118),
-		"CodexDetailPanel": Rect2(960, 210, 840, 700),
-		"CodexDetailPortraitSlot": Rect2(1080, 258, 600, 360),
-		"CodexDetailChipRow": Rect2(1110, 642, 540, 64),
-		"CodexDetailParchmentInset": Rect2(1050, 730, 660, 134),
-	}
+	# SCRUM-879: контейнерный шелл — вместо абсолютных рект проверяем safe-зону
+	# рамы (маргины meta40 160px от базы 1536x1024) и сдерживание колонок.
 	var codex_viewport_size := codex_screen.get_viewport_rect().size
-	for node_name in expected_layout.keys():
-		var control := codex_main.find_child(str(node_name), true, false) as Control
-		var expected_rect := _codex_v2_expected_rect(expected_layout[node_name], codex_viewport_size)
-		var actual_rect := control.get_global_rect()
-		if actual_rect.position.distance_to(expected_rect.position) > 2.0 or actual_rect.size.distance_to(expected_rect.size) > 2.0:
-			_fail("Expected SCRUM-850 %s rect near %s, got %s." % [node_name, str(expected_rect), str(actual_rect)])
+	var codex_margin_x := roundf(160.0 * codex_viewport_size.x / 1536.0)
+	var codex_margin_y := roundf(160.0 * codex_viewport_size.y / 1024.0)
+	var codex_safe_rect := Rect2(
+		codex_margin_x, codex_margin_y,
+		codex_viewport_size.x - 2.0 * codex_margin_x, codex_viewport_size.y - 2.0 * codex_margin_y
+	).grow(2.0)
+	for safe_control in [codex_nav_panel, codex_content, codex_detail, codex_back_button]:
+		if not codex_safe_rect.encloses((safe_control as Control).get_global_rect()):
+			_fail("Expected %s to stay inside unified safe margins %s, got %s." % [str((safe_control as Control).name), str(codex_safe_rect), str((safe_control as Control).get_global_rect())])
+			return
+	var codex_center_rect := codex_content.get_global_rect().grow(1.0)
+	for center_child in [codex_center_object_stage, codex_center_summary, codex_center_list]:
+		if not codex_center_rect.encloses((center_child as Control).get_global_rect()):
+			_fail("Expected %s to stay inside CodexContent panel." % str((center_child as Control).name))
+			return
+	var codex_detail_rect := codex_detail.get_global_rect().grow(1.0)
+	for detail_child in [detail_portrait, detail_chip_row, detail_text_safe]:
+		if not codex_detail_rect.encloses((detail_child as Control).get_global_rect()):
+			_fail("Expected %s to stay inside CodexDetailPanel." % str((detail_child as Control).name))
 			return
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
@@ -7134,7 +7096,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
 	dump_lines.append("")
-	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait, detail_chip_row, detail_text_safe]:
+	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait, detail_chip_row, detail_text_safe]:
 		var control_node := control as Control
 		var texture_path := ""
 		if control_node is PanelContainer:
@@ -7180,7 +7142,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var scrum438_dump := PackedStringArray()
 	scrum438_dump.append("# SCRUM-438 Codex V2 Runtime Dump")
 	scrum438_dump.append("")
-	for control in [codex_main_panel, codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait]:
+	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait]:
 		var c := control as Control
 		scrum438_dump.append("- `%s`: `%s`" % [c.name, str(c.get_global_rect())])
 	scrum438_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)

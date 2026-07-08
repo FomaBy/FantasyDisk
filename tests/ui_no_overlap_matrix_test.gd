@@ -32,15 +32,9 @@ const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_
 const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
 const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
-# SCRUM-684: кодекс переведён на Dark Fantasy pixel-art рамки (Pixel Lab, codex_pl/fit),
-# заменив старые overhaul_2k codex-фреймы. Ассерты совпадают с runtime_smoke_test.gd.
-const CODEX_MAIN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_main_shell.png"
-const CODEX_NAV_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_nav_panel.png"
-const CODEX_LIST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_grid_panel.png"
-const CODEX_DETAIL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_detail_panel.png"
-const CODEX_ENTRY_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_entry_card.png"
-const CODEX_TAB_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_category_button.png"
-const CODEX_BACK_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/codex_pl/fit/codex_pl_back_button.png"
+# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
+# StyleBoxFlat в safe-зоне полой рамы meta40 (ассерты совпадают с runtime_smoke_test.gd).
+const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
@@ -692,27 +686,43 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if not content_safe.encloses(child.get_global_rect()):
 					return "%s: expected %s to stay inside ResultContent safe rect %s, got %s." % [context, child_name, str(content_safe), str(child.get_global_rect())]
 		"codex":
-			var expected_panels := {
-				"CodexMainPanel": CODEX_MAIN_2K_FRAME_PATH,
-				"CodexNavPanel": CODEX_NAV_2K_FRAME_PATH,
-				"CodexContent": CODEX_LIST_2K_FRAME_PATH,
-				"CodexDetailPanel": CODEX_DETAIL_2K_FRAME_PATH,
-			}
-			for node_name in expected_panels.keys():
-				var panel := main.find_child(str(node_name), true, false) as Control
-				if panel == null or not panel.get_global_rect().has_area():
-					return "%s: expected visible %s." % [context, node_name]
-				if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != str(expected_panels[node_name]):
-					return "%s: expected %s to use its Codex @2K frame." % [context, node_name]
-			var entry_card := main.find_child("CodexEntryCard", true, false) as Control
-			if entry_card == null or _stylebox_texture_path(entry_card.get_theme_stylebox("normal")) != CODEX_ENTRY_CARD_2K_FRAME_PATH:
-				return "%s: expected CodexEntryCard to use codex_entry_card @2K frame." % context
+			# SCRUM-879: единый атлас-стиль — фон COVERED без осевого stretch,
+			# полая рама meta40 поверх, панели-чипы StyleBoxFlat в safe-зоне рамы.
+			var codex_background := main.find_child("UnifiedBackground_codex", true, false) as TextureRect
+			if codex_background == null or codex_background.texture == null:
+				return "%s: expected UnifiedBackground_codex with a loaded texture." % context
+			if codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
+				return "%s: expected UnifiedBackground_codex to cover the viewport without axis stretch." % context
+			var codex_frame := main.find_child("CodexFrame", true, false) as Panel
+			if codex_frame == null:
+				return "%s: expected CodexFrame ornament overlay." % context
+			var codex_frame_style := codex_frame.get_theme_stylebox("panel") as StyleBoxTexture
+			if codex_frame_style == null or codex_frame_style.draw_center:
+				return "%s: expected hollow CodexFrame (StyleBoxTexture, draw_center=false)." % context
+			if codex_frame_style.texture == null or not codex_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
+				return "%s: expected CodexFrame to use the meta40 frame_border 9-slice." % context
+			var codex_vp := codex_frame.get_viewport_rect().size
+			var codex_margin_x := roundf(160.0 * codex_vp.x / 1536.0)
+			var codex_margin_y := roundf(160.0 * codex_vp.y / 1024.0)
+			var codex_safe := Rect2(
+				codex_margin_x, codex_margin_y,
+				codex_vp.x - 2.0 * codex_margin_x, codex_vp.y - 2.0 * codex_margin_y
+			).grow(2.0)
+			for codex_panel_name in ["CodexNavPanel", "CodexContent", "CodexDetailPanel"]:
+				var codex_panel := main.find_child(str(codex_panel_name), true, false) as PanelContainer
+				if codex_panel == null or not codex_panel.get_global_rect().has_area():
+					return "%s: expected visible %s." % [context, codex_panel_name]
+				var codex_chip := codex_panel.get_theme_stylebox("panel") as StyleBoxFlat
+				if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
+					return "%s: expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, codex_panel_name]
+				if not codex_safe.encloses(codex_panel.get_global_rect()):
+					return "%s: expected %s to stay inside unified safe margins %s, got %s." % [context, codex_panel_name, str(codex_safe), str(codex_panel.get_global_rect())]
+			var entry_card := main.find_child("CodexEntryCard", true, false) as Button
+			if entry_card == null or not (entry_card.get_theme_stylebox("normal") is StyleBoxFlat):
+				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
-			if tab_button == null or _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) != CODEX_TAB_BTN_2K_FRAME_PATH:
-				return "%s: expected CodexTab_characters to use codex_tab_btn @2K frame." % context
-			var back_button := main.find_child("CodexBackButton", true, false) as Button
-			if back_button == null or _stylebox_texture_path(back_button.get_theme_stylebox("normal")) != CODEX_BACK_BTN_2K_FRAME_PATH:
-				return "%s: expected CodexBackButton to use codex_back_btn @2K frame." % context
+			if tab_button == null or not _stylebox_texture_path(tab_button.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
+				return "%s: expected CodexTab_characters to use the global codex_tab kit button." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control
 			var center_stage := main.find_child("CodexCenterObjectStage", true, false) as Control
 			var center_texture := main.find_child("CodexCenterObjectTexture", true, false) as TextureRect
