@@ -752,6 +752,18 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected SCRUM-850 Codex object art to use contained centered scaling." % context
 			if detail_portrait.get_global_rect().size.x <= center_stage.get_global_rect().size.x:
 				return "%s: expected SCRUM-850 right detail object stage to be wider than the center selected-object stage." % context
+			# SCRUM-881 (директива юзера, суперсидит object-first пропорции SCRUM-850):
+			# компактный центральный объект + досье ×2 по ширине.
+			if detail_panel.get_global_rect().size.x < 1.8 * center_stage.get_global_rect().size.x:
+				return "%s: expected SCRUM-881 dossier panel to be at least 1.8x wider than the compact center stage, got %.0f vs %.0f." % [context, detail_panel.get_global_rect().size.x, center_stage.get_global_rect().size.x]
+			if center_stage.get_global_rect().size.y > maxf(0.35 * center_panel.get_global_rect().size.y, 165.0):
+				return "%s: expected SCRUM-881 compact center object stage (<= ~35 percent of column height / 165px floor), got %.0f of %.0f." % [context, center_stage.get_global_rect().size.y, center_panel.get_global_rect().size.y]
+			var center_summary_body := main.find_child("CodexCenterSummaryBody", true, false) as Label
+			if center_summary_body == null or center_summary_body.max_lines_visible > 2 or center_summary_body.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS:
+				return "%s: expected SCRUM-881 center summary body to stay very short (<= 2 lines with ellipsis)." % context
+			var dossier_headings := main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
+			if dossier_headings.size() < 3:
+				return "%s: expected SCRUM-881 structured dossier sections (>= 3) for the default entry, got %d." % [context, dossier_headings.size()]
 		"attribute_shop_economy":
 			var panel := main.find_child("AttributeShopPanel", true, false) as Control
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button

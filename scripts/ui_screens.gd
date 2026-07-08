@@ -4041,7 +4041,9 @@ func _show_codex_screen() -> void:
 	header.add_child(header_spacer)
 	var back_button := _make_button("Назад")
 	back_button.name = "CodexBackButton"
-	_set_action_button_size(back_button, 180.0, _atlas_action_button_height())
+	# SCRUM-881: единый размер back-кнопки со всеми экранами (атлас/настройки/
+	# патч-ноуты) — 260 × action-height, кит мапит на нативную плиту back_260x104.
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -4053,9 +4055,11 @@ func _show_codex_screen() -> void:
 	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
+	# SCRUM-881: nav ужат (300s против прежних 340s) — освобождённая ширина
+	# уходит вправо, в широкое досье.
 	var nav_panel := PanelContainer.new()
 	nav_panel.name = "CodexNavPanel"
-	nav_panel.custom_minimum_size = Vector2(roundf(clampf(340.0 * s, 240.0, 360.0)), 0.0)
+	nav_panel.custom_minimum_size = Vector2(roundf(clampf(300.0 * s, 220.0, 360.0)), 0.0)
 	nav_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	nav_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(10.0 * s)))
 	body.add_child(nav_panel)
@@ -4067,6 +4071,9 @@ func _show_codex_screen() -> void:
 
 	var content := PanelContainer.new()
 	content.name = "CodexContent"
+	# SCRUM-881: центр (список записей) не схлопывается на малых вьюпортах —
+	# минимум ~220px; остальное ширины забирает широкое досье справа.
+	content.custom_minimum_size = Vector2(roundf(clampf(240.0 * s, 220.0, 320.0)), 0.0)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
@@ -4076,16 +4083,19 @@ func _show_codex_screen() -> void:
 	center_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
 	content.add_child(center_box)
 
-	# Объект-сцена уже правой панели досье (инвариант SCRUM-850: досье-портрет
-	# шире центральной сцены — ассертится в matrix/smoke).
+	# SCRUM-881 (фидбек юзера): центральный объект КОМПАКТНЫЙ — фикс-бокс
+	# картинки + очень краткая сводка в один ряд, без полупустой сцены-превью.
+	# Освобождённая высота уходит списку записей (CodexCenterListHost).
+	var center_overview_row := HBoxContainer.new()
+	center_overview_row.name = "CodexCenterOverviewRow"
+	center_overview_row.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	center_box.add_child(center_overview_row)
+	var center_stage_side := roundf(clampf(240.0 * s, 150.0, 280.0))
 	var center_object_stage := Control.new()
 	center_object_stage.name = "CodexCenterObjectStage"
 	center_object_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	center_object_stage.custom_minimum_size = Vector2(roundf(clampf(340.0 * s, 200.0, 380.0)), 0.0)
-	center_object_stage.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	center_object_stage.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	center_object_stage.size_flags_stretch_ratio = 1.6
-	center_box.add_child(center_object_stage)
+	center_object_stage.custom_minimum_size = Vector2(center_stage_side, center_stage_side)
+	center_overview_row.add_child(center_object_stage)
 	var center_object_texture := TextureRect.new()
 	center_object_texture.name = "CodexCenterObjectTexture"
 	center_object_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4097,8 +4107,10 @@ func _show_codex_screen() -> void:
 
 	var center_summary_panel := PanelContainer.new()
 	center_summary_panel.name = "CodexCenterSummaryPanel"
+	center_summary_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center_summary_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	center_summary_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.62, roundf(8.0 * s)))
-	center_box.add_child(center_summary_panel)
+	center_overview_row.add_child(center_summary_panel)
 	var center_summary_box := VBoxContainer.new()
 	center_summary_box.name = "CodexCenterSummaryBox"
 	center_summary_box.add_theme_constant_override("separation", int(roundf(5.0 * s)))
@@ -4119,11 +4131,12 @@ func _show_codex_screen() -> void:
 	center_summary_body.name = "CodexCenterSummaryBody"
 	center_summary_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	center_summary_body.clip_text = true
-	center_summary_body.max_lines_visible = 3
+	# SCRUM-881: сводка ОЧЕНЬ краткая — максимум 2 строки, полный текст в досье.
+	center_summary_body.max_lines_visible = 2
 	center_summary_body.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	center_summary_body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
 	center_summary_body.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.96))
-	center_summary_body.custom_minimum_size.y = ceilf(float(_codex_font_size(13, 10, 18)) * 3.0 * 1.3)
+	center_summary_body.custom_minimum_size.y = ceilf(float(_codex_font_size(13, 10, 18)) * 2.0 * 1.3)
 	center_summary_box.add_child(center_summary_body)
 
 	var center_list_host := Control.new()
@@ -4131,12 +4144,13 @@ func _show_codex_screen() -> void:
 	center_list_host.clip_contents = true
 	center_list_host.custom_minimum_size = Vector2(0.0, roundf(clampf(150.0 * s, 96.0, 220.0)))
 	center_list_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	center_list_host.size_flags_stretch_ratio = 1.0
 	center_box.add_child(center_list_host)
 
+	# SCRUM-881: досье ×2 по ширине (940s против прежних 470s) под глубокое
+	# структурированное описание; при конфликте ширина досье в приоритете.
 	var detail_panel := PanelContainer.new()
 	detail_panel.name = "CodexDetailPanel"
-	detail_panel.custom_minimum_size = Vector2(roundf(clampf(470.0 * s, 300.0, 480.0)), 0.0)
+	detail_panel.custom_minimum_size = Vector2(roundf(clampf(940.0 * s, 420.0, 960.0)), 0.0)
 	detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	detail_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(12.0 * s)))
 	body.add_child(detail_panel)
@@ -4444,9 +4458,11 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 
 	var texture := detail_data.get("texture", null) as Texture2D
 	if texture != null:
+		# SCRUM-881: слот арта ниже прежнего (300s против 360s) — высота досье
+		# уходит глубокому структурированному тексту.
 		var portrait_slot := PanelContainer.new()
 		portrait_slot.name = "CodexDetailPortraitSlot"
-		portrait_slot.custom_minimum_size = Vector2(0.0, roundf(clampf(360.0 * s, 170.0, 380.0)))
+		portrait_slot.custom_minimum_size = Vector2(0.0, roundf(clampf(300.0 * s, 150.0, 320.0)))
 		portrait_slot.add_theme_stylebox_override("panel", _atlas_translucent_style(0.55, 10.0))
 		box.add_child(portrait_slot)
 		var portrait := TextureRect.new()
@@ -4505,9 +4521,41 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.add_theme_constant_override("separation", 7)
 	text_scroll.add_child(text_box)
-	var lines: Array = detail_data.get("body_lines", [])
-	for line in lines:
-		_codex_label(text_box, str(line), 15, Color(0.88, 0.92, 0.98, 0.96))
+	# SCRUM-881: глубокое досье — структурированные секции (бронзовый заголовок →
+	# титулы записей золотом → светлое тело) из СУЩЕСТВУЮЩИХ данных
+	# codex_data/ProgressionData; сырой body_lines остаётся fallback-путём.
+	var sections: Array = detail_data.get("sections", [])
+	if sections.is_empty():
+		var lines: Array = detail_data.get("body_lines", [])
+		for line in lines:
+			if str(line) != "":
+				_codex_label(text_box, str(line), 15, Color(0.88, 0.92, 0.98, 0.96))
+	else:
+		var heading_index := 0
+		for section in sections:
+			var section_dict := section as Dictionary
+			if section_dict == null or section_dict.is_empty():
+				continue
+			var heading := str(section_dict.get("heading", ""))
+			if heading != "":
+				if heading_index > 0:
+					var section_gap := Control.new()
+					section_gap.custom_minimum_size = Vector2(0.0, roundf(6.0 * s))
+					text_box.add_child(section_gap)
+				var heading_label := _codex_label(text_box, heading, 17, Color(0.78, 0.66, 0.44, 1.0))
+				heading_label.name = "CodexDetailSectionHeading_%d" % heading_index
+				heading_index += 1
+			for line in section_dict.get("lines", []):
+				if line is Dictionary:
+					var line_dict := line as Dictionary
+					var line_title := str(line_dict.get("title", ""))
+					if line_title != "":
+						_codex_label(text_box, line_title, 15, Color(0.96, 0.90, 0.68, 1.0))
+					var line_text := str(line_dict.get("text", ""))
+					if line_text != "":
+						_codex_label(text_box, line_text, 15, Color(0.88, 0.92, 0.98, 0.96))
+				elif str(line) != "":
+					_codex_label(text_box, str(line), 15, Color(0.88, 0.92, 0.98, 0.96))
 
 
 func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
@@ -4604,6 +4652,258 @@ func _hide_glossary_tooltip() -> void:
 		existing.queue_free()
 
 
+# --- SCRUM-881: секции глубокого досье. СТРОГО существующие данные из
+# codex_data/ProgressionData/StatFormulas/GLOSSARY; пустое поле = секция/строка
+# пропускается (никаких заглушек). Формат: [{heading, lines:[String|{title,text}]}].
+func _codex_character_sections(character: Dictionary) -> Array:
+	var character_id := str(character.get("id", ""))
+	var sections := []
+	# Идентичность/роль: описание конфига + механическая идентичность класса + плейстайл.
+	var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(character_id)
+	var identity_lines := []
+	if str(character.get("description", "")) != "":
+		identity_lines.append(str(character["description"]))
+	var identity_title := str(identity.get("identity_title", ""))
+	var identity_summary := str(identity.get("summary", ""))
+	if identity_title != "" or identity_summary != "":
+		identity_lines.append({"title": identity_title, "text": identity_summary})
+	if str(character.get("playstyle", "")) != "":
+		identity_lines.append(str(character["playstyle"]))
+	if not identity_lines.is_empty():
+		sections.append({"heading": "Идентичность и роль", "lines": identity_lines})
+	# Сильные и слабые стороны.
+	var side_lines := []
+	if str(character.get("strengths", "")) != "":
+		side_lines.append("Сильное: %s" % character["strengths"])
+	if str(character.get("weaknesses", "")) != "":
+		side_lines.append("Слабое: %s" % character["weaknesses"])
+	if not side_lines.is_empty():
+		sections.append({"heading": "Сильные и слабые стороны", "lines": side_lines})
+	# 8 базовых характеристик компактными парами; ★ — главный стат класса.
+	var base_stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
+	var main_attribute := str(game.PROGRESSION_DATA.class_main_attribute(character_id))
+	var stat_lines := []
+	var stat_pair := PackedStringArray()
+	for stat_id in game.PROGRESSION_DATA.STAT_NAMES.keys():
+		var stat_piece := "%s: %d" % [str(game.PROGRESSION_DATA.STAT_NAMES[stat_id]), int(roundf(float(base_stats.get(stat_id, 0.0))))]
+		if str(stat_id) == main_attribute:
+			stat_piece += " ★"
+		stat_pair.append(stat_piece)
+		if stat_pair.size() == 2:
+			stat_lines.append("  ·  ".join(stat_pair))
+			stat_pair = PackedStringArray()
+	if stat_pair.size() > 0:
+		stat_lines.append("  ·  ".join(stat_pair))
+	var priorities: Array = game.PROGRESSION_DATA.attribute_priorities(character_id)
+	if not priorities.is_empty():
+		var priority_names := PackedStringArray()
+		for priority_id in priorities:
+			priority_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(priority_id, priority_id)))
+		stat_lines.append("Приоритеты прокачки: %s." % " → ".join(priority_names))
+	if not stat_lines.is_empty():
+		sections.append({"heading": "Базовые характеристики", "lines": stat_lines})
+	# Три оружия: полное описание + identity-строка механики из ProgressionData.
+	var weapon_lines := []
+	for weapon in character.get("weapons", []):
+		var weapon_text := str(weapon.get("description", ""))
+		var weapon_identity := str(game.PROGRESSION_DATA.weapon_mechanic_identity(character_id, str(weapon.get("id", ""))))
+		if weapon_identity != "":
+			weapon_text += "\nМеханика: %s." % weapon_identity
+		weapon_lines.append({"title": str(weapon.get("title", "")), "text": weapon_text})
+	if not weapon_lines.is_empty():
+		sections.append({"heading": "Оружие", "lines": weapon_lines})
+	# Ультимейт: описание + реальные параметры конфига (только присутствующие).
+	var ultimate: Dictionary = character.get("ultimate", {})
+	if not ultimate.is_empty():
+		var ultimate_lines := [{"title": str(ultimate.get("title", "")), "text": str(ultimate.get("description", ""))}]
+		var ultimate_bits := PackedStringArray()
+		if float(ultimate.get("radius", 0.0)) > 0.0:
+			ultimate_bits.append("радиус %d" % int(ultimate["radius"]))
+		if float(ultimate.get("damage", 0.0)) > 0.0:
+			ultimate_bits.append("урон ×%.2f" % float(ultimate["damage"]))
+		if float(ultimate.get("duration", 0.0)) > 0.0:
+			ultimate_bits.append("длительность %.1f с" % float(ultimate["duration"]))
+		if int(ultimate.get("target_count", 0)) > 0:
+			ultimate_bits.append("до %d целей" % int(ultimate["target_count"]))
+		if float(ultimate.get("heal_ratio", 0.0)) > 0.0:
+			ultimate_bits.append("лечение %d%% урона" % int(roundf(float(ultimate["heal_ratio"]) * 100.0)))
+		if not ultimate_bits.is_empty():
+			ultimate_lines.append("Параметры: %s." % "; ".join(ultimate_bits))
+		sections.append({"heading": "Ультимейт", "lines": ultimate_lines})
+	# Классовые вознесения: реальные титулы ступеней из ASCENSION_LEVELS.
+	var ascension_levels: Array = game.PROGRESSION_DATA.ascension_levels(character_id)
+	if not ascension_levels.is_empty():
+		var ascension_names := PackedStringArray()
+		for ascension_entry in ascension_levels:
+			var ascension_title := str((ascension_entry as Dictionary).get("title", ""))
+			if ascension_title != "":
+				ascension_names.append(ascension_title)
+		if not ascension_names.is_empty():
+			sections.append({"heading": "Вознесения класса", "lines": ["Ступени: %s." % " → ".join(ascension_names)]})
+	return sections
+
+
+func _codex_monster_sections(monster: Dictionary) -> Array:
+	var monster_id := str(monster.get("id", ""))
+	var kind := str(monster.get("kind", "standard"))
+	var sections := []
+	# Профиль угрозы: тип из ENEMY_SIZE_PROFILES + поведение.
+	var profile_id := "ordinary"
+	match kind:
+		"elite":
+			profile_id = "elite"
+		"mini_elite":
+			profile_id = "mini_elite"
+		"boss":
+			profile_id = "boss"
+	var size_profile: Dictionary = game.PROGRESSION_DATA.enemy_size_profile(profile_id)
+	var behavior_lines := []
+	if str(size_profile.get("label", "")) != "":
+		behavior_lines.append("Класс угрозы: %s (габарит ×%.2f)." % [str(size_profile["label"]), float(size_profile.get("scale", 1.0))])
+	if str(monster.get("behavior", "")) != "":
+		behavior_lines.append(str(monster["behavior"]))
+	if not behavior_lines.is_empty():
+		sections.append({"heading": "Тип и поведение", "lines": behavior_lines})
+	# Умения — канонические имена и описания из codex_data.
+	var ability_lines := []
+	for ability in monster.get("abilities", []):
+		ability_lines.append({"title": str((ability as Dictionary).get("title", "")), "text": str((ability as Dictionary).get("description", ""))})
+	if not ability_lines.is_empty():
+		sections.append({"heading": "Умения", "lines": ability_lines})
+	# Боевой паттерн элиток/боссов: UNIQUE_ENCOUNTER_PATTERNS + каталог механик.
+	var pattern: Dictionary = game.PROGRESSION_DATA.unique_encounter_pattern(monster_id)
+	if not pattern.is_empty():
+		var pattern_lines := []
+		if str(pattern.get("summary", "")) != "":
+			pattern_lines.append({"title": str(pattern.get("title", "")), "text": "Паттерн боя: %s." % str(pattern["summary"])})
+		var mechanic_catalog: Dictionary = game.PROGRESSION_DATA.enemy_mechanic_catalog()
+		for mechanic_id in pattern.get("mechanics", []):
+			var mechanic: Dictionary = mechanic_catalog.get(str(mechanic_id), {})
+			if mechanic.is_empty():
+				continue
+			var mechanic_text := str(mechanic.get("desc", ""))
+			if bool(mechanic.get("telegraph", false)):
+				mechanic_text += " Телеграфится заранее."
+			pattern_lines.append({"title": str(mechanic.get("title", mechanic_id)), "text": mechanic_text})
+		if not pattern_lines.is_empty():
+			sections.append({"heading": "Боевой паттерн", "lines": pattern_lines})
+	# Боевые параметры из конфигов: спецатака элитки / множители мини-элитки.
+	var combat_lines := []
+	var attack_source_id := monster_id
+	var mini_kind: Dictionary = {}
+	if kind == "mini_elite":
+		mini_kind = game.PROGRESSION_DATA.mini_elite_kind_by_id(monster_id)
+		if not mini_kind.is_empty():
+			combat_lines.append("Относительно базовой элитки: здоровье ×%.2f; скорость ×%.2f; урон ×%.2f." % [float(mini_kind.get("hp_mult", 1.0)), float(mini_kind.get("speed_mult", 1.0)), float(mini_kind.get("damage_mult", 1.0))])
+			attack_source_id = str(mini_kind.get("behavior", monster_id))
+	var attack_config: Dictionary = game.PROGRESSION_DATA.elite_attack_config(attack_source_id)
+	if not attack_config.is_empty():
+		var attack_bits := PackedStringArray()
+		if float(attack_config.get("cooldown", 0.0)) > 0.0:
+			attack_bits.append("перезарядка %.1f с" % float(attack_config["cooldown"]))
+		if float(attack_config.get("trigger_range", 0.0)) > 0.0:
+			attack_bits.append("дистанция срабатывания %d" % int(attack_config["trigger_range"]))
+		if float(attack_config.get("radius", 0.0)) > 0.0:
+			attack_bits.append("радиус %d" % int(attack_config["radius"]))
+		if float(attack_config.get("damage_factor", 0.0)) > 0.0:
+			attack_bits.append("урон ×%.1f от базового" % float(attack_config["damage_factor"]))
+		if not attack_bits.is_empty():
+			combat_lines.append("Спецатака: %s." % "; ".join(attack_bits))
+	if not combat_lines.is_empty():
+		sections.append({"heading": "Боевые параметры", "lines": combat_lines})
+	return sections
+
+
+func _codex_artifact_sections(artifact: Dictionary, definition: Dictionary) -> Array:
+	var sections := []
+	# Полный текст эффекта + интерпретация для текущего класса (если тематика чужая).
+	var effect_lines := []
+	if str(artifact.get("description", "")) != "":
+		effect_lines.append(str(artifact["description"]))
+	var affinity_note := _artifact_affinity_note(definition)
+	if not affinity_note.is_empty():
+		effect_lines.append(str(affinity_note["text"]))
+	if not effect_lines.is_empty():
+		sections.append({"heading": "Эффект", "lines": effect_lines})
+	# Свойства: редкость/источник, цена, активность-триггер.
+	var property_lines := []
+	if str(artifact.get("source", "")) == "shop":
+		property_lines.append("Источник: походный магазин.")
+	else:
+		property_lines.append("Редкость: %s." % _artifact_tier_text(definition))
+	if definition.has("cost"):
+		property_lines.append("Базовая цена: %d золота." % int(definition.get("cost", 0)))
+	if bool(definition.get("active", false)):
+		property_lines.append("Активный артефакт: срабатывает сам по триггеру из описания эффекта.")
+	if not property_lines.is_empty():
+		sections.append({"heading": "Свойства", "lines": property_lines})
+	# Тематика классов + каноническое пояснение из глоссария.
+	var affinity_list: Array = definition.get("class_affinity", [])
+	if not affinity_list.is_empty():
+		var class_names := PackedStringArray()
+		for class_id in affinity_list:
+			class_names.append(str(CLASS_RU.get(class_id, class_id)))
+		var affinity_lines := ["Задуман для: %s." % ", ".join(class_names)]
+		var affinity_term: Dictionary = GLOSSARY.definition("affinity")
+		if str(affinity_term.get("desc", "")) != "":
+			affinity_lines.append(str(affinity_term["desc"]))
+		sections.append({"heading": "Тематика классов", "lines": affinity_lines})
+	return sections
+
+
+func _codex_stat_sections(stat: Dictionary) -> Array:
+	var stat_id := str(stat.get("id", ""))
+	var sections := []
+	var description_lines := []
+	if str(stat.get("description", "")) != "":
+		description_lines.append(str(stat["description"]))
+	var stat_definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
+	if str(stat_definition.get("formula", "")) != "":
+		description_lines.append("Формула: %s" % str(stat_definition["formula"]))
+	if not description_lines.is_empty():
+		sections.append({"heading": "Описание", "lines": description_lines})
+	if str(stat.get("influences", "")) != "":
+		sections.append({"heading": "Влияние", "lines": ["Влияет на: %s" % str(stat["influences"])]})
+	# Связанные записи: классы, у которых этот стат — главный (identity-данные).
+	if str(stat.get("type", "")) == "base":
+		var main_class_names := PackedStringArray()
+		for character_id in game.PROGRESSION_DATA.character_ids():
+			if str(game.PROGRESSION_DATA.class_main_attribute(str(character_id))) == stat_id:
+				var config: Dictionary = game.PROGRESSION_DATA.character_config(str(character_id))
+				main_class_names.append(str(config.get("title", character_id)))
+		if not main_class_names.is_empty():
+			sections.append({"heading": "Связанные классы", "lines": ["Главный стат для: %s." % ", ".join(main_class_names)]})
+	return sections
+
+
+func _codex_glossary_sections(term_id: String, definition: Dictionary) -> Array:
+	var sections := []
+	if str(definition.get("desc", "")) != "":
+		sections.append({"heading": "Определение", "lines": [str(definition["desc"])]})
+	# Связанная характеристика: термин с тем же id в реестре статов.
+	var stat_definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(term_id, {})
+	if not stat_definition.is_empty():
+		var stat_lines := []
+		if str(stat_definition.get("description", "")) != "":
+			stat_lines.append(str(stat_definition["description"]))
+		if str(stat_definition.get("influences", "")) != "":
+			stat_lines.append("Влияет на: %s" % str(stat_definition["influences"]))
+		if not stat_lines.is_empty():
+			sections.append({"heading": "Связанная характеристика", "lines": stat_lines})
+	return sections
+
+
+func _codex_ascension_sections(entry: Dictionary) -> Array:
+	var sections := []
+	if str(entry.get("description", "")) != "":
+		sections.append({"heading": "Усложнение", "lines": [str(entry["description"])]})
+	# Кумулятив: уровень N включает все усложнения 1..N (реальный хелпер данных).
+	var cumulative_lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(int(entry.get("level", 0)))
+	if not cumulative_lines.is_empty():
+		sections.append({"heading": "Кумулятивно на этом уровне", "lines": cumulative_lines})
+	return sections
+
+
 func _build_codex_characters(list: VBoxContainer) -> void:
 	for character in CODEX_DATA.characters():
 		var body_lines := [
@@ -4626,6 +4926,7 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"covered_portrait": true,
 			"chips": ["Герой", str(character.get("id", ""))],
 			"body_lines": body_lines,
+			"sections": _codex_character_sections(character),
 		})
 		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size())
 		var text_box := VBoxContainer.new()
@@ -4655,6 +4956,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"covered_portrait": false,
 				"chips": [str(kind_titles[kind]), str(monster["id"])],
 				"body_lines": body_lines,
+				"sections": _codex_monster_sections(monster),
 			})
 			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size())
 			var text_box := VBoxContainer.new()
@@ -4686,6 +4988,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"covered_portrait": false,
 			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
 			"body_lines": body_lines,
+			"sections": _codex_artifact_sections(artifact, artifact_definition),
 		})
 		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
@@ -4702,6 +5005,7 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 			"summary": str(entry["description"]),
 			"chips": ["Возвышение", "ур. %d" % entry["level"]],
 			"body_lines": [str(entry["description"])],
+			"sections": _codex_ascension_sections(entry),
 		})
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -4724,6 +5028,7 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 					str(stat["description"]),
 					"Влияет на: %s" % stat["influences"] if str(stat["influences"]) != "" else "",
 				],
+				"sections": _codex_stat_sections(stat),
 			})
 			var icon_control: Control = game.UIIconRegistry.make_icon(str(stat["id"]), Vector2(36, 36))
 			row.add_child(icon_control)
@@ -4742,6 +5047,7 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 			"term_id": str(term_id),
 			"chips": ["Глоссарий", str(term_id)],
 			"body_lines": [str(definition.get("desc", ""))],
+			"sections": _codex_glossary_sections(str(term_id), definition),
 		})
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 4)
