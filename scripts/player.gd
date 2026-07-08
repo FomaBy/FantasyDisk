@@ -1291,6 +1291,9 @@ func apply_reward(reward: Dictionary) -> void:
 
 	if reward.has("mods"):
 		_apply_reward_mods(reward["mods"])
+		# SCRUM-961 «Украденный герб» (§5): слоты роллят чужие классовые id забега.
+		if float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0)) > 0.0:
+			_roll_cross_class_artifacts(int(float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0))))
 	if reward.has("affinity_mods"):
 		# С 0.2 affinity_mods больше не пропадают у «чужого» класса: это
 		# универсальная интерпретация артефакта через текущий class kit.
@@ -1322,6 +1325,28 @@ func _apply_reward_mods(mods: Dictionary) -> void:
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 1.0)) * float(mods[modifier_id])
 		else:
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 0.0)) + float(mods[modifier_id])
+
+
+# SCRUM-961 «Украденный герб» (artifact_system_matrix §5): ролл N случайных ЧУЖИХ
+# классовых артефактов на этот забег — равновероятно, без дублей. Array кладётся в
+# run_modifiers НАПРЯМУЮ (не через _apply_reward_mods: там float-коэрция); живёт до
+# конца забега (run_modifiers пересоздаются в configure_character), сэмплеры читают
+# его параметром cross_class_ids (§1.4).
+func _roll_cross_class_artifacts(slots: int) -> void:
+	var existing_raw = run_modifiers.get("cross_class_artifact_ids", [])
+	var rolled: Array = (existing_raw as Array).duplicate() if existing_raw is Array else []
+	var candidates: Array = []
+	for artifact in ProgressionData.ARTIFACTS:
+		var affinity: Array = (artifact as Dictionary).get("class_affinity", []) as Array
+		if affinity.is_empty() or affinity.has(character_id):
+			continue
+		var artifact_id := str((artifact as Dictionary).get("id", ""))
+		if not rolled.has(artifact_id):
+			candidates.append(artifact_id)
+	candidates.shuffle()
+	for index in range(mini(slots, candidates.size())):
+		rolled.append(candidates[index])
+	run_modifiers["cross_class_artifact_ids"] = rolled
 
 
 # Боевое подмножество модификаторов мета-древа умений (SCRUM-150): суммарные

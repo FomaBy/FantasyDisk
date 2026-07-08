@@ -26,6 +26,7 @@ func _initialize() -> void:
 	_check_synthetic_rule()
 	_check_samplers_all_classes()
 	_check_cross_class_exception()
+	_check_stolen_crest_roll()
 
 	if not _errors.is_empty():
 		for e in _errors:
@@ -165,3 +166,42 @@ func _check_cross_class_exception() -> void:
 	var shop_ids := _pool_ids(PD.shop_items(0, "berserk", 0, foreign_ids))
 	if not shop_ids.has(foreign_ids[0]):
 		_errors.append("cross_class_ids: '%s' не пропущен в shop_items" % str(foreign_ids[0]))
+
+
+# (г) «Украденный герб» (§5): apply_reward с cross_class_artifact_slots роллит
+# ровно N чужих классовых id в run_modifiers.cross_class_artifact_ids (Array).
+func _check_stolen_crest_roll() -> void:
+	var player_scene := load("res://scenes/Player.tscn") as PackedScene
+	if player_scene == null:
+		_errors.append("stolen_crest: Player.tscn не загрузилась")
+		return
+	var player := player_scene.instantiate()
+	root.add_child(player)
+	player.call("configure_character", "thief")
+	player.call("apply_reward", {
+		"kind": "artifact", "id": "stolen_crest", "title": "Украденный герб",
+		"mods": {"cross_class_artifact_slots": 2.0},
+	})
+	var modifiers: Dictionary = player.get("run_modifiers")
+	var rolled_raw = modifiers.get("cross_class_artifact_ids", null)
+	if not (rolled_raw is Array):
+		_errors.append("stolen_crest: cross_class_artifact_ids не Array (%s)" % str(rolled_raw))
+		player.free()
+		return
+	var rolled: Array = rolled_raw
+	if rolled.size() != 2 or str(rolled[0]) == str(rolled[1]):
+		_errors.append("stolen_crest: ожидались 2 уникальных чужих id, получено %s" % str(rolled))
+	for rolled_id in rolled:
+		var definition := PD.artifact_definition(str(rolled_id))
+		var affinity: Array = definition.get("class_affinity", []) as Array
+		if affinity.is_empty() or affinity.has("thief"):
+			_errors.append("stolen_crest: id '%s' не чужой классовый" % str(rolled_id))
+	# Роллнутые id реально открывают чужие артефакты в сэмплере этого забега.
+	var pool_ids := _pool_ids(PD.reward_pool("thief", 0, rolled))
+	for rolled_id in rolled:
+		if not pool_ids.has(str(rolled_id)):
+			_errors.append("stolen_crest: роллнутый '%s' не попал в reward_pool" % str(rolled_id))
+	# Слот-ключ прошёл обычной float-коэрцией mods.
+	if float(modifiers.get("cross_class_artifact_slots", 0.0)) < 2.0:
+		_errors.append("stolen_crest: cross_class_artifact_slots не применился как мод")
+	player.free()
