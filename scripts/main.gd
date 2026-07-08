@@ -107,6 +107,11 @@ const SCREEN_BACKGROUND_PATHS := {
 	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
+# SCRUM-997: фоны-иллюстрации событий (пак SCRUM-998). Маппинг — файловая
+# конвенция манифеста docs/design/references/events_backgrounds_pack/manifest.json:
+# event_bg_<event.id>.png. Незамапленные id падают на общий фон "event"
+# (ui_backdrop_arcane_lab) — пул артов сойдётся с пулом событий после SCRUM-995.
+const EVENT_BACKGROUND_DIR := "res://assets/backgrounds/events"
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
 # SCRUM-592: hotspot сидит на самом верхнем-левом ВИДИМОМ пикселе острия
 # (включая сглаживание апекса в (1,1)). Прежний (2,2) указывал на первый
@@ -1337,6 +1342,19 @@ func _cached_texture(path: String) -> Texture2D:
 			texture = image_texture
 	texture_cache[path] = texture
 	return texture
+
+
+# SCRUM-997: путь фона-иллюстрации события по event.id ("" — арта нет, UI берёт
+# общий фолбэк "event"). Словарь-маппинг не дублируется в коде: истина — файлы
+# пака SCRUM-998 (EVENT_BACKGROUND_DIR/event_bg_<id>.png), существование
+# проверяется через ResourceLoader (работает и в экспортированном .pck).
+func event_background_path(event_id: String) -> String:
+	if event_id.strip_edges() == "":
+		return ""
+	var path := "%s/event_bg_%s.png" % [EVENT_BACKGROUND_DIR, event_id]
+	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
+		return path
+	return ""
 
 
 func _png_import_texture_ready(path: String) -> bool:
