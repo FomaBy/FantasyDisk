@@ -324,15 +324,8 @@ const LU_BADGE_META := {
 	"both": {"frame": "badge_both", "text": "ЛУЧШИЙ ВЫБОР", "label_zone": Rect2(0.33, 0.31, 0.45, 0.35), "text_color": Color(0.24, 0.12, 0.05, 1.0)},
 }
 
-# #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
-const RWD_PANEL_2K := Rect2(720, 390, 1120, 660)
-const RWD_SAFE_2K := Rect2(778, 462, 1004, 522)
-const RWD_CARD_2K := Rect2(0, 0, 300, 430)                  # BattleRewardButton{0..2} = REWARD_CARD_SIZE (gap 18)
-
-# #13 Награда элитки — _show_elite_artifact_reward (панель 1140×640)
-const ELR_PANEL_2K := Rect2(710, 400, 1140, 640)
-const ELR_SAFE_2K := Rect2(768, 472, 1024, 502)
-const ELR_CARD_2K := Rect2(0, 0, 320, 430)                  # EliteArtifactRewardButton{0..2} = REWARD_ELITE_CARD_SIZE (gap 22)
+# #12/#13 Награды (обычная и элитки) — SCRUM-883: панели и карточки — чипы Атласа,
+# геометрия задаётся _create_menu_box/REWARD_*_CARD_SIZE (спек-рамки @2K сняты).
 
 # #28 Тост повышения — _show_level_up_toast (транзиентный full-rect burst на позиции игрока/центра)
 const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
