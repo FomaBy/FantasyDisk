@@ -3957,5 +3957,10 @@
   "key": "SCRUM-879",
   "status": "К выполнению",
   "desc_hash": "f8cc7ead85a87cb49dc69478576fc179"
+ },
+ "animation_berserk_axe_attack_visual_task.md": {
+  "key": "SCRUM-880",
+  "status": "Контроль качества",
+  "desc_hash": "d3619ea401b1d2d74025ff999e523125"
  }
 }

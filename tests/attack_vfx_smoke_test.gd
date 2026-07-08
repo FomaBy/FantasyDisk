@@ -71,6 +71,26 @@ func _test_vfx_helpers() -> void:
 	if body_material != null and body_material.blend_mode == CanvasItemMaterial.BLEND_MODE_ADD:
 		push_error("Expected weapon signature body to stay non-additive for readable 60%% opacity.")
 		quit(1)
+	var axe_texture := load("res://assets/sprites/weapons/two_handed_axe.png") as Texture2D
+	var axe_signature := AttackVfxScript.weapon_signature(
+		host,
+		Vector2(78, 42),
+		"axe",
+		180.0,
+		color,
+		0.0,
+		axe_texture,
+		0.0,
+		0.62,
+		Vector2(10.0, -2.0)
+	)
+	if axe_signature == null:
+		push_error("Expected axe signature helper to spawn with the axe VFX asset.")
+		quit(1)
+	var actual_axe := axe_signature.get_node_or_null("WeaponSignatureActualWeapon") as Sprite2D
+	if actual_axe == null or actual_axe.texture == null or actual_axe.texture.resource_path != "res://assets/sprites/weapons/two_handed_axe.png":
+		push_error("Expected axe signature to include the actual two-handed axe weapon sprite.")
+		quit(1)
 	_test_berserk_sweep_geometry()
 	_write_scrum457_dump(slash_node, beam_sprite, sound_wave_node, ring_node)
 	host.queue_free()
@@ -102,24 +122,31 @@ func _test_weapon_fire_paths() -> void:
 				quit(1)
 			if weapon.has_method("_attack"):
 				weapon.call("_attack")
-			if not _has_vfx_node("WeaponSignatureVfx_%s" % weapon_id):
+			var signature := _vfx_node("WeaponSignatureVfx_%s" % weapon_id)
+			if signature == null:
 				push_error("Expected %s/%s to spawn dedicated weapon signature VFX." % [character_id, weapon_id])
 				quit(1)
+			if character_id == "berserk" and weapon_id == "axe":
+				var actual_weapon := signature.get_node_or_null("WeaponSignatureActualWeapon") as Sprite2D
+				if actual_weapon == null or actual_weapon.texture == null or actual_weapon.texture.resource_path != "res://assets/sprites/weapons/two_handed_axe.png":
+					push_error("Expected Berserk axe runtime attack signature to show the actual axe sprite.")
+					quit(1)
 	player.queue_free()
 	enemy.queue_free()
 
 
-func _has_vfx_node(node_name: String) -> bool:
+func _vfx_node(node_name: String) -> Node2D:
 	for child in root.get_children():
 		if child.name == node_name:
-			return true
-	return false
+			return child as Node2D
+	return null
 
 
 func _test_berserk_sweep_geometry() -> void:
 	var weapon := BerserkWeaponScript.new()
-	weapon.attack_range = 240.0
-	weapon.sweep_degrees = 100.0
+	weapon.weapon_id = "axe"
+	weapon.attack_range = 250.0
+	weapon.sweep_degrees = 180.0
 	var points: PackedVector2Array = weapon.call("_sweep_zone_points", Vector2.RIGHT)
 	if points.size() < 5:
 		push_error("Expected Berserk sweep to produce a wedge polygon.")
@@ -128,7 +155,7 @@ func _test_berserk_sweep_geometry() -> void:
 		push_error("Expected Berserk sweep apex to stay at the character.")
 		quit(1)
 	for index in range(1, points.size()):
-		if points[index].x <= 0.0:
+		if points[index].x < -0.001:
 			push_error("Expected Berserk sweep arc points to extend outward from the character, got %s." % points[index])
 			quit(1)
 	var middle := points[int(points.size() / 2)]
@@ -146,6 +173,12 @@ func _test_berserk_sweep_geometry() -> void:
 	var slash := owner.get_node_or_null("SlashVfx") as Node2D
 	if slash == null:
 		push_error("Expected Berserk sweep to spawn slash VFX.")
+		quit(1)
+	if absf(float(slash.get_meta("visual_sweep_degrees", 0.0)) - 180.0) > 0.01:
+		push_error("Expected Berserk axe sweep VFX to record the 180-degree visual sweep.")
+		quit(1)
+	if float(slash.get_meta("visual_lateral_scale", 1.0)) < 1.55:
+		push_error("Expected Berserk axe sweep VFX to use a broader lateral scale.")
 		quit(1)
 	for child in slash.get_children():
 		if child is Sprite2D and absf(absf((child as Sprite2D).rotation) - PI) > 0.01:
