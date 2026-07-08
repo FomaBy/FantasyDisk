@@ -48,7 +48,7 @@ sweep должен примерно соответствовать live зоне
 
 | Jira | Задача | Lane | Prio | Статус |
 | --- | --- | --- | --- | --- |
-| SCRUM-880 | [Берсерк: топор в атаке и 180° sweep visual](../tasks/animation_berserk_axe_attack_visual_task.md) | codex/animator | p1 | done; ready_for_QA |
+| SCRUM-880 | [Берсерк: топор в атаке и 180° sweep visual](../tasks/animation_berserk_axe_attack_visual_task.md) | codex/animator | p1 | done; QA PASSED; Jira `Готово` |
 
 **Backlog review 2026-06-30 (PM):** беклог вычищен. Закрыты как superseded (висели в
 «Контроль качества» с 12.06, новое UI-направление, работа в игре): SCRUM-111, SCRUM-118.
