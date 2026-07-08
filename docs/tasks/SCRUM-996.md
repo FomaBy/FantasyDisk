@@ -1,6 +1,6 @@
 # Events Backend: условные и скрытые исходы для нового пака событий
 
-Статус: in_progress
+Статус: done
 Приоритет: p1
 Роль: Back-end
 Версия: 0.2.1
@@ -107,3 +107,18 @@ Locked paths: `scripts/ui_screens.gd` (event resolve/apply/reveal-функции
 
 Зелёный гейт → push в origin/dev → Jira SCRUM-996 «Контроль качества» + комментарий
 с итогом → этот файл `Статус: done`.
+
+## Итог
+
+Реализовано и запушено в origin/dev пятью коммитами (18022681 схема event_data +
+pick_event(context) c act-фильтром; 430ede8a рантайм: hidden/unknown_hint («Рискнуть»),
+reveal-шаг (EventStory=outcome_text + строка «Проверка … — пройдена/провалена»,
+карточки/Назад скрыты, EventContinueButton с фокусом), damage_flat (пол 1 HP),
+shop_after/shop_discount после события и после победы событийного боя с выходом
+магазина в advance/combat-возврат; 02133dcc тест event_outcomes_runtime_test.gd —
+все ветки AC; bda26302 contract_check типизирует новые ключи + честность hidden,
+runtime_smoke докликивает reveal, инвариант «≥10 событий» сохранён; ad7e3445 доки
+menus_ui §Event + persistence). Пул RANDOM_EVENTS не тронут (заменит SCRUM-995).
+Воркер отчитался о двойном зелёном гейте; оркестратор перепроверил HEAD:
+contract_check / event_data_smoke / event_outcomes_runtime — PASSED, runtime_smoke
+— двойной прогон (см. QA-Вердикт).
