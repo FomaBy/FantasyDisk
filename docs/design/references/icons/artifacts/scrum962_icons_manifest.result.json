@@ -1,175 +1,23 @@
 {
  "generated": [
   {
-   "id": "acid_catalyst",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_acid_catalyst.png",
-   "source": "docs/design/references/icons/artifacts/acid_catalyst/acid_catalyst_source.png",
+   "id": "anchor_core",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_anchor_core.png",
+   "source": "docs/design/references/icons/artifacts/anchor_core/anchor_core_source.png",
    "alpha_bbox": [
-    71,
+    57,
     29,
-    186,
+    199,
     227
    ],
    "padding": [
-    71,
+    57,
     29,
-    70,
+    57,
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "f93175b0499d"
-  },
-  {
-   "id": "clear_acid",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_clear_acid.png",
-   "source": "docs/design/references/icons/artifacts/clear_acid/clear_acid_source.png",
-   "alpha_bbox": [
-    72,
-    29,
-    183,
-    227
-   ],
-   "padding": [
-    72,
-    29,
-    73,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "b09f7c5b1cb1"
-  },
-  {
-   "id": "elemental_recoil",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_elemental_recoil.png",
-   "source": "docs/design/references/icons/artifacts/elemental_recoil/elemental_recoil_source.png",
-   "alpha_bbox": [
-    29,
-    30,
-    227,
-    227
-   ],
-   "padding": [
-    29,
-    30,
-    29,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "2e97c56c93f3"
-  },
-  {
-   "id": "fourth_ring",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_fourth_ring.png",
-   "source": "docs/design/references/icons/artifacts/fourth_ring/fourth_ring_source.png",
-   "alpha_bbox": [
-    38,
-    29,
-    219,
-    227
-   ],
-   "padding": [
-    38,
-    29,
-    37,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "fe4a5552e1aa"
-  },
-  {
-   "id": "mana_overflow",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_mana_overflow.png",
-   "source": "docs/design/references/icons/artifacts/mana_overflow/mana_overflow_source.png",
-   "alpha_bbox": [
-    65,
-    29,
-    190,
-    227
-   ],
-   "padding": [
-    65,
-    29,
-    66,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "b9276ae99dfa"
-  },
-  {
-   "id": "meteor_heart",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_meteor_heart.png",
-   "source": "docs/design/references/icons/artifacts/meteor_heart/meteor_heart_source.png",
-   "alpha_bbox": [
-    63,
-    28,
-    192,
-    227
-   ],
-   "padding": [
-    63,
-    28,
-    64,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "8a65278bcccc"
-  },
-  {
-   "id": "prismatic_cross",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_prismatic_cross.png",
-   "source": "docs/design/references/icons/artifacts/prismatic_cross/prismatic_cross_source.png",
-   "alpha_bbox": [
-    64,
-    28,
-    193,
-    227
-   ],
-   "padding": [
-    64,
-    28,
-    63,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "ee5e3af88dcd"
-  },
-  {
-   "id": "reactor_homunculus",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_reactor_homunculus.png",
-   "source": "docs/design/references/icons/artifacts/reactor_homunculus/reactor_homunculus_source.png",
-   "alpha_bbox": [
-    75,
-    29,
-    179,
-    227
-   ],
-   "padding": [
-    75,
-    29,
-    77,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "e67239fda7ed"
-  },
-  {
-   "id": "tank_homunculus",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_tank_homunculus.png",
-   "source": "docs/design/references/icons/artifacts/tank_homunculus/tank_homunculus_source.png",
-   "alpha_bbox": [
-    38,
-    28,
-    219,
-    227
-   ],
-   "padding": [
-    38,
-    28,
-    37,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "ac0a88d78e3a"
+   "sha": "4e45c2ccdb55"
   }
  ],
  "failures": [],
