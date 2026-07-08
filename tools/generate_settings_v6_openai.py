@@ -7,7 +7,10 @@
 hover/pressed/disabled/inactive — детерминированные PIL-деривативы от базы,
 чтобы геометрия состояний совпадала пиксель-в-пиксель.
 
-PixelLab-части (иконки табов, эмблема, розетка чекбокса, звезда, гем, стрелка)
+Модальная рама/табы/кнопки сняты атлас-миграцией (SCRUM-879..888) — генератор
+держит только живые полевые элементы (поля, слайдер, чип значения, PixelLab-набор).
+
+PixelLab-части (иконки строк, эмблема, розетка чекбокса, звезда, гем, стрелка)
 кладутся заранее в docs/design/references/settings_v6/pixellab/ и собираются
 шагом --derive (alpha-cleanup + композиция checkbox_on = розетка + звезда).
 
@@ -48,40 +51,6 @@ WIDE = ("; the element is ONE wide horizontal bar spanning the FULL image "
 
 # key -> (filename, gen_canvas, target_size, prompt)
 SPEC: dict[str, tuple[str, str, tuple[int, int], str]] = {
-    "modal_frame": (
-        "ui_settings_v6_modal_frame.png", "1536x1024", (1420, 1060),
-        f"{STYLE}; grand ornate settings modal panel filling the ENTIRE image "
-        "edge to edge: border band of embossed antique gold filigree over "
-        "dark bronze with corner rosettes and a small arched pediment crest "
-        "at the top center, interior is a very dark quiet leather-and-stone "
-        "field (near-black warm brown, subtle vignette, faint arcane "
-        "constellation etchings) kept EMPTY and uncluttered so UI content "
-        "stays readable on top; nothing outside the panel"),
-    "content_inset": (
-        "ui_settings_v6_content_inset.png", "1536x1024", (512, 256),
-        f"{STYLE}; ONE wide recessed rectangular inset well panel filling "
-        "the ENTIRE image edge to edge (all four edges of the panel rim "
-        "visible), thin dark bronze beveled rim with tiny corner studs, "
-        "interior an even darker flat recessed field (near-black, faint "
-        "inner shadow at the top), center kept EMPTY and uniform for "
-        "settings rows; nothing outside the panel"),
-    "tab_active": (
-        "ui_settings_v6_tab_active.png", "1536x1024", (340, 84),
-        f"{STYLE}; lit bookmark tab plate: warm amber-gold glowing plaque "
-        "with an embossed brass border and small flame-gem chips at the "
-        "left and right ends, radiant and clearly SELECTED{WIDE}"),
-    "btn_primary_normal": (
-        "ui_settings_v6_btn_primary_normal.png", "1536x1024", (320, 80),
-        f"{STYLE}; hero action button plate: polished antique gold surface "
-        "with dragon-scale engraving, bold ornate brass border, warm inner "
-        "glow, clearly the PRIMARY confirm button{WIDE}"),
-    "btn_neutral_normal": (
-        "ui_settings_v6_btn_neutral_normal.png", "1536x1024", (320, 80),
-        f"{STYLE}; secondary action button plate: dark bronze and tooled "
-        "leather surface, slim brass border with corner rivets, calm and "
-        "muted; the middle of the plate is a PLAIN EMPTY flat leather field "
-        "reserved for a text label — NO central medallion, NO emblem, NO "
-        "circle, NO ornament in the center{WIDE}"),
     "field_normal": (
         "ui_settings_v6_field_normal.png", "1536x1024", (560, 56),
         f"{STYLE}; recessed value socket bar for a dropdown field: very dark "
@@ -160,25 +129,6 @@ def _fit(img: Image.Image, target: tuple[int, int]) -> Image.Image:
 def derive_states() -> None:
     """Собрать все производные состояния и PixelLab-финалы."""
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
-    print("derive: tabs", flush=True)
-    tab = _load_asset("ui_settings_v6_tab_active.png")
-    _save(_adjust(tab, brightness=0.66, saturation=0.42), "ui_settings_v6_tab_inactive.png")
-    # hover заметно тусклее active: фокус-стиль невыбранных табов носит hover-арт,
-    # и слишком золотой hover читался как вторая активная вкладка.
-    _save(_adjust(tab, brightness=0.76, saturation=0.52), "ui_settings_v6_tab_hover.png")
-
-    print("derive: buttons", flush=True)
-    for kind in ("primary", "neutral"):
-        base = _load_asset(f"ui_settings_v6_btn_{kind}_normal.png")
-        _save(_adjust(base, brightness=1.12, saturation=1.08), f"ui_settings_v6_btn_{kind}_hover.png")
-        _save(_adjust(base, brightness=0.80, contrast=1.04), f"ui_settings_v6_btn_{kind}_pressed.png")
-        # primary — очень яркое золото: тусклый desat оставляет его светлее
-        # neutral-normal, поэтому глушим сильнее (честный greyed-out).
-        if kind == "primary":
-            _save(_adjust(base, brightness=0.48, saturation=0.28), f"ui_settings_v6_btn_{kind}_disabled.png")
-        else:
-            _save(_adjust(base, brightness=0.72, saturation=0.30), f"ui_settings_v6_btn_{kind}_disabled.png")
-
     print("derive: fields", flush=True)
     field = _load_asset("ui_settings_v6_field_normal.png")
     _save(_adjust(field, brightness=1.16, saturation=1.06), "ui_settings_v6_field_hover.png")
@@ -302,7 +252,7 @@ def main() -> None:
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
     client = require_client()
     for i, k in enumerate(keys, 1):
-        q = "high" if k == "modal_frame" else args.quality
+        q = args.quality
         try:
             out = generate(client, k, q)
         except Exception as exc:  # noqa: BLE001 — биллинг/квота важны, падаем громко

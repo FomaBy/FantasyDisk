@@ -18,9 +18,6 @@ const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_uniqu
 const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png"
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
 const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
-# SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
-const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
-const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 # SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
 # StyleBoxFlat в safe-зоне полой рамы meta40 (ассерты совпадают с runtime_smoke_test.gd).
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
@@ -459,9 +456,8 @@ func _open_route_map(main: Node) -> void:
 
 
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
-	# SCRUM-565/568: Событие и Докача переехали на overhaul_2k card-рамку (evt_card),
-	# поэтому общий minimal-metal card-контракт к ним больше не применяется (проверка
-	# evt_card-рамки — в их match-ветках ниже).
+	# SCRUM-565/568 → атлас-миграция: карточки События и Докачи на собственном
+	# choice_card-контракте, общий minimal-metal card-контракт к ним не применяется.
 	if ["rest_economy", "upgrade_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
 			var card := node as Button

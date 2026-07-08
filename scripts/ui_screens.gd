@@ -211,25 +211,16 @@ const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(8.0, 8.0, 8.0, 8.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(6.0, 6.0, 6.0, 6.0)
 
 # === SCRUM-487: координатная спека @2560×1440 — блок Боевые ===
-# Источник правды для рисующего скрипта (рисует рамки/панели ровно в эти размеры) и
-# документ-спека раскладки. Значения вычислены из фактической раскладки билдеров при
-# базе 2560×1440 (window/stretch=canvas_items, aspect=keep → рантайм всегда лэйаутит в
-# этой базе, окно скейлится автоматически). Стиль и инварианты — как у блока Меню (MM_*/
-# QC_*/PM_* в SCRUM-484): панели с рамкой держат пустую safe-area под контент.
+# Значения вычислены из фактической раскладки билдеров при базе 2560×1440
+# (window/stretch=canvas_items, aspect=keep → рантайм всегда лэйаутит в этой базе,
+# окно скейлится автоматически). Панели с рамкой держат пустую safe-area под контент.
 # Шаблонные размеры контейнер-зависимых слотов (карточки/кнопки/ряды) заданы как
 # Rect2(0, 0, w, h) — позиция считается контейнером в рантайме (центрирование).
+# Координатные спеки экранов, ушедших на атлас-стиль (SCRUM-879..888), сняты.
 const COMBAT_BLOCK_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 
-# #5 Бой / HUD — generated 2K frame-kit slots. Keep these in sync with
-# tools/build_ui_2k_frame_kit.py; SCRUM-671 runtime placement uses the SCRUM666_*
-# geometry below because SCRUM-666 is a full-screen mockup/source package.
-const CHUD_RESOURCE_PANEL_2K := Rect2(18, 18, 820, 84)
-const CHUD_TIMER_2K := Rect2(1136, 14, 288, 96)
-const CHUD_ASCENSION_BADGE_2K := Rect2(1432, 18, 64, 64)
-const CHUD_ARTIFACT_ROW_2K := Rect2(2140, 16, 402, 104)
-const CHUD_LEVELUP_BUTTON_2K := Rect2(2436, 1316, 96, 117)
-const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)
-const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay (full-rect)
+# #5 Бой / HUD — SCRUM-671 runtime placement uses the SCRUM666_* geometry below
+# because SCRUM-666 is a full-screen mockup/source package.
 
 # SCRUM-671 / SCRUM-666 clean essential-only runtime HUD geometry.
 # SCRUM-778 keeps the same accepted HUD content, but compacts the runtime footprint
@@ -277,14 +268,8 @@ const HUD_V2_ASCENSION_PIP_2K := 44.0
 const HUD_V2_ASCENSION_GAP_2K := 8.0
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
-const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
-const EVT_SAFE_2K := Rect2(478, 402, 1604, 642)
-const EVT_CARD_2K := Rect2(0, 0, 480, 340)                  # EventChoiceButton{0..2} (3 в ряд, gap 48)
-const EVT_BACK_BUTTON_2K := Rect2(0, 0, 380, 54)            # EventBackButton
 
 # #14 Улучшение — _show_upgrade_screen (economy-панель "upgrade"; target 1720×730, центр)
-const UPGRADE_PANEL_2K := Rect2(420, 355, 1720, 730)        # MenuPanel_upgrade (centered economy panel)
-const UPGRADE_SAFE_2K := Rect2(478, 427, 1604, 592)         # safe = панель − content 58/72/58/66
 
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
 # SCRUM-883: оверлей на едином атлас-стиле (эталон SCRUM-879) — панель/карточки/
@@ -323,7 +308,6 @@ const LU_BADGE_META := {
 # геометрия задаётся _create_menu_box/REWARD_*_CARD_SIZE (спек-рамки @2K сняты).
 
 # #28 Тост повышения — _show_level_up_toast (транзиентный full-rect burst на позиции игрока/центра)
-const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
 
 # #29 Баннер заголовка боя — _show_combat_title_banner (center-top; ширина была 1280 = 720p-баг → 2K)
 const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление босса (big)
@@ -344,50 +328,21 @@ const VICTORY_BANNER_CHIP_PAD := 26.0
 # атлас-шелл (см. #15 ниже), собственного координатного движка больше не имеет.
 
 # #8 Магазин — _show_shop_screen (backdrop-лавка; контент в центральной зоне «стены»)
-const SHOP_TITLE_2K := Rect2(900, 104, 760, 86)            # ShopHeader (заголовок+подзаголовок)
-const SHOP_WALL_2K := Rect2(512, 547, 1536, 533)           # ShopParchmentWall (anchor-фракции 0.20/0.38/0.80/0.75)
-const SHOP_SAFE_2K := Rect2(512, 547, 1536, 533)           # пустая зона лавки под слоты
-const SHOP_SLOT_2K := Rect2(0, 0, 148, 148)                # ShopItemButton{0..3} (anchors 0.30/0.70 × 0.18/0.84 внутри стены)
-const SHOP_BACK_2K := Rect2(1100, 1314, 360, 104)          # ShopLeaveButton (anchor bottom-center)
 
 # #9 Докача — _show_attribute_shop (панель full-height; скролл опций + фикс-низ)
-const ATTR_PANEL_2K := Rect2(730, 28, 1124, 1384)
-const ATTR_SAFE_2K := Rect2(788, 100, 1008, 1246)          # панель − content 58/72/58/66
-const ATTR_OFFER_2K := Rect2(0, 0, 480, 340)               # AttributeOffer_* = ECONOMY_CHOICE_TARGET_1440 (грид 2 кол)
-const ATTR_ACTION_BUTTON_2K := Rect2(0, 0, 420, 62)        # AttributeReroll/Skip (фикс ВНЕ скролла снизу)
 
 # #10 Дерево навыков (легаси-спека v3; экран заменён Атласом героев — _show_atlas_screen, SCRUM-827)
-const SKILL_MAIN_PANEL_2K := Rect2(48, 26, 2464, 1388)
-const SKILL_SAFE_2K := Rect2(136, 118, 2288, 1214)         # layout-VBox (header→hint→body)
-const SKILL_POINTS_BADGE_2K := Rect2(0, 0, 215, 96)        # SkillTreePointsBadge (ширина растёт под текст очков)
-const SKILL_BACK_2K := Rect2(0, 0, 260, 104)               # SkillTreeBackButton
-const SKILL_CLASS_PANEL_2K := Rect2(136, 262, 330, 1070)   # SkillTreeClassPanel (левая колонка)
-const SKILL_BRANCHES_2K := Rect2(484, 262, 1932, 1276)     # SkillTreeBranches (ряд веток; @2K без гориз-скролла)
-const SKILL_BRANCH_2K := Rect2(0, 0, 164, 430)             # SkillTreeBranchPanel_* (шаблон ветки, separation 14)
 
 # #15 Кодекс — _show_codex_screen / _show_codex_section: SCRUM-879, контейнерный
 # шелл в атлас-стиле (фон COVERED → safe-зона рамы → «табы | объект-сцена | досье»
 # → полая рама поверх); панели — _atlas_chip_style, ряды — _unified_apply_row_theme.
 
 # #16 Настройки — _show_settings_menu (SCRUM-879: фулскрин атлас-шелл, строки v6)
-const SETTINGS_PANEL_2K := Rect2(256, 104, 2048, 1232)
-const SETTINGS_SAFE_2K := Rect2(430, 229, 1700, 1062)
-const SETTINGS_TITLE_2K := Rect2(448, 229, 1664, 64)
-const SETTINGS_TAB_SWITCHER_2K := Rect2(730, 316, 1100, 220)
-const SETTINGS_CONTENT_PANEL_2K := Rect2(430, 570, 1700, 610)
-const SETTINGS_CONTROL_ROW_2K := Rect2(658, 602, 1438, 62) # строка контрола (разрешение/режим окна; шаблон h)
-const SETTINGS_BACK_2K := Rect2(1140, 1204, 280, 87)
 # === конец спеки SCRUM-488 ===
 
 # #17 Что нового / патч-ноуты — _show_patch_notes_screen (SCRUM-576). Полноэкранная панель
 # (как skill-tree main), хедер «Что нового» + «Назад в меню» сверху, скролл версий/буллетов
 # внутри safe-area. Текст длинных версий уходит в вертикальный скролл (рамка не растягивается).
-const PN_PANEL_2K := Rect2(48, 26, 2464, 1388)             # PatchNotesPanel (фрейм)
-const PN_SAFE_2K := Rect2(136, 118, 2288, 1214)            # layout-VBox (header → scroll), панель − content 58/72/58/66 (масштаб)
-const PN_HEADER_2K := Rect2(136, 118, 2288, 104)           # хедер (title EXPAND + back)
-const PN_TITLE_2K := Rect2(136, 118, 1900, 104)            # «Что нового» (38px)
-const PN_BACK_2K := Rect2(2164, 118, 260, 104)             # PatchNotesBackButton
-const PN_SCROLL_2K := Rect2(136, 234, 2288, 1098)          # скролл версий/буллетов (под хедером)
 
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -518,19 +473,8 @@ func _init(game_ref) -> void:
 # safe-area (пустая зона внутри рамки, куда можно класть контент). База дизайна 2K
 # (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
 # вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
-const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const MM_TITLE_2K := Rect2(56, 44, 720, 270)
 # Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
 # 6 кнопок 380×104, separation 10 → высота 674; top рассчитывается ниже лого).
-const MM_BUTTON_COLUMN_2K := Rect2(72, 394, 380, 674)
-const MM_BTN_START_2K := Rect2(72, 394, 380, 104)
-const MM_BTN_SETTINGS_2K := Rect2(72, 508, 380, 104)
-const MM_BTN_SKILLTREE_2K := Rect2(72, 622, 380, 104)
-const MM_BTN_PATCHNOTES_2K := Rect2(72, 736, 380, 104)
-const MM_BTN_CODEX_2K := Rect2(72, 850, 380, 104)
-const MM_BTN_EXIT_2K := Rect2(72, 964, 380, 104)
-const MM_VERSION_LABEL_2K := Rect2(2440, 1406, 104, 24)  # якорь bottom-right
-const MM_SAFE_2K := Rect2(72, 394, 380, 674)  # фон обязан держать эту колонку пустой
 
 
 func _main_menu_actions_top(viewport_size: Vector2, title_bottom: float) -> float:
@@ -706,13 +650,6 @@ func _show_main_menu() -> void:
 # Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
 # margins (58,72,58,66) → safe-area. Контент: заголовок, подзаголовок, ряд из двух
 # кнопок 220×72 (separation 18). Всё помещается внутри safe-area без наслоений.
-const QC_DIM_2K := Rect2(0, 0, 2560, 1440)
-const QC_PANEL_2K := Rect2(980, 550, 600, 340)
-const QC_SAFE_2K := Rect2(1038, 622, 484, 202)
-const QC_TITLE_2K := Rect2(1038, 627, 484, 44)
-const QC_SUBTITLE_2K := Rect2(1038, 687, 484, 44)
-const QC_BTN_EXIT_2K := Rect2(1051, 747, 220, 72)
-const QC_BTN_CANCEL_2K := Rect2(1289, 747, 220, 72)
 
 
 func _show_quit_confirmation_dialog() -> void:
@@ -837,17 +774,12 @@ func _cancel_quit_confirmation_dialog() -> void:
 # SCRUM-484/SCRUM-842: координатная спека @2560×1440 — продолжить забег (модалка).
 # Панель расширена до 840×380, чтобы long-кнопка «Продолжить» 420×72 и «Новая игра»
 # 240×72 с gap 18 оставались внутри safe-area и не клепали текст по орнаменту.
-const CR_DIM_2K := Rect2(0, 0, 2560, 1440)
 const CR_PANEL_2K := Rect2(860, 530, 840, 380)
-const CR_SAFE_2K := Rect2(932, 602, 696, 242)
-const CR_TITLE_2K := Rect2(932, 614, 696, 44)
-const CR_SUBTITLE_2K := Rect2(932, 674, 696, 66)
 const CR_BTN_CONTINUE_2K := Rect2(942, 758, 420, 72)
 const CR_BTN_NEWGAME_2K := Rect2(1380, 758, 240, 72)
 
 # SCRUM-584: координатная спека @2560x1440 — конфликт переназначения клавиши.
 # Mockup/art source: docs/design/references/scrum584_rebind_conflict_2k/.
-const RC_DIM_2K := Rect2(0, 0, 2560, 1440)
 const RC_PANEL_2K := Rect2(940, 530, 680, 380)
 const RC_SAFE_2K := Rect2(998, 602, 564, 242)
 const RC_TITLE_2K := Rect2(998, 614, 564, 44)
@@ -1012,18 +944,7 @@ const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
 # Доли HS4_* (Rect2 в долях) НЕ совпадают с этими px (напр. HS4_PORTRAIT_FRAME долями ≈
 # (51,194,632,835) против реальных (56,179,661,959)) — оставлены для mockup-валидации, НЕ трогать.
 const HS4_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const HS4_TITLE_2K := Rect2(56, 40, 2448, 122)
-const HS4_BACK_2K := Rect2(56, 74, 218, 54)                  # compact runtime back button centered inside title band
-const HS4_PORTRAIT_FRAME_2K := Rect2(56, 179, 661, 959)
-const HS4_PORTRAIT_SAFE_2K := Rect2(114, 251, 545, 821)       # frame content margins: 58/72/58/66
-const HS4_DOSSIER_2K := Rect2(753, 179, 1091, 959)            # x = 56 + 661 + gap 36
-const HS4_RADAR_2K := Rect2(1880, 179, 624, 959)             # x = 753 + 1091 + gap 36
-const HS4_CAROUSEL_2K := Rect2(56, 1155, 2448, 245)
-const HS4_CHOOSE_BTN_2K := Rect2(0, 0, 512, 89)              # шаблон (shrink_center в dossier-VBox)
-const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-кнопок возвышения
-# Карусель SCRUM-561: content-zone comes from hs4_carousel_panel; thumbnails stay square inside the safe band.
-const HS4_CAROUSEL_SLOT_2K := Rect2(237, 1230, 101, 101)     # square slot inside hud-strip content safe area
-const HS4_CAROUSEL_SLOT_STEP_2K := 248.0
+# Карусель SCRUM-561: thumbnails stay square inside the safe band of the carousel strip.
 const HS4_PIXELLAB_DIR := "res://assets/sprites/ui/frames/hero_select_pixellab/"
 const HS4_PIXELLAB_PATHS := {
 	"background": HS4_PIXELLAB_DIR + "background.png",
@@ -1070,16 +991,6 @@ const HS4_PIXELLAB_CONTENT_RECT := {
 	"carousel_left": Rect2(36, 42, 60, 92),
 	"carousel_right": Rect2(36, 42, 60, 92),
 	"hero_slot": Rect2(18, 18, 160, 160),
-}
-const HS4_PIXELLAB_LAYOUT_2K := {
-	"back": Rect2(100, 86, 460, 148),
-	"title": Rect2(240, 6, 1840, 184),
-	"portrait": Rect2(64, 178, 600, 820),
-	"dossier": Rect2(720, 178, 980, 820),
-	"radar": Rect2(1716, 178, 780, 520),
-	"ascension": Rect2(1714, 728, 780, 270),
-	"choose": Rect2(1012, 998, 512, 118),
-	"carousel": Rect2(64, 1080, 2432, 330),
 }
 
 
@@ -6034,16 +5945,6 @@ func _show_pause_menu(force := false) -> void:
 # скейлятся ×0.911 → safe-area ≈ (67,86,67,78). Контент: заголовок, подзаголовок,
 # 6 кнопок 280×60 (separation 8; SCRUM-848 добавил «Фидбек»). Столб контента 498px
 # центрирован в safe-area (низ 973 ≤ 1052) — всё внутри без наслоений.
-const PM_PANEL_2K := Rect2(831, 310, 898, 820)
-const PM_SAFE_2K := Rect2(898, 396, 764, 656)
-const PM_TITLE_2K := Rect2(898, 475, 764, 58)
-const PM_SUBTITLE_2K := Rect2(898, 541, 764, 24)
-const PM_BTN_CONTINUE_2K := Rect2(1140, 573, 280, 60)
-const PM_BTN_DOSSIER_2K := Rect2(1140, 641, 280, 60)
-const PM_BTN_SETTINGS_2K := Rect2(1140, 709, 280, 60)
-const PM_BTN_FEEDBACK_2K := Rect2(1140, 777, 280, 60)
-const PM_BTN_ENDRUN_2K := Rect2(1140, 845, 280, 60)
-const PM_BTN_MAINMENU_2K := Rect2(1140, 913, 280, 60)
 
 
 func _build_run_pause_menu() -> void:
@@ -8575,16 +8476,7 @@ func _show_event_screen(route_node: Dictionary) -> void:
 # всегда остаётся в нижнем safe-слоте. Pause screen сохраняет scroll-контракт отдельно.
 # SCRUM-883: модалка итогов — чип Атласа с симметричным чип-пэддингом.
 const RESULT_MODAL_CHIP_PAD := 24.0
-const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
-const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
-const RESULT_TITLE_2K := Rect2(898, 396, 764, 42)
-const RESULT_SUBTITLE_2K := Rect2(898, 448, 764, 128)
-const RESULT_BODY_2K := Rect2(898, 586, 764, 352)
-const RESULT_CREST_2K := Rect2(899, 678, 168, 168)
-const RESULT_SUMMARY_2K := Rect2(1086, 586, 576, 352)
 const VS_BTN_NEWRUN_2K := Rect2(1070, 948, 420, 104)     # x = 898 + (764-420)/2; нижний слот safe
-const DS_BTN_RETRY_2K := Rect2(1070, 948, 420, 104)      # геометрия = VS_BTN_NEWRUN_2K
 
 
 func _show_victory_screen() -> void:
@@ -10273,15 +10165,6 @@ func _apply_video_settings() -> void:
 # статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
 # тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
 # не уезжают за нижний край (SCRUM-460).
-const FB_PANEL_2K := Rect2(810, 330, 940, 780)
-const FB_SAFE_2K := Rect2(868, 402, 824, 642)
-const FB_TITLE_2K := Rect2(868, 402, 824, 42)
-const FB_SCROLL_2K := Rect2(868, 454, 824, 470)
-const FB_TEXTEDIT_2K := Rect2(868, 508, 824, 130)
-const FB_SCREENSHOT_2K := Rect2(868, 648, 824, 240)
-const FB_STATUS_2K := Rect2(868, 934, 824, 36)
-const FB_BTN_SEND_2K := Rect2(1031, 980, 260, 64)
-const FB_BTN_CANCEL_2K := Rect2(1309, 980, 220, 64)
 
 
 # SCRUM-848: тот же захват, что у хоткея P в main.gd — последний отрисованный кадр
@@ -11674,7 +11557,7 @@ func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector
 
 
 func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	if slot in ["cr_btn", "pm_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
+	if slot == "cr_btn" and _text_button_unique_id(button) != "":
 		_apply_fantasy_button_theme(button)
 		return
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))

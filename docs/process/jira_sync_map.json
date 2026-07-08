@@ -4012,5 +4012,10 @@
   "key": "SCRUM-889",
   "status": "Готово",
   "desc_hash": "55a402237b97a344aa1f300db3fdf1e0"
+ },
+ "cleanup_orphan_ui_frames_atlas_migration_task.md": {
+  "key": "SCRUM-891",
+  "status": "В работе",
+  "desc_hash": "3feaed6ca60874810ff57fbfbe806b4f"
  }
 }

@@ -3,7 +3,7 @@ extends SceneTree
 # SCRUM-717 (refactor wave 0.2.0): exhaustive existence + anti-drift validation for the
 # UIThemePaths theme-path collections. ui_icon_registry_smoke covers ICON_PATHS and
 # dark_fantasy_ui_theme covers the minimal_metal frame/button + text_button_unique kits,
-# but the active OVERHAUL_2K / LEVEL_UP_SCRUM682 / RED_GOLD / UNIFIED / GLOBAL collections
+# but the active OVERHAUL_2K / RED_GOLD / UNIFIED / GLOBAL collections
 # were not exhaustively checked. A stale path here = a missing texture at runtime. This is
 # read-only validation; no theme path was changed.
 
@@ -14,7 +14,6 @@ func _initialize() -> void:
 	var errors: Array = []
 
 	# Flat path dicts (id -> path).
-	_check_path_dict(errors, UIThemePaths.LEVEL_UP_SCRUM682_FRAME_PATHS, "LEVEL_UP_SCRUM682_FRAME_PATHS")
 	_check_path_dict(errors, UIThemePaths.OVERHAUL_2K_FRAME_PATHS, "OVERHAUL_2K_FRAME_PATHS")
 	_check_path_dict(errors, UIThemePaths.MINIMAL_METAL_FRAME_PATHS, "MINIMAL_METAL_FRAME_PATHS")
 

@@ -121,7 +121,6 @@ const PD_PANEL_2K := Rect2(20, 18, 2520, 1404)
 const PD_SAFE_2K := Rect2(135, 165, 2290, 1123)
 const PD_LEFT_COLUMN_2K := Rect2(135, 165, 330, 1123)
 const PD_RIGHT_AREA_2K := Rect2(483, 165, 1942, 1123)
-const PD_BTN_2K := Rect2(0, 0, 280, 60)  # шаблон-размер кнопки управления
 const PD_STAT_GROUP_2K := Rect2(0, 0, 430, 0)  # шаблон-ширина панели группы статов
 const READABILITY_BASE_VIEWPORT := Vector2(1280.0, 720.0)
 const READABILITY_MAX_SCALE := 1.18
@@ -323,7 +322,7 @@ func _build_left_controls(left_column: VBoxContainer) -> void:
 	button_box.add_theme_constant_override("separation", _readable_px(8.0))
 	left_column.add_child(button_box)
 
-	# SCRUM-580: 4 кнопки управления досье-паузы переодеты в выделенный pd_btn @2K-фрейм.
+	# SCRUM-580 → атлас-миграция: 4 кнопки управления досье-паузы на глобальном ките кнопок.
 	var resume_button := _make_button("Продолжить")
 	resume_button.name = "PauseResumeButton"
 	_apply_pd_2k_button_theme(resume_button)
