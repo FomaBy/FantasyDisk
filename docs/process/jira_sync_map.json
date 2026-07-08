@@ -4017,5 +4017,10 @@
   "key": "SCRUM-891",
   "status": "Контроль качества",
   "desc_hash": "ae66a5ff3a62a1f50316b902b19d6399"
+ },
+ "design_levelup_atlas_beautify_task.md": {
+  "key": "SCRUM-892",
+  "status": "К выполнению",
+  "desc_hash": "06ba1f6d45b98f46aeae2f4e499f30c0"
  }
 }
