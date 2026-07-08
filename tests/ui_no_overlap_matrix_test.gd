@@ -76,12 +76,12 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
 			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
-			"DerivedStatsGroups",
+			"DerivedStatsGroups", "RunEquipmentPanel",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
 			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
 			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
-			"DerivedStatsGroups",
+			"DerivedStatsGroups", "RunEquipmentPanel",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
 			"HS4PortraitFrame", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",

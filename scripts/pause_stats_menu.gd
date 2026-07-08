@@ -17,6 +17,18 @@ const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.g
 
 const HERO_EMBLEM_PATH := "res://assets/sprites/ui/atlas_style/emblem_hero_hall.png"
 
+# SCRUM-893: язык Атласа в полном составе — полая рама meta40 по краю экрана
+# (числа = ui_screens._atlas_frame_style/_unified_safe_margins, коэффициент
+# захода в тёмное поле рамы 0.86 = атлас после фидбека), парадная рама портрета
+# (PixelLab), герб класса и орнамент-разделители.
+const META40_FRAME_BORDER_PATH := "res://assets/sprites/ui/meta40/frame_border.png"
+const ATLAS_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+const ATLAS_FRAME_SOURCE_MARGIN := 160.0
+const FRAME_CONTENT_ENCROACH := 0.86
+const PORTRAIT_FRAME_PATH := "res://assets/sprites/ui/atlas_style/dossier_portrait_frame.png"
+const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
+const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
+
 # Глобальный кнопочный кит: нативные плиты text_buttons_unique, size-маппинг
 # = ui_screens._text_button_unique_id (72-высоты → 220/240/260-плиты,
 # 104 → back_260x104, промежуточная 88 → minimal_metal back_m 9-slice).
@@ -84,6 +96,8 @@ var _base_stats_container: VBoxContainer = null
 var _derived_groups_container: GridContainer = null
 var _survival_stats_container: VBoxContainer = null
 var _hero_card_container: VBoxContainer = null
+var _equipment_flow: HFlowContainer = null
+var _arsenal_box: VBoxContainer = null
 var _player: Node = null
 
 # SCRUM-890 (доработка): derived-статы выживания живут в карточке героя
@@ -162,6 +176,52 @@ func _translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
 	return style
 
 
+# SCRUM-893: полая рама meta40 на весь экран — как на экранах атласа/настроек/
+# кодекса. Контент живёт в safe-зоне (маргины 160·vp/source ×0.86); фолбэк без
+# ассета — прежний плотный чип.
+func _frame_style() -> StyleBox:
+	if not ResourceLoader.exists(META40_FRAME_BORDER_PATH):
+		return _chip_style(0.95, maxf(7.0, roundf(16.0 * _atlas_scale())))
+	var vp := get_viewport_rect().size
+	if vp.x <= 0.0 or vp.y <= 0.0:
+		vp = Vector2(2560.0, 1440.0)
+	var style := StyleBoxTexture.new()
+	style.texture = load(META40_FRAME_BORDER_PATH)
+	style.texture_margin_left = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_top = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_right = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_bottom = ATLAS_FRAME_SOURCE_MARGIN
+	style.draw_center = false
+	var margin_h := roundf(ATLAS_FRAME_SOURCE_MARGIN * vp.x / ATLAS_FRAME_SOURCE_SIZE.x * FRAME_CONTENT_ENCROACH)
+	var margin_v := roundf(ATLAS_FRAME_SOURCE_MARGIN * vp.y / ATLAS_FRAME_SOURCE_SIZE.y * FRAME_CONTENT_ENCROACH)
+	style.content_margin_left = margin_h
+	style.content_margin_right = margin_h
+	style.content_margin_top = margin_v
+	style.content_margin_bottom = margin_v
+	return style
+
+
+# Орнамент-разделитель секций (atlas_style); фолбэк — латунная линия 2px.
+func _make_section_divider() -> Control:
+	if ResourceLoader.exists(DIVIDER_ORNAMENT_PATH):
+		var ornament := TextureRect.new()
+		ornament.name = "DossierDivider"
+		ornament.texture = load(DIVIDER_ORNAMENT_PATH)
+		ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ornament.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		ornament.custom_minimum_size = Vector2(0.0, maxf(16.0, roundf(24.0 * _atlas_scale())))
+		ornament.modulate = Color(1.0, 1.0, 1.0, 0.85)
+		ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return ornament
+	var line := ColorRect.new()
+	line.name = "DossierDivider"
+	line.custom_minimum_size = Vector2(0.0, 2.0)
+	line.color = Color(0.52, 0.41, 0.24, 0.55)
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return line
+
+
 # логика = ui_screens._atlas_action_button_height (72/88/104 по высоте вьюпорта).
 func _action_button_height() -> float:
 	var vp_h := get_viewport_rect().size.y
@@ -178,7 +238,9 @@ func _build_layout() -> void:
 	var overlay := ColorRect.new()
 	overlay.name = "PauseStatsDim"
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0.01, 0.015, 0.025, 0.75)
+	# SCRUM-893: рама полая — фон паузы теперь дим, гасим игру сильнее, чтобы
+	# контент досье читался как передний план.
+	overlay.color = Color(0.01, 0.015, 0.025, 0.88)
 	add_child(overlay)
 
 	var root := Control.new()
@@ -187,15 +249,13 @@ func _build_layout() -> void:
 	add_child(root)
 
 	var s := _atlas_scale()
+	# SCRUM-893: имя узла сохранено (непрерывность матрицы/дампов), но это больше
+	# не плоский чип — полая золотая рама meta40 по краю экрана, контент в safe-зоне.
 	var panel := PanelContainer.new()
 	panel.name = "EscapeStatsPanelFrame"
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = 20.0
-	panel.offset_top = 18.0
-	panel.offset_right = -20.0
-	panel.offset_bottom = -18.0
 	panel.clip_contents = true
-	panel.add_theme_stylebox_override("panel", _chip_style(0.95, maxf(7.0, roundf(16.0 * s))))
+	panel.add_theme_stylebox_override("panel", _frame_style())
 	root.add_child(panel)
 
 	var layout := VBoxContainer.new()
@@ -320,7 +380,8 @@ func _build_body(layout: VBoxContainer, s: float) -> void:
 	# статов плотными chip-рядами и компактный блок «Выживание».
 	var hero_card := PanelContainer.new()
 	hero_card.name = "HeroCard"
-	hero_card.custom_minimum_size = Vector2(clampf(430.0 * s, 320.0, 460.0), 0.0)
+	# SCRUM-893: шире под парадный портрет 200px + ряды с значениями.
+	hero_card.custom_minimum_size = Vector2(clampf(520.0 * s, 340.0, 560.0), 0.0)
 	hero_card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hero_card.add_theme_stylebox_override("panel", _chip_style(0.90, maxf(5.0, roundf(12.0 * s))))
 	body.add_child(hero_card)
@@ -338,7 +399,9 @@ func _build_body(layout: VBoxContainer, s: float) -> void:
 	_hero_card_container = VBoxContainer.new()
 	_hero_card_container.name = "HeroCardContent"
 	_hero_card_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_hero_card_container.add_theme_constant_override("separation", 6)
+	# SCRUM-893: сепарация 4 + портрет 188 — карточка (8 базовых + «Выживание»)
+	# помещается на 1440p без скролла; на компактных высотах скролл остаётся.
+	_hero_card_container.add_theme_constant_override("separation", 4)
 	hero_scroll.add_child(_hero_card_container)
 
 	# ПРАВО — «Боевые параметры»: 4 секции кожаными чипами в сетке 2×2.
@@ -380,13 +443,98 @@ func _build_body(layout: VBoxContainer, s: float) -> void:
 	scroll.follow_focus = true
 	right_column.add_child(scroll)
 
+	# Скролл держит и сетку, и снаряжение: на 1440p всё помещается без скролла,
+	# на компактных вьюпортах правая зона листается целиком.
+	var right_content := VBoxContainer.new()
+	right_content.name = "DerivedStatsScrollContent"
+	right_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_content.add_theme_constant_override("separation", maxi(8, int(roundf(12.0 * s))))
+	scroll.add_child(right_content)
+
 	_derived_groups_container = GridContainer.new()
 	_derived_groups_container.name = "DerivedStatsGroups"
 	_derived_groups_container.columns = 2 if get_viewport_rect().size.x >= 1500.0 else 1
 	_derived_groups_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_derived_groups_container.add_theme_constant_override("h_separation", maxi(8, int(roundf(12.0 * s))))
 	_derived_groups_container.add_theme_constant_override("v_separation", maxi(8, int(roundf(12.0 * s))))
-	scroll.add_child(_derived_groups_container)
+	right_content.add_child(_derived_groups_container)
+
+	# SCRUM-893: «Арсенал» — механика оружия и ульта словами (та же дата-база,
+	# что у кодекса: weapon.description + ultimate_config).
+	var arsenal_panel := PanelContainer.new()
+	arsenal_panel.name = "ArsenalPanel"
+	arsenal_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	arsenal_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(10.0 * s))))
+	right_content.add_child(arsenal_panel)
+
+	var arsenal_outer := VBoxContainer.new()
+	arsenal_outer.add_theme_constant_override("separation", 6)
+	arsenal_panel.add_child(arsenal_outer)
+
+	var arsenal_header := HBoxContainer.new()
+	arsenal_header.add_theme_constant_override("separation", 8)
+	arsenal_outer.add_child(arsenal_header)
+
+	var arsenal_marker := ColorRect.new()
+	arsenal_marker.custom_minimum_size = Vector2(5.0, 22.0)
+	arsenal_marker.color = Color(0.85, 0.62, 0.30, 1.0)
+	arsenal_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	arsenal_header.add_child(arsenal_marker)
+
+	var arsenal_title := Label.new()
+	arsenal_title.name = "ArsenalTitle"
+	arsenal_title.text = "Арсенал"
+	arsenal_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	arsenal_title.add_theme_font_size_override("font_size", _readable_px(18.0))
+	arsenal_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
+	arsenal_header.add_child(arsenal_title)
+
+	_arsenal_box = VBoxContainer.new()
+	_arsenal_box.name = "ArsenalEntries"
+	_arsenal_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_arsenal_box.add_theme_constant_override("separation", 6)
+	arsenal_outer.add_child(_arsenal_box)
+
+	# SCRUM-893: под параметрами — снаряжение текущего забега (артефакты игрока).
+	# Панель тянется на остаток высоты: свободное место читается как инвентарь
+	# с запасом под будущие находки, а не как дыра лейаута.
+	var equip_panel := PanelContainer.new()
+	equip_panel.name = "RunEquipmentPanel"
+	equip_panel.custom_minimum_size = Vector2(0.0, 110.0)
+	equip_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	equip_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	equip_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(10.0 * s))))
+	right_content.add_child(equip_panel)
+
+	var equip_box := VBoxContainer.new()
+	equip_box.add_theme_constant_override("separation", 6)
+	equip_panel.add_child(equip_box)
+
+	var equip_header := HBoxContainer.new()
+	equip_header.add_theme_constant_override("separation", 8)
+	equip_box.add_child(equip_header)
+
+	var equip_marker := ColorRect.new()
+	equip_marker.custom_minimum_size = Vector2(5.0, 22.0)
+	equip_marker.color = Color(0.94, 0.80, 0.46, 1.0)
+	equip_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	equip_header.add_child(equip_marker)
+
+	var equip_title := Label.new()
+	equip_title.name = "RunEquipmentTitle"
+	equip_title.text = "Снаряжение забега"
+	equip_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	equip_title.add_theme_font_size_override("font_size", _readable_px(18.0))
+	equip_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
+	equip_header.add_child(equip_title)
+
+	_equipment_flow = HFlowContainer.new()
+	_equipment_flow.name = "RunEquipmentFlow"
+	_equipment_flow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_equipment_flow.add_theme_constant_override("h_separation", 8)
+	_equipment_flow.add_theme_constant_override("v_separation", 6)
+	equip_box.add_child(_equipment_flow)
 
 
 func _refresh_hero_card() -> void:
@@ -407,42 +555,94 @@ func _refresh_hero_card() -> void:
 
 	var identity := HBoxContainer.new()
 	identity.name = "HeroIdentityRow"
-	identity.add_theme_constant_override("separation", 10)
+	identity.add_theme_constant_override("separation", maxi(10, int(roundf(14.0 * s))))
 	_hero_card_container.add_child(identity)
 
-	var portrait_px := clampf(128.0 * s, 96.0, 128.0)
-	var portrait_slot := PanelContainer.new()
+	# SCRUM-893: парадный портрет — крупный, в резной раме PixelLab поверх
+	# тёмного колодца; фолбэк без ассета — прежний полупрозрачный слот.
+	var portrait_px := clampf(188.0 * s, 128.0, 196.0)
+	var portrait_slot := Control.new()
 	portrait_slot.name = "PauseDossierPortraitSlot"
 	portrait_slot.custom_minimum_size = Vector2(portrait_px, portrait_px)
 	portrait_slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	portrait_slot.add_theme_stylebox_override("panel", _translucent_style(0.55, 10.0))
 	identity.add_child(portrait_slot)
+
+	var portrait_well := Panel.new()
+	portrait_well.name = "PauseDossierPortraitWell"
+	portrait_well.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var well_inset := roundf(portrait_px * 0.08)
+	portrait_well.offset_left = well_inset
+	portrait_well.offset_top = well_inset
+	portrait_well.offset_right = -well_inset
+	portrait_well.offset_bottom = -well_inset
+	portrait_well.add_theme_stylebox_override("panel", _translucent_style(0.62, 10.0))
+	portrait_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_slot.add_child(portrait_well)
 
 	var portrait := TextureRect.new()
 	portrait.name = "PauseDossierPortrait"
+	portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var portrait_inset := roundf(portrait_px * 0.10)
+	portrait.offset_left = portrait_inset
+	portrait.offset_top = portrait_inset
+	portrait.offset_right = -portrait_inset
+	portrait.offset_bottom = -portrait_inset
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sprite_path := str(config.get("sprite_path", ""))
 	if sprite_path != "" and ResourceLoader.exists(sprite_path):
 		portrait.texture = load(sprite_path)
 	portrait_slot.add_child(portrait)
 
+	if ResourceLoader.exists(PORTRAIT_FRAME_PATH):
+		var portrait_frame := TextureRect.new()
+		portrait_frame.name = "PauseDossierPortraitFrame"
+		portrait_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+		portrait_frame.texture = load(PORTRAIT_FRAME_PATH)
+		portrait_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait_frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait_frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		portrait_slot.add_child(portrait_frame)
+
 	var text_box := VBoxContainer.new()
 	text_box.name = "HeroIdentityText"
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	text_box.add_theme_constant_override("separation", 2)
+	text_box.add_theme_constant_override("separation", 3)
 	identity.add_child(text_box)
+
+	# Имя героя золотом + герб класса meta40 рядом.
+	var name_row := HBoxContainer.new()
+	name_row.name = "PauseDossierNameRow"
+	name_row.add_theme_constant_override("separation", 8)
+	text_box.add_child(name_row)
+
+	var crest_path := "%screst_%s.png" % [CLASS_CREST_DIR, character_id]
+	if ResourceLoader.exists(crest_path):
+		var crest := TextureRect.new()
+		crest.name = "PauseDossierCrest"
+		crest.texture = load(crest_path)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var crest_px := maxf(30.0, roundf(42.0 * s))
+		crest.custom_minimum_size = Vector2(crest_px, crest_px)
+		crest.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		name_row.add_child(crest)
 
 	var title := Label.new()
 	title.name = "PauseDossierTitle"
 	title.text = str(config.get("title", "Герой"))
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title.add_theme_font_size_override("font_size", _readable_px(20.0))
+	title.add_theme_font_size_override("font_size", _readable_px(27.0))
 	title.add_theme_color_override("font_color", COLOR_TITLE)
-	text_box.add_child(title)
+	name_row.add_child(title)
 
 	_add_identity_row(text_box, "PauseDossierWeapon", "Оружие", str(weapon.get("title", "—")))
 	_add_identity_row(text_box, "PauseDossierLevel", "Уровень", "%d · XP %d/%d" % [
@@ -453,24 +653,31 @@ func _refresh_hero_card() -> void:
 		ascension_level = int(_player.get_parent().get("selected_ascension_level"))
 	_add_identity_row(text_box, "PauseDossierAscension", "Возвышение", str(ascension_level))
 
-	var divider := ColorRect.new()
+	# SCRUM-893: орнамент-разделители atlas_style между секциями карточки.
+	var divider := _make_section_divider()
 	divider.name = "HeroCardDivider"
-	divider.custom_minimum_size = Vector2(0.0, 2.0)
-	divider.color = Color(0.52, 0.41, 0.24, 0.55)
-	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_card_container.add_child(divider)
+
+	var base_title := Label.new()
+	base_title.name = "BaseStatsTitle"
+	base_title.text = "Характеристики"
+	base_title.add_theme_font_size_override("font_size", _readable_px(16.0))
+	base_title.add_theme_color_override("font_color", COLOR_KIND)
+	_hero_card_container.add_child(base_title)
 
 	_base_stats_container = VBoxContainer.new()
 	_base_stats_container.name = "BaseStatsList"
 	_base_stats_container.add_theme_constant_override("separation", 2)
 	_hero_card_container.add_child(_base_stats_container)
 
+	_hero_card_container.add_child(_make_section_divider())
+
 	# SCRUM-890 (доработка): блок «Выживание» — оборонительные derived-статы
 	# под базовыми (правые 4 секции остались атакующими).
 	var survival_title := Label.new()
 	survival_title.name = "SurvivalTitle"
 	survival_title.text = "Выживание"
-	survival_title.add_theme_font_size_override("font_size", _readable_px(15.0))
+	survival_title.add_theme_font_size_override("font_size", _readable_px(16.0))
 	survival_title.add_theme_color_override("font_color", COLOR_KIND)
 	_hero_card_container.add_child(survival_title)
 
@@ -540,6 +747,115 @@ func _refresh_stats() -> void:
 	for group in DERIVED_GROUPS:
 		_derived_groups_container.add_child(_make_derived_group(group, derived_entries_by_id))
 	_refresh_survival_rows(derived_entries_by_id)
+	_refresh_arsenal()
+	_refresh_equipment()
+
+
+# SCRUM-893: словесная часть досье — как играет оружие и что делает ульта.
+func _refresh_arsenal() -> void:
+	if _arsenal_box == null:
+		return
+	for child in _arsenal_box.get_children():
+		child.queue_free()
+	if _player == null or not is_instance_valid(_player):
+		return
+	var character_id := str(_player.get("character_id"))
+	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
+	_add_arsenal_entry("ArsenalWeapon", "Оружие — %s" % str(weapon.get("title", "—")),
+		str(weapon.get("description", "")))
+	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	if not ultimate.is_empty():
+		_add_arsenal_entry("ArsenalUltimate", "Ульта — %s" % str(ultimate.get("title", "")),
+			str(ultimate.get("description", "")))
+
+
+func _add_arsenal_entry(entry_name: String, kind_text: String, body_text: String) -> void:
+	var entry := VBoxContainer.new()
+	entry.name = entry_name
+	entry.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	entry.add_theme_constant_override("separation", 1)
+	_arsenal_box.add_child(entry)
+
+	var kind := Label.new()
+	kind.name = "%sKind" % entry_name
+	kind.text = kind_text
+	kind.add_theme_font_size_override("font_size", _readable_px(15.0))
+	kind.add_theme_color_override("font_color", COLOR_KIND)
+	entry.add_child(kind)
+
+	var body := Label.new()
+	body.name = "%sBody" % entry_name
+	body.text = body_text
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_theme_font_size_override("font_size", _readable_px(14.0))
+	body.add_theme_color_override("font_color", COLOR_BODY)
+	entry.add_child(body)
+
+
+# SCRUM-893: чипы артефактов текущего забега (player.artifacts: [{id, title}]) +
+# пустые слоты-сокеты meta40 до минимума 8 — свободное место панели читается
+# как инвентарь под будущие находки, а не как дыра лейаута.
+const EQUIPMENT_MIN_SLOTS := 8
+const EQUIPMENT_SOCKET_PATH := "res://assets/sprites/ui/meta40/socket_minor.png"
+
+
+func _refresh_equipment() -> void:
+	if _equipment_flow == null:
+		return
+	for child in _equipment_flow.get_children():
+		child.queue_free()
+	var artifacts: Array = []
+	if _player != null and is_instance_valid(_player) and _player.get("artifacts") != null:
+		artifacts = _player.get("artifacts")
+	if artifacts.is_empty():
+		var empty_label := Label.new()
+		empty_label.name = "RunEquipmentEmpty"
+		empty_label.text = "Артефакты ещё не найдены — ищи награды за бои и события."
+		# EXPAND на всю строку flow — сокеты уходят на собственный ряд ниже.
+		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		empty_label.add_theme_font_size_override("font_size", _readable_px(14.0))
+		empty_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.70, 1.0))
+		_equipment_flow.add_child(empty_label)
+		_add_equipment_sockets(EQUIPMENT_MIN_SLOTS)
+		return
+	for artifact in artifacts:
+		var chip := PanelContainer.new()
+		chip.name = "RunEquipmentChip_%s" % str(artifact.get("id", ""))
+		chip.custom_minimum_size = Vector2(0, 40.0)
+		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+		_equipment_flow.add_child(chip)
+
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 6)
+		chip.add_child(line)
+
+		var icon := UIIconRegistry.make_icon("artifact", Vector2(22, 22))
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		line.add_child(icon)
+
+		var chip_label := Label.new()
+		chip_label.text = str(artifact.get("title", "Артефакт"))
+		chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		chip_label.add_theme_font_size_override("font_size", _readable_px(14.0))
+		chip_label.add_theme_color_override("font_color", COLOR_BODY)
+		line.add_child(chip_label)
+	_add_equipment_sockets(maxi(EQUIPMENT_MIN_SLOTS - artifacts.size(), 2))
+
+
+func _add_equipment_sockets(count: int) -> void:
+	if _equipment_flow == null or not ResourceLoader.exists(EQUIPMENT_SOCKET_PATH):
+		return
+	for i in range(count):
+		var socket := TextureRect.new()
+		socket.name = "RunEquipmentSlot_%d" % i
+		socket.texture = load(EQUIPMENT_SOCKET_PATH)
+		socket.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		socket.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		socket.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		socket.custom_minimum_size = Vector2(56.0, 56.0)
+		socket.modulate = Color(1.0, 1.0, 1.0, 0.55)
+		socket.tooltip_text = "Свободный слот — артефакты выпадают из наград за бои и события."
+		_equipment_flow.add_child(socket)
 
 
 # SCRUM-890 (доработка): плотные ряды «Выживания» в карточке героя — ОЗ (тек/макс),
@@ -605,6 +921,9 @@ func _make_survival_stat_row(entry: Dictionary, display_name := "", value_overri
 	var value_label := Label.new()
 	value_label.name = "SurvivalStatValue_%s" % stat_id
 	value_label.text = value_override if value_override != "" else _compact_value_text(entry)
+	# SCRUM-893: clip_text обнуляет min-width Label — без явного минимума метка
+	# схлопывается в 0 рядом с EXPAND_FILL-именем (значения «исчезали» на рендере).
+	value_label.custom_minimum_size = Vector2(_readable_px(96.0), 0)
 	value_label.clip_text = true
 	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -696,7 +1015,8 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	var group_panel := PanelContainer.new()
 	group_panel.name = "DerivedStatGroup_%s" % str(group.get("id", ""))
 	group_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	group_panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	# SCRUM-893: секции делят высоту сетки поровну (без пустого поля под ними).
+	group_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	group_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(12.0 * s))))
 	var accent: Color = group.get("accent", Color(0.95, 0.78, 0.32, 1.0))
 
@@ -727,7 +1047,9 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 
 	var chips := GridContainer.new()
 	chips.name = "DerivedStatChips_%s" % str(group.get("id", ""))
-	chips.columns = 2
+	# SCRUM-893: 2 колонки чипов только на широких вьюпортах — на 1920 и уже
+	# имя+значение не делят чип без эллипсиса, читаемость дороже плотности.
+	chips.columns = 2 if get_viewport_rect().size.x >= 2200.0 else 1
 	chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chips.add_theme_constant_override("h_separation", 8)
 	chips.add_theme_constant_override("v_separation", 6)
@@ -780,6 +1102,8 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	var value_label := Label.new()
 	value_label.name = "DerivedStatValue_%s" % stat_id
 	value_label.text = _compact_value_text(entry)
+	# SCRUM-893: см. SurvivalStatValue — clip_text без min-width схлопывал значение в 0.
+	value_label.custom_minimum_size = Vector2(_readable_px(84.0), 0)
 	value_label.clip_text = true
 	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

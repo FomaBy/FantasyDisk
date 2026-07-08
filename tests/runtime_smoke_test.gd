@@ -1151,6 +1151,23 @@ func _initialize() -> void:
 		if survival_row == null or survival_row.tooltip_text == "":
 			_fail("Expected Survival row %s with a hover tooltip." % survival_row_name)
 			return
+	# SCRUM-893: регресс «пустых значений» — clip_text без min-width схлопывал
+	# value-метку в 0 px рядом с EXPAND_FILL-именем (текст был, рендера не было).
+	if survival_hp_value.custom_minimum_size.x <= 0.0:
+		_fail("Expected Survival value labels to reserve min width (SCRUM-893 collapse fix).")
+		return
+	var scrum893_damage_value := pause_menu.find_child("DerivedStatValue_damage", true, false) as Label
+	if scrum893_damage_value == null or scrum893_damage_value.text.strip_edges() == "" or scrum893_damage_value.custom_minimum_size.x <= 0.0:
+		_fail("Expected derived stat values non-empty with reserved min width (SCRUM-893).")
+		return
+	# SCRUM-893: парадная рама портрета и полоса снаряжения забега.
+	if pause_menu.find_child("PauseDossierPortraitFrame", true, false) == null:
+		_fail("Expected the ornate portrait frame in the hero card (SCRUM-893).")
+		return
+	var scrum893_equipment_flow := pause_menu.find_child("RunEquipmentFlow", true, false) as HFlowContainer
+	if scrum893_equipment_flow == null or scrum893_equipment_flow.get_child_count() < 1:
+		_fail("Expected the run equipment strip (artifact chips or placeholder, SCRUM-893).")
+		return
 	# SCRUM-890 вариант Б: ровно 4 секции боевых параметров в сетке 2×2 (1 колонка
 	# на компактных вьюпортах).
 	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() != 4:
