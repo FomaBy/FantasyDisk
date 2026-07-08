@@ -57,7 +57,7 @@
   {"id": "impact_string", "motif": "taut reinforced bowstring, impact shockwave"},
   {"id": "moon_splitter", "motif": "crescent moon crossbow bolt, splitting light shards"},
   {"id": "storm_piercer", "motif": "storm-charged arrowhead, piercing lightning line"},
-  {"id": "root_snare", "motif": "gnarled root snare trap, thorned jaws"},
+  {"id": "root_snare", "motif": "gnarled root snare trap, interlocking thorned jaws snapped shut, solid dark twisted wood, no hollow gap"},
   {"id": "hunters_mark", "motif": "glowing hunter rune mark, antler sigil"},
   {"id": "armor_protocol", "motif": "riveted armor protocol plate, hazard chevrons"},
   {"id": "anchor_core", "motif": "magnetized anchor core sphere, iron filings orbit"},
