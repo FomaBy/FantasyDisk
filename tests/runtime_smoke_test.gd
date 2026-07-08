@@ -6869,18 +6869,18 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	await process_frame
 	econ_main.set("selected_character_id", "berserk")
 
-	# Аффинити-пометки: больше не красные/желтые запреты, а текст интерпретации.
-	# SCRUM-961: легаси split_core/void_ink удалены — проверяем на классовых
-	# stolen_crest (thief) / void_hunger (dark_mage) с той же семантикой (игрок —
-	# берсерк, чужой affinity → пометка); новый формат пометки сделает SCRUM-963.
+	# Классовые пометки SCRUM-963: формат «Класс: <RU> · Возвышение N» у ЛЮБОГО
+	# классового артефакта (после гейта SCRUM-961 чужой класс = только cross-class
+	# выпадение «Украденного герба» — карточка честно называет класс-владельца);
+	# у универсалов пометки нет. Анкеры: stolen_crest (thief) / void_hunger (dark_mage).
 	var crest_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("stolen_crest"))
 	var void_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_hunger"))
 	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
-	if not str(crest_note.get("text", "")).begins_with("Интерпретация:"):
-		_fail("Expected a class interpretation note for a foreign affinity artifact.")
+	if str(crest_note.get("text", "")) != "Класс: Вор · Возвышение 5":
+		_fail("Expected 'Класс: Вор · Возвышение 5' note for stolen_crest, got '%s'." % str(crest_note.get("text", "")))
 		return
-	if not str(void_note.get("text", "")).begins_with("Интерпретация:"):
-		_fail("Expected a class interpretation note for a foreign affinity artifact (void_hunger).")
+	if str(void_note.get("text", "")) != "Класс: Темный маг · Возвышение 5":
+		_fail("Expected 'Класс: Темный маг · Возвышение 5' note for void_hunger, got '%s'." % str(void_note.get("text", "")))
 		return
 	if not none_note.is_empty():
 		_fail("Expected no affinity note for a universal artifact.")

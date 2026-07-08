@@ -792,11 +792,54 @@ func _add_arsenal_entry(entry_name: String, kind_text: String, body_text: String
 	entry.add_child(body)
 
 
-# SCRUM-893: чипы артефактов текущего забега (player.artifacts: [{id, title}]) +
+# SCRUM-893: чипы артефактов текущего забега (player.artifacts: [{id, title, tier?}]) +
 # пустые слоты-сокеты meta40 до минимума 8 — свободное место панели читается
 # как инвентарь под будущие находки, а не как дыра лейаута.
 const EQUIPMENT_MIN_SLOTS := 8
 const EQUIPMENT_SOCKET_PATH := "res://assets/sprites/ui/meta40/socket_minor.png"
+# SCRUM-963: канон редкости — строки/цвета = ui_screens.TIER_LABELS/TIER_COLORS
+# (сцена не имеет доступа к хелперам ui_screens — локальный дубль по паттерну файла).
+const EQUIPMENT_TIER_LABELS := {1: "Обычный", 2: "Редкий", 3: "Эпический"}
+const EQUIPMENT_TIER_COLORS := {
+	1: Color(0.80, 0.86, 0.94, 1.0),
+	2: Color(0.46, 0.78, 1.0, 1.0),
+	3: Color(1.0, 0.74, 0.30, 1.0),
+}
+
+
+# SCRUM-963: уникальная иконка артефакта artifact_<id>.png (реестровая
+# «artifact»-иконка — только dev-fallback на отсутствующий файл/пустой id).
+func _equipment_artifact_icon(artifact_id: String) -> Control:
+	var path := "%sartifact_%s.png" % [ShopUIConstants.ARTIFACT_ICON_DIR, artifact_id]
+	if artifact_id != "" and ResourceLoader.exists(path):
+		var icon := TextureRect.new()
+		icon.name = "RunEquipmentIcon_%s" % artifact_id
+		icon.texture = load(path)
+		icon.custom_minimum_size = Vector2(22, 22)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return icon
+	return UIIconRegistry.make_icon("artifact", Vector2(22, 22))
+
+
+# SCRUM-963: тултип чипа — редкость РОЛЛНУТОГО тира записи забега (фоллбек —
+# корневой тир определения для старых сейвов) + описание из определения.
+func _equipment_artifact_tooltip(artifact: Dictionary) -> String:
+	var title := str(artifact.get("title", "Артефакт"))
+	var definition: Dictionary = ProgressionData.artifact_definition(str(artifact.get("id", "")))
+	var tier := int(artifact.get("tier", 0))
+	if tier <= 0:
+		tier = int(definition.get("tier", 0))
+	var lines := PackedStringArray()
+	if EQUIPMENT_TIER_LABELS.has(tier):
+		lines.append("%s (%s)" % [title, EQUIPMENT_TIER_LABELS[tier]])
+	else:
+		lines.append(title)
+	var description := str(definition.get("description", ""))
+	if description != "":
+		lines.append(description)
+	return "\n".join(lines)
 
 
 func _refresh_equipment() -> void:
@@ -818,18 +861,23 @@ func _refresh_equipment() -> void:
 		_equipment_flow.add_child(empty_label)
 		_add_equipment_sockets(EQUIPMENT_MIN_SLOTS)
 		return
-	for artifact in artifacts:
+	for artifact_entry in artifacts:
+		# Совместимость со старыми сейвами: запись может быть голым title (String).
+		var artifact: Dictionary = artifact_entry if artifact_entry is Dictionary else {"id": "", "title": str(artifact_entry)}
 		var chip := PanelContainer.new()
 		chip.name = "RunEquipmentChip_%s" % str(artifact.get("id", ""))
 		chip.custom_minimum_size = Vector2(0, 40.0)
 		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+		chip.mouse_filter = Control.MOUSE_FILTER_STOP
+		chip.tooltip_text = _equipment_artifact_tooltip(artifact)
 		_equipment_flow.add_child(chip)
 
 		var line := HBoxContainer.new()
 		line.add_theme_constant_override("separation", 6)
 		chip.add_child(line)
 
-		var icon := UIIconRegistry.make_icon("artifact", Vector2(22, 22))
+		# SCRUM-963: уникальная иконка артефакта в чипе.
+		var icon := _equipment_artifact_icon(str(artifact.get("id", "")))
 		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		line.add_child(icon)
 
@@ -837,7 +885,10 @@ func _refresh_equipment() -> void:
 		chip_label.text = str(artifact.get("title", "Артефакт"))
 		chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		chip_label.add_theme_font_size_override("font_size", _readable_px(14.0))
-		chip_label.add_theme_color_override("font_color", COLOR_BODY)
+		# SCRUM-963: имя — цветом роллнутой редкости (язык карточек наград);
+		# записи без тира (старые сейвы) остаются нейтральными.
+		var rolled_tier := int(artifact.get("tier", 0))
+		chip_label.add_theme_color_override("font_color", EQUIPMENT_TIER_COLORS.get(rolled_tier, COLOR_BODY))
 		line.add_child(chip_label)
 	_add_equipment_sockets(maxi(EQUIPMENT_MIN_SLOTS - artifacts.size(), 2))
 

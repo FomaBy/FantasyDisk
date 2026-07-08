@@ -4475,6 +4475,8 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		portrait.texture = texture
+		# SCRUM-963: запертые записи держат силуэт и в досье (тинт из detail_data).
+		portrait.self_modulate = detail_data.get("texture_tint", Color.WHITE)
 		_codex_pl_make_nearest(portrait)
 		portrait_slot.add_child(portrait)
 
@@ -4717,9 +4719,39 @@ func _codex_monster_sections(monster: Dictionary) -> Array:
 	return sections
 
 
-func _codex_artifact_sections(artifact: Dictionary, definition: Dictionary) -> Array:
+# SCRUM-963: классовый артефакт заперт в кодексе, пока мета-Возвышение ЕГО
+# класса ниже requires_ascension (тот же порог, что гейт выдачи SCRUM-961).
+func _codex_artifact_locked(definition: Dictionary) -> bool:
+	var required := int(definition.get("requires_ascension", 0))
+	if required <= 0:
+		return false
+	var affinity: Array = definition.get("class_affinity", [])
+	if affinity.is_empty():
+		return false
+	for class_id in affinity:
+		if game.ascension_level_for(str(class_id)) >= required:
+			return false
+	return true
+
+
+func _codex_artifact_unlock_condition(definition: Dictionary) -> String:
+	var class_names := PackedStringArray()
+	for class_id in definition.get("class_affinity", []):
+		class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+	return "Откроется на Возвышении %d — %s." % [int(definition.get("requires_ascension", 0)), ", ".join(class_names)]
+
+
+func _codex_artifact_sections(artifact: Dictionary, definition: Dictionary, locked := false) -> Array:
 	var sections := []
-	# Полный текст эффекта + интерпретация для текущего класса (если тематика чужая).
+	# Запертая запись: эффект скрыт, досье показывает условие разблокировки.
+	if locked:
+		sections.append({"heading": "Как открыть", "lines": [
+			_codex_artifact_unlock_condition(definition),
+			"Классовые артефакты выпадают только своему классу.",
+		]})
+		sections.append({"heading": "Свойства", "lines": ["Редкость: %s." % _artifact_tier_text(definition)]})
+		return sections
+	# Полный текст эффекта + классовая пометка (SCRUM-963: «Класс: … · Возвышение N»).
 	var effect_lines := []
 	if str(artifact.get("description", "")) != "":
 		effect_lines.append(str(artifact["description"]))
@@ -4740,17 +4772,17 @@ func _codex_artifact_sections(artifact: Dictionary, definition: Dictionary) -> A
 		property_lines.append("Активный артефакт: срабатывает сам по триггеру из описания эффекта.")
 	if not property_lines.is_empty():
 		sections.append({"heading": "Свойства", "lines": property_lines})
-	# Тематика классов + каноническое пояснение из глоссария.
+	# Классовый артефакт: класс-владелец + каноническое пояснение из глоссария.
 	var affinity_list: Array = definition.get("class_affinity", [])
 	if not affinity_list.is_empty():
 		var class_names := PackedStringArray()
 		for class_id in affinity_list:
-			class_names.append(str(CLASS_RU.get(class_id, class_id)))
-		var affinity_lines := ["Задуман для: %s." % ", ".join(class_names)]
+			class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+		var affinity_lines := ["Класс: %s." % ", ".join(class_names)]
 		var affinity_term: Dictionary = GLOSSARY.definition("affinity")
 		if str(affinity_term.get("desc", "")) != "":
 			affinity_lines.append(str(affinity_term["desc"]))
-		sections.append({"heading": "Тематика классов", "lines": affinity_lines})
+		sections.append({"heading": "Классовый артефакт", "lines": affinity_lines})
 	return sections
 
 
@@ -4853,35 +4885,68 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 			_codex_label(text_box, "%s (%s) — %s" % [monster["title"], monster["id"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
+# SCRUM-963: тёмный силуэт иконки запертой записи + дим всего чип-ряда — тот же
+# приём, что «скрытая звезда» Атласа и locked-узлы прогрессии (тинты кита).
+const CODEX_LOCKED_SILHOUETTE_TINT := Color(0.09, 0.11, 0.17, 0.96)
+const CODEX_LOCKED_ROW_TINT := Color(0.70, 0.72, 0.78, 0.82)
+
+
 func _build_codex_artifacts(list: VBoxContainer) -> void:
 	for artifact in CODEX_DATA.artifacts():
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
-		var body_lines := [str(artifact["description"])]
-		var codex_note := _artifact_affinity_note(artifact_definition)
-		if not codex_note.is_empty():
-			body_lines.append(str(codex_note["text"]))
-		var affinity_list: Array = artifact_definition.get("class_affinity", [])
-		if not affinity_list.is_empty():
-			var class_names := []
-			for class_id in affinity_list:
-				class_names.append(str(CLASS_RU.get(class_id, class_id)))
-			body_lines.append("Тематика: %s" % ", ".join(class_names))
+		var locked := _codex_artifact_locked(artifact_definition)
+		var tier_text := _artifact_tier_text(artifact_definition)
+		var affinity_note := _artifact_affinity_note(artifact_definition)
+		# Чипы: редкость + класс-владелец; сырой id игроку не показывается
+		# (SCRUM-963), товары магазина помечены источником вместо редкости.
+		var chips := []
+		if str(artifact.get("source", "")) == "shop":
+			chips.append("Магазин")
+		else:
+			chips.append(tier_text)
+		if not affinity_note.is_empty():
+			var class_names := PackedStringArray()
+			for class_id in artifact_definition.get("class_affinity", []):
+				class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+			chips.append(", ".join(class_names))
+		if locked:
+			chips.append("Заперто")
+		var body_lines := []
+		var summary := str(artifact["description"])
+		if locked:
+			summary = _codex_artifact_unlock_condition(artifact_definition)
+			body_lines.append(summary)
+		else:
+			body_lines.append(str(artifact["description"]))
+			if not affinity_note.is_empty():
+				body_lines.append(str(affinity_note["text"]))
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(artifact["title"]),
-			"summary": str(artifact["description"]),
+			"summary": summary,
 			"texture": icon_texture,
+			"texture_tint": CODEX_LOCKED_SILHOUETTE_TINT if locked else Color.WHITE,
 			"covered_portrait": false,
-			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
+			"chips": chips,
 			"body_lines": body_lines,
-			"sections": _codex_artifact_sections(artifact, artifact_definition),
+			"sections": _codex_artifact_sections(artifact, artifact_definition, locked),
 		})
 		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot")
 		var text_box := VBoxContainer.new()
 		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(text_box)
-		_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], _artifact_tier_text(artifact_definition), artifact["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+		if locked:
+			# Запертая запись: силуэт иконки, дим ряда, вместо эффекта — условие.
+			var slot_texture := row.get_node_or_null("CodexArtifactIconSlot/CodexArtifactIconSlotTexture") as TextureRect
+			if slot_texture != null:
+				slot_texture.self_modulate = CODEX_LOCKED_SILHOUETTE_TINT
+			var entry_button := row.get_meta("entry_button", null) as Button
+			if entry_button != null:
+				entry_button.modulate = CODEX_LOCKED_ROW_TINT
+			_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], tier_text, summary], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+		else:
+			_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], tier_text, artifact["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
@@ -7187,7 +7252,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 
 	var subtitle := Label.new()
 	subtitle.name = "BossArtifactRewardSubtitle"
-	subtitle.text = "Акт пройден! Выбери 1 из 3 суперредких артефактов."
+	# SCRUM-963: канон редкости — боссовые трофеи фиксированно эпические (тир 3).
+	subtitle.text = "Акт пройден! Выбери 1 из 3 эпических артефактов."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
 	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
@@ -7728,7 +7794,9 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(40, 40)))
+	# SCRUM-963: пост-боевые награды тоже содержат артефакты (reward_pool) —
+	# артефакт показывает свою artifact_<id>.png, статы — реестровые иконки.
+	icon_row.add_child(_make_reward_card_icon(reward, Vector2(40, 40)))
 
 	var title_label := Label.new()
 	title_label.name = "BattleRewardTitle"
@@ -7739,7 +7807,12 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.max_lines_visible = 2
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 22))
-	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	# SCRUM-963: титул артефакта — цветом редкости (язык элитных карточек);
+	# стат/атрибут-награды остаются золотыми.
+	if str(reward.get("kind", "")) == "artifact":
+		title_label.add_theme_color_override("font_color", _artifact_tier_color(reward))
+	else:
+		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 
 	var preview_label := Label.new()
@@ -7763,6 +7836,20 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 14))
 	description_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	content.add_child(description_label)
+
+	# SCRUM-963: классовая пометка классового артефакта — одна строка цветом пометки.
+	var reward_note := _artifact_affinity_note(reward)
+	if not reward_note.is_empty():
+		var note_label := Label.new()
+		note_label.name = "BattleRewardClassNote"
+		note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		note_label.text = str(reward_note["text"])
+		note_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		note_label.max_lines_visible = 1
+		note_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		note_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
+		note_label.add_theme_color_override("font_color", reward_note["color"])
+		content.add_child(note_label)
 
 	var spacer := Control.new()
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7806,7 +7893,8 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(52, 52)))
+	# SCRUM-963: у артефакта — его уникальная иконка artifact_<id>.png.
+	icon_row.add_child(_make_reward_card_icon(reward, Vector2(52, 52)))
 
 	var title_label := Label.new()
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7842,7 +7930,16 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	effect_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(effect_label)
 
+	# SCRUM-963: нижняя строка карточки — у классового артефакта классовая пометка
+	# («Класс: Вор · Возвышение 5», цвет пометки), у универсального — прежняя
+	# классовая интерпретация эффекта (бронза).
 	var interpretation := _reward_interpretation_text(reward)
+	var footnote_color := Color(0.78, 0.66, 0.44, 1.0)
+	if interpretation == "":
+		var note := _artifact_affinity_note(reward)
+		if not note.is_empty():
+			interpretation = str(note["text"])
+			footnote_color = note["color"]
 	if interpretation != "":
 		var interp_label := Label.new()
 		interp_label.name = "EliteArtifactRewardInterpretation"
@@ -7853,7 +7950,7 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 		interp_label.max_lines_visible = 1
 		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
-		interp_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+		interp_label.add_theme_color_override("font_color", footnote_color)
 		content.add_child(interp_label)
 
 	return button
@@ -8028,17 +8125,22 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 		var affinity_note := _artifact_affinity_note(item)
 		if not affinity_note.is_empty():
 			button.tooltip_text += "\n[%s]" % affinity_note["text"]
-			var note_label := Label.new()
-			note_label.name = "ShopAffinityNote"
-			note_label.text = "!"
-			note_label.tooltip_text = str(affinity_note["text"])
-			note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
-			note_label.add_theme_color_override("font_color", affinity_note["color"])
-			note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-			note_label.offset_left = -26.0
-			note_label.offset_top = 4.0
-			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			button.add_child(note_label)
+			# SCRUM-963: бейдж «!» — только на выпадении ЧУЖОГО класса (cross-class
+			# слот «Украденного герба»); свой классовый артефакт — штатный товар,
+			# пометка живёт в тултипе без тревожного маркера.
+			var affinity_list: Array = item.get("class_affinity", [])
+			if not affinity_list.has(game.selected_character_id):
+				var note_label := Label.new()
+				note_label.name = "ShopAffinityNote"
+				note_label.text = "!"
+				note_label.tooltip_text = str(affinity_note["text"])
+				note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+				note_label.add_theme_color_override("font_color", affinity_note["color"])
+				note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+				note_label.offset_left = -26.0
+				note_label.offset_top = 4.0
+				note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				button.add_child(note_label)
 	# SCRUM-883: слот товара — чип-ряд Атласа (StyleBoxFlat, hover — золотой кант);
 	# внутренности слота (иконка, пергамент-плашка, ценник) сохранены.
 	_apply_atlas_choice_card_theme(button, _atlas_card_pad(SHOP_INLINE_SLOT_SIZE))
@@ -9227,7 +9329,7 @@ func _random_shop_items(count: int) -> Array:
 	var class_skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers_for_class(game.meta_state, game.selected_character_id)
 	var class_shop_price_delta := float(class_skill_mods.get("shop_price_mult", 0.0)) - float(skill_mods.get("shop_price_mult", 0.0))
 	price_mult *= maxf(1.0 + class_shop_price_delta, 0.1)
-	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
+	# Capstone «Связи в гильдии»: гарантированный эпический (tier 3) товар на стене.
 	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
 		var has_rare := false
 		for item in items:
@@ -9474,6 +9576,11 @@ func _update_level_up_button() -> void:
 func _format_level_up_reward_text(reward: Dictionary) -> String:
 	var preview := _level_up_reward_preview(reward)
 	var interpretation := _reward_interpretation_text(reward)
+	# SCRUM-963: у классовых артефактов вместо интерпретации — классовая пометка.
+	if interpretation == "":
+		var note := _artifact_affinity_note(reward)
+		if not note.is_empty():
+			interpretation = str(note["text"])
 	return "%s\n%s\n%s%s" % [
 		str(reward.get("title", "Upgrade")),
 		preview,
@@ -9503,6 +9610,22 @@ func _reward_icon_id(reward: Dictionary) -> String:
 	if str(reward.get("kind", "")) == "artifact":
 		return "artifact"
 	return "buff_power"
+
+
+# SCRUM-963: иконка карточки награды. Артефакт получает СВОЮ artifact_<id>.png
+# (резолвер _artifact_icon_texture, с dev-fallback внутри); стат/атрибут-награды
+# остаются на реестровых иконках _reward_icon_id как раньше.
+func _make_reward_card_icon(reward: Dictionary, size: Vector2) -> Control:
+	if str(reward.get("kind", "")) == "artifact" and str(reward.get("id", "")) != "":
+		var icon := TextureRect.new()
+		icon.name = "RewardArtifactIcon_%s" % str(reward["id"])
+		icon.texture = _artifact_icon_texture(str(reward["id"]))
+		icon.custom_minimum_size = size
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return icon
+	return game.UIIconRegistry.make_icon(_reward_icon_id(reward), size)
 
 
 # SCRUM-525: какие производные статы реально двигает +1 к базовому атрибуту.
@@ -9690,6 +9813,11 @@ func _level_up_reward_preview(reward: Dictionary) -> String:
 
 
 func _reward_interpretation_text(reward: Dictionary) -> String:
+	# SCRUM-963: классовые артефакты говорят классовой пометкой (_artifact_affinity_note),
+	# а не генерик-интерпретацией первого mod-ключа — новые классовые ключи
+	# (rage_hit_stacks и т.п.) неизвестны LEVEL_UP_MOD_DISPLAY и давали филлер.
+	if not (reward.get("class_affinity", []) as Array).is_empty():
+		return ""
 	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
 	if not stat_keys.is_empty():
 		return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, str(stat_keys[0]))
@@ -12767,14 +12895,25 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
-const TIER_LABELS := {1: "Тир 1", 2: "Тир 2 — редкий", 3: "Тир 3 — легендарный"}
+# SCRUM-963: канон редкости (artifact_system_matrix §1.1) — tier и есть редкость,
+# без номеров: 1 обычный / 2 редкий / 3 эпический. Цвета тиров сохранены.
+const TIER_LABELS := {1: "Обычный", 2: "Редкий", 3: "Эпический"}
 const TIER_COLORS := {
 	1: Color(0.80, 0.86, 0.94, 1.0),
 	2: Color(0.46, 0.78, 1.0, 1.0),
 	3: Color(1.0, 0.74, 0.30, 1.0),
 }
+# SCRUM-963: 17/17 — дословно titles ProgressionData.CHARACTER_CONFIGS.
 const CLASS_RU := {
 	"berserk": "Берсерк",
+	"soldier": "Солдат",
+	"thief": "Вор",
+	"elementalist": "Элементалист",
+	"sniper": "Снайпер",
+	"priest": "Священник",
+	"biologist": "Биолог",
+	"robot": "Робот",
+	"engineer": "Инженер",
 	"dark_mage": "Темный маг",
 	"guitarist": "Гитарист",
 	"assassin": "Ассасин",
@@ -12787,16 +12926,21 @@ const CLASS_RU := {
 
 
 func _artifact_affinity_note(definition: Dictionary) -> Dictionary:
-	# С 0.2 классовая часть больше не пропадает: affinity теперь объясняет,
-	# как артефакт интерпретируется текущим классом.
+	# SCRUM-963: классовая пометка вместо старой «Интерпретации» — после гейта
+	# SCRUM-961 классовый артефакт больше не «перетолковывается» чужим классом,
+	# а честно подписывается своим классом и порогом Возвышения. Пометка есть у
+	# ЛЮБОГО классового артефакта (свой класс — знак эксклюзива, cross-class
+	# выпадение «Украденного герба» — честное имя чужого класса).
 	var affinity: Array = definition.get("class_affinity", definition.get("classes", []))
-	if affinity.is_empty() or affinity.has(game.selected_character_id):
+	if affinity.is_empty():
 		return {}
-	var affinity_keys := (definition.get("affinity_mods", {}) as Dictionary).keys()
-	var parameter_id := "buff_power"
-	if not affinity_keys.is_empty():
-		parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(str(affinity_keys[0]), affinity_keys[0]))
-	var text := "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, parameter_id)
+	var class_names := PackedStringArray()
+	for class_id in affinity:
+		class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+	var text := "Класс: %s" % ", ".join(class_names)
+	var required := int(definition.get("requires_ascension", 0))
+	if required > 0:
+		text += " · Возвышение %d" % required
 	return {"text": text, "color": Color(0.55, 0.92, 1.0, 1.0)}
 
 
@@ -12808,8 +12952,14 @@ func _artifact_affinity_suffix(definition: Dictionary) -> String:
 [%s]" % note["text"]
 
 
+# Подпись редкости по конкретному тиру (0/неизвестный → пусто: старые записи
+# player.artifacts без тира редкость не показывают).
+func _tier_label(tier: int) -> String:
+	return str(TIER_LABELS.get(tier, ""))
+
+
 func _artifact_tier_text(definition: Dictionary) -> String:
-	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Тир 1"))
+	return str(TIER_LABELS.get(int(definition.get("tier", 1)), TIER_LABELS[1]))
 
 
 func _artifact_tier_color(definition: Dictionary) -> Color:
@@ -12823,8 +12973,13 @@ func _artifact_tooltip(artifact: Dictionary) -> String:
 	var description := str(definition.get("description", ""))
 	if description == "":
 		return title
+	# SCRUM-963: редкость полученного артефакта — РОЛЛНУТЫЙ тир записи забега
+	# (player.artifacts[].tier, пишется с SCRUM-960); фоллбек — корневой тир
+	# определения (старые сейвы без тира).
+	var rolled_tier := int(artifact.get("tier", 0))
+	var tier_text := _tier_label(rolled_tier) if rolled_tier > 0 else _artifact_tier_text(definition)
 	return "%s (%s)
-%s%s" % [title, _artifact_tier_text(definition), description, _artifact_affinity_suffix(definition)]
+%s%s" % [title, tier_text, description, _artifact_affinity_suffix(definition)]
 
 
 func _create_damage_flash_overlay(root: Control) -> void:

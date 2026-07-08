@@ -128,10 +128,28 @@ func _check_artifacts(errors: Array) -> void:
 		sources[str(art.get("source", ""))] = true
 		if not _player_text_ok(str(art.get("title", "")), aid):
 			errors.append("артефакт '%s': негодный title" % aid)
+		# SCRUM-963: player-facing титулы локализованы — латиница в title запрещена
+		# (id остаются латиницей, но игроку не показываются).
+		if _has_latin(str(art.get("title", ""))):
+			errors.append("артефакт '%s': латиница в title '%s'" % [aid, str(art.get("title", ""))])
+		# SCRUM-963: у каждого финального артефакта — СВОЯ иконка artifact_<id>.png;
+		# fallback-иконка (buff_power) допустима только как dev-страховка кода.
+		if str(art.get("source", "")) == "artifact":
+			var icon_path := "res://assets/sprites/ui/icons/artifacts/artifact_%s.png" % aid
+			if not ResourceLoader.exists(icon_path):
+				errors.append("артефакт '%s': нет уникальной иконки %s (fallback запрещён)" % [aid, icon_path])
 	# Проекция объединяет ARTIFACTS (source=artifact) и SHOP_ITEMS (source=shop).
 	for src in ["artifact", "shop"]:
 		if not sources.has(src):
 			errors.append("в artifacts() нет ни одной записи source '%s'" % src)
+
+
+func _has_latin(text: String) -> bool:
+	for i in range(text.length()):
+		var code := text.unicode_at(i)
+		if (code >= 65 and code <= 90) or (code >= 97 and code <= 122):
+			return true
+	return false
 
 
 func _check_ascensions(errors: Array) -> void:

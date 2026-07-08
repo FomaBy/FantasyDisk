@@ -779,13 +779,15 @@ func _wave_threat_hint(route_node: Dictionary, node_seed: int) -> String:
 func _elite_artifact_tier_hint(route_node: Dictionary) -> String:
 	var pred_stage := _node_predicted_stage(route_node)
 	# Тот же depth-weighting, что в ProgressionData.elite_artifact_choices.
+	# SCRUM-963: формулировки — канон редкости «обычный/редкий/эпический»
+	# без номеров тиров (artifact_system_matrix §1.1, TIER_LABELS).
 	var scale: float = game.PROGRESSION_DATA.stage_scale(pred_stage)
 	var tier3_weight := 0.22 + maxf(float(pred_stage) - 2.0, 0.0) * 0.18
 	if tier3_weight >= 0.6:
-		return "шанс эпического (тир 3)"
+		return "шанс эпического"
 	if scale >= 1.5 or pred_stage >= 3:
-		return "ориентир тир 2"
-	return "ориентир тир 1–2"
+		return "ориентир — редкий"
+	return "ориентир — обычный или редкий"
 
 
 func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollContainer, step_index: int, branch_index: int, route_node: Dictionary) -> void:
