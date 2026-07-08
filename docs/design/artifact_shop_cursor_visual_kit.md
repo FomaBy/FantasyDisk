@@ -26,23 +26,23 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 
 | Artifact ID | Name | Icon path |
 | --- | --- | --- |
-| `warrior_charm` | Warrior Charm | `assets/sprites/ui/icons/artifacts/artifact_warrior_charm.png` |
-| `fox_boots` | Fox Boots | `assets/sprites/ui/icons/artifacts/artifact_fox_boots.png` |
-| `glass_orb` | Glass Orb | `assets/sprites/ui/icons/artifacts/artifact_glass_orb.png` |
-| `hawk_lens` | Hawk Lens | `assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png` |
-| `ember_core` | Ember Core | `assets/sprites/ui/icons/artifacts/artifact_ember_core.png` |
-| `old_codex` | Old Codex | `assets/sprites/ui/icons/artifacts/artifact_old_codex.png` |
-| `stone_heart` | Stone Heart | `assets/sprites/ui/icons/artifacts/artifact_stone_heart.png` |
-| `banner_seed` | Banner Seed | `assets/sprites/ui/icons/artifacts/artifact_banner_seed.png` |
-| `red_whetstone` | Red Whetstone | `assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png` |
-| `star_compass` | Star Compass | `assets/sprites/ui/icons/artifacts/artifact_star_compass.png` |
-| `living_root` | Living Root | `assets/sprites/ui/icons/artifacts/artifact_living_root.png` |
-| `captains_coin` | Captain's Coin | `assets/sprites/ui/icons/artifacts/artifact_captains_coin.png` |
-| `quickstring` | Quickstring | `assets/sprites/ui/icons/artifacts/artifact_quickstring.png` |
-| `heavy_totem` | Heavy Totem | `assets/sprites/ui/icons/artifacts/artifact_heavy_totem.png` |
-| `splinter_gloves` | Splinter Gloves | `assets/sprites/ui/icons/artifacts/artifact_splinter_gloves.png` |
-| `wide_sigil` | Wide Sigil | `assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png` |
-| `summoners_bell` | Summoner's Bell | `assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png` |
+| `warrior_charm` | Оберег воина | `assets/sprites/ui/icons/artifacts/artifact_warrior_charm.png` |
+| `fox_boots` | Лисьи сапоги | `assets/sprites/ui/icons/artifacts/artifact_fox_boots.png` |
+| `glass_orb` | Стеклянная сфера | `assets/sprites/ui/icons/artifacts/artifact_glass_orb.png` |
+| `hawk_lens` | Линза ястреба | `assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png` |
+| `ember_core` | Тлеющее ядро | `assets/sprites/ui/icons/artifacts/artifact_ember_core.png` |
+| `old_codex` | Ветхий кодекс | `assets/sprites/ui/icons/artifacts/artifact_old_codex.png` |
+| `stone_heart` | Каменное сердце | `assets/sprites/ui/icons/artifacts/artifact_stone_heart.png` |
+| `banner_seed` | Семя знамени | `assets/sprites/ui/icons/artifacts/artifact_banner_seed.png` |
+| `red_whetstone` | Красный оселок | `assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png` |
+| `star_compass` | Звёздный компас | `assets/sprites/ui/icons/artifacts/artifact_star_compass.png` |
+| `living_root` | Живой корень | `assets/sprites/ui/icons/artifacts/artifact_living_root.png` |
+| `captains_coin` | Монета капитана | `assets/sprites/ui/icons/artifacts/artifact_captains_coin.png` |
+| `quickstring` | Быстрая струна | `assets/sprites/ui/icons/artifacts/artifact_quickstring.png` |
+| `heavy_totem` | Тяжёлый тотем | `assets/sprites/ui/icons/artifacts/artifact_heavy_totem.png` |
+| `splinter_gloves` | Перчатки осколков | `assets/sprites/ui/icons/artifacts/artifact_splinter_gloves.png` |
+| `wide_sigil` | Дальняя печать | `assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png` |
+| `summoners_bell` | Колокольчик призывателя | `assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png` |
 | `sturdy_amulet` | Крепкий амулет | `assets/sprites/ui/icons/artifacts/artifact_sturdy_amulet.png` |
 | `fast_boots` | Быстрые сапоги | `assets/sprites/ui/icons/artifacts/artifact_fast_boots.png` |
 | `magnetic_buckle` | Магнитная пряжка | `assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png` |
