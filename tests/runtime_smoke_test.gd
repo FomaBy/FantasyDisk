@@ -6827,17 +6827,30 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 
 
 func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
-	# Данные: у всех артефактов tier и class_affinity; tier 3 — 5-8 штук.
-	var tier3_count := 0
+	# Данные: у всех артефактов tier и class_affinity. SCRUM-961: экономика тира 3
+	# считается ДВУМЯ счётчиками — универсалы (пустой class_affinity, 5-8 корней,
+	# прежний гейт) и классовые (requires_ascension 5, ровно 35 = 16×2 + 3 у Химика).
+	var tier3_universal_count := 0
+	var tier3_class_count := 0
 	for artifact in ProgressionData.ARTIFACTS:
 		var tier := int(artifact.get("tier", 0))
 		if tier < 1 or tier > 3 or not artifact.has("class_affinity"):
 			_fail("Expected artifact %s to declare tier 1-3 and class_affinity." % artifact.get("id"))
 			return
-		if tier == 3:
-			tier3_count += 1
-	if tier3_count < 5 or tier3_count > 8:
-		_fail("Expected 5-8 tier-3 artifacts, got %d." % tier3_count)
+		if tier != 3:
+			continue
+		if (artifact.get("class_affinity", []) as Array).is_empty():
+			tier3_universal_count += 1
+		else:
+			tier3_class_count += 1
+			if int(artifact.get("requires_ascension", 0)) != 5:
+				_fail("Expected class tier-3 artifact %s to require Ascension 5." % artifact.get("id"))
+				return
+	if tier3_universal_count < 5 or tier3_universal_count > 8:
+		_fail("Expected 5-8 universal tier-3 artifacts, got %d." % tier3_universal_count)
+		return
+	if tier3_class_count != 35:
+		_fail("Expected exactly 35 class tier-3 artifacts (16×2 + chemist 3), got %d." % tier3_class_count)
 		return
 	# Цены магазина x3-4.
 	for item in ProgressionData.SHOP_ITEMS:
@@ -6851,14 +6864,17 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	econ_main.set("selected_character_id", "berserk")
 
 	# Аффинити-пометки: больше не красные/желтые запреты, а текст интерпретации.
-	var split_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("split_core"))
-	var void_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_ink"))
+	# SCRUM-961: легаси split_core/void_ink удалены — проверяем на классовых
+	# stolen_crest (thief) / void_hunger (dark_mage) с той же семантикой (игрок —
+	# берсерк, чужой affinity → пометка); новый формат пометки сделает SCRUM-963.
+	var crest_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("stolen_crest"))
+	var void_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("void_hunger"))
 	var none_note: Dictionary = econ_main.ui._artifact_affinity_note(ProgressionData.artifact_definition("warrior_charm"))
-	if not str(split_note.get("text", "")).begins_with("Интерпретация:"):
+	if not str(crest_note.get("text", "")).begins_with("Интерпретация:"):
 		_fail("Expected a class interpretation note for a foreign affinity artifact.")
 		return
 	if not str(void_note.get("text", "")).begins_with("Интерпретация:"):
-		_fail("Expected a class interpretation note for a mixed affinity artifact.")
+		_fail("Expected a class interpretation note for a foreign affinity artifact (void_hunger).")
 		return
 	if not none_note.is_empty():
 		_fail("Expected no affinity note for a universal artifact.")
