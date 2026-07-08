@@ -27,7 +27,6 @@ const LEVEL_UP_CARD_HOVER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level
 const LEVEL_UP_CARD_SELECTED_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card_selected.png"
 const LEVEL_UP_EFFECT_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_effect_preview.png"
 const LEVEL_UP_LATER_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
-const ATTR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pn_panel.png"
 # SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
 # StyleBoxFlat в safe-зоне полой рамы meta40 (ассерты совпадают с runtime_smoke_test.gd).
@@ -765,20 +764,20 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
 			if panel == null or not panel.get_global_rect().has_area():
 				return "%s: expected visible AttributeShopPanel." % context
-			# SCRUM-568: панель докачи рисуется собственной attr_panel @2K-рамкой.
-			if _stylebox_texture_path(panel.get_theme_stylebox("panel")) != ATTR_PANEL_2K_FRAME_PATH:
-				return "%s: expected AttributeShopPanel to use attr_panel @2K frame." % context
+			# SCRUM-883: панель докачки — чип Атласа (StyleBoxFlat) вместо attr_panel @2K.
+			var attr_chip := panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if attr_chip == null or attr_chip.bg_color.a < 0.9 or attr_chip.bg_color.v > 0.35:
+				return "%s: expected AttributeShopPanel to use a dark atlas chip StyleBoxFlat (alpha >= 0.9)." % context
 			if skip_button == null or skip_button.disabled:
 				return "%s: expected AttributeSkipButton to remain reachable and enabled." % context
 			for node in main.find_children("AttributeOffer_*", "Button", true, false):
 				var offer := node as Button
 				if offer == null:
 					continue
-				# SCRUM-568: карточки опций используют evt_card @2K-рамку (normal+hover).
-				if _stylebox_texture_path(offer.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
-					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, offer.name]
-				if _stylebox_texture_path(offer.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
-					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, offer.name]
+				# SCRUM-883: карточки опций — чип-ряды Атласа (общий контракт карточек).
+				var offer_error := _economy_choice_card_contract_error(offer, context)
+				if offer_error != "":
+					return offer_error
 				if not offer.disabled:
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):

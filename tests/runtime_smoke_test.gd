@@ -43,7 +43,6 @@ const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_
 const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
-const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
 const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
 const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png"
 const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
@@ -1243,8 +1242,10 @@ func _initialize() -> void:
 	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
 		_fail("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
 		return
-	if _stylebox_texture_path((attribute_panel as PanelContainer).get_theme_stylebox("panel")) != ATTRIBUTE_SHOP_PANEL_TEXTURE_2K:
-		_fail("Expected attribute shop panel to use the SCRUM-568 attr_panel @2K frame.")
+	# SCRUM-883: панель докачки — чип Атласа (StyleBoxFlat) вместо attr_panel @2K.
+	var attr_panel_chip := (attribute_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
+	if attr_panel_chip == null or attr_panel_chip.bg_color.a < 0.9 or attr_panel_chip.bg_color.v > 0.35:
+		_fail("Expected attribute shop panel to use the SCRUM-883 dark atlas chip panel.")
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
 	if reroll_button == null:

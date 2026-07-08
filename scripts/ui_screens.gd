@@ -2276,10 +2276,9 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	panel.offset_top = panel_vertical_margin
 	panel.offset_right = panel_width * 0.5
 	panel.offset_bottom = -panel_vertical_margin
-	# SCRUM-568: высокая панель докачи использует per-слот attr_panel @2K-рамку
-	# (1124×1384, нарисована 1:1 под слот; 9-slice тянет только плоскую середину).
-	var attr_panel_display := Vector2(panel_width, maxf(1.0, viewport_size.y - panel_vertical_margin * 2.0))
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("attr_panel", attr_panel_display))
+	# SCRUM-883: высокая панель докачки — чип Атласа (тёмная кожа, латунный кант)
+	# вместо attr_panel @2K-рамки; дим-фон поверх меты сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 18.0))
 	root.add_child(panel)
 
 	var outer := VBoxContainer.new()
@@ -2314,7 +2313,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	money_label.name = "AttributeShopMoney"
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
+	money_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	box.add_child(money_label)
 
 	var offers_box := GridContainer.new()
@@ -2389,10 +2388,8 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var attr_offer_size := _economy_attribute_choice_display_size()
 		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, attr_offer_size)
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		# SCRUM-568: карточка опции докачи переодета в evt_card @2K-рамку (480×340, тот же
-		# card-тип) и переинсечена под её content-зону — единый дарк-фэнтези стиль с Событием.
-		_apply_overhaul_choice_2k_theme(offer_button, "evt_card", attr_offer_size)
-		_reinset_overhaul_choice_content(offer_button, "evt_card", attr_offer_size)
+		# SCRUM-883: карточка опции — чип-ряд Атласа из общей фабрики (единый стиль
+		# с экономикой/событием); отдельное переодевание в evt_card снято.
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
