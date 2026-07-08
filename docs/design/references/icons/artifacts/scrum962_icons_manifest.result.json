@@ -1,180 +1,351 @@
 {
  "generated": [
   {
-   "id": "aegis_shard",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_aegis_shard.png",
-   "source": "docs/design/references/icons/artifacts/aegis_shard/aegis_shard_source.png",
+   "id": "bass_resonator",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_bass_resonator.png",
+   "source": "docs/design/references/icons/artifacts/bass_resonator/bass_resonator_source.png",
    "alpha_bbox": [
-    77,
+    57,
     29,
-    179,
+    198,
+    227
+   ],
+   "padding": [
+    57,
+    29,
+    58,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "227eb6c59e9b"
+  },
+  {
+   "id": "blue_totem",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_blue_totem.png",
+   "source": "docs/design/references/icons/artifacts/blue_totem/blue_totem_source.png",
+   "alpha_bbox": [
+    44,
+    28,
+    213,
     228
    ],
    "padding": [
-    77,
-    29,
-    77,
+    44,
+    28,
+    43,
     28
    ],
    "corner_alpha_max": 0,
-   "sha": "85c0b58ccded"
+   "sha": "700b7c531779"
   },
   {
-   "id": "arcane_prism",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_arcane_prism.png",
-   "source": "docs/design/references/icons/artifacts/arcane_prism/arcane_prism_source.png",
+   "id": "bonesaw_teeth",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_bonesaw_teeth.png",
+   "source": "docs/design/references/icons/artifacts/bonesaw_teeth/bonesaw_teeth_source.png",
    "alpha_bbox": [
-    73,
     29,
-    182,
-    227
+    29,
+    225,
+    228
    ],
    "padding": [
-    73,
     29,
-    74,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "2ddabc211e1c"
-  },
-  {
-   "id": "battle_fan",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_battle_fan.png",
-   "source": "docs/design/references/icons/artifacts/battle_fan/battle_fan_source.png",
-   "alpha_bbox": [
-    33,
     29,
-    224,
-    227
-   ],
-   "padding": [
-    33,
-    29,
-    32,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "52b3ac67cc27"
-  },
-  {
-   "id": "blood_roar",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_blood_roar.png",
-   "source": "docs/design/references/icons/artifacts/blood_roar/blood_roar_source.png",
-   "alpha_bbox": [
     31,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "393884c43981"
+  },
+  {
+   "id": "briar_seal",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_briar_seal.png",
+   "source": "docs/design/references/icons/artifacts/briar_seal/briar_seal_source.png",
+   "alpha_bbox": [
+    47,
+    29,
+    209,
+    227
+   ],
+   "padding": [
+    47,
+    29,
+    47,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "c932409b516f"
+  },
+  {
+   "id": "feedback_loop",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_feedback_loop.png",
+   "source": "docs/design/references/icons/artifacts/feedback_loop/feedback_loop_source.png",
+   "alpha_bbox": [
+    42,
+    29,
+    213,
+    228
+   ],
+   "padding": [
+    42,
+    29,
+    43,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "7538e69f3a6d"
+  },
+  {
+   "id": "inhibitor_colony",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_inhibitor_colony.png",
+   "source": "docs/design/references/icons/artifacts/inhibitor_colony/inhibitor_colony_source.png",
+   "alpha_bbox": [
+    29,
     29,
     226,
     227
    ],
    "padding": [
-    31,
+    29,
     29,
     30,
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "8e267af9028a"
+   "sha": "e8f5481034a9"
   },
   {
-   "id": "crimson_grip",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_crimson_grip.png",
-   "source": "docs/design/references/icons/artifacts/crimson_grip/crimson_grip_source.png",
-   "alpha_bbox": [
-    84,
-    28,
-    171,
-    227
-   ],
-   "padding": [
-    84,
-    28,
-    85,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "0d9db928c133"
-  },
-  {
-   "id": "evasion_shroud",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_evasion_shroud.png",
-   "source": "docs/design/references/icons/artifacts/evasion_shroud/evasion_shroud_source.png",
-   "alpha_bbox": [
-    60,
-    29,
-    196,
-    227
-   ],
-   "padding": [
-    60,
-    29,
-    60,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "d010fff24f04"
-  },
-  {
-   "id": "executioner_edge",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_executioner_edge.png",
-   "source": "docs/design/references/icons/artifacts/executioner_edge/executioner_edge_source.png",
-   "alpha_bbox": [
-    54,
-    28,
-    202,
-    228
-   ],
-   "padding": [
-    54,
-    28,
-    54,
-    28
-   ],
-   "corner_alpha_max": 0,
-   "sha": "5142dfd9bdc4"
-  },
-  {
-   "id": "falcon_feather",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_falcon_feather.png",
-   "source": "docs/design/references/icons/artifacts/falcon_feather/falcon_feather_source.png",
+   "id": "lucky_coin",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_lucky_coin.png",
+   "source": "docs/design/references/icons/artifacts/lucky_coin/lucky_coin_source.png",
    "alpha_bbox": [
     28,
-    29,
+    28,
     227,
     227
    ],
    "padding": [
     28,
-    29,
+    28,
     29,
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "0a896a4d3ed3"
+   "sha": "df6fa7375135"
   },
   {
-   "id": "ghost_ribbon",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_ghost_ribbon.png",
-   "source": "docs/design/references/icons/artifacts/ghost_ribbon/ghost_ribbon_source.png",
+   "id": "magnetic_purse",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_magnetic_purse.png",
+   "source": "docs/design/references/icons/artifacts/magnetic_purse/magnetic_purse_source.png",
    "alpha_bbox": [
-    73,
+    57,
     29,
-    181,
+    197,
+    228
+   ],
+   "padding": [
+    57,
+    29,
+    59,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "82477930933f"
+  },
+  {
+   "id": "overdrive_pick",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_overdrive_pick.png",
+   "source": "docs/design/references/icons/artifacts/overdrive_pick/overdrive_pick_source.png",
+   "alpha_bbox": [
+    45,
+    28,
+    211,
     227
    ],
    "padding": [
-    73,
-    29,
-    75,
+    45,
+    28,
+    45,
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "febca835b1f0"
+   "sha": "fcaee561efd2"
   },
   {
-   "id": "hammer_weight",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_hammer_weight.png",
-   "source": "docs/design/references/icons/artifacts/hammer_weight/hammer_weight_source.png",
+   "id": "pack_alpha",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_pack_alpha.png",
+   "source": "docs/design/references/icons/artifacts/pack_alpha/pack_alpha_source.png",
+   "alpha_bbox": [
+    56,
+    28,
+    200,
+    227
+   ],
+   "padding": [
+    56,
+    28,
+    56,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "5140a01ea60f"
+  },
+  {
+   "id": "paralyzing_blade",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_paralyzing_blade.png",
+   "source": "docs/design/references/icons/artifacts/paralyzing_blade/paralyzing_blade_source.png",
+   "alpha_bbox": [
+    58,
+    28,
+    196,
+    227
+   ],
+   "padding": [
+    58,
+    28,
+    60,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "ab3820f29245"
+  },
+  {
+   "id": "plague_carrier",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_plague_carrier.png",
+   "source": "docs/design/references/icons/artifacts/plague_carrier/plague_carrier_source.png",
+   "alpha_bbox": [
+    49,
+    29,
+    206,
+    227
+   ],
+   "padding": [
+    49,
+    29,
+    50,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "c746f22bc172"
+  },
+  {
+   "id": "restorative_vapor",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_restorative_vapor.png",
+   "source": "docs/design/references/icons/artifacts/restorative_vapor/restorative_vapor_source.png",
+   "alpha_bbox": [
+    71,
+    28,
+    183,
+    227
+   ],
+   "padding": [
+    71,
+    28,
+    73,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "4c7456425f78"
+  },
+  {
+   "id": "rhythm_counter",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_rhythm_counter.png",
+   "source": "docs/design/references/icons/artifacts/rhythm_counter/rhythm_counter_source.png",
+   "alpha_bbox": [
+    55,
+    29,
+    200,
+    227
+   ],
+   "padding": [
+    55,
+    29,
+    56,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "815620009e59"
+  },
+  {
+   "id": "sample_chain",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_sample_chain.png",
+   "source": "docs/design/references/icons/artifacts/sample_chain/sample_chain_source.png",
+   "alpha_bbox": [
+    59,
+    28,
+    196,
+    228
+   ],
+   "padding": [
+    59,
+    28,
+    60,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "9899b086a10d"
+  },
+  {
+   "id": "smoke_cache",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_smoke_cache.png",
+   "source": "docs/design/references/icons/artifacts/smoke_cache/smoke_cache_source.png",
+   "alpha_bbox": [
+    49,
+    29,
+    206,
+    227
+   ],
+   "padding": [
+    49,
+    29,
+    50,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "aa738ea34b55"
+  },
+  {
+   "id": "spirit_pack_banner",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_spirit_pack_banner.png",
+   "source": "docs/design/references/icons/artifacts/spirit_pack_banner/spirit_pack_banner_source.png",
+   "alpha_bbox": [
+    70,
+    28,
+    187,
+    228
+   ],
+   "padding": [
+    70,
+    28,
+    69,
+    28
+   ],
+   "corner_alpha_max": 0,
+   "sha": "c7591a3c4323"
+  },
+  {
+   "id": "split_analysis",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_split_analysis.png",
+   "source": "docs/design/references/icons/artifacts/split_analysis/split_analysis_source.png",
+   "alpha_bbox": [
+    60,
+    29,
+    194,
+    227
+   ],
+   "padding": [
+    60,
+    29,
+    62,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "e396c5b0900f"
+  },
+  {
+   "id": "spore_capacitor",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_spore_capacitor.png",
+   "source": "docs/design/references/icons/artifacts/spore_capacitor/spore_capacitor_source.png",
    "alpha_bbox": [
     51,
     29,
@@ -188,202 +359,107 @@
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "9ab602c81c4b"
+   "sha": "624fdd494648"
   },
   {
-   "id": "iron_scale",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_iron_scale.png",
-   "source": "docs/design/references/icons/artifacts/iron_scale/iron_scale_source.png",
+   "id": "stage_amplifier",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_stage_amplifier.png",
+   "source": "docs/design/references/icons/artifacts/stage_amplifier/stage_amplifier_source.png",
    "alpha_bbox": [
-    63,
+    42,
+    28,
+    213,
+    227
+   ],
+   "padding": [
+    42,
+    28,
+    43,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "2c60684f40f9"
+  },
+  {
+   "id": "stolen_crest",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_stolen_crest.png",
+   "source": "docs/design/references/icons/artifacts/stolen_crest/stolen_crest_source.png",
+   "alpha_bbox": [
+    47,
     29,
-    193,
+    209,
+    227
+   ],
+   "padding": [
+    47,
+    29,
+    47,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "7cba761b4e45"
+  },
+  {
+   "id": "surgical_oath",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_surgical_oath.png",
+   "source": "docs/design/references/icons/artifacts/surgical_oath/surgical_oath_source.png",
+   "alpha_bbox": [
+    76,
+    29,
+    180,
     228
    ],
    "padding": [
-    63,
+    76,
     29,
-    63,
+    76,
     28
    ],
    "corner_alpha_max": 0,
-   "sha": "de7a86b4d84c"
+   "sha": "4f0e5d22259f"
   },
   {
-   "id": "last_onslaught",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_last_onslaught.png",
-   "source": "docs/design/references/icons/artifacts/last_onslaught/last_onslaught_source.png",
+   "id": "symbiote_sheath",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_symbiote_sheath.png",
+   "source": "docs/design/references/icons/artifacts/symbiote_sheath/symbiote_sheath_source.png",
    "alpha_bbox": [
-    35,
+    65,
+    29,
+    190,
+    227
+   ],
+   "padding": [
+    65,
+    29,
+    66,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "220e0a1748b6"
+  },
+  {
+   "id": "triage_protocol",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_triage_protocol.png",
+   "source": "docs/design/references/icons/artifacts/triage_protocol/triage_protocol_source.png",
+   "alpha_bbox": [
+    69,
     28,
-    221,
+    187,
     227
    ],
    "padding": [
-    35,
+    69,
     28,
-    35,
+    69,
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "5ad2c60869a6"
+   "sha": "d51ca8761700"
   },
   {
-   "id": "overcharge_rune",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_overcharge_rune.png",
-   "source": "docs/design/references/icons/artifacts/overcharge_rune/overcharge_rune_source.png",
-   "alpha_bbox": [
-    68,
-    28,
-    188,
-    228
-   ],
-   "padding": [
-    68,
-    28,
-    68,
-    28
-   ],
-   "corner_alpha_max": 0,
-   "sha": "3c0c4ffa924b"
-  },
-  {
-   "id": "perfect_edge",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_perfect_edge.png",
-   "source": "docs/design/references/icons/artifacts/perfect_edge/perfect_edge_source.png",
-   "alpha_bbox": [
-    103,
-    29,
-    154,
-    227
-   ],
-   "padding": [
-    103,
-    29,
-    102,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "b1e5bea21430"
-  },
-  {
-   "id": "plague_metronome",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_plague_metronome.png",
-   "source": "docs/design/references/icons/artifacts/plague_metronome/plague_metronome_source.png",
-   "alpha_bbox": [
-    62,
-    29,
-    192,
-    228
-   ],
-   "padding": [
-    62,
-    29,
-    64,
-    28
-   ],
-   "corner_alpha_max": 0,
-   "sha": "dd501fecd107"
-  },
-  {
-   "id": "ram_horn",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_ram_horn.png",
-   "source": "docs/design/references/icons/artifacts/ram_horn/ram_horn_source.png",
-   "alpha_bbox": [
-    74,
-    28,
-    181,
-    227
-   ],
-   "padding": [
-    74,
-    28,
-    75,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "1f3f21138c69"
-  },
-  {
-   "id": "return_arc_rune",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_return_arc_rune.png",
-   "source": "docs/design/references/icons/artifacts/return_arc_rune/return_arc_rune_source.png",
-   "alpha_bbox": [
-    44,
-    29,
-    211,
-    227
-   ],
-   "padding": [
-    44,
-    29,
-    45,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "15ad5e5b0e3e"
-  },
-  {
-   "id": "shadow_twin",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_shadow_twin.png",
-   "source": "docs/design/references/icons/artifacts/shadow_twin/shadow_twin_source.png",
-   "alpha_bbox": [
-    48,
-    29,
-    208,
-    227
-   ],
-   "padding": [
-    48,
-    29,
-    48,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "09a32f74505f"
-  },
-  {
-   "id": "spectral_axe",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_spectral_axe.png",
-   "source": "docs/design/references/icons/artifacts/spectral_axe/spectral_axe_source.png",
-   "alpha_bbox": [
-    72,
-    29,
-    184,
-    227
-   ],
-   "padding": [
-    72,
-    29,
-    72,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "89c3343555e9"
-  },
-  {
-   "id": "thirsty_ruby",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_thirsty_ruby.png",
-   "source": "docs/design/references/icons/artifacts/thirsty_ruby/thirsty_ruby_source.png",
-   "alpha_bbox": [
-    68,
-    29,
-    188,
-    227
-   ],
-   "padding": [
-    68,
-    29,
-    68,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "a9064e4c5b15"
-  },
-  {
-   "id": "troll_blood",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_troll_blood.png",
-   "source": "docs/design/references/icons/artifacts/troll_blood/troll_blood_source.png",
+   "id": "wolf_call",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_wolf_call.png",
+   "source": "docs/design/references/icons/artifacts/wolf_call/wolf_call_source.png",
    "alpha_bbox": [
     69,
     29,
@@ -397,83 +473,7 @@
     29
    ],
    "corner_alpha_max": 0,
-   "sha": "5a40b2e54904"
-  },
-  {
-   "id": "venom_spool",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_venom_spool.png",
-   "source": "docs/design/references/icons/artifacts/venom_spool/venom_spool_source.png",
-   "alpha_bbox": [
-    54,
-    28,
-    201,
-    227
-   ],
-   "padding": [
-    54,
-    28,
-    55,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "66253f441aa0"
-  },
-  {
-   "id": "venom_vial",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_venom_vial.png",
-   "source": "docs/design/references/icons/artifacts/venom_vial/venom_vial_source.png",
-   "alpha_bbox": [
-    66,
-    29,
-    189,
-    227
-   ],
-   "padding": [
-    66,
-    29,
-    67,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "40c651f9a18c"
-  },
-  {
-   "id": "war_banner",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_war_banner.png",
-   "source": "docs/design/references/icons/artifacts/war_banner/war_banner_source.png",
-   "alpha_bbox": [
-    79,
-    29,
-    177,
-    228
-   ],
-   "padding": [
-    79,
-    29,
-    79,
-    28
-   ],
-   "corner_alpha_max": 0,
-   "sha": "16b94606ce2b"
-  },
-  {
-   "id": "wide_halo",
-   "runtime": "assets/sprites/ui/icons/artifacts/artifact_wide_halo.png",
-   "source": "docs/design/references/icons/artifacts/wide_halo/wide_halo_source.png",
-   "alpha_bbox": [
-    60,
-    29,
-    195,
-    227
-   ],
-   "padding": [
-    60,
-    29,
-    61,
-    29
-   ],
-   "corner_alpha_max": 0,
-   "sha": "79c99db79ac5"
+   "sha": "3012d41afa94"
   }
  ],
  "failures": [],
