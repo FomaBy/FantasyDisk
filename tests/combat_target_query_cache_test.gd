@@ -43,6 +43,17 @@ func _initialize() -> void:
 	if generation_after_queries != generation_after_first:
 		errors.append("cache rebuilt more than once in the same frame")
 
+	var contact := _enemy("ContactEnemy", Vector2.ZERO)
+	holder.add_child(contact)
+	await process_frame
+	var offset_start := Vector2(30.0, 0.0)
+	var contact_corridor := TARGET_QUERY.in_corridor(origin, offset_start, Vector2.RIGHT, 60.0, 240.0, 40.0)
+	var contact_segment := TARGET_QUERY.in_segment(origin, offset_start, Vector2(240.0, 0.0), 60.0, 40.0)
+	if contact_corridor.is_empty() or contact_corridor[0]["node"] != contact:
+		errors.append("corridor back_allowance should include a contact-stuck enemy behind the beam start")
+	if not contact_segment.has(contact):
+		errors.append("segment back_allowance should include a contact-stuck enemy behind the segment start")
+
 	holder.queue_free()
 	await process_frame
 

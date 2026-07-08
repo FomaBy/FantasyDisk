@@ -103,6 +103,12 @@
 - Берсерк использует melee shapes: `strip`, `sweep`, `circle`.
 - Class weapons используют reusable modes: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
 - Прицеливание имеет два runtime-режима. `nearest` оставляет автонаводку на ближайшего врага, `cursor` берет единые `Player.attack_aim_direction()` / `attack_aim_position()` для melee, projectiles, beams, deploys и point-AoE. Summoner commands в cursor mode выбирают цель рядом с точкой курсора.
+- SCRUM-886: contact-stuck enemies remain hittable when they overlap the player.
+  `BerserkWeapon` accepts targets within a 40px close-contact rescue radius before
+  applying strip/sweep/frustum rejection, and `ClassWeapon` line/corridor helpers
+  give player-origin beams, vents, brace/compression lines and sound-wave cones a
+  40px back allowance. This is a hit-query fix only: attack ranges, cooldowns,
+  target caps, falloff, DPS budgets and enemy movement/pathfinding are unchanged.
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
 - Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
 - Друидский `druid_beast` summon использует `AllyMinion/AnimatedBody` с готовым `SpriteFrames`: `move` loop при движении/ожидании, `attack` one-shot при фактическом ударе и `flip_h` вправо по движению/атаке. Остальные ally visuals остаются статичными `Sprite2D` через fallback `Body`.

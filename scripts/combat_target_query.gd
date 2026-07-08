@@ -106,13 +106,13 @@ static func in_corridor(source: Node, origin: Vector2, direction: Vector2, width
 	return hits
 
 
-static func in_segment(source: Node, start: Vector2, finish: Vector2, width: float) -> Array:
+static func in_segment(source: Node, start: Vector2, finish: Vector2, width: float, back_allowance := 0.0) -> Array:
 	var segment := finish - start
 	var length := segment.length()
 	if length <= 0.001:
 		return in_radius(source, start, width * 0.5)
 	var direction := segment / length
 	var result := []
-	for hit in in_corridor(source, start, direction, width, length):
+	for hit in in_corridor(source, start, direction, width, length, back_allowance):
 		result.append(hit["node"])
 	return result

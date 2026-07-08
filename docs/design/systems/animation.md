@@ -36,6 +36,11 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
+- SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
+  importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
+  (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
+  Knight source/runtime frames and reports with 8 idle directions and 6-frame
+  directional `move/walk` rows; no legacy/manual fallback was used.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
@@ -338,7 +343,9 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
   `idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>`
   rows for all 8 directions. Weapons and shield remain separate weapon visuals;
-  the base Knight source has empty hands and no baked equipment.
+  the base Knight source has empty hands and no baked equipment. SCRUM-885
+  refreshed this pack from PixelLab MCP on 2026-07-08 and kept the same
+  directional runtime contract.
 - SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
   Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
   skeleton-source packages under

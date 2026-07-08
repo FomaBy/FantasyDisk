@@ -43,6 +43,11 @@ Domain docs для подробностей по областям:
   Ranger, Robot and Thief; Berserk, Soldier, Elementalist, Sniper, Engineer and
   Doctor keep their current valid runtime packs until PixelLab source packages
   expose complete directional movement rows or a valid manifest download.
+- SCRUM-885 (2026-07-08) performs a focused Knight refresh from PixelLab MCP
+  character `c1a7d633-7353-4861-aea3-8d937b601cba` (`FantasyDisk Knight PixelLab
+  SCRUM-430 no-shield 2026-06-30`). The importer refreshed only `knight`, kept the
+  no-shield/no-weapon source contract, and exported 8 idle directions plus 6-frame
+  directional `move/walk` rows at `2026-07-08T15:55:39.543782`.
 
 ## Основной Поток Игры
 
@@ -395,7 +400,7 @@ completed, `route_stage` продвигается и autosave сохраняет
 - socket для оружия;
 - возможность проходить сквозь монстров.
 
-Коллизия игрока не должна физически цепляться за enemy layers. Монстры наносят контактный урон отдельной атакой с задержкой.
+Коллизия игрока не должна физически цепляться за enemy layers. Монстры наносят контактный урон отдельной атакой с задержкой. SCRUM-886 закрывает боевую мертвую зону для overlap/contact случаев: если монстр уже стоит в позиции игрока, melee shapes Берсерка и class weapon line/corridor/wave helpers все равно считают его валидной целью в малой 40px rescue-зоне. Это не меняет speed/collision/pathfinding врагов и не трогает численные weapon budgets.
 
 ### Выживаемость и сценарные проверки
 
@@ -407,7 +412,7 @@ completed, `route_stage` продвигается и autosave сохраняет
 
 ### Target queries
 
-Горячие weapon/player target scans используют `scripts/combat_target_query.gd`. Helper кеширует список `enemies` на один frame и дает единые методы `nearest`, `nearest_many`, `in_radius`, `has_in_radius`, `in_corridor` и `in_segment`. Group membership `enemies` сохранен как compatibility contract для спавна, cleanup и старых систем. Текущая интеграция покрывает `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion` и `SummonerWeapon`; тест `tests/combat_target_query_cache_test.gd` проверяет геометрию helper-ов и отсутствие rebuild в том же frame.
+Горячие weapon/player target scans используют `scripts/combat_target_query.gd`. Helper кеширует список `enemies` на один frame и дает единые методы `nearest`, `nearest_many`, `in_radius`, `has_in_radius`, `in_corridor` и `in_segment`; line helpers поддерживают optional `back_allowance` для weapon starts, смещенных вперед от игрока. Group membership `enemies` сохранен как compatibility contract для спавна, cleanup и старых систем. Текущая интеграция покрывает `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion` и `SummonerWeapon`; тесты `tests/combat_target_query_cache_test.gd` и `tests/contact_stuck_attack_deadzone_test.gd` проверяют геометрию helper-ов, отсутствие rebuild в том же frame и contact-stuck hit regression.
 
 ## Персонажи
 
@@ -719,7 +724,10 @@ no-shield directional pack. Source frames live under
 `assets/sprites/characters/full_frame/knight_pixellab/`, and
 `knight_spriteframes.tres` exposes 8-direction idle poses plus 6-frame
 directional `walk`/`move` rows. The accepted source keeps weapons and shield
-separate from the base hero.
+separate from the base hero. SCRUM-885 refreshed this same PixelLab character on
+2026-07-08, regenerating 56 source PNGs, 56 normalized transparent `512x512`
+runtime PNGs and the manifest/alpha report without changing gameplay or weapon
+visual ownership.
 
 SCRUM-419 подготовил per-class Assassin v2 Design-source handoff:
 `docs/design/references/characters_v2/assassin/assassin_v2_source_clean.png`,
@@ -1097,7 +1105,9 @@ SCRUM-430 makes Knight's live portrait/SpriteFrames PixelLab-based:
 `assets/sprites/characters/pixellab/knight/` and
 `assets/sprites/characters/full_frame/knight_pixellab/`. The body animation
 contract remains `idle` / `walk` / `move` only; weapon visuals own Knight
-attacks, and the base hero source has no baked weapon or shield.
+attacks, and the base hero source has no baked weapon or shield. SCRUM-885
+re-imported the pack from PixelLab MCP on 2026-07-08 and kept the same combat/UI
+paths with refreshed directional frames.
 
 ## Оружие Берсерка
 
