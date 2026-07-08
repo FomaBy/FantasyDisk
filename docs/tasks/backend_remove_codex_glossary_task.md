@@ -74,3 +74,17 @@
 
 - Disk cleanup: temporary worktree `/private/tmp/fsd_wt_remove_codex_glossary`
   removed after push; no additional clones were created.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+- QA worker: codex-board-drain-20260708-1718.
+- Verified from clean `origin/dev` commit `aa843184`.
+- `rg` check found no live glossary UI ids/builders in `scripts/ui_screens.gd`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/codex_data_smoke_test.gd` — PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/glossary_smoke_test.gd` — PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd` — PASSED with known dummy-renderer screenshot warning: `Parameter "t" is null` in `_try_capture_weapon_select_screenshot`.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd` — PASSED.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd` — PASSED with the same known dummy-renderer screenshot warning.
+- Disk cleanup: no QA worktree or clone created.
