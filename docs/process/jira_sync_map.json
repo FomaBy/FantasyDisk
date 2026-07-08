@@ -3967,5 +3967,10 @@
   "key": "SCRUM-881",
   "status": "К выполнению",
   "desc_hash": "e2121a7cc6de9f33d36e21ee238bb5f0"
+ },
+ "design_ui_feedback_polish_settings_hero_task.md": {
+  "key": "SCRUM-882",
+  "status": "К выполнению",
+  "desc_hash": "027777c41dcf49e19cad578f0d5fa3de"
  }
 }
