@@ -108,6 +108,17 @@ Locked paths: `scripts/ui_screens.gd` (event resolve/apply/reveal-функции
 Зелёный гейт → push в origin/dev → Jira SCRUM-996 «Контроль качества» + комментарий
 с итогом → этот файл `Статус: done`.
 
+## QA-Вердикт
+
+Статус: PASSED
+Проверил: claude-fable-orchestrator, 2026-07-09.
+Верификация HEAD в worktree: event_data_contract_check (pool=29, новые ключи
+типизированы), event_data_smoke_test, event_outcomes_runtime_test (все ветки AC:
+check S/F, hidden+reveal, damage_flat пол 1 HP, shop_after событие/победа, награды,
+очистка current_event_definition) — PASSED; runtime_smoke_test ×2 подряд — passed
+(шум _try_capture_weapon_select_screenshot — известный headless-артефакт). Обратная
+совместимость со старым пулом подтверждена зелёными старыми тестами. AC закрыты.
+
 ## Итог
 
 Реализовано и запушено в origin/dev пятью коммитами (18022681 схема event_data +
