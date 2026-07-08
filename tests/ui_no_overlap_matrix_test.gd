@@ -73,13 +73,16 @@ func _initialize() -> void:
 			"LevelUpPanel", "LevelUpHeroHeader", "LevelUpRewardButton0",
 			"LevelUpRewardButton1", "LevelUpRewardButton2", "LevelUpLaterButton",
 		], dump_lines, errors)
+		# SCRUM-890: Esc в любой точке забега открывает сразу досье героя — оба id
+		# (pause_menu исторический и pause_stats) показывают ОДИН экран PauseStatsMenu;
+		# id сохранены ради непрерывности дампов scrum330/design-review.
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
-			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
-			"DerivedStatsGroups",
+			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
+			"PauseEndRunButton", "HeroCard", "BaseStatsList", "DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
-			"EscapeStatsPanelFrame", "PauseControlButtons", "BaseStatsList",
-			"DerivedStatsGroups",
+			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
+			"PauseEndRunButton", "HeroCard", "BaseStatsList", "DerivedStatsGroups",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "hero_select", Callable(self, "_open_hero_select"), [
 			"HS4PortraitFrame", "HS4DossierFrame", "HS4AscensionFrame", "HS4Carousel", "HS4ChooseButton",
@@ -327,6 +330,8 @@ func _open_level_up(main: Node) -> void:
 	main.ui._show_level_up_screen(false)
 
 
+# SCRUM-890: _show_pause_menu теперь всегда открывает досье — оба открывателя
+# эквивалентны, «pause_stats» дополнительно фиксирует прямой путь _show_pause_dossier_menu.
 func _open_pause_menu(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "sword")
