@@ -5943,142 +5943,9 @@ func _show_pause_menu(force := false) -> void:
 	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.pause_overlay_layer)
 	game.pause_stats_menu = null
-	if _should_open_pause_dossier_first():
-		_show_pause_dossier_menu()
-	else:
-		_build_run_pause_menu()
-
-
-# SCRUM-484: координатная спека @2560×1440 — пауза в забеге (модалка).
-# Панель _pause_end_modal_display_size("pause"): source 986×900, высота клампится в
-# [520,820] → @2K = 898×820, CenterContainer центрирует. Content margins (74,94,74,86)
-# скейлятся ×0.911 → safe-area ≈ (67,86,67,78). Контент: заголовок, подзаголовок,
-# 6 кнопок 280×60 (separation 8; SCRUM-848 добавил «Фидбек»). Столб контента 498px
-# центрирован в safe-area (низ 973 ≤ 1052) — всё внутри без наслоений.
-
-
-func _build_run_pause_menu() -> void:
-	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
-		return
-	for child in game.pause_overlay_layer.get_children():
-		child.queue_free()
-
-	var dim := ColorRect.new()
-	dim.name = "RunPauseDim"
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.01, 0.015, 0.025, 0.70)
-	game.pause_overlay_layer.add_child(dim)
-
-	var root := Control.new()
-	root.name = "RunPauseMenuRoot"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	game.pause_overlay_layer.add_child(root)
-	_prepare_global_tooltips(root)
-
-	var panel := PanelContainer.new()
-	panel.name = "RunPauseMenuPanel"
-	var panel_size := _pause_end_modal_display_size("pause")
-	panel.custom_minimum_size = panel_size
-	# SCRUM-883: единый атлас-стиль — панель паузы на плотном кожаном чипе (StyleBoxFlat,
-	# латунный кант) вместо per-слот pm_panel @2K-рамки. Размер панели по-прежнему из
-	# общей _pause_end_modal_display_size (общий PAUSE_END_MODAL_* победы/смерти не трогаем).
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.95, roundf(20.0 * _atlas_ui_scale())))
-	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = _pause_menu_top_left_position(panel_size)
-	panel.size = panel_size
-	root.add_child(panel)
-	root.resized.connect(func() -> void:
-		if panel != null and is_instance_valid(panel):
-			var next_size := _pause_end_modal_display_size("pause")
-			panel.custom_minimum_size = next_size
-			panel.size = next_size
-			panel.position = _pause_menu_top_left_position(next_size)
-	)
-
-	var box := VBoxContainer.new()
-	box.name = "RunPauseMenuContent"
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
-	panel.add_child(box)
-
-	var title := Label.new()
-	title.name = "RunPauseMenuTitle"
-	title.text = "Пауза"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(44))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
-
-	var subtitle := Label.new()
-	subtitle.name = "RunPauseMenuSubtitle"
-	subtitle.text = "Забег поставлен на паузу"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	box.add_child(subtitle)
-
-	# SCRUM-883: 6 кнопок паузы — только глобальный кит: имена RunPause* мапятся
-	# в _text_button_unique_id на нативную плиту pause_280x60, отдельная pm_btn-
-	# перештамповка не нужна (она и так редиректила в кит).
-	var continue_button := _make_button("Продолжить")
-	continue_button.name = "RunPauseContinueButton"
-	_set_action_button_size(continue_button, 280.0, 60.0)
-	continue_button.pressed.connect(_resume_game)
-	box.add_child(continue_button)
-
-	var dossier_button := _make_button("Досье персонажа")
-	dossier_button.name = "RunPauseDossierButton"
-	_set_action_button_size(dossier_button, 280.0, 60.0)
-	dossier_button.pressed.connect(_show_pause_dossier_menu)
-	box.add_child(dossier_button)
-
-	var settings_button := _make_button("Настройки")
-	settings_button.name = "RunPauseSettingsButton"
-	_set_action_button_size(settings_button, 280.0, 60.0)
-	settings_button.pressed.connect(func() -> void:
-		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
-	)
-	box.add_child(settings_button)
-
-	# SCRUM-848: фидбек доступен без знания хоткея P — видимая кнопка в паузе.
-	# Скриншот берём как у хоткея (последний отрисованный кадр вьюпорта, поверх
-	# будет меню паузы — это ок, игрок описывает момент, в котором остановился).
-	var feedback_button := _make_button("Фидбек")
-	feedback_button.name = "RunPauseFeedbackButton"
-	_set_action_button_size(feedback_button, 280.0, 60.0)
-	feedback_button.pressed.connect(func() -> void:
-		_show_feedback_overlay(_capture_feedback_screenshot())
-	)
-	box.add_child(feedback_button)
-
-	var end_run_button := _make_button("Покинуть забег")
-	end_run_button.name = "RunPauseEndRunButton"
-	_set_action_button_size(end_run_button, 280.0, 60.0)
-	# SCRUM-883: завершение забега — только через модалку подтверждения (стиль quit-
-	# диалога), случайный клик больше не убивает забег без вопроса.
-	end_run_button.pressed.connect(_show_end_run_confirmation_dialog)
-	box.add_child(end_run_button)
-
-	var main_menu_button := _make_button("Главное меню")
-	main_menu_button.name = "RunPauseMainMenuButton"
-	_set_action_button_size(main_menu_button, 280.0, 60.0)
-	main_menu_button.pressed.connect(_quit_current_run)
-	box.add_child(main_menu_button)
-
-	# SCRUM-812: вертикальное меню паузы проходимо с геймпада/стрелок, стартовый
-	# фокус — «Продолжить»; ui_cancel (B/Esc) продолжает игру (см. main._input).
-	_wire_run_ui_focus([
-		continue_button, dossier_button, settings_button, end_run_button, main_menu_button,
-	], false, [], continue_button)
-
-
-func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var margin := clampf(viewport_size.y * 0.025, 18.0, 28.0)
-	var max_x := maxf(margin, viewport_size.x - panel_size.x - margin)
-	var max_y := maxf(margin, viewport_size.y - panel_size.y - margin)
-	return Vector2(minf(margin, max_x), minf(margin, max_y))
+	# SCRUM-890: Esc в любой момент забега открывает сразу досье героя — промежуточное
+	# простое меню паузы (RunPauseMenu) удалено, его функции живут в шапке досье.
+	_show_pause_dossier_menu()
 
 
 # SCRUM-883: модалка подтверждения «Завершить забег» из паузы — тот же стиль, что у
@@ -6195,7 +6062,7 @@ func _cancel_end_run_confirmation_dialog() -> bool:
 	if overlay == null:
 		return false
 	overlay.queue_free()
-	var end_run_button := game.pause_overlay_layer.find_child("RunPauseEndRunButton", true, false) as Button
+	var end_run_button := game.pause_overlay_layer.find_child("PauseEndRunButton", true, false) as Button
 	if end_run_button != null and is_instance_valid(end_run_button):
 		end_run_button.grab_focus()
 	return true
@@ -6207,6 +6074,9 @@ func _show_pause_dossier_menu() -> void:
 	for child in game.pause_overlay_layer.get_children():
 		child.queue_free()
 
+	# SCRUM-890: досье может быть первым открытым UI забега — гарантируем
+	# геймпад-биндинги ui_accept/ui_cancel (B = «Продолжить» через main._input).
+	_ensure_run_ui_gamepad_bindings()
 	game.pause_stats_menu = game.PAUSE_STATS_MENU_SCENE.instantiate() as Control
 	game.pause_overlay_layer.add_child(game.pause_stats_menu)
 	if game.pause_stats_menu.has_method("setup"):
@@ -6215,6 +6085,9 @@ func _show_pause_dossier_menu() -> void:
 	game.pause_stats_menu.settings_requested.connect(func() -> void:
 		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
 	)
+	# SCRUM-890: «Завершить забег» из шапки досье открывает модалку SCRUM-883
+	# (EndRunConfirmationDialog в pause_overlay_layer), а не движковый фолбэк сцены.
+	game.pause_stats_menu.set("end_run_confirm_handler", Callable(self, "_show_end_run_confirmation_dialog"))
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
 
@@ -6227,17 +6100,6 @@ func _is_settings_screen_open() -> bool:
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
 		return false
 	return game.ui_layer.find_child("SettingsV2Root", true, false) != null
-
-
-func _should_open_pause_dossier_first() -> bool:
-	if not game.combat_active:
-		return false
-	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
-		return true
-	for screen_name in ["LevelUpOverlay", "ShopScreen", "AttributeShopScreen", "EliteArtifactRewardScreen", "EventScreen", "RouteMapScreen"]:
-		if game.ui_layer.find_child(screen_name, true, false) != null:
-			return false
-	return true
 
 
 func _can_open_pause_dossier() -> bool:
@@ -10175,15 +10037,6 @@ func _apply_video_settings() -> void:
 # статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
 # тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
 # не уезжают за нижний край (SCRUM-460).
-
-
-# SCRUM-848: тот же захват, что у хоткея P в main.gd — последний отрисованный кадр
-# вьюпорта (в headless скриншота нет, форма покажет заглушку из _normalized_screenshot).
-func _capture_feedback_screenshot() -> Image:
-	if DisplayServer.get_name() == "headless":
-		return null
-	var viewport_texture: ViewportTexture = game.get_viewport().get_texture()
-	return viewport_texture.get_image() if viewport_texture != null else null
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:

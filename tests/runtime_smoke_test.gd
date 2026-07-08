@@ -35,12 +35,9 @@ const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
 const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
-const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
-# SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
-# заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
-const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
+# SCRUM-890: досье паузы и глобальный тултип — StyleBoxFlat-чипы атласа,
+# texture-рамки pd_panel/stat_tooltip @2K сняты.
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
-const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 # SCRUM-883: «Позже» на level-up — глобальный кнопочный кит (text_buttons_unique/
 # либо minimal_metal_buttons/), lu682-арт снят.
 const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
@@ -980,23 +977,18 @@ func _initialize() -> void:
 			_fail("Expected level-up reward cards to expose visible effective before/after previews.")
 			return
 
-	# Escape поверх level-up открывает единое меню забега, а досье доступно кнопкой.
+	# SCRUM-890: Escape поверх level-up открывает сразу досье героя (простое
+	# run-pause меню удалено).
 	var pause_escape := InputEventKey.new()
 	pause_escape.keycode = KEY_ESCAPE
 	pause_escape.pressed = true
 	main.call("_input", pause_escape)
 	await process_frame
-	if main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected Escape on level-up to open the run pause menu.")
-		return
-	var dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
-	if dossier_button == null:
-		_fail("Expected run pause menu to expose a character dossier button.")
-		return
-	dossier_button.pressed.emit()
-	await process_frame
 	if main.find_child("PauseStatsMenuRoot", true, false) == null:
-		_fail("Expected dossier button to open the character dossier overlay.")
+		_fail("Expected Escape on level-up to open the pause dossier (SCRUM-890).")
+		return
+	if main.find_child("RunPauseMenuRoot", true, false) != null:
+		_fail("Expected the removed standalone run pause menu to stay gone (SCRUM-890).")
 		return
 	if main.find_child("PriorityBadge_strength", true, false) == null:
 		_fail("Expected pause dossier to highlight Berserk priority attributes.")
@@ -1004,13 +996,14 @@ func _initialize() -> void:
 	if (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay") == null:
 		_fail("Expected level-up overlay to remain underneath the pause dossier.")
 		return
+	# Esc внутри досье = «Продолжить» (resume).
 	var pause_close := InputEventKey.new()
 	pause_close.keycode = KEY_ESCAPE
 	pause_close.pressed = true
 	main.call("_input", pause_close)
 	await process_frame
-	if main.find_child("RunPauseMenuRoot", true, false) != null or main.find_child("PauseStatsMenuRoot", true, false) != null:
-		_fail("Expected second Escape to close the run pause overlay.")
+	if main.find_child("PauseStatsMenuRoot", true, false) != null:
+		_fail("Expected second Escape to close the pause dossier overlay.")
 		return
 	if (main.get("ui_layer") as CanvasLayer).get_node_or_null("LevelUpOverlay") == null:
 		_fail("Expected closing the dossier to preserve the level-up overlay.")
@@ -1113,25 +1106,55 @@ func _initialize() -> void:
 	if pause_menu == null or not is_instance_valid(pause_menu):
 		_fail("Expected active-combat Esc to attach the pause stats character board.")
 		return
-	var run_controls := pause_menu.find_child("RunControls", true, false) as VBoxContainer
-	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as VBoxContainer
+	# SCRUM-890 вариант Б: шапка (титул-чип + кит-кнопки в ряд) + тело
+	# (карточка героя слева, «Боевые параметры» 2×2 справа).
+	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as HBoxContainer
+	var hero_card := pause_menu.find_child("HeroCard", true, false) as PanelContainer
 	var base_stats_list := pause_menu.find_child("BaseStatsList", true, false) as VBoxContainer
 	var derived_groups := pause_menu.find_child("DerivedStatsGroups", true, false) as GridContainer
-	if run_controls == null or control_buttons == null or base_stats_list == null or derived_groups == null:
-		_fail("Expected pause stats menu to build left controls, base stats, and grouped derived stats.")
+	if control_buttons == null or hero_card == null or base_stats_list == null or derived_groups == null:
+		_fail("Expected pause dossier to build the header button row, hero card, base stats, and grouped derived stats.")
 		return
-	if control_buttons.get_child_count() < 4:
-		_fail("Expected pause stats menu controls to stay grouped on the left.")
+	if control_buttons.get_child_count() != 4:
+		_fail("Expected exactly 4 run control buttons in the dossier header (SCRUM-890).")
 		return
-	var pause_artifacts := pause_menu.find_child("ArtifactsList", true, false) as HFlowContainer
-	if pause_artifacts == null or pause_artifacts.get_child_count() < 1:
-		_fail("Expected the pause menu to show the artifacts block (icons or empty hint).")
+	if pause_menu.find_child("DossierTitleChip", true, false) == null:
+		_fail("Expected the dossier header title chip (SCRUM-890 atlas header).")
+		return
+	if pause_menu.find_child("PauseDossierPortraitSlot", true, false) == null or pause_menu.find_child("PauseDossierTitle", true, false) == null:
+		_fail("Expected the hero card to show the portrait slot and class title.")
 		return
 	if base_stats_list.get_child_count() != UIIconRegistry.BASE_STAT_IDS.size():
-		_fail("Expected base stats to sit under controls as one compact row per base stat.")
+		_fail("Expected the hero card to list one compact row per base stat.")
 		return
-	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() < 5:
-		_fail("Expected derived stats to be organized into responsive compact logical groups.")
+	# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс),
+	# Защита, Уворот, Регенерация; ряд «Призывы» ТОЛЬКО у призывного кита
+	# (berserk+sword — не призыватель, канон: ProgressionData.weapon_archetype).
+	var survival_list := pause_menu.find_child("SurvivalStatsList", true, false) as VBoxContainer
+	var survival_title := pause_menu.find_child("SurvivalTitle", true, false) as Label
+	if survival_list == null or survival_title == null:
+		_fail("Expected the hero card Survival block (title + rows, SCRUM-890).")
+		return
+	if survival_list.get_child_count() != 4:
+		_fail("Expected 4 Survival rows for a non-summoning kit, got %d." % survival_list.get_child_count())
+		return
+	if pause_menu.find_child("SurvivalStatRow_summon_amount", true, false) != null:
+		_fail("Expected no summon row in Survival for berserk+sword.")
+		return
+	var survival_hp_row := pause_menu.find_child("SurvivalStatRow_health_point", true, false) as Control
+	var survival_hp_value := pause_menu.find_child("SurvivalStatValue_health_point", true, false) as Label
+	if survival_hp_row == null or survival_hp_row.tooltip_text == "" or survival_hp_value == null or not survival_hp_value.text.contains("/"):
+		_fail("Expected the Survival HP row to show current/max HP with a tooltip.")
+		return
+	for survival_row_name in ["SurvivalStatRow_defense", "SurvivalStatRow_dodge", "SurvivalStatRow_regeneration"]:
+		var survival_row := pause_menu.find_child(survival_row_name, true, false) as Control
+		if survival_row == null or survival_row.tooltip_text == "":
+			_fail("Expected Survival row %s with a hover tooltip." % survival_row_name)
+			return
+	# SCRUM-890 вариант Б: ровно 4 секции боевых параметров в сетке 2×2 (1 колонка
+	# на компактных вьюпортах).
+	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() != 4:
+		_fail("Expected exactly 4 derived stat sections in a 2x2/1-column grid (SCRUM-890).")
 		return
 	var strength_row := pause_menu.find_child("BaseStatRow_strength", true, false) as Control
 	var damage_chip := pause_menu.find_child("DerivedStatChip_damage", true, false) as Control
@@ -1144,53 +1167,95 @@ func _initialize() -> void:
 	if escape_panel == null or resume_button == null or physical_group == null:
 		_fail("Expected pause stats menu to expose Design kit hook nodes.")
 		return
-	if _stylebox_texture_path(escape_panel.get_theme_stylebox("panel")) != PAUSE_DOSSIER_PANEL_TEXTURE_2K:
-		_fail("Expected pause dossier/stats panel shell to use the SCRUM-486 @2K pd_panel frame.")
+	# SCRUM-890: панель досье — плотный атлас-чип (StyleBoxFlat, латунный кант),
+	# числа = _atlas_chip_style.
+	var dossier_panel_style := escape_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if dossier_panel_style == null or dossier_panel_style.bg_color.a < 0.9:
+		_fail("Expected the dossier panel to use an opaque atlas chip StyleBoxFlat (SCRUM-890).")
 		return
-	if not (escape_panel.get_theme_stylebox("panel") is StyleBoxTexture):
-		_fail("Expected Escape stats panel to use Design StyleBoxTexture frame.")
+	if not _color_approx(dossier_panel_style.border_color, Color(0.52, 0.41, 0.24, 0.90)):
+		_fail("Expected the dossier panel chip to keep the brass atlas border.")
 		return
-	if not (resume_button.get_theme_stylebox("normal") is StyleBoxTexture):
-		_fail("Expected Escape menu buttons to use Design StyleBoxTexture frame.")
-		return
-	# SCRUM-669: 4 pause-dossier text actions use the same generated pause_280x60 kit.
+	# Кит-кнопки шапки: нативные плиты глобального кита по size-маппингу
+	# (на 2560x1440 h=104 → back_260x104), НЕ растянутые контейнером.
 	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
 		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
 		if pd_button == null:
 			_fail("Expected pause dossier control button %s." % pd_btn_name)
 			return
-		if not _button_uses_text_button_unique_id(pd_button, "pause_280x60"):
-			_fail("Expected %s to use the SCRUM-657 pause_280x60 text-button state kit." % pd_btn_name)
+		if not [72.0, 88.0, 104.0].has(pd_button.custom_minimum_size.y):
+			_fail("Expected %s to use a kit action height (72/88/104), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
 			return
-	if not (strength_row.get_theme_stylebox("panel") is StyleBoxTexture) or not (damage_chip.get_theme_stylebox("panel") is StyleBoxTexture) or not (physical_group.get_theme_stylebox("panel") is StyleBoxTexture):
-		_fail("Expected base rows, derived chips, and derived groups to use Design StyleBoxTexture frames.")
+		var pd_style := pd_button.get_theme_stylebox("normal") as StyleBoxTexture
+		if pd_style == null or pd_style.texture == null:
+			_fail("Expected %s to ride a global kit texture plate." % pd_btn_name)
+			return
+		var pd_plate_path := pd_style.texture.resource_path
+		if not (pd_plate_path.contains("text_buttons_unique") or pd_plate_path.contains("minimal_metal_buttons")):
+			_fail("Expected %s plate from the global button kit, got %s." % [pd_btn_name, pd_plate_path])
+			return
+		var pd_rect := pd_button.get_global_rect()
+		if absf(pd_rect.size.x - pd_button.custom_minimum_size.x) > 0.5 or absf(pd_rect.size.y - pd_button.custom_minimum_size.y) > 0.5:
+			_fail("Expected %s to keep its native kit size (no container stretch), got %s." % [pd_btn_name, str(pd_rect.size)])
+			return
+	if _button_uses_text_button_unique_id(resume_button, "back_260x104") != (resume_button.custom_minimum_size.y >= 96.0):
+		_fail("Expected the dossier header buttons to follow the kit size mapping (back_260x104 at h=104).")
 		return
-	# SCRUM-851: single-frame tooltip — custom content is a bare Label (no second
-	# PanelContainer frame); the only frame comes from the popup's TooltipPanel style.
+	# Ряды/чипы/секции — StyleBoxFlat-чипы атлас-языка (0.62 ряды, 0.86 секции).
+	var strength_row_style := strength_row.get_theme_stylebox("panel") as StyleBoxFlat
+	var damage_chip_style := damage_chip.get_theme_stylebox("panel") as StyleBoxFlat
+	var physical_group_style := physical_group.get_theme_stylebox("panel") as StyleBoxFlat
+	if strength_row_style == null or damage_chip_style == null or physical_group_style == null:
+		_fail("Expected base rows, derived chips, and sections to use atlas chip StyleBoxFlat.")
+		return
+	if strength_row_style.bg_color.a < 0.55 or damage_chip_style.bg_color.a < 0.55 or physical_group_style.bg_color.a < 0.8:
+		_fail("Expected readable chip alphas (rows >=0.55, sections >=0.8).")
+		return
+	if physical_group.find_child("DerivedGroupMarker_physical_damage", true, false) == null:
+		_fail("Expected the section header to keep its colored accent marker (SCRUM-890).")
+		return
+	var stats_hint := pause_menu.find_child("DerivedStatsHint", true, false) as Label
+	if stats_hint == null or not stats_hint.text.contains("Наведи"):
+		_fail("Expected the derived stats header to keep the hover hint (SCRUM-890).")
+		return
+	# SCRUM-851/SCRUM-890: тултип краткий; контент — титул золотом + тело светлым,
+	# единственная рамка — чип TooltipPanel попапа.
 	if strength_row.tooltip_text.contains("Формула:") or not strength_row.tooltip_text.contains(" — "):
 		_fail("Expected concise pause stat tooltip text (name — value + description).")
 		return
-	var tooltip_label := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as Label
-	if tooltip_label == null:
-		_fail("Expected custom stat tooltip content to be a bare Label (single frame).")
+	var tooltip_content := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as VBoxContainer
+	if tooltip_content == null:
+		_fail("Expected custom stat tooltip content to be the SCRUM-890 title+body column.")
 		return
-	if tooltip_label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		_fail("Expected custom stat tooltip label to ignore mouse input.")
+	var tooltip_title := tooltip_content.find_child("GlobalTooltipTitleLabel", true, false) as Label
+	var tooltip_body := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label
+	if tooltip_title == null or tooltip_body == null:
+		_fail("Expected the global tooltip to split into gold title and light body labels.")
 		return
-	if tooltip_label.get_theme_font_size("font_size") < 20:
-		_fail("Expected custom stat tooltip label to use the enlarged SCRUM-851 font.")
+	if not _color_approx(tooltip_title.get_theme_color("font_color"), Color(0.96, 0.90, 0.68, 1.0)):
+		_fail("Expected the tooltip title to use the gold atlas title color.")
 		return
-	if tooltip_label.custom_minimum_size.x > 620.0:
-		_fail("Expected custom stat tooltip wrap width to stay within the SCRUM-851 wide cap.")
+	if tooltip_content.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected custom stat tooltip content to ignore mouse input.")
 		return
-	var popup_tooltip_style := pause_menu.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxTexture
-	if popup_tooltip_style == null or _stylebox_texture_path(popup_tooltip_style) != STAT_TOOLTIP_TEXTURE_2K:
-		_fail("Expected pause tooltip popup frame to use the SCRUM-586 2K stat tooltip texture.")
+	if tooltip_title.get_theme_font_size("font_size") < 20 or tooltip_body.get_theme_font_size("font_size") < 20:
+		_fail("Expected custom stat tooltip labels to keep the enlarged SCRUM-851 font.")
 		return
-	if popup_tooltip_style.content_margin_left < 44.0 or popup_tooltip_style.content_margin_top < 42.0 or popup_tooltip_style.content_margin_right < 44.0 or popup_tooltip_style.content_margin_bottom < 42.0:
-		_fail("Expected pause tooltip popup content margins to keep text inside the SCRUM-586 safe zone.")
+	if tooltip_body.custom_minimum_size.x > 620.0 * 1.01:
+		_fail("Expected custom stat tooltip wrap width to stay within the wide cap.")
 		return
-	tooltip_label.queue_free()
+	# SCRUM-890: панель тултипа — чип 0.97 (числа = _atlas_chip_style).
+	var popup_tooltip_style := pause_menu.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxFlat
+	if popup_tooltip_style == null or popup_tooltip_style.bg_color.a < 0.95:
+		_fail("Expected the tooltip popup panel to use the dense atlas chip StyleBoxFlat (SCRUM-890).")
+		return
+	if not _color_approx(popup_tooltip_style.border_color, Color(0.52, 0.41, 0.24, 0.90)):
+		_fail("Expected the tooltip popup chip to keep the brass atlas border.")
+		return
+	if popup_tooltip_style.content_margin_left < 12.0 or popup_tooltip_style.content_margin_top < 10.0:
+		_fail("Expected the tooltip popup chip to keep readable content margins.")
+		return
+	tooltip_content.queue_free()
 	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
 	var strength_value := pause_menu.find_child("BaseStatValue_strength", true, false) as Label
 	var strength_icon := pause_menu.find_child("UIIcon_strength", true, false) as Control
@@ -1206,9 +1271,11 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
+	# SCRUM-890 вариант Б + доработка: 8 базовых + 16 производных в 4 секциях
+	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
 	var stat_icons := pause_menu.find_children("UIIcon_*", "Control", true, false)
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + UIIconRegistry.DERIVED_ATTRIBUTE_IDS.size():
-		_fail("Expected pause stats menu to show icons for base stats and derived attributes.")
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 20:
+		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
 	if paused or main.get("pause_stats_menu") != null or main.find_child("RunPauseMenuRoot", true, false) != null:
@@ -1387,32 +1454,33 @@ func _test_glossary_terms(main: Node) -> void:
 	if str(generic_button.get_meta("global_tooltip_install_mode", "")) != "custom_tooltip_script" or not (generic_button is Button) or not generic_button.has_signal("pressed"):
 		_fail("Expected global tooltip skin to attach conservatively without breaking native Button behavior.")
 		return
-	# SCRUM-851: кастомный контент — голый Label; единственная рамка приходит от
-	# движкового попапа через стиль "TooltipPanel" темы, которую ставит
-	# _prepare_global_tooltips. Рамка в рамке (PanelContainer в попапе) запрещена.
-	var generic_label := generic_button.call("_make_custom_tooltip", generic_button.tooltip_text) as Label
-	if generic_label == null or generic_label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		_fail("Expected generic tooltip content to be a bare mouse-ignoring Label (single frame).")
+	# SCRUM-851/SCRUM-890: кастомный контент — столбец «титул золотом + тело
+	# светлым» без своей рамки; единственная рамка приходит от движкового попапа
+	# через стиль "TooltipPanel" (чип атласа) темы из _prepare_global_tooltips.
+	var generic_content := generic_button.call("_make_custom_tooltip", generic_button.tooltip_text) as VBoxContainer
+	if generic_content == null or generic_content.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		_fail("Expected generic tooltip content to be a bare mouse-ignoring title/body column (single frame).")
 		return
-	if generic_label.autowrap_mode == TextServer.AUTOWRAP_OFF or generic_label.custom_minimum_size.x < 400.0 or generic_label.custom_minimum_size.x > 620.0:
-		_fail("Expected long generic tooltip copy to wrap inside the SCRUM-851 width band.")
+	var generic_title := generic_content.find_child("GlobalTooltipTitleLabel", true, false) as Label
+	if generic_title == null:
+		_fail("Expected the generic tooltip to expose the gold title label.")
 		return
-	if generic_label.get_theme_font_size("font_size") < 20:
+	if generic_title.autowrap_mode == TextServer.AUTOWRAP_OFF or generic_title.custom_minimum_size.x < 400.0 or generic_title.custom_minimum_size.x > 700.0:
+		_fail("Expected long generic tooltip copy to wrap inside the tooltip width band.")
+		return
+	if generic_title.get_theme_font_size("font_size") < 20:
 		_fail("Expected generic tooltip label to use the enlarged SCRUM-851 font.")
 		return
-	var generic_style := generic_button.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxTexture
-	if generic_style == null or _stylebox_texture_path(generic_style) != MINIMAL_TOOLTIP_TEXTURE:
-		_fail("Expected the popup TooltipPanel style to use the minimal-metal tooltip frame.")
+	# SCRUM-890: панель попапа — плотный чип (bg 0.085/0.070/0.055 a=0.97,
+	# латунный кант) — числа = _atlas_chip_style.
+	var generic_style := generic_button.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxFlat
+	if generic_style == null or generic_style.bg_color.a < 0.95:
+		_fail("Expected the popup TooltipPanel style to be the near-opaque atlas chip (SCRUM-890).")
 		return
-	var frame_image := generic_style.texture.get_image()
-	if frame_image == null:
-		_fail("Expected the tooltip frame texture to expose image data for the opacity check.")
+	if not _color_approx(generic_style.border_color, Color(0.52, 0.41, 0.24, 0.90)):
+		_fail("Expected the popup TooltipPanel chip to keep the brass atlas border.")
 		return
-	var frame_center := frame_image.get_pixel(frame_image.get_width() / 2, frame_image.get_height() / 2)
-	if frame_center.a < 0.93:
-		_fail("Expected the tooltip frame background to be near-opaque (SCRUM-851), got alpha %.3f." % frame_center.a)
-		return
-	generic_label.queue_free()
+	generic_content.queue_free()
 	generic_button.queue_free()
 	await process_frame
 
@@ -2036,11 +2104,11 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 
 	route_main.ui._show_pause_menu()
 	await process_frame
-	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected run pause menu to open over an event screen.")
+	if route_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected the pause dossier to open over an event screen (SCRUM-890).")
 		return
 	if route_main.find_child("EventScreen", true, false) == null:
-		_fail("Expected event screen to remain underneath the run pause menu.")
+		_fail("Expected event screen to remain underneath the pause dossier.")
 		return
 	route_main.ui._resume_game()
 	await process_frame
@@ -2053,18 +2121,18 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		_fail("Expected event screen to show a disabled Back button with explanation when skip is not allowed.")
 		return
 
-	# SCRUM-530: Escape на экране события открывает run-pause ПОВЕРХ события (не no-op).
-	# Проверяем через реальный _input/Escape, а не прямой вызов _show_pause_menu.
+	# SCRUM-530/SCRUM-890: Escape на экране события открывает досье ПОВЕРХ события
+	# (не no-op). Проверяем через реальный _input/Escape, а не прямой вызов.
 	var event_escape := InputEventKey.new()
 	event_escape.keycode = KEY_ESCAPE
 	event_escape.pressed = true
 	route_main.call("_input", event_escape)
 	await process_frame
-	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected Escape on the event screen to open the run pause menu (SCRUM-530).")
+	if route_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected Escape on the event screen to open the pause dossier (SCRUM-530/890).")
 		return
 	if route_main.find_child("EventScreen", true, false) == null:
-		_fail("Expected the event screen to remain under the pause menu opened via Escape (SCRUM-530).")
+		_fail("Expected the event screen to remain under the pause dossier opened via Escape (SCRUM-530).")
 		return
 	route_main.ui._resume_game()
 	await process_frame
@@ -2072,21 +2140,21 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		_fail("Expected event choices to survive an Escape→pause→resume cycle (SCRUM-530).")
 		return
 
-	# SCRUM-883: «Покинуть забег» из паузы открывает модалку подтверждения в стиле
-	# quit-диалога (atlas-чип, кит-кнопки 220×72, фокус на «Отмене»); Esc отменяет
-	# только модалку — пауза и забег остаются живы.
+	# SCRUM-883/SCRUM-890: «Завершить забег» из шапки досье открывает модалку
+	# подтверждения в стиле quit-диалога (atlas-чип, кит-кнопки 220×72, фокус на
+	# «Отмене»); Esc отменяет только модалку — пауза и забег остаются живы.
 	route_main.ui._show_pause_menu()
 	await process_frame
-	var pause_panel := route_main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
+	var pause_panel := route_main.find_child("EscapeStatsPanelFrame", true, false) as PanelContainer
 	var pause_panel_style: StyleBoxFlat = null
 	if pause_panel != null:
 		pause_panel_style = pause_panel.get_theme_stylebox("panel") as StyleBoxFlat
 	if pause_panel_style == null or pause_panel_style.bg_color.a < 0.90:
-		_fail("Expected run pause panel to use an opaque atlas chip StyleBoxFlat (a>=0.9, SCRUM-883).")
+		_fail("Expected the pause dossier panel to use an opaque atlas chip StyleBoxFlat (a>=0.9).")
 		return
-	var end_run_button := route_main.find_child("RunPauseEndRunButton", true, false) as Button
+	var end_run_button := route_main.find_child("PauseEndRunButton", true, false) as Button
 	if end_run_button == null:
-		_fail("Expected run pause menu to expose RunPauseEndRunButton.")
+		_fail("Expected the dossier header to expose PauseEndRunButton.")
 		return
 	end_run_button.pressed.emit()
 	await process_frame
@@ -2121,8 +2189,8 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	if route_main.find_child("EndRunConfirmationDialog", true, false) != null:
 		_fail("Expected Escape to cancel only the end-run confirmation dialog.")
 		return
-	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected the run pause menu to survive cancelling the end-run confirmation.")
+	if route_main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected the pause dossier to survive cancelling the end-run confirmation.")
 		return
 	route_main.ui._resume_game()
 	await process_frame
@@ -2187,9 +2255,9 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	# пауза-оверлей с модалкой закрываются, открывается экран итогов (смерть).
 	route_main.ui._show_pause_menu()
 	await process_frame
-	var final_end_run_button := route_main.find_child("RunPauseEndRunButton", true, false) as Button
+	var final_end_run_button := route_main.find_child("PauseEndRunButton", true, false) as Button
 	if final_end_run_button == null:
-		_fail("Expected run pause menu over the route map to expose RunPauseEndRunButton.")
+		_fail("Expected the pause dossier over the route map to expose PauseEndRunButton.")
 		return
 	final_end_run_button.pressed.emit()
 	await process_frame
@@ -2203,7 +2271,7 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	if route_main.find_child("DeathRetryButton", true, false) == null:
 		_fail("Expected confirming end-run to show the run summary (death) screen.")
 		return
-	if route_main.find_child("RunPauseMenuRoot", true, false) != null or route_main.find_child("EndRunConfirmationDialog", true, false) != null:
+	if route_main.find_child("PauseStatsMenuRoot", true, false) != null or route_main.find_child("EndRunConfirmationDialog", true, false) != null:
 		_fail("Expected confirming end-run to close the pause overlay and confirmation dialog.")
 		return
 
@@ -2835,15 +2903,14 @@ func _test_noncombat_nodes(main: Node) -> void:
 		return
 	main.ui._show_pause_menu()
 	await process_frame
-	if main.find_child("RunPauseMenuRoot", true, false) == null:
-		_fail("Expected run pause menu to open over the shop screen.")
+	if main.find_child("PauseStatsMenuRoot", true, false) == null:
+		_fail("Expected the pause dossier to open over the shop screen (SCRUM-890).")
 		return
-	var shop_dossier_button := main.find_child("RunPauseDossierButton", true, false) as Button
-	if shop_dossier_button == null:
-		_fail("Expected run pause menu to expose character dossier from shop.")
+	if main.find_child("PauseResumeButton", true, false) == null:
+		_fail("Expected the dossier header controls to be available from the shop.")
 		return
 	if main.find_child("ShopScreen", true, false) == null:
-		_fail("Expected shop screen to remain underneath the run pause menu.")
+		_fail("Expected shop screen to remain underneath the pause dossier.")
 		return
 	main.ui._resume_game()
 	await process_frame
@@ -3098,6 +3165,15 @@ func _is_neutral_bright_button_tint(color: Color) -> bool:
 
 func _is_neutral_button_font(color: Color) -> bool:
 	return color.r >= 0.98 and color.g >= 0.98 and color.b >= 0.98 and absf(color.r - color.g) <= 0.015 and absf(color.g - color.b) <= 0.015
+
+
+func _color_approx(actual: Color, expected: Color, tolerance := 0.01) -> bool:
+	return (
+		absf(actual.r - expected.r) <= tolerance
+		and absf(actual.g - expected.g) <= tolerance
+		and absf(actual.b - expected.b) <= tolerance
+		and absf(actual.a - expected.a) <= tolerance
+	)
 
 
 func _test_stat_artifact_recording() -> void:

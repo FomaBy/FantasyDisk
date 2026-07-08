@@ -115,16 +115,15 @@ func _test_reward_focus(main) -> bool:
 
 
 func _test_pause_menu_focus_and_cancel(main) -> bool:
-	# _show_pause_menu в бою открывает досье (PauseStatsMenu, кнопка «Продолжить» =
-	# PauseResumeButton), вне блокирующих экранов — run-меню (RunPauseContinueButton).
-	# Обе — валидный стартовый фокус (наша разводка); принимаем любой вариант.
+	# SCRUM-890: _show_pause_menu ВСЕГДА открывает досье героя; стартовый фокус —
+	# первая кнопка шапки «Продолжить» (PauseResumeButton).
 	main.ui._show_pause_menu(true)
 	await process_frame
 	await process_frame
 	var focus := _focus_owner(main)
 	var focus_name := str(focus.name) if focus != null else ""
-	if focus == null or (focus_name != "RunPauseContinueButton" and focus_name != "PauseResumeButton"):
-		_fail("SCRUM-812: стартовый фокус паузы — «Продолжить» (Run/Dossier), получено: %s" % [focus])
+	if focus == null or focus_name != "PauseResumeButton":
+		_fail("SCRUM-812/890: стартовый фокус досье — «Продолжить» (PauseResumeButton), получено: %s" % [focus])
 		return false
 	if not main.ui._is_run_pause_overlay_open():
 		_fail("SCRUM-812: пауза-оверлей должен быть открыт.")
