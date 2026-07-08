@@ -25,7 +25,7 @@ extends RefCounted
 #     неизвестен…»), action-текст кнопки — «Рискнуть». Исходы hidden-выбора
 #     обязаны нести outcome_text (честное раскрытие ПОСЛЕ выбора).
 #     NB: цена cost_money у hidden-выбора не видна на кнопке — упоминай её
-#     в unknown_hint.
+#     в unknown_hint. description у hidden-выбора не нужен (UI его не покажет).
 #   unknown_hint: String  — «загадочное» описание для hidden-карточки.
 #   check: {"stat": String, "difficulty": int 1..12} — детерминированная
 #     проверка стата (порог: stat >= difficulty), ветвит success/failure.
@@ -37,7 +37,9 @@ extends RefCounted
 #     имеет outcome_text ЛИБО выбор hidden ЛИБО была check-проверка — экран
 #     события показывает reveal-шаг (текст исхода + кнопка «В путь») вместо
 #     мгновенного перехода на карту. Обязателен для hidden-исходов и веток
-#     check в новом паке (SCRUM-995).
+#     check в новом паке (SCRUM-995). У исхода-боя ветки check reveal не
+#     показывается (исход — сам бой), но текст храним для честности данных
+#     и будущего пре-боевого флейвора UI.
 #   money: int            — выдать золото.
 #   cost_money: int       — цена (масштабируется по этапу маршрута).
 #   stats: {stat_id: int} — перманентные статы забега.
@@ -56,301 +58,377 @@ extends RefCounted
 #   combat: {"type": "battle"|"elite", "enemy_health_multiplier": float,
 #            "money_multiplier": float, "xp_multiplier": float}
 #     — исход-бой (reveal-шаг не показывается: исход боя — сам бой).
-#   post_combat: Dictionary — награда за победу в исходе-бое (stats/mods/
-#     random_artifact/... + опц. shop_after/shop_discount).
+#   post_combat: Dictionary — награда за победу в исходе-бое. ТОЛЬКО
+#     stats/mods/heal_percent (+ опц. shop_after/shop_discount): рантайм
+#     применяет post_combat через Player.apply_reward, а money/random_artifact
+#     он молча игнорирует (гард — event_data_contract_check). «Больше добычи»
+#     за событийный бой выражай combat.money_multiplier/xp_multiplier.
 # ============================================================================
+# SCRUM-995: полированный стартовый пак — ровно 12 событий, 3 выбора у каждого
+# (безопасный / рискованный / умный-чековый либо моральная альтернатива).
+# id закреплены оркестратором: на них завязаны фоны SCRUM-998 и UI SCRUM-997
+# (sudden_fork/sacrifice_altar дополнительно штампуются узлами hazard/altar в
+# route_map_screen.gd). Балансовая голден-таблица EV — progression_balance.md
+# §Random Events EV; инварианты — event_data_smoke_test / event_risk_reward_ev_test.
 const RANDOM_EVENTS := [
 	{
-		# SCRUM-608: «Опасная развилка» — узел типа hazard на маршруте. Безопасный
-		# обход (золото/лечение) ИЛИ рискованный срез (бой + награда за победу).
-		# Рисковый апсайд держим выше безопасного (EV-инвариант SCRUM-495).
+		# Флагман AC SCRUM-995: три стороны одного налёта — караван, бандиты или
+		# собственный карман. Обе боевые ветки ведут к разной добыче (лавка со
+		# скидкой vs жирный кошель с проклятием молвы), чек — добыча без боя.
+		"id": "caravan_bandits",
+		"title": "Караван под ударом",
+		"story": "Головная повозка каравана завалилась набок, в борту дрожат стрелы. Бандиты стягивают кольцо, охрана торговца пятится к обозу. Главарь машет тебе: «Вставай к нам — добра хватит на всех». Торговец кричит, что заплатит вдвое.",
+		"tags": {"acts": [], "biomes": []},
+		"choices": [
+			{
+				"id": "defend_caravan", "title": "Вступиться за караван",
+				"description": "Бой с бандитами: победа — +30% золота за бой, +1 Лидерство и лавка торговца со скидкой 25%.",
+				"risk": true,
+				"combat": {"type": "battle", "enemy_health_multiplier": 1.15, "money_multiplier": 1.3},
+				"post_combat": {"stats": {"leadership": 1}, "shop_after": true, "shop_discount": 0.25},
+			},
+			{
+				"id": "join_bandits", "title": "Встать за бандитов",
+				"description": "Бой с охраной: +75% золота за бой и +1 Сила, но дурная слава — враги на 6% живучее до конца забега.",
+				"risk": true,
+				"combat": {"type": "battle", "enemy_health_multiplier": 1.22, "money_multiplier": 1.75, "xp_multiplier": 1.2},
+				"post_combat": {"stats": {"strength": 1}, "mods": {"enemy_health_multiplier": 1.06}},
+			},
+			{
+				"id": "rob_and_run", "title": "Ограбить и сбежать",
+				"description": "Проверка Ловкости 7: успех — +45 золота из бесхозных сундуков без боя, провал — стрела (10 урона) и бой.",
+				"check": {"stat": "agility", "difficulty": 7},
+				"success": {"money": 45, "outcome_text": "Пока сталь звенит о сталь, ты срезаешь кошели с обеих сторон и растворяешься в пыли."},
+				"failure": {"damage_flat": 10, "combat": {"type": "battle", "enemy_health_multiplier": 1.15, "money_multiplier": 1.2}, "outcome_text": "Стрела находит тебя раньше, чем тень. Теперь придётся драться."},
+			},
+		],
+	},
+	{
+		# SCRUM-608→995: узел hazard штампует event_id sudden_fork (route_map_screen).
+		# Дух сохранён: безопасный обход / рискованный срез / чек-разведка.
 		"id": "sudden_fork",
 		"title": "Опасная развилка",
-		"story": "Тропа раздваивается: широкий безопасный обход петляет в сторону, а узкий срез ныряет в теснину, где между камней мелькают тени. Срез короче — но кто-то его уже стережёт.",
+		"story": "Тропа расходится у гнилого верстового столба: широкая дуга обхода уводит в сторону, узкий срез ныряет в тёмную теснину. Между камней мелькают тени — срез явно кем-то облюбован. Решай, чем платить: временем или кровью.",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "safe_detour", "title": "Безопасный обход", "description": "Без риска: +14 золота и лечение 20% HP.", "money": 14, "heal_percent": 0.20},
-			{"id": "risky_shortcut", "title": "Опасный срез", "description": "Риск: бой в теснине. Победа: +50% золота, +1 Сила и +6% урон на весь забег.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.5}, "post_combat": {"stats": {"strength": 1}, "mods": {"damage_multiplier": 1.06}}},
-			{"id": "scout_ahead", "title": "Разведать", "description": "Проверка Восприятия 7: успех +18 золота и +1 Восприятие, провал -10% HP.", "check": {"stat": "perception", "difficulty": 7}, "success": {"money": 18, "stats": {"perception": 1}}, "failure": {"health_percent_cost": 0.10}},
+			{
+				"id": "safe_detour", "title": "Пойти в обход",
+				"description": "Без риска: +12 золота попутной торговлей и передышка (лечение 15% HP).",
+				"money": 12, "heal_percent": 0.15,
+			},
+			{
+				"id": "risky_shortcut", "title": "Срезать через теснину",
+				"description": "Бой в теснине: победа — +50% золота за бой, +1 Сила и +6% урона до конца забега.",
+				"risk": true,
+				"combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.5},
+				"post_combat": {"stats": {"strength": 1}, "mods": {"damage_multiplier": 1.06}},
+			},
+			{
+				"id": "scout_ahead", "title": "Разведать тропу",
+				"description": "Проверка Восприятия 6: успех — тайник дозорных (+16 золота, +1 Восприятие), провал — растяжка (−10% HP).",
+				"check": {"stat": "perception", "difficulty": 6},
+				"success": {"money": 16, "stats": {"perception": 1}, "outcome_text": "Ты замечаешь растяжку, а за ней — тайник дозорных: монеты и добрая примета, что тени ушли."},
+				"failure": {"health_percent_cost": 0.10, "outcome_text": "Щёлкает растяжка — камнепад оставляет ссадины, но тропа впереди свободна."},
+			},
 		],
 	},
 	{
-		# SCRUM-610: «Алтарь жертвы» — узел типа altar на маршруте (постоянная сделка
-		# тело-за-силу, без боя/арта). Штампуется на узле через event_id; держим в общем
-		# наборе по образцу sudden_fork. Каждый выбор: % макс. HP -> перманентные
-		# stats/mods (apply_reward kind=event пишет их в run-снапшот навсегда).
+		# SCRUM-610→995: узел altar штампует event_id sacrifice_altar (route_map_screen).
+		# Постоянная сделка тело/золото-за-силу, allow_skip сохранён (уйти можно).
 		"id": "sacrifice_altar",
 		"title": "Алтарь жертвы",
-		"story": "Алтарь сложен из костей тех, кто уже заключил сделку. Он не торгуется и не лжёт: за плоть он платит силой, и платёж этот навсегда. Чем больше отдашь — тем тяжелее награда.",
+		"story": "Алтарь сложен из костей тех, кто уже заключал сделку. Он не торгуется и не лжёт: за плоть и золото платит силой, и платёж этот навсегда. Чем страшнее цена, тем тяжелее дар.",
 		"allow_skip": true,
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "offer_blood", "title": "Отдать кровь", "description": "Цена: 18% макс. HP. Навсегда: +2 Сила и +8% урон.", "health_percent_cost": 0.18, "stats": {"strength": 2}, "mods": {"damage_multiplier": 1.08}},
-			{"id": "offer_flesh", "title": "Отдать плоть", "description": "Цена: 28% макс. HP. Навсегда: +2 Ловкость и +12% скорость атаки.", "health_percent_cost": 0.28, "stats": {"agility": 2}, "mods": {"attack_speed_multiplier": 1.12}},
-			{"id": "offer_breath", "title": "Отдать дыхание", "description": "Цена: 22% макс. HP. Навсегда: +1 Выносливость, +1 Энергия и +4% защита.", "health_percent_cost": 0.22, "stats": {"endurance": 1, "energy": 1}, "mods": {"defense_flat": 0.04}},
+			{
+				"id": "offer_blood", "title": "Отдать кровь",
+				"description": "Цена: 18% макс. HP — навсегда +2 Сила и +8% урона.",
+				"health_percent_cost": 0.18, "stats": {"strength": 2}, "mods": {"damage_multiplier": 1.08},
+				"outcome_text": "Кровь уходит в кость, как вода в песок. Взамен в мышцы вливается чужая, злая сила.",
+			},
+			{
+				"id": "offer_flesh", "title": "Отдать плоть",
+				"description": "Цена: 28% макс. HP — навсегда +2 Ловкость и +12% скорости атаки.",
+				"health_percent_cost": 0.28, "stats": {"agility": 2}, "mods": {"attack_speed_multiplier": 1.12},
+				"outcome_text": "Алтарь берёт своё без ножа. Тело становится легче — и быстрее, чем когда-либо.",
+			},
+			{
+				"id": "offer_gold", "title": "Выкупить чужой дар",
+				"description": "Цена: 26 золота — навсегда +1 Выносливость, +1 Энергия и +4% защиты.",
+				"cost_money": 26, "stats": {"endurance": 1, "energy": 1}, "mods": {"defense_flat": 0.04},
+				"outcome_text": "Монеты плавятся на костях. Чей-то недоплаченный дар переходит к тебе — без крови, но и без размаха.",
+			},
 		],
 	},
 	{
-		"id": "wandering_bard",
-		"title": "Странствующий бард",
-		"story": "У развилки сидит бард с лютней, струны которой светятся как тонкие лезвия. Он знает песни о каждом герое, но за хорошую балладу просит звонкую монету.",
+		# Магазин без боя: платный вход / чек-лазейка с подарком и скидкой / уйти.
+		"id": "night_market",
+		"title": "Ночной рынок",
+		"story": "Под обрушенным мостом мерцают воровские фонари: контрабандисты разложили товар, какого не сыщешь днём. Вход стережёт вышибала с пудовыми кулаками. Чужаков здесь не любят, но золото любят сильнее.",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "pay_ballad", "title": "Заплатить за балладу", "description": "Цена: 18 золота. На весь забег: +12% к скорости атаки.", "cost_money": 18, "mods": {"attack_speed_multiplier": 1.12}},
-			{"id": "sing_yourself", "title": "Спеть самому", "description": "Проверка Знания 7: успех +1 Знание, +1 Восприятие и +1 Лидерство, провал -1 Знание.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1, "perception": 1, "leadership": 1}}, "failure": {"stats": {"knowledge": -1}}},
-			{"id": "walk_away", "title": "Попросить припев на удачу", "description": "Без цены: +6 золота и немного вдохновения.", "money": 6, "mods": {"xp_gain_multiplier": 1.04}},
+			{
+				"id": "pay_entry", "title": "Заплатить за вход",
+				"description": "Цена: 20 золота — пропуск к прилавкам контрабандистов.",
+				"cost_money": 20, "shop_after": true,
+				"outcome_text": "Монеты исчезают в перчатке вышибалы. Перед тобой раскладывают товар, какого не увидишь при свете дня.",
+			},
+			{
+				"id": "find_gap", "title": "Найти лазейку",
+				"description": "Проверка Восприятия 7: успех — внутрь без платы, кошель «за молчание» (+12 золота) и скидка 15%, провал — кулаки вышибалы (8 урона).",
+				"check": {"stat": "perception", "difficulty": 7},
+				"success": {"money": 12, "shop_after": true, "shop_discount": 0.15, "outcome_text": "Ты находишь дыру в ограждении и знакомое лицо: тебя проводят как своего и суют кошель «за молчание»."},
+				"failure": {"damage_flat": 8, "outcome_text": "Вышибала замечает тебя первым. Аргументов у него два, и оба пудовые."},
+			},
+			{
+				"id": "walk_on", "title": "Пройти мимо",
+				"description": "Ночные сделки не для тебя — уйти, ничего не потеряв.",
+			},
 		],
 	},
 	{
-		"id": "cursed_altar",
-		"title": "Проклятый алтарь",
-		"story": "Черный алтарь дышит теплым воздухом, хотя вокруг стелется холод. На камне видна выемка в форме ладони, и где-то под землей шевелятся цепи.",
+		# Hidden-молитва (2 честных исхода) / чек-крипта (артефакт или проклятие
+		# с боем) / безопасный обыск.
+		"id": "cursed_chapel",
+		"title": "Заброшенная часовня",
+		"story": "Часовня давно забыла своего бога: скамьи сгнили, фрески выцвели до пятен. Под алтарём — плита крипты в цепях, и на ней свежие царапины. Изнутри.",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "blood_price", "title": "Отдать кровь", "description": "Цена: 30% текущего HP. Получить случайный артефакт.", "health_percent_cost": 0.30, "random_artifact": true},
-			{"id": "defile", "title": "Осквернить алтарь", "description": "Риск: элитный бой с тенью-стражем. Победа: элитная добыча, +50% золота, +25% опыта и +1 Сила/+1 Выносливость.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12, "money_multiplier": 1.5, "xp_multiplier": 1.25}, "post_combat": {"stats": {"strength": 1, "endurance": 1}}},
-			{"id": "quiet_prayer", "title": "Тихая молитва", "description": "Получить +1 Выносливость, но потерять 10% HP.", "stats": {"endurance": 1}, "health_percent_cost": 0.10},
+			{
+				"id": "whisper_prayer", "title": "Помолиться во тьме",
+				"hidden": true,
+				"unknown_hint": "Молитва в осквернённом месте — кто-нибудь да ответит. Вопрос — кто.",
+				"random_outcomes": [
+					{"stats": {"endurance": 1}, "heal_percent": 0.20, "outcome_text": "Отвечает не тот, кому молились, но дар настоящий: раны затягиваются, плоть каменеет."},
+					{"damage_flat": 6, "mods": {"xp_gain_multiplier": 1.08}, "outcome_text": "Голос из-под плиты дерёт уши до крови — зато теперь ты понимаешь этот мир чуть лучше."},
+				],
+			},
+			{
+				"id": "break_crypt", "title": "Вскрыть крипту",
+				"description": "Проверка Силы 8: успех — реликвия из гроба, провал — проклятие (+5% HP врагов) и бой с нежитью.",
+				"check": {"stat": "strength", "difficulty": 8},
+				"success": {"random_artifact": true, "outcome_text": "Цепи лопаются. Среди костей лежит то, что хоронили старательнее покойника."},
+				"failure": {"mods": {"enemy_health_multiplier": 1.05}, "combat": {"type": "battle", "enemy_health_multiplier": 1.2, "money_multiplier": 1.25}, "outcome_text": "Плита трескается не туда: проклятие расползается по округе, а мертвецы встают размяться."},
+			},
+			{
+				"id": "search_nave", "title": "Обыскать неф",
+				"description": "Без риска: собрать по углам утварь и монеты (+14 золота).",
+				"money": 14,
+			},
 		],
 	},
 	{
-		"id": "road_ambush",
-		"title": "Засада!",
-		"story": "Сначала слышен только песок под ногами. Потом дорога раскрывается множеством глаз, и из мрака вываливается подготовленная стая.",
-		"choices": [
-			{"id": "stand_ground", "title": "Принять бой", "description": "Риск: усиленный бой. Победа дает +50% золота и +1 Сила за бой.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.5}, "post_combat": {"stats": {"strength": 1}}},
-			{"id": "break_through", "title": "Прорыв", "description": "Проверка Ловкости 8: успех +1 Ловкость и +6% скорость атаки, провал -15% HP.", "check": {"stat": "agility", "difficulty": 8}, "success": {"stats": {"agility": 1}, "mods": {"attack_speed_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.15}},
-		],
-	},
-	{
-		"id": "old_well",
-		"title": "Старый колодец",
-		"story": "Колодец стоит посреди дороги так, будто дорогу построили вокруг него. Из глубины пахнет дождем, монетами и чем-то, что слишком долго ждало.",
-		"choices": [
-			{"id": "throw_coin", "title": "Бросить монету", "description": "Цена: 6 золота. Случайно: лечение 30% HP, 28 золота или бой с повышенной наградой.", "cost_money": 6, "random_outcomes": [{"heal_percent": 0.30}, {"money": 28}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.10, "money_multiplier": 1.4}}]},
-			{"id": "listen", "title": "Прислушаться", "description": "Проверка Восприятия 7: успех +1 Восприятие, провал +5 золота.", "check": {"stat": "perception", "difficulty": 7}, "success": {"stats": {"perception": 1}}, "failure": {"money": 5}},
-		],
-	},
-	{
-		"id": "wounded_mercenary",
-		"title": "Раненый наемник",
-		"story": "У обочины лежит наемник с пробитым щитом. Он не просит жалости, только воды и обещания, что его меч еще раз увидит бой.",
-		"choices": [
-			{"id": "help", "title": "Помочь", "description": "Цена: 20 золота. Следующие бои: +1 Лидерство и +1 призыв.", "cost_money": 20, "stats": {"leadership": 1}, "mods": {"summon_bonus": 1}},
-			{"id": "loot", "title": "Обыскать сумку", "description": "Получить 30 золота, но -1 Знание.", "money": 30, "stats": {"knowledge": -1}},
-			{"id": "bind_wounds", "title": "Перевязать раны", "description": "Проверка Выносливости 7: успех +1 Защита через артефактный мод, провал -6 золота.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"mods": {"defense_flat": 0.06}}, "failure": {"cost_money": 6}},
-		],
-	},
-	{
-		"id": "goblin_lottery",
-		"title": "Гоблин-лотерейщик",
-		"story": "Гоблин в цилиндре трясет мешок, из которого то звенит стекло, то шепчет чужой голос. На табличке написано: «Возвратов нет, проклятий тоже почти нет».",
-		"choices": [
-			{"id": "buy_bag", "title": "Купить мешок вслепую", "description": "Цена: 8 золота. Риск: артефакт, 16 золота или мимик.", "risk": true, "cost_money": 8, "random_outcomes": [{"random_artifact": true}, {"money": 16}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.20, "money_multiplier": 1.5}}]},
-			{"id": "haggle", "title": "Торговаться", "description": "Проверка Восприятия 8: успех +30 золота, провал -10 золота.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 30}, "failure": {"cost_money": 10}},
-		],
-	},
-	{
-		"id": "hot_spring",
-		"title": "Горячий источник",
-		"story": "В каменной чаше кипит вода цвета янтаря. Пар складывается в лица прежних путников, которые выглядят слишком довольными и слишком сонными.",
-		"choices": [
-			{"id": "full_rest", "title": "Отдохнуть", "description": "Полное лечение. Следующий бой: враги на 25% живучее.", "heal_percent": 1.0, "mods": {"enemy_health_multiplier": 1.25}},
-			{"id": "quick_dip", "title": "Быстро окунуться", "description": "Лечение 35% HP без побочного эффекта.", "heal_percent": 0.35},
-		],
-	},
-	{
-		"id": "mirror_phantom",
-		"title": "Зеркальный фантом",
-		"story": "На дороге висит зеркало без рамы. В отражении твой герой улыбается первым, поднимает оружие и делает шаг наружу.",
-		"choices": [
-			{"id": "duel", "title": "Разбить отражение", "description": "Риск: элитный бой против фантома. Победа: элитная добыча, +30% золота, +1 Интеллект и +8% урон.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.05, "money_multiplier": 1.3}, "post_combat": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}},
-			{"id": "study", "title": "Изучить отражение", "description": "Проверка Интеллекта 8: успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 8}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
-		],
-	},
-	{
-		"id": "stone_guardian",
-		"title": "Каменный страж",
-		"story": "Страж перегородил мост и произносит загадку голосом жернова. Каждое неправильное слово оставляет трещину не в камне, а в воздухе вокруг тебя.",
-		"choices": [
-			{"id": "answer_riddle", "title": "Ответить на загадку", "description": "Проверка Знания 8: успех сундук с артефактом, провал бой.", "check": {"stat": "knowledge", "difficulty": 8}, "success": {"random_artifact": true}, "failure": {"combat": {"type": "battle", "enemy_health_multiplier": 1.15}}},
-			{"id": "fight_guardian", "title": "Сразу в бой", "description": "Риск: тяжелый бой. Победа дает +30% золота, +1 Сила и +1 Выносливость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.25, "money_multiplier": 1.3}, "post_combat": {"stats": {"strength": 1, "endurance": 1}}},
-		],
-	},
-	{
-		"id": "heroes_graveyard",
-		"title": "Кладбище героев",
-		"story": "Старые клинки торчат из земли вместо крестов. На каждом имени есть свежая царапина, будто кто-то проверял, не освободилось ли место для нового.",
-		"choices": [
-			{"id": "dig", "title": "Раскопать могилу", "description": "Риск: артефакт павшего или гнев мертвеца (бой, но +1 Выносливость за победу).", "risk": true, "random_outcomes": [{"random_artifact": true}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.22, "money_multiplier": 1.35}, "post_combat": {"stats": {"endurance": 1}}}]},
-			{"id": "pay_respects", "title": "Почтить павших", "description": "+1 Выносливость и лечение 15% HP.", "stats": {"endurance": 1}, "heal_percent": 0.15},
-		],
-	},
-	{
-		"id": "fallen_star",
-		"title": "Падшая звезда",
-		"story": "В кратере лежит осколок неба, горячий как свежая рана. Он тянется к твоей руке, но трава вокруг уже сгорела до стекла.",
-		"choices": [
-			{"id": "take_shard", "title": "Взять осколок", "description": "+2 Энергия, но потерять 12% HP от звездного ожога.", "stats": {"energy": 2}, "health_percent_cost": 0.12},
-			{"id": "observe", "title": "Изучить кратер", "description": "Проверка Интеллекта 7: успех +1 Энергия и +1 Знание, провал -8% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"energy": 1, "knowledge": 1}}, "failure": {"health_percent_cost": 0.08}},
-		],
-	},
-	{
-		"id": "training_dummies",
-		"title": "Тренировочные манекены",
-		"story": "На поляне стоят манекены с нарисованными оскалами. Когда ты подходишь ближе, они дружно поворачивают головы и ждут первого удара.",
-		"choices": [
-			{"id": "speed_trial", "title": "Испытание скорости", "description": "Проверка Ловкости 7: успех +1 Ловкость и +8% скорость атаки, провал -10% HP.", "check": {"stat": "agility", "difficulty": 7}, "success": {"stats": {"agility": 1}, "mods": {"attack_speed_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.10}},
-			{"id": "power_trial", "title": "Испытание силы", "description": "Проверка Силы 7: успех +1 Сила и +8% урон, провал -10% HP.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.10}},
-		],
-	},
-	{
-		"id": "warden_gate_trial",
-		"title": "Врата Хранителя",
-		"story": "Тройные врата перегораживают тропу: бронзовая плита, светящаяся руна и пустой трон с венцом. Хранитель шепчет, что каждый герой открывает свою створку — и платит свою цену за чужую.",
-		"choices": [
-			{"id": "brace_plate", "title": "Танк: упереться в плиту", "description": "Проверка Выносливости 7: танк держит вес — успех +1 Выносливость и +0.08 Защита, провал -12% HP.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"stats": {"endurance": 1}, "mods": {"defense_flat": 0.08}}, "failure": {"health_percent_cost": 0.12}},
-			{"id": "read_rune", "title": "Маг: распутать руну", "description": "Проверка Интеллекта 7: маг читает формулу — успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
-			{"id": "claim_throne", "title": "Призыватель: занять трон", "description": "Проверка Лидерства 7: призыватель командует венцом — успех +1 Лидерство и +1 призыв, провал -12% HP.", "check": {"stat": "leadership", "difficulty": 7}, "success": {"stats": {"leadership": 1}, "mods": {"summon_bonus": 1}}, "failure": {"health_percent_cost": 0.12}},
-		],
-	},
-	{
-		"id": "abandoned_forge",
-		"title": "Заброшенная кузница",
-		"story": "Горн остыл века назад, но молот сам качается над наковальней, будто кто-то невидимый всё ещё кует. На стене висят три заготовки, и каждая отзывается на свою руку.",
-		"choices": [
-			{"id": "temper_armor", "title": "Танк: закалить броню", "description": "Проверка Выносливости 8: успех усиленная пластина (+0.10 Защита и +6% HP), провал -10% HP.", "check": {"stat": "endurance", "difficulty": 8}, "success": {"mods": {"defense_flat": 0.10, "max_health_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.10}},
-			{"id": "etch_sigil", "title": "Маг: вытравить сигил", "description": "Проверка Интеллекта 8: успех боевой сигил (+12% урон и +6% скорость атаки), провал -10% HP.", "check": {"stat": "intelligence", "difficulty": 8}, "success": {"mods": {"damage_multiplier": 1.12, "attack_speed_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.10}},
-			{"id": "salvage_scrap", "title": "Собрать лом", "description": "Без проверки: +22 золота из старых инструментов.", "money": 22},
-		],
-	},
-	{
-		"id": "merchant_caravan",
-		"title": "Торговый караван",
-		"story": "Из пыли выкатывается крытая повозка, увешанная амулетами и медными колокольчиками. Купец улыбается слишком широко и раскладывает товар прямо на дорожной пыли.",
-		"choices": [
-			{"id": "buy_relic", "title": "Купить реликвию", "description": "Цена: 26 золота. Получить случайный артефакт из запасов каравана.", "cost_money": 26, "random_artifact": true},
-			{"id": "buy_tonic", "title": "Купить тоник", "description": "Цена: 14 золота. Лечение 45% HP и +4% к лечению на забег.", "cost_money": 14, "heal_percent": 0.45, "mods": {"healing_multiplier": 1.04}},
-			{"id": "haggle_caravan", "title": "Сбить цену", "description": "Проверка Восприятия 8: успех +28 золота сдачи, провал -10 золота.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 28}, "failure": {"cost_money": 10}},
-		],
-	},
-	{
-		"id": "whispering_grove",
-		"title": "Шепчущая роща",
-		"story": "Деревья смыкают кроны в зелёный купол, и листва шепчет имена на языке, который ты почти понимаешь. В центре поляны бьёт родник, а тени между стволами слишком уж осмысленны.",
-		"choices": [
-			{"id": "drink_spring", "title": "Испить из родника", "description": "Лечение 40% HP и +1 Знание от шёпота рощи.", "heal_percent": 0.40, "stats": {"knowledge": 1}},
-			{"id": "follow_whisper", "title": "Пойти на шёпот", "description": "Проверка Знания 7: успех +1 Знание и +6% опыта, провал -8% HP.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.06}}, "failure": {"health_percent_cost": 0.08}},
-			{"id": "disturb_grove", "title": "Потревожить тени", "description": "Риск: бой с лесными стражами. Победа: +35% золота, +1 Восприятие и +1 Сила.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.35}, "post_combat": {"stats": {"perception": 1, "strength": 1}}},
-		],
-	},
-	{
-		"id": "collapsing_mineshaft",
-		"title": "Обвалившаяся шахта",
-		"story": "Вход в шахту наполовину завален, изнутри тянет рудной сыростью и слышен далёкий стук кирки. Балки скрипят, и пыль сыплется на ржавую вагонетку с чем-то блестящим внутри.",
-		"choices": [
-			{"id": "dig_through", "title": "Разобрать завал", "description": "Цена: 10% HP. Случайно: артефакт, 26 золота или обрушение в бой.", "health_percent_cost": 0.10, "random_outcomes": [{"random_artifact": true}, {"money": 26}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.3}}]},
-			{"id": "brace_beams", "title": "Укрепить балки", "description": "Проверка Выносливости 7: успех вынести руду (+24 золота), провал -10% HP под обвалом.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"money": 24}, "failure": {"health_percent_cost": 0.10}},
-		],
-	},
-	# SCRUM-605: +5 сценариев риск/награды (data-driven, только существующие ключи
-	# choice; рисковая ветка каждого события держит апсайд ≥ безопасной — EV-инвариант
-	# SCRUM-495/508). Моды — только из VALID_MODS контракта (event_data_contract_check).
-	{
-		"id": "crystal_geode_vault",
-		"title": "Кристальная жеода",
-		"story": "В стене пещеры раскрылась исполинская жеода — частокол светящихся кристаллов в человеческий рост. Внутри пульсирует тёплый свет, но грани остры как бритвы, а в глубине что-то отзывается на каждый шаг.",
-		"choices": [
-			{"id": "chip_outer_shards", "title": "Отколоть с краю", "description": "Без риска: +16 золота кристальной крошки и лечение 18% HP от тёплого свечения.", "money": 16, "heal_percent": 0.18},
-			{"id": "breach_the_core", "title": "Пробиться к ядру", "description": "Риск: бой с кристальным стражем жеоды. Победа: +60% золота, случайный артефакт, +1 Сила и +1 Выносливость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.6}, "post_combat": {"random_artifact": true, "stats": {"strength": 1, "endurance": 1}}},
-			{"id": "pry_with_care", "title": "Аккуратно выломать", "description": "Проверка Силы 7: успех +1 Сила, +1 Выносливость и +14 золота, провал -12% HP о грани.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1, "endurance": 1}, "money": 14}, "failure": {"health_percent_cost": 0.12}},
-		],
-	},
-	{
-		"id": "starlit_observatory",
-		"title": "Звёздная обсерватория",
-		"story": "На вершине утёса стоит покинутая обсерватория. Огромная линза ловит свет давно погасших звёзд, и в её фокусе дрожит знание, к которому опасно прикасаться без подготовки.",
-		"choices": [
-			{"id": "copy_notes", "title": "Переписать заметки", "description": "Без риска: +1 Знание и +8 золота из оставленных журналов.", "stats": {"knowledge": 1}, "money": 8},
-			{"id": "gaze_through_lens", "title": "Взглянуть сквозь линзу", "description": "Проверка Знания 8: успех +1 Знание, +1 Восприятие, +1 Интеллект и случайный артефакт, провал -1 Знание и -10% HP.", "check": {"stat": "knowledge", "difficulty": 8}, "success": {"stats": {"knowledge": 1, "perception": 1, "intelligence": 1}, "random_artifact": true}, "failure": {"stats": {"knowledge": -1}, "health_percent_cost": 0.10}},
-			{"id": "align_the_mirrors", "title": "Настроить зеркала", "description": "Цена: 20 золота. На весь забег: +10% опыта и +1 Восприятие.", "cost_money": 20, "mods": {"xp_gain_multiplier": 1.10}, "stats": {"perception": 1}},
-		],
-	},
-	{
-		"id": "sunken_caravan",
-		"title": "Затонувший караван",
-		"story": "Болото поглотило торговый караван — над тиной торчат осями вверх повозки. Сундуки ещё видны под мутной водой, но в глубине что-то медленно ворочается и пускает пузыри.",
-		"choices": [
-			{"id": "skim_the_surface", "title": "Снять, что плавает", "description": "Без риска: +18 золота с поверхности трясины.", "money": 18},
-			{"id": "dive_for_chest", "title": "Нырнуть за сундуком", "description": "Риск: бой с болотной тварью в воде. Победа: +50% золота, +35% опыта, случайный артефакт и +1 Ловкость.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.14, "money_multiplier": 1.5, "xp_multiplier": 1.35}, "post_combat": {"random_artifact": true, "stats": {"agility": 1}}},
-			{"id": "probe_with_pole", "title": "Прощупать шестом", "description": "Проверка Восприятия 6: успех +20 золота и +1 Ловкость, провал -10% HP в трясине.", "check": {"stat": "perception", "difficulty": 6}, "success": {"money": 20, "stats": {"agility": 1}}, "failure": {"health_percent_cost": 0.10}},
-		],
-	},
-	{
-		"id": "war_drums_camp",
-		"title": "Покинутый лагерь воинов",
-		"story": "Догорающие костры брошенного лагеря ещё хранят тепло. На стойках висят боевые барабаны и точильные камни, а у поваленного знамени поблёскивает чей-то припрятанный паёк.",
-		"choices": [
-			{"id": "share_rations", "title": "Подкрепиться пайком", "description": "Без риска: лечение 22% HP и +6 золота из забытого кошеля.", "heal_percent": 0.22, "money": 6},
-			{"id": "beat_the_drums", "title": "Ударить в барабаны", "description": "Риск: на грохот сбегается элитный загонщик. Победа: элитная добыча, +50% золота, +25% опыта, +1 Сила и +1 Лидерство.", "risk": true, "combat": {"type": "elite", "enemy_health_multiplier": 1.12, "money_multiplier": 1.5, "xp_multiplier": 1.25}, "post_combat": {"stats": {"strength": 1, "leadership": 1}}},
-			{"id": "whet_your_blade", "title": "Наточить оружие", "description": "Цена: 16 золота за камни и масло. На весь забег: +8% скорости атаки и +6% урон.", "cost_money": 16, "mods": {"attack_speed_multiplier": 1.08, "damage_multiplier": 1.06}},
-		],
-	},
-	{
-		"id": "twin_offering_shrine",
-		"title": "Святилище двойного подношения",
-		"story": "Две каменные чаши стоят перед безликим идолом: одна просит монету, другая — кровь. Над ними мерцает наградной свет, но идол принимает дар лишь от того, кто действительно рискнёт.",
-		"choices": [
-			{"id": "leave_token_coin", "title": "Оставить монетку", "description": "Без риска: бросить +4 золота на удачу, +4% опыта на забег.", "money": 4, "mods": {"xp_gain_multiplier": 1.04}},
-			{"id": "coin_offering", "title": "Подношение золотом", "description": "Цена: 26 золота. Получить случайный артефакт и +1 Лидерство.", "cost_money": 26, "random_artifact": true, "stats": {"leadership": 1}},
-			{"id": "blood_offering", "title": "Подношение кровью", "description": "Цена: 22% текущего HP. Случайный исход: либо случайный артефакт и +1 Выносливость, либо +1 Сила и +12 золота.", "health_percent_cost": 0.22, "random_outcomes": [{"random_artifact": true, "stats": {"endurance": 1}}, {"stats": {"strength": 1}, "money": 12}]},
-		],
-	},
-	# SCRUM-501: +5 сценариев, ≥2 класс-реактивны (несколько check-веток по разным
-	# архетипным атрибутам — endurance=танк, intelligence=маг, leadership=призыватель,
-	# strength=берсерк, knowledge=учёный). Только существующие ключи choice; difficulty
-	# строго в 1..12; рисковый апсайд ≥ безопасного (EV-инвариант SCRUM-495/508).
-	{
-		"id": "oracle_crossroads",
-		"title": "Перекрёсток оракула",
-		"story": "На скрещении трёх дорог сидит слепой оракул и чертит на песке знаки. «Каждому — своя тропа, — шепчет он, — телу, разуму или воле. Чужая тропа покарает самозванца».",
-		"choices": [
-			{"id": "path_of_body", "title": "Танк: тропа тела", "description": "Проверка Выносливости 7: танк выдерживает испытание плоти — успех +1 Выносливость и +0.08 Защита, провал -12% HP.", "check": {"stat": "endurance", "difficulty": 7}, "success": {"stats": {"endurance": 1}, "mods": {"defense_flat": 0.08}}, "failure": {"health_percent_cost": 0.12}},
-			{"id": "path_of_mind", "title": "Маг: тропа разума", "description": "Проверка Интеллекта 7: маг читает знаки на песке — успех +1 Интеллект и +8% урон, провал -12% HP.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.12}},
-			{"id": "path_of_will", "title": "Призыватель: тропа воли", "description": "Проверка Лидерства 7: призыватель подчиняет видение — успех +1 Лидерство и +1 призыв, провал -12% HP.", "check": {"stat": "leadership", "difficulty": 7}, "success": {"stats": {"leadership": 1}, "mods": {"summon_bonus": 1}}, "failure": {"health_percent_cost": 0.12}},
-		],
-	},
-	{
-		"id": "runed_menhir",
-		"title": "Рунный менгир",
-		"story": "Среди вереска торчит замшелый камень выше человека, испещрённый рунами. Часть знаков можно выбить силой, часть — лишь прочитать; камень глухо гудит, ожидая, чем именно его потревожат.",
-		"choices": [
-			{"id": "shatter_menhir", "title": "Берсерк: расколоть силой", "description": "Проверка Силы 7: грубая сила вскрывает тайник — успех +1 Сила и +20 золота, провал -12% HP от отдачи.", "check": {"stat": "strength", "difficulty": 7}, "success": {"stats": {"strength": 1}, "money": 20}, "failure": {"health_percent_cost": 0.12}},
-			{"id": "decipher_runes", "title": "Учёный: прочесть руны", "description": "Проверка Знания 7: знаток разбирает древнее письмо — успех +1 Знание и +8% опыта, провал -1 Знание.", "check": {"stat": "knowledge", "difficulty": 7}, "success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.08}}, "failure": {"stats": {"knowledge": -1}}},
-			{"id": "leave_offering_menhir", "title": "Оставить подношение", "description": "Цена: 10 золота. Камень благодарит лечением 25% HP.", "cost_money": 10, "heal_percent": 0.25},
-		],
-	},
-	{
+		# 2 из 3 выборов hidden (ставки с честным раскрытием), чек — поймать шулера.
 		"id": "gilded_gambler",
 		"title": "Позолоченный шулер",
-		"story": "За складным столиком сидит щёголь в золочёном плаще и тасует три карты быстрее, чем успевает глаз. «Удвою ставку или заберу всё, — мурлычет он, — выбор за тобой, герой».",
+		"story": "За складным столиком под фонарём сидит щёголь в золочёном плаще. Три карты порхают в его пальцах быстрее, чем успевает глаз. «Ставь, герой, — мурлычет он. — Сегодня удача пахнет твоими деньгами».",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "place_bet", "title": "Сделать ставку", "description": "Цена: 12 золота. Удвоить или потерять: артефакт, 30 золота или подставной громила.", "risk": true, "cost_money": 12, "random_outcomes": [{"random_artifact": true}, {"money": 30}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.18, "money_multiplier": 1.4}}]},
-			{"id": "read_the_tell", "title": "Раскусить шулера", "description": "Проверка Восприятия 8: успех +26 золота с пойманного на жульничестве, провал -10 золота отступного.", "check": {"stat": "perception", "difficulty": 8}, "success": {"money": 26}, "failure": {"cost_money": 10}},
+			{
+				"id": "small_bet", "title": "Малая ставка",
+				"hidden": true,
+				"unknown_hint": "Ставка 10 золотых на три карты. Втрое — или в рукав шулера.",
+				"cost_money": 10,
+				"random_outcomes": [
+					{"money": 30, "outcome_text": "Дама! Шулер морщится, отсчитывая тридцать монет, — и тасует быстрее."},
+					{"outcome_text": "Пустышка. Десять монет ныряют в золочёный рукав, шулер разводит руками."},
+				],
+			},
+			{
+				"id": "big_bet", "title": "Всё или ничего",
+				"hidden": true,
+				"unknown_hint": "Ставка 25 золотых. Шулер обещает утроить — или заберёт всё с улыбкой.",
+				"cost_money": 25,
+				"random_outcomes": [
+					{"money": 75, "outcome_text": "Три туза. Шулер бледнеет под пудрой и отдаёт втрое — руки его больше не танцуют."},
+					{"outcome_text": "Крап был на твоей карте с самого начала. Двадцать пять монет уходят за стол."},
+				],
+			},
+			{
+				"id": "catch_the_hand", "title": "Схватить за руку",
+				"description": "Проверка Восприятия 8: успех — поймать крап и стрясти 30 золота отступных, провал — громила бьёт первым (6 урона).",
+				"check": {"stat": "perception", "difficulty": 8},
+				"success": {"money": 30, "outcome_text": "Ты перехватываешь ладонь с краплёной картой. Отступные шулер отсчитывает молча."},
+				"failure": {"damage_flat": 6, "outcome_text": "Пальцы шулера чисты как слеза. Зато у его громилы тяжёлая рука."},
+			},
 		],
 	},
 	{
-		"id": "tidewater_grotto",
-		"title": "Приливный грот",
-		"story": "Морская пещера дышит в такт прибою: вода то отступает, обнажая жемчужный песок, то с рёвом врывается обратно. В дальнем гроте поблёскивает что-то, оставленное отливом.",
+		# Моральная развилка: помочь за золото / обобрать / пройти мимо («ничего»).
+		"id": "wounded_mercenary",
+		"title": "Раненый наёмник",
+		"story": "У обочины сидит наёмник, зажимая разрубленный бок. Он не просит о жалости — просто смотрит, как ты подходишь, и прикидывает, что ты за человек. Рядом лежит его сумка с добычей за целый сезон.",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "bathe_in_pool", "title": "Омыться в заводи", "description": "Без риска: лечение 30% HP и +4% к лечению на забег от целебной соли.", "heal_percent": 0.30, "mods": {"healing_multiplier": 1.04}},
-			{"id": "raid_the_grotto", "title": "Добраться до грота", "description": "Прилив запирает в бою с глубинной тварью. Победа: +50% золота, +30% опыта и случайный артефакт.", "risk": true, "combat": {"type": "battle", "enemy_health_multiplier": 1.16, "money_multiplier": 1.5, "xp_multiplier": 1.3}, "post_combat": {"random_artifact": true}},
-			{"id": "time_the_waves", "title": "Поймать отлив", "description": "Проверка Ловкости 7: успех +18 золота с обнажённого дна, провал -10% HP под накатившей волной.", "check": {"stat": "agility", "difficulty": 7}, "success": {"money": 18}, "failure": {"health_percent_cost": 0.10}},
+			{
+				"id": "patch_him_up", "title": "Перевязать и помочь",
+				"description": "Цена: 18 золота на снадобья — наёмник в долгу: +1 Лидерство и +1 к призванным союзникам.",
+				"cost_money": 18, "stats": {"leadership": 1}, "mods": {"summon_bonus": 1},
+				"outcome_text": "Наёмник встаёт, пробует плечо и коротко кивает. Такие долги возвращают сталью — его выучка теперь при тебе.",
+			},
+			{
+				"id": "rob_him", "title": "Обобрать раненого",
+				"description": "Забрать сумку (+26 золота), но такое не забывается: −1 Знание.",
+				"money": 26, "stats": {"knowledge": -1},
+				"outcome_text": "Кошель тяжёлый, а взгляд раненого — ещё тяжелее. Что-то в тебе стало проще и глуше.",
+			},
+			{
+				"id": "pass_by", "title": "Пройти мимо",
+				"description": "Не твоя война — идти дальше, ничего не тратя.",
+			},
 		],
 	},
 	{
-		"id": "wandering_emberwisp",
-		"title": "Блуждающий огонёк",
-		"story": "В сумерках над болотом качается тёплый огонёк размером с кулак. Он манит в сторону от тропы, обещая то ли клад, то ли трясину, и подрагивает, стоит подойти чуть ближе.",
+		# Класс-реактивное событие №1: три чека под разные архетипы
+		# (endurance/intelligence/strength), провал любого — бой со стражем.
+		"id": "stone_guardian",
+		"title": "Каменный страж",
+		"story": "Древние врата перегорожены исполином из серого камня. Глаза его вспыхивают: «Докажи, что достоин пройти, — телом, разумом или силой». Голос — как жернова, и неверный ответ он засчитывает в свою пользу.",
+		"tags": {"acts": [], "biomes": []},
 		"choices": [
-			{"id": "follow_emberwisp", "title": "Пойти за огоньком", "description": "Цена: 8% HP по топкой тропе. Случайно: +28 золота, случайный артефакт или засада в трясине.", "health_percent_cost": 0.08, "random_outcomes": [{"money": 28}, {"random_artifact": true}, {"combat": {"type": "battle", "enemy_health_multiplier": 1.14, "money_multiplier": 1.3}}]},
-			{"id": "snare_the_ember", "title": "Поймать искру", "description": "Проверка Интеллекта 7: успех приручённый огонёк даёт +8% урон на весь забег, провал -8% HP от ожога.", "check": {"stat": "intelligence", "difficulty": 7}, "success": {"mods": {"damage_multiplier": 1.08}}, "failure": {"health_percent_cost": 0.08}},
+			{
+				"id": "hold_the_gate", "title": "Упереться в створ",
+				"description": "Проверка Выносливости 7: успех — +1 Выносливость и +6% защиты, провал — страж нападает.",
+				"check": {"stat": "endurance", "difficulty": 7},
+				"success": {"stats": {"endurance": 1}, "mods": {"defense_flat": 0.06}, "outcome_text": "Ты держишь вес створа, пока страж считает до ста. Камень отступает — тело запоминает урок."},
+				"failure": {"combat": {"type": "battle", "enemy_health_multiplier": 1.2, "money_multiplier": 1.25}, "outcome_text": "Колени подгибаются. Страж делает шаг вперёд — экзамен продолжится сталью."},
+			},
+			{
+				"id": "read_the_glyphs", "title": "Прочесть глифы",
+				"description": "Проверка Интеллекта 7: успех — +1 Интеллект и +6% урона, провал — страж нападает.",
+				"check": {"stat": "intelligence", "difficulty": 7},
+				"success": {"stats": {"intelligence": 1}, "mods": {"damage_multiplier": 1.06}, "outcome_text": "Глифы складываются в формулу пробоя. Страж скрипит — засчитано."},
+				"failure": {"combat": {"type": "battle", "enemy_health_multiplier": 1.2, "money_multiplier": 1.25}, "outcome_text": "Глифы плывут перед глазами. Страж расценивает запинку как вызов."},
+			},
+			{
+				"id": "test_of_arms", "title": "Испытание силой",
+				"description": "Проверка Силы 9: успех — страж выносит реликвию прежних победителей, провал — бой всерьёз.",
+				"check": {"stat": "strength", "difficulty": 9},
+				"success": {"random_artifact": true, "outcome_text": "Ты сдвигаешь стража на пядь — этого достаточно. Из-за врат он выносит реликвию прежних победителей."},
+				"failure": {"combat": {"type": "battle", "enemy_health_multiplier": 1.25, "money_multiplier": 1.3}, "outcome_text": "Страж не двигается с места. Зато двигается его кулак."},
+			},
+		],
+	},
+	{
+		# Риск/награда с random_outcomes: могила (артефакт или урон+бой) /
+		# безопасное почтение / чек-эпитафии.
+		"id": "heroes_graveyard",
+		"title": "Кладбище павших героев",
+		"story": "Вместо крестов из земли торчат старые клинки — по рукоять. На ближайшем выцарапано имя и свежая зарубка: кто-то проверял, не освободилось ли место. Говорят, героев здесь хоронили вместе с добычей.",
+		"tags": {"acts": [], "biomes": []},
+		"choices": [
+			{
+				"id": "dig_the_grave", "title": "Раскопать могилу",
+				"description": "Потревожить павшего: в гробу либо его реликвия, либо он сам — злой и при оружии.",
+				"risk": true,
+				"random_outcomes": [
+					{"random_artifact": true, "outcome_text": "Гроб пуст — почти. Оружие павшего ещё помнит, как драться, и не против сменить хозяина."},
+					{"damage_flat": 8, "combat": {"type": "battle", "enemy_health_multiplier": 1.2, "money_multiplier": 1.35}, "post_combat": {"stats": {"endurance": 1}}},
+				],
+			},
+			{
+				"id": "honor_the_fallen", "title": "Почтить павших",
+				"description": "Поклониться клинкам: +1 Выносливость и лечение 15% HP — мёртвые ценят уважение.",
+				"stats": {"endurance": 1}, "heal_percent": 0.15,
+			},
+			{
+				"id": "read_epitaphs", "title": "Прочесть эпитафии",
+				"description": "Проверка Знания 7: успех — уроки чужих смертей (+1 Знание, +6% опыта), провал — порез о ржавый клинок (6 урона).",
+				"check": {"stat": "knowledge", "difficulty": 7},
+				"success": {"stats": {"knowledge": 1}, "mods": {"xp_gain_multiplier": 1.06}, "outcome_text": "Эпитафии складываются в одну науку: как не лечь рядом. Читается быстро, запоминается навсегда."},
+				"failure": {"damage_flat": 6, "outcome_text": "Имена стёрты дождями. Зато ржавый клинок под ладонью — вполне настоящий."},
+			},
+		],
+	},
+	{
+		# Hidden-монетка (3 честных исхода, включая «ничего») / хил / чек-нырок.
+		"id": "old_well",
+		"title": "Колодец желаний",
+		"story": "Колодец стоит посреди тропы так, будто тропу проложили вокруг него. Из глубины тянет дождём и мокрой медью, на дне что-то поблёскивает. Табличка стёрта до двух слов: «…сбудется. Наверное».",
+		"tags": {"acts": [], "biomes": []},
+		"choices": [
+			{
+				"id": "toss_a_coin", "title": "Бросить монету",
+				"hidden": true,
+				"unknown_hint": "Одна монета (6 золотых) — и колодец сам решит, чем ответить.",
+				"cost_money": 6,
+				"random_outcomes": [
+					{"money": 24, "outcome_text": "Колодец возвращает пригоршню чужих монет. Чьё-то желание, видимо, отменили."},
+					{"heal_percent": 0.30, "outcome_text": "Вода вспыхивает тёплым светом, и раны затягиваются на глазах."},
+					{"outcome_text": "Монета падает беззвучно. Сегодня колодец глух к желаниям."},
+				],
+			},
+			{
+				"id": "draw_water", "title": "Набрать воды",
+				"description": "Без риска: студёная вода лечит 25% HP.",
+				"heal_percent": 0.25,
+			},
+			{
+				"id": "dive_down", "title": "Нырнуть за блеском",
+				"description": "Проверка Ловкости 8: успех — вещь, которую загадали до тебя, провал — 9 урона о тесные стены.",
+				"check": {"stat": "agility", "difficulty": 8},
+				"success": {"random_artifact": true, "outcome_text": "На дне, среди ила и монет, лежит вещь, которую кто-то пожелал слишком сильно."},
+				"failure": {"damage_flat": 9, "outcome_text": "Стены уже, чем казались, а дно — твёрже. Блеск оказался водой на камне."},
+			},
+		],
+	},
+	{
+		# Elite-бой с жирным post_combat / обход с потерей / чек-диверсия.
+		"id": "war_drums_camp",
+		"title": "Барабаны за холмом",
+		"story": "За холмом дымит военный лагерь орды: частокол, дозорные, барабаны в самом сердце. Утром они снимутся и пойдут жечь тракт, а пока — пьют. Лучшего случая ударить, проскользнуть или напакостить не будет.",
+		"tags": {"acts": [], "biomes": []},
+		"choices": [
+			{
+				"id": "storm_the_camp", "title": "Ударить по лагерю",
+				"description": "Элитный бой с вожаком орды: победа — +60% золота и +30% опыта за бой, +1 Сила, +1 Лидерство и +6% урона.",
+				"risk": true,
+				"combat": {"type": "elite", "enemy_health_multiplier": 1.12, "money_multiplier": 1.6, "xp_multiplier": 1.3},
+				"post_combat": {"stats": {"strength": 1, "leadership": 1}, "mods": {"damage_multiplier": 1.06}},
+			},
+			{
+				"id": "slip_past", "title": "Обойти оврагом",
+				"description": "Тихо уйти по колючему оврагу, оставив лагерь за спиной (−6% HP о терновник).",
+				"health_percent_cost": 0.06,
+			},
+			{
+				"id": "cut_the_drums", "title": "Порезать барабаны",
+				"description": "Проверка Ловкости 8: успех — унести походную кассу (+22 золота, +6% опыта), провал — стрела дозорного (10 урона) и бой.",
+				"check": {"stat": "agility", "difficulty": 8},
+				"success": {"money": 22, "mods": {"xp_gain_multiplier": 1.06}, "outcome_text": "Кожа барабанов расходится беззвучно, а походная касса сама напрашивается в руки. Утром орда проспит."},
+				"failure": {"damage_flat": 10, "combat": {"type": "battle", "enemy_health_multiplier": 1.15, "money_multiplier": 1.2}, "outcome_text": "Дозорный оказывается трезвее, чем выглядел. Стрела — и тревога поднимает лагерь."},
+			},
+		],
+	},
+	{
+		# Класс-реактивное событие №2 (intelligence/strength): статы/моды за HP-цену,
+		# осколок как артефакт через силовой чек.
+		"id": "fallen_star",
+		"title": "Упавшая звезда",
+		"story": "В дымящемся кратере остывает осколок неба — горячий, как свежая рана, и будто живой. Трава вокруг сгорела в стекло. Он тянется к руке — или это рука сама тянется к нему.",
+		"tags": {"acts": [], "biomes": []},
+		"choices": [
+			{
+				"id": "grab_the_shard", "title": "Схватить голыми руками",
+				"description": "Стерпеть звёздный ожог (−12% HP) — осколок отдаст силу: +2 Энергия.",
+				"health_percent_cost": 0.12, "stats": {"energy": 2},
+				"outcome_text": "Ладони шипят, но жар уходит внутрь и остаётся там силой чужого неба.",
+			},
+			{
+				"id": "study_the_light", "title": "Изучить свечение",
+				"description": "Проверка Интеллекта 7: успех — +1 Энергия и +1 Знание, провал — вспышка (7 урона).",
+				"check": {"stat": "intelligence", "difficulty": 7},
+				"success": {"stats": {"energy": 1, "knowledge": 1}, "outcome_text": "Свечение пульсирует, как чужой код. Ты читаешь его — и часть прочитанного остаётся в тебе."},
+				"failure": {"damage_flat": 7, "outcome_text": "Осколок огрызается вспышкой. Перед глазами долго стоит белое."},
+			},
+			{
+				"id": "pry_it_loose", "title": "Выломать из кратера",
+				"description": "Проверка Силы 8: успех — остывший осколок становится реликвией, провал — ожог о стеклянные края (8 урона).",
+				"check": {"stat": "strength", "difficulty": 8},
+				"success": {"random_artifact": true, "outcome_text": "Осколок поддаётся и остывает в руках. Теперь это оружие — или почти оружие."},
+				"failure": {"damage_flat": 8, "outcome_text": "Стеклянные края крошатся под пальцами и режут глубже, чем звёздный жар."},
+			},
 		],
 	},
 ]
