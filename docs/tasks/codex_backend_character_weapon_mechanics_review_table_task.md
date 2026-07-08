@@ -54,6 +54,22 @@ Docs/mirrors: report added; task mirror and local task board updated. Jira final
 comment/status and commit hashes are recorded after push in the Jira comments.
 Disk cleanup: none created.
 
+Excel follow-up QA PASSED 2026-07-08:
+- Jira moved to `Готово` after the workbook follow-up.
+- Verified workbook parity with the markdown report: 17/17 class rows and 51/51
+  unique weapon rows match `character_weapon_mechanics_review_table.md`.
+- Verified workbook sheets: `Class Kits`, `Weapons`, `Review Hotspots`,
+  `Sources`; hotspot rows = 6, source/traceability rows = 10.
+- Formula/error scan found 0 `#REF!`, `#DIV/0!`, `#VALUE!`, `#NAME?`, `#N/A`.
+- Visual render QA passed for all sheets after a QA fix increased `Sources`
+  source-row heights to avoid clipped long source paths.
+- `unzip -t docs/design/reports/character_weapon_mechanics_review_table.xlsx`
+  — PASS.
+- Runtime smoke not rerun: Excel row-height QA fix only, no gameplay/runtime
+  files changed.
+Disk cleanup: removed temporary `/tmp/fantasydisk_scrum878_xlsx_qa` after QA;
+no repo sidecars retained.
+
 Follow-up done 2026-07-08: exported the markdown review artifact to
 `docs/design/reports/character_weapon_mechanics_review_table.xlsx`.
 Workbook sheets:
