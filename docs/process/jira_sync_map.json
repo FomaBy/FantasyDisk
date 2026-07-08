@@ -4002,5 +4002,10 @@
   "key": "SCRUM-886",
   "status": "Контроль качества",
   "desc_hash": "23878918cd3a1200eea923bbdf9d0c8e"
+ },
+ "design_pause_dossier_atlas_esc_unify_task.md": {
+  "key": "SCRUM-890",
+  "status": "К выполнению",
+  "desc_hash": "440207edc36f0116d999fb651d5d7fd1"
  }
 }
