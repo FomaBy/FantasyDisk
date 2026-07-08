@@ -1193,14 +1193,14 @@ func _initialize() -> void:
 	if escape_panel == null or resume_button == null or physical_group == null:
 		_fail("Expected pause stats menu to expose Design kit hook nodes.")
 		return
-	# SCRUM-890: панель досье — плотный атлас-чип (StyleBoxFlat, латунный кант),
-	# числа = _atlas_chip_style.
-	var dossier_panel_style := escape_panel.get_theme_stylebox("panel") as StyleBoxFlat
-	if dossier_panel_style == null or dossier_panel_style.bg_color.a < 0.9:
-		_fail("Expected the dossier panel to use an opaque atlas chip StyleBoxFlat (SCRUM-890).")
+	# SCRUM-893: панель досье — полая рама meta40 (StyleBoxTexture frame_border,
+	# draw_center=false) поверх плотного дима; плоский чип SCRUM-890 ушёл.
+	var dossier_panel_style := escape_panel.get_theme_stylebox("panel") as StyleBoxTexture
+	if dossier_panel_style == null or dossier_panel_style.draw_center or dossier_panel_style.texture == null:
+		_fail("Expected the dossier panel to use the hollow meta40 frame (SCRUM-893).")
 		return
-	if not _color_approx(dossier_panel_style.border_color, Color(0.52, 0.41, 0.24, 0.90)):
-		_fail("Expected the dossier panel chip to keep the brass atlas border.")
+	if not dossier_panel_style.texture.resource_path.ends_with("meta40/frame_border.png"):
+		_fail("Expected the dossier frame to reuse the meta40 frame_border 9-slice.")
 		return
 	# Кит-кнопки шапки: нативные плиты глобального кита по size-маппингу
 	# (на 2560x1440 h=104 → back_260x104), НЕ растянутые контейнером.
@@ -2171,12 +2171,18 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 	# «Отмене»); Esc отменяет только модалку — пауза и забег остаются живы.
 	route_main.ui._show_pause_menu()
 	await process_frame
+	# SCRUM-893: панель досье — полая рама meta40 (StyleBoxTexture, draw_center=false)
+	# поверх плотного дима PauseStatsDim (a>=0.8); плоский чип SCRUM-890 ушёл.
 	var pause_panel := route_main.find_child("EscapeStatsPanelFrame", true, false) as PanelContainer
-	var pause_panel_style: StyleBoxFlat = null
+	var pause_panel_style: StyleBoxTexture = null
 	if pause_panel != null:
-		pause_panel_style = pause_panel.get_theme_stylebox("panel") as StyleBoxFlat
-	if pause_panel_style == null or pause_panel_style.bg_color.a < 0.90:
-		_fail("Expected the pause dossier panel to use an opaque atlas chip StyleBoxFlat (a>=0.9).")
+		pause_panel_style = pause_panel.get_theme_stylebox("panel") as StyleBoxTexture
+	if pause_panel_style == null or pause_panel_style.draw_center or pause_panel_style.texture == null:
+		_fail("Expected the pause dossier panel to use the hollow meta40 frame (SCRUM-893).")
+		return
+	var pause_dim := route_main.find_child("PauseStatsDim", true, false) as ColorRect
+	if pause_dim == null or pause_dim.color.a < 0.80:
+		_fail("Expected an opaque dossier dim behind the hollow frame (SCRUM-893).")
 		return
 	var end_run_button := route_main.find_child("PauseEndRunButton", true, false) as Button
 	if end_run_button == null:
