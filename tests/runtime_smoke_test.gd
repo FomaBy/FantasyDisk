@@ -50,10 +50,11 @@ const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_s
 const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
-# SCRUM-879 (supersedes SCRUM-847 tab plates): табы настроек носят глобальный
-# кит — нативную пластину quit_220x72 (220×72, все состояния), актив/неактив —
-# модуляцией, как вкладки Атласа.
-const SETTINGS_TAB_KIT_PLATE_PREFIX := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_quit_220x72"
+# SCRUM-882 (фидбек, supersedes SCRUM-879 tab plates): табы настроек — тот же
+# стиль, что кнопка «Назад»: 260×_atlas_action_button_height(), на высоте 104
+# это НАТИВНАЯ плита back_260x104 (та же, что у SettingsBackButton); актив/
+# неактив — модуляцией, как вкладки Атласа.
+const SETTINGS_TAB_KIT_PLATE_PREFIX := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_back_260x104"
 const SETTINGS_TAB_ACTIVE_TINT := Color(1.0, 0.94, 0.74)
 const SETTINGS_TAB_IDLE_TINT := Color(0.74, 0.76, 0.84, 0.92)
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
@@ -5631,16 +5632,64 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	if content_panel_style == null or content_panel_style.bg_color.a < 0.8:
 		_fail("Expected SettingsContentPanel to wear an opaque atlas chip StyleBoxFlat.")
 		return
-	# Табы — кнопки глобального кита с НАТИВНОЙ пластиной quit_220x72: фикс-сетка
-	# 3×(220+24)×72; позиции ячеек меряем от глобального rect самого свитчера.
-	var tab_width := 220.0
-	var tab_height := 72.0
+	# SCRUM-882: табы — кнопки глобального кита на плите «Назад»: фикс-сетка
+	# 3×(260+24)×_atlas_action_button_height() (72/88/104 по высоте вьюпорта);
+	# позиции ячеек меряем от глобального rect самого свитчера.
+	var settings_vp_h := main.get_viewport().get_visible_rect().size.y
+	var tab_width := 260.0
+	var tab_height := 104.0
+	if settings_vp_h < 760.0:
+		tab_height = 72.0
+	elif settings_vp_h < 1000.0:
+		tab_height = 88.0
 	var tab_gap := 24.0
 	if absf(switcher_rect.size.x - (tab_width * 3.0 + tab_gap * 2.0)) > 3.0 or absf(switcher_rect.size.y - tab_height) > 3.0:
-		_fail("Expected SettingsTabSwitcher to size from the fixed SCRUM-879 kit grid, got %s." % str(switcher_rect.size))
+		_fail("Expected SettingsTabSwitcher to size from the fixed SCRUM-882 kit grid (3x260+2x24 x %s), got %s." % [str(tab_height), str(switcher_rect.size)])
 		return
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
+		return
+	var settings_back_for_tabs := main.find_child("SettingsBackButton", true, false) as Button
+	if settings_back_for_tabs == null:
+		_fail("Expected settings header to expose SettingsBackButton for the tab plate contract.")
+		return
+	var settings_back_plate := _stylebox_texture_path(settings_back_for_tabs.get_theme_stylebox("normal"))
+	# SCRUM-882: контент — колонка фикс-ширины по ЦЕНТРУ контент-панели, строки
+	# внутри колонки выровнены влево (label.x строк одинаков и равен левому краю
+	# колонки). Меряем активный таб «Экран» (current_tab == 0 после открытия).
+	if tabs.current_tab != 0:
+		_fail("Expected settings to open on the Экран tab before centering checks.")
+		return
+	var screen_column := (tabs.get_node_or_null("Экран") as Control).get_child(0) as VBoxContainer
+	if screen_column == null or screen_column.name != "ЭкранContent":
+		_fail("Expected Экран tab to host its rows in the ЭкранContent column.")
+		return
+	var panel_center_x := content_panel.get_global_rect().get_center().x
+	var screen_column_rect := screen_column.get_global_rect()
+	if absf(screen_column_rect.get_center().x - panel_center_x) > 3.0:
+		_fail("SCRUM-882: expected the Экран settings column (center %.1f) to sit centered in SettingsContentPanel (center %.1f)." % [screen_column_rect.get_center().x, panel_center_x])
+		return
+	var screen_label_x := -1.0
+	var screen_rows_seen := 0
+	for screen_row in screen_column.get_children():
+		if not str(screen_row.name).begins_with("SettingsRow_"):
+			continue
+		var screen_row_label := (screen_row as HBoxContainer).get_child(0) as Label
+		if screen_row_label == null:
+			_fail("Expected %s to start with its Label column." % str(screen_row.name))
+			return
+		var label_x := screen_row_label.get_global_rect().position.x
+		screen_rows_seen += 1
+		if screen_label_x < 0.0:
+			screen_label_x = label_x
+		elif absf(label_x - screen_label_x) > 1.0:
+			_fail("SCRUM-882: expected left-aligned settings rows (label x %.1f), %s starts at %.1f." % [screen_label_x, str(screen_row.name), label_x])
+			return
+	if screen_rows_seen < 2:
+		_fail("Expected the Экран tab to expose at least two settings rows for the alignment contract.")
+		return
+	if absf(screen_label_x - screen_column_rect.position.x) > 1.0:
+		_fail("SCRUM-882: expected row labels to hug the settings column left edge (%.1f), got %.1f." % [screen_column_rect.position.x, screen_label_x])
 		return
 	var settings_switcher_dump := PackedStringArray()
 	settings_switcher_dump.append("# SCRUM-879 Settings Kit-Tab Runtime Layout")
@@ -5666,9 +5715,16 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
 			_fail("Expected SettingsTabButton_%d to sit on the SCRUM-879 kit tab grid. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
 			return
-		if not plate_path.begins_with(SETTINGS_TAB_KIT_PLATE_PREFIX):
-			_fail("Expected SettingsTabButton_%d to wear a global-kit minimal_metal plate, got %s." % [tab_index, plate_path])
-			return
+		# SCRUM-882: на канон-высоте 104 таб носит ту же нативную плиту, что и
+		# кнопка «Назад» (back_260x104); на компакт-высотах 88/72 кит штатно
+		# уходит в 9-slice-ветки — там плиту не пиннируем.
+		if tab_height >= 100.0:
+			if not plate_path.begins_with(SETTINGS_TAB_KIT_PLATE_PREFIX):
+				_fail("Expected SettingsTabButton_%d to wear the back_260x104 kit plate, got %s." % [tab_index, plate_path])
+				return
+			if plate_path != settings_back_plate:
+				_fail("Expected SettingsTabButton_%d normal plate (%s) to match SettingsBackButton plate (%s)." % [tab_index, plate_path, settings_back_plate])
+				return
 		var expected_tint := SETTINGS_TAB_ACTIVE_TINT if tabs.current_tab == tab_index else SETTINGS_TAB_IDLE_TINT
 		if not tab_button.modulate.is_equal_approx(expected_tint):
 			_fail("Expected SettingsTabButton_%d modulate to mark the %s tab (atlas pattern), got %s." % [tab_index, "active" if tabs.current_tab == tab_index else "idle", str(tab_button.modulate)])
@@ -5694,6 +5750,43 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
 			settings_switcher_image.save_png("%s/settings_v2_runtime.png" % settings_switcher_qa_dir)
+	# SCRUM-882: после клик-цикла активен таб «Управление» — его колонка тоже
+	# центрирована в панели, а bind-строки внутри скролла выровнены влево по
+	# единому label.x.
+	await process_frame
+	var controls_column := (tabs.get_node_or_null("Управление") as Control).get_child(0) as VBoxContainer
+	if controls_column == null or controls_column.name != "УправлениеContent":
+		_fail("Expected Управление tab to host its content in the УправлениеContent column.")
+		return
+	var controls_column_rect := controls_column.get_global_rect()
+	var controls_panel_center_x := content_panel.get_global_rect().get_center().x
+	if absf(controls_column_rect.get_center().x - controls_panel_center_x) > 3.0:
+		_fail("SCRUM-882: expected the Управление settings column (center %.1f) to sit centered in SettingsContentPanel (center %.1f)." % [controls_column_rect.get_center().x, controls_panel_center_x])
+		return
+	var controls_content_probe := controls_column.find_child("ControlsContent", true, false) as VBoxContainer
+	if controls_content_probe == null:
+		_fail("Expected the Управление column to host ControlsContent inside its scroll.")
+		return
+	var controls_label_x := -1.0
+	var controls_rows_seen := 0
+	for controls_row in controls_content_probe.get_children():
+		var controls_row_name := str(controls_row.name)
+		if not (controls_row_name.begins_with("SettingsRow_") or controls_row_name.begins_with("BindingRow_") or controls_row_name.begins_with("GamepadBindRow_")):
+			continue
+		var controls_row_label := (controls_row as HBoxContainer).get_child(0) as Label
+		if controls_row_label == null:
+			_fail("Expected %s to start with its Label column." % controls_row_name)
+			return
+		var controls_row_label_x := controls_row_label.get_global_rect().position.x
+		controls_rows_seen += 1
+		if controls_label_x < 0.0:
+			controls_label_x = controls_row_label_x
+		elif absf(controls_row_label_x - controls_label_x) > 1.0:
+			_fail("SCRUM-882: expected left-aligned controls rows (label x %.1f), %s starts at %.1f." % [controls_label_x, controls_row_name, controls_row_label_x])
+			return
+	if controls_rows_seen < 6:
+		_fail("Expected the Управление tab to expose device/aim/bind rows for the alignment contract, saw %d." % controls_rows_seen)
+		return
 	var resolution_option := main.find_child("SettingsResolutionOption", true, false) as OptionButton
 	var apply_button := main.find_child("SettingsApplyButton", true, false) as Button
 	var revert_button := main.find_child("SettingsRevertButton", true, false) as Button
