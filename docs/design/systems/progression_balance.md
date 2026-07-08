@@ -264,11 +264,28 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - `player.artifacts` хранит `{id, title[, tier]}` с совместимостью со старым
   title-only форматом; `tier` пишется из материализованного оффера (SCRUM-960),
   старые записи без tier валидны (читатели берут `.get("tier", 0)`).
+- **Классовые артефакты (SCRUM-961):** 85 записей (по 5 на каждый из 17 классов,
+  `class_affinity=[класс]`, `requires_ascension: 5`) заперты гейтом
+  `is_reward_relevant(reward, character_id, ascension_level, cross_class_ids)`
+  (matrix §1.4) во всех сэмплерах: `reward_pool` / `shop_items` /
+  `elite_artifact_choices` / `boss_completion_*`. Возвышение — **метовое**
+  (макс. достигнутый уровень класса, `main.ascension_level_for`), не выбранное
+  на забег: до Возвышения 5 классовые не выпадают вообще; чужому классу — никогда.
+  Тиры кита: 3×т2 + 2×т3 (Химик: т1+т2+3×т3), неформальная сумма силы 12 у всех.
+  Гейты: `tests/artifact_ascension_gate_test.gd`, `tests/class_artifacts_test.gd`.
+- **Cross-class исключение (§5):** единственное — `stolen_crest` (Вор, т3). При
+  получении `player.apply_reward` роллит 2 случайных ЧУЖИХ классовых id
+  (равновероятно, без дублей) в `run_modifiers["cross_class_artifact_ids"]`
+  (Array, напрямую — мимо float-коэрции `_apply_reward_mods`); сэмплеры пропускают
+  ровно эти id сквозь гейт до конца забега. Анти-runaway капы классовых механик
+  (§8.4): duplicate_hit ≤ 0.65 суммарно, take_hit_pulse клампится ≤ 1.0, спреды
+  DoT extend-режимом без рекурсии, взрывы (wand/mirror/twin bell) не порождают
+  новых взрывов, стаки капятся (rage 5, acid 5, мины 5, капканы 4, resonance 3).
 - HUD показывает artifact icons в `ArtifactHudRow`.
 - Pause stats menu имеет отдельный блок «Артефакты».
 - Artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png`
-  (иконки 15 новых семей SCRUM-960 — placeholder-копии до пака SCRUM-962).
-- `class_affinity` теперь означает тематику/источник артефакта, а не запрет. `affinity_mods` применяются любому классу через интерпретацию текущего героя.
+  (пак SCRUM-962: 154 боевые иконки — семьи, сохранённые и все 85 классовых).
+- `affinity_mods` в данных больше не используются (SCRUM-961: гейт на выдаче, эффекты — обычные stats/mods/триггеры); код-путь в `player.gd` остаётся legacy no-op для старых сейвов.
 - SCRUM-606 adds five tier-2/cost55 active artifacts on existing hooks:
   `field_kit` (`room_clear_heal_percent`), `vital_siphon` (`kill_heal_percent`),
   `powder_charge` (`kill_explosion_chance`), `bulwark_echo` (`take_hit_pulse_chance`),

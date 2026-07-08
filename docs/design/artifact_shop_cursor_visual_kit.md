@@ -10,7 +10,7 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 
 ## Summary
 
-- Artifact icons: `70` unique PNG, `256x256`, transparent realistic D&D/tabletop fantasy raster magic item pictures.
+- Artifact icons: `154` unique PNG, `256x256`, transparent realistic D&D/tabletop fantasy raster magic item pictures (SCRUM-960/961/962: 32 семьи + 37 сохранённых + 85 классовых; 17 легаси-иконок удалены).
 - Shop-only icons: `7` unique PNG, `128x128`, transparent background.
 - Shop frame assets: slot, hover, price badge, purchased/unavailable overlay, tooltip frame.
 - Cursor assets: normal, hover and attack variants, `48x48`, transparent background.
@@ -42,11 +42,7 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `heavy_totem` | Heavy Totem | `assets/sprites/ui/icons/artifacts/artifact_heavy_totem.png` |
 | `splinter_gloves` | Splinter Gloves | `assets/sprites/ui/icons/artifacts/artifact_splinter_gloves.png` |
 | `wide_sigil` | Wide Sigil | `assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png` |
-| `swift_ink` | Swift Ink | `assets/sprites/ui/icons/artifacts/artifact_swift_ink.png` |
 | `summoners_bell` | Summoner's Bell | `assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png` |
-| `blood_sigil` | Кровавая печать | `assets/sprites/ui/icons/artifacts/artifact_blood_sigil.png` |
-| `void_ink` | Чернила пустоты | `assets/sprites/ui/icons/artifacts/artifact_void_ink.png` |
-| `echo_pick` | Медиатор эха | `assets/sprites/ui/icons/artifacts/artifact_echo_pick.png` |
 | `sturdy_amulet` | Крепкий амулет | `assets/sprites/ui/icons/artifacts/artifact_sturdy_amulet.png` |
 | `fast_boots` | Быстрые сапоги | `assets/sprites/ui/icons/artifacts/artifact_fast_boots.png` |
 | `magnetic_buckle` | Магнитная пряжка | `assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png` |
@@ -54,18 +50,6 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `survival_manual` | Учебник выживания | `assets/sprites/ui/icons/artifacts/artifact_survival_manual.png` |
 | `cracked_shield` | Треснувший щит | `assets/sprites/ui/icons/artifacts/artifact_cracked_shield.png` |
 | `sharp_talisman` | Острый талисман | `assets/sprites/ui/icons/artifacts/artifact_sharp_talisman.png` |
-| `jagged_blade` | Зазубренное лезвие | `assets/sprites/ui/icons/artifacts/artifact_jagged_blade.png` |
-| `heavy_grip` | Тяжелая рукоять | `assets/sprites/ui/icons/artifacts/artifact_heavy_grip.png` |
-| `war_belt` | Боевой ремень | `assets/sprites/ui/icons/artifacts/artifact_war_belt.png` |
-| `warriors_rage` | Ярость воина | `assets/sprites/ui/icons/artifacts/artifact_warriors_rage.png` |
-| `dark_crystal` | Темный кристалл | `assets/sprites/ui/icons/artifacts/artifact_dark_crystal.png` |
-| `ash_page` | Пепельная страница | `assets/sprites/ui/icons/artifacts/artifact_ash_page.png` |
-| `skull_resonator` | Черепной резонатор | `assets/sprites/ui/icons/artifacts/artifact_skull_resonator.png` |
-| `ink_candle` | Чернильная свеча | `assets/sprites/ui/icons/artifacts/artifact_ink_candle.png` |
-| `copper_string` | Медная струна | `assets/sprites/ui/icons/artifacts/artifact_copper_string.png` |
-| `broken_pick` | Сломанный медиатор | `assets/sprites/ui/icons/artifacts/artifact_broken_pick.png` |
-| `loud_amp` | Громкий усилитель | `assets/sprites/ui/icons/artifacts/artifact_loud_amp.png` |
-| `bass_cable` | Басовый кабель | `assets/sprites/ui/icons/artifacts/artifact_bass_cable.png` |
 | `cursed_crown` | Проклятая корона | `assets/sprites/ui/icons/artifacts/artifact_cursed_crown.png` |
 | `fragile_heart` | Хрупкое сердце | `assets/sprites/ui/icons/artifacts/artifact_fragile_heart.png` |
 | `greedy_purse` | Жадный кошелек | `assets/sprites/ui/icons/artifacts/artifact_greedy_purse.png` |
@@ -73,12 +57,39 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `golden_route_mark` | Золотая метка пути | `assets/sprites/ui/icons/artifacts/artifact_golden_route_mark.png` |
 | `glass_edge` | Стеклянная кромка | `assets/sprites/ui/icons/artifacts/artifact_glass_edge.png` |
 | `echo_core` | Эхо Разлома | `assets/sprites/ui/icons/artifacts/artifact_echo_core.png` |
-| `split_core` | Ядро Расщепления | `assets/sprites/ui/icons/artifacts/artifact_split_core.png` |
 | `blood_pact` | Кровавый Рубеж | `assets/sprites/ui/icons/artifacts/artifact_blood_pact.png` |
 | `leech_heart` | Сердце Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_heart.png` |
 | `thorn_pact` | Договор Шипов | `assets/sprites/ui/icons/artifacts/artifact_thorn_pact.png` |
 | `phantom_step` | Призрачный Шаг | `assets/sprites/ui/icons/artifacts/artifact_phantom_step.png` |
 | `leech_fang` | Клык Пиявки | `assets/sprites/ui/icons/artifacts/artifact_leech_fang.png` |
+
+### SCRUM-961 Class Artifact Icons (85)
+
+Все классовые артефакты Возвышения-5 следуют единому пути
+`assets/sprites/ui/icons/artifacts/artifact_<id>.png` (пак SCRUM-962,
+референсы `docs/design/references/icons/artifacts/<id>/`). ID (по 5 на класс):
+`perfect_edge, shadow_twin, venom_spool, evasion_shroud, return_arc_rune` (assassin);
+`crimson_grip, spectral_axe, hammer_weight, blood_roar, last_onslaught` (berserk);
+`spore_capacitor, sample_chain, symbiote_sheath, inhibitor_colony, split_analysis` (biologist);
+`lucky_coin, magnetic_purse, paralyzing_blade, smoke_cache, stolen_crest` (thief);
+`overdrive_pick, bass_resonator, stage_amplifier, feedback_loop, rhythm_counter` (guitarist);
+`surgical_oath, bonesaw_teeth, plague_carrier, restorative_vapor, triage_protocol` (doctor);
+`spirit_pack_banner, wolf_call, blue_totem, briar_seal, pack_alpha` (druid);
+`turret_magazine, drone_gyroscope, mine_satchel, field_blueprint, salvage_core` (engineer);
+`impact_string, moon_splitter, storm_piercer, root_snare, hunters_mark` (ranger);
+`armor_protocol, anchor_core, press_calibrator, reactor_chronometer, repair_subroutine` (robot);
+`rebound_plate, triple_thrust, tower_slam, holy_chain, vanguard_oath` (knight);
+`prayer_beads, reliquary_salvo, censer_vow, twin_bell, martyr_shroud` (priest);
+`longshot_scope, deadeye_round, spotter_mark, shatter_drum, clean_line` (sniper);
+`second_volley, arquebus_shrapnel, long_fuse, bayonet_trigger, battle_doctrine` (soldier);
+`chain_wand, curse_font, mirror_page, void_hunger, black_bargain` (dark_mage);
+`volatile_dust, acid_catalyst, clear_acid, tank_homunculus, reactor_homunculus` (chemist);
+`fourth_ring, prismatic_cross, meteor_heart, mana_overflow, elemental_recoil` (elementalist).
+
+Легаси-иконки классовых (blood_sigil, void_ink, echo_pick, jagged_blade, heavy_grip,
+war_belt, warriors_rage, dark_crystal, ash_page, skull_resonator, ink_candle,
+copper_string, broken_pick, loud_amp, bass_cable, split_core) и swift_ink удалены
+вместе с source-референсами и строками манифеста SCRUM-340.
 
 ### SCRUM-606 / SCRUM-609 Artifact Icons
 
