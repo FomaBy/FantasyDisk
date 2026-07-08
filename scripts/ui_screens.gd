@@ -1331,8 +1331,9 @@ func _build_character_select_v4() -> void:
 	root.add_child(title_chip)
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	_set_action_button_size(back_button, 180.0, action_h)
-	back_button.position = Vector2(content_rect.end.x - 180.0, content_rect.position.y)
+	# Единый возврат (фидбек 2026-07-08): та же плита 260×h, что на всех экранах.
+	_set_action_button_size(back_button, 260.0, action_h)
+	back_button.position = Vector2(content_rect.end.x - 260.0, content_rect.position.y)
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
 	# «Выбрать» — главный CTA в шапке (паттерн Атласа: действия в верхней полосе;
@@ -2483,36 +2484,43 @@ func _show_atlas_screen() -> void:
 	layout.add_theme_constant_override("separation", int(roundf(10.0 * s)))
 	safe.add_child(layout)
 
-	# --- Шапка: валюты + вкладки + назад ---
+	# --- Шапка (фидбек пользователя 2026-07-08): «Созвездие» слева + рядом счётчик
+	# свободных эмблем класса; «Гильдия» + звёздная пыль по центру (между двумя
+	# expand-спейсерами); «Назад» справа. Табы и назад — единые плиты кита 260×h,
+	# как back-кнопки остальных экранов (однообразие возврата и кнопок).
 	var header := HBoxContainer.new()
 	header.name = "AtlasHeader"
 	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
+	var atlas_action_h := _atlas_action_button_height()
+	var tab_constellation := _make_button("Созвездие")
+	tab_constellation.name = "AtlasTabConstellation"
+	_set_action_button_size(tab_constellation, 260.0, atlas_action_h)
+	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
+	header.add_child(tab_constellation)
+	_atlas["tab_constellation"] = tab_constellation
 	var emblem_badge := _atlas_make_currency_chip("AtlasEmblemBadge", META40_CURRENCY_EMBLEM_PATH, "AtlasEmblemsLabel", s)
 	header.add_child(emblem_badge)
 	_atlas["emblem_badge"] = emblem_badge
 	_atlas["emblems_label"] = emblem_badge.find_child("AtlasEmblemsLabel", true, false)
-	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
-	header.add_child(stardust_badge)
-	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
 	var header_spacer := Control.new()
 	header_spacer.name = "AtlasHeaderSpacer"
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(header_spacer)
-	var tab_constellation := _make_button("Созвездие")
-	tab_constellation.name = "AtlasTabConstellation"
-	var atlas_action_h := _atlas_action_button_height()
-	_set_action_button_size(tab_constellation, 236.0, atlas_action_h)
-	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
-	header.add_child(tab_constellation)
-	_atlas["tab_constellation"] = tab_constellation
 	var tab_guild := _make_button("Гильдия")
 	tab_guild.name = "AtlasTabGuild"
-	_set_action_button_size(tab_guild, 236.0, atlas_action_h)
+	_set_action_button_size(tab_guild, 260.0, atlas_action_h)
 	tab_guild.pressed.connect(Callable(self, "_atlas_switch_tab").bind("guild"))
 	header.add_child(tab_guild)
 	_atlas["tab_guild"] = tab_guild
-	var back_button := _make_button("Назад в меню")
+	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
+	header.add_child(stardust_badge)
+	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
+	var header_spacer_right := Control.new()
+	header_spacer_right.name = "AtlasHeaderSpacerRight"
+	header_spacer_right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer_right)
+	var back_button := _make_button("Назад")
 	back_button.name = "AtlasBackButton"
 	_set_action_button_size(back_button, 260.0, atlas_action_h)
 	back_button.pressed.connect(_show_main_menu)
@@ -3951,7 +3959,8 @@ func _show_patch_notes_screen() -> void:
 	header_spacer.name = "PatchNotesHeaderSpacer"
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(header_spacer)
-	var back_button := _make_button("Назад в меню")
+	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите 260×h.
+	var back_button := _make_button("Назад")
 	back_button.name = "PatchNotesBackButton"
 	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	back_button.pressed.connect(_show_main_menu)
@@ -4928,9 +4937,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	header_spacer.name = "SettingsHeaderSpacer"
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(header_spacer)
-	# «Назад» — в шапке (атлас-паттерн, как AtlasBackButton); НАТИВНАЯ пластина
-	# кита settings_back_280x64 (маппинг по имени), фикс 280×64 без растяжки.
-	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", 280.0, 64.0)
+	# «Назад» — в шапке; единый возврат (фидбек 2026-07-08): та же плита 260×h,
+	# что на всех экранах (маппинг имени переведён на back_260x104).
+	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", 260.0, _atlas_action_button_height())
 	back_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	back_button.pressed.connect(settings_back)
 	header.add_child(back_button)
@@ -10994,7 +11003,8 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name == "LevelUpLaterButton":
 		return "later_260x72"
 	if button_name == "SettingsBackButton":
-		return "settings_back_280x64"
+		# Фидбек 2026-07-08: единый возврат — та же плита, что у остальных back.
+		return "back_260x104"
 	if button_name == "SettingsResetBindingsButton":
 		if size.x >= 540.0:
 			return "reset_bindings_long_560x104"
