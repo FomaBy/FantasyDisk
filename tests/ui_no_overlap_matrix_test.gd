@@ -13,9 +13,6 @@ const VIEWPORT_SIZES := [
 const SCRUM483_GATE_SIZES := [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]
 const TEXT_OVERFLOW_TOLERANCE := 6.0
 const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
-const MINIMAL_CARD_PATH := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
-const ECONOMY_CHOICE_WIDE_PATH := MINIMAL_CARD_PATH
-const ECONOMY_CHOICE_WIDE_HOVER_PATH := MINIMAL_CARD_PATH
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
 const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_normal.png"
 const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png"
@@ -1002,38 +999,48 @@ func _requires_viewport_fit(screen_id: String) -> bool:
 	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy", "combat_hud"]
 
 
+# SCRUM-883: карточки экономики — чип-ряды Атласа: тёмный StyleBoxFlat (a >= 0.8)
+# с латунным кантом, hover — золотой кант; min-ширины по вьюпорту сохранены,
+# контент держится внутри чип-пэддингов карточки.
 func _economy_choice_card_contract_error(card: Button, context: String) -> String:
-	if str(card.get_meta("economy_frame_path", "")) != ECONOMY_CHOICE_WIDE_PATH:
-		return "%s: expected %s to use SCRUM-451 minimal-metal economy choice frame, got %s." % [context, card.name, str(card.get_meta("economy_frame_path", ""))]
-	if str(card.get_meta("economy_hover_frame_path", "")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
-		return "%s: expected %s hover to use SCRUM-451 minimal-metal hover frame." % [context, card.name]
-	if _stylebox_texture_path(card.get_theme_stylebox("normal")) != ECONOMY_CHOICE_WIDE_PATH:
-		return "%s: expected %s normal StyleBox to use minimal-metal economy choice frame." % [context, card.name]
-	if _stylebox_texture_path(card.get_theme_stylebox("hover")) != ECONOMY_CHOICE_WIDE_HOVER_PATH:
-		return "%s: expected %s hover StyleBox to use minimal-metal economy choice hover frame." % [context, card.name]
+	if str(card.get_meta("economy_card_style", "")) != "atlas_chip":
+		return "%s: expected %s to expose SCRUM-883 atlas chip style metadata." % [context, card.name]
+	var normal := card.get_theme_stylebox("normal") as StyleBoxFlat
+	if normal == null or normal.bg_color.a < 0.8 or normal.bg_color.v > 0.35:
+		return "%s: expected %s normal style to be a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, card.name]
+	var hover := card.get_theme_stylebox("hover") as StyleBoxFlat
+	if hover == null or hover.bg_color.a < 0.8:
+		return "%s: expected %s hover style to be an atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, card.name]
+	if hover.border_color.r < 0.85 or hover.border_color.g < 0.6 or hover.border_color.b > 0.6:
+		return "%s: expected %s hover chip to use the golden atlas border, got %s." % [context, card.name, str(hover.border_color)]
 	var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
 	if context.contains("(1920, 1080)"):
 		expected_min_width = 420.0
 	elif context.contains("(2560, 1440)"):
 		expected_min_width = 480.0
 	if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
-		return "%s: expected %s to use the SCRUM-451 minimal-metal card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
-	var source_size: Vector2 = card.get_meta("economy_source_size", Vector2.ZERO)
-	var source_safe: Rect2 = card.get_meta("economy_source_safe_rect", Rect2())
-	if source_size != Vector2(426.0, 486.0) or source_safe != Rect2(46.0, 58.0, 334.0, 374.0):
-		return "%s: expected %s to expose SCRUM-451 source size/safe rect metadata." % [context, card.name]
+		return "%s: expected %s to keep the per-viewport economy card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+	var display_size: Vector2 = card.get_meta("economy_display_size", Vector2.ZERO)
+	var margins: Vector4 = card.get_meta("economy_content_margins", Vector4.ZERO)
+	if display_size == Vector2.ZERO or margins == Vector4.ZERO:
+		return "%s: expected %s to expose economy display size and chip content margins metadata." % [context, card.name]
 	var card_rect := card.get_global_rect()
-	var safe_rect := _scaled_source_rect(card_rect, source_size, source_safe).grow(1.0)
+	var source_safe := Rect2(
+		margins.x, margins.y,
+		maxf(1.0, display_size.x - margins.x - margins.z),
+		maxf(1.0, display_size.y - margins.y - margins.w)
+	)
+	var safe_rect := _scaled_source_rect(card_rect, display_size, source_safe).grow(2.0)
 	var content := card.find_child("%sContent" % card.name, true, false) as Control
 	if content != null:
 		for child in content.get_children():
 			var child_control := child as Control
 			if child_control != null and child_control.visible and not safe_rect.encloses(child_control.get_global_rect()):
-				return "%s: expected %s child %s to stay inside scaled wide-card safe rect %s." % [context, card.name, child_control.name, str(safe_rect)]
+				return "%s: expected %s child %s to stay inside chip safe rect %s." % [context, card.name, child_control.name, str(safe_rect)]
 	for suffix in ["Title", "Description", "Action"]:
 		var label := card.find_child("%s%s" % [card.name, suffix], true, false) as Label
 		if label != null and not safe_rect.encloses(label.get_global_rect()):
-			return "%s: expected %s label %s to stay inside scaled wide-card safe rect %s." % [context, card.name, label.name, str(safe_rect)]
+			return "%s: expected %s label %s to stay inside chip safe rect %s." % [context, card.name, label.name, str(safe_rect)]
 	return ""
 
 

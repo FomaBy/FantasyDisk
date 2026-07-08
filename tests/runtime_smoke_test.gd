@@ -34,9 +34,8 @@ const HERO_SELECT_DOSSIER_SOURCE_SIZE := Vector2(1120.0, 1140.0)
 const HERO_SELECT_DOSSIER_SAFE_MARGINS := Vector4(126.0, 160.0, 126.0, 172.0)
 const HERO_SELECT_THUMBNAIL_SOURCE_SIZE := Vector2(1536.0, 255.0)
 const HERO_SELECT_THUMBNAIL_SAFE_MARGINS := Vector4(132.0, 62.0, 132.0, 62.0)
-const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png"
 const MINIMAL_PANEL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png"
-const MINIMAL_CARD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_card.png"
+const MINIMAL_MODAL_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png"
 const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png"
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
@@ -69,15 +68,6 @@ const RESULT_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_
 # StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
 const CODEX_TAB_KIT_TEXTURE_PART := "minimal_metal_codex_tab"
-const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
-const REWARD_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
-const REWARD_ELITE_CARD_SAFE_MARGINS := Vector4(45.0, 58.0, 45.0, 56.0)
-const REWARD_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
-const REWARD_ELITE_CARD_TEXTURE := MINIMAL_CARD_TEXTURE
-const ECONOMY_CHOICE_WIDE_TEXTURE := MINIMAL_CARD_TEXTURE
-const ECONOMY_CHOICE_WIDE_HOVER_TEXTURE := MINIMAL_CARD_TEXTURE
-# SCRUM-568: карточки опций докачи переехали на overhaul_2k evt_card-рамку.
-const ATTRIBUTE_OFFER_CARD_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -1264,12 +1254,16 @@ func _initialize() -> void:
 	var snapshot: Dictionary = main.get("run_player_snapshot")
 	var stats_before: Dictionary = (snapshot.get("stats", {}) as Dictionary).duplicate(true)
 	var attr_money_before := int(main.ui._run_money())
+	# SCRUM-883: карточки опций докачки — чип-ряды Атласа (StyleBoxFlat, тёмная кожа,
+	# hover — золотой кант) вместо evt_card @2K-рамок.
 	var first_offer := attribute_offers.get_child(0) as Button
-	if first_offer == null or _stylebox_texture_path(first_offer.get_theme_stylebox("normal")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
-		_fail("Expected attribute offers to use the SCRUM-568 evt_card @2K frame.")
+	var first_offer_chip := first_offer.get_theme_stylebox("normal") as StyleBoxFlat if first_offer != null else null
+	if first_offer == null or first_offer_chip == null or first_offer_chip.bg_color.a < 0.8 or first_offer_chip.bg_color.v > 0.35:
+		_fail("Expected attribute offers to use the SCRUM-883 dark atlas chip card style.")
 		return
-	if _stylebox_texture_path(first_offer.get_theme_stylebox("hover")) != ATTRIBUTE_OFFER_CARD_TEXTURE_2K:
-		_fail("Expected attribute offers to use the SCRUM-568 evt_card @2K hover frame.")
+	var first_offer_hover := first_offer.get_theme_stylebox("hover") as StyleBoxFlat
+	if first_offer_hover == null or first_offer_hover.bg_color.a < 0.8 or first_offer_hover.border_color.r < 0.85 or first_offer_hover.border_color.b > 0.6:
+		_fail("Expected attribute offer hover chip to use the golden atlas border.")
 		return
 	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)
 	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
@@ -4390,7 +4384,7 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		_fail("Expected battle reward screen to render 3 SCRUM-338 framed reward cards.")
 		scaling_main.queue_free()
 		return
-	if not _assert_reward_cards_use_scrum338_frames(battle_reward_buttons, "BattleRewardCardContent", REWARD_CARD_TEXTURE, REWARD_CARD_SAFE_MARGINS, "battle_reward"):
+	if not _assert_reward_cards_use_atlas_chips(battle_reward_buttons, "BattleRewardCardContent", "battle_reward"):
 		scaling_main.queue_free()
 		return
 	scaling_main.ui._show_elite_artifact_reward(Callable())
@@ -4402,7 +4396,7 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		_fail("Expected elite artifact reward screen to render 3 clickable artifact buttons.")
 		scaling_main.queue_free()
 		return
-	if not _assert_reward_cards_use_scrum338_frames(reward_buttons, "EliteArtifactRewardContent", REWARD_ELITE_CARD_TEXTURE, REWARD_ELITE_CARD_SAFE_MARGINS, "elite_reward"):
+	if not _assert_reward_cards_use_atlas_chips(reward_buttons, "EliteArtifactRewardContent", "elite_reward"):
 		scaling_main.queue_free()
 		return
 	scaling_main.queue_free()
@@ -7613,41 +7607,41 @@ func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size:
 	await process_frame
 
 
-func _assert_reward_cards_use_scrum338_frames(buttons: Array, content_name: String, texture_path: String, safe_margins: Vector4, context: String) -> bool:
+# SCRUM-883 (supersedes SCRUM-338 frames): карточки наград — чип-ряды Атласа:
+# тёмный StyleBoxFlat (a >= 0.8), hover — золотой кант, контент внутри чип-пэддингов.
+func _assert_reward_cards_use_atlas_chips(buttons: Array, content_name: String, context: String) -> bool:
 	var dump_lines := PackedStringArray()
-	dump_lines.append("# SCRUM-338 Reward Frame Runtime Dump")
+	dump_lines.append("# SCRUM-883 Reward Atlas Chip Runtime Dump")
 	dump_lines.append("")
 	dump_lines.append("- Context: `%s`" % context)
-	dump_lines.append("- Expected texture: `%s`" % texture_path)
 	for button_node in buttons:
 		var button := button_node as Button
 		if button == null:
 			_fail("Expected %s reward card button." % context)
 			return false
-		var style_path := _stylebox_texture_path(button.get_theme_stylebox("normal"))
-		if style_path != texture_path:
-			_fail("Expected %s to use reward texture %s, got %s." % [button.name, texture_path, style_path])
+		var chip := button.get_theme_stylebox("normal") as StyleBoxFlat
+		if chip == null or chip.bg_color.a < 0.8 or chip.bg_color.v > 0.35:
+			_fail("Expected %s to use the SCRUM-883 dark atlas chip card style." % button.name)
 			return false
-			var hover_style_path := _stylebox_texture_path(button.get_theme_stylebox("hover"))
-			if hover_style_path != texture_path and not hover_style_path.ends_with("_hover.png"):
-				_fail("Expected %s to use a hover reward texture or SCRUM-448 shared minimal card, got %s." % [button.name, hover_style_path])
-				return false
+		var hover_chip := button.get_theme_stylebox("hover") as StyleBoxFlat
+		if hover_chip == null or hover_chip.bg_color.a < 0.8 or hover_chip.border_color.r < 0.85 or hover_chip.border_color.b > 0.6:
+			_fail("Expected %s hover chip to use the golden atlas border." % button.name)
+			return false
 		var content := button.find_child(content_name, false, false) as Control
 		if content == null:
-			_fail("Expected %s to expose %s inside the reward safe-zone." % [button.name, content_name])
+			_fail("Expected %s to expose %s inside the reward chip." % [button.name, content_name])
 			return false
 		var card_rect := button.get_global_rect()
 		var content_rect := content.get_global_rect()
-		var safe_rect := _scaled_safe_rect(card_rect, REWARD_FRAME_SOURCE_SIZE, safe_margins)
-		dump_lines.append("- `%s`: card `%s`, safe `%s`, content `%s`, texture `%s`" % [
+		var safe_rect := card_rect.grow(1.0)
+		dump_lines.append("- `%s`: card `%s`, content `%s`, chip alpha `%.2f`" % [
 			button.name,
 			str(card_rect),
-			str(safe_rect),
 			str(content_rect),
-			style_path,
+			chip.bg_color.a,
 		])
 		if not _rect_contains_with_tolerance(safe_rect, content_rect, 2.0):
-			_fail("Expected %s content rect %s to stay inside reward safe rect %s." % [button.name, content_rect, safe_rect])
+			_fail("Expected %s content rect %s to stay inside reward chip %s." % [button.name, content_rect, safe_rect])
 			return false
 		if context == "battle_reward" and button.find_child("BattleRewardActionLabel", true, false) == null:
 			_fail("Expected %s to show the player-facing Получить action label." % button.name)
@@ -7963,14 +7957,12 @@ func _write_scrum437_attribute_offer_dump(panel: Control, offers: Container) -> 
 			var card := node as Button
 			if card == null:
 				continue
-			dump.append("- `%s`: rect `%s`, min `%s`, normal `%s`, hover `%s`, source `%s`, safe `%s`, content `%s`" % [
+			dump.append("- `%s`: rect `%s`, min `%s`, style `%s`, pad `%s`, content `%s`" % [
 				card.name,
 				str(card.get_global_rect()),
 				str(card.custom_minimum_size),
-				_stylebox_texture_path(card.get_theme_stylebox("normal")),
-				_stylebox_texture_path(card.get_theme_stylebox("hover")),
-				str(card.get_meta("economy_source_size", Vector2.ZERO)),
-				str(card.get_meta("economy_source_safe_rect", Rect2())),
+				str(card.get_meta("economy_card_style", "")),
+				str(card.get_meta("economy_card_pad", 0.0)),
 				str(card.get_meta("economy_content_margins", Vector4.ZERO)),
 			])
 	var file := FileAccess.open("%s/wide_economy_choice_card_runtime_dump.md" % qa_dir, FileAccess.WRITE)
@@ -8412,22 +8404,6 @@ func _rect_contains_with_tolerance(outer: Rect2, inner: Rect2, tolerance_px: flo
 		and inner.position.y >= outer.position.y - tolerance_px \
 		and inner.end.x <= outer.end.x + tolerance_px \
 		and inner.end.y <= outer.end.y + tolerance_px
-
-
-func _scaled_safe_rect(frame_rect: Rect2, source_size: Vector2, margins: Vector4) -> Rect2:
-	var scale_x := frame_rect.size.x / maxf(source_size.x, 1.0)
-	var scale_y := frame_rect.size.y / maxf(source_size.y, 1.0)
-	var margin_left := margins.x * scale_x
-	var margin_top := margins.y * scale_y
-	var margin_right := margins.z * scale_x
-	var margin_bottom := margins.w * scale_y
-	return Rect2(
-		frame_rect.position + Vector2(margin_left, margin_top),
-		Vector2(
-			maxf(frame_rect.size.x - margin_left - margin_right, 0.0),
-			maxf(frame_rect.size.y - margin_top - margin_bottom, 0.0)
-		)
-	)
 
 
 func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: Rect2) -> Rect2:
