@@ -45,9 +45,9 @@ const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
-const LEVEL_UP_LATER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png"
-const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png"
-const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
+# SCRUM-883: «Позже» на level-up — глобальный кнопочный кит (text_buttons_unique/
+# либо minimal_metal_buttons/), lu682-арт снят.
+const MINIMAL_METAL_BUTTON_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
 # SCRUM-882 (фидбек, supersedes SCRUM-879 tab plates): табы настроек — тот же
@@ -981,8 +981,10 @@ func _initialize() -> void:
 		if not bool(reward_button.get_meta("level_up_text_field_card", false)):
 			_fail("Expected level-up reward cards to be styled as clickable text-field panels.")
 			return
-		if not (reward_button.get_theme_stylebox("normal") is StyleBoxTexture) or not (reward_button.get_theme_stylebox("hover") is StyleBoxTexture):
-			_fail("Expected level-up reward cards to use SCRUM-682 frame textures.")
+		# SCRUM-883: карточки = плотные чип-ряды атласа (StyleBoxFlat, normal a>=0.8).
+		var card_chip_style := reward_button.get_theme_stylebox("normal") as StyleBoxFlat
+		if card_chip_style == null or card_chip_style.bg_color.a < 0.8 or not (reward_button.get_theme_stylebox("hover") is StyleBoxFlat):
+			_fail("Expected level-up reward cards to use dense atlas chip styles (SCRUM-883).")
 			return
 		var description_label := reward_button.find_child("LevelUpRewardDescription", true, false) as Label
 		if description_label == null or description_label.text.strip_edges() == "":
@@ -1036,9 +1038,10 @@ func _initialize() -> void:
 	if defer_button == null:
 		_fail("Expected level-up to expose a bottom button for deferred choice.")
 		return
+	# SCRUM-883: «Позже» = глобальный кит 260×_atlas_action_button_height (104 на 1440p).
 	var defer_rect := defer_button.get_global_rect()
-	if defer_rect.size.x < 300.0 or defer_rect.size.y < 82.0 or not _button_uses_level_up_later_style(defer_button):
-		_fail("Expected level-up Later button to use SCRUM-682 later-button art, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
+	if defer_rect.size.x < 240.0 or defer_rect.size.y < 64.0 or not _button_uses_level_up_later_style(defer_button):
+		_fail("Expected level-up Later button to use the global text-button kit, got rect=%s min=%s." % [str(defer_rect), str(defer_button.custom_minimum_size)])
 		return
 	defer_button.pressed.emit()
 	await process_frame
@@ -2993,22 +2996,20 @@ func _button_uses_text_button_unique_id(button: Button, button_id: String) -> bo
 	return true
 
 
+# SCRUM-883: «Позже» — Button-контрол глобального кита: все состояния StyleBoxTexture
+# из text_buttons_unique/ (по имени узла — later_260x72) либо minimal_metal_buttons/.
 func _button_uses_level_up_later_style(button: Button) -> bool:
 	if button == null:
 		return false
-	var expected := {
-		"normal": LEVEL_UP_LATER_TEXTURE,
-		"hover": LEVEL_UP_LATER_HOVER_TEXTURE,
-		"focus": LEVEL_UP_LATER_HOVER_TEXTURE,
-		"pressed": LEVEL_UP_LATER_PRESSED_TEXTURE,
-		"disabled": LEVEL_UP_LATER_TEXTURE,
-	}
-	for state in expected.keys():
+	for state in ["normal", "hover", "focus", "pressed", "disabled"]:
 		var style := button.get_theme_stylebox(state)
 		if not (style is StyleBoxTexture):
 			return false
 		var texture := (style as StyleBoxTexture).texture
-		if texture == null or texture.resource_path != str(expected[state]):
+		if texture == null:
+			return false
+		var path := str(texture.resource_path)
+		if not (path.begins_with(TEXT_BUTTON_DIR) or path.begins_with(MINIMAL_METAL_BUTTON_DIR)):
 			return false
 	if not _is_neutral_button_font(button.get_theme_color("font_hover_color")) or not _is_neutral_button_font(button.get_theme_color("font_focus_color")):
 		return false
