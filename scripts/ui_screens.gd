@@ -341,10 +341,11 @@ const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
 const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление босса (big)
 const CTB_SMALL_2K := Rect2(100, 92, 2360, 56)             # появление элитки
 
-# #30 Баннер победы — _show_victory_banner (dim + "ПОБЕДА" 96pt по центру)
-const VBN_DIM_2K := Rect2(0, 0, 2560, 1440)
-const VBN_FRAME_2K := Rect2(560, 600, 1440, 240)
-const VBN_SAFE_2K := Rect2(672, 652, 1216, 136)
+# #30 Баннер победы — _show_victory_banner: дим + компактный чип Атласа с золотым
+# титулом «ПОБЕДА» по вертикальному центру 2K-холста (SCRUM-883, ранее vbn_frame @2K).
+const VICTORY_BANNER_CHIP_SIZE := Vector2(960.0, 224.0)
+const VICTORY_BANNER_CHIP_TOP := 608.0
+const VICTORY_BANNER_CHIP_PAD := 26.0
 # === конец спеки SCRUM-487 ===
 
 # === SCRUM-488: координатная спека @2560×1440 — блок Прогрессия/Экономика ===
@@ -2203,25 +2204,18 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	frame.anchor_right = 0.5
 	frame.anchor_top = 0.0
 	frame.anchor_bottom = 0.0
-	frame.offset_left = -VBN_FRAME_2K.size.x * 0.5
-	frame.offset_right = VBN_FRAME_2K.size.x * 0.5
-	frame.offset_top = VBN_FRAME_2K.position.y
-	frame.offset_bottom = VBN_FRAME_2K.position.y + VBN_FRAME_2K.size.y
-	frame.pivot_offset = Vector2(VBN_FRAME_2K.size.x * 0.5, VBN_FRAME_2K.size.y * 0.5)
+	# SCRUM-883: транзиентный оверлей поверх боя — компактный чип Атласа вместо
+	# тяжёлой vbn_frame @2K-рамы (просто и торжественно; дим сохранён, растяжек нет).
+	var banner_size := VICTORY_BANNER_CHIP_SIZE
+	frame.offset_left = -banner_size.x * 0.5
+	frame.offset_right = banner_size.x * 0.5
+	frame.offset_top = VICTORY_BANNER_CHIP_TOP
+	frame.offset_bottom = VICTORY_BANNER_CHIP_TOP + banner_size.y
+	frame.pivot_offset = banner_size * 0.5
 	frame.scale = Vector2(0.92, 0.92)
 	frame.modulate.a = 0.0
-	frame.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("vbn_frame", VBN_FRAME_2K.size))
-	var content_margins := _overhaul_2k_content_margins("vbn_frame", VBN_FRAME_2K.size)
-	var content_rect := Rect2(
-		Vector2(content_margins.x, content_margins.y),
-		Vector2(
-			VBN_FRAME_2K.size.x - content_margins.x - content_margins.z,
-			VBN_FRAME_2K.size.y - content_margins.y - content_margins.w
-		)
-	)
-	frame.set_meta("victory_banner_slot", "vbn_frame")
-	frame.set_meta("victory_banner_content_margins", content_margins)
-	frame.set_meta("victory_banner_content_rect", content_rect)
+	frame.add_theme_stylebox_override("panel", _atlas_chip_style(0.92, VICTORY_BANNER_CHIP_PAD))
+	frame.set_meta("victory_banner_style", "atlas_chip")
 	click_catcher.add_child(frame)
 
 	var label := Label.new()
@@ -2233,7 +2227,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", _readable_font_size(90))
-	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
+	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
 	frame.add_child(label)

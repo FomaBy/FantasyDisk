@@ -37,7 +37,6 @@ const PN_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_f
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
-const VBN_FRAME_2K_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_vbn_frame.png"
 const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806
 const CHUD_TIMER_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: единая подложка, без жёлтой рамки
 const CHUD_V2_BAR_TRACK_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"  # SCRUM-806
@@ -984,21 +983,18 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var frame := main.find_child("VictoryBannerFrame", true, false) as PanelContainer
 			if frame == null or not frame.visible or not frame.get_global_rect().has_area():
 				return "%s: expected visible VictoryBannerFrame." % context
-			if _stylebox_texture_path(frame.get_theme_stylebox("panel")) != VBN_FRAME_2K_PATH:
-				return "%s: expected VictoryBannerFrame to use vbn_frame @2K asset." % context
-			if str(frame.get_meta("victory_banner_slot", "")) != "vbn_frame":
-				return "%s: expected VictoryBannerFrame slot metadata to be vbn_frame." % context
-			if Vector4(frame.get_meta("victory_banner_content_margins", Vector4.ZERO)) != Vector4(112, 52, 112, 52):
-				return "%s: expected VictoryBannerFrame strict SCRUM-590 content margins." % context
-			var frame_safe: Rect2 = frame.get_meta("victory_banner_content_rect", Rect2()) as Rect2
-			if frame_safe != Rect2(112, 52, 1216, 136):
-				return "%s: expected VictoryBannerFrame safe rect to match VBN_FRAME_2K content zone." % context
+			# SCRUM-883: баннер победы — чип Атласа (StyleBoxFlat, тёмная кожа + латунный
+			# кант) без текстурной vbn-рамы; дим сохранён, растяжек нет.
+			var banner_chip := frame.get_theme_stylebox("panel") as StyleBoxFlat
+			if banner_chip == null or banner_chip.bg_color.a < 0.9 or banner_chip.bg_color.v > 0.35:
+				return "%s: expected VictoryBannerFrame to use a dark atlas chip StyleBoxFlat (alpha >= 0.9)." % context
+			if str(frame.get_meta("victory_banner_style", "")) != "atlas_chip":
+				return "%s: expected VictoryBannerFrame to expose SCRUM-883 atlas chip metadata." % context
 			var victory_label := frame.find_child("VictoryBannerLabel", true, false) as Label
 			if victory_label == null or victory_label.text.strip_edges() == "":
 				return "%s: expected VictoryBannerLabel runtime text inside the frame." % context
-			var scaled_victory_safe := _scaled_source_rect(frame.get_global_rect(), Vector2(1440, 240), frame_safe).grow(1.0)
-			if not scaled_victory_safe.encloses(victory_label.get_global_rect()):
-				return "%s: expected VictoryBannerLabel to stay inside scaled safe rect %s." % [context, str(scaled_victory_safe)]
+			if not frame.get_global_rect().grow(1.0).encloses(victory_label.get_global_rect()):
+				return "%s: expected VictoryBannerLabel to stay inside the victory banner chip %s." % [context, str(frame.get_global_rect())]
 	return ""
 
 
