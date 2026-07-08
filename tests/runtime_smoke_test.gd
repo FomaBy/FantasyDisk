@@ -5605,19 +5605,42 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Settings v6: obsolete v3 switcher frame panel should be gone (tabs are standalone plates).")
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
-	# SCRUM-879: табы — кнопки глобального кита с НАТИВНОЙ пластиной quit_220x72:
-	# фикс (220,72), сетка 3×(220+gap), gap = max(6, min(20×s, дожим по
-	# внутренней ширине модалки)), s = ширина модалки / 1420.
-	var modal := main.find_child("SettingsV2Modal", true, false) as Control
-	if modal == null:
-		_fail("Expected SettingsV2Modal to exist for the settings tab grid check.")
+	# SCRUM-879 (итерация 2): настройки — ФУЛСКРИН атлас-шелл, v6-модалки нет:
+	# safe-зона рамы + полая рама meta40 поверх + контент-панель — чип Атласа.
+	if main.find_child("SettingsV2Modal", true, false) != null:
+		_fail("SCRUM-879: settings must drop the v6 modal (fullscreen atlas shell).")
 		return
-	var v6_scale := modal.get_global_rect().size.x / 1420.0
+	var settings_safe := main.find_child("SettingsSafeArea", true, false) as MarginContainer
+	if settings_safe == null:
+		_fail("Expected fullscreen settings to build SettingsSafeArea (unified frame safe zone).")
+		return
+	var settings_frame := main.find_child("SettingsFrame", true, false) as Panel
+	if settings_frame == null:
+		_fail("Expected fullscreen settings to draw the hollow SettingsFrame on top.")
+		return
+	var settings_frame_style := settings_frame.get_theme_stylebox("panel") as StyleBoxTexture
+	if settings_frame_style == null or settings_frame_style.draw_center:
+		_fail("Expected SettingsFrame to use a hollow StyleBoxTexture (draw_center off).")
+		return
+	var settings_frame_texture := _stylebox_texture_path(settings_frame_style)
+	if not settings_frame_texture.ends_with("meta40/frame_border.png"):
+		_fail("Expected SettingsFrame to wear the meta40 frame_border art, got %s." % settings_frame_texture)
+		return
+	var content_panel := main.find_child("SettingsContentPanel", true, false) as Control
+	if content_panel == null:
+		_fail("Expected fullscreen settings to expose SettingsContentPanel.")
+		return
+	var content_panel_style := content_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if content_panel_style == null or content_panel_style.bg_color.a < 0.8:
+		_fail("Expected SettingsContentPanel to wear an opaque atlas chip StyleBoxFlat.")
+		return
+	# Табы — кнопки глобального кита с НАТИВНОЙ пластиной quit_220x72: фикс-сетка
+	# 3×(220+24)×72; позиции ячеек меряем от глобального rect самого свитчера.
 	var tab_width := 220.0
 	var tab_height := 72.0
-	var tab_gap := maxf(6.0, minf(roundf(20.0 * v6_scale), floorf(((1420.0 - 144.0) * v6_scale - tab_width * 3.0) / 2.0)))
+	var tab_gap := 24.0
 	if absf(switcher_rect.size.x - (tab_width * 3.0 + tab_gap * 2.0)) > 3.0 or absf(switcher_rect.size.y - tab_height) > 3.0:
-		_fail("Expected SettingsTabSwitcher to size from the SCRUM-879 kit grid, got %s." % str(switcher_rect.size))
+		_fail("Expected SettingsTabSwitcher to size from the fixed SCRUM-879 kit grid, got %s." % str(switcher_rect.size))
 		return
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
@@ -5626,11 +5649,8 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	settings_switcher_dump.append("# SCRUM-879 Settings Kit-Tab Runtime Layout")
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
-	settings_switcher_dump.append("- v6_scale: `%s`" % str(v6_scale))
-	var content_panel := main.find_child("SettingsContentPanel", true, false) as Control
-	settings_switcher_dump.append("- modal_rect: `%s`" % str(modal.get_global_rect()))
-	if content_panel != null:
-		settings_switcher_dump.append("- content_panel_rect: `%s`" % str(content_panel.get_global_rect()))
+	settings_switcher_dump.append("- safe_area_rect: `%s`" % str(settings_safe.get_global_rect()))
+	settings_switcher_dump.append("- content_panel_rect: `%s`" % str(content_panel.get_global_rect()))
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("| tab | actual | expected kit grid rect | stylebox |")
 	settings_switcher_dump.append("| --- | --- | --- | --- |")

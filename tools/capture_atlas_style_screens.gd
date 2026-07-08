@@ -20,7 +20,8 @@ const SCREENS := [
 	},
 	{
 		"slug": "settings",
-		"nodes": ["SettingsV2Modal", "SettingsV2MainModalFrame", "SettingsTabSwitcher",
+		"nodes": ["SettingsSafeArea", "SettingsFrame", "SettingsHeader",
+			"SettingsTitleChip", "SettingsTabSwitcher",
 			"SettingsTabButton_0", "SettingsContentPanel", "SettingsBottomActions",
 			"SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton",
 			"UnifiedBackground_settings"],

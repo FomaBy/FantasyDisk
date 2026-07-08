@@ -131,18 +131,15 @@ const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const SETTINGS_RETURN_MAIN_MENU := "main_menu"
 const SETTINGS_RETURN_RUN_PAUSE := "run_pause"
-# --- Settings v6 (SCRUM-847, полный редизайн с нуля) ---------------------------
-# Дизайн-система «Зал звёздного свода» — единый стиль с экраном «Атлас
-# Персонажа» (meta40): латунь/золото, тёмная кожа, сапфировые акценты.
-# Геометрия унаследована от v5: координаты в design-px модалки 1420×1060 при
-# базовом вьюпорте 2560×1440, скейл единым s = modal_width/1420. Арт-кит —
-# OpenAI gpt-image-2 (панели/кнопки/поля) + PixelLab (иконки/эмблема/гем),
-# состояния hover/pressed/disabled — PIL-деривативы (tools/generate_settings_v6_openai.py).
+# --- Settings v6 (SCRUM-847) + фулскрин атлас-шелл (SCRUM-879, итерация 2) ----
+# Шелл экрана — единый атлас-паттерн (_show_atlas_screen): фон/safe-зона/полая
+# рама, кнопки — глобальный кит. От v6 остался кит СТРОК (поля, бинды,
+# чекбоксы, слайдеры, медальон, иконки табов): их геометрия — design-px листа
+# 1420×1060, масштаб s = ширина контент-зоны / 1420 (кламп 0.55..1.05).
+# Арт-кит строк — OpenAI gpt-image-2 + PixelLab, состояния hover/pressed/
+# disabled — PIL-деривативы (tools/generate_settings_v6_openai.py).
 const SETTINGS_V6_DIR := "res://assets/sprites/ui/frames/settings_v6/"
 const SETTINGS_V6_DESIGN_SIZE := Vector2(1420.0, 1060.0)
-const SETTINGS_V6_MODAL_WIDTH_RATIO := 0.555
-const SETTINGS_V6_MODAL_FRAME_PATH := SETTINGS_V6_DIR + "ui_settings_v6_modal_frame.png"
-const SETTINGS_V6_CONTENT_INSET_PATH := SETTINGS_V6_DIR + "ui_settings_v6_content_inset.png"
 const SETTINGS_V6_MEDALLION_PATH := SETTINGS_V6_DIR + "ui_settings_v6_medallion.png"
 const SETTINGS_V6_TAB_ICON_PATHS := [
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_screen.png",
@@ -164,16 +161,6 @@ const SETTINGS_V6_SLIDER_FILL_PATH := SETTINGS_V6_DIR + "ui_settings_v6_slider_f
 const SETTINGS_V6_SLIDER_GEM_PATH := SETTINGS_V6_DIR + "ui_settings_v6_slider_gem.png"
 const SETTINGS_V6_VALUE_CHIP_PATH := SETTINGS_V6_DIR + "ui_settings_v6_value_chip.png"
 # Геометрия (design-px @1420×1060): title/табы/панель/низ.
-const SETTINGS_V6_TITLE_RECT := Rect2(80.0, 56.0, 1260.0, 62.0)
-const SETTINGS_V6_TAB_SIZE := Vector2(340.0, 84.0)
-const SETTINGS_V6_TAB_GAP := 20.0
-const SETTINGS_V6_TAB_TOP := 150.0
-const SETTINGS_V6_CONTENT_RECT := Rect2(72.0, 258.0, 1276.0, 630.0)
-const SETTINGS_V6_CONTENT_PAD := Vector4(44.0, 34.0, 44.0, 30.0)
-const SETTINGS_V6_DIVIDER_Y := 910.0
-const SETTINGS_V6_ACTION_SIZE := Vector2(320.0, 80.0)
-const SETTINGS_V6_ACTION_GAP := 30.0
-const SETTINGS_V6_ACTION_TOP := 936.0
 const SETTINGS_V6_LABEL_COL := Vector2(380.0, 56.0)
 const SETTINGS_V6_CONTROL_SIZE := Vector2(560.0, 56.0)
 # Палитра v6 — выведена из экрана Атласа (meta40): текст-пергамент, атласное
@@ -400,7 +387,7 @@ const CODEX_CHIP_ROW_SAFE_2K := Rect2(1731, 731, 648, 107)
 const CODEX_ENTRY_CARD_2K := Rect2(0, 0, 963, 147)
 const CODEX_TAB_BUTTON_2K := Rect2(0, 0, 333, 115)
 
-# #16 Настройки — _show_settings_menu (V2-модалка, scaled fill → 2K)
+# #16 Настройки — _show_settings_menu (SCRUM-879: фулскрин атлас-шелл, строки v6)
 const SETTINGS_PANEL_2K := Rect2(256, 104, 2048, 1232)
 const SETTINGS_SAFE_2K := Rect2(430, 229, 1700, 1062)
 const SETTINGS_TITLE_2K := Rect2(448, 229, 1664, 64)
@@ -5069,37 +5056,6 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 	control.offset_bottom = rect.position.y + rect.size.y
 
 
-func _settings_v6_modal_rect() -> Rect2:
-	# v6 (геометрия унаследована от v5/SCRUM-805): модалка 55.5% ширины вьюпорта,
-	# пропорция дизайн-листа 1420×1060 (≈1.34) зафиксирована — вся внутренняя
-	# геометрия скейлится единым s = width/1420 без искажений. Кап по высоте 87%.
-	var viewport_size := Vector2(1280.0, 720.0)
-	if game != null and game.get_viewport() != null:
-		viewport_size = game.get_viewport().get_visible_rect().size
-	var aspect := SETTINGS_V6_DESIGN_SIZE.x / SETTINGS_V6_DESIGN_SIZE.y
-	var width := clampf(roundf(viewport_size.x * SETTINGS_V6_MODAL_WIDTH_RATIO), 980.0, 1560.0)
-	var height := roundf(width / aspect)
-	var max_height := roundf(viewport_size.y * 0.87)
-	if height > max_height:
-		height = max_height
-		width = roundf(height * aspect)
-	return Rect2(
-		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
-		Vector2(width, height)
-	)
-
-
-func _settings_v6_scale(modal_size: Vector2) -> float:
-	return modal_size.x / SETTINGS_V6_DESIGN_SIZE.x
-
-
-func _settings_v6_rect(design_rect: Rect2, s: float) -> Rect2:
-	return Rect2(
-		Vector2(roundf(design_rect.position.x * s), roundf(design_rect.position.y * s)),
-		Vector2(roundf(design_rect.size.x * s), roundf(design_rect.size.y * s))
-	)
-
-
 func _settings_v6_font(design_px: float, s: float) -> int:
 	# Кегль скейлится вместе с сеткой (s), пол 12px. На 1080p (s=0.75)
 	# label 26 → 19.5px, статус 22 → 16.5px — читаемо по дизайн-инварианту.
@@ -5130,18 +5086,6 @@ func _settings_v6_texture_box(path: String, source_margins: Vector4, content: Ve
 	# margins — в px источника (углы рисуются 1:1, середина тянется);
 	# content — в экранных px (уже ×s у вызывающего).
 	return _global_texture_style(path, source_margins, Color.WHITE, content)
-
-
-func _settings_v6_main_modal_style(display_size: Vector2) -> StyleBox:
-	# Арт рамки в пропорции модалки (1420:1060) — рисуется целиком без
-	# 9-slice-растяжений орнамента (аспект rect == аспект текстуры при любом s).
-	var s := _settings_v6_scale(display_size)
-	var content := Vector4(72.0 * s, 130.0 * s, 72.0 * s, 44.0 * s)
-	return _settings_v6_texture_box(SETTINGS_V6_MODAL_FRAME_PATH, Vector4(12.0, 12.0, 12.0, 12.0), content)
-
-
-func _settings_v6_content_panel_style(display_size := Vector2.ZERO) -> StyleBox:
-	return _settings_v6_texture_box(SETTINGS_V6_CONTENT_INSET_PATH, Vector4(30.0, 30.0, 30.0, 30.0), Vector4.ZERO)
 
 
 func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
@@ -5229,56 +5173,64 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	# с лёгким шейдом 0.30: поверх фона лежит модалка, сильное затемнение не нужно.
 	_unified_add_background(root, "settings", 0.30)
 
-	var modal_rect := _settings_v6_modal_rect()
-	var modal := Control.new()
-	modal.name = "SettingsV2Modal"
-	modal.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_apply_control_rect(modal, modal_rect)
-	root.add_child(modal)
+	# SCRUM-879 (итерация 2): полноэкранный атлас-шелл вместо v6-модалки — слои
+	# как у «Атласа героев» (_show_atlas_screen): фон → safe-зона рамы → VBox
+	# (шапка / свитчер табов / контент / футер) → полая рама ПОВЕРХ
+	# (_unified_add_frame последним). Строки контента (поля/бинды/чекбоксы/
+	# слайдеры v6) сохранены — их масштаб s считается ниже.
+	var s_ui := _atlas_ui_scale()
+	# Масштаб v6-строк: детерминированно от вьюпорта ДО построения строк —
+	# ширина контент-зоны safe-области (минус запас на поля чипа) к дизайн-листу
+	# 1420; кламп держит строки читаемыми на 648p и не даёт распухнуть на 4K.
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	var safe_m := _unified_safe_margins()
+	var content_w := vp.x - safe_m.x - safe_m.z - roundf(44.0 * s_ui) * 2.0
+	var s := clampf(content_w / SETTINGS_V6_DESIGN_SIZE.x, 0.55, 1.05)
 
-	var s := _settings_v6_scale(modal_rect.size)
+	var safe := _unified_make_safe_area(root, "Settings")
+	var layout := VBoxContainer.new()
+	layout.name = "SettingsLayout"
+	layout.add_theme_constant_override("separation", int(12.0 * s_ui))
+	safe.add_child(layout)
 
-	var modal_frame := PanelContainer.new()
-	modal_frame.name = "SettingsV2MainModalFrame"
-	modal_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
-	modal_frame.add_theme_stylebox_override("panel", _settings_v6_main_modal_style(modal_rect.size))
-	modal_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	modal.add_child(modal_frame)
+	var settings_back := func() -> void:
+		_return_from_settings()
 
+	# --- Ряд 1: шапка — чип-титул (v6-медальон внутри) + спейсер + «Назад» ---
+	var header := HBoxContainer.new()
+	header.name = "SettingsHeader"
+	header.add_theme_constant_override("separation", int(12.0 * s_ui))
+	layout.add_child(header)
+	var title_chip := _unified_header_chip("Settings", "Настройки", "settings", s_ui)
+	header.add_child(title_chip)
+	# Эмблемы кита для "settings" в ATLAS_STYLE_EMBLEM_PATHS нет (чип текстовый) —
+	# вставляем v6-медальон первым в ряд чипа: арт 180×72, аспект 2.5:1 сохранён
+	# (85×34×s_ui, KEEP_ASPECT_CENTERED — без растяжки, Правило 1).
+	var chip_row := title_chip.get_child(0) as HBoxContainer
 	var medallion_texture: Texture2D = game._cached_texture(SETTINGS_V6_MEDALLION_PATH)
-	if medallion_texture != null:
+	if chip_row != null and medallion_texture != null:
 		var medallion := TextureRect.new()
 		medallion.name = "SettingsV6Emblem"
 		medallion.texture = medallion_texture
+		medallion.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		medallion.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		medallion.custom_minimum_size = Vector2(roundf(85.0 * s_ui), roundf(34.0 * s_ui))
+		medallion.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		medallion.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_apply_control_rect(medallion, _settings_v6_rect(Rect2(620.0, -14.0, 180.0, 72.0), s))
-		modal.add_child(medallion)
-
-	# v6: капсула-плашка под титулом — фронтон рамки несёт плотный узор, текст
-	# кладём на чистое тёмное поле, а не на орнамент. SCRUM-879: сам стиль — чип
-	# Атласа (_atlas_chip_style), как панели экрана «Атлас героев».
-	var title_backing := Panel.new()
-	title_backing.name = "SettingsV2TitleBacking"
-	title_backing.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title_backing.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(14.0 * s)))
-	_apply_control_rect(title_backing, _settings_v6_rect(Rect2(470.0, 52.0, 480.0, 70.0), s))
-	modal.add_child(title_backing)
-	# Плашка сразу над рамкой: эмблема и титул рисуются поверх неё.
-	modal.move_child(title_backing, 1)
-
-	var title := Label.new()
-	title.name = "SettingsV2Title"
-	title.text = "НАСТРОЙКИ"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _settings_v6_font(46.0, s))
-	title.add_theme_color_override("font_color", SETTINGS_V6_TEXT_BRIGHT)
-	title.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.6))
-	title.add_theme_constant_override("shadow_offset_x", maxi(1, int(roundf(2.0 * s))))
-	title.add_theme_constant_override("shadow_offset_y", maxi(1, int(roundf(2.0 * s))))
-	_apply_control_rect(title, _settings_v6_rect(SETTINGS_V6_TITLE_RECT, s))
-	modal.add_child(title)
+		chip_row.add_child(medallion)
+		chip_row.move_child(medallion, 0)
+	var header_spacer := Control.new()
+	header_spacer.name = "SettingsHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	# «Назад» — в шапке (атлас-паттерн, как AtlasBackButton); НАТИВНАЯ пластина
+	# кита settings_back_280x64 (маппинг по имени), фикс 280×64 без растяжки.
+	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", 280.0, 64.0)
+	back_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	back_button.pressed.connect(settings_back)
+	header.add_child(back_button)
+	_settings_fit_kit_row([back_button], 280.0, 64.0)
+	game.ui_escape_action = settings_back
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
@@ -5286,32 +5238,28 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
 
-	# SCRUM-879: табы — кнопки глобального кита фиксированных px-размеров (не
-	# дизайн-сетка ×s): свитчер центрируется в слоте табов (150..234 design-px),
-	# на малых вьюпортах прижимается вверх, чтобы не наехать на контент-панель.
-	var switcher := _make_settings_tab_switcher(tabs, s)
-	var switcher_size := switcher.custom_minimum_size
-	var switcher_y := roundf(SETTINGS_V6_TAB_TOP * s + (SETTINGS_V6_TAB_SIZE.y * s - switcher_size.y) * 0.5)
-	switcher_y = minf(switcher_y, roundf((SETTINGS_V6_CONTENT_RECT.position.y - 2.0) * s - switcher_size.y))
-	_apply_control_rect(switcher, Rect2(
-		Vector2(roundf((SETTINGS_V6_DESIGN_SIZE.x * s - switcher_size.x) * 0.5), switcher_y),
-		switcher_size))
-	modal.add_child(switcher)
+	# --- Ряд 2: свитчер табов — кнопки глобального кита, фикс-сетка 3×220×72 ---
+	var switcher_row := HBoxContainer.new()
+	switcher_row.name = "SettingsSwitcherRow"
+	switcher_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	layout.add_child(switcher_row)
+	switcher_row.add_child(_make_settings_tab_switcher(tabs, s))
 
-	var content_panel := Panel.new()
+	# --- Ряд 3: контент-панель — чип Атласа (как AtlasNodePanel), табы внутри ---
+	var content_panel := PanelContainer.new()
 	content_panel.name = "SettingsContentPanel"
-	var content_panel_rect := _settings_v6_rect(SETTINGS_V6_CONTENT_RECT, s)
-	content_panel.add_theme_stylebox_override("panel", _settings_v6_content_panel_style(content_panel_rect.size))
+	content_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(16.0 * s_ui)))
+	content_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content_panel.clip_contents = true
-	_apply_control_rect(content_panel, content_panel_rect)
-	modal.add_child(content_panel)
+	layout.add_child(content_panel)
+	# Малые поля: content-margins самого чипа уже держат контент на тёмном поле.
 	var content_margin := MarginContainer.new()
 	content_margin.name = "SettingsContentSafe"
-	content_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content_margin.add_theme_constant_override("margin_left", int(roundf(SETTINGS_V6_CONTENT_PAD.x * s)))
-	content_margin.add_theme_constant_override("margin_top", int(roundf(SETTINGS_V6_CONTENT_PAD.y * s)))
-	content_margin.add_theme_constant_override("margin_right", int(roundf(SETTINGS_V6_CONTENT_PAD.z * s)))
-	content_margin.add_theme_constant_override("margin_bottom", int(roundf(SETTINGS_V6_CONTENT_PAD.w * s)))
+	content_margin.add_theme_constant_override("margin_left", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_top", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_right", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_bottom", int(8.0 * s_ui))
 	content_panel.add_child(content_margin)
 	content_margin.add_child(tabs)
 
@@ -5642,50 +5590,26 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	controls_box.add_child(gp_reset)
 
-	var settings_back := func() -> void:
-		_return_from_settings()
-
-	var divider := ColorRect.new()
-	divider.name = "SettingsV6Divider"
-	divider.color = SETTINGS_V6_BRONZE_LINE
-	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_apply_control_rect(divider, _settings_v6_rect(Rect2(160.0, SETTINGS_V6_DIVIDER_Y, 1100.0, 2.0), s))
-	divider.custom_minimum_size.y = maxf(1.0, divider.custom_minimum_size.y)
-	modal.add_child(divider)
-
+	# --- Ряд 4: футер — «Вернуть»/«Применить» справа («Назад» теперь в шапке).
+	# Кнопки глобального кита, фикс 280×64: Apply/Revert носят НАТИВНУЮ пластину
+	# по size-маппингу кита (y<=66, 240<=x<360) — без даунскейла и растяжки.
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
-	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	# SCRUM-879: нижний ряд — кнопки глобального кита. При s>=0.8 все три носят
-	# НАТИВНУЮ пластину settings_back_280x64 (280×64): Back — по имени, Apply и
-	# Revert — по size-маппингу кита (y<=66, 240<=x<360). На меньших вьюпортах
-	# слот ряда (80×s) ниже 64px — даунскейлим равномерно с сохранением аспекта
-	# 280:64 (пропорции арта не искажаются; Apply/Revert при ширине <240 кит
-	# штатно переводит на 9-slice minimal_metal).
-	var action_height := minf(64.0, floorf(SETTINGS_V6_ACTION_SIZE.y * s))
-	var action_width := roundf(action_height * 280.0 / 64.0)
-	var action_gap := maxf(12.0, roundf(SETTINGS_V6_ACTION_GAP * s))
-	action_row.add_theme_constant_override("separation", int(action_gap))
-	var action_row_width := action_width * 3.0 + action_gap * 2.0
-	_apply_control_rect(action_row, Rect2(
-		Vector2(
-			roundf((SETTINGS_V6_DESIGN_SIZE.x * s - action_row_width) * 0.5),
-			roundf(SETTINGS_V6_ACTION_TOP * s + (SETTINGS_V6_ACTION_SIZE.y * s - action_height) * 0.5)),
-		Vector2(action_row_width, action_height)))
-	modal.add_child(action_row)
-	var apply_button := _settings_v6_make_action_button("Применить", "SettingsApplyButton", action_width, action_height)
-	apply_button.disabled = not _settings_video_dirty()
-	apply_button.pressed.connect(_apply_pending_video_settings)
-	action_row.add_child(apply_button)
-	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", action_width, action_height)
+	action_row.alignment = BoxContainer.ALIGNMENT_END
+	action_row.add_theme_constant_override("separation", int(14.0 * s_ui))
+	layout.add_child(action_row)
+	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
 	action_row.add_child(revert_button)
-	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", action_width, action_height)
-	back_button.pressed.connect(settings_back)
-	action_row.add_child(back_button)
-	_settings_fit_kit_row([apply_button, revert_button, back_button], action_width, action_height)
-	game.ui_escape_action = settings_back
+	var apply_button := _settings_v6_make_action_button("Применить", "SettingsApplyButton", 280.0, 64.0)
+	apply_button.disabled = not _settings_video_dirty()
+	apply_button.pressed.connect(_apply_pending_video_settings)
+	action_row.add_child(apply_button)
+	_settings_fit_kit_row([revert_button, apply_button], 280.0, 64.0)
+
+	# Полая рама frame_border ПОВЕРХ всего контента — строго последним слоем.
+	_unified_add_frame(root, "Settings")
 
 	# SCRUM-813: стартовый фокус — первая вкладка настроек; LB/RB листают вкладки
 	# (см. _handle_menu_shoulder_nav). Слайдеры/OptionButton/CheckBox фокусируемы —
@@ -5734,20 +5658,19 @@ func _return_from_settings() -> void:
 	_show_main_menu()
 
 
-func _make_settings_tab_switcher(tabs: TabContainer, s: float) -> Control:
+func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	# SCRUM-879: табы настроек — обычные кнопки глобального кита, как вкладки
-	# «Атласа героев» (_show_atlas_screen), актив/неактив — модуляцией
-	# (_atlas_apply_tab_state), иконки v6 остаются. Размер ФИКСИРОВАННЫЙ
-	# (220,72) — нативный маппинг кита quit_220x72 (Правило 1: уникальные
-	# текстуры только 1:1); это единственный натив, чей ряд из трёх входит во
-	# внутреннюю ширину модалки даже на 1152×648 (гэп дожимается до 6px).
+	# «Атласа героев» (_show_atlas_screen), актив/неактив — модуляцией,
+	# иконки v6 остаются. Размер ФИКСИРОВАННЫЙ (220,72) — нативный маппинг кита
+	# quit_220x72 (Правило 1: уникальные текстуры только 1:1); гэп фикс 24 —
+	# фулскрин-шелл (итерация 2) даёт сетке 708×72 запас даже в самой узкой
+	# safe-зоне рамы (912px на 1152×648).
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var modal_inner_width := (SETTINGS_V6_DESIGN_SIZE.x - 144.0) * s
 	var tab_width := 220.0
 	var tab_height := 72.0
-	var tab_gap := maxf(6.0, minf(roundf(SETTINGS_V6_TAB_GAP * s), floorf((modal_inner_width - tab_width * 3.0) / 2.0)))
+	var tab_gap := 24.0
 	switcher.custom_minimum_size = Vector2(tab_width * 3.0 + tab_gap * 2.0, tab_height)
 
 	var buttons: Array[Button] = []
