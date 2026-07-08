@@ -792,13 +792,31 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if rest_back == null or not rest_back.visible or rest_back.text.strip_edges() == "" or not rest_back.get_global_rect().has_area():
 				return "%s: expected visible non-empty RestBackButton." % context
 		"patch_notes":
-			# SCRUM-576: панель «Что нового» рисуется собственной pn_panel @2K-рамкой,
-			# контент держится в её content-зоне (хедер + скролл версий не на орнаменте).
+			# SCRUM-879: «Что нового» в едином атлас-стиле — тёмная кожаная панель
+			# в safe-зоне, фон-хроника COVERED без растяжки осей, полая рама поверх.
 			var pn_panel := main.find_child("PatchNotesPanel", true, false) as Control
 			if pn_panel == null or not pn_panel.get_global_rect().has_area():
 				return "%s: expected visible PatchNotesPanel." % context
-			if _stylebox_texture_path(pn_panel.get_theme_stylebox("panel")) != PN_PANEL_2K_FRAME_PATH:
-				return "%s: expected PatchNotesPanel to use pn_panel @2K frame." % context
+			var pn_style := pn_panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if pn_style == null or pn_style.bg_color.a < 0.8:
+				return "%s: expected PatchNotesPanel to use a dark StyleBoxFlat chip (bg alpha >= 0.8)." % context
+			var pn_bg := main.find_child("UnifiedBackground_patch_notes", true, false) as TextureRect
+			if pn_bg == null or pn_bg.texture == null:
+				return "%s: expected UnifiedBackground_patch_notes with a texture." % context
+			if pn_bg.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or pn_bg.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
+				return "%s: expected patch notes background KEEP_ASPECT_COVERED without axis stretch." % context
+			var pn_frame := main.find_child("PatchNotesFrame", true, false) as Panel
+			if pn_frame == null:
+				return "%s: expected PatchNotesFrame overlay." % context
+			var pn_frame_style := pn_frame.get_theme_stylebox("panel") as StyleBoxTexture
+			if pn_frame_style == null or pn_frame_style.draw_center or pn_frame_style.texture == null \
+					or not str(pn_frame_style.texture.resource_path).ends_with("meta40/frame_border.png"):
+				return "%s: expected PatchNotesFrame to draw the hollow meta40/frame_border 9-slice." % context
+			var pn_vp: Vector2 = pn_frame.get_viewport().get_visible_rect().size
+			var pn_margins := Vector2(roundf(160.0 * pn_vp.x / 1536.0), roundf(160.0 * pn_vp.y / 1024.0))
+			var pn_safe := Rect2(pn_margins, pn_vp - pn_margins * 2.0)
+			if not pn_safe.grow(2.0).encloses(pn_panel.get_global_rect()):
+				return "%s: expected PatchNotesPanel %s inside frame safe rect %s." % [context, str(pn_panel.get_global_rect()), str(pn_safe)]
 		"level_up":
 			var level_panel := main.find_child("LevelUpPanel", true, false) as Control
 			if level_panel == null or not level_panel.visible or not level_panel.get_global_rect().has_area():
