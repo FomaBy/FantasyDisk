@@ -11,6 +11,7 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 # SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
 # Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
 const GROUND_POOL_Z := -3
+const CONTACT_STUCK_HIT_BACK_ALLOWANCE := 40.0
 
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const PRIMARY_CAST_ACTION_MODES := {
@@ -536,7 +537,7 @@ func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
-	for hit in TARGET_QUERY.in_corridor(self, origin, direction, beam_width, attack_range):
+	for hit in _enemies_in_corridor(origin, direction, beam_width, attack_range):
 		_damage_enemy(hit["node"], amount)
 
 
@@ -737,17 +738,8 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(beam_visual)
 
 	var hits := []
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var to_enemy := enemy_node.global_position - start
-		var forward := to_enemy.dot(direction)
-		if forward < 0.0 or forward > attack_range:
-			continue
-		var closest_point := start + direction * forward
-		if enemy_node.global_position.distance_to(closest_point) <= beam_width * 0.5:
-			hits.append({"node": enemy_node, "forward": forward})
+	for hit in _enemies_in_corridor(start, direction, beam_width, attack_range):
+		hits.append(hit)
 
 	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return float(a["forward"]) < float(b["forward"])
@@ -771,17 +763,8 @@ func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(beam_visual)
 
 	var hits := []
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		var enemy_node := enemy as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		var to_enemy := enemy_node.global_position - start
-		var forward := to_enemy.dot(direction)
-		if forward < 0.0 or forward > attack_range:
-			continue
-		var closest_point := start + direction * forward
-		if enemy_node.global_position.distance_to(closest_point) <= beam_width * 0.5:
-			hits.append({"node": enemy_node, "forward": forward})
+	for hit in _enemies_in_corridor(start, direction, beam_width, attack_range):
+		hits.append(hit)
 
 	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return float(a["forward"]) < float(b["forward"])
@@ -1994,7 +1977,7 @@ func _compress_enemies_to_axis(origin: Vector2, direction: Vector2, perpendicula
 			continue
 		var to_enemy := enemy_node.global_position - origin
 		var forward := to_enemy.dot(direction)
-		if forward < -24.0 or forward > range_limit:
+		if forward < -CONTACT_STUCK_HIT_BACK_ALLOWANCE or forward > range_limit:
 			continue
 		var side := to_enemy.dot(perpendicular)
 		if abs(side) > width * 0.5:
@@ -2091,7 +2074,16 @@ func _owner_uses_cursor_aim(owner_node: Node) -> bool:
 
 
 func _enemies_in_corridor(origin: Vector2, direction: Vector2, width: float, range_limit: float) -> Array:
-	return TARGET_QUERY.in_corridor(self, origin, direction, width, range_limit, 24.0)
+	return TARGET_QUERY.in_corridor(self, origin, direction, width, range_limit, _line_back_allowance(origin))
+
+
+func _line_back_allowance(origin: Vector2) -> float:
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return 0.0
+	if origin.distance_squared_to(owner_node.global_position) <= CONTACT_STUCK_HIT_BACK_ALLOWANCE * CONTACT_STUCK_HIT_BACK_ALLOWANCE:
+		return CONTACT_STUCK_HIT_BACK_ALLOWANCE
+	return 0.0
 
 
 func _find_nearest_enemy_from(origin: Vector2, range_limit: float, excluded_ids: Dictionary) -> Node2D:
@@ -2126,7 +2118,7 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 	var perpendicular := Vector2(-direction.y, direction.x)
 	var to_enemy := enemy_position - origin
 	var forward := to_enemy.dot(direction)
-	if forward < 0.0 or forward > attack_range:
+	if forward < -CONTACT_STUCK_HIT_BACK_ALLOWANCE or forward > attack_range:
 		return false
 	var width_ratio: float = clamp(forward / max(attack_range, 1.0), 0.0, 1.0)
 	var half_width := lerpf(58.0, wave_width * 0.5, width_ratio)
@@ -2330,7 +2322,7 @@ func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, a
 	if length <= 0.001:
 		_damage_enemies_in_circle(start, width * 0.5, amount)
 		return
-	for enemy_node in TARGET_QUERY.in_segment(self, start, finish, width):
+	for enemy_node in TARGET_QUERY.in_segment(self, start, finish, width, _line_back_allowance(start)):
 		_damage_enemy(enemy_node, amount)
 
 

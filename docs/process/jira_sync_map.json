@@ -3992,5 +3992,10 @@
   "key": "SCRUM-885",
   "status": "Контроль качества",
   "desc_hash": "2c5a77b565eba9edb03a89179fb951f9"
+ },
+ "backend_contact_stuck_enemy_attack_deadzone_task.md": {
+  "key": "SCRUM-886",
+  "status": "В работе",
+  "desc_hash": "a162f59a82440f5236e52881374c390a"
  }
 }

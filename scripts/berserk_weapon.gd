@@ -3,6 +3,7 @@ extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const EXACT_ZONE_OVERLAY_ALPHA := 0.60
+const CONTACT_STUCK_HIT_RADIUS := 40.0
 
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"
@@ -276,6 +277,8 @@ func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
 
 
 func _is_enemy_inside_attack(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2) -> bool:
+	if owner_node.global_position.distance_squared_to(enemy_node.global_position) <= CONTACT_STUCK_HIT_RADIUS * CONTACT_STUCK_HIT_RADIUS:
+		return true
 	if attack_shape == "circle":
 		var radius := _effective_circle_radius()
 		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= radius * radius

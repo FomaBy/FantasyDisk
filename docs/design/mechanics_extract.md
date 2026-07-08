@@ -850,9 +850,16 @@ Available helpers:
 - `nearest_many(source, origin, range_limit, count, excluded_ids)`.
 - `in_radius(source, origin, radius)` and `has_in_radius(...)`.
 - `in_corridor(source, origin, direction, width, range_limit, back_allowance)`.
-- `in_segment(source, start, finish, width)`.
+- `in_segment(source, start, finish, width, back_allowance)`.
 
-Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused check: `tests/combat_target_query_cache_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
+SCRUM-886 (2026-07-08) uses that optional `back_allowance` for player-origin
+beams/corridors/segments whose visual/damage start is offset in front of the
+player. A monster overlapping the player is no longer rejected as being behind
+the first pixel of the beam, while distant non-player-origin segments keep their
+normal geometry. Berserk melee also has a 40px close-contact rescue radius before
+strip/sweep/frustum checks.
+
+Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused checks: `tests/combat_target_query_cache_test.gd`, `tests/contact_stuck_attack_deadzone_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
 
 
 ### Историческая Выдержка Class Sheet 0.2 — Статы И Баланс (2026-06-11)
