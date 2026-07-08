@@ -20,10 +20,15 @@ const PROJECTILE_SPEED := 950.0
 const MUZZLE_OFFSET := Vector2(0.0, -14.0)
 const IDLE_RETRY_INTERVAL := 0.2
 const FIRST_AUTO_SHOT_DELAY := 0.35
+# SCRUM-961 «Магазин турели»: базовый боезапас режима магазина.
+const SENTRY_MAGAZINE_BASE := 14
 
 var _weapon_instance_id := 0
 var _owner_instance_id := 0
 var _fire_cooldown := FIRST_AUTO_SHOT_DELAY
+# SCRUM-961: -1 = без магазина (легаси-поведение «живёт до замены»); >0 = осталось
+# выстрелов, по расстрелу турель деспаунится сама (см. try_fire).
+var _shots_left := -1
 
 
 func _ready() -> void:
@@ -36,6 +41,23 @@ func _ready() -> void:
 func setup(weapon: Node, owner_node: Node2D) -> void:
 	_weapon_instance_id = weapon.get_instance_id() if weapon != null else 0
 	_owner_instance_id = owner_node.get_instance_id() if owner_node != null else 0
+	# SCRUM-961 «Магазин турели»/«Полевой чертеж»: магазин активируется ключом
+	# sentry_magazine_bonus (14 базовых + бонус ключа + 2 за каждые 6 Лидерства
+	# чертежа); без ключа поведение турели не меняется.
+	if owner_node == null:
+		return
+	var mods = owner_node.get("run_modifiers")
+	if not (mods is Dictionary):
+		return
+	var magazine_bonus := float((mods as Dictionary).get("sentry_magazine_bonus", 0.0))
+	if magazine_bonus <= 0.0:
+		return
+	var blueprint_shots := 0
+	if float((mods as Dictionary).get("blueprint_leadership_scaling", 0.0)) > 0.0:
+		var stats = owner_node.get("stats")
+		if stats is Dictionary:
+			blueprint_shots = int(floor(float((stats as Dictionary).get("leadership", 0.0)) / 6.0)) * 2
+	_shots_left = SENTRY_MAGAZINE_BASE + int(magazine_bonus) + blueprint_shots
 
 
 func _play_deploy_pop() -> void:
@@ -99,12 +121,23 @@ func try_fire(weapon: Node) -> bool:
 	var falloff := clampf(float(weapon.get("damage_falloff")), 0.05, 1.0)
 	var fired := false
 	for index in range(targets.size()):
+		# SCRUM-961 «Магазин турели»: каждый снаряд тратит боезапас.
+		if _shots_left == 0:
+			break
 		var target := targets[index] as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var shot_damage := float(weapon.call("_rolled_damage", owner_node)) * pow(falloff, float(index))
 		_launch_projectile(weapon, target, shot_damage)
 		fired = true
+		if _shots_left > 0:
+			_shots_left -= 1
+	if _shots_left == 0:
+		# Боезапас расстрелян: деспаун с мини-VFX + возврат перезарядки владельцу
+		# («Ядро утилизации», no-op без ключа).
+		AttackVfx.ring_pulse(weapon.call("_projectile_parent"), global_position, 46.0, Color(0.85, 0.75, 0.40, 0.45), false)
+		weapon.call("_salvage_device_refund")
+		queue_free()
 	return fired
 
 

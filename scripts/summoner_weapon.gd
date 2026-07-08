@@ -30,6 +30,24 @@ var _cooldown := 0.0
 var _command_refresh := 0.0
 var _initial_prefill_done := false
 var ally_visual_ids: Array[String] = []
+# SCRUM-961 «Гомункул-реактор»: особый юнит вне боевого лимита + таймер его волн.
+var _reactor_unit: Node2D = null
+var _reactor_pulse_left := 0.0
+
+const HOMUNCULUS_TEXTURE_PATH := "res://assets/sprites/allies/ally_homunculus.png"
+const REACTOR_PULSE_INTERVAL := 1.6
+const REACTOR_WAVE_RADIUS := 140.0
+
+
+# SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
+func _owner_mod(key: String, default_value := 0.0) -> float:
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return default_value
+	var mods = owner_node.get("run_modifiers")
+	if mods is Dictionary:
+		return float((mods as Dictionary).get(key, default_value))
+	return default_value
 
 
 func configure_weapon(config: Dictionary) -> void:
@@ -73,6 +91,7 @@ func _process(delta: float) -> void:
 	if _command_refresh <= 0.0:
 		_command_existing_summons()
 		_command_refresh = 0.25
+	_update_reactor_homunculus(delta)
 	if _cooldown > 0.0:
 		return
 
@@ -114,6 +133,10 @@ func _summon(play_cast_animation := true) -> bool:
 	ally.add_to_group("player_weapon_effects")
 	ally.set_meta("summon_weapon_owner", get_instance_id())
 	var selected_visual_id := _selected_ally_visual_id()
+	# SCRUM-961 «Зов волков»: состав стаи смещается к melee-зверям.
+	var pack_bias := weapon_id == "summon_amulet" and _owner_mod("pack_wolf_bias") > 0.0
+	if pack_bias and randf() < 0.8:
+		selected_visual_id = "druid_beast"
 	if ally.has_method("set_visual_id"):
 		ally.call("set_visual_id", selected_visual_id)
 	else:
@@ -123,6 +146,9 @@ func _summon(play_cast_animation := true) -> bool:
 	var angle := randf() * TAU
 	ally.global_position = owner_node.global_position + Vector2.RIGHT.rotated(angle) * 48.0
 	var profile := _summon_profile(owner_node)
+	# SCRUM-961 «Зов волков»: ближние (melee) духи рвут сильнее (+20% урона).
+	if pack_bias and selected_visual_id == "druid_beast":
+		profile["damage"] = float(profile.get("damage", 1.0)) * 1.2
 	if ally.has_method("set_combat_profile"):
 		ally.call("set_combat_profile", profile)
 	else:
@@ -169,9 +195,15 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var run_modifiers: Dictionary = run_modifiers_raw if run_modifiers_raw is Dictionary else {}
 	var meta_damage_mult := 1.0
 	var meta_health_mult := 1.0
+	var taunt_pulse := false
 	if weapon_id == "homunculus_vial":
 		meta_damage_mult *= 1.0 + float(run_modifiers.get("homunculus_power_mult", 0.0))
 		meta_health_mult *= 1.0 + float(run_modifiers.get("homunculus_power_mult", 0.0))
+		# SCRUM-961 «Гомункул-танк»: здоровяк (+60% HP) с периодической провокацией
+		# (taunt-пульс — в ally_minion по образцу bastion_taunt игрока).
+		if float(run_modifiers.get("homunculus_taunt", 0.0)) > 0.0:
+			meta_health_mult *= 1.6
+			taunt_pulse = true
 	if weapon_id == "summon_amulet":
 		meta_damage_mult *= 1.0 + float(run_modifiers.get("pet_damage_mult", 0.0))
 	return {
@@ -187,7 +219,64 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 		"aoe_radius": summon_radius,
 		"aoe_damage_multiplier": summon_splash_damage,
 		"leash_radius": summon_leash_radius,
+		"taunt_pulse": taunt_pulse,
 	}
+
+
+# SCRUM-961 «Гомункул-реактор»: второй особый гомункул — неуязвимый реактор.
+# НЕ занимает боевой лимит (не в группе allies, не считается _active_weapon_summons),
+# не атакует; каждые 1.6с волна r140 вешает стак DoT (0.8/тик, кап 3) на врагов.
+func _update_reactor_homunculus(delta: float) -> void:
+	if weapon_id != "homunculus_vial" or _owner_mod("homunculus_reactor") <= 0.0:
+		return
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return
+	if _reactor_unit == null or not is_instance_valid(_reactor_unit):
+		_reactor_unit = _spawn_reactor_unit(owner_node)
+		_reactor_pulse_left = REACTOR_PULSE_INTERVAL
+		if _reactor_unit == null:
+			return
+	# Реактор дрейфует за владельцем на фиксированном плече.
+	var anchor := owner_node.global_position + Vector2(64.0, -42.0)
+	_reactor_unit.global_position = _reactor_unit.global_position.lerp(anchor, minf(delta * 3.0, 1.0))
+	_reactor_pulse_left -= delta
+	if _reactor_pulse_left > 0.0:
+		return
+	_reactor_pulse_left = REACTOR_PULSE_INTERVAL
+	AttackVfx.ring_pulse(_reactor_unit.get_parent(), _reactor_unit.global_position, REACTOR_WAVE_RADIUS, Color(0.55, 0.95, 0.45, 0.34), false)
+	for enemy in TARGET_QUERY.in_radius(self, _reactor_unit.global_position, REACTOR_WAVE_RADIUS):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		StatusEffects.apply_status(enemy_node, "reactor_homunculus_dot", {
+			"duration": 3.4,
+			"dot_damage": 0.8,
+			"dot_interval": 1.0,
+			"stack_mode": "add",
+			"max_stacks": 3,
+			"marker_color": Color(0.55, 0.95, 0.45, 1.0),
+		})
+
+
+func _spawn_reactor_unit(owner_node: Node2D) -> Node2D:
+	var parent := owner_node.get_tree().current_scene
+	if parent == null or not is_instance_valid(parent):
+		parent = owner_node.get_parent()
+	if parent == null:
+		return null
+	var reactor := Node2D.new()
+	reactor.name = "ReactorHomunculus"
+	reactor.z_index = 5
+	var visual := Sprite2D.new()
+	visual.texture = load(HOMUNCULUS_TEXTURE_PATH) as Texture2D
+	visual.modulate = Color(0.65, 1.0, 0.60, 0.85)
+	visual.scale = Vector2.ONE * 0.80
+	reactor.add_child(visual)
+	parent.add_child(reactor)
+	reactor.add_to_group("player_weapon_effects")
+	reactor.global_position = owner_node.global_position + Vector2(64.0, -42.0)
+	return reactor
 
 
 func _selected_ally_visual_id() -> String:
