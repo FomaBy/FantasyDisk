@@ -51,9 +51,11 @@ const LEVEL_UP_LATER_HOVER_TEXTURE := "res://assets/sprites/ui/frames/level_up_s
 const LEVEL_UP_LATER_PRESSED_TEXTURE := "res://assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png"
 const MINIMAL_HUD_STRIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_hud_strip.png"
 const MINIMAL_FIELD_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png"
-# SCRUM-792 (supersedes SCRUM-448 for Settings v3): PixelLab 9-slice фрейм-семья настроек.
-const SETTINGS_V6_TAB_ACTIVE_TEXTURE := "res://assets/sprites/ui/frames/settings_v6/ui_settings_v6_tab_active.png"
-const SETTINGS_V6_TAB_INACTIVE_TEXTURE := "res://assets/sprites/ui/frames/settings_v6/ui_settings_v6_tab_inactive.png"
+# SCRUM-879 (supersedes SCRUM-847 tab plates): табы настроек носят глобальный
+# кит (minimal_metal 9-slice), актив/неактив — модуляцией, как вкладки Атласа.
+const SETTINGS_TAB_KIT_PLATE_PREFIX := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
+const SETTINGS_TAB_ACTIVE_TINT := Color(1.0, 0.94, 0.74)
+const SETTINGS_TAB_IDLE_TINT := Color(0.74, 0.76, 0.84, 0.92)
 # SCRUM-564 (supersedes SCRUM-448 for HUD frames): per-слот @2K-рамки боевого HUD,
 # нарисованы 1:1 под слот (CHUD_*_2K) build_ui_2k_frame_kit.py → резкий орнамент.
 const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806: слим-кластер v2
@@ -321,8 +323,8 @@ func _initialize() -> void:
 
 	main.call("_show_settings_menu")
 	await process_frame
-	if not _has_screen_background(main, "settings"):
-		_fail("Expected settings screen to use the system/cathedral screen backdrop.")
+	if not _has_unified_screen_background(main, "settings"):
+		_fail("Expected settings screen to use the SCRUM-879 unified atlas-style backdrop.")
 		return
 	await _test_settings_tabs_and_rebind(main)
 	main.set("selected_resolution_index", 0)
@@ -2881,6 +2883,16 @@ func _test_noncombat_nodes(main: Node) -> void:
 	main.call("_apply_event_choice", {"title": "Rest", "description": "Recover", "heal_percent": 0.25})
 	main.call("_show_upgrade_screen")
 	main.call("_apply_reward_to_run", {"title": "Test Upgrade", "description": "+defense", "mods": {"defense_flat": 0.04}})
+
+
+func _has_unified_screen_background(node: Node, screen_id: String) -> bool:
+	# SCRUM-879: атлас-стиль фонов (_unified_add_background) — TextureRect
+	# UnifiedBackground_<id>, COVERED + IGNORE_SIZE (без растяжки осей).
+	var background := _find_active_ui_child(node, "UnifiedBackground_%s" % screen_id) as TextureRect
+	if background == null or background.texture == null:
+		return false
+	return background.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED \
+		and background.expand_mode == TextureRect.EXPAND_IGNORE_SIZE
 
 
 func _has_screen_background(node: Node, screen_background_id: String) -> bool:
@@ -5592,27 +5604,34 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Settings v6: obsolete v3 switcher frame panel should be gone (tabs are standalone plates).")
 		return
 	var switcher_rect := tab_switcher.get_global_rect()
-	# v6 (сетка v5/SCRUM-805): 3 самостоятельных «листа-закладки» 340×84 (design-px), гэп 20,
-	# скейл s = высота свитчера / 84. Каждая кнопка обтянута своим v6-артом.
-	var v6_scale := switcher_rect.size.y / 84.0
-	var tab_width := roundf(340.0 * v6_scale)
-	var tab_gap := roundf(20.0 * v6_scale)
+	# SCRUM-879: табы — кнопки глобального кита (minimal_metal 9-slice) в сетке
+	# 3×(w+gap) от слота модалки: gap=max(10, 20×s), h=min(66, 84×s),
+	# w=min(236, (внутр. ширина модалки − 2×gap)/3), s = ширина модалки / 1420.
+	var modal := main.find_child("SettingsV2Modal", true, false) as Control
+	if modal == null:
+		_fail("Expected SettingsV2Modal to exist for the settings tab grid check.")
+		return
+	var v6_scale := modal.get_global_rect().size.x / 1420.0
+	var tab_gap := maxf(10.0, roundf(20.0 * v6_scale))
+	var tab_height := minf(66.0, floorf(84.0 * v6_scale))
+	var tab_width := minf(236.0, floorf(((1420.0 - 144.0) * v6_scale - 2.0 * tab_gap) / 3.0))
+	if absf(switcher_rect.size.x - (tab_width * 3.0 + tab_gap * 2.0)) > 3.0 or absf(switcher_rect.size.y - tab_height) > 3.0:
+		_fail("Expected SettingsTabSwitcher to size from the SCRUM-879 kit grid, got %s." % str(switcher_rect.size))
+		return
 	if main.find_child("SettingsTabButton_3", true, false) != null:
 		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
 		return
 	var settings_switcher_dump := PackedStringArray()
-	settings_switcher_dump.append("# SCRUM-847 Settings v6 Runtime Layout")
+	settings_switcher_dump.append("# SCRUM-879 Settings Kit-Tab Runtime Layout")
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("- switcher_rect: `%s`" % str(switcher_rect))
 	settings_switcher_dump.append("- v6_scale: `%s`" % str(v6_scale))
-	var modal := main.find_child("SettingsV2Modal", true, false) as Control
 	var content_panel := main.find_child("SettingsContentPanel", true, false) as Control
-	if modal != null:
-		settings_switcher_dump.append("- modal_rect: `%s`" % str(modal.get_global_rect()))
+	settings_switcher_dump.append("- modal_rect: `%s`" % str(modal.get_global_rect()))
 	if content_panel != null:
 		settings_switcher_dump.append("- content_panel_rect: `%s`" % str(content_panel.get_global_rect()))
 	settings_switcher_dump.append("")
-	settings_switcher_dump.append("| tab | actual | expected v6 plate rect | stylebox |")
+	settings_switcher_dump.append("| tab | actual | expected kit grid rect | stylebox |")
 	settings_switcher_dump.append("| --- | --- | --- | --- |")
 	for tab_index in range(3):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
@@ -5627,11 +5646,14 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		var plate_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal"))
 		settings_switcher_dump.append("| `%d` | `%s` | `%s` | `%s` |" % [tab_index, str(actual), str(expected), plate_path])
 		if actual.position.distance_to(expected.position) > 3.0 or actual.size.distance_to(expected.size) > 3.0:
-			_fail("Expected SettingsTabButton_%d to sit on the v6 tab grid. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
+			_fail("Expected SettingsTabButton_%d to sit on the SCRUM-879 kit tab grid. Actual=%s expected=%s" % [tab_index, str(actual), str(expected)])
 			return
-		var expected_plate := SETTINGS_V6_TAB_ACTIVE_TEXTURE if tabs.current_tab == tab_index else SETTINGS_V6_TAB_INACTIVE_TEXTURE
-		if plate_path != expected_plate:
-			_fail("Expected SettingsTabButton_%d to wear the v6 %s plate, got %s." % [tab_index, "active" if tabs.current_tab == tab_index else "inactive", plate_path])
+		if not plate_path.begins_with(SETTINGS_TAB_KIT_PLATE_PREFIX):
+			_fail("Expected SettingsTabButton_%d to wear a global-kit minimal_metal plate, got %s." % [tab_index, plate_path])
+			return
+		var expected_tint := SETTINGS_TAB_ACTIVE_TINT if tabs.current_tab == tab_index else SETTINGS_TAB_IDLE_TINT
+		if not tab_button.modulate.is_equal_approx(expected_tint):
+			_fail("Expected SettingsTabButton_%d modulate to mark the %s tab (atlas pattern), got %s." % [tab_index, "active" if tabs.current_tab == tab_index else "idle", str(tab_button.modulate)])
 			return
 		tab_button.pressed.emit()
 		await process_frame
