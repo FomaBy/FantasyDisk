@@ -941,13 +941,22 @@ func _initialize() -> void:
 	if level_up_particles == null or level_up_particles.get_child_count() < 20:
 		_fail("Expected level-up to create burst particles and rays.")
 		return
-	var level_up_hero := level_up_overlay.find_child("LevelUpHeroPortrait", true, false) as TextureRect
-	if level_up_hero == null or level_up_hero.texture == null:
-		_fail("Expected level-up screen to include the selected hero portrait.")
+	# Директива пользователя SCRUM-892: иконки/портрета класса на level-up НЕТ.
+	for level_up_class_icon in ["LevelUpHeroPortrait", "LevelUpHeroFrame", "LevelUpHeroRing", "LevelUpHeroIcon"]:
+		if level_up_overlay.find_child(level_up_class_icon, true, false) != null:
+			_fail("Expected level-up screen to drop the class icon/portrait (%s found)." % level_up_class_icon)
+			return
+	# SCRUM-892: торжественный шелл атласа — полая рама meta40 и орнамент шапки.
+	var level_up_frame := level_up_overlay.find_child("LevelUpFrame", true, false) as Panel
+	if level_up_frame == null:
+		_fail("Expected level-up overlay to draw the hollow meta40 atlas frame.")
 		return
-	var level_up_portrait := _expected_character_portrait_path(str(main.get("selected_character_id")))
-	if level_up_hero.texture.resource_path != level_up_portrait:
-		_fail("Expected level-up hero portrait to use new full-frame portrait %s, got %s." % [level_up_portrait, level_up_hero.texture.resource_path])
+	var level_up_frame_style := level_up_frame.get_theme_stylebox("panel") as StyleBoxTexture
+	if level_up_frame_style == null or level_up_frame_style.draw_center or level_up_frame_style.texture == null or not level_up_frame_style.texture.resource_path.ends_with("meta40/frame_border.png"):
+		_fail("Expected LevelUpFrame to be a hollow meta40 frame_border 9-slice.")
+		return
+	if level_up_overlay.find_child("LevelUpTitleDivider", true, false) == null:
+		_fail("Expected level-up header to include the ceremonial divider ornament.")
 		return
 	# SCRUM-149: ровно 3 варианта за уровень.
 	var level_up_buttons := level_up_overlay.find_children("LevelUpRewardButton*", "Button", true, false)
