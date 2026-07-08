@@ -1157,7 +1157,7 @@ const HS4_MINIMAL_SLOT_SIZE := 280.0
 const HS4_MINIMAL_BASE_STATS := HeroSelectConstants.HERO_BASE_STATS
 const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
 const HS4_MINIMAL_PREVIEW_MAX_SIZE := 660.0
-const HS4_MINIMAL_SLOT_MIN_SIZE := 184.0
+const HS4_MINIMAL_SLOT_MIN_SIZE := 180.0
 const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
 const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
 const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
@@ -1357,34 +1357,6 @@ func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state:
 		return
 
 
-func _hs4_minimal_style(fill: Color, border := Color(0.0, 0.0, 0.0, 0.0), border_width := 0, radius := 4) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.content_margin_left = 10
-	style.content_margin_top = 8
-	style.content_margin_right = 10
-	style.content_margin_bottom = 8
-	return style
-
-
-func _apply_hs4_minimal_button_theme(button: Button, selected := false) -> void:
-	var normal_border := Color(0.70, 0.55, 0.26, 0.72) if selected else Color(0.18, 0.18, 0.18, 0.52)
-	var normal_fill := Color(0.03, 0.03, 0.032, 0.86) if selected else Color(0.0, 0.0, 0.0, 0.06)
-	button.add_theme_stylebox_override("normal", _hs4_minimal_style(normal_fill, normal_border, 1 if selected else 0, 3))
-	button.add_theme_stylebox_override("hover", _hs4_minimal_style(Color(0.12, 0.085, 0.035, 0.52), Color(0.96, 0.76, 0.35, 0.90), 1, 3))
-	button.add_theme_stylebox_override("focus", _hs4_minimal_style(Color(0.13, 0.09, 0.035, 0.58), Color(1.0, 0.86, 0.44, 1.0), 2, 3))
-	button.add_theme_stylebox_override("pressed", _hs4_minimal_style(Color(0.20, 0.11, 0.035, 0.70), Color(0.78, 0.52, 0.20, 0.95), 1, 3))
-	button.add_theme_stylebox_override("disabled", _hs4_minimal_style(Color(0.0, 0.0, 0.0, 0.16), Color(0.12, 0.12, 0.14, 0.48), 1, 3))
-	button.add_theme_color_override("font_color", Color(0.94, 0.88, 0.72, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.78, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.78, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.48, 0.52, 1.0))
-
-
 # SCRUM-851: тултип стата краткий — «Имя — значение» + человеческое описание.
 # Формулы, тех-листинги производных и классовые интерпретации — в кодекс, не в ховер.
 func _hs4_stat_tooltip(stat_id: String, value: float, _character_id: String) -> String:
@@ -1482,53 +1454,86 @@ func _build_character_select_v4() -> void:
 	if vp.x <= 0.0 or vp.y <= 0.0:
 		vp = Vector2(1600.0, 900.0)
 	var layout_scale := clampf(vp.y / 900.0, 0.76, 1.18)
+	var s := _atlas_ui_scale()
+	var action_h := _atlas_action_button_height()
 
-	var black_background := ColorRect.new()
-	black_background.name = "HS4BlackBackground"
-	black_background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	black_background.color = Color.BLACK
-	black_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(black_background)
+	# SCRUM-879: единый атлас-стиль — фон-зал героев, контент строго в safe-зоне
+	# рамы, полая рама frame_border добавляется последней (поверх контента).
+	_unified_add_background(root, "hero_select")
+	var sm := _unified_safe_margins()
+	var content_rect := Rect2(Vector2(sm.x, sm.y), vp - Vector2(sm.x + sm.z, sm.y + sm.w))
 
-	var margin_x := clampf(vp.x * 0.035, 28.0, 76.0)
-	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
-	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
-	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
-	var carousel_slot_size := clampf(vp.y * 0.282, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
-	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
-	var carousel_y := vp.y - bottom_margin - carousel_h
-	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
-	var ascension_h := clampf(vp.y * 0.12, HS4_MINIMAL_ASCENSION_MIN_HEIGHT, HS4_MINIMAL_ASCENSION_MAX_HEIGHT)
-	var ascension_gap := clampf(vp.y * 0.012, 8.0, 12.0)
-	var ascension_reserved_h := 148.0
-	if vp.y < 720.0:
-		ascension_reserved_h = 88.0
-	elif vp.y < 1000.0:
-		ascension_reserved_h = 136.0
-	var left_w := clampf(vp.x * 0.33, 370.0, 660.0)
-	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
-	var portrait_size := clampf(minf(left_w, top_h - ascension_reserved_h - ascension_gap), preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
-	var left_x := margin_x
-	var dossier_x := left_x + left_w + gap
-	var dossier_w := maxf(420.0, vp.x - margin_x - dossier_x)
-
+	# --- Шапка: чип-титул слева, «Назад» на глобальном ките справа ---
+	var title_chip := _unified_header_chip("HS4", "Выбор героя", "hero_select", s)
+	title_chip.position = content_rect.position
+	root.add_child(title_chip)
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	back_button.position = Vector2(margin_x, maxf(12.0, top_y - 50.0))
-	_set_action_button_size(back_button, 124.0, 44.0)
-	_apply_hs4_minimal_button_theme(back_button)
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(14.0 * layout_scale))), 0, 24))
+	_set_action_button_size(back_button, 180.0, action_h)
+	back_button.position = Vector2(content_rect.end.x - 180.0, content_rect.position.y)
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
+	# «Выбрать» — главный CTA в шапке (паттерн Атласа: действия в верхней полосе;
+	# в узкую колонну возвышения 720p кит hero_confirm по ширине не помещается).
+	var select_button := _make_button("Выбрать")
+	select_button.name = "HS4ChooseButton"
+	_set_action_button_size(select_button, 320.0, action_h)
+	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	select_button.position = Vector2(back_button.position.x - 12.0 - 320.0, content_rect.position.y)
+	root.add_child(select_button)
+	# Реальная высота шапки: у кит-кнопок 9-slice минимум выше компактного
+	# action_h (контент-маргины ассета) — меряем фактические минимумы.
+	var header_h := maxf(maxf(back_button.get_combined_minimum_size().y, select_button.get_combined_minimum_size().y), action_h)
 
-	var portrait_panel := Control.new()
+	# Геометрия: слева колонна-витрина (портрет на пьедестале + возвышение) на всю
+	# высоту safe-зоны, справа досье и карусель под ним. На 720p полноширинная
+	# нижняя лента не помещается в safe-зону вместе с портретом 320px, поэтому
+	# карусель живёт в правой колонке на всех вьюпортах.
+	var column_gap := clampf(content_rect.size.x * 0.012, 8.0, 16.0)
+	var vgap := clampf(content_rect.size.y * 0.010, 4.0, 10.0)
+	var header_band := title_chip.get_combined_minimum_size().y + 4.0
+	var carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var carousel_h := carousel_slot_size + clampf(content_rect.size.y * 0.012, 6.0, 14.0)
+	var ascension_reserved_h := 64.0 + clampf(content_rect.size.y * 0.08, 36.0, 52.0)
+	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
+	var carousel_min_w := 2.0 * 54.0 + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
+	var portrait_size := clampf(
+		minf(content_rect.size.x * 0.34, content_rect.size.y - header_band - vgap * 2.0 - ascension_reserved_h),
+		preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
+	portrait_size = floorf(maxf(minf(portrait_size, content_rect.size.x - column_gap - carousel_min_w), preview_floor))
+	var left_x := content_rect.position.x
+	var left_top := content_rect.position.y + header_band + vgap
+	var dossier_x := left_x + portrait_size + column_gap
+	var dossier_w := content_rect.end.x - dossier_x
+	var dossier_y := content_rect.position.y + header_h + vgap
+	var carousel_y := content_rect.end.y - carousel_h
+	var dossier_h := carousel_y - vgap - dossier_y
+
+	var portrait_panel := Panel.new()
 	portrait_panel.name = "HS4PortraitFrame"
-	portrait_panel.position = Vector2(left_x + maxf(0.0, (left_w - portrait_size) * 0.5), top_y)
+	portrait_panel.position = Vector2(left_x, left_top)
 	portrait_panel.size = Vector2(portrait_size, portrait_size)
 	portrait_panel.custom_minimum_size = portrait_panel.size
+	portrait_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.82, roundf(clampf(10.0 * s, 5.0, 10.0))))
 	portrait_panel.clip_contents = true
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(portrait_panel)
+
+	# Пьедестал-подиум PixelLab: аспект-бокс 676:148 у нижней кромки портрет-фрейма,
+	# добавлен ДО портрета (под ним по z-порядку). Герой floor-align на верхнюю
+	# площадку — линия пола = верх бокса + 22% его высоты.
+	var pedestal := TextureRect.new()
+	pedestal.name = "HS4Pedestal"
+	pedestal.texture = game._cached_texture(ATLAS_STYLE_PEDESTAL_PATH)
+	pedestal.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pedestal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pedestal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pedestal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var pedestal_w := roundf(portrait_size * 0.86)
+	var pedestal_h := roundf(pedestal_w * 148.0 / 676.0)
+	pedestal.position = Vector2(roundf((portrait_size - pedestal_w) * 0.5), portrait_size - pedestal_h - maxf(6.0, roundf(portrait_size * 0.02)))
+	pedestal.size = Vector2(pedestal_w, pedestal_h)
+	portrait_panel.add_child(pedestal)
 	var portrait := TextureRect.new()
 	portrait.name = "HS4Portrait"
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -1595,8 +1600,9 @@ func _build_character_select_v4() -> void:
 		texture_rect.offset_right = left + draw_size.x
 		texture_rect.offset_bottom = top + draw_size.y
 	var position_main_portrait := func(texture: Texture2D) -> void:
-		var floor_y := portrait_panel.size.y - maxf(6.0, roundf(portrait_panel.size.y * 0.025))
-		var visible_target := Vector2(portrait_panel.size.x * 0.86, portrait_panel.size.y * 0.92)
+		# Floor-align на верхнюю площадку пьедестала (верх бокса + 22% высоты).
+		var floor_y := pedestal.position.y + roundf(pedestal.size.y * 0.22)
+		var visible_target := Vector2(portrait_panel.size.x * 0.86, maxf(96.0, floor_y - maxf(10.0, roundf(portrait_panel.size.y * 0.05))))
 		position_alpha_cropped_texture.call(portrait, texture, portrait_panel.size, visible_target, floor_y, portrait_panel.size.x * 0.5)
 	var portrait_preview_state := {
 		"character_id": "",
@@ -1616,9 +1622,9 @@ func _build_character_select_v4() -> void:
 
 	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HS4DossierFrame"
-	dossier_panel.position = Vector2(dossier_x, top_y)
-	dossier_panel.size = Vector2(dossier_w, top_h)
-	dossier_panel.add_theme_stylebox_override("panel", _hs4_minimal_style(Color(0.018, 0.018, 0.022, 0.72), Color(0.34, 0.28, 0.18, 0.64), 1, 4))
+	dossier_panel.position = Vector2(dossier_x, dossier_y)
+	dossier_panel.size = Vector2(dossier_w, dossier_h)
+	dossier_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(clampf(12.0 * s, 6.0, 12.0))))
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(dossier_panel)
 
@@ -1648,7 +1654,7 @@ func _build_character_select_v4() -> void:
 	name_label.name = "HS4NameLabel"
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
-	name_label.add_theme_color_override("font_color", Color(0.98, 0.88, 0.56, 1.0))
+	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(name_label)
 
 	var desc_label := Label.new()
@@ -1658,7 +1664,7 @@ func _build_character_select_v4() -> void:
 	desc_label.max_lines_visible = 3
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
-	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	dossier_content.add_child(desc_label)
 
 	var strengths_label := Label.new()
@@ -1686,7 +1692,7 @@ func _build_character_select_v4() -> void:
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	weapon_label.add_theme_color_override("font_color", Color(0.84, 0.90, 1.0, 0.96))
+	weapon_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(weapon_label)
 
@@ -1697,7 +1703,7 @@ func _build_character_select_v4() -> void:
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	identity_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-	identity_label.add_theme_color_override("font_color", Color(0.72, 0.76, 0.84, 1.0))
+	identity_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(identity_label)
 
@@ -1706,7 +1712,7 @@ func _build_character_select_v4() -> void:
 	stats_title.text = "Основные характеристики"
 	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	stats_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	stats_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
+	stats_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(stats_title)
 
 	var stats_grid := GridContainer.new()
@@ -1719,7 +1725,9 @@ func _build_character_select_v4() -> void:
 	var stat_buttons := {}
 	var stat_fill_nodes := {}
 	var stat_value_labels := {}
-	var stat_button_w := maxf(180.0, (dossier_w - 64.0) * 0.5)
+	# Ширина колонок статов: вычитаем чип-паддинги, маргины, разделитель грида и
+	# вертикальный скроллбар, иначе min-size контента распирает PanelContainer.
+	var stat_button_w := maxf(180.0, (dossier_w - 130.0) * 0.5)
 	var stat_button_h := maxf(38.0, roundf(42.0 * layout_scale))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
@@ -1729,7 +1737,7 @@ func _build_character_select_v4() -> void:
 		stat_button.focus_mode = Control.FOCUS_ALL
 		stat_button.text = ""
 		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
-		_apply_hs4_minimal_button_theme(stat_button)
+		_unified_apply_row_theme(stat_button, 8.0)
 		var stat_row := HBoxContainer.new()
 		stat_row.name = "HS4StatLine_%s" % sid
 		stat_row.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1781,7 +1789,7 @@ func _build_character_select_v4() -> void:
 	guidance_title.text = "Подсказки билда"
 	guidance_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	guidance_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	guidance_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
+	guidance_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(guidance_title)
 
 	var guidance_labels := {}
@@ -1792,17 +1800,23 @@ func _build_character_select_v4() -> void:
 		guide_label.max_lines_visible = 2 if relevance != "optional" else 1
 		guide_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-		guide_label.add_theme_color_override("font_color", Color(0.78, 0.82, 0.90, 1.0))
+		guide_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		dossier_content.add_child(guide_label)
 		guidance_labels[relevance] = guide_label
 
-	var ascension_panel := VBoxContainer.new()
+	var ascension_top := left_top + portrait_size + vgap
+	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
+	var ascension_panel := PanelContainer.new()
 	ascension_panel.name = "HS4AscensionFrame"
-	ascension_panel.position = Vector2(portrait_panel.position.x, portrait_panel.position.y + portrait_size + ascension_gap)
-	ascension_panel.size = Vector2(portrait_size, ascension_h)
-	ascension_panel.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
-	ascension_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ascension_panel.position = Vector2(left_x, ascension_top)
+	ascension_panel.size = Vector2(portrait_size, maxf(action_h + 20.0, content_rect.end.y - ascension_top))
+	ascension_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, ascension_pad))
+	ascension_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(ascension_panel)
+	var ascension_box := VBoxContainer.new()
+	ascension_box.name = "HS4AscensionBox"
+	ascension_box.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
+	ascension_panel.add_child(ascension_box)
 
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
@@ -1810,9 +1824,9 @@ func _build_character_select_v4() -> void:
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	asc_label.custom_minimum_size = Vector2(0.0, maxf(20.0, 26.0 * layout_scale))
 	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
-	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
-	asc_label.visible = vp.y >= 900.0
-	ascension_panel.add_child(asc_label)
+	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	asc_label.visible = vp.y >= 1200.0
+	ascension_box.add_child(asc_label)
 
 	var asc_intro := Label.new()
 	asc_intro.name = "HS4AscensionIntro"
@@ -1822,47 +1836,37 @@ func _build_character_select_v4() -> void:
 	asc_intro.visible = false
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
-	asc_intro.add_theme_color_override("font_color", Color(0.78, 0.80, 0.86, 1.0))
-	ascension_panel.add_child(asc_intro)
+	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	ascension_box.add_child(asc_intro)
 
 	var asc_action_row := HBoxContainer.new()
 	asc_action_row.name = "HS4AscensionActionRow"
 	asc_action_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	asc_action_row.add_theme_constant_override("separation", maxi(6, int(round(9.0 * layout_scale))))
-	ascension_panel.add_child(asc_action_row)
+	ascension_box.add_child(asc_action_row)
 	var asc_box := HBoxContainer.new()
 	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
 	asc_action_row.add_child(asc_box)
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
-	var asc_button_size := Vector2(maxf(46.0, 52.0 * layout_scale), maxf(40.0, 46.0 * layout_scale))
+	var asc_button_size := Vector2(56.0, 56.0)
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
-	_apply_hs4_minimal_button_theme(asc_minus)
 	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_minus)
 	var asc_stepper_label := Label.new()
 	asc_stepper_label.name = "HS4AscensionValue"
 	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_stepper_label.custom_minimum_size = Vector2(maxf(76.0, 92.0 * layout_scale), asc_button_size.y)
+	asc_stepper_label.custom_minimum_size = Vector2(maxf(64.0, roundf(84.0 * layout_scale)), asc_button_size.y)
 	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
 	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
-	_apply_hs4_minimal_button_theme(asc_plus)
 	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_plus)
-
-	var select_button := _make_button("Выбрать")
-	select_button.name = "HS4ChooseButton"
-	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(select_button, maxf(124.0, minf(190.0, portrait_size * 0.34)), asc_button_size.y)
-	_apply_hs4_minimal_button_theme(select_button, true)
-	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
-	asc_action_row.add_child(select_button)
 
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -1873,12 +1877,17 @@ func _build_character_select_v4() -> void:
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	ascension_panel.add_child(asc_mods)
+	ascension_box.add_child(asc_mods)
+	# Компакт-страховка: если контент возвышения не влезает по высоте (узкие
+	# вьюпорты), строка модификаторов уходит в тултип панели.
+	if ascension_panel.get_combined_minimum_size().y > ascension_panel.size.y:
+		asc_mods.visible = false
 
-	var carousel_panel := Control.new()
+	var carousel_panel := Panel.new()
 	carousel_panel.name = "HS4CarouselFrame"
-	carousel_panel.position = Vector2(margin_x, carousel_y)
-	carousel_panel.size = Vector2(vp.x - margin_x * 2.0, carousel_h)
+	carousel_panel.position = Vector2(dossier_x, carousel_y)
+	carousel_panel.size = Vector2(dossier_w, carousel_h)
+	carousel_panel.add_theme_stylebox_override("panel", _atlas_translucent_style(0.45, 12.0))
 	carousel_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(carousel_panel)
 	var carousel := Control.new()
@@ -1889,7 +1898,7 @@ func _build_character_select_v4() -> void:
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
 	var carousel_area_h: float = carousel.size.y
-	var arrow_size := Vector2(maxf(64.0, carousel_slot_size * 0.30), carousel_slot_size)
+	var arrow_size := Vector2(54.0, 42.0)
 	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
 	var slot_label_h := clampf(roundf(slot_size.y * 0.17), 26.0, 34.0)
 	var slot_label_gap := maxf(3.0, roundf(slot_size.y * 0.02))
@@ -1897,23 +1906,21 @@ func _build_character_select_v4() -> void:
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
 	if roster.is_empty():
 		return
-	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 8.0))), 3, roster.size())
-	var slot_gap: float = maxf(8.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
+	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0 - 6.0) / (carousel_slot_size + 6.0))), 3, roster.size())
+	var slot_gap: float = maxf(6.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
 
 	var left_arrow := _make_button("<")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
-	_apply_hs4_minimal_button_theme(left_arrow)
-	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 22))
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button(">")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
-	_apply_hs4_minimal_button_theme(right_arrow)
-	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(16, 0, 22))
 	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
 
@@ -1933,7 +1940,7 @@ func _build_character_select_v4() -> void:
 		slot.position = Vector2(arrow_size.x + slot_gap + i * (slot_size.x + slot_gap), slot_y)
 		slot.size = slot_size
 		slot.custom_minimum_size = slot_size
-		_apply_hs4_minimal_button_theme(slot)
+		_unified_apply_row_theme(slot, 6.0)
 		var slot_portrait := TextureRect.new()
 		slot_portrait.name = "HS4CarouselPortrait_%02d" % i
 		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -2090,7 +2097,7 @@ func _build_character_select_v4() -> void:
 				var slot_title := str(rconf.get("title", rid))
 				slot.tooltip_text = slot_title
 				slot_label.text = slot_title
-				_apply_hs4_minimal_button_theme(slot, rid == cid)
+				_unified_apply_row_theme(slot, 6.0, rid == cid)
 				slot_portrait.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.58, 0.60, 0.68, 0.78)
 				slot_label.modulate = Color(1.0, 0.96, 0.80, 1.0) if rid == cid else Color(0.66, 0.68, 0.74, 0.84)
 			else:
@@ -2139,6 +2146,8 @@ func _build_character_select_v4() -> void:
 	game.ui_escape_action = _show_main_menu
 	refresh.call()
 	refresh_focus_graph.call(true)
+	# Полая рама 9-slice поверх всего контента — добавляется последней.
+	_unified_add_frame(root, "HeroSelect")
 
 func _show_character_select() -> void:
 	game.clear_run_autosave()

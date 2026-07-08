@@ -339,10 +339,10 @@ func _initialize() -> void:
 	if hero_screen == null:
 		_fail("Expected character select to use a fullscreen hero select root.")
 		return
-	# User redesign 2026-06-30: minimal black Hero Select with dossier, ascension chooser, and enlarged labeled carousel slots.
-	var v4_black_bg := main.find_child("HS4BlackBackground", true, false) as ColorRect
-	if v4_black_bg == null or v4_black_bg.color != Color.BLACK:
-		_fail("Expected hero select to use a pure black background.")
+	# SCRUM-879: hero select uses the unified atlas-style hero hall backdrop.
+	var v4_unified_bg := main.find_child("UnifiedBackground_hero_select", true, false) as TextureRect
+	if v4_unified_bg == null or v4_unified_bg.texture == null:
+		_fail("Expected hero select to use the unified hero hall background.")
 		return
 	if _has_screen_background(main, "hero_select") or main.find_child("HS4PixelLabBackground", true, false) != null:
 		_fail("Expected minimal hero select to remove the old PixelLab hero_select backdrop.")
@@ -7894,7 +7894,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 
 	var context := "hero select %s" % str(viewport_size)
 	var hero_screen := hero_main.find_child("HeroSelectScreen", true, false) as Control
-	var black_bg := hero_main.find_child("HS4BlackBackground", true, false) as ColorRect
+	var unified_bg := hero_main.find_child("UnifiedBackground_hero_select", true, false) as TextureRect
 	var radar := hero_main.find_child("HS4Radar", true, false) as Control
 	var radar_title := hero_main.find_child("HeroStatRadarTitle", true, false) as Control
 	var large_portrait := hero_main.find_child("HS4Portrait", true, false) as TextureRect
@@ -7909,11 +7909,11 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	var back_button := hero_main.find_child("HS4BackButton", true, false) as Control
 	if back_button == null:
 		back_button = hero_main.find_child("HeroSelectBackButton", true, false) as Control
-	if hero_screen == null or black_bg == null or large_portrait == null or large_portrait_frame == null or dossier_panel == null or ascension_panel == null or stats_grid == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
+	if hero_screen == null or unified_bg == null or large_portrait == null or large_portrait_frame == null or dossier_panel == null or ascension_panel == null or stats_grid == null or asc_label == null or asc_mods == null or choose_button == null or thumbnail_strip == null or back_button == null:
 		_fail("Expected minimal hero select portrait/dossier/ascension/carousel/back nodes at %s." % context)
 		return
-	if black_bg.color != Color.BLACK:
-		_fail("Expected minimal hero select to use pure black background at %s." % context)
+	if unified_bg.texture == null:
+		_fail("Expected hero select unified hero hall background texture at %s." % context)
 		return
 	if radar != null:
 		_fail("Expected minimal hero select to remove the old stat radar at %s." % context)
