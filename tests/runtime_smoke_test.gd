@@ -1369,37 +1369,12 @@ func _test_glossary_terms(main: Node) -> void:
 		if str(definition.get("name", "")) == "" or str(definition.get("desc", "")) == "":
 			_fail("Expected glossary term %s to include Russian name and description." % str(term_id))
 			return
-	var button := main.ui._make_glossary_term_button("crit", false) as Button
-	button.position = Vector2(24, 120)
-	(main.get("ui_layer") as CanvasLayer).add_child(button)
-	await process_frame
-	# SCRUM-879: термин — «кожаный ряд» единого чип-языка (StyleBoxFlat),
-	# пунктирная flat-ссылка упразднена вместе с китом codex_pl.
-	if not (button.get_theme_stylebox("normal") is StyleBoxFlat):
-		_fail("Expected glossary terms to use the unified leather row StyleBoxFlat.")
+	# SCRUM-884 (фидбек юзера): отдельные term-кнопки и всплывающие подсказки
+	# глоссария упразднены — термины живут обычными карточками раздела кодекса
+	# (см. _test_codex_screen), определение показывает правое досье.
+	if main.ui.has_method("_make_glossary_term_button") or main.ui.has_method("_show_glossary_tooltip"):
+		_fail("Expected SCRUM-884 to remove glossary term buttons and tooltip popups from ui_screens.")
 		return
-	if not button.tooltip_text.contains("Критический удар"):
-		_fail("Expected normal-screen glossary term to expose hover tooltip text.")
-		return
-	await main.ui._show_glossary_tooltip(button, "crit")
-	await process_frame
-	var tooltip := main.find_child("GlossaryTooltipPanel", true, false) as PanelContainer
-	if tooltip == null or not _collect_label_text(tooltip).contains("Критический удар"):
-		_fail("Expected glossary hover to create a tooltip panel with the term name.")
-		return
-	if tooltip.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		_fail("Expected glossary tooltip to ignore mouse input and avoid hover flicker.")
-		return
-	var glossary_tooltip_style := tooltip.get_theme_stylebox("panel") as StyleBoxFlat
-	if glossary_tooltip_style == null or glossary_tooltip_style.bg_color.a < 0.9 or glossary_tooltip_style.bg_color.v > 0.35:
-		_fail("Expected glossary tooltip to use the near-opaque dark atlas chip StyleBoxFlat.")
-		return
-	if tooltip.get_global_rect().intersects(button.get_global_rect()):
-		_fail("Expected glossary tooltip to keep a stable offset and avoid overlapping its anchor.")
-		return
-	main.ui._hide_glossary_tooltip()
-	button.queue_free()
-	await process_frame
 	var generic_button := Button.new()
 	generic_button.name = "GenericTooltipProbe"
 	generic_button.tooltip_text = "Непрозрачная глобальная подсказка с переносом слов, достаточно длинная, чтобы гарантированно не поместиться в одну строку тултипа"
@@ -7189,9 +7164,6 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
 	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
-	var codex_center_object_stage := codex_main.find_child("CodexCenterObjectStage", true, false) as Control
-	var codex_center_object_texture := codex_main.find_child("CodexCenterObjectTexture", true, false) as TextureRect
-	var codex_center_summary := codex_main.find_child("CodexCenterSummaryPanel", true, false) as PanelContainer
 	var codex_center_list := codex_main.find_child("CodexCenterListHost", true, false) as Control
 	var codex_detail := codex_main.find_child("CodexDetailPanel", true, false) as PanelContainer
 	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
@@ -7200,8 +7172,17 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var detail_portrait := codex_main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
 	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
 	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
-	if codex_background == null or codex_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_object_stage == null or codex_center_object_texture == null or codex_center_summary == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
-		_fail("Expected SCRUM-879 atlas-style Codex layout to include background/frame, nav/center/detail panels, object stages, tabs, entry card, and portrait slots.")
+	if codex_background == null or codex_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
+		_fail("Expected SCRUM-879/884 atlas-style Codex layout to include background/frame, nav/list/detail panels, tabs, entry card, and portrait slots.")
+		return
+	# SCRUM-884 (фидбек юзера): центральный предпросмотр (объект-сцена + сводка)
+	# упразднён — в центре только список карточек, картинку показывает досье.
+	for codex_absent_name in ["CodexCenterOverviewRow", "CodexCenterObjectStage", "CodexCenterObjectTexture", "CodexCenterSummaryPanel", "CodexCenterSummaryBody"]:
+		if codex_main.find_child(str(codex_absent_name), true, false) != null:
+			_fail("Expected SCRUM-884 codex center preview node %s to be removed." % str(codex_absent_name))
+			return
+	if codex_main.find_child("GlossaryTooltipPanel", true, false) != null:
+		_fail("Expected SCRUM-884 codex to open without glossary tooltip popups.")
 		return
 
 	# SCRUM-879: слои атлас-стиля — COVERED-фон без осевого stretch и полая
@@ -7243,30 +7224,14 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
 		_fail("Expected SCRUM-850 Codex detail object art to use contained scaling, not cover-crop.")
 		return
-	if codex_center_object_texture.texture == null or codex_center_object_texture.texture.resource_path != expected_default_portrait:
-		_fail("Expected SCRUM-850 Codex center selected-object stage to mirror the default character portrait.")
-		return
-	if codex_center_object_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
-		_fail("Expected SCRUM-850 Codex center selected-object art to preserve aspect with centered scaling.")
-		return
-	if detail_portrait.get_global_rect().size.x <= codex_center_object_stage.get_global_rect().size.x:
-		_fail("Expected SCRUM-850 right detail object stage to be wider than the center selected-object stage.")
-		return
-	# SCRUM-881 (директива юзера, суперсидит object-first пропорции SCRUM-850):
-	# досье ×2 — панель минимум в 1.8 раза шире компактной центральной сцены.
-	if codex_detail.get_global_rect().size.x < 1.8 * codex_center_object_stage.get_global_rect().size.x:
-		_fail("Expected SCRUM-881 dossier panel to be at least 1.8x wider than the compact center object stage, got %.0f vs %.0f." % [codex_detail.get_global_rect().size.x, codex_center_object_stage.get_global_rect().size.x])
-		return
-	# SCRUM-881: центральный объект КОМПАКТЕН — сцена не выше ~35% колонки
-	# (абсолютный пол 165px на малых вьюпортах, clamp-минимум сцены 150).
-	var codex_column_height := codex_content.get_global_rect().size.y
-	if codex_center_object_stage.get_global_rect().size.y > maxf(0.35 * codex_column_height, 165.0):
-		_fail("Expected SCRUM-881 compact center object stage (<= ~35 percent of column height), got %.0f of %.0f." % [codex_center_object_stage.get_global_rect().size.y, codex_column_height])
-		return
-	# SCRUM-881: сводка у объекта очень краткая — максимум 2 строки с эллипсисом.
-	var codex_summary_body := codex_main.find_child("CodexCenterSummaryBody", true, false) as Label
-	if codex_summary_body == null or codex_summary_body.max_lines_visible > 2 or codex_summary_body.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS:
-		_fail("Expected SCRUM-881 center summary body to stay very short (<= 2 lines with ellipsis).")
+	# SCRUM-884: освобождённая предпросмотром высота уходит списку — лента
+	# занимает >= 90% внутренней (за content-margins чипа) зоны CodexContent.
+	var codex_content_style := codex_content.get_theme_stylebox("panel")
+	var codex_center_inner_height := codex_content.get_global_rect().size.y
+	if codex_content_style != null:
+		codex_center_inner_height -= codex_content_style.get_content_margin(SIDE_TOP) + codex_content_style.get_content_margin(SIDE_BOTTOM)
+	if codex_center_list.get_global_rect().size.y < 0.9 * codex_center_inner_height:
+		_fail("Expected SCRUM-884 CodexCenterListHost to fill >= 90 percent of the CodexContent inner zone, got %.0f of %.0f." % [codex_center_list.get_global_rect().size.y, codex_center_inner_height])
 		return
 	# SCRUM-881: глубокое досье — у выбранного (дефолтного) персонажа минимум
 	# 3 структурные секции с бронзовыми заголовками.
@@ -7298,10 +7263,9 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 			_fail("Expected %s to stay inside unified safe margins %s, got %s." % [str((safe_control as Control).name), str(codex_safe_rect), str((safe_control as Control).get_global_rect())])
 			return
 	var codex_center_rect := codex_content.get_global_rect().grow(1.0)
-	for center_child in [codex_center_object_stage, codex_center_summary, codex_center_list]:
-		if not codex_center_rect.encloses((center_child as Control).get_global_rect()):
-			_fail("Expected %s to stay inside CodexContent panel." % str((center_child as Control).name))
-			return
+	if not codex_center_rect.encloses(codex_center_list.get_global_rect()):
+		_fail("Expected CodexCenterListHost to stay inside CodexContent panel.")
+		return
 	var codex_detail_rect := codex_detail.get_global_rect().grow(1.0)
 	for detail_child in [detail_portrait, detail_chip_row, detail_text_safe]:
 		if not codex_detail_rect.encloses((detail_child as Control).get_global_rect()):
@@ -7313,7 +7277,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# SCRUM-345 Codex Texture Runtime Dump")
 	dump_lines.append("")
-	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait, detail_chip_row, detail_text_safe]:
+	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait, detail_chip_row, detail_text_safe]:
 		var control_node := control as Control
 		var texture_path := ""
 		if control_node is PanelContainer:
@@ -7359,7 +7323,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var scrum438_dump := PackedStringArray()
 	scrum438_dump.append("# SCRUM-438 Codex V2 Runtime Dump")
 	scrum438_dump.append("")
-	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_object_stage, codex_center_summary, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait]:
+	for control in [codex_nav_panel, codex_tabs, codex_content, codex_center_list, codex_detail, default_entry, default_portrait, detail_portrait]:
 		var c := control as Control
 		scrum438_dump.append("- `%s`: `%s`" % [c.name, str(c.get_global_rect())])
 	scrum438_dump.append("- `CodexDefaultCharacterPortrait`: `%s`" % expected_default_portrait)
@@ -7378,8 +7342,70 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if artifact_section == null or not artifact_section.visible:
 		_fail("Expected SCRUM-850 Codex to lazy-build and show the artifacts section.")
 		return
-	if codex_center_object_texture.texture == null or not codex_center_object_texture.texture.resource_path.contains("/artifacts/"):
-		_fail("Expected SCRUM-850 Codex artifacts section to show a canonical artifact icon in the center object stage.")
+	# SCRUM-884: предпросмотра в центре больше нет — канонический арт записи
+	# показывает правое досье.
+	var artifact_detail_texture := codex_main.find_child("CodexDetailPortraitTexture", true, false) as TextureRect
+	if artifact_detail_texture == null or artifact_detail_texture.texture == null or not artifact_detail_texture.texture.resource_path.contains("/artifacts/"):
+		_fail("Expected SCRUM-884 Codex artifacts section to show the canonical artifact icon in the right dossier.")
+		return
+
+	# SCRUM-884: глоссарий — обычный раздел со списком карточек-рядов: первая
+	# карточка подсвечена selected при входе, клик по карточке обновляет правое
+	# досье определением, всплывающих подсказок терминов нет.
+	var glossary_tab := codex_main.find_child("CodexTab_glossary", true, false) as Button
+	if glossary_tab == null:
+		_fail("Expected Codex to keep the glossary category tab.")
+		return
+	glossary_tab.pressed.emit()
+	await process_frame
+	var glossary_section := codex_main.find_child("CodexSection_glossary", true, false) as Control
+	if glossary_section == null or not glossary_section.visible:
+		_fail("Expected SCRUM-884 Codex to lazy-build and show the glossary section.")
+		return
+	var glossary_list := codex_main.find_child("CodexSectionList_glossary", true, false) as VBoxContainer
+	if glossary_list == null:
+		_fail("Expected SCRUM-884 glossary section to host a plain entry list.")
+		return
+	var glossary_cards: Array = []
+	for glossary_child in glossary_list.get_children():
+		if glossary_child is Button:
+			glossary_cards.append(glossary_child)
+	if glossary_cards.size() < 5:
+		_fail("Expected SCRUM-884 glossary to list >= 5 entry card rows, got %d." % glossary_cards.size())
+		return
+	var glossary_default_card := glossary_cards[0] as Button
+	if codex_content.get_meta("codex_selected_entry", null) != glossary_default_card:
+		_fail("Expected SCRUM-884 glossary default entry card to be selected on section open.")
+		return
+	var glossary_selected_style := glossary_default_card.get_theme_stylebox("normal") as StyleBoxFlat
+	if glossary_selected_style == null or glossary_selected_style.get_border_width(SIDE_LEFT) < 3:
+		_fail("Expected SCRUM-884 selected glossary card to use the highlighted (3px border) leather row style.")
+		return
+	var glossary_detail_title := codex_main.find_child("CodexDetailTitle", true, false) as Label
+	if glossary_detail_title == null or glossary_detail_title.text.strip_edges() == "":
+		_fail("Expected SCRUM-884 glossary dossier title to be filled on section open.")
+		return
+	var glossary_second_card := glossary_cards[1] as Button
+	glossary_second_card.pressed.emit()
+	await process_frame
+	if codex_content.get_meta("codex_selected_entry", null) != glossary_second_card:
+		_fail("Expected SCRUM-884 clicking a glossary card to move the selected highlight.")
+		return
+	glossary_detail_title = codex_main.find_child("CodexDetailTitle", true, false) as Label
+	var glossary_second_detail: Dictionary = glossary_second_card.get_meta("codex_detail_data", {})
+	if glossary_detail_title == null or glossary_detail_title.text != str(glossary_second_detail.get("title", "")):
+		_fail("Expected SCRUM-884 glossary dossier to show the clicked term definition.")
+		return
+	var glossary_definition_heading_found := false
+	for glossary_heading in codex_main.find_children("CodexDetailSectionHeading_*", "Label", true, false):
+		if (glossary_heading as Label).text == "Определение":
+			glossary_definition_heading_found = true
+			break
+	if not glossary_definition_heading_found:
+		_fail("Expected SCRUM-884 glossary dossier to include the definition section from _codex_glossary_sections.")
+		return
+	if codex_main.find_child("GlossaryTooltipPanel", true, false) != null:
+		_fail("Expected SCRUM-884 glossary section to work without tooltip popups.")
 		return
 
 	# Полнота данных кодекса.

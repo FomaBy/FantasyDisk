@@ -4156,9 +4156,11 @@ func _show_patch_notes_screen() -> void:
 
 func _show_codex_screen() -> void:
 	# SCRUM-879: кодекс на едином атлас-стиле (слои экрана «Атлас героев»):
-	# фон COVERED → контент в safe-зоне рамы → тело «табы | объект-сцена | досье»
+	# фон COVERED → контент в safe-зоне рамы → тело «табы | список | досье»
 	# → полая рама поверх. Контейнерный лейаут (без абсолютного _codex_v2-движка);
-	# данные/дискавери/ленивые секции и object-first зоны SCRUM-850 сохранены.
+	# данные/дискавери/ленивые секции сохранены. SCRUM-884 (фидбек юзера):
+	# центральный предпросмотр (сцена+сводка) упразднён — центр только список,
+	# картинка и полное описание живут в правом досье.
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -4198,7 +4200,7 @@ func _show_codex_screen() -> void:
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
 
-	# --- Тело: нав-панель | центр (объект-сцена/сводка/лента) | досье ---
+	# --- Тело: нав-панель | центр (список записей) | досье ---
 	var body := HBoxContainer.new()
 	body.name = "CodexBody"
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -4233,62 +4235,9 @@ func _show_codex_screen() -> void:
 	center_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
 	content.add_child(center_box)
 
-	# SCRUM-881 (фидбек юзера): центральный объект КОМПАКТНЫЙ — фикс-бокс
-	# картинки + очень краткая сводка в один ряд, без полупустой сцены-превью.
-	# Освобождённая высота уходит списку записей (CodexCenterListHost).
-	var center_overview_row := HBoxContainer.new()
-	center_overview_row.name = "CodexCenterOverviewRow"
-	center_overview_row.add_theme_constant_override("separation", int(roundf(10.0 * s)))
-	center_box.add_child(center_overview_row)
-	var center_stage_side := roundf(clampf(240.0 * s, 150.0, 280.0))
-	var center_object_stage := Control.new()
-	center_object_stage.name = "CodexCenterObjectStage"
-	center_object_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	center_object_stage.custom_minimum_size = Vector2(center_stage_side, center_stage_side)
-	center_overview_row.add_child(center_object_stage)
-	var center_object_texture := TextureRect.new()
-	center_object_texture.name = "CodexCenterObjectTexture"
-	center_object_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	center_object_texture.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center_object_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	center_object_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_codex_pl_make_nearest(center_object_texture)
-	center_object_stage.add_child(center_object_texture)
-
-	var center_summary_panel := PanelContainer.new()
-	center_summary_panel.name = "CodexCenterSummaryPanel"
-	center_summary_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	center_summary_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	center_summary_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.62, roundf(8.0 * s)))
-	center_overview_row.add_child(center_summary_panel)
-	var center_summary_box := VBoxContainer.new()
-	center_summary_box.name = "CodexCenterSummaryBox"
-	center_summary_box.add_theme_constant_override("separation", int(roundf(5.0 * s)))
-	center_summary_panel.add_child(center_summary_box)
-	var center_summary_title := Label.new()
-	center_summary_title.name = "CodexCenterSummaryTitle"
-	center_summary_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	center_summary_title.clip_text = true
-	center_summary_title.max_lines_visible = 1
-	center_summary_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	center_summary_title.add_theme_font_size_override("font_size", _codex_font_size(21, 14, 28))
-	center_summary_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	# Autowrap-лейблы почти не заявляют min height — резервируем 1/3 строки явно,
-	# иначе панель сводки схлопывается и текст уходит под клип.
-	center_summary_title.custom_minimum_size.y = ceilf(float(_codex_font_size(21, 14, 28)) * 1.4)
-	center_summary_box.add_child(center_summary_title)
-	var center_summary_body := Label.new()
-	center_summary_body.name = "CodexCenterSummaryBody"
-	center_summary_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	center_summary_body.clip_text = true
-	# SCRUM-881: сводка ОЧЕНЬ краткая — максимум 2 строки, полный текст в досье.
-	center_summary_body.max_lines_visible = 2
-	center_summary_body.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	center_summary_body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
-	center_summary_body.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.96))
-	center_summary_body.custom_minimum_size.y = ceilf(float(_codex_font_size(13, 10, 18)) * 2.0 * 1.3)
-	center_summary_box.add_child(center_summary_body)
-
+	# SCRUM-884 (фидбек юзера): в центре ТОЛЬКО список карточек «имя + краткое
+	# описание» на всю высоту колонки — предпросмотр (сцена/сводка) упразднён,
+	# арт и полное досье показывает правая панель.
 	var center_list_host := Control.new()
 	center_list_host.name = "CodexCenterListHost"
 	center_list_host.clip_contents = true
@@ -4307,9 +4256,6 @@ func _show_codex_screen() -> void:
 
 	content.set_meta("codex_detail_panel", detail_panel)
 	content.set_meta("codex_tabs", tabs_row)
-	content.set_meta("codex_center_object_texture", center_object_texture)
-	content.set_meta("codex_center_summary_title", center_summary_title)
-	content.set_meta("codex_center_summary_body", center_summary_body)
 	content.set_meta("codex_section_host", center_list_host)
 	content.set_meta("codex_active_section", "characters")
 
@@ -4378,7 +4324,6 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 		var default_detail: Dictionary = existing.get_meta("codex_default_detail", {})
 		if detail_panel != null and not default_detail.is_empty():
 			_codex_update_detail(detail_panel, default_detail)
-			_codex_update_center_overview(content, default_detail)
 			if existing.has_meta("codex_default_entry_button"):
 				_codex_set_selected_entry(content, existing.get_meta("codex_default_entry_button") as Button)
 		return
@@ -4416,7 +4361,6 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
 		_codex_update_detail(detail_panel, default_detail)
-		_codex_update_center_overview(content, default_detail)
 		if scroll.has_meta("codex_default_entry_button"):
 			_codex_set_selected_entry(content, scroll.get_meta("codex_default_entry_button") as Button)
 
@@ -4553,30 +4497,7 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 	button.pressed.connect(func() -> void:
 		_codex_set_selected_entry(content, button)
 		_codex_update_detail(detail_panel, detail_data)
-		_codex_update_center_overview(content, detail_data)
 	)
-
-
-func _codex_update_center_overview(content: PanelContainer, detail_data: Dictionary) -> void:
-	if content == null or not is_instance_valid(content):
-		return
-	var texture_rect := content.get_meta("codex_center_object_texture", null) as TextureRect
-	if texture_rect != null:
-		texture_rect.texture = detail_data.get("texture", null) as Texture2D
-		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var title := content.get_meta("codex_center_summary_title", null) as Label
-	if title != null:
-		title.text = str(detail_data.get("title", ""))
-		title.add_theme_font_size_override("font_size", _codex_font_size(21, 14, 28))
-	var body := content.get_meta("codex_center_summary_body", null) as Label
-	if body != null:
-		var summary := str(detail_data.get("summary", ""))
-		if summary == "":
-			var lines: Array = detail_data.get("body_lines", [])
-			if not lines.is_empty():
-				summary = str(lines[0])
-		body.text = summary
-		body.add_theme_font_size_override("font_size", _codex_font_size(13, 10, 18))
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
@@ -4626,8 +4547,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		portrait_slot.add_child(portrait)
 
 	var chips: Array = detail_data.get("chips", [])
-	var term_id := str(detail_data.get("term_id", ""))
-	if not chips.is_empty() or term_id != "":
+	if not chips.is_empty():
 		var chip_row := HBoxContainer.new()
 		chip_row.name = "CodexDetailChipRow"
 		chip_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -4649,11 +4569,6 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip_label.add_theme_font_size_override("font_size", _codex_font_size(14, 11, 18))
 			chip_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 			chip.add_child(chip_label)
-		if term_id != "":
-			var glossary_button := _make_glossary_term_button(term_id, false)
-			glossary_button.name = "CodexDetailGlossaryTerm_%s" % term_id
-			glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-			chip_row.add_child(glossary_button)
 
 	var parchment := PanelContainer.new()
 	parchment.name = "CodexDetailParchmentInset"
@@ -4708,98 +4623,9 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 					_codex_label(text_box, str(line), 15, Color(0.88, 0.92, 0.98, 0.96))
 
 
-func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
-	# SCRUM-879: термин глоссария — компактный «кожаный ряд» единого чип-языка
-	# (вместо flat-ссылки с пунктиром); тултип-поведение сохранено.
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	var button := Button.new()
-	button.name = "GlossaryTerm_%s" % term_id
-	button.text = str(definition.get("name", term_id))
-	button.focus_mode = Control.FOCUS_NONE
-	button.mouse_filter = Control.MOUSE_FILTER_STOP
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
-	button.add_theme_font_size_override("font_size", _readable_font_size(14))
-	_unified_apply_row_theme(button, 6.0)
-	button.mouse_entered.connect(func() -> void:
-		if not popup_context or Input.is_key_pressed(KEY_ALT):
-			_show_glossary_tooltip(button, term_id)
-	)
-	button.mouse_exited.connect(_hide_glossary_tooltip)
-	button.gui_input.connect(func(event: InputEvent) -> void:
-		if popup_context and event is InputEventKey and Input.is_key_pressed(KEY_ALT):
-			_show_glossary_tooltip(button, term_id)
-	)
-	return button
-
-
-func _glossary_tooltip_text(term_id: String) -> String:
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	return "%s\n%s" % [str(definition.get("name", term_id)), str(definition.get("desc", ""))]
-
-
-# SCRUM-484: координатная спека @2560×1440 — тултип глоссария (транзиентный).
-# Плавающая панель шириной 460, высота по контенту (заголовок + описание autowrap).
-# Позиция динамическая (под якорем +8), но всегда внутри viewport с отступом 16 от
-# краёв (clamp). Шаблон-размер ниже + правила размещения для рисующего скрипта.
-const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контенту (шаблон ~140)
-const GT_PANEL_CONTENT_2K := Vector4(66, 44, 66, 40)
-const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
-const GT_ANCHOR_GAP_2K := 18.0  # SCRUM-840: stable gap from cursor/anchor, avoids hover flicker.
-# SCRUM-851: тултип-шрифты укрупнены — 20/16 против прежних 16/13, мелкий текст не читался.
-const GT_TITLE_FONT_SIZE := 20
-const GT_DESC_FONT_SIZE := 16
-const GT_TEXT_SEPARATION := 4
-
-
-func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
-	_hide_glossary_tooltip()
-	if game.ui_layer == null:
-		return
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	if definition.is_empty():
-		return
-	var tooltip := PanelContainer.new()
-	tooltip.name = "GlossaryTooltipPanel"
-	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
-	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.custom_minimum_size = Vector2(GT_PANEL_2K.size.x, 0)
-	# SCRUM-879: тултип глоссария — почти непрозрачный чип Атласа (ширина фикс 460,
-	# высота content-driven); позиционирование/клампы к вьюпорту без изменений.
-	tooltip.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, 12.0))
-	var box := VBoxContainer.new()
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_theme_constant_override("separation", GT_TEXT_SEPARATION)
-	tooltip.add_child(box)
-	var title := Label.new()
-	title.text = str(definition.get("name", term_id))
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title.add_theme_font_size_override("font_size", _readable_font_size(GT_TITLE_FONT_SIZE))
-	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
-	box.add_child(title)
-	var desc := Label.new()
-	desc.text = str(definition.get("desc", ""))
-	desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", _readable_font_size(GT_DESC_FONT_SIZE))
-	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
-	box.add_child(desc)
-	game.ui_layer.add_child(tooltip)
-	var anchor_rect := anchor.get_global_rect()
-	var viewport_size := anchor.get_viewport_rect().size
-	tooltip.position = anchor_rect.end + Vector2(GT_ANCHOR_GAP_2K, GT_ANCHOR_GAP_2K)
-	tooltip.size = Vector2(GT_PANEL_2K.size.x, 0)
-	await game.get_tree().process_frame
-	tooltip.size = Vector2(GT_PANEL_2K.size.x, tooltip.get_combined_minimum_size().y)
-	GlobalTooltip.place_near_anchor(tooltip, anchor_rect, viewport_size, GT_ANCHOR_GAP_2K, GT_VIEWPORT_MARGIN_2K)
-
-
-func _hide_glossary_tooltip() -> void:
-	if game.ui_layer == null:
-		return
-	var existing: Node = game.ui_layer.find_child("GlossaryTooltipPanel", true, false)
-	if existing != null:
-		existing.queue_free()
+# SCRUM-884 (фидбек юзера): всплывающие подсказки глоссария и отдельные
+# term-кнопки упразднены — термины стали обычными карточками списка кодекса,
+# определение показывает правое досье (_codex_glossary_sections).
 
 
 # --- SCRUM-881: секции глубокого досье. СТРОГО существующие данные из
@@ -5189,12 +5015,14 @@ func _build_codex_stats(list: VBoxContainer) -> void:
 
 
 func _build_codex_glossary(list: VBoxContainer) -> void:
+	# SCRUM-884: термин — обычная карточка списка (тот же чип-ряд, что у прочих
+	# разделов): имя золотом + краткое определение; клик показывает полное
+	# определение в правом досье (_codex_glossary_sections). Тултипы упразднены.
 	for term_id in GLOSSARY.term_ids():
 		var definition: Dictionary = GLOSSARY.definition(term_id)
 		var row := _codex_entry_panel(list, {
 			"title": str(definition.get("name", term_id)),
 			"summary": str(definition.get("desc", "")),
-			"term_id": str(term_id),
 			"chips": ["Глоссарий", str(term_id)],
 			"body_lines": [str(definition.get("desc", ""))],
 			"sections": _codex_glossary_sections(str(term_id), definition),
@@ -5202,9 +5030,11 @@ func _build_codex_glossary(list: VBoxContainer) -> void:
 		var box := VBoxContainer.new()
 		box.add_theme_constant_override("separation", 4)
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(box)
-		box.add_child(_make_glossary_term_button(term_id, false))
-		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR, 2)
+		var term_name := _codex_label(box, str(definition.get("name", term_id)), 12, Color(0.96, 0.90, 0.68, 1.0), 1)
+		term_name.name = "GlossaryTermName_%s" % term_id
+		_codex_label(box, str(definition.get("desc", "")), 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
