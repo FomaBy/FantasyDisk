@@ -127,6 +127,40 @@ redesign (the visual layer is SCRUM-997):
   the normal shop-node «return to map without advance» exit
   (`Main.event_shop_exit_action`, consumed by one exit).
 
+SCRUM-997 turns the Event screen into an illustrated encounter (spec:
+`docs/design/mockups/scrum997_event_dialog/spec.md`, geometry single-sourced by
+`_event_dialog_metrics()`):
+
+- **Per-event background.** `ScreenBackground_event` swaps its texture to
+  `assets/backgrounds/events/event_bg_<event.id>.png` when the SCRUM-998 art
+  exists (`Main.event_background_path()`, file-convention manifest — no id
+  dictionary in code); unmapped ids keep the shared `ui_backdrop_arcane_lab`
+  fallback. Over native art the `ScreenBackgroundReadableShade` lightens to
+  a=0.14 (the art reserves dark UI zones per the pack manifest); the fallback
+  keeps the usual a=0.44.
+- **Right-side dialog panel.** `MenuPanel_event` is a manually-rected atlas
+  chip (`_atlas_chip_style(0.90, pad)`) pinned to the right safe edge, width
+  `clamp(0.36·W, 330, 980)`, spanning from the top safe margin down to the
+  bottom strip. Inside, the scroll keeps `EventContent` with left-aligned
+  golden `EventTitle`, a brass `EventTitleRule` divider and light `EventStory`;
+  long stories scroll instead of inflating the panel. The illustration on the
+  left is never covered by text.
+- **Bottom choice strip.** `EventBottomZone` (full-rect, mouse-ignore) hosts
+  `EventChoiceRow` — exactly three `_make_economy_choice_card` chips sized
+  `card_w × clamp(0.22·H, 142, 320)` — plus the unified 260-wide
+  `EventBackButton` plate at the right end, vertically centered. Every card
+  carries a SCRUM-997 hint line (`EventChoiceButtonNHint`): «Проверка: <Стат>
+  <N>» for checks, a compact visible-reward summary, or «Исход скрыт» for
+  hidden choices (price stays in `unknown_hint` per the SCRUM-996 contract).
+- **Reveal.** The SCRUM-996 reveal keeps its node contract; visually the
+  outcome text lands in the right dialog panel while `EventContinueButton`
+  («В путь», 260-wide plate) is centered in the bottom strip and grabs focus.
+- The UI no-overlap matrix enforces the new geometry: right-side panel
+  (left edge ≥ 0.55·W, width ≈ 30–42%·W or the 980 clamp), title/story inside
+  the chip content rect, the choice row inside the bottom strip and clear of
+  the panel, hint lines inside their cards, back plate in the strip and clear
+  of both, and a `ScreenBackground_event` (or fallback) node present.
+
 SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
 frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
 and `Управление`, with built-in `TabContainer` headers hidden and
