@@ -8588,12 +8588,14 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		game.used_event_ids.append(event_id)
 	game.current_event_definition = event_definition.duplicate(true)
 
-	# SCRUM-883: единый атлас-стиль — панель события на плотном кожаном чипе
-	# (StyleBoxFlat, латунный кант) вместо per-слот evt_panel @2K-рамки.
-	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _atlas_chip_style(0.94, roundf(18.0 * _atlas_ui_scale())))
+	# SCRUM-997: иллюстрированная встреча (спека docs/design/mockups/
+	# scrum997_event_dialog/spec.md): фон-арт события на весь экран, диалог-панель
+	# справа на полупрозрачном чипе Атласа, три карточки выбора внизу.
+	var metrics := _event_dialog_metrics()
+	var box := _create_menu_box(str(event_definition.get("title", route_node.get("name", "Событие"))), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _atlas_chip_style(0.90, float(metrics["panel_pad"])))
 	_configure_event_menu_layout(box)
-	var event_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
-	var event_root := event_panel.get_parent() as Control if event_panel != null and event_panel.get_parent() != null else null
+	_apply_event_screen_background(box, event_id)
+	var event_root := _event_screen_root(box)
 	if event_root != null:
 		event_root.name = "EventScreen"
 	_create_menu_run_hud()
@@ -8605,9 +8607,25 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	# опций. Подставляем процедурные выборы, чтобы экран всегда был кликабельным.
 	if event_choices.is_empty():
 		event_choices = _random_event_choices()
-	var event_card_size := _economy_choice_display_size(3)
-	var choices := _make_economy_choice_row("EventChoiceRow", event_card_size, 3)
-	box.add_child(choices)
+	# SCRUM-997: нижняя полоса выборов — отдельная full-rect зона на корне экрана
+	# (не в панели): ряд карточек слева + плита «Назад» у правого safe-края.
+	var bottom_zone := Control.new()
+	bottom_zone.name = "EventBottomZone"
+	bottom_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bottom_zone.set_anchors_preset(Control.PRESET_FULL_RECT)
+	if event_root != null:
+		event_root.add_child(bottom_zone)
+	else:
+		box.add_child(bottom_zone)
+	var event_card_size: Vector2 = metrics["card_size"]
+	var row_rect: Rect2 = metrics["row_rect"]
+	var choices := HBoxContainer.new()
+	choices.name = "EventChoiceRow"
+	choices.alignment = BoxContainer.ALIGNMENT_BEGIN
+	choices.add_theme_constant_override("separation", int(metrics["gap"]))
+	bottom_zone.add_child(choices)
+	choices.position = row_rect.position
+	choices.size = row_rect.size
 	var selectable_buttons: Array[Button] = []
 	var index := 0
 	for event_choice in event_choices:
@@ -8618,7 +8636,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		button.name = "EventChoiceButton%d" % index
 		# SCRUM-883: карточки выбора носят единый atlas-чип общего хелпера
 		# _make_economy_choice_card (StyleBoxFlat a>=0.8, hover — более яркий золотой
-		# кант) — per-слот evt_card перештамповка и пере-инсет больше не нужны.
+		# кант); SCRUM-997 добавляет строку награды/чек-хинта (спека §2).
+		_add_event_choice_hint_line(button, event_choice, event_card_size)
 		var required_money := _event_choice_scaled_cost(event_choice)
 		if required_money > 0 and _run_money() < required_money:
 			button.disabled = true
@@ -8649,9 +8668,10 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		)
 		index += 1
 	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите back_260x104, 260×action-height.
+	# SCRUM-997: плита живёт в нижней полосе у правого safe-края (спека §2) —
+	# не на иллюстрации (нижняя четверть арта — тёмная UI-зона по манифесту SCRUM-998).
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	# Аварийный выход: если ни один выбор недоступен (например, не хватает золота на все
@@ -8671,7 +8691,10 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		game.current_event_definition.clear()
 		game.route._show_battle_map()
 	)
-	box.add_child(back_button)
+	bottom_zone.add_child(back_button)
+	var back_rect: Rect2 = metrics["back_rect"]
+	back_button.position = back_rect.position
+	back_button.size = back_rect.size
 
 	# Клавиатура/геймпад: события должны выбираться не только мышью (AC SCRUM-477).
 	# Замыкаем фокус по доступным карточкам стрелками влево/вправо и ставим фокус на
@@ -9022,6 +9045,102 @@ func _event_choice_risk_description(description: String, is_risk: bool) -> Strin
 	return "Риск: %s" % text
 
 
+# SCRUM-997: фон-иллюстрация события — texture по event.id из пака SCRUM-998
+# (маппинг main.event_background_path, кэш screen_background_cache под ключом
+# "event:<id>"). Незамапленный id оставляет общий backdrop "event" и плотный шейд
+# 0.44; над родным артом шейд облегчается до 0.14 — арт сам держит тёмные
+# UI-зоны (правая треть/нижняя четверть, манифест events_backgrounds_pack).
+func _apply_event_screen_background(box: VBoxContainer, event_id: String) -> void:
+	var root := _event_screen_root(box)
+	if root == null:
+		return
+	var background := root.find_child("ScreenBackground_event", false, false) as TextureRect
+	if background == null:
+		return
+	var path := str(game.event_background_path(event_id))
+	if path == "":
+		return
+	var cache_key := "event:%s" % event_id
+	var texture: Texture2D = null
+	if game.screen_background_cache.has(cache_key):
+		texture = game.screen_background_cache[cache_key]
+	else:
+		texture = game._cached_texture(path)
+		game.screen_background_cache[cache_key] = texture
+	if texture == null:
+		return
+	background.texture = texture
+	var shade := root.find_child("ScreenBackgroundReadableShade", false, false) as ColorRect
+	if shade != null:
+		shade.color = Color(0.0, 0.0, 0.0, 0.14)
+
+
+# SCRUM-997: строка награды/чек-хинта на карточке выбора (спека §2, п.3):
+# «Проверка: <Стат> <N>» | компактная видимая награда | для hidden — «Исход
+# скрыт» (точный исход не раскрываем, детали цены — в unknown_hint по контракту
+# SCRUM-996). Пустая строка = хинт не показываем.
+func _event_choice_hint_text(event_choice: Dictionary) -> String:
+	if bool(event_choice.get("hidden", false)):
+		return "Исход скрыт"
+	if event_choice.has("check"):
+		var check: Dictionary = event_choice.get("check", {})
+		var stat_id := str(check.get("stat", ""))
+		var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		return "Проверка: %s %d" % [stat_name, int(check.get("difficulty", 0))]
+	if event_choice.has("random_outcomes"):
+		return "Случайный исход"
+	if event_choice.has("combat"):
+		return "Бой — награда за победу"
+	var parts: Array[String] = []
+	if event_choice.has("health_percent_cost"):
+		parts.append("−%d%% HP" % int(roundf(float(event_choice["health_percent_cost"]) * 100.0)))
+	if event_choice.has("money"):
+		parts.append("+%d зол." % int(event_choice["money"]))
+	if event_choice.has("heal_percent"):
+		parts.append("Лечение %d%%" % int(roundf(float(event_choice["heal_percent"]) * 100.0)))
+	var stats: Dictionary = event_choice.get("stats", {})
+	for stat_id in stats:
+		parts.append("%+d %s" % [int(stats[stat_id]), str(game.PROGRESSION_DATA.STAT_NAMES.get(str(stat_id), str(stat_id)))])
+	if bool(event_choice.get("random_artifact", false)):
+		parts.append("Случайный артефакт")
+	if not (event_choice.get("mods", {}) as Dictionary).is_empty():
+		parts.append("Бонус забега")
+	if event_choice.has("reward"):
+		parts.append("Награда")
+	if parts.is_empty():
+		return ""
+	return " · ".join(PackedStringArray(parts.slice(0, 3)))
+
+
+# SCRUM-997: вставка hint-строки в контент карточки (между описанием и action).
+# Канон клип-строк: без autowrap, TRIM_ELLIPSIS и ЯВНЫЙ min-width (клип без
+# min-width рядом с EXPAND_FILL схлопывает метку — память проекта); полный текст
+# дублируется в tooltip карточки.
+func _add_event_choice_hint_line(button: Button, event_choice: Dictionary, card_size: Vector2) -> void:
+	if button == null:
+		return
+	var hint := _event_choice_hint_text(event_choice)
+	if hint == "":
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	if content == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var hint_label := Label.new()
+	hint_label.name = "%sHint" % button.name
+	hint_label.text = hint
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	hint_label.custom_minimum_size = Vector2(maxf(card_size.x - margins.x - margins.z, 60.0), 0.0)
+	hint_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 18))
+	hint_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(hint_label)
+	# После title (0) и description (1), перед action-строкой.
+	content.move_child(hint_label, mini(2, content.get_child_count() - 1))
+	button.tooltip_text = "%s\n%s" % [button.tooltip_text, hint]
+
+
 # Обратная совместимость (rest-экран, dev-фасад main._apply_event_choice, старые
 # тесты): bool = «стартовал бой». Полная резолюция — _apply_event_choice_resolved.
 func _apply_event_choice(event_choice: Dictionary) -> bool:
@@ -9167,29 +9286,49 @@ func _event_outcome_reveal_text(outcome: Dictionary) -> String:
 # SCRUM-996: reveal-состояние экрана события — story-текст заменяется текстом
 # исхода, карточки выбора и «Назад» прячутся, остаётся одна кнопка продолжения
 # EventContinueButton («В путь»). Только она завершает событие (clear + advance,
-# либо событийный магазин при shop_after). Никакого визуального редизайна:
-# те же панель/кнопки (визуальный слой — SCRUM-997).
+# либо событийный магазин при shop_after). SCRUM-997: исход показывается в
+# диалог-панели справа, кнопка «В путь» — по центру нижней полосы (спека §2).
 func _show_event_outcome_reveal(box: VBoxContainer, outcome: Dictionary) -> void:
 	if box == null or not is_instance_valid(box):
 		return
+	var root := _event_screen_root(box)
 	var story_label := box.find_child("EventStory", false, false) as Label
 	if story_label != null:
 		story_label.text = _event_outcome_reveal_text(outcome)
-	var choices_row := box.find_child("EventChoiceRow", false, false) as CanvasItem
+	var choices_row: CanvasItem = null
+	var back_button: Button = null
+	if root != null:
+		choices_row = root.find_child("EventChoiceRow", true, false) as CanvasItem
+		back_button = root.find_child("EventBackButton", true, false) as Button
+	if choices_row == null:
+		choices_row = box.find_child("EventChoiceRow", false, false) as CanvasItem
+	if back_button == null:
+		back_button = box.find_child("EventBackButton", false, false) as Button
 	if choices_row != null:
 		choices_row.visible = false
-	var back_button := box.find_child("EventBackButton", false, false) as Button
 	if back_button != null:
 		back_button.visible = false
 	var continue_button := _make_button("В путь")
 	continue_button.name = "EventContinueButton"
-	continue_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(continue_button, 260.0, _atlas_action_button_height())
 	continue_button.tooltip_text = "Принять исход и продолжить маршрут."
 	continue_button.pressed.connect(func() -> void:
 		_finish_event_and_continue(outcome)
 	)
-	box.add_child(continue_button)
+	var bottom_zone := root.find_child("EventBottomZone", true, false) as Control if root != null else null
+	if bottom_zone != null:
+		bottom_zone.add_child(continue_button)
+		var metrics := _event_dialog_metrics()
+		var row_rect: Rect2 = metrics["row_rect"]
+		var back_h := _atlas_action_button_height()
+		continue_button.position = Vector2(
+			roundf(((metrics["vp"] as Vector2).x - 260.0) * 0.5),
+			row_rect.position.y + roundf((row_rect.size.y - back_h) * 0.5)
+		)
+		continue_button.size = Vector2(260.0, back_h)
+	else:
+		continue_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		box.add_child(continue_button)
 	# Фокус-цепь SCRUM-477: в reveal-состоянии единственная цель — кнопка
 	# продолжения; замыкаем её на себя, чтобы стрелки/стик не роняли фокус.
 	continue_button.focus_neighbor_left = continue_button.get_path()
@@ -12007,35 +12146,86 @@ func _economy_panel_style() -> StyleBox:
 # SCRUM-883: Событие в едином атлас-стиле. Панель — atlas-чип (MenuPanel_event),
 # контент раскладывается от ФАКТИЧЕСКИХ content-margins чипа (не от source-зон
 # @2K-рамки); титул золотом 30/36, стори — читаемое тело 16+ с autowrap.
+# SCRUM-997: метрики зон иллюстрированного event-диалога — единственный источник
+# геометрии экрана события (спека docs/design/mockups/scrum997_event_dialog/spec.md §1-2):
+# диалог-панель СПРАВА (~36% ширины, от верха safe-зоны до верха нижнего ряда),
+# нижняя полоса (~22% высоты) = ряд из 3 карточек + плита «Назад» 260×action-height
+# у правого края. Все значения — от фактического viewport (матрица 1152×648…3840×2160).
+func _event_dialog_metrics() -> Dictionary:
+	var vp := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		vp = game.get_viewport().get_visible_rect().size
+	var m := roundf(clampf(vp.y * 0.025, 12.0, 36.0))
+	var bottom_h := roundf(clampf(vp.y * 0.22, 142.0, 320.0))
+	var row_top := vp.y - m - bottom_h
+	var gap := roundf(clampf(vp.x * 0.012, 10.0, 32.0))
+	var gap_v := roundf(clampf(vp.y * 0.016, 8.0, 24.0))
+	var panel_w := roundf(clampf(vp.x * 0.36, 330.0, 980.0))
+	var pad := roundf(clampf(vp.y * 0.018, 12.0, 26.0))
+	var back_w := 260.0
+	var back_h := _atlas_action_button_height()
+	var card_w := floorf((vp.x - 2.0 * m - back_w - 3.0 * gap) / 3.0)
+	return {
+		"vp": vp,
+		"margin": m,
+		"gap": gap,
+		"panel_pad": pad,
+		"panel_rect": Rect2(vp.x - m - panel_w, m, panel_w, row_top - gap_v - m),
+		"row_rect": Rect2(m, row_top, card_w * 3.0 + gap * 2.0, bottom_h),
+		"card_size": Vector2(card_w, bottom_h),
+		"back_rect": Rect2(vp.x - m - back_w, row_top + roundf((bottom_h - back_h) * 0.5), back_w, back_h),
+	}
+
+
+# SCRUM-997: корень экрана события (EventScreen) от контент-бокса: box → scroll →
+# MenuPanel_event → root. Null-safe для ранних вызовов/деградаций.
+func _event_screen_root(box: VBoxContainer) -> Control:
+	if box == null or not is_instance_valid(box):
+		return null
+	var scroll := box.get_parent()
+	if scroll == null:
+		return null
+	var panel := scroll.get_parent()
+	if panel == null:
+		return null
+	return panel.get_parent() as Control
+
+
 func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	if box == null:
 		return
-	var display_size := _economy_menu_panel_half_size("event") * 2.0
-	var margins := Vector4(25.0, 18.0, 25.0, 18.0)
+	# SCRUM-997: диалог-панель СПРАВА (спека §2) вместо центральной economy-панели:
+	# ручной rect (якоря 0/0), панель не перекрывает иллюстрацию слева.
+	var metrics := _event_dialog_metrics()
+	var panel_rect: Rect2 = metrics["panel_rect"]
+	var pad: float = metrics["panel_pad"]
 	var scroll := box.get_parent() as ScrollContainer
 	var panel: PanelContainer = null
 	if scroll != null:
 		panel = scroll.get_parent() as PanelContainer
 	if panel != null:
-		var panel_style := panel.get_theme_stylebox("panel")
-		if panel_style != null:
-			margins = Vector4(
-				panel_style.get_content_margin(SIDE_LEFT),
-				panel_style.get_content_margin(SIDE_TOP),
-				panel_style.get_content_margin(SIDE_RIGHT),
-				panel_style.get_content_margin(SIDE_BOTTOM)
-			)
+		panel.anchor_left = 0.0
+		panel.anchor_top = 0.0
+		panel.anchor_right = 0.0
+		panel.anchor_bottom = 0.0
+		panel.offset_left = panel_rect.position.x
+		panel.offset_top = panel_rect.position.y
+		panel.offset_right = panel_rect.end.x
+		panel.offset_bottom = panel_rect.end.y
+	# Контент-зона чипа: по X pad·1.4 (см. _atlas_chip_style), по Y pad.
 	var content_size := Vector2(
-		maxf(320.0, display_size.x - margins.x - margins.z),
-		maxf(240.0, display_size.y - margins.y - margins.w)
+		maxf(240.0, panel_rect.size.x - pad * 2.8),
+		maxf(180.0, panel_rect.size.y - pad * 2.0)
 	)
-	var compact := display_size.y < 680.0
+	var compact := (metrics["vp"] as Vector2).y < 760.0
 	box.name = "EventContent"
 	box.alignment = BoxContainer.ALIGNMENT_BEGIN
-	box.custom_minimum_size = content_size
+	# Ширина минус запас на вертикальный скроллбар: длинный story скроллится,
+	# не распирая панель (канон: фикс-зону держат ручные rect'ы, не min-size лейблов).
+	box.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", 12 if compact else 16)
+	box.add_theme_constant_override("separation", 10 if compact else 14)
 	if scroll != null:
 		scroll.follow_focus = false
 		scroll.scroll_vertical = 0
@@ -12043,17 +12233,30 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	var title_label := box.find_child("MenuTitle_event", false, false) as Label
 	if title_label != null:
 		title_label.name = "EventTitle"
-		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
-		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 36, 0, 48))
+		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 34, 0, 44))
 		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+		# Латунная отчёркивающая линия под титулом (спека §2).
+		if box.find_child("EventTitleRule", false, false) == null:
+			var rule := ColorRect.new()
+			rule.name = "EventTitleRule"
+			rule.color = Color(0.52, 0.41, 0.24, 0.90)
+			rule.custom_minimum_size = Vector2(0.0, 2.0)
+			rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			box.add_child(rule)
+			box.move_child(rule, title_label.get_index() + 1)
 	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
 	if story_label != null:
 		story_label.name = "EventStory"
-		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		story_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		story_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		story_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
-		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		story_label.add_theme_font_size_override("font_size", _readable_font_size(16 if compact else 18, 12, 24))
+		story_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
+		story_label.size_flags_vertical = Control.SIZE_FILL
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(16 if compact else 17, 13, 22))
 		story_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 
 

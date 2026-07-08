@@ -980,19 +980,32 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if effect_text == null or not effect_text.text.contains("->"):
 					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
 		"event_economy":
-			# SCRUM-883: панель события — единый atlas-чип (StyleBoxFlat, плотная кожа),
-			# карточки — чипы общего хелпера (контракт с rewards-агентом: a>=0.8,
-			# hover-кант ярче), возврат — единая плита back_260x104.
+			# SCRUM-997: иллюстрированный event-диалог (спека docs/design/mockups/
+			# scrum997_event_dialog/spec.md): фон-арт на весь экран, диалог-панель
+			# СПРАВА (~36% ширины, чип Атласа a>=0.85), нижняя полоса = ряд из 3
+			# карточек-чипов (a>=0.8, hover-кант ярче) + плита «Назад» 260×action-height.
+			var event_vp: Vector2 = main.get_viewport().get_visible_rect().size
+			if main.find_child("ScreenBackground_event", true, false) == null \
+					and main.find_child("ScreenBackgroundFallback_event", true, false) == null:
+				return "%s: expected the event screen to keep ScreenBackground_event (illustration or fallback)." % context
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
 			if event_panel == null or not event_panel.visible or not event_panel.get_global_rect().has_area():
-				return "%s: expected visible event panel instead of an empty event shell." % context
+				return "%s: expected visible event dialog panel instead of an empty event shell." % context
 			var event_panel_style := event_panel.get_theme_stylebox("panel") as StyleBoxFlat
-			if event_panel_style == null or event_panel_style.bg_color.a < 0.90:
-				return "%s: expected event MenuPanel to use an opaque atlas chip StyleBoxFlat (a>=0.9)." % context
+			if event_panel_style == null or event_panel_style.bg_color.a < 0.85:
+				return "%s: expected event dialog panel to use a dense atlas chip StyleBoxFlat (a>=0.85)." % context
 			if main.find_child("UpgradeFabButton", true, false) != null:
 				return "%s: event screen must not render the disabled UpgradeFabButton inside MenuPanel_event." % context
-			# Safe-зона — от фактических content-margins чипа панели.
 			var event_panel_rect := event_panel.get_global_rect()
+			# SCRUM-997: панель прижата к правому краю и не шире ~42% вьюпорта
+			# (иллюстрация слева не перекрывается); на 4K ширина клампится 980 (спека §4).
+			if event_panel_rect.position.x < event_vp.x * 0.55:
+				return "%s: expected the event dialog panel on the RIGHT side (left edge >= 0.55*W), got %s." % [context, str(event_panel_rect)]
+			if event_panel_rect.end.x > event_vp.x - 2.0 or event_panel_rect.position.y < 2.0:
+				return "%s: expected the event dialog panel inside the viewport safe area, got %s." % [context, str(event_panel_rect)]
+			if event_panel_rect.size.x < minf(event_vp.x * 0.30, 979.0) or event_panel_rect.size.x > event_vp.x * 0.42:
+				return "%s: expected the event dialog panel width ~34-38%% of the viewport, got %.0f at %s." % [context, event_panel_rect.size.x, str(event_vp)]
+			# Safe-зона — от фактических content-margins чипа панели.
 			var event_safe := Rect2(
 				event_panel_rect.position + Vector2(event_panel_style.get_content_margin(SIDE_LEFT), event_panel_style.get_content_margin(SIDE_TOP)),
 				event_panel_rect.size - Vector2(
@@ -1012,6 +1025,18 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected event title/story labels to be visible and non-empty." % context
 				if not event_safe.encloses(label.get_global_rect()):
 					return "%s: expected %s to stay inside event chip safe rect %s." % [context, label.name, str(event_safe)]
+			# SCRUM-997: ряд карточек — нижняя полоса, не пересекает диалог-панель.
+			var event_row := main.find_child("EventChoiceRow", true, false) as Control
+			if event_row == null or not event_row.visible or not event_row.get_global_rect().has_area():
+				return "%s: expected a visible EventChoiceRow bottom strip." % context
+			var event_row_rect := event_row.get_global_rect()
+			if event_row_rect.position.y < event_vp.y * 0.60:
+				return "%s: expected the event choice row in the bottom strip (top >= 0.60*H), got %s." % [context, str(event_row_rect)]
+			if event_row_rect.end.y > event_vp.y - 2.0:
+				return "%s: expected the event choice row inside the viewport, got %s." % [context, str(event_row_rect)]
+			if event_row_rect.intersects(event_panel_rect):
+				return "%s: expected the event choice row to stay clear of the dialog panel." % context
+			var event_row_safe := event_row_rect.grow(2.0)
 			var visible_event_choices := 0
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
@@ -1033,11 +1058,19 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s hover chip border to be brighter (golden) than normal." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
-				if not event_safe.encloses(event_button.get_global_rect()):
-					return "%s: expected %s to stay inside event chip safe rect %s." % [context, event_button.name, str(event_safe)]
+				if not event_row_safe.encloses(event_button.get_global_rect()):
+					return "%s: expected %s to stay inside the bottom choice strip %s, got %s." % [context, event_button.name, str(event_row_safe), str(event_button.get_global_rect())]
+				if event_button.get_global_rect().intersects(event_panel_rect):
+					return "%s: expected %s to stay clear of the dialog panel." % [context, event_button.name]
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
 				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
+				# SCRUM-997: строка награды/чек-хинта обязана жить внутри карточки.
+				var event_hint := event_button.find_child("%sHint" % event_button.name, true, false) as Label
+				if event_button.visible and (event_hint == null or event_hint.text.strip_edges() == ""):
+					return "%s: expected %s to expose a reward/check hint line (SCRUM-997)." % [context, event_button.name]
+				if event_hint != null and not event_button.get_global_rect().grow(1.0).encloses(event_hint.get_global_rect()):
+					return "%s: event hint %s escapes its card safe content rect." % [context, event_hint.name]
 			if visible_event_choices < 2:
 				return "%s: expected at least two visible event choices, got %d." % [context, visible_event_choices]
 			var event_back := main.find_child("EventBackButton", true, false) as Button
@@ -1046,8 +1079,12 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			# SCRUM-883: единый возврат — плита 260×action-height (кит back_260x104).
 			if absf(event_back.custom_minimum_size.x - 260.0) > 0.5 or event_back.custom_minimum_size.y < 72.0:
 				return "%s: expected EventBackButton to use the unified 260-wide back plate, got %s." % [context, str(event_back.custom_minimum_size)]
-			if not event_safe.encloses(event_back.get_global_rect()):
-				return "%s: expected EventBackButton to stay inside event chip safe rect %s." % [context, str(event_safe)]
+			# SCRUM-997: «Назад» — в нижней полосе, правее ряда, вне панели и иллюстративной зоны.
+			var event_back_rect := event_back.get_global_rect()
+			if event_back_rect.position.y < event_vp.y * 0.60 or event_back_rect.end.y > event_vp.y - 2.0 or event_back_rect.end.x > event_vp.x - 2.0:
+				return "%s: expected EventBackButton in the bottom strip, got %s." % [context, str(event_back_rect)]
+			if event_back_rect.intersects(event_panel_rect) or event_back_rect.intersects(event_row_rect):
+				return "%s: expected EventBackButton to stay clear of the dialog panel and the choice row." % context
 		"level_up_toast":
 			var toast_frame := main.find_child("LevelUpToastFrame", true, false) as PanelContainer
 			if toast_frame == null or not toast_frame.visible or not toast_frame.get_global_rect().has_area():
