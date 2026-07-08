@@ -7690,6 +7690,20 @@ func _test_weapon_select_clean_layout(main_scene: PackedScene) -> void:
 		if pixellab_layer != null:
 			_fail("SCRUM-870: Weapon Select must not render the rejected SCRUM-868 PixelLab runtime layer for %s." % character_id)
 			return
+		# SCRUM-883: единый атлас-шелл — фон-зал героев COVERED и полая рама meta40 поверх.
+		var ws_shell_bg := weapon_main.find_child("UnifiedBackground_hero_select", true, false) as TextureRect
+		if ws_shell_bg == null or ws_shell_bg.texture == null or ws_shell_bg.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED:
+			_fail("SCRUM-883: expected weapon select to reuse the covered hero-hall unified background for %s." % character_id)
+			return
+		var ws_shell_frame := weapon_main.find_child("WeaponSelectFrame", true, false) as Panel
+		if ws_shell_frame == null:
+			_fail("SCRUM-883: expected WeaponSelectFrame atlas overlay for %s." % character_id)
+			return
+		var ws_shell_frame_style := ws_shell_frame.get_theme_stylebox("panel") as StyleBoxTexture
+		if ws_shell_frame_style == null or ws_shell_frame_style.draw_center or ws_shell_frame_style.texture == null \
+				or not str(ws_shell_frame_style.texture.resource_path).ends_with("meta40/frame_border.png"):
+			_fail("SCRUM-883: expected hollow meta40 atlas frame overlay on weapon select for %s." % character_id)
+			return
 		var panel := weapon_main.find_child("MenuPanel_weapon_select", true, false) as PanelContainer
 		if panel == null:
 			_fail("Expected SCRUM-870 weapon select panel for %s." % character_id)

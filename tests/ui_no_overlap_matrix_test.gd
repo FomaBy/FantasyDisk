@@ -488,12 +488,36 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var layer := main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
 			if layer != null:
 				return "%s: SCRUM-870 forbids the rejected WeaponSelectPixelLabRuntimeLayer." % context
+			# SCRUM-883: единый атлас-стиль — фон-зал героев COVERED без осевого
+			# stretch, полая рама meta40 поверх, плита-чип в safe-зоне рамы.
+			var ws_background := main.find_child("UnifiedBackground_hero_select", true, false) as TextureRect
+			if ws_background == null or ws_background.texture == null:
+				return "%s: expected UnifiedBackground_hero_select with a loaded texture." % context
+			if ws_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or ws_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
+				return "%s: expected UnifiedBackground_hero_select to cover the viewport without axis stretch." % context
+			var ws_frame := main.find_child("WeaponSelectFrame", true, false) as Panel
+			if ws_frame == null:
+				return "%s: expected WeaponSelectFrame ornament overlay." % context
+			var ws_frame_style := ws_frame.get_theme_stylebox("panel") as StyleBoxTexture
+			if ws_frame_style == null or ws_frame_style.draw_center:
+				return "%s: expected hollow WeaponSelectFrame (StyleBoxTexture, draw_center=false)." % context
+			if ws_frame_style.texture == null or not ws_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
+				return "%s: expected WeaponSelectFrame to use the meta40 frame_border 9-slice." % context
 			var panel := main.find_child("MenuPanel_weapon_select", true, false) as Control
 			if panel == null:
 				return "%s: expected live SCRUM-870 Weapon Select panel." % context
 			var panel_style := panel.get_theme_stylebox("panel")
 			if not panel_style is StyleBoxFlat or (panel_style as StyleBoxFlat).bg_color.a < 0.80:
 				return "%s: expected Weapon Select panel to be an opaque readable dark live panel." % context
+			var ws_vp := ws_frame.get_viewport_rect().size
+			var ws_margin_x := roundf(160.0 * ws_vp.x / 1536.0)
+			var ws_margin_y := roundf(160.0 * ws_vp.y / 1024.0)
+			var ws_safe := Rect2(
+				ws_margin_x, ws_margin_y,
+				ws_vp.x - 2.0 * ws_margin_x, ws_vp.y - 2.0 * ws_margin_y
+			).grow(2.0)
+			if not ws_safe.encloses(panel.get_global_rect()):
+				return "%s: expected MenuPanel_weapon_select to stay inside unified safe margins %s, got %s." % [context, str(ws_safe), str(panel.get_global_rect())]
 			for node in main.find_children("WeaponOption_*", "Button", true, false):
 				var button := node as Button
 				if button == null:
