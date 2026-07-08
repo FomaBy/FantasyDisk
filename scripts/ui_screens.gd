@@ -529,6 +529,25 @@ const ATLAS_CLASS_GENITIVE := {
 	"ranger": "Рейнджера", "doctor": "Доктора", "chemist": "Химика",
 	"knight": "Рыцаря", "druid": "Друида",
 }
+# SCRUM-879: единый атлас-стиль остальных экранов (выбор героя / кодекс /
+# релиз-ноты / настройки). Фоны 2560×1440 — OpenAI-пайплайн SCRUM-832, акценты —
+# PixelLab. Слои повторяют экран «Атлас героев»: тихий фон COVERED, контент в
+# safe-зоне, полая рама frame_border поверх, панели — _atlas_chip_style, кнопки —
+# глобальный кит (_make_button/_set_action_button_size).
+const ATLAS_STYLE_DIR := "res://assets/sprites/ui/atlas_style/"
+const ATLAS_STYLE_BG_PATHS := {
+	"hero_select": ATLAS_STYLE_DIR + "bg_hero_hall.png",
+	"codex": ATLAS_STYLE_DIR + "bg_codex_archive.png",
+	"patch_notes": ATLAS_STYLE_DIR + "bg_chronicle.png",
+	"settings": ATLAS_STYLE_DIR + "bg_sanctum.png",
+}
+const ATLAS_STYLE_EMBLEM_PATHS := {
+	"hero_select": ATLAS_STYLE_DIR + "emblem_hero_hall.png",
+	"codex": ATLAS_STYLE_DIR + "emblem_codex.png",
+	"patch_notes": ATLAS_STYLE_DIR + "emblem_chronicle.png",
+}
+const ATLAS_STYLE_PEDESTAL_PATH := ATLAS_STYLE_DIR + "pedestal_dais.png"
+const ATLAS_STYLE_DIVIDER_PATH := ATLAS_STYLE_DIR + "divider_ornament.png"
 const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
 const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
 const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
@@ -3034,6 +3053,137 @@ func _atlas_add_legend_item(legend: HBoxContainer, icon_path: String, text: Stri
 	label.add_theme_font_size_override("font_size", _readable_font_size(13))
 	label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.94, 0.92))
 	item.add_child(label)
+
+
+# --- SCRUM-879: атлас-стиль для остальных экранов --------------------------
+# Слои как у «Атласа героев»: фон COVERED (без растяжки осей, fallback bg_sky),
+# контент ТОЛЬКО в safe-зоне рамы, полая рама 9-slice ПОВЕРХ контента
+# (_unified_add_frame звать ПОСЛЕДНИМ). Панели — _atlas_chip_style.
+
+func _unified_add_background(root: Control, screen_id: String, shade_alpha := 0.0) -> void:
+	var path := str(ATLAS_STYLE_BG_PATHS.get(screen_id, ""))
+	if path == "" or not ResourceLoader.exists(path):
+		path = META40_BG_SKY_PATH
+	var background := TextureRect.new()
+	background.name = "UnifiedBackground_%s" % screen_id
+	background.texture = game._cached_texture(path)
+	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(background)
+	if shade_alpha > 0.0:
+		var shade := ColorRect.new()
+		shade.name = "UnifiedBackgroundShade"
+		shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+		shade.color = Color(0.0, 0.0, 0.0, shade_alpha)
+		shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(shade)
+
+
+func _unified_safe_margins() -> Vector4:
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	return _scaled_frame_margins_xy(
+		ATLAS_FRAME_SOURCE_SIZE, vp,
+		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+
+
+func _unified_make_safe_area(root: Control, prefix: String) -> MarginContainer:
+	var margins := _unified_safe_margins()
+	var safe := MarginContainer.new()
+	safe.name = "%sSafeArea" % prefix
+	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	safe.add_theme_constant_override("margin_left", int(margins.x))
+	safe.add_theme_constant_override("margin_top", int(margins.y))
+	safe.add_theme_constant_override("margin_right", int(margins.z))
+	safe.add_theme_constant_override("margin_bottom", int(margins.w))
+	root.add_child(safe)
+	return safe
+
+
+func _unified_add_frame(root: Control, prefix: String) -> Panel:
+	var frame := Panel.new()
+	frame.name = "%sFrame" % prefix
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.add_theme_stylebox_override("panel", _atlas_frame_style(_unified_safe_margins()))
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	root.add_child(frame)
+	return frame
+
+
+# Кожаный чип-заголовок экрана: эмблема PixelLab + титул золотом (шапка как
+# валютные чипы Атласа).
+func _unified_header_chip(prefix: String, title: String, screen_id: String, s: float) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.name = "%sTitleChip" % prefix
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	chip.add_child(row)
+	var emblem_path := str(ATLAS_STYLE_EMBLEM_PATHS.get(screen_id, ""))
+	if emblem_path != "" and ResourceLoader.exists(emblem_path):
+		var icon := TextureRect.new()
+		icon.name = "%sTitleEmblem" % prefix
+		icon.texture = game._cached_texture(emblem_path)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var icon_px := maxf(26.0, roundf(44.0 * s))
+		icon.custom_minimum_size = Vector2(icon_px, icon_px)
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(icon)
+	var label := Label.new()
+	label.name = "%sTitleLabel" % prefix
+	label.text = title
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	row.add_child(label)
+	return chip
+
+
+# Тема «кожаного ряда» для списочных Button-контролов (карточки кодекса,
+# слоты карусели, строки статов): это НЕ действие-кнопки глобального кита,
+# а контентные ряды в языке чипов Атласа.
+func _unified_apply_row_theme(button: Button, pad := 10.0, selected := false) -> void:
+	var normal := _atlas_chip_style(0.72, pad)
+	var hover := _atlas_chip_style(0.82, pad)
+	hover.border_color = Color(0.72, 0.58, 0.34, 0.95)
+	var pressed := _atlas_chip_style(0.92, pad)
+	pressed.bg_color = Color(0.11, 0.09, 0.07, 0.94)
+	var focus := _atlas_chip_style(0.84, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	if selected:
+		normal = _atlas_chip_style(0.88, pad)
+		normal.border_color = Color(0.93, 0.77, 0.40, 0.95)
+		normal.set_border_width_all(3)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", pressed)
+	button.add_theme_stylebox_override("focus", focus)
+	button.add_theme_stylebox_override("disabled", _atlas_translucent_style(0.45, 10.0))
+	button.add_theme_color_override("font_color", Color(0.90, 0.86, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+# Орнамент-разделитель PixelLab фикс-высоты (KEEP_ASPECT_CENTERED — без растяжки).
+func _unified_add_divider(parent: Control, s: float, name_suffix := "") -> void:
+	if not ResourceLoader.exists(ATLAS_STYLE_DIVIDER_PATH):
+		return
+	var divider := TextureRect.new()
+	divider.name = "UnifiedDivider%s" % name_suffix
+	divider.texture = game._cached_texture(ATLAS_STYLE_DIVIDER_PATH)
+	divider.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	divider.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	divider.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	divider.custom_minimum_size = Vector2(0.0, maxf(18.0, roundf(28.0 * s)))
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(divider)
 
 
 # Узлы текущего графа: созвездие выбранного класса либо Атлас гильдии.
