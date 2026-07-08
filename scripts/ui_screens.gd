@@ -319,15 +319,8 @@ const LU_BADGE_META := {
 	"both": {"text": "ЛУЧШИЙ ВЫБОР", "text_color": Color(0.98, 0.87, 0.42, 1.0)},
 }
 
-# #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
-const RWD_PANEL_2K := Rect2(720, 390, 1120, 660)
-const RWD_SAFE_2K := Rect2(778, 462, 1004, 522)
-const RWD_CARD_2K := Rect2(0, 0, 300, 430)                  # BattleRewardButton{0..2} = REWARD_CARD_SIZE (gap 18)
-
-# #13 Награда элитки — _show_elite_artifact_reward (панель 1140×640)
-const ELR_PANEL_2K := Rect2(710, 400, 1140, 640)
-const ELR_SAFE_2K := Rect2(768, 472, 1024, 502)
-const ELR_CARD_2K := Rect2(0, 0, 320, 430)                  # EliteArtifactRewardButton{0..2} = REWARD_ELITE_CARD_SIZE (gap 22)
+# #12/#13 Награды (обычная и элитки) — SCRUM-883: панели и карточки — чипы Атласа,
+# геометрия задаётся _create_menu_box/REWARD_*_CARD_SIZE (спек-рамки @2K сняты).
 
 # #28 Тост повышения — _show_level_up_toast (транзиентный full-rect burst на позиции игрока/центра)
 const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
@@ -336,10 +329,11 @@ const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
 const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление босса (big)
 const CTB_SMALL_2K := Rect2(100, 92, 2360, 56)             # появление элитки
 
-# #30 Баннер победы — _show_victory_banner (dim + "ПОБЕДА" 96pt по центру)
-const VBN_DIM_2K := Rect2(0, 0, 2560, 1440)
-const VBN_FRAME_2K := Rect2(560, 600, 1440, 240)
-const VBN_SAFE_2K := Rect2(672, 652, 1216, 136)
+# #30 Баннер победы — _show_victory_banner: дим + компактный чип Атласа с золотым
+# титулом «ПОБЕДА» по вертикальному центру 2K-холста (SCRUM-883, ранее vbn_frame @2K).
+const VICTORY_BANNER_CHIP_SIZE := Vector2(960.0, 224.0)
+const VICTORY_BANNER_CHIP_TOP := 608.0
+const VICTORY_BANNER_CHIP_PAD := 26.0
 # === конец спеки SCRUM-487 ===
 
 # === SCRUM-488: координатная спека @2560×1440 — блок Прогрессия/Экономика ===
@@ -397,20 +391,12 @@ const PN_SCROLL_2K := Rect2(136, 234, 2288, 1098)          # скролл вер
 
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
-const ECONOMY_CHOICE_CARD_PATH := MINIMAL_CARD_PATH
-const ECONOMY_CHOICE_CARD_HOVER_PATH := MINIMAL_CARD_PATH
 const ECONOMY_DRAGON_PANEL_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_dragon_panel.png"
 const ECONOMY_PRICE_BADGE_PATH := MINIMAL_FIELD_PATH
 const ECONOMY_TOOLTIP_PATH := MINIMAL_TOOLTIP_PATH
 const ECONOMY_PANEL_SOURCE_SIZE := Vector2(782.0, 716.0)
 const ECONOMY_PANEL_TEXTURE_MARGINS := Vector4(38.0, 52.0, 38.0, 48.0)
 const ECONOMY_PANEL_CONTENT := Vector4(58.0, 72.0, 58.0, 66.0)
-const ECONOMY_CHOICE_SOURCE_SIZE := Vector2(426.0, 486.0)
-const ECONOMY_CHOICE_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const ECONOMY_CHOICE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const ECONOMY_CHOICE_HOVER_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const ECONOMY_CHOICE_SAFE_RECT := Rect2(46.0, 58.0, 334.0, 374.0)
 const ECONOMY_CHOICE_TARGET_720 := Vector2(360.0, 240.0)
 const ECONOMY_CHOICE_TARGET_1080 := Vector2(420.0, 300.0)
 const ECONOMY_CHOICE_TARGET_1440 := Vector2(480.0, 340.0)
@@ -519,18 +505,9 @@ const CODEX_PL_ICONS := {
 	"glossary": CODEX_PL_FRAME_DIR + "codex_pl_icon_glossary.png",
 	"ascensions": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
 }
-const REWARD_FRAME_DIR := "res://assets/sprites/ui/frames/rewards/"
-const REWARD_CARD_PATH := MINIMAL_CARD_PATH
-const REWARD_CARD_HOVER_PATH := MINIMAL_CARD_PATH
-const REWARD_ELITE_CARD_PATH := MINIMAL_CARD_PATH
-const REWARD_ELITE_CARD_HOVER_PATH := MINIMAL_CARD_PATH
-const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
+# SCRUM-883: карточки наград — чип-ряды Атласа; display-размеры слотов сохранены.
 const REWARD_CARD_SIZE := Vector2(300.0, 430.0)
 const REWARD_ELITE_CARD_SIZE := Vector2(320.0, 430.0)
-const REWARD_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_CARD_SOURCE_CONTENT := Vector4(48.0, 60.0, 48.0, 62.0)
-const REWARD_ELITE_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_ELITE_CARD_SOURCE_CONTENT := Vector4(48.0, 60.0, 48.0, 62.0)
 
 
 func _init(game_ref) -> void:
@@ -2198,25 +2175,18 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	frame.anchor_right = 0.5
 	frame.anchor_top = 0.0
 	frame.anchor_bottom = 0.0
-	frame.offset_left = -VBN_FRAME_2K.size.x * 0.5
-	frame.offset_right = VBN_FRAME_2K.size.x * 0.5
-	frame.offset_top = VBN_FRAME_2K.position.y
-	frame.offset_bottom = VBN_FRAME_2K.position.y + VBN_FRAME_2K.size.y
-	frame.pivot_offset = Vector2(VBN_FRAME_2K.size.x * 0.5, VBN_FRAME_2K.size.y * 0.5)
+	# SCRUM-883: транзиентный оверлей поверх боя — компактный чип Атласа вместо
+	# тяжёлой vbn_frame @2K-рамы (просто и торжественно; дим сохранён, растяжек нет).
+	var banner_size := VICTORY_BANNER_CHIP_SIZE
+	frame.offset_left = -banner_size.x * 0.5
+	frame.offset_right = banner_size.x * 0.5
+	frame.offset_top = VICTORY_BANNER_CHIP_TOP
+	frame.offset_bottom = VICTORY_BANNER_CHIP_TOP + banner_size.y
+	frame.pivot_offset = banner_size * 0.5
 	frame.scale = Vector2(0.92, 0.92)
 	frame.modulate.a = 0.0
-	frame.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("vbn_frame", VBN_FRAME_2K.size))
-	var content_margins := _overhaul_2k_content_margins("vbn_frame", VBN_FRAME_2K.size)
-	var content_rect := Rect2(
-		Vector2(content_margins.x, content_margins.y),
-		Vector2(
-			VBN_FRAME_2K.size.x - content_margins.x - content_margins.z,
-			VBN_FRAME_2K.size.y - content_margins.y - content_margins.w
-		)
-	)
-	frame.set_meta("victory_banner_slot", "vbn_frame")
-	frame.set_meta("victory_banner_content_margins", content_margins)
-	frame.set_meta("victory_banner_content_rect", content_rect)
+	frame.add_theme_stylebox_override("panel", _atlas_chip_style(0.92, VICTORY_BANNER_CHIP_PAD))
+	frame.set_meta("victory_banner_style", "atlas_chip")
 	click_catcher.add_child(frame)
 
 	var label := Label.new()
@@ -2228,7 +2198,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", _readable_font_size(90))
-	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
+	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
 	frame.add_child(label)
@@ -2294,10 +2264,9 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	panel.offset_top = panel_vertical_margin
 	panel.offset_right = panel_width * 0.5
 	panel.offset_bottom = -panel_vertical_margin
-	# SCRUM-568: высокая панель докачи использует per-слот attr_panel @2K-рамку
-	# (1124×1384, нарисована 1:1 под слот; 9-slice тянет только плоскую середину).
-	var attr_panel_display := Vector2(panel_width, maxf(1.0, viewport_size.y - panel_vertical_margin * 2.0))
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("attr_panel", attr_panel_display))
+	# SCRUM-883: высокая панель докачки — чип Атласа (тёмная кожа, латунный кант)
+	# вместо attr_panel @2K-рамки; дим-фон поверх меты сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 18.0))
 	root.add_child(panel)
 
 	var outer := VBoxContainer.new()
@@ -2332,7 +2301,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	money_label.name = "AttributeShopMoney"
 	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
+	money_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	box.add_child(money_label)
 
 	var offers_box := GridContainer.new()
@@ -2407,10 +2376,8 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		var attr_offer_size := _economy_attribute_choice_display_size()
 		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, attr_offer_size)
 		offer_button.name = "AttributeOffer_%s" % stat_id
-		# SCRUM-568: карточка опции докачи переодета в evt_card @2K-рамку (480×340, тот же
-		# card-тип) и переинсечена под её content-зону — единый дарк-фэнтези стиль с Событием.
-		_apply_overhaul_choice_2k_theme(offer_button, "evt_card", attr_offer_size)
-		_reinset_overhaul_choice_content(offer_button, "evt_card", attr_offer_size)
+		# SCRUM-883: карточка опции — чип-ряд Атласа из общей фабрики (единый стиль
+		# с экономикой/событием); отдельное переодевание в evt_card снято.
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
@@ -7141,7 +7108,8 @@ func _cycle_codex_section(dir: int) -> bool:
 
 
 func _show_reward_screen() -> void:
-	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
+	# SCRUM-883: панель награды — чип Атласа (карточки внутри — чип-ряды).
+	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward", _atlas_chip_style(0.94, 18.0))
 	_create_menu_run_hud()
 	var rewards_row := HBoxContainer.new()
 	rewards_row.name = "BattleRewardCardsRow"
@@ -7319,7 +7287,8 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	# SCRUM-883: панель трофея — чип Атласа; дим-фон сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -7334,15 +7303,15 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	title.text = "Трофей элитки"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
-	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
 	var subtitle := Label.new()
 	subtitle.name = "EliteArtifactRewardSubtitle"
 	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	box.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
@@ -7419,7 +7388,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
+	# SCRUM-883: панель трофея босса — чип Атласа; дим-фон сохранён.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
 	center.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -7441,8 +7411,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 	subtitle.name = "BossArtifactRewardSubtitle"
 	subtitle.text = "Акт пройден! Выбери 1 из 3 суперредких артефактов."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	box.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
@@ -7779,8 +7749,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 22))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 22))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 
 	var preview_label := Label.new()
@@ -7789,8 +7759,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 16))
-	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 16))
+	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(preview_label)
 
 	var description_label := Label.new()
@@ -7801,8 +7771,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.max_lines_visible = 2
 	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 14))
-	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 14))
+	description_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	content.add_child(description_label)
 
 	var spacer := Control.new()
@@ -7815,8 +7785,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 16))
-	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 16))
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
 	content.add_child(action_label)
@@ -7879,8 +7849,8 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	effect_label.max_lines_visible = 2
 	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 15))
-	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
+	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 15))
+	effect_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(effect_label)
 
 	var interpretation := _reward_interpretation_text(reward)
@@ -7893,8 +7863,8 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		interp_label.max_lines_visible = 1
 		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 0, 14))
-		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
+		interp_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		content.add_child(interp_label)
 
 	return button
@@ -7976,8 +7946,8 @@ func _show_shop_screen() -> void:
 	var subtitle := Label.new()
 	subtitle.text = "Выбери предмет. Описание появляется при наведении."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16, 12))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	title_box.add_child(subtitle)
 
 	# Товары лежат в центральной свободной зоне shop backdrop как предметы
@@ -8072,11 +8042,9 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 			note_label.offset_top = 4.0
 			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			button.add_child(note_label)
-	button.add_theme_stylebox_override("normal", _shop_wall_button_style(false))
-	button.add_theme_stylebox_override("hover", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("pressed", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("focus", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("disabled", _shop_wall_button_style(false))
+	# SCRUM-883: слот товара — чип-ряд Атласа (StyleBoxFlat, hover — золотой кант);
+	# внутренности слота (иконка, пергамент-плашка, ценник) сохранены.
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(SHOP_INLINE_SLOT_SIZE))
 	button.pressed.connect(func() -> void:
 		_buy_shop_item_at(index)
 	)
@@ -8207,8 +8175,8 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(18, 12))
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
 	if not affordable:
@@ -8354,21 +8322,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	return "artifact"
 
 
-func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.90, 0.76, 0.38, 0.08) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.border_color = Color(1.0, 0.86, 0.42, 0.38) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.set_border_width_all(1 if is_hovered else 0)
-	style.set_corner_radius_all(18)
-	style.content_margin_left = 0
-	style.content_margin_top = 0
-	style.content_margin_right = 0
-	style.content_margin_bottom = 0
-	style.shadow_color = Color(1.0, 0.70, 0.24, 0.18) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.shadow_size = 12 if is_hovered else 0
-	return style
-
-
 func _shop_item_shadow_style() -> StyleBox:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.035, 0.025, 0.016, 0.38)
@@ -8494,7 +8447,9 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
+	# SCRUM-883: панель улучшения — чип Атласа (экономический фолбэк) вместо
+	# upgrade_panel @2K-рамки; карточки — чип-ряды общей фабрики.
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
 	var upgrade_card_size := _economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
@@ -8632,6 +8587,8 @@ func _show_event_screen(route_node: Dictionary) -> void:
 # screens больше не кладутся в ScrollContainer: title/subtitle занимают верх safe-зоны,
 # body делит середину на crest-slot и компактную run-summary column, а action button
 # всегда остаётся в нижнем safe-слоте. Pause screen сохраняет scroll-контракт отдельно.
+# SCRUM-883: модалка итогов — чип Атласа с симметричным чип-пэддингом.
+const RESULT_MODAL_CHIP_PAD := 24.0
 const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
 const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
@@ -8733,8 +8690,8 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 0, 22))
-		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 12, 22))
+		outcome_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(outcome_label)
 
@@ -8763,16 +8720,16 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 0, 20))
-		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 12, 20))
+		name_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
 		var value_label := Label.new()
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 0, 20))
-		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 12, 20))
+		value_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
 
@@ -8788,8 +8745,8 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 0, 18))
-		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 12, 18))
+		artifacts_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(artifacts_label)
 
@@ -11600,8 +11557,9 @@ func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 
 
 func _pause_end_modal_content_margins(display_size: Vector2, screen_background_id: String) -> Vector4:
-	if screen_background_id == "death":
-		return _overhaul_2k_content_margins("result_panel", display_size)
+	# SCRUM-883: у результ-чипа контент держат симметричные чип-пэддинги.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_content_margins(RESULT_MODAL_CHIP_PAD)
 	return _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 
 
@@ -11744,8 +11702,9 @@ func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
+# SCRUM-883: панели экономических экранов маршрута (костёр и фолбэк) — чип Атласа.
 func _economy_panel_style() -> StyleBox:
-	return _minimal_frame_style("panel")
+	return _atlas_chip_style(0.94, 18.0)
 
 
 # SCRUM-565: Событие @2K. Панель и карточки выбора используют per-слот overhaul_2k-рамки
@@ -11791,46 +11750,31 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
 
 
-# SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
-# (upgrade_panel 1720×730), нарисованная РОВНО в свой пиксельный размер → на 2K 1:1,
-# на 1080p/4K юниформ-скейл вьюпортом без растяжения орнамента. Карточки выбора —
-# общий economy-choice-арт (как остальные economy-экраны кроме события).
-func _upgrade_panel_2k_style() -> StyleBox:
-	var display_size := _economy_menu_panel_half_size("upgrade") * 2.0
-	return _overhaul_2k_frame_style("upgrade_panel", display_size)
-
-
-# SCRUM-565/568: переинсет контента карточки выбора под content-зону её overhaul_2k-рамки
-# (slot), чтобы текст/иконки держались внутри safe-зоны и не лезли на орнамент.
-func _reinset_overhaul_choice_content(button: Button, slot: String, display_size: Vector2) -> void:
-	if button == null or not UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
+# SCRUM-565/568 → SCRUM-883: чип-карточка держит контент собственными симметричными
+# пэддингами — переинсет под content-зону текстурной рамки больше не нужен. Хелпер
+# сохранён идемпотентной переустановкой чип-маржин (его зовёт экран события).
+func _reinset_overhaul_choice_content(button: Button, _slot: String, _display_size: Vector2) -> void:
+	if button == null:
 		return
 	var content := button.find_child("%sContent" % button.name, true, false) as Control
 	if content == null:
 		return
-	var source_size: Vector2 = UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]
-	var base_content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT.get(slot, Vector4.ZERO)
-	var margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	if margins == Vector4.ZERO:
+		return
 	content.offset_left = margins.x
 	content.offset_top = margins.y
 	content.offset_right = -margins.z
 	content.offset_bottom = -margins.w
-	button.set_meta("economy_content_margins", margins)
 
 
-# SCRUM-565/568: переодеть карточку выбора в overhaul_2k-рамку slot (normal/hover/
-# pressed/focus/disabled) с теми же нейтральными тинтами, что у economy-карт.
-func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
-	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+# SCRUM-565/568 → SCRUM-883: карточки выбора больше не переодеваются в текстурные
+# @2K-рамки — единый чип-язык Атласа. Сигнатура и точки вызова сохранены (экран
+# события зовёт хелпер со слотом; слот игнорируется).
+func _apply_overhaul_choice_2k_theme(button: Button, _slot: String, display_size: Vector2) -> void:
+	if button == null:
+		return
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
 
 
 # SCRUM-883: карточка награды = кожаный чип-ряд атласа (база — _unified_apply_
@@ -11870,32 +11814,49 @@ func _apply_level_up_card_atlas_theme(button: Button, display_size: Vector2, is_
 
 
 func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
-	# SCRUM-578: экран «Смерть» (end-модалка результата) получает per-слот @2K-рамку
-	# result_panel (RESULT_PANEL_2K 898×820), нарисованную РОВНО в свой размер → резкий
-	# орнамент на 1080p/2K/4K. Победа/пауза пока на общем PAUSE_END_MODAL_PATH (свои таски).
-	if screen_background_id == "death":
-		return _overhaul_2k_frame_style("result_panel", display_size)
+	# SCRUM-883: итоги забега (Победа/Поражение) — модалка-чип Атласа 0.96 вместо
+	# текстурных рам (result_panel @2K у смерти, minimal-modal у победы). Пауза —
+	# чужая зона: остаётся на общем PAUSE_END_MODAL_PATH.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_style(0.96, RESULT_MODAL_CHIP_PAD)
 	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
 	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 	return _global_texture_style(PAUSE_END_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
 
 
-func _economy_choice_style(display_size: Vector2, hovered := false, pressed := false, disabled := false) -> StyleBox:
-	var path := ECONOMY_CHOICE_CARD_HOVER_PATH if hovered else ECONOMY_CHOICE_CARD_PATH
-	var texture_margins := _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS if hovered else ECONOMY_CHOICE_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_CONTENT if hovered else ECONOMY_CHOICE_CONTENT)
-	var tint := Color.WHITE
-	if hovered:
-		tint = BUTTON_NEUTRAL_HOVER_TINT
-	if pressed:
-		tint = Color(0.90, 0.84, 0.76, 1.0)
-	if disabled:
-		tint = Color(0.58, 0.58, 0.58, 0.82)
-	return _global_texture_style(path, texture_margins, tint, content_margins, true)
+# SCRUM-883: чип-пэддинг карточек наград/экономики от высоты слота (симметрия с
+# _atlas_chip_style: по X пад расширяется 1.4x внутри самого стиля).
+func _atlas_card_pad(display_size: Vector2) -> float:
+	return roundf(clampf(display_size.y * 0.10, 18.0, 34.0))
 
 
-func _economy_choice_content_margins(display_size: Vector2) -> Vector4:
-	return _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_CONTENT)
+func _atlas_chip_content_margins(pad: float) -> Vector4:
+	return Vector4(pad * 1.4, pad, pad * 1.4, pad)
+
+
+# SCRUM-883: контентные карточки-ряды (награда за бой, артефакты элитки/босса,
+# экономика маршрута, докачка, события) — единый чип-язык Атласа поверх
+# _unified_apply_row_theme: normal — плотный чип 0.86, hover/focus/pressed —
+# золотой кант; disabled сохраняет силуэт чипа (дим — модуляцией карточки).
+# Никаких текстурных рамок и растяжек (Правило 1/2 SCRUM-879).
+func _apply_atlas_choice_card_theme(button: Button, pad: float) -> void:
+	_unified_apply_row_theme(button, pad)
+	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
+	var hover := _atlas_chip_style(0.90, pad)
+	hover.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("hover", hover)
+	var pressed := _atlas_chip_style(0.94, pad)
+	pressed.bg_color = Color(0.11, 0.09, 0.07, 0.94)
+	pressed.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("pressed", pressed)
+	var focus := _atlas_chip_style(0.90, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("focus", focus)
+	var disabled := _atlas_chip_style(0.80, pad)
+	disabled.border_color = Color(0.36, 0.32, 0.26, 0.70)
+	button.add_theme_stylebox_override("disabled", disabled)
+	button.set_meta("economy_card_style", "atlas_chip")
+	button.set_meta("economy_card_pad", pad)
 
 
 func _economy_choice_display_size(cards_in_row := 3) -> Vector2:
@@ -11937,19 +11898,6 @@ func _economy_choice_row_gap(display_size: Vector2) -> int:
 	return 24
 
 
-func _apply_economy_choice_theme(button: Button, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _economy_choice_style(display_size))
-	button.add_theme_stylebox_override("hover", _economy_choice_style(display_size, true))
-	button.add_theme_stylebox_override("pressed", _economy_choice_style(display_size, true, true))
-	button.add_theme_stylebox_override("focus", _economy_choice_style(display_size, true))
-	button.add_theme_stylebox_override("disabled", _economy_choice_style(display_size, false, false, true))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
-
-
 func _make_economy_choice_row(row_name: String, display_size := Vector2.ZERO, cards_in_row := 3) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.name = row_name
@@ -11967,10 +11915,6 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	button.name = button_name if button_name != "" else "EconomyChoiceCard"
 	var compact_attribute := button.name.begins_with("AttributeOffer_")
 	button.set_meta("economy_frame_kind", "choice_card")
-	button.set_meta("economy_frame_path", ECONOMY_CHOICE_CARD_PATH)
-	button.set_meta("economy_hover_frame_path", ECONOMY_CHOICE_CARD_HOVER_PATH)
-	button.set_meta("economy_source_size", ECONOMY_CHOICE_SOURCE_SIZE)
-	button.set_meta("economy_source_safe_rect", ECONOMY_CHOICE_SAFE_RECT)
 	button.set_meta("economy_display_size", display_size)
 	button.text = ""
 	button.custom_minimum_size = display_size
@@ -11979,9 +11923,12 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [title, description]
-	_apply_economy_choice_theme(button, display_size)
+	# SCRUM-883: карточка выбора — чип-ряд Атласа (StyleBoxFlat), контент держат
+	# симметричные чип-пэддинги вместо content-зоны текстурной рамки.
+	var card_pad := _atlas_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, card_pad)
 
-	var margins := _economy_choice_content_margins(display_size)
+	var margins := _atlas_chip_content_margins(card_pad)
 	button.set_meta("economy_content_margins", margins)
 	var content := VBoxContainer.new()
 	content.name = "%sContent" % button.name
@@ -12000,8 +11947,8 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 0, 24))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 12, 24))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title_label)
 
@@ -12012,8 +11959,8 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 0, 20))
-	desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 12, 20))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(desc_label)
 
@@ -12022,7 +11969,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 12, 22))
-	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
 
@@ -12071,75 +12018,19 @@ func _prepend_economy_choice_content(button: Button, control: Control) -> void:
 	content.move_child(control, 0)
 
 
-func _reward_card_content_margins(elite := false) -> Vector4:
-	var source_content := REWARD_ELITE_CARD_SOURCE_CONTENT if elite else REWARD_CARD_SOURCE_CONTENT
-	var display_size := REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE
-	return Vector4(
-		roundf(source_content.x / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
-		roundf(source_content.y / REWARD_FRAME_SOURCE_SIZE.y * display_size.y),
-		roundf(source_content.z / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
-		roundf(source_content.w / REWARD_FRAME_SOURCE_SIZE.y * display_size.y)
-	)
+# SCRUM-883: чип-пэддинг карточки награды (обычной/элитной) от её display-размера.
+func _reward_card_pad(elite := false) -> float:
+	return _atlas_card_pad(REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
 
 
-func _reward_card_style(elite := false, hovered := false, pressed := false, disabled := false) -> StyleBox:
-	var path := REWARD_ELITE_CARD_PATH if elite else REWARD_CARD_PATH
-	if hovered:
-		path = REWARD_ELITE_CARD_HOVER_PATH if elite else REWARD_CARD_HOVER_PATH
-	var source_margins := REWARD_ELITE_CARD_TEXTURE_MARGINS if elite else REWARD_CARD_TEXTURE_MARGINS
-	var display_size := REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE
-	var texture_margins := _scaled_frame_margins_xy(REWARD_FRAME_SOURCE_SIZE, display_size, source_margins)
-	var content_margins := _reward_card_content_margins(elite)
-	var tint := Color.WHITE
-	if hovered:
-		tint = BUTTON_NEUTRAL_HOVER_TINT
-	if pressed:
-		tint = Color(0.88, 0.84, 0.90, 1.0) if elite else Color(0.90, 0.86, 0.78, 1.0)
-	if disabled:
-		tint = Color(0.58, 0.58, 0.58, 0.82)
-	var texture: Texture2D = game._cached_texture(path)
-	if texture == null:
-		var fallback := StyleBoxFlat.new()
-		fallback.bg_color = Color(0.08, 0.055, 0.08, 0.96) if elite else Color(0.09, 0.06, 0.045, 0.96)
-		fallback.border_color = Color(0.72, 0.50, 1.0, 0.88) if elite else Color(0.95, 0.72, 0.28, 0.88)
-		fallback.set_border_width_all(2)
-		fallback.set_corner_radius_all(8)
-		fallback.content_margin_left = content_margins.x
-		fallback.content_margin_top = content_margins.y
-		fallback.content_margin_right = content_margins.z
-		fallback.content_margin_bottom = content_margins.w
-		return fallback
-	var style := StyleBoxTexture.new()
-	style.texture = texture
-	style.texture_margin_left = texture_margins.x
-	style.texture_margin_top = texture_margins.y
-	style.texture_margin_right = texture_margins.z
-	style.texture_margin_bottom = texture_margins.w
-	style.modulate_color = tint
-	style.content_margin_left = content_margins.x
-	style.content_margin_top = content_margins.y
-	style.content_margin_right = content_margins.z
-	style.content_margin_bottom = content_margins.w
-	style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
-	style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
-	return style
-
-
+# SCRUM-883: карточки наград — чип-ряды Атласа (общий язык с карточками экономики);
+# текстурные reward-рамки SCRUM-338/448 сняты.
 func _apply_reward_card_theme(button: Button, elite := false) -> void:
-	button.add_theme_stylebox_override("normal", _reward_card_style(elite))
-	button.add_theme_stylebox_override("hover", _reward_card_style(elite, true))
-	button.add_theme_stylebox_override("pressed", _reward_card_style(elite, true, true))
-	button.add_theme_stylebox_override("focus", _reward_card_style(elite, true))
-	button.add_theme_stylebox_override("disabled", _reward_card_style(elite, false, false, true))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+	_apply_atlas_choice_card_theme(button, _reward_card_pad(elite))
 
 
 func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
-	var margins := _reward_card_content_margins(elite)
+	var margins := _atlas_chip_content_margins(_reward_card_pad(elite))
 	var content := VBoxContainer.new()
 	content.clip_contents = true
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
