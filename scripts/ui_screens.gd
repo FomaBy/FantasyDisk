@@ -1525,21 +1525,31 @@ func _build_character_select_v4() -> void:
 		position_main_portrait.call(portrait.texture)
 	)
 
+	var dossier_chip_pad := roundf(clampf(12.0 * s, 6.0, 12.0))
 	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HS4DossierFrame"
 	dossier_panel.position = Vector2(dossier_x, dossier_y)
 	dossier_panel.size = Vector2(dossier_w, dossier_h)
-	dossier_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(clampf(12.0 * s, 6.0, 12.0))))
+	dossier_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, dossier_chip_pad))
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(dossier_panel)
 
+	var dossier_margin_side := maxi(14, int(round(20.0 * layout_scale)))
+	var dossier_margin_v := maxi(12, int(round(16.0 * layout_scale)))
 	var dossier_margin := MarginContainer.new()
 	dossier_margin.name = "HS4DossierContentSafe"
-	dossier_margin.add_theme_constant_override("margin_left", maxi(14, int(round(20.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_top", maxi(12, int(round(16.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_right", maxi(14, int(round(20.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_bottom", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_left", dossier_margin_side)
+	dossier_margin.add_theme_constant_override("margin_top", dossier_margin_v)
+	dossier_margin.add_theme_constant_override("margin_right", dossier_margin_side)
+	dossier_margin.add_theme_constant_override("margin_bottom", dossier_margin_v)
 	dossier_panel.add_child(dossier_margin)
+
+	# SCRUM-887: досье из двух колонн — слева скролл текстов (растёт), справа
+	# фикс-колонна из 8 полос характеристик БЕЗ скролла (всегда все видимы).
+	var dossier_columns := HBoxContainer.new()
+	dossier_columns.name = "HS4DossierColumns"
+	dossier_columns.add_theme_constant_override("separation", maxi(10, int(round(14.0 * layout_scale))))
+	dossier_margin.add_child(dossier_columns)
 
 	var dossier_scroll := ScrollContainer.new()
 	dossier_scroll.name = "HS4DossierScroll"
@@ -1547,7 +1557,7 @@ func _build_character_select_v4() -> void:
 	dossier_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	dossier_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier_margin.add_child(dossier_scroll)
+	dossier_columns.add_child(dossier_scroll)
 
 	var dossier_content := VBoxContainer.new()
 	dossier_content.name = "HS4DossierContent"
@@ -1590,6 +1600,18 @@ func _build_character_select_v4() -> void:
 	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
 	dossier_content.add_child(weaknesses_label)
 
+	# SCRUM-887: главные атрибуты класса из данных (main_attribute + следующий
+	# по ATTRIBUTE_PRIORITIES) — сразу после слабых сторон, золотым.
+	var main_attrs_label := Label.new()
+	main_attrs_label.name = "HS4MainAttributes"
+	main_attrs_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	main_attrs_label.max_lines_visible = 2
+	main_attrs_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	main_attrs_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	main_attrs_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
+	main_attrs_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	dossier_content.add_child(main_attrs_label)
+
 	var weapon_label := Label.new()
 	weapon_label.name = "HS4Weapon"
 	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1612,44 +1634,74 @@ func _build_character_select_v4() -> void:
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(identity_label)
 
+	# SCRUM-887: правая фикс-колонна характеристик — 8 полос ВЕРТИКАЛЬНО, без
+	# скролла. Высоты решает арифметика (не min-size детей): хост — обычный
+	# Control, PanelContainer не распирается (грабли SCRUM-876, см. memory).
+	var stats_col_w := clampf(300.0 * layout_scale, 220.0, 320.0)
+	var stats_inner_h := dossier_h - 2.0 * dossier_chip_pad - 2.0 * float(dossier_margin_v)
+	var stats_column := Control.new()
+	stats_column.name = "HS4StatsColumn"
+	stats_column.custom_minimum_size = Vector2(stats_col_w, 0.0)
+	stats_column.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_columns.add_child(stats_column)
+
+	var stats_title_font := _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22)
+	var stats_title_band := roundf(float(stats_title_font) * 1.5) + 6.0
+	# Норма: ряд 34–52px; не влезает (720p) — компакт-паддинги; совсем мало
+	# (648p) — ультра-компакт: только бары, имена/значения уходят в тултип.
+	var stat_row_sep := clampf(roundf(4.0 * layout_scale), 3.0, 6.0)
+	var stat_row_h := clampf(floorf((stats_inner_h - stats_title_band - 7.0 * stat_row_sep) / 8.0), 34.0, 52.0)
+	var stat_row_style_pad := 8.0
+	var stat_row_pad_v := 5.0
+	var stat_row_pad_h := 8.0
+	if stats_title_band + 8.0 * stat_row_h + 7.0 * stat_row_sep > stats_inner_h + 0.5:
+		stat_row_sep = 2.0
+		stat_row_style_pad = 4.0
+		stat_row_pad_v = 1.0
+		stat_row_pad_h = 6.0
+		stat_row_h = floorf((stats_inner_h - stats_title_band - 7.0 * stat_row_sep) / 8.0)
+	var stat_rows_show_text := stat_row_h >= 14.0
+	if not stat_rows_show_text:
+		stat_row_style_pad = 2.0
+		stat_row_h = maxf(10.0, stat_row_h)
+
 	var stats_title := Label.new()
 	stats_title.name = "HS4StatsTitle"
-	stats_title.text = "Основные характеристики"
+	stats_title.text = "Характеристики"
 	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	stats_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	stats_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	dossier_content.add_child(stats_title)
+	stats_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	stats_title.position = Vector2.ZERO
+	stats_title.size = Vector2(stats_col_w, maxf(0.0, stats_title_band - 4.0))
+	stats_title.add_theme_font_size_override("font_size", stats_title_font)
+	stats_title.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	stats_column.add_child(stats_title)
 
 	var stats_grid := GridContainer.new()
 	stats_grid.name = "HS4StatsGrid"
-	stats_grid.columns = 2
-	stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stats_grid.add_theme_constant_override("h_separation", maxi(8, int(round(12.0 * layout_scale))))
-	stats_grid.add_theme_constant_override("v_separation", maxi(5, int(round(7.0 * layout_scale))))
-	dossier_content.add_child(stats_grid)
+	stats_grid.columns = 1
+	stats_grid.position = Vector2(0.0, stats_title_band)
+	stats_grid.size = Vector2(stats_col_w, maxf(0.0, stats_inner_h - stats_title_band))
+	stats_grid.add_theme_constant_override("v_separation", int(stat_row_sep))
+	stats_column.add_child(stats_grid)
 	var stat_buttons := {}
 	var stat_fill_nodes := {}
 	var stat_value_labels := {}
-	# Ширина колонок статов: вычитаем чип-паддинги, маргины, разделитель грида и
-	# вертикальный скроллбар, иначе min-size контента распирает PanelContainer.
-	var stat_button_w := maxf(180.0, (dossier_w - 130.0) * 0.5)
-	var stat_button_h := maxf(38.0, roundf(42.0 * layout_scale))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
 		stat_button.name = "HS4Stat_%s" % sid
-		stat_button.custom_minimum_size = Vector2(stat_button_w, stat_button_h)
+		stat_button.custom_minimum_size = Vector2(stats_col_w, stat_row_h)
 		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
 		stat_button.focus_mode = Control.FOCUS_ALL
 		stat_button.text = ""
 		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
-		_unified_apply_row_theme(stat_button, 8.0)
+		_unified_apply_row_theme(stat_button, stat_row_style_pad)
 		var stat_row := HBoxContainer.new()
 		stat_row.name = "HS4StatLine_%s" % sid
 		stat_row.set_anchors_preset(Control.PRESET_FULL_RECT)
-		stat_row.offset_left = 8.0
-		stat_row.offset_right = -8.0
-		stat_row.offset_top = 5.0
-		stat_row.offset_bottom = -5.0
+		stat_row.offset_left = stat_row_pad_h
+		stat_row.offset_right = -stat_row_pad_h
+		stat_row.offset_top = stat_row_pad_v
+		stat_row.offset_bottom = -stat_row_pad_v
 		stat_row.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
 		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stat_button.add_child(stat_row)
@@ -1659,12 +1711,13 @@ func _build_character_select_v4() -> void:
 		stat_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		stat_name.visible = stat_rows_show_text
 		stat_name.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
 		stat_name.add_theme_color_override("font_color", Color(0.88, 0.84, 0.74, 1.0))
 		stat_row.add_child(stat_name)
 		var bar_bg := ColorRect.new()
 		bar_bg.name = "HS4StatBar_%s" % sid
-		bar_bg.custom_minimum_size = Vector2(maxf(72.0, 126.0 * layout_scale), maxf(10.0, 12.0 * layout_scale))
+		bar_bg.custom_minimum_size = Vector2(maxf(64.0, 96.0 * layout_scale), maxf(8.0, minf(12.0 * layout_scale, stat_row_h - 2.0 * stat_row_pad_v)))
 		bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		bar_bg.color = Color(0.09, 0.085, 0.075, 0.92)
 		bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1681,6 +1734,7 @@ func _build_character_select_v4() -> void:
 		stat_value.custom_minimum_size = Vector2(maxf(22.0, 28.0 * layout_scale), 0.0)
 		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		stat_value.visible = stat_rows_show_text
 		stat_value.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
 		stat_value.add_theme_color_override("font_color", Color(0.96, 0.90, 0.70, 1.0))
 		stat_row.add_child(stat_value)
@@ -1937,10 +1991,24 @@ func _build_character_select_v4() -> void:
 			ctrl.focus_neighbor_right = right.get_path()
 			ctrl.focus_neighbor_top = select_button.get_path()
 			ctrl.focus_neighbor_bottom = ctrl.get_path()
+		# SCRUM-887: статы — вертикальная колонна у правого края досье; цепочка
+		# сверху вниз, вход — с «Назад», выход вниз — в правую стрелку карусели.
+		var stat_chain: Array = []
+		for sid in HS4_MINIMAL_BASE_STATS:
+			stat_chain.append(stat_buttons[sid] as Control)
+		for i in range(stat_chain.size()):
+			var stat_ctrl := stat_chain[i] as Control
+			var above := (back_button as Control) if i == 0 else (stat_chain[i - 1] as Control)
+			var below := (right_arrow as Control) if i == stat_chain.size() - 1 else (stat_chain[i + 1] as Control)
+			stat_ctrl.focus_neighbor_top = above.get_path()
+			stat_ctrl.focus_neighbor_bottom = below.get_path()
+			stat_ctrl.focus_neighbor_left = select_button.get_path()
+			stat_ctrl.focus_neighbor_right = stat_ctrl.get_path()
+		right_arrow.focus_neighbor_top = (stat_chain.back() as Control).get_path()
 		back_button.focus_neighbor_left = back_button.get_path()
 		back_button.focus_neighbor_right = back_button.get_path()
 		back_button.focus_neighbor_top = back_button.get_path()
-		back_button.focus_neighbor_bottom = select_button.get_path()
+		back_button.focus_neighbor_bottom = (stat_chain.front() as Control).get_path()
 		asc_minus.focus_neighbor_left = asc_plus.get_path()
 		asc_minus.focus_neighbor_right = asc_plus.get_path()
 		asc_minus.focus_neighbor_top = back_button.get_path()
@@ -1989,6 +2057,15 @@ func _build_character_select_v4() -> void:
 		var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(cid)
 		var main_attr: String = str(game.PROGRESSION_DATA.class_main_attribute(cid))
 		identity_label.text = "%s: %s" % [str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)), str(identity.get("summary", ""))]
+		# SCRUM-887: пара главных атрибутов из данных — main_attribute + следующий
+		# по приоритетам класса (русские имена статов, как в подписях полос).
+		var main_attr_names := PackedStringArray()
+		main_attr_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)))
+		for attr in game.PROGRESSION_DATA.attribute_priorities(cid):
+			if str(attr) != main_attr:
+				main_attr_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(str(attr), str(attr))))
+				break
+		main_attrs_label.text = "Основные атрибуты: %s" % ", ".join(main_attr_names)
 		for sid in HS4_MINIMAL_BASE_STATS:
 			var sval := float(stats.get(sid, 0.0))
 			var stat_button := stat_buttons[sid] as Button
