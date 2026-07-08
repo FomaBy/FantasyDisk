@@ -22,7 +22,6 @@ const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_bu
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
 const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
 # SCRUM-565: Событие @2K использует собственные per-слот overhaul_2k-рамки.
-const EVT_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_panel.png"
 const EVT_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_evt_card.png"
 const LEVEL_UP_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_panel.png"
 const LEVEL_UP_CARD_2K_FRAME_PATH := "res://assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_card.png"
@@ -891,27 +890,38 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if effect_text == null or not effect_text.text.contains("->"):
 					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
 		"event_economy":
-			# SCRUM-565: панель события рисуется собственной evt_panel @2K-рамкой.
+			# SCRUM-883: панель события — единый atlas-чип (StyleBoxFlat, плотная кожа),
+			# карточки — чипы общего хелпера (контракт с rewards-агентом: a>=0.8,
+			# hover-кант ярче), возврат — единая плита back_260x104.
 			var event_panel := main.find_child("MenuPanel_event", true, false) as Control
 			if event_panel == null or not event_panel.visible or not event_panel.get_global_rect().has_area():
 				return "%s: expected visible event panel instead of an empty event shell." % context
-			if _stylebox_texture_path(event_panel.get_theme_stylebox("panel")) != EVT_PANEL_2K_FRAME_PATH:
-				return "%s: expected event MenuPanel to use evt_panel @2K frame." % context
+			var event_panel_style := event_panel.get_theme_stylebox("panel") as StyleBoxFlat
+			if event_panel_style == null or event_panel_style.bg_color.a < 0.90:
+				return "%s: expected event MenuPanel to use an opaque atlas chip StyleBoxFlat (a>=0.9)." % context
 			if main.find_child("UpgradeFabButton", true, false) != null:
 				return "%s: event screen must not render the disabled UpgradeFabButton inside MenuPanel_event." % context
-			var event_safe := _scaled_source_rect(event_panel.get_global_rect(), Vector2(1720, 780), Rect2(58, 72, 1604, 642)).grow(1.0)
+			# Safe-зона — от фактических content-margins чипа панели.
+			var event_panel_rect := event_panel.get_global_rect()
+			var event_safe := Rect2(
+				event_panel_rect.position + Vector2(event_panel_style.get_content_margin(SIDE_LEFT), event_panel_style.get_content_margin(SIDE_TOP)),
+				event_panel_rect.size - Vector2(
+					event_panel_style.get_content_margin(SIDE_LEFT) + event_panel_style.get_content_margin(SIDE_RIGHT),
+					event_panel_style.get_content_margin(SIDE_TOP) + event_panel_style.get_content_margin(SIDE_BOTTOM)
+				)
+			).grow(1.0)
 			var event_content := main.find_child("EventContent", true, false) as Control
 			if event_content == null or not event_content.visible or not event_content.get_global_rect().has_area():
 				return "%s: expected visible EventContent inside the event panel." % context
 			if not event_safe.encloses(event_content.get_global_rect()):
-				return "%s: expected EventContent to stay inside evt_panel safe rect %s, got %s." % [context, str(event_safe), str(event_content.get_global_rect())]
+				return "%s: expected EventContent to stay inside event chip safe rect %s, got %s." % [context, str(event_safe), str(event_content.get_global_rect())]
 			var event_title := main.find_child("EventTitle", true, false) as Label
 			var event_story := main.find_child("EventStory", true, false) as Label
 			for label in [event_title, event_story]:
 				if label == null or not label.visible or label.text.strip_edges() == "" or not label.get_global_rect().has_area():
 					return "%s: expected event title/story labels to be visible and non-empty." % context
 				if not event_safe.encloses(label.get_global_rect()):
-					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, label.name, str(event_safe)]
+					return "%s: expected %s to stay inside event chip safe rect %s." % [context, label.name, str(event_safe)]
 			var visible_event_choices := 0
 			for node in main.find_children("EventChoiceButton*", "Button", true, false):
 				var event_button := node as Button
@@ -919,15 +929,22 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					continue
 				if event_button.visible and event_button.get_global_rect().has_area():
 					visible_event_choices += 1
-				# SCRUM-565: карточки выбора используют evt_card @2K-рамку (normal+hover).
-				if _stylebox_texture_path(event_button.get_theme_stylebox("normal")) != EVT_CARD_2K_FRAME_PATH:
-					return "%s: expected %s normal StyleBox to use evt_card @2K frame." % [context, event_button.name]
-				if _stylebox_texture_path(event_button.get_theme_stylebox("hover")) != EVT_CARD_2K_FRAME_PATH:
-					return "%s: expected %s hover StyleBox to use evt_card @2K frame." % [context, event_button.name]
+				# SCRUM-883: карточки выбора — atlas-чипы (StyleBoxFlat, a>=0.8),
+				# hover-кант заметно ярче (золотой) канта normal.
+				var event_card_normal := event_button.get_theme_stylebox("normal") as StyleBoxFlat
+				var event_card_hover := event_button.get_theme_stylebox("hover") as StyleBoxFlat
+				if event_card_normal == null or event_card_normal.bg_color.a < 0.80:
+					return "%s: expected %s normal StyleBox to be an opaque atlas chip StyleBoxFlat (a>=0.8)." % [context, event_button.name]
+				if event_card_hover == null:
+					return "%s: expected %s hover StyleBox to be an atlas chip StyleBoxFlat." % [context, event_button.name]
+				var normal_border := event_card_normal.border_color
+				var hover_border := event_card_hover.border_color
+				if hover_border.r + hover_border.g + hover_border.b <= normal_border.r + normal_border.g + normal_border.b:
+					return "%s: expected %s hover chip border to be brighter (golden) than normal." % [context, event_button.name]
 				if event_button.tooltip_text.contains("Риск: Риск:"):
 					return "%s: expected event option text to avoid duplicated risk prefix." % context
 				if not event_safe.encloses(event_button.get_global_rect()):
-					return "%s: expected %s to stay inside evt_panel safe rect %s." % [context, event_button.name, str(event_safe)]
+					return "%s: expected %s to stay inside event chip safe rect %s." % [context, event_button.name, str(event_safe)]
 				var desc := event_button.find_child("%sDescription" % event_button.name, true, false) as Label
 				if desc != null and not event_button.get_global_rect().grow(1.0).encloses(desc.get_global_rect()):
 					return "%s: event description %s escapes its card safe content rect." % [context, desc.name]
@@ -936,8 +953,11 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var event_back := main.find_child("EventBackButton", true, false) as Button
 			if event_back == null or not event_back.visible or event_back.text.strip_edges() == "" or not event_back.get_global_rect().has_area():
 				return "%s: expected visible non-empty EventBackButton." % context
+			# SCRUM-883: единый возврат — плита 260×action-height (кит back_260x104).
+			if absf(event_back.custom_minimum_size.x - 260.0) > 0.5 or event_back.custom_minimum_size.y < 72.0:
+				return "%s: expected EventBackButton to use the unified 260-wide back plate, got %s." % [context, str(event_back.custom_minimum_size)]
 			if not event_safe.encloses(event_back.get_global_rect()):
-				return "%s: expected EventBackButton to stay inside evt_panel safe rect %s." % [context, str(event_safe)]
+				return "%s: expected EventBackButton to stay inside event chip safe rect %s." % [context, str(event_safe)]
 		"level_up_toast":
 			var toast_frame := main.find_child("LevelUpToastFrame", true, false) as PanelContainer
 			if toast_frame == null or not toast_frame.visible or not toast_frame.get_global_rect().has_area():

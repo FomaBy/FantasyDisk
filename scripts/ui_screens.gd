@@ -780,10 +780,10 @@ func _show_quit_confirmation_dialog() -> void:
 	panel.offset_right = 300.0
 	panel.offset_bottom = 170.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-581: свежий @2K per-слот фрейм диалога подтверждения (qc_modal 600×340, modal-
-	# профиль — более ornate бордюр befitting confirm-модалки; SCRUM-486 держал qc_panel
-	# на общем panel-профиле). Кнопки остаются на унифицированном 4-state minimal_metal.
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("qc_modal", Vector2(600.0, 340.0)))
+	# SCRUM-883: единый атлас-стиль — модалка подтверждения на плотном кожаном чипе
+	# (StyleBoxFlat, латунный кант) вместо per-слот qc_modal @2K-рамки. Кнопки остаются
+	# на глобальном ките (нативы quit_220x72 по маппингу имён QuitConfirm*).
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * _atlas_ui_scale())))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -839,6 +839,12 @@ func _show_quit_confirmation_dialog() -> void:
 	confirm_button.focus_neighbor_left = cancel_button.get_path()
 	cancel_button.focus_neighbor_left = confirm_button.get_path()
 	cancel_button.focus_neighbor_right = confirm_button.get_path()
+	# SCRUM-883: замыкаем и вертикаль — стрелки вверх/вниз не должны уводить фокус
+	# на кнопки экрана ПОД модалкой (мышь блокирует overlay, клавиатуру — соседи).
+	confirm_button.focus_neighbor_top = cancel_button.get_path()
+	confirm_button.focus_neighbor_bottom = cancel_button.get_path()
+	cancel_button.focus_neighbor_top = confirm_button.get_path()
+	cancel_button.focus_neighbor_bottom = confirm_button.get_path()
 	cancel_button.grab_focus()
 
 	overlay.gui_input.connect(func(event: InputEvent) -> void:
@@ -6227,10 +6233,10 @@ func _build_run_pause_menu() -> void:
 	panel.name = "RunPauseMenuPanel"
 	var panel_size := _pause_end_modal_display_size("pause")
 	panel.custom_minimum_size = panel_size
-	# SCRUM-486: @2K per-слот фрейм паузы (pm_panel 898×820). Размер панели берётся из
-	# общей _pause_end_modal_display_size (на 2K ≈898×820), но стиль — собственный pm_panel,
-	# чтобы НЕ трогать общий PAUSE_END_MODAL_* (его делят победа/смерть).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pm_panel", panel_size))
+	# SCRUM-883: единый атлас-стиль — панель паузы на плотном кожаном чипе (StyleBoxFlat,
+	# латунный кант) вместо per-слот pm_panel @2K-рамки. Размер панели по-прежнему из
+	# общей _pause_end_modal_display_size (общий PAUSE_END_MODAL_* победы/смерти не трогаем).
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.95, roundf(20.0 * _atlas_ui_scale())))
 	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	panel.position = _pause_menu_top_left_position(panel_size)
 	panel.size = panel_size
@@ -6262,30 +6268,27 @@ func _build_run_pause_menu() -> void:
 	subtitle.text = "Забег поставлен на паузу"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	box.add_child(subtitle)
 
-	# SCRUM-579: 5 кнопок паузы переодеты в выделенный pm_btn @2K-фрейм (280×60),
-	# нарисованный РОВНО под слот (9-slice-safe) — единый дарк-фэнтези стиль с панелью pm_panel,
-	# вместо общего minimal-metal standard-кнопочного фрейма.
+	# SCRUM-883: 6 кнопок паузы — только глобальный кит: имена RunPause* мапятся
+	# в _text_button_unique_id на нативную плиту pause_280x60, отдельная pm_btn-
+	# перештамповка не нужна (она и так редиректила в кит).
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "RunPauseContinueButton"
 	_set_action_button_size(continue_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(continue_button, "pm_btn", PM_BTN_CONTINUE_2K.size)
 	continue_button.pressed.connect(_resume_game)
 	box.add_child(continue_button)
 
 	var dossier_button := _make_button("Досье персонажа")
 	dossier_button.name = "RunPauseDossierButton"
 	_set_action_button_size(dossier_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(dossier_button, "pm_btn", PM_BTN_DOSSIER_2K.size)
 	dossier_button.pressed.connect(_show_pause_dossier_menu)
 	box.add_child(dossier_button)
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "RunPauseSettingsButton"
 	_set_action_button_size(settings_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(settings_button, "pm_btn", PM_BTN_SETTINGS_2K.size)
 	settings_button.pressed.connect(func() -> void:
 		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
 	)
@@ -6297,7 +6300,6 @@ func _build_run_pause_menu() -> void:
 	var feedback_button := _make_button("Фидбек")
 	feedback_button.name = "RunPauseFeedbackButton"
 	_set_action_button_size(feedback_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(feedback_button, "pm_btn", PM_BTN_FEEDBACK_2K.size)
 	feedback_button.pressed.connect(func() -> void:
 		_show_feedback_overlay(_capture_feedback_screenshot())
 	)
@@ -6306,14 +6308,14 @@ func _build_run_pause_menu() -> void:
 	var end_run_button := _make_button("Покинуть забег")
 	end_run_button.name = "RunPauseEndRunButton"
 	_set_action_button_size(end_run_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(end_run_button, "pm_btn", PM_BTN_ENDRUN_2K.size)
-	end_run_button.pressed.connect(_end_current_run_by_player)
+	# SCRUM-883: завершение забега — только через модалку подтверждения (стиль quit-
+	# диалога), случайный клик больше не убивает забег без вопроса.
+	end_run_button.pressed.connect(_show_end_run_confirmation_dialog)
 	box.add_child(end_run_button)
 
 	var main_menu_button := _make_button("Главное меню")
 	main_menu_button.name = "RunPauseMainMenuButton"
 	_set_action_button_size(main_menu_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(main_menu_button, "pm_btn", PM_BTN_MAINMENU_2K.size)
 	main_menu_button.pressed.connect(_quit_current_run)
 	box.add_child(main_menu_button)
 
@@ -6330,6 +6332,126 @@ func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
 	var max_x := maxf(margin, viewport_size.x - panel_size.x - margin)
 	var max_y := maxf(margin, viewport_size.y - panel_size.y - margin)
 	return Vector2(minf(margin, max_x), minf(margin, max_y))
+
+
+# SCRUM-883: модалка подтверждения «Завершить забег» из паузы — тот же стиль, что у
+# quit-диалога главного меню: плотный atlas-чип, золотой титул, кит-кнопки 220×72
+# (нативы quit_220x72 по size-маппингу), стартовый фокус на безопасной «Отмене»,
+# Esc/B и клик мимо панели отменяют только модалку (пауза остаётся).
+func _show_end_run_confirmation_dialog() -> void:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return
+	if game.pause_overlay_layer.find_child("EndRunConfirmationDialog", true, false) != null:
+		var existing_cancel := game.pause_overlay_layer.find_child("EndRunConfirmCancelButton", true, false) as Button
+		if existing_cancel != null:
+			existing_cancel.grab_focus()
+		return
+
+	var overlay := Control.new()
+	overlay.name = "EndRunConfirmationDialog"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 500
+	game.pause_overlay_layer.add_child(overlay)
+
+	var dim := ColorRect.new()
+	dim.name = "EndRunConfirmationDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.0, 0.0, 0.0, 0.55)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(dim)
+
+	var panel := PanelContainer.new()
+	panel.name = "EndRunConfirmationPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -300.0
+	panel.offset_top = -170.0
+	panel.offset_right = 300.0
+	panel.offset_bottom = 170.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * _atlas_ui_scale())))
+	overlay.add_child(panel)
+
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 12)
+	panel.add_child(box)
+
+	var title_label := Label.new()
+	title_label.name = "EndRunConfirmationTitle"
+	title_label.text = "Завершить забег?"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title_label)
+
+	var subtitle_label := Label.new()
+	subtitle_label.name = "EndRunConfirmationSubtitle"
+	subtitle_label.text = "Текущий забег закончится, и будет подведён итог. Продолжить?"
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
+	box.add_child(subtitle_label)
+
+	var button_row := HBoxContainer.new()
+	button_row.name = "EndRunConfirmationButtons"
+	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.custom_minimum_size = Vector2(0.0, 72.0)
+	button_row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button_row.add_theme_constant_override("separation", 18)
+	box.add_child(button_row)
+
+	var confirm_button := _make_button("Завершить")
+	confirm_button.name = "EndRunConfirmAcceptButton"
+	_set_action_button_size(confirm_button, 220.0, 72.0)
+	confirm_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	# Диалог живёт в pause_overlay_layer и умрёт вместе с ним при _clear_ui завершения.
+	confirm_button.pressed.connect(_end_current_run_by_player)
+	button_row.add_child(confirm_button)
+
+	var cancel_button := _make_button("Отмена")
+	cancel_button.name = "EndRunConfirmCancelButton"
+	_set_action_button_size(cancel_button, 220.0, 72.0)
+	cancel_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	cancel_button.pressed.connect(_cancel_end_run_confirmation_dialog)
+	button_row.add_child(cancel_button)
+
+	# Полное 4-стороннее замыкание фокуса: под модалкой вертикальная колонна кнопок
+	# паузы, стрелки не должны уводить фокус за пределы диалога.
+	confirm_button.focus_neighbor_left = cancel_button.get_path()
+	confirm_button.focus_neighbor_right = cancel_button.get_path()
+	confirm_button.focus_neighbor_top = cancel_button.get_path()
+	confirm_button.focus_neighbor_bottom = cancel_button.get_path()
+	cancel_button.focus_neighbor_left = confirm_button.get_path()
+	cancel_button.focus_neighbor_right = confirm_button.get_path()
+	cancel_button.focus_neighbor_top = confirm_button.get_path()
+	cancel_button.focus_neighbor_bottom = confirm_button.get_path()
+	cancel_button.grab_focus()
+
+	overlay.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if not panel.get_global_rect().has_point((event as InputEventMouseButton).global_position):
+				_cancel_end_run_confirmation_dialog()
+	)
+
+
+# Возвращает true, если модалка подтверждения была открыта и закрыта этим вызовом.
+func _cancel_end_run_confirmation_dialog() -> bool:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return false
+	var overlay: Node = game.pause_overlay_layer.find_child("EndRunConfirmationDialog", true, false)
+	if overlay == null:
+		return false
+	overlay.queue_free()
+	var end_run_button := game.pause_overlay_layer.find_child("RunPauseEndRunButton", true, false) as Button
+	if end_run_button != null and is_instance_valid(end_run_button):
+		end_run_button.grab_focus()
+	return true
 
 
 func _show_pause_dossier_menu() -> void:
@@ -6393,6 +6515,10 @@ func _pause_dossier_player() -> Node:
 
 
 func _resume_game() -> void:
+	# SCRUM-883: Esc/B при открытом подтверждении «Завершить забег» отменяет только
+	# модалку — пауза остаётся (паритет с Escape-отменой quit-диалога главного меню).
+	if _cancel_end_run_confirmation_dialog():
+		return
 	game.pending_rebind_action = ""
 	game.pop_pause("escape_menu")
 	if game.pause_stats_menu != null and is_instance_valid(game.pause_stats_menu):
@@ -8498,7 +8624,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		game.used_event_ids.append(event_id)
 	game.current_event_definition = event_definition.duplicate(true)
 
-	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _event_panel_2k_style())
+	# SCRUM-883: единый атлас-стиль — панель события на плотном кожаном чипе
+	# (StyleBoxFlat, латунный кант) вместо per-слот evt_panel @2K-рамки.
+	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _atlas_chip_style(0.94, roundf(18.0 * _atlas_ui_scale())))
 	_configure_event_menu_layout(box)
 	var event_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
 	var event_root := event_panel.get_parent() as Control if event_panel != null and event_panel.get_parent() != null else null
@@ -8524,10 +8652,9 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		var action_text := _event_choice_action_text(event_choice)
 		var button := _make_economy_choice_card(title_text, desc_text, action_text, "EventChoiceButton%d" % index, event_card_size)
 		button.name = "EventChoiceButton%d" % index
-		# SCRUM-565: переодеть карточку выбора в per-слот evt_card @2K-рамку и пере-инсетить
-		# контент под её content-зону (46/58/46/54 source → display), чтобы текст не лез на орнамент.
-		_apply_overhaul_choice_2k_theme(button, "evt_card", event_card_size)
-		_reinset_overhaul_choice_content(button, "evt_card", event_card_size)
+		# SCRUM-883: карточки выбора носят единый atlas-чип общего хелпера
+		# _make_economy_choice_card (StyleBoxFlat a>=0.8, hover — более яркий золотой
+		# кант) — per-слот evt_card перештамповка и пере-инсет больше не нужны.
 		var required_money := _event_choice_scaled_cost(event_choice)
 		if required_money > 0 and _run_money() < required_money:
 			button.disabled = true
@@ -8544,10 +8671,11 @@ func _show_event_screen(route_node: Dictionary) -> void:
 				game.route._advance_route_after_noncombat()
 		)
 		index += 1
+	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите back_260x104, 260×action-height.
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(back_button, 380.0, 54.0)
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	# Аварийный выход: если ни один выбор недоступен (например, не хватает золота на все
 	# платные опции), кнопка «Назад» обязана работать, иначе забег застревает навсегда.
@@ -11439,7 +11567,8 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name == "FeedbackCancelButton":
 		return "feedback_cancel_220x64"
 	if button_name == "EventBackButton":
-		return "event_back_380x54"
+		# Фидбек 2026-07-08: единый возврат — та же плита back_260x104, что у остальных back.
+		return "back_260x104"
 	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
 		return "rebind_420x62"
 	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
@@ -11753,19 +11882,27 @@ func _economy_panel_style() -> StyleBox:
 	return _minimal_frame_style("panel")
 
 
-# SCRUM-565: Событие @2K. Панель и карточки выбора используют per-слот overhaul_2k-рамки
-# (evt_panel 1720×780, evt_card 480×340), нарисованные РОВНО в свой пиксельный размер →
-# на 2K рендерятся 1:1, на 1080p/4K юниформ-скейлятся вьюпортом без растяжения орнамента.
-func _event_panel_2k_style() -> StyleBox:
-	var display_size := _economy_menu_panel_half_size("event") * 2.0
-	return _overhaul_2k_frame_style("evt_panel", display_size)
-
-
+# SCRUM-883: Событие в едином атлас-стиле. Панель — atlas-чип (MenuPanel_event),
+# контент раскладывается от ФАКТИЧЕСКИХ content-margins чипа (не от source-зон
+# @2K-рамки); титул золотом 30/36, стори — читаемое тело 16+ с autowrap.
 func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	if box == null:
 		return
 	var display_size := _economy_menu_panel_half_size("event") * 2.0
-	var margins := _overhaul_2k_content_margins("evt_panel", display_size)
+	var margins := Vector4(25.0, 18.0, 25.0, 18.0)
+	var scroll := box.get_parent() as ScrollContainer
+	var panel: PanelContainer = null
+	if scroll != null:
+		panel = scroll.get_parent() as PanelContainer
+	if panel != null:
+		var panel_style := panel.get_theme_stylebox("panel")
+		if panel_style != null:
+			margins = Vector4(
+				panel_style.get_content_margin(SIDE_LEFT),
+				panel_style.get_content_margin(SIDE_TOP),
+				panel_style.get_content_margin(SIDE_RIGHT),
+				panel_style.get_content_margin(SIDE_BOTTOM)
+			)
 	var content_size := Vector2(
 		maxf(320.0, display_size.x - margins.x - margins.z),
 		maxf(240.0, display_size.y - margins.y - margins.w)
@@ -11777,7 +11914,6 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_theme_constant_override("separation", 12 if compact else 16)
-	var scroll := box.get_parent() as ScrollContainer
 	if scroll != null:
 		scroll.follow_focus = false
 		scroll.scroll_vertical = 0
@@ -11787,13 +11923,16 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		title_label.name = "EventTitle"
 		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
 		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 36, 0, 48))
+		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
 	if story_label != null:
 		story_label.name = "EventStory"
 		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		story_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
 		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(16 if compact else 18, 12, 24))
+		story_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 
 
 # SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка

@@ -41,7 +41,6 @@ const MINIMAL_TOOLTIP_TEXTURE := "res://assets/sprites/ui/frames/minimal_metal/u
 # SCRUM-486 (UI Overhaul 2K): per-слот @2K-ассеты блока Меню/Навигация (build_ui_2k_frame_kit.py),
 # заменили общие minimal-фреймы SCRUM-448 на экранах паузы/досье/тултипов.
 const STAT_TOOLTIP_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png"
-const RUN_PAUSE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pm_panel.png"
 const TEXT_BUTTON_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
 const PAUSE_DOSSIER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png"
 const ATTRIBUTE_SHOP_PANEL_TEXTURE_2K := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_attr_panel.png"
@@ -2103,6 +2102,64 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		_fail("Expected event choices to survive an Escape→pause→resume cycle (SCRUM-530).")
 		return
 
+	# SCRUM-883: «Покинуть забег» из паузы открывает модалку подтверждения в стиле
+	# quit-диалога (atlas-чип, кит-кнопки 220×72, фокус на «Отмене»); Esc отменяет
+	# только модалку — пауза и забег остаются живы.
+	route_main.ui._show_pause_menu()
+	await process_frame
+	var pause_panel := route_main.find_child("RunPauseMenuPanel", true, false) as PanelContainer
+	var pause_panel_style: StyleBoxFlat = null
+	if pause_panel != null:
+		pause_panel_style = pause_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if pause_panel_style == null or pause_panel_style.bg_color.a < 0.90:
+		_fail("Expected run pause panel to use an opaque atlas chip StyleBoxFlat (a>=0.9, SCRUM-883).")
+		return
+	var end_run_button := route_main.find_child("RunPauseEndRunButton", true, false) as Button
+	if end_run_button == null:
+		_fail("Expected run pause menu to expose RunPauseEndRunButton.")
+		return
+	end_run_button.pressed.emit()
+	await process_frame
+	var end_run_dialog := route_main.find_child("EndRunConfirmationDialog", true, false) as Control
+	var end_run_accept := route_main.find_child("EndRunConfirmAcceptButton", true, false) as Button
+	var end_run_cancel := route_main.find_child("EndRunConfirmCancelButton", true, false) as Button
+	if end_run_dialog == null or end_run_accept == null or end_run_cancel == null:
+		_fail("Expected SCRUM-883 end-run confirmation dialog with accept/cancel buttons.")
+		return
+	var end_run_panel := route_main.find_child("EndRunConfirmationPanel", true, false) as Control
+	var end_run_panel_style: StyleBoxFlat = null
+	if end_run_panel != null:
+		end_run_panel_style = end_run_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if end_run_panel_style == null or end_run_panel_style.bg_color.a < 0.90:
+		_fail("Expected end-run confirmation panel to use an opaque atlas chip StyleBoxFlat (a>=0.9).")
+		return
+	if route_main.get_viewport().gui_get_focus_owner() != end_run_cancel:
+		_fail("Expected end-run confirmation to focus safe Cancel by default.")
+		return
+	for end_run_confirm_button in [end_run_accept, end_run_cancel]:
+		if absf(end_run_confirm_button.custom_minimum_size.x - 220.0) > 0.5 or absf(end_run_confirm_button.custom_minimum_size.y - 72.0) > 0.5:
+			_fail("Expected end-run confirmation buttons to stay 220x72, got %s." % str(end_run_confirm_button.custom_minimum_size))
+			return
+		if not _button_uses_text_button_unique_id(end_run_confirm_button, "quit_220x72"):
+			_fail("Expected end-run confirmation buttons to ride the quit_220x72 kit plate.")
+			return
+	var end_run_escape := InputEventKey.new()
+	end_run_escape.keycode = KEY_ESCAPE
+	end_run_escape.pressed = true
+	route_main.call("_input", end_run_escape)
+	await process_frame
+	if route_main.find_child("EndRunConfirmationDialog", true, false) != null:
+		_fail("Expected Escape to cancel only the end-run confirmation dialog.")
+		return
+	if route_main.find_child("RunPauseMenuRoot", true, false) == null:
+		_fail("Expected the run pause menu to survive cancelling the end-run confirmation.")
+		return
+	route_main.ui._resume_game()
+	await process_frame
+	if route_main.find_child("EventChoiceButton0", true, false) == null:
+		_fail("Expected event choices to survive the cancelled end-run confirmation cycle.")
+		return
+
 	# SCRUM-530: level-up, открытый С УЗЛА-СОБЫТИЯ, после выбора возвращает на ТО ЖЕ событие
 	# (тот же набор опций, route_stage не сдвинут, событие не подменено), а не уводит на карту.
 	var event_id_before := str((route_main.get("current_event_definition") as Dictionary).get("id", ""))
@@ -2154,6 +2211,30 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		return
 	if route_main.find_child("RouteMapScreen", true, false) == null:
 		_fail("Expected choosing an event option to return to the route map.")
+		return
+
+	# SCRUM-883: подтверждение «Завершить» в модалке реально завершает забег —
+	# пауза-оверлей с модалкой закрываются, открывается экран итогов (смерть).
+	route_main.ui._show_pause_menu()
+	await process_frame
+	var final_end_run_button := route_main.find_child("RunPauseEndRunButton", true, false) as Button
+	if final_end_run_button == null:
+		_fail("Expected run pause menu over the route map to expose RunPauseEndRunButton.")
+		return
+	final_end_run_button.pressed.emit()
+	await process_frame
+	var final_end_run_accept := route_main.find_child("EndRunConfirmAcceptButton", true, false) as Button
+	if final_end_run_accept == null:
+		_fail("Expected end-run confirmation dialog over the route map pause.")
+		return
+	final_end_run_accept.pressed.emit()
+	await process_frame
+	await process_frame
+	if route_main.find_child("DeathRetryButton", true, false) == null:
+		_fail("Expected confirming end-run to show the run summary (death) screen.")
+		return
+	if route_main.find_child("RunPauseMenuRoot", true, false) != null or route_main.find_child("EndRunConfirmationDialog", true, false) != null:
+		_fail("Expected confirming end-run to close the pause overlay and confirmation dialog.")
 		return
 
 	route_main.queue_free()
@@ -6818,6 +6899,11 @@ func _test_main_menu_quit_confirmation(main_scene: PackedScene) -> void:
 		return
 	if dialog.mouse_filter != Control.MOUSE_FILTER_STOP or panel.mouse_filter != Control.MOUSE_FILTER_STOP:
 		_fail("Expected quit confirmation dialog to be modal and block clicks below it.")
+		return
+	# SCRUM-883: модалка выхода — единый atlas-чип (StyleBoxFlat, плотная кожа).
+	var quit_panel_style := panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if quit_panel_style == null or quit_panel_style.bg_color.a < 0.90:
+		_fail("Expected quit confirmation panel to use an opaque atlas chip StyleBoxFlat (a>=0.9).")
 		return
 	if quit_main.get_viewport().gui_get_focus_owner() != cancel_button:
 		_fail("Expected quit confirmation dialog to focus safe Cancel by default.")
