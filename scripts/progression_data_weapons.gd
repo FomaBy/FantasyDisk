@@ -769,21 +769,26 @@ const ROBOT_WEAPONS := {
 const ENGINEER_WEAPONS := {
 	"engineer_sentry_wrench": {
 		"id": "engineer_sentry_wrench", "title": "Ключ Часового",
-		"description": "Sentry link: ставит короткоживущую турель, которая сама выбирает цели и прошивает их точечными лучами.",
+		"description": "Sentry turret: разворачивает стационарную турель (лимит 2, новая заменяет старейшую); турели сами обстреливают ближайших врагов снарядами.",
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
-		"damage_multiplier": 1.32, "fire_interval": 1.32,  # SCRUM-505: профильная медиана при lvl20, lvl1 guard сохранён
+		# SCRUM-888: переосмысление — РАЗВОРАЧИВАЕМЫЕ ПЕРСИСТЕНТНЫЕ ТУРЕЛИ.
+		# damage_multiplier — урон одного снаряда турели; сустейн (2 турели ×
+		# выстрел каждые amp_pulse_interval) моделируется summon-компонентом
+		# бюджета: summon_attack_interval/summon_damage_multiplier зеркалят
+		# реальный цикл scripts/sentry_turret.gd 1:1 (_budget_summon_dps).
+		"damage_multiplier": 0.71, "fire_interval": 2.70,
 		"upgrade_damage_exponent": 2.45,  # SCRUM-505: sentry scales from lvl20 DPS upgrades, not lvl1 flat damage
 		"attack_range": 560.0, "aoe_radius": 170.0,
-		# SCRUM-505: турель — мультишот по РАЗНЫМ ближайшим целям (used-dict). 1 турель ×
-		# 4 шота за цикл не покрывает 20t. Турель не использует _summon_profile (прямой
-		# engineer_sentry_link в class_weapon), её count флат — поэтому буст УМЕРЕННЫЙ
-		# (2 турели, +шоты, чаще пульс, мягче falloff), чтобы не раздуть lvl1. Доп.
-		# шоты на lvl20 идут от run_modifiers.extra_projectile (level-карты).
-		"beam_width": 34.0, "projectile_count": 8,  # SCRUM-505: +шоты/цикл (было 4)
-		"amp_lifetime": 3.6, "amp_pulse_interval": 0.28, "max_summons": 2,  # SCRUM-505: 2 турели, быстрее пульс (было 2.8/0.42/1)
-		"max_summons_cap": 5,
-		"damage_falloff": 0.94, "knockback": 42.0,  # SCRUM-505: мягче спад урона по шотам (было 0.72)
+		# Залп = projectile_count + extra_projectile снарядов по РАЗНЫМ ближайшим
+		# целям (damage_falloff^i на доп. снаряды). Одна цель в радиусе получает
+		# ТОЛЬКО первый снаряд — соло не перегревается, толпа получает покрытие
+		# (crowd-ось инженера aoe_target 1.12; residual-пара тюнера = старой).
+		"projectile_count": 2,
+		"amp_pulse_interval": 0.55,  # базовый темп турели; ÷ (1 + min(summon_amount*0.014 + leadership*0.006, 0.30))
+		"max_summons": 2, "max_summons_cap": 2,  # SCRUM-888: жёсткий лимит 2 турели, старейшая заменяется с мини-VFX
+		"damage_falloff": 0.55,  # спад на доп. снаряды залпа (2-й и далее)
+		"summon_attack_interval": 0.55, "summon_damage_multiplier": 1.0,  # бюджет-зеркало цикла турели (не геймплей)
 		"deploy_role": "turret_dps",
 		"summon_role": "engineer_sentry",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/sentry_turret.gd" id="1_sentry_turret"]
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/engineer_turret/sentry_turret.png" id="2_turret_texture"]
+
+[node name="SentryTurret" type="Node2D"]
+z_index = 7
+script = ExtResource("1_sentry_turret")
+
+[node name="Visual" type="Sprite2D" parent="."]
+texture = ExtResource("2_turret_texture")

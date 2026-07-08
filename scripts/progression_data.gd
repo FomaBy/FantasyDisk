@@ -957,8 +957,26 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var vent_count := float(config.get("projectile_count", 4.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + vent_count * 0.70 + aoe_radius / 150.0, 1.0, 5.0)}
 		"engineer_sentry_link":
-			var sentry_shots := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": clampf(sentry_shots * 0.66, 1.0, 3.2), "five_hits": clampf(sentry_shots * 0.96, 1.0, 5.0)}
+			# SCRUM-888: турели. Прямой компонент — мгновенный первый выстрел при
+			# развёртке (1 цель); сустейн стрельбы турелей считает _budget_summon_dps
+			# (max_summons × damage × summon_damage_multiplier / summon_attack_interval).
+			# Толпу добирают: залп по РАЗНЫМ ближайшим целям (projectile_count со
+			# спадом damage_falloff^i; одиночная цель получает только 1-й снаряд —
+			# соло-ось не греется) и сплэш снаряда (cap целей со спадом 1/(1+0.75i))
+			# — зеркала sentry_turret.try_fire и _damage_engineer_sentry_splash.
+			var sentry_splash_bonus := 0.0
+			if float(config.get("sentry_splash_radius", 0.0)) > 0.0:
+				var sentry_splash_cap := maxi(int(config.get("sentry_splash_target_cap", 0)), 0)
+				var sentry_splash_mult := maxf(float(config.get("sentry_splash_damage_multiplier", 0.0)), 0.0)
+				for sentry_splash_index in range(sentry_splash_cap):
+					sentry_splash_bonus += sentry_splash_mult / (1.0 + float(sentry_splash_index) * 0.75)
+			var sentry_volley := maxi(int(config.get("projectile_count", 1)), 1)
+			var sentry_volley_falloff := clampf(float(config.get("damage_falloff", 0.55)), 0.05, 1.0)
+			var sentry_volley_crowd := 1.0
+			for sentry_volley_index in range(1, sentry_volley):
+				sentry_volley_crowd += pow(sentry_volley_falloff, float(sentry_volley_index))
+			var sentry_crowd_factor := sentry_volley_crowd * (1.0 + sentry_splash_bonus)
+			return {"solo_hits": 1.0, "five_hits": sentry_crowd_factor, "summon_targets": sentry_crowd_factor}
 		"engineer_repair_drone":
 			var drone_links := float(config.get("projectile_count", 4.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + drone_links * 0.68, 1.0, 4.6)}

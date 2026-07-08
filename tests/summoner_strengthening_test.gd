@@ -96,8 +96,10 @@ func _test_deploy_role_configs(errors: Array) -> void:
 		if str(config.get("deploy_role", "")) != str(expected[key]):
 			errors.append("Expected %s deploy_role=%s, got %s." % [key, expected[key], config.get("deploy_role", "")])
 	var sentry: Dictionary = ProgressionData.weapon("engineer", "engineer_sentry_wrench")
-	if int(sentry.get("max_summons_cap", 0)) < 4:
-		errors.append("Expected Engineer sentry to define a Leadership cap high enough for turret play.")
+	# SCRUM-888: турели — жёсткий лимит 2 одновременно (старейшая заменяется),
+	# кап держит и Leadership-скейл, и ульту (+2 summon_bonus) на отметке 2.
+	if int(sentry.get("max_summons_cap", 0)) != 2:
+		errors.append("Expected Engineer sentry turret hard cap of 2, got %s." % sentry.get("max_summons_cap", 0))
 	if float(sentry.get("sentry_splash_radius", 0.0)) <= 0.0 or float(sentry.get("sentry_splash_damage_multiplier", 0.0)) <= 0.0:
 		errors.append("Expected Engineer sentry to define small capped splash knobs.")
 
@@ -201,6 +203,9 @@ func _test_summon_group_target_distribution(errors: Array) -> void:
 
 
 func _test_engineer_sentry_loop_distribution(errors: Array) -> void:
+	# SCRUM-888: «Ключ Часового» = стационарные турели. Гарды: турель фокусит
+	# БЛИЖАЙШЕГО врага (без сплэша дальние не тронуты), сплэш-хелпер добирает
+	# толпу с капом (проверка ниже).
 	var holder := Node2D.new()
 	root.add_child(holder)
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
@@ -211,19 +216,18 @@ func _test_engineer_sentry_loop_distribution(errors: Array) -> void:
 	player.call("configure_character", "engineer", "engineer_sentry_wrench")
 	var weapon: Node = player.get("equipped_weapon")
 	if weapon == null:
-		errors.append("Expected Engineer sentry weapon for turret loop distribution test.")
+		errors.append("Expected Engineer sentry weapon for turret focus test.")
 		holder.queue_free()
 		await process_frame
 		return
 	weapon.set_process(false)
-	weapon.set("projectile_count", 5)
-	weapon.set("amp_pulse_interval", 0.03)
-	weapon.set("amp_lifetime", 0.45)
+	weapon.set("amp_pulse_interval", 0.05)
 	weapon.set("damage_falloff", 1.0)
 	weapon.set("sentry_splash_radius", 0.0)
 	weapon.set("sentry_splash_damage_multiplier", 0.0)
 	var params: Dictionary = player.get("derived_parameters")
 	params["damage"] = 10.0
+	params["crit_chance"] = 0.0
 	player.set("derived_parameters", params)
 
 	var enemies: Array = []
@@ -231,21 +235,21 @@ func _test_engineer_sentry_loop_distribution(errors: Array) -> void:
 		var enemy := TestEnemy.new()
 		holder.add_child(enemy)
 		enemy.add_to_group("enemies")
-		enemy.health = 120.0
-		enemy.max_health = 120.0
-		enemy.global_position = player.global_position + Vector2(130.0 + index * 34.0, -28.0 + index * 18.0)
+		enemy.health = 100000.0
+		enemy.max_health = 100000.0
+		enemy.global_position = player.global_position + Vector2(150.0 + index * 160.0, 0.0)
 		enemies.append(enemy)
 	await process_frame
 
 	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
 	for _frame in range(45):
 		await process_frame
-	var damaged_targets := 0
-	for enemy in enemies:
-		if float(enemy.damage_taken) > 0.01:
-			damaged_targets += 1
-	if damaged_targets < 3:
-		errors.append("Expected Engineer sentry cycle to distribute shots across at least 3 targets, damaged %d." % damaged_targets)
+	var nearest_enemy: Node2D = enemies[0]
+	if float(nearest_enemy.damage_taken) <= 0.01:
+		errors.append("Expected Engineer turret to damage the nearest enemy, got %.2f." % nearest_enemy.damage_taken)
+	var farthest_enemy: Node2D = enemies[3]
+	if float(farthest_enemy.damage_taken) > 0.01:
+		errors.append("Expected Engineer turret (no splash, volley 1) to leave far targets alone, got %.2f." % farthest_enemy.damage_taken)
 
 	var primary := TestEnemy.new()
 	var nearby := TestEnemy.new()

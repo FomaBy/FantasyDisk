@@ -1751,70 +1751,53 @@ func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "deploy", amp_lifetime, direction, {"pulse_interval": amp_pulse_interval})
-	_deployed_amps = _deployed_amps.filter(func(device: Node) -> bool:
-		return device != null and is_instance_valid(device)
-	)
-	var sentry := Node2D.new()
-	sentry.name = "EngineerSentryNode"
-	sentry.add_to_group("engineer_devices")
-	sentry.z_index = 7
-	var visual := Sprite2D.new()
-	visual.name = "SentryVisual"
-	visual.texture = _weapon_visual_texture()
-	visual.scale = Vector2.ONE * 0.28
-	sentry.add_child(visual)
-	_projectile_parent().add_child(sentry)
-	_register_effect(sentry)
-	sentry.global_position = owner_node.global_position + direction * 92.0
-	_deployed_amps.append(sentry)
+	# SCRUM-888: «Ключ Часового» = развёртка стационарных турелей.
+	# По кулдауну оружия ставится турель (scripts/sentry_turret.gd); лимит
+	# max_summons (жёсткий кап 2) — старейшая заменяется с мини-VFX. Турель
+	# живёт до конца боя (чистка: player_weapon_effects / cleanup_effects) и
+	# сама обстреливает ближайших врагов снарядами. Мгновенный первый выстрел
+	# при развёртке — прямой компонент бюджет-модели (_budget_hit_model),
+	# сустейн турелей моделирует _budget_summon_dps.
+	_emit_weapon_animation_event(owner_node, "deploy", 0.62, direction, {"pulse_interval": amp_pulse_interval})
+	var alive_turrets: Array[Node] = []
+	for device in _deployed_amps:
+		if device != null and is_instance_valid(device):
+			alive_turrets.append(device)
+	_deployed_amps = alive_turrets
+	var turret_scene := load("res://scenes/SentryTurret.tscn") as PackedScene
+	if turret_scene == null:
+		return
+	var turret := turret_scene.instantiate() as Node2D
+	if turret == null:
+		return
+	if turret.has_method("setup"):
+		turret.call("setup", self, owner_node)
+	_projectile_parent().add_child(turret)
+	_register_effect(turret)
+	turret.global_position = owner_node.global_position + direction * 92.0
+	_deployed_amps.append(turret)
 	while _deployed_amps.size() > maxi(max_summons, 1):
 		var oldest: Node = _deployed_amps.pop_front()
+		if oldest != null and is_instance_valid(oldest) and oldest is Node2D:
+			AttackVfx.ring_pulse(_projectile_parent(), (oldest as Node2D).global_position, aoe_radius * 0.30, visual_color, false)
 		_release_effect(oldest)
 
-	AttackVfx.ring_pulse(_projectile_parent(), sentry.global_position, aoe_radius * 0.45, visual_color, false)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var sentry_id := sentry.get_instance_id()
-	var shot_count := maxi(projectile_count + _extra_projectiles(), 1)
-	var sentry_tween := sentry.create_tween()
-	var used_targets: Dictionary = {}
-	for shot_index in range(shot_count):
-		if shot_index > 0:
-			sentry_tween.tween_interval(maxf(amp_pulse_interval, 0.12))
-		sentry_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			var current_sentry := instance_from_id(sentry_id) as Node2D
-			if current_weapon == null or current_owner == null or current_sentry == null:
-				return
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("amp_pulse_interval")), 0.12), direction, {"index": shot_index, "count": shot_count})
-			var target_enemy: Node2D = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used_targets)
-			if target_enemy == null and not used_targets.is_empty():
-				used_targets.clear()
-				target_enemy = current_weapon.call("_find_nearest_enemy_from", current_sentry.global_position, float(current_weapon.get("attack_range")), used_targets)
-			if target_enemy == null:
-				return
-			used_targets[target_enemy.get_instance_id()] = true
-			var beam := AttackVfx.beam(current_weapon.call("_projectile_parent"), current_sentry.global_position, target_enemy.global_position, float(current_weapon.get("beam_width")), current_weapon.get("visual_color"))
-			current_weapon.call("_register_effect", beam)
-			var shot_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) * pow(float(current_weapon.get("damage_falloff")), float(shot_index))
-			current_weapon.call("_damage_enemy", target_enemy, shot_damage)
-			current_weapon.call("_damage_engineer_sentry_splash", target_enemy, shot_damage)
-		)
-	sentry_tween.tween_interval(maxf(amp_lifetime - float(shot_count) * maxf(amp_pulse_interval, 0.12), 0.08))
-	sentry_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_sentry := instance_from_id(sentry_id) as Node
-		if current_sentry == null:
-			return
-		if current_weapon != null:
-			var devices: Array = current_weapon.get("_deployed_amps")
-			devices.erase(current_sentry)
-			current_weapon.call("_release_effect", current_sentry)
-		else:
-			current_sentry.queue_free()
-	)
+	AttackVfx.ring_pulse(_projectile_parent(), turret.global_position, aoe_radius * 0.45, visual_color, false)
+	# Мгновенное включение: турель сразу обстреливает ближайшего врага.
+	if turret.has_method("try_fire"):
+		turret.call("try_fire", self)
+
+
+func _engineer_turret_projectile_hit(target_instance_id: int, shot_damage: float) -> void:
+	# Прилёт снаряда турели (колбэк твина полёта; цель — по instance id,
+	# см. SCRUM-551: без захвата узлов в лямбдах).
+	if _effects_shutdown:
+		return
+	var target := instance_from_id(target_instance_id) as Node2D
+	if target == null or not is_instance_valid(target):
+		return
+	_damage_enemy(target, shot_damage)
+	_damage_engineer_sentry_splash(target, shot_damage)
 
 
 func _damage_engineer_sentry_splash(primary_target: Node2D, shot_damage: float) -> void:

@@ -160,7 +160,7 @@ SCRUM-854/SCRUM-862/SCRUM-860/SCRUM-875 уточнили runtime-контрак�
 | Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
-| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps`: временные турели распределяют beam shots по целям, дают малый capped splash и имеют Leadership cap |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные турели (жёсткий лимит 2, старейшая заменяется) автострельбой бьют залпом по разным ближайшим целям, малый capped splash; урон/темп скейлятся от Лидерства |
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
 | Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
@@ -200,7 +200,7 @@ SCRUM-254 усилил призывателей через data-driven поля 
 | `pack_damage` | `druid/summon_amulet` | Быстрая стая: высокий темп, умеренная живучесть, малый контроль |
 | `tank_control` | `chemist/homunculus_vial` | Более плотный одиночный миньон: больше HP, медленнее, отталкивает цель |
 | `support_totem` | `druid/raven_totem` | Тотем-поддержка: deploy-пульсы, контроль и малый sustain |
-| `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель: автономные beam shots, роль считается summon archetype |
+| `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель (SCRUM-888): персистентная автострельба снарядами по ближайшим, роль считается summon archetype |
 | `support_drone` | `engineer/engineer_repair_drone` | Support chain: ремонт от урона + малый дополнительный sustain |
 
 SCRUM-859 добавил отдельный `deploy_role` для ClassWeapon-deploys: `stage_pulse`
