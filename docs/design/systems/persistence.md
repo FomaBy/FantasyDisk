@@ -52,6 +52,19 @@ current `route_stage`, selected route branches, player snapshot
 pending level-up/attribute offers, used events, current shop stock and shop
 re-entry state.
 
+SCRUM-996 (event reveal / event shop) deliberately adds **no** new autosave
+fields. The event outcome is applied to the in-memory run snapshot when the
+choice is pressed, but the autosave is still written only at the next map
+checkpoint (`_advance_route_after_noncombat`, reached by confirming the reveal
+via `EventContinueButton` or by leaving an event `shop_after` shop). Quitting
+the game during the reveal state or inside an event shop therefore rolls back
+to the last autosave: the run re-enters the same unresolved event
+(`current_event_definition` is part of the snapshot, SCRUM-530 — no reroll) and
+the outcome/purchases made after the last checkpoint are discarded. This is the
+intended contract, not a bug. `Main.event_shop_exit_action` (the deferred
+event-shop exit) is runtime-only and is reset on autosave restore, act
+transition, run end and new run.
+
 Main menu start checks `RunAutosave.has_run()`:
 
 - `Продолжить` loads the snapshot into `Main` and opens the route map.

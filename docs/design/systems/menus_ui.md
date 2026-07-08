@@ -99,6 +99,34 @@ must keep `UpgradeFabButton` on the screen root, never inside
 The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
 if the Rest content disappears from the campfire panel.
 
+SCRUM-996 adds conditional/hidden outcomes to the Event screen without visual
+redesign (the visual layer is SCRUM-997):
+
+- **Hidden choices.** A choice with `hidden: true` never reveals its outcome on
+  the card: the description shows `unknown_hint` (fallback «Исход неизвестен…»)
+  and the action text is «Рискнуть». `cost_money` price is not printed on a
+  hidden card's action button, so hidden paid choices must mention the price in
+  `unknown_hint` (data contract, `scripts/event_data.gd`).
+- **Reveal state.** If the applied outcome has `outcome_text`, or the choice was
+  `hidden`, or a stat `check` ran, the screen switches to a reveal state after
+  the outcome is applied: `EventStory` text is replaced by `outcome_text` plus a
+  check-result line («Проверка <Стат> <N> — пройдена/провалена»), the
+  `EventChoiceRow` cards and `EventBackButton` hide, and a single
+  `EventContinueButton` («В путь», the standard 260-wide action plate) appears
+  and grabs focus (the SCRUM-477 focus chain collapses to this one button, its
+  neighbors loop to itself). Only pressing it clears `current_event_definition`
+  and advances the route (`_advance_route_after_noncombat`). Outcomes without
+  these markers keep the old instant transition; combat outcomes start combat
+  immediately as before (the fight itself is the reveal).
+- **Event shop.** An outcome with `shop_after: true` (also honored inside
+  `post_combat` of an event fight) opens the regular `_show_shop_screen()` after
+  the reveal confirmation, with a freshly generated stock and an optional
+  `shop_discount` (0..0.9) applied to stock prices once. Leaving that shop
+  continues the event path — route advance with autosave after an event outcome,
+  or the standard combat-node return after an event-fight victory — instead of
+  the normal shop-node «return to map without advance» exit
+  (`Main.event_shop_exit_action`, consumed by one exit).
+
 SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
 frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
 and `Управление`, with built-in `TabContainer` headers hidden and
