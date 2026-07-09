@@ -524,7 +524,7 @@ func _test_weapon_animation_timing_events(player: Node) -> void:
 	var grenade_weapon: Node = player.get("equipped_weapon")
 	grenade_weapon.set_process(false)
 	grenade_weapon.call("_emit_weapon_animation_event", player, "windup", 0.42, Vector2.RIGHT, {"delayed": true})
-	_assert_weapon_timing_event(events, "grenade_cook", "windup")
+	_assert_weapon_timing_event(events, "grenade_fuse", "windup")
 
 	player.configure_character("guitarist", "sound_amp")
 	var amp_weapon: Node = player.get("equipped_weapon")
@@ -632,9 +632,9 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["druid", "summon_amulet", "summon", "cast", "deploy"],
 		["druid", "briar_staff", "aoe_projectile", "cast", "windup"],
 		["druid", "raven_totem", "amp", "shoot", "deploy"],
-		["soldier", "soldier_rifle", "suppression_burst", "shoot", "burst"],
-		["soldier", "soldier_grenade", "grenade_cook", "shoot", "windup"],
-		["soldier", "soldier_bayonet", "bayonet_brace", "shoot", "windup"],
+		["soldier", "soldier_rifle", "arquebus_shot", "shoot", "windup"],
+		["soldier", "soldier_grenade", "grenade_fuse", "shoot", "windup"],
+		["soldier", "soldier_bayonet", "bayonet_cone", "shoot", "windup"],
 		["thief", "thief_coin_pouch", "coin_ricochet", "shoot", "windup"],
 		["thief", "thief_shadow_cloak", "shadow_backstab", "shoot", "windup"],
 		["thief", "thief_smoke_bomb", "smoke_bomb", "shoot", "windup"],

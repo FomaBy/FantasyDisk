@@ -106,19 +106,30 @@ func _cleanup(holder: Node2D) -> void:
 
 
 func _test_soldier_grenade_delayed_falloff(errors: Array) -> void:
+	# SCRUM-937: контракт «медленный полёт + отдельный фитиль»: урона нет ни в
+	# полёте, ни пока горит фитиль; взрыв тяжёлый, с falloff к краю зоны.
 	var holder := _new_scene("Scrum857GrenadeContract")
 	var owner := _new_owner(holder)
 	var weapon := _new_weapon(owner, "soldier", "soldier_grenade")
+	if float(weapon.get("projectile_speed")) > 260.0:
+		errors.append("soldier_grenade projectile_speed %.0f is not a slow-flight contract" % float(weapon.get("projectile_speed")))
+	if float(weapon.get("grenade_delay")) < 0.60:
+		errors.append("soldier_grenade fuse %.2f is not a delayed-explosion contract" % float(weapon.get("grenade_delay")))
 	var center := owner.global_position + Vector2(220, 0)
 	var center_enemy := _new_enemy(holder, center)
 	var edge_enemy := _new_enemy(holder, center + Vector2(float(weapon.get("aoe_radius")) * 0.92, 0))
 	await process_frame
 
-	weapon.call("_fire_grenade_cook", owner, center_enemy, Vector2.RIGHT)
-	await create_timer(float(weapon.get("grenade_delay")) * 0.70).timeout
+	var travel := (220.0 - 26.0) / clampf(float(weapon.get("projectile_speed")), 60.0, 460.0)
+	var fuse := float(weapon.get("grenade_delay"))
+	weapon.call("_fire_grenade_fuse", owner, center_enemy, Vector2.RIGHT)
+	await create_timer(travel * 0.75).timeout
 	if center_enemy.total_damage > EPS or edge_enemy.total_damage > EPS:
-		errors.append("soldier_grenade dealt damage before fuse resolved (center %.3f, edge %.3f)" % [center_enemy.total_damage, edge_enemy.total_damage])
-	await create_timer(float(weapon.get("grenade_delay")) * 0.45 + 0.08).timeout
+		errors.append("soldier_grenade dealt damage mid-flight (center %.3f, edge %.3f)" % [center_enemy.total_damage, edge_enemy.total_damage])
+	await create_timer(travel * 0.25 + fuse * 0.35).timeout
+	if center_enemy.total_damage > EPS or edge_enemy.total_damage > EPS:
+		errors.append("soldier_grenade dealt damage while fuse was burning (center %.3f, edge %.3f)" % [center_enemy.total_damage, edge_enemy.total_damage])
+	await create_timer(fuse * 0.65 + 0.15).timeout
 	if center_enemy.total_damage <= EPS:
 		errors.append("soldier_grenade did not damage center after fuse")
 	if edge_enemy.total_damage <= EPS or edge_enemy.total_damage >= center_enemy.total_damage:

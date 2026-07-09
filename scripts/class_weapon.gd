@@ -42,9 +42,9 @@ const ATTACK_MODE_EXECUTORS := {
 	"pulse": "_exec_pulse",
 	"amp": "_exec_amp",
 	"trap": "_exec_trap",
-	"suppression_burst": "_exec_suppression_burst",
-	"grenade_cook": "_exec_grenade_cook",
-	"bayonet_brace": "_exec_bayonet_brace",
+	"arquebus_shot": "_exec_arquebus_shot",
+	"grenade_fuse": "_exec_grenade_fuse",
+	"bayonet_cone": "_exec_bayonet_cone",
 	"coin_ricochet": "_exec_coin_ricochet",
 	"shadow_backstab": "_exec_shadow_backstab",
 	"smoke_bomb": "_exec_smoke_bomb",
@@ -89,6 +89,11 @@ const ATTACK_MODE_EXECUTORS := {
 @export var grenade_delay := 0.42
 @export var brace_duration := 0.34
 @export var suppression_width := 120.0
+# SCRUM-938 «Штык-конус»: сектор ближнего укола + редкий авто-выстрел винтовки.
+@export var cone_degrees := 100.0
+@export var bayonet_auto_shot_chance := 0.0
+@export var bayonet_shot_range := 560.0
+@export var bayonet_shot_damage_multiplier := 0.7
 @export var damage_falloff := 0.55
 @export var pierce_damage_falloff := 1.0
 @export var steal_money := 0
@@ -207,6 +212,10 @@ func configure_weapon(config: Dictionary) -> void:
 	grenade_delay = float(config.get("grenade_delay", grenade_delay))
 	brace_duration = float(config.get("brace_duration", brace_duration))
 	suppression_width = float(config.get("suppression_width", suppression_width))
+	cone_degrees = float(config.get("cone_degrees", cone_degrees))
+	bayonet_auto_shot_chance = float(config.get("bayonet_auto_shot_chance", bayonet_auto_shot_chance))
+	bayonet_shot_range = float(config.get("bayonet_shot_range", bayonet_shot_range))
+	bayonet_shot_damage_multiplier = float(config.get("bayonet_shot_damage_multiplier", bayonet_shot_damage_multiplier))
 	damage_falloff = float(config.get("damage_falloff", damage_falloff))
 	pierce_damage_falloff = float(config.get("pierce_damage_falloff", pierce_damage_falloff))
 	steal_money = int(config.get("steal_money", steal_money))
@@ -301,6 +310,7 @@ func _attack() -> void:
 		_charge_time = 0.0
 	_current_charge_multiplier = 1.0
 	_maybe_fire_rhythm_echo(owner_node, target, direction)
+	_maybe_fire_action_echo(owner_node, target, direction)
 
 
 # SCRUM-961: mode-rework артефакты меняют пейсинг оружия на точке потребления
@@ -352,6 +362,61 @@ func _maybe_fire_rhythm_echo(owner_node: Node2D, target: Node2D, direction: Vect
 	)
 
 
+# SCRUM-935 «Двойное действие» (class trait Солдата, data-driven): каждое действие
+# оружия с шансом action_echo_chance (CLASS_TRAITS через Player.class_trait_value)
+# создаёт ОДНУ полную копию себя с коротким читаемым сдвигом — второй выстрел /
+# вторая граната / второй укол. Копия выполняется под флагом _action_echo_active и
+# НЕ роллит новую копию: рекурсия невозможна и структурно (эхо не зовёт _attack()),
+# и по гарду. Деплой-режимы исключены (эхо не ставит второй усилитель/капкан/мину).
+# Эхо повторяет только само действие: кулдаун, heal-on-attack, заряд и ролл
+# rhythm-эха НЕ переприменяются (без двойных классовых сайд-эффектов).
+const ACTION_ECHO_EXCLUDED_MODES := {
+	"amp": true, "trap": true,
+	"engineer_sentry_link": true, "engineer_repair_drone": true, "engineer_pressure_mines": true,
+}
+const ACTION_ECHO_DEFAULT_DELAY := 0.18
+
+var _action_echo_active := false
+
+
+func _maybe_fire_action_echo(owner_node: Node2D, target: Node2D, direction: Vector2) -> bool:
+	if _action_echo_active or _effects_shutdown:
+		return false
+	if ACTION_ECHO_EXCLUDED_MODES.has(attack_mode):
+		return false
+	if owner_node == null or not is_instance_valid(owner_node) or not owner_node.has_method("class_trait_value"):
+		return false
+	var echo_chance := clampf(float(owner_node.call("class_trait_value", "action_echo_chance", 0.0)), 0.0, 1.0)
+	if echo_chance <= 0.0 or randf() >= echo_chance:
+		return false
+	var echo_delay := maxf(float(owner_node.call("class_trait_value", "action_echo_delay", ACTION_ECHO_DEFAULT_DELAY)), 0.01)
+	var target_id := 0
+	if target != null and is_instance_valid(target):
+		target_id = target.get_instance_id()
+	var echo_tween := create_tween()
+	echo_tween.tween_interval(echo_delay)
+	# SCRUM-551: без лямбды с захватом узлов — Callable + примитивные bind-аргументы.
+	echo_tween.tween_callback(Callable(self, "_fire_action_echo").bind(owner_node.get_instance_id(), target_id, direction))
+	return true
+
+
+func _fire_action_echo(owner_id: int, target_id: int, direction: Vector2) -> void:
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	var current_target: Node2D = null
+	if target_id != 0:
+		var target_candidate := instance_from_id(target_id) as Node2D
+		if target_candidate != null and is_instance_valid(target_candidate):
+			current_target = target_candidate
+	_action_echo_active = true
+	_emit_weapon_animation_event(current_owner, "pulse", 0.0, direction, {"action_echo": true})
+	_execute_attack_mode(current_owner, current_target, direction)
+	_action_echo_active = false
+
+
 func _primary_action_animation_for_mode() -> String:
 	return "cast" if PRIMARY_CAST_ACTION_MODES.has(attack_mode) else "shoot"
 
@@ -376,11 +441,11 @@ func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vect
 			center = owner_node.global_position
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			center = owner_node.global_position + direction * minf(attack_range, 150.0)
-		"grenade_cook", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "bio_spore_bloom", "robot_magnetic_anchor":
+		"grenade_fuse", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "bio_spore_bloom", "robot_magnetic_anchor":
 			center = owner_node.global_position + direction * minf(attack_range, 360.0)
 			if target != null:
 				center = target.global_position
-		"beam", "dot_beam", "suppression_burst", "sniper_lockshot", "sniper_split_round", "bayonet_brace", "robot_compression_line":
+		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line":
 			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
 			radius = maxf(beam_width * 2.2, 86.0)
 		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
@@ -437,16 +502,16 @@ func _exec_trap(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void
 	_fire_trap(owner_node, direction)
 
 
-func _exec_suppression_burst(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
-	_fire_suppression_burst(owner_node, direction)
+func _exec_arquebus_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_arquebus_shot(owner_node, target, direction)
 
 
-func _exec_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_fire_grenade_cook(owner_node, target, direction)
+func _exec_grenade_fuse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_grenade_fuse(owner_node, target, direction)
 
 
-func _exec_bayonet_brace(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
-	_fire_bayonet_brace(owner_node, direction)
+func _exec_bayonet_cone(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_bayonet_cone(owner_node, direction)
 
 
 func _exec_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1168,143 +1233,211 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 		)
 
 
-func _fire_suppression_burst(owner_node: Node2D, direction: Vector2) -> void:
-	var count := maxi(projectile_count + _extra_projectiles(), 1)
-	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.02) * float(maxi(count - 1, 1)), direction, {"count": count})
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var burst_tween := create_tween()
-	for burst_index in range(count):
-		if burst_index > 0:
-			burst_tween.tween_interval(maxf(burst_interval, 0.02))
-		burst_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			if current_weapon == null or current_owner == null:
-				return
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.02), direction, {"index": burst_index, "count": count})
-			current_weapon.call("_fire_suppression_round", current_owner, direction)
-		)
+# SCRUM-936 «Аркебуза»: одна быстрая взрывная пуля — видимый снаряд летит далеко
+# в цель и взрывается малым AoE (полный урон в центре, falloff к краю зоны).
+# extra_projectile (артефакты «Ядро Расщепления» и т.п.) добавляет пули по
+# следующим ближайшим целям. Trait «Двойное действие» даёт второй независимый
+# выстрел через _maybe_fire_action_echo (без рекурсии).
+func _fire_arquebus_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var count := maxi(1 + _extra_projectiles(), 1)
+	var targets := _find_closest_enemies(owner_node, count)
+	if targets.is_empty():
+		if target != null and is_instance_valid(target):
+			targets = [target]  # цель вне базового радиуса поиска (передана _attack)
+		else:
+			_launch_arquebus_bullet(owner_node, null, direction)
+			return
+	for target_index in range(mini(count, targets.size())):
+		var target_node := targets[target_index] as Node2D
+		var aim := direction
+		if target_node != null:
+			var to_target: Vector2 = target_node.global_position - owner_node.global_position
+			if to_target.length_squared() > 0.001:
+				aim = to_target.normalized()
+		_launch_arquebus_bullet(owner_node, target_node, aim)
 
 
-func _fire_suppression_round(owner_node: Node2D, direction: Vector2) -> void:
+func _launch_arquebus_bullet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var start := owner_node.global_position + direction * 28.0
-	var finish := owner_node.global_position + direction * attack_range
-	var tracer := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
-	_register_effect(tracer)
-	# SCRUM-961 «Шрапнель аркебузы»: коридор подавления шире (+25%), соседям
-	# прилетает больше (falloff 0.38→0.52); основная цель без изменений.
-	var shrapnel := _owner_mod("arquebus_shrapnel_bonus") > 0.0
-	var corridor_width := suppression_width * (1.25 if shrapnel else 1.0)
-	var neighbor_falloff := clampf(damage_falloff + (0.14 if shrapnel else 0.0), 0.0, 0.9)
-	var hits := _enemies_in_corridor(start, direction, corridor_width, attack_range)
-	if hits.is_empty():
+	var target_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 560.0)
+	if target != null:
+		target_position = target.global_position
+	# Короткая вспышка у дула — читаемое начало выстрела (важно для эха: два дула).
+	var muzzle := AttackVfx.beam(_projectile_parent(), start, start + direction * 46.0, beam_width, Color(visual_color.r, visual_color.g, visual_color.b, 0.55))
+	_register_effect(muzzle)
+	var bullet := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
+	_register_effect(bullet)
+	var travel_time: float = clampf(start.distance_to(target_position) / maxf(projectile_speed, 1.0), 0.05, 0.60)
+	var tween := create_tween()
+	tween.tween_property(bullet, "global_position", target_position, travel_time).set_trans(Tween.TRANS_LINEAR)
+	# SCRUM-551: Callable + примитивные bind-аргументы вместо лямбды с захватом узлов.
+	tween.tween_callback(Callable(self, "_explode_arquebus_bullet").bind(bullet.get_instance_id(), owner_node.get_instance_id(), target_position, direction))
+
+
+func _explode_arquebus_bullet(bullet_id: int, owner_id: int, center: Vector2, direction: Vector2) -> void:
+	var bullet := instance_from_id(bullet_id) as Node
+	if _effects_shutdown:
+		if bullet != null and is_instance_valid(bullet):
+			bullet.queue_free()
 		return
-	var damage_value := _rolled_damage(owner_node)
-	var primary := hits[0]["node"] as Node2D
-	_damage_enemy(primary, damage_value)
-	for hit_index in range(1, mini(hits.size(), 4)):
-		_damage_enemy(hits[hit_index]["node"], damage_value * neighbor_falloff)
-		_push_enemy(hits[hit_index]["node"], direction)
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var explosion_damage := damage
+	if current_owner != null and is_instance_valid(current_owner):
+		explosion_damage = _rolled_damage(current_owner)
+	# SCRUM-961 «Шрапнель аркебузы» (rework SCRUM-936): осколочная зона шире (+25%)
+	# и злее к соседям (falloff-пол 0.45→0.59); центр без изменений.
+	var shrapnel := _owner_mod("arquebus_shrapnel_bonus") > 0.0
+	var blast_radius := aoe_radius * (1.25 if shrapnel else 1.0)
+	var edge_falloff := clampf(damage_falloff + (0.14 if shrapnel else 0.0), 0.0, 0.9)
+	_damage_enemies_in_circle_falloff(center, blast_radius, explosion_damage, edge_falloff)
+	for enemy_node in TARGET_QUERY.in_radius(self, center, blast_radius):
+		_push_enemy(enemy_node, direction)
+	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, visual_color)
+	if bullet != null and is_instance_valid(bullet):
+		_release_effect(bullet)
 
 
-func _fire_grenade_cook(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+# SCRUM-937 «Граната с фитилем»: медленный снаряд долго летит в телеграфированную
+# зону, ложится и горит на видимом фитиле (grenade_delay), затем тяжёлый взрыв с
+# falloff к краю. Урон ТОЛЬКО на взрыве — враги успевают выйти из зоны. Trait
+# «Двойное действие» бросает вторую независимую гранату со своим полётом/фитилём.
+# Полёт капится GRENADE_MAX_FLIGHT_SPEED: derived projectile_speed растёт от статов
+# (perception 18/очко) и без капа съел бы «медленную» identity нюка.
+const GRENADE_MAX_FLIGHT_SPEED := 460.0
+
+
+func _fire_grenade_fuse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	# SCRUM-961 «Длинный фитиль»: фитиль горит дольше (+0.35с телеграф), взрыв
 	# окупается (+long_fuse_bonus урона, +10% радиуса).
 	var fuse_bonus := _owner_mod("long_fuse_bonus")
-	var effective_delay := grenade_delay + (0.35 if fuse_bonus > 0.0 else 0.0)
+	var fuse_delay := maxf(grenade_delay, 0.20) + (0.35 if fuse_bonus > 0.0 else 0.0)
 	var blast_radius := aoe_radius * (1.10 if fuse_bonus > 0.0 else 1.0)
 	var blast_damage_mult := 1.0 + fuse_bonus
-	_emit_weapon_animation_event(owner_node, "windup", maxf(effective_delay, 0.10), direction, {"delayed": true})
-	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 440.0)
+	var target_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 440.0)
 	if target != null:
 		target_position = target.global_position
+	var start := owner_node.global_position + direction * 26.0
+	var flight_speed := clampf(projectile_speed, 60.0, GRENADE_MAX_FLIGHT_SPEED)
+	var travel_time := maxf(start.distance_to(target_position) / flight_speed, 0.25)
+	_emit_weapon_animation_event(owner_node, "windup", travel_time + fuse_delay, direction, {"delayed": true})
 	var telegraph := AttackVfx.ring_pulse(_projectile_parent(), target_position, blast_radius, visual_color, true)
 	_register_effect(telegraph)
-	var grenade := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 26.0, visual_color)
+	var grenade := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
 	_register_effect(grenade)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var grenade_id := grenade.get_instance_id()
-	var telegraph_id := telegraph.get_instance_id()
 	var tween := create_tween()
-	tween.tween_property(grenade, "global_position", target_position, maxf(effective_delay * 0.55, 0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_interval(maxf(effective_delay * 0.45, 0.04))
-	tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		var current_grenade := instance_from_id(grenade_id) as Node
-		var current_telegraph := instance_from_id(telegraph_id) as Node
-		if current_weapon == null:
-			if current_grenade != null:
-				current_grenade.queue_free()
-			if current_telegraph != null:
-				current_telegraph.queue_free()
-			return
-		var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-		explosion_damage *= blast_damage_mult
-		if current_owner != null:
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
-		current_weapon.call("_damage_enemies_in_circle_falloff", target_position, blast_radius, explosion_damage, damage_falloff)
-		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, blast_radius, visual_color)
-		if current_grenade != null:
-			current_weapon.call("_release_effect", current_grenade)
-		if current_telegraph != null:
-			current_weapon.call("_release_effect", current_telegraph)
-	)
+	tween.tween_property(grenade, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Посадка: отдельный «armed»-пульс фитиля — читаемая фаза между полётом и взрывом.
+	tween.tween_callback(Callable(self, "_arm_grenade_fuse").bind(owner_node.get_instance_id(), target_position, blast_radius, direction, fuse_delay))
+	tween.tween_interval(fuse_delay)
+	tween.tween_callback(Callable(self, "_explode_grenade_fuse").bind(grenade.get_instance_id(), telegraph.get_instance_id(), owner_node.get_instance_id(), target_position, blast_radius, blast_damage_mult, direction))
 
 
-func _fire_bayonet_brace(owner_node: Node2D, direction: Vector2) -> void:
-	var brace_visual := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
-	_register_effect(brace_visual)
-	# SCRUM-961 «Спуск штыка»: при уколе шанс пули по линии за конусом стойки.
-	if randf() < _owner_mod("bayonet_shot_chance"):
-		_fire_bayonet_line_shot(owner_node, direction)
-	var state := {"hit_ids": {}}
-	var checks := maxi(int(ceil(brace_duration / 0.08)), 1)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var brace_tween := create_tween()
-	for check_index in range(checks):
-		if check_index > 0:
-			brace_tween.tween_interval(brace_duration / float(checks))
-		brace_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			if current_weapon == null or current_owner == null:
-				return
-			current_weapon.call("_damage_bayonet_corridor_once", current_owner, direction, state)
-		)
+func _arm_grenade_fuse(owner_id: int, center: Vector2, blast_radius: float, direction: Vector2, fuse_delay: float) -> void:
+	if _effects_shutdown:
+		return
+	var fuse_ring := AttackVfx.ring_pulse(_projectile_parent(), center, blast_radius * 0.45, Color(1.0, 0.82, 0.30, 0.55), false)
+	if fuse_ring != null:
+		_register_effect(fuse_ring)
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner != null and is_instance_valid(current_owner):
+		_emit_weapon_animation_event(current_owner, "pulse", fuse_delay, direction, {"fuse": true})
 
 
-# SCRUM-961 «Спуск штыка»: пуля по линии — дальность 420, 70% урона первому
-# врагу на траектории (закрывает мёртвую зону штыка по дальним).
-func _fire_bayonet_line_shot(owner_node: Node2D, direction: Vector2) -> void:
-	var start := owner_node.global_position + direction * 22.0
-	var shot_range := 420.0
-	var tracer := AttackVfx.beam(_projectile_parent(), start, owner_node.global_position + direction * shot_range, beam_width * 0.6, Color(visual_color.r, visual_color.g, visual_color.b, 0.50))
+func _explode_grenade_fuse(grenade_id: int, telegraph_id: int, owner_id: int, center: Vector2, blast_radius: float, blast_damage_mult: float, direction: Vector2) -> void:
+	var current_grenade := instance_from_id(grenade_id) as Node
+	var current_telegraph := instance_from_id(telegraph_id) as Node
+	if _effects_shutdown:
+		if current_grenade != null and is_instance_valid(current_grenade):
+			current_grenade.queue_free()
+		if current_telegraph != null and is_instance_valid(current_telegraph):
+			current_telegraph.queue_free()
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var explosion_damage := damage
+	if current_owner != null and is_instance_valid(current_owner):
+		explosion_damage = _rolled_damage(current_owner)
+		_emit_weapon_animation_event(current_owner, "release", 0.0, direction, {"delayed": true})
+	explosion_damage *= blast_damage_mult
+	_damage_enemies_in_circle_falloff(center, blast_radius, explosion_damage, damage_falloff)
+	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, visual_color)
+	if current_grenade != null and is_instance_valid(current_grenade):
+		_release_effect(current_grenade)
+	if current_telegraph != null and is_instance_valid(current_telegraph):
+		_release_effect(current_telegraph)
+
+
+# SCRUM-938 «Штык-конус»: активный ближний сектор (cone_degrees) в направлении
+# атаки — каждый враг в конусе получает укол и отброс за один взмах; вплотную к
+# ногам мёртвой зоны нет (contact-rescue радиус). Поверх укола — редкий
+# авто-выстрел винтовки по цели ЗА конусом (bayonet_auto_shot_chance + артефакт
+# «Спуск штыка»). Выстрел — бонус-акцент, не превращает штык в вторую аркебузу.
+const BAYONET_CONTACT_RESCUE_RADIUS := 52.0
+
+
+func _fire_bayonet_cone(owner_node: Node2D, direction: Vector2) -> void:
+	var cone_visual := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
+	_register_effect(cone_visual)
+	var damage_value := _rolled_damage(owner_node)
+	var origin := owner_node.global_position
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if not _is_enemy_inside_bayonet_cone(origin, enemy_node.global_position, direction):
+			continue
+		_damage_enemy(enemy_node, damage_value)
+		var push_direction := (enemy_node.global_position - origin)
+		_push_enemy(enemy_node, push_direction.normalized() if push_direction.length_squared() > 0.001 else direction)
+	# Редкий выстрел: встроенный шанс оружия + артефакт SCRUM-961 «Спуск штыка».
+	var shot_chance := clampf(bayonet_auto_shot_chance + _owner_mod("bayonet_shot_chance"), 0.0, 1.0)
+	if randf() < shot_chance:
+		_fire_bayonet_auto_shot(owner_node, direction)
+
+
+func _is_enemy_inside_bayonet_cone(origin: Vector2, enemy_position: Vector2, direction: Vector2) -> bool:
+	var to_enemy := enemy_position - origin
+	var distance := to_enemy.length()
+	# Анти-deadzone: враг у самых ног (включая застрявшего на игроке) всегда в зоне.
+	if distance <= BAYONET_CONTACT_RESCUE_RADIUS:
+		return true
+	if distance > attack_range:
+		return false
+	return absf(direction.angle_to(to_enemy)) <= deg_to_rad(clampf(cone_degrees, 1.0, 360.0) * 0.5)
+
+
+# Авто-выстрел штыка: цель — ближайший враг ВНЕ конуса (дальше досягаемости укола),
+# в пределах bayonet_shot_range; без такой цели пуля уходит по направлению укола.
+# Урон bayonet_shot_damage_multiplier от укола первому врагу на траектории.
+func _fire_bayonet_auto_shot(owner_node: Node2D, direction: Vector2) -> void:
+	var shot_direction := direction
+	var beyond_target := _find_bayonet_shot_target(owner_node)
+	if beyond_target != null:
+		var to_target := beyond_target.global_position - owner_node.global_position
+		if to_target.length_squared() > 0.001:
+			shot_direction = to_target.normalized()
+	var start := owner_node.global_position + shot_direction * 22.0
+	var tracer := AttackVfx.beam(_projectile_parent(), start, owner_node.global_position + shot_direction * bayonet_shot_range, beam_width * 0.6, Color(visual_color.r, visual_color.g, visual_color.b, 0.50))
 	_register_effect(tracer)
-	var hits := _enemies_in_corridor(start, direction, beam_width, shot_range)
+	_emit_weapon_animation_event(owner_node, "pulse", 0.0, shot_direction, {"bayonet_shot": true})
+	var hits := _enemies_in_corridor(start, shot_direction, maxf(beam_width, 40.0), bayonet_shot_range)
 	if hits.is_empty():
 		return
-	_damage_enemy(hits[0]["node"], _rolled_damage(owner_node) * 0.7)
+	_damage_enemy(hits[0]["node"], _rolled_damage(owner_node) * bayonet_shot_damage_multiplier)
 
 
-func _damage_bayonet_corridor_once(owner_node: Node2D, direction: Vector2, state: Dictionary) -> void:
-	var origin := owner_node.global_position + direction * 18.0
-	var hit_ids: Dictionary = state.get("hit_ids", {})
-	var damage_value := _rolled_damage(owner_node)
-	for hit in _enemies_in_corridor(origin, direction, beam_width, attack_range):
-		var enemy_node := hit["node"] as Node2D
-		if enemy_node == null:
+func _find_bayonet_shot_target(owner_node: Node2D) -> Node2D:
+	var best: Node2D = null
+	var best_distance := INF
+	var origin := owner_node.global_position
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		var enemy_id := enemy_node.get_instance_id()
-		if hit_ids.has(enemy_id):
+		var distance := origin.distance_to(enemy_node.global_position)
+		if distance <= attack_range or distance > bayonet_shot_range:
 			continue
-		hit_ids[enemy_id] = true
-		_damage_enemy(enemy_node, damage_value)
-		_push_enemy(enemy_node, direction)
-	state["hit_ids"] = hit_ids
+		if distance < best_distance:
+			best_distance = distance
+			best = enemy_node
+	return best
 
 
 func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -2150,7 +2283,7 @@ func _maybe_duplicate_hit(enemy: Node, amount: float, hit_type: String) -> void:
 	if duplicate_chance <= 0.0:
 		return
 	var universal := _owner_mod("duplicate_hit_universal") > 0.0
-	if attack_mode != "suppression_burst" and not (universal and attack_mode in ["grenade_cook", "bayonet_brace"]):
+	if attack_mode != "arquebus_shot" and not (universal and attack_mode in ["grenade_fuse", "bayonet_cone"]):
 		return
 	if randf() >= duplicate_chance:
 		return
@@ -3191,9 +3324,9 @@ func _emit_weapon_animation_event(owner_node: Node2D, phase: String, duration: f
 
 func _estimated_windup_duration() -> float:
 	match attack_mode:
-		"grenade_cook", "smoke_bomb", "prism_rift", "meteor_shards", "priest_sanctify", "robot_magnetic_anchor", "robot_compression_line", "sniper_lockshot", "sniper_kill_zone":
+		"grenade_fuse", "smoke_bomb", "prism_rift", "meteor_shards", "priest_sanctify", "robot_magnetic_anchor", "robot_compression_line", "sniper_lockshot", "sniper_kill_zone":
 			return maxf(grenade_delay, 0.08)
-		"suppression_burst", "priest_ward", "bio_spore_bloom", "bio_sample_dart":
+		"priest_ward", "bio_spore_bloom", "bio_sample_dart":
 			return maxf(burst_interval, 0.06)
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			return 0.10

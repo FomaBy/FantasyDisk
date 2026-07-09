@@ -148,9 +148,9 @@ const CHARACTER_CONFIGS := {
 	"soldier": {
 		"id": "soldier",
 		"title": "Солдат",
-		"description": "Стрелок средней дистанции: держит строй, кладет залпы по линии и рвет скопления гранатами. Ровный темп без лишнего риска.",
-		"strengths": "ровный урон с дистанции, залпы по линии, гранаты по скоплениям, штыковая оборона.",
-		"weaknesses": "нужна линия огня, по боссу залпы слабее.",
+		"description": "Стрелок средней дистанции с двойным спуском: каждое действие может произойти дважды. Взрывные пули, тяжелые гранаты с фитилем и штыковой конус вблизи.",
+		"strengths": "шанс 50% на второе действие, взрывные пули с малым AoE, тяжелые гранаты по скоплениям, штыковой конус вблизи.",
+		"weaknesses": "граната требует ждать фитиль, по боссу пули слабее.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
 	},
 	"thief": {
@@ -289,6 +289,25 @@ const ULTIMATE_CONFIGS := {
 	"druid": {"title": "Зов стаи", "description": "Временно призывает сверхлимитную стаю союзников.", "duration": 6.0, "radius": 260.0, "damage": 0.80, "target_count": 4, "damage_charge_rate": 0.031, "taken_charge_rate": 1.10, "boss_cap": 0.08},
 }
 
+# SCRUM-935: data-driven реестр class traits (канон — docs/design/class_traits_registry.md).
+# Ключи читаются generic-хуком Player.class_trait_value(key) без хардкода класса:
+#   action_echo_chance — «Двойное действие»: шанс, что действие оружия создаст ОДНУ
+#     полную копию себя (второй выстрел/бросок/укол). Копия помечена и НЕ роллит
+#     новую копию — цепочки невозможны (см. ClassWeapon._maybe_fire_action_echo).
+#   action_echo_delay — читаемый сдвиг копии в секундах (QA видит два действия).
+# Матожидание выхода оружия ×(1+chance) учтено в budget-модели
+# (estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон кита.
+# Новые классы волны SCRUM-894..952 добавляют СВОИ записи сюда.
+const CLASS_TRAITS := {
+	"soldier": {
+		"id": "double_action",
+		"title": "Двойное действие",
+		"description": "Каждое действие оружия с шансом 50% происходит дважды; копия не создает новых копий.",
+		"action_echo_chance": 0.5,
+		"action_echo_delay": 0.18,
+	},
+}
+
 const CLASS_MECHANIC_IDENTITIES := {
 	"berserk": {
 		"main_attribute": "strength",
@@ -303,13 +322,13 @@ const CLASS_MECHANIC_IDENTITIES := {
 	},
 	"soldier": {
 		"main_attribute": "perception",
-		"identity_title": "Тактическая линия огня",
-		"summary": "Восприятие задает линию огня: солдат видит дальше, бьет точнее и держит позицию, пока враг не дрогнет.",
-		"mechanic_tags": ["line_control", "suppression", "telegraphed_explosive", "brace"],
+		"identity_title": "Двойное действие",
+		"summary": "Каждое действие оружия Солдата с шансом 50% происходит дважды: второй выстрел, вторая граната, второй укол. Копия не создает новых копий.",
+		"mechanic_tags": ["double_action", "explosive_bullet", "delayed_nuke", "melee_cone"],
 		"weapon_identities": {
-			"soldier_rifle": "подавляющий burst по линии",
-			"soldier_grenade": "задержанная граната с читаемой зоной",
-			"soldier_bayonet": "оборонительная штыковая стойка",
+			"soldier_rifle": "быстрая взрывная пуля с малым AoE",
+			"soldier_grenade": "медленная граната с длинным фитилем и тяжелым взрывом",
+			"soldier_bayonet": "ближний штыковой конус с редкими выстрелами вдаль",
 		},
 	},
 	"thief": {

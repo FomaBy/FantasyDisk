@@ -10,6 +10,7 @@ const CLASS_DAMAGE_PARAMETER := CharacterData.CLASS_DAMAGE_PARAMETER
 const STAT_CLASS_RELEVANCE := CharacterData.STAT_CLASS_RELEVANCE
 const CLASS_INTERPRETATIONS := CharacterData.CLASS_INTERPRETATIONS
 const CLASS_MECHANIC_IDENTITIES := CharacterData.CLASS_MECHANIC_IDENTITIES
+const CLASS_TRAITS := CharacterData.CLASS_TRAITS  # SCRUM-935: data-driven class traits
 const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 const ATTRIBUTE_REGISTRY := CharacterData.ATTRIBUTE_REGISTRY  # SCRUM-695: канон-реестр атрибутов
@@ -721,6 +722,16 @@ static func character_config(character_id: String) -> Dictionary:
 	return CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"]).duplicate(true)
 
 
+# SCRUM-935: канонический доступ к class trait (пусто у классов без trait'а).
+static func class_trait(character_id: String) -> Dictionary:
+	return (CLASS_TRAITS.get(character_id, {}) as Dictionary).duplicate(true)
+
+
+# SCRUM-935 «Двойное действие»: шанс полной копии действия оружия (Солдат = 0.5).
+static func class_action_echo_chance(character_id: String) -> float:
+	return clampf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("action_echo_chance", 0.0)), 0.0, 1.0)
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -828,8 +839,14 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var dot_dps := _budget_dot_dps(config, params, interval)
 	var pool_dps := _budget_pool_dps(config, params, interval)
 	var summon_dps := _budget_summon_dps(config, params, stats)
-	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps + summon_dps
-	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
+	# SCRUM-935 «Двойное действие»: echo-trait создаёт полную копию действия оружия
+	# с шансом p ⇒ матожидание выхода действия ×(1+p). Фактор применяется к
+	# action-компонентам (direct/dot/pool), но НЕ к призывам (деплой исключён из
+	# эха) и НЕ к ульте (не действие оружия). Благодаря этому budget_tuning_for
+	# автоматически компенсирует урон кита (AC SCRUM-935: кит сопоставим с ростером).
+	var action_echo_factor := 1.0 + class_action_echo_chance(character_id)
+	var solo_dps := (direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps
+	var aoe_dps := (direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0))
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -899,7 +916,7 @@ static func _crowd_clear_density_factor(config: Dictionary, target_count: int) -
 			factor *= 0.98
 	if ["sniper_lockshot", "moon_crossbow", "drain_link"].has(mode):
 		factor *= 0.92
-	elif ["aoe_projectile", "grenade_cook", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines"].has(mode):
+	elif ["aoe_projectile", "grenade_fuse", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines"].has(mode):
 		factor *= 1.04
 	return clampf(factor, 0.82, 1.12)
 
@@ -956,15 +973,20 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("beam_width", 40.0)) / 120.0, 1.0, 1.6), "dot_targets": 1.0}
 		"trap":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.2)}
-		"suppression_burst":
-			var burst_count := float(config.get("projectile_count", 3.0))
-			var suppression_width := float(config.get("suppression_width", 120.0))
-			return {"solo_hits": clampf(burst_count, 1.0, 4.0), "five_hits": clampf(burst_count * (1.0 + suppression_width / 210.0), 1.0, 5.0)}
-		"grenade_cook":
+		"arquebus_shot":
+			# SCRUM-936: одна взрывная пуля — полный урон цели + малый AoE соседям
+			# с falloff (модель как aoe_projectile при projectile_count=1).
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)}
+		"grenade_fuse":
+			# SCRUM-937: медленный снаряд + фитиль; вся ценность — тяжёлый AoE-взрыв.
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
-		"bayonet_brace":
-			var brace_width := float(config.get("beam_width", 120.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + brace_width / 56.0, 1.0, 4.0)}
+		"bayonet_cone":
+			# SCRUM-938: ближний конус + редкий авто-выстрел (chance*mult добавкой к
+			# обеим осям — пуля бьёт одну цель за конусом).
+			var cone := float(config.get("cone_degrees", 100.0))
+			var shot_bonus := clampf(float(config.get("bayonet_auto_shot_chance", 0.0)), 0.0, 1.0) * float(config.get("bayonet_shot_damage_multiplier", 0.7))
+			var cone_hits := 1.0 + (cone / 110.0) * (attack_range / 260.0) * 1.9
+			return {"solo_hits": 1.0 + shot_bonus, "five_hits": clampf(cone_hits + shot_bonus, 1.0, 4.4)}
 		"coin_ricochet":
 			var chain_count := float(config.get("projectile_count", 3.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(chain_count * 0.76, 1.0, 5.0)}

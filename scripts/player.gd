@@ -235,6 +235,16 @@ static func _default_run_modifiers() -> Dictionary:
 	}
 
 
+# SCRUM-935: generic data-driven хук class trait'ов. Числовые параметры trait'а
+# текущего класса (ProgressionData.CLASS_TRAITS) читаются по ключу — без
+# хардкода класса в потребителях. Пример: ClassWeapon._maybe_fire_action_echo
+# берёт "action_echo_chance"/"action_echo_delay" («Двойное действие» Солдата).
+# У классов без trait'а возвращается default_value.
+func class_trait_value(key: String, default_value := 0.0) -> float:
+	var trait_config: Dictionary = PROGRESSION_DATA.CLASS_TRAITS.get(character_id, {})
+	return float(trait_config.get(key, default_value))
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()

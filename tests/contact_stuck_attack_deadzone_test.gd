@@ -24,11 +24,11 @@ func _initialize() -> void:
 	await _test_class_contact_mode("dot_beam", errors, {"dot_ticks": 1})
 	await _test_class_contact_mode("drain_link", errors)
 	await _test_class_contact_mode("sound_wave", errors)
-	await _test_class_contact_mode("bayonet_brace", errors, {"brace_duration": 0.02}, 12)
+	await _test_class_contact_mode("bayonet_cone", errors, {"cone_degrees": 105.0}, 12)
 	await _test_class_contact_mode("sniper_lockshot", errors, {"grenade_delay": 0.01}, 20)
 	await _test_class_contact_mode("robot_compression_line", errors, {"grenade_delay": 0.01}, 20)
 	await _test_class_contact_mode("robot_reactor_vent", errors, {"projectile_count": 4})
-	await _test_class_contact_mode("suppression_burst", errors, {"projectile_count": 1, "burst_interval": 0.01, "suppression_width": 72.0})
+	await _test_class_contact_mode("arquebus_shot", errors, {"projectile_speed": 9999.0}, 20)
 
 	if not errors.is_empty():
 		for error in errors:

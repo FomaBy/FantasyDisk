@@ -3446,9 +3446,9 @@ func _test_class_weapon_configs() -> void:
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
 	var expected := {
 		"soldier": {
-			"soldier_rifle": {"scene": "SoldierRifle", "mode": "suppression_burst", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
-			"soldier_grenade": {"scene": "SoldierGrenade", "mode": "grenade_cook", "sprite": "res://assets/sprites/weapons/soldier_grenade.png"},
-			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_brace", "sprite": "res://assets/sprites/weapons/soldier_bayonet.png"},
+			"soldier_rifle": {"scene": "SoldierRifle", "mode": "arquebus_shot", "sprite": "res://assets/sprites/weapons/soldier_rifle.png"},
+			"soldier_grenade": {"scene": "SoldierGrenade", "mode": "grenade_fuse", "sprite": "res://assets/sprites/weapons/soldier_grenade.png"},
+			"soldier_bayonet": {"scene": "SoldierBayonet", "mode": "bayonet_cone", "sprite": "res://assets/sprites/weapons/soldier_bayonet.png"},
 		},
 		"thief": {
 			"thief_coin_pouch": {"scene": "ThiefCoinPouch", "mode": "coin_ricochet", "sprite": "res://assets/sprites/weapons/thief_coin_pouch.png"},
@@ -4121,7 +4121,7 @@ func _test_unique_class_identity_patterns() -> void:
 			_fail("Expected Soldier weapons to use three distinct attack modes.")
 			return
 		soldier_modes[mode] = true
-	for required_soldier_mode in ["suppression_burst", "grenade_cook", "bayonet_brace"]:
+	for required_soldier_mode in ["arquebus_shot", "grenade_fuse", "bayonet_cone"]:
 		if not soldier_modes.has(required_soldier_mode):
 			_fail("Expected Soldier to include unique %s attack mode." % required_soldier_mode)
 			return
@@ -4953,9 +4953,9 @@ func _test_soldier_weapon_mechanics() -> void:
 		_fail("Expected Soldier to expose exactly rifle/grenade/bayonet weapons.")
 		return
 	var expected_modes := {
-		"soldier_rifle": "suppression_burst",
-		"soldier_grenade": "grenade_cook",
-		"soldier_bayonet": "bayonet_brace",
+		"soldier_rifle": "arquebus_shot",
+		"soldier_grenade": "grenade_fuse",
+		"soldier_bayonet": "bayonet_cone",
 	}
 	for weapon_id in expected_modes.keys():
 		var config: Dictionary = ProgressionData.weapon("soldier", weapon_id)
@@ -4994,7 +4994,9 @@ func _test_soldier_weapon_mechanics() -> void:
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		weapon.call("_attack")
-		await create_timer(0.85).timeout
+		# SCRUM-937: у гранаты медленный полёт + фитиль — урон приходит заметно позже.
+		var damage_wait := 2.4 if weapon_id == "soldier_grenade" else 0.85
+		await create_timer(damage_wait).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Soldier weapon %s to damage its target." % weapon_id)
 			return
