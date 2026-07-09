@@ -1,0 +1,32 @@
+{
+  "jira": "SCRUM-1016",
+  "status": "IMPLEMENTATION_SELF_CHECK_PASS_INDEPENDENT_QA_PENDING",
+  "source_png_count": 120,
+  "runtime_png_count": 120,
+  "source_canvas": [
+    180,
+    180
+  ],
+  "runtime_canvas": [
+    256,
+    256
+  ],
+  "minimum_runtime_gutter_px": 20,
+  "common_center_x": 128,
+  "common_baseline_y": 232,
+  "baseline_delta_px": 0,
+  "rows_per_character": [
+    "move_left",
+    "move_right",
+    "attack_left",
+    "attack_right"
+  ],
+  "frames_per_row": 6,
+  "movement_loop": true,
+  "attack_loop": false,
+  "extra_runtime_directions": [],
+  "horizontal_flip_required": false,
+  "alpha_threshold": 4,
+  "visual_review": "PASS Animator implementation self-check: all 20 rows are readable left/right cycles, the final bear walking-template retake stays quadruped, stag/lion casts show cyan-blue spectral cues, the allied palette is preserved, and no frame is visibly cropped; independent QA remains pending",
+  "contact_sheet": "docs/design/previews/druid_summons_ghost_animation_pack_contact.png"
+}

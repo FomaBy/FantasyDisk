@@ -4202,5 +4202,10 @@
   "key": "SCRUM-1017",
   "status": "Готово",
   "desc_hash": "797d43658bdc44d4f5303d2b41da6e78"
+ },
+ "SCRUM-1016_druid_ghost_animation_integration.md": {
+  "key": "SCRUM-1016",
+  "status": "В работе",
+  "desc_hash": "1e673864a14c00ca7b7a11029d8f062b"
  }
 }

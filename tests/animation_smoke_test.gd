@@ -10,6 +10,7 @@ func _initialize() -> void:
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
 	_test_druid_wolf_ally_animation()
+	_test_druid_ghost_horizontal_ally_animations()
 	_test_character_full_frame_alpha_matte()
 	_test_full_frame_animation_registry()
 	_test_enemy_animation()
@@ -959,6 +960,124 @@ func _test_druid_wolf_ally_animation() -> void:
 				or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
 			_fail("Expected summon '%s' move to loop and attack/death to be one-shot." % summon_visual)
 	ally.queue_free()
+
+
+func _test_druid_ghost_horizontal_ally_animations() -> void:
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var expected_ids := [
+		"druid_ghost_wolf",
+		"druid_ghost_bear",
+		"druid_ghost_panther",
+		"druid_ghost_stag",
+		"druid_ghost_lion",
+	]
+	var allowed_animations := [
+		"attack",
+		"attack_left",
+		"attack_right",
+		"move",
+		"move_left",
+		"move_right",
+	]
+	for ghost_id in expected_ids:
+		var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", ghost_id)
+		if frames == null:
+			_fail("Expected %s to resolve through FullFrameAnimationRegistry." % ghost_id)
+			return
+		var animation_names := []
+		for animation_name in frames.get_animation_names():
+			animation_names.append(str(animation_name))
+		animation_names.sort()
+		if animation_names != allowed_animations:
+			_fail("Expected %s to expose only horizontal move/attack rows, got %s." % [ghost_id, str(animation_names)])
+			return
+		for animation_name in allowed_animations:
+			if frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s %s to expose exactly 6 PixelLab frames." % [ghost_id, animation_name])
+				return
+			var should_loop: bool = str(animation_name).begins_with("move")
+			if frames.get_animation_loop(animation_name) != should_loop:
+				_fail("Expected %s %s loop=%s." % [ghost_id, animation_name, str(should_loop)])
+				return
+			for frame_index in range(frames.get_frame_count(animation_name)):
+				var texture := frames.get_frame_texture(animation_name, frame_index)
+				if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
+					_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
+					return
+				var expected_direction := "right" if animation_name.ends_with("_right") else "left"
+				var expected_kind := "attack" if animation_name.begins_with("attack") else "move"
+				var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
+				if not texture.resource_path.begins_with(expected_prefix):
+					_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
+					return
+		var runtime_files := []
+		for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):
+			if file_name.ends_with(".png"):
+				runtime_files.append(file_name)
+		if runtime_files.size() != 24:
+			_fail("Expected %s runtime folder to contain exactly 24 west/east PNGs, got %d." % [ghost_id, runtime_files.size()])
+			return
+		for file_name in runtime_files:
+			for forbidden_direction in ["north", "south", "up", "down"]:
+				if str(file_name).contains(forbidden_direction):
+					_fail("Expected %s runtime folder to omit %s direction assets: %s." % [ghost_id, forbidden_direction, file_name])
+					return
+
+		var ally := ally_scene.instantiate()
+		root.add_child(ally)
+		ally.call("set_visual_id", ghost_id)
+		var body := ally.get_node("Body") as Sprite2D
+		var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
+		if body.visible or not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
+			_fail("Expected %s to use its directional AnimatedSprite2D visual." % ghost_id)
+			ally.queue_free()
+			return
+		if not FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
+			_fail("Expected %s to declare explicit horizontal direction rows." % ghost_id)
+			ally.queue_free()
+			return
+
+		ally.set("velocity", Vector2.LEFT * 120.0)
+		ally.call("_update_visual_animation")
+		if animated_body.animation != &"move_left" or animated_body.flip_h:
+			_fail("Expected %s left movement to play move_left without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.set("velocity", Vector2.RIGHT * 120.0)
+		ally.call("_update_visual_animation")
+		if animated_body.animation != &"move_right" or animated_body.flip_h:
+			_fail("Expected %s right movement to play move_right without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.call("_play_attack_animation", Vector2.LEFT)
+		if animated_body.animation != &"attack_left" or animated_body.flip_h:
+			_fail("Expected %s left action to play attack_left without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.call("_play_attack_animation", Vector2.RIGHT)
+		if animated_body.animation != &"attack_right" or animated_body.flip_h:
+			_fail("Expected %s right action to play attack_right without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		if float(ally.get("_attack_anim_time")) < 0.5:
+			_fail("Expected %s action visual window to cover all 6 frames at 12fps." % ghost_id)
+			ally.queue_free()
+			return
+		if ghost_id in ["druid_ghost_stag", "druid_ghost_lion"]:
+			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.LEFT) or animated_body.animation != &"attack_left" or animated_body.flip_h:
+				_fail("Expected %s cast alias to resolve to attack_left without flip." % ghost_id)
+				ally.queue_free()
+				return
+			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.RIGHT) or animated_body.animation != &"attack_right" or animated_body.flip_h:
+				_fail("Expected %s cast alias to resolve to attack_right without flip." % ghost_id)
+				ally.queue_free()
+				return
+		ally.call("_play_attack_animation", Vector2.UP)
+		if animated_body.animation != &"attack_right" or animated_body.flip_h:
+			_fail("Expected %s vertical target action to preserve the last horizontal facing without flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.queue_free()
 
 
 func _test_full_frame_animation_registry() -> void:

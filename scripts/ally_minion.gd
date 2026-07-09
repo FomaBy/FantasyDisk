@@ -125,7 +125,7 @@ func _apply_visual() -> void:
 		animated_body.stop()
 		body.visible = true
 		return
-	animated_body.flip_h = _last_facing_right
+	animated_body.flip_h = false if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body) else _last_facing_right
 	FullFrameAnimationRegistry.play_state(animated_body, "move", Vector2.LEFT)
 
 
@@ -239,7 +239,10 @@ func _update_visual_animation() -> void:
 
 	if absf(velocity.x) > 1.0:
 		_last_facing_right = velocity.x > 0.0
-	animated_body.flip_h = _last_facing_right
+	if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
+		animated_body.flip_h = false
+	else:
+		animated_body.flip_h = _last_facing_right
 
 	if _attack_anim_time > 0.0:
 		FullFrameAnimationRegistry.play_state(animated_body, "attack", Vector2.RIGHT if _last_facing_right else Vector2.LEFT)
@@ -254,8 +257,27 @@ func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
 		return
 	if absf(direction.x) > 0.01:
 		_last_facing_right = direction.x > 0.0
-	_attack_anim_time = 0.44
-	FullFrameAnimationRegistry.play_state(animated_body, "attack", direction)
+	var visual_direction := direction
+	if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body) and absf(direction.x) <= 0.01:
+		visual_direction = Vector2.RIGHT if _last_facing_right else Vector2.LEFT
+	if FullFrameAnimationRegistry.play_state(animated_body, "attack", visual_direction):
+		_attack_anim_time = _active_full_frame_animation_duration(animated_body, 0.44)
+	else:
+		_attack_anim_time = 0.44
+
+
+func _active_full_frame_animation_duration(animated_body: AnimatedSprite2D, fallback: float) -> float:
+	if animated_body == null or animated_body.sprite_frames == null:
+		return fallback
+	var frames := animated_body.sprite_frames
+	var animation_name := animated_body.animation
+	if not frames.has_animation(animation_name):
+		return fallback
+	var frame_count := frames.get_frame_count(animation_name)
+	var speed := frames.get_animation_speed(animation_name)
+	if frame_count <= 0 or speed <= 0.0:
+		return fallback
+	return maxf(fallback, float(frame_count) / speed)
 
 
 func is_using_animated_ally_visual() -> bool:

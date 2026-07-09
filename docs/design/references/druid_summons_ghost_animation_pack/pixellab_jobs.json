@@ -1,0 +1,498 @@
+{
+  "jira": "SCRUM-1016",
+  "started_at": "2026-07-09T22:22:20Z",
+  "config_smoke": "PASS",
+  "tool": "animate_character",
+  "records": [
+    {
+      "id": "druid_ghost_wolf",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+      "kind": "movement",
+      "request": {
+        "character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: 8d473df8-9bc2-481c-ad58-b69cfecc5d33\nanimation: running-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"8d473df8-9bc2-481c-ad58-b69cfecc5d33\")\nif poor: delete_animation(character_id=\"8d473df8-9bc2-481c-ad58-b69cfecc5d33\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_wolf",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+      "kind": "action",
+      "request": {
+        "character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+        "animation_name": "ghost_melee_sweep",
+        "action_description": "lunging forward with a wide claw and body sweep, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 8d473df8-9bc2-481c-ad58-b69cfecc5d33\nanimation: v3 custom (lunging forward with a wide claw and body sweep, then returning to the ready pose)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"8d473df8-9bc2-481c-ad58-b69cfecc5d33\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_bear",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "movement",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: running-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")\nif poor: delete_animation(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_bear",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "action",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "animation_name": "ghost_ground_slam",
+        "action_description": "raising both forepaws and slamming them heavily onto the ground, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: v3 custom (raising both forepaws and slamming them heavily onto the ground, then returning to the ready pose)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_panther",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+      "kind": "movement",
+      "request": {
+        "character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: b2d06d20-aabb-48e2-9d8a-5053daa03e8e\nanimation: running-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"b2d06d20-aabb-48e2-9d8a-5053daa03e8e\")\nif poor: delete_animation(character_id=\"b2d06d20-aabb-48e2-9d8a-5053daa03e8e\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_panther",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+      "kind": "action",
+      "request": {
+        "character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+        "animation_name": "ghost_pounce_rake",
+        "action_description": "making a short forward pounce followed by a wide circular claw rake, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "error: need 2 job slots but only 0 available (10/10 used)\n\nhint: wait for jobs to finish (~30-60s each), then retry",
+      "accepted": false
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "movement",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "error: need 2 job slots but only 0 available (10/10 used)\n\nhint: wait for 2 jobs to finish (~2-4 min each)",
+      "accepted": false
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "action",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "animation_name": "ghost_spirit_lance_cast",
+        "action_description": "bracing and lifting the antlers to cast a focused spirit lance forward, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "error: need 2 job slots but only 0 available (10/10 used)\n\nhint: wait for jobs to finish (~30-60s each), then retry",
+      "accepted": false
+    },
+    {
+      "id": "druid_ghost_lion",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "kind": "movement",
+      "request": {
+        "character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "error: need 2 job slots but only 0 available (10/10 used)\n\nhint: wait for 2 jobs to finish (~2-4 min each)",
+      "accepted": false
+    },
+    {
+      "id": "druid_ghost_lion",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "kind": "action",
+      "request": {
+        "character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+        "animation_name": "ghost_roar_cast",
+        "action_description": "planting all paws and releasing a powerful spectral roar projectile forward while the mane surges, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "error: need 2 job slots but only 0 available (10/10 used)\n\nhint: wait for jobs to finish (~30-60s each), then retry",
+      "accepted": false
+    }
+  ],
+  "retry_records": [
+    {
+      "id": "druid_ghost_panther",
+      "role": "physical_melee_aoe",
+      "pixellab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+      "kind": "action",
+      "attempt": 2,
+      "request": {
+        "character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+        "animation_name": "ghost_pounce_rake",
+        "action_description": "making a short forward pounce followed by a wide circular claw rake, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: b2d06d20-aabb-48e2-9d8a-5053daa03e8e\nanimation: v3 custom (making a short forward pounce followed by a wide circular claw rake, then returning to the ready pose)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"b2d06d20-aabb-48e2-9d8a-5053daa03e8e\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "movement",
+      "attempt": 2,
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: running-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")\nif poor: delete_animation(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "action",
+      "attempt": 2,
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "animation_name": "ghost_spirit_lance_cast",
+        "action_description": "bracing and lifting the antlers to cast a focused spirit lance forward, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: v3 custom (bracing and lifting the antlers to cast a focused spirit lance forward, then returning to the ready pose)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_lion",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "kind": "movement",
+      "attempt": 2,
+      "request": {
+        "character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: 48d76788-eeba-4a9f-a36f-bd40a8f42e07\nanimation: running-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"48d76788-eeba-4a9f-a36f-bd40a8f42e07\")\nif poor: delete_animation(character_id=\"48d76788-eeba-4a9f-a36f-bd40a8f42e07\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_lion",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "kind": "action",
+      "attempt": 2,
+      "request": {
+        "character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+        "animation_name": "ghost_roar_cast",
+        "action_description": "planting all paws and releasing a powerful spectral roar projectile forward while the mane surges, then returning to the ready pose",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 48d76788-eeba-4a9f-a36f-bd40a8f42e07\nanimation: v3 custom (planting all paws and releasing a powerful spectral roar projectile forward while the mane surges, then returning to the ready pose)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"48d76788-eeba-4a9f-a36f-bd40a8f42e07\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "movement",
+      "attempt": 3,
+      "retry_reason": "east direction failed under service heavy load",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": [
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: running-6-frames\ndirections: east (1 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")\nif poor: delete_animation(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    }
+  ],
+  "summary": {
+    "initial_successful_animation_jobs": 20,
+    "quality_retake_animation_jobs": 5,
+    "service_job_failures_retried": 1,
+    "slot_exhausted_calls": 5,
+    "selected_animation_jobs": 20,
+    "selected_unique_job_ids": 20,
+    "superseded_edge_touching_jobs": 5,
+    "final_status": "PASS",
+    "visual_quality_retake_animation_jobs": 4,
+    "superseded_after_contact_review": 4
+  },
+  "completed_at": "2026-07-09T23:01:10Z",
+  "quality_retake_records": [
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "movement_centered",
+      "attempt": "quality_retake",
+      "retry_reason": "strict alpha/crop gate found source frame touching canvas edge",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "animation_name": "ghost_move_centered",
+        "action_description": "walking steadily in place with a heavy grounded quadruped gait, body remains centered and compact inside the canvas with generous transparent padding and no horizontal translation",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: v3 custom (walking steadily in place with a heavy grounded quadruped gait, body remains centered and compact inside the canvas with generous transparent padding and no horizontal translation)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "movement_centered",
+      "attempt": "quality_retake",
+      "retry_reason": "strict alpha/crop gate found source frame touching canvas edge",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "animation_name": "ghost_move_centered",
+        "action_description": "trotting gracefully in place with a light quadruped gait, full antlers and body remain centered and compact inside the canvas with generous transparent padding and no horizontal translation",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: v3 custom (trotting gracefully in place with a light quadruped gait, full antlers and body remain centered and compact inside the canvas with generous transparent padding and no horizontal translation)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "action_right_centered",
+      "attempt": "quality_retake",
+      "retry_reason": "strict alpha/crop gate found source frame touching canvas edge",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "animation_name": "ghost_spirit_lance_cast_centered",
+        "action_description": "bracing in place and charging a compact spirit lance glow between the antlers, full antlers and body remain centered inside the canvas with generous transparent padding and no translation",
+        "directions": [
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: v3 custom (bracing in place and charging a compact spirit lance glow between the antlers, full antlers and body remain centered inside the canvas with generous transparent padding and no translation)\ndirections: east (1 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 3 generations (3/dir x 1)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")",
+      "accepted": true
+    }
+  ],
+  "visual_quality_retake_records": [
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "movement_quadruped",
+      "attempt": "visual_quality_retake",
+      "retry_reason": "Animator contact-sheet review rejected pose/readability/palette",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "animation_name": "ghost_move_quadruped",
+        "action_description": "walking in place on all four paws with a low heavy grounded quadruped gait, never standing upright and never rearing, full body stays centered compact with generous transparent padding and no horizontal translation",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: v3 custom (walking in place on all four paws with a low heavy grounded quadruped gait, never standing upright and never rearing, full body stays centered compact with generous transparent padding and no horizontal translation)\ndirections: west, east (2 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 6 generations (3/dir x 2)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "kind": "action_left_readable",
+      "attempt": "visual_quality_retake",
+      "retry_reason": "Animator contact-sheet review rejected pose/readability/palette",
+      "request": {
+        "character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+        "animation_name": "ghost_spirit_lance_cast_left_readable",
+        "action_description": "bracing in place and releasing a clearly visible compact bright cyan spirit lance flash between the antlers, no orange red or fire, full antlers and body remain centered with generous transparent padding",
+        "directions": [
+          "west"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: f17948e2-8e1d-44f2-93f1-8f8593ae01fe\nanimation: v3 custom (bracing in place and releasing a clearly visible compact bright cyan spirit lance flash between the antlers, no orange red or fire, full antlers and body remain centered with generous transparent padding)\ndirections: west (1 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 3 generations (3/dir x 1)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"f17948e2-8e1d-44f2-93f1-8f8593ae01fe\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_lion",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "kind": "action_left_blue",
+      "attempt": "visual_quality_retake",
+      "retry_reason": "Animator contact-sheet review rejected pose/readability/palette",
+      "request": {
+        "character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+        "animation_name": "ghost_roar_cast_left_blue",
+        "action_description": "planting all four paws and releasing a clearly visible compact cyan and blue spectral roar burst forward, no orange red fire or ground circle, full body and mane remain centered with generous transparent padding",
+        "directions": [
+          "west"
+        ],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      },
+      "response_text": "character: 48d76788-eeba-4a9f-a36f-bd40a8f42e07\nanimation: v3 custom (planting all four paws and releasing a clearly visible compact cyan and blue spectral roar burst forward, no orange red fire or ground circle, full body and mane remain centered with generous transparent padding)\ndirections: west (1 jobs)\nframes: 7 (1 reference + 6 animated)\ncost: 3 generations (3/dir x 1)\neta: ~30-60s/direction\n\nhint: get_character(character_id=\"48d76788-eeba-4a9f-a36f-bd40a8f42e07\")",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "movement_walking_template",
+      "attempt": "visual_quality_retake_2",
+      "retry_reason": "custom centered movement still reared upright; switch to alternate quadruped walking skeleton template",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "template_animation_id": "walking-6-frames",
+        "animation_name": "ghost_walk_quadruped",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "error: animation 'walking-6-frames' not available for template 'bear'\navailable: angry, attack-left, attack-right, drinking, eating, going-to-sleep, idle-long, idle-resting, idle-sitting, jump...",
+      "accepted": false
+    },
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "movement_template_probe",
+      "attempt": "walk-6-frames",
+      "retry_reason": "find available alternate bear quadruped walking template",
+      "request": {
+        "character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+        "template_animation_id": "walk-6-frames",
+        "animation_name": "ghost_walk_quadruped",
+        "directions": [
+          "west",
+          "east"
+        ],
+        "mode": "template"
+      },
+      "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: walk-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")\nif poor: delete_animation(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
+      "accepted": true
+    }
+  ]
+}

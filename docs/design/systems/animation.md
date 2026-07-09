@@ -696,6 +696,21 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - SCRUM-353 padded the wolf (`druid_beast`) frame PNGs to safe `256x256` canvas
   so transparent alpha no longer touches canvas edges; registry placement is
   `scale Vector2(0.37, 0.37)`, `position Vector2(0, -37)`.
+- SCRUM-1016 (2026-07-10) adds a PixelLab-only horizontal animation contract
+  for `druid_ghost_wolf`, `druid_ghost_bear`, `druid_ghost_panther`,
+  `druid_ghost_stag`, and `druid_ghost_lion`. Each accepted SCRUM-1015
+  character UUID supplies exactly two repository/runtime directions: 6-frame
+  `move_left`/`move_right` loops at 10fps and 6-frame
+  `attack_left`/`attack_right` one-shots at 12fps. Raw PixelLab west/east frames
+  live below each `assets/sprites/allies/druid_ghost_*/pixellab_source/` tree;
+  normalized runtime frames use transparent `256x256` cells with shared center
+  X `128`, baseline Y `232`, one pack-wide scale and safe gutters. The registry
+  marks these five entries `explicit_horizontal_directions`, so `AllyMinion`
+  chooses the matching row and keeps `flip_h=false`; all older allies retain
+  their existing source-facing flip contract. Physical wolf/bear/panther rows
+  stage sweep/slam/pounce actions, while stag/lion rows stage spirit-lance/roar
+  casts. This is a visual-only hook: Summon Amulet roster, spawn weighting,
+  damage, aura and balance remain Backend SCRUM-902 scope.
 
 ## Hit / Death
 

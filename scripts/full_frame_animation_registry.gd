@@ -34,6 +34,36 @@ const FULL_FRAME_SPRITEFRAMES := {
 			"position": Vector2(0.0, -10.0),
 			"source_faces_left": true,
 		},
+		"druid_ghost_wolf": {
+			"frames": "res://assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres",
+			"scale": Vector2(0.42, 0.42),
+			"position": Vector2(0.0, -44.0),
+			"explicit_horizontal_directions": true,
+		},
+		"druid_ghost_bear": {
+			"frames": "res://assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres",
+			"scale": Vector2(0.40, 0.40),
+			"position": Vector2(0.0, -42.0),
+			"explicit_horizontal_directions": true,
+		},
+		"druid_ghost_panther": {
+			"frames": "res://assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres",
+			"scale": Vector2(0.43, 0.43),
+			"position": Vector2(0.0, -45.0),
+			"explicit_horizontal_directions": true,
+		},
+		"druid_ghost_stag": {
+			"frames": "res://assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres",
+			"scale": Vector2(0.40, 0.40),
+			"position": Vector2(0.0, -42.0),
+			"explicit_horizontal_directions": true,
+		},
+		"druid_ghost_lion": {
+			"frames": "res://assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres",
+			"scale": Vector2(0.41, 0.41),
+			"position": Vector2(0.0, -43.0),
+			"explicit_horizontal_directions": true,
+		},
 	},
 	"enemy": {
 		"rift_cutter": {
@@ -266,6 +296,7 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 	animated_body.set_meta("entity_kind", entity_kind)
 	animated_body.set_meta("entity_id", entity_id)
 	animated_body.set_meta("source_faces_left", bool(config.get("source_faces_left", true)))
+	animated_body.set_meta("explicit_horizontal_directions", bool(config.get("explicit_horizontal_directions", false)))
 
 	var static_body := owner.get_node_or_null(static_body_name) as CanvasItem
 	if static_body != null:
@@ -278,10 +309,17 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 static func play_state(animated_body: AnimatedSprite2D, requested_state: String, direction := Vector2.ZERO) -> bool:
 	if animated_body == null or animated_body.sprite_frames == null:
 		return false
-	var state_name := _resolve_animation_name(animated_body.sprite_frames, requested_state)
+	var uses_explicit_horizontal := bool(animated_body.get_meta("explicit_horizontal_directions", false))
+	var state_name := ""
+	if uses_explicit_horizontal and absf(direction.x) > 0.001:
+		state_name = _resolve_horizontal_animation_name(animated_body.sprite_frames, requested_state, direction.x > 0.0)
+	if state_name == "":
+		state_name = _resolve_animation_name(animated_body.sprite_frames, requested_state)
 	if state_name == "":
 		return false
-	if direction.length_squared() > 0.001:
+	if uses_explicit_horizontal:
+		animated_body.flip_h = false
+	elif direction.length_squared() > 0.001:
 		var source_faces_left := bool(animated_body.get_meta("source_faces_left", true))
 		animated_body.flip_h = direction.x > 0.0 if source_faces_left else direction.x < 0.0
 	animated_body.set_meta("last_requested_state", requested_state)
@@ -295,6 +333,21 @@ static func has_state(animated_body: AnimatedSprite2D, requested_state: String) 
 	if animated_body == null or animated_body.sprite_frames == null:
 		return false
 	return _resolve_animation_name(animated_body.sprite_frames, requested_state) != ""
+
+
+static func uses_explicit_horizontal_directions(animated_body: AnimatedSprite2D) -> bool:
+	return animated_body != null and bool(animated_body.get_meta("explicit_horizontal_directions", false))
+
+
+static func _resolve_horizontal_animation_name(frames: SpriteFrames, requested_state: String, faces_right: bool) -> String:
+	if frames == null:
+		return ""
+	var suffix := "right" if faces_right else "left"
+	for candidate in _state_candidates(requested_state):
+		var directional_candidate := "%s_%s" % [candidate, suffix]
+		if frames.has_animation(directional_candidate):
+			return directional_candidate
+	return ""
 
 
 static func _resolve_animation_name(frames: SpriteFrames, requested_state: String) -> String:

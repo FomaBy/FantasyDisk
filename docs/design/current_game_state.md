@@ -1238,6 +1238,16 @@ SCRUM-152/157/254/357/854/859: `AllyMinion.tscn` больше не исполь�
 
 SCRUM-279/280 оживили базового волка Друида: `druid_beast` в `AllyMinion` включает `AnimatedSprite2D` с `assets/sprites/allies/ally_druid_wolf_spriteframes.tres`, `move` (8 frames, 12fps, loop) при перемещении/ожидании, `attack` (6 frames, 14fps, one-shot) в момент фактического удара и `flip_h` вправо по направлению движения/атаки. SCRUM-351 централизовал это через `scripts/full_frame_animation_registry.gd`: `druid_beast`, `druid_pack_spirit`, `homunculus` и `leadership_echo` подключают full-frame SpriteFrames по source-specific ally ID, а PNG `ally_*.png` остаются безопасным fallback при отсутствии или поломке SpriteFrames. SCRUM-353 validated the four mobile summons through `fantasydisk-animation-director`, maps runtime `attack` to manifest `attack_primary`, and padded wolf frames to safe `256x256` canvas with registry placement compensation. SCRUM-370 added 6-frame, 10fps, non-loop `death` rows to all four ally SpriteFrames paths. SCRUM-399 repainted the four mobile summon static/fallback PNGs and existing move/attack/death frame PNGs into a blue/cyan ethereal allied-spirit style while preserving runtime IDs, SpriteFrames resources, timings, scale and positions.
 
+SCRUM-1016 добавил Animator-owned PixelLab visual packs для будущих Summon
+Amulet ID `druid_ghost_wolf`, `druid_ghost_bear`, `druid_ghost_panther`,
+`druid_ghost_stag` и `druid_ghost_lion` из принятых SCRUM-1015 UUID. У каждого
+есть только explicit horizontal rows: `move_left/right` 6f loop и
+`attack_left/right` 6f one-shot; `AllyMinion` выбирает соответствующий ряд через
+`FullFrameAnimationRegistry` без `flip_h`. Source/runtime разнесены, runtime PNG
+нормализованы в прозрачные `256x256` клетки с едиными center/baseline/gutter
+правилами. Это только визуальная готовность: `summoner_weapon.gd`, roster/spawn
+weighting, damage, aura и balance не менялись и остаются за SCRUM-902.
+
 ## Боевые Эффекты (Attack VFX)
 
 Все зоны атак и снаряды игрока рисуются текстурными спрайтами через общий модуль `scripts/attack_vfx.gd` (класс `AttackVfx`); плоские полупрозрачные Polygon2D-зоны убраны из активного боевого визуала. Текстуры эффектов лежат в `assets/sprites/effects/`. Новые художественные ассеты с 2026-06-14 генерируются только skill-ом `fantasydisk-asset-generator`; старые локальные generator scripts остаются историческими pipeline notes для уже существующих PNG.
