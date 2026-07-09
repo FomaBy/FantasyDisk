@@ -63,5 +63,5 @@ Jira: SCRUM-973
 
 ## Cleanup
 
-Disk cleanup: pending final push; disposable `.godot/` cache and worktree will be removed.
+Disk cleanup: removed the disposable 431 MB `.godot/` cache; task worktree is removed after this final metadata push and confirmed in Jira.
 Thread cleanup: not a disposable top-level worker thread; sub-agent will report to dispatcher.
