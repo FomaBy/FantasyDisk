@@ -4432,9 +4432,11 @@ func _test_unique_class_identity_patterns() -> void:
 	homunculus_weapon.set_process(false)
 	homunculus_weapon.call("_update_homunculus_pair", 0.1)
 	await process_frame
+	# Направленный статичный арт мог развернуть танк за кадр — принимаем любой
+	# из 4 новых PixelLab-кадров танка (prefix-match).
 	var homunculus_tank_visual_ok := false
 	for ally in get_nodes_in_group("allies"):
-		if ally.get("owner_node") == chemist_minion_owner and _node_sprite_texture_path(ally, "Body") == "res://assets/sprites/allies/homunculus_tank_south.png":
+		if ally.get("owner_node") == chemist_minion_owner and _node_sprite_texture_path(ally, "Body").begins_with("res://assets/sprites/allies/homunculus_tank_"):
 			homunculus_tank_visual_ok = true
 	if not homunculus_tank_visual_ok:
 		_fail("Expected Chemist homunculus tank to use the new PixelLab tank sprite.")
@@ -4446,7 +4448,7 @@ func _test_unique_class_identity_patterns() -> void:
 	if (homunculus_caster as Node).is_in_group("allies"):
 		_fail("Expected Chemist homunculus caster to stay outside the allies combat group.")
 		return
-	if _node_sprite_texture_path(homunculus_caster, "CasterVisual") != "res://assets/sprites/allies/homunculus_caster_south.png":
+	if not _node_sprite_texture_path(homunculus_caster, "CasterVisual").begins_with("res://assets/sprites/allies/homunculus_caster_"):
 		_fail("Expected Chemist homunculus caster to use the new PixelLab caster sprite.")
 		return
 

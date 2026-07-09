@@ -372,10 +372,13 @@ const CHEMIST_WEAPONS := {
 	# "damage") — вложения в физику ощутимо разгоняют именно пыль.
 	"blast_powder": {
 		"id": "blast_powder", "title": "Взрывная пыль",
-		"description": "Быстрый прямой взрыв по области на ближне-средней дистанции. Скейлится от физического урона; без облаков и DoT.",
+		"description": "Быстрая пара прямых взрывов по ближайшим целям на ближне-средней дистанции. Скейлится от физического урона; без облаков и DoT.",
 		"scene_path": "res://scenes/BlastPowder.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "damage",
-		"damage_multiplier": 2.05, "fire_interval": 0.62,
+		# projectile_count 2 — двойной бросок по двум ближайшим целям: живое
+		# crowd-покрытие прямого AoE (по одиночной цели летит один снаряд);
+		# ручной множитель держит авто-тюнер вне сатурации клампа 2.80.
+		"damage_multiplier": 2.60, "fire_interval": 0.62, "projectile_count": 2,
 		"attack_range": 430.0, "aoe_radius": 150.0, "projectile_speed": 640.0,
 		"visual_color": Color(0.95, 0.72, 0.22, 0.44),
 		"passive_mods": {"aoe_radius_multiplier": 1.10},
