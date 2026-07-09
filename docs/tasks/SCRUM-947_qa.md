@@ -1,6 +1,6 @@
 # SCRUM-947 — independent QA: Elementalist magic-bonus trait
 
-Статус: blocked
+Статус: done (remediation `2a8aac19` ready for independent recheck)
 Дата: 2026-07-10
 QA owner: Codex `/root`
 Combined implementation: SCRUM-947, SCRUM-948, SCRUM-949, SCRUM-950
@@ -8,7 +8,15 @@ Implementation commits: `f6266a76`, `3b9a0a6c`, `4cf721fa`, `d62eb642`
 
 ## QA-Вердикт
 
-Статус: FAILED
+Current status: PENDING INDEPENDENT RECHECK
+
+Remediation `2a8aac19` is pushed to `origin/dev`. It preserves below-base
+Intelligence penalties and adds the missing focused regression while all
+Elementalist, isolation, balance and runtime gates pass. The original FAILED
+verdict and evidence below remain the historical QA record; a worker other than
+the remediation author must issue the new final verdict.
+
+Historical status: FAILED
 
 The positive-bonus path is data-driven and otherwise behaves as specified:
 Elementalist magic-tagged run, passive, prayer and above-base Intelligence
