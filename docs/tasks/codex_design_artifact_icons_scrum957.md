@@ -112,14 +112,15 @@ Passed on worktree base `1d4eb8c5`:
 
 ## Final Latest-dev Verification
 
-Implementation commit was rebased onto `origin/dev` `5d584a76`; rebased commit
-under test: `8fe6d592`. The concurrent SCRUM-898 merge intentionally reduced the
-global icon registry/reference totals by one; all SCRUM-957 assets and hashes
-remain unchanged.
+Implementation commit was rebased onto `origin/dev` `231e52c5`; rebased Design
+commit: `916099d3`. The last content-changing base tested was `9450c531`; the
+later `231e52c5` integration changes only Jira/task evidence. Concurrent
+SCRUM-898/SCRUM-968 merges adjusted global registry/reference totals; all
+SCRUM-957 assets and hashes remain unchanged.
 
 - `ui_icon_registry_smoke_test.gd` — PASS (49 registry icons).
-- `asset_reference_integrity_test.gd` — PASS (195 files, 2405 unique refs).
-- `no_duplicate_artifact_files_test.gd` — PASS (13,843 files).
+- `asset_reference_integrity_test.gd` — PASS (195 files, 2424 unique refs).
+- `no_duplicate_artifact_files_test.gd` — PASS (13,830 files).
 - `artifacts_606_609_test.gd` — PASS (10 artifact data/icon records).
 - `runtime_smoke_test.gd` — PASS; known benign dummy-render screenshot warning
   only.
