@@ -804,11 +804,12 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
   OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background built
   from current runtime character, monster, elite and boss sprite references.
-  The final runtime image uses an additional edge-aware smoothing pass to reduce
-  grain/noisy texture in the sky, clouds, stone and magic haze while preserving
-  silhouettes. It keeps a calm dark left column for the six runtime menu buttons
+  The final runtime image uses a grain-reduction pass plus a smooth-lines
+  revision to reduce ragged/uneven contours in the sky, clouds, ruins, stone
+  platform, capes, boss armor and monster silhouettes while preserving
+  readability. It keeps a calm dark left column for the six runtime menu buttons
   and a readable title-safe area, and contains no baked UI text/buttons/frames.
-  Source, sprite reference sheet, backup, preview, smoothing comparison and
+  Source, sprite reference sheet, backup, preview, smoothing comparisons and
   safe-zone evidence are documented in
   `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
   an explicit OpenAI Images override by direct user request.

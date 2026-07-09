@@ -23,11 +23,14 @@ removing grain and adding texture smoothing.
 | --- | --- |
 | Runtime background | `assets/backgrounds/main_menu_epic_battle_v3.png` |
 | OpenAI source image | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_source.png` |
-| Final smoothed reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` |
+| First smoothed reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` |
+| Smooth-lines OpenAI edit source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` |
+| Final smooth-lines reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` |
 | Sprite reference sheet | `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png` |
 | Previous runtime backup | `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png` |
 | Safe-zone overlay | `docs/design/previews/main_menu_openai_clean_background_safe_zones.png` |
 | Smoothing comparison | `docs/design/previews/main_menu_openai_smoothing_comparison.png` |
+| Smooth-lines comparison | `docs/design/previews/main_menu_openai_smooth_lines_comparison.png` |
 
 ## Screen Elements
 
@@ -52,16 +55,22 @@ buttons, logos or panels. Runtime controls remain separate Godot nodes.
 | Asset ID | Path | Purpose | Size | Alpha | Texture margins | Content margins | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | main_menu_openai_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_source.png` | raw OpenAI source | 1672x941 | RGB | n/a | n/a | generated from current sprite sheet and old layout reference |
-| main_menu_openai_final_smooth | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` | final denoised/smoothed source | 2560x1440 | RGB | n/a | safe zones preserved | edge-aware smoothing applied after user feedback |
+| main_menu_openai_final_smooth | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` | first denoised/smoothed source | 2560x1440 | RGB | n/a | safe zones preserved | edge-aware smoothing applied after first user feedback |
+| main_menu_openai_smooth_lines_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` | OpenAI edit source for smoother contours | 1672x941 | RGB | n/a | n/a | generated after follow-up feedback about ragged edges |
+| main_menu_openai_final_smooth_lines | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` | final smooth-lines runtime source | 2560x1440 | RGB | n/a | safe zones preserved | smoother clouds, silhouettes, platform edges and boss contours |
 | main_menu_epic_battle_v3 | `assets/backgrounds/main_menu_epic_battle_v3.png` | live runtime background | 2560x1440 | RGB | n/a | safe zones preserved | keeps existing `MAIN_MENU_BACKGROUND` code path |
 
 ## Smoothing Pass
 
-The final runtime image uses the stronger smoothing candidate from
+The first runtime image used the stronger smoothing candidate from
 `main_menu_openai_smoothing_comparison.png`: a local edge-aware PIL/NumPy pass
-that applies stronger median/Gaussian smoothing to low-edge texture fields and
-lighter smoothing on silhouettes. This reduces grain in clouds, sky, magic haze,
-lava speckles and stone texture while preserving character/boss readability.
+that reduced grain in clouds, sky, magic haze, lava speckles and stone texture.
+
+The final revision uses an additional OpenAI edit plus a light anti-ragged
+postprocess, tracked in `main_menu_openai_smooth_lines_comparison.png`. This
+revision specifically smooths uneven/ragged contours on clouds, ruins, capes,
+stone platform edges, boss armor and monster silhouettes while keeping the same
+main-menu composition and safe zones.
 
 ## Responsive Rules
 

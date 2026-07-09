@@ -160,8 +160,9 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 главного меню: 2560x1440 OpenAI-generated clean cartoon-realistic D&D/dark
 fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок,
 читаемой title-safe областью под `MainMenuTitleLabel`, героями/монстрами/боссами
-по референсам текущих runtime sprites и дополнительным edge-aware smoothing pass
-для уменьшения зернистости текстур. Source/reference sheet/backup/preview/safe-zone
+по референсам текущих runtime sprites, дополнительным grain-reduction pass и
+smooth-lines ревизией для более плавных контуров облаков, руин, платформы,
+плащей, боссов и monster silhouettes. Source/reference sheet/backup/preview/safe-zone
 evidence задокументированы в
 `docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
 explicit OpenAI Images override по прямому запросу пользователя). Предыдущий

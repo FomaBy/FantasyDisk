@@ -43,7 +43,8 @@ Jira: SCRUM-1001
 - Левая колонка и верхняя title-safe зона остаются читаемыми для существующего
   `MainMenuTitleLabel` и шести runtime-кнопок.
 - Визуальный стиль: clean cartoon-realistic D&D/dark fantasy, current-sprite-inspired
-  characters/monsters/bosses, reduced grain/noise.
+  characters/monsters/bosses, reduced grain/noise, smoother lines and less ragged
+  contours.
 - Есть spec/evidence under `docs/design/mockups/main_menu_openai_clean_background/`
   и preview under `docs/design/previews/`.
 - Godot smoke/UI checks run or blocker recorded.
@@ -59,6 +60,11 @@ Done 2026-07-09.
 - После пользовательского фидбека применён усиленный edge-aware smoothing pass:
   зернистость в sky/clouds/magic haze/stone texture снижена, силуэты героев и
   боссов сохранены.
+- После follow-up фидбека `убрать неровности краев / сделать более плавные линии /
+  картинку менее рваную` выполнена отдельная smooth-lines ревизия через OpenAI
+  edit текущей композиции + лёгкий anti-ragged postprocess. Финальный runtime
+  source:
+  `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png`.
 - Старый runtime background сохранён:
   `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
 - Evidence/spec:
@@ -69,6 +75,8 @@ Done 2026-07-09.
   `docs/design/previews/main_menu_openai_clean_background_safe_zones.png`.
 - Sprite reference sheet:
   `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png`.
+- Smooth-lines comparison:
+  `docs/design/previews/main_menu_openai_smooth_lines_comparison.png`.
 
 ## Проверки
 
