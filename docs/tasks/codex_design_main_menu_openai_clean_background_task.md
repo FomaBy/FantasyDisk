@@ -156,6 +156,8 @@ sidecars were not staged).
 
 ## QA-Вердикт 2026-07-10
 
+Статус: PASSED
+
 **PASSED** — независимый QA/Codex (`/root/audit_qa`) на свежем
 `origin/dev` (`380ed0f0`). Реализационные PNG, UI-код, spec, previews и domain
 docs проверялись read-only.
