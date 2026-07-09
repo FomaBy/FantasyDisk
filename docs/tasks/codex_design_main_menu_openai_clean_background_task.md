@@ -153,3 +153,50 @@ sidecars were not staged).
   weapon-select screenshot helper; both affected suites exited `0` and passed.
 - Runtime image/UI/code/spec/previews/design docs were not modified during
   reconciliation. Independent QA remains required; no self-QA verdict added.
+
+## QA-Вердикт 2026-07-10
+
+**PASSED** — независимый QA/Codex (`/root/audit_qa`) на свежем
+`origin/dev` (`380ed0f0`). Реализационные PNG, UI-код, spec, previews и domain
+docs проверялись read-only.
+
+- Цепочка реализации подтверждена: `b979bbba` и reconciliation `4c6ad324`
+  являются предками протестированного `origin/dev`.
+- OpenAI Images override явно разрешён прямым запросом пользователя и записан в
+  Jira/task/spec. Финальные prompt/manifest указывают
+  `current_character_boss_reference_sheet_generation_clean.png` как visual input
+  и исключают предыдущие main-menu screens/backgrounds/previews.
+- Runtime, final source и final preview byte-identical: `2560x1440`, 8-bit RGB,
+  без alpha/textual metadata, SHA-256
+  `160e3bc07f01a0120833aba882426f89dc72b94023d6e7de9f87e4f4bfec023e`.
+- Визуально проверены финальный preview/runtime и safe-zone overlay: baked
+  UI/text/logo/labels/watermark отсутствуют; гитарист читается спереди/в 3/4,
+  гитара естественно лежит на корпусе; distracting orange ember/speck noise не
+  виден; party/boss art остаётся center-right/right.
+- Left/title/actions safe zones визуально пустые, тёмные и low-detail. В каждой
+  зоне `warm pixels = 0`; luminance means `16.53 / 13.68 / 15.71`, edge means
+  около `0.40`, против right-art luminance `40.02`, edge mean `6.61`.
+- `MainMenuBackground` использует `STRETCH_KEEP_ASPECT_COVERED`.
+  `ui_no_overlap_matrix_test.gd` проверил main menu на `1152x648`, `1280x720`,
+  `1536x864`, `1600x900`, `1920x1080`, `2560x1440`, `3840x2160`; обязательные
+  `1280/1920/2560` прошли без overlap и без наложения контента на frame.
+
+### QA Gates
+
+- PASS: `runtime_smoke_ui_test.gd`.
+- PASS: `ui_no_overlap_matrix_test.gd`.
+- PASS: `dark_fantasy_ui_theme_test.gd`.
+- PASS: `runtime_smoke_test.gd` (duplicate-artifact guard: `13754` files).
+- PASS: `animation_smoke_test.gd`.
+- PASS: `meta_progression_smoke_test.gd`.
+- PASS: `melee_weapon_targeting_test.gd`.
+
+Known benign headless dummy-render `texture_2d_get` warning появился только в
+weapon-select screenshot helper; затронутые suites завершились с exit `0` и
+явным PASS.
+
+Disk cleanup: disposable QA worktree (`2.8G`, включая `431M .godot`) отмечен к
+удалению сразу после evidence push.
+
+Thread cleanup: collaboration subagent; отдельного user-owned worker thread для
+архивации нет.
