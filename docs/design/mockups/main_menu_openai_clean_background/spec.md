@@ -81,8 +81,9 @@ main-menu composition and safe zones.
 
 The orange dots came from the generated background as ember/spark/lava-particle
 noise. The cleanup pass builds a warm orange/yellow candidate mask, keeps large
-connected golden linework such as portal circles and music curves, and replaces
-only small isolated components with a locally smoothed background. Evidence:
+connected golden linework such as portal circles and music curves, and
+color-neutralizes only small isolated components into the darker cool palette
+without blurring the surrounding texture. Evidence:
 `main_menu_openai_orange_noise_mask.png` and
 `main_menu_openai_no_orange_noise_comparison.png`.
 

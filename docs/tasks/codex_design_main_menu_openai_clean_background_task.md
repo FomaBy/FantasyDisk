@@ -67,9 +67,9 @@ Done 2026-07-09.
   `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png`.
 - После follow-up фидбека `убрать оранжевые точки / сделать без лишнего шума`
   выполнена локальная cleanup-ревизия: мелкие isolated orange/yellow
-  ember/spark components удалены по цвету/размеру и заменены локально сглаженным
-  фоном; крупные golden portal/music linework сохранены. Финальный runtime
-  source:
+  ember/spark components найдены по цвету/размеру и нейтрализованы в более
+  тёмную холодную палитру без размытия текстуры; крупные golden portal/music
+  linework сохранены. Финальный runtime source:
   `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png`.
 - Старый runtime background сохранён:
   `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
