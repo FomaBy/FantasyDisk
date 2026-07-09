@@ -111,5 +111,9 @@ contract, full SHA-256 values, source modes/sizes, alpha bbox, four-side padding
 transparent corners, zero green-fringe pixels, small-size visible content,
 unique hashes, preserved sidecars, pre-change snapshots and exclusion guards.
 
-Disk cleanup: the disposable QA worktree and its generated `.godot` cache are
-removed after the QA evidence and scoped Jira sync commits are pushed.
+Git/Jira: QA evidence commit `e85e0015` was pushed to `origin/dev`; live Jira
+was moved from `Контроль качества` to `Готово` after the PASS verdict.
+
+Disk cleanup: removed the generated `.godot` cache (`444 MB`) and Python
+caches. The now-clean disposable QA worktree and local branch are removed after
+the scoped Jira-map sync commit is pushed.
