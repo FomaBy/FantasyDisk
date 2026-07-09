@@ -2482,15 +2482,23 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 
 # SCRUM-961 «Минная сумка»: жизненный цикл персистентной мины — лежит до
 # срабатывания (враг в радиусе после safe-задержки 2.5с), автоподрыв через 6с;
-# один подрыв на мину, кап 5 живых (старейшая снимается тихо).
+# один подрыв на мину, кап 5 живых (при полном поле новые мины не ставятся,
+# пока слот не освободится подрывом/тайм-аутом — см. SCRUM-964 QA-фикс ниже).
 const PERSISTENT_MINE_SAFE_DELAY := 2.5
 const PERSISTENT_MINE_AUTO_DETONATE := 6.0
 const PERSISTENT_MINE_CAP := 5
 
 
 func _arm_persistent_mine(mine: Node2D, owner_node: Node2D, mine_index: int) -> void:
+	# SCRUM-964 QA-фикс: при полном поле (кап 5) НОВАЯ мина не ставится (skip),
+	# вместо тихого снятия старейшей. Прежний retire-oldest под живым автоогнём
+	# (fire_interval ~0.79с × залп 3) вытеснял мины в ~1.3с — раньше армирования
+	# 2.5с, из-за чего ни одна мина не доживала ни до proximity-подрыва, ни до
+	# автоподрыва 6с: оружие с «Минной сумкой» давало 0 урона в непрерывном бою.
+	if _alive_persistent_mines(mine).size() >= PERSISTENT_MINE_CAP:
+		_release_effect(mine)
+		return
 	mine.set_meta("persistent_mine", true)
-	_retire_excess_persistent_mines(mine)
 	var check_interval := maxf(pool_tick_interval, 0.10)
 	var check_count := maxi(int(ceil(PERSISTENT_MINE_AUTO_DETONATE / check_interval)), 1)
 	var state := {"triggered": false}
@@ -2556,14 +2564,12 @@ func _retire_excess_root_traps(new_trap: Node2D) -> void:
 		_release_effect(oldest)
 
 
-func _retire_excess_persistent_mines(new_mine: Node2D) -> void:
+func _alive_persistent_mines(exclude: Node2D = null) -> Array[Node2D]:
 	var alive_mines: Array[Node2D] = []
 	for effect in _alive_effects():
-		if effect is Node2D and effect.has_meta("persistent_mine") and effect != new_mine:
+		if effect is Node2D and effect.has_meta("persistent_mine") and effect != exclude:
 			alive_mines.append(effect as Node2D)
-	while alive_mines.size() >= PERSISTENT_MINE_CAP:
-		var oldest := alive_mines.pop_front() as Node2D
-		_release_effect(oldest)
+	return alive_mines
 
 
 # SCRUM-961 «Ядро утилизации»: отжившее/подорванное устройство возвращает
