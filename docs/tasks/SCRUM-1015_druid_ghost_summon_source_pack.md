@@ -1,6 +1,6 @@
 # SCRUM-1015 — Druid Ghost Summon PixelLab Source Pack
 
-Статус: done (ready for independent Design QA)
+Статус: done (independent QA PASSED)
 Контур: Codex
 Owner: Design Main/Codex
 Thread/Worker: `/root/audit_repo`
@@ -67,3 +67,45 @@ Git/Jira:
 
 Disk cleanup: removed task `.godot` import cache (`445 MB`) and Python caches;
 the clean disposable worktree is removed after the final sync commit is pushed.
+
+## Independent QA verdict — 2026-07-10
+
+Verdict: **PASSED** (`/root/audit_ready`, Codex QA lane).
+
+- Reviewed the source package independently from fresh `origin/dev`, without
+  modifying source PNGs, manifest, previews, runtime assets, scripts or tests.
+- Provenance/contract PASS: the manifest contains exactly the five canonical
+  IDs and five unique valid PixelLab UUIDs; each captured `create_character`
+  request is a standard four-direction quadruped request, while repository
+  exports are intentionally restricted to `west`/`east`.
+- File/alpha PASS: exactly ten source PNGs, all transparent RGBA `180x180`, no
+  `.import` sidecars, transparent corners, alpha extrema `0..255`, manifest
+  bounding boxes reproduced, minimum exterior gutter `11 px`.
+- Pair consistency PASS: west/east bottom-baseline deltas are wolf `1 px`, bear
+  `1 px`, panther `1 px`, stag `4 px`, lion `3 px` (maximum `4 px`).
+- Visual PASS: contact sheet and alpha/bbox overlay were reviewed at source
+  resolution. Wolf, bear, panther, stag and lion remain distinct, readable and
+  directionally coherent; the spectral cyan/blue treatment, safe gutters and
+  transparent backgrounds are consistent. No text, logo or baked background is
+  present in the source PNGs.
+- Scope PASS: source commit `9450c531` and handoff sync `231e52c5` add Design
+  source/evidence only; no SpriteFrames, animation rows, runtime integration,
+  gameplay or balance implementation is included.
+- Handoff PASS: SCRUM-1016 contains the exact five UUIDs and canonical source
+  path contract, remains unassigned, and is released only after this verdict.
+
+Independent verification:
+
+- PASS `python3 docs/design/references/druid_summons_ghost_pack/build_contact_sheet.py`
+  (`ok: true`; regenerated evidence leaves the worktree clean).
+- PASS independent Pillow assertions for file set, RGBA/size, alpha bbox,
+  transparent corners, gutters and west/east baseline deltas.
+- PASS JSON parse and manifest/request-contract assertions.
+- PASS `git diff --check 9450c531^..231e52c5`.
+- PASS `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`
+  (`Runtime smoke test passed`, exit `0`; the known headless `texture_2d_get`
+  screenshot-helper warning remains non-fatal).
+
+No QA bugs were found. Jira SCRUM-1015 may move to `Готово`; SCRUM-1016 may be
+unblocked for the Animator lane after correcting the previously reversed Jira
+dependency link.
