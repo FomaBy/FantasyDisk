@@ -2022,7 +2022,13 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	var final_amount := maxf(amount, 0.0)
 	if enemy.is_in_group("bosses") and enemy.get("max_health") != null:
 		final_amount = minf(final_amount, float(enemy.get("max_health")) * float(_ultimate_config().get("boss_cap", 0.1)))
-	enemy.take_damage(final_amount)
+	# SCRUM-1007: ульта — урон игрока; метка атрибутирует он-килл trait'ы, тип
+	# урона — канал класса (маг. классы красят цифру магией).
+	if _take_damage_accepts_feedback(enemy):
+		var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
+		enemy.take_damage(final_amount, {"damage_type": ult_type, "player_owned": true})
+	else:
+		enemy.take_damage(final_amount)
 
 
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
@@ -2226,6 +2232,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 # _on_enemy_died. Взрыв «Цепная Искра» (шанс) + лечение-стак «Сбор Душ» (каждое N-е).
 # Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
 func on_enemy_killed(enemy: Node2D) -> void:
+	_trigger_class_on_kill_trait(enemy)
 	_apply_dot_death_spread(enemy)
 	_trigger_kill_growth(enemy)
 	# «Цепная Искра»: шанс взрыва по области у трупа.
@@ -2247,6 +2254,52 @@ func on_enemy_killed(enemy: Node2D) -> void:
 		if _kill_streak_counter >= streak_every:
 			_kill_streak_counter = 0
 			heal_percent(0.03)
+
+
+# SCRUM-1007: классовый он-килл trait «Тёмный распад» (data-driven,
+# ProgressionData.class_on_kill_trait — сейчас только class_id=dark_mage).
+# КВАЛИФИЦИРОВАННАЯ смерть порождает РОВНО ОДИН магический AoE-взрыв вокруг
+# жертвы. Атрибуция: enemy._record_kill_attribution кладёт feedback убившего
+# хита в мету "killing_hit_feedback"; квалифицируют только хиты с
+# player_owned=true (урон оружия класса через class_weapon._call_take_damage,
+# тики проклятия черепа через tick_feedback, ульта через _apply_ultimate_damage).
+# Убийства чужих источников (hazard, боссы, неатрибутированные) trait НЕ триггерят.
+# АНТИ-РЕКУРСИЯ: урон взрыва помечен dark_decay=true → жертвы взрыва новых
+# взрывов НЕ порождают (плотная группа не цепляет каскад; покрыто
+# tests/dark_mage_kit_test.gd). Урон = derived magic_damage * magic_damage_ratio
+# (фикс от статов, а не доля убившего хита — иначе dot-тики черепа обесценили
+# бы trait). Эффект мгновенный (orb_burst самоочищается твином) — к концу боя
+# на игроке/арене состояния trait'а не остаётся.
+func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
+	var trait_config := ProgressionData.class_on_kill_trait(character_id)
+	if trait_config.is_empty() or enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
+		return
+	var attribution_raw = enemy.get_meta("killing_hit_feedback") if enemy.has_meta("killing_hit_feedback") else null
+	var attribution: Dictionary = attribution_raw if attribution_raw is Dictionary else {}
+	if not bool(attribution.get("player_owned", false)):
+		return
+	if bool(attribution.get("dark_decay", false)):
+		return
+	var radius := float(trait_config.get("radius", 120.0))
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(trait_config.get("magic_damage_ratio", 0.85))
+	if damage_amount <= 0.0 or radius <= 0.0:
+		return
+	var blast_position := enemy.global_position
+	AttackVfx.orb_burst(_vfx_parent(), blast_position, radius, Color(0.52, 0.16, 0.95, 0.50))
+	for other_node in TARGET_QUERY.in_radius(self, blast_position, radius):
+		if other_node == enemy or not other_node.has_method("take_damage"):
+			continue
+		if _take_damage_accepts_feedback(other_node):
+			other_node.take_damage(damage_amount, {"damage_type": "magic", "player_owned": true, "dark_decay": true})
+		else:
+			other_node.take_damage(damage_amount)
+
+
+# SCRUM-940: у Проклятого черепа нет прямого урона → on_weapon_hit не зовётся.
+# Заряд ульты кормим ожидаемым прожигом каста (взвешенный итог передаёт оружие),
+# без вампиризма и он-хит проков — только энергия ульты.
+func on_curse_applied(expected_burn_damage: float) -> void:
+	_gain_ultimate_charge(maxf(expected_burn_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
 
 
 func _trigger_kill_growth(enemy: Node2D) -> void:

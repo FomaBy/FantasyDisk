@@ -19,6 +19,10 @@ const PRIMARY_CAST_ACTION_MODES := {
 	"homing_curse": true,
 	"beam": true,
 	"drain_link": true,
+	# SCRUM-939..941: новый кит Тёмного мага кастует, как и прежние формы.
+	"dark_chain_burst": true,
+	"skull_curse_burn": true,
+	"dark_mirror_blast": true,
 }
 const EVENT_CAST_ACTION_MODES := {
 	"aoe_projectile": true,
@@ -29,6 +33,9 @@ const EVENT_CAST_ACTION_MODES := {
 	"priest_prayer_chain": true,
 	"bio_symbiote_web": true,
 	"engineer_repair_drone": true,
+	"dark_chain_burst": true,
+	"skull_curse_burn": true,
+	"dark_mirror_blast": true,
 }
 const ATTACK_MODE_EXECUTORS := {
 	"aoe_projectile": "_exec_aoe_projectile",
@@ -36,6 +43,9 @@ const ATTACK_MODE_EXECUTORS := {
 	"stab_flurry": "_exec_stab_flurry",
 	"dot_beam": "_exec_dot_beam",
 	"homing_curse": "_exec_homing_curse",
+	"dark_chain_burst": "_exec_dark_chain_burst",
+	"skull_curse_burn": "_exec_skull_curse_burn",
+	"dark_mirror_blast": "_exec_dark_mirror_blast",
 	"beam": "_exec_beam",
 	"drain_link": "_exec_drain_link",
 	"sound_wave": "_exec_sound_wave",
@@ -135,6 +145,14 @@ const ATTACK_MODE_EXECUTORS := {
 @export var sentry_splash_damage_multiplier := 0.0
 @export var sentry_splash_target_cap := 0
 @export var deploy_texture_path := ""
+# SCRUM-939..941: параметры кита Тёмного мага (цепь / curse-прожиг / зеркало).
+@export var chain_targets := 3
+@export var chain_hop_range := 300.0
+@export var chain_burst_ratio := 0.45
+@export var mirror_damage_ratio := 1.0
+@export var curse_only := false
+@export var curse_tick_rate := 7.0
+@export var curse_tick_multiplier := 1.0
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -257,6 +275,13 @@ func configure_weapon(config: Dictionary) -> void:
 	sentry_splash_damage_multiplier = float(config.get("sentry_splash_damage_multiplier", sentry_splash_damage_multiplier))
 	sentry_splash_target_cap = int(config.get("sentry_splash_target_cap", sentry_splash_target_cap))
 	deploy_texture_path = str(config.get("deploy_texture_path", deploy_texture_path))
+	chain_targets = int(config.get("chain_targets", chain_targets))
+	chain_hop_range = float(config.get("chain_hop_range", chain_hop_range))
+	chain_burst_ratio = float(config.get("chain_burst_ratio", chain_burst_ratio))
+	mirror_damage_ratio = float(config.get("mirror_damage_ratio", mirror_damage_ratio))
+	curse_only = bool(config.get("curse_only", curse_only))
+	curse_tick_rate = float(config.get("curse_tick_rate", curse_tick_rate))
+	curse_tick_multiplier = float(config.get("curse_tick_multiplier", curse_tick_multiplier))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -476,6 +501,18 @@ func _exec_dot_beam(owner_node: Node2D, _target: Node2D, direction: Vector2) -> 
 
 func _exec_homing_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_fire_curse(owner_node, target, direction)
+
+
+func _exec_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_dark_chain_burst(owner_node, target, direction)
+
+
+func _exec_skull_curse_burn(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_skull_curse_burn(owner_node, target, direction)
+
+
+func _exec_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_dark_mirror_blast(owner_node, target, direction)
 
 
 func _exec_beam(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
@@ -815,12 +852,9 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
-			# SCRUM-961 «Зеркальная страница»: взрыв Книги тьмы дублируется на 55%
-			# в точке, симметричной относительно мага; зеркало не зеркалится (§8.4).
-			if current_owner != null and str(current_weapon.get("weapon_id")) == "dark_book" and float(current_weapon.call("_owner_mod", "book_mirror_blast")) > 0.0:
-				var mirror_position: Vector2 = current_owner.global_position * 2.0 - target_position
-				current_weapon.call("_damage_aoe_projectile_explosion", mirror_position, aoe_radius, explosion_damage * 0.55)
-				AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), mirror_position, aoe_radius, visual_color)
+			# SCRUM-941: старый хук «Зеркальной страницы» удалён — dark_book ушёл
+			# с aoe_projectile на dark_mirror_blast (зеркало теперь база оружия,
+			# артефакт репозиционирован в book_mirror_echo).
 			# SCRUM-961 «Летучая пыль»: blast_powder без облака-DoT (трейд на темп).
 			if leaves_pool and not bool(current_weapon.call("_volatile_powder_active")):
 				var parameters_raw = current_owner.get("derived_parameters") if current_owner != null else null
@@ -859,6 +893,227 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius * 0.72, visual_color)
 	)
 	_register_effect(skull)
+
+
+# ============================================================================
+# SCRUM-939..941: кит Тёмного мага (цепь палочки / curse-прожиг черепа /
+# зеркальные взрывы книги). Все лямбды в tween_callback заменены на
+# Callable(self, "...").bind(...) (канон SCRUM-551 против freed-lambda).
+# ============================================================================
+
+
+# SCRUM-939: Тёмная палочка — видимый цепной/рикошет-снаряд.
+# Правила таргетинга (детерминированы, покрыты dark_mage_kit_test):
+#   1) первая цель = переданный target (ближайший враг), иначе ближайший на арене;
+#   2) каждый рикошет летит в БЛИЖАЙШЕГО ещё не поражённого врага в chain_hop_range
+#      от точки текущего попадания; всего до chain_targets (+артефакт/extra) целей;
+#   3) повторных попаданий по одной цели в рамках одного каста НЕТ. FALLBACK
+#      (задокументирован): если валидных целей не осталось — цепь обрывается
+#      раньше, снаряд НЕ возвращается в уже поражённые цели.
+# На каждом попадании — малый магический AoE-бурст по соседям жертвы (сама
+# жертва бурстом не задевается — без double-dip). Бурст бьёт напрямую и не
+# порождает новых рикошетов/бурстов (анти-каскад §8.4).
+func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var first_target := target
+	if first_target == null:
+		first_target = _find_closest_enemy(owner_node, INF)
+	if first_target == null:
+		# Пустая арена: видимый снаряд «в никуда», урона нет.
+		var miss := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 24.0, visual_color)
+		_register_effect(miss)
+		var miss_tween := create_tween()
+		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * minf(attack_range, 300.0), 0.2)
+		miss_tween.tween_callback(Callable(self, "_release_effect").bind(miss))
+		return
+	# Цепь выбирается детерминированно в момент каста.
+	var chain: Array = [first_target]
+	var used := {first_target.get_instance_id(): true}
+	var hop_origin: Vector2 = first_target.global_position
+	var chain_limit := maxi(chain_targets + _extra_projectiles() + int(_owner_mod("wand_extra_chain")), 1)
+	for hop_index in range(chain_limit - 1):
+		var next_target := _find_nearest_enemy_from(hop_origin, chain_hop_range, used)
+		if next_target == null:
+			break  # документированный fallback: цепь обрывается без повторов
+		chain.append(next_target)
+		used[next_target.get_instance_id()] = true
+		hop_origin = next_target.global_position
+	_launch_dark_chain_hop(owner_node.global_position + direction * 26.0, chain, 0, _rolled_damage(owner_node))
+
+
+# Один видимый прыжок цепи: орб летит из точки предыдущего попадания в
+# следующую цель; попадание резолвится по прилёту.
+func _launch_dark_chain_hop(from_position: Vector2, chain: Array, hop_index: int, damage_value: float) -> void:
+	if _effects_shutdown or hop_index >= chain.size():
+		return
+	var enemy_node := chain[hop_index] as Node2D
+	if enemy_node == null or not is_instance_valid(enemy_node):
+		# Цель умерла в полёте — цепь продолжает к следующей из той же точки.
+		_launch_dark_chain_hop(from_position, chain, hop_index + 1, damage_value)
+		return
+	var orb := AttackVfx.orb_projectile(_projectile_parent(), from_position, visual_color)
+	_register_effect(orb)
+	var target_position := enemy_node.global_position
+	var travel_time := clampf(from_position.distance_to(target_position) / maxf(projectile_speed, 1.0), 0.05, 0.30)
+	var hop_tween := create_tween()
+	hop_tween.tween_property(orb, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	hop_tween.tween_callback(Callable(self, "_resolve_dark_chain_hit").bind(orb, chain, hop_index, damage_value))
+
+
+func _resolve_dark_chain_hit(orb: Node, chain: Array, hop_index: int, damage_value: float) -> void:
+	var impact_position := Vector2.ZERO
+	var impact_known := false
+	if orb != null and is_instance_valid(orb):
+		impact_position = (orb as Node2D).global_position
+		impact_known = true
+		_release_effect(orb)
+	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
+	var enemy_node := chain[hop_index] as Node2D
+	if enemy_node != null and is_instance_valid(enemy_node):
+		impact_position = enemy_node.global_position
+		impact_known = true
+		var hit_damage := damage_value * pow(falloff, float(hop_index))
+		_damage_enemy(enemy_node, hit_damage)
+		_fire_dark_chain_hit_burst(enemy_node, impact_position, hit_damage * chain_burst_ratio * (1.0 + _owner_mod("wand_burst_bonus")))
+	if not impact_known:
+		return
+	_launch_dark_chain_hop(impact_position, chain, hop_index + 1, damage_value)
+
+
+# Малый бурст у точки попадания цепи: соседи жертвы получают долю урона хита.
+# Прямой урон без он-хит проков (анти-каскад §8.4: бурст не рикошетит и не
+# порождает новые бурсты); сама жертва исключена (уже получила прямой хит).
+func _fire_dark_chain_hit_burst(victim: Node2D, center: Vector2, amount: float) -> void:
+	if amount <= 0.0 or aoe_radius <= 0.0:
+		return
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
+	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		if enemy_node == victim:
+			continue
+		if enemy_node.has_method("take_damage"):
+			_call_take_damage(enemy_node, amount, {"damage_type": _weapon_damage_type()})
+
+
+# SCRUM-940: Проклятый череп — ЧИСТОЕ проклятие, прямого урона нет.
+# Череп летит в точку цели и накрывает область: каждый враг в aoe_radius
+# получает статус skull_curse (dot_ticks тиков dot-оси). Повторное попадание
+# ОБНОВЛЯЕТ прожиг (refresh, 1 стак) — стакование запрещено, бесконечного
+# прожига нет. Скейл: dot_damage (сила тика) и dot_speed (темп, капится
+# floor-ом интервала 0.1с ≈ 10 тик/с). Магические множители НЕ участвуют.
+func _fire_skull_curse_burn(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var target_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 300.0)
+	if target != null:
+		target_position = target.global_position
+	elif _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
+		target_position = owner_node.call("attack_aim_position", attack_range)
+	var skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, target_position, visual_color, 0.20, Callable(self, "_apply_skull_curse_zone").bind(target_position))
+	_register_effect(skull)
+
+
+func _apply_skull_curse_zone(center: Vector2) -> void:
+	if _effects_shutdown:
+		return
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return
+	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, false)
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0)
+	var tick_speed := maxf(float(parameters.get("dot_speed", 1.0)), 0.2) * maxf(curse_tick_rate, 0.2)
+	# Floor 0.1с зеркалит кламп StatusEffects.tick: выше ~10 тик/с прожиг не
+	# ускоряется, но суммарный урон каста сохраняется (число тиков фиксировано).
+	var tick_interval := maxf(1.0 / tick_speed, 0.1)
+	var ticks := maxi(dot_ticks, 1)
+	# +полтика запаса: тик срабатывает только пока remaining > 0.
+	var duration := (float(ticks) + 0.5) * tick_interval
+	var cursed_count := 0
+	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		StatusEffects.apply_status(enemy_node, "skull_curse", {
+			"duration": duration,
+			"dot_damage": tick_damage,
+			"dot_interval": tick_interval,
+			"max_stacks": 1,
+			"stack_mode": "refresh",
+			"marker_color": Color(0.78, 0.16, 1.0, 1.0),
+			# SCRUM-1007: тики проклятия — урон игрока (атрибуция он-килл trait).
+			"tick_feedback": {"damage_type": "dot", "player_owned": true, "curse": true},
+		})
+		if enemy_node is Node2D:
+			HazardVfx.dot_tick(enemy_node, Color(visual_color.r, visual_color.g, visual_color.b, 1.0))
+		cursed_count += 1
+	# Прямого урона нет → on_weapon_hit не зовётся; заряд ульты кормим явно
+	# ожидаемым прожигом каста (половинный вес, без он-хит проков/вампиризма).
+	if cursed_count > 0 and owner_node.has_method("on_curse_applied"):
+		owner_node.call("on_curse_applied", tick_damage * float(ticks) * float(cursed_count) * 0.5)
+
+
+# SCRUM-941: Книга тьмы — зеркальные AoE-взрывы вокруг мага.
+# Каждый каст порождает ДВА взрыва: первичный в точке цели P и зеркальный в
+# M = 2*owner_pos - P (позиция мага НА МОМЕНТ КАСТА — детерминированная
+# геометрия: горизонталь/вертикаль/диагональ зеркалятся одинаково). Оба взрыва
+# следуют одним правилам урона/диминишинга (_damage_aoe_projectile_explosion);
+# враг, накрытый обоими зонами, ЛЕГАЛЬНО получает оба удара (задокументировано,
+# покрыто тестом). У границ арены зеркальная точка может выйти за поле — взрыв
+# всё равно валиден и бьёт врагов в своём радиусе.
+func _fire_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var primary_targets: Array = []
+	if target != null:
+		primary_targets = _find_closest_enemies(owner_node, maxi(1 + _extra_projectiles(), 1))
+	if primary_targets.is_empty():
+		var aim_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 360.0)
+		if _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
+			aim_position = owner_node.call("attack_aim_position", attack_range)
+		_launch_dark_mirror_pair(owner_node, aim_position)
+		return
+	for target_node in primary_targets:
+		var enemy_node := target_node as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		_launch_dark_mirror_pair(owner_node, enemy_node.global_position)
+
+
+func _launch_dark_mirror_pair(owner_node: Node2D, target_position: Vector2) -> void:
+	var mirror_position: Vector2 = owner_node.global_position * 2.0 - target_position
+	var damage_value := _rolled_damage(owner_node)
+	var to_target := (target_position - owner_node.global_position).normalized()
+	if to_target.length_squared() <= 0.001:
+		to_target = Vector2.RIGHT
+	_launch_dark_mirror_orb(owner_node.global_position + to_target * 28.0, target_position, damage_value)
+	_launch_dark_mirror_orb(owner_node.global_position - to_target * 28.0, mirror_position, damage_value * maxf(mirror_damage_ratio, 0.0))
+
+
+func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_damage: float) -> void:
+	if blast_damage <= 0.0:
+		return
+	var orb := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
+	_register_effect(orb)
+	var travel_time := clampf(start.distance_to(blast_position) / maxf(projectile_speed, 1.0), 0.08, 0.45)
+	var orb_tween := create_tween()
+	orb_tween.tween_property(orb, "global_position", blast_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	orb_tween.tween_callback(Callable(self, "_resolve_dark_mirror_blast").bind(orb, blast_position, blast_damage))
+
+
+func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage: float) -> void:
+	if orb != null and is_instance_valid(orb):
+		_release_effect(orb)
+	if _effects_shutdown:
+		return
+	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius, visual_color)
+	_damage_aoe_projectile_explosion(blast_position, aoe_radius, blast_damage)
+	# SCRUM-961 «Зеркальная страница» (репозиционирована под новый кит): взрыв
+	# отдаётся эхом на долю урона; эхо НЕ зеркалится и НЕ эхоится повторно.
+	var echo_ratio := _owner_mod("book_mirror_echo")
+	if echo_ratio > 0.0:
+		var echo_tween := create_tween()
+		echo_tween.tween_interval(0.22)
+		echo_tween.tween_callback(Callable(self, "_resolve_dark_mirror_echo").bind(blast_position, blast_damage * clampf(echo_ratio, 0.0, 1.0)))
+
+
+func _resolve_dark_mirror_echo(blast_position: Vector2, echo_damage: float) -> void:
+	if _effects_shutdown or echo_damage <= 0.0:
+		return
+	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius * 0.8, Color(visual_color.r, visual_color.g, visual_color.b, visual_color.a * 0.7))
+	_damage_aoe_projectile_explosion(blast_position, aoe_radius * 0.8, echo_damage)
 
 
 func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
@@ -901,18 +1156,16 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var hit_count := 0
 	var hit_limit := _effective_pierce_count()
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
-	# SCRUM-961: «Лунный расщепитель» ветвит болт с первой цели; «Цепная палочка»
-	# лопает первые пробитые цели малыми взрывами.
+	# SCRUM-961: «Лунный расщепитель» ветвит болт с первой цели.
+	# SCRUM-939: хук «Цепной палочки» (wand_chain_blasts) удалён — dark_wand
+	# ушёл с beam на dark_chain_burst, артефакт репозиционирован (wand_extra_chain).
 	var moon_splits := int(_owner_mod("moon_split_targets")) if weapon_id == "moon_crossbow" else 0
-	var wand_blasts := int(_owner_mod("wand_chain_blasts")) if weapon_id == "dark_wand" else 0
 	for hit in hits:
 		if hit_count >= hit_limit:
 			break
 		_damage_enemy(hit["node"], damage_value * pow(falloff, float(hit_count)))
 		if hit_count == 0 and moon_splits > 0:
 			_fire_moon_splits(hit["node"] as Node2D, damage_value, moon_splits)
-		if hit_count < wand_blasts:
-			_fire_wand_chain_blast(hit["node"] as Node2D, damage_value * 0.35)
 		hit_count += 1
 
 
@@ -928,18 +1181,6 @@ func _fire_moon_splits(first_hit: Node2D, damage_value: float, split_targets: in
 		var branch := AttackVfx.beam(_projectile_parent(), first_hit.global_position, branch_target.global_position, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
 		_register_effect(branch)
 		_damage_enemy(branch_target, damage_value * 0.45)
-
-
-# SCRUM-961 «Цепная палочка»: малый взрыв (r70, 35% урона) у пробитой цели.
-# Взрыв бьёт напрямую и новых взрывов/рикошетов не порождает (§8.4 анти-каскад).
-func _fire_wand_chain_blast(center_enemy: Node2D, amount: float) -> void:
-	if center_enemy == null or not is_instance_valid(center_enemy):
-		return
-	var center := center_enemy.global_position
-	AttackVfx.orb_burst(_projectile_parent(), center, 70.0, visual_color)
-	for enemy_node in TARGET_QUERY.in_radius(self, center, 70.0):
-		if enemy_node.has_method("take_damage"):
-			_call_take_damage(enemy_node, amount, {"damage_type": _weapon_damage_type()})
 
 
 func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
@@ -3274,7 +3515,13 @@ func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
-		enemy.call("take_damage", amount, feedback)
+		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		# SCRUM-1007: весь урон классового оружия — урон ИГРОКА. Метка едет в
+		# feedback убившего хита (enemy._record_kill_attribution) и служит
+		# атрибуцией он-килл trait'ов; лишний ключ для остальных читателей шумом
+		# не является (enemy читает только известные поля).
+		tagged["player_owned"] = true
+		enemy.call("take_damage", amount, tagged)
 	else:
 		enemy.call("take_damage", amount)
 

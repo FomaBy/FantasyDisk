@@ -299,6 +299,10 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if health <= 0.0:
 		_death_lifecycle_started = true
 		health = 0.0
+		# SCRUM-1007: фиксируем feedback убившего хита ДО сигнала — подписчики
+		# died (он-килл trait'ы) читают атрибуцию из меты (отдельная функция,
+		# не относится к маппингу damage_type→SFX).
+		_record_kill_attribution(feedback_data)
 		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
 		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
@@ -310,6 +314,17 @@ func take_damage(amount: float, feedback := {}) -> void:
 			if rig != null and rig.has_method("spawn_death_ghost"):
 				rig.spawn_death_ghost()
 			queue_free()
+
+
+# SCRUM-1007: атрибуция смертельного удара. Feedback убившего хита кладётся в
+# мету "killing_hit_feedback" непосредственно перед died.emit — обработчики
+# смерти (player.on_enemy_killed → он-килл trait'ы) по ней различают источник:
+#   player_owned=true  — урон игрока (оружие/тик проклятия/ульта);
+#   dark_decay=true    — урон самого взрыва «Тёмного распада» (анти-рекурсия);
+#   пустая мета         — неатрибутированный источник (hazard/чужой) → trait молчит.
+# Отдельная функция вне блока маппинга damage_type→SFX (владение SCRUM-968).
+func _record_kill_attribution(feedback: Dictionary) -> void:
+	set_meta("killing_hit_feedback", feedback.duplicate(true) if feedback is Dictionary else {})
 
 
 func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:

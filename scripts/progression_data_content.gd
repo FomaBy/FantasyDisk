@@ -426,10 +426,11 @@ const ARTIFACTS := [
 	{"id": "long_fuse", "title": "Длинный фитиль", "tier": 2, "cost": 55, "class_affinity": ["soldier"], "requires_ascension": 5, "description": "Фитиль горит на 0.35с дольше: взрыв +50% урона и +10% радиуса.", "mods": {"long_fuse_bonus": 0.5}},
 	{"id": "bayonet_trigger", "title": "Спуск штыка", "tier": 2, "cost": 55, "class_affinity": ["soldier"], "requires_ascension": 5, "description": "+35% к шансу авто-выстрела штыка по цели за конусом (70% урона).", "mods": {"bayonet_shot_chance": 0.35}},
 	{"id": "battle_doctrine", "title": "Боевой устав", "tier": 3, "cost": 95, "class_affinity": ["soldier"], "requires_ascension": 5, "description": "Дубли по уставу: работают на пулях, гранатах и штыке; +6% к шансу дубля.", "mods": {"duplicate_hit_universal": 1.0, "duplicate_hit_chance": 0.06}},
-	# Dark Mage — Темная формула:
-	{"id": "chain_wand", "title": "Цепная палочка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Луч палочки лопает первые 3 пробитые цели малыми взрывами (35%).", "mods": {"wand_chain_blasts": 3.0}},
+	# Dark Mage — Темная формула (SCRUM-939/941: chain_wand и mirror_page
+	# репозиционированы — цепь и зеркало теперь БАЗА оружий нового кита):
+	{"id": "chain_wand", "title": "Цепная палочка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Цепь палочки прыгает на одну цель дальше, а бурсты попаданий бьют на 15% сильнее.", "mods": {"wand_extra_chain": 1.0, "wand_burst_bonus": 0.15}},
 	{"id": "curse_font", "title": "Купель проклятий", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+3 урона проклятия за тик, +0.35 тика в секунду.", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.35}},
-	{"id": "mirror_page", "title": "Зеркальная страница", "tier": 3, "cost": 95, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Взрыв Книги тьмы зеркалится (55%) в точке, симметричной относительно мага.", "mods": {"book_mirror_blast": 1.0}},
+	{"id": "mirror_page", "title": "Зеркальная страница", "tier": 3, "cost": 95, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Оба взрыва Книги тьмы отдаются эхом (45% урона) через мгновение.", "mods": {"book_mirror_echo": 0.45}},
 	{"id": "void_hunger", "title": "Голод пустоты", "tier": 3, "cost": 95, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Проклятые смерти голодны: DoT перекидывается на соседей погибшего (2.5с).", "mods": {"dot_death_spread_duration": 2.5}},
 	{"id": "black_bargain", "title": "Черная сделка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+4 урона DoT за тик, +0.25 тика в секунду; −15% максимального HP.", "mods": {"dot_damage_flat": 4.0, "dot_speed_flat": 0.25, "max_health_multiplier": 0.85}},
 	# Chemist — Алхимическая цепь:

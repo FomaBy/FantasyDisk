@@ -90,55 +90,79 @@ const BERSERK_WEAPONS := {
 }
 
 const DARK_MAGE_WEAPONS := {
+	# SCRUM-939..941: редизайн кита Тёмного мага. Класс смещён в area-давление
+	# (solo_target 0.84 / aoe_target 1.30), поэтому три оружия делят AoE-ниши:
+	#   dark_wand    — цепной снаряд по РАСТЯНУТЫМ группам (рикошеты + бурсты);
+	#   cursed_skull — стационарный curse-прожиг ЯДРА толпы (только dot-ось);
+	#   dark_book    — зеркальные парные взрывы при ОКРУЖЕНИИ (два фронта разом).
 	"dark_book": {
 		"id": "dark_book",
 		"title": "Книга тьмы",
-		"description": "Два снаряда по области: летят в две ближайшие цели и взрываются.",
+		# SCRUM-941: каждый каст = ПАРА взрывов, симметричных относительно мага.
+		"description": "Парные страницы: взрыв по цели и зеркальный взрыв в симметричной точке с другой стороны мага.",
 		"scene_path": "res://scenes/DarkBook.tscn",
-		"attack_mode": "aoe_projectile",
+		"attack_mode": "dark_mirror_blast",
 		"damage_parameter": "magic_damage",
 		"damage_multiplier": 0.95,
-		"projectile_count": 2,
+		"projectile_count": 1,
 		"fire_interval": 1.31,
 		"attack_range": 620.0,
 		"aoe_radius": 175.0,
 		"projectile_speed": 520.0,
+		# Зеркальный взрыв бьёт той же силой (правила урона/диминишинга общие).
+		"mirror_damage_ratio": 1.0,
 		"visual_color": Color(0.45, 0.15, 0.88, 0.38),
 		"passive_mods": {"aoe_radius_multiplier": 1.10},
 	},
 	"cursed_skull": {
 		"id": "cursed_skull",
 		"title": "Проклятый череп",
-		"description": "Быстрое проклятие: цель получает удар и несколько тиков периодического урона; соседей цепляет убывающий проклятый всплеск.",
+		# SCRUM-940: ЧИСТОЕ проклятие — прямого урона нет вовсе. Череп накрывает
+		# область, все проклятые быстро прогорают частыми тиками dot-оси.
+		# Скейл ТОЛЬКО через curse/dot-пайплайн: dot_damage (сила тика: Знание +
+		# dot_damage_flat моды + общий «Урон») и dot_speed (темп тиков).
+		# Магические/чисто физические множители урон черепа НЕ повышают —
+		# задокументированное правило кита (см. characters_weapons.md).
+		"description": "Чистое проклятие: череп накрывает область, проклятые быстро сгорают частыми тиками. Урон растет только от силы и темпа проклятий.",
 		"scene_path": "res://scenes/CursedSkull.tscn",
-		"attack_mode": "homing_curse",
+		"attack_mode": "skull_curse_burn",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.75,
-		"fire_interval": 0.99,
+		"curse_only": true,
+		"damage_multiplier": 1.0,
+		"fire_interval": 0.9,
 		"attack_range": 560.0,
-		"aoe_radius": 115.0,
+		"aoe_radius": 165.0,
+		# Тиков за каст на каждую проклятую цель; повторный каст ОБНОВЛЯЕТ
+		# проклятие (refresh, 1 стак) — стакования и бесконечного прожига нет.
 		"dot_ticks": 5,
+		# Базовый темп тиков (тик/с при dot_speed=1.0): «быстрый прожиг».
+		"curse_tick_rate": 7.0,
+		"curse_tick_multiplier": 1.05,
 		"projectile_speed": 680.0,
-		"damage_falloff": 0.52,
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
-		"passive_mods": {"damage_multiplier": 0.95},
+		"passive_mods": {"dot_speed_flat": 0.25},
 	},
 	"dark_wand": {
 		"id": "dark_wand",
 		"title": "Темная палочка",
-		"description": "Два pierce-луча веером: пробивают несколько врагов каждый, но темная энергия убывает после каждой цели.",
+		# SCRUM-939: видимый цепной/рикошет-снаряд: до 3 монстров суммарно
+		# (первая цель + 2 рикошета в ближайших ещё не поражённых), на КАЖДОМ
+		# попадании малый магический бурст по соседям жертвы. Повторных хитов
+		# одной цели в цепи нет: если валидные цели кончились — цепь обрывается
+		# раньше (документированный fallback, см. _fire_dark_chain_burst).
+		"description": "Цепной снаряд: рикошетит до трех монстров, темная энергия убывает с каждым прыжком, а каждое попадание лопается малым взрывом.",
 		"scene_path": "res://scenes/DarkWand.tscn",
-		"attack_mode": "beam",
+		"attack_mode": "dark_chain_burst",
 		"damage_parameter": "magic_damage",
 		"damage_multiplier": 0.95,
-		"fire_interval": 1.54,
-		"attack_range": 720.0,
-		"aoe_radius": 70.0,
-		"beam_width": 56.0,
-		"beam_count": 2,
-		"beam_fan_degrees": 14.0,
-		"pierce_count": 5,
+		"fire_interval": 1.35,
+		"attack_range": 700.0,
+		"chain_targets": 3,
+		"chain_hop_range": 300.0,
+		"chain_burst_ratio": 0.45,
 		"pierce_damage_falloff": 0.82,
+		"aoe_radius": 90.0,
+		"projectile_speed": 1050.0,
 		"visual_color": Color(0.28, 0.95, 1.0, 0.45),
 		"passive_mods": {"range_multiplier": 1.08},
 	},

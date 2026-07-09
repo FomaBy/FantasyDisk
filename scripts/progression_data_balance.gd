@@ -246,6 +246,10 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"homing_curse": "projectile",
 	"arquebus_shot": "projectile",
 	"grenade_fuse": "projectile",
+	# SCRUM-939..941: кит Тёмного мага — цепь/зеркало снарядные, череп = curse-зона.
+	"dark_chain_burst": "projectile",
+	"dark_mirror_blast": "projectile",
+	"skull_curse_burn": "aoe",
 	"coin_ricochet": "projectile",
 	"meteor_shards": "projectile",
 	"sniper_lockshot": "projectile",

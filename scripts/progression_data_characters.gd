@@ -214,8 +214,10 @@ const CHARACTER_CONFIGS := {
 	"dark_mage": {
 		"id": "dark_mage",
 		"title": "Темный маг",
-		"description": "Стеклянная пушка: книги, лучи и проклятия выжигают целые области издали. Убивает раньше, чем до него дойдут, — иначе умрет сам.",
-		"strengths": "мощный урон по области, пробивающие лучи, проклятия со временем.",
+		# SCRUM-939..941/1007: кит = цепной снаряд / curse-прожиг / зеркальные
+		# взрывы; trait «Тёмный распад» — убитые магом взрываются сами.
+		"description": "Стеклянная пушка: цепные снаряды, проклятия и парные взрывы выжигают целые области издали, а убитые им враги взрываются сами. Убивает раньше, чем до него дойдут, — иначе умрет сам.",
+		"strengths": "мощный урон по области, цепные рикошеты, быстрые проклятия, взрывы убитых врагов.",
 		"weaknesses": "самый хрупкий, вблизи обречен.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png",
 	},
@@ -429,11 +431,12 @@ const CLASS_MECHANIC_IDENTITIES := {
 		"main_attribute": "intelligence",
 		"identity_title": "Темная формула",
 		"summary": "Интеллект кормит тьму: чем острее ум, тем шире области распада и глубже вгрызаются проклятия.",
-		"mechanic_tags": ["curse", "beam", "dot", "aoe_burst"],
+		# SCRUM-939..941/1007: кит редизайна — цепь/curse-прожиг/зеркало + он-килл распад.
+		"mechanic_tags": ["curse", "chain", "dot", "aoe_burst", "mirror_blast", "on_kill_decay"],
 		"weapon_identities": {
-			"dark_book": "двойной AoE projectile",
-			"cursed_skull": "homing curse с DoT",
-			"dark_wand": "двойной pierce beam",
+			"dark_book": "зеркальные парные AoE-взрывы вокруг мага",
+			"cursed_skull": "curse-зона с быстрым тикающим прожигом (только dot-ось)",
+			"dark_wand": "цепной рикошет-снаряд: до 3 целей, бурст на каждом попадании",
 		},
 	},
 	"guitarist": {
@@ -512,6 +515,26 @@ const CLASS_MECHANIC_IDENTITIES := {
 			"briar_staff": "терновая зона контроля",
 			"raven_totem": "raven/totem support pulses",
 		},
+	},
+}
+
+# SCRUM-1007: data-driven классовые он-килл trait'ы (канон —
+# docs/design/class_traits_registry.md). Потребитель: player.on_enemy_killed →
+# _trigger_class_on_kill_trait (гейт по character_id + атрибуции убившего хита).
+# dark_mage «Тёмный распад»: КВАЛИФИЦИРОВАННЫЕ убийства (killing-hit feedback с
+# player_owned=true: оружие класса, тики проклятия черепа, ульта) взрываются
+# магическим AoE вокруг жертвы. Урон = derived magic_damage * magic_damage_ratio
+# — ФИКС ОТ СТАТОВ, а не доля убившего хита: кит черепа добивает мелкими
+# dot-тиками, и «доля хита» обесценила бы trait (решение задокументировано).
+# АНТИ-РЕКУРСИЯ: урон взрыва помечен dark_decay=true, жертвы взрыва новых
+# взрывов не порождают.
+const CLASS_ON_KILL_TRAITS := {
+	"dark_mage": {
+		"id": "dark_decay",
+		"title": "Тёмный распад",
+		"description": "Убитые Тёмным магом враги взрываются магическим уроном по области; взрывы не порождают новых взрывов.",
+		"radius": 120.0,
+		"magic_damage_ratio": 0.85,
 	},
 }
 

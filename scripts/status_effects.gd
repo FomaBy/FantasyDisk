@@ -58,7 +58,14 @@ static func tick(target: Node, delta: float) -> void:
 				# Только если цель принимает 2-арг take_damage(amount, feedback) (враг/босс);
 				# у игрока 2-й аргумент — строка-источник, ему feedback не шлём.
 				if feedback_capable:
-					target.call("take_damage", tick_total, {"damage_type": "dot"})
+					# SCRUM-1007: статус может нести tick_feedback (атрибуция
+					# источника тика, напр. player_owned у проклятия черепа) —
+					# дефолтный damage_type "dot" сохраняется, ключи домешиваются.
+					var tick_feedback := {"damage_type": "dot"}
+					var extra_feedback_raw = status.get("tick_feedback", null)
+					if extra_feedback_raw is Dictionary:
+						tick_feedback.merge(extra_feedback_raw as Dictionary, true)
+					target.call("take_damage", tick_total, tick_feedback)
 				else:
 					target.call("take_damage", tick_total)
 		if float(status.get("remaining", 0.0)) <= 0.0:

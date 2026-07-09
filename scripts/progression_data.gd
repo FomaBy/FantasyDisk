@@ -15,6 +15,7 @@ const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 const ATTRIBUTE_REGISTRY := CharacterData.ATTRIBUTE_REGISTRY  # SCRUM-695: канон-реестр атрибутов
 const ATTRIBUTE_RELEVANCE := CharacterData.ATTRIBUTE_RELEVANCE  # SCRUM-695: матрица 2/8/7
+const CLASS_ON_KILL_TRAITS := CharacterData.CLASS_ON_KILL_TRAITS  # SCRUM-1007: он-килл trait'ы
 
 const BalanceData := preload("res://scripts/progression_data_balance.gd")
 const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
@@ -212,6 +213,12 @@ static func start_boon_mods(boon_id: String, character_id := "") -> Dictionary:
 
 static func damage_parameter_for(character_id: String) -> String:
 	return str(CLASS_DAMAGE_PARAMETER.get(character_id, "damage"))
+
+
+# SCRUM-1007: конфиг классового он-килл trait'а (пусто = trait'а нет).
+static func class_on_kill_trait(character_id: String) -> Dictionary:
+	var raw = CLASS_ON_KILL_TRAITS.get(character_id, {})
+	return (raw as Dictionary).duplicate(true) if raw is Dictionary else {}
 
 
 static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
@@ -865,6 +872,10 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var direct_dps := base_damage * crit_factor / interval
 	if _is_pure_summon_weapon(config):
 		direct_dps = 0.0
+	elif bool(config.get("curse_only", false)):
+		# SCRUM-940: curse-only оружие (cursed_skull) прямого урона не наносит —
+		# весь его выход идёт через dot-ось (_budget_dot_dps), как и в рантайме.
+		direct_dps = 0.0
 	elif str(config.get("summon_role", "")) != "":
 		direct_dps *= _budget_summon_role_damage_factor(config, params, stats)
 	var hit_model := _budget_hit_model(config)
@@ -949,7 +960,7 @@ static func _crowd_clear_density_factor(config: Dictionary, target_count: int) -
 			factor *= 0.98
 	if ["sniper_lockshot", "moon_crossbow", "drain_link"].has(mode):
 		factor *= 0.92
-	elif ["aoe_projectile", "grenade_fuse", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines"].has(mode):
+	elif ["aoe_projectile", "grenade_fuse", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines", "dark_mirror_blast"].has(mode):
 		factor *= 1.04
 	return clampf(factor, 0.82, 1.12)
 
@@ -984,6 +995,30 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * blast_hits, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"homing_curse":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 180.0, 1.0, 2.0), "dot_targets": 1.0}
+		"dark_chain_burst":
+			# SCRUM-939: цепь до chain_targets целей со спадом pierce_damage_falloff
+			# по прыжкам; на каждом попадании малый бурст (chain_burst_ratio от
+			# урона хита) бьёт СОСЕДЕЙ жертвы (сама жертва исключена). Solo: одна
+			# цель = только первый хит, бурсту некого задевать → 1.0.
+			var chain_count := clampf(float(config.get("chain_targets", 3.0)), 1.0, 5.0)
+			var chain_falloff := clampf(float(config.get("pierce_damage_falloff", 0.82)), 0.1, 1.0)
+			var chain_direct := 0.0
+			for chain_index in range(int(chain_count)):
+				chain_direct += pow(chain_falloff, float(chain_index))
+			var burst_ratio := clampf(float(config.get("chain_burst_ratio", 0.45)), 0.0, 1.0)
+			var burst_neighbors := clampf(aoe_radius / 95.0, 0.0, 2.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(chain_direct + chain_count * burst_ratio * burst_neighbors, 1.0, 5.0)}
+		"skull_curse_burn":
+			# SCRUM-940: прямого урона нет (curse_only гасит direct_dps выше);
+			# solo = 1 проклятая цель, в толпе зона курсит несколько целей разом.
+			return {"solo_hits": 1.0, "five_hits": 1.0, "dot_targets": clampf(1.0 + aoe_radius / 110.0, 1.0, 4.0)}
+		"dark_mirror_blast":
+			# SCRUM-941: пара взрывов. Первичный кроет кластер у цели; зеркальный
+			# в среднем добавляет mirror-долю покрытия (в кластерном 5t-сценарии
+			# зеркало чаще бьёт по краю/пустоте — коэффициент 0.45 покрытия).
+			var mirror_ratio := maxf(float(config.get("mirror_damage_ratio", 1.0)), 0.0)
+			var primary_blast := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(primary_blast * (1.0 + mirror_ratio * 0.45), 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"beam":
 			var beam_count := float(config.get("beam_count", 1.0))
 			var pierce := float(config.get("pierce_count", 1.0))
@@ -1137,7 +1172,10 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
 		return 0.0
-	return float(params.get("dot_damage", 1.0)) * ticks / maxf(interval, 0.18)
+	# SCRUM-940: curse_tick_multiplier — оружейный множитель силы тика проклятия
+	# (зеркалит class_weapon._apply_skull_curse_zone); для прочих оружий = 1.0.
+	var tick_multiplier := maxf(float(config.get("curse_tick_multiplier", 1.0)), 0.0)
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * ticks / maxf(interval, 0.18)
 
 
 static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
