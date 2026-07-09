@@ -4102,5 +4102,10 @@
   "key": "SCRUM-1012",
   "status": "Контроль качества",
   "desc_hash": "c0fc2bf3033bd2d938536a526731b81f"
+ },
+ "SCRUM-898_qa.md": {
+  "key": "SCRUM-898",
+  "status": "Контроль качества",
+  "desc_hash": "eb35680d103760bf4ee39514eae1f8ff"
  }
 }

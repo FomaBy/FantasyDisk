@@ -1,9 +1,14 @@
 # SCRUM-898 — independent QA
 
+Статус: done (remediation `f75ef20e`, ожидает повторный QA)  
 Date: 2026-07-10  
 QA owner: Codex `/root`  
 Implementation commits: `35301aa4`, `c4349b57`  
 Verdict: **FAILED**
+
+The verdict below records the first independent QA pass. Its three blockers were
+fixed in `f75ef20e`; Jira/local status is now review-ready for a new independent
+verdict.
 
 ## Blocking findings
 
