@@ -155,6 +155,10 @@ static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_s
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	# SCRUM-1000: бой не должен рождаться под чужой паузой (консольные fight/act
+	# в обход экранов). Штатные входы (клик узла карты, событие) приходят без
+	# pause-причин — для них это no-op. Симметрично гарду в _end_combat.
+	game._clear_all_game_pauses()
 	_boss_victory_pending = false
 	game.reset_run_ascension()
 	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
@@ -261,6 +265,15 @@ func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 
+	# SCRUM-1000: канонический конец боя снимает ВСЕ внутрибоевые pause-причины.
+	# Штатные пути (win/lose из main._process, died-сигнал игрока) недостижимы при
+	# активной паузе (main._process гейтится get_tree().paused), поэтому для них
+	# это no-op. Обходные пути (дев-консоль win/die при открытом level-up/досье/
+	# фидбеке) без этого оставляли get_tree().paused=true навсегда: победный флоу
+	# сносит pause-экран через _clear_ui без pop_pause, и следующий бой рождался
+	# мёртвым — без спавна волн, тика таймера, инпута и обновления камеры
+	# (игроку видна только верхняя-левая четверть арены).
+	game._clear_all_game_pauses()
 	_boss_victory_pending = false
 	var was_boss_fight = game.boss_combat_active
 	var was_elite_fight := str(game.current_combat_type) == "elite"
