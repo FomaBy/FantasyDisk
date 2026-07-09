@@ -75,6 +75,7 @@ func _run(errors: Array) -> void:
 	_test_entries_match_options(main, ui, errors)
 	_test_disable_decision(errors)
 	_test_clamp_and_persist(main, ui, errors)
+	_test_editor_preview_window_override(main, ui, errors)
 
 	main.queue_free()
 	await process_frame
@@ -142,3 +143,18 @@ func _test_clamp_and_persist(main, ui, errors: Array) -> void:
 		"персист валидного выбора (res=%d/mode=%d) не сохранился (%s/%s)" % [
 			0, max_mode, s2["resolution_index"], s2["window_mode_index"]])
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+
+
+func _test_editor_preview_window_override(main, ui, errors: Array) -> void:
+	var preview_size: Vector2i = ui._editor_preview_window_resolution(Vector2i(1920, 1040), Vector2i(1920, 1080), 1.0)
+	_expect(errors, preview_size.x < 1920 and preview_size.y < 1040,
+		"editor preview window should leave room for bordered window chrome")
+	_expect(errors, preview_size.x > 0 and preview_size.y > 0,
+		"editor preview window resolution must stay positive")
+	_expect(errors, absf((float(preview_size.x) / float(preview_size.y)) - (16.0 / 9.0)) <= 0.05,
+		"editor preview window should keep a 16:9 gameplay surface")
+	var saved_window_mode: int = main.selected_window_mode_index
+	var saved_resolution: int = main.selected_resolution_index
+	ui._apply_editor_preview_video_settings()
+	_expect(errors, main.selected_window_mode_index == saved_window_mode and main.selected_resolution_index == saved_resolution,
+		"editor preview override must not rewrite saved video selection indices")

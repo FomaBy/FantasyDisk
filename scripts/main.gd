@@ -592,7 +592,14 @@ func _load_game_settings() -> void:
 	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
-		ui._apply_video_settings()
+		if _is_editor_preview_runtime():
+			ui._apply_editor_preview_video_settings()
+		else:
+			ui._apply_video_settings()
+
+
+func _is_editor_preview_runtime() -> bool:
+	return OS.has_feature("editor")
 
 
 func save_game_settings() -> void:

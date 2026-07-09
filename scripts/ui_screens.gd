@@ -10730,6 +10730,46 @@ func _sync_window_content_scale(content_size: Vector2i) -> void:
 	window.content_scale_size = content_size
 
 
+func _editor_preview_window_resolution(usable_logical: Vector2i, screen_full: Vector2i, screen_scale: float) -> Vector2i:
+	var scale := maxf(screen_scale, 1.0)
+	var usable_physical := DisplayResolution.physical_usable_size(usable_logical, scale)
+	var max_window := Vector2i(maxi(320, usable_physical.x - 96), maxi(180, usable_physical.y - 96))
+	var default_index := DisplayResolution.default_resolution_index(screen_full, scale)
+	var target: Vector2i = game.RESOLUTION_OPTIONS[clampi(default_index, 0, game.RESOLUTION_OPTIONS.size() - 1)]
+	var fit_scale: float = minf(minf(float(max_window.x) / float(target.x), float(max_window.y) / float(target.y)), 1.0)
+	if fit_scale < 1.0:
+		target = Vector2i(
+			maxi(320, int(floor(float(target.x) * fit_scale))),
+			maxi(180, int(floor(float(target.y) * fit_scale)))
+		)
+	target.x = mini(target.x, max_window.x)
+	target.y = mini(target.y, max_window.y)
+	return target
+
+
+func _apply_editor_preview_video_settings() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+
+	var screen_count := DisplayServer.get_screen_count()
+	var screen: int = clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
+	var usable := DisplayServer.screen_get_usable_rect(screen)
+	var screen_full := DisplayServer.screen_get_size(screen)
+	var screen_scale := DisplayServer.screen_get_scale(screen)
+	var resolution := _editor_preview_window_resolution(usable.size, screen_full, screen_scale)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_RESIZE_DISABLED, false)
+	DisplayServer.window_set_current_screen(screen)
+	DisplayServer.window_set_size(resolution)
+	_sync_window_content_scale(resolution)
+	var logical_window_size := Vector2i(
+		int(round(float(resolution.x) / maxf(screen_scale, 1.0))),
+		int(round(float(resolution.y) / maxf(screen_scale, 1.0)))
+	)
+	DisplayServer.window_set_position(usable.position + (usable.size - logical_window_size) / 2)
+
+
 func _apply_video_settings() -> void:
 	game.selected_window_mode_index = clampi(game.selected_window_mode_index, 0, game.WINDOW_MODE_OPTIONS.size() - 1)
 	if DisplayServer.get_name() == "headless":

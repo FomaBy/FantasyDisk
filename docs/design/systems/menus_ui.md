@@ -930,6 +930,10 @@ with `DisplayResolution.clamp_to_physical(...)`, and `project.godot` enables
 `window/dpi/allow_hidpi=true`. QA evidence:
 `build/qa/scrum441/hidpi_resolution_evidence.md`.
 
+SCRUM-1002 makes Godot editor previews ignore saved fullscreen at launch and use
+a bordered, resizable, screen-fitting window. The override is non-persistent:
+exported/runtime builds still use the saved video mode and resolution.
+
 ## SCRUM-478 Bright Minimalist Full UI Anchor
 
 SCRUM-478 is the Design-source anchor for the next full-game minimalist UI
