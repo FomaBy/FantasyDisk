@@ -1,0 +1,536 @@
+{
+  "_comment": "Мастеринг-рецепт пака SCRUM-966/967 (см. docs/design/systems/audio.md §2/§5/§6/§7 и docs/design/references/audio_sources/SOURCES.md). Пути src относительны --src. SFX: иерархия групп громкости обеспечивается TP-потолками (hits -3 dBTP > dodge -4.5 > pickups/UI -6 > hit_dot -8; low_hp -6): короткие транзиенты физически не достигают LUFS-таргетов при потолке, поэтому peak-выравнивание внутри группы.",
+  "music": [
+    {
+      "id": "music_menu_tavern_warm",
+      "src": "music_src/Loop_The_Bards_Tale.wav",
+      "edit": "author_loop",
+      "repeat": 2,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: The Bard's Tale (loop version, CC0)"
+    },
+    {
+      "id": "music_route_map_bard_journey",
+      "src": "music_src/Exploration.mp3",
+      "edit": "cut_loop",
+      "bpm": 110.5,
+      "intro_sec": 2.5,
+      "loop_sec": 85.0,
+      "seam_xfade_sec": 0.4,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Exploration (CC0)"
+    },
+    {
+      "id": "music_shop_campfire_inn",
+      "src": "music_src/Suonatore_di_Liuto.mp3",
+      "edit": "cut_loop",
+      "bpm": 69.5,
+      "intro_sec": 2.0,
+      "loop_sec": 76.0,
+      "seam_xfade_sec": 0.5,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - Suonatore di Liuto (CC BY 4.0)"
+    },
+    {
+      "id": "music_combat_bardic_skirmish_a",
+      "src": "music_src/Loop_Minstrel_Dance.wav",
+      "edit": "author_loop",
+      "repeat": 1,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Minstrel Dance (loop version, CC0)"
+    },
+    {
+      "id": "music_combat_bardic_skirmish_b",
+      "src": "music_src/Master_of_the_Feast.mp3",
+      "edit": "cut_loop",
+      "bpm": 121.5,
+      "intro_sec": 3.0,
+      "loop_sec": 65.0,
+      "seam_xfade_sec": 0.35,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - Master of the Feast (CC BY 4.0)"
+    },
+    {
+      "id": "music_combat_ruined_courtyard",
+      "src": "music_src/Lord_of_the_Land.mp3",
+      "edit": "cut_loop",
+      "bpm": 110.5,
+      "intro_sec": 3.0,
+      "loop_sec": 62.0,
+      "seam_xfade_sec": 0.4,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - Lord of the Land (CC BY 4.0)"
+    },
+    {
+      "id": "music_combat_fey_marsh",
+      "src": "music_src/Celtic_Impulse.mp3",
+      "edit": "cut_loop",
+      "bpm": 141.5,
+      "intro_sec": 2.5,
+      "loop_sec": 64.0,
+      "seam_xfade_sec": 0.35,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - Celtic Impulse (CC BY 4.0)"
+    },
+    {
+      "id": "music_elite_duel_300",
+      "src": "music_src/battle.wav",
+      "edit": "author_loop",
+      "repeat": 1,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Battle (full=loop, CC0)"
+    },
+    {
+      "id": "music_boss_battle_300",
+      "src": "music_src/Drums_of_the_Deep.mp3",
+      "edit": "cut_loop",
+      "bpm": 76.5,
+      "intro_sec": 5.0,
+      "loop_sec": 130.0,
+      "seam_xfade_sec": 0.8,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - Drums of the Deep (CC BY 4.0)"
+    },
+    {
+      "id": "music_final_boss_crescendo_300",
+      "src": "music_src/The_Escalation.mp3",
+      "edit": "cut_loop",
+      "bpm": 119.0,
+      "intro_sec": 5.0,
+      "loop_sec": 140.0,
+      "seam_xfade_sec": 1.2,
+      "lufs": -16.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "Kevin MacLeod - The Escalation (CC BY 4.0)"
+    },
+    {
+      "id": "music_sting_victory",
+      "src": "music_src/victory.wav",
+      "edit": "sting_cut",
+      "start_sec": 0.05,
+      "dur_sec": 3.2,
+      "fade_out_sec": 0.6,
+      "norm": "momentary_max",
+      "lufs": -14.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Victory Theme (CC0), открывающая фраза"
+    },
+    {
+      "id": "music_sting_victory_epic",
+      "src": "music_src/victory.wav",
+      "edit": "sting_cut",
+      "start_sec": 20.6,
+      "dur_sec": 5.6,
+      "fade_out_sec": 1.1,
+      "norm": "momentary_max",
+      "lufs": -14.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Victory Theme (CC0), поздняя кульминация"
+    },
+    {
+      "id": "music_sting_defeat",
+      "src": "music_src/defeat.wav",
+      "edit": "sting_cut",
+      "start_sec": 0.04,
+      "dur_sec": 4.3,
+      "fade_out_sec": 0.9,
+      "norm": "momentary_max",
+      "lufs": -14.0,
+      "ceiling": -1.0,
+      "vorbis_level": 0.4,
+      "_src_track": "RandomMind - Medieval: Defeat Theme (CC0), первая фраза"
+    }
+  ],
+  "sfx": [
+    {
+      "id": "sfx_hit",
+      "dur_sec": 0.14,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "fade_out": 0.03,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactPunch_medium_000.ogg",
+          "slice": [
+            0.0,
+            0.13
+          ]
+        },
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactWood_light_000.ogg",
+          "slice": [
+            0.0,
+            0.1
+          ],
+          "gain_db": -7,
+          "at": 0.005
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_hit_magic",
+      "dur_sec": 0.18,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "fade_out": 0.05,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_rpg/Audio/cloth2.ogg",
+          "slice": [
+            0.0,
+            0.17
+          ],
+          "hp": 500
+        },
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactSoft_medium_000.ogg",
+          "slice": [
+            0.0,
+            0.1
+          ],
+          "lp": 2500,
+          "gain_db": -6
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_hit_dot",
+      "dur_sec": 0.09,
+      "lufs": -19.5,
+      "vorbis_level": 0.6,
+      "fade_in": 0.004,
+      "fade_out": 0.03,
+      "layers": [
+        {
+          "src": "sfx_src/fire-1.wav",
+          "slice": [
+            1.2,
+            1.29
+          ],
+          "hp": 400
+        }
+      ],
+      "ceiling": -8.0
+    },
+    {
+      "id": "sfx_player_hit",
+      "dur_sec": 0.24,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "fade_out": 0.05,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactPunch_heavy_000.ogg",
+          "slice": [
+            0.0,
+            0.21
+          ],
+          "pitch": 0.88
+        },
+        {
+          "src": "sfx_src/kenney_rpg/Audio/clothBelt.ogg",
+          "slice": [
+            0.0,
+            0.2
+          ],
+          "gain_db": -8,
+          "at": 0.01
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_dodge",
+      "dur_sec": 0.17,
+      "lufs": -19.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.04,
+      "layers": [
+        {
+          "src": "sfx_src/rpg_pack/RPG Sound Pack/battle/swing.wav",
+          "slice": [
+            0.0,
+            0.15
+          ],
+          "lp": 3200,
+          "pitch": 0.95
+        },
+        {
+          "src": "sfx_src/kenney_rpg/Audio/cloth1.ogg",
+          "slice": [
+            0.0,
+            0.14
+          ],
+          "gain_db": -5,
+          "at": 0.02
+        },
+        {
+          "src": "sfx_src/kenney_impact/Audio/footstep_carpet_000.ogg",
+          "slice": [
+            0.0,
+            0.1
+          ],
+          "lp": 2000,
+          "gain_db": -12,
+          "at": 0.07
+        }
+      ],
+      "ceiling": -4.5
+    },
+    {
+      "id": "sfx_pickup_xp",
+      "dur_sec": 0.14,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.05,
+      "layers": [
+        {
+          "src": "music_src/Suonatore_di_Liuto.mp3",
+          "slice": [
+            0.43,
+            0.57
+          ]
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_pickup_money",
+      "dur_sec": 0.16,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.045,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_rpg/Audio/handleCoins.ogg",
+          "slice": [
+            0.41,
+            0.57
+          ],
+          "lp": 6000
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_level_up",
+      "dur_sec": 0.75,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "fade_out": 0.22,
+      "layers": [
+        {
+          "src": "music_src/victory.wav",
+          "slice": [
+            0.0,
+            0.75
+          ]
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_purchase",
+      "dur_sec": 0.34,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.06,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_rpg/Audio/handleCoins2.ogg",
+          "slice": [
+            0.0,
+            0.3
+          ]
+        },
+        {
+          "src": "sfx_src/kenney_rpg/Audio/handleSmallLeather.ogg",
+          "slice": [
+            0.0,
+            0.28
+          ],
+          "gain_db": -2,
+          "at": 0.1
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_ui_click",
+      "dur_sec": 0.08,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.025,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactWood_light_001.ogg",
+          "slice": [
+            0.0,
+            0.075
+          ]
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_ui_back",
+      "dur_sec": 0.09,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.03,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactWood_light_001.ogg",
+          "slice": [
+            0.0,
+            0.07
+          ],
+          "pitch": 0.84
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_ui_error",
+      "dur_sec": 0.24,
+      "lufs": -20.5,
+      "vorbis_level": 0.6,
+      "fade_out": 0.07,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactWood_medium_000.ogg",
+          "slice": [
+            0.0,
+            0.18
+          ],
+          "pitch": 0.75,
+          "lp": 2200
+        }
+      ],
+      "ceiling": -6.0
+    },
+    {
+      "id": "sfx_artifact_reveal",
+      "dur_sec": 0.95,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "stereo": true,
+      "fade_in": 0.005,
+      "fade_out": 0.3,
+      "layers": [
+        {
+          "src": "music_src/victory.wav",
+          "slice": [
+            20.5,
+            21.45
+          ]
+        },
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactSoft_heavy_000.ogg",
+          "slice": [
+            0.0,
+            0.35
+          ],
+          "pitch": 0.7,
+          "gain_db": -5
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_boss_phase",
+      "dur_sec": 0.95,
+      "lufs": -18.0,
+      "vorbis_level": 0.6,
+      "fade_out": 0.28,
+      "layers": [
+        {
+          "src": "sfx_src/kenney_impact/Audio/impactSoft_heavy_000.ogg",
+          "slice": [
+            0.0,
+            0.45
+          ],
+          "pitch": 0.62
+        },
+        {
+          "src": "music_src/Drums_of_the_Deep.mp3",
+          "slice": [
+            0.0,
+            0.9
+          ],
+          "lp": 550,
+          "gain_db": -7,
+          "at": 0.05
+        }
+      ],
+      "ceiling": -3.0
+    },
+    {
+      "id": "sfx_low_hp_pulse",
+      "dur_sec": 5.4,
+      "lufs": -24.0,
+      "vorbis_level": 0.6,
+      "stereo": true,
+      "loop": true,
+      "loop_xfade_sec": 0.12,
+      "norm": "shortterm_max",
+      "ceiling": -6.0,
+      "layers": [
+        {
+          "src": "sfx_src/heartbeat_slow.wav",
+          "lp": 900
+        },
+        {
+          "src": "sfx_src/heartbeat_slow.wav",
+          "lp": 900,
+          "at": 1.8
+        },
+        {
+          "src": "sfx_src/heartbeat_slow.wav",
+          "lp": 900,
+          "at": 3.6
+        },
+        {
+          "src": "sfx_src/ghostbreath.flac",
+          "pitch": 1.267,
+          "lp": 1500,
+          "gain_db": -6,
+          "fade_in": 0.15,
+          "fade_out": 0.2
+        },
+        {
+          "src": "sfx_src/ghostbreath.flac",
+          "pitch": 1.267,
+          "lp": 1500,
+          "gain_db": -6,
+          "at": 2.7,
+          "fade_in": 0.15,
+          "fade_out": 0.2
+        }
+      ]
+    }
+  ]
+}
