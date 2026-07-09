@@ -1359,7 +1359,13 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var magic_intelligence := intelligence
 	if magic_bonus_effectiveness != 1.0 and not base_for_growth.is_empty():
 		var base_intelligence := float(base_for_growth.get("intelligence", intelligence))
-		magic_intelligence = base_intelligence + maxf(intelligence - base_intelligence, 0.0) * magic_bonus_effectiveness
+		var intelligence_delta := intelligence - base_intelligence
+		# The trait amplifies only a positive bonus. A below-base value is a
+		# penalty and must pass through unchanged, just like multiplier penalties
+		# in _amplified_bonus_multiplier(). Clamping the delta to zero here would
+		# silently restore debuffed Intelligence to the class base (SCRUM-1019).
+		if intelligence_delta > 0.0:
+			magic_intelligence = base_intelligence + intelligence_delta * magic_bonus_effectiveness
 	var magic_base := 14.0 * magic_intelligence / 10.0
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat

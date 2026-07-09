@@ -165,11 +165,29 @@ func _test_trait_attribute_source(errors: Array) -> void:
 	var actual_gain := float(bumped.get("magic_damage")) / float(base.get("magic_damage")) - 1.0
 	if absf(actual_gain - expected_gain) > 0.001:
 		errors.append("атрибутный источник: рост магии %.5f != ожидаемого %.5f (дельта интеллекта × growth × 1.30)" % [actual_gain, expected_gain])
+	# SCRUM-1019: trait усиливает только положительную дельту. Отрицательная
+	# дельта проходит без ×1.30 и обязательно снижает магический канал вместо
+	# скрытого восстановления значения к базе класса.
+	var stats_reduced: Dictionary = stats_base.duplicate(true)
+	stats_reduced["intelligence"] = float(stats_reduced["intelligence"]) - 2.0
+	var reduced := PD.derived_parameters(stats_reduced, {}, config_e)
+	# _scaled_stat_growth deliberately scales positive progression only; attribute
+	# penalties pass through at face value before the Elementalist trait is applied.
+	var expected_loss := 2.0 / base_intelligence
+	var actual_loss := 1.0 - float(reduced.get("magic_damage")) / float(base.get("magic_damage"))
+	if absf(actual_loss - expected_loss) > 0.001:
+		errors.append("атрибутный штраф: потеря магии %.5f != ожидаемой %.5f (отрицательная дельта не должна усиливаться или обнуляться)" % [actual_loss, expected_loss])
+	if float(reduced.get("magic_damage")) >= float(base.get("magic_damage")) - EPS:
+		errors.append("атрибутный штраф: интеллект ниже базы не снизил магический канал")
 	# Прочие каналы от интеллекта не растут (изоляция типов SCRUM-524).
 	if absf(float(bumped.get("damage")) - float(base.get("damage"))) > EPS:
 		errors.append("атрибутный источник: интеллект изменил физический канал")
 	if absf(float(bumped.get("dot_damage")) - float(base.get("dot_damage"))) > EPS:
 		errors.append("атрибутный источник: интеллект изменил периодический канал")
+	if absf(float(reduced.get("damage")) - float(base.get("damage"))) > EPS:
+		errors.append("атрибутный штраф: интеллект изменил физический канал")
+	if absf(float(reduced.get("dot_damage")) - float(base.get("dot_damage"))) > EPS:
+		errors.append("атрибутный штраф: интеллект изменил периодический канал")
 
 
 func _test_trait_stacking_no_double_apply(errors: Array) -> void:
