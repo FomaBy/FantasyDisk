@@ -17,7 +17,7 @@
 | `biologist` | bio-reaction scientist: spore blooms, sample analysis, symbiote webs |
 | `robot` | heavy tank-control construct: magnetic pulls, compression lines, reactor vents |
 | `engineer` | mechanical summoner/support: sentry links, repair drone sustain, pressure mine grid |
-| `dark_mage` | caster: AoE, beams, DoT, дистанционный wave clear |
+| `dark_mage` | caster: цепные снаряды, curse-прожиг, зеркальные AoE-взрывы; убитые взрываются (trait «Тёмный распад») |
 | `guitarist` | sound/control: waves, knockback, deployable amp |
 | `assassin` | быстрый crit melee/ranged hybrid: boomerang, flurry, poison line |
 | `ranger` | дальний точный контроль: piercing shots, fan beams, trap |
@@ -72,9 +72,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `engineer` | `engineer_sentry_wrench` | Ключ Часового | `EngineerSentryWrench.tscn` | `engineer_sentry_link` | `turret_dps`: temporary sentries remember targets per cycle, spread beam shots, and add small capped splash |
 | `engineer` | `engineer_repair_drone` | Ремонтный Дрон | `EngineerRepairDrone.tscn` | `engineer_repair_drone` | Chain drone links enemies and repairs owner from damage |
 | `engineer` | `engineer_pressure_mines` | Минная Сетка | `EngineerPressureMines.tscn` | `engineer_pressure_mines` | Three pressure mines fan out and trigger independently |
-| `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `aoe_projectile` | 2 AoE-снаряда по ближайшим целям |
-| `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `homing_curse` | Самонаведение, DoT и decayed curse splash |
-| `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `beam` | 2 pierce-луча веером с decay после каждой цели |
+| `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `dark_mirror_blast` | Пара взрывов: по цели и в зеркальной точке относительно мага (SCRUM-941) |
+| `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `skull_curse_burn` | Curse-only зона: без прямого урона, частые dot-тики по проклятым (SCRUM-940) |
+| `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `dark_chain_burst` | Цепной снаряд до 3 целей с малым AoE-бурстом на каждом попадании (SCRUM-939) |
 | `guitarist` | `electric_guitar` | Электрогитара | `ElectricGuitar.tscn` | `sound_wave` | Направленная звуковая волна |
 | `guitarist` | `bass_guitar` | Бас-гитара | `BassGuitar.tscn` | `pulse` | Частый круговой pulse/knockback |
 | `guitarist` | `sound_amp` | Звуковой усилитель | `SoundAmp.tscn` | `amp` | `stage_pulse`: deploy amp, autonomous pulses, cleanup, capped deploy count |

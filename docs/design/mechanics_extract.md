@@ -177,9 +177,9 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные турели (жёсткий лимит 2, старейшая заменяется) автострельбой бьют залпом по разным ближайшим целям, малый capped splash; урон/темп скейлятся от Лидерства |
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
-| Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
-| Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и decayed splash по области цели |
-| Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов), damage decays после каждой цели |
+| Темный маг | Темная книга | `dark_book` | `dark_mirror_blast` | SCRUM-941: каждый каст = пара взрывов — по цели и в зеркальной точке M = 2*маг − P; оба по общим правилам урона, двойное накрытие легально |
+| Темный маг | Проклятый череп | `cursed_skull` | `skull_curse_burn` | SCRUM-940: curse-only зона — прямого урона нет; dot_ticks частых тиков dot-оси (скейл dot_damage/dot_speed, refresh без стаков) |
+| Темный маг | Темный жезл | `dark_wand` | `dark_chain_burst` | SCRUM-939: цепной снаряд до 3 разных целей (спад по прыжкам, без повторов), малый магический бурст по соседям каждого попадания |
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
 | Гитарист | Усилитель | `sound_amp` | `amp` | `stage_pulse`: деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4), cap 3 |
@@ -831,7 +831,9 @@ breaking the numeric gate: global damage smoke still passes with worst CCT
 `tests/projectile_chain_pierce_identity_test.gd`: grenade damage waits for fuse,
 meteor uses a longer cast plus shard payoff, coin ricochet stays nearest-chain,
 sniper shatter uses fan trajectories with limited pierce, prayer chain prefers a
-sustain arc toward the owner, and dark curse/pierce damage decays.
+sustain arc toward the owner, dark wand chain damage decays per hop within
+hop range, and the cursed skull zone curses without direct damage
+(SCRUM-939/940 rework).
 
 ### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
 
