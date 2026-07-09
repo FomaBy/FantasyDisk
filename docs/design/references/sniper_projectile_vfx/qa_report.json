@@ -1,0 +1,278 @@
+{
+  "issue": "SCRUM-934",
+  "pipeline": "PixelLab MCP create_map_object + deterministic alpha cleanup",
+  "status": "PASS",
+  "failures": [],
+  "assets": {
+    "sniper_shatter_rounds_projectile": {
+      "pixel_lab_id": "7da22aa9-112f-4f01-942b-4f6d9d85c380",
+      "source": {
+        "path": "docs/design/references/sniper_projectile_vfx/pixellab_shatter_rounds_projectile_source.png",
+        "sha256": "f95f29cbdc253eb6909a278123e31c6c65f6efc54d97316dd304e1eb510afc70",
+        "size": [
+          128,
+          64
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          19,
+          24,
+          115,
+          39
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 13,
+        "coverage_alpha_gt_0": 0.113037,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "accepted": {
+        "path": "docs/design/references/sniper_projectile_vfx/accepted_shatter_rounds_projectile.png",
+        "sha256": "6d2cd9a21b8925adcd452c30ea4e94c30a379323dbf4501ca3b2156c58ba367e",
+        "size": [
+          128,
+          64
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          19,
+          24,
+          115,
+          39
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 13,
+        "coverage_alpha_gt_0": 0.113037,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "runtime": {
+        "path": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds_projectile.png",
+        "sha256": "6d2cd9a21b8925adcd452c30ea4e94c30a379323dbf4501ca3b2156c58ba367e",
+        "size": [
+          128,
+          64
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          19,
+          24,
+          115,
+          39
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 13,
+        "coverage_alpha_gt_0": 0.113037,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "display_size": [
+        48,
+        24
+      ]
+    },
+    "sniper_deadeye_rifle_endpoint_impact": {
+      "pixel_lab_id": "371efe43-2f92-4c5d-9421-2d56b1eb4895",
+      "source": {
+        "path": "docs/design/references/sniper_projectile_vfx/pixellab_deadeye_endpoint_impact_source.png",
+        "sha256": "4a485bdc8b5f2c0feb3f0655bcdab29e96129bf03e9047f38080c215692d9051",
+        "size": [
+          192,
+          192
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          22,
+          23,
+          167,
+          172
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 20,
+        "coverage_alpha_gt_0": 0.083062,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "accepted": {
+        "path": "docs/design/references/sniper_projectile_vfx/accepted_deadeye_endpoint_impact.png",
+        "sha256": "744d92e4308f1ed4ec5bfbc644c9278fe20c98342399fde0ab56ea4989bba2a6",
+        "size": [
+          192,
+          192
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          22,
+          23,
+          167,
+          172
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 20,
+        "coverage_alpha_gt_0": 0.083062,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "runtime": {
+        "path": "assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle_endpoint_impact.png",
+        "sha256": "744d92e4308f1ed4ec5bfbc644c9278fe20c98342399fde0ab56ea4989bba2a6",
+        "size": [
+          192,
+          192
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          22,
+          23,
+          167,
+          172
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 20,
+        "coverage_alpha_gt_0": 0.083062,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "display_size": [
+        96,
+        96
+      ]
+    },
+    "sniper_spotter_scope_telegraph": {
+      "pixel_lab_id": "7d95f053-d8d2-4f26-abb9-deeb3c52b3a8",
+      "source": {
+        "path": "docs/design/references/sniper_projectile_vfx/pixellab_spotter_scope_telegraph_source.png",
+        "sha256": "d416ebc35e2a2739f4de9632a08aeea3db3864188d5c1f2678f2034b7c0b306c",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "transparent_corners": false,
+        "min_gutter_px": 0,
+        "coverage_alpha_gt_0": 1.0,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "accepted": {
+        "path": "docs/design/references/sniper_projectile_vfx/accepted_spotter_scope_telegraph.png",
+        "sha256": "e6fb5560448f9153eafdf280b1cf387522ffaaf573952dcc9392852d94bdb576",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          9,
+          10,
+          247,
+          246
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 9,
+        "coverage_alpha_gt_0": 0.454376,
+        "alpha_max": 168,
+        "partial_alpha_pixels": 29778
+      },
+      "runtime": {
+        "path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope_telegraph.png",
+        "sha256": "e6fb5560448f9153eafdf280b1cf387522ffaaf573952dcc9392852d94bdb576",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          9,
+          10,
+          247,
+          246
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 9,
+        "coverage_alpha_gt_0": 0.454376,
+        "alpha_max": 168,
+        "partial_alpha_pixels": 29778
+      },
+      "display_size": [
+        160,
+        160
+      ]
+    },
+    "sniper_spotter_scope_impact": {
+      "pixel_lab_id": "4fd616e6-1e86-4d7a-9498-ff1cc43980aa",
+      "source": {
+        "path": "docs/design/references/sniper_projectile_vfx/pixellab_spotter_scope_impact_source.png",
+        "sha256": "965d0abc325f19fe14af980d1029626d52b380a6c959528022c6302ddfd1f8f4",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "transparent_corners": false,
+        "min_gutter_px": 0,
+        "coverage_alpha_gt_0": 1.0,
+        "alpha_max": 255,
+        "partial_alpha_pixels": 0
+      },
+      "accepted": {
+        "path": "docs/design/references/sniper_projectile_vfx/accepted_spotter_scope_impact.png",
+        "sha256": "c31c7430d96d8aeb51cb96745ab77bf1cb934b2cd66e2397792035cedad47df5",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          27,
+          21,
+          238,
+          231
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 18,
+        "coverage_alpha_gt_0": 0.491394,
+        "alpha_max": 235,
+        "partial_alpha_pixels": 32204
+      },
+      "runtime": {
+        "path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope_impact.png",
+        "sha256": "c31c7430d96d8aeb51cb96745ab77bf1cb934b2cd66e2397792035cedad47df5",
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          27,
+          21,
+          238,
+          231
+        ],
+        "transparent_corners": true,
+        "min_gutter_px": 18,
+        "coverage_alpha_gt_0": 0.491394,
+        "alpha_max": 235,
+        "partial_alpha_pixels": 32204
+      },
+      "display_size": [
+        144,
+        144
+      ]
+    }
+  },
+  "contact_sheet": "docs/design/previews/sniper_projectile_vfx_contact.png",
+  "visual_review": "PENDING_INDEPENDENT_QA"
+}
