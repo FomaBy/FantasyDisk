@@ -79,3 +79,48 @@ Read-only: runtime/data/tests/product docs, especially `scripts/ui_screens.gd` a
 - [x] Runtime smoke green gate.
 - [x] Package ready for commit/push and Jira `Контроль качества`; final hashes
   and disk cleanup are recorded in the Jira result comment after integration.
+
+## Независимый QA-вердикт 2026-07-10
+
+Статус: PASSED
+
+Проверил: QA/Designer2 Codex (`/root/audit_qa`)
+
+База финального прогона: fresh `origin/dev` `69e416c3`
+
+- Design Main завершил и освободил locks до начала проверки; QA не менял
+  mockup, PixelLab source, layout, spec, preview, runtime code или tests.
+- PixelLab provenance подтверждён по manifest/request/export evidence. Accepted
+  asset ID: `3ace4827-cfee-439e-8545-4dc145993d2f`; raw native export является
+  настоящим `672x378` RGBA с `141392` полностью прозрачными и `112624`
+  непрозрачными пикселями, без partial alpha. Его SHA-256:
+  `86429a6fcc0fedd2fd1b560b2ac2e60cd11e59c40578beb1cfe78b565cbc3159`.
+- Source PNG pixel-identical raw export (отличается только PNG encoding), а
+  `1920x1080` base является точным nearest-neighbour upscale. SHA-256 source:
+  `897eefe8d9b0a1e0a95d4d9712fdd735c346a3bac37e5250cc34ff2a2441d7ba`;
+  base: `38fb3e21db0565b3490dac269e2d4ad7a4366da34cfe49d51be8e5a516bd1670`.
+- Независимый повтор planning validator совпал с committed report:
+  `ready_for_image`, `ok=true`, 35/35 элементов, 0 errors/warnings. Layout guide
+  и final compositor совпали с committed reports: `ok=true`, 18/18 zones.
+  Повторно сгенерированные final/debug изображения pixel-exact совпали с
+  committed файлами (`max diff=0`).
+- Все 18 content zones уникальны, попарно не пересекаются и находятся внутри
+  родительских interiors. Ни одна зона не пересекает scrollbar lanes
+  `884..904`, `1242..1258`, `1720..1740`; все rendered text bboxes помещаются
+  в свои зоны.
+- Responsive contract проверен для `1280x720`, `1920x1080`, `2560x1440`:
+  панели остаются в canvas, межпанельные gaps масштабируются `16/24/32 px`.
+  Preview и debug overlay визуально проверены: текст, иконка, списки и detail
+  находятся только в пустых тёмных областях; dragon claws, gems, rails, button
+  caps и углы рамок не перекрыты. Все шесть русских вкладок читаются; baked
+  text, pseudotext и watermark отсутствуют.
+- Final mockup и preview byte-identical, SHA-256
+  `424c8208c70bba44017c16aede7ad92d294ad24904c73c4b8464f5a05be08faf`;
+  debug overlay SHA-256
+  `8164516811a621a0b636f35edfb181cc7a61fbd88b60a0ad6d190140142ba5a9`.
+- `runtime_smoke_test.gd` повторно прошёл после fast-forward до актуального
+  `origin/dev`, включая duplicate-artifact guard. Единственный вывод — известное
+  benign dummy-render предупреждение `texture_2d_get` screenshot helper.
+
+Вердикт: Design-пакет SCRUM-1013 соответствует PixelLab/content-zone/UI
+контрактам и принят для Backend handoff SCRUM-955.
