@@ -22,7 +22,7 @@
 | `assassin` | быстрый crit melee/ranged hybrid: boomerang, flurry, poison line |
 | `ranger` | дальний точный контроль: piercing shots, fan beams, trap |
 | `doctor` | self-sustain через урон: potion, poison injection, melee saw |
-| `chemist` | AoE + DoT zones: explosions, acid pools, homunculus summon |
+| `chemist` | catalyst-периодика (+50%): быстрый физический AoE, вечные кислотные заряды из луж, постоянная пара гомункулов танк+кастер |
 | `knight` | tank/control melee: spear strip, shield bash, circular flail |
 | `druid` | summon/nature control: beast pack, thorn zones, raven totem |
 
@@ -87,9 +87,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `doctor` | `restore_potion` | Зелье восстановления | `RestorePotion.tscn` | `drain_link` | Drain-связь к ближайшей цели, weapon-only heal |
 | `doctor` | `plague_syringe` | Чумной шприц | `PlagueSyringe.tscn` | `drain_link` | Тонкая plague-link связь с DoT и sustain cap |
 | `doctor` | `bone_saw` | Костяная пила | `BoneSaw.tscn` | `stab_flurry` | Ближний saw/flurry, DoT, small weapon-only heal |
-| `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | Взрыв + poison cloud |
-| `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | Большая acid pool / stacking DoT feeling |
-| `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | `tank_control` homunculus scaling from magic damage |
+| `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | SCRUM-943: быстрый ПРЯМОЙ физический close-mid AoE (fire 0.62, r150, range 430), без луж/DoT; trait периодики его не усиливает |
+| `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | SCRUM-944: долгая (7с) полупрозрачная лужа; тики пока враг внутри + один ВЕЧНЫЙ кислотный заряд с каждой отдельной лужи (кап 5, артефакт +3), заряды тикают по dot-оси до смерти носителя |
+| `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | SCRUM-946: постоянная пара — танк (4x max HP Химика, таунт-пульсы, смертен, респавн 4с) + неуязвимый кастер (вне боевого лимита, волны каждые 1.7с вешают вечный DoT-заряд, кап 4; fallback-позиция — плечо Химика) |
 | `knight` | `long_spear` | Копье | `LongSpear.tscn` | `strip` | Длинный точечный выпад, легкий frontal block/counter |
 | `knight` | `tower_shield` | Башенный щит | `TowerShield.tscn` | `sweep` | Frontal guard/counter, contact-pack control |
 | `knight` | `holy_flail` | Освященный кистень | `HolyFlail.tscn` | `circle` | Circular holy control, broad soft counter |
@@ -140,9 +140,40 @@ Design visual set is complete for the first 9 classes and 27 weapons as of 2026-
 
 Socket/display status: the original 27 weapon scenes point to matching canonical PNG and use reduced `WeaponVisual.scale` for clearer body/face readability. Soldier scenes point to canonical `soldier_rifle.png`, `soldier_grenade.png`, and `soldier_bayonet.png`. Preview sheets: `docs/design/previews/weapon_v2_assets_contact.png` for raw PNG QA and `docs/design/previews/weapon_v2_socket_contact.png` for class/weapon visual placement. `venom_wire` is intentionally thin and best paired with a separate line/VFX during attacks; `hunter_trap` and several deploy/summon weapons can also serve as world sprite bases.
 
-Source-specific summon/deploy visuals (SCRUM-157): `scripts/summoner_weapon.gd` reads `ally_visual_id` / `ally_visual_ids` and passes the selected ID into `AllyMinion.set_visual_id()`. `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses `ally_homunculus`; `leadership_echo` is reserved for future echo-style summons. `scripts/class_weapon.gd` reads optional `deploy_texture_path`: `sound_amp` deploys `deploy_sound_amp_field.png`, while `raven_totem` deploys `deploy_raven_totem_field.png`.
+Source-specific summon/deploy visuals (SCRUM-157): `scripts/summoner_weapon.gd` reads `ally_visual_id` / `ally_visual_ids` and passes the selected ID into `AllyMinion.set_visual_id()`. `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses the SCRUM-945 PixelLab pair art (`homunculus_tank_*`/`homunculus_caster_*`, 4-directional static frames chosen by movement axis in `AllyMinion`/`SummonerWeapon`); `leadership_echo` is reserved for future echo-style summons. `scripts/class_weapon.gd` reads optional `deploy_texture_path`: `sound_amp` deploys `deploy_sound_amp_field.png`, while `raven_totem` deploys `deploy_raven_totem_field.png`.
 
 Summon role runtime (SCRUM-254/SCRUM-854/SCRUM-859): summon/deploy configs may define `summon_role`, `deploy_role` and role coefficients. `SummonerWeapon` builds an `AllyMinion.set_combat_profile()` payload from owner `derived_parameters` and Leadership: damage, move speed, attack interval, lifetime, max HP, control knockback, support healing and small splash. Current mobile summon roles are `pack_damage` (Druid beasts), `tank_control` (Chemist homunculus), `support_totem`, `engineer_sentry` and `support_drone`; deploy identity roles are `stage_pulse` (Guitarist amp), `support_totem` (Druid raven totem), `turret_dps` (Engineer sentry), `repair_chain` (Engineer drone), and `mine_grid` (Engineer mines). Mobile summon weapons tag minions by owner+weapon, prefill about half of the current cap at battle start, and then replenish normally. ClassWeapon deploy count uses `max_summons_cap` where configured, so Leadership still improves the loop but cannot create AFK runaway device carpets. `ProgressionData.weapon_archetype()` treats `summon_role` weapons as summon archetype, and the balance harness models pure summon DPS through minion output rather than an invisible direct hit.
+
+## Chemist Class Trait — «Катализатор» (SCRUM-942)
+
+Signature trait Химика (канон: `docs/design/class_traits_registry.md`, данные:
+`ProgressionData.CLASS_TRAITS`): ВЕСЬ периодический урон Химика усилен на +50%
+(`periodic_damage_multiplier: 1.5`). Прямые попадания — включая прямой AoE-взрыв
+Взрывной пыли — trait НЕ усиливает.
+
+Что считается периодическим (source tagging, data-driven — будущие оружия
+опт-инятся этими же тегами):
+
+- hit-контексты с `damage_type="dot"`: тики луж (`ClassWeapon._damage_enemies_in_pool`),
+  DoT-тики оружия (`_apply_weapon_dot_tick`) — множитель применяется в
+  `Player.meta_damage_multiplier`;
+- статусы с `dot_damage`, применённые через `StatusEffects.apply_status_from(источник, ...)`:
+  кислотные заряды луж, волны гомункула-кастера, `toxic_debuff` — множитель
+  источника запекается в `dot_damage` на моменте применения;
+- универсальные DoT-тики игрока (`Player._trigger_universal_dot`).
+
+Бюджет-формулы зеркалят trait в `_budget_dot_dps`/`_budget_pool_dps`/
+`_budget_pool_charge_dps`/`_budget_summon_wave_dps`, поэтому авто-тюнинг
+(`budget_tuning_for`) сам пересчитывает кит Химика под классовый коридор —
+формульный гейт и live-замеры видят одну и ту же периодику. Утечка другим
+классам исключена данными: у классов без trait'а множитель 1.0
+(`tests/chemist_kit_test.gd`).
+
+Балансовые капы периодики Химика (задокументированные): кислотные заряды — не
+более 5 вечных зарядов на цель с разных луж (артефакт «Кислотный катализатор»
++3, до 8); повторное стояние в одной луже второй заряд НЕ даёт (per-pool
+идентичность статуса `acid_charge_p<pool_id>`); волны кастера — стак до 4 вечных
+зарядов `homunculus_caster_dot` на цель.
 
 ## Targeting Rule
 
