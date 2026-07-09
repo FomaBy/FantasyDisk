@@ -5063,9 +5063,19 @@ func _settings_video_dirty() -> bool:
 	return false
 
 
-func _pending_screen_index(screen_count: int) -> int:
+func _settings_monitor_model(screen_sizes: Array[Vector2i]) -> Dictionary:
 	_ensure_settings_video_pending()
-	return clampi(int(settings_video_pending.get("screen_index", game.selected_screen_index)), 0, maxi(screen_count - 1, 0))
+	return DisplayResolution.monitor_options(
+		screen_sizes,
+		int(settings_video_pending.get("screen_index", game.selected_screen_index))
+	)
+
+
+func _current_monitor_sizes() -> Array[Vector2i]:
+	var screen_sizes: Array[Vector2i] = []
+	for screen_index in range(maxi(DisplayServer.get_screen_count(), 0)):
+		screen_sizes.append(DisplayServer.screen_get_size(screen_index))
+	return screen_sizes
 
 
 func _clamp_pending_resolution_for_screen(screen_index: int) -> void:
@@ -5223,15 +5233,14 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var screen_box := screen_tab.get_child(0) as VBoxContainer
 	tabs.add_child(screen_tab)
 
-	var screen_count := DisplayServer.get_screen_count()
-	var pending_screen := _pending_screen_index(screen_count)
-	if screen_count > 1:
+	var monitor_model := _settings_monitor_model(_current_monitor_sizes())
+	var pending_screen := int(monitor_model["selected_index"])
+	if bool(monitor_model["visible"]):
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
 		_settings_v6_apply_field_theme(screen_options, s)
-		for screen_index in range(screen_count):
-			var size := DisplayServer.screen_get_size(screen_index)
-			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
+		for option: Dictionary in monitor_model["options"]:
+			screen_options.add_item(str(option["label"]), int(option["index"]))
 		screen_options.selected = pending_screen
 		screen_options.item_selected.connect(func(index: int) -> void:
 			settings_video_pending["screen_index"] = index

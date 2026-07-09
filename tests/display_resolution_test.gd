@@ -24,6 +24,7 @@ func _initialize() -> void:
 	_test_clamp(errors)
 	_test_scale_guard(errors)
 	_test_allowed_policy(errors)
+	_test_monitor_options(errors)
 	_write_scrum441_dump()
 
 	if not errors.is_empty():
@@ -98,6 +99,32 @@ func _test_allowed_policy(errors: Array) -> void:
 		"sanitize_resolution_index должен клэмпить отрицательный индекс в 0")
 	_expect(errors, DisplayResolution.sanitize_resolution_index(999) == 1,
 		"sanitize_resolution_index должен клэмпить высокий индекс в Full HD")
+
+
+func _test_monitor_options(errors: Array) -> void:
+	var three_screens: Array[Vector2i] = [
+		Vector2i(1920, 1080),
+		Vector2i(2560, 1440),
+		Vector2i(3840, 2160),
+	]
+	var model := DisplayResolution.monitor_options(three_screens, 1)
+	_expect(errors, bool(model["visible"]), "three-screen selector должен быть видим")
+	_expect(errors, int(model["selected_index"]) == 1, "валидный monitor index должен сохраняться")
+	var options: Array = model["options"]
+	_expect(errors, options.size() == 3, "three-screen model должен содержать ровно 3 опции")
+	if options.size() == 3:
+		_expect(errors, str(options[0]["label"]) == "Экран 1 (1920x1080)", "неверная первая monitor label")
+		_expect(errors, str(options[1]["label"]) == "Экран 2 (2560x1440)", "неверная вторая monitor label")
+		_expect(errors, str(options[2]["label"]) == "Экран 3 (3840x2160)", "неверная третья monitor label")
+	_expect(errors, DisplayResolution.sanitize_screen_index(three_screens, -4) == 0,
+		"negative monitor index должен fallback'иться в 0")
+	_expect(errors, DisplayResolution.sanitize_screen_index(three_screens, 99) == 2,
+		"oversized monitor index должен clamp'иться к последнему экрану")
+	var no_screens: Array[Vector2i] = []
+	var empty_model := DisplayResolution.monitor_options(no_screens, 8)
+	_expect(errors, not bool(empty_model["visible"]), "zero-screen selector должен быть скрыт")
+	_expect(errors, int(empty_model["selected_index"]) == 0, "zero-screen fallback должен вернуть 0")
+	_expect(errors, (empty_model["options"] as Array).is_empty(), "zero-screen model не должен иметь опций")
 
 
 func _write_scrum441_dump() -> void:

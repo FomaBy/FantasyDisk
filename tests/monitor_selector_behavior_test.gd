@@ -10,8 +10,8 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const GameSettings := preload("res://scripts/game_settings.gd")
+const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const SAVE_PATH := "user://settings.cfg"
-const UI_SCREENS_PATH := "res://scripts/ui_screens.gd"
 
 
 func _initialize() -> void:
@@ -51,7 +51,7 @@ func _expect(errors: Array[String], condition: bool, message: String) -> void:
 
 func _run(errors: Array[String]) -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
-	_test_runtime_source_contract(errors)
+	_test_virtual_monitor_option_model(errors)
 
 	var main := MAIN_SCENE.instantiate()
 	root.add_child(main)
@@ -65,34 +65,78 @@ func _run(errors: Array[String]) -> void:
 		return
 
 	_test_resolution_contract(main, errors)
+	_test_runtime_monitor_adapter(ui, errors)
 	_test_virtual_screen_clamping(main, ui, errors)
 	await _test_single_screen_visibility(ui, errors)
 	await _test_apply_revert_and_restart(main, ui, errors)
 
 
-func _test_runtime_source_contract(errors: Array[String]) -> void:
-	var source_file := FileAccess.open(UI_SCREENS_PATH, FileAccess.READ)
-	_expect(errors, source_file != null, "cannot read %s" % UI_SCREENS_PATH)
-	if source_file == null:
-		return
-	var source := source_file.get_as_text()
-	source_file.close()
+func _test_virtual_monitor_option_model(errors: Array[String]) -> void:
+	var one_screen: Array[Vector2i] = [Vector2i(1920, 1080)]
+	var one_model := DisplayResolution.monitor_options(one_screen, 0)
+	_expect(errors, not bool(one_model["visible"]),
+		"one-screen monitor selector model should be hidden")
+	_expect(errors, int(one_model["selected_index"]) == 0,
+		"one-screen model should select screen 0")
+	var one_options: Array = one_model["options"]
+	_expect(errors, one_options.size() == 1,
+		"one-screen model should retain one exact option for runtime geometry")
+	if one_options.size() == 1:
+		_expect(errors, str(one_options[0]["label"]) == "Экран 1 (1920x1080)",
+			"one-screen label is not exact")
 
-	# The selector must not consume space on a one-monitor setup.
-	_expect(errors, source.contains("if screen_count > 1:"),
-		"SettingsScreenOption is not guarded by screen_count > 1")
-	# Stable, user-readable labels: one-based number plus physical size hint.
-	_expect(errors, source.contains('screen_options.add_item("Экран %d (%dx%d)"'),
-		"monitor option label is not the expected 'Экран N (WxH)' contract")
-	# A disappeared saved monitor is clamped before any selected-screen geometry
-	# is read or the window is moved.
-	var clamp_pos := source.find("game.selected_screen_index = clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))")
-	var geometry_pos := source.find("var usable := DisplayServer.screen_get_usable_rect(screen)", clamp_pos)
-	_expect(errors, clamp_pos >= 0, "runtime apply path does not clamp selected_screen_index")
-	_expect(errors, geometry_pos > clamp_pos,
-		"runtime apply path reads monitor geometry before clamping a stale index")
-	_expect(errors, source.contains("DisplayServer.window_set_current_screen(screen)"),
-		"runtime apply path does not move the window to the selected screen")
+	var three_screens: Array[Vector2i] = [
+		Vector2i(1920, 1080),
+		Vector2i(2560, 1440),
+		Vector2i(3840, 2160),
+	]
+	var three_model := DisplayResolution.monitor_options(three_screens, 1)
+	_expect(errors, bool(three_model["visible"]),
+		"three-screen monitor selector model should be visible")
+	_expect(errors, int(three_model["selected_index"]) == 1,
+		"three-screen model did not preserve requested screen 1")
+	var options: Array = three_model["options"]
+	_expect(errors, options.size() == 3,
+		"three-screen model should expose exactly three options")
+	var expected_labels := [
+		"Экран 1 (1920x1080)",
+		"Экран 2 (2560x1440)",
+		"Экран 3 (3840x2160)",
+	]
+	for option_index in range(mini(options.size(), expected_labels.size())):
+		var option: Dictionary = options[option_index]
+		_expect(errors, int(option["index"]) == option_index,
+			"monitor option %d has wrong ordered index" % option_index)
+		_expect(errors, option["size"] == three_screens[option_index],
+			"monitor option %d has wrong ordered size" % option_index)
+		_expect(errors, str(option["label"]) == expected_labels[option_index],
+			"monitor option %d has wrong exact label" % option_index)
+
+	var disappeared_model := DisplayResolution.monitor_options(one_screen, 2)
+	_expect(errors, int(disappeared_model["selected_index"]) == 0,
+		"disappeared screen 2 did not fall back to screen 0")
+	_expect(errors, DisplayResolution.sanitize_screen_index(three_screens, -7) == 0,
+		"negative virtual monitor index was not clamped to 0")
+	_expect(errors, DisplayResolution.sanitize_screen_index(three_screens, 99) == 2,
+		"oversized virtual monitor index was not clamped to the last screen")
+	var no_screens: Array[Vector2i] = []
+	var empty_model := DisplayResolution.monitor_options(no_screens, 4)
+	_expect(errors, not bool(empty_model["visible"]),
+		"zero-screen defensive model should be hidden")
+	_expect(errors, int(empty_model["selected_index"]) == 0,
+		"zero-screen defensive model did not return screen 0")
+	_expect(errors, (empty_model["options"] as Array).is_empty(),
+		"zero-screen defensive model unexpectedly has options")
+
+
+func _test_runtime_monitor_adapter(ui, errors: Array[String]) -> void:
+	var current_sizes: Array[Vector2i] = ui._current_monitor_sizes()
+	var screen_count := maxi(DisplayServer.get_screen_count(), 0)
+	_expect(errors, current_sizes.size() == screen_count,
+		"DisplayServer adapter returned %d sizes for %d screens" % [current_sizes.size(), screen_count])
+	for screen_index in range(screen_count):
+		_expect(errors, current_sizes[screen_index] == DisplayServer.screen_get_size(screen_index),
+			"DisplayServer adapter changed size/order for screen %d" % screen_index)
 
 
 func _test_resolution_contract(main, errors: Array[String]) -> void:
@@ -105,20 +149,27 @@ func _test_resolution_contract(main, errors: Array[String]) -> void:
 
 
 func _test_virtual_screen_clamping(main, ui, errors: Array[String]) -> void:
+	var one_screen: Array[Vector2i] = [Vector2i(1920, 1080)]
+	var three_screens: Array[Vector2i] = [
+		Vector2i(1920, 1080),
+		Vector2i(2560, 1440),
+		Vector2i(3840, 2160),
+	]
 	main.selected_screen_index = 2
 	ui.settings_video_pending.clear()
-	_expect(errors, int(ui._pending_screen_index(1)) == 0,
+	_expect(errors, int(ui._settings_monitor_model(one_screen)["selected_index"]) == 0,
 		"saved screen 2 did not fall back to screen 0 when only one screen remains")
-	_expect(errors, int(ui._pending_screen_index(3)) == 2,
+	_expect(errors, int(ui._settings_monitor_model(three_screens)["selected_index"]) == 2,
 		"valid saved screen 2 was not preserved for a three-screen setup")
 
 	ui.settings_video_pending["screen_index"] = -7
-	_expect(errors, int(ui._pending_screen_index(3)) == 0,
+	_expect(errors, int(ui._settings_monitor_model(three_screens)["selected_index"]) == 0,
 		"negative pending screen index was not clamped to 0")
 	ui.settings_video_pending["screen_index"] = 99
-	_expect(errors, int(ui._pending_screen_index(3)) == 2,
+	_expect(errors, int(ui._settings_monitor_model(three_screens)["selected_index"]) == 2,
 		"oversized pending screen index was not clamped to the last screen")
-	_expect(errors, int(ui._pending_screen_index(0)) == 0,
+	var no_screens: Array[Vector2i] = []
+	_expect(errors, int(ui._settings_monitor_model(no_screens)["selected_index"]) == 0,
 		"zero-screen defensive path did not return screen 0")
 
 
