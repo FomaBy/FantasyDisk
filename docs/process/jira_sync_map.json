@@ -4217,5 +4217,10 @@
   "key": "SCRUM-1020",
   "status": "К выполнению",
   "desc_hash": "f62efe54d23aa687d2ce3936f8b305a9"
+ },
+ "SCRUM-934.md": {
+  "key": "SCRUM-934",
+  "status": "Контроль качества",
+  "desc_hash": "0016fd10d9bed0685b140d8c2dfae5de"
  }
 }
