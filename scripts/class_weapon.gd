@@ -1570,107 +1570,161 @@ func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 	)
 
 
-func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "channel", orbit_duration, direction, {"ticks": maxi(storm_ticks, 1)})
-	var orbit_root := Node2D.new()
-	orbit_root.name = "ElementalOrbitNode"
-	orbit_root.z_index = 10
-	_projectile_parent().add_child(orbit_root)
-	_register_effect(orbit_root)
-	orbit_root.global_position = owner_node.global_position
-	var colors := [
-		Color(1.0, 0.42, 0.16, 0.55),
-		Color(0.26, 0.76, 1.0, 0.55),
-		Color(0.64, 1.0, 0.28, 0.55),
-	]
-	# SCRUM-961 «Четвертое кольцо»: земляная орбита (4-й орб добавляет EXISTS-ключ
-	# elemental_orb_extra_count) — физический удар + мини-DoT + отброс на каждом
-	# тике, квадратная разметка зоны отличает землю от трёх стихий.
-	var earth_mode := _owner_mod("earth_orb_mode") > 0.0
-	if earth_mode:
-		colors.append(Color(0.72, 0.52, 0.24, 0.60))
-		_draw_earth_square(owner_node.global_position, aoe_radius * 0.62)
-	var orbit_count := maxi(projectile_count + _extra_projectiles(), 3)
-	for orb_index in range(orbit_count):
-		var orb := Sprite2D.new()
-		orb.name = "ElementalOrbitOrb"
-		orb.texture = _weapon_visual_texture()
-		orb.modulate = colors[orb_index % colors.size()]
-		orb.scale = Vector2.ONE * 0.16
-		orb.position = Vector2.RIGHT.rotated(TAU * float(orb_index) / float(orbit_count)) * aoe_radius * 0.62
-		orbit_root.add_child(orb)
-	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius, visual_color, true)
-	var ticks := maxi(storm_ticks, 1)
-	_damage_enemies_in_circle(owner_node.global_position, aoe_radius, _rolled_damage(owner_node) / float(ticks))
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var orbit_id := orbit_root.get_instance_id()
-	var tick_interval := maxf(orbit_duration / float(ticks), 0.08)
-	var orbit_tween := create_tween()
-	orbit_tween.set_parallel(true)
-	orbit_tween.tween_property(orbit_root, "rotation", TAU * 1.35, orbit_duration).set_trans(Tween.TRANS_LINEAR)
-	orbit_tween.chain()
-	for tick_index in range(ticks):
-		if tick_index > 0:
-			orbit_tween.tween_interval(tick_interval)
-		orbit_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			var current_orbit := instance_from_id(orbit_id) as Node2D
-			if current_weapon == null or current_owner == null or current_orbit == null:
-				return
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", tick_interval, direction, {"index": tick_index, "count": ticks})
-			current_orbit.global_position = current_owner.global_position
-			var tick_damage := float(current_weapon.call("_rolled_damage", current_owner)) / float(ticks)
-			current_weapon.call("_damage_enemies_in_circle", current_owner.global_position, current_weapon.get("aoe_radius"), tick_damage)
-			if earth_mode:
-				current_weapon.call("_apply_earth_orb_strike", current_owner, tick_damage)
-			# SCRUM-961 «Стихийный отдачник»: области толкают монстров от кастера.
-			current_weapon.call("_apply_elemental_repulse", current_owner, current_owner.global_position, float(current_weapon.get("aoe_radius")))
-		)
-	orbit_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_orbit := instance_from_id(orbit_id) as Node
-		if current_orbit == null:
-			return
-		if current_weapon != null:
-			current_weapon.call("_release_effect", current_orbit)
-		else:
-			current_orbit.queue_free()
-	)
+# === SCRUM-947..950: кит Элементалиста (редизайн поверх trait «Проводник стихий») ===
+# Ниши: постоянный квадрат-ореол (кольцо) / редкий полнокартный X (призма) /
+# сверхредкий нюк с догорающей зоной (метеор). Константы ниже — единственный
+# источник истины по долям/геометрии; бюджетная модель (_budget_hit_model в
+# progression_data.gd) зеркалит эти же числа в комментариях.
+
+# SCRUM-948 «Кольцо Четырёх Стихий»: квадратная зона в точке каста.
+const SQUARE_HALF_RATIO := 0.72          # половина стороны квадрата = aoe_radius * ratio
+const SQUARE_PHYSICAL_SHARE := 0.45      # доля канала damage (ось силы) на КАСТ
+const SQUARE_DOT_TICK_SHARE := 0.70      # доля dot_damage владельца на тик ожога
+const SQUARE_EARTH_CORE_PHYS_BONUS := 0.60  # артефакт «Четвертое кольцо»: +60% физ.доли
+const SQUARE_EXTRA_TICK_CAP := 2         # кап доп. тиков от extra-рун («Монолит»)
+const SQUARE_ELEMENT_COLORS := [
+	Color(1.0, 0.42, 0.16, 0.85),  # огонь
+	Color(0.26, 0.76, 1.0, 0.85),  # вода
+	Color(0.64, 1.0, 0.28, 0.85),  # природа
+	Color(0.72, 0.52, 0.24, 0.85), # земля — четвёртая стихия
+]
+
+# SCRUM-949 «Призматический Фокус»: полнокартный X-разлом.
+# PRISM_FULL_MAP_REACH — документированный практический предел «во всю карту»:
+# длина плеча луча от центра. Диагональ арены 4096×2304 ≈ 4700px, значит 4800px
+# достигает любой точки арены из любого центра каста (тест держит этот инвариант).
+const PRISM_FULL_MAP_REACH := 4800.0
+const PRISM_BEAM_DAMAGE_SHARE := 0.72    # один луч-хит на врага за каст (без дублей)
+const PRISM_CENTER_BONUS_SHARE := 0.55   # бонус-хит центра пересечения (стакается с лучом)
+const PRISM_CROSS_EXTRA_SHARE := 0.60    # артефакт «Призматический крест»: доп. крест «+»
+
+# SCRUM-950 «Ядро Метеора»: grenade_delay = ПОЛНАЯ задержка до удара.
+const METEOR_TELEGRAPH_RATIO := 0.42     # доля задержки на чистый телеграф до падения
+const METEOR_FALL_HEIGHT := 540.0        # высота, с которой метеор летит в зону
+const METEOR_ZONE_RADIUS_RATIO := 0.78   # радиус догорающей зоны от aoe_radius
+const METEOR_ZONE_FULL_TARGETS := 2      # полные тики зоны ближайшим к ядру
+const METEOR_ZONE_TARGET_DIMINISH := 1.2 # спад по рангу удалённости в зоне
+const METEOR_HEART_CENTER_BONUS := 0.55  # артефакт «Сердце метеора»: +55% центра
+const METEOR_HEART_EXTRA_ZONE_TICKS := 2 # и догорание на 2 тика дольше
 
 
-# SCRUM-961 «Четвертое кольцо»: удар земли — физический (тип изолирован от
-# магии кольца), мини-DoT и отброс; урон долевой от тика, без своего скейла.
-func _apply_earth_orb_strike(owner_node: Node2D, tick_damage: float) -> void:
-	var dot_tick := 1.0
-	var parameters_raw = owner_node.get("derived_parameters")
-	if parameters_raw is Dictionary:
-		dot_tick = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)) * 0.35, 0.5)
-	for enemy in TARGET_QUERY.in_radius(self, owner_node.global_position, aoe_radius):
+# SCRUM-948: враги внутри КВАДРАТА (углы поражаются — вписанный круг их не берёт,
+# за пределами стороны — нет). Сбор через окружающий радиус + осевой фильтр.
+func _enemies_in_square(center: Vector2, half_size: float) -> Array:
+	var result := []
+	for enemy in TARGET_QUERY.in_radius(self, center, half_size * 1.4143):
 		var enemy_node := enemy as Node2D
-		if enemy_node == null:
+		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		_damage_enemy(enemy_node, tick_damage * 0.5, false, "physical", false)
-		StatusEffects.apply_status(enemy_node, "earth_orb_dot", {
-			"duration": 1.2,
-			"dot_damage": dot_tick,
-			"dot_interval": 0.6,
-			"marker_color": Color(0.72, 0.52, 0.24, 1.0),
-		})
-		var away := enemy_node.global_position - owner_node.global_position
-		if away.length_squared() > 0.001:
-			_push_enemy(enemy_node, away.normalized())
+		var offset := enemy_node.global_position - center
+		if absf(offset.x) <= half_size and absf(offset.y) <= half_size:
+			result.append(enemy_node)
+	return result
 
 
-# SCRUM-961 «Четвертое кольцо»: квадратная разметка земляной зоны (4 грани).
-func _draw_earth_square(center: Vector2, half_size: float) -> void:
+# SCRUM-948 «Кольцо Четырёх Стихий»: квадратная AoE четырёх стихий в точке каста
+# (зона НЕ следует за героем). Каждый тик бьёт ТРЕМЯ каналами сразу — потому
+# оружие тяжело масштабировать оптимально (три атрибутные оси):
+#   магия     — ролл magic_damage, делённый на тики (ось интеллекта, канал оружия);
+#   физика    — SQUARE_PHYSICAL_SHARE от канала damage владельца (ось силы);
+#   периодика — статус ожога от dot_damage/dot_speed владельца (ось знания);
+# и отбрасывает задетых ПРОЧЬ от центра квадрата (защита личного пространства).
+# Имя функции сохраняет исторический attack_mode "elemental_orbit" (стабильные
+# внешние контракты: меты, тесты, анимации).
+func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
+	# «Монолит»/extra-руны: дополнительные тики поля (кап SQUARE_EXTRA_TICK_CAP).
+	var ticks := maxi(storm_ticks, 1) + clampi(_extra_projectiles(), 0, SQUARE_EXTRA_TICK_CAP)
+	_emit_weapon_animation_event(owner_node, "channel", orbit_duration, direction, {"ticks": ticks})
+	var center: Vector2 = owner_node.global_position
+	var half_size: float = aoe_radius * SQUARE_HALF_RATIO
+	var field_root := Node2D.new()
+	field_root.name = "ElementalSquareField"
+	field_root.z_index = 3
+	_projectile_parent().add_child(field_root)
+	_register_effect(field_root)
+	field_root.global_position = center
+	_draw_square_field(field_root, half_size)
+	_elemental_square_tick(owner_node, center, half_size, ticks)
+	var tick_interval := maxf(orbit_duration / float(ticks), 0.08)
+	var owner_id := owner_node.get_instance_id()
+	var field_id := field_root.get_instance_id()
+	var field_tween := create_tween()
+	for tick_index in range(1, ticks):
+		field_tween.tween_interval(tick_interval)
+		field_tween.tween_callback(Callable(self, "_elemental_square_scheduled_tick").bind(owner_id, center, half_size, ticks, tick_index, direction))
+	field_tween.tween_interval(tick_interval)
+	field_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(field_id))
+
+
+# Разметка квадрата: 4 грани + руны четырёх стихий по углам. Полупрозрачно и
+# под врагами (z_index поля 3), чтобы зона читалась квадратом, но не закрывала бой.
+func _draw_square_field(field_root: Node2D, half_size: float) -> void:
 	var corners := [Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)]
 	for corner_index in range(4):
-		var edge_start: Vector2 = center + (corners[corner_index] as Vector2) * half_size
-		var edge_end: Vector2 = center + (corners[(corner_index + 1) % 4] as Vector2) * half_size
-		var edge := AttackVfx.beam(_projectile_parent(), edge_start, edge_end, 6.0, Color(0.72, 0.52, 0.24, 0.35))
-		_register_effect(edge)
+		var edge_start: Vector2 = (corners[corner_index] as Vector2) * half_size
+		var edge_end: Vector2 = (corners[(corner_index + 1) % 4] as Vector2) * half_size
+		var edge := Line2D.new()
+		edge.points = PackedVector2Array([edge_start, edge_end])
+		edge.width = 6.0
+		edge.default_color = Color(visual_color.r, visual_color.g, visual_color.b, 0.34)
+		field_root.add_child(edge)
+		var rune := Sprite2D.new()
+		rune.name = "ElementRune%d" % corner_index
+		rune.texture = _weapon_visual_texture()
+		rune.modulate = SQUARE_ELEMENT_COLORS[corner_index % SQUARE_ELEMENT_COLORS.size()]
+		rune.scale = Vector2.ONE * 0.16
+		rune.position = (corners[corner_index] as Vector2) * half_size
+		field_root.add_child(rune)
+
+
+func _elemental_square_scheduled_tick(owner_id: int, center: Vector2, half_size: float, ticks: int, tick_index: int, direction: Vector2) -> void:
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	_emit_weapon_animation_event(current_owner, "pulse", 0.0, direction, {"index": tick_index, "count": ticks})
+	_elemental_square_tick(current_owner, center, half_size, ticks)
+
+
+# Один тик квадрата: три канала + отброс от ЦЕНТРА КВАДРАТА (не от героя — зона
+# автономна после каста). Элиты/боссы получают тот же apply_knockback-импульс,
+# что и у прочих отбросов оружий (их устойчивость решает enemy-сторона).
+func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: float, ticks: int) -> void:
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var tick_divisor := float(maxi(ticks, 1))
+	var magic_tick := _rolled_damage(owner_node) / tick_divisor
+	var physical_total := float(parameters.get("damage", 0.0)) * SQUARE_PHYSICAL_SHARE
+	if _owner_mod("earth_orb_mode") > 0.0:
+		# «Четвертое кольцо»: земляное ядро укрепляет физический канал квадрата.
+		physical_total *= 1.0 + SQUARE_EARTH_CORE_PHYS_BONUS
+	var physical_tick := physical_total / tick_divisor
+	var dot_tick_damage := maxf(float(parameters.get("dot_damage", 2.0)) * SQUARE_DOT_TICK_SHARE, 0.5)
+	var dot_interval := 1.0 / maxf(float(parameters.get("dot_speed", 1.0)), 0.2)
+	var burn_ticks := maxi(dot_ticks, 1)
+	for enemy in _enemies_in_square(center, half_size):
+		var enemy_node := enemy as Node2D
+		_damage_enemy(enemy_node, magic_tick)
+		if physical_tick > 0.0:
+			_damage_enemy(enemy_node, physical_tick, false, "physical", false)
+		StatusEffects.apply_status(enemy_node, "four_elements_burn", {
+			"duration": dot_interval * float(burn_ticks),
+			"dot_damage": dot_tick_damage,
+			"dot_interval": dot_interval,
+			"marker_color": Color(0.40, 0.82, 1.0, 1.0),
+		})
+		var away := enemy_node.global_position - center
+		if away.length_squared() > 0.001:
+			_push_enemy(enemy_node, away.normalized())
+	# SCRUM-961 «Стихийный отдачник»: дополнительный радиальный пуш от кастера.
+	_apply_elemental_repulse(owner_node, center, half_size * 1.4143)
+
+
+func _release_effect_by_id(effect_id: int) -> void:
+	var effect := instance_from_id(effect_id) as Node
+	if effect != null:
+		_release_effect(effect)
 
 
 # SCRUM-961 «Стихийный отдачник»: радиальный пуш от кастера по врагам в зоне.
@@ -1691,143 +1745,160 @@ func _apply_elemental_repulse(owner_node: Node2D, center: Vector2, radius: float
 			enemy_node.global_position += away.normalized() * repulse_power * 0.10
 
 
+# SCRUM-949 «Призматический Фокус»: полнокартный X-разлом через точку фокуса
+# (ближайшая цель или точка на attack_range по направлению атаки). Две диагональные
+# линии (направление ±45°) длиной PRISM_FULL_MAP_REACH в каждое плечо пронзают
+# всех врагов на пути; малый AoE в центре пересечения бьёт бонус-хитом.
+# Телеграф: тонкие X-линии + кольцо центра на время grenade_delay ДО урона.
+# Детерминизм урона: за каст враг получает НЕ БОЛЕЕ одного луч-хита (первая
+# диагональ в порядке осей побеждает; кресты артефакта — своя доля, тоже один хит)
+# и не более одного центр-хита. Центр+луч = полный пэйофф пересечения.
 func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.12), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		center = target.global_position
-	var perpendicular := Vector2(-direction.y, direction.x).normalized()
-	if perpendicular.length_squared() <= 0.001:
-		perpendicular = Vector2.UP
-	var side_span := minf(aoe_radius * 1.15, 220.0)
-	var start_a := center - perpendicular * side_span - direction * 90.0
-	var end_a := center + perpendicular * side_span + direction * 90.0
-	var start_b := center + perpendicular * side_span - direction * 90.0
-	var end_b := center - perpendicular * side_span + direction * 90.0
-	var telegraph := AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
-	_register_effect(telegraph)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var telegraph_id := telegraph.get_instance_id()
+	var axis_a := direction.rotated(PI / 4.0)
+	if axis_a.length_squared() <= 0.001:
+		axis_a = Vector2(1, -1)
+	axis_a = axis_a.normalized()
+	var axis_b := axis_a.rotated(PI / 2.0)
+	var telegraph_ids: Array = []
+	for axis in [axis_a, axis_b]:
+		var axis_vector: Vector2 = axis
+		var tele_beam := AttackVfx.beam(_projectile_parent(), center - axis_vector * PRISM_FULL_MAP_REACH, center + axis_vector * PRISM_FULL_MAP_REACH, maxf(beam_width * 0.35, 12.0), Color(visual_color.r, visual_color.g, visual_color.b, 0.20))
+		_register_effect(tele_beam)
+		telegraph_ids.append(tele_beam.get_instance_id())
+	var telegraph_ring := AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
+	_register_effect(telegraph_ring)
+	telegraph_ids.append(telegraph_ring.get_instance_id())
 	var rift_tween := create_tween()
 	rift_tween.tween_interval(maxf(grenade_delay, 0.12))
-	rift_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		if current_weapon == null:
-			return
-		if current_owner != null:
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
-		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-		var color_a := Color(0.26, 0.78, 1.0, 0.50)
-		var color_b := Color(1.0, 0.46, 0.20, 0.50)
-		var beam_a := AttackVfx.beam(current_weapon.call("_projectile_parent"), start_a, end_a, beam_width, color_a)
-		var beam_b := AttackVfx.beam(current_weapon.call("_projectile_parent"), start_b, end_b, beam_width, color_b)
-		current_weapon.call("_register_effect", beam_a)
-		current_weapon.call("_register_effect", beam_b)
-		current_weapon.call("_damage_enemies_in_segment", start_a, end_a, beam_width, damage_value * 0.62)
-		current_weapon.call("_damage_enemies_in_segment", start_b, end_b, beam_width, damage_value * 0.62)
-		current_weapon.call("_damage_enemies_in_circle", center, beam_width * 0.85, damage_value * 0.55)
-		# SCRUM-961 «Призматический крест»: X-линии пробивают карту насквозь.
-		if float(current_weapon.call("_owner_mod", "prism_cross_pierce")) > 0.0:
-			current_weapon.call("_fire_prism_extensions", start_a, end_a, damage_value)
-			current_weapon.call("_fire_prism_extensions", start_b, end_b, damage_value)
-		# SCRUM-961 «Стихийный отдачник»: зона креста толкает монстров от кастера.
-		if current_owner != null:
-			current_weapon.call("_apply_elemental_repulse", current_owner, center, float(current_weapon.get("aoe_radius")))
-		var current_telegraph := instance_from_id(telegraph_id) as Node
-		if current_telegraph != null:
-			current_weapon.call("_release_effect", current_telegraph)
-	)
+	rift_tween.tween_callback(Callable(self, "_resolve_prism_rift").bind(owner_node.get_instance_id(), center, axis_a, axis_b, direction, telegraph_ids))
 
 
-# SCRUM-961 «Призматический крест»: продолжение линии в обе стороны за пределы
-# зоны (по 900px), дальняя часть ослаблена до 60% сегментного урона.
-func _fire_prism_extensions(start: Vector2, finish: Vector2, damage_value: float) -> void:
-	var axis := finish - start
-	if axis.length_squared() <= 0.001:
+func _resolve_prism_rift(owner_id: int, center: Vector2, axis_a: Vector2, axis_b: Vector2, direction: Vector2, telegraph_ids: Array) -> void:
+	for telegraph_id in telegraph_ids:
+		_release_effect_by_id(int(telegraph_id))
+	if _effects_shutdown:
 		return
-	var axis_direction := axis.normalized()
-	var far_damage := damage_value * 0.62 * 0.6
-	for segment in [[finish, finish + axis_direction * 900.0], [start, start - axis_direction * 900.0]]:
-		var segment_start: Vector2 = segment[0]
-		var segment_end: Vector2 = segment[1]
-		var extension := AttackVfx.beam(_projectile_parent(), segment_start, segment_end, beam_width * 0.7, Color(visual_color.r, visual_color.g, visual_color.b, 0.30))
-		_register_effect(extension)
-		_damage_enemies_in_segment(segment_start, segment_end, beam_width * 0.7, far_damage)
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner != null and is_instance_valid(current_owner):
+		_emit_weapon_animation_event(current_owner, "release", 0.0, direction, {"delayed": true})
+	var damage_value := damage
+	if current_owner != null and is_instance_valid(current_owner):
+		damage_value = _rolled_damage(current_owner)
+	# Оси урона: главные диагонали X, при артефакте «Призматический крест» — ещё
+	# крест «+» (горизонталь/вертикаль относительно атаки) со сниженной долей.
+	var beam_axes := [[axis_a, PRISM_BEAM_DAMAGE_SHARE], [axis_b, PRISM_BEAM_DAMAGE_SHARE]]
+	if _owner_mod("prism_cross_pierce") > 0.0:
+		var cross_axis := direction.normalized() if direction.length_squared() > 0.001 else Vector2.RIGHT
+		beam_axes.append([cross_axis, PRISM_BEAM_DAMAGE_SHARE * PRISM_CROSS_EXTRA_SHARE])
+		beam_axes.append([cross_axis.rotated(PI / 2.0), PRISM_BEAM_DAMAGE_SHARE * PRISM_CROSS_EXTRA_SHARE])
+	var color_cycle := [Color(0.26, 0.78, 1.0, 0.50), Color(1.0, 0.46, 0.20, 0.50), Color(0.76, 0.42, 1.0, 0.42), Color(0.64, 1.0, 0.28, 0.42)]
+	var struck := {}
+	for axis_index in range(beam_axes.size()):
+		var axis_vector: Vector2 = beam_axes[axis_index][0]
+		var axis_share: float = beam_axes[axis_index][1]
+		var beam_start := center - axis_vector * PRISM_FULL_MAP_REACH
+		var beam_end := center + axis_vector * PRISM_FULL_MAP_REACH
+		var beam_visual := AttackVfx.beam(_projectile_parent(), beam_start, beam_end, beam_width, color_cycle[axis_index % color_cycle.size()])
+		_register_effect(beam_visual)
+		for enemy in TARGET_QUERY.in_segment(self, beam_start, beam_end, beam_width):
+			var enemy_node := enemy as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			var enemy_key := enemy_node.get_instance_id()
+			if struck.has(enemy_key):
+				continue
+			struck[enemy_key] = true
+			_damage_enemy(enemy_node, damage_value * axis_share)
+	for enemy in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		_damage_enemy(enemy as Node2D, damage_value * PRISM_CENTER_BONUS_SHARE)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
+	# SCRUM-961 «Стихийный отдачник»: центр разлома толкает монстров от кастера.
+	if current_owner != null and is_instance_valid(current_owner):
+		_apply_elemental_repulse(current_owner, center, aoe_radius)
 
 
+# SCRUM-950 «Ядро Метеора»: самое медленное оружие игрока. grenade_delay — полная
+# задержка до удара: сначала чистый телеграф зоны (METEOR_TELEGRAPH_RATIO доли,
+# HazardVfx.telegraph — рост + тревожный пульс, читаемо ГДЕ и КОГДА упадёт),
+# затем видимое падение метеора остаток времени. Урона до удара НЕТ. На ударе —
+# тяжёлый магический AoE с falloff, затем догорающая DoT-зона: dot_ticks тиков
+# каждые pool_tick_interval по dot-оси владельца (спад по рангу удалённости).
 func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.12), direction, {"delayed": true})
+	var total_delay := maxf(grenade_delay, 0.30)
+	_emit_weapon_animation_event(owner_node, "windup", total_delay, direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 430.0)
 	if target != null:
 		center = target.global_position
-	var telegraph := AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
-	_register_effect(telegraph)
-	var meteor := AttackVfx.orb_projectile(_projectile_parent(), center + Vector2(0.0, -220.0), visual_color)
+	var telegraph_holder := Node2D.new()
+	telegraph_holder.name = "MeteorTelegraph"
+	_projectile_parent().add_child(telegraph_holder)
+	telegraph_holder.global_position = center
+	_register_effect(telegraph_holder)
+	HazardVfx.telegraph(telegraph_holder, aoe_radius, Color(1.0, 0.45, 0.15, 1.0), total_delay)
+	var meteor := AttackVfx.orb_projectile(_projectile_parent(), center + Vector2(200.0, -METEOR_FALL_HEIGHT), visual_color)
 	_register_effect(meteor)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var meteor_id := meteor.get_instance_id()
-	var telegraph_id := telegraph.get_instance_id()
+	var fall_time := maxf(total_delay * (1.0 - METEOR_TELEGRAPH_RATIO), 0.15)
 	var meteor_tween := create_tween()
-	meteor_tween.tween_property(meteor, "global_position", center, maxf(grenade_delay, 0.12)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	meteor_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		var current_meteor := instance_from_id(meteor_id) as Node
-		if current_weapon == null:
-			if current_meteor != null:
-				current_meteor.queue_free()
-			return
-		if current_owner != null:
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true, "shards": int(current_weapon.get("shard_count"))})
-		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-		# SCRUM-961 «Сердце метеора»: центральный удар жирнее (+70%), воронка
-		# догорает DoT-зоной; пейсинг — в _fire_interval_artifact_factor.
-		var heart_mode := float(current_weapon.call("_owner_mod", "meteor_heart_mode")) > 0.0
-		current_weapon.call("_damage_enemies_in_circle_falloff", center, aoe_radius, damage_value * 0.96 * (1.7 if heart_mode else 1.0), 0.50)
-		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), center, aoe_radius, visual_color)
-		var count: int = maxi(int(current_weapon.get("shard_count")), 1)
-		for shard_index in range(count):
-			var angle := TAU * float(shard_index) / float(count)
-			var shard_pos := center + Vector2.RIGHT.rotated(angle) * aoe_radius * 0.72
-			current_weapon.call("_damage_enemies_in_circle_falloff", shard_pos, current_weapon.get("beam_width") * 1.45, damage_value * 0.28, 0.45)
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), shard_pos, current_weapon.get("beam_width") * 1.45, current_weapon.get("visual_color"))
-		if heart_mode:
-			current_weapon.call("_spawn_meteor_crater", center)
+	meteor_tween.tween_interval(total_delay - fall_time)
+	meteor_tween.tween_property(meteor, "global_position", center, fall_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	meteor_tween.tween_callback(Callable(self, "_resolve_meteor_impact").bind(owner_node.get_instance_id(), center, direction, meteor.get_instance_id(), telegraph_holder.get_instance_id()))
+
+
+func _resolve_meteor_impact(owner_id: int, center: Vector2, direction: Vector2, meteor_id: int, telegraph_id: int) -> void:
+	_release_effect_by_id(meteor_id)
+	_release_effect_by_id(telegraph_id)
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var owner_alive := current_owner != null and is_instance_valid(current_owner)
+	if owner_alive:
+		_emit_weapon_animation_event(current_owner, "release", 0.0, direction, {"delayed": true})
+	var damage_value := damage
+	if owner_alive:
+		damage_value = _rolled_damage(current_owner)
+	var heart_mode := _owner_mod("meteor_heart_mode") > 0.0
+	# «Сердце метеора»: реже (интервал ×1.45 в _fire_interval_artifact_factor),
+	# но центральный удар жирнее и зона догорает дольше.
+	var center_multiplier := 1.0 + (METEOR_HEART_CENTER_BONUS if heart_mode else 0.0)
+	_damage_enemies_in_circle_falloff(center, aoe_radius, damage_value * center_multiplier, 0.55)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
+	if owner_alive:
 		# SCRUM-961 «Стихийный отдачник»: удар метеора толкает монстров от кастера.
-		if current_owner != null:
-			current_weapon.call("_apply_elemental_repulse", current_owner, center, aoe_radius)
-		var current_telegraph := instance_from_id(telegraph_id) as Node
-		if current_telegraph != null:
-			current_weapon.call("_release_effect", current_telegraph)
-		if current_meteor != null:
-			current_weapon.call("_release_effect", current_meteor)
-	)
+		_apply_elemental_repulse(current_owner, center, aoe_radius)
+	var zone_ticks := maxi(dot_ticks, 1) + (METEOR_HEART_EXTRA_ZONE_TICKS if heart_mode else 0)
+	var tick_interval := maxf(pool_tick_interval, 0.18)
+	var zone_radius := aoe_radius * METEOR_ZONE_RADIUS_RATIO
+	var zone_tween := create_tween()
+	for tick_index in range(zone_ticks):
+		zone_tween.tween_interval(tick_interval)
+		zone_tween.tween_callback(Callable(self, "_meteor_zone_tick").bind(owner_id, center, zone_radius))
 
 
-# SCRUM-961 «Сердце метеора»: воронка догорает 2.5с — dot-тики по врагам в кратере
-# (диминиш толпы через _damage_enemies_in_pool, урон от dot_damage владельца).
-func _spawn_meteor_crater(center: Vector2) -> void:
-	var owner_node := _owner_node()
+# Тик догорающей зоны метеора: периодический канал (тип "dot", ось знания),
+# полные тики — ближайшим к ядру, дальше спад по рангу (анти-раздувание толпой).
+func _meteor_zone_tick(owner_id: int, center: Vector2, zone_radius: float) -> void:
+	if _effects_shutdown:
+		return
 	var tick_damage := 2.0
-	if owner_node != null:
-		var parameters_raw = owner_node.get("derived_parameters")
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner != null and is_instance_valid(current_owner):
+		var parameters_raw = current_owner.get("derived_parameters")
 		if parameters_raw is Dictionary:
 			tick_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
-	var crater_radius := aoe_radius * 0.72
-	var weapon_self_id := get_instance_id()
-	var crater_tween := create_tween()
-	for tick_index in range(4):
-		crater_tween.tween_interval(0.62)
-		crater_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_self_id) as ClassWeapon
-			if current_weapon == null or not is_instance_valid(current_weapon) or current_weapon._effects_shutdown:
-				return
-			AttackVfx.ring_pulse(current_weapon._projectile_parent(), center, crater_radius, Color(1.0, 0.45, 0.15, 0.22), false)
-			current_weapon._damage_enemies_in_pool(center, crater_radius, tick_damage)
-		)
+	AttackVfx.ring_pulse(_projectile_parent(), center, zone_radius, Color(1.0, 0.45, 0.15, 0.22), false)
+	var enemies: Array = TARGET_QUERY.in_radius(self, center, zone_radius)
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return center.distance_squared_to(a.global_position) < center.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var factor := 1.0
+		if index >= METEOR_ZONE_FULL_TARGETS:
+			factor = 1.0 / (1.0 + float(index - METEOR_ZONE_FULL_TARGETS + 1) * METEOR_ZONE_TARGET_DIMINISH)
+		_damage_enemy(enemies[index] as Node2D, tick_damage * factor, false, "dot", false)
 
 
 func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:

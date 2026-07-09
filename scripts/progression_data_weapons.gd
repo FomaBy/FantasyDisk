@@ -574,36 +574,57 @@ const THIEF_WEAPONS := {
 }
 
 const ELEMENTALIST_WEAPONS := {
+	# SCRUM-948..950: редизайн кита Элементалиста поверх trait SCRUM-947
+	# («Проводник стихий», см. ProgressionData.ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS).
+	# Ниши кита: постоянный квадрат-ореол / редкий полнокартный X / сверхредкий
+	# нюк с догорающей зоной. Метеор — максимальный fire_interval среди ВСЕХ
+	# оружий игрока (4.50 > 4.0 у homunculus_vial).
 	"elementalist_orb_ring": {
-		"id": "elementalist_orb_ring", "title": "Кольцо Трех Стихий",
-		"description": "Орбиты стихий вращаются вокруг героя, несколько раз прожигая врагов в зоне.",
+		# SCRUM-948: «Кольцо Четырёх Стихий» (бывш. «Кольцо Трех Стихий») —
+		# квадратная AoE в точке каста, три канала урона сразу (физика+магия+
+		# периодика, потому тяжело масштабируется оптимально) + отброс от центра
+		# на каждом тике. Геометрия/доли — константы SQUARE_* в class_weapon.gd.
+		"id": "elementalist_orb_ring", "title": "Кольцо Четырёх Стихий",
+		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом и отбрасывают врагов прочь от центра.",
 		"scene_path": "res://scenes/ElementalistOrbRing.tscn",
 		"attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.88, "fire_interval": 1.42,
-		"attack_range": 360.0, "aoe_radius": 210.0,
-		"projectile_count": 3, "orbit_duration": 1.35, "storm_ticks": 4,
+		"damage_multiplier": 1.35, "fire_interval": 1.52,
+		"attack_range": 360.0, "aoe_radius": 230.0,
+		"projectile_count": 4, "orbit_duration": 1.35, "storm_ticks": 4,
+		"dot_ticks": 2, "knockback": 46.0,
 		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
 	"elementalist_prism_focus": {
+		# SCRUM-949: полнокартный X-разлом — две диагональные линии через точку
+		# фокуса до границ арены (практический предел PRISM_FULL_MAP_REACH в
+		# class_weapon.gd покрывает диагональ арены 4096×2304 из любой точки)
+		# + малый AoE в центре пересечения. Урон детерминирован: линия — не более
+		# одного попадания на врага за каст, центр — один бонус-хит.
 		"id": "elementalist_prism_focus", "title": "Призматический Фокус",
-		"description": "Открывает крестовой разлом на ближайшей цели: две линии стихий сходятся и бьют область пересечения.",
+		"description": "X-разлом во всю карту: две диагональные линии стихий пронзают арену через точку фокуса, а их пересечение взрывается малым AoE.",
 		"scene_path": "res://scenes/ElementalistPrismFocus.tscn",
 		"attack_mode": "prism_rift", "damage_parameter": "magic_damage",
-		"damage_multiplier": 1.02, "fire_interval": 1.30,
-		"attack_range": 560.0, "aoe_radius": 180.0,
-		"beam_width": 64.0, "grenade_delay": 0.24,
+		"damage_multiplier": 1.90, "fire_interval": 2.30,
+		"attack_range": 560.0, "aoe_radius": 150.0,
+		"beam_width": 58.0, "grenade_delay": 0.42,
 		"visual_color": Color(0.76, 0.42, 1.0, 0.44),
 		"passive_mods": {"range_multiplier": 1.05},
 	},
 	"elementalist_meteor_core": {
+		# SCRUM-950: самое медленное оружие игрока — максимальный fire_interval,
+		# долгий телеграф + падение (grenade_delay = ПОЛНАЯ задержка до удара,
+		# внутри делится на телеграф/полёт: METEOR_TELEGRAPH_RATIO), огромный
+		# магический взрыв и догорающая DoT-зона (dot_ticks тиков каждые
+		# pool_tick_interval по dot-оси владельца).
 		"id": "elementalist_meteor_core", "title": "Ядро Метеора",
-		"description": "Долгий cast метеора: крупный телеграф, тяжелый центральный взрыв и веер вторичных осколочных зон.",
+		"description": "Высшая ставка мага: долгий телеграф, тяжёлое падение метеора, огромный взрыв и догорающая зона ожога. Самое медленное оружие в игре.",
 		"scene_path": "res://scenes/ElementalistMeteorCore.tscn",
 		"attack_mode": "meteor_shards", "damage_parameter": "magic_damage",
-		"damage_multiplier": 1.14, "fire_interval": 1.88,
-		"attack_range": 610.0, "aoe_radius": 210.0,
-		"beam_width": 72.0, "grenade_delay": 0.68, "shard_count": 5,
+		"damage_multiplier": 2.90, "fire_interval": 4.50,
+		"attack_range": 610.0, "aoe_radius": 240.0,
+		"beam_width": 72.0, "grenade_delay": 1.30,
+		"dot_ticks": 5, "pool_tick_interval": 0.62,
 		"visual_color": Color(1.0, 0.48, 0.16, 0.46),
 		"passive_mods": {"damage_multiplier": 1.04},
 	},

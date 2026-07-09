@@ -563,6 +563,39 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
 
 
+# SCRUM-947 «Проводник стихий»: класс-trait Элементалиста. Каждый источник бонуса
+# МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness scaling: +15% источник
+# → +19.5% фактически; НЕ флэт-множитель прямого урона). Детерминированный порядок
+# стакинга (см. derived_parameters, дублируется в docs/design/systems/
+# characters_weapons.md): каждый magic-tagged источник усиливается РОВНО ОДИН РАЗ,
+# отдельно от остальных, ДО перемножения источников между собой:
+#   1) забеговый run_modifiers.magic_damage_multiplier — softcap → ×1.30 на избыток
+#      (усиливается уже задиминишенный бонус, глобальный анти-runaway остаётся
+#      арбитром) → upgrade_damage_exponent;
+#   2) пассив оружия passive_mods.magic_damage_multiplier (класс-прогрессия) —
+#      ×1.30 на бонусную часть;
+#   3) magic-tagged бафы (prayer_opening_*) — ×1.30 на саму добавку;
+#   4) атрибутный источник: дельта интеллекта НАД базой класса (после
+#      growth-скаляра CLASS_LEVEL_STAT_GROWTH_SCALARS) → ×1.30 только в канале
+#      magic_damage. Изоляция типов урона (SCRUM-524) не нарушается: интеллект
+#      владеет только магией, другие каналы не видят усиления.
+# НЕ усиливаются: universal damage_multiplier/damage_flat (не magic-tagged),
+# physical-only и periodic-only (dot_*) источники, а также штрафы (<1.0).
+const ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS := 1.30
+
+
+static func _magic_bonus_effectiveness_for(character_id: String) -> float:
+	return ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS if character_id == "elementalist" else 1.0
+
+
+# Усиливает БОНУСНУЮ часть множителя: 1.15 → 1.0 + 0.15*effectiveness. Штрафы
+# (multiplier <= 1.0) проходят без изменения — trait усиливает бонусы, не дебаффы.
+static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float) -> float:
+	if effectiveness == 1.0 or multiplier <= 1.0:
+		return multiplier
+	return 1.0 + (multiplier - 1.0) * effectiveness
+
+
 static func effective_defense(raw_defense: float) -> float:
 	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
 
@@ -995,14 +1028,23 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"smoke_bomb":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 84.0, 1.0, 4.4)}
 		"elemental_orbit":
-			var orbit_ticks := float(config.get("storm_ticks", 4.0))
-			return {"solo_hits": clampf(orbit_ticks * 0.55, 1.0, 3.0), "five_hits": clampf(1.0 + aoe_radius / 55.0, 1.0, 5.0)}
+			# SCRUM-948: квадрат четырёх стихий. Соло за каст = полный ролл магии
+			# + физ.доля SQUARE_PHYSICAL_SHARE (0.45 × канал damage ≈ +11% на
+			# базе Элементалиста, см. class_weapon.gd), периодика — dot_ticks
+			# (отдельная ось _budget_dot_dps). Толпа — по площади квадрата.
+			return {"solo_hits": 1.11, "five_hits": clampf(1.0 + aoe_radius / 60.0, 1.0, 5.0), "dot_targets": clampf(1.0 + aoe_radius / 90.0, 1.0, 4.0)}
 		"prism_rift":
-			var prism_width := float(config.get("beam_width", 64.0))
-			return {"solo_hits": 1.05, "five_hits": clampf(2.0 + prism_width / 48.0, 2.0, 5.0)}
+			# SCRUM-949: полнокартный X. Соло у фокуса = луч (0.72) + центр (0.55)
+			# = 1.27 ролла; толпа — пирс двух диагоналей через всю арену + центр
+			# (доли PRISM_* в class_weapon.gd).
+			var prism_width := float(config.get("beam_width", 58.0))
+			return {"solo_hits": 1.27, "five_hits": clampf(2.5 + prism_width / 45.0, 2.5, 5.0)}
 		"meteor_shards":
-			var meteor_shards := float(config.get("shard_count", 3.0))
-			return {"solo_hits": 1.06, "five_hits": clampf(1.0 + aoe_radius / 95.0 + meteor_shards * 0.32, 1.0, 5.0)}
+			# SCRUM-950: одиночный тяжёлый нюк (веер осколков удалён). Соло =
+			# полный центр; толпа — большой AoE с falloff (×0.78 средняя доля);
+			# догорающая зона — dot_ticks по dot-оси со спадом по рангу
+			# (METEOR_ZONE_* в class_weapon.gd → dot_targets ≈ 3 на 5 целях).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 95.0) * 0.78, 1.0, 5.0), "dot_targets": 3.0}
 		"sniper_lockshot":
 			return {"solo_hits": 1.34, "five_hits": clampf(1.34 + float(config.get("beam_width", 34.0)) / 38.0, 1.34, 2.4)}
 		"sniper_kill_zone":
@@ -1227,11 +1269,19 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
+	# SCRUM-947 «Проводник стихий»: magic-tagged бонусы Элементалиста на 30%
+	# эффективнее. Порядок и полный список источников — у константы
+	# ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS. Каждый источник усиливается ровно
+	# один раз ЗДЕСЬ (точка агрегации), до перемножения — двойного применения
+	# при нескольких магических множителях нет.
+	var magic_bonus_effectiveness := _magic_bonus_effectiveness_for(character_id)
+	run_magic_damage_multiplier = _amplified_bonus_multiplier(run_magic_damage_multiplier, magic_bonus_effectiveness)
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
-	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("magic_damage_multiplier", 1.0))
+	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * _amplified_bonus_multiplier(float(passive_mods.get("magic_damage_multiplier", 1.0)), magic_bonus_effectiveness)
 	# SCRUM-961 «Четки молитвы»: открывающий бафф первых секунд боя усиливает
 	# магический канал (prayer_opening_active ставит player.on_battle_start).
-	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0))
+	# SCRUM-947: magic-tagged бафф — добавка усиливается trait'ом Элементалиста.
+	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0)) * magic_bonus_effectiveness
 	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
 	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
 	# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары — пишет player
@@ -1301,7 +1351,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
 	var physical_base := 15.0 * strength / 10.0
-	var magic_base := 14.0 * intelligence / 10.0
+	# SCRUM-947: атрибутный источник магического бонуса — дельта интеллекта НАД
+	# базой класса (после growth-скаляра) на 30% эффективнее для Элементалиста.
+	# База класса не трогается (стартовые числа и формульные гейты неизменны),
+	# усиление действует ТОЛЬКО в канале magic_damage (изоляция типов SCRUM-524).
+	var magic_intelligence := intelligence
+	if magic_bonus_effectiveness != 1.0 and not base_for_growth.is_empty():
+		var base_intelligence := float(base_for_growth.get("intelligence", intelligence))
+		magic_intelligence = base_intelligence + maxf(intelligence - base_intelligence, 0.0) * magic_bonus_effectiveness
+	var magic_base := 14.0 * magic_intelligence / 10.0
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
 	var range_perception := perception
