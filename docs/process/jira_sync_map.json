@@ -4162,5 +4162,25 @@
   "key": "SCRUM-956",
   "status": "Готово",
   "desc_hash": "d311c5c9da69fb71c4aa8b145100dfe2"
+ },
+ "SCRUM-947_qa.md": {
+  "key": "SCRUM-947",
+  "status": "К выполнению",
+  "desc_hash": "94a6a4a9a784011ef1bb44a271c4e852"
+ },
+ "SCRUM-948_qa.md": {
+  "key": "SCRUM-948",
+  "status": "Готово",
+  "desc_hash": "11cc0be593930f3b601e13f0e5530fdd"
+ },
+ "SCRUM-949_qa.md": {
+  "key": "SCRUM-949",
+  "status": "Готово",
+  "desc_hash": "032c89a128dd27295cc5e90089d41cf5"
+ },
+ "SCRUM-950_qa.md": {
+  "key": "SCRUM-950",
+  "status": "Готово",
+  "desc_hash": "83b7e6b6e1f1da5d58d67d2897a704db"
  }
 }
