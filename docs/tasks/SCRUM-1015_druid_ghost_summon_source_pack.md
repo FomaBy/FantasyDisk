@@ -56,4 +56,14 @@ Verification:
   (`texture_2d_get` from the headless Weapon Select screenshot helper is an
   existing non-fatal warning; exit 0 and `Runtime smoke test passed`).
 
-Git/Jira and disk-cleanup evidence are appended after push and status sync.
+Git/Jira:
+
+- Source package commit `9450c531` pushed directly to `origin/dev`.
+- Live Jira SCRUM-1015 transitioned to `Контроль качества`; ready-for-QA
+  evidence posted. This is not a self-QA verdict.
+- SCRUM-1016 received the exact PixelLab-ID/source-path handoff and remains
+  blocked until independent Design acceptance. SCRUM-901 remains decomposed and
+  blocked by its children.
+
+Disk cleanup: removed task `.godot` import cache (`445 MB`) and Python caches;
+the clean disposable worktree is removed after the final sync commit is pushed.

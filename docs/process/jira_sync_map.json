@@ -4112,5 +4112,10 @@
   "key": "SCRUM-1012",
   "status": "Готово",
   "desc_hash": "b60cd1412a994ec2fccf4e2a6fdc5ccb"
+ },
+ "SCRUM-1015_druid_ghost_summon_source_pack.md": {
+  "key": "SCRUM-1015",
+  "status": "Контроль качества",
+  "desc_hash": "ba40b73cfb5ff0d42a3db27bcdb59e2e"
  }
 }
