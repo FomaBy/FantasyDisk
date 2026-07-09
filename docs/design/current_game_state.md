@@ -1416,8 +1416,9 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 Звуковая система реализована через autoload `AudioManager` (`scripts/audio_manager.gd`, регистрация в `project.godot`):
 
 - SFX: `sfx_hit` (попадание по врагу), `sfx_player_hit` (урон по игроку), `sfx_dodge` (уворот), `sfx_pickup_xp`, `sfx_pickup_money`, `sfx_level_up`.
-- Музыка: `music_menu` (меню, карта, небоевые экраны), `music_combat` (бой). Лупы включаются через `AudioStreamWAV.LOOP_FORWARD`.
-- Ассеты лежат в `assets/audio/` и генерируются воспроизводимо скриптом `tools/generate_audio_assets.py` (production helper, не runtime).
+- Музыка (SCRUM-154, RandomMind CC0): `menu` (`music_menu_tavern.wav` — меню, карта, небоевые экраны), `combat` (`music_combat_minstrel.wav` — бой), `boss` (`music_boss_battle.mp3` — босс). Лупы: WAV через `AudioStreamWAV.LOOP_FORWARD`, MP3 через `loop = true`.
+- Ассеты лежат в `assets/audio/`; старые SFX сгенерены процедурным `tools/generate_audio_assets.py` (production helper, не runtime), музыка — курируемый CC0-сорсинг (`docs/design/audio.md`).
+- Целевое направление аудио 0.2.x (10 бардовских треков, ротация боевой музыки, round-timed playback, регенерация SFX + low-HP cue): спека SCRUM-965 в `docs/design/systems/audio.md`; реализация — SCRUM-966/967/968.
 - Пул из 8 SFX-плееров и троттлинг 0.05с на звук защищают от спама при уроне по толпе.
 - В headless-режиме (smoke tests) аудио полностью отключено, чтобы не оставлять висячие AudioStreamPlayback при выходе.
 - Громкость: музыка -8 dB, SFX -4 dB, шина Master. Новые профили стартуют без звука: `music_enabled=false` и `sfx_enabled=false`, при этом `master_volume`/`music_volume`/`sfx_volume` остаются 100%. Нулевой `master_volume` задает очень тихую громкость, но не hard-mute'ит Master bus; mute применяется только явными флагами `music_enabled=false` / `sfx_enabled=false`. Старые `user://settings.cfg` с `master_volume <= 0` и без `master_zero_intent` мигрируют к дефолтным 100%, чтобы случайно «залипшая» тишина не переживала перезапуск. Кроссфейд музыки при прерывании твина сбрасывает fade-player и восстанавливает целевую громкость текущего трека.
