@@ -4015,7 +4015,7 @@
  },
  "cleanup_orphan_ui_frames_atlas_migration_task.md": {
   "key": "SCRUM-891",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "ae66a5ff3a62a1f50316b902b19d6399"
  },
  "design_levelup_atlas_beautify_task.md": {

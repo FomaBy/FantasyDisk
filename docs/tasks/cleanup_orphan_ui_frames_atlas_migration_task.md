@@ -114,3 +114,34 @@ scripts/ui/ui_theme_paths.gd, scripts/ui_screens.gd,
 tests/ui_theme_paths_existence_test.gd, tests/ui_no_overlap_matrix_test.gd,
 tools/capture_settings_v6.gd(.uid), tools/build_ui_2k_frame_kit.py,
 tools/generate_settings_v6_openai.py, tools/recolor_yellow_buttons_brass.py
+
+## QA-Вердикт (2026-07-09)
+
+Статус: PASSED
+
+Проверено на `origin/dev` `38139d5c9ff167d40fa5ebc53daa007dd1a7fd78`;
+implementation-коммит `c793d496d971cc71c923b8c6ed281e6d7f4d451f`
+подтверждён как ancestor актуального `origin/dev`.
+
+- Фактически проверены 154 удалённых пути: в HEAD не осталось ни
+  одного.
+- Поиск в `scripts/`, `tests/`, `tools/` по basename/stem каждого
+  удалённого PNG и `capture_settings_v6` вернул 0 активных ссылок.
+- Все 68 проверенных survivor-файлов (PNG, `.import`, settings/codex
+  backgrounds) на месте; осталось 13 PNG в `overhaul_2k`, 14 PNG в
+  `settings_v6`, 6 PNG в `codex_pl`; `level_up_scrum682` отсутствует.
+- `git diff --check c793d496^ c793d496` — clean.
+- Через `python3 tools/godot_gate.py --headless --path . --script` прошли:
+  `ui_theme_paths_existence_test.gd`, `runtime_smoke_test.gd`,
+  `ui_no_overlap_matrix_test.gd`, `dark_fantasy_ui_theme_test.gd`,
+  `animation_smoke_test.gd`, `meta_progression_smoke_test.gd`,
+  `melee_weapon_targeting_test.gd`.
+- Runtime smoke вывел известное dummy-renderer warning `Parameter "t" is null`,
+  после чего завершился явным `Runtime smoke test passed` и exit code 0.
+
+Краевые случаи: чистый import в новом QA-worktree, полное отсутствие
+удалённых directories/assets, отсутствие stale references, сохранность
+каждого защищённого UI slot/sidecar/background, runtime/animation/meta/targeting
+regression smokes.
+
+Баги: нет.
