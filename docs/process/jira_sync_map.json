@@ -4117,5 +4117,10 @@
   "key": "SCRUM-1015",
   "status": "Контроль качества",
   "desc_hash": "ba40b73cfb5ff0d42a3db27bcdb59e2e"
+ },
+ "codex_design_artifact_icons_scrum957.md": {
+  "key": "SCRUM-957",
+  "status": "В работе",
+  "desc_hash": "27c70d3b775f569e5f0e76fbf77df22c"
  }
 }
