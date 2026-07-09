@@ -1195,9 +1195,9 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим врагам, урон убывает по цепи, первые попадания крадут золото |
 | Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и малый splash рядом, не двигая героя |
 | Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Delayed AoE дыма плюс временный dodge-window |
-| Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбита стихийных сфер вокруг героя с несколькими AoE-тиками |
-| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
-| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Long-cast метеор: крупный central impact с falloff и вторичные shard-зоны рядом |
+| Элементалист | Кольцо Четырёх Стихий | `elementalist_orb_ring` | `elemental_orbit` | SCRUM-948: квадратная AoE в точке каста — три канала урона (магия+физика+ожог) и отброс от центра |
+| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | SCRUM-949: полнокартный X-разлом через точку фокуса с центр-AoE и телеграфом |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | SCRUM-950: самое медленное оружие игрока — долгий телеграф+падение, тяжёлый удар и догорающая DoT-зона |
 | Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний beam по locked target и falloff по линии |
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркированная kill-zone у ближайшей цели вызывает несколько точных sky-beam попаданий |
 | Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
