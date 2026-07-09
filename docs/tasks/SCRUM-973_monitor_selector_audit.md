@@ -1,9 +1,9 @@
 # SCRUM-973 — Audit monitor selector behavior
 
-Статус: new
+Статус: done
 Контур: Codex
-Owner: Backend/Codex
-Thread: /root/audit_ready
+Owner: QA/Codex
+Thread: /root
 Locked paths: `tests/monitor_selector_behavior_test.gd`, `docs/tasks/SCRUM-973_monitor_selector_audit.md`; `scripts/game_settings.gd` only if a missing pure persistence/clamp helper is proven; `docs/process/jira_sync_map.json` only if scoped sync changes it
 Jira: SCRUM-973
 
@@ -66,7 +66,7 @@ Jira: SCRUM-973
 Disk cleanup: removed the disposable 431 MB `.godot/` cache; task worktree is removed after this final metadata push and confirmed in Jira.
 Thread cleanup: not a disposable top-level worker thread; sub-agent will report to dispatcher.
 
-## QA-Вердикт (2026-07-09)
+## Первичный QA-Вердикт (2026-07-09)
 
 Статус: FAILED
 
@@ -90,3 +90,22 @@ SCRUM-973 не менялись.
 Баг: `SCRUM-1012` — нужен behavioral virtual one/three-screen test для
 точного count, order, labels, selection и disappeared-monitor fallback без
 brittle source-string assertions.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+Зависимость `SCRUM-1012` исправлена (`423b4368`) и независимо принята
+(`c0ed9861`). Повторный QA на свежем `origin/dev` подтвердил весь исходный
+acceptance contract SCRUM-973:
+
+- pure model поведенчески покрывает 0/1/3 экрана, точные count/order/labels,
+  отрицательный/завышенный индекс и исчезнувший сохранённый монитор;
+- runtime `DisplayServer` adapter сохраняет фактические размеры и порядок;
+- pending state, Apply, Revert, persistence/restart, 2560×1440 и 1920×1080
+  проверяются без source-string false-green;
+- `game_settings_smoke`, `video_settings_apply`, `ui_no_overlap_matrix`,
+  gamepad focus/rebind и `runtime_smoke` прошли, все exit 0.
+
+Новых дефектов не найдено. Исходный FAILED сохранён выше как историческое
+обоснование bug-fix, но финальный вердикт после исправления — PASSED.
