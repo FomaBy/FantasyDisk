@@ -236,7 +236,10 @@ func _check_persistent_mine_cap() -> void:
 	await process_frame
 
 
-# (г4) «Кислотный катализатор»: стаки едкого DoT капятся 5.
+# (г4) Кислотные заряды (SCRUM-944 базовая механика + артефакт «Кислотный
+# катализатор»): одна лужа даёт цели РОВНО один вечный заряд (повторные тики той
+# же лужи не стакают), разные лужи стакаются до капа 5; артефакт
+# acid_charge_stacks поднимает кап до 8 (5 + ACID_CHARGE_ARTIFACT_CAP_BONUS).
 func _check_acid_charge_cap() -> void:
 	var player := _make_player("chemist", "acid_flask")
 	await process_frame
@@ -245,16 +248,34 @@ func _check_acid_charge_cap() -> void:
 		_errors.append("acid_charge: у химика не экипировалась кислотная колба")
 		player.free()
 		return
-	(player.get("run_modifiers") as Dictionary)["acid_charge_stacks"] = 1.0
 	var enemy := _make_dummy_enemy(player.global_position + Vector2(50.0, 0.0))
 	await process_frame
+	var fake_pools: Array = []
+	for i in range(10):
+		var pool := Node2D.new()
+		root.add_child(pool)
+		fake_pools.append(pool)
+	# Одна и та же лужа 8 раз — заряд один.
 	for i in range(8):
-		weapon.call("_apply_pool_contact_statuses", [enemy])
-	var status: Dictionary = StatusEffects.snapshot(enemy).get("acid_charge", {})
-	if status.is_empty():
-		_errors.append("acid_charge: статус не навесился с лужи")
-	elif int(status.get("stacks", 0)) != 5:
-		_errors.append("acid_charge: %d стаков вместо капа 5" % int(status.get("stacks", 0)))
+		weapon.call("_apply_pool_contact_statuses", [enemy], fake_pools[0])
+	var single_pool_charges := int(StatusEffects.count_status_prefix(enemy, "acid_charge"))
+	if single_pool_charges != 1:
+		_errors.append("acid_charge: одна лужа дала %d зарядов вместо 1" % single_pool_charges)
+	# 10 разных луж — кап 5 (базовый pool_charge_cap).
+	for pool in fake_pools:
+		weapon.call("_apply_pool_contact_statuses", [enemy], pool)
+	var base_cap_charges := int(StatusEffects.count_status_prefix(enemy, "acid_charge"))
+	if base_cap_charges != 5:
+		_errors.append("acid_charge: %d зарядов вместо базового капа 5" % base_cap_charges)
+	# Артефакт «Кислотный катализатор»: кап растёт до 8.
+	(player.get("run_modifiers") as Dictionary)["acid_charge_stacks"] = 1.0
+	for pool in fake_pools:
+		weapon.call("_apply_pool_contact_statuses", [enemy], pool)
+	var artifact_cap_charges := int(StatusEffects.count_status_prefix(enemy, "acid_charge"))
+	if artifact_cap_charges != 8:
+		_errors.append("acid_charge: %d зарядов вместо артефактного капа 8" % artifact_cap_charges)
+	for pool in fake_pools:
+		(pool as Node).free()
 	player.free()
 	enemy.free()
 	await process_frame

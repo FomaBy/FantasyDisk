@@ -4233,8 +4233,16 @@ func _test_unique_class_identity_patterns() -> void:
 	if float(ProgressionData.weapon("ranger", "moon_crossbow").get("charge_seconds", 0.0)) <= 0.0:
 		_fail("Expected Ranger moon crossbow to expose stance charge seconds.")
 		return
-	if not bool(ProgressionData.weapon("chemist", "blast_powder").get("combo_clouds", false)):
-		_fail("Expected Chemist clouds to support combo explosions.")
+	# SCRUM-943/944: кит Химика — быстрый прямой физический AoE без луж +
+	# кислотные лужи с перманентными контактными зарядами.
+	var chemist_blast_config: Dictionary = ProgressionData.weapon("chemist", "blast_powder")
+	if bool(chemist_blast_config.get("leaves_pool", false)) \
+			or str(chemist_blast_config.get("damage_parameter", "")) != "damage" \
+			or float(chemist_blast_config.get("fire_interval", 9.0)) > 0.8:
+		_fail("Expected Chemist blast powder to be a fast direct physical AoE without pools.")
+		return
+	if not bool(ProgressionData.weapon("chemist", "acid_flask").get("pool_contact_charges", false)):
+		_fail("Expected Chemist acid flask puddles to apply persistent contact charges.")
 		return
 	if float(ProgressionData.weapon("knight", "long_spear").get("passive_mods", {}).get("block_reduction", 0.0)) <= 0.0:
 		_fail("Expected Knight weapons to carry block/counter passive data.")
@@ -4304,15 +4312,52 @@ func _test_unique_class_identity_patterns() -> void:
 	chemist_enemy.set("health", 100000.0)
 	chemist_enemy.global_position = chemist.global_position + Vector2(40, 0)
 	await process_frame
+	# SCRUM-943: взрыв пыли — прямой БЕЗ лужи; SCRUM-944: кислотная лужа вешает
+	# перманентный контактный заряд с per-pool идентичностью.
 	var chemist_hp_before := float(chemist_enemy.get("health"))
-	chemist_weapon.set("pool_element", "spark")
-	chemist_weapon.call("_spawn_damage_pool", chemist_enemy.global_position, 1.0)
-	chemist_weapon.set("pool_element", "poison")
-	chemist_weapon.call("_spawn_damage_pool", chemist_enemy.global_position + Vector2(18, 0), 1.0)
+	chemist_weapon.call("_damage_aoe_projectile_explosion", chemist_enemy.global_position, 150.0, 10.0)
 	await process_frame
 	if float(chemist_enemy.get("health")) >= chemist_hp_before:
-		_fail("Expected Chemist overlapping cloud elements to trigger combo damage.")
+		_fail("Expected Chemist blast powder direct AoE explosion to damage enemies.")
 		return
+	if get_nodes_in_group("chemist_clouds").size() > 0:
+		_fail("Expected Chemist blast powder explosion to leave no pools.")
+		return
+	var chemist_acid := player_scene.instantiate()
+	holder.add_child(chemist_acid)
+	chemist_acid.global_position = Vector2(1150, 700)
+	await process_frame
+	chemist_acid.call("configure_character", "chemist", "acid_flask")
+	var acid_weapon: Node = chemist_acid.get("equipped_weapon")
+	acid_weapon.set_process(false)
+	var acid_enemy := enemy_scene.instantiate()
+	holder.add_child(acid_enemy)
+	acid_enemy.set("max_health", 100000.0)
+	acid_enemy.set("health", 100000.0)
+	acid_enemy.global_position = chemist_acid.global_position + Vector2(40, 0)
+	await process_frame
+	var acid_hp_before := float(acid_enemy.get("health"))
+	acid_weapon.call("_spawn_damage_pool", acid_enemy.global_position, 2.0)
+	var acid_pools := get_nodes_in_group("chemist_clouds")
+	if acid_pools.is_empty():
+		_fail("Expected Chemist acid flask to leave a ground puddle.")
+		return
+	var acid_pool := acid_pools[0] as Node2D
+	acid_weapon.call("_damage_enemies_in_pool", acid_pool.global_position, 150.0, 2.0, acid_pool)
+	await process_frame
+	if float(acid_enemy.get("health")) >= acid_hp_before:
+		_fail("Expected Chemist acid puddle tick to damage enemies inside.")
+		return
+	var acid_charge_found := false
+	for status_id in StatusEffects.snapshot(acid_enemy).keys():
+		if str(status_id).begins_with("acid_charge"):
+			acid_charge_found = true
+	if not acid_charge_found:
+		_fail("Expected Chemist acid puddle contact to apply a persistent acid charge.")
+		return
+	acid_pool.remove_from_group("chemist_clouds")
+	acid_pool.queue_free()
+	await process_frame
 
 	var knight := player_scene.instantiate()
 	holder.add_child(knight)
@@ -4377,6 +4422,7 @@ func _test_unique_class_identity_patterns() -> void:
 			ally.queue_free()
 	await process_frame
 
+	# SCRUM-946: пара «танк + кастер» — постоянные юниты на новых PixelLab-спрайтах.
 	var chemist_minion_owner := player_scene.instantiate()
 	holder.add_child(chemist_minion_owner)
 	chemist_minion_owner.global_position = Vector2(1600, 700)
@@ -4384,14 +4430,24 @@ func _test_unique_class_identity_patterns() -> void:
 	chemist_minion_owner.call("configure_character", "chemist", "homunculus_vial")
 	var homunculus_weapon: Node = chemist_minion_owner.get("equipped_weapon")
 	homunculus_weapon.set_process(false)
-	homunculus_weapon.call("_summon")
+	homunculus_weapon.call("_update_homunculus_pair", 0.1)
 	await process_frame
-	var homunculus_visual_ok := false
+	var homunculus_tank_visual_ok := false
 	for ally in get_nodes_in_group("allies"):
-		if ally.get("owner_node") == chemist_minion_owner and _node_sprite_texture_path(ally, "Body") == "res://assets/sprites/allies/ally_homunculus.png":
-			homunculus_visual_ok = true
-	if not homunculus_visual_ok:
-		_fail("Expected Chemist homunculus summons to use the homunculus sprite.")
+		if ally.get("owner_node") == chemist_minion_owner and _node_sprite_texture_path(ally, "Body") == "res://assets/sprites/allies/homunculus_tank_south.png":
+			homunculus_tank_visual_ok = true
+	if not homunculus_tank_visual_ok:
+		_fail("Expected Chemist homunculus tank to use the new PixelLab tank sprite.")
+		return
+	var homunculus_caster: Node = homunculus_weapon.get("_pair_caster")
+	if homunculus_caster == null or not is_instance_valid(homunculus_caster):
+		_fail("Expected Chemist homunculus pair to spawn the invulnerable caster.")
+		return
+	if (homunculus_caster as Node).is_in_group("allies"):
+		_fail("Expected Chemist homunculus caster to stay outside the allies combat group.")
+		return
+	if _node_sprite_texture_path(homunculus_caster, "CasterVisual") != "res://assets/sprites/allies/homunculus_caster_south.png":
+		_fail("Expected Chemist homunculus caster to use the new PixelLab caster sprite.")
 		return
 
 	var raven_druid := player_scene.instantiate()

@@ -36,9 +36,12 @@ const ZERO_EPS := 0.01
 const MAX_POOL_IDEAL_20T := 70000.0
 
 # Оружие-лужи (leaves_pool), которые давали выброс на плотном паке.
+# SCRUM-943: blast_powder больше не оставляет лужу (редизайн — быстрый прямой
+# физический AoE), из пар исключён; ось луж Химика держит только acid_flask
+# (SCRUM-944: длинные лужи + перманентные заряды, trait ×1.5 — гейт ловит
+# суммарный live-разгон периодики).
 const POOL_PAIRS := [
 	["chemist", "acid_flask"],
-	["chemist", "blast_powder"],
 ]
 
 var _holder: Node2D

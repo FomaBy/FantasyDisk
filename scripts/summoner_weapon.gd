@@ -33,10 +33,41 @@ var ally_visual_ids: Array[String] = []
 # SCRUM-961 «Гомункул-реактор»: особый юнит вне боевого лимита + таймер его волн.
 var _reactor_unit: Node2D = null
 var _reactor_pulse_left := 0.0
+# SCRUM-946: постоянная пара «танк + кастер» (homunculus_vial).
+var summon_pair_mode := false
+var pair_tank_visual_id := "homunculus_tank"
+var summon_wave_interval := 1.7
+var summon_wave_radius := 150.0
+var summon_wave_dot_multiplier := 0.35
+var summon_wave_dot_interval := 1.0
+var summon_wave_stack_cap := 4
+var _pair_tank: Node2D = null
+var _pair_caster: Node2D = null
+# Отдельный флаг «танк был развёрнут»: freed-ссылка в GDScript сравнивается с null
+# как равная (freed == null → true), поэтому детект смерти по `_pair_tank != null`
+# молча пропускал бы респавн-паузу после queue_free танка.
+var _pair_tank_deployed := false
+var _pair_tank_respawn_left := 0.0
+var _pair_wave_left := 0.0
+var _pair_caster_facing := "south"
 
-const HOMUNCULUS_TEXTURE_PATH := "res://assets/sprites/allies/ally_homunculus.png"
+# SCRUM-946: новые PixelLab-спрайты пары (SCRUM-945); старый ally_homunculus.png
+# больше не используется — реактор (SCRUM-961) тоже переведён на арт кастера.
+const HOMUNCULUS_CASTER_TEXTURE_PATHS := {
+	"south": "res://assets/sprites/allies/homunculus_caster_south.png",
+	"north": "res://assets/sprites/allies/homunculus_caster_north.png",
+	"east": "res://assets/sprites/allies/homunculus_caster_east.png",
+	"west": "res://assets/sprites/allies/homunculus_caster_west.png",
+}
+const HOMUNCULUS_TEXTURE_PATH := "res://assets/sprites/allies/homunculus_caster_south.png"
 const REACTOR_PULSE_INTERVAL := 1.6
 const REACTOR_WAVE_RADIUS := 140.0
+# SCRUM-946: вечный DoT-заряд волны кастера — живёт до смерти носителя.
+const CASTER_WAVE_STATUS_ID := "homunculus_caster_dot"
+const CASTER_WAVE_PERSIST_SECONDS := 999999.0
+# SCRUM-946: плечо кастера у танка и fallback-плечо у Химика (танк мёртв).
+const CASTER_TANK_OFFSET := Vector2(42.0, -34.0)
+const CASTER_OWNER_FALLBACK_OFFSET := Vector2(64.0, -42.0)
 
 
 # SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
@@ -72,6 +103,14 @@ func configure_weapon(config: Dictionary) -> void:
 	summon_aoe_radius = float(config.get("summon_aoe_radius", config.get("aoe_radius", summon_aoe_radius)))
 	summon_aoe_damage_multiplier = float(config.get("summon_aoe_damage_multiplier", summon_aoe_damage_multiplier))
 	summon_leash_radius = float(config.get("summon_leash_radius", summon_leash_radius))
+	# SCRUM-946: конфиг пары «танк + кастер».
+	summon_pair_mode = bool(config.get("summon_pair_mode", summon_pair_mode))
+	pair_tank_visual_id = str(config.get("pair_tank_visual_id", pair_tank_visual_id))
+	summon_wave_interval = maxf(float(config.get("summon_wave_interval", summon_wave_interval)), 0.2)
+	summon_wave_radius = maxf(float(config.get("summon_wave_radius", summon_wave_radius)), 24.0)
+	summon_wave_dot_multiplier = maxf(float(config.get("summon_wave_dot_multiplier", summon_wave_dot_multiplier)), 0.0)
+	summon_wave_dot_interval = maxf(float(config.get("summon_wave_dot_interval", summon_wave_dot_interval)), 0.2)
+	summon_wave_stack_cap = maxi(int(config.get("summon_wave_stack_cap", summon_wave_stack_cap)), 1)
 	ally_visual_ids.clear()
 	var configured_visuals: Array = config.get("ally_visual_ids", [])
 	for visual_id in configured_visuals:
@@ -86,6 +125,16 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_cooldown -= delta
 	_command_refresh -= delta
+	# SCRUM-946: пара «танк + кастер» ведёт популяцию сама (без generic-лимита
+	# и прифилла) — постоянные юниты вместо потока временных саммонов.
+	if summon_pair_mode:
+		_initial_prefill_done = true
+		if _command_refresh <= 0.0:
+			_command_existing_summons()
+			_command_refresh = 0.25
+		_update_reactor_homunculus(delta)
+		_update_homunculus_pair(delta)
+		return
 	if not _initial_prefill_done:
 		_prefill_starting_summons()
 	if _command_refresh <= 0.0:
@@ -279,6 +328,182 @@ func _spawn_reactor_unit(owner_node: Node2D) -> Node2D:
 	return reactor
 
 
+# ============================ SCRUM-946: пара гомункулов ============================
+# Постоянная пара: ТАНК (смертен, 4x max HP Химика, таунт-пульсы — враги грызут
+# его; после смерти переспавнивается через summon_interval) и КАСТЕР (неуязвимый
+# Node2D-эффект вне групп allies/боевого лимита — аггро не собирает и урона не
+# принимает; ходит рядом с танком, fallback — плечо Химика; каждые
+# summon_wave_interval волной вешает ВЕЧНЫЙ DoT-заряд, кап summon_wave_stack_cap).
+# Таймера жизни нет ни у одного из пары — только танк можно убить.
+func _update_homunculus_pair(delta: float) -> void:
+	if not summon_pair_mode:
+		return
+	var owner_node := _owner_node()
+	if owner_node == null:
+		return
+	# --- танк: жив / переспавн через summon_interval после смерти -----------------
+	if not _pair_tank_alive():
+		if _pair_tank_deployed:
+			# Танк только что умер/освобождён — таймер респавна; таунт спадает сам
+			# (мёртвый владелец bastion_taunt не резолвится в enemy._taunt_target).
+			_pair_tank = null
+			_pair_tank_deployed = false
+			_pair_tank_respawn_left = maxf(summon_interval, 0.05)
+		_pair_tank_respawn_left -= delta
+		if _pair_tank_respawn_left <= 0.0:
+			_pair_tank = _spawn_pair_tank(owner_node)
+			_pair_tank_deployed = _pair_tank != null and is_instance_valid(_pair_tank)
+	# --- кастер: вечен, следует за танком (fallback — за Химиком) ------------------
+	if _pair_caster == null or not is_instance_valid(_pair_caster):
+		_pair_caster = _spawn_pair_caster(owner_node)
+		_pair_wave_left = summon_wave_interval
+		if _pair_caster == null:
+			return
+	var anchor := _pair_caster_anchor(owner_node)
+	var previous_position := _pair_caster.global_position
+	_pair_caster.global_position = _pair_caster.global_position.lerp(anchor, minf(delta * 3.2, 1.0))
+	_update_pair_caster_facing(_pair_caster.global_position - previous_position)
+	_pair_wave_left -= delta
+	if _pair_wave_left > 0.0:
+		return
+	_pair_wave_left = summon_wave_interval
+	_fire_caster_wave(owner_node)
+
+
+func _pair_tank_alive() -> bool:
+	if _pair_tank == null or not is_instance_valid(_pair_tank) or _pair_tank.is_queued_for_deletion():
+		return false
+	var health_value = _pair_tank.get("health")
+	return health_value == null or float(health_value) > 0.0
+
+
+func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
+	if ally_scene == null:
+		return null
+	var tank := ally_scene.instantiate() as Node2D
+	var parent := owner_node.get_tree().current_scene
+	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
+		parent = owner_node.get_parent()
+	if parent == null:
+		parent = owner_node.get_tree().root
+	parent.add_child(tank)
+	tank.add_to_group("player_weapon_effects")
+	tank.set_meta("summon_weapon_owner", get_instance_id())
+	tank.set_meta("homunculus_pair_role", "tank")
+	if tank.has_method("set_visual_id"):
+		tank.call("set_visual_id", pair_tank_visual_id)
+	else:
+		tank.set("ally_visual_id", pair_tank_visual_id)
+	tank.set("owner_node", owner_node)
+	tank.set("command_mode", command_mode)
+	tank.global_position = owner_node.global_position + Vector2.RIGHT.rotated(randf() * TAU) * 48.0
+	var profile := _summon_profile(owner_node)
+	# Танк-фантазия: РОВНО 4x max HP Химика (summon_health_multiplier=4.0) ×
+	# мета-артефакты (homunculus_power_mult / «Гомункул-танк»); leadership-bulk
+	# generic-саммонов сюда не подмешиваем — 4x и есть его «броня».
+	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
+	var meta_health_mult := float(profile.get("max_health", owner_max_hp)) / maxf(owner_max_hp * summon_health_multiplier * (1.0 + _profile_summon_bulk(owner_node)), 0.001)
+	profile["max_health"] = owner_max_hp * summon_health_multiplier * meta_health_mult
+	profile["lifetime"] = 1.0e9  # без таймера жизни: пара постоянна (SCRUM-946)
+	profile["taunt_pulse"] = true  # таунт — базовое поведение танка пары
+	if tank.has_method("set_combat_profile"):
+		tank.call("set_combat_profile", profile)
+	else:
+		for key in profile.keys():
+			if tank.get(str(key)) != null:
+				tank.set(str(key), profile[key])
+	if owner_node.has_method("play_action_animation"):
+		owner_node.play_action_animation("cast", tank.global_position - owner_node.global_position)
+	_command_existing_summons()
+	return tank
+
+
+# Изолированный пересчёт leadership-bulk generic-профиля (зеркало _summon_profile),
+# чтобы вычесть его из HP танка и оставить чистые 4x × мета-артефакты.
+func _profile_summon_bulk(owner_node: Node) -> float:
+	var stats_raw = owner_node.get("stats")
+	var stats: Dictionary = stats_raw if stats_raw is Dictionary else {}
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var leadership := float(stats.get("leadership", 0.0))
+	var summon_amount := float(parameters.get("summon_amount", 0.0))
+	return minf(leadership * 0.045 + summon_amount * 0.010, 0.75)
+
+
+func _spawn_pair_caster(owner_node: Node2D) -> Node2D:
+	var parent := owner_node.get_tree().current_scene
+	if parent == null or not is_instance_valid(parent):
+		parent = owner_node.get_parent()
+	if parent == null:
+		return null
+	var caster := Node2D.new()
+	caster.name = "HomunculusCaster"
+	caster.z_index = 5
+	caster.set_meta("homunculus_pair_role", "caster")
+	var visual := Sprite2D.new()
+	visual.name = "CasterVisual"
+	visual.texture = load(str(HOMUNCULUS_CASTER_TEXTURE_PATHS["south"])) as Texture2D
+	caster.add_child(visual)
+	parent.add_child(caster)
+	caster.add_to_group("player_weapon_effects")
+	caster.global_position = _pair_caster_anchor(owner_node)
+	_pair_caster_facing = "south"
+	return caster
+
+
+func _pair_caster_anchor(owner_node: Node2D) -> Vector2:
+	if _pair_tank_alive():
+		return _pair_tank.global_position + CASTER_TANK_OFFSET
+	# Задокументированный fallback: танк мёртв — кастер держится у плеча Химика.
+	return owner_node.global_position + CASTER_OWNER_FALLBACK_OFFSET
+
+
+# 4-направленный статичный арт кастера (PixelLab, SCRUM-945): выбираем кадр по
+# доминирующей оси дрейфа; стоя на месте — сохраняем последний ракурс.
+func _update_pair_caster_facing(motion: Vector2) -> void:
+	if _pair_caster == null or not is_instance_valid(_pair_caster):
+		return
+	if motion.length_squared() < 1.0:
+		return
+	var facing := "south"
+	if absf(motion.x) >= absf(motion.y):
+		facing = "east" if motion.x >= 0.0 else "west"
+	else:
+		facing = "south" if motion.y >= 0.0 else "north"
+	if facing == _pair_caster_facing:
+		return
+	_pair_caster_facing = facing
+	var visual := _pair_caster.get_node_or_null("CasterVisual") as Sprite2D
+	if visual != null:
+		visual.texture = load(str(HOMUNCULUS_CASTER_TEXTURE_PATHS.get(facing, HOMUNCULUS_CASTER_TEXTURE_PATHS["south"]))) as Texture2D
+
+
+# Волна кастера: вечный периодический заряд (stack add до summon_wave_stack_cap).
+# Тик = dot_damage Химика × summon_wave_dot_multiplier; trait «Катализатор»
+# (+50% периодики) запекается через StatusEffects.apply_status_from(владелец).
+func _fire_caster_wave(owner_node: Node2D) -> void:
+	if _pair_caster == null or not is_instance_valid(_pair_caster) or not _pair_caster.is_inside_tree():
+		return
+	var parameters_raw = owner_node.get("derived_parameters")
+	var dot_damage := 2.0
+	if parameters_raw is Dictionary:
+		dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
+	var wave_tick := maxf(dot_damage * summon_wave_dot_multiplier, 0.30)
+	AttackVfx.ring_pulse(_pair_caster.get_parent(), _pair_caster.global_position, summon_wave_radius, Color(0.55, 0.95, 0.45, 0.34), false)
+	for enemy in TARGET_QUERY.in_radius(self, _pair_caster.global_position, summon_wave_radius):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		StatusEffects.apply_status_from(owner_node, enemy_node, CASTER_WAVE_STATUS_ID, {
+			"duration": CASTER_WAVE_PERSIST_SECONDS,
+			"dot_damage": wave_tick,
+			"dot_interval": summon_wave_dot_interval,
+			"stack_mode": "add",
+			"max_stacks": summon_wave_stack_cap,
+			"marker_color": Color(0.55, 0.95, 0.45, 1.0),
+		})
+
+
 func _selected_ally_visual_id() -> String:
 	if not ally_visual_ids.is_empty():
 		return ally_visual_ids[randi() % ally_visual_ids.size()]
@@ -286,7 +511,9 @@ func _selected_ally_visual_id() -> String:
 		return ally_visual_id
 	match weapon_id:
 		"homunculus_vial":
-			return "homunculus"
+			# SCRUM-946: и generic-путь (прямой вызов _summon в тестах) идёт на
+			# новый арт танка — легаси ally_homunculus.png больше не используется.
+			return pair_tank_visual_id
 		"summon_amulet":
 			return "druid_beast" if randf() < 0.5 else "druid_pack_spirit"
 		"leadership_echo":

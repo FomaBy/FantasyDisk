@@ -7,8 +7,33 @@ const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_
 const ALLY_VISUAL_PATHS := {
 	"druid_beast": "res://assets/sprites/allies/ally_druid_beast.png",
 	"druid_pack_spirit": "res://assets/sprites/allies/ally_druid_pack_spirit.png",
-	"homunculus": "res://assets/sprites/allies/ally_homunculus.png",
+	# SCRUM-946: гомункулы переведены на новые PixelLab-спрайты (SCRUM-945);
+	# легаси-id "homunculus" тоже указывает на арт танка.
+	"homunculus": "res://assets/sprites/allies/homunculus_tank_south.png",
+	"homunculus_tank": "res://assets/sprites/allies/homunculus_tank_south.png",
 	"leadership_echo": "res://assets/sprites/allies/ally_leadership_echo.png",
+}
+# SCRUM-946: 4-направленный статичный арт (по PNG на ракурс, без spriteframes) —
+# кадр выбирается по доминирующей оси движения в _update_visual_animation.
+const DIRECTIONAL_ALLY_VISUAL_PATHS := {
+	"homunculus": {
+		"south": "res://assets/sprites/allies/homunculus_tank_south.png",
+		"north": "res://assets/sprites/allies/homunculus_tank_north.png",
+		"east": "res://assets/sprites/allies/homunculus_tank_east.png",
+		"west": "res://assets/sprites/allies/homunculus_tank_west.png",
+	},
+	"homunculus_tank": {
+		"south": "res://assets/sprites/allies/homunculus_tank_south.png",
+		"north": "res://assets/sprites/allies/homunculus_tank_north.png",
+		"east": "res://assets/sprites/allies/homunculus_tank_east.png",
+		"west": "res://assets/sprites/allies/homunculus_tank_west.png",
+	},
+	"homunculus_caster": {
+		"south": "res://assets/sprites/allies/homunculus_caster_south.png",
+		"north": "res://assets/sprites/allies/homunculus_caster_north.png",
+		"east": "res://assets/sprites/allies/homunculus_caster_east.png",
+		"west": "res://assets/sprites/allies/homunculus_caster_west.png",
+	},
 }
 const FALLBACK_ALLY_VISUAL_ID := "druid_beast"
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
@@ -31,6 +56,9 @@ const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 var _attack_cooldown := 0.0
 var _attack_anim_time := 0.0
 var _last_facing_right := false
+# SCRUM-946: текущий ракурс 4-направленного статичного арта (см.
+# DIRECTIONAL_ALLY_VISUAL_PATHS); юниты без направленного арта его не трогают.
+var _directional_facing := "south"
 var owner_node: Node2D = null
 var command_target: Node2D = null
 var health := 18.0
@@ -116,6 +144,7 @@ func _apply_visual() -> void:
 	if texture != null:
 		body.texture = texture
 	body.visible = true
+	_directional_facing = "south"  # SCRUM-946: базовый кадр направленного арта
 
 	if animated_body == null:
 		return
@@ -235,6 +264,7 @@ func _try_attack(target: Node2D) -> void:
 func _update_visual_animation() -> void:
 	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
 	if animated_body == null or not animated_body.visible:
+		_update_directional_static_visual()
 		return
 
 	if absf(velocity.x) > 1.0:
@@ -251,9 +281,36 @@ func _update_visual_animation() -> void:
 	FullFrameAnimationRegistry.play_state(animated_body, "move", Vector2.RIGHT if _last_facing_right else Vector2.LEFT)
 
 
+# SCRUM-946: 4-направленный статичный арт гомункулов — подмена кадра Body по
+# доминирующей оси движения (стоя на месте — держим последний ракурс).
+func _update_directional_static_visual(direction := Vector2.ZERO) -> void:
+	if not DIRECTIONAL_ALLY_VISUAL_PATHS.has(ally_visual_id):
+		return
+	var motion := direction if direction.length_squared() > 0.01 else velocity
+	if motion.length_squared() < 4.0:
+		return
+	var facing := "south"
+	if absf(motion.x) >= absf(motion.y):
+		facing = "east" if motion.x >= 0.0 else "west"
+	else:
+		facing = "south" if motion.y >= 0.0 else "north"
+	if facing == _directional_facing:
+		return
+	_directional_facing = facing
+	var body := get_node_or_null("Body") as Sprite2D
+	if body == null:
+		return
+	var directions: Dictionary = DIRECTIONAL_ALLY_VISUAL_PATHS[ally_visual_id]
+	var texture := load(str(directions.get(facing, directions["south"]))) as Texture2D
+	if texture != null:
+		body.texture = texture
+
+
 func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
 	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
 	if animated_body == null or not animated_body.visible:
+		# SCRUM-946: направленный статичный арт разворачивается к цели удара.
+		_update_directional_static_visual(direction)
 		return
 	if absf(direction.x) > 0.01:
 		_last_facing_right = direction.x > 0.0
