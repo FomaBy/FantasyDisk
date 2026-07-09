@@ -13,7 +13,9 @@ Jira: SCRUM-1001
 Прямой пользовательский запрос 2026-07-09: используя генерацию картинок OpenAI,
 сделать новую картинку на главный экран игры, уменьшить зернистость и использовать
 как референсы текущие спрайты персонажей и монстров/боссов. Требуемое визуальное
-направление: чисто, мультяшно-реалистично и красиво.
+направление: чисто, мультяшно-реалистично и красиво. Последний follow-up:
+перегенерировать с нуля без референса к предыдущим экранам, но с референсами на
+боссов и персонажей.
 
 ## Process Override
 
@@ -30,6 +32,8 @@ Jira: SCRUM-1001
   style/subject references.
 - Снизить зернистость относительно предыдущего фона: гладкие чистые формы,
   без шумного film grain, без чрезмерного pixel-art/noise texture.
+- Для последней ревизии не использовать предыдущие main-menu screens/backgrounds
+  как generation reference; входной visual reference = текущие персонажи и боссы.
 - Сохранить runtime path `assets/backgrounds/main_menu_epic_battle_v3.png`, чтобы
   не менять кодовый контракт `MAIN_MENU_BACKGROUND`.
 - Сохранить предыдущий runtime background в backup/evidence.
@@ -45,6 +49,8 @@ Jira: SCRUM-1001
 - Визуальный стиль: clean cartoon-realistic D&D/dark fantasy, current-sprite-inspired
   characters/monsters/bosses, reduced grain/noise, smoother lines and less ragged
   contours, without extra orange spark/ember dot noise.
+- Latest from-scratch pass uses current character/boss sprite references only and
+  does not use previous screen/background images as input references.
 - Есть spec/evidence under `docs/design/mockups/main_menu_openai_clean_background/`
   и preview under `docs/design/previews/`.
 - Godot smoke/UI checks run or blocker recorded.
@@ -71,6 +77,13 @@ Done 2026-07-09.
   тёмную холодную палитру без размытия текстуры; крупные golden portal/music
   linework сохранены. Финальный runtime source:
   `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png`.
+- После follow-up фидбека `перегенерируй с нуля без референса к предыдущим
+  экранам, но с референсами на боссов и персонажей` выполнена новая OpenAI
+  Images generate-ревизия: предыдущие main-menu/background/screen изображения не
+  использовались как входные референсы; единственный visual reference input =
+  no-label contact sheet из текущих runtime персонажей и боссов. Новый активный
+  runtime source:
+  `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_from_scratch_character_boss_refs.png`.
 - Старый runtime background сохранён:
   `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
 - Evidence/spec:
@@ -81,11 +94,17 @@ Done 2026-07-09.
   `docs/design/previews/main_menu_openai_clean_background_safe_zones.png`.
 - Sprite reference sheet:
   `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png`.
+- From-scratch character/boss reference sheets:
+  `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_no_labels.png`,
+  `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_annotated.png`,
+  `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_manifest.md`.
 - Smooth-lines comparison:
   `docs/design/previews/main_menu_openai_smooth_lines_comparison.png`.
 - Orange-noise mask/comparison:
   `docs/design/previews/main_menu_openai_orange_noise_mask.png`,
   `docs/design/previews/main_menu_openai_no_orange_noise_comparison.png`.
+- From-scratch source/runtime comparison:
+  `docs/design/previews/main_menu_openai_from_scratch_comparison.png`.
 
 ## Проверки
 

@@ -256,15 +256,14 @@ Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable sh
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
 `MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
-2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background based
-on current runtime character, monster, elite and boss sprite references. The
-final runtime PNG has a grain-reduction pass plus a smooth-lines revision that
-reduces ragged/uneven contours in clouds, stone, ruins, capes, boss armor and
-monster silhouettes while preserving hero/boss readability. The latest
-SCRUM-1001 follow-up removes extra orange ember/spark dot noise by
-color-neutralizing small isolated warm components into the darker cool palette
-while preserving large golden portal/music linework.
-The calm left button-safe column and readable title-safe area are preserved, the
+2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background. The
+latest active pass is regenerated from scratch without previous
+screen/background reference input: only the no-label contact sheet of current
+runtime characters and bosses was used as the visual reference. The composition
+is a moonlit obsidian fortress/causeway with the party and boss silhouettes on
+the center-right/right side, no old central portal/atlas/music-line layout and
+no baked UI text. The calm left button-safe column and readable title-safe area
+are preserved, the
 asset is prepared for proportional cover-crop rather than one-axis stretching,
 and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
 backup, preview and safe-zone evidence are tracked in

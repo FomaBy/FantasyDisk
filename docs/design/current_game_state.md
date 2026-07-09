@@ -158,16 +158,14 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `main_menu_epic_battle_v3.png` используется стартовым экраном как активный фон
 главного меню: 2560x1440 OpenAI-generated clean cartoon-realistic D&D/dark
-fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок,
-читаемой title-safe областью под `MainMenuTitleLabel`, героями/монстрами/боссами
-по референсам текущих runtime sprites, дополнительным grain-reduction pass и
-smooth-lines ревизией для более плавных контуров облаков, руин, платформы,
-плащей, боссов и monster silhouettes. SCRUM-1001 follow-up также удаляет
-лишние orange ember/spark dots, которые пришли из генерации как частицы/пепел:
-мелкие isolated компоненты нейтрализованы в более тёмную холодную палитру без
-размытия текстуры, а крупные golden portal/music линии сохранены.
-Source/reference sheet/backup/preview/safe-zone
-evidence задокументированы в
+fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок и
+читаемой title-safe областью под `MainMenuTitleLabel`. Последняя SCRUM-1001
+ревизия перегенерирована с нуля без previous screen/background reference input:
+входным visual reference был только no-label contact sheet из текущих runtime
+персонажей и боссов. Активная композиция — холодная moonlit obsidian fortress /
+causeway scene с героями и боссами справа/center-right, без старого центрального
+portal/atlas/music-line layout и без baked UI/text. Source/reference
+sheet/backup/preview/safe-zone evidence задокументированы в
 `docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
 explicit OpenAI Images override по прямому запросу пользователя). Предыдущий
 0.2.0 cosmic atlas фон сохранён в

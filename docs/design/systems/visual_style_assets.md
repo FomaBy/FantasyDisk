@@ -802,17 +802,15 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
   art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
-  OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background built
-  from current runtime character, monster, elite and boss sprite references.
-  The final runtime image uses a grain-reduction pass plus a smooth-lines
-  revision to reduce ragged/uneven contours in the sky, clouds, ruins, stone
-  platform, capes, boss armor and monster silhouettes while preserving
-  readability. A later SCRUM-1001 cleanup removes extra orange ember/spark dot
-  noise from the generated image while preserving large golden portal/music
-  linework. It keeps a calm dark left column for the six runtime menu buttons
-  and a readable title-safe area, and contains no baked UI text/buttons/frames.
-  Source, sprite reference sheet, backup, preview, cleanup comparisons and
-  safe-zone evidence are documented in
+  OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background. The
+  latest active SCRUM-1001 pass is a from-scratch generation that excludes
+  previous screen/background reference input and uses only current runtime
+  character and boss sprites as the visual reference. It keeps a calm dark left
+  column for the six runtime menu buttons and a readable title-safe area, places
+  the party/boss action center-right/right, avoids the old portal/atlas/music
+  line layout, and contains no baked UI text/buttons/frames. Source, character/
+  boss reference sheets, backup, preview, comparisons and safe-zone evidence are
+  documented in
   `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
   an explicit OpenAI Images override by direct user request.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
