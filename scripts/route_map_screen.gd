@@ -305,7 +305,9 @@ func _place_altar_node(route: Array) -> void:
 	if non_boss_rows <= START_BATTLE_ONLY_ROWS:
 		return
 	# Кандидаты: внутренние ряды (после стартовых, до последнего не-босс ряда),
-	# в которых есть хотя бы одна свободная ветка (не shop/chest).
+	# в которых есть хотя бы одна свободная ветка (не shop/chest/elite_battle).
+	# SCRUM-994: elite_battle защищён наравне с shop/chest — сгенерированный
+	# элитный узел обязан остаться элитным боем, алтарь его не переписывает.
 	var candidate_rows := []
 	for row_index in range(START_BATTLE_ONLY_ROWS, non_boss_rows):
 		var row: Array = route[row_index]
@@ -313,18 +315,18 @@ func _place_altar_node(route: Array) -> void:
 			continue
 		for route_node in row:
 			var node_type := str(route_node.get("type", ""))
-			if node_type != "shop" and node_type != "chest":
+			if node_type != "shop" and node_type != "chest" and node_type != "elite_battle":
 				candidate_rows.append(row_index)
 				break
 	if candidate_rows.is_empty():
 		return
 	var chosen_row_index: int = candidate_rows[game.rng.randi_range(0, candidate_rows.size() - 1)]
 	var chosen_row: Array = route[chosen_row_index]
-	# Свободные ветки в выбранном ряду (не shop/chest), затем случайная из них.
+	# Свободные ветки в выбранном ряду (не shop/chest/elite_battle), затем случайная из них.
 	var free_branches := []
 	for branch_index in range(chosen_row.size()):
 		var branch_type := str((chosen_row[branch_index] as Dictionary).get("type", ""))
-		if branch_type != "shop" and branch_type != "chest":
+		if branch_type != "shop" and branch_type != "chest" and branch_type != "elite_battle":
 			free_branches.append(branch_index)
 	if free_branches.is_empty():
 		return
@@ -1079,7 +1081,11 @@ func _open_route_node(route_node: Dictionary) -> void:
 			game.ui._show_event_screen(altar_node)
 		"chest":
 			game.ui._show_elite_artifact_reward(Callable(self, "_advance_route_after_noncombat"))
-		"elite_battle":
+		"elite_battle", "elite":
+			# SCRUM-994: инвариант «elite = обязательный бой». Элитный узел может
+			# войти ТОЛЬКО в элитный бой — никакого event-флоу. Алиас "elite"
+			# страхует данные старых сейвов от дрейфа имени типа: без него такой
+			# узел свалился бы в дефолтную ветку обычного боя.
 			game.combat._start_combat(false, "elite")
 		"boss":
 			# SCRUM-619: на финальном акте при выполненном гейте подменяется на
