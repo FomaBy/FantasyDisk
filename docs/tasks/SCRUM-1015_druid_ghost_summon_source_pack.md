@@ -107,5 +107,5 @@ Independent verification:
   screenshot-helper warning remains non-fatal).
 
 No QA bugs were found. Jira SCRUM-1015 may move to `Готово`; SCRUM-1016 may be
-unblocked for the Animator lane after correcting the previously reversed Jira
-dependency link.
+unblocked for the Animator lane; the raw Jira link payload confirms the existing
+`SCRUM-1016 is blocked by SCRUM-1015` dependency direction is already correct.
