@@ -1,0 +1,352 @@
+{
+  "ok": true,
+  "files": [
+    {
+      "file": "druid_ghost_wolf_west.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        46,
+        45,
+        167,
+        129
+      ],
+      "gutter_ltrb": [
+        46,
+        45,
+        13,
+        51
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_wolf_east.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        15,
+        44,
+        134,
+        128
+      ],
+      "gutter_ltrb": [
+        15,
+        44,
+        46,
+        52
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_bear_west.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        22,
+        24,
+        156,
+        160
+      ],
+      "gutter_ltrb": [
+        22,
+        24,
+        24,
+        20
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_bear_east.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        22,
+        26,
+        158,
+        161
+      ],
+      "gutter_ltrb": [
+        22,
+        26,
+        22,
+        19
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_panther_west.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        48,
+        55,
+        161,
+        123
+      ],
+      "gutter_ltrb": [
+        48,
+        55,
+        19,
+        57
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_panther_east.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        17,
+        55,
+        132,
+        124
+      ],
+      "gutter_ltrb": [
+        17,
+        55,
+        48,
+        56
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_stag_west.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        34,
+        22,
+        156,
+        152
+      ],
+      "gutter_ltrb": [
+        34,
+        22,
+        24,
+        28
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_stag_east.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        27,
+        21,
+        147,
+        148
+      ],
+      "gutter_ltrb": [
+        27,
+        21,
+        33,
+        32
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_lion_west.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        29,
+        38,
+        169,
+        134
+      ],
+      "gutter_ltrb": [
+        29,
+        38,
+        11,
+        46
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    },
+    {
+      "file": "druid_ghost_lion_east.png",
+      "size": [
+        180,
+        180
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visible_bbox": [
+        13,
+        37,
+        150,
+        131
+      ],
+      "gutter_ltrb": [
+        13,
+        37,
+        30,
+        49
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true
+    }
+  ],
+  "baseline_checks": [
+    {
+      "id": "druid_ghost_wolf",
+      "visible_bottom_rows": [
+        129,
+        128
+      ],
+      "delta": 1,
+      "pass": true
+    },
+    {
+      "id": "druid_ghost_bear",
+      "visible_bottom_rows": [
+        160,
+        161
+      ],
+      "delta": 1,
+      "pass": true
+    },
+    {
+      "id": "druid_ghost_panther",
+      "visible_bottom_rows": [
+        123,
+        124
+      ],
+      "delta": 1,
+      "pass": true
+    },
+    {
+      "id": "druid_ghost_stag",
+      "visible_bottom_rows": [
+        152,
+        148
+      ],
+      "delta": 4,
+      "pass": true
+    },
+    {
+      "id": "druid_ghost_lion",
+      "visible_bottom_rows": [
+        134,
+        131
+      ],
+      "delta": 3,
+      "pass": true
+    }
+  ]
+}
