@@ -1,6 +1,6 @@
 # SCRUM-1016 — Druid Ghost Summon PixelLab Animation Integration
 
-Статус: in_progress
+Статус: done (ready for independent QA)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_ready`
@@ -101,3 +101,10 @@ remain Backend-owned by SCRUM-902.
   integration owner.
 - Independent QA is still required before Jira may move from
   `Контроль качества` to `Готово`.
+- Landed to `origin/dev` as commit `af5b5543`; Jira moved to
+  `Контроль качества`, not `Готово`.
+- Disk cleanup: removed task `.godot` cache (452 MB), Python `__pycache__`,
+  temporary PixelLab download and smoke logs. The clean task worktree is removed
+  after this final mirror update reaches `origin/dev`.
+- Thread cleanup: not a disposable worker thread; this subagent reports back to
+  the parent coordinator.
