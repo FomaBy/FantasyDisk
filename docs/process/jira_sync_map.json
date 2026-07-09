@@ -4097,5 +4097,10 @@
   "key": "SCRUM-1013",
   "status": "Контроль качества",
   "desc_hash": "e4788e92f0beee3e03958770015a4b29"
+ },
+ "bug_scrum1012_monitor_selector_behavioral_virtual_screens_task.md": {
+  "key": "SCRUM-1012",
+  "status": "Контроль качества",
+  "desc_hash": "c0fc2bf3033bd2d938536a526731b81f"
  }
 }
