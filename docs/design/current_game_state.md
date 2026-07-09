@@ -161,10 +161,12 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок и
 читаемой title-safe областью под `MainMenuTitleLabel`. Последняя SCRUM-1001
 ревизия перегенерирована с нуля без previous screen/background reference input:
-входным visual reference был только no-label contact sheet из текущих runtime
-персонажей и боссов. Активная композиция — холодная moonlit obsidian fortress /
-causeway scene с героями и боссами справа/center-right, без старого центрального
-portal/atlas/music-line layout и без baked UI/text. Source/reference
+входным visual reference был только clean board из текущих runtime персонажей и
+боссов. Активная композиция — холодная moonlit mountain-pass/citadel key art с
+героями в 3/4 front/side poses справа/center-right; гитарист читается спереди/в
+3/4 с гитарой на корпусе, не спиной. Boss threat вынесен в дальний план/облака,
+без старого central portal/atlas/music-line layout и без baked UI/text.
+Source/reference
 sheet/backup/preview/safe-zone evidence задокументированы в
 `docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
 explicit OpenAI Images override по прямому запросу пользователя). Предыдущий

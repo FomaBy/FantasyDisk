@@ -19,6 +19,9 @@ removing grain, adding texture smoothing, smoothing ragged linework and removing
 orange spark/ember dot noise. Latest follow-up requested a full regeneration
 from scratch without using previous screens/backgrounds as references, while
 still using current runtime character and boss sprites as visual references.
+The first local from-scratch candidate was rejected before push because the
+guitarist read as back-facing while playing; the accepted reimagined pass uses
+3/4 front/side party key-art poses and a clearly readable guitarist.
 
 ## Runtime Asset Contract
 
@@ -30,10 +33,10 @@ still using current runtime character and boss sprites as visual references.
 | Smooth-lines OpenAI edit source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` |
 | Final smooth-lines reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` |
 | Final no-orange-noise reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png` |
-| From-scratch OpenAI source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_from_scratch_source.png` |
-| Final from-scratch character/boss reference background | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_from_scratch_character_boss_refs.png` |
+| Reimagined OpenAI source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_reimagined_source.png` |
+| Final reimagined character/boss reference background | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_reimagined_character_boss_refs.png` |
 | Sprite reference sheet | `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png` |
-| From-scratch no-label character/boss reference sheet | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_no_labels.png` |
+| Reimagined clean character/boss reference sheet | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_generation_clean.png` |
 | From-scratch annotated character/boss reference sheet | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_annotated.png` |
 | From-scratch reference manifest | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_manifest.md` |
 | Previous runtime backup | `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png` |
@@ -42,7 +45,7 @@ still using current runtime character and boss sprites as visual references.
 | Smooth-lines comparison | `docs/design/previews/main_menu_openai_smooth_lines_comparison.png` |
 | Orange-noise mask | `docs/design/previews/main_menu_openai_orange_noise_mask.png` |
 | No-orange-noise comparison | `docs/design/previews/main_menu_openai_no_orange_noise_comparison.png` |
-| From-scratch source/runtime comparison | `docs/design/previews/main_menu_openai_from_scratch_comparison.png` |
+| Reimagined source/runtime comparison | `docs/design/previews/main_menu_openai_reimagined_comparison.png` |
 
 ## Screen Elements
 
@@ -71,23 +74,25 @@ buttons, logos or panels. Runtime controls remain separate Godot nodes.
 | main_menu_openai_smooth_lines_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` | OpenAI edit source for smoother contours | 1672x941 | RGB | n/a | n/a | generated after follow-up feedback about ragged edges |
 | main_menu_openai_final_smooth_lines | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` | final smooth-lines runtime source | 2560x1440 | RGB | n/a | safe zones preserved | smoother clouds, silhouettes, platform edges and boss contours |
 | main_menu_openai_final_no_orange_noise | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png` | final no-orange-noise runtime source | 2560x1440 | RGB | n/a | safe zones preserved | small isolated orange/yellow ember/spark components removed |
-| current_character_boss_reference_sheet_no_labels | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_no_labels.png` | from-scratch generation visual reference input | 1536x1200 | RGB | n/a | n/a | current runtime heroes and bosses only; no previous screens/backgrounds |
+| current_character_boss_reference_sheet_generation_clean | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_generation_clean.png` | accepted reimagined generation visual reference input | 1536x1152 | RGB | n/a | n/a | current runtime heroes and bosses only; no previous screens/backgrounds, no card/grid borders |
 | current_character_boss_reference_sheet_annotated | `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_annotated.png` | evidence reference sheet | 1536x1200 | RGB | n/a | n/a | annotated for traceability, not used as generation layout |
-| main_menu_openai_from_scratch_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_from_scratch_source.png` | raw OpenAI from-scratch source | 1672x941 | RGB | n/a | n/a | generated from the character/boss sheet only, no previous screen/background input |
-| main_menu_openai_final_from_scratch_character_boss_refs | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_from_scratch_character_boss_refs.png` | active final from-scratch runtime source | 2560x1440 | RGB | n/a | safe zones preserved | moonlit obsidian fortress/causeway composition with calm left UI space |
+| main_menu_openai_reimagined_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_reimagined_source.png` | raw OpenAI reimagined source | 1672x941 | RGB | n/a | n/a | generated from the clean character/boss sheet only, no previous screen/background input |
+| main_menu_openai_final_reimagined_character_boss_refs | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_reimagined_character_boss_refs.png` | active final reimagined runtime source | 2560x1440 | RGB | n/a | safe zones preserved | 3/4 front/side party key art with readable guitarist and calm left UI space |
 | main_menu_epic_battle_v3 | `assets/backgrounds/main_menu_epic_battle_v3.png` | live runtime background | 2560x1440 | RGB | n/a | safe zones preserved | keeps existing `MAIN_MENU_BACKGROUND` code path |
 
-## From-Scratch Regeneration Pass
+## Reimagined From-Scratch Regeneration Pass
 
 The latest runtime background is a full OpenAI Images regeneration from scratch.
 The previous main-menu images, old screen previews and prior generated
 backgrounds were not used as input references. The only visual reference image
 used for this pass was
-`current_character_boss_reference_sheet_no_labels.png`, built from current
-runtime character and boss sprites. The accepted composition is a cold moonlit
-obsidian fortress/causeway scene with the hero party and boss silhouettes on the
-center-right/right side, while the left menu/title safe zones remain dark and
-low-detail.
+`current_character_boss_reference_sheet_generation_clean.png`, built from
+current runtime character and boss sprites. The accepted composition is a cold
+moonlit mountain-pass/citadel key-art scene with the hero party in 3/4
+front/side poses on the center-right/right side. The guitarist is visible from
+the front/3/4 side with the guitar held naturally across the torso. Bosses are
+atmospheric threats in the distant citadel/clouds, while the left menu/title
+safe zones remain dark and low-detail.
 
 ## Smoothing Pass
 
@@ -138,6 +143,7 @@ without blurring the surrounding texture. Evidence:
 - [x] Current character/monster/boss sprites were used in a reference sheet.
 - [x] Latest pass uses current character/boss reference sheet only and excludes
       previous screen/background images as generation references.
+- [x] Guitarist reads front/3/4 side with visible guitar, not back-facing.
 - [x] Grain reduction and smoothing pass applied after user feedback.
 - [x] Orange spark/ember dot noise removed after follow-up feedback.
 - [x] No UI content overlaps frame decoration; this background has no UI frame.

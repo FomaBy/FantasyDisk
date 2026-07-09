@@ -803,12 +803,14 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
   art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
   OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background. The
-  latest active SCRUM-1001 pass is a from-scratch generation that excludes
-  previous screen/background reference input and uses only current runtime
-  character and boss sprites as the visual reference. It keeps a calm dark left
-  column for the six runtime menu buttons and a readable title-safe area, places
-  the party/boss action center-right/right, avoids the old portal/atlas/music
-  line layout, and contains no baked UI text/buttons/frames. Source, character/
+  latest active SCRUM-1001 pass is a reimagined from-scratch generation that
+  excludes previous screen/background reference input and uses only current
+  runtime character and boss sprites as the visual reference. It keeps a calm
+  dark left column for the six runtime menu buttons and a readable title-safe
+  area, places the 3/4 front/side party and boss threat center-right/right,
+  keeps the guitarist front/3/4 readable with the guitar on the torso, avoids
+  the old portal/atlas/music line layout, and contains no baked UI
+  text/buttons/frames. Source, character/
   boss reference sheets, backup, preview, comparisons and safe-zone evidence are
   documented in
   `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is

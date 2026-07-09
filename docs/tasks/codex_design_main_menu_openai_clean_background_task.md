@@ -13,9 +13,10 @@ Jira: SCRUM-1001
 Прямой пользовательский запрос 2026-07-09: используя генерацию картинок OpenAI,
 сделать новую картинку на главный экран игры, уменьшить зернистость и использовать
 как референсы текущие спрайты персонажей и монстров/боссов. Требуемое визуальное
-направление: чисто, мультяшно-реалистично и красиво. Последний follow-up:
+направление: чисто, мультяшно-реалистично и красиво. Последние follow-up:
 перегенерировать с нуля без референса к предыдущим экранам, но с референсами на
-боссов и персонажей.
+боссов и персонажей; затем исправить проблему, где гитарист читался спиной и
+играющим на гитаре.
 
 ## Process Override
 
@@ -51,6 +52,8 @@ Jira: SCRUM-1001
   contours, without extra orange spark/ember dot noise.
 - Latest from-scratch pass uses current character/boss sprite references only and
   does not use previous screen/background images as input references.
+- Guitarist must read as front/3/4 side with guitar visible naturally across the
+  torso, not as a back-facing figure playing backwards.
 - Есть spec/evidence under `docs/design/mockups/main_menu_openai_clean_background/`
   и preview under `docs/design/previews/`.
 - Godot smoke/UI checks run or blocker recorded.
@@ -80,10 +83,13 @@ Done 2026-07-09.
 - После follow-up фидбека `перегенерируй с нуля без референса к предыдущим
   экранам, но с референсами на боссов и персонажей` выполнена новая OpenAI
   Images generate-ревизия: предыдущие main-menu/background/screen изображения не
-  использовались как входные референсы; единственный visual reference input =
-  no-label contact sheet из текущих runtime персонажей и боссов. Новый активный
-  runtime source:
-  `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_from_scratch_character_boss_refs.png`.
+  использовались как входные референсы.
+- Первый локальный from-scratch кандидат был отклонён до push из-за позы
+  гитариста. После follow-up `Гитарист Спиной играет на гитаре` выполнена
+  переосмысленная generate-ревизия: единственный visual reference input =
+  clean board из текущих runtime персонажей и боссов, без карточек/сетки/старых
+  фонов. Новый активный runtime source:
+  `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_reimagined_character_boss_refs.png`.
 - Старый runtime background сохранён:
   `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
 - Evidence/spec:
@@ -95,7 +101,7 @@ Done 2026-07-09.
 - Sprite reference sheet:
   `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png`.
 - From-scratch character/boss reference sheets:
-  `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_no_labels.png`,
+  `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_generation_clean.png`,
   `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_annotated.png`,
   `docs/design/references/main_menu_openai_clean_background/current_character_boss_reference_sheet_manifest.md`.
 - Smooth-lines comparison:
@@ -103,8 +109,8 @@ Done 2026-07-09.
 - Orange-noise mask/comparison:
   `docs/design/previews/main_menu_openai_orange_noise_mask.png`,
   `docs/design/previews/main_menu_openai_no_orange_noise_comparison.png`.
-- From-scratch source/runtime comparison:
-  `docs/design/previews/main_menu_openai_from_scratch_comparison.png`.
+- Reimagined source/runtime comparison:
+  `docs/design/previews/main_menu_openai_reimagined_comparison.png`.
 
 ## Проверки
 

@@ -258,12 +258,13 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
 `MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
 2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background. The
 latest active pass is regenerated from scratch without previous
-screen/background reference input: only the no-label contact sheet of current
-runtime characters and bosses was used as the visual reference. The composition
-is a moonlit obsidian fortress/causeway with the party and boss silhouettes on
-the center-right/right side, no old central portal/atlas/music-line layout and
-no baked UI text. The calm left button-safe column and readable title-safe area
-are preserved, the
+screen/background reference input: only the clean board of current runtime
+characters and bosses was used as the visual reference. The composition is a
+moonlit mountain-pass/citadel key-art scene with the party in 3/4 front/side
+poses on the center-right/right side, a clearly front/3/4 readable guitarist
+holding the guitar naturally, distant boss threats, no old central
+portal/atlas/music-line layout and no baked UI text. The calm left
+button-safe column and readable title-safe area are preserved, the
 asset is prepared for proportional cover-crop rather than one-axis stretching,
 and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
 backup, preview and safe-zone evidence are tracked in

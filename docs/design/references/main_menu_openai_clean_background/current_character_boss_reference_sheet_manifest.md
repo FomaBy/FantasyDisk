@@ -1,6 +1,9 @@
 # Current Character/Boss Reference Sheet
 
-Used for SCRUM-1001 from-scratch main-menu regeneration. Previous main-menu/background/screen images are intentionally excluded.
+Used for SCRUM-1001 reimagined from-scratch main-menu regeneration. Previous
+main-menu/background/screen images are intentionally excluded. The accepted
+generation input is `current_character_boss_reference_sheet_generation_clean.png`,
+a no-label/no-card-border board of the current runtime characters and bosses.
 
 | Role | ID | Path |
 | --- | --- | --- |
