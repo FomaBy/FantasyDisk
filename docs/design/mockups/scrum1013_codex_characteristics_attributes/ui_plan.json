@@ -1,0 +1,85 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 12, "allow_overlap": false},
+  "screen": {
+    "id": "codex_characteristics_attributes",
+    "purpose": "Design-only handoff for SCRUM-955: split base characteristics, derived attributes and ascension into distinct Codex sections.",
+    "base_resolution": "1920x1080",
+    "responsive_targets": ["1280x720", "1920x1080", "2560x1440"]
+  },
+  "content": {
+    "screen_title": "Кодекс",
+    "back": "Назад",
+    "tab_characters": "Персонажи",
+    "tab_monsters": "Монстры",
+    "tab_artifacts": "Артефакты",
+    "tab_characteristics": "Характеристики",
+    "tab_attributes": "Атрибуты",
+    "tab_ascension": "Возвышение",
+    "list_title": "Характеристики",
+    "entry_one": "Сила",
+    "entry_two": "Интеллект",
+    "entry_three": "Ловкость",
+    "detail_title": "Сила",
+    "detail_chips": "Базовая характеристика   •   Урон",
+    "detail_body": "Усиливает физические атаки и оружие ближнего боя. В подробностях показываются формула, влияние на сборку и связанные производные параметры.",
+    "preview_caption": "Иконка и схема влияния",
+    "detail_related": "СВЯЗАННЫЕ АТРИБУТЫ\nУрон\nСила крита\nОтталкивание"
+  },
+  "inventory": {
+    "fixed_text": ["Кодекс", "Назад", "Персонажи", "Монстры", "Артефакты", "Характеристики", "Атрибуты", "Возвышение"],
+    "dynamic_text": ["section title", "entry title", "entry summary", "detail title", "chips", "formula", "description", "build impact", "related attributes", "unlock condition"],
+    "controls": ["back button", "six category tab buttons", "focusable center entry rows", "center scrollbar", "related-attributes scrollbar", "detail scrollbar"],
+    "media": ["selected entry icon or diagram clipped to preview_stage"],
+    "repeatable": ["center entry rows", "detail paragraphs", "detail chips"],
+    "states": ["default", "hover", "pressed", "keyboard focus", "selected", "disabled", "locked", "empty", "loading", "scroll overflow"],
+    "input": ["mouse", "keyboard", "gamepad focus", "LB/RB section cycling", "Esc/B back"]
+  },
+  "responsive_rules": {
+    "1280x720": "Uniform 0.6667 geometry scale; clamp body fonts to 18-22px, tab labels to 18px minimum, row height to 60px, frame content reserve to at least 16px; both list/detail scrollbars remain required.",
+    "1920x1080": "Use exact rectangles in elements; tab labels 20-25px, list/detail body 20-28px; frame content reserve 24-40px.",
+    "2560x1440": "Uniform 1.3333 geometry scale; cap body fonts at 34px and labels at 32px; preserve proportional frame/content margins and 24px minimum inter-column gap."
+  },
+  "elements": [
+    {"id": "header_title_frame", "kind": "panel", "x": 72, "y": 44, "w": 320, "h": 92, "min_w": 240, "min_h": 72},
+    {"id": "screen_title", "kind": "text", "parent": "header_title_frame", "content_zone": true, "x": 145, "y": 68, "w": 210, "h": 44, "text_key": "screen_title", "max_font": 36, "min_font": 24},
+
+    {"id": "back_button_frame", "kind": "button", "x": 1588, "y": 44, "w": 260, "h": 92, "min_w": 220, "min_h": 72},
+    {"id": "back_button_label", "kind": "text", "parent": "back_button_frame", "content_zone": true, "x": 1620, "y": 70, "w": 180, "h": 44, "text_key": "back", "max_font": 30, "min_font": 20},
+
+    {"id": "nav_panel", "kind": "panel", "x": 72, "y": 164, "w": 320, "h": 844, "min_w": 280, "min_h": 680},
+    {"id": "nav_safe_zone", "kind": "zone", "parent": "nav_panel", "content_zone": true, "x": 100, "y": 192, "w": 264, "h": 788},
+
+    {"id": "tab_characters_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 196, "w": 264, "h": 104},
+    {"id": "tab_characters_label", "kind": "text", "parent": "tab_characters_frame", "content_zone": true, "x": 140, "y": 217, "w": 212, "h": 62, "text_key": "tab_characters", "max_font": 24, "min_font": 17},
+    {"id": "tab_monsters_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 324, "w": 264, "h": 104},
+    {"id": "tab_monsters_label", "kind": "text", "parent": "tab_monsters_frame", "content_zone": true, "x": 140, "y": 345, "w": 212, "h": 62, "text_key": "tab_monsters", "max_font": 24, "min_font": 17},
+    {"id": "tab_artifacts_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 452, "w": 264, "h": 104},
+    {"id": "tab_artifacts_label", "kind": "text", "parent": "tab_artifacts_frame", "content_zone": true, "x": 140, "y": 473, "w": 212, "h": 62, "text_key": "tab_artifacts", "max_font": 24, "min_font": 17},
+    {"id": "tab_characteristics_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 580, "w": 264, "h": 104},
+    {"id": "tab_characteristics_label", "kind": "text", "parent": "tab_characteristics_frame", "content_zone": true, "x": 140, "y": 601, "w": 212, "h": 62, "text_key": "tab_characteristics", "max_font": 22, "min_font": 16},
+    {"id": "tab_attributes_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 708, "w": 264, "h": 104},
+    {"id": "tab_attributes_label", "kind": "text", "parent": "tab_attributes_frame", "content_zone": true, "x": 140, "y": 729, "w": 212, "h": 62, "text_key": "tab_attributes", "max_font": 24, "min_font": 17},
+    {"id": "tab_ascension_frame", "kind": "button", "parent": "nav_panel", "x": 100, "y": 836, "w": 264, "h": 104},
+    {"id": "tab_ascension_label", "kind": "text", "parent": "tab_ascension_frame", "content_zone": true, "x": 140, "y": 857, "w": 212, "h": 62, "text_key": "tab_ascension", "max_font": 24, "min_font": 17},
+
+    {"id": "center_panel", "kind": "panel", "x": 416, "y": 164, "w": 520, "h": 844, "min_w": 420, "min_h": 680},
+    {"id": "center_title", "kind": "text", "parent": "center_panel", "content_zone": true, "x": 500, "y": 212, "w": 360, "h": 50, "text_key": "list_title", "max_font": 29, "min_font": 20},
+    {"id": "center_list_scroll", "kind": "scroll_area", "parent": "center_panel", "content_zone": true, "x": 468, "y": 270, "w": 436, "h": 684, "scroll": "auto", "item_count": 30, "item_h": 92, "item_gap": 5, "padding": 8, "scrollbar_w": 20, "min_content_w": 340},
+    {"id": "entry_row_selected", "kind": "button", "parent": "center_list_scroll", "x": 468, "y": 286, "w": 416, "h": 92},
+    {"id": "entry_row_selected_content", "kind": "text", "parent": "entry_row_selected", "content_zone": true, "x": 500, "y": 304, "w": 360, "h": 56, "text_key": "entry_one", "max_font": 23, "min_font": 17},
+    {"id": "entry_row_default", "kind": "button", "parent": "center_list_scroll", "x": 468, "y": 383, "w": 416, "h": 92},
+    {"id": "entry_row_default_content", "kind": "text", "parent": "entry_row_default", "content_zone": true, "x": 500, "y": 401, "w": 360, "h": 56, "text_key": "entry_two", "max_font": 23, "min_font": 17},
+    {"id": "entry_row_hover", "kind": "button", "parent": "center_list_scroll", "x": 468, "y": 480, "w": 416, "h": 92},
+    {"id": "entry_row_hover_content", "kind": "text", "parent": "entry_row_hover", "content_zone": true, "x": 500, "y": 498, "w": 360, "h": 56, "text_key": "entry_three", "max_font": 23, "min_font": 17},
+
+    {"id": "detail_panel", "kind": "panel", "x": 960, "y": 164, "w": 888, "h": 844, "min_w": 700, "min_h": 680},
+    {"id": "preview_stage", "kind": "portrait", "parent": "detail_panel", "content_zone": true, "x": 1004, "y": 208, "w": 286, "h": 316, "min_w": 220, "min_h": 240},
+    {"id": "preview_caption", "kind": "text", "parent": "preview_stage", "content_zone": true, "x": 1030, "y": 430, "w": 234, "h": 54, "text_key": "preview_caption", "max_font": 21, "min_font": 16},
+    {"id": "detail_related_scroll", "kind": "scroll_area", "parent": "detail_panel", "content_zone": true, "x": 1034, "y": 594, "w": 224, "h": 326, "scroll": "auto", "content_h": 520, "scrollbar_w": 16, "min_content_w": 180},
+    {"id": "detail_related_content", "kind": "text", "parent": "detail_related_scroll", "content_zone": true, "x": 1046, "y": 610, "w": 180, "h": 280, "text_key": "detail_related", "max_font": 20, "min_font": 14},
+    {"id": "detail_title", "kind": "text", "parent": "detail_panel", "content_zone": true, "x": 1330, "y": 210, "w": 280, "h": 68, "text_key": "detail_title", "max_font": 36, "min_font": 22},
+    {"id": "detail_chips", "kind": "text", "parent": "detail_panel", "content_zone": true, "x": 1330, "y": 294, "w": 280, "h": 64, "text_key": "detail_chips", "max_font": 20, "min_font": 15},
+    {"id": "detail_body_scroll", "kind": "scroll_area", "parent": "detail_panel", "content_zone": true, "x": 1340, "y": 420, "w": 400, "h": 516, "text_key": "detail_body", "max_font": 25, "min_font": 18, "scroll": "auto", "content_h": 1360, "scrollbar_w": 20, "min_content_w": 340}
+  ]
+}

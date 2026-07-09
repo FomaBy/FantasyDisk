@@ -1,0 +1,34 @@
+{
+  "jsonrpc": "2.0",
+  "id": 10131,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "scrum1013_codex_characteristics_attributes_v1",
+      "width": 672,
+      "height": 378,
+      "no_background": false,
+      "color_palette": "obsidian black, charcoal iron, dark oxblood leather, restrained antique gold, faint amethyst accents",
+      "description": "Full-page 16:9 pixel-art game Codex interface frame layer for FantasyDisk, D&D dark fantasy dragon style, strict and premium, blackened iron, dark oxblood leather, worn antique gold, subtle dragon-scale and claw motifs. Orthographic flat UI, no perspective. The left narrow navigation panel, center list panel, and wide right preview/detail panel must have calm dark empty interiors. Six stacked empty tab/button interiors in the left panel; the fourth may have a restrained selected-state gold rim. Center panel has empty heading and scroll-list interior with three empty row frames. Right panel has a large empty square preview well on the left and a large calm empty text/detail interior on the right. Small empty title plaque at upper left and empty Back button at upper right. Decorative metal, dragon heads, claws, gems, seams, smoke, highlights and ornaments must stay outside all empty interiors and outside their reserve margins. No text, no letters, no numbers, no pseudo-text, no runes shaped like text, no IDs, no logo, no watermark, no characters, no weapons, no icons. No baked content. Restrained detail density, crisp silhouettes, readable empty interiors, no neon, no visual noise. Source geometry uses a 512x288 virtual canvas matching the supplied rounded rectangles; preserve their shape and placement exactly.",
+      "pieces": [
+        {"id": "header_title", "kind": "rounded_rect", "x": 19.2, "y": 11.7, "w": 85.3, "h": 24.5, "radius": 4},
+        {"id": "back_button", "kind": "rounded_rect", "x": 423.5, "y": 11.7, "w": 69.3, "h": 24.5, "radius": 4},
+        {"id": "nav_panel", "kind": "rounded_rect", "x": 19.2, "y": 43.7, "w": 85.3, "h": 225.1, "radius": 5},
+        {"id": "center_panel", "kind": "rounded_rect", "x": 110.9, "y": 43.7, "w": 138.7, "h": 225.1, "radius": 5},
+        {"id": "detail_panel", "kind": "rounded_rect", "x": 256.0, "y": 43.7, "w": 236.8, "h": 225.1, "radius": 5},
+        {"id": "tab_characters", "kind": "rounded_rect", "x": 26.7, "y": 52.3, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_monsters", "kind": "rounded_rect", "x": 26.7, "y": 86.4, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_artifacts", "kind": "rounded_rect", "x": 26.7, "y": 120.5, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_characteristics", "kind": "rounded_rect", "x": 26.7, "y": 154.7, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_attributes", "kind": "rounded_rect", "x": 26.7, "y": 188.8, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_ascension", "kind": "rounded_rect", "x": 26.7, "y": 222.9, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "center_row_selected", "kind": "rounded_rect", "x": 120.5, "y": 74.1, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "center_row_default", "kind": "rounded_rect", "x": 120.5, "y": 100.8, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "center_row_hover", "kind": "rounded_rect", "x": 120.5, "y": 127.5, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "preview_stage", "kind": "rounded_rect", "x": 267.7, "y": 55.5, "w": 76.3, "h": 84.3, "radius": 5},
+        {"id": "detail_text", "kind": "rounded_rect", "x": 352.5, "y": 101.9, "w": 127.0, "h": 155.2, "radius": 4}
+      ]
+    }
+  }
+}

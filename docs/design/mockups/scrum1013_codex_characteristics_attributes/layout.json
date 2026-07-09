@@ -1,0 +1,54 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F2E2BE",
+    "stroke_fill": "#100A0B",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "screen_title": "КОДЕКС",
+    "back": "НАЗАД",
+    "tab_characters": "Персонажи",
+    "tab_monsters": "Монстры",
+    "tab_artifacts": "Артефакты",
+    "tab_characteristics": "Характеристики",
+    "tab_attributes": "Атрибуты",
+    "tab_ascension": "Возвышение",
+    "list_title": "ХАРАКТЕРИСТИКИ",
+    "entry_one": "СИЛА\nФизический урон и мощь оружия",
+    "entry_two": "ИНТЕЛЛЕКТ\nМагический урон и эффекты",
+    "entry_three": "ЛОВКОСТЬ\nТемп атаки и мобильность",
+    "preview_caption": "Иконка и схема влияния",
+    "detail_title": "СИЛА",
+    "detail_chips": "БАЗОВАЯ   •   УРОН",
+    "detail_body": "Усиливает физические атаки и оружие ближнего боя.\n\nФОРМУЛА\nКаждое очко увеличивает вклад силы в профильное оружие.\n\nВЛИЯНИЕ НА СБОРКУ\nГлавная характеристика Берсерка и других героев, полагающихся на мощные удары. Связанные производные параметры перечисляются отдельно, без внутренних ID.",
+    "detail_related": "СВЯЗАННЫЕ АТРИБУТЫ\n\nУрон\nСила крита\nОтталкивание"
+  },
+  "zones": [
+    {"id": "screen_title", "content_key": "screen_title", "x": 145, "y": 68, "w": 210, "h": 44, "max_font": 36, "min_font": 24, "color": "#F4D990", "debug_color": "#E8B653"},
+    {"id": "back_button_label", "content_key": "back", "x": 1620, "y": 70, "w": 180, "h": 44, "max_font": 30, "min_font": 20, "debug_color": "#E8B653"},
+
+    {"id": "tab_characters_label", "content_key": "tab_characters", "x": 140, "y": 217, "w": 212, "h": 62, "max_font": 24, "min_font": 17, "align": "left", "debug_color": "#9E7AEF"},
+    {"id": "tab_monsters_label", "content_key": "tab_monsters", "x": 140, "y": 345, "w": 212, "h": 62, "max_font": 24, "min_font": 17, "align": "left", "debug_color": "#9E7AEF"},
+    {"id": "tab_artifacts_label", "content_key": "tab_artifacts", "x": 140, "y": 473, "w": 212, "h": 62, "max_font": 24, "min_font": 17, "align": "left", "debug_color": "#9E7AEF"},
+    {"id": "tab_characteristics_label", "content_key": "tab_characteristics", "x": 140, "y": 601, "w": 212, "h": 62, "max_font": 22, "min_font": 16, "align": "left", "color": "#FFE3A1", "debug_color": "#FFB44A"},
+    {"id": "tab_attributes_label", "content_key": "tab_attributes", "x": 140, "y": 729, "w": 212, "h": 62, "max_font": 24, "min_font": 17, "align": "left", "debug_color": "#9E7AEF"},
+    {"id": "tab_ascension_label", "content_key": "tab_ascension", "x": 140, "y": 857, "w": 212, "h": 62, "max_font": 24, "min_font": 17, "align": "left", "debug_color": "#9E7AEF"},
+
+    {"id": "center_title", "content_key": "list_title", "x": 500, "y": 212, "w": 360, "h": 50, "max_font": 29, "min_font": 20, "align": "left", "color": "#F4D990", "debug_color": "#54C9C2"},
+    {"id": "entry_row_selected", "content_key": "entry_one", "x": 500, "y": 304, "w": 360, "h": 56, "max_font": 23, "min_font": 17, "align": "left", "color": "#FFE3A1", "debug_color": "#54C9C2"},
+    {"id": "entry_row_default", "content_key": "entry_two", "x": 500, "y": 401, "w": 360, "h": 56, "max_font": 23, "min_font": 17, "align": "left", "debug_color": "#54C9C2"},
+    {"id": "entry_row_hover", "content_key": "entry_three", "x": 500, "y": 498, "w": 360, "h": 56, "max_font": 23, "min_font": 17, "align": "left", "debug_color": "#54C9C2"},
+
+    {"id": "preview_icon", "image_path": "assets/sprites/ui/icons/stats/stat_strength.png", "x": 1046, "y": 244, "w": 202, "h": 202, "required": true, "debug_color": "#F07178"},
+    {"id": "preview_caption", "content_key": "preview_caption", "x": 1022, "y": 454, "w": 250, "h": 50, "max_font": 20, "min_font": 15, "color": "#D1C19F", "debug_color": "#F07178"},
+    {"id": "detail_related", "content_key": "detail_related", "x": 1034, "y": 594, "w": 200, "h": 326, "max_font": 22, "min_font": 16, "align": "left", "valign": "top", "color": "#D9C8A8", "debug_color": "#F07178"},
+    {"id": "detail_title", "content_key": "detail_title", "x": 1330, "y": 210, "w": 280, "h": 68, "max_font": 36, "min_font": 22, "align": "left", "color": "#F4D990", "debug_color": "#5DA9E9"},
+    {"id": "detail_chips", "content_key": "detail_chips", "x": 1330, "y": 294, "w": 280, "h": 64, "max_font": 20, "min_font": 15, "align": "left", "color": "#D8B96E", "debug_color": "#5DA9E9"},
+    {"id": "detail_body", "content_key": "detail_body", "x": 1340, "y": 420, "w": 368, "h": 516, "max_font": 25, "min_font": 18, "align": "left", "valign": "top", "color": "#E6D8BC", "debug_color": "#5DA9E9"}
+  ]
+}

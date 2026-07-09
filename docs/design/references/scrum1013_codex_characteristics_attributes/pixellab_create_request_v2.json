@@ -1,0 +1,37 @@
+{
+  "jsonrpc": "2.0",
+  "id": 10135,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "scrum1013_codex_characteristics_attributes_v2_clean_zones",
+      "width": 672,
+      "height": 378,
+      "no_background": false,
+      "color_palette": "obsidian black, charcoal iron, dark oxblood leather, restrained antique gold, faint amethyst accents",
+      "description": "Full-page 16:9 pixel-art Codex interface frame layer for FantasyDisk, orthographic flat D&D dark fantasy dragon UI. This is an EMPTY runtime content frame, not an illustration. Draw only restrained blackened-iron, dark-leather and antique-gold borders around the supplied rectangles. CRITICAL: the entire center list interior from virtual x=111 y=44 w=139 h=225, including all space below the three row frames, must be flat, calm, dark and completely empty. No crystals, flames, people, ghosts, characters, monsters, weapons, icons, scenery, paintings, glow clusters or decorative objects inside the center panel. The right preview well and right detail/title/chip/text interiors must also be calm and empty. Six stacked tab interiors at left remain empty; fourth tab has only a restrained selected gold rim. Upper-left title plaque and upper-right Back button remain empty. Decorative dragon claws, gems and metal may exist only on OUTER borders, never inside any listed rectangle or reserve margin. No text, letters, numbers, pseudo-text, runes shaped like text, IDs, logo, watermark, icons or baked labels anywhere. No visual noise. Crisp pixel-art silhouettes and generous empty content zones. Preserve the supplied 512x288 virtual geometry exactly.",
+      "pieces": [
+        {"id": "header_title", "kind": "rounded_rect", "x": 19.2, "y": 11.7, "w": 85.3, "h": 24.5, "radius": 4},
+        {"id": "back_button", "kind": "rounded_rect", "x": 423.5, "y": 11.7, "w": 69.3, "h": 24.5, "radius": 4},
+        {"id": "nav_panel", "kind": "rounded_rect", "x": 19.2, "y": 43.7, "w": 85.3, "h": 225.1, "radius": 5},
+        {"id": "center_panel", "kind": "rounded_rect", "x": 110.9, "y": 43.7, "w": 138.7, "h": 225.1, "radius": 5},
+        {"id": "center_list_interior", "kind": "rounded_rect", "x": 118.0, "y": 66.0, "w": 124.0, "h": 191.0, "radius": 3},
+        {"id": "detail_panel", "kind": "rounded_rect", "x": 256.0, "y": 43.7, "w": 236.8, "h": 225.1, "radius": 5},
+        {"id": "tab_characters", "kind": "rounded_rect", "x": 26.7, "y": 52.3, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_monsters", "kind": "rounded_rect", "x": 26.7, "y": 86.4, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_artifacts", "kind": "rounded_rect", "x": 26.7, "y": 120.5, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_characteristics", "kind": "rounded_rect", "x": 26.7, "y": 154.7, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_attributes", "kind": "rounded_rect", "x": 26.7, "y": 188.8, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "tab_ascension", "kind": "rounded_rect", "x": 26.7, "y": 222.9, "w": 70.4, "h": 27.7, "radius": 4},
+        {"id": "center_row_selected", "kind": "rounded_rect", "x": 120.5, "y": 74.1, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "center_row_default", "kind": "rounded_rect", "x": 120.5, "y": 100.8, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "center_row_hover", "kind": "rounded_rect", "x": 120.5, "y": 127.5, "w": 121.6, "h": 23.5, "radius": 3},
+        {"id": "preview_stage", "kind": "rounded_rect", "x": 267.7, "y": 55.5, "w": 76.3, "h": 84.3, "radius": 5},
+        {"id": "detail_title_zone", "kind": "rounded_rect", "x": 352.5, "y": 56.0, "w": 127.0, "h": 18.0, "radius": 3},
+        {"id": "detail_chip_zone", "kind": "rounded_rect", "x": 352.5, "y": 78.5, "w": 127.0, "h": 17.0, "radius": 3},
+        {"id": "detail_text", "kind": "rounded_rect", "x": 352.5, "y": 101.9, "w": 127.0, "h": 155.2, "radius": 4}
+      ]
+    }
+  }
+}
