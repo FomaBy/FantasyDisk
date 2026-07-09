@@ -1,10 +1,10 @@
 # SCRUM-898 — independent QA
 
-Статус: done (remediation `f75ef20e`, ожидает повторный QA)  
-Date: 2026-07-10  
-QA owner: Codex `/root`  
-Implementation commits: `35301aa4`, `c4349b57`  
-Verdict: **FAILED**
+Статус: done (QA PASSED after remediation `f75ef20e`)
+Date: 2026-07-10
+QA owner: Codex `/root/audit_ready` (remediation recheck); previous QA: `/root`
+Implementation commits: `35301aa4`, `c4349b57`; remediation: `f75ef20e`; handoff: `64caf658`
+Current verdict: **PASSED** (historical FAILED verdict preserved below)
 
 The verdict below records the first independent QA pass. Its three blockers were
 fixed in `f75ef20e`; Jira/local status is now review-ready for a new independent
@@ -65,3 +65,64 @@ Required remediation is narrow: migrate the five scene defaults, remove the five
 UI references per `SCRUM-898_ui_screens_tail.md`, update the stale current-state
 paragraph, add an active-config grep/assertion so the same gap cannot return, and
 rerun the focused/balance/runtime gates.
+
+## QA-Вердикт (2026-07-10, independent remediation recheck)
+
+Статус: PASSED
+
+Проверено на fresh `origin/dev` worktree: remediation base `64caf658`, final
+latest-dev recheck `9450c531`; `f75ef20e` и `64caf658` подтверждены как
+ancestors. Изменения после `64caf658` не пересекают SCRUM-898 runtime scope;
+`weapon_integrity_test.gd` и `runtime_smoke_test.gd` повторно PASS на final
+HEAD. QA не менял production/runtime файлы.
+
+### Acceptance evidence
+
+- `git diff f1e836fd..64caf658` inspected read-only; remediation scope matches
+  the three original blockers. The wider range also contains separately landed
+  SCRUM-968 audio work, which was not attributed to SCRUM-898.
+- `sound_wave_damage` is absent from active weapon scene configs and
+  `scripts/ui_screens.gd`.
+- `ElectricGuitar`, `BassGuitar`, `SoundAmp`, `BriarStaff`, and `RavenTotem`
+  expose `damage_parameter = "magic_damage"` directly from their scenes before
+  any `configure_weapon()` adapter runs.
+- `weapon_integrity_test.gd` instantiates the roster and verifies all 17 classes
+  / 51 weapon configs; every applicable scene/config damage parameter is active
+  (`damage` or `magic_damage`) and matches its data config.
+- `_shop_item_fallback_icon_id()` returns `magic_damage` for Guitarist class
+  affinity; no removed icon id remains in the active UI path.
+- `docs/design/current_game_state.md` explicitly records that SCRUM-898 removed
+  the separate sound axis and universal battle-shout hook. The active runtime
+  hook list no longer claims battle shout.
+- `docs/tasks/SCRUM-898_ui_screens_tail.md` is removed after application.
+- Remaining `sound_wave_damage` references are either migration guards with
+  explicit SCRUM-898 removed/legacy comments or documents marked
+  `Историческая справка`; none is an active data/UI/config declaration.
+
+### Test evidence
+
+All Godot commands ran through `python3 tools/godot_gate.py` with Godot 4.7:
+
+- `tests/damage_type_isolation_test.gd` — PASS (3 owners / 3 damage axes).
+- `tests/damage_type_palette_test.gd` — PASS.
+- `tests/weapon_integrity_test.gd` — PASS (17 classes / 51 weapons).
+- `tests/weapon_tuning_application_test.gd` — PASS (51/51).
+- `tests/stat_formulas_smoke_test.gd` — PASS (34 definitions).
+- `tests/level_up_advisor_test.gd` — PASS.
+- `tests/monitor_selector_behavior_test.gd` — PASS.
+- `tests/display_resolution_test.gd` — PASS.
+- `tools/balance_harness.gd` — PASS; local reports generated.
+- `tests/global_damage_balance_smoke_test.gd` — PASS (51 pairs; worst CCT
+  deviation +22%, `doctor/restore_potion/20`).
+- `tests/ui_no_overlap_matrix_test.gd` — PASS.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/meta_progression_smoke_test.gd` — PASS.
+- `tests/melee_weapon_targeting_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS; the known dummy-renderer null-texture
+  screenshot diagnostic was non-fatal after assertions.
+
+Краевые случаи: direct unconfigured scene defaults, negative/oversized/zero
+monitor regression, removed/unknown damage-channel fallbacks, all 51
+scene/config pairs, 2K/FHD display policy, and the full UI resolution matrix.
+
+Баги: нет. Jira may move to `Готово`; remove the stale `qa-failed` label.
