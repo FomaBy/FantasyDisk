@@ -172,7 +172,6 @@ var _assassin_crit_shadow_cooldown_left := 0.0
 var _kill_growth_stacks := 0
 var _kill_growth_time_left := 0.0
 var _knight_counter_cooldown_left := 0.0
-var _battle_shout_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
 var _reactor_heat := 0.0
 var _reactor_heat_active := false
@@ -207,7 +206,6 @@ static func _default_run_modifiers() -> Dictionary:
 	return {
 		"damage_multiplier": 1.0,
 		"magic_damage_multiplier": 1.0,
-		"sound_damage_multiplier": 1.0,
 		"attack_speed_multiplier": 1.0,
 		"range_multiplier": 1.0,
 		"aoe_radius_multiplier": 1.0,
@@ -455,7 +453,6 @@ func _physics_process(_delta: float) -> void:
 	_damage_invulnerability_left = max(_damage_invulnerability_left - _delta, 0.0)
 	_assassin_crit_shadow_cooldown_left = max(_assassin_crit_shadow_cooldown_left - _delta, 0.0)
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
-	_battle_shout_cooldown_left = max(_battle_shout_cooldown_left - _delta, 0.0)
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
 	_update_meta_keystone_runtime(_delta)
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
@@ -499,7 +496,6 @@ func _physics_process(_delta: float) -> void:
 	_update_low_hp_state()
 	_update_conditional_keystones(_delta)
 	_apply_regeneration(_delta)
-	_update_battle_shout()
 	_update_class_status_auras()
 
 
@@ -983,7 +979,9 @@ func meta_context_for_weapon(weapon: Node, extra := {}) -> Dictionary:
 	context["is_pet"] = wid in ["summon_amulet", "homunculus_vial"] or str(context.get("summon_role", "")) != ""
 	context["is_briar"] = wid == "briar_staff" or str(context.get("pool_element", "")) == "briar"
 	context["is_cloud"] = wid in ["acid_flask", "volatile_vial", "blast_powder"] or bool(context.get("leaves_pool", false))
-	context["is_sound"] = damage_param == "sound_wave_damage" or mode in ["sound_wave", "pulse", "amp"]
+	# SCRUM-898: «звуковая» тематика — по геометрии атаки (волны/пульсы/усилители);
+	# тип урона sound_wave_damage удалён, гитарные оружия бьют магией.
+	context["is_sound"] = mode in ["sound_wave", "pulse", "amp"]
 	context["is_charged"] = weapon != null and weapon.get("charge_seconds") != null and float(weapon.get("charge_seconds")) > 0.0
 	return context
 
@@ -992,8 +990,6 @@ func _damage_type_for_parameter(parameter_id: String) -> String:
 	match parameter_id:
 		"magic_damage":
 			return "magic"
-		"sound_wave_damage":
-			return "sound"
 		_:
 			return "physical"
 
@@ -1754,7 +1750,7 @@ func _activate_dark_mage_ultimate(config: Dictionary, multiplier: float) -> void
 
 func _activate_guitarist_ultimate(config: Dictionary, multiplier: float) -> void:
 	var radius := float(config.get("radius", 430.0)) * clampf(multiplier, 0.8, 1.6)
-	var damage_amount := float(derived_parameters.get("sound_wave_damage", 10.0)) * float(config.get("damage", 1.15)) * multiplier
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(config.get("damage", 1.15)) * multiplier
 	AttackVfx.ring_pulse(_vfx_parent(), global_position, radius, Color(0.25, 0.85, 1.0, 0.50), true)
 	for enemy in _enemies_in_radius(global_position, radius):
 		var away: Vector2 = enemy.global_position - global_position
@@ -1989,7 +1985,7 @@ func _activate_druid_ultimate(config: Dictionary, multiplier: float) -> void:
 		_vfx_parent().add_child(ally)
 		ally.add_to_group("player_weapon_effects")
 		ally.set("owner_node", self)
-		ally.set("damage", float(derived_parameters.get("sound_wave_damage", derived_parameters.get("damage", 8.0))) * float(config.get("damage", 0.8)) * multiplier)
+		ally.set("damage", float(derived_parameters.get("magic_damage", derived_parameters.get("damage", 8.0))) * float(config.get("damage", 0.8)) * multiplier)
 		ally.global_position = global_position + Vector2.RIGHT.rotated(TAU * float(index) / maxf(count, 1.0)) * 72.0
 		var life_tween := ally.create_tween()
 		life_tween.tween_interval(float(config.get("duration", 6.0)) * clampf(multiplier, 0.8, 1.7))
@@ -2193,28 +2189,6 @@ func _trigger_leadership_echo(enemy: Node2D) -> void:
 	var parent := _vfx_parent() as Node2D
 	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
 	enemy.take_damage(echo_damage)
-
-
-func _update_battle_shout() -> void:
-	if _battle_shout_cooldown_left > 0.0 or not is_inside_tree():
-		return
-	var sound_damage := float(derived_parameters.get("sound_wave_damage", 0.0))
-	if character_id == "guitarist" or sound_damage < 10.0:
-		return
-	var shout_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.55, 105.0, 230.0)
-	var affected := 0
-	for enemy_node in TARGET_QUERY.in_radius(self, global_position, shout_radius):
-		var away: Vector2 = enemy_node.global_position - global_position
-		affected += 1
-		if enemy_node.has_method("apply_knockback") and away.length_squared() > 0.001:
-			enemy_node.apply_knockback(away.normalized() * sound_damage * 10.0)
-		elif away.length_squared() > 0.001:
-			enemy_node.global_position += away.normalized() * sound_damage * 0.08
-	if affected <= 0:
-		return
-	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
-	AttackVfx.ring_pulse(parent, global_position, shout_radius, Color(0.26, 0.82, 1.0, 0.32), true)
-	_battle_shout_cooldown_left = maxf(1.3, 4.4 - float(stats.get("energy", 0.0)) * 0.08)
 
 
 func _on_weapon_hit_echo(enemy: Node2D) -> void:

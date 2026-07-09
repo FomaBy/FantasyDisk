@@ -1297,10 +1297,11 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
-	# SCRUM-890 вариант Б + доработка: 8 базовых + 16 производных в 4 секциях
+	# SCRUM-890 вариант Б + доработка: 8 базовых + 15 производных в 4 секциях
 	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
+	# SCRUM-898: секция «Поддержка / Контроль» потеряла sound_wave_damage (16 → 15).
 	var stat_icons := pause_menu.find_children("UIIcon_*", "Control", true, false)
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 20:
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 19:
 		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
@@ -3410,11 +3411,11 @@ func _test_threat_indicator_edge() -> bool:
 # SCRUM-523: единая палитра типов урона + маршрутизация канала оружия в тип.
 # Палитра — единственный источник scripts/enemy.gd; цвет через Enemy.damage_type_color().
 func _test_damage_type_palette() -> bool:
+	# SCRUM-898: звуковой канал удалён — палитра знает physical/magic/dot/true.
 	var expected_colors := {
 		"physical": Color(1.0, 0.84, 0.42, 1.0),
 		"magic": Color(0.68, 0.46, 1.0, 1.0),
 		"dot": Color(0.46, 1.0, 0.42, 1.0),
-		"sound": Color(0.30, 0.86, 1.0, 1.0),
 		"true": Color(1.0, 0.96, 0.82, 1.0),
 	}
 	for damage_type in expected_colors.keys():
@@ -3425,7 +3426,10 @@ func _test_damage_type_palette() -> bool:
 	if not EnemyScript.damage_type_color("__unknown__").is_equal_approx(expected_colors["true"]):
 		push_error("Damage-type palette fallback for unknown type must be the 'true' color.")
 		return false
-	var channel_to_type := {"magic_damage": "magic", "sound_wave_damage": "sound", "damage": "physical"}
+	if not EnemyScript.damage_type_color("sound").is_equal_approx(expected_colors["true"]):
+		push_error("Removed 'sound' damage type must fall back to the 'true' color.")
+		return false
+	var channel_to_type := {"magic_damage": "magic", "damage": "physical", "sound_wave_damage": "physical"}
 	var weapon := ClassWeaponScript.new()
 	for channel in channel_to_type.keys():
 		weapon.damage_parameter = channel
@@ -4466,12 +4470,13 @@ func _test_universal_attribute_interpretations() -> void:
 	universal_player.global_position = Vector2(900, 700)
 	await process_frame
 	universal_player.call("configure_character", "berserk", "sword")
+	# SCRUM-898: sound_wave_damage удалён — универсальные интерпретации живут на
+	# магии/DoT/лидерстве; battle-shout (звуковой окрик) выпилен вместе с осью.
 	var boosted: Dictionary = universal_player.get("derived_parameters")
 	boosted["magic_damage"] = 80.0
 	boosted["dot_damage"] = 40.0
 	boosted["dot_speed"] = 4.0
 	boosted["summon_amount"] = 18.0
-	boosted["sound_wave_damage"] = 34.0
 	boosted["aura_radius"] = 220.0
 	universal_player.set("derived_parameters", boosted)
 
@@ -4494,15 +4499,6 @@ func _test_universal_attribute_interpretations() -> void:
 		await process_frame
 	if float(enemy.get("health")) >= leadership_hp_before:
 		_fail("Expected leadership interpretation to trigger echo weapon damage.")
-		return
-
-	var shout_enemy := enemy_scene.instantiate()
-	holder.add_child(shout_enemy)
-	shout_enemy.global_position = universal_player.global_position + Vector2(60, 0)
-	await process_frame
-	universal_player.call("_update_battle_shout")
-	if float(universal_player.get("_battle_shout_cooldown_left")) <= 0.0:
-		_fail("Expected sound damage interpretation to trigger a battle shout cooldown.")
 		return
 
 	var rewards := ProgressionData.level_up_rewards("berserk")
@@ -5563,7 +5559,7 @@ func _test_attribute_weapon_synergy_matrix() -> void:
 			return
 
 	var watched_parameters := [
-		"damage", "magic_damage", "sound_wave_damage", "attack_speed",
+		"damage", "magic_damage", "attack_speed",
 		"crit_chance", "crit_damage_multiplier", "move_speed", "dodge",
 		"defense", "health_point", "attack_range", "aoe_radius",
 		"pickup_radius", "dot_damage", "dot_speed", "projectile_speed",

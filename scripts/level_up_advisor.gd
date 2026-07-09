@@ -24,13 +24,12 @@ const MIN_VISIBLE_DELTA := 0.002
 
 # Показываемые производные параметры: порядок = приоритет при равных дельтах.
 # kind: number | percent (0..1 → пп) | mult (×N) | per_second
-# Изоляция типов урона (SCRUM-524): из damage/magic_damage/sound_wave_damage
+# Изоляция типов урона (SCRUM-524): из damage/magic_damage
 # наружу отдаётся только «свой» тип класса (см. _collect_deltas).
-const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage", "sound_wave_damage"]
+const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 const DELTA_DEFINITIONS := [
 	{"id": "damage", "label": "Урон", "kind": "number"},
 	{"id": "magic_damage", "label": "Маг. урон", "kind": "number"},
-	{"id": "sound_wave_damage", "label": "Звук. урон", "kind": "number"},
 	{"id": "attack_speed", "label": "Атак/с", "kind": "per_second"},
 	{"id": "crit_chance", "label": "Шанс крита", "kind": "percent"},
 	{"id": "crit_damage_multiplier", "label": "Сила крита", "kind": "mult"},

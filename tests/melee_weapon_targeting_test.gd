@@ -73,7 +73,6 @@ func _initialize() -> void:
 	isolated_parameters["dot_damage"] = 0.0
 	isolated_parameters["dot_speed"] = 0.0
 	isolated_parameters["summon_amount"] = 0.0
-	isolated_parameters["sound_wave_damage"] = 0.0
 	isolated_parameters["aura_radius"] = 0.0
 	player.set("derived_parameters", isolated_parameters)
 

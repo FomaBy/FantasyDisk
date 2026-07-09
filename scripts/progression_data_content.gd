@@ -381,7 +381,7 @@ const ARTIFACTS := [
 	# Druid — Командование стаей:
 	{"id": "spirit_pack_banner", "title": "Знамя духовной стаи", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+20% силы поддержки; духи бьют на 15% сильнее.", "mods": {"buff_power_flat": 0.20, "pet_damage_mult": 0.15}},
 	{"id": "wolf_call", "title": "Зов волков", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+2 к силе призывов; стая склоняется к волкам, ближние духи рвут на 20% сильнее.", "mods": {"summon_bonus": 2.0, "pack_wolf_bias": 1.0}},
-	{"id": "blue_totem", "title": "Голубой тотем", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Вороний тотем пульсирует злее (+25%) и чаще; +10% звукового урона.", "mods": {"raven_pulse_bonus": 0.25, "sound_damage_multiplier": 1.10}},
+	{"id": "blue_totem", "title": "Голубой тотем", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Вороний тотем пульсирует злее (+25%) и чаще; +10% магического урона.", "mods": {"raven_pulse_bonus": 0.25, "magic_damage_multiplier": 1.10}},
 	{"id": "briar_seal", "title": "Печать терновника", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Терновые зоны замедляют на 20%; +0.25 тика периодического урона в секунду.", "mods": {"briar_slow_power": 0.20, "dot_speed_flat": 0.25}},
 	{"id": "pack_alpha", "title": "Альфа стаи", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+40 радиуса аур, +15% силы поддержки, +1.5 к силе призывов.", "mods": {"aura_radius_flat": 40.0, "buff_power_flat": 0.15, "summon_bonus": 1.5}},
 	# Engineer — Мастерская приказов:

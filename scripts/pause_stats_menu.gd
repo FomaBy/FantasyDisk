@@ -74,9 +74,9 @@ const DERIVED_GROUPS := [
 		"accent": Color(0.55, 0.42, 1.0, 1.0),
 	},
 	{
-		"id": "sound_control",
-		"title": "Звук / Контроль",
-		"stats": ["sound_wave_damage", "aura_radius", "buff_power", "knockback_distance"],
+		"id": "support_control",
+		"title": "Поддержка / Контроль",
+		"stats": ["aura_radius", "buff_power", "knockback_distance"],
 		"accent": Color(0.30, 0.86, 1.0, 1.0),
 	},
 	{
@@ -1239,7 +1239,7 @@ func _value_color(entry: Dictionary) -> Color:
 
 	var stat_id := str(entry.get("id", ""))
 	match stat_id:
-		"damage", "magic_damage", "sound_wave_damage":
+		"damage", "magic_damage":
 			return VALUE_HIGH if value >= 15.0 else VALUE_EFFECTIVE
 		"attack_speed":
 			return VALUE_HIGH if value >= 1.2 else VALUE_EFFECTIVE

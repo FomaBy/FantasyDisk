@@ -18,8 +18,8 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
 const EPS := 0.001
-# Нетривиальный стат-блок: strength/intelligence/perception/energy > 0, чтобы
-# damage/magic_damage/sound_wave_damage были ненулевыми и множитель проявился.
+# Нетривиальный стат-блок: strength/intelligence > 0, чтобы damage/magic_damage
+# были ненулевыми и множитель проявился (SCRUM-898: звуковой оси больше нет).
 const PROBE_STATS := {
 	"strength": 12.0, "agility": 8.0, "intelligence": 12.0, "perception": 10.0,
 	"energy": 9.0, "knowledge": 8.0, "endurance": 10.0, "leadership": 9.0,
@@ -62,7 +62,7 @@ func _initialize() -> void:
 			var untuned_cfg: Dictionary = config.duplicate(true)
 			untuned_cfg["budget_damage_multiplier"] = 1.0
 			var untuned := ProgressionData.derived_parameters(PROBE_STATS, NEUTRAL_MODS, untuned_cfg)
-			for key in ["damage", "magic_damage", "sound_wave_damage"]:
+			for key in ["damage", "magic_damage"]:
 				var base_v := float(untuned.get(key, 0.0))
 				var tuned_v := float(tuned.get(key, 0.0))
 				if base_v <= EPS:

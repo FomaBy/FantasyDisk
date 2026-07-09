@@ -91,7 +91,7 @@ func _initialize() -> void:
 		_fail("Гибридная лучшая карточка должна получить бейдж both, получено %s." % str(hybrid_advice["badges"]))
 
 	# 7) Изоляция типов урона: у берсерка дельты «+Урон» показывают физический
-	# damage и не показывают чужие magic/sound типы.
+	# damage и не показывают чужой magic-тип (SCRUM-898: звуковая ось удалена).
 	var damage_forecast: Dictionary = (advice["forecasts"] as Array)[0]
 	var delta_ids: Array = []
 	for delta in (damage_forecast["deltas"] as Array):
@@ -99,7 +99,7 @@ func _initialize() -> void:
 	if not delta_ids.has("damage"):
 		_fail("Дельты «+Урон» берсерка обязаны включать параметр damage, получено %s." % str(delta_ids))
 	if delta_ids.has("magic_damage") or delta_ids.has("sound_wave_damage"):
-		_fail("Дельты берсерка не должны показывать чужие типы урона, получено %s." % str(delta_ids))
+		_fail("Дельты берсерка не должны показывать чужие/удалённые типы урона, получено %s." % str(delta_ids))
 
 	# 8) Rare-награда «+1 Сила»: базовый атрибут двигает урон, дельта видима.
 	var strength_reward := {"id": "levelup_stat_strength", "title": "Сила +1", "kind": "stat", "stats": {"strength": 1.0}, "rare": true}

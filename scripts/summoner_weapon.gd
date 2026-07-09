@@ -8,7 +8,7 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 
 @export var weapon_id := "summon_amulet"
 @export var damage := 6.0
-@export var damage_parameter := "sound_wave_damage"
+@export var damage_parameter := "magic_damage"
 @export var damage_multiplier := 0.55
 @export var fire_interval := 3.0
 @export var attack_range := 420.0

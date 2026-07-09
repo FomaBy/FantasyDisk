@@ -14,7 +14,6 @@ const BASE_STAT_IDS := [
 const DERIVED_ATTRIBUTE_IDS := [
 	"damage",
 	"magic_damage",
-	"sound_wave_damage",
 	"attack_speed",
 	"crit_chance",
 	"crit_damage_multiplier",
@@ -58,7 +57,6 @@ const ICON_PATHS := {
 	"leadership": "res://assets/sprites/ui/icons/stats/stat_leadership.png",
 	"damage": "res://assets/sprites/ui/icons/derived/attr_damage.png",
 	"magic_damage": "res://assets/sprites/ui/icons/derived/attr_magic_damage.png",
-	"sound_wave_damage": "res://assets/sprites/ui/icons/derived/attr_sound_wave_damage.png",
 	"attack_speed": "res://assets/sprites/ui/icons/derived/attr_attack_speed.png",
 	"crit_chance": "res://assets/sprites/ui/icons/derived/attr_crit_chance.png",
 	"crit_damage_multiplier": "res://assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png",
@@ -111,7 +109,6 @@ const ICON_ABBREVIATIONS := {
 	"leadership": "LDR",
 	"damage": "DMG",
 	"magic_damage": "MAG",
-	"sound_wave_damage": "SND",
 	"attack_speed": "ASP",
 	"crit_chance": "CRT",
 	"crit_damage_multiplier": "CRD",

@@ -153,7 +153,7 @@ func _test_class_weapon_close_and_execute(errors: Array) -> void:
 	weapon.set("melee_execute_multiplier", 1.40)
 	weapon.set("melee_arc_followup_radius", 0.0)
 	weapon.set("melee_stagger_knockback_multiplier", 0.0)
-	player.set("derived_parameters", {"damage": 100.0, "magic_damage": 0.0, "dot_damage": 0.0, "summon_amount": 0.0, "sound_wave_damage": 0.0, "crit_chance": 0.0, "crit_damage_multiplier": 1.0})
+	player.set("derived_parameters", {"damage": 100.0, "magic_damage": 0.0, "dot_damage": 0.0, "summon_amount": 0.0, "crit_chance": 0.0, "crit_damage_multiplier": 1.0})
 
 	var far_enemy := enemy_scene.instantiate()
 	holder.add_child(far_enemy)

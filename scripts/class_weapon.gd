@@ -321,11 +321,16 @@ func _fire_interval_artifact_factor() -> float:
 # SCRUM-961 «Счетчик ритма»: каждый N-й гитарный каст срабатывает дважды — повтор
 # на 55% урона с короткой задержкой. Деплой amp исключён (эхо не ставит второй
 # усилитель), эхо не порождает эхо (гард по _rhythm_echo_scale).
+# SCRUM-898: гейт по weapon_id гитариста — sound_wave_damage удалён, гитарные
+# оружия теперь бьют магией и по damage_parameter неотличимы от прочей магии.
+const _RHYTHM_ECHO_WEAPON_IDS := ["electric_guitar", "bass_guitar", "sound_amp"]
+
+
 func _maybe_fire_rhythm_echo(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	if _rhythm_echo_scale < 1.0:
 		return
 	var echo_every := int(_owner_mod("rhythm_echo_every"))
-	if echo_every <= 0 or attack_mode == "amp" or damage_parameter != "sound_wave_damage":
+	if echo_every <= 0 or attack_mode == "amp" or not weapon_id in _RHYTHM_ECHO_WEAPON_IDS:
 		return
 	_rhythm_cast_counter += 1
 	if _rhythm_cast_counter < echo_every:
@@ -2795,15 +2800,14 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 
 # SCRUM-523: КАНАЛ урона оружия → строковый тип для палитры боевых цифр.
 # Источник истины о канале — damage_parameter оружия (см. progression_data_weapons):
-# "magic_damage" → магия, "sound_wave_damage" → звук, всё прочее ("damage") →
-# физика. DoT-тики красятся "dot" в точке тика, а не отсюда. Цвет берёт владелец
-# цифры (enemy.gd) через Enemy.damage_type_color() — здесь только маршрутизация типа.
+# "magic_damage" → магия, всё прочее ("damage") → физика (SCRUM-898: звуковой
+# канал удалён, бывшие sound-оружия бьют магией). DoT-тики красятся "dot" в точке
+# тика, а не отсюда. Цвет берёт владелец цифры (enemy.gd) через
+# Enemy.damage_type_color() — здесь только маршрутизация типа.
 func _weapon_damage_type() -> String:
 	match damage_parameter:
 		"magic_damage":
 			return "magic"
-		"sound_wave_damage":
-			return "sound"
 		_:
 			return "physical"
 

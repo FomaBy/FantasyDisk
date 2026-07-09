@@ -287,8 +287,8 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 			return "Для этого класса работает как частота вспомогательных эхо-эффектов и поддержки."
 		"intelligence", "magic_damage":
 			return "Для этого класса работает как зачарование оружия или магический splash."
-		"sound_wave_damage", "aura_radius":
-			return "Для этого класса работает как боевой клич и ближний контроль пространства."
+		"aura_radius":
+			return "Для этого класса работает как аура присутствия и ближний контроль пространства."
 		"knowledge", "dot_damage", "dot_speed":
 			return "Для этого класса добавляет малый bleed/burn/poison след к ударам."
 		"energy", "ultimate_multiplier":
@@ -413,8 +413,6 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "aura_radius"
 			"magic_damage_multiplier":
 				return "magic_focus"
-			"sound_damage_multiplier":
-				return "sound_wave_damage"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
@@ -1119,7 +1117,7 @@ static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictio
 static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Dictionary:
 	var config := ultimate_config(character_id)
 	var multiplier := float(params.get("ultimate_multiplier", 1.0))
-	var base_damage := maxf(maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0))), float(params.get("sound_wave_damage", 1.0)))
+	var base_damage := maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0)))
 	var damage := base_damage * float(config.get("damage", 1.0)) * multiplier
 	var target_count := float(config.get("target_count", 5.0))
 	if not config.has("target_count"):
@@ -1206,14 +1204,12 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
 	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
-	var run_sound_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("sound_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
 	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("magic_damage_multiplier", 1.0))
 	# SCRUM-961 «Четки молитвы»: открывающий бафф первых секунд боя усиливает
 	# магический канал (prayer_opening_active ставит player.on_battle_start).
 	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0))
-	var sound_damage_multiplier := pow(run_sound_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("sound_damage_multiplier", 1.0))
 	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
 	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
 	# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары — пишет player
@@ -1276,14 +1272,14 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
 	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
 	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
-	# восприятие+энергия→звуковой, знание→периодический (DoT). damage_flat и
+	# знание→периодический (DoT). SCRUM-898: звуковой тип удалён (бывшие
+	# sound-оружия Гитариста/Друида переведены на магический канал). damage_flat и
 	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
 	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
 	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
 	var physical_base := 15.0 * strength / 10.0
 	var magic_base := 14.0 * intelligence / 10.0
-	var sound_base := perception + energy
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
 	var range_perception := perception
@@ -1312,7 +1308,6 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	return {
 		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
 		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat,
-		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier * sound_damage_multiplier + universal_damage_flat,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
 		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
@@ -1555,10 +1550,9 @@ static func display_stats(stats: Dictionary) -> String:
 
 
 static func display_derived_parameters(parameters: Dictionary) -> String:
-	return "Урон %.1f | Магия %.1f | Звук %.1f | Атаки %.2f | Крит %.0f%% | Защита %.0f%% | Дальность %.0f | Область %.0f | Подбор %.0f" % [
+	return "Урон %.1f | Магия %.1f | Атаки %.2f | Крит %.0f%% | Защита %.0f%% | Дальность %.0f | Область %.0f | Подбор %.0f" % [
 		float(parameters.get("damage", 0.0)),
 		float(parameters.get("magic_damage", 0.0)),
-		float(parameters.get("sound_wave_damage", 0.0)),
 		float(parameters.get("attack_speed", 0.0)),
 		float(parameters.get("crit_chance", 0.0)) * 100.0,
 		float(parameters.get("defense", 0.0)) * 100.0,
