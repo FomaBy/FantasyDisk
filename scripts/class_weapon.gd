@@ -1024,8 +1024,11 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 	# ускоряется, но суммарный урон каста сохраняется (число тиков фиксировано).
 	var tick_interval := maxf(1.0 / tick_speed, 0.1)
 	var ticks := maxi(dot_ticks, 1)
-	# +полтика запаса: тик срабатывает только пока remaining > 0.
-	var duration := (float(ticks) + 0.5) * tick_interval
+	# +0.99 тика запаса: StatusEffects.tick списывает remaining ДО проверки
+	# тика, и k-й тик реально срабатывает на первом кадре ПОСЛЕ k*interval —
+	# с меньшим буфером последний тик терялся. +0.99 (а не +1.0) не даёт
+	# родиться лишнему (ticks+1)-му тику на границе.
+	var duration := (float(ticks) + 0.99) * tick_interval
 	var cursed_count := 0
 	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
 		StatusEffects.apply_status(enemy_node, "skull_curse", {

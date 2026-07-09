@@ -55,7 +55,7 @@ func _initialize() -> void:
 	await _test_elementalist_meteor_long_cast_payoff(errors)
 	await _test_thief_coin_ricochet_vs_sniper_shatter(errors)
 	await _test_priest_chain_target_rule(errors)
-	await _test_dark_mage_pierce_and_curse_decay(errors)
+	await _test_dark_mage_chain_and_curse_zone(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -217,35 +217,59 @@ func _test_priest_chain_target_rule(errors: Array) -> void:
 	await _cleanup(holder)
 
 
-func _test_dark_mage_pierce_and_curse_decay(errors: Array) -> void:
-	var beam_holder := _new_scene("Scrum857DarkPierceContract")
-	var beam_owner := _new_owner(beam_holder)
-	var beam_weapon := _new_weapon(beam_owner, "dark_mage", "dark_wand")
-	var first := _new_enemy(beam_holder, beam_owner.global_position + Vector2(150, 0))
-	var second := _new_enemy(beam_holder, beam_owner.global_position + Vector2(240, 0))
-	var third := _new_enemy(beam_holder, beam_owner.global_position + Vector2(330, 0))
+# SCRUM-939/940: контракты нового кита Тёмного мага. Палочка — цепной снаряд
+# со спадом по прыжкам (детерминированный ближайший-невыбитый таргетинг);
+# череп — curse-only зона: мгновенного урона НЕТ, только dot-тики по проклятым.
+func _test_dark_mage_chain_and_curse_zone(errors: Array) -> void:
+	var chain_holder := _new_scene("Scrum939DarkChainContract")
+	var chain_owner := _new_owner(chain_holder)
+	var chain_weapon := _new_weapon(chain_owner, "dark_mage", "dark_wand")
+	# Контракт цепи считает ТОЧНЫЕ хиты: замораживаем кулдаун (движок может
+	# заново включить _process в первый кадр после set_process(false)).
+	chain_weapon.set("_cooldown", 1.0e9)
+	# Линия 150px: бурсты (r90) соседних попаданий не перекрещиваются.
+	var first := _new_enemy(chain_holder, chain_owner.global_position + Vector2(150, 0))
+	var second := _new_enemy(chain_holder, first.global_position + Vector2(150, 0))
+	var third := _new_enemy(chain_holder, second.global_position + Vector2(150, 0))
+	# Четвёртый дальше chain_hop_range от третьего — цепь до него не достаёт.
+	var beyond := _new_enemy(chain_holder, third.global_position + Vector2(float(chain_weapon.get("chain_hop_range")) + 120.0, 0))
 	await process_frame
 
-	beam_weapon.call("_fire_single_beam", beam_owner, Vector2.RIGHT)
-	await process_frame
+	chain_weapon.call("_fire_dark_chain_burst", chain_owner, first, Vector2.RIGHT)
+	await create_timer(1.1).timeout
 	if first.total_damage <= EPS or second.total_damage <= EPS or third.total_damage <= EPS:
-		errors.append("dark_wand pierce beam should hit line targets")
+		errors.append("dark_wand chain should ricochet through 3 targets (%.3f, %.3f, %.3f)" % [first.total_damage, second.total_damage, third.total_damage])
 	if not (first.total_damage > second.total_damage and second.total_damage > third.total_damage):
-		errors.append("dark_wand pierce damage should decay per target (%.3f, %.3f, %.3f)" % [first.total_damage, second.total_damage, third.total_damage])
-	await _cleanup(beam_holder)
+		errors.append("dark_wand chain damage should decay per hop (%.3f, %.3f, %.3f)" % [first.total_damage, second.total_damage, third.total_damage])
+	if beyond.total_damage > EPS:
+		errors.append("dark_wand chain must not reach targets beyond hop range (%.3f)" % beyond.total_damage)
+	await _cleanup(chain_holder)
 
-	var curse_holder := _new_scene("Scrum857CurseDecayContract")
+	var curse_holder := _new_scene("Scrum940CurseZoneContract")
 	var curse_owner := _new_owner(curse_holder)
 	var curse_weapon := _new_weapon(curse_owner, "dark_mage", "cursed_skull")
-	curse_weapon.set("dot_ticks", 0)
-	var primary := _new_enemy(curse_holder, curse_owner.global_position + Vector2(160, 0))
-	var splash_edge := _new_enemy(curse_holder, primary.global_position + Vector2(float(curse_weapon.get("aoe_radius")) * 0.68, 0))
+	curse_weapon.set("_cooldown", 1.0e9)  # curse-only контракт: без авто-атак
+	var zone_radius := float(curse_weapon.get("aoe_radius"))
+	var primary := _new_enemy(curse_holder, curse_owner.global_position + Vector2(200, 0))
+	var inside := _new_enemy(curse_holder, primary.global_position + Vector2(zone_radius * 0.6, 0))
+	var outside := _new_enemy(curse_holder, primary.global_position + Vector2(zone_radius * 2.4, 0))
 	await process_frame
 
-	curse_weapon.call("_fire_curse", curse_owner, primary, Vector2.RIGHT)
-	await create_timer(0.35).timeout
-	if primary.total_damage <= splash_edge.total_damage:
-		errors.append("cursed_skull primary curse should exceed decayed splash (primary %.3f, splash %.3f)" % [primary.total_damage, splash_edge.total_damage])
-	if splash_edge.total_damage <= EPS:
-		errors.append("cursed_skull should still apply decayed splash to nearby enemies")
+	curse_weapon.call("_fire_skull_curse_burn", curse_owner, primary, Vector2.RIGHT)
+	await create_timer(0.32).timeout
+	# Curse-only: сам прилёт черепа не наносит урона — только вешает проклятие.
+	if primary.total_damage > EPS or inside.total_damage > EPS:
+		errors.append("cursed_skull must not deal direct damage on impact (primary %.3f, inside %.3f)" % [primary.total_damage, inside.total_damage])
+	if not StatusEffects.has_status(primary, "skull_curse") or not StatusEffects.has_status(inside, "skull_curse"):
+		errors.append("cursed_skull should curse every enemy inside the zone")
+	if StatusEffects.has_status(outside, "skull_curse"):
+		errors.append("cursed_skull must not curse enemies outside the zone")
+	# Тики dot-оси приносят урон только проклятым.
+	for _tick_frame in range(14):
+		StatusEffects.tick(primary, 0.1)
+		StatusEffects.tick(outside, 0.1)
+	if primary.total_damage <= EPS:
+		errors.append("cursed skull curse ticks should burn cursed enemies")
+	if outside.total_damage > EPS:
+		errors.append("cursed skull must not burn enemies that were never cursed")
 	await _cleanup(curse_holder)
