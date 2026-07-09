@@ -86,7 +86,7 @@ Read-only: runtime/data/tests/product docs, especially `scripts/ui_screens.gd` a
 
 Проверил: QA/Designer2 Codex (`/root/audit_qa`)
 
-База финального прогона: fresh `origin/dev` `69e416c3`
+База финального прогона: pushed `origin/dev` `89c20a8c`
 
 - Design Main завершил и освободил locks до начала проверки; QA не менял
   mockup, PixelLab source, layout, spec, preview, runtime code или tests.
@@ -118,9 +118,10 @@ Read-only: runtime/data/tests/product docs, especially `scripts/ui_screens.gd` a
   `424c8208c70bba44017c16aede7ad92d294ad24904c73c4b8464f5a05be08faf`;
   debug overlay SHA-256
   `8164516811a621a0b636f35edfb181cc7a61fbd88b60a0ad6d190140142ba5a9`.
-- `runtime_smoke_test.gd` повторно прошёл после fast-forward до актуального
-  `origin/dev`, включая duplicate-artifact guard. Единственный вывод — известное
-  benign dummy-render предупреждение `texture_2d_get` screenshot helper.
+- `runtime_smoke_test.gd` повторно прошёл на pushed revision `89c20a8c` после
+  финального rebase, включая duplicate-artifact guard (`13861` files scanned).
+  Единственный вывод — известное benign dummy-render предупреждение
+  `texture_2d_get` screenshot helper.
 
 Вердикт: Design-пакет SCRUM-1013 соответствует PixelLab/content-zone/UI
 контрактам и принят для Backend handoff SCRUM-955.
