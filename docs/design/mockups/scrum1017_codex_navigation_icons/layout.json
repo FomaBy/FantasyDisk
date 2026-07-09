@@ -1,0 +1,57 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F2E2BE",
+    "stroke_fill": "#100A0B",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "screen_title": "КОДЕКС",
+    "back": "НАЗАД",
+    "tab_characters": "Персонажи",
+    "tab_monsters": "Монстры",
+    "tab_artifacts": "Артефакты",
+    "tab_characteristics": "Характеристики",
+    "tab_attributes": "Атрибуты",
+    "tab_ascension": "Возвышение",
+    "section_title": "ПЕРСОНАЖИ",
+    "row_1": "Берсерк",
+    "row_2": "Темный маг",
+    "row_3": "Гитарист",
+    "row_4": "Друид",
+    "detail_title": "БЕРСЕРК",
+    "chip_1": "БЛИЖНИЙ БОЙ",
+    "chip_2": "СТОЙКОСТЬ",
+    "detail_body": "СТИЛЬ ИГРЫ\nБлижний рубака с тяжелыми двуручными замахами.\n\nСИЛЬНЫЕ СТОРОНЫ\nУрон по толпе, большой запас здоровья, широкие дуги ударов.\n\nОРУЖИЕ И УМЕНИЯ\nКровавый размах · Топор · Крик ярости"
+  },
+  "zones": [
+    {"id": "screen_title", "content_key": "screen_title", "x": 108, "y": 58, "w": 268, "h": 68, "max_font": 38, "min_font": 24, "color": "#F4D990", "debug_color": "#E8B653"},
+    {"id": "back_label", "content_key": "back", "x": 1610, "y": 66, "w": 208, "h": 54, "max_font": 30, "min_font": 20, "debug_color": "#E8B653"},
+    {"id": "tab_characters_label", "content_key": "tab_characters", "x": 146, "y": 248, "w": 212, "h": 52, "max_font": 26, "min_font": 17, "color": "#F4D990", "debug_color": "#9E7AEF"},
+    {"id": "tab_monsters_label", "content_key": "tab_monsters", "x": 146, "y": 366, "w": 212, "h": 52, "max_font": 26, "min_font": 17, "debug_color": "#9E7AEF"},
+    {"id": "tab_artifacts_label", "content_key": "tab_artifacts", "x": 146, "y": 484, "w": 212, "h": 52, "max_font": 26, "min_font": 17, "debug_color": "#9E7AEF"},
+    {"id": "tab_characteristics_label", "content_key": "tab_characteristics", "x": 146, "y": 602, "w": 212, "h": 52, "max_font": 22, "min_font": 15, "debug_color": "#9E7AEF"},
+    {"id": "tab_attributes_label", "content_key": "tab_attributes", "x": 146, "y": 720, "w": 212, "h": 52, "max_font": 26, "min_font": 17, "debug_color": "#9E7AEF"},
+    {"id": "tab_ascension_label", "content_key": "tab_ascension", "x": 146, "y": 838, "w": 212, "h": 52, "max_font": 23, "min_font": 15, "debug_color": "#9E7AEF"},
+    {"id": "center_header", "content_key": "section_title", "x": 540, "y": 222, "w": 380, "h": 44, "max_font": 31, "min_font": 20, "color": "#F4D990", "debug_color": "#E8B653"},
+
+    {"id": "row_1_image", "image_path": "docs/design/references/scrum1017_codex_navigation_icons/character_samples/berserk_alpha_bbox_crop.png", "x": 502, "y": 320, "w": 88, "h": 96, "debug_color": "#45C7F0"},
+    {"id": "row_1_name", "content_key": "row_1", "x": 616, "y": 337, "w": 330, "h": 60, "max_font": 30, "min_font": 18, "color": "#F4D990", "debug_color": "#67D391"},
+    {"id": "row_2_image", "image_path": "docs/design/references/scrum1017_codex_navigation_icons/character_samples/dark_mage_alpha_bbox_crop.png", "x": 502, "y": 490, "w": 88, "h": 96, "debug_color": "#45C7F0"},
+    {"id": "row_2_name", "content_key": "row_2", "x": 616, "y": 507, "w": 330, "h": 60, "max_font": 30, "min_font": 18, "debug_color": "#67D391"},
+    {"id": "row_3_image", "image_path": "docs/design/references/scrum1017_codex_navigation_icons/character_samples/guitarist_alpha_bbox_crop.png", "x": 502, "y": 660, "w": 88, "h": 96, "debug_color": "#45C7F0"},
+    {"id": "row_3_name", "content_key": "row_3", "x": 616, "y": 677, "w": 330, "h": 60, "max_font": 30, "min_font": 18, "debug_color": "#67D391"},
+    {"id": "row_4_image", "image_path": "docs/design/references/scrum1017_codex_navigation_icons/character_samples/druid_alpha_bbox_crop.png", "x": 502, "y": 830, "w": 88, "h": 96, "debug_color": "#45C7F0"},
+    {"id": "row_4_name", "content_key": "row_4", "x": 616, "y": 847, "w": 330, "h": 60, "max_font": 30, "min_font": 18, "debug_color": "#67D391"},
+
+    {"id": "detail_title", "content_key": "detail_title", "x": 1200, "y": 222, "w": 508, "h": 46, "max_font": 34, "min_font": 22, "color": "#F4D990", "debug_color": "#E8B653"},
+    {"id": "detail_preview_image", "image_path": "docs/design/references/scrum1017_codex_navigation_icons/character_samples/berserk_alpha_bbox_crop.png", "x": 1140, "y": 310, "w": 236, "h": 248, "debug_color": "#45C7F0"},
+    {"id": "detail_chip_1", "content_key": "chip_1", "x": 1450, "y": 331, "w": 268, "h": 32, "max_font": 22, "min_font": 15, "color": "#D8B56C", "debug_color": "#E8B653"},
+    {"id": "detail_chip_2", "content_key": "chip_2", "x": 1450, "y": 417, "w": 268, "h": 32, "max_font": 22, "min_font": 15, "color": "#D8B56C", "debug_color": "#E8B653"},
+    {"id": "detail_body", "content_key": "detail_body", "x": 1140, "y": 632, "w": 610, "h": 304, "align": "left", "valign": "top", "max_font": 24, "min_font": 17, "color": "#EDE3CF", "line_spacing": 1.12, "debug_color": "#F09A68"}
+  ]
+}

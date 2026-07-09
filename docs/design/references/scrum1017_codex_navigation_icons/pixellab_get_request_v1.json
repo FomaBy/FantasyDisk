@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1018,
+  "method": "tools/call",
+  "params": {
+    "name": "get_ui_asset",
+    "arguments": {
+      "ui_asset_id": "27b4e50d-3d97-470d-bb7a-e11eecfb0c5f",
+      "include_preview": false
+    }
+  }
+}

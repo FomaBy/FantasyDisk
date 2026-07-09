@@ -1,0 +1,455 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "screen_title",
+      "rect": [
+        108,
+        58,
+        268,
+        68
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "КОДЕКС"
+      ],
+      "text_bbox": [
+        164,
+        73,
+        156,
+        38
+      ]
+    },
+    {
+      "id": "back_label",
+      "rect": [
+        1610,
+        66,
+        208,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "НАЗАД"
+      ],
+      "text_bbox": [
+        1662,
+        78,
+        104,
+        31
+      ]
+    },
+    {
+      "id": "tab_characters_label",
+      "rect": [
+        146,
+        248,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 26,
+      "lines": [
+        "Персонажи"
+      ],
+      "text_bbox": [
+        183,
+        260,
+        138,
+        28
+      ]
+    },
+    {
+      "id": "tab_monsters_label",
+      "rect": [
+        146,
+        366,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 26,
+      "lines": [
+        "Монстры"
+      ],
+      "text_bbox": [
+        196,
+        378,
+        112,
+        28
+      ]
+    },
+    {
+      "id": "tab_artifacts_label",
+      "rect": [
+        146,
+        484,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 26,
+      "lines": [
+        "Артефакты"
+      ],
+      "text_bbox": [
+        182,
+        496,
+        139,
+        28
+      ]
+    },
+    {
+      "id": "tab_characteristics_label",
+      "rect": [
+        146,
+        602,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Характеристики"
+      ],
+      "text_bbox": [
+        169,
+        616,
+        166,
+        24
+      ]
+    },
+    {
+      "id": "tab_attributes_label",
+      "rect": [
+        146,
+        720,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 26,
+      "lines": [
+        "Атрибуты"
+      ],
+      "text_bbox": [
+        191,
+        732,
+        122,
+        29
+      ]
+    },
+    {
+      "id": "tab_ascension_label",
+      "rect": [
+        146,
+        838,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 23,
+      "lines": [
+        "Возвышение"
+      ],
+      "text_bbox": [
+        182,
+        854,
+        141,
+        21
+      ]
+    },
+    {
+      "id": "center_header",
+      "rect": [
+        540,
+        222,
+        380,
+        44
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 31,
+      "lines": [
+        "ПЕРСОНАЖИ"
+      ],
+      "text_bbox": [
+        626,
+        230,
+        208,
+        27
+      ]
+    },
+    {
+      "id": "row_1_image",
+      "rect": [
+        502,
+        320,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        502,
+        324,
+        88,
+        88
+      ]
+    },
+    {
+      "id": "row_1_name",
+      "rect": [
+        616,
+        337,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Берсерк"
+      ],
+      "text_bbox": [
+        720,
+        351,
+        121,
+        32
+      ]
+    },
+    {
+      "id": "row_2_image",
+      "rect": [
+        502,
+        490,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        502,
+        494,
+        88,
+        88
+      ]
+    },
+    {
+      "id": "row_2_name",
+      "rect": [
+        616,
+        507,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Темный маг"
+      ],
+      "text_bbox": [
+        694,
+        524,
+        173,
+        26
+      ]
+    },
+    {
+      "id": "row_3_image",
+      "rect": [
+        502,
+        660,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        502,
+        664,
+        88,
+        88
+      ]
+    },
+    {
+      "id": "row_3_name",
+      "rect": [
+        616,
+        677,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Гитарист"
+      ],
+      "text_bbox": [
+        715,
+        691,
+        132,
+        32
+      ]
+    },
+    {
+      "id": "row_4_image",
+      "rect": [
+        502,
+        830,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        502,
+        834,
+        88,
+        88
+      ]
+    },
+    {
+      "id": "row_4_name",
+      "rect": [
+        616,
+        847,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Друид"
+      ],
+      "text_bbox": [
+        736,
+        861,
+        90,
+        32
+      ]
+    },
+    {
+      "id": "detail_title",
+      "rect": [
+        1200,
+        222,
+        508,
+        46
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "БЕРСЕРК"
+      ],
+      "text_bbox": [
+        1372,
+        230,
+        163,
+        29
+      ]
+    },
+    {
+      "id": "detail_preview_image",
+      "rect": [
+        1140,
+        310,
+        236,
+        248
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        1140,
+        316,
+        236,
+        236
+      ]
+    },
+    {
+      "id": "detail_chip_1",
+      "rect": [
+        1450,
+        331,
+        268,
+        32
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "БЛИЖНИЙ БОЙ"
+      ],
+      "text_bbox": [
+        1498,
+        335,
+        171,
+        24
+      ]
+    },
+    {
+      "id": "detail_chip_2",
+      "rect": [
+        1450,
+        417,
+        268,
+        32
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "СТОЙКОСТЬ"
+      ],
+      "text_bbox": [
+        1514,
+        421,
+        139,
+        24
+      ]
+    },
+    {
+      "id": "detail_body",
+      "rect": [
+        1140,
+        632,
+        610,
+        304
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "СТИЛЬ ИГРЫ",
+        "Ближний рубака с тяжелыми двуручными замахами.",
+        "",
+        "СИЛЬНЫЕ СТОРОНЫ",
+        "Урон по толпе, большой запас здоровья, широкие",
+        "дуги ударов.",
+        "",
+        "ОРУЖИЕ И УМЕНИЯ",
+        "Кровавый размах · Топор · Крик ярости"
+      ],
+      "text_bbox": [
+        1140,
+        632,
+        587,
+        298
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1017,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "scrum1017_codex_navigation_icons_v1",
+      "width": 672,
+      "height": 378,
+      "no_background": true,
+      "seed": 1017,
+      "color_palette": "blackened iron, charcoal, restrained worn gold, muted ruby and violet accents",
+      "description": "Full-screen 16:9 pixel-art RPG UI frame/layout layer for the FantasyDisk Codex, matching the accepted strict D&D dark-fantasy dragon library/atlas family. Transparent outside the separate frames. No text, no letters, no numbers, no pseudo-text, no runes shaped like writing, no logos, no watermark. Exact scaffold pieces define the required composition: compact title and back frames at top; one tall left navigation frame with exactly six stacked empty button interiors; one wide center list frame with exactly four large row cards, each row containing one large empty square image well on the left and a broad calm empty Russian-name zone to its right; one wide right detail frame with one large empty preview well at upper left, exactly two quiet empty chips at upper right, and one broad empty description/abilities/gameplay-notes well at bottom. All internal rectangles must remain empty, dark, calm and readable. Draw thin crisp frames around the interiors, never over them. Dragon claws, gems, spikes, rails, highlights and ornaments must remain outside the empty interiors. Do not place characters, monsters, artifacts, icons or category emblems in any well. Do not draw vertical bars, double rails or stray pillars below the preview; scrollbar rails are runtime-only and their reserved lanes must stay empty. Style: premium restrained FantasyDisk Codex, blackened steel, smoked stone, worn gold edge, tiny muted ruby/violet sockets, subtle parchment-library cues, brutal and epic but not loud, not cluttered, not over-detailed. Thin density-friendly borders, strong rectangular orthographic layout, no perspective.",
+      "pieces": [
+        {"id": "title_frame", "kind": "rounded_rect", "x": 19, "y": 10, "w": 91, "h": 30, "radius": 3, "label": "empty title frame"},
+        {"id": "back_frame", "kind": "rounded_rect", "x": 421, "y": 12, "w": 72, "h": 26, "radius": 3, "label": "empty back button"},
+        {"id": "nav_panel", "kind": "rounded_rect", "x": 19, "y": 46, "w": 86, "h": 224, "radius": 2, "label": "left navigation shell"},
+        {"id": "nav_1", "kind": "rounded_rect", "x": 28, "y": 59, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "nav_2", "kind": "rounded_rect", "x": 28, "y": 91, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "nav_3", "kind": "rounded_rect", "x": 28, "y": 122, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "nav_4", "kind": "rounded_rect", "x": 28, "y": 154, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "nav_5", "kind": "rounded_rect", "x": 28, "y": 185, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "nav_6", "kind": "rounded_rect", "x": 28, "y": 217, "w": 69, "h": 28, "radius": 2, "label": "empty category button"},
+        {"id": "center_panel", "kind": "rounded_rect", "x": 112, "y": 46, "w": 165, "h": 224, "radius": 2, "label": "center list shell"},
+        {"id": "row_1", "kind": "rounded_rect", "x": 123, "y": 77, "w": 138, "h": 41, "radius": 2, "label": "empty list row"},
+        {"id": "row_1_well", "kind": "rounded_rect", "x": 128, "y": 83, "w": 29, "h": 30, "radius": 2, "label": "empty image well"},
+        {"id": "row_2", "kind": "rounded_rect", "x": 123, "y": 123, "w": 138, "h": 41, "radius": 2, "label": "empty list row"},
+        {"id": "row_2_well", "kind": "rounded_rect", "x": 128, "y": 128, "w": 29, "h": 30, "radius": 2, "label": "empty image well"},
+        {"id": "row_3", "kind": "rounded_rect", "x": 123, "y": 168, "w": 138, "h": 41, "radius": 2, "label": "empty list row"},
+        {"id": "row_3_well", "kind": "rounded_rect", "x": 128, "y": 173, "w": 29, "h": 30, "radius": 2, "label": "empty image well"},
+        {"id": "row_4", "kind": "rounded_rect", "x": 123, "y": 213, "w": 138, "h": 41, "radius": 2, "label": "empty list row"},
+        {"id": "row_4_well", "kind": "rounded_rect", "x": 128, "y": 219, "w": 29, "h": 30, "radius": 2, "label": "empty image well"},
+        {"id": "detail_panel", "kind": "rounded_rect", "x": 284, "y": 46, "w": 209, "h": 224, "radius": 2, "label": "right detail shell"},
+        {"id": "preview_well", "kind": "rounded_rect", "x": 296, "y": 76, "w": 80, "h": 80, "radius": 2, "label": "large empty preview well"},
+        {"id": "chip_1", "kind": "rounded_rect", "x": 382, "y": 83, "w": 88, "h": 19, "radius": 2, "label": "empty detail chip"},
+        {"id": "chip_2", "kind": "rounded_rect", "x": 382, "y": 106, "w": 88, "h": 19, "radius": 2, "label": "empty detail chip"},
+        {"id": "detail_body", "kind": "rounded_rect", "x": 296, "y": 162, "w": 182, "h": 95, "radius": 2, "label": "empty scrollable detail text well"}
+      ]
+    }
+  }
+}

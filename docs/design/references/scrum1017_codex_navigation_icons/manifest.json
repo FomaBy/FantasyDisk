@@ -1,0 +1,62 @@
+{
+  "task": "SCRUM-1017",
+  "owner": "Designer2/Codex /root/audit_qa",
+  "generator": "PixelLab MCP create_ui_asset",
+  "config_smoke": {
+    "status": "PASS",
+    "tool": "get_balance",
+    "is_error": false,
+    "secrets_printed_or_stored": false
+  },
+  "fallback": {
+    "used": false,
+    "openai_images": false,
+    "manual_frame_drawing": false,
+    "legacy_generate_asset": false
+  },
+  "preflight": {
+    "rejected_request": "688x387",
+    "reason": "PixelLab schema maximum for this aspect is 688x384",
+    "asset_created": false,
+    "resolution": "corrected to exact 672x378 16:9 before generation"
+  },
+  "accepted_asset": {
+    "ui_asset_id": "27b4e50d-3d97-470d-bb7a-e11eecfb0c5f",
+    "name": "scrum1017_codex_navigation_icons_v1",
+    "status": "completed",
+    "dimensions": [672, 378],
+    "mode": "RGBA",
+    "no_background": true,
+    "seed": 1017,
+    "generation_count": 40,
+    "piece_count": 23,
+    "request": "pixellab_create_request_v1.json",
+    "fetch_request": "pixellab_get_request_v1.json",
+    "download_endpoint": "https://api.pixellab.ai/mcp/ui-assets/27b4e50d-3d97-470d-bb7a-e11eecfb0c5f/download",
+    "source_file": "pixellab_scrum1017_codex_navigation_icons_v1_672x378.png",
+    "source_sha256": "5b89865361d0aed6fc2d2edf457959f42d0ecf0bc3d10875e5ddcde450b535a7",
+    "alpha": {"fully_transparent": 72393, "fully_opaque": 181623, "partial": 0, "bbox": [20, 15, 645, 354]}
+  },
+  "postprocess": {
+    "script": "postprocess_pixellab_source.py",
+    "operation": "nearest-neighbour scale only; no drawing, cleanup, masking or geometry changes",
+    "base_file": "pixellab_scrum1017_codex_navigation_icons_base_1920x1080.png",
+    "base_sha256": "203038984b5f497d8a5bd5bb5783143527c9d046fcfc348abd05a08fe999f230"
+  },
+  "character_samples": {
+    "policy": "preview-only alpha-bbox crop plus 8% transparent reserve from canonical runtime pixels",
+    "script": "prepare_character_samples.py",
+    "sources": {
+      "berserk": {"runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png", "runtime_sha256": "60a024bc29f1005d90cfd0522d145d3180d2a2b53d40eace5bf8dd6611f6d2ad", "sample": "character_samples/berserk_alpha_bbox_crop.png", "sample_sha256": "8bd756476473cc59778f9af6129db51f2a6f02ff774868e88399ca28b4dd0788"},
+      "dark_mage": {"runtime": "assets/sprites/characters/full_frame/dark_mage_pixellab/dark_mage_idle_south.png", "runtime_sha256": "5e1eabe267ba8fa19369c145cced7b73f98a66396d77f542d99c56825b9a1016", "sample": "character_samples/dark_mage_alpha_bbox_crop.png", "sample_sha256": "f8ded21436dc53fe899d4cd37a4e56df7e08f0c063ed7ac0a86dedd211998985"},
+      "guitarist": {"runtime": "assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png", "runtime_sha256": "35d0fff311606759baf2e82c4cfab4fd90b38844e9a5b61e66e00928e2a179ae", "sample": "character_samples/guitarist_alpha_bbox_crop.png", "sample_sha256": "ce9a986ffc9cc6564c70e55a0a30543d87279c8df4ded53bb4cfdcc9b57a9a16"},
+      "druid": {"runtime": "assets/sprites/characters/full_frame/druid_pixellab/druid_idle_south.png", "runtime_sha256": "a767500f7bb0b51e9485b7cb92e84dfac0fbbe4f12b998fdf4e3ac3074d11ecd", "sample": "character_samples/druid_alpha_bbox_crop.png", "sample_sha256": "938b492a0adc2477229e4f9e0a650c370560db6e22ebb9bf5e4d37efbdf57d5a"}
+    }
+  },
+  "mockups": {
+    "characters": {"file": "../../mockups/scrum1017_codex_navigation_icons/codex_characters_mockup_1920x1080.png", "sha256": "c30f18cca4fb97ebf4ae4dee85499b1839602f2fdbdad444cf6b9bad842294c5", "debug_sha256": "949aec3667f7de9194aad83f1e5040fb64b0afeecc5cefdab2ad7d4c6de0b4e2"},
+    "monsters": {"file": "../../mockups/scrum1017_codex_navigation_icons/codex_monsters_mockup_1920x1080.png", "sha256": "c58693265289188a03e0637b26678d3ba0ca6b2467dbd44d62b169ac94e604d4", "debug_sha256": "f0afa29354bfe136f27cd3e26c37721f53ac9cbe5c5e964203576a28a9953177"},
+    "artifacts": {"file": "../../mockups/scrum1017_codex_navigation_icons/codex_artifacts_mockup_1920x1080.png", "sha256": "d6f2552e5e6e4e16043a4018d1be02c333a8b9126b8121ed58075da76a4f046f", "debug_sha256": "a28d2f27dd3d2989f0b2661d6ccdc8ad7d9448c34babbf0f5f44472237a1d539"},
+    "responsive_contact_sha256": "b0139a3c8e2ba371c4c966057730a5167df6191bfee2e7d63482ab1f8644c7d5"
+  }
+}

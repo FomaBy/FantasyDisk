@@ -1,0 +1,653 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "title_frame",
+      "kind": "panel",
+      "rect": [
+        72,
+        36,
+        340,
+        112
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "screen_title",
+      "kind": "text",
+      "rect": [
+        108,
+        58,
+        268,
+        68
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "back_frame",
+      "kind": "button",
+      "rect": [
+        1580,
+        46,
+        268,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "back_label",
+      "kind": "text",
+      "rect": [
+        1610,
+        66,
+        208,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "nav_panel",
+      "kind": "panel",
+      "rect": [
+        72,
+        172,
+        324,
+        840
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "nav_safe_zone",
+      "kind": "zone",
+      "rect": [
+        104,
+        210,
+        260,
+        752
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_characters_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        222,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_characters_label",
+      "kind": "text",
+      "rect": [
+        146,
+        248,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_monsters_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        340,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_monsters_label",
+      "kind": "text",
+      "rect": [
+        146,
+        366,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_artifacts_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        458,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_artifacts_label",
+      "kind": "text",
+      "rect": [
+        146,
+        484,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_characteristics_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        576,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_characteristics_label",
+      "kind": "text",
+      "rect": [
+        146,
+        602,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "tab_attributes_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        694,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_attributes_label",
+      "kind": "text",
+      "rect": [
+        146,
+        720,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_ascension_frame",
+      "kind": "button",
+      "rect": [
+        104,
+        812,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_ascension_label",
+      "kind": "text",
+      "rect": [
+        146,
+        838,
+        212,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 23
+    },
+    {
+      "id": "center_panel",
+      "kind": "panel",
+      "rect": [
+        420,
+        172,
+        620,
+        840
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "center_safe_zone",
+      "kind": "zone",
+      "rect": [
+        452,
+        208,
+        556,
+        760
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "center_header",
+      "kind": "text",
+      "rect": [
+        540,
+        222,
+        380,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 31
+    },
+    {
+      "id": "center_list_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        452,
+        278,
+        556,
+        690
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 2874,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        990,
+        278,
+        18,
+        690
+      ]
+    },
+    {
+      "id": "center_scrollbar_lane",
+      "kind": "scrollbar",
+      "rect": [
+        990,
+        290,
+        18,
+        664
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_1_frame",
+      "kind": "slot",
+      "rect": [
+        460,
+        290,
+        516,
+        154
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_1_image_well",
+      "kind": "slot",
+      "rect": [
+        480,
+        310,
+        122,
+        114
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_1_image",
+      "kind": "portrait",
+      "rect": [
+        502,
+        320,
+        88,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_1_name",
+      "kind": "text",
+      "rect": [
+        616,
+        337,
+        330,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "row_2_frame",
+      "kind": "slot",
+      "rect": [
+        460,
+        460,
+        516,
+        154
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_2_image_well",
+      "kind": "slot",
+      "rect": [
+        480,
+        480,
+        122,
+        114
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_2_image",
+      "kind": "portrait",
+      "rect": [
+        502,
+        490,
+        88,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_2_name",
+      "kind": "text",
+      "rect": [
+        616,
+        507,
+        330,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "row_3_frame",
+      "kind": "slot",
+      "rect": [
+        460,
+        630,
+        516,
+        154
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_3_image_well",
+      "kind": "slot",
+      "rect": [
+        480,
+        650,
+        122,
+        114
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_3_image",
+      "kind": "portrait",
+      "rect": [
+        502,
+        660,
+        88,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_3_name",
+      "kind": "text",
+      "rect": [
+        616,
+        677,
+        330,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "row_4_frame",
+      "kind": "slot",
+      "rect": [
+        460,
+        800,
+        516,
+        154
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_4_image_well",
+      "kind": "slot",
+      "rect": [
+        480,
+        820,
+        122,
+        114
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_4_image",
+      "kind": "portrait",
+      "rect": [
+        502,
+        830,
+        88,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_4_name",
+      "kind": "text",
+      "rect": [
+        616,
+        847,
+        330,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "detail_panel",
+      "kind": "panel",
+      "rect": [
+        1064,
+        172,
+        784,
+        840
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_safe_zone",
+      "kind": "zone",
+      "rect": [
+        1096,
+        208,
+        720,
+        760
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_title",
+      "kind": "text",
+      "rect": [
+        1200,
+        222,
+        508,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "detail_preview_well",
+      "kind": "slot",
+      "rect": [
+        1108,
+        284,
+        300,
+        300
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_preview_image",
+      "kind": "portrait",
+      "rect": [
+        1140,
+        310,
+        236,
+        248
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_chip_1_frame",
+      "kind": "slot",
+      "rect": [
+        1432,
+        310,
+        330,
+        70
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_chip_1",
+      "kind": "text",
+      "rect": [
+        1450,
+        331,
+        268,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "detail_chip_2_frame",
+      "kind": "slot",
+      "rect": [
+        1432,
+        396,
+        330,
+        70
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "detail_chip_2",
+      "kind": "text",
+      "rect": [
+        1450,
+        417,
+        268,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "detail_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        1108,
+        606,
+        684,
+        356
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 640,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1776,
+        606,
+        16,
+        356
+      ]
+    },
+    {
+      "id": "detail_body",
+      "kind": "text",
+      "rect": [
+        1140,
+        632,
+        610,
+        304
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "detail_scrollbar_lane",
+      "kind": "scrollbar",
+      "rect": [
+        1776,
+        632,
+        16,
+        304
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}
