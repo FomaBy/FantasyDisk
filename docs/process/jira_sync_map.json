@@ -4052,5 +4052,35 @@
   "key": "SCRUM-997",
   "status": "Готово",
   "desc_hash": "555530ea2530ef2a465e7838e164eff3"
+ },
+ "SCRUM-959.md": {
+  "key": "SCRUM-959",
+  "status": "Готово",
+  "desc_hash": "5326fba371d49c9fa1f3eac45ea42ec6"
+ },
+ "SCRUM-960.md": {
+  "key": "SCRUM-960",
+  "status": "Готово",
+  "desc_hash": "b1f31ae3159a05aa55568802851f57f8"
+ },
+ "SCRUM-961.md": {
+  "key": "SCRUM-961",
+  "status": "Готово",
+  "desc_hash": "f7793eaf07ebf4b40c5d3db66ca4bd15"
+ },
+ "SCRUM-962.md": {
+  "key": "SCRUM-962",
+  "status": "Готово",
+  "desc_hash": "fb84cf6e5aa18d3dd8e1a91cc4791db6"
+ },
+ "SCRUM-963.md": {
+  "key": "SCRUM-963",
+  "status": "Готово",
+  "desc_hash": "0697b43f30e0e82475ad66dee0379dd3"
+ },
+ "SCRUM-964.md": {
+  "key": "SCRUM-964",
+  "status": null,
+  "desc_hash": null
  }
 }
