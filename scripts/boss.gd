@@ -911,6 +911,14 @@ func _update_boss_phase() -> void:
 
 	boss_phase = next_phase
 	set_meta("boss_phase", boss_phase)
+	# SCRUM-968: аудио-акцент смены фазы (war drum + низкий рог, спека §5).
+	# На спавне SFX не звучит: с полным HP phase_for_ratio держит фазу 1 и
+	# _update_boss_phase выходит выше (next_phase <= boss_phase).
+	if is_inside_tree():
+		if _cached_audio == null or not is_instance_valid(_cached_audio):
+			_cached_audio = get_node_or_null("/root/AudioManager")
+		if _cached_audio != null and _cached_audio.has_method("play_sfx"):
+			_cached_audio.play_sfx("boss_phase")
 	_burst_cooldown = minf(_burst_cooldown, 0.45)
 	_dash_cooldown = minf(_dash_cooldown, 0.65)
 	_slam_cooldown = minf(_slam_cooldown, 0.55)

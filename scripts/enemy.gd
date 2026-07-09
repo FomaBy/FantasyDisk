@@ -119,6 +119,18 @@ const COMBAT_FEEDBACK_DAMAGE_COLORS := {
 static func damage_type_color(damage_type) -> Color:
 	return COMBAT_FEEDBACK_DAMAGE_COLORS.get(str(damage_type), COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
 
+
+# SCRUM-968: маппинг типа урона -> SFX попадания (спека §5). Дефолт (physical/
+# true/неизвестный) — глухой "hit"; static для headless focused-теста.
+static func hit_sfx_for_damage_type(damage_type: String) -> String:
+	match damage_type:
+		"magic":
+			return "hit_magic"
+		"dot":
+			return "hit_dot"
+		_:
+			return "hit"
+
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
 # согласованно одним множителем. Профиль задается data-driven через
@@ -275,7 +287,10 @@ func take_damage(amount: float, feedback := {}) -> void:
 		if _cached_audio == null or not is_instance_valid(_cached_audio):
 			_cached_audio = get_node_or_null("/root/AudioManager")
 		if _cached_audio != null and _cached_audio.has_method("play_sfx"):
-			_cached_audio.play_sfx("hit")
+			# SCRUM-968: типизированные попадания (спека §5) — маппинг по
+			# feedback.damage_type в единой точке урона. Оси после SCRUM-898:
+			# physical/magic/dot (+"true" у нетипизированных источников -> "hit").
+			_cached_audio.play_sfx(hit_sfx_for_damage_type(str(feedback_data.get("damage_type", ""))))
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()

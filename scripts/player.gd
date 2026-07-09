@@ -494,6 +494,7 @@ func _physics_process(_delta: float) -> void:
 		move_and_slide()
 	_update_movement_animation(_delta)
 	_update_low_hp_state()
+	_update_low_hp_audio_cue()
 	_update_conditional_keystones(_delta)
 	_apply_regeneration(_delta)
 	_update_class_status_auras()
@@ -2922,6 +2923,49 @@ func _show_dodge_popup() -> void:
 
 
 var _cached_audio: Node = null
+
+# SCRUM-968: low-HP аудио-пульс. Гистерезис зеркалит красную виньетку
+# (ui_screens: LOW_HP_VIGNETTE_ON/OFF_RATIO): ВКЛ < 30%, ВЫКЛ >= 34%.
+const LOW_HP_AUDIO_ON_RATIO := 0.30
+const LOW_HP_AUDIO_OFF_RATIO := 0.34
+var _low_hp_audio_active := false
+
+
+static func low_hp_cue_should_be_active(currently_active: bool, hp_ratio: float) -> bool:
+	# Чистая функция гистерезиса (тестируется headless): между порогами
+	# состояние удерживается, ниже ON — включение, от OFF и выше — выключение.
+	if hp_ratio < LOW_HP_AUDIO_ON_RATIO:
+		return true
+	if hp_ratio >= LOW_HP_AUDIO_OFF_RATIO:
+		return false
+	return currently_active
+
+
+func _update_low_hp_audio_cue() -> void:
+	var next_active := low_hp_cue_should_be_active(_low_hp_audio_active, health / maxf(max_health, 1.0))
+	if next_active == _low_hp_audio_active:
+		return
+	# Edge-triggered: set_sfx_loop зовётся только на смене состояния — луп не стакается.
+	_low_hp_audio_active = next_active
+	_set_low_hp_audio_loop(next_active)
+
+
+func _set_low_hp_audio_loop(active: bool) -> void:
+	if not is_inside_tree():
+		return
+	if _cached_audio == null or not is_instance_valid(_cached_audio):
+		_cached_audio = get_node_or_null("/root/AudioManager")
+	if _cached_audio != null and _cached_audio.has_method("set_sfx_loop"):
+		_cached_audio.set_sfx_loop("low_hp_pulse", active)
+
+
+func _exit_tree() -> void:
+	# Смерть/конец боя/смена экрана убирают игрока из дерева — пульс гаснет
+	# (страховка-дубль к combat_director._play_combat_result_audio).
+	if _low_hp_audio_active:
+		_low_hp_audio_active = false
+		if _cached_audio != null and is_instance_valid(_cached_audio) and _cached_audio.has_method("set_sfx_loop"):
+			_cached_audio.set_sfx_loop("low_hp_pulse", false)
 
 
 func _play_sfx(sfx_id: String) -> void:

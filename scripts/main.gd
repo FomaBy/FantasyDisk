@@ -1237,6 +1237,9 @@ func _process(delta: float) -> void:
 
 	# SCRUM-785: таймер тикает во ВСЕХ боях, включая боссовый (5-минутный «убей или проиграл»).
 	round_time_left -= delta
+	# SCRUM-968: scripted outro музыки за N секунд до конца раунда — по игровому
+	# таймеру (пауза не рассинхронизирует), begin_music_outro идемпотентен.
+	_update_music_outro()
 	spawn_cooldown -= delta
 
 	if spawn_cooldown <= 0.0:
@@ -1331,6 +1334,23 @@ func _play_music(music_id: String) -> void:
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null and audio.has_method("play_music"):
 		audio.play_music(music_id)
+
+
+func _update_music_outro() -> void:
+	# SCRUM-968 (спека §3): музыка «музыкально затухает» к round_time_left == 0,
+	# в тишину встают стингер результата и баннер. Окно зависит от типа боя
+	# (6 c обычный / 8 c элитка+боссы) — его знает AudioManager по kind трека.
+	# Вызывается из тика боя (_process), поэтому пауза не рассинхронизирует конец.
+	if not combat_active:
+		return
+	var audio := get_node_or_null("/root/AudioManager")
+	if audio == null or not audio.has_method("begin_music_outro"):
+		return
+	var window := 6.0
+	if audio.has_method("music_outro_window"):
+		window = float(audio.music_outro_window())
+	if round_time_left > 0.0 and round_time_left <= window:
+		audio.begin_music_outro(round_time_left)
 
 
 func _cached_texture(path: String) -> Texture2D:

@@ -161,8 +161,6 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game._clear_all_game_pauses()
 	_boss_victory_pending = false
 	game.reset_run_ascension()
-	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
-	game._play_music("boss" if is_boss_fight else "combat")
 	game._clear_ui()
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
@@ -172,6 +170,9 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
 	# SCRUM-785: длительность зависит от типа боя — выставляем после current_combat_type.
 	game.round_time_left = _current_round_duration()
+	# SCRUM-968: боевой трек по типу узла + реальная длительность раунда (спека §3):
+	# ротация обычного боя, элитная дуэль, босс актов 1-2, финальный/секретный босс.
+	_play_combat_start_music()
 	# SCRUM-784: первая волна выходит почти мгновенно (наполняем экран в первую секунду).
 	game.spawn_cooldown = 0.1
 	game.spawn_wave_index = 0
@@ -284,6 +285,10 @@ func _end_combat(victory: bool) -> void:
 	# баннера), чтобы замыкание не зависело от последующей мутации поля.
 	var grant_elite_reward := was_elite_fight and _elite_defeated
 	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
+	# SCRUM-968: музыкальный финал раунда — fast-outro при раннем конце (босс/элитка
+	# убиты до таймера, смерть игрока; при штатном таймауте outro уже идёт —
+	# begin_music_outro идемпотентен) + стингер результата + снятие low-HP лупа.
+	_play_combat_result_audio(victory, was_boss_fight, was_elite_fight)
 	game.combat_active = false
 	game.boss_combat_active = false
 	if game.current_player != null and is_instance_valid(game.current_player):
@@ -361,6 +366,46 @@ func _end_combat(victory: bool) -> void:
 			else:
 				game.run_metrics["outcome_reason"] = "Пал в бою на этапе маршрута %d" % (game.route_stage + 1)
 		game.ui._show_death_screen()
+
+
+func _play_combat_start_music() -> void:
+	# SCRUM-968 (спека §3, «Точки вызова»): kind боевого трека по типу узла.
+	# Боссы актов 1-2 -> "boss"; босс акта 3 и секретный босс -> "final";
+	# элитка -> "elite"; всё остальное -> "battle" (shuffle-bag ротация §4).
+	# Длительность — реальный round_time_left (учитывает Возвышение и 300с элиток/боссов).
+	var audio: Node = game.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		return
+	var kind := "battle"
+	if game.boss_combat_active:
+		kind = "final" if (game.secret_boss_active or game.current_act >= game.ACT_COUNT) else "boss"
+	elif str(game.current_combat_type) == "elite":
+		kind = "elite"
+	if audio.has_method("play_combat_music"):
+		audio.play_combat_music(kind, float(game.round_time_left))
+	elif audio.has_method("play_music"):
+		# Fallback на легаси-API (не должен срабатывать после SCRUM-968).
+		audio.play_music("boss" if game.boss_combat_active else "combat")
+
+
+func _play_combat_result_audio(victory: bool, was_boss_fight: bool, was_elite_fight: bool) -> void:
+	# SCRUM-968 (спека §3, п.4): ранний конец раунда — fast-outro 1.2 c + стингер
+	# результата немедленно. При конце по таймеру outro уже отработал (идемпотентный
+	# begin_music_outro проигнорирует повтор) — остаётся только стингер.
+	var audio: Node = game.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		return
+	if audio.has_method("begin_music_outro"):
+		audio.begin_music_outro(1.2)
+	if audio.has_method("set_sfx_loop"):
+		# Бой кончился — low-HP пульс гаснет всегда (страховка к player._exit_tree).
+		audio.set_sfx_loop("low_hp_pulse", false)
+	if not audio.has_method("play_music_stinger"):
+		return
+	if victory:
+		audio.play_music_stinger("music_sting_victory_epic" if (was_boss_fight or was_elite_fight) else "music_sting_victory")
+	else:
+		audio.play_music_stinger("music_sting_defeat")
 
 
 func _random_enemy_scene() -> PackedScene:

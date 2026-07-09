@@ -66,7 +66,14 @@ func _show_battle_map() -> void:
 	_route_focus_target = null
 	# A→ui_accept / B→ui_cancel для геймпада (в текущей сборке их нет; идемпотентно).
 	game.ui._ensure_run_ui_gamepad_bindings()
-	game._play_music("menu")
+	# SCRUM-968: путевая тема карты маршрута (спека §2 №2); до SCRUM-966 звучал "menu".
+	# Старт свежего забега (акт 1, этап 0 — ни одного обычного боя ещё не было)
+	# пересыпает shuffle-bag боевой ротации (спека §4: session-only, не в autosave).
+	if game.current_act <= 1 and game.route_stage <= 0:
+		var audio: Node = game.get_node_or_null("/root/AudioManager")
+		if audio != null and audio.has_method("reset_combat_rotation"):
+			audio.reset_combat_rotation()
+	game._play_music("route_map")
 	game._clear_world()
 	game._clear_hud()
 	game._clear_ui()
@@ -1058,6 +1065,11 @@ func _open_route_node(route_node: Dictionary) -> void:
 		game.current_shop_items.clear()
 		game.current_shop_purchased.clear()
 		game.current_shop_node_key = ""
+	# SCRUM-968: safe-узлы (магазин/костёр/событие/сундук) — камерная тема привала
+	# (спека §2 №3); возврат к "route_map" делает _show_battle_map при выходе.
+	# Бои музыку не трогают: их трек ставит _start_combat -> play_combat_music.
+	if node_type in ["shop", "rest", "event", "hazard", "altar", "chest"]:
+		game._play_music("shop")
 	match node_type:
 		"shop":
 			game.ui._show_shop_screen()
