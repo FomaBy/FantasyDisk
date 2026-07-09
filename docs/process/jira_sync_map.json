@@ -4082,5 +4082,10 @@
   "key": "SCRUM-964",
   "status": null,
   "desc_hash": null
+ },
+ "codex_design_main_menu_openai_clean_background_task.md": {
+  "key": "SCRUM-1001",
+  "status": "Контроль качества",
+  "desc_hash": "5b36853aeaaa6e9763d1cb1187e8ea53"
  }
 }

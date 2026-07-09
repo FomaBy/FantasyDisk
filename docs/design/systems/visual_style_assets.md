@@ -801,13 +801,17 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   route nodes/lines and FAB content.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
-  art. The 2026-07-02 0.2.0 release pass replaced the previous dragon battle
-  image with an OpenAI-generated cosmic character-atlas background: pixel-art
-  heroes in front of a constellation atlas, distant boss figures, a calm dark
-  left column for the six runtime menu buttons and a readable title-safe area.
-  The runtime background contains no baked UI text/buttons/frames. Source,
-  backup, preview and the Telegram/Discord announcement image are documented in
-  `docs/design/mockups/main_menu_020_cosmic_release/spec.md`.
+  art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
+  OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background built
+  from current runtime character, monster, elite and boss sprite references.
+  The final runtime image uses an additional edge-aware smoothing pass to reduce
+  grain/noisy texture in the sky, clouds, stone and magic haze while preserving
+  silhouettes. It keeps a calm dark left column for the six runtime menu buttons
+  and a readable title-safe area, and contains no baked UI text/buttons/frames.
+  Source, sprite reference sheet, backup, preview, smoothing comparison and
+  safe-zone evidence are documented in
+  `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
+  an explicit OpenAI Images override by direct user request.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

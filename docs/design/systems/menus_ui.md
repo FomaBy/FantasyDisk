@@ -254,7 +254,24 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. The 2026-07-02 0.2.0 release pass replaces the earlier dragon-battle image with a 2560x1440 OpenAI-generated cosmic character-atlas background: pixel-art heroes, constellation/star-chart rings, atlas silhouettes and distant bosses, while preserving the calm left button-safe column and readable title-safe area. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. Source, backup, preview and the Telegram/Discord announcement derivative are tracked in `docs/design/mockups/main_menu_020_cosmic_release/spec.md`. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
+`MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
+2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background based
+on current runtime character, monster, elite and boss sprite references. The
+final runtime PNG has an extra edge-aware smoothing pass to reduce grain in
+clouds, stone, magic haze and sky texture while preserving hero/boss silhouettes.
+The calm left button-safe column and readable title-safe area are preserved, the
+asset is prepared for proportional cover-crop rather than one-axis stretching,
+and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
+backup, preview and safe-zone evidence are tracked in
+`docs/design/mockups/main_menu_openai_clean_background/spec.md`. This is an
+explicit OpenAI Images override because the user directly requested OpenAI image
+generation. SCRUM-680 release refresh keeps the title as
+`assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
+transparent, PixelLab crest source in
+`docs/design/references/main_menu_logo_release_fix/`) and positions the action
+column below the title with a computed `80px` minimum source-space gap for
+1920x1080, 2560x1440 and 1080x1920.
 
 ## Route Map 2K Source
 

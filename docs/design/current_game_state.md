@@ -156,7 +156,27 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 Фон арены выбирается случайно из доступного набора и может зависеть от типа узла карты.
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
-`main_menu_epic_battle_v3.png` используется стартовым экраном как активный 0.2.0 release фон: 2560x1440 OpenAI-generated D&D dark fantasy cosmic atlas art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок, читаемой title-safe областью под `MainMenuTitleLabel`, пиксельными героями, созвездиями/атласом персонажей и несколькими боссами на дальнем плане. Source/backup/preview и Telegram/Discord announcement derivative задокументированы в `docs/design/mockups/main_menu_020_cosmic_release/spec.md`. SCRUM-680 release refresh (2026-07-02) заменил runtime logo на PixelLab-based `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent; source/provenance `docs/design/references/main_menu_logo_release_fix/`) и опустил `MainMenuActions` ниже логотипа через viewport-aware top calculation, чтобы 1920x1080, 2560x1440 и 1080x1920 не перекрывали title. SCRUM-418 удалил старый `main_menu_epic_battle.png` из runtime assets как legacy-дубль; backup лежит вне shipping scope в `build/qa/scrum418/removed_assets_backup/`. Старые совместимые копии `screen_event_background.png`, `screen_shop_background.png` и `screen_campfire_background.png` также удалены из `assets/sprites/ui/screens/` как дубли canonical UI backdrop set.
+`main_menu_epic_battle_v3.png` используется стартовым экраном как активный фон
+главного меню: 2560x1440 OpenAI-generated clean cartoon-realistic D&D/dark
+fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок,
+читаемой title-safe областью под `MainMenuTitleLabel`, героями/монстрами/боссами
+по референсам текущих runtime sprites и дополнительным edge-aware smoothing pass
+для уменьшения зернистости текстур. Source/reference sheet/backup/preview/safe-zone
+evidence задокументированы в
+`docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
+explicit OpenAI Images override по прямому запросу пользователя). Предыдущий
+0.2.0 cosmic atlas фон сохранён в
+`docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
+SCRUM-680 release refresh (2026-07-02) заменил runtime logo на PixelLab-based
+`assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
+transparent; source/provenance `docs/design/references/main_menu_logo_release_fix/`)
+и опустил `MainMenuActions` ниже логотипа через viewport-aware top calculation,
+чтобы 1920x1080, 2560x1440 и 1080x1920 не перекрывали title. SCRUM-418 удалил
+старый `main_menu_epic_battle.png` из runtime assets как legacy-дубль; backup
+лежит вне shipping scope в `build/qa/scrum418/removed_assets_backup/`. Старые
+совместимые копии `screen_event_background.png`, `screen_shop_background.png` и
+`screen_campfire_background.png` также удалены из `assets/sprites/ui/screens/`
+как дубли canonical UI backdrop set.
 
 SCRUM-158/170 добавили и подключили canonical UI backdrop set `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Все `2560x1440`, с низкоконтрастным спокойным центром под центральные окна и более богатым dark fantasy материалом по краям. Runtime mapping идет через `SCREEN_BACKGROUND_PATHS`: `system/settings/codex/hero_select/weapon_select/pause_stats/meta_tree/campfire` -> cathedral, `shop` -> merchant archive, `event/upgrade/level_up/meta_progression` -> arcane lab, `elite_reward/victory/artifact_reward` -> reward hall, `death/defeat/end_run_confirm` -> defeat crypt. Фоны ставятся `TextureRect` cover-scaling под читаемое затемнение, без замены route map/combat backgrounds.
 `route_map_backdrop.png` используется full-screen route map hook-ом: это темный низкоконтрастный фон пустоши с туманным спокойным центром под узлы и линиями, а детали/силуэты вынесены к краям.
