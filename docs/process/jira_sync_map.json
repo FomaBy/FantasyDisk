@@ -4206,11 +4206,16 @@
  "SCRUM-1016_druid_ghost_animation_integration.md": {
   "key": "SCRUM-1016",
   "status": "Контроль качества",
-  "desc_hash": "291ab9271b6431ac9ce8cfe7630a9c5d"
+  "desc_hash": "a47fa98b1e796039af620642cbfc6115"
  },
  "SCRUM-955.md": {
   "key": "SCRUM-955",
   "status": "Контроль качества",
   "desc_hash": "754decbf01e1135d999de133ba953a42"
+ },
+ "bug_SCRUM-1020_druid_ghost_bear_move_identity_remediation_task.md": {
+  "key": "SCRUM-1020",
+  "status": "К выполнению",
+  "desc_hash": "f62efe54d23aa687d2ce3936f8b305a9"
  }
 }

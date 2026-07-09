@@ -1,6 +1,6 @@
 # SCRUM-1016 — Druid Ghost Summon PixelLab Animation Integration
 
-Статус: done (ready for independent QA)
+Статус: done (independent QA FAILED — blocked by SCRUM-1020)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_ready`
@@ -108,3 +108,51 @@ remain Backend-owned by SCRUM-902.
   after this final mirror update reaches `origin/dev`.
 - Thread cleanup: not a disposable worker thread; this subagent reports back to
   the parent coordinator.
+
+## Independent QA Verdict (2026-07-10)
+
+Status: **FAILED**
+
+Independent reviewer: Animator QA `/root/audit_qa` on fresh
+`origin/dev` `1a5c211579d1723b435b84cf6cae0460cf2dc777`. The reviewer did not
+implement SCRUM-1016 and did not modify its production assets or runtime code.
+
+### Blocking visual defect
+
+`druid_ghost_bear/move_right` does not preserve one coherent bear identity:
+frames `00..02` read as a lean canine/fox-like quadruped, while frames `03..05`
+abruptly become a heavy bear. Meaningful-alpha area jumps from `7,372..8,253`
+pixels to `13,871..15,403` pixels (`2.09x` max/min), producing a visible
+species/scale pop at the configured `10 fps`. The all-frame contact sheet shows
+the discontinuity in the bear `move_right` row.
+
+Remediation: Jira **SCRUM-1020**, linked as blocking SCRUM-1016. SCRUM-1016
+stays in `Контроль качества` with `blocked` + `qa-failed` labels until the
+PixelLab bear movement row is replaced and accepted by a new independent visual
+QA pass.
+
+### Checks that passed
+
+- PixelLab MCP config `get_balance` and live `get_character` for all five exact
+  character UUIDs.
+- All 20 selected live animation job UUIDs and all 120 live frame URLs (`0..5`)
+  matched the evidence. This confirms PixelLab v3's reference frame is excluded
+  and the six animated frames are retained.
+- Live PixelLab downloads matched all 120 committed raw source PNGs by SHA-256;
+  every row contains six unique source/runtime hashes.
+- Source/runtime separation, `.gdignore`, RGBA `256x256` runtime canvas,
+  meaningful alpha, shared center X `128`, shared bbox bottom/baseline `232`,
+  and minimum runtime gutter `20 px` passed.
+- Five SpriteFrames resources, explicit left/right selection, no horizontal
+  flip, texture/canvas/runtime-path assertions, attack/cast aliases, vertical
+  last-facing fallback, and the true `6 / 12 = 0.50 s` action window passed.
+- The contact sheet includes all six representative frames for all 20 rows; it
+  is the evidence that exposed the visual defect rather than an automated PASS.
+- `tests/animation_smoke_test.gd`: PASS.
+- `tests/runtime_smoke_test.gd`: PASS, exit `0`; only the known dummy-renderer
+  `texture_2d_get` screenshot warning was emitted.
+- `tests/meta_progression_smoke_test.gd`: PASS.
+- `tests/melee_weapon_targeting_test.gd`: PASS.
+- `git diff --check`: PASS.
+
+Bugs: SCRUM-1020.
