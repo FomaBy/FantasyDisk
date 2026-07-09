@@ -4087,5 +4087,10 @@
   "key": "SCRUM-1001",
   "status": "Контроль качества",
   "desc_hash": "bf980528febc1bad977fe21b8ad115b8"
+ },
+ "SCRUM-973_monitor_selector_audit.md": {
+  "key": "SCRUM-973",
+  "status": "В работе",
+  "desc_hash": "8bebed19951d03623ba5faec37f9e7e8"
  }
 }
