@@ -138,13 +138,14 @@ func _test_soldier_grenade_delayed_falloff(errors: Array) -> void:
 
 
 func _test_elementalist_meteor_long_cast_payoff(errors: Array) -> void:
+	# SCRUM-950: метеор — самое медленное оружие: долгий телеграф+падение
+	# (grenade_delay >= 1.0 полной задержки), центр жирнее края, после удара —
+	# догорающая DoT-зона (веер осколков удалён; детали в elementalist_kit_test).
 	var holder := _new_scene("Scrum857MeteorContract")
 	var owner := _new_owner(holder)
 	var weapon := _new_weapon(owner, "elementalist", "elementalist_meteor_core")
-	if float(weapon.get("grenade_delay")) < 0.60:
-		errors.append("elementalist_meteor_core delay %.2f is not a long-cast contract" % float(weapon.get("grenade_delay")))
-	if int(weapon.get("shard_count")) < 5:
-		errors.append("elementalist_meteor_core should expose secondary shards")
+	if float(weapon.get("grenade_delay")) < 1.0:
+		errors.append("elementalist_meteor_core delay %.2f is not a heavy long-cast contract (SCRUM-950)" % float(weapon.get("grenade_delay")))
 	var center := owner.global_position + Vector2(260, 0)
 	var center_enemy := _new_enemy(holder, center)
 	var edge_enemy := _new_enemy(holder, center + Vector2(float(weapon.get("aoe_radius")) * 0.90, 0))
@@ -157,6 +158,12 @@ func _test_elementalist_meteor_long_cast_payoff(errors: Array) -> void:
 	await create_timer(float(weapon.get("grenade_delay")) * 0.55 + 0.10).timeout
 	if center_enemy.total_damage <= edge_enemy.total_damage:
 		errors.append("elementalist_meteor_core center payoff should exceed edge damage (center %.3f, edge %.3f)" % [center_enemy.total_damage, edge_enemy.total_damage])
+	var impact_damage := center_enemy.total_damage
+	# Догорающая зона: dot-тики продолжают бить центр после удара.
+	await create_timer(float(weapon.get("pool_tick_interval")) * 2.0 + 0.25).timeout
+	if center_enemy.total_damage <= impact_damage + EPS:
+		errors.append("elementalist_meteor_core lingering zone dealt no post-impact damage")
+	weapon.cleanup_effects()
 	await _cleanup(holder)
 
 

@@ -5122,7 +5122,12 @@ func _test_elementalist_weapon_mechanics() -> void:
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		weapon.call("_attack")
-		await create_timer(0.95).timeout
+		# SCRUM-950: у метеора долгий телеграф+падение (grenade_delay — полная
+		# задержка до удара), ждём дольше стандартного окна.
+		var damage_window := 0.95
+		if weapon_id == "elementalist_meteor_core":
+			damage_window = float(weapon.get("grenade_delay")) + 0.55
+		await create_timer(damage_window).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Elementalist weapon %s to damage its target." % weapon_id)
 			return
