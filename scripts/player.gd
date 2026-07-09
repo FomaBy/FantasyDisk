@@ -3027,10 +3027,12 @@ func _configure_skeletal_player_rig(skeleton_scene: PackedScene) -> void:
 		rig.update_animation(0.0, Vector2.ZERO, _facing_direction)
 
 
-func _character_skeleton_rig_scene(class_id: String) -> PackedScene:
-	match class_id:
-		"knight":
-			return KNIGHT_SKELETON_RIG_SCENE
+func _character_skeleton_rig_scene(_class_id: String) -> PackedScene:
+	# SCRUM-919: Рыцарь (последний скелетный класс) переведён на принятый PixelLab
+	# full-frame пак (knight_spriteframes.tres) и в бою, как остальные классы —
+	# скелетный риг больше не подключается к боевому рендеру. Сцены ригов
+	# (KNIGHT/DARK_MAGE_SKELETON_RIG_SCENE) остаются аварийным вариантом: вернуть
+	# класс сюда можно только осознанным решением.
 	return null
 
 

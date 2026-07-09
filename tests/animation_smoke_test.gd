@@ -312,12 +312,12 @@ func _test_player_animation() -> void:
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
-		if sheet_character_id == "knight":
-			if body.visible or rig.visible:
-				_fail("Expected %s to hide full-frame Body and legacy cutout RigRoot while the skeletal rig is live." % sheet_character_id)
-			_assert_skeletal_player_rig(player, sheet_character_id)
-		elif not body.visible or rig.visible:
+		if not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
+		if sheet_character_id == "knight":
+			# SCRUM-919: бой Рыцаря рендерит принятый PixelLab-пак; легаси
+			# скелетный риг (skeleton_parts) больше не подключается к рантайму.
+			_assert_knight_pixellab_combat_visual(player, body)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-823 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
 		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "biologist" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "engineer" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "ranger" or sheet_character_id == "robot" or sheet_character_id == "sniper" or sheet_character_id == "soldier" or sheet_character_id == "thief":
@@ -811,62 +811,41 @@ func _assert_sliced_rig(root_node: Node, rig_path: String, texture_fragment: Str
 		_fail("Expected %s rig WeaponSocketMount." % label)
 
 
-func _assert_skeletal_player_rig(player: Node, character_id: String) -> void:
+func _assert_knight_pixellab_combat_visual(player: Node, body: AnimatedSprite2D) -> void:
+	# SCRUM-919 (follow-up SCRUM-430/869/885): бой Рыцаря обязан рендерить принятый
+	# PixelLab full-frame пак, а не легаси-скелетный риг из skeleton_parts.
 	var previous_velocity = player.get("velocity")
 	var previous_animation_time := float(player.get("_animation_time"))
-	var rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
-	if rig == null or not rig.visible:
-		_fail("Expected %s live SkeletalRigRoot." % character_id)
-	var skeleton := rig.get_node_or_null("Skeleton2D") as Skeleton2D
-	var animation_player := rig.get_node_or_null("AnimationPlayer") as AnimationPlayer
-	if skeleton == null or animation_player == null:
-		_fail("Expected %s Skeleton2D and AnimationPlayer nodes." % character_id)
-	if not animation_player.has_animation("idle") or not animation_player.has_animation("walk") or not animation_player.has_animation("move"):
-		_fail("Expected %s skeletal rig to expose idle/walk/move clips." % character_id)
-	if animation_player.has_animation("attack") or animation_player.has_animation("attack_primary"):
-		_fail("Expected %s skeletal body rig to omit attack clips." % character_id)
-	for bone_path in [
-		"Root",
-		"Root/Pelvis",
-		"Root/Pelvis/Torso",
-		"Root/Pelvis/Torso/Head",
-		"Root/Pelvis/Torso/UpperArmL",
-		"Root/Pelvis/Torso/UpperArmR",
-		"Root/Pelvis/ThighL",
-		"Root/Pelvis/ThighR",
-	]:
-		if skeleton.get_node_or_null(bone_path) == null:
-			_fail("Expected %s skeletal bone %s." % [character_id, bone_path])
-	var torso_sprite := skeleton.get_node_or_null("Root/Pelvis/Torso/Sprite") as Sprite2D
-	if torso_sprite == null or torso_sprite.texture == null:
-		_fail("Expected %s skeletal torso sprite texture." % character_id)
-	if not torso_sprite.texture.resource_path.contains("assets/sprites/characters/skeleton_parts/%s/parts/" % character_id):
-		_fail("Expected %s skeletal rig to use asset-side accepted parts, got %s." % [character_id, torso_sprite.texture.resource_path])
-	var root_bone := skeleton.get_node("Root") as Bone2D
-	var thigh_l := skeleton.get_node("Root/Pelvis/ThighL") as Bone2D
-	var thigh_r := skeleton.get_node("Root/Pelvis/ThighR") as Bone2D
-	var idle_root_y := root_bone.position.y
+	var skeletal_rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+	if skeletal_rig != null and skeletal_rig.visible:
+		_fail("Expected knight combat visual to drop the legacy SkeletalRigRoot (SCRUM-919).")
+	var idle_texture := body.sprite_frames.get_frame_texture(str(body.animation), 0)
+	if idle_texture == null or not idle_texture.resource_path.contains("assets/sprites/characters/full_frame/knight_pixellab/"):
+		_fail("Expected knight combat idle frame from the accepted PixelLab pack, got %s." % (idle_texture.resource_path if idle_texture != null else "<null>"))
 	player.set("velocity", Vector2(120, 0))
 	player.call("_update_movement_animation", 0.20)
-	if str(rig.get("active_animation")) != "walk":
-		_fail("Expected %s skeletal rig to switch to walk while moving." % character_id)
-	if abs(root_bone.position.y - idle_root_y) <= 0.01:
-		_fail("Expected %s skeletal walk to move the root bone." % character_id)
-	if abs(thigh_l.rotation - thigh_r.rotation) <= 0.05:
-		_fail("Expected %s skeletal walk to use opposing leg rotations." % character_id)
-	if rig.scale.x <= 0.0:
-		_fail("Expected %s skeletal rig to face right with positive scale." % character_id)
-	player.set("velocity", Vector2(-120, 0))
-	player.call("_update_movement_animation", 0.20)
-	if rig.scale.x >= 0.0:
-		_fail("Expected %s skeletal rig to mirror when facing left." % character_id)
+	var move_animation := str(body.animation)
+	if move_animation != "walk_east" and move_animation != "move_east":
+		_fail("Expected knight combat movement to play a directional PixelLab walk/move animation, got %s." % move_animation)
+	if not body.sprite_frames.get_animation_loop(move_animation):
+		_fail("Expected knight combat move animation %s to loop." % move_animation)
+	if body.sprite_frames.get_frame_count(move_animation) < 5:
+		_fail("Expected knight combat move animation %s to keep >=5 frames." % move_animation)
+	if body.flip_h:
+		_fail("Expected knight directional PixelLab animation to render without mirror flip.")
+	var move_texture := body.sprite_frames.get_frame_texture(move_animation, 0)
+	if move_texture == null or not move_texture.resource_path.contains("assets/sprites/characters/full_frame/knight_pixellab/"):
+		_fail("Expected knight combat move frames from the accepted PixelLab pack, got %s." % (move_texture.resource_path if move_texture != null else "<null>"))
 	player.set("velocity", Vector2.ZERO)
 	player.call("_update_movement_animation", 0.20)
-	if str(rig.get("active_animation")) != "idle":
-		_fail("Expected %s skeletal rig to return to idle when stopped." % character_id)
+	var idle_animation := str(body.animation)
+	if not idle_animation.begins_with("idle"):
+		_fail("Expected knight to return to a looping PixelLab idle when stopped, got %s." % idle_animation)
+	if not body.sprite_frames.get_animation_loop(idle_animation):
+		_fail("Expected knight combat idle animation %s to loop." % idle_animation)
 	var weapon_socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
 	if weapon_socket == null or not weapon_socket.has_meta("weapon_orbit_radius"):
-		_fail("Expected %s weapon socket orbit behavior to remain configured." % character_id)
+		_fail("Expected knight weapon socket orbit behavior to remain configured.")
 	player.set("velocity", previous_velocity)
 	player.set("_animation_time", previous_animation_time)
 
