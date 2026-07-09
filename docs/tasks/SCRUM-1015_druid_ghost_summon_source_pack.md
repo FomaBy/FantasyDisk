@@ -68,9 +68,9 @@ Git/Jira:
 Disk cleanup: removed task `.godot` import cache (`445 MB`) and Python caches;
 the clean disposable worktree is removed after the final sync commit is pushed.
 
-## Independent QA verdict — 2026-07-10
+## QA-Вердикт — 2026-07-10, `/root/audit_ready`
 
-Verdict: **PASSED** (`/root/audit_ready`, Codex QA lane).
+Статус: PASSED (`/root/audit_ready`, Codex QA lane).
 
 - Reviewed the source package independently from fresh `origin/dev`, without
   modifying source PNGs, manifest, previews, runtime assets, scripts or tests.
