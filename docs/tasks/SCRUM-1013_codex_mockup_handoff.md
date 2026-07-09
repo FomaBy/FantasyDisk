@@ -1,6 +1,6 @@
 # SCRUM-1013 — Codex Characteristics/Attributes Split: PixelLab Mockup Handoff
 
-Статус: review  
+Статус: done  
 Контур: Codex  
 Owner: Design Main/Codex  
 Thread/Worker: `/root/audit_repo`  

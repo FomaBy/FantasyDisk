@@ -4092,5 +4092,10 @@
   "key": "SCRUM-1003",
   "status": "Готово",
   "desc_hash": "6b717d80fb11683f2a06e089d21f84f7"
+ },
+ "SCRUM-1013_codex_mockup_handoff.md": {
+  "key": "SCRUM-1013",
+  "status": "Контроль качества",
+  "desc_hash": "e4788e92f0beee3e03958770015a4b29"
  }
 }
