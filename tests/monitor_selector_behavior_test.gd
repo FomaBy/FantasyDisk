@@ -190,4 +190,3 @@ func _test_apply_revert_and_restart(main, ui, errors: Array[String]) -> void:
 	await process_frame
 	await process_frame
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
-
