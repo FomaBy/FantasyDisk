@@ -154,7 +154,7 @@ sidecars were not staged).
 - Runtime image/UI/code/spec/previews/design docs were not modified during
   reconciliation. Independent QA remains required; no self-QA verdict added.
 
-## QA-Вердикт 2026-07-10
+## QA-Вердикт 2026-07-09
 
 Статус: PASSED
 
