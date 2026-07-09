@@ -162,7 +162,10 @@ fantasy key art без baked UI, со спокойной левой колонк
 читаемой title-safe областью под `MainMenuTitleLabel`, героями/монстрами/боссами
 по референсам текущих runtime sprites, дополнительным grain-reduction pass и
 smooth-lines ревизией для более плавных контуров облаков, руин, платформы,
-плащей, боссов и monster silhouettes. Source/reference sheet/backup/preview/safe-zone
+плащей, боссов и monster silhouettes. SCRUM-1001 follow-up также удаляет
+лишние orange ember/spark dots, которые пришли из генерации как частицы/пепел:
+мелкие isolated компоненты заменены локально сглаженным фоном, а крупные golden
+portal/music линии сохранены. Source/reference sheet/backup/preview/safe-zone
 evidence задокументированы в
 `docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
 explicit OpenAI Images override по прямому запросу пользователя). Предыдущий

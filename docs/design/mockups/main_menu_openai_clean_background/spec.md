@@ -15,7 +15,8 @@ Generated with: OpenAI Images built-in `image_gen` via explicit user `OpenAI Ima
 User requested a new main-menu picture made with OpenAI image generation, using
 current character/monster/boss sprites as references. The image must be clean,
 less grainy, cartoon-realistic and beautiful. Follow-up feedback requested
-removing grain and adding texture smoothing.
+removing grain, adding texture smoothing, smoothing ragged linework and removing
+orange spark/ember dot noise.
 
 ## Runtime Asset Contract
 
@@ -26,11 +27,14 @@ removing grain and adding texture smoothing.
 | First smoothed reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` |
 | Smooth-lines OpenAI edit source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` |
 | Final smooth-lines reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` |
+| Final no-orange-noise reference | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png` |
 | Sprite reference sheet | `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png` |
 | Previous runtime backup | `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png` |
 | Safe-zone overlay | `docs/design/previews/main_menu_openai_clean_background_safe_zones.png` |
 | Smoothing comparison | `docs/design/previews/main_menu_openai_smoothing_comparison.png` |
 | Smooth-lines comparison | `docs/design/previews/main_menu_openai_smooth_lines_comparison.png` |
+| Orange-noise mask | `docs/design/previews/main_menu_openai_orange_noise_mask.png` |
+| No-orange-noise comparison | `docs/design/previews/main_menu_openai_no_orange_noise_comparison.png` |
 
 ## Screen Elements
 
@@ -58,6 +62,7 @@ buttons, logos or panels. Runtime controls remain separate Godot nodes.
 | main_menu_openai_final_smooth | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth.png` | first denoised/smoothed source | 2560x1440 | RGB | n/a | safe zones preserved | edge-aware smoothing applied after first user feedback |
 | main_menu_openai_smooth_lines_source | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_smooth_lines_source.png` | OpenAI edit source for smoother contours | 1672x941 | RGB | n/a | n/a | generated after follow-up feedback about ragged edges |
 | main_menu_openai_final_smooth_lines | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png` | final smooth-lines runtime source | 2560x1440 | RGB | n/a | safe zones preserved | smoother clouds, silhouettes, platform edges and boss contours |
+| main_menu_openai_final_no_orange_noise | `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png` | final no-orange-noise runtime source | 2560x1440 | RGB | n/a | safe zones preserved | small isolated orange/yellow ember/spark components removed |
 | main_menu_epic_battle_v3 | `assets/backgrounds/main_menu_epic_battle_v3.png` | live runtime background | 2560x1440 | RGB | n/a | safe zones preserved | keeps existing `MAIN_MENU_BACKGROUND` code path |
 
 ## Smoothing Pass
@@ -71,6 +76,15 @@ postprocess, tracked in `main_menu_openai_smooth_lines_comparison.png`. This
 revision specifically smooths uneven/ragged contours on clouds, ruins, capes,
 stone platform edges, boss armor and monster silhouettes while keeping the same
 main-menu composition and safe zones.
+
+## Orange Dot Cleanup
+
+The orange dots came from the generated background as ember/spark/lava-particle
+noise. The cleanup pass builds a warm orange/yellow candidate mask, keeps large
+connected golden linework such as portal circles and music curves, and replaces
+only small isolated components with a locally smoothed background. Evidence:
+`main_menu_openai_orange_noise_mask.png` and
+`main_menu_openai_no_orange_noise_comparison.png`.
 
 ## Responsive Rules
 
@@ -98,6 +112,7 @@ main-menu composition and safe zones.
 - [x] Runtime asset is 2560x1440 RGB PNG.
 - [x] Current character/monster/boss sprites were used in a reference sheet.
 - [x] Grain reduction and smoothing pass applied after user feedback.
+- [x] Orange spark/ember dot noise removed after follow-up feedback.
 - [x] No UI content overlaps frame decoration; this background has no UI frame.
 - [x] Main-menu title/actions safe zones remain free of key art.
 - [x] Godot smoke/UI verification completed.

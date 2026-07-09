@@ -260,7 +260,10 @@ Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
 on current runtime character, monster, elite and boss sprite references. The
 final runtime PNG has a grain-reduction pass plus a smooth-lines revision that
 reduces ragged/uneven contours in clouds, stone, ruins, capes, boss armor and
-monster silhouettes while preserving hero/boss readability.
+monster silhouettes while preserving hero/boss readability. The latest
+SCRUM-1001 follow-up removes extra orange ember/spark dot noise by replacing
+small isolated warm components with locally smoothed background while preserving
+large golden portal/music linework.
 The calm left button-safe column and readable title-safe area are preserved, the
 asset is prepared for proportional cover-crop rather than one-axis stretching,
 and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,

@@ -44,7 +44,7 @@ Jira: SCRUM-1001
   `MainMenuTitleLabel` и шести runtime-кнопок.
 - Визуальный стиль: clean cartoon-realistic D&D/dark fantasy, current-sprite-inspired
   characters/monsters/bosses, reduced grain/noise, smoother lines and less ragged
-  contours.
+  contours, without extra orange spark/ember dot noise.
 - Есть spec/evidence under `docs/design/mockups/main_menu_openai_clean_background/`
   и preview under `docs/design/previews/`.
 - Godot smoke/UI checks run or blocker recorded.
@@ -65,6 +65,12 @@ Done 2026-07-09.
   edit текущей композиции + лёгкий anti-ragged postprocess. Финальный runtime
   source:
   `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_smooth_lines.png`.
+- После follow-up фидбека `убрать оранжевые точки / сделать без лишнего шума`
+  выполнена локальная cleanup-ревизия: мелкие isolated orange/yellow
+  ember/spark components удалены по цвету/размеру и заменены локально сглаженным
+  фоном; крупные golden portal/music linework сохранены. Финальный runtime
+  source:
+  `docs/design/references/main_menu_openai_clean_background/main_menu_openai_final_no_orange_noise.png`.
 - Старый runtime background сохранён:
   `docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
 - Evidence/spec:
@@ -77,6 +83,9 @@ Done 2026-07-09.
   `docs/design/references/main_menu_openai_clean_background/current_sprite_reference_contact_sheet.png`.
 - Smooth-lines comparison:
   `docs/design/previews/main_menu_openai_smooth_lines_comparison.png`.
+- Orange-noise mask/comparison:
+  `docs/design/previews/main_menu_openai_orange_noise_mask.png`,
+  `docs/design/previews/main_menu_openai_no_orange_noise_comparison.png`.
 
 ## Проверки
 

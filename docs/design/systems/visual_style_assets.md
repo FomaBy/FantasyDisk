@@ -807,9 +807,11 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   The final runtime image uses a grain-reduction pass plus a smooth-lines
   revision to reduce ragged/uneven contours in the sky, clouds, ruins, stone
   platform, capes, boss armor and monster silhouettes while preserving
-  readability. It keeps a calm dark left column for the six runtime menu buttons
+  readability. A later SCRUM-1001 cleanup removes extra orange ember/spark dot
+  noise from the generated image while preserving large golden portal/music
+  linework. It keeps a calm dark left column for the six runtime menu buttons
   and a readable title-safe area, and contains no baked UI text/buttons/frames.
-  Source, sprite reference sheet, backup, preview, smoothing comparisons and
+  Source, sprite reference sheet, backup, preview, cleanup comparisons and
   safe-zone evidence are documented in
   `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
   an explicit OpenAI Images override by direct user request.
