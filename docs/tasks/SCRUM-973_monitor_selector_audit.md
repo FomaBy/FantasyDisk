@@ -1,6 +1,6 @@
 # SCRUM-973 — Audit monitor selector behavior
 
-Статус: review
+Статус: new
 Контур: Codex
 Owner: Backend/Codex
 Thread: /root/audit_ready
@@ -65,3 +65,28 @@ Jira: SCRUM-973
 
 Disk cleanup: removed the disposable 431 MB `.godot/` cache; task worktree is removed after this final metadata push and confirmed in Jira.
 Thread cleanup: not a disposable top-level worker thread; sub-agent will report to dispatcher.
+
+## QA-Вердикт (2026-07-09)
+
+Статус: FAILED
+
+Проверено на `origin/dev` `de84ee0fefe10867ce37c56d8aee775c344e9b90`;
+implementation merge `39142aa255f425f3500a15b03536172ce813beb8`
+подтверждён как ancestor. Task-owned commits `f21afa4e`/`e6ec3388`
+меняют только focused test, mirror и sync map; production UI/runtime в рамках
+SCRUM-973 не менялись.
+
+- `_pending_screen_index`, Apply/Revert dirty state, persistence/restart и
+  контракт 2560×1440 + 1920×1080 проверяются поведенчески.
+- Multi-monitor count/labels/geometry проверяются только через
+  `source.contains(...)` / `source.find(...)` по тексту `ui_screens.gd`.
+  Тест не строит virtual multi-screen options collection и не проверяет
+  фактические count/order/labels.
+- `python3 tools/godot_gate.py --headless --path . --script
+  res://tests/monitor_selector_behavior_test.gd` возвращает PASS, несмотря
+  на этот пробел. Это false-green для одного из главных acceptance
+  критериев.
+
+Баг: `SCRUM-1012` — нужен behavioral virtual one/three-screen test для
+точного count, order, labels, selection и disappeared-monitor fallback без
+brittle source-string assertions.
