@@ -126,6 +126,16 @@ const ATTACK_MODE_EXECUTORS := {
 @export var pool_duration := 3.0
 @export var pool_tick_interval := 0.6
 @export var pool_direct_damage_multiplier := 1.0
+# SCRUM-944: per-weapon скалер тика лужи (зеркалится в _budget_pool_dps).
+@export var pool_tick_damage_multiplier := 1.0
+# SCRUM-944: полупрозрачная наземная лужа (visual-polish кислотной колбы).
+@export var pool_translucent := false
+# SCRUM-944: перманентные контактные заряды лужи — один вечный DoT-заряд с КАЖДОЙ
+# отдельной лужи (кап pool_charge_cap на цель; артефакт acid_charge_stacks: +3).
+@export var pool_contact_charges := false
+@export var pool_charge_tick_multiplier := 0.30
+@export var pool_charge_tick_interval := 0.9
+@export var pool_charge_cap := 5
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var crit_shadow_burst_radius := 0.0
@@ -257,6 +267,12 @@ func configure_weapon(config: Dictionary) -> void:
 	pool_duration = float(config.get("pool_duration", pool_duration))
 	pool_tick_interval = float(config.get("pool_tick_interval", pool_tick_interval))
 	pool_direct_damage_multiplier = float(config.get("pool_direct_damage_multiplier", pool_direct_damage_multiplier))
+	pool_tick_damage_multiplier = float(config.get("pool_tick_damage_multiplier", pool_tick_damage_multiplier))
+	pool_translucent = bool(config.get("pool_translucent", pool_translucent))
+	pool_contact_charges = bool(config.get("pool_contact_charges", pool_contact_charges))
+	pool_charge_tick_multiplier = float(config.get("pool_charge_tick_multiplier", pool_charge_tick_multiplier))
+	pool_charge_tick_interval = float(config.get("pool_charge_tick_interval", pool_charge_tick_interval))
+	pool_charge_cap = int(config.get("pool_charge_cap", pool_charge_cap))
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
@@ -722,7 +738,8 @@ func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: fl
 
 func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	# Ядовитое облако химика: тики по врагам в радиусе, группа player_weapon_effects.
-	tick_damage *= POOL_TICK_DAMAGE_MULTIPLIER
+	# SCRUM-944: pool_tick_damage_multiplier — per-weapon скалер (зеркален в бюджете).
+	tick_damage *= POOL_TICK_DAMAGE_MULTIPLIER * pool_tick_damage_multiplier
 	var combo_target := _find_combo_cloud(pool_position)
 	var pool := Node2D.new()
 	pool.name = "ChemistPoisonPool"
@@ -743,10 +760,16 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 	var pool_sprite := Sprite2D.new()
 	pool_sprite.name = "PoolSprite"
 	pool_sprite.texture = _pool_visual_texture()
-	# SCRUM-961 «Прозрачная кислота» (виз. контракт): лужа прозрачнее (альфа ниже
-	# базовой 0.82), опасность подчёркивает яркая danger-кромка при спавне.
+	# SCRUM-944 (визуальный контракт кита): pool_translucent-лужи (кислота) всегда
+	# полупрозрачны — поле боя/UI читаются сквозь зону; SCRUM-961 «Прозрачная
+	# кислота» дополнительно подчёркивает опасность яркой danger-кромкой при спавне.
 	var clear_pool := weapon_id == "acid_flask" and _owner_mod("pool_duration_mult") > 0.0
-	pool_sprite.modulate = Color(1.0, 1.0, 1.0, 0.58 if clear_pool else 0.82)
+	var pool_alpha := 0.82
+	if pool_translucent:
+		pool_alpha = 0.50
+	elif clear_pool:
+		pool_alpha = 0.58
+	pool_sprite.modulate = Color(1.0, 1.0, 1.0, pool_alpha)
 	var pool_scale := (aoe_radius * 1.42) / 256.0
 	pool_sprite.scale = Vector2.ONE * pool_scale
 	visual.add_child(pool_sprite)
@@ -778,7 +801,9 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_pool := instance_from_id(pool_id) as Node2D
 			if current_weapon != null and current_pool != null:
-				current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage)
+				# SCRUM-944: лужа передаёт себя тику — контактные заряды с per-pool
+				# идентичностью («одна лужа = один вечный заряд», без повторов).
+				current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage, current_pool)
 		)
 	pool_tween.tween_property(pool_sprite, "modulate:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
@@ -3425,12 +3450,15 @@ func _retire_excess_damage_pools(new_pool: Node2D) -> void:
 		_release_effect(stale_pool)
 		stale_pool.queue_free()
 
-func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> void:
+func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float, source_pool: Node2D = null) -> void:
 	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
-	_apply_pool_contact_statuses(enemies)
+	_apply_pool_contact_statuses(enemies, source_pool)
 	if enemies.size() <= POOL_FULL_TARGETS:
 		for enemy_node in enemies:
-			_damage_enemy(enemy_node, amount)
+			# SCRUM-942: тик лужи — периодический канал и на одиночной цели тоже:
+			# тип "dot" (единая покраска цифр + trait-множитель периодики), без
+			# он-хит статусов/дублей — зеркально ветке толпы ниже.
+			_damage_enemy(enemy_node, amount, false, "dot", false)
 		return
 	# Сортировка по близости к центру лужи — полный урон достаётся «ядру» пака.
 	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
@@ -3443,24 +3471,50 @@ func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float) -> v
 		_damage_enemy(enemies[index] as Node2D, amount * factor, false, "dot", false)
 
 
-# SCRUM-961: контактные статусы луж («Кислотный катализатор» — перманентные стаки
-# едкого DoT до смерти носителя, кап 5; «Печать терновника» — стабильный слоу).
-func _apply_pool_contact_statuses(enemies: Array) -> void:
-	var acid_charges := weapon_id == "acid_flask" and _owner_mod("acid_charge_stacks") > 0.0
+# SCRUM-944: базовый префикс id вечных кислотных зарядов (+ instance id лужи).
+const ACID_CHARGE_STATUS_PREFIX := "acid_charge"
+# SCRUM-944: «вечность» заряда — живёт до смерти носителя (раунды много короче).
+const ACID_CHARGE_PERSIST_SECONDS := 999999.0
+# SCRUM-961 «Кислотный катализатор»: артефакт поднимает кап зарядов на цель.
+const ACID_CHARGE_ARTIFACT_CAP_BONUS := 3
+
+# SCRUM-944: контактные статусы луж. Кислотная колба (pool_contact_charges):
+# монстр в луже получает ОДИН вечный DoT-заряд ОТ ЭТОЙ КОНКРЕТНОЙ лужи
+# (status id = acid_charge_p<pool_instance_id>, max_stacks 1 → стоять в одной
+# луже бесконечно = всё равно один заряд). Разные лужи стакаются: каждая даёт
+# свой статус; их тики складываются и живут до смерти носителя. Балансовый кап:
+# pool_charge_cap зарядов на цель (артефакт «Кислотный катализатор» +3).
+# Trait «Катализатор» (+50% периодики) запекается через apply_status_from.
+# «Печать терновника» (briar_staff) — стабильный слоу, без изменений.
+func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) -> void:
+	var acid_charges := pool_contact_charges and source_pool != null and is_instance_valid(source_pool)
 	var briar_slow := weapon_id == "briar_staff" and _owner_mod("briar_slow_power") > 0.0
 	if not acid_charges and not briar_slow:
 		return
+	var owner_node := _owner_node()
+	var charge_status_id := ""
+	var charge_tick := 0.0
+	var charge_cap := pool_charge_cap
+	if acid_charges:
+		charge_status_id = "%s_p%d" % [ACID_CHARGE_STATUS_PREFIX, source_pool.get_instance_id()]
+		if _owner_mod("acid_charge_stacks") > 0.0:
+			charge_cap += ACID_CHARGE_ARTIFACT_CAP_BONUS
+		var parameters_raw = owner_node.get("derived_parameters") if owner_node != null else null
+		var dot_damage := 2.0
+		if parameters_raw is Dictionary:
+			dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
+		charge_tick = maxf(dot_damage * pool_charge_tick_multiplier, 0.30)
 	for enemy in enemies:
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		if acid_charges:
-			StatusEffects.apply_status(enemy_node, "acid_charge", {
-				"duration": 999.0,
-				"dot_damage": 0.8,
-				"dot_interval": 1.0,
-				"stack_mode": "add",
-				"max_stacks": 5,
+		if acid_charges and not StatusEffects.has_status(enemy_node, charge_status_id) \
+				and StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX) < charge_cap:
+			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
+				"duration": ACID_CHARGE_PERSIST_SECONDS,
+				"dot_damage": charge_tick,
+				"dot_interval": pool_charge_tick_interval,
+				"max_stacks": 1,
 				"marker_color": Color(0.62, 0.95, 0.25, 1.0),
 			})
 		if briar_slow:

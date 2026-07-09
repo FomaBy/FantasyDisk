@@ -252,8 +252,8 @@ const CHARACTER_CONFIGS := {
 	},
 	"chemist": {
 		"id": "chemist", "title": "Химик",
-		"description": "Алхимик выжженной земли: взрывы, кислотные лужи и ядовитые облака превращают арену в отраву. Хрупок — пусть работает химия.",
-		"strengths": "едкие зоны, урон со временем, взрывы по области, гомункул-помощник.",
+		"description": "Алхимик выжженной земли: взрывы, кислотные лужи и пара гомункулов превращают арену в отраву. Хрупок — пусть работает химия.",
+		"strengths": "перманентные кислотные заряды, усиленная периодика («Катализатор»: +50%), быстрые взрывы по области, гомункулы танк и кастер.",
 		"weaknesses": "хрупкий, урону нужно время.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
 	},
@@ -339,6 +339,21 @@ const CLASS_TRAITS := {
 		"description": "Убитые Тёмным магом враги взрываются магическим уроном по области; взрывы не порождают новых взрывов.",
 		"on_kill_blast_radius": 120.0,
 		"on_kill_blast_magic_ratio": 0.85,
+	},
+	"chemist": {
+		# SCRUM-942 «Катализатор»: рантайм (player.periodic_damage_multiplier) и
+		# формульный бюджет (_budget_dot_dps/_budget_pool_dps/_budget_pool_charge_dps/
+		# _budget_summon_wave_dps) читают множитель ОТСЮДА — trait не «зашит» в
+		# пайплайн и не протекает другим классам. «Периодическим» считается урон,
+		# чей источник помечен damage_type="dot" в hit-контексте (тики луж /
+		# DoT-тики оружия) либо навешен статусом с dot_damage через
+		# StatusEffects.apply_status_from(источник, ...) — будущие оружия
+		# опт-инятся этим же тегированием. Прямые хиты (physical/magic) множитель
+		# НЕ трогает. Покрыто tests/chemist_kit_test.gd.
+		"id": "catalyst",
+		"title": "Катализатор",
+		"description": "Весь периодический урон Химика усилен на +50%: DoT-тики, тики кислотных луж, перманентные кислотные заряды и волны гомункула-кастера. Прямые попадания (включая взрыв Взрывной пыли) не усиливаются.",
+		"periodic_damage_multiplier": 1.5,
 	},
 }
 
@@ -504,12 +519,12 @@ const CLASS_MECHANIC_IDENTITIES := {
 	"chemist": {
 		"main_attribute": "intelligence",
 		"identity_title": "Алхимическая цепь",
-		"summary": "Интеллект смешивает реагенты без промаха: чем яснее расчет, тем злее взрывы и едче кислотные лужи.",
-		"mechanic_tags": ["cloud_combo", "acid_pool", "explosion", "homunculus"],
+		"summary": "Интеллект смешивает реагенты без промаха, а «Катализатор» разгоняет всю периодику Химика на +50%: едкие заряды и волны гомункула догрызают то, что не добил взрыв.",
+		"mechanic_tags": ["catalyst_trait", "acid_pool", "explosion", "homunculus_pair"],
 		"weapon_identities": {
-			"blast_powder": "взрывная пыль и spark cloud",
-			"acid_flask": "кислотный DoT pool",
-			"homunculus_vial": "temporary homunculus summon",
+			"blast_powder": "быстрый прямой физический AoE-удар",
+			"acid_flask": "долгие лужи с перманентными кислотными зарядами",
+			"homunculus_vial": "постоянная пара: гомункул-танк и неуязвимый кастер",
 		},
 	},
 	"knight": {

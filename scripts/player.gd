@@ -1025,10 +1025,23 @@ func _element_for_weapon_context(weapon_id_value: String, mode: String, weapon: 
 	return ""
 
 
+# SCRUM-942 «Катализатор»: классовый множитель периодического урона (data-driven
+# из ProgressionData.CLASS_TRAITS; 1.0 для классов без trait'а — утечки нет).
+# Читается двумя каналами периодики: hit-контексты с damage_type="dot"
+# (meta_damage_multiplier ниже) и статусы с dot_damage, применяемые через
+# StatusEffects.apply_status_from(self, ...). Прямые хиты не усиливает.
+func periodic_damage_multiplier() -> float:
+	return ProgressionData.class_periodic_damage_multiplier(character_id)
+
+
 func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	var ctx: Dictionary = context if context is Dictionary else {}
 	var mode := str(ctx.get("attack_mode", ""))
 	var multiplier := 1.0
+	# SCRUM-942: периодический источник (тики луж / DoT-тики оружия) помечен
+	# damage_type="dot" — усиливаем классовым trait-множителем периодики.
+	if str(ctx.get("damage_type", "")) == "dot":
+		multiplier *= periodic_damage_multiplier()
 	var gold_cap := float(run_modifiers.get("gold_damage_bonus_cap", 0.0))
 	var gold_step := float(run_modifiers.get("gold_damage_per_50", 0.0))
 	if gold_cap > 0.0 and gold_step > 0.0:
@@ -2102,6 +2115,8 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 	if dot_damage <= 5.0:
 		return
 	var tick_damage := dot_damage * (0.22 if character_id in ["doctor", "chemist", "dark_mage", "assassin", "druid"] else 0.14)
+	# SCRUM-942 «Катализатор»: универсальные DoT-тики — периодический канал.
+	tick_damage *= periodic_damage_multiplier()
 	var dot_tween := create_tween()
 	var enemy_id := enemy.get_instance_id()
 	for tick_index in range(2):
@@ -2131,7 +2146,9 @@ func _trigger_class_status_effects(enemy: Node2D) -> void:
 				"marker_color": Color(0.72, 0.42, 1.0, 1.0),
 			})
 		"chemist", "doctor", "assassin", "biologist":
-			StatusEffects.apply_status(enemy, "toxic_debuff", {
+			# SCRUM-942: периодический статус идёт через apply_status_from —
+			# trait-множитель источника запекается в dot_damage.
+			StatusEffects.apply_status_from(self, enemy, "toxic_debuff", {
 				"duration": 2.4,
 				"max_stacks": 2,
 				"stack_mode": "add",

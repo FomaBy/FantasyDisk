@@ -783,6 +783,17 @@ static func class_budget_profile(character_id: String) -> Dictionary:
 	return CLASS_BUDGET_PROFILES.get(character_id, CLASS_BUDGET_PROFILES["berserk"]).duplicate(true)
 
 
+# SCRUM-942 «Катализатор»: множитель ПЕРИОДИЧЕСКОГО урона класса (1.0 = без trait'а).
+# Единая точка чтения для рантайма (player.periodic_damage_multiplier) и
+# бюджет-формул (_budget_dot_dps/_budget_pool_dps/_budget_summon_wave_dps) —
+# live-замер и формульный гейт видят одну и ту же периодику.
+static func class_periodic_damage_multiplier(character_id: String) -> float:
+	var trait_config = CLASS_TRAITS.get(character_id, {})
+	if not (trait_config is Dictionary):
+		return 1.0
+	return maxf(float((trait_config as Dictionary).get("periodic_damage_multiplier", 1.0)), 0.0)
+
+
 # SCRUM-544: comfort-вес класса/оружия — относительный потолок внутри ±20%-полосы.
 # Per-weapon override > class weight > дефолт. Чем выше — тем больше «сырого» DPS
 # классу позволено (плата за вовлечённость игрока).
@@ -883,8 +894,13 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	# эха) и НЕ к ульте (не действие оружия). Благодаря этому budget_tuning_for
 	# автоматически компенсирует урон кита (AC SCRUM-935: кит сопоставим с ростером).
 	var action_echo_factor := 1.0 + class_action_echo_chance(character_id)
-	var solo_dps := (direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps
-	var aoe_dps := (direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0))
+	# SCRUM-946: периодические волны гомункула-кастера; по толпе волна накрывает
+	# нескольких целей радиусом (зеркало клампа pool_targets: 1 + r/130, кап 4).
+	# Волны — канал призыва (как summon_dps), echo-фактор действий на них не действует.
+	var wave_dps := _budget_summon_wave_dps(config, params)
+	var wave_targets := clampf(1.0 + float(config.get("summon_wave_radius", 130.0)) / 130.0, 1.0, 4.0)
+	var solo_dps := (direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps
+	var aoe_dps := (direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -1173,7 +1189,10 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 	var tick_multiplier := maxf(float(config.get("curse_tick_multiplier", 1.0)), 0.0)
 	var stats_map: Dictionary = stats if stats is Dictionary else {}
 	var curse_depth := 1.0 + maxf(float(stats_map.get("intelligence", 0.0)), 0.0) * maxf(float(config.get("curse_int_scale", 0.0)), 0.0)
-	return float(params.get("dot_damage", 1.0)) * tick_multiplier * curse_depth * ticks / maxf(interval, 0.18)
+	# SCRUM-942: DoT-тики — периодический канал, множится классовым trait'ом
+	# (у классов без trait'а множитель 1.0 — формула тождественна прежней).
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * curse_depth * ticks / maxf(interval, 0.18) \
+		* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 
 
 static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
@@ -1181,7 +1200,43 @@ static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: f
 		return 0.0
 	var tick_interval := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
 	var uptime := minf(float(config.get("pool_duration", 3.0)) / maxf(interval, 0.18), 1.0)
-	return float(params.get("dot_damage", 1.0)) / tick_interval * uptime
+	# SCRUM-944: per-weapon скалер тика лужи (зеркало ClassWeapon._spawn_damage_pool).
+	var tick_scale := maxf(float(config.get("pool_tick_damage_multiplier", 1.0)), 0.0)
+	# SCRUM-942: тики лужи — периодический канал, множится классовым trait'ом.
+	var periodic_mult := class_periodic_damage_multiplier(str(config.get("character_id", "")))
+	var pool_dps := float(params.get("dot_damage", 1.0)) * tick_scale / tick_interval * uptime * periodic_mult
+	return pool_dps + _budget_pool_charge_dps(config, params, periodic_mult)
+
+
+# SCRUM-944: бюджет перманентных контактных зарядов лужи (кислотная колба).
+# Зеркалит ClassWeapon._apply_pool_contact_statuses: враг копит по одному вечному
+# DoT-заряду с каждой РАЗНОЙ лужи (кап pool_charge_cap), тик = dot_damage ×
+# pool_charge_tick_multiplier / pool_charge_tick_interval. Ramp-фактор 0.5 —
+# заряды набираются по мере прохода луж, к концу бюджет-окна выходят на кап.
+static func _budget_pool_charge_dps(config: Dictionary, params: Dictionary, periodic_mult: float) -> float:
+	if not bool(config.get("pool_contact_charges", false)):
+		return 0.0
+	var cap := maxf(float(config.get("pool_charge_cap", 5.0)), 1.0)
+	var tick_multiplier := maxf(float(config.get("pool_charge_tick_multiplier", 0.30)), 0.0)
+	var tick_interval := maxf(float(config.get("pool_charge_tick_interval", 0.9)), 0.18)
+	const CHARGE_RAMP_FACTOR := 0.5
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * cap * CHARGE_RAMP_FACTOR / tick_interval * periodic_mult
+
+
+# SCRUM-946: бюджет волн гомункула-кастера (пара «танк+кастер»). Зеркалит
+# summoner_weapon._update_homunculus_pair: неуязвимый кастер каждые
+# summon_wave_interval вешает вечный DoT-заряд (кап summon_wave_stack_cap),
+# тик = dot_damage × summon_wave_dot_multiplier / summon_wave_dot_interval.
+# Ramp-фактор 0.5 — стаки волн копятся к капу за первые ~cap×interval секунд окна.
+static func _budget_summon_wave_dps(config: Dictionary, params: Dictionary) -> float:
+	if float(config.get("summon_wave_interval", 0.0)) <= 0.0:
+		return 0.0
+	var cap := maxf(float(config.get("summon_wave_stack_cap", 4.0)), 1.0)
+	var tick_multiplier := maxf(float(config.get("summon_wave_dot_multiplier", 0.35)), 0.0)
+	var tick_interval := maxf(float(config.get("summon_wave_dot_interval", 1.0)), 0.18)
+	const WAVE_RAMP_FACTOR := 0.5
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * cap * WAVE_RAMP_FACTOR / tick_interval \
+		* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 
 
 static func _budget_summon_dps(config: Dictionary, params: Dictionary, stats := {}) -> float:

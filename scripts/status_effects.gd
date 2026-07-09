@@ -38,6 +38,40 @@ static func apply_status(target: Node, status_id: String, config: Dictionary) ->
 		target.set_meta(MARKER_META_KEY, config["marker_color"])
 
 
+# SCRUM-942: применение ПЕРИОДИЧЕСКОГО статуса с учётом trait'а источника.
+# Тики статуса бегут на цели и не видят владельца, поэтому классовый множитель
+# периодики («Катализатор» Химика: ×1.5) запекается в dot_damage на моменте
+# применения. Источник опт-инится утиным методом periodic_damage_multiplier()
+# (player читает его из ProgressionData.CLASS_TRAITS — data-driven, без утечки
+# другим классам). Статусы без dot_damage проходят без изменений.
+static func apply_status_from(source: Node, target: Node, status_id: String, config: Dictionary) -> void:
+	var scaled_config := config
+	var multiplier := source_periodic_multiplier(source)
+	if not is_equal_approx(multiplier, 1.0) and float(config.get("dot_damage", 0.0)) > 0.0:
+		scaled_config = config.duplicate(true)
+		scaled_config["dot_damage"] = float(config.get("dot_damage", 0.0)) * multiplier
+	apply_status(target, status_id, scaled_config)
+
+
+# SCRUM-942: периодический множитель источника урона (1.0 — без trait'а).
+static func source_periodic_multiplier(source: Node) -> float:
+	if source == null or not is_instance_valid(source):
+		return 1.0
+	if source.has_method("periodic_damage_multiplier"):
+		return maxf(float(source.call("periodic_damage_multiplier")), 0.0)
+	return 1.0
+
+
+# SCRUM-944: число активных статусов с данным префиксом id (кап перманентных
+# кислотных зарядов: один заряд = один статус "acid_charge_p<pool_id>").
+static func count_status_prefix(target: Node, prefix: String) -> int:
+	var count := 0
+	for status_id in _statuses(target).keys():
+		if str(status_id).begins_with(prefix):
+			count += 1
+	return count
+
+
 static func tick(target: Node, delta: float) -> void:
 	if target == null or not is_instance_valid(target) or not target.has_meta(META_KEY):
 		return

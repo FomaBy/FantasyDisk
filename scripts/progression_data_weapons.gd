@@ -365,53 +365,76 @@ const DOCTOR_WEAPONS := {
 }
 
 const CHEMIST_WEAPONS := {
+	# SCRUM-943: быстрый ПРЯМОЙ физический close-mid AoE — комфортная «рабочая
+	# лошадка» кита. Базовой лужи/DoT нет (leaves_pool убран) — периодическую ось
+	# кита держат кислотная колба и волны гомункула; trait «Катализатор» (SCRUM-942)
+	# этот прямой взрыв НЕ усиливает. Скейл от физического урона (damage_parameter
+	# "damage") — вложения в физику ощутимо разгоняют именно пыль.
 	"blast_powder": {
 		"id": "blast_powder", "title": "Взрывная пыль",
-		"description": "Взрыв по области и ядовитое облако: тики DoT 3 секунды.",
+		"description": "Быстрый прямой взрыв по области на ближне-средней дистанции. Скейлится от физического урона; без облаков и DoT.",
 		"scene_path": "res://scenes/BlastPowder.tscn",
-		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.31, "fire_interval": 1.25,
-		"attack_range": 580.0, "aoe_radius": 170.0, "projectile_speed": 500.0,
-		"leaves_pool": true, "pool_element": "spark", "combo_clouds": true, "pool_duration": 3.0, "pool_tick_interval": 0.6,
-		"pool_direct_damage_multiplier": 0.39,
-		"visual_color": Color(0.62, 0.95, 0.18, 0.42),
-		"passive_mods": {"aoe_radius_multiplier": 1.12},
+		"attack_mode": "aoe_projectile", "damage_parameter": "damage",
+		"damage_multiplier": 2.05, "fire_interval": 0.62,
+		"attack_range": 430.0, "aoe_radius": 150.0, "projectile_speed": 640.0,
+		"visual_color": Color(0.95, 0.72, 0.22, 0.44),
+		"passive_mods": {"aoe_radius_multiplier": 1.10},
 	},
+	# SCRUM-944: зонный контроль пола — долгоживущие ПОЛУПРОЗРАЧНЫЕ лужи. Монстр,
+	# зашедший в лужу, получает один ВЕЧНЫЙ кислотный заряд ОТ ЭТОЙ лужи (статус
+	# "acid_charge_p<pool_id>", тикает до смерти носителя); разные лужи стакаются
+	# (кап pool_charge_cap, артефакт «Кислотный катализатор» поднимает кап на +3).
+	# Trait «Катализатор» множит и тики лужи, и заряды (+50%).
 	"acid_flask": {
 		"id": "acid_flask", "title": "Кислотная колба",
-		"description": "Кислотный бросок: слабый взрыв, но большая едкая лужа с частыми DoT-тиками.",
+		"description": "Долгая полупрозрачная кислотная лужа: пока враг в луже — тики, а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
 		"scene_path": "res://scenes/AcidFlask.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.24, "fire_interval": 1.08,
-		"attack_range": 600.0, "aoe_radius": 215.0, "projectile_speed": 520.0,
-		"leaves_pool": true, "pool_element": "poison", "combo_clouds": true, "pool_duration": 4.2, "pool_tick_interval": 0.48,
-		"pool_direct_damage_multiplier": 0.42,
+		"damage_multiplier": 0.24, "fire_interval": 1.25,
+		"attack_range": 600.0, "aoe_radius": 210.0, "projectile_speed": 520.0,
+		"leaves_pool": true, "pool_element": "poison", "pool_duration": 7.0, "pool_tick_interval": 0.75,
+		"pool_tick_damage_multiplier": 0.90,
+		"pool_direct_damage_multiplier": 0.38,
+		"pool_translucent": true,
+		"pool_contact_charges": true, "pool_charge_tick_multiplier": 0.30,
+		"pool_charge_tick_interval": 0.9, "pool_charge_cap": 5,
 		"visual_color": Color(0.22, 0.95, 0.26, 0.44),
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
+	# SCRUM-946: ПОСТОЯННАЯ пара гомункулов (без таймера жизни):
+	# - танк: 4x max HP Химика, таунт-пульсы (враги грызут его, а не игрока),
+	#   смертен; после смерти переспавнивается через fire_interval (4с);
+	# - кастер: неуязвим (Node2D-эффект вне групп allies/боевого лимита), ходит
+	#   рядом с танком (fallback — плечо Химика), каждые summon_wave_interval
+	#   вешает волной вечный DoT-заряд (кап summon_wave_stack_cap, trait ×1.5).
+	# max_summons=2 — бюджетное покрытие пары (боевой лимит рантайма пара не
+	# использует: популяцию ведёт _update_homunculus_pair).
 	"homunculus_vial": {
 		"id": "homunculus_vial", "title": "Склянка гомункула",
-		"description": "Временный алхимический приспешник: лимит небольшой, урон растет от магического урона.",
+		"description": "Постоянная пара гомункулов: живучий танк-провокатор (4x HP Химика) и неуязвимый кастер, копящий волнами вечный периодический урон.",
 		"scene_path": "res://scenes/HomunculusVial.tscn",
 		"damage_parameter": "magic_damage",
 		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
-		"damage_multiplier": 0.90, "fire_interval": 4.0,
+		"damage_multiplier": 0.90, "fire_interval": 4.0,  # fire_interval = респавн-пауза танка
 		"upgrade_damage_exponent": 1.40,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 70.0,
-		# SCRUM-505: один гомункул не виден на 20t. Расширяем алхимический splash
-		# (кислотное облако) и добавляем тело, но основной прирост покрытия — от
-		# Лидерства в _summon_profile, чтобы lvl1 (LDR~0) не раздулся. flat-base умеренный.
-		"summon_aoe_radius": 84.0, "summon_aoe_damage_multiplier": 0.86,  # SCRUM-505 lvl1-нейтральный base (было 78/0.85); рост покрытия splash — от (level-1) в _summon_profile
+		"summon_aoe_radius": 84.0, "summon_aoe_damage_multiplier": 0.86,  # SCRUM-505: splash танка; рост покрытия — от (level-1) в _summon_profile
 		"summon_leash_radius": 540.0,
-		"max_summons": 2,  # SCRUM-505: 2 базовых (было 1); рой растёт от Лидерства
+		"max_summons": 2,  # бюджет-покрытие пары танк+кастер (см. коммент выше)
 		"summon_role": "tank_control",
 		"summon_role_damage_multiplier": 1.25,  # SCRUM-546 (был 0.95)
-		"summon_health_multiplier": 0.42,
-		"summon_attack_interval": 0.38,  # SCRUM-505: чуть чаще (было 0.40)
+		"summon_health_multiplier": 4.0,  # SCRUM-946: танк = 4x max HP Химика
+		"summon_attack_interval": 0.38,
 		"summon_speed_multiplier": 0.88,
-		"summon_lifetime_multiplier": 1.18,
 		"summon_control_knockback": 95.0,
-		"ally_visual_id": "homunculus",
+		"summon_pair_mode": true,
+		"pair_tank_visual_id": "homunculus_tank",
+		"summon_wave_interval": 1.7,
+		"summon_wave_radius": 150.0,
+		"summon_wave_dot_multiplier": 0.35,
+		"summon_wave_dot_interval": 1.0,
+		"summon_wave_stack_cap": 4,
+		"ally_visual_id": "homunculus_tank",
 		"visual_color": Color(0.54, 0.96, 0.48, 0.42),
 		"passive_mods": {"max_health_flat": 6.0},
 	},
