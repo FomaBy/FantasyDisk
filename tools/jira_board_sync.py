@@ -198,10 +198,16 @@ def sprint_version(sprint_name: str):
 
 
 def add_to_sprint(sprint_id, keys):
+    # Поштучно, а не батчем: один фантомный/недоступный ключ (удалённый в Jira
+    # тикет, живущий в локальной карте) 400-ит весь батч и роняет прогон синка
+    # (грабли SCRUM-496). Точечный вызов + skip с warning'ом устойчивее.
     if sprint_id and keys:
-        for i in range(0, len(keys), 50):
-            api("POST", f"/rest/agile/1.0/sprint/{sprint_id}/issue",
-                {"issues": keys[i:i + 50]})
+        for key in keys:
+            try:
+                api("POST", f"/rest/agile/1.0/sprint/{sprint_id}/issue",
+                    {"issues": [key]})
+            except JiraApiError as e:
+                sys.stderr.write(f"SKIP_SPRINT_ADD {key}: HTTP {e.args[0]}\n")
 
 
 def parse_task(path: str) -> dict:

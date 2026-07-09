@@ -2918,11 +2918,6 @@
   "status": "Готово",
   "desc_hash": "67b1a56d5c2d9ba413c81c9c08c634f5"
  },
- "SCRUM-496_skeleton_rig_mage_knight_runtime.md": {
-  "key": "SCRUM-496",
-  "status": "К выполнению",
-  "desc_hash": "b5b0d3e0ee1b52673de12e62a68f1dcd"
- },
  "SCRUM-502_run_summary_screen.md": {
   "key": "SCRUM-502",
   "status": "Готово",
@@ -3820,8 +3815,8 @@
  },
  "ui_tooltip_single_frame_rework_task.md": {
   "key": "SCRUM-851",
-  "status": "К выполнению",
-  "desc_hash": "60e5ce6f4f9133af8b8b941d0f28b8d7"
+  "status": "Готово",
+  "desc_hash": "888c7df3e73993dd8a94522b64662483"
  },
  "backend_berserk_geometry_radius_stat_split_task.md": {
   "key": "SCRUM-852",
@@ -4000,7 +3995,7 @@
  },
  "backend_contact_stuck_enemy_attack_deadzone_task.md": {
   "key": "SCRUM-886",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "23878918cd3a1200eea923bbdf9d0c8e"
  },
  "design_pause_dossier_atlas_esc_unify_task.md": {
@@ -4031,7 +4026,7 @@
  "design_main_menu_logo_v2_task.md": {
   "key": "SCRUM-978",
   "status": "Готово",
-  "desc_hash": "47f8a1b12d030a90251d499cd187812e"
+  "desc_hash": "4aefcb642f64d9613620c7add66ea14e"
  },
  "SCRUM-998.md": {
   "key": "SCRUM-998",
@@ -4080,8 +4075,8 @@
  },
  "SCRUM-964.md": {
   "key": "SCRUM-964",
-  "status": null,
-  "desc_hash": null
+  "status": "Готово",
+  "desc_hash": "2d38365042713943fb82b26c7cc24815"
  },
  "codex_design_main_menu_openai_clean_background_task.md": {
   "key": "SCRUM-1001",
@@ -4095,7 +4090,7 @@
  },
  "codex_perenos_chata_autonomy_update_task.md": {
   "key": "SCRUM-1003",
-  "status": "Контроль качества",
-  "desc_hash": "10e0c6bb18e4aedfdb4d28c5e497ef2d"
+  "status": "Готово",
+  "desc_hash": "6b717d80fb11683f2a06e089d21f84f7"
  }
 }
