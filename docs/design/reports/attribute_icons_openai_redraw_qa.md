@@ -1,5 +1,7 @@
 # SCRUM-691 Attribute Icon OpenAI Redraw QA
 
+> Историческая справка: упоминания `sound_wave_damage` в этом документе описывают состояние ДО SCRUM-898 (2026-07-10). Звуковая ось урона удалена; оружия Гитариста/Друида бьют магией (`magic_damage`).
+
 - Generated: 2026-06-30T09:11:33.939057+00:00
 - Generator: OpenAI `gpt-image-2` through `fantasydisk-asset-generator/scripts/generate_asset.py` (`--quality high --size 1024x1024 --no-task`).
 - Task exception: SCRUM-691 explicitly overrides the normal PixelLab-first icon workflow and requires OpenAI/ChatGPT image generation.

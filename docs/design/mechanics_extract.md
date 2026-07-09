@@ -48,7 +48,7 @@ solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целев�
 | Ловкость | `agility` | Скорость атаки, крит, скорость движения, уворот |
 | Интеллект | `intelligence` | Магический урон и scaling мага |
 | Восприятие | `perception` | Дальность, AoE, снаряды, radius-related параметры |
-| Энергия | `energy` | Магический/звуковой потенциал, ресурсная фантазия |
+| Энергия | `energy` | Темп уникальных механик и ультимейта, ресурсная фантазия |
 | Знание | `knowledge` | DoT, формулы магии, технические параметры |
 | Выносливость | `endurance` | HP, защита, отталкивание |
 | Лидерство | `leadership` | Ауры, призывы, поддержка |
@@ -111,8 +111,7 @@ SCRUM-854/SCRUM-862/SCRUM-860/SCRUM-875 уточнили runtime-контрак�
 | Параметр | ID в коде | Что делает |
 | --- | --- | --- |
 | Урон | `damage` | Основной физический урон |
-| Магический урон | `magic_damage` | Урон Темного мага |
-| Урон звуковой волны | `sound_wave_damage` | Урон Гитариста |
+| Магический урон | `magic_damage` | Урон магических классов (после SCRUM-898 включая Гитариста и Друида) |
 | Скорость атаки | `attack_speed` | Уменьшает интервалы атак: итоговый интервал = `base_fire_interval / attack_speed`, минимум 0.18с |
 | Возвышение | `ascension_level` | Метапрогрессия 1-5 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
 | Шанс крита | `crit_chance` | Вероятность критического удара |
@@ -253,7 +252,7 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 | --- | --- | --- |
 | Физический урон | `physical_damage` | `damage`, `attack_speed`, `crit_chance`, `crit_damage_multiplier`, `knockback_power` |
 | Магия | `magic_damage` | `magic_damage`, `aoe_radius`, `projectile_speed`, `attack_range`, `range_multiplier` |
-| Звук / Контроль | `sound_control` | `sound_wave_damage`, `aura_radius`, `buff_power`, `knockback_distance` |
+| Поддержка / Контроль | `support_control` | `aura_radius`, `buff_power`, `knockback_distance` |
 | Яд / DoT | `dot_poison` | `dot_damage`, `dot_speed` |
 | Выживаемость | `survival` | `health_point`, `defense`, `dodge`, `move_speed`, `absorb`, `regeneration`, `vampiric_amount`, `vampiric_chance` |
 | Приспешники / Поддержка | `summons_support` | `summon_amount`, `pickup_radius`, `ultimate_multiplier` |
@@ -618,10 +617,10 @@ Escape открывает крупное меню характеристик:
 
 ### Универсальная Полезность Атрибутов (2026-06-12)
 
-- Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage -> magic_damage, guitarist -> sound_wave_damage).
+- Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage/guitarist/druid -> magic_damage). SCRUM-898: звуковая ось (`sound_wave_damage`) удалена, бывшие sound-классы переведены на магический канал.
 - Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды, кроме явных class-specific исключений вроде SCRUM-854/SCRUM-862 Doctor external sustain filter, который также покрывает boss completion tier-3 artifact reward.
 - Все базовые и производные параметры могут появляться у любого класса. Если параметр не является «родным» для текущего оружия, он получает runtime-интерпретацию через `ProgressionData.CLASS_INTERPRETATIONS` и hooks в `Player`/`ClassWeapon`.
-- Превью изменений урона по-прежнему показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
+- Превью изменений урона по-прежнему показывает классовый параметр (Магу и Гитаристу — «Маг. урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
 - Фиксация наборов (анти-реролл): набор level-up генерируется один раз на полученный уровень (`level_up_offer`), пара атрибутов и счетчик rerolls — в `attribute_offer`/`attribute_rerolls_left`, сбрасываются только победным флоу нового боя; ассортимент магазина уже фиксировался до ухода с узла.
 
 Матрица runtime-интерпретаций:
@@ -629,10 +628,10 @@ Escape открывает крупное меню характеристик:
 | Атрибут / параметр | Универсальная интерпретация |
 | --- | --- |
 | `intelligence` / `magic_damage` | Магический канал изолирован: Magic Focus усиливает только `magic_damage` и не повышает физические удары. |
-| `sound_wave_damage` / `aura_radius` | Не-гитаристы получают боевой клич: периодическая волна отталкивания рядом с героем; радиус и сила берутся из sound/aura параметров. |
+| `aura_radius` | Аура присутствия и ближний контроль пространства (SCRUM-898: звуковой боевой клич не-гитаристов удалён вместе со звуковой осью урона). |
 | `knowledge` / `dot_damage` / `dot_speed` | Не-DoT классы добавляют малое bleed/burn/poison послевкусие к обычным ударам. |
 | `leadership` / `summon_amount` | Не-саммонеры получают эхо-оружие/фантом/сокол/знамя: каждые несколько ударов происходит повторный echo hit. Друид продолжает скейлить питомцев напрямую. |
-| `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit shadow burst ассасина, block/counter рыцаря, battle shout и будущие ultimates. |
+| `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit shadow burst ассасина, block/counter рыцаря и будущие ultimates. |
 | `strength` / `damage` | Магам/контроллерам дает физическую весомость: прямой урон, knockback и устойчивость снарядов/ударов. |
 | `perception` / `attack_range` / `aura_radius` / `pickup_radius` | Универсально расширяет дистанцию, радиус атак/зон, magnet и читаемость buildcraft. |
 | `endurance` / `defense` / `absorb` / `health_point` | Универсальная выживаемость; блоки и контратаки дополнительно используют эти значения у танковых билдов. |
@@ -667,9 +666,8 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 
 | Параметр | Формула (актуальная истина) | Реализация | Статус |
 | --- | --- | --- | --- |
-| damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic/Sound modifiers не протекают в physical | работает |
-| magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование; не повышает physical/sound | работает |
-| sound_wave_damage | `(Per+Energy) * weapon_mult * damage_mult * sound_damage_multiplier + flat` | derived -> звук/боевой клич; не повышает physical/magic | работает |
+| damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic modifiers не протекают в physical | работает |
+| magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование (включая экс-sound оружия Гитариста/Друида); не повышает physical | работает |
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), cap 0.55; mult = clamp(1.30+Agi*0.055+flat*0.75, 1.0, 2.75) | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |

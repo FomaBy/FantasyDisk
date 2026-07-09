@@ -407,7 +407,7 @@ assets until Animator/Back-end integration is accepted.
 | `doctor` | Доктор | Выживание через урон | `restore_potion`, `plague_syringe`, `bone_saw` | magic_damage |
 | `chemist` | Химик | AoE + DoT зоны | `blast_powder`, `acid_flask`, `homunculus_vial` | magic_damage |
 | `knight` | Рыцарь | Танк/копье | `long_spear`, `tower_shield`, `holy_flail` | damage |
-| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | sound_wave_damage |
+| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | magic_damage |
 
 Релевантность атрибутов расширена: strength -> berserk/assassin/ranger/knight; intelligence -> dark_mage/doctor/chemist; energy -> dark_mage/guitarist/doctor/chemist/druid. Вознесение: по 10 уровней на каждый новый класс (ID `<класс>_asc_1..10`, тематические имена в ASCENSION_LEVELS).
 
@@ -909,7 +909,6 @@ QA-gated route-pool task. QA evidence:
 | --- | --- | --- |
 | `damage` | Урон | `assets/sprites/ui/icons/derived/attr_damage.png` |
 | `magic_damage` | Магический урон | `assets/sprites/ui/icons/derived/attr_magic_damage.png` |
-| `sound_wave_damage` | Урон звуковой волны | `assets/sprites/ui/icons/derived/attr_sound_wave_damage.png` |
 | `attack_speed` | Скорость атаки | `assets/sprites/ui/icons/derived/attr_attack_speed.png` |
 | `crit_chance` | Шанс крита | `assets/sprites/ui/icons/derived/attr_crit_chance.png` |
 | `crit_damage_multiplier` | Множитель крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
@@ -1189,7 +1188,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.

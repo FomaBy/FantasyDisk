@@ -81,12 +81,13 @@
   | Физический | `physical` | `Color(1.0, 0.84, 0.42, 1.0)` (золотой) | melee, снаряды, добивания/осколки |
   | Магический | `magic` | `Color(0.68, 0.46, 1.0, 1.0)` (фиолетовый) | beam/AoE/curse мага, элементалист |
   | Периодический (DoT) | `dot` | `Color(0.46, 1.0, 0.42, 1.0)` (зелёный) | тики оружейного DoT и статус-эффектов |
-  | Звуковой | `sound` | `Color(0.30, 0.86, 1.0, 1.0)` (голубой) | гитарист (sound_wave/pulse/amp), друид |
   | Чистый | `true` | `Color(1.0, 0.96, 0.82, 1.0)` (тёплый белый) | нетипизированный/истинный урон (дефолт) |
 
 - Канал попадания оружия определяется его `damage_parameter` (см.
-  `progression_data_weapons.gd`): `magic_damage` → `magic`, `sound_wave_damage` →
-  `sound`, прочее (`damage`) → `physical`. Маппинг — `class_weapon._weapon_damage_type()`;
+  `progression_data_weapons.gd`): `magic_damage` → `magic`, прочее (`damage`) →
+  `physical`. Историческое: до SCRUM-898 существовал звуковой канал `sound`
+  (`sound_wave_damage`, голубой) — удалён, оружия Гитариста/Друида бьют магией.
+  Маппинг — `class_weapon._weapon_damage_type()`;
   DoT-тики (`_damage_enemy_with_dot` и тик `status_effects`) проставляют `dot` в точке
   тика. Берсерк-melee типизирует `physical` напрямую.
 - Крит ПЕРЕБИВАЕТ цвет типа красным `Color(1.0, 0.24, 0.16, 1.0)` — ожидаемое

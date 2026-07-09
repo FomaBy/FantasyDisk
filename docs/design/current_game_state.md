@@ -1279,7 +1279,6 @@ SCRUM-756 (2026-07-01) заменил только `assets/sprites/effects/vfx_w
 Производные параметры:
 - `damage`
 - `magic_damage`
-- `sound_wave_damage`
 - `attack_speed`
 - `crit_chance`
 - `crit_damage_multiplier`

@@ -1,3 +1,5 @@
+> Историческая справка: упоминания `sound_wave_damage` в этом документе описывают состояние ДО SCRUM-898 (2026-07-10). Звуковая ось урона удалена; оружия Гитариста/Друида бьют магией (`magic_damage`).
+
 | Category | Asset | Size | Status note |
 | --- | --- | --- | --- |
 | audit_characters_active | `assets/sprites/characters/assassin.png` | 512x512 RGBA | import ok |
