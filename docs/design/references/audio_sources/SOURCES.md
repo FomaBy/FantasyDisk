@@ -90,3 +90,8 @@ SFX: иерархия групп через TP-потолки — hits/праз�
 (короткие транзиенты физически не достигают LUFS-таргетов §6 при заданных
 потолках — выравнивание внутри группы по пикам, отклонение зафиксировано).
 Полный лог: tools/audio_master.py --manifest tools/audio_master_manifest.json.
+
+
+## SCRUM-1018 loop re-edit (2026-07-10)
+
+- `music_elite_duel_300.ogg`: re-edited as seamless loop — концертный фейд-аут и 3.95s тишины срезаны (78.92s → 69.40s), equal-power кроссфейд 0.4s хвоста в голову, шов replaced-gap 0.0044 FS, LUFS -16.01, пик -2.99 dBFS. Исходник/лицензия без изменений (RandomMind, CC0).
