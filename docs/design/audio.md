@@ -1,15 +1,18 @@
 # Аудио FantasyDisk
 
-Обновлено: 2026-07-09 (SCRUM-966/967 — новый бардовский пак: 10 тем + 3 стингера,
-15 органических SFX). Предыдущая ревизия: 2026-06-13 (SCRUM-154).
+Обновлено: 2026-07-10 (SCRUM-968 — пак подключён в рантайм: `MUSIC_META`,
+ротация боевых тем, round-timed outro, стингеры, `set_sfx_loop`; легаси
+wav/mp3 удалены). Предыдущие ревизии: 2026-07-09 (SCRUM-966/967 — бардовский
+пак), 2026-06-13 (SCRUM-154).
 
-## Новый пак (SCRUM-966 музыка / SCRUM-967 SFX)
+## Текущий пак (SCRUM-966 музыка / SCRUM-967 SFX / SCRUM-968 интеграция)
 
 Файлы: `assets/audio/music/*.ogg` (13) и `assets/audio/sfx/*.ogg` (15) по спеке
 `docs/design/systems/audio.md` (§2/§5/§7). Формат: OGG Vorbis 44.1 kHz
-(музыка стерео q≈6, SFX моно q≈4). **Подключение кодом — SCRUM-968**
-(`MUSIC_META` c loop_offset, ротация, стингеры, `set_sfx_loop`); до него в
-рантайме играют легаси-файлы ниже.
+(музыка стерео q≈6, SFX моно q≈4). Подключение — `scripts/audio_manager.gd`:
+`MUSIC_META` (loop/loop_offset проставляются кодом на загруженном
+`AudioStreamOggVorbis`, .import не правится), shuffle-bag ротация боя,
+`play_combat_music`/`begin_music_outro`/`play_music_stinger`/`set_sfx_loop`.
 
 Полная таблица источников/лицензий/правок каждого файла:
 `docs/design/references/audio_sources/SOURCES.md`. Сводка:
@@ -22,8 +25,10 @@
 | Стингеры | music_sting_victory, music_sting_victory_epic, music_sting_defeat | RandomMind (Victory/Defeat Theme) | CC0 |
 | SFX (15 id) | sfx_hit, sfx_hit_magic, sfx_hit_dot, sfx_player_hit, sfx_dodge, sfx_pickup_xp, sfx_pickup_money, sfx_level_up, sfx_purchase, sfx_ui_click, sfx_ui_back, sfx_ui_error, sfx_artifact_reveal, sfx_boss_phase, sfx_low_hp_pulse | Kenney (Impact Sounds, RPG Audio), artisticdude (RPG Sound Pack), bart (Heartbeat), qubodup (Ghost breath), AntumDeluge (Fire Crackling) + вырезки RandomMind/MacLeod | CC0 (+CC BY 4.0 у 2 вырезок) |
 
-**CC BY-атрибуции обязательны** — блок для credits в SOURCES.md (6 треков
-Kevin MacLeod, incompetech.com, CC BY 4.0). Вносится в экран «Об игре» в SCRUM-968+.
+**CC BY-атрибуции обязательны** — канонический player-facing файл
+`docs/CREDITS.md` (6 треков Kevin MacLeod, incompetech.com, CC BY 4.0; источник
+блока — SOURCES.md). Игровой экран «Об игре/Благодарности» — хвост
+`docs/tasks/SCRUM-968_ui_screens_tail.md` (ui_screens.gd был залочен).
 
 ### Нормализация и лупы (замеры 2026-07-09)
 
@@ -56,24 +61,27 @@ Kevin MacLeod, incompetech.com, CC BY 4.0). Вносится в экран «О�
 - Тональная сверка соседних треков (меню→карта→магазин, §1) — за плейтестом:
   программная оценка лада не выполнялась.
 
-## Легаси (до SCRUM-968, играет в рантайме сейчас)
+## Легаси (удалено в SCRUM-968)
 
-| Слот | Файл | Трек | Автор | Лицензия | Источник | Луп |
-| --- | --- | --- | --- | --- | --- | --- |
-| Меню/мета | `assets/audio/music_menu_tavern.wav` | Medieval: The Old Tower Inn | RandomMind | CC0 | https://opengameart.org/content/medieval-the-old-tower-inn | Авторский loop-WAV; шов дополнительно сглажен микро-фейдом 23мс (скачок на стыке 9748 -> 0 сэмплов) |
-| Бой | `assets/audio/music_combat_minstrel.wav` | Medieval: Minstrel Dance | RandomMind | CC0 | https://opengameart.org/content/medieval-minstrel-dance | Авторский loop-WAV (скачок на стыке 1436 — мягкий) |
-| Босс | `assets/audio/music_boss_battle.mp3` | Medieval: Battle | RandomMind | CC0 | https://opengameart.org/content/medieval-battle | AudioStreamMP3.loop = true (стык 2 сэмпла — бесшовно) |
+Плоские `assets/audio/*.wav|mp3` (3 трека RandomMind CC0 из SCRUM-154:
+The Old Tower Inn / Minstrel Dance / Battle + 6 процедурных SFX генератора
+`tools/generate_audio_assets.py`) удалены из репо после переключения всех id
+на ogg-пак: рантайм-ссылок не осталось (grep по scripts/scenes/tests), история
+— в git до коммита SCRUM-968. Прежние slot-id экранов живут как алиасы
+(`menu`/`route_map`/`shop` → записи `MUSIC_META`), легаси `combat`/`boss` в
+`play_music` роутятся в `play_combat_music` (AC «старые id замаплены»).
+`MUSIC_GAIN_DB` заменён полем `gain_db` в `MUSIC_META` (пак −16 LUFS → трим 0).
 
-Легаси-SFX: `assets/audio/sfx_*.wav` (см. `audio_manager.SFX_PATHS`).
-Нормализация легаси: RMS ~−17 dBFS через `MUSIC_GAIN_DB` (меню +2.8, бой −2.4,
-босс −1.4 дБ). После переключения id в SCRUM-968 легаси-файлы уходят в
-`git rm` + бэкап `build/cleanup_backup_*/audio/`.
-
-## Кроссфейд
+## Кроссфейд и round-timed playback
 
 `audio_manager.play_music`: при смене трека текущий уезжает на второй плеер и
 затухает (0.9с), новый нарастает с −28 дБ до целевой громкости. Без щелчков.
-Босс-бой включает слот `boss` (combat_director._start_combat).
+Бой: `combat_director._start_combat` → `play_combat_music(kind, длительность
+раунда)`; за 6 c (8 c у элиток/боссов) до конца таймера `main._process`
+запускает идемпотентный `begin_music_outro` (ease-out до −40 dB на
+PAUSABLE-якоре — фейд замирает вместе с паузой). Ранний конец боя (босс убит /
+смерть) — fast-outro 1.2 c; поверх тишины — стингер результата
+(`play_music_stinger`), затем экран/карта меняют трек штатным кроссфейдом.
 
 ## Проверка лупов
 

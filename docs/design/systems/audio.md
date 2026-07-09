@@ -1,19 +1,23 @@
 # Audio — направление звука и тайминг-спека
 
-Обновлено: 2026-07-09 (SCRUM-965 — финальная спека саунд-дизайна ДО генерации ассетов).
+Обновлено: 2026-07-10 (SCRUM-968 — интеграция ВЫПОЛНЕНА). Предыдущая ревизия:
+2026-07-09 (SCRUM-965 — спека саунд-дизайна до генерации ассетов).
 
-Этот документ — **источник истины по целевому аудио-направлению FantasyDisk** и фундамент
-для трёх последующих тикетов:
+Этот документ — **источник истины по аудио-направлению FantasyDisk**. Цепочка
+реализована полностью:
 
-- **SCRUM-966** — генерация/сорсинг 10 музыкальных тем (+ стингеры) по разделам
-  «Музыкальный пак» и «План генерации».
-- **SCRUM-967** — регенерация SFX-пака (тёплый органический звук) + low-HP cue по разделу «SFX-пак».
-- **SCRUM-968** — backend-интеграция: ротация боевой музыки, round-timed playback,
-  новые SFX id по разделам «Round-timed playback», «Ротация» и «Зависимости реализации».
+- **SCRUM-966** (готово) — 10 музыкальных тем + 3 стингера (`assets/audio/music/*.ogg`).
+- **SCRUM-967** (готово) — 15 органических SFX + low-HP cue (`assets/audio/sfx/*.ogg`).
+- **SCRUM-968** (готово) — backend-интеграция: `MUSIC_META`, shuffle-bag ротация §4,
+  round-timed playback §3 (outro/стингеры), новые SFX id §5, типизированные хиты,
+  low-HP луп. Вызовы внутри залоченного `ui_screens.gd` (purchase/ui_click/ui_back/
+  ui_error/artifact_reveal/credits-экран) отложены в
+  `docs/tasks/SCRUM-968_ui_screens_tail.md`.
 
-Текущая реализация (до 966–968) описана в конце, в разделе «Current state».
+Фактическая реализация описана в конце, в разделе «Current state».
 Snapshot полного состояния игры: `docs/design/current_game_state.md`. Канонические ID:
-`docs/design/content_registry.md`. Лицензии/источники треков: `docs/design/audio.md`.
+`docs/design/content_registry.md`. Лицензии/источники треков: `docs/design/audio.md`;
+player-facing атрибуции: `docs/CREDITS.md`.
 
 ---
 
@@ -374,48 +378,67 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
 
 ---
 
-## Current state — реализация ДО SCRUM-966..968
+## Current state — реализация ПОСЛЕ SCRUM-966..968
 
 Источник истины — autoload `scripts/audio_manager.gd` (`AudioManager`). Ниже — фактическое
-состояние на 2026-07-09 (описание из ревизии 2026-06-13 сохранено и уточнено).
+состояние на 2026-07-10 (SCRUM-968).
 
 ### Архитектура
 
 - `AudioManager` — autoload с `process_mode = PROCESS_MODE_ALWAYS` (звук идёт и на паузе).
 - В headless (`DisplayServer.get_name() == "headless"`, smoke-тесты) аудио полностью
-  отключается (`_disabled = true`): микшера нет, иначе остаются висячие
-  `AudioStreamPlayback` при выходе.
+  отключается (`_disabled = true`): все API, включая новые (play_music_timed,
+  play_combat_music, begin_music_outro, play_music_stinger, set_sfx_loop,
+  reset_combat_rotation), — no-op.
 - Шины создаются программно поверх дефолтного layout (в нём только `Master`): `Music` и
-  `SFX` добавляются в `_ensure_audio_buses` и шлются в `Master`.
+  `SFX` добавляются в `_ensure_audio_buses` и шлются в `Master`. Настройки громкости
+  (`apply_volume_settings`) без изменений.
 - При выходе/закрытии (`_exit_tree`, `NOTIFICATION_WM_CLOSE_REQUEST`,
-  `NOTIFICATION_PREDELETE`) стримы останавливаются и отвязываются (`_release_audio_refs`),
-  чтобы AudioServer не ругался «resources still in use at exit».
+  `NOTIFICATION_PREDELETE`) стримы останавливаются и отвязываются (`_release_audio_refs`,
+  включая стингер-плеер и loop-каналы), чтобы AudioServer не ругался
+  «resources still in use at exit».
 
 ### SFX
 
 - Пул из `SFX_POOL_SIZE = 8` плееров `AudioStreamPlayer` на шине `SFX`, базовая громкость
   `SFX_VOLUME_DB = -4.0`.
 - `play_sfx(id)` берёт первый свободный плеер пула; если все заняты — звук пропускается.
-- Троттлинг: один и тот же `id` не чаще `SFX_MIN_REPEAT_INTERVAL = 0.05` c.
-- Текущие звуки (`SFX_PATHS`, плоские `assets/audio/sfx_*.wav`): `hit`, `player_hit`,
-  `dodge`, `pickup_xp`, `pickup_money`, `level_up`. Победный баннер и артефакт-награды
-  переиспользуют `level_up`; покупка, поражение, фазы босса, UI-клики и low-HP — беззвучны
-  (закрывается SCRUM-967/968).
+- Троттлинг: дефолт `SFX_MIN_REPEAT_INTERVAL = 0.05` c, пер-id `SFX_THROTTLE_OVERRIDES`
+  (`hit_dot` 0.12, `pickup_*` 0.06, `ui_error` 0.08).
+- 15 ogg-id (`SFX_PATHS`, `assets/audio/sfx/sfx_*.ogg`): типизированные попадания
+  `hit`/`hit_magic`/`hit_dot` (маппинг `Enemy.hit_sfx_for_damage_type` по
+  `feedback.damage_type` в `enemy.take_damage` — единой точке урона; оси SCRUM-898:
+  physical/magic/dot/true), `player_hit`, `dodge`, `pickup_xp`, `pickup_money`,
+  `level_up`, `boss_phase` (boss.gd `_update_boss_phase`), `low_hp_pulse` (луп-канал
+  вне пула: `set_sfx_loop`, гистерезис в player.gd ВКЛ<30%/ВЫКЛ≥34% зеркалит виньетку,
+  fade 0.42/0.50 c; гаснет на смерти/конце боя). `purchase`, `ui_click`, `ui_back`,
+  `ui_error`, `artifact_reveal` — ассеты и id готовы, вызовы в залоченном
+  `ui_screens.gd` отложены (`docs/tasks/SCRUM-968_ui_screens_tail.md`).
 
 ### Музыка
 
-- Один основной плеер `_music_player` + второй `_music_player_fade` для кроссфейда
-  (`MUSIC_CROSSFADE_SEC = 0.9`), оба на шине `Music`, база `MUSIC_VOLUME_DB = -8.0`.
-- Треки (`MUSIC_PATHS`): `menu` (`music_menu_tavern.wav`, ~50 c),
-  `combat` (`music_combat_minstrel.wav`, ~56 c), `boss` (`music_boss_battle.mp3`).
-- Луп: WAV → `LOOP_FORWARD` (`loop_end` в кадрах с учётом каналов/битности, SCRUM-646),
-  MP3 → `loop = true`.
-- Источник (SCRUM-154): RandomMind, CC0 (OpenGameArt) — детали в `docs/design/audio.md`.
-- Нормализация: `MUSIC_GAIN_DB` (`menu +2.8`, `combat −2.4`, `boss −1.4` dB) к ~−17 dBFS RMS.
-- Переключение: меню/карта — `ui_screens.gd`/`route_map_screen.gd` → `_play_music("menu")`;
-  бой — `combat_director.gd` → `_play_music("boss" if is_boss_fight else "combat")`;
-  роутинг через `main.gd`. Магазин/костёр/событие наследуют `menu`; музыка НЕ знает о
-  таймере раунда и продолжает луп после конца боя до смены экрана.
+- Плееры: `_music_player` + `_music_player_fade` (кроссфейд `MUSIC_CROSSFADE_SEC = 0.9`)
+  + `_music_stinger_player` (стингеры поверх затухающего трека), все на шине `Music`,
+  база `MUSIC_VOLUME_DB = -8.0`.
+- `MUSIC_META` (13 ogg): path, loop, `loop_offset` (интро в секундах — проставляется
+  кодом на `AudioStreamOggVorbis`, .import не правится), `gain_db` (новый пак −16 LUFS →
+  0). Slot-алиасы `menu`/`route_map`/`shop`; легаси `combat`/`boss` в `play_music`
+  роутятся в `play_combat_music`.
+- Ротация §4 реализована: shuffle-bag 4 обычных тем, без повтора подряд (в т.ч. через
+  границу мешка и после `reset_combat_rotation` на старте забега —
+  route_map_screen._show_battle_map при act 1/stage 0), мягкий биомный приоритет акта,
+  session-only (не в autosave).
+- Round-timed playback §3 реализован: `combat_director._start_combat` →
+  `play_combat_music(kind, round_time_left)` (kind: боссы актов 1–2 → boss, акт 3 и
+  секретный → final, элитка → elite, иначе battle); `main._process` при
+  `round_time_left <= music_outro_window()` (6 c бой / 8 c элитка+боссы) →
+  идемпотентный `begin_music_outro(round_time_left)` — ease-out до −40 dB на
+  PAUSABLE-якоре (замирает с паузой); ранний конец (`_end_combat`) → fast-outro 1.2 c +
+  стингер (`music_sting_victory`/`_victory_epic`/`_defeat`).
+- Экраны: меню — `ui_screens.gd` (alias `menu`), карта/старт забега —
+  `route_map_screen.gd` (`route_map`), safe-узлы (shop/rest/event/hazard/altar/chest) —
+  `_open_route_node` (`shop`), возврат на карту — снова `route_map`.
+- Источники: `docs/design/audio.md`, SOURCES.md; CC BY-атрибуции — `docs/CREDITS.md`.
 
 ### Настройки громкости
 
