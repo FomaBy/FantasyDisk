@@ -87,7 +87,7 @@ const ARTIFACTS := [
 		2: {"description": "+4 Интеллект.", "stats": {"intelligence": 4.0}},
 		3: {"description": "+7 Интеллект.", "stats": {"intelligence": 7.0}},
 	}},
-	{"id": "hawk_lens", "title": "Линза ястреба", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
+	{"id": "hawk_lens", "title": "Линза охоты", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+2 Восприятие.", "stats": {"perception": 2.0},
 	 "tiers": {
 		1: {"description": "+2 Восприятие.", "stats": {"perception": 2.0}},
@@ -144,7 +144,7 @@ const ARTIFACTS := [
 		2: {"description": "+25 max HP.", "mods": {"max_health_flat": 25.0}},
 		3: {"description": "+40 max HP.", "mods": {"max_health_flat": 40.0}},
 	}},
-	{"id": "fast_boots", "title": "Быстрые сапоги", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
+	{"id": "fast_boots", "title": "Легкие сапоги", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% скорости движения.", "mods": {"move_speed_multiplier": 1.10},
 	 "tiers": {
 		1: {"description": "+10% скорости движения.", "mods": {"move_speed_multiplier": 1.10}},
@@ -158,7 +158,7 @@ const ARTIFACTS := [
 		2: {"description": "+18% ширины сектора.", "mods": {"sector_multiplier": 1.18}},
 		3: {"description": "+30% ширины сектора.", "mods": {"sector_multiplier": 1.30}},
 	}},
-	{"id": "magnetic_buckle", "title": "Магнитная пряжка", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
+	{"id": "magnetic_buckle", "title": "Магнитный талисман", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+35 радиуса подбора.", "mods": {"pickup_radius_flat": 35.0},
 	 "tiers": {
 		1: {"description": "+35 радиуса подбора.", "mods": {"pickup_radius_flat": 35.0}},
@@ -293,7 +293,7 @@ const ARTIFACTS := [
 	}},
 	# --- Сохранённые универсалы (37, artifact_system_matrix §3 — значения без
 	# изменений; SCRUM-963: последние англ. title переведены, id стабильны) ---
-	{"id": "red_whetstone", "title": "Красный оселок", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Сила, +3 Ловкость.", "stats": {"strength": 3.0, "agility": 3.0}},
+	{"id": "red_whetstone", "title": "Точильный камень", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Сила, +3 Ловкость.", "stats": {"strength": 3.0, "agility": 3.0}},
 	{"id": "star_compass", "title": "Звёздный компас", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Восприятие, +3 Знание.", "stats": {"perception": 3.0, "knowledge": 3.0}},
 	{"id": "living_root", "title": "Живой корень", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Выносливость, +3 Энергия.", "stats": {"endurance": 3.0, "energy": 3.0}},
 	{"id": "captains_coin", "title": "Монета капитана", "tier": 1, "cost": 30, "class_affinity": [], "description": "+3 Лидерство, +3 Сила.", "stats": {"leadership": 3.0, "strength": 3.0}},
@@ -322,7 +322,7 @@ const ARTIFACTS := [
 	# mods (НЕ *_multiplier), раскладывается _apply_reward_mods как обычно. Пометка «⚡ Активный»
 	# вшита в description (data-driven, без правок карточки). Значения консервативны и ситуативны:
 	# лечение/щит/мув-бафф/ситуативный бурст — НЕ постоянный +damage, чтобы не смещать DPS/TTD-гейты.
-	{"id": "field_kit", "title": "Полевой набор", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_room_clear", "description": "⚡ Активный — при зачистке боя: лечит 5% максимального здоровья.", "mods": {"room_clear_heal_percent": 0.05}},
+	{"id": "field_kit", "title": "Полевой бинт", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_room_clear", "description": "⚡ Активный — при зачистке боя: лечит 5% максимального здоровья.", "mods": {"room_clear_heal_percent": 0.05}},
 	{"id": "vital_siphon", "title": "Живой сифон", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: возвращает 1% максимального здоровья.", "mods": {"kill_heal_percent": 0.01}},
 	{"id": "powder_charge", "title": "Пороховой заряд", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: 10% шанс взрыва по области у трупа (70% урона).", "mods": {"kill_explosion_chance": 0.10}},
 	{"id": "bulwark_echo", "title": "Эхо бастиона", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — получив удар: 16% шанс выпустить отталкивающую волну рядом. Перезаряд 3с.", "mods": {"take_hit_pulse_chance": 0.16}},

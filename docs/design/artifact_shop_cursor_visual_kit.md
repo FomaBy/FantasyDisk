@@ -8,6 +8,10 @@ Back-end audit follow-up resolved 2026-06-11: фактические PNG из р
 
 User feedback rework 2026-06-12: artifact icons заменены как `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items. Это не пентаграммы, не плоские UI-symbols и не simple icon set: один красивый finished painted предмет на каждый active artifact ID, без встроенной UI-рамки, пьедесталов, фона, осколков, частиц и текста. Предметы сохраняют readable fantasy lighting/materials и привязаны к названию/эффекту из `ProgressionData.ARTIFACTS`. Предыдущие generated/vector-like, glossy, concept-sheet tile и per-item pictogram направления superseded. Shop-only icons and frames keep the richer FantasyDisk fantasy-medallion treatment. Cursor variants were reworked in SCRUM-223 into a dark steel dragon/clawed fire pointer.
 
+Naming contract SCRUM-956: artifact ids stay stable; `quickstring` is «Быстрая
+струна». «Масло темпа» and «Пыльный артефакт» belong only to
+`shop_weapon_cooldown` and `shop_artifact`; do not invent a `dusty_artifact` id.
+
 ## Summary
 
 - Artifact icons: `154` unique PNG, `256x256`, transparent realistic D&D/tabletop fantasy raster magic item pictures (SCRUM-960/961/962: 32 семьи + 37 сохранённых + 85 классовых; 17 легаси-иконок удалены).
@@ -29,12 +33,12 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `warrior_charm` | Оберег воина | `assets/sprites/ui/icons/artifacts/artifact_warrior_charm.png` |
 | `fox_boots` | Лисьи сапоги | `assets/sprites/ui/icons/artifacts/artifact_fox_boots.png` |
 | `glass_orb` | Стеклянная сфера | `assets/sprites/ui/icons/artifacts/artifact_glass_orb.png` |
-| `hawk_lens` | Линза ястреба | `assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png` |
+| `hawk_lens` | Линза охоты | `assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png` |
 | `ember_core` | Тлеющее ядро | `assets/sprites/ui/icons/artifacts/artifact_ember_core.png` |
 | `old_codex` | Ветхий кодекс | `assets/sprites/ui/icons/artifacts/artifact_old_codex.png` |
 | `stone_heart` | Каменное сердце | `assets/sprites/ui/icons/artifacts/artifact_stone_heart.png` |
 | `banner_seed` | Семя знамени | `assets/sprites/ui/icons/artifacts/artifact_banner_seed.png` |
-| `red_whetstone` | Красный оселок | `assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png` |
+| `red_whetstone` | Точильный камень | `assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png` |
 | `star_compass` | Звёздный компас | `assets/sprites/ui/icons/artifacts/artifact_star_compass.png` |
 | `living_root` | Живой корень | `assets/sprites/ui/icons/artifacts/artifact_living_root.png` |
 | `captains_coin` | Монета капитана | `assets/sprites/ui/icons/artifacts/artifact_captains_coin.png` |
@@ -44,8 +48,8 @@ User feedback rework 2026-06-12: artifact icons заменены как `256x256
 | `wide_sigil` | Дальняя печать | `assets/sprites/ui/icons/artifacts/artifact_wide_sigil.png` |
 | `summoners_bell` | Колокольчик призывателя | `assets/sprites/ui/icons/artifacts/artifact_summoners_bell.png` |
 | `sturdy_amulet` | Крепкий амулет | `assets/sprites/ui/icons/artifacts/artifact_sturdy_amulet.png` |
-| `fast_boots` | Быстрые сапоги | `assets/sprites/ui/icons/artifacts/artifact_fast_boots.png` |
-| `magnetic_buckle` | Магнитная пряжка | `assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png` |
+| `fast_boots` | Легкие сапоги | `assets/sprites/ui/icons/artifacts/artifact_fast_boots.png` |
+| `magnetic_buckle` | Магнитный талисман | `assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png` |
 | `silver_coin` | Серебряная монета | `assets/sprites/ui/icons/artifacts/artifact_silver_coin.png` |
 | `survival_manual` | Учебник выживания | `assets/sprites/ui/icons/artifacts/artifact_survival_manual.png` |
 | `cracked_shield` | Треснувший щит | `assets/sprites/ui/icons/artifacts/artifact_cracked_shield.png` |
@@ -95,7 +99,7 @@ copper_string, broken_pick, loud_amp, bass_cable, split_core) и swift_ink уд�
 
 | Artifact ID | Name | Icon path |
 | --- | --- | --- |
-| `field_kit` | Полевой набор | `assets/sprites/ui/icons/artifacts/artifact_field_kit.png` |
+| `field_kit` | Полевой бинт | `assets/sprites/ui/icons/artifacts/artifact_field_kit.png` |
 | `vital_siphon` | Живой сифон | `assets/sprites/ui/icons/artifacts/artifact_vital_siphon.png` |
 | `powder_charge` | Пороховой заряд | `assets/sprites/ui/icons/artifacts/artifact_powder_charge.png` |
 | `bulwark_echo` | Эхо бастиона | `assets/sprites/ui/icons/artifacts/artifact_bulwark_echo.png` |

@@ -13,6 +13,18 @@ const CodexData := preload("res://scripts/codex_data.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const VALID_MONSTER_KINDS := ["standard", "elite", "mini_elite", "boss"]
+const SCRUM_956_ARTIFACT_TITLES := {
+	"red_whetstone": "Точильный камень",
+	"field_kit": "Полевой бинт",
+	"magnetic_buckle": "Магнитный талисман",
+	"fast_boots": "Легкие сапоги",
+	"quickstring": "Быстрая струна",
+	"hawk_lens": "Линза охоты",
+}
+const SCRUM_956_SHOP_TITLES := {
+	"shop_weapon_cooldown": "Масло темпа",
+	"shop_artifact": "Пыльный артефакт",
+}
 
 
 func _initialize() -> void:
@@ -118,6 +130,7 @@ func _check_artifacts(errors: Array) -> void:
 		errors.append("artifacts() подозрительно мал (%d)" % artifacts.size())
 	var seen := {}
 	var sources := {}
+	var projected_titles := {}
 	for entry in artifacts:
 		var art: Dictionary = entry
 		var aid := str(art.get("id", ""))
@@ -126,12 +139,14 @@ func _check_artifacts(errors: Array) -> void:
 			continue
 		seen[aid] = true
 		sources[str(art.get("source", ""))] = true
-		if not _player_text_ok(str(art.get("title", "")), aid):
+		var title := str(art.get("title", ""))
+		projected_titles[aid] = title
+		if not _player_text_ok(title, aid):
 			errors.append("артефакт '%s': негодный title" % aid)
 		# SCRUM-963: player-facing титулы локализованы — латиница в title запрещена
 		# (id остаются латиницей, но игроку не показываются).
-		if _has_latin(str(art.get("title", ""))):
-			errors.append("артефакт '%s': латиница в title '%s'" % [aid, str(art.get("title", ""))])
+		if _has_latin(title):
+			errors.append("артефакт '%s': латиница в title '%s'" % [aid, title])
 		# SCRUM-963: у каждого финального артефакта — СВОЯ иконка artifact_<id>.png;
 		# fallback-иконка (buff_power) допустима только как dev-страховка кода.
 		if str(art.get("source", "")) == "artifact":
@@ -142,6 +157,16 @@ func _check_artifacts(errors: Array) -> void:
 	for src in ["artifact", "shop"]:
 		if not sources.has(src):
 			errors.append("в artifacts() нет ни одной записи source '%s'" % src)
+	for artifact_id in SCRUM_956_ARTIFACT_TITLES:
+		var expected_title := str(SCRUM_956_ARTIFACT_TITLES[artifact_id])
+		if str(projected_titles.get(artifact_id, "")) != expected_title:
+			errors.append("SCRUM-956: '%s' должен называться '%s', получено '%s'" % [artifact_id, expected_title, str(projected_titles.get(artifact_id, "<нет>"))])
+	for shop_id in SCRUM_956_SHOP_TITLES:
+		var expected_shop_title := str(SCRUM_956_SHOP_TITLES[shop_id])
+		if str(projected_titles.get(shop_id, "")) != expected_shop_title:
+			errors.append("SCRUM-956: '%s' должен называться '%s', получено '%s'" % [shop_id, expected_shop_title, str(projected_titles.get(shop_id, "<нет>"))])
+	if projected_titles.has("dusty_artifact"):
+		errors.append("SCRUM-956: выдуманный id 'dusty_artifact' запрещён; Пыльный артефакт = shop_artifact")
 
 
 func _has_latin(text: String) -> bool:

@@ -120,7 +120,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `warrior_charm` | Оберег воина | `strength` | warrior_charm (переимен. с Warrior Charm) | REUSE |
 | `fox_boots` | Лисьи сапоги | `agility` | fox_boots | REUSE |
 | `glass_orb` | Стеклянная сфера | `intelligence` | glass_orb | REUSE |
-| `hawk_lens` | Линза ястреба | `perception` | hawk_lens | REUSE |
+| `hawk_lens` | Линза охоты | `perception` | hawk_lens | REUSE |
 | `ember_core` | Тлеющее ядро | `energy` | ember_core | REUSE |
 | `old_codex` | Ветхий кодекс | `knowledge` | old_codex | REUSE |
 | `stone_heart` | Каменное сердце | `endurance` | stone_heart | REUSE |
@@ -135,9 +135,9 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `splinter_gloves` | Перчатки осколков | damage | `damage_multiplier` | 1.10 / 1.18 / 1.30 | splinter_gloves | REUSE |
 | `quickstring` | Быстрая струна | attack_speed | `attack_speed_multiplier` | 1.10 / 1.18 / 1.30 | quickstring | REUSE |
 | `sturdy_amulet` | Крепкий амулет | max_health | `max_health_flat` | +15 / +25 / +40 | sturdy_amulet | REUSE |
-| `fast_boots` | Быстрые сапоги | move_speed | `move_speed_multiplier` | 1.10 / 1.18 / 1.30 | fast_boots (+поглощён swift_ink) | REUSE |
+| `fast_boots` | Легкие сапоги | move_speed | `move_speed_multiplier` | 1.10 / 1.18 / 1.30 | fast_boots (+поглощён swift_ink) | REUSE |
 | `battle_fan` | Боевой веер | aoe_radius | `sector_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: ornate war fan, blades spread wide, steel ribs |
-| `magnetic_buckle` | Магнитная пряжка | pickup_radius | `pickup_radius_flat` | +35 / +55 / +90 | magnetic_buckle | REUSE |
+| `magnetic_buckle` | Магнитный талисман | pickup_radius | `pickup_radius_flat` | +35 / +55 / +90 | magnetic_buckle | REUSE |
 | `iron_scale` | Железная чешуя | defense | `defense_flat` | +0.10 / +0.18 / +0.30 | — | NEW: single heavy iron scale plate, riveted edge |
 | `arcane_prism` | Чародейская призма | magic_focus | `magic_damage_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: floating crystal prism refracting violet arcane light |
 | `ram_horn` | Рог тарана | knockback | `knockback_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: curled bronze ram horn, battering ring mount |
@@ -165,7 +165,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 Записи, id, значения и иконки не трогаются (все Icon = REUSE).
 
-**Двойные статы (4, т1):** `red_whetstone` (+3 Сила/+3 Ловкость), `star_compass` (+3 Восприятие/+3 Знание), `living_root` (+3 Выносливость/+3 Энергия), `captains_coin` (+3 Лидерство/+3 Сила). SCRUM-963 даёт им русские title (Красный оселок, Звёздный компас, Живой корень, Монета капитана) — id стабильны.
+**Двойные статы (4, т1):** `red_whetstone` (+3 Сила/+3 Ловкость), `star_compass` (+3 Восприятие/+3 Знание), `living_root` (+3 Выносливость/+3 Энергия), `captains_coin` (+3 Лидерство/+3 Сила). Русские title: Точильный камень, Звёздный компас, Живой корень, Монета капитана; id стабильны.
 
 **Проклятья / трейдоффы (12, т2):** `heavy_totem` (+62% HP / −5% скорости — переезжает в эту группу как трейдофф), `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`.
 
