@@ -118,5 +118,9 @@ Final tested content head was `d62eb642`; the later fast-forward to
 `origin/dev` `08905e3b` contains only audio and task/Jira evidence changes
 outside SCRUM-956 data/UI/test scope.
 
-Disk cleanup: the disposable QA worktree and generated `.godot` cache are
-removed after the QA evidence and scoped Jira sync commits are pushed.
+Git/Jira: QA evidence commit `09a61aa7` was pushed to `origin/dev`; live Jira
+was moved from `Контроль качества` to `Готово` after the PASS verdict.
+
+Disk cleanup: removed the generated `.godot` cache (`445 MB`) and Python
+caches. The now-clean disposable QA worktree and local branch are removed after
+the scoped Jira-map sync commit is pushed.

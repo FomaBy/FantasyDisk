@@ -4131,7 +4131,7 @@
  "SCRUM-956_artifact_localization.md": {
   "key": "SCRUM-956",
   "status": "Контроль качества",
-  "desc_hash": "8d8d816b50dc6b14966c35b0801a5a7f"
+  "desc_hash": "ad9b41dea8e1e754c2d59fb82882f3a4"
  },
  "SCRUM-957_qa.md": {
   "key": "SCRUM-957",
@@ -4157,5 +4157,10 @@
   "key": "SCRUM-938",
   "status": "Готово",
   "desc_hash": "406c3ba3daa96d34f638a0801fe7a16d"
+ },
+ "SCRUM-956_qa.md": {
+  "key": "SCRUM-956",
+  "status": "Готово",
+  "desc_hash": "d311c5c9da69fb71c4aa8b145100dfe2"
  }
 }
