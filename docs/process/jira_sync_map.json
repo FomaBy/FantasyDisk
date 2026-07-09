@@ -4165,8 +4165,8 @@
  },
  "SCRUM-947_qa.md": {
   "key": "SCRUM-947",
-  "status": "Контроль качества",
-  "desc_hash": "c477f919f579741a89cf0fb5d7a2b052"
+  "status": "Готово",
+  "desc_hash": "628e6a6a61910354773ad238d16dcf05"
  },
  "SCRUM-948_qa.md": {
   "key": "SCRUM-948",
@@ -4192,5 +4192,10 @@
   "key": "SCRUM-1017",
   "status": "Контроль качества",
   "desc_hash": "9a73b79dfffab8db9addff8bb135ea79"
+ },
+ "SCRUM-1019_qa.md": {
+  "key": "SCRUM-1019",
+  "status": "Готово",
+  "desc_hash": "9fde536673cdda9c79403f8b7e1a73ae"
  }
 }
