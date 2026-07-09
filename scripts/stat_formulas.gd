@@ -194,7 +194,7 @@ const STAT_DEFINITIONS := {
 		"name_en": "Move Speed",
 		"type": "derived",
 		"description": "Скорость перемещения персонажа.",
-		"formula": "(245 + Agility * 5.5) * move speed multiplier.",
+		"formula": "(282 + Agility * 6.2) * move speed multiplier.",
 		"influences": "Agility и награды на Move Speed.",
 		"format": "units",
 	},
@@ -496,12 +496,6 @@ static func attack_speed(stats: Dictionary, default_hits_per_second: float, addi
 static func dodge(stats: Dictionary, default_dodge: float, addition := 0.0) -> float:
 	var raw := default_dodge * float(stats.get(AGILITY, 0.0)) / 10.0 + addition
 	return clamp(raw / (1.0 + maxf(raw, 0.0) * 1.15), 0.0, 0.55)
-
-
-static func move_speed(default_speed: float, stats: Dictionary, addition := 0.0) -> float:
-	# SCRUM-661: вклад Agility масштабируется коэффициентом 5.5 согласно
-	# задокументированной формуле STAT_DEFINITIONS['move_speed'] (:197).
-	return default_speed + addition + float(stats.get(AGILITY, 0.0)) * 5.5
 
 
 static func health_points(stats: Dictionary, default_health: float, addition := 0.0) -> float:

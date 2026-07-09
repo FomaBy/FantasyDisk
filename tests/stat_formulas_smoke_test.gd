@@ -89,8 +89,14 @@ func _check_formulas(errors: Array) -> void:
 	_expect(errors, "crit_damage", SF.crit_damage_multiplier(stats, 2.0, 0.0), 1.575)     # 1.30+5*0.055
 	_expect(errors, "attack_speed", SF.attack_speed(stats, 1.0, 0.0), 0.1962)             # 1*3*(Agi+Energy/Per/End support)/100
 	_expect(errors, "dodge", SF.dodge(stats, 0.1, 0.0), 0.0473)                           # 0.1*5/10 with diminishing returns
-	_expect(errors, "move_speed", SF.move_speed(300.0, stats, 0.0), 327.5)                # SCRUM-661: 300+5*5.5
-	_expect(errors, "move_speed_doc", SF.move_speed(245.0, {SF.AGILITY: 10.0}, 0.0), 300.0)  # SCRUM-661: 245+10*5.5 по doc-формуле
+	# SCRUM-877: мёртвый helper SF.move_speed() удалён (реальная формула живёт в
+	# progression_data.gd::derived_stats). Контракт: отображаемая строка формулы
+	# обязана называть реальные константы 282 и 6.2, а не легаси 245/5.5.
+	var move_speed_formula := str(SF.STAT_DEFINITIONS.get("move_speed", {}).get("formula", ""))
+	if not (move_speed_formula.contains("282") and move_speed_formula.contains("6.2")):
+		errors.append("move_speed: отображаемая формула '%s' не совпадает с реальной (282 + Agility * 6.2)" % move_speed_formula)
+	if move_speed_formula.contains("245") or move_speed_formula.contains("5.5"):
+		errors.append("move_speed: отображаемая формула '%s' содержит легаси-константы 245/5.5" % move_speed_formula)
 	_expect(errors, "health_points", SF.health_points(stats, 100.0, 0.0), 200.0)         # 100*8/4
 	_expect(errors, "attack_range", SF.attack_range(240.0, 10.0), 250.0)                  # 240+10
 
