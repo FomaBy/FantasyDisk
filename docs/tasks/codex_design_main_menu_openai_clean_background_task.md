@@ -3,9 +3,9 @@
 Статус: done
 Версия: 0.2.1
 Контур: Codex
-Owner: Design/Codex current thread
-Thread: current Codex user chat
-Locked paths: assets/backgrounds/main_menu_epic_battle_v3.png; docs/design/mockups/main_menu_openai_clean_background/; docs/design/references/main_menu_openai_clean_background/; docs/design/previews/main_menu_openai_clean_background_preview.png; docs/design/systems/menus_ui.md; docs/design/systems/visual_style_assets.md; docs/design/current_game_state.md
+Owner: Design/Codex reconciliation
+Thread: /root/audit_repo
+Locked paths: `docs/tasks/codex_design_main_menu_openai_clean_background_task.md`; `docs/process/jira_sync_map.json` only if scoped sync changes it. Runtime PNG, preview/spec, design docs, UI and code are read-only verification.
 Jira: SCRUM-1001
 
 ## Контекст
@@ -123,3 +123,33 @@ Done 2026-07-09.
 
 Disk cleanup: none created (no disposable worktree/clone; Godot import/cache
 sidecars were not staged).
+
+## Completion Reconciliation 2026-07-09
+
+- Verified the full implementation chain `4709d8b4` -> `670a9570` ->
+  `423ba3ec` -> `1d59c23d` -> `47aef079` -> `b979bbba`; every commit is an
+  ancestor of `origin/dev`.
+- Visually inspected the active runtime PNG and safe-zone overlay. The party,
+  bosses and readable front/3/4 guitarist remain center-right/right; the title
+  and six-button left zones stay dark, calm and free of key silhouettes. No
+  baked UI/text/logo/label/watermark or distracting orange speck noise is
+  visible in the content-safe zones.
+- Runtime, preview and final reimagined source are byte-identical
+  (`SHA-256 160e3bc07f01a0120833aba882426f89dc72b94023d6e7de9f87e4f4bfec023e`).
+  All are `2560x1440`, 8-bit RGB PNGs with no alpha channel or textual metadata.
+- Pixel sanity: left safe-zone luminance `mean=16.57`, `std=2.86`, edge mean
+  `0.58`, versus right-art `mean=33.43`, `std=27.76`, edge mean `11.13`;
+  title/actions warm-pixel ratio is `0`, with zero tiny warm components.
+- Confirmed the current-character/boss-only reference board, manifest and
+  from-scratch prompt are tracked and explicitly exclude previous screens and
+  backgrounds as generation inputs.
+
+### Reconciliation Checks
+
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/ui_no_overlap_matrix_test.gd`.
+- PASS: `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`.
+- The known headless dummy-render `texture_2d_get` warning occurred in the
+  weapon-select screenshot helper; both affected suites exited `0` and passed.
+- Runtime image/UI/code/spec/previews/design docs were not modified during
+  reconciliation. Independent QA remains required; no self-QA verdict added.
