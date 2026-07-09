@@ -1,6 +1,6 @@
 # SCRUM-956 — Russian-only artifact names
 
-Статус: review  
+Статус: done
 Версия: 0.2.1  
 Контур: Codex  
 Owner: Backend/Content Codex `/root`  

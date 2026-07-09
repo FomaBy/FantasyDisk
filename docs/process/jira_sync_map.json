@@ -4127,5 +4127,10 @@
   "key": "SCRUM-999",
   "status": "Готово",
   "desc_hash": "20a39abec66000e875eded04ed990ccd"
+ },
+ "SCRUM-956_artifact_localization.md": {
+  "key": "SCRUM-956",
+  "status": "Контроль качества",
+  "desc_hash": "8d8d816b50dc6b14966c35b0801a5a7f"
  }
 }
