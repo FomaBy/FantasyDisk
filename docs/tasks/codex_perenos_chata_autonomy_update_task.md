@@ -55,3 +55,16 @@ Locked paths: `skills/codex/perenos-chata/SKILL.md`, `skills/codex/perenos-chata
   в финальном Jira comment после отправки результата в `origin/dev`.
 
 QA выполняет отдельный исполнитель; самостоятельный QA-вердикт не добавлялся.
+
+## QA-Вердикт (2026-07-09)
+
+Статус: PASSED
+QA owner: Claude orchestrator
+Checked ref: origin/dev 73ed3dcd
+
+Verification:
+- Первая сдача была strand'ом (результат не в origin/dev) — возвращена; воркер перезалил.
+- Коммиты 0e0525de (skill update) + 73ed3dcd (sync) в origin/dev.
+- skills/codex/perenos-chata/SKILL.md: автономный in-scope режим, AGENTS.md-first, live Jira checks (sprint/status/lane/locked paths), Git/push state в snapshot.
+- agents/openai.yaml валиден (yaml.safe_load PASS).
+- Mirror docs/tasks/codex_perenos_chata_autonomy_update_task.md в репо.
