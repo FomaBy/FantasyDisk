@@ -4137,5 +4137,25 @@
   "key": "SCRUM-957",
   "status": "Готово",
   "desc_hash": "5d709d7f5186599e5e8a2ba93e98ff6a"
+ },
+ "SCRUM-935_qa.md": {
+  "key": "SCRUM-935",
+  "status": "Готово",
+  "desc_hash": "c2beb07b4a8ceeaa9334623ae0621ed1"
+ },
+ "SCRUM-936_qa.md": {
+  "key": "SCRUM-936",
+  "status": "Готово",
+  "desc_hash": "e1b1fe9b1009b80b3e9544d08a6a9e62"
+ },
+ "SCRUM-937_qa.md": {
+  "key": "SCRUM-937",
+  "status": "Готово",
+  "desc_hash": "b1348fc925ac85469d0323c9fb1073b0"
+ },
+ "SCRUM-938_qa.md": {
+  "key": "SCRUM-938",
+  "status": "Готово",
+  "desc_hash": "406c3ba3daa96d34f638a0801fe7a16d"
  }
 }
