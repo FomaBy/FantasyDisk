@@ -1,20 +1,38 @@
 # SCRUM-947 — independent QA: Elementalist magic-bonus trait
 
-Статус: done (remediation `2a8aac19` ready for independent recheck)
+Статус: done
 Дата: 2026-07-10
-QA owner: Codex `/root`
+Final QA owner: Codex `/root/audit_repo`
+Historical QA owner: Codex `/root`
 Combined implementation: SCRUM-947, SCRUM-948, SCRUM-949, SCRUM-950
 Implementation commits: `f6266a76`, `3b9a0a6c`, `4cf721fa`, `d62eb642`
+Remediation: `2a8aac19` (Jira sync `cee96169`)
 
 ## QA-Вердикт
 
-Current status: PENDING INDEPENDENT RECHECK
+Статус: PASSED
 
-Remediation `2a8aac19` is pushed to `origin/dev`. It preserves below-base
-Intelligence penalties and adds the missing focused regression while all
-Elementalist, isolation, balance and runtime gates pass. The original FAILED
-verdict and evidence below remain the historical QA record; a worker other than
-the remediation author must issue the new final verdict.
+Final independent recheck on 2026-07-10 confirms remediation `2a8aac19` fixes
+the blocking Intelligence-penalty defect without a production regression.
+Fresh ratios were `1.000000` at zero delta, `1.265778` for `+2` Intelligence
+(exact class-growth × `1.30` expectation), and `0.777778` for `-2` Intelligence
+(exact unamplified penalty). Run and passive `0.80` magic multipliers remained
+`0.800000`, physical/DoT channels stayed isolated, and run+passive stacking
+matched its independently multiplied expectation exactly.
+
+The full Elementalist, damage isolation, 51/51 tuning, 17-class budget, global
+damage/survivability, 153-measurement comfort band, projectile identity,
+animation, runtime, balance harness and survivability harness gates all passed.
+Elementalist tuning remains ring `51.84/178.11`, prism `51.84/178.22`, meteor
+`51.85/178.23` solo/20-target DPS; the final balance audit reports all 51
+class+weapon pairs PASS. Detailed final evidence is in
+`docs/tasks/SCRUM-1019_qa.md`.
+
+SCRUM-947 is accepted and may move to `Готово`. The original FAILED verdict and
+evidence below remain intact as the historical QA record.
+
+Disk cleanup: disposable `.godot/`, generated `build/`, temporary probe and QA
+worktree removed after Jira/GitHub synchronization.
 
 Historical status: FAILED
 
