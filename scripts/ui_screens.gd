@@ -469,8 +469,9 @@ const CODEX_PL_ICONS := {
 	"characters": CODEX_PL_FRAME_DIR + "codex_pl_icon_characters.png",
 	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
 	"artifacts": CODEX_PL_FRAME_DIR + "codex_pl_icon_artifacts.png",
-	"stats": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
-	"ascensions": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
+	"characteristics": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
+	"attributes": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
+	"ascension": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
 }
 # SCRUM-883: карточки наград — чип-ряды Атласа; display-размеры слотов сохранены.
 const REWARD_CARD_SIZE := Vector2(300.0, 430.0)
@@ -2114,8 +2115,9 @@ const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
-	{"id": "stats", "title": "Характеристики"},
-	{"id": "ascensions", "title": "Возвышения"},
+	{"id": "characteristics", "title": "Характеристики"},
+	{"id": "attributes", "title": "Атрибуты"},
+	{"id": "ascension", "title": "Возвышение"},
 ]
 
 
@@ -4141,11 +4143,12 @@ func _show_codex_screen() -> void:
 	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
-	# SCRUM-881: nav ужат (300s против прежних 340s) — освобождённая ширина
-	# уходит вправо, в широкое досье.
+	# SCRUM-955: six Russian labels include the long «Характеристики». The rail
+	# follows the accepted mockup proportions closely enough to keep text + icon
+	# inside each button's empty center at 720p/1080p/1440p without ellipsis.
 	var nav_panel := PanelContainer.new()
 	nav_panel.name = "CodexNavPanel"
-	nav_panel.custom_minimum_size = Vector2(roundf(clampf(300.0 * s, 220.0, 360.0)), 0.0)
+	nav_panel.custom_minimum_size = Vector2(roundf(clampf(480.0 * s, 240.0, 427.0)), 0.0)
 	nav_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	nav_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, roundf(10.0 * s)))
 	body.add_child(nav_panel)
@@ -4213,6 +4216,10 @@ func _show_codex_screen() -> void:
 		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var tab_style := tab_button.get_theme_stylebox(tab_state)
 			if tab_style != null:
+				# Accepted tab content reserve: a calm label zone after the icon
+				# socket, with the right cap left unobstructed.
+				tab_style.content_margin_left = maxf(24.0, roundf(48.0 * s))
+				tab_style.content_margin_right = maxf(8.0, roundf(16.0 * s))
 				tab_style.content_margin_top = maxf(12.0, roundf(32.0 * s))
 				tab_style.content_margin_bottom = maxf(12.0, roundf(32.0 * s))
 		var icon_path := str(CODEX_PL_ICONS.get(section_id, ""))
@@ -4286,9 +4293,11 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_monsters(list)
 		"artifacts":
 			_build_codex_artifacts(list)
-		"stats":
-			_build_codex_stats(list)
-		"ascensions":
+		"characteristics":
+			_build_codex_stats(list, "base")
+		"attributes":
+			_build_codex_stats(list, "derived")
+		"ascension":
 			_build_codex_ascensions(list)
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
@@ -4433,19 +4442,32 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
-	# SCRUM-879: досье записи — VBox в панели-чипе Атласа: титул золотом →
-	# портрет-слот (полупрозрачный, KEEP_ASPECT) → чипы-ряды → «тёмная кожа»
-	# вместо пергамента, тексты светлые (как панель узла Атласа).
+	# SCRUM-955 / accepted SCRUM-1013 mockup: wide dossier uses two stable safe
+	# zones. The left rail owns the contained preview and an independently
+	# scrollable related-parameter list; title/chips/body stay in the right rail.
+	# Both rails live inside the dark panel content margin, never on the frame.
 	if detail_panel == null or not is_instance_valid(detail_panel):
 		return
 	for child in detail_panel.get_children():
 		detail_panel.remove_child(child)
 		child.queue_free()
 	var s := _atlas_ui_scale()
+	var columns := HBoxContainer.new()
+	columns.name = "CodexDetailContent"
+	columns.add_theme_constant_override("separation", maxi(8, int(roundf(18.0 * s))))
+	detail_panel.add_child(columns)
+	var left_rail := VBoxContainer.new()
+	left_rail.name = "CodexDetailLeftRail"
+	left_rail.custom_minimum_size.x = roundf(clampf(320.0 * s, 160.0, 300.0))
+	left_rail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	left_rail.add_theme_constant_override("separation", maxi(6, int(roundf(10.0 * s))))
+	columns.add_child(left_rail)
 	var box := VBoxContainer.new()
-	box.name = "CodexDetailContent"
-	box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
-	detail_panel.add_child(box)
+	box.name = "CodexDetailRightRail"
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", maxi(6, int(roundf(8.0 * s))))
+	columns.add_child(box)
 
 	var title := Label.new()
 	title.name = "CodexDetailTitle"
@@ -4455,6 +4477,10 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# clip_text removes the Label's vertical minimum in a VBox. Reserve the
+	# accepted title zone explicitly so the selected Russian name cannot collapse
+	# to a one-pixel sliver above the chips (caught by SCRUM-955 visual QA).
+	title.custom_minimum_size.y = roundf(clampf(68.0 * s, 32.0, 68.0))
 	title.add_theme_font_size_override("font_size", _codex_font_size(22, 16, 30))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
@@ -4467,7 +4493,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		portrait_slot.name = "CodexDetailPortraitSlot"
 		portrait_slot.custom_minimum_size = Vector2(0.0, roundf(clampf(300.0 * s, 150.0, 320.0)))
 		portrait_slot.add_theme_stylebox_override("panel", _atlas_translucent_style(0.55, 10.0))
-		box.add_child(portrait_slot)
+		left_rail.add_child(portrait_slot)
 		var portrait := TextureRect.new()
 		portrait.name = "CodexDetailPortraitTexture"
 		portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -4479,6 +4505,46 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		portrait.self_modulate = detail_data.get("texture_tint", Color.WHITE)
 		_codex_pl_make_nearest(portrait)
 		portrait_slot.add_child(portrait)
+
+	var related_entries: Array = detail_data.get("related", [])
+	if not related_entries.is_empty():
+		var related_panel := PanelContainer.new()
+		related_panel.name = "CodexDetailRelatedPanel"
+		related_panel.custom_minimum_size.y = roundf(clampf(180.0 * s, 96.0, 220.0))
+		related_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		related_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.72, roundf(7.0 * s)))
+		left_rail.add_child(related_panel)
+		var related_box := VBoxContainer.new()
+		related_box.name = "CodexDetailRelatedContent"
+		related_box.add_theme_constant_override("separation", maxi(4, int(roundf(6.0 * s))))
+		related_panel.add_child(related_box)
+		var related_heading := str(detail_data.get("related_title", "Связанные параметры"))
+		if left_rail.custom_minimum_size.x < 180.0:
+			related_heading = related_heading.replace("Связанные ", "Связанные\n")
+		var related_title := _codex_label(related_box, related_heading, 13, Color(0.96, 0.90, 0.68, 1.0), 2)
+		related_title.name = "CodexDetailRelatedTitle"
+		var related_scroll := ScrollContainer.new()
+		related_scroll.name = "CodexDetailRelatedScroll"
+		related_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		related_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		related_scroll.follow_focus = true
+		related_box.add_child(related_scroll)
+		var related_list := VBoxContainer.new()
+		related_list.name = "CodexDetailRelatedList"
+		related_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		related_list.add_theme_constant_override("separation", maxi(3, int(roundf(4.0 * s))))
+		related_scroll.add_child(related_list)
+		for related_entry in related_entries:
+			var related_dict := related_entry as Dictionary
+			var related_text := str(related_dict.get("title", ""))
+			if related_text != "":
+				_codex_label(related_list, related_text, 13, Color(0.84, 0.80, 0.70, 0.96), 2)
+	else:
+		# Entries without a related projection still keep the preview rail, but an
+		# entirely empty rail collapses so Ascension/details retain body width.
+		if texture == null:
+			left_rail.visible = false
+			left_rail.custom_minimum_size.x = 0.0
 
 	var chips: Array = detail_data.get("chips", [])
 	if not chips.is_empty():
@@ -4492,6 +4558,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			var chip_text = chips[chip_index]
 			var chip := PanelContainer.new()
 			chip.name = "CodexDetailChip"
+			chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(6.0 * s)))
 			chip_row.add_child(chip)
 			var chip_label := Label.new()
@@ -4842,7 +4909,7 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"summary": str(character["playstyle"]),
 			"texture": texture,
 			"covered_portrait": true,
-			"chips": ["Герой", str(character.get("id", ""))],
+			"chips": ["Герой"],
 			"body_lines": body_lines,
 			"sections": _codex_character_sections(character),
 		})
@@ -4872,7 +4939,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"summary": str(monster["behavior"]),
 				"texture": texture,
 				"covered_portrait": false,
-				"chips": [str(kind_titles[kind]), str(monster["id"])],
+				"chips": [str(kind_titles[kind])],
 				"body_lines": body_lines,
 				"sections": _codex_monster_sections(monster),
 			})
@@ -4882,7 +4949,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			text_box.add_theme_constant_override("separation", 3)
 			row.add_child(text_box)
-			_codex_label(text_box, "%s (%s) — %s" % [monster["title"], monster["id"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+			_codex_label(text_box, "%s — %s" % [monster["title"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 # SCRUM-963: тёмный силуэт иконки запертой записи + дим всего чип-ряда — тот же
@@ -4965,28 +5032,32 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		_codex_label(text_box, "%d. %s — %s" % [entry["level"], entry["title"], entry["description"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
-func _build_codex_stats(list: VBoxContainer) -> void:
-	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
-	for stat_type in ["base", "derived"]:
-		for stat in CODEX_DATA.stats():
-			if str(stat["type"]) != stat_type:
-				continue
-			var row := _codex_entry_panel(list, {
-				"title": str(stat["title"]),
-				"summary": str(stat["description"]),
-				"chips": [str(type_titles.get(stat_type, stat_type)), str(stat["id"])],
-				"body_lines": [
-					str(stat["description"]),
-					"Влияет на: %s" % stat["influences"] if str(stat["influences"]) != "" else "",
-				],
-				"sections": _codex_stat_sections(stat),
-			})
-			var icon_control: Control = game.UIIconRegistry.make_icon(str(stat["id"]), Vector2(36, 36))
-			row.add_child(icon_control)
-			var text_box := VBoxContainer.new()
-			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			row.add_child(text_box)
-			_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
+	var type_titles := {"base": "Базовая характеристика", "derived": "Производный атрибут"}
+	var related_titles := {"base": "Связанные атрибуты", "derived": "Связанные характеристики"}
+	var entries: Array = CODEX_DATA.characteristics() if stat_type == "base" else CODEX_DATA.attributes()
+	for stat in entries:
+		var stat_id := str(stat["id"])
+		var row := _codex_entry_panel(list, {
+			"title": str(stat["title"]),
+			"summary": str(stat["description"]),
+			"texture": game.UIIconRegistry.texture_for(stat_id),
+			"covered_portrait": false,
+			"chips": [str(type_titles.get(stat_type, "Параметр"))],
+			"related_title": str(related_titles.get(stat_type, "Связанные параметры")),
+			"related": stat.get("related", []),
+			"body_lines": [
+				str(stat["description"]),
+				"Влияет на: %s" % stat["influences"] if str(stat["influences"]) != "" else "",
+			],
+			"sections": _codex_stat_sections(stat),
+		})
+		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(36, 36))
+		row.add_child(icon_control)
+		var text_box := VBoxContainer.new()
+		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(text_box)
+		_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:

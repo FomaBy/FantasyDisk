@@ -5,6 +5,7 @@ const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const EXPECTED_ROUTE_STEPS_TO_BOSS := 8  # SCRUM-786: 8 нодов до босса (было 10)
 const EXPECTED_ACT_COUNT := 3
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
+const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
@@ -7609,12 +7610,24 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if artifacts.size() != expected_artifacts:
 		_fail("Expected codex artifacts (%d) to match progression data (%d)." % [artifacts.size(), expected_artifacts])
 		return
-	if codex_data.characters().size() != ProgressionData.character_ids().size() or codex_data.stats().size() < 20:
-		_fail("Expected codex to cover all playable characters and the stat definitions.")
+	var characteristics: Array = codex_data.characteristics()
+	var attributes: Array = codex_data.attributes()
+	if codex_data.characters().size() != ProgressionData.character_ids().size():
+		_fail("Expected codex to cover all playable characters.")
+		return
+	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != StatFormulas.DERIVED_STAT_ORDER.size():
+		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), StatFormulas.DERIVED_STAT_ORDER.size(), characteristics.size(), attributes.size()])
+		return
+	if codex_data.stats() != characteristics + attributes:
+		_fail("Expected compatibility stats projection to preserve characteristics + attributes order.")
 		return
 
-	# Все разделы открываются.
-	for section_id in ["monsters", "artifacts", "stats", "ascensions", "characters"]:
+	# SCRUM-955: все шесть русских разделов открываются; старые mixed stats /
+	# plural ascensions ids больше не существуют в навигации.
+	if codex_main.find_child("CodexTab_stats", true, false) != null or codex_main.find_child("CodexTab_ascensions", true, false) != null:
+		_fail("Expected SCRUM-955 Codex to remove legacy mixed stats/ascensions tabs.")
+		return
+	for section_id in ["monsters", "artifacts", "characteristics", "attributes", "ascension", "characters"]:
 		var tab := codex_main.find_child("CodexTab_%s" % section_id, true, false) as Button
 		if tab == null:
 			_fail("Expected codex tab %s." % section_id)
@@ -7625,6 +7638,18 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if section == null or not (section as Control).visible:
 			_fail("Expected codex section %s to build and become visible." % section_id)
 			return
+		if section_id == "characteristics" or section_id == "attributes":
+			var list := codex_main.find_child("CodexSectionList_%s" % section_id, true, false) as VBoxContainer
+			var expected_rows := characteristics.size() if section_id == "characteristics" else attributes.size()
+			var rendered_rows := 0 if list == null else list.get_child_count()
+			if rendered_rows != expected_rows:
+				_fail("Expected Codex %s section to render all %d canonical rows, got %d." % [section_id, expected_rows, rendered_rows])
+				return
+			var related_panel := codex_main.find_child("CodexDetailRelatedPanel", true, false) as PanelContainer
+			var related_scroll := codex_main.find_child("CodexDetailRelatedScroll", true, false) as ScrollContainer
+			if related_panel == null or related_scroll == null or not related_panel.get_global_rect().has_area() or not related_scroll.get_global_rect().has_area():
+				_fail("Expected Codex %s dossier to expose the accepted scrollable related-parameter safe zone." % section_id)
+				return
 
 	var back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	back_button.pressed.emit()

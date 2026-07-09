@@ -374,15 +374,69 @@ static func ascensions() -> Array:
 	return result
 
 
-static func stats() -> Array:
+static func _related_stats(stat_id: String, stat_type: String) -> Array:
+	# Связи выводятся из живого канонического реестра, а не из отдельной копии:
+	# формула/описание влияния производного атрибута прямо называют базовые
+	# характеристики через канонический name_ru. Технический id остаётся только
+	# внутренним ключом (SCRUM-955).
 	var result := []
-	for stat_id in STAT_FORMULAS.STAT_DEFINITIONS.keys():
-		var definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS[stat_id]
-		result.append({
-			"id": str(stat_id),
-			"title": str(definition.get("name_ru", str(stat_id))),
-			"type": str(definition.get("type", "base")),
-			"description": str(definition.get("description", "")),
-			"influences": str(definition.get("influences", "")),
-		})
+	var candidates: Array = STAT_FORMULAS.DERIVED_STAT_ORDER if stat_type == "base" else STAT_FORMULAS.BASE_STAT_ORDER
+	var source_definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(stat_id, {})
+	var source_name_ru := str(source_definition.get("name_ru", ""))
+	for candidate_id_value in candidates:
+		var candidate_id := str(candidate_id_value)
+		var candidate: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(candidate_id, {})
+		var related := false
+		if stat_type == "base":
+			var haystack := "%s %s" % [str(candidate.get("formula", "")), str(candidate.get("influences", ""))]
+			related = source_name_ru != "" and haystack.findn(source_name_ru) >= 0
+		else:
+			var candidate_name_ru := str(candidate.get("name_ru", ""))
+			var source_haystack := "%s %s" % [str(source_definition.get("formula", "")), str(source_definition.get("influences", ""))]
+			related = candidate_name_ru != "" and source_haystack.findn(candidate_name_ru) >= 0
+		if related:
+			result.append({
+				"id": candidate_id,
+				"title": str(candidate.get("name_ru", candidate_id)),
+			})
 	return result
+
+
+static func _stat_projection(stat_id: String, expected_type: String) -> Dictionary:
+	var definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(stat_id, {})
+	if definition.is_empty() or str(definition.get("type", "")) != expected_type:
+		return {}
+	return {
+		"id": stat_id,
+		"title": str(definition.get("name_ru", stat_id)),
+		"type": expected_type,
+		"description": str(definition.get("description", "")),
+		"formula": str(definition.get("formula", "")),
+		"influences": str(definition.get("influences", "")),
+		"related": _related_stats(stat_id, expected_type),
+	}
+
+
+static func characteristics() -> Array:
+	var result := []
+	for stat_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+		var entry := _stat_projection(str(stat_id_value), "base")
+		if not entry.is_empty():
+			result.append(entry)
+	return result
+
+
+static func attributes() -> Array:
+	var result := []
+	for stat_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+		var entry := _stat_projection(str(stat_id_value), "derived")
+		if not entry.is_empty():
+			result.append(entry)
+	return result
+
+
+# Compatibility projection for non-UI tooling. The live Codex navigation uses
+# characteristics()/attributes() separately; keeping stats() avoids breaking
+# older diagnostics while preserving the canonical order and strict split.
+static func stats() -> Array:
+	return characteristics() + attributes()

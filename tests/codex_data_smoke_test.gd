@@ -1,7 +1,7 @@
 extends SceneTree
 
-# Smoke-тест codex_data.gd (был непокрыт). Валидирует 5 проекций кодекса
-# (characters/monsters/artifacts/ascensions/stats): обязательные поля,
+# Smoke-тест codex_data.gd. Валидирует 6 player-facing проекций кодекса
+# (characters/monsters/artifacts/ascensions/characteristics/attributes): поля,
 # уникальность id, целостность kind/abilities у монстров, согласованность
 # персонажей с реестром и базовую player-facing адекватность текста.
 # content_registry_consistency_test уже сверяет спрайт-ПУТИ — тут структура ДАННЫХ.
@@ -11,6 +11,7 @@ extends SceneTree
 
 const CodexData := preload("res://scripts/codex_data.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const StatFormulas := preload("res://scripts/stat_formulas.gd")
 
 const VALID_MONSTER_KINDS := ["standard", "elite", "mini_elite", "boss"]
 const SCRUM_956_ARTIFACT_TITLES := {
@@ -34,7 +35,7 @@ func _initialize() -> void:
 	_check_characters(errors)
 	_check_artifacts(errors)
 	_check_ascensions(errors)
-	_check_stats(errors)
+	_check_stat_split(errors)
 
 	if not errors.is_empty():
 		for e in errors:
@@ -42,9 +43,9 @@ func _initialize() -> void:
 		push_error("Codex data smoke test: %d ошибок." % errors.size())
 		quit(1)
 		return
-	print("Codex data smoke test passed (%d монстров, %d персонажей, %d артефактов, %d вознесений, %d статов)." % [
+	print("Codex data smoke test passed (%d монстров, %d персонажей, %d артефактов, %d возвышений, %d характеристик, %d атрибутов)." % [
 		CodexData.monsters().size(), CodexData.characters().size(), CodexData.artifacts().size(),
-		CodexData.ascensions().size(), CodexData.stats().size()])
+		CodexData.ascensions().size(), CodexData.characteristics().size(), CodexData.attributes().size()])
 	quit(0)
 
 
@@ -193,19 +194,64 @@ func _check_ascensions(errors: Array) -> void:
 			errors.append("вознесение '%s': негодный title" % aid)
 
 
-func _check_stats(errors: Array) -> void:
-	var stats := CodexData.stats()
-	if stats.is_empty():
-		errors.append("stats() пуст")
+func _projection_ids(entries: Array) -> Array:
+	var result := []
+	for entry in entries:
+		result.append(str((entry as Dictionary).get("id", "")))
+	return result
+
+
+func _check_stat_projection(entries: Array, expected_ids: Array, expected_type: String, other_ids: Array, errors: Array) -> void:
+	var ids := _projection_ids(entries)
+	if ids != expected_ids:
+		errors.append("%s projection ids/order %s != canonical %s" % [expected_type, str(ids), str(expected_ids)])
 	var seen := {}
-	for entry in stats:
+	for entry in entries:
 		var st: Dictionary = entry
 		var sid := str(st.get("id", ""))
 		if sid == "" or seen.has(sid):
-			errors.append("стат с пустым/дублирующимся id '%s'" % sid)
+			errors.append("%s: пустой/дублирующийся id '%s'" % [expected_type, sid])
 			continue
 		seen[sid] = true
-		if not _player_text_ok(str(st.get("title", "")), sid):
-			errors.append("стат '%s': негодный title" % sid)
-		if str(st.get("type", "")) == "":
-			errors.append("стат '%s': пустой type" % sid)
+		if other_ids.has(sid):
+			errors.append("%s: запись '%s' попала в обе секции" % [expected_type, sid])
+		if str(st.get("type", "")) != expected_type:
+			errors.append("%s: '%s' имеет type '%s'" % [expected_type, sid, str(st.get("type", ""))])
+		var title := str(st.get("title", ""))
+		var description := str(st.get("description", ""))
+		if not _player_text_ok(title, sid) or _has_latin(title):
+			errors.append("%s: '%s' имеет не русское player-facing имя '%s'" % [expected_type, sid, title])
+		if not _player_text_ok(description, sid) or _has_latin(description):
+			errors.append("%s: '%s' имеет не русское player-facing описание '%s'" % [expected_type, sid, description])
+		var influences := str(st.get("influences", ""))
+		if influences == "" or _has_latin(influences):
+			errors.append("%s: '%s' имеет пустое/не русское влияние '%s'" % [expected_type, sid, influences])
+		var formula := str(st.get("formula", ""))
+		if formula == "" or _has_latin(formula):
+			errors.append("%s: '%s' имеет пустую/не русскую player-facing формулу '%s'" % [expected_type, sid, formula])
+		for related_entry in st.get("related", []):
+			var related: Dictionary = related_entry
+			var related_id := str(related.get("id", ""))
+			if not other_ids.has(related_id):
+				errors.append("%s: '%s' ссылается на некорректную связанную запись '%s'" % [expected_type, sid, related_id])
+			if not _player_text_ok(str(related.get("title", "")), related_id) or _has_latin(str(related.get("title", ""))):
+				errors.append("%s: '%s' показывает негодный related title для '%s'" % [expected_type, sid, related_id])
+
+
+func _check_stat_split(errors: Array) -> void:
+	var characteristics := CodexData.characteristics()
+	var attributes := CodexData.attributes()
+	var base_ids: Array = Array(StatFormulas.BASE_STAT_ORDER)
+	var derived_ids: Array = Array(StatFormulas.DERIVED_STAT_ORDER)
+	if characteristics.is_empty():
+		errors.append("characteristics() пуст")
+	if attributes.is_empty():
+		errors.append("attributes() пуст")
+	_check_stat_projection(characteristics, base_ids, "base", derived_ids, errors)
+	_check_stat_projection(attributes, derived_ids, "derived", base_ids, errors)
+	for characteristic in characteristics:
+		if (characteristic as Dictionary).get("related", []).is_empty():
+			errors.append("base: '%s' не имеет ни одного связанного атрибута из канонических формул" % str((characteristic as Dictionary).get("id", "")))
+	var expected_compat := characteristics + attributes
+	if CodexData.stats() != expected_compat:
+		errors.append("stats() compatibility projection не равен characteristics + attributes")

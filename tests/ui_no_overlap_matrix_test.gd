@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const CodexData := preload("res://scripts/codex_data.gd")
 const VIEWPORT_SIZES := [
 	Vector2i(1152, 648),
 	Vector2i(1280, 720),
@@ -11,6 +12,7 @@ const VIEWPORT_SIZES := [
 	Vector2i(3840, 2160),
 ]
 const SCRUM483_GATE_SIZES := [Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]
+const SCRUM955_CODEX_GATE_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const TEXT_OVERFLOW_TOLERANCE := 6.0
 const UI_FRAME_TEXTURE_PREFIX := "res://assets/sprites/ui/frames/"
 const CR_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_cr_panel.png"
@@ -275,8 +277,95 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 	var screen_error := _screen_specific_assertions(main, screen_id, context)
 	if screen_error != "":
 		errors.append(screen_error)
+	if screen_id == "codex" and SCRUM955_CODEX_GATE_SIZES.has(viewport_size):
+		await _append_codex_split_errors(main, context, errors, dump_lines)
 	viewport.queue_free()
 	await process_frame
+
+
+func _append_codex_split_errors(main: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var content := main.find_child("CodexContent", true, false) as PanelContainer
+	var nav_panel := main.find_child("CodexNavPanel", true, false) as PanelContainer
+	if content == null or nav_panel == null:
+		errors.append("%s: SCRUM-955 Codex content/nav missing." % context)
+		return
+	var expected_tabs := [
+		["characters", "Персонажи"], ["monsters", "Монстры"],
+		["artifacts", "Артефакты"], ["characteristics", "Характеристики"],
+		["attributes", "Атрибуты"], ["ascension", "Возвышение"],
+	]
+	var tab_rects := []
+	for pair in expected_tabs:
+		var tab := main.find_child("CodexTab_%s" % str(pair[0]), true, false) as Button
+		if tab == null or not tab.is_visible_in_tree():
+			errors.append("%s: missing visible CodexTab_%s." % [context, str(pair[0])])
+			continue
+		if tab.text != str(pair[1]):
+			errors.append("%s: CodexTab_%s text '%s' != '%s'." % [context, str(pair[0]), tab.text, str(pair[1])])
+		if not nav_panel.get_global_rect().grow(1.0).encloses(tab.get_global_rect()):
+			errors.append("%s: CodexTab_%s escapes frame-safe nav interior." % [context, str(pair[0])])
+		var fit_error := _button_label_content_fit_error(tab, "normal", context)
+		if fit_error != "":
+			errors.append(fit_error)
+		tab_rects.append(tab.get_global_rect())
+	for i in range(tab_rects.size()):
+		for j in range(i + 1, tab_rects.size()):
+			if (tab_rects[i] as Rect2).grow(-1.0).intersects((tab_rects[j] as Rect2).grow(-1.0)):
+				errors.append("%s: Codex split tabs %d/%d overlap." % [context, i, j])
+
+	var section_specs := {
+		"characteristics": {"count": 8, "related_title": "Связанные атрибуты"},
+		"attributes": {"count": 26, "related_title": "Связанные характеристики"},
+	}
+	for section_id in section_specs:
+		main.ui.call("_show_codex_section", content, str(section_id))
+		await process_frame
+		await process_frame
+		var section := main.find_child("CodexSection_%s" % str(section_id), true, false) as ScrollContainer
+		var list := main.find_child("CodexSectionList_%s" % str(section_id), true, false) as VBoxContainer
+		if section == null or list == null or not section.is_visible_in_tree():
+			errors.append("%s: missing live Codex section %s." % [context, str(section_id)])
+			continue
+		var cards := list.get_children()
+		var expected_count := int((section_specs[section_id] as Dictionary)["count"])
+		if cards.size() != expected_count:
+			errors.append("%s: Codex %s has %d rows, expected %d canonical entries." % [context, str(section_id), cards.size(), expected_count])
+		var related_panel := main.find_child("CodexDetailRelatedPanel", true, false) as PanelContainer
+		var related_scroll := main.find_child("CodexDetailRelatedScroll", true, false) as ScrollContainer
+		var related_title := main.find_child("CodexDetailRelatedTitle", true, false) as Label
+		var detail_title := main.find_child("CodexDetailTitle", true, false) as Label
+		var detail_chips := main.find_child("CodexDetailChipRow", true, false) as HBoxContainer
+		var left_rail := main.find_child("CodexDetailLeftRail", true, false) as Control
+		var right_rail := main.find_child("CodexDetailRightRail", true, false) as Control
+		var detail_panel := main.find_child("CodexDetailPanel", true, false) as Control
+		for required in [related_panel, related_scroll, related_title, left_rail, right_rail, detail_panel]:
+			if required == null or not (required as Control).is_visible_in_tree() or not (required as Control).get_global_rect().has_area():
+				errors.append("%s: %s missing a visible accepted content zone." % [context, str(section_id)])
+				break
+		if related_title != null and related_title.text.replace("\n", " ") != str((section_specs[section_id] as Dictionary)["related_title"]):
+			errors.append("%s: %s related title '%s' is not canonical." % [context, str(section_id), related_title.text])
+		if detail_title == null or detail_title.get_global_rect().size.y < 30.0:
+			errors.append("%s: %s selected-entry title zone collapsed below 30px." % [context, str(section_id)])
+		if detail_chips == null or detail_chips.get_child_count() == 0:
+			errors.append("%s: %s semantic chip row is empty." % [context, str(section_id)])
+		else:
+			for chip in detail_chips.get_children():
+				if (chip as Control).get_global_rect().size.x < 80.0:
+					errors.append("%s: %s semantic chip collapsed below 80px." % [context, str(section_id)])
+		if detail_panel != null and left_rail != null and right_rail != null:
+			var detail_rect := detail_panel.get_global_rect().grow(1.0)
+			if not detail_rect.encloses(left_rail.get_global_rect()) or not detail_rect.encloses(right_rail.get_global_rect()):
+				errors.append("%s: %s dossier rails escape the empty detail-frame interior." % [context, str(section_id)])
+			if left_rail.get_global_rect().grow(-1.0).intersects(right_rail.get_global_rect().grow(-1.0)):
+				errors.append("%s: %s dossier left/right content zones overlap." % [context, str(section_id)])
+		var entries: Array = CodexData.characteristics() if str(section_id) == "characteristics" else CodexData.attributes()
+		for text_control in _visible_text_controls(main.find_child("CodexScreen", true, false)):
+			var displayed := _control_text(text_control as Control).strip_edges()
+			for entry in entries:
+				var raw_id := str((entry as Dictionary).get("id", ""))
+				if displayed == raw_id or displayed.contains("(%s)" % raw_id) or displayed.contains("[%s]" % raw_id):
+					errors.append("%s: %s exposes raw id '%s' in player-facing text." % [context, str(section_id), raw_id])
+		_append_text_overflow_errors(main, "%s/%s" % [context, str(section_id)], errors, dump_lines)
 
 
 func _open_main_menu(main: Node) -> void:

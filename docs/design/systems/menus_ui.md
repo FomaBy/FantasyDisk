@@ -689,6 +689,26 @@ the category rail, so the active Codex shows Персонажи, Монстры,
 Характеристики and Возвышения only. Screenshot evidence:
 `build/qa/codex_object_first/`.
 
+SCRUM-955 supersedes that five-section data/navigation statement using the
+independently accepted PixelLab and content-zone package from SCRUM-1013. The
+active rail has six fixed Russian tabs: `Персонажи`, `Монстры`, `Артефакты`,
+`Характеристики`, `Атрибуты`, `Возвышение`. The rail width and button content
+margins scale so the longest label plus icon fits without ellipsis at
+1280x720, 1920x1080 and 2560x1440. `Характеристики` is the exact ordered
+`BASE_STAT_ORDER` projection (8 rows); `Атрибуты` is the exact ordered
+`DERIVED_STAT_ORDER` projection (26 rows). Both lists remain lazy/cached.
+
+The dossier follows the accepted split content zones: `CodexDetailLeftRail`
+contains the centered, aspect-preserving icon and
+`CodexDetailRelatedScroll`; `CodexDetailRightRail` contains title, semantic
+Russian chip, and `CodexDetailParchmentInset`. The related list is derived from
+the canonical formula/influence registry and uses Russian display titles only.
+The two rails, all six tabs, center rows and scrollbars remain inside the dark
+panel interiors; the hollow frame ornament stays unobstructed. No row or chip
+shows raw character, monster, artifact or stat ids. Focused coverage lives in
+`codex_data_smoke_test.gd`, `runtime_smoke_test.gd` and the 720p/1080p/1440p
+Codex branch of `ui_no_overlap_matrix_test.gd`.
+
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
 SCRUM-574 is the live Codex 2K frame baseline. Mockup/spec:

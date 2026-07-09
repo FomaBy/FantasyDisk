@@ -930,8 +930,8 @@ QA-gated route-pool task. QA evidence:
 | `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
 | `vampiric_amount` | Вампиризм | `assets/sprites/ui/icons/derived/attr_vampiric_amount.png` |
 | `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
-| `dot_damage` | Урон DoT | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
-| `dot_speed` | Скорость тиков DoT | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
+| `dot_damage` | Периодический урон | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
+| `dot_speed` | Частота периодического урона | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
 | `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
