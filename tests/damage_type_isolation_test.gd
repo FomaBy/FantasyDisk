@@ -45,6 +45,7 @@ func _initialize() -> void:
 	_check_non_owner_attributes_inert(errors)
 	_check_run_modifier_isolation(errors)
 	_check_sound_axis_removed(errors)
+	_check_ui_sound_axis_removed(errors)
 
 	if not errors.is_empty():
 		for e in errors:
@@ -125,6 +126,19 @@ func _check_sound_axis_removed(errors: Array) -> void:
 		if absf(legacy_values[t] - base_values[t]) > EPS:
 			errors.append("легаси sound_damage_multiplier изменил тип '%s' (%.4f -> %.4f)" % [
 				t, base_values[t], legacy_values[t]])
+
+
+func _check_ui_sound_axis_removed(errors: Array) -> void:
+	# Acceptance contract SCRUM-898: the active UI source must not regain the
+	# deleted derived-stat id. Build the marker in two pieces so repository search
+	# continues to distinguish this guard from an active config reference.
+	var ui_source := FileAccess.get_file_as_string("res://scripts/ui_screens.gd")
+	if ui_source.is_empty():
+		errors.append("не удалось прочитать scripts/ui_screens.gd для проверки удалённой оси")
+		return
+	var removed_parameter := "sound_wave" + "_damage"
+	if ui_source.contains(removed_parameter):
+		errors.append("scripts/ui_screens.gd всё ещё содержит удалённый стат")
 
 
 func _check_run_modifier_isolation(errors: Array) -> void:

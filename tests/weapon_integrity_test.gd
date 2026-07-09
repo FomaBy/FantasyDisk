@@ -21,6 +21,8 @@ const TEXTURE_ID_ALIASES := {
 	"hammer": "two_handed_hammer",
 }
 
+const ACTIVE_DAMAGE_PARAMETERS := ["damage", "magic_damage"]
+
 
 func _initialize() -> void:
 	var errors: Array = []
@@ -94,6 +96,9 @@ func _check_weapon_config(errors: Array, passive_ids: Dictionary, character_id: 
 		errors.append("%s/%s: missing scene_path '%s'" % [character_id, weapon_id, scene_path])
 	if _expected_attack_mode(config) == "":
 		errors.append("%s/%s: missing attack_mode/attack_shape marker" % [character_id, weapon_id])
+	var config_damage_parameter := str(config.get("damage_parameter", "damage"))
+	if not config_damage_parameter in ACTIVE_DAMAGE_PARAMETERS:
+		errors.append("%s/%s: invalid active damage_parameter '%s'" % [character_id, weapon_id, config_damage_parameter])
 	var expected_texture := _expected_texture_path(weapon_id)
 	if not FileAccess.file_exists(expected_texture):
 		errors.append("%s/%s: missing canonical weapon texture '%s'" % [character_id, weapon_id, expected_texture])
@@ -106,6 +111,15 @@ func _check_weapon_scene(errors: Array, character_id: String, weapon_id: String,
 	var script_ref = weapon_node.get_script()
 	var script_path := str(script_ref.resource_path) if script_ref != null else ""
 	var marker := _expected_attack_mode(config)
+	if script_path.ends_with("class_weapon.gd") or script_path.ends_with("summoner_weapon.gd"):
+		var config_damage_parameter := str(config.get("damage_parameter", "damage"))
+		var scene_damage_parameter := str(weapon_node.get("damage_parameter"))
+		if scene_damage_parameter != config_damage_parameter:
+			errors.append("%s/%s: scene damage_parameter '%s' != config '%s'" % [
+				character_id, weapon_id, scene_damage_parameter, config_damage_parameter])
+		if not scene_damage_parameter in ACTIVE_DAMAGE_PARAMETERS:
+			errors.append("%s/%s: scene retains invalid damage_parameter '%s'" % [
+				character_id, weapon_id, scene_damage_parameter])
 	if script_path.ends_with("class_weapon.gd"):
 		var scene_mode := str(weapon_node.get("attack_mode"))
 		if scene_mode != marker:

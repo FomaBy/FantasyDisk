@@ -8420,7 +8420,7 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	if classes.has("dark_mage"):
 		return "magic_damage"
 	if classes.has("guitarist"):
-		return "sound_wave_damage"
+		return "magic_damage"
 	if modifiers.has("money_gain_multiplier"):
 		return "money"
 	if modifiers.has("xp_gain_multiplier"):
@@ -9857,15 +9857,15 @@ func _make_reward_card_icon(reward: Dictionary, size: Vector2) -> Control:
 const STAT_DERIVED_PREVIEW := {
 	"strength": ["damage"],
 	"intelligence": ["magic_damage"],
-	"perception": ["sound_wave_damage", "attack_range", "aoe_radius", "pickup_radius"],
-	"energy": ["sound_wave_damage", "ultimate_multiplier", "projectile_speed"],
+	"perception": ["attack_range", "aoe_radius", "pickup_radius"],
+	"energy": ["ultimate_multiplier", "projectile_speed"],
 	"knowledge": ["dot_damage", "regeneration", "dot_speed", "summon_amount"],
 	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
 	"endurance": ["health_point", "defense", "absorb", "knockback_power"],
 	"leadership": ["summon_amount", "aura_radius", "buff_power"],
 }
 
-const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage", "sound_wave_damage"]
+const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 
 
 # SCRUM-525: RU-список производных, на которые влияет атрибут (для блока «Влияет на: …»
@@ -10078,8 +10078,6 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 			return "Урон"
 		"magic_damage":
 			return "Маг. урон"
-		"sound_wave_damage":
-			return "Звуковой урон"
 		"attack_speed":
 			return "Скорость атаки"
 		"health_point":
