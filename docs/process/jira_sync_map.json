@@ -4187,5 +4187,10 @@
   "key": "SCRUM-1019",
   "status": "Контроль качества",
   "desc_hash": "87c8278ebbf797dbbdd288e02b3bce57"
+ },
+ "SCRUM-1017_codex_navigation_icons_handoff.md": {
+  "key": "SCRUM-1017",
+  "status": "Контроль качества",
+  "desc_hash": "9a73b79dfffab8db9addff8bb135ea79"
  }
 }
