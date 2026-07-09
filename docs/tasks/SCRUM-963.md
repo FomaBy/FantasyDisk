@@ -75,6 +75,15 @@ Validation (godot_gate, полный список):
 - `python3 tools/validate_artifact_icons.py` exit 0 (info-замечания по 3 легаси
   иконкам SCRUM-690 — вне зоны 963)
 
-## QA-Вердикт
+## QA-Вердикт (SCRUM-964)
 
-Статус: —（ожидает SCRUM-964）
+Статус: PASSED
+Дата: 2026-07-09
+Проверил: claude-fable-orchestrator (claude-qa-scrum964-artifact-validation-20260709).
+Латиница в player-facing title (ARTIFACTS 154 + SHOP_ITEMS 7) — ноль; codex-гейт
+иконок 154/154 и запрет латиницы — PASSED (codex_data_smoke, 161 записей);
+ui_no_overlap_matrix (HUD-ряд/карточки) PASSED, полный runtime_smoke (анкер
+классовой пометки «Класс: <RU> · Возвышение 5») PASSED, null_artifacts_snapshot
+(сейв-совместимость `{id,title}` без тира) PASSED. Оконная визуальная приёмка
+deferred: live user session (2 оконных Godot) — вместо неё headless rect-гейты
+матрицы + контакт-щиты 962; оконный добор — следующим свободным окном.

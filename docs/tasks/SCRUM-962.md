@@ -75,3 +75,16 @@ Validation:
 
 Коммиты (dev): чанк 1/4, чанк 2/4, чанк 3/4 (+root_snare regen), чанк 4/4,
 выбраковка 6 + контакт-щиты, evidence/import/отчёт/зеркало (финальный).
+
+## QA-Вердикт (SCRUM-964)
+
+Статус: PASSED
+Дата: 2026-07-09
+Проверил: claude-fable-orchestrator (claude-qa-scrum964-artifact-validation-20260709).
+154/154 `artifact_<id>.png` + 154 `.png.import`, git-tree пары в origin/dev сходятся,
+17 легаси-PNG отсутствуют; `validate_artifact_icons.py` exit 0. Контакт-щиты
+(universal 15 + class 85) отсмотрены глазами: предметы изолированы, без текста/
+рамок/запечённого фона, один акцент, классовая идентичность и 40px-ряд читаемы.
+Detached-components на 6 иконках (3 легаси SCRUM-690 + magnetic_purse/tower_slam/
+arquebus_shrapnel) — accepted-minor, без follow-up. no_duplicate_artifact_files,
+asset_reference_integrity, ui_icon_registry_smoke — PASSED.

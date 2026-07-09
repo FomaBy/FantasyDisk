@@ -66,9 +66,20 @@ Locked paths: `scripts/progression_data.gd` (гейт+сэмплеры), `script
   event_random_artifact, progression_economy, codex_data, content_registry
   consistency, asset_reference_integrity.
 
-## QA-Вердикт
+## QA-Вердикт (SCRUM-964)
 
-Статус: —
+Статус: PASSED
+Дата: 2026-07-09
+Проверил: claude-fable-orchestrator (claude-qa-scrum964-artifact-validation-20260709).
+Гейт-свип 17 классов × {asc0, asc4-spot, asc5} × 4 сэмплера — 2 прогона PASSED:
+asc0/asc4 чисты (0 утечек, включая исчерпывающие elite/boss-пулы), asc5 — все 5
+своих в reward/shop/elite, boss-пул t3 2/2 (chemist 3/3), чужих ноль; cross-class
+(`stolen_crest`-контракт) пропускает ровно перечисленные id, в т.ч. на asc0.
+Найден и исправлен баг: `mine_satchel` — чурн кап-5 вытеснял мины до армирования
+2.5с (0 урона в бою); фикс skip-при-капе `2c2d30de`, верификация ×2 (888/898 урона
+за 9с, кап держится, тайм-аут освобождает слот). Кит-баланс §8.1: berserk +35.6%,
+engineer +31.5% (в коридоре); dark_mage +58.8/+66.5/+73.3% — зафиксированное
+отклонение слайса замера (декомпозиция в SCRUM-964.md), warning по §8.3-паттерну.
 
 ## Files
 

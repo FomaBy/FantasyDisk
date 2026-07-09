@@ -124,3 +124,15 @@ troll_blood, thirsty_ruby, overcharge_rune) — прецедент SCRUM-500; у
 материализации. Для SCRUM-963: `player.artifacts[].tier` уже пишется; TIER_LABELS
 канон «Обычный/Редкий/Эпический»; reward-карточки всё ещё берут иконку стата
 (`_reward_icon_id`), а не `artifact_<id>.png`.
+
+## QA-Вердикт (SCRUM-964)
+
+Статус: PASSED
+Дата: 2026-07-09
+Проверил: claude-fable-orchestrator (claude-qa-scrum964-artifact-validation-20260709).
+32 семьи материализуются на всех трёх тирах по §1.2 (сверены warrior_charm 2/4/7,
+splinter_gloves ×1.10/1.18/1.30, sturdy_amulet +15/+25/+40, fast_boots — дословно);
+доля т3 в reward_pool = 7.7% на 2705 роллах (коридор §8.5: 5-12%), t1/t2 = 64.4/27.9%.
+Батарея зелёная: artifact_family_roll, rewards/content integrity (154+7),
+progression_economy (EV-порог обновлён под пак-12 SCRUM-995, фикс 2c2d30de), смоук.
+Латиницы в title ARTIFACTS+SHOP_ITEMS ноль. Evidence: docs/tasks/SCRUM-964.md.
