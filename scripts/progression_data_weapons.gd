@@ -575,7 +575,7 @@ const THIEF_WEAPONS := {
 
 const ELEMENTALIST_WEAPONS := {
 	# SCRUM-948..950: редизайн кита Элементалиста поверх trait SCRUM-947
-	# («Проводник стихий», см. ProgressionData.ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS).
+	# («Проводник стихий», см. CLASS_TRAITS.elementalist в progression_data_characters.gd).
 	# Ниши кита: постоянный квадрат-ореол / редкий полнокартный X / сверхредкий
 	# нюк с догорающей зоной. Метеор — максимальный fire_interval среди ВСЕХ
 	# оружий игрока (4.50 > 4.0 у homunculus_vial).

@@ -563,12 +563,13 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
 
 
-# SCRUM-947 «Проводник стихий»: класс-trait Элементалиста. Каждый источник бонуса
-# МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness scaling: +15% источник
-# → +19.5% фактически; НЕ флэт-множитель прямого урона). Детерминированный порядок
-# стакинга (см. derived_parameters, дублируется в docs/design/systems/
-# characters_weapons.md): каждый magic-tagged источник усиливается РОВНО ОДИН РАЗ,
-# отдельно от остальных, ДО перемножения источников между собой:
+# SCRUM-947 «Проводник стихий»: класс-trait Элементалиста, data-driven запись
+# CLASS_TRAITS.elementalist.magic_bonus_effectiveness = 1.30 (реестр SCRUM-935).
+# Каждый источник бонуса МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness
+# scaling: +15% источник → +19.5% фактически; НЕ флэт-множитель прямого урона).
+# Детерминированный порядок стакинга (см. derived_parameters, дублируется в
+# docs/design/systems/characters_weapons.md): каждый magic-tagged источник
+# усиливается РОВНО ОДИН РАЗ, отдельно от остальных, ДО перемножения источников:
 #   1) забеговый run_modifiers.magic_damage_multiplier — softcap → ×1.30 на избыток
 #      (усиливается уже задиминишенный бонус, глобальный анти-runaway остаётся
 #      арбитром) → upgrade_damage_exponent;
@@ -581,11 +582,10 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 #      владеет только магией, другие каналы не видят усиления.
 # НЕ усиливаются: universal damage_multiplier/damage_flat (не magic-tagged),
 # physical-only и periodic-only (dot_*) источники, а также штрафы (<1.0).
-const ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS := 1.30
-
-
 static func _magic_bonus_effectiveness_for(character_id: String) -> float:
-	return ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS if character_id == "elementalist" else 1.0
+	if character_id == "":
+		return 1.0
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("magic_bonus_effectiveness", 1.0)), 1.0)
 
 
 # Усиливает БОНУСНУЮ часть множителя: 1.15 → 1.0 + 0.15*effectiveness. Штрафы
@@ -1270,8 +1270,9 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
 	# SCRUM-947 «Проводник стихий»: magic-tagged бонусы Элементалиста на 30%
-	# эффективнее. Порядок и полный список источников — у константы
-	# ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS. Каждый источник усиливается ровно
+	# эффективнее (CLASS_TRAITS.elementalist.magic_bonus_effectiveness). Порядок
+	# и полный список источников — у _magic_bonus_effectiveness_for. Каждый
+	# источник усиливается ровно
 	# один раз ЗДЕСЬ (точка агрегации), до перемножения — двойного применения
 	# при нескольких магических множителях нет.
 	var magic_bonus_effectiveness := _magic_bonus_effectiveness_for(character_id)

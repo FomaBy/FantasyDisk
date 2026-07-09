@@ -308,6 +308,18 @@ const CLASS_TRAITS := {
 		"action_echo_chance": 0.5,
 		"action_echo_delay": 0.18,
 	},
+	"elementalist": {
+		# SCRUM-947 «Проводник стихий»: bonus-effectiveness scaling — каждый
+		# magic-tagged источник бонуса на 30% эффективнее (+15% → ~+19.5%).
+		# Потребитель — точка агрегации magic-бонусов
+		# ProgressionData.derived_parameters (порядок стакинга задокументирован
+		# в docs/design/systems/characters_weapons.md, покрыт
+		# tests/elementalist_kit_test.gd).
+		"id": "elemental_conduit",
+		"title": "Проводник стихий",
+		"description": "Все бонусы к магическому урону на 30% эффективнее: источник «+15%» даёт около +20%. Каждый источник усиливается ровно один раз.",
+		"magic_bonus_effectiveness": 1.30,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {
@@ -346,8 +358,8 @@ const CLASS_MECHANIC_IDENTITIES := {
 	},
 	"elementalist": {
 		# SCRUM-947: trait «Проводник стихий» — источник истины в
-		# docs/design/class_traits_registry.md; механика — в
-		# ProgressionData.ELEMENTALIST_MAGIC_BONUS_EFFECTIVENESS.
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (magic_bonus_effectiveness), потребитель — derived_parameters.
 		"main_attribute": "intelligence",
 		"identity_title": "Проводник стихий",
 		"summary": "Интеллект складывает стихии в формулы, а трейт проводит их без потерь: каждый бонус магического урона на 30% эффективнее (+15% источник даёт ~+20%).",
