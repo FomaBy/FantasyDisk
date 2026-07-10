@@ -1,6 +1,6 @@
 # BUG SCRUM-1022: Druid Ghost Registry Omits `source_faces_left` Bool
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: /root/audit_qa
 Thread/Worker: collaboration subagent `/root/audit_qa`
