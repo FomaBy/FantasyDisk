@@ -17,6 +17,8 @@ aoe_radius = 220.0
 beam_width = 34.0
 grenade_delay = 0.2
 damage_falloff = 0.38
+close_burst_radius = 150.0
+close_burst_ratio = 0.8
 visual_color = Color(0.92, 0.96, 1, 0.46)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

@@ -5323,7 +5323,12 @@ func _test_sniper_weapon_mechanics() -> void:
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		weapon.call("_attack")
-		await create_timer(0.90).timeout
+		# SCRUM-932: у Прицела Наводчика отложенный артиллерийский снаряд
+		# (grenade_delay ~1с до падения) — как у метеора, ждём дольше окна.
+		var damage_window := 0.90
+		if weapon_id == "sniper_spotter_scope":
+			damage_window = float(weapon.get("grenade_delay")) + 0.55
+		await create_timer(damage_window).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Sniper weapon %s to damage its target." % weapon_id)
 			return
