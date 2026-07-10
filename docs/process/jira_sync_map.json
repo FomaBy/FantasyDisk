@@ -4425,12 +4425,17 @@
  },
  "SCRUM-990_artifact_reward_gold_shell.md": {
   "key": "SCRUM-990",
-  "status": "Контроль качества",
-  "desc_hash": "510e63dfc86d761e8afb3cfa32cb2765"
+  "status": "Готово",
+  "desc_hash": "0a901998d80931e8501c7176af33f99b"
  },
  "SCRUM-991_artifact_reward_resolved_text.md": {
   "key": "SCRUM-991",
-  "status": "Контроль качества",
-  "desc_hash": "7fbb5ad6c07a0f5cea768f9bf542333a"
+  "status": "Готово",
+  "desc_hash": "feedd3468b2c7befede1cb47a06ce9c9"
+ },
+ "SCRUM-992_artifact_reward_independent_qa.md": {
+  "key": "SCRUM-992",
+  "status": "Готово",
+  "desc_hash": "2ef6cd60629348203fef7bf4b80d8a0b"
  }
 }
