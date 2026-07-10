@@ -1238,9 +1238,8 @@ func _build_character_select_v4() -> void:
 	var header_h := maxf(back_button.get_combined_minimum_size().y, action_h)
 
 	# Геометрия (SCRUM-882): единая шапка (чип-титул слева, «Назад» справа) над
-	# ОБЕИМИ колоннами; ниже слева колонна-витрина (портрет на пьедестале →
-	# возвышение → CTA «Выбрать» у низа safe-зоны), справа досье строго вровень
-	# с портретом и карусель под ним.
+	# ОБЕИМИ колоннами; ниже слева колонна-витрина (портрет на пьедестале → CTA
+	# «Выбрать» у низа safe-зоны), справа досье → возвышение → карусель.
 	var column_gap := clampf(content_rect.size.x * 0.012, 8.0, 16.0)
 	var vgap := clampf(content_rect.size.y * 0.010, 4.0, 10.0)
 	var header_band := maxf(title_chip.get_combined_minimum_size().y + 4.0, header_h)
@@ -1251,11 +1250,13 @@ func _build_character_select_v4() -> void:
 	# пропорциональный даунскейл под ширину колонны, аспект не ломаем).
 	var choose_aspect := 104.0 / 380.0
 	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
-	var asc_min_h := 42.0 + ascension_pad * 2.0
+	# Utility button art has a 59px combined minimum at compact readability.
+	# Reserve it explicitly so the real Control rect (not just requested 42px)
+	# stays inside the ascension panel on 720p (SCRUM-980).
+	var asc_min_h := maxf(62.0, 42.0 + ascension_pad * 2.0)
 	var asc_target_h := maxf(asc_min_h, clampf(content_rect.size.y * 0.115, 52.0, 100.0))
-	# Вертикальный бюджет колонны: portrait + vgap + возвышение + vgap + CTA.
-	# На коротких вьюпортах превью ужимается ниже прежнего пола 320 — CTA и
-	# степпер возвышения (кнопки ≥42px, seal-контракт) важнее пары строк портрета.
+	# Вертикальный бюджет левой колонны: portrait + vgap + CTA. Возвышение после
+	# SCRUM-980 живёт в правой полосе и больше не отнимает высоту у preview.
 	var preview_floor := HS4_MINIMAL_PREVIEW_MIN_SIZE
 	if vp.y < 720.0:
 		preview_floor = 240.0
@@ -1264,12 +1265,15 @@ func _build_character_select_v4() -> void:
 	var left_x := content_rect.position.x
 	var left_top := content_rect.position.y + header_band + vgap
 	var column_budget := content_rect.end.y - left_top
-	var portrait_size := (column_budget - vgap * 2.0 - asc_target_h) / (1.0 + choose_aspect)
+	var portrait_size := (column_budget - vgap) / (1.0 + choose_aspect)
 	if portrait_size > MAX_ACTION_BUTTON_VISUAL_WIDTH:
 		# Плита CTA шире 560 не растёт (глобальный кап кита) — высота фиксируется.
-		portrait_size = column_budget - vgap * 2.0 - asc_target_h - roundf(MAX_ACTION_BUTTON_VISUAL_WIDTH * choose_aspect)
+		portrait_size = column_budget - vgap - roundf(MAX_ACTION_BUTTON_VISUAL_WIDTH * choose_aspect)
 	portrait_size = minf(portrait_size, content_rect.size.x * 0.34)
 	portrait_size = minf(portrait_size, content_rect.size.x - column_gap - carousel_min_w)
+	# Global action art caps at 560px; keep CTA at least 90% of the portrait
+	# column instead of allowing a visibly undersized plate on 1440p.
+	portrait_size = minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH / 0.90)
 	portrait_size = floorf(clampf(portrait_size, preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE))
 	var choose_w := minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH)
 	var choose_h := maxf(roundf(choose_w * choose_aspect), 68.0)
@@ -1281,7 +1285,8 @@ func _build_character_select_v4() -> void:
 	var carousel_y := content_rect.end.y - carousel_h
 
 	# Счётчик карусели «N–M из K» — полупрозрачный чип над правым краем карусели.
-	# Создаётся до досье: его высота резервирует полосу между досье и каруселью.
+	# Создаётся до досье: его фактическая ширина резервирует правый сегмент полосы
+	# возвышения между досье и каруселью.
 	var carousel_counter := PanelContainer.new()
 	carousel_counter.name = "HS4CarouselCounter"
 	var counter_style := _atlas_translucent_style(0.55, 8.0)
@@ -1300,13 +1305,12 @@ func _build_character_select_v4() -> void:
 	carousel_counter_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.72, 1.0))
 	carousel_counter.add_child(carousel_counter_label)
 	root.add_child(carousel_counter)
-	var counter_band := carousel_counter.get_combined_minimum_size().y
-
-	# Досье чуть ниже по высоте (фидбек): низ поднят минимум на 10% высоты полосы,
-	# освобождённая полоса — воздуху и счётчику карусели.
-	var dossier_full_h := carousel_y - vgap - dossier_y
-	var dossier_lift := maxf(roundf(dossier_full_h * 0.10), counter_band + 12.0)
-	var dossier_h := dossier_full_h - dossier_lift
+	# SCRUM-980: полоса между досье и каруселью принадлежит отдельному правому
+	# фрейму возвышения. Счётчик карусели занимает правый край той же полосы,
+	# поэтому ни описание, ни +/- не делят вертикаль с левой CTA.
+	var ascension_h := asc_target_h
+	var ascension_top := carousel_y - vgap - ascension_h
+	var dossier_h := maxf(0.0, ascension_top - vgap - dossier_y)
 
 	var portrait_panel := Panel.new()
 	portrait_panel.name = "HS4PortraitFrame"
@@ -1657,32 +1661,26 @@ func _build_character_select_v4() -> void:
 		dossier_content.add_child(guide_label)
 		guidance_labels[relevance] = guide_label
 
-	# Возвышение занимает полосу между портретом и CTA (кап 132px — лишний воздух
-	# уходит между возвышением и кнопкой, а не растягивает панель). Хост — обычный
-	# Panel с ручным лейаутом: PanelContainer растёт от min-size детей и ломает
-	# фикс-геометрию колонны (грабли SCRUM-876, см. memory).
-	var ascension_top := left_top + portrait_size + vgap
-	var ascension_h := maxf(asc_min_h, minf(choose_top - vgap - ascension_top, 132.0))
+	# Возвышение — широкая правая полоса между досье и каруселью. Хост остаётся
+	# обычным Panel: ручная арифметика гарантирует пустую content-zone рамки и не
+	# даёт minimum-size детей вытолкнуть CTA/карусель (SCRUM-876/SCRUM-980).
+	var ascension_counter_gap := maxf(column_gap, 8.0)
+	var ascension_w := maxf(0.0, dossier_w - carousel_counter.get_combined_minimum_size().x - ascension_counter_gap)
 	var ascension_panel := Panel.new()
 	ascension_panel.name = "HS4AscensionFrame"
-	ascension_panel.position = Vector2(left_x, ascension_top)
-	ascension_panel.size = Vector2(portrait_size, ascension_h)
+	ascension_panel.position = Vector2(dossier_x, ascension_top)
+	ascension_panel.size = Vector2(ascension_w, ascension_h)
 	ascension_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, ascension_pad))
 	ascension_panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	ascension_panel.clip_contents = true
 	root.add_child(ascension_panel)
-	# Вертикальный бюджет контента: степпер + (если влезает) строка модификаторов.
+	# Степпер слева, полное описание выбранного уровня в вертикальном scroll справа.
 	var asc_content_h := ascension_h - ascension_pad * 2.0
-	var asc_mods_font := _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16)
-	var asc_mods_line_h := roundf(float(asc_mods_font) * 1.5)
-	var asc_row_gap := 4.0
-	var asc_button_px := clampf(asc_content_h - asc_mods_line_h - asc_row_gap, 42.0, 56.0)
+	var asc_button_px := clampf(asc_content_h, 42.0, 56.0)
 	var asc_button_size := Vector2(asc_button_px, asc_button_px)
-	var asc_mods_fits := asc_content_h - asc_button_px - asc_row_gap >= asc_mods_line_h - 0.5
-	var asc_used_h := asc_button_px + ((asc_row_gap + asc_mods_line_h) if asc_mods_fits else 0.0)
-	var asc_row_y := ascension_pad + maxf(0.0, roundf((asc_content_h - asc_used_h) * 0.5))
 
-	# SCRUM-882: компакт-панель между портретом и CTA — титул всегда в тултипе
-	# панели, вертикальный бюджет уходит степперу и строке модификаторов.
+	# Заголовок/интро остаются скрытыми compatibility nodes; доступное описание
+	# уровня и полный cumulative tooltip принадлежат правой полосе.
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1691,7 +1689,7 @@ func _build_character_select_v4() -> void:
 	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	asc_label.visible = false
 	asc_label.position = Vector2(ascension_pad * 1.4, ascension_pad)
-	asc_label.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), 0.0)
+	asc_label.size = Vector2(maxf(0.0, ascension_w - ascension_pad * 2.8), 0.0)
 	ascension_panel.add_child(asc_label)
 
 	var asc_intro := Label.new()
@@ -1704,7 +1702,7 @@ func _build_character_select_v4() -> void:
 	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	asc_intro.position = Vector2(ascension_pad * 1.4, ascension_pad)
-	asc_intro.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), 0.0)
+	asc_intro.size = Vector2(maxf(0.0, ascension_w - ascension_pad * 2.8), 0.0)
 	ascension_panel.add_child(asc_intro)
 
 	var asc_box := HBoxContainer.new()
@@ -1731,27 +1729,70 @@ func _build_character_select_v4() -> void:
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
 	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
 	asc_box.add_child(asc_plus)
-	# Ручное центрирование ряда степпера в фикс-панели.
+	# Ручное центрирование фактического combined minimum: utility art может быть
+	# выше requested size, особенно на 720p.
 	asc_box.size = asc_box.get_combined_minimum_size()
-	asc_box.position = Vector2(roundf((portrait_size - asc_box.size.x) * 0.5), asc_row_y)
+	asc_box.position = Vector2(
+		ascension_pad,
+		roundf((ascension_h - asc_box.size.y) * 0.5))
 
+	var asc_description_gap := maxf(8.0, roundf(10.0 * layout_scale))
+	var asc_description_x := asc_box.position.x + asc_box.size.x + asc_description_gap
+	var asc_description_scroll := ScrollContainer.new()
+	asc_description_scroll.name = "HS4AscensionDescriptionScroll"
+	asc_description_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	asc_description_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	asc_description_scroll.focus_mode = Control.FOCUS_ALL
+	asc_description_scroll.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	asc_description_scroll.tooltip_text = "Описание Возвышения. Прокрутка: ↑/↓ или колесо мыши."
+	asc_description_scroll.position = Vector2(asc_description_x, ascension_pad)
+	asc_description_scroll.size = Vector2(
+		maxf(0.0, ascension_w - asc_description_x - ascension_pad),
+		maxf(0.0, ascension_h - ascension_pad * 2.0))
+	ascension_panel.add_child(asc_description_scroll)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
+	asc_mods.custom_minimum_size = Vector2(maxf(0.0, asc_description_scroll.size.x - 14.0), 0.0)
+	asc_mods.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 1
-	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_mods.max_lines_visible = -1
+	asc_mods.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	asc_mods.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", asc_mods_font)
+	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	# Компакт-страховка: если строка модификаторов не помещается под степпером,
-	# она уходит в тултип панели (бюджет решается арифметикой, не min-size).
-	asc_mods.visible = asc_mods_fits
-	asc_mods.position = Vector2(ascension_pad * 1.4, asc_row_y + asc_button_px + asc_row_gap)
-	asc_mods.size = Vector2(maxf(0.0, portrait_size - ascension_pad * 2.8), asc_mods_line_h)
-	ascension_panel.add_child(asc_mods)
+	asc_mods.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	asc_description_scroll.add_child(asc_mods)
+	asc_description_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := asc_description_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(floor(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(asc_description_scroll.size.y * 0.65)))
+		var previous_scroll := asc_description_scroll.scroll_vertical
+		var target_scroll := clampi(
+			asc_description_scroll.scroll_vertical + scroll_direction * scroll_step,
+			0,
+			scroll_max)
+		if target_scroll == previous_scroll:
+			# ScrollContainer owns ui_up/down internally, so explicitly hand focus
+			# to the declared boundary neighbor when there is nothing left to scroll.
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := asc_description_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				asc_description_scroll.accept_event()
+			return
+		asc_description_scroll.scroll_vertical = target_scroll
+		asc_description_scroll.accept_event()
+	)
 
-	# Фидбек SCRUM-882: CTA «Выбрать» — под превью и возвышением, прижат к низу
+	# CTA «Выбрать» — под превью, прижат к низу
 	# safe-зоны, на плите кнопок главного меню (main_menu_380x104 через
 	# _text_button_unique_id) во всю ширину колонны. Шрифт — базовый кнопочный
 	# (как в главном меню), без кастомных override.
@@ -1908,11 +1949,15 @@ func _build_character_select_v4() -> void:
 		asc_minus.focus_neighbor_top = back_button.get_path()
 		asc_minus.focus_neighbor_bottom = select_button.get_path()
 		asc_plus.focus_neighbor_left = asc_minus.get_path()
-		asc_plus.focus_neighbor_right = asc_minus.get_path()
+		asc_plus.focus_neighbor_right = asc_description_scroll.get_path()
 		asc_plus.focus_neighbor_top = back_button.get_path()
 		asc_plus.focus_neighbor_bottom = select_button.get_path()
-		# SCRUM-882: CTA внизу левой колонны — сверху степпер возвышения,
-		# справа вход в ряд карусели.
+		asc_description_scroll.focus_neighbor_left = asc_plus.get_path()
+		asc_description_scroll.focus_neighbor_right = asc_description_scroll.get_path()
+		asc_description_scroll.focus_neighbor_top = back_button.get_path()
+		asc_description_scroll.focus_neighbor_bottom = select_button.get_path()
+		# CTA внизу левой колонны: вверх ведёт к степперу правой полосы,
+		# вправо — вход в ряд карусели.
 		select_button.focus_neighbor_left = asc_minus.get_path()
 		select_button.focus_neighbor_right = left_arrow.get_path()
 		select_button.focus_neighbor_top = asc_minus.get_path()
@@ -1984,8 +2029,10 @@ func _build_character_select_v4() -> void:
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
 		asc_stepper_label.text = "%d / %d" % [game.selected_ascension_level, maxl]
-		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
 		var ascension_tooltip := _hs4_ascension_text(game.selected_ascension_level)
+		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
+		asc_description_scroll.scroll_vertical = 0
+		asc_description_scroll.set_deferred("scroll_vertical", 0)
 		asc_mods.tooltip_text = ascension_tooltip
 		ascension_panel.tooltip_text = ascension_tooltip
 		asc_minus.disabled = game.selected_ascension_level <= 0

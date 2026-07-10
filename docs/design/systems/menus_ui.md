@@ -291,7 +291,31 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- SCRUM-798 keeps the 2026-06-30 user-requested minimal black Hero Select direction, not the older ornate/Pixellab frame layout, but rebuilds the live sizing and information hierarchy. `_show_character_select()` / `_build_character_select_v4()` builds `HeroSelectScreen` over `HS4BlackBackground`; no title frame, no PixelLab backdrop, no compass rose, and no `HeroStatRadar` are active. The selected `HS4Portrait` is now the dominant left-column object (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `660x660` on tall screens) and keeps SCRUM-416/SCRUM-687 directional SpriteFrame rotation when available. `HS4AscensionFrame` is directly below the preview with `-`/`+`, max clamping, modifier text/tooltip and `HS4ChooseButton`. The right `HS4DossierFrame` is scroll-safe and contains class title, description, strengths, weaknesses, weapon names, class identity, eight base characteristics as hoverable Line Bars with rich `StatFormulas.STAT_DEFINITIONS` + class interpretation tooltips, and data-driven build guidance sections `Основные атрибуты`, `Второстепенные атрибуты`, `Дополнительные атрибуты` from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive `HS4CarouselSlot_*` buttons (`~203px` at 720p, `~305px` at 1080p, capped near `320px`), larger arrows, cyclic paging and default focus on the selected visible slot. Since SCRUM-421 follow-up, carousel portraits are also alpha-bottom aligned inside clipped slots so PixelLab classes with different transparent canvas padding share one visible baseline. SCRUM-822 now positions both the large preview and carousel portraits by cached alpha bounding boxes, so transparent side padding is ignored, visible bodies are centered/bottom-aligned, and each carousel slot reserves a bottom `HS4CarouselLabel_*` name strip from the character title. Evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`, `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
+- SCRUM-980 supersedes the old left-column ascension geometry while preserving
+  the active HS4/Atlas art and selected-level semantics. `HS4AscensionFrame` is
+  now a wide right-hand band between `HS4DossierFrame` and `HS4Carousel`;
+  `HS4AscensionActionRow` occupies its left safe segment and the untrimmed
+  `AscensionModsLabel` occupies `HS4AscensionDescriptionScroll` in the right
+  segment. At 1280×720 the text scrolls vertically; at 1920×1080 and
+  2560×1440 the current-level delta fits in full. `HS4CarouselCounter` reserves
+  a separate segment beside the frame, while `HS4ChooseButton` remains at the
+  bottom of the left portrait column. Stepper, description, counter, carousel,
+  dossier and CTA must never overlap or cover frame ornament. Focused geometry
+  coverage: `tests/hero_select_scrum980_ascension_layout_test.gd`; transient
+  rect/screenshot evidence: `build/qa/scrum980/`.
+- Historical SCRUM-798 baseline (its ascension placement is superseded by
+  SCRUM-980 above) keeps the 2026-06-30 user-requested minimal Hero Select
+  sizing/information hierarchy. The selected `HS4Portrait` is the dominant
+  left-column object and keeps SCRUM-416/SCRUM-687 directional SpriteFrame
+  rotation when available. The right `HS4DossierFrame` is scroll-safe and
+  contains class title, description, strengths, weaknesses, weapon names,
+  class identity, eight base characteristics as hoverable Line Bars and
+  data-driven build guidance. The bottom `HS4Carousel` uses enlarged responsive
+  slots, cyclic paging and default focus on the selected visible slot. Since
+  SCRUM-421/SCRUM-822, large and carousel portraits use cached alpha bounds for
+  consistent centering/bottom alignment and reserve a name strip. Historical
+  evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`,
+  `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
 - SCRUM-870 supersedes the SCRUM-868 full-screen Weapon Select runtime layer.
   `_show_weapon_select()` no longer creates `WeaponSelectPixelLabRuntimeLayer`;
   the old PixelLab layer remains only as historical SCRUM-867/868 evidence.

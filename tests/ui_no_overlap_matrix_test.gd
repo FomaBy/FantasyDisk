@@ -1372,7 +1372,11 @@ func _text_control_contract_error(control: Control, context: String) -> String:
 	var parent_control := control.get_parent() as Control
 	if parent_control != null and parent_control.is_visible_in_tree() and parent_control.get_global_rect().has_area():
 		var parent_rect := parent_control.get_global_rect().grow(TEXT_OVERFLOW_TOLERANCE)
-		if not parent_rect.encloses(rect):
+		# A ScrollContainer's direct content is intentionally allowed to exceed
+		# its viewport; only the clipped visible intersection must remain usable.
+		if parent_control is ScrollContainer and not parent_control.get_global_rect().intersection(rect).has_area():
+			return "%s: text control %s has no visible area inside scroll viewport %s." % [context, control.name, str(parent_control.get_global_rect())]
+		if not parent_control is ScrollContainer and not parent_rect.encloses(rect):
 			return "%s: text control %s rect %s escapes parent content rect %s." % [context, control.name, str(rect), str(parent_control.get_global_rect())]
 
 	var needed := _text_control_needed_size(control)

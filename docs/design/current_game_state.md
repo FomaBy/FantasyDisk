@@ -285,6 +285,17 @@ SCRUM-356 подключил unified Hero Select frame в runtime: `assets/sprit
 
 SCRUM-798 (2026-07-01) supersedes the first black-minimal Hero Select sizing while keeping the same no-frame/no-radar direction. The current `HeroSelectScreen` is built by `_build_character_select_v4()` over `HS4BlackBackground`: a large selected `HS4Portrait` dominates the left column (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `620x620` on tall screens), `HS4AscensionFrame` sits directly below the preview with `-`/`+`, modifier text/tooltip and `HS4ChooseButton`, and the right `HS4DossierFrame` is a scroll-safe class dossier. The dossier now shows description, strengths/weaknesses, weapons, class identity, eight base characteristics as hoverable Line Bars (`HS4Stat_*` with `HS4StatBarFill_*`) and data-driven build guidance sections for `primary`/`secondary`/`optional` attribute relevance from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive slots (`~187px` at 720p, `~281px` at 1080p, capped near `304px`) with larger arrows and selected/hover/focus states. The old Hero Select frame assets remain historical/reference assets only for this screen. QA evidence: `build/qa/scrum-798/`.
 
+SCRUM-980 supersedes only that paragraph's ascension placement. The live
+`HS4AscensionFrame` is now a wide right-hand band between dossier and carousel:
+the `-`/value/`+` stepper occupies its left content segment, while the exact
+selected-level delta is untrimmed inside vertical
+`HS4AscensionDescriptionScroll` on the right. The 1280×720 layout scrolls the
+long delta inside the frame; 1920×1080 and 2560×1440 show it in full.
+`HS4CarouselCounter` and `HS4ChooseButton` keep separate reserved zones, so no
+ascension text/control overlaps the carousel, dossier, portrait, frame border or
+CTA. Coverage: `tests/hero_select_scrum980_ascension_layout_test.gd` and
+transient `build/qa/scrum980/`.
+
 SCRUM-263/264 остаются правилом размеров: стандартные action-кнопки 104px высотой через `_make_button()` и `_set_action_button_size()`, main menu использует 380x104, wide action capped до 560px, pause menu 280x60, rebind/dropdown-style controls 420x62, compact utility 54x42 и FAB 50x50. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Route nodes, shop item hit areas, hero thumbnails, reward/weapon cards остаются карточками/hit areas без heavy action button frame. SCRUM-281 добавляет локальное исключение: `HeroSelectChooseButton` использует compact `hero_confirm` 260x72, чтобы screen-specific herouiframe layout оставался внутри 1280x720. Runtime smoke пишет фактический dump размеров в `build/qa/scrum450_minimal_metal_buttons/minimal_metal_button_sizes.md`.
 
 Contextual UI frame kits removed from runtime `assets/sprites/ui/frames/contextual/` by SCRUM-418 after no live references were found; historical backup lives under `build/qa/scrum418/removed_assets_backup/` and active UI direction remains Red & Gold Dragon + Ornate Dark canon.
@@ -1457,8 +1468,9 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
   UI-рамки, PixelLab backdrop, title frame и compass/radar. Экран строится на
   `HS4BlackBackground`: слева крупный responsive `HS4Portrait` с направленной
   preview-rotation для PixelLab-классов и static `sprite_path` fallback для
-  остальных; прямо под превью расположен `HS4AscensionFrame` с выбором уровня
-  `-`/`+`, строкой модификатора/tooltip и кнопкой `HS4ChooseButton`; справа
+  остальных; `HS4ChooseButton` расположен под превью, а широкий правый
+  `HS4AscensionFrame` между досье и каруселью содержит выбор уровня `-`/`+` и
+  scroll-safe строку модификатора/tooltip в отдельной content-zone; справа
   находится scroll-safe `HS4DossierFrame` с описанием, сильными/слабыми
   сторонами, оружием, class identity, восемью характеристиками как hoverable
   Line Bars и data-driven секциями `Основные атрибуты`,
@@ -1466,7 +1478,8 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
   увеличенными responsive слотами и крупными cyclic-стрелками. Select,
   Back/Escape, ascension stepper, default focus and carousel interaction behavior
   are preserved. Focused coverage: `tests/hero_select_pixellab_layout_test.gd`,
-  `tests/hero_select_scrum798_capture_test.gd`, existing Berserk/Dark Mage/Guitarist Hero Select preview
+  `tests/hero_select_scrum798_capture_test.gd`,
+  `tests/hero_select_scrum980_ascension_layout_test.gd`, existing Berserk/Dark Mage/Guitarist Hero Select preview
   smokes, `runtime_smoke_ui_test.gd`, and `ui_no_overlap_matrix_test.gd`.
 - Размеры изображений: кодекс — персонажи 216px with covered scaling (SCRUM-417), монстры 150px, артефакты 96px; HUD-артефакты 48px; пауза-артефакты 56px; иконки магазина 112px внутри frameless hit area 164x186.
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
@@ -1569,7 +1582,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | --- | --- |
 | Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
-| Выбор персонажа | Fullscreen minimal black SCRUM-798: слева крупное responsive rotating selected hero preview, под ним Возвышение + старт, справа scroll-safe dossier with strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance, снизу enlarged carousel slots with arrow scrolling |
+| Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe dossier; между dossier и нижней carousel находится SCRUM-980 `HS4AscensionFrame` с focusable `-`/value/`+` и keyboard/gamepad/mouse-scroll описанием выбранного уровня в отдельной content-zone; strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance сохраняются |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | Вертикальная карта с иконками и tooltip |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
