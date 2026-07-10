@@ -1,6 +1,6 @@
 # BUG: meta_skill_tree live-combat keystone scenarios недетерминированы
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1028
 Контур: Codex
