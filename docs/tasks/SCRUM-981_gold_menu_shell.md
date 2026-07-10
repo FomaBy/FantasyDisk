@@ -162,3 +162,14 @@ SCRUM-981 остаётся в `Контроль качества`; runtime QA н
 
 Disk cleanup: disposable QA worktree/cache/UID sidecars удаляются после push
 QA verdict mirrors. Thread cleanup: handled by parent dispatcher.
+
+### Re-QA after SCRUM-1036 (2026-07-10)
+
+Статус: FAILED
+
+Fix `144371177` закрыл исходный выход HUD/FAB в forbidden inner reserve на
+fresh 720p/1080p/1440p; exact Route Map, Combat/frameless Level Up и весь
+перечисленный regression set зелёные. Новый блокирующий child `SCRUM-1039`:
+live `2560 -> 1280` оставляет завышенные minimum sizes resource tracks, из-за
+чего HP/XP пересекаются на `10px`, XP/ULT — на `9px`. Parent остаётся в
+`Контроль качества`; product code/tests/art QA не менял.

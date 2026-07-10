@@ -104,3 +104,25 @@ follows after this routing mirror lands.
 Независимая приёмка SCRUM-981 на `02fc618de`; product/runtime files QA не
 менял. Связанный Jira verdict содержит полную матрицу rect и список зелёных
 регрессионных гейтов.
+
+## QA-Вердикт — independent re-QA (2026-07-10)
+
+Статус: FAILED
+
+Проверено на свежем `origin/dev` `5229e770f` с fix `144371177`. Исходный
+дефект inner-reserve исправлен: на `1280x720`, `1920x1080`, `2560x1440`
+каждый видимый HUD child находится в authored inner rect; Rest FAB точно
+`72x72`, uniformly scaled и занимает top-right socket; HUD/FAB/content panel
+не пересекаются. Exact Route Map specialized gate, Combat/frameless Level Up
+regression, focused/no-overlap/theme/runtime UI, gamepad `2/2`,
+animation/meta/targeting и full runtime зелёные.
+
+Блокирующий child: `SCRUM-1039`. После live `2560x1440 -> 1280x720` stale child
+minimum sizes увеличивают HP/XP/ULT tracks до `32/26/26px`, поэтому HP/XP
+пересекаются на `10px`, XP/ULT — на `9px`. Current oracle проверяет inner
+containment и возврат к 2K, но не sibling disjointness/совпадение со fresh
+1280. Product code/tests/art QA не менял.
+
+Disk cleanup: removed QA `.godot` cache (`~450 MB`), temporary probe and
+generated UID sidecars; disposable clean worktree/branch removal follows after
+the routing commit is pushed. Thread cleanup: handled by parent dispatcher.
