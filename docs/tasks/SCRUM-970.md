@@ -1,6 +1,6 @@
 # SCRUM-970 — Atlas/Guild skill-node clickability at 1920×1080
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-970
 Контур: Codex
