@@ -1,0 +1,218 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_safe",
+      "kind": "panel",
+      "rect": [
+        48,
+        28,
+        1184,
+        664
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "settings_title",
+      "kind": "text",
+      "rect": [
+        96,
+        52,
+        360,
+        66
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "back_button",
+      "kind": "button",
+      "rect": [
+        972,
+        48,
+        220,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    },
+    {
+      "id": "tab_screen",
+      "kind": "button",
+      "rect": [
+        368,
+        132,
+        260,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_sound",
+      "kind": "button",
+      "rect": [
+        652,
+        132,
+        260,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "tab_controls",
+      "kind": "button",
+      "rect": [
+        368,
+        216,
+        260,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "tab_game",
+      "kind": "button",
+      "rect": [
+        652,
+        216,
+        260,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "content_panel",
+      "kind": "panel",
+      "rect": [
+        160,
+        306,
+        960,
+        364
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "content_safe",
+      "kind": "zone",
+      "rect": [
+        184,
+        322,
+        912,
+        326
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "game_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        194,
+        332,
+        892,
+        306
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 520,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1072,
+        332,
+        14,
+        306
+      ]
+    },
+    {
+      "id": "game_title",
+      "kind": "text",
+      "rect": [
+        208,
+        340,
+        400,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "game_status",
+      "kind": "text",
+      "rect": [
+        730,
+        340,
+        330,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 21
+    },
+    {
+      "id": "game_desc",
+      "kind": "text",
+      "rect": [
+        208,
+        384,
+        852,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 19
+    },
+    {
+      "id": "game_warning",
+      "kind": "text",
+      "rect": [
+        208,
+        424,
+        852,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "row_monster_hp",
+      "kind": "panel",
+      "rect": [
+        204,
+        478,
+        842,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_monster_damage",
+      "kind": "panel",
+      "rect": [
+        204,
+        546,
+        842,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

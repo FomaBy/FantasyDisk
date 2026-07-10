@@ -1,0 +1,35 @@
+{
+  "ticket": "SCRUM-975",
+  "canvas": {"width": 1280, "height": 720},
+  "policy": {"min_gap": 5, "allow_overlap": false},
+  "content": {
+    "settings_title": "Настройки",
+    "back": "Назад",
+    "tab_screen": "Экран",
+    "tab_sound": "Звук",
+    "tab_controls": "Управление",
+    "tab_game": "Игра",
+    "game_title": "Песочница забега",
+    "game_status": "Обычный режим · 1.0×",
+    "game_desc": "Настройки применятся со следующего забега.",
+    "game_warning": "Пользовательский режим отключает обычный прогресс и достижения."
+  },
+  "elements": [
+    {"id": "screen_safe", "kind": "panel", "x": 48, "y": 28, "w": 1184, "h": 664, "collision": false},
+    {"id": "settings_title", "kind": "text", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 96, "y": 52, "w": 360, "h": 66, "text_key": "settings_title", "max_font": 36, "min_font": 24},
+    {"id": "back_button", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 972, "y": 48, "w": 220, "h": 72, "text_key": "back", "max_font": 27, "min_font": 20},
+    {"id": "tab_screen", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 368, "y": 132, "w": 260, "h": 72, "text_key": "tab_screen", "max_font": 26, "min_font": 18},
+    {"id": "tab_sound", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 652, "y": 132, "w": 260, "h": 72, "text_key": "tab_sound", "max_font": 26, "min_font": 18},
+    {"id": "tab_controls", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 368, "y": 216, "w": 260, "h": 72, "text_key": "tab_controls", "max_font": 24, "min_font": 17},
+    {"id": "tab_game", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 652, "y": 216, "w": 260, "h": 72, "text_key": "tab_game", "max_font": 26, "min_font": 18},
+    {"id": "content_panel", "kind": "panel", "parent": "screen_safe", "x": 160, "y": 306, "w": 960, "h": 364, "collision": false},
+    {"id": "content_safe", "kind": "zone", "parent": "content_panel", "content_zone": true, "x": 184, "y": 322, "w": 912, "h": 326, "collision": false},
+    {"id": "game_scroll", "kind": "scroll_area", "parent": "content_safe", "content_zone": true, "x": 194, "y": 332, "w": 892, "h": 306, "scroll": "auto", "content_h": 520, "scrollbar_w": 14, "min_content_w": 780, "collision": false},
+    {"id": "game_title", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 340, "w": 400, "h": 34, "text_key": "game_title", "max_font": 25, "min_font": 18},
+    {"id": "game_status", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 730, "y": 340, "w": 330, "h": 34, "text_key": "game_status", "max_font": 21, "min_font": 16},
+    {"id": "game_desc", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 384, "w": 852, "h": 30, "text_key": "game_desc", "max_font": 19, "min_font": 15},
+    {"id": "game_warning", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 424, "w": 852, "h": 42, "text_key": "game_warning", "max_font": 18, "min_font": 14},
+    {"id": "row_monster_hp", "kind": "panel", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 204, "y": 478, "w": 842, "h": 56},
+    {"id": "row_monster_damage", "kind": "panel", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 204, "y": 546, "w": 842, "h": 56}
+  ]
+}

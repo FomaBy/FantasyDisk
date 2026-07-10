@@ -1,0 +1,45 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F0E2B9",
+    "stroke_fill": "#160E0A",
+    "stroke_width": 1,
+    "line_spacing": 1.04,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "settings_title": "Настройки",
+    "back": "Назад",
+    "tab_screen": "Экран",
+    "tab_sound": "Звук",
+    "tab_controls": "Управление",
+    "tab_game": "Игра",
+    "game_title": "Песочница забега",
+    "game_status": "Обычный режим · 1.0×",
+    "game_desc": "Настройки применятся со следующего забега.",
+    "game_warning": "Пользовательский режим отключает обычный прогресс и достижения.",
+    "monster_hp": "Здоровье монстров",
+    "monster_damage": "Урон монстров",
+    "neutral": "1.0×",
+    "scroll_hint": "Прокрутите вниз: ещё 3 параметра и сброс"
+  },
+  "zones": [
+    {"id": "settings_title", "content_key": "settings_title", "x": 112, "y": 56, "w": 320, "h": 56, "max_font": 34, "min_font": 22, "color": "#F5E6AE"},
+    {"id": "back", "content_key": "back", "x": 1010, "y": 60, "w": 144, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_screen", "content_key": "tab_screen", "x": 396, "y": 144, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_sound", "content_key": "tab_sound", "x": 680, "y": 144, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_controls", "content_key": "tab_controls", "x": 396, "y": 228, "w": 204, "h": 48, "max_font": 22, "min_font": 17, "align": "center"},
+    {"id": "tab_game", "content_key": "tab_game", "x": 680, "y": 228, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center", "color": "#F7D475"},
+    {"id": "game_title", "content_key": "game_title", "x": 208, "y": 332, "w": 400, "h": 34, "max_font": 25, "min_font": 18, "color": "#F5E6AE"},
+    {"id": "game_status", "content_key": "game_status", "x": 700, "y": 332, "w": 300, "h": 34, "max_font": 20, "min_font": 15, "align": "right", "color": "#A7D7A2"},
+    {"id": "game_desc", "content_key": "game_desc", "x": 208, "y": 374, "w": 800, "h": 28, "max_font": 18, "min_font": 14, "color": "#B8D6FF"},
+    {"id": "game_warning", "content_key": "game_warning", "x": 208, "y": 410, "w": 800, "h": 34, "max_font": 17, "min_font": 13, "color": "#F0CC75"},
+    {"id": "label_monster_hp", "content_key": "monster_hp", "x": 250, "y": 462, "w": 410, "h": 38, "max_font": 20, "min_font": 15},
+    {"id": "value_monster_hp", "content_key": "neutral", "x": 680, "y": 462, "w": 100, "h": 38, "max_font": 20, "min_font": 15, "align": "center", "color": "#F0CC75"},
+    {"id": "label_monster_damage", "content_key": "monster_damage", "x": 250, "y": 526, "w": 410, "h": 38, "max_font": 20, "min_font": 15},
+    {"id": "value_monster_damage", "content_key": "neutral", "x": 680, "y": 526, "w": 100, "h": 38, "max_font": 20, "min_font": 15, "align": "center", "color": "#F0CC75"},
+    {"id": "scroll_hint", "content_key": "scroll_hint", "x": 250, "y": 598, "w": 730, "h": 24, "max_font": 16, "min_font": 13, "color": "#B8D6FF", "align": "center"}
+  ]
+}

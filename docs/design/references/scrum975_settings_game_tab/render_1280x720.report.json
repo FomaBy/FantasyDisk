@@ -1,0 +1,320 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "settings_title",
+      "rect": [
+        112,
+        56,
+        320,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "Настройки"
+      ],
+      "text_bbox": [
+        112,
+        67,
+        170,
+        34
+      ]
+    },
+    {
+      "id": "back",
+      "rect": [
+        1010,
+        60,
+        144,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 25,
+      "lines": [
+        "Назад"
+      ],
+      "text_bbox": [
+        1045,
+        72,
+        74,
+        24
+      ]
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        396,
+        144,
+        204,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 25,
+      "lines": [
+        "Экран"
+      ],
+      "text_bbox": [
+        462,
+        156,
+        73,
+        25
+      ]
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        680,
+        144,
+        204,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 25,
+      "lines": [
+        "Звук"
+      ],
+      "text_bbox": [
+        754,
+        156,
+        55,
+        25
+      ]
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        396,
+        228,
+        204,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Управление"
+      ],
+      "text_bbox": [
+        436,
+        241,
+        125,
+        22
+      ]
+    },
+    {
+      "id": "tab_game",
+      "rect": [
+        680,
+        228,
+        204,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 25,
+      "lines": [
+        "Игра"
+      ],
+      "text_bbox": [
+        753,
+        240,
+        58,
+        25
+      ]
+    },
+    {
+      "id": "game_title",
+      "rect": [
+        208,
+        332,
+        400,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 25,
+      "lines": [
+        "Песочница забега"
+      ],
+      "text_bbox": [
+        208,
+        336,
+        214,
+        26
+      ]
+    },
+    {
+      "id": "game_status",
+      "rect": [
+        700,
+        332,
+        300,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Обычный режим · 1.0×"
+      ],
+      "text_bbox": [
+        786,
+        338,
+        214,
+        21
+      ]
+    },
+    {
+      "id": "game_desc",
+      "rect": [
+        208,
+        374,
+        800,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "Настройки применятся со следующего забега."
+      ],
+      "text_bbox": [
+        208,
+        378,
+        392,
+        20
+      ]
+    },
+    {
+      "id": "game_warning",
+      "rect": [
+        208,
+        410,
+        800,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 17,
+      "lines": [
+        "Пользовательский режим отключает обычный прогресс и достижения."
+      ],
+      "text_bbox": [
+        208,
+        418,
+        562,
+        18
+      ]
+    },
+    {
+      "id": "label_monster_hp",
+      "rect": [
+        250,
+        462,
+        410,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Здоровье монстров"
+      ],
+      "text_bbox": [
+        250,
+        471,
+        185,
+        20
+      ]
+    },
+    {
+      "id": "value_monster_hp",
+      "rect": [
+        680,
+        462,
+        100,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        709,
+        473,
+        42,
+        16
+      ]
+    },
+    {
+      "id": "label_monster_damage",
+      "rect": [
+        250,
+        526,
+        410,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Урон монстров"
+      ],
+      "text_bbox": [
+        250,
+        535,
+        142,
+        20
+      ]
+    },
+    {
+      "id": "value_monster_damage",
+      "rect": [
+        680,
+        526,
+        100,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        709,
+        537,
+        42,
+        16
+      ]
+    },
+    {
+      "id": "scroll_hint",
+      "rect": [
+        250,
+        598,
+        730,
+        24
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 16,
+      "lines": [
+        "Прокрутите вниз: ещё 3 параметра и сброс"
+      ],
+      "text_bbox": [
+        454,
+        602,
+        323,
+        17
+      ]
+    }
+  ]
+}

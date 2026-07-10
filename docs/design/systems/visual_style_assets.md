@@ -672,6 +672,18 @@ Rebuild/QA assets:
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` - SCRUM-439 Settings v2 three-slot switcher candidate (`1280x256`, RGBA; slot safe rects `Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`, `Rect2(854,78,275,92)`);
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png` - SCRUM-439 Settings v2 nested section panel candidate (`1024x384`, RGBA; content margins `104/96/104/92`);
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png` - SCRUM-439 Settings v2 control-row frame candidate (`1536x192`, RGBA; content margins `96/54/96/54`);
+- `docs/design/references/scrum975_settings_game_tab/` - SCRUM-975 PixelLab
+  source package for the four-tab Settings/Game sandbox extension. The accepted
+  layout uses four separate plates instead of modifying the historical
+  three-slot strip: one 4×1 row at 1920×1080/2560×1440 and a 2×2 reflow at
+  1280×720. Exact panel/content zones, 720p scroll lane, five modifier rows,
+  reset/status contract, PixelLab IDs, post-processing provenance and fit
+  reports are recorded in `spec.md`, `ui_plan*.json`, `layout*.json` and
+  `manifest.json`; rendered/debug previews live under
+  `docs/design/previews/scrum975_settings_game_tab/`. Runtime promotion is a
+  separate Back-end handoff and must reuse the current live Settings shell,
+  fields, sliders, value chips and action plates rather than stretching a
+  combined bitmap.
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;

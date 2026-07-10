@@ -1,0 +1,93 @@
+{
+  "ticket": "SCRUM-975",
+  "name": "settings_four_tab_game_design",
+  "generated": "2026-07-10",
+  "owner": "Design/Codex /root/design_scrum975",
+  "pipeline": "UI Director -> content-zone planning gate -> PixelLab MCP create_ui_asset -> deterministic checker-alpha cleanup -> accepted existing Settings backdrop underlay -> content-zone compositor",
+  "pixellab_mcp": {
+    "config_smoke": "PASS: get_balance returned a JSON-RPC result; no credentials printed or stored",
+    "generic_openai_fallback": false,
+    "assets": [
+      {
+        "purpose": "2560x1440 and 1920x1080 four-tab one-row Settings/Game frame layer",
+        "ui_asset_id": "105dd091-3096-41c5-a1e5-bc3277cfaef0",
+        "name": "scrum975_settings_four_tab_game_layout",
+        "source_size": [672, 378],
+        "seed": 975,
+        "source": "pixellab_settings_four_tab_layout_source.png",
+        "alpha_layer": "pixellab_settings_four_tab_layout_alpha.png",
+        "mockup_bases": [
+          "pixellab_settings_four_tab_layout_2560x1440.png",
+          "pixellab_settings_four_tab_layout_1920x1080.png"
+        ],
+        "notes": "four separate tabs; fourth tab active; five slider rows; source is textless; PixelLab baked an opaque neutral checker outside the art, removed only as connected export background by postprocess_assets.py"
+      },
+      {
+        "purpose": "1280x720 responsive 2x2 tab reflow with internal scroll lane",
+        "ui_asset_id": "4c7ff5a3-1655-456b-ba16-2d724a0e7525",
+        "name": "scrum975_settings_four_tab_game_layout_720",
+        "source_size": [672, 378],
+        "seed": 977,
+        "source": "pixellab_settings_four_tab_layout_720_source.png",
+        "alpha_layer": "pixellab_settings_four_tab_layout_720_alpha.png",
+        "mockup_base": "pixellab_settings_four_tab_layout_1280x720.png",
+        "notes": "four 260x72-equivalent plates in a 2x2 grid; generated vertical scrollbar lane; disconnected tinted checker export artifacts behind the active tab removed by exact, documented cleanup regions"
+      },
+      {
+        "purpose": "Game tab icon source sheet",
+        "ui_asset_id": "62c4a582-2b12-4a3e-9b41-6d747caa7b6a",
+        "name": "scrum975_settings_game_tab_medallion",
+        "source_size": [192, 192],
+        "seed": 976,
+        "source": "pixellab_game_tab_medallion_source.png",
+        "selected_component_bbox": [151, 10, 165, 24],
+        "final_candidate": "ui_settings_game_tab_icon_44.png",
+        "final_size": [44, 44],
+        "alpha_bbox": [8, 8, 36, 36],
+        "content_reserve": 8,
+        "notes": "PixelLab returned a textless UI source sheet; a single isolated worn-gold round sandbox dial glyph was selected and nearest-neighbor scaled into the established 44x44 Settings icon contract"
+      }
+    ]
+  },
+  "accepted_existing_source_reuse": {
+    "background": "assets/backgrounds/ui/ui_backdrop_system_cathedral.png",
+    "reason": "already accepted and live for Settings; PixelLab provides the new frame/layout layer, while the backdrop remains the established visual anchor",
+    "shade": 0.3
+  },
+  "planning": {
+    "base": "ui_plan.json",
+    "base_report": "ui_plan.report.json",
+    "base_decision": "ready_for_image",
+    "compact": "ui_plan_1280x720.json",
+    "compact_report": "ui_plan_1280x720.report.json",
+    "compact_decision": "ready_for_image"
+  },
+  "composite_outputs": [
+    {
+      "size": [1280, 720],
+      "preview": "docs/design/previews/scrum975_settings_game_tab/settings_game_1280x720.png",
+      "debug": "docs/design/previews/scrum975_settings_game_tab/settings_game_1280x720.debug.png",
+      "report": "render_1280x720.report.json",
+      "fit": true,
+      "scroll": "required; 14px lane; initial view shows first two rows"
+    },
+    {
+      "size": [1920, 1080],
+      "preview": "docs/design/previews/scrum975_settings_game_tab/settings_game_1920x1080.png",
+      "debug": "docs/design/previews/scrum975_settings_game_tab/settings_game_1920x1080.debug.png",
+      "report": "render_1920x1080.report.json",
+      "fit": true,
+      "scroll": "not required"
+    },
+    {
+      "size": [2560, 1440],
+      "preview": "docs/design/previews/scrum975_settings_game_tab/settings_game_2560x1440.png",
+      "debug": "docs/design/previews/scrum975_settings_game_tab/settings_game_2560x1440.debug.png",
+      "report": "render_2560x1440.report.json",
+      "fit": true,
+      "scroll": "not required"
+    }
+  ],
+  "runtime_promotion": "none in SCRUM-975; Back-end handoff may promote ui_settings_game_tab_icon_44.png and must reuse current live shell/fields/sliders/buttons",
+  "secrets": "none embedded"
+}

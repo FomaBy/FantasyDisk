@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-07-03
+Обновлено: 2026-07-10
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -188,6 +188,22 @@ native 2048×1232 (covers 2K+4K), proportional 1536×924 at 1080p (no one-axis
 stretch — only tiled 9-slice centers adapt). Runtime swap is a Back-end follow-up
 per `docs/design/references/settings_v3_full_redraw/backend_handoff.md` (exact
 paths, texture margins, node IDs, tests); v2/minimal-metal stays live until then.
+
+SCRUM-975 defines the Design handoff for a fourth Settings tab, `Игра`, over the
+current fullscreen Atlas-family shell. It uses four independent global-kit tab
+plates instead of stretching the obsolete three-slot switcher: one centered row
+at 1920x1080 and 2560x1440, and a centered 2×2 grid at 1280x720. The Game page
+contains five SCRUM-976 sandbox multipliers, a neutral/custom status, next-run
+application and progression-restriction notices, and an atomic reset to `1.0×`.
+The header, Back action and tab plates remain fixed; only Game-page content
+scrolls at 720p. Every label, slider, value and hit area stays inside the real
+empty frame interior, clear of dragon heads, gems, bevels and the dedicated
+scroll lane. Exact rectangles, responsive rules, PixelLab provenance, generated
+sources and debug-overlay evidence live in
+`docs/design/references/scrum975_settings_game_tab/`; rendered previews live in
+`docs/design/previews/scrum975_settings_game_tab/`. This is a Design package,
+not a claim that the fourth runtime tab is already integrated; SCRUM-1025 owns
+that Back-end integration after SCRUM-975 and SCRUM-976 are accepted.
 
 SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
 Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
