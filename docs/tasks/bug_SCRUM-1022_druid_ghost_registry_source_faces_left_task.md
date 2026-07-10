@@ -1,9 +1,9 @@
 # BUG SCRUM-1022: Druid Ghost Registry Omits `source_faces_left` Bool
 
-Статус: new
+Статус: review
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: /root/audit_qa
+Thread/Worker: collaboration subagent `/root/audit_qa`
 Роль: Animator / Back-end animation integration
 Jira: SCRUM-1022
 Found by independent QA: SCRUM-1020 / SCRUM-1016
@@ -13,6 +13,8 @@ Fix Version: `0.2.1`
 Recommended locked paths: `scripts/full_frame_animation_registry.gd`,
 `tests/full_frame_registry_integrity_test.gd` only if intentionally revising the
 typed contract, this mirror and scoped `docs/process/jira_sync_map.json`.
+Active branch/worktree: `codex/scrum-1022-druid-ghost-registry` at
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1022-druid-ghost-registry`.
 Read-only/out of scope: `assets/sprites/allies/druid_ghost_*/**`,
 `assets/sprites/allies/ally_druid_ghost_*_spriteframes.tres`,
 `scripts/ally_minion.gd`, Summon Amulet roster/spawning/damage/aura/balance and
@@ -86,3 +88,32 @@ boolean required by `full_frame_registry_integrity_test.gd`.
 Jira link direction was corrected after live-payload audit: SCRUM-1022 now
 exposes SCRUM-1020, SCRUM-1016 and SCRUM-901 as `outwardIssue` blocker targets.
 No production fix was made by QA.
+
+## Implementation Result (2026-07-10)
+
+- Added explicit `"source_faces_left": true` to all five Druid ghost registry
+  entries. `true` records the pack's canonical left-facing source convention;
+  `"explicit_horizontal_directions": true` remains authoritative for runtime
+  row selection and continues to force `flip_h = false`.
+- Preserved every SpriteFrames path, scale, position and explicit-direction flag.
+  No PNG, SpriteFrames, `AllyMinion`, roster, spawn, damage, aura or balance file
+  was changed.
+- Kept `tests/full_frame_registry_integrity_test.gd` unchanged: its strict typed
+  contract is correct. Existing `animation_smoke_test.gd` already proves all
+  five spirits select left/right move/attack (and caster aliases) without flip.
+- Product/system docs were not changed because the documented runtime behavior
+  remains exactly the SCRUM-1016 explicit-row/no-flip contract.
+
+Verification through `tools/godot_gate.py`:
+
+- pre-fix `full_frame_registry_integrity_test.gd`: reproduced **FAILED** with the
+  five expected `source_faces_left` type errors;
+- post-fix `full_frame_registry_integrity_test.gd`: **PASS** (36 entries);
+- `animation_smoke_test.gd`: **PASS**;
+- `asset_reference_integrity_test.gd`: **PASS** (200 files / 2549 references);
+- `ally_minion_lifecycle_test.gd`: **PASS**;
+- `melee_weapon_targeting_test.gd`: **PASS**;
+- `runtime_smoke_test.gd`: **PASS** (exit 0; duplicate-artifact guard passed).
+
+Next status: independent QA must verify this remediation before SCRUM-1022 or
+its blocked source tickets can move to `Готово`.
