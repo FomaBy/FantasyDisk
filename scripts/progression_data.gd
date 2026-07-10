@@ -1328,7 +1328,8 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 	if str(config.get("attack_mode", "")) == "plague_dart":
 		var profile := plague_tick_profile(config, params)
 		return float(profile.get("tick_damage", 0.0)) * float(profile.get("ramp_average", 1.0)) \
-			/ maxf(float(profile.get("tick_interval", 1.0)), 0.18)
+			/ maxf(float(profile.get("tick_interval", 1.0)), 0.18) \
+			* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
 		return 0.0
