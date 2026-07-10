@@ -1,10 +1,10 @@
 # SCRUM-975 — Design: four-tab Settings / Game sandbox page
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: Design/Codex
 Thread: `/root/design_scrum975`
-Locked paths: `docs/design/references/scrum975_settings_game_tab/**`, `docs/design/previews/scrum975_settings_game_tab/**`, this task mirror, and the backend handoff mirror created after its Jira issue
+Locked paths: released after push of the Design package; runtime integration remains owned by SCRUM-1025
 Jira: SCRUM-975
 Sprint / fixVersion: `Спринт 0.2.1` / `0.2.1`
 Branch / worktree: `codex/scrum-975-settings-game-design` / `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-975-design`
@@ -76,3 +76,15 @@ neutral action. Back-end remains authoritative for clamping and propagation.
 - 2026-07-10: Design validation passed (`ready_for_image`, fit `ok: true`,
   runtime smoke PASS); SCRUM-1025 created as the blocked Back-end integration
   handoff depending on SCRUM-975 and SCRUM-976.
+
+## Результат
+
+- Jira SCRUM-975 moved to `Контроль качества`; independent QA is still required.
+- Design package and responsive evidence pushed to `origin/dev` in commit
+  `192c7cbf`.
+- PixelLab generation IDs, original exports, deterministic post-processing,
+  layouts and fit reports are recorded in the reference manifest.
+- Runtime scope remains intentionally incomplete: SCRUM-1025 integrates this
+  package after SCRUM-975 and SCRUM-976 acceptance; SCRUM-977 remains blocked.
+- Disk cleanup: generated `.godot/` import cache removed; task worktree and
+  local branch are removed after the final bookkeeping commit is pushed.

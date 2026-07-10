@@ -4262,5 +4262,15 @@
   "key": "SCRUM-980",
   "status": "Контроль качества",
   "desc_hash": "f89ecba304a1a4de0f88a75c2885bf4f"
+ },
+ "SCRUM-975_settings_four_tab_game_design.md": {
+  "key": "SCRUM-975",
+  "status": "Контроль качества",
+  "desc_hash": "c0eefc7cde5dff77a7102710bf26fbb1"
+ },
+ "backend_settings_game_four_tab_integration_task.md": {
+  "key": "SCRUM-1025",
+  "status": "К выполнению",
+  "desc_hash": "88970248dc316d8bcbd885363716824e"
  }
 }
