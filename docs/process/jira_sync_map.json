@@ -4305,7 +4305,12 @@
  },
  "SCRUM-985_level_up_icon_frame_background_fix.md": {
   "key": "SCRUM-985",
-  "status": "Контроль качества",
-  "desc_hash": "d1970c58b26c9bb03ed93f0e820c637e"
+  "status": "К выполнению",
+  "desc_hash": "91652a4e286ede418f3c4b6366b6893b"
+ },
+ "bug_scrum985_levelup_720p_badge_socket_overlap_task.md": {
+  "key": "SCRUM-1032",
+  "status": "В работе",
+  "desc_hash": "c5e50d5e16f3570e1686a46aa94c4d4b"
  }
 }
