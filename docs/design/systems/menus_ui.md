@@ -319,6 +319,19 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   dossier and CTA must never overlap or cover frame ornament. Focused geometry
   coverage: `tests/hero_select_scrum980_ascension_layout_test.gd`; transient
   rect/screenshot evidence: `build/qa/scrum980/`.
+- SCRUM-1026 makes the full-size portion of that contract exhaustive instead of
+  relying on the shorter level-2 sample. At viewport heights `>=1000`,
+  `HS4AscensionFrame` has a 132 px minimum and stays bottom-anchored above the
+  carousel, so it expands upward into the scroll-safe dossier budget only.
+  Every selectable delta 0..5 has zero vertical overflow at 1920×1080 and
+  2560×1440; 1280×720 uses a 69 px band so its real 59 px utility row stays
+  inside 5 px top/bottom frame content margins, while the copy keeps its
+  intentional internal scroll. The focused gate uses physical viewport-bounded `−`/`+` and hero-slot
+  pointer input, validates exact cumulative tooltips, scroll reset and D-pad
+  boundary transfer, and records every level's label/viewport/overflow metrics.
+  No art, frame texture/content margin, carousel, counter, portrait or CTA
+  geometry changes. Spec:
+  `docs/design/mockups/hero_select_black_minimal/scrum1026_ascension_level3_responsive_spec.md`.
 - Historical SCRUM-798 baseline (its ascension placement is superseded by
   SCRUM-980 above) keeps the 2026-06-30 user-requested minimal Hero Select
   sizing/information hierarchy. The selected `HS4Portrait` is the dominant

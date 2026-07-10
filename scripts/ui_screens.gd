@@ -1251,10 +1251,19 @@ func _build_character_select_v4() -> void:
 	var choose_aspect := 104.0 / 380.0
 	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
 	# Utility button art has a 59px combined minimum at compact readability.
-	# Reserve it explicitly so the real Control rect (not just requested 42px)
-	# stays inside the ascension panel on 720p (SCRUM-980).
-	var asc_min_h := maxf(62.0, 42.0 + ascension_pad * 2.0)
+	# Reserve that real minimum plus both content margins; using the requested
+	# 42px alone left the 720p row only 1–2px from/inside the decorative border.
+	var asc_utility_min_h := 59.0
+	var asc_min_h := maxf(62.0, asc_utility_min_h + ascension_pad * 2.0)
 	var asc_target_h := maxf(asc_min_h, clampf(content_rect.size.y * 0.115, 52.0, 100.0))
+	# SCRUM-1026: the 1080p/1440p contract promises the complete selected-level
+	# delta without an internal scrollbar. Level 5 is the longest supported copy;
+	# reserve four readable lines plus the unchanged frame padding. The band's
+	# bottom edge stays anchored above the carousel, so this grows upward only and
+	# consumes the already scroll-safe dossier budget. Compact 720p keeps the
+	# original band and its intentional keyboard/mouse/gamepad scroll path.
+	if vp.y >= 1000.0:
+		asc_target_h = maxf(asc_target_h, 132.0)
 	# Вертикальный бюджет левой колонны: portrait + vgap + CTA. Возвышение после
 	# SCRUM-980 живёт в правой полосе и больше не отнимает высоту у preview.
 	var preview_floor := HS4_MINIMAL_PREVIEW_MIN_SIZE
@@ -1309,8 +1318,12 @@ func _build_character_select_v4() -> void:
 	# фрейму возвышения. Счётчик карусели занимает правый край той же полосы,
 	# поэтому ни описание, ни +/- не делят вертикаль с левой CTA.
 	var ascension_h := asc_target_h
-	var ascension_top := carousel_y - vgap - ascension_h
-	var dossier_h := maxf(0.0, ascension_top - vgap - dossier_y)
+	# The frame-safe 69px compact band must not steal height from the fixed
+	# eight-row stats column. At 720p reclaim that budget from the two decorative
+	# inter-panel gaps (still positive/non-overlapping); full sizes retain vgap.
+	var ascension_outer_gap := 1.0 if vp.y < 800.0 else vgap
+	var ascension_top := carousel_y - ascension_outer_gap - ascension_h
+	var dossier_h := maxf(0.0, ascension_top - ascension_outer_gap - dossier_y)
 
 	var portrait_panel := Panel.new()
 	portrait_panel.name = "HS4PortraitFrame"
@@ -1676,6 +1689,10 @@ func _build_character_select_v4() -> void:
 	root.add_child(ascension_panel)
 	# Степпер слева, полное описание выбранного уровня в вертикальном scroll справа.
 	var asc_content_h := ascension_h - ascension_pad * 2.0
+	# `_atlas_chip_style` uses pad*1.4 for horizontal content margins. Keep the
+	# manually positioned row/scroll on that exact authored inset, not the
+	# smaller vertical pad (SCRUM-1026 frame-content oracle).
+	var ascension_pad_x := ascension_pad * 1.4
 	var asc_button_px := clampf(asc_content_h, 42.0, 56.0)
 	var asc_button_size := Vector2(asc_button_px, asc_button_px)
 
@@ -1688,8 +1705,8 @@ func _build_character_select_v4() -> void:
 	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
 	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	asc_label.visible = false
-	asc_label.position = Vector2(ascension_pad * 1.4, ascension_pad)
-	asc_label.size = Vector2(maxf(0.0, ascension_w - ascension_pad * 2.8), 0.0)
+	asc_label.position = Vector2(ascension_pad_x, ascension_pad)
+	asc_label.size = Vector2(maxf(0.0, ascension_w - ascension_pad_x * 2.0), 0.0)
 	ascension_panel.add_child(asc_label)
 
 	var asc_intro := Label.new()
@@ -1701,8 +1718,8 @@ func _build_character_select_v4() -> void:
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	asc_intro.position = Vector2(ascension_pad * 1.4, ascension_pad)
-	asc_intro.size = Vector2(maxf(0.0, ascension_w - ascension_pad * 2.8), 0.0)
+	asc_intro.position = Vector2(ascension_pad_x, ascension_pad)
+	asc_intro.size = Vector2(maxf(0.0, ascension_w - ascension_pad_x * 2.0), 0.0)
 	ascension_panel.add_child(asc_intro)
 
 	var asc_box := HBoxContainer.new()
@@ -1733,7 +1750,7 @@ func _build_character_select_v4() -> void:
 	# выше requested size, особенно на 720p.
 	asc_box.size = asc_box.get_combined_minimum_size()
 	asc_box.position = Vector2(
-		ascension_pad,
+		ascension_pad_x,
 		roundf((ascension_h - asc_box.size.y) * 0.5))
 
 	var asc_description_gap := maxf(8.0, roundf(10.0 * layout_scale))
@@ -1747,7 +1764,7 @@ func _build_character_select_v4() -> void:
 	asc_description_scroll.tooltip_text = "Описание Возвышения. Прокрутка: ↑/↓ или колесо мыши."
 	asc_description_scroll.position = Vector2(asc_description_x, ascension_pad)
 	asc_description_scroll.size = Vector2(
-		maxf(0.0, ascension_w - asc_description_x - ascension_pad),
+		maxf(0.0, ascension_w - asc_description_x - ascension_pad_x),
 		maxf(0.0, ascension_h - ascension_pad * 2.0))
 	ascension_panel.add_child(asc_description_scroll)
 	var asc_mods := Label.new()
@@ -2034,6 +2051,10 @@ func _build_character_select_v4() -> void:
 		asc_description_scroll.scroll_vertical = 0
 		asc_description_scroll.set_deferred("scroll_vertical", 0)
 		asc_mods.tooltip_text = ascension_tooltip
+		# The Label ignores mouse input, so the ScrollContainer is the real hover
+		# target. Keep cumulative mechanics on that live target as well as the
+		# parent panel, with the interaction hint appended after the exact copy.
+		asc_description_scroll.tooltip_text = "%s\nПрокрутка: ↑/↓, D-pad или колесо мыши." % ascension_tooltip
 		ascension_panel.tooltip_text = ascension_tooltip
 		asc_minus.disabled = game.selected_ascension_level <= 0
 		asc_plus.disabled = game.selected_ascension_level >= maxl
