@@ -679,9 +679,13 @@ func _show_main_menu() -> void:
 		var safe: Rect2 = root.get_meta("gold_shell_content_rect", Rect2())
 		if safe.size.x <= 1.0 or safe.size.y <= 1.0:
 			return
-		var cb_size := Vector2(minf(240.0, safe.size.x), 40.0)
+		# Верхний правый угол safe-зоны: напротив лого (верх-лево), ВЫШЕ сетки
+		# действий и метки версии — гарантированно вне их прямоугольников на 16:9
+		# (лого ≤ левой половины, сетка стартует ниже; см. _main_menu_gold_shell_metrics).
+		var cb_size := Vector2(minf(240.0, safe.size.x), 36.0)
+		var pad := 12.0
 		credits_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		credits_button.position = Vector2(safe.position.x, safe.end.y - cb_size.y)
+		credits_button.position = Vector2(safe.end.x - cb_size.x - pad, safe.position.y + pad)
 		credits_button.size = cb_size
 	reposition_credits.call()
 	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
