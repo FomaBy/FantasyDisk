@@ -43,16 +43,23 @@ func setup(weapon: Node, owner_node: Node2D, slot_index: int, slot_count: int) -
 	_weapon_instance_id = weapon.get_instance_id() if weapon != null else 0
 	_owner_instance_id = owner_node.get_instance_id() if owner_node != null else 0
 	set_slot(slot_index, slot_count)
-	_angle = _phase_offset()
 	if owner_node != null and is_instance_valid(owner_node):
-		global_position = owner_node.global_position + Vector2.RIGHT.rotated(_angle) * _orbit_radius()
+		global_position = owner_node.global_position \
+			+ Vector2.RIGHT.rotated(_angle + _phase_offset()) * _orbit_radius()
 
 
 func set_slot(slot_index: int, slot_count: int) -> void:
-	# Перераспределение фаз при изменении числа дронов: слот задаёт фазу и
-	# радиус витка спирали; текущий угол сохраняется (без телепорта).
+	# Перераспределение при росте парка: слот задаёт фазу и радиус витка
+	# спирали. Накопленный угол ОБНУЛЯЕТСЯ — эффективные углы всех дронов
+	# снова равномерны (TAU×slot/count): иначе дроны разных волн деплоя несут
+	# разную угловую историю и пара соседних колец может слипнуться навсегда
+	# (одинаковая угловая скорость фиксирует относительные углы). Радиальный
+	# пере-сеат при смене слота происходит в любом случае (_orbit_radius от
+	# слота), так что разовый угловой пере-сеат в момент присоединения нового
+	# дрона — та же читаемая «перестройка звена», а не телепорт в бою.
 	_slot_index = maxi(slot_index, 0)
 	_slot_count = maxi(slot_count, 1)
+	_angle = 0.0
 
 
 func slot_index() -> int:
