@@ -2088,3 +2088,34 @@ Assassin — единственный класс со снятым крит-по
 нет). Hero Select описание заявляет 100%-кап; копирайт-пасс — SCRUM-952.
 Гейты: `tests/assassin_kit_test.gd`, `tests/kill_scaling_identity_test.gd`,
 tuning 51/51, weapon integrity, global damage/survivability smokes — зелёные.
+## SCRUM-900 Doctor Weapon-Only Sustain State
+
+Доктор — сустейн-класс «чумного доктора» с data-driven trait'ом «Клятва чумного
+доктора» (`CLASS_TRAITS.doctor.generic_sustain_blocked`): generic-сустейн
+(регенерация, вампиризм, kill-heal, room-clear heal, low-HP regen, прямые
+heal-награды и мета-звёзды регена/вампиризма) на Доктора не действует. Отсечка
+работает в четырёх точках: пул наград (`is_reward_relevant`, пометка
+`doctor_friendly: true` пропускает предмет), применение наград/меты
+(`Player._apply_reward_mods` / `apply_meta_skill_modifiers`), базовый пассивный
+реген в формуле (`derived_parameters`), lowhp-страховка `_apply_regeneration`.
+Route/rest/shop-лечение (аптечки-пикапы) сознательно не блокируется.
+
+Кит лечится ТОЛЬКО от фактически нанесённого своим оружием урона через
+drain-бюджет SCRUM-517 (7 hp/s default, 11 hard cap — бессмертие от полного
+заражения карты недостижимо):
+
+- `restore_potion` (aoe_projectile): бросок зелья, магический взрыв 150r,
+  хил 16% нанесённого урона; промах не лечит;
+- `plague_syringe` (plague_dart): чумной дротик — зараза 24с с медленным
+  ramp'ом тиков (0.45→1.0 за 5 тиков), спред 22%/тик на соседа в радиусе 200,
+  кап 10 одновременных зараз, хил 12% чумного урона;
+- `bone_saw` (saw_sector): melee-сектор 135° дальностью 215, мультихит с
+  диминишем сверх 4 целей, сильнейший хил кита 34% — лечит только фронт:
+  окружение с флангов/спины не бьётся и не лечит (позиционный риск).
+
+Бюджет-тюнинг кита в коридоре (1.081-1.507, без клампов); crowd-clear
+отклонения 20t: −55%→+10.8% хуже всего у чумы (dot-давление), зелье +6.6%,
+пила +13.1% — все PASS. Гейты: tests/doctor_kit_test.gd,
+weapon_tuning_application_test, weapon_integrity_test,
+damage_type_isolation_test, global_survivability_balance_smoke_test,
+runtime_smoke_test.

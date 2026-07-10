@@ -21,7 +21,7 @@
 | `guitarist` | sound/control: waves, knockback, deployable amp |
 | `assassin` | хрупкий crit-скейлер (trait «Хладнокровие»: кап крита 100%, избыток → крит-урон): дуговой boomerang, point-blank flurry с рывком темпа, poison line от героя; выживает уворотом («Теневая завеса») |
 | `ranger` | дальний точный контроль: piercing shots, fan beams, trap |
-| `doctor` | self-sustain через урон: potion, poison injection, melee saw |
+| `doctor` | weapon-only sustain (SCRUM-900): trait «Клятва чумного доктора» — generic реген/вампиризм/kill-heal не действуют; лечится только уроном своего оружия (зелье-AoE, чума со спредом, сектор-пила) |
 | `chemist` | catalyst-периодика (+50%): быстрый физический AoE, вечные кислотные заряды из луж, постоянная пара гомункулов танк+кастер |
 | `knight` | tank/control melee: spear strip, shield bash, circular flail |
 | `druid` | summon/nature control: beast pack, thorn zones, raven totem |
@@ -84,9 +84,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `ranger` | `moon_crossbow` | Лунный арбалет | `MoonCrossbow.tscn` | `beam` | Дальний точный piercing shot |
 | `ranger` | `storm_longbow` | Грозовой длинный лук | `StormLongbow.tscn` | `beam` | 3 дальних луча веером |
 | `ranger` | `hunter_trap` | Охотничий капкан | `HunterTrap.tscn` | `trap` | Deploy trap: burst + knockback при входе врага |
-| `doctor` | `restore_potion` | Зелье восстановления | `RestorePotion.tscn` | `drain_link` | Drain-связь к ближайшей цели, weapon-only heal |
-| `doctor` | `plague_syringe` | Чумной шприц | `PlagueSyringe.tscn` | `drain_link` | Тонкая plague-link связь с DoT и sustain cap |
-| `doctor` | `bone_saw` | Костяная пила | `BoneSaw.tscn` | `stab_flurry` | Ближний saw/flurry, DoT, small weapon-only heal |
+| `doctor` | `restore_potion` | Зелье восстановления | `RestorePotion.tscn` | `aoe_projectile` | Бросок зелья: магический AoE-взрыв 150r; хил 16% фактического урона через drain-бюджет (SCRUM-900) |
+| `doctor` | `plague_syringe` | Чумной шприц | `PlagueSyringe.tscn` | `plague_dart` | Чумной дротик: зараза 24с, ramp тиков 0.45→1.0, спред 22%/тик (радиус 200, кап 10 зараз), хил 12% чумного урона (SCRUM-900) |
+| `doctor` | `bone_saw` | Костяная пила | `BoneSaw.tscn` | `saw_sector` | Melee-сектор 135°/215: мультихит с диминишем сверх 4 целей, сильнейший хил кита 34% — только по фронту (SCRUM-900) |
 | `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | SCRUM-943: быстрый ПРЯМОЙ физический close-mid AoE (fire 0.62, r150, range 430), без луж/DoT; trait периодики его не усиливает |
 | `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | SCRUM-944: долгая (7с) полупрозрачная лужа; тики пока враг внутри + один ВЕЧНЫЙ кислотный заряд с каждой отдельной лужи (кап 5, артефакт +3), заряды тикают по dot-оси до смерти носителя |
 | `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | SCRUM-946: постоянная пара — танк (4x max HP Химика, таунт-пульсы, смертен, респавн 4с) + неуязвимый кастер (вне боевого лимита, волны каждые 1.7с вешают вечный DoT-заряд, кап 4; fallback-позиция — плечо Химика) |

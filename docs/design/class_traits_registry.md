@@ -36,7 +36,7 @@ Canonical registry, resolves SCRUM-953; спорные решения приня
 | 11 | `guitarist` | Гитарист | «Разогрев»: пока Гитарист не получает урона, его магический урон растёт (~+2%/сек, кап +20%); полученный удар сбрасывает разогрев. | SCRUM-953 (решение реестра) | new-ticket-needed |
 | 12 | `assassin` | Ассасин | «Хладнокровие»: кап шанса крита для Ассасина — 100% (у остальных классов глобальный кап 55%); крит-вложения окупаются полностью. | SCRUM-894 | implemented |
 | 13 | `ranger` | Рейнджер | «Сторожевой лук»: попадания лука/арбалета отбрасывают врагов от игрока (всегда от персонажа, даже при рикошете/пирсе). | SCRUM-909 | backlog |
-| 14 | `doctor` | Доктор | «Клятва чумного доктора»: лечится только собственным оружием — общие регенерация/вампиризм/артефактный сустейн на Доктора не действуют. | SCRUM-900 | backlog |
+| 14 | `doctor` | Доктор | «Клятва чумного доктора»: лечится только собственным оружием — общие регенерация/вампиризм/артефактный сустейн на Доктора не действуют. | SCRUM-900 | implemented |
 | 15 | `chemist` | Химик | «Катализатор»: весь периодический урон Химика усилен на +50% (DoT, тики луж, стаки кислоты, волны гомункула). | SCRUM-942 | implemented |
 | 16 | `knight` | Рыцарь | «Возмездие»: ударивший Рыцаря враг отбрасывается прочь (обычные монстры и мини-элиты; боссы и главные элиты не смещаются). | SCRUM-920 | backlog |
 | 17 | `druid` | Друид | «Аура дикой силы»: постоянная аура урона с видимым радиусом, баффает Друида и его призывы; масштаб от aura_radius и buff_power. | SCRUM-902 | backlog |
@@ -72,7 +72,14 @@ tests/thief_kit_test.gd;
 `ProgressionData.class_crit_profile` в `derived_parameters` (кап/diminish/overflow
 крита) и `Player.current_dodge_chance` (ситуативный dodge-бонус при враге внутри
 derived `aura_radius`; суммарный уворот ≤ `SURVIVABILITY_DODGE_CAP`), тест
-tests/assassin_kit_test.gd.
+tests/assassin_kit_test.gd; Доктор «Клятва чумного доктора»
+(SCRUM-900) — запись `CLASS_TRAITS.doctor` (`generic_sustain_blocked: 1.0`),
+точки отсечки: пул-фильтр `is_reward_relevant` (+пометка `doctor_friendly`
+пропускает предмет), гейт применения `Player._apply_reward_mods` /
+`apply_meta_skill_modifiers` (`is_blocked_sustain_mod_key`), отсечка базового
+пассивного регена в `derived_parameters._class_gated_regeneration`, lowhp-регенная
+страховка `_apply_regeneration`; сустейн кита — только `heal_percent_of_damage`
+оружий через drain-бюджет SCRUM-517, тест tests/doctor_kit_test.gd.
 Новые traits волны добавляют свои записи в `CLASS_TRAITS` и переиспользуют
 подходящий хук.
 
