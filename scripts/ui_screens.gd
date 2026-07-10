@@ -650,8 +650,42 @@ func _show_main_menu() -> void:
 	var action_buttons := [
 		start_button, settings_button, skill_tree_button, patch_notes_button, codex_button, exit_button,
 	]
+	# SCRUM-968: озвучка кнопок меню через общий хелпер (ui_click). Живёт рядом со
+	# штатными навигационными обработчиками; MainMenuActions остаётся ровно на 6
+	# кнопках × 2 колонки (контракт runtime_smoke / gold shell).
+	for menu_button in action_buttons:
+		_connect_ui_sfx(menu_button, "click")
+
+	# SCRUM-968: «Благодарности» — player-facing блок атрибуций CC BY (docs/CREDITS.md).
+	# Отдельная ссылка НА root (не в MainMenuActions — там контрактные 6 кнопок);
+	# позиционируется по золотому safe-rect (gold_shell_content_rect), чтобы держаться
+	# в пустой зоне рамы (frame-safe правило), низ safe-зоны у левого края.
+	var credits_button := Button.new()
+	credits_button.name = "MainMenuCreditsButton"
+	credits_button.text = "Благодарности"
+	credits_button.flat = true
+	credits_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	credits_button.add_theme_font_size_override("font_size", _readable_font_size(15))
+	credits_button.add_theme_color_override("font_color", Color(0.82, 0.78, 0.58, 0.92))
+	credits_button.add_theme_color_override("font_hover_color", Color(0.98, 0.90, 0.62, 1.0))
+	credits_button.pressed.connect(_show_credits_screen)
+	root.add_child(credits_button)
+	_connect_ui_sfx(credits_button, "click")
+
 	_layout_main_menu_gold_shell(root, title_logo, action_box, version_label, action_buttons)
+	var reposition_credits := func() -> void:
+		if not is_instance_valid(credits_button):
+			return
+		var safe: Rect2 = root.get_meta("gold_shell_content_rect", Rect2())
+		if safe.size.x <= 1.0 or safe.size.y <= 1.0:
+			return
+		var cb_size := Vector2(minf(240.0, safe.size.x), 40.0)
+		credits_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		credits_button.position = Vector2(safe.position.x, safe.end.y - cb_size.y)
+		credits_button.size = cb_size
+	reposition_credits.call()
 	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
+	root.resized.connect(reposition_credits)
 	_wire_main_menu_grid_focus(action_buttons, start_button)
 	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
 	_unified_add_frame(root, "MainMenu")
@@ -2284,7 +2318,9 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	tween.chain().tween_interval(1.3)
 	tween.chain().tween_callback(continue_once)
 
-	game._play_sfx("level_up")
+	# SCRUM-968: акцент баннера — artifact_reveal (level_up остаётся только за
+	# настоящим повышением уровня в _on_player_leveled_up).
+	game._play_sfx("artifact_reveal")
 
 
 func _random_attribute_pair() -> Array:
@@ -2415,9 +2451,15 @@ func _show_attribute_shop(on_done: Callable) -> void:
 		if on_done.is_valid():
 			on_done.call()
 	)
+	# SCRUM-968: «Пропустить» докачку — отмена/закрытие → ui_back.
+	_connect_ui_sfx(skip_button, "back")
 	reroll_button.pressed.connect(func() -> void:
 		if game.attribute_rerolls_left <= 0 or not _spend_run_money(_attribute_reroll_cost()):
+			# SCRUM-968: реролл недоступен / нет золота — отказ.
+			game._play_sfx("ui_error")
 			return
+		# SCRUM-968: платный реролл характеристик — трата золота.
+		game._play_sfx("purchase")
 		game.attribute_rerolls_left -= 1
 		game.attribute_offer = _random_attribute_pair()
 		_refresh_attribute_shop(root, on_done)
@@ -2472,7 +2514,11 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		_prepend_economy_choice_content(offer_button, icon_control)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
+				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
+				game._play_sfx("ui_error")
 				return
+			# SCRUM-968: успешная докачка характеристики — трата золота.
+			game._play_sfx("purchase")
 			_apply_reward_to_run({"stats": {stat_id: 1.0}})
 			game.attribute_offer = []
 			if on_done.is_valid():
@@ -4003,9 +4049,13 @@ func _atlas_buy_selected() -> void:
 	if node_id == "" or _atlas.is_empty():
 		return
 	if not game.META_PROGRESSION.can_buy_node(game.meta_state, node_id):
+		# SCRUM-968: узел недоступен (нет звёздной пыли / не открыт предок) — отказ.
+		game._play_sfx("ui_error")
 		return
 	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
 	game.META_PROGRESSION.save_state(game.meta_state)
+	# SCRUM-968: успешная покупка узла Атласа — трата звёздной пыли.
+	game._play_sfx("purchase")
 	_atlas_refresh()
 	_atlas_play_purchase_ceremony(node_id)
 
@@ -4323,6 +4373,120 @@ func _show_patch_notes_screen() -> void:
 
 	# Рама — ПОСЛЕДНЕЙ: полый 9-slice поверх контента (контент в safe-зоне).
 	_unified_add_frame(root, "PatchNotes")
+
+
+# SCRUM-968: player-facing «Благодарности» — обязательный CC BY-блок (Kevin
+# MacLeod, CC BY 4.0) + CC0-вклад + инструменты. Канонический источник —
+# docs/CREDITS.md; текст транскрибирован в рантайм, чтобы обязательная атрибуция
+# уходила в билд без зависимости от экспорта каталога docs/. Экран автономный:
+# фон + затемнение + кожаный чип-панель со скроллом + «Назад» в меню.
+func _show_credits_screen() -> void:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "CreditsScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, "settings")
+
+	var s := _atlas_ui_scale()
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var panel := PanelContainer.new()
+	panel.name = "CreditsPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	var panel_width := clampf(viewport_size.x - 96.0, 560.0, 900.0)
+	var panel_height := clampf(viewport_size.y - 96.0, 360.0, 760.0)
+	panel.offset_left = -panel_width * 0.5
+	panel.offset_top = -panel_height * 0.5
+	panel.offset_right = panel_width * 0.5
+	panel.offset_bottom = panel_height * 0.5
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.95, roundf(20.0 * s)))
+	root.add_child(panel)
+
+	var outer := VBoxContainer.new()
+	outer.name = "CreditsOuter"
+	outer.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(outer)
+
+	var title := Label.new()
+	title.name = "CreditsTitle"
+	title.text = "Благодарности"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", _readable_font_size(32))
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	outer.add_child(title)
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "CreditsScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer.add_child(scroll)
+
+	var content := VBoxContainer.new()
+	content.name = "CreditsContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", int(roundf(6.0 * s)))
+	scroll.add_child(content)
+
+	# Порядок и текст зеркалят docs/CREDITS.md (источник истины по атрибуциям).
+	_add_credits_heading(content, "Музыка (CC BY 4.0 — атрибуция обязательна)")
+	_add_credits_body(content, "«Suonatore di Liuto», «Master of the Feast», «Lord of the Land», «Celtic Impulse», «Drums of the Deep», «The Escalation»")
+	_add_credits_body(content, "Kevin MacLeod (incompetech.com)")
+	_add_credits_body(content, "Licensed under Creative Commons: By Attribution 4.0 License")
+	_add_credits_body(content, "http://creativecommons.org/licenses/by/4.0/")
+
+	_add_credits_heading(content, "Музыка и SFX (CC0)")
+	for cc0_line in [
+		"RandomMind — средневековые треки (opengameart.org)",
+		"Kenney — Impact Sounds / RPG Audio (kenney.nl)",
+		"artisticdude — RPG Sound Pack (opengameart.org)",
+		"bart — Heartbeat sounds (opengameart.org)",
+		"qubodup — Ghost breath (opengameart.org)",
+		"AntumDeluge — Fire Crackling (opengameart.org)",
+	]:
+		_add_credits_body(content, "•  %s" % cc0_line)
+
+	_add_credits_heading(content, "Инструменты")
+	_add_credits_body(content, "Godot Engine (godotengine.org, MIT)")
+
+	# «Назад» — единый возврат в меню (плита 260×h), ui_back через общий хелпер.
+	var back_button := _make_button("Назад")
+	back_button.name = "CreditsBackButton"
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
+	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	back_button.pressed.connect(_show_main_menu)
+	_connect_ui_sfx(back_button, "back")
+	outer.add_child(back_button)
+
+	game.ui_escape_action = _show_main_menu
+	_ensure_run_ui_gamepad_bindings()
+	back_button.call_deferred("grab_focus")
+
+
+func _add_credits_heading(parent: Control, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", _readable_font_size(20))
+	label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	parent.add_child(label)
+
+
+func _add_credits_body(parent: Control, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
+	parent.add_child(label)
 
 
 func _show_codex_screen() -> void:
@@ -7615,7 +7779,8 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 
 	# Выбор обязателен: Escape ничего не закрывает.
 	game.ui_escape_action = Callable()
-	game._play_sfx("level_up")
+	# SCRUM-968: показ артефакта элитки — акцент artifact_reveal (не level_up).
+	game._play_sfx("artifact_reveal")
 
 
 func _show_boss_artifact_reward(on_done: Callable) -> void:
@@ -7724,7 +7889,8 @@ func _show_boss_artifact_reward(on_done: Callable) -> void:
 
 	# Выбор обязателен: Escape ничего не закрывает.
 	game.ui_escape_action = Callable()
-	game._play_sfx("level_up")
+	# SCRUM-968: показ артефакта босса — акцент artifact_reveal (не level_up).
+	game._play_sfx("artifact_reveal")
 
 
 # SCRUM-892: план стека карточек на весь набор наград — карточки контентной
@@ -8511,6 +8677,8 @@ func _show_shop_screen() -> void:
 		else:
 			game.route._return_to_map_after_shop_visit()
 	skip_button.pressed.connect(leave_shop)
+	# SCRUM-968: «Назад» из магазина — выход/закрытие экрана → ui_back.
+	_connect_ui_sfx(skip_button, "back")
 	game.ui_escape_action = leave_shop
 	root.add_child(skip_button)
 
@@ -8562,7 +8730,11 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	# внутренности слота (иконка, пергамент-плашка, ценник) сохранены.
 	_apply_atlas_choice_card_theme(button, _atlas_card_pad(SHOP_INLINE_SLOT_SIZE))
 	button.pressed.connect(func() -> void:
-		_buy_shop_item_at(index)
+		# SCRUM-968: успех покупки → purchase, отказ (не хватает золота) → ui_error.
+		if _buy_shop_item_at(index):
+			game._play_sfx("purchase")
+		else:
+			game._play_sfx("ui_error")
 	)
 
 	if purchased:
@@ -8943,6 +9115,8 @@ func _show_rest_screen() -> void:
 		_apply_event_choice({"title": "Rest", "description": "Recover", "heal_percent": 0.35})
 		game.route._advance_route_after_noncombat()
 	)
+	# SCRUM-968: отдых/подготовка — бесплатные подтверждения (не траты) → ui_click.
+	_connect_ui_sfx(heal_button, "click")
 
 	var guard_button := _make_economy_choice_card("Защитная стойка", "Получить +6% защиты до конца забега.", "Подготовиться", "RestGuardButton", rest_card_size)
 	choices.add_child(guard_button)
@@ -8950,12 +9124,15 @@ func _show_rest_screen() -> void:
 		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
 	)
+	_connect_ui_sfx(guard_button, "click")
 	var back_button := _make_button("Назад")
 	back_button.name = "RestBackButton"
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(back_button, 380.0, 54.0)
 	back_button.tooltip_text = "Вернуться на карту без отдыха."
 	back_button.pressed.connect(game.route._advance_route_after_noncombat)
+	# SCRUM-968: «Назад» от костра — выход/закрытие экрана → ui_back.
+	_connect_ui_sfx(back_button, "back")
 	box.add_child(back_button)
 
 	# SCRUM-812: два выбора листаются лево/право, «Назад» доступна ui_down, старт — «Передышка».
@@ -9064,7 +9241,12 @@ func _show_event_screen(route_node: Dictionary) -> void:
 			selectable_buttons.append(button)
 		button.pressed.connect(func() -> void:
 			if not _event_choice_is_affordable(event_choice):
+				# SCRUM-968: платный выбор события без золота — отказ.
+				game._play_sfx("ui_error")
 				return
+			# SCRUM-968: платный выбор события (трата золота) — purchase.
+			if _event_choice_scaled_cost(event_choice) > 0:
+				game._play_sfx("purchase")
 			var resolution := _apply_event_choice_resolved(event_choice)
 			if bool(resolution.get("starts_combat", false)):
 				return  # бой стартовал, экран уже сменён; reveal не показывается — исход боя = сам бой
@@ -12466,6 +12648,21 @@ func _make_button(text: String) -> Button:
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_style_button_control(button)
 	return button
+
+
+# SCRUM-968: единая озвучка кнопок (спека §3) — общая обёртка вокруг
+# pressed.connect. kind "click" (подтверждение/переход) → ui_click, "back"
+# (назад/отмена/закрытие экрана) → ui_back. Троттлинг-группа ui уже настроена
+# в AudioManager (ui_click/ui_back дефолт 0.05 c) — спам исключён. Подключается
+# как звук-компаньон рядом со штатным навигационным обработчиком кнопки; в
+# headless _play_sfx — полный no-op.
+func _connect_ui_sfx(button: BaseButton, kind := "click") -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var sfx := "ui_back" if kind == "back" else "ui_click"
+	button.pressed.connect(func() -> void:
+		game._play_sfx(sfx)
+	)
 
 
 func _readability_font_scale() -> float:
