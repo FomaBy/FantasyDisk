@@ -2348,8 +2348,165 @@ func _random_attribute_pair() -> Array:
 	return pair
 
 
+func _normalize_attribute_offer(saved_offer: Array) -> Array:
+	# Old saves and automation fixtures may contain duplicate, removed or 4+
+	# entries. Preserve canonical entries in order, then fill to the live 2/3
+	# contract without ever overflowing the authored three-card row.
+	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, 3)
+	var normalized: Array = []
+	for raw_stat in saved_offer:
+		var stat_id := str(raw_stat)
+		if not pool.has(stat_id) or normalized.has(stat_id):
+			continue
+		normalized.append(stat_id)
+		pool.erase(stat_id)
+		if normalized.size() >= option_count:
+			return normalized
+	while normalized.size() < option_count and not pool.is_empty():
+		var index: int = game.rng.randi_range(0, pool.size() - 1)
+		normalized.append(pool[index])
+		pool.remove_at(index)
+	return normalized
+
+
+func _attribute_shop_layout_for_size(viewport_size: Vector2) -> Dictionary:
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var tier_t := clampf((viewport_size.y - 720.0) / 360.0, 0.0, 1.0)
+	var large_t := clampf((viewport_size.y - 1080.0) / 360.0, 0.0, 1.0)
+	var card_size := Vector2.ZERO
+	var offer_gap := 0.0
+	var offer_top_offset := 0.0
+	var action_size := Vector2.ZERO
+	var action_gap := 0.0
+	var action_bottom_inset := 0.0
+	var title_size := Vector2.ZERO
+	var money_size := Vector2.ZERO
+	if viewport_size.y <= 1080.0:
+		card_size = Vector2(276.0, 232.0).lerp(Vector2(360.0, 360.0), tier_t)
+		offer_gap = lerpf(22.0, 70.0, tier_t)
+		offer_top_offset = lerpf(81.0, 137.0, tier_t)
+		action_size = Vector2(300.0, 64.0).lerp(Vector2(380.0, 72.0), tier_t)
+		action_gap = lerpf(80.0, 160.0, tier_t)
+		action_bottom_inset = lerpf(19.0, 30.0, tier_t)
+		title_size = Vector2(378.0, 50.0).lerp(Vector2(500.0, 60.0), tier_t)
+		money_size = Vector2(240.0, 42.0).lerp(Vector2(380.0, 50.0), tier_t)
+	else:
+		card_size = Vector2(360.0, 360.0).lerp(Vector2(460.0, 500.0), large_t)
+		offer_gap = lerpf(70.0, 120.0, large_t)
+		offer_top_offset = lerpf(137.0, 173.0, large_t)
+		action_size = Vector2(380.0, 72.0).lerp(Vector2(460.0, 88.0), large_t)
+		action_gap = lerpf(160.0, 340.0, large_t)
+		action_bottom_inset = lerpf(30.0, 35.0, large_t)
+		title_size = Vector2(500.0, 60.0).lerp(Vector2(700.0, 64.0), large_t)
+		money_size = Vector2(380.0, 50.0).lerp(Vector2(480.0, 64.0), large_t)
+
+	# Width-constrained windows still keep exactly three cards in one row.
+	var max_offer_width := maxf(180.0, (inner_rect.size.x - 48.0 - offer_gap * 2.0) / 3.0)
+	card_size.x = minf(card_size.x, max_offer_width)
+	var offer_row_size := Vector2(card_size.x * 3.0 + offer_gap * 2.0, card_size.y)
+	var offer_rect := Rect2(
+		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - offer_row_size.x) * 0.5), roundf(inner_rect.position.y + offer_top_offset)),
+		offer_row_size
+	)
+
+	var max_action_width := maxf(180.0, (inner_rect.size.x - 48.0 - action_gap) * 0.5)
+	action_size.x = minf(action_size.x, max_action_width)
+	var action_row_size := Vector2(action_size.x * 2.0 + action_gap, action_size.y)
+	var action_rect := Rect2(
+		Vector2(
+			roundf(inner_rect.position.x + (inner_rect.size.x - action_row_size.x) * 0.5),
+			roundf(inner_rect.end.y - action_bottom_inset - action_size.y)
+		),
+		action_row_size
+	)
+	# Never let the offer row collide with the bottom action band on unusual aspect ratios.
+	card_size.y = minf(card_size.y, maxf(160.0, action_rect.position.y - offer_rect.position.y - 24.0))
+	offer_rect.size.y = card_size.y
+
+	var title_rect := Rect2(
+		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - title_size.x) * 0.5), roundf(inner_rect.position.y + lerpf(6.0, 10.0, clampf((viewport_size.y - 720.0) / 720.0, 0.0, 1.0)))),
+		title_size
+	)
+	var money_rect := Rect2(
+		Vector2(inner_rect.position.x + 24.0, inner_rect.position.y + (20.0 if viewport_size.y >= 1000.0 else 10.0)),
+		money_size
+	)
+	# Compact 1152×648 legacy verification: keep the left money status and the
+	# centered title as separate peers instead of allowing their labels to touch.
+	money_rect.size.x = minf(money_rect.size.x, maxf(120.0, title_rect.position.x - money_rect.position.x - 12.0))
+	return {
+		"safe_rect": _unified_safe_rect_for_size(viewport_size),
+		"inner_rect": inner_rect,
+		"title_rect": title_rect,
+		"money_rect": money_rect,
+		"offers_rect": offer_rect,
+		"offer_size": card_size,
+		"offer_gap": offer_gap,
+		"actions_rect": action_rect,
+		"action_size": action_size,
+		"action_gap": action_gap,
+	}
+
+
+func _apply_attribute_shop_rect(control: Control, rect: Rect2) -> void:
+	if control == null:
+		return
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.custom_minimum_size = rect.size
+	control.size = rect.size
+
+
+func _layout_attribute_shop(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var layout := _attribute_shop_layout_for_size(root.size)
+	root.set_meta("gold_shell_content_rect", layout["safe_rect"])
+	root.set_meta("gold_shell_inner_rect", layout["inner_rect"])
+	var title := root.find_child("AttributeShopTitle", true, false) as Label
+	var money := root.find_child("AttributeShopMoney", true, false) as Label
+	var offers := root.find_child("AttributeOffers", true, false) as HBoxContainer
+	var actions := root.find_child("AttributeShopActions", true, false) as HBoxContainer
+	_apply_attribute_shop_rect(title, layout["title_rect"])
+	_apply_attribute_shop_rect(money, layout["money_rect"])
+	_apply_attribute_shop_rect(offers, layout["offers_rect"])
+	_apply_attribute_shop_rect(actions, layout["actions_rect"])
+	if title != null:
+		title.add_theme_font_size_override("font_size", int(clampf(roundf((layout["title_rect"] as Rect2).size.y * 0.58), 24.0, 42.0)))
+	if money != null:
+		money.add_theme_font_size_override("font_size", int(clampf(roundf((layout["money_rect"] as Rect2).size.y * 0.34), 12.0, 22.0)))
+	if offers != null:
+		offers.add_theme_constant_override("separation", int(roundf(float(layout["offer_gap"]))))
+		for child in offers.get_children():
+			if child is Button:
+				var offer_button := child as Button
+				offer_button.custom_minimum_size = layout["offer_size"]
+				offer_button.size = layout["offer_size"]
+				_apply_atlas_choice_card_theme(offer_button, _atlas_card_pad(layout["offer_size"]))
+				_layout_attribute_offer_card(offer_button)
+				_layout_attribute_offer_card.call_deferred(offer_button)
+	if actions != null:
+		actions.add_theme_constant_override("separation", int(roundf(float(layout["action_gap"]))))
+		for action_child in actions.get_children():
+			if action_child is Button:
+				var action_button := action_child as Button
+				action_button.custom_minimum_size = layout["action_size"]
+				action_button.size = layout["action_size"]
+				action_button.add_theme_font_size_override("font_size", int(clampf(roundf((layout["action_size"] as Vector2).y * 0.27), 14.0, 24.0)))
+				# Compact authored action band: avoid the 104px global button plate
+				# expanding the HBox beyond the gold-shell inner rect at 720p.
+				_apply_shop_leave_button_theme(action_button)
+	var frame := root.find_child("AttributeShopFrame", false, false) as Panel
+	if frame != null:
+		root.move_child(frame, root.get_child_count() - 1)
+
+
 func _show_attribute_shop(on_done: Callable) -> void:
-	# Окно докачки после боя: 1 из 2 характеристик за деньги, reroll x2, пропуск.
+	# SCRUM-982/987/988: mandatory post-combat gold shop. Manual Route/Rest entry
+	# is removed; this screen remains the victory continuation for 2 default or
+	# 3 Atlas offers in one row inside the shared hollow gold shell.
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -2363,101 +2520,55 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	_add_screen_background(root, "meta_progression")
 
 	var shade := ColorRect.new()
-	shade.color = Color(0.02, 0.025, 0.045, 0.92)
+	shade.name = "AttributeShopReadableShade"
+	shade.color = Color(0.02, 0.025, 0.045, 0.20)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
-	# SCRUM-413: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
-	# вписывается в 1280x720 и узкие окна. Карточки опций в ScrollContainer, а кнопки
-	# «Обновить»/«Пропустить» закреплены ВНЕ скролла снизу панели (SCRUM-467).
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var panel_width: float = minf(1100.0, maxf(640.0, viewport_size.x - 48.0))
-	var panel_vertical_margin: float = minf(28.0, maxf(18.0, viewport_size.y * 0.045))
-	var panel := PanelContainer.new()
-	panel.name = "AttributeShopPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.0
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 1.0
-	panel.offset_left = -panel_width * 0.5
-	panel.offset_top = panel_vertical_margin
-	panel.offset_right = panel_width * 0.5
-	panel.offset_bottom = -panel_vertical_margin
-	# SCRUM-883: высокая панель докачки — чип Атласа (тёмная кожа, латунный кант)
-	# вместо attr_panel @2K-рамки; дим-фон поверх меты сохранён.
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 18.0))
-	root.add_child(panel)
-
-	var outer := VBoxContainer.new()
-	outer.name = "AttributeShopOuter"
-	outer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	outer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer.add_theme_constant_override("separation", 10)
-	panel.add_child(outer)
-
-	var scroll := ScrollContainer.new()
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.follow_focus = true
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer.add_child(scroll)
-
-	var box := VBoxContainer.new()
-	box.name = "AttributeShopContent"
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
-	scroll.add_child(box)
-
 	var title := Label.new()
+	title.name = "AttributeShopTitle"
 	title.text = "Докачка"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(title)
 
 	var money_label := Label.new()
 	money_label.name = "AttributeShopMoney"
-	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	money_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	money_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
-	box.add_child(money_label)
+	money_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(money_label)
 
-	var offers_box := GridContainer.new()
+	var offers_box := HBoxContainer.new()
 	offers_box.name = "AttributeOffers"
-	offers_box.columns = 1 if panel_width < 820.0 else 2
-	offers_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	offers_box.add_theme_constant_override("h_separation", _economy_choice_row_gap(_economy_attribute_choice_display_size()))
-	offers_box.add_theme_constant_override("v_separation", 14)
-	box.add_child(offers_box)
+	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	offers_box.mouse_filter = Control.MOUSE_FILTER_PASS
+	root.add_child(offers_box)
 
-	# Кнопки действий — ВНЕ скролла, закреплены снизу панели: при 4+ опциях докачки
-	# (ветка Знаний мета-древа) на 720p они раньше уезжали под фолд (SCRUM-467).
-	var actions := VBoxContainer.new()
+	var actions := HBoxContainer.new()
 	actions.name = "AttributeShopActions"
-	actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
-	var compact_action_height := 54.0 if viewport_size.y <= 660.0 else 62.0
-	actions.add_theme_constant_override("separation", 6 if viewport_size.y <= 660.0 else 8)
-	outer.add_child(actions)
+	root.add_child(actions)
 
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
-	reroll_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(reroll_button, STANDARD_ACTION_BUTTON_WIDTH, compact_action_height)
+	_apply_shop_leave_button_theme(reroll_button)
 	actions.add_child(reroll_button)
 
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
-	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(skip_button, STANDARD_ACTION_BUTTON_WIDTH, compact_action_height)
+	_apply_shop_leave_button_theme(skip_button)
 	actions.add_child(skip_button)
 
-	# Набор и счетчик rerolls живут в game-state: переоткрытие окна (FAB)
-	# не дает бесплатного реролла; сброс — только в победном флоу нового боя.
-	if game.attribute_offer.is_empty():
-		game.attribute_offer = _random_attribute_pair()
+	# Набор и счетчик rerolls живут в game-state: повторный runtime вызов не дает
+	# бесплатного реролла; сброс — только в победном флоу нового боя. Legacy and
+	# malformed saved arrays are canonicalized to the same strict 2/3 contract.
+	game.attribute_offer = _normalize_attribute_offer(game.attribute_offer)
 	skip_button.pressed.connect(func() -> void:
 		if on_done.is_valid():
 			on_done.call()
@@ -2476,7 +2587,160 @@ func _show_attribute_shop(on_done: Callable) -> void:
 		_refresh_attribute_shop(root, on_done)
 	)
 	game.ui_escape_action = skip_button.pressed.emit
+	_unified_add_frame(root, "AttributeShop")
+	_layout_attribute_shop(root)
+	root.resized.connect(func() -> void:
+		_layout_attribute_shop(root)
+		_layout_attribute_shop.call_deferred(root)
+	)
 	_refresh_attribute_shop(root, on_done)
+
+
+func _make_attribute_offer_card(stat_id: String, stat_title: String, interpretation: String, influence_text: String, preview_lines: Array, buy_cost: int, display_size: Vector2) -> Button:
+	var button := Button.new()
+	button.name = "AttributeOffer_%s" % stat_id
+	button.text = ""
+	button.custom_minimum_size = display_size
+	button.size = display_size
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.set_meta("attribute_stat_id", stat_id)
+	button.set_meta("economy_display_size", display_size)
+	var card_pad := _atlas_card_pad(display_size)
+	button.set_meta("economy_content_margins", _atlas_chip_content_margins(card_pad))
+	_apply_atlas_choice_card_theme(button, card_pad)
+
+	var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(32, 32))
+	icon_control.name = "%sIcon" % button.name
+	icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(icon_control)
+
+	var title_label := Label.new()
+	title_label.name = "%sTitle" % button.name
+	title_label.text = "%s  +1" % stat_title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(title_label)
+
+	var interpretation_label := Label.new()
+	interpretation_label.name = "%sInterpretation" % button.name
+	interpretation_label.text = interpretation
+	interpretation_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	interpretation_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	interpretation_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	interpretation_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	interpretation_label.max_lines_visible = 2
+	interpretation_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.92, 1.0))
+	interpretation_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(interpretation_label)
+
+	var influence_label := Label.new()
+	influence_label.name = "%sInfluence" % button.name
+	influence_label.text = "Влияет на: %s" % (influence_text if influence_text != "" else "базовую характеристику")
+	influence_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	influence_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	influence_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	influence_label.add_theme_color_override("font_color", Color(0.74, 0.84, 0.96, 1.0))
+	influence_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(influence_label)
+
+	var preview_label := Label.new()
+	preview_label.name = "%sPreview" % button.name
+	preview_label.text = "\n".join(preview_lines) if not preview_lines.is_empty() else "+1 к базовой характеристике"
+	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	preview_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(preview_label)
+
+	var price_label := Label.new()
+	price_label.name = "%sAction" % button.name
+	price_label.text = "%d зол." % buy_cost
+	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	price_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(price_label)
+
+	button.resized.connect(_layout_attribute_offer_card.bind(button))
+	_layout_attribute_offer_card(button)
+	return button
+
+
+func _layout_attribute_offer_card(button: Button) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var display_size := button.size
+	if display_size.x <= 1.0 or display_size.y <= 1.0:
+		display_size = button.custom_minimum_size
+	var pad := _atlas_card_pad(display_size)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("economy_display_size", display_size)
+	button.set_meta("economy_content_margins", margins)
+	var content_rect := Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, display_size.x - margins.x - margins.z), maxf(1.0, display_size.y - margins.y - margins.w))
+	)
+	button.set_meta("attribute_content_rect", content_rect)
+	var gap := clampf(roundf(content_rect.size.y * 0.012), 2.0, 6.0)
+	var icon_side := clampf(roundf(content_rect.size.y * 0.14), 26.0, 56.0)
+	var title_h := clampf(roundf(content_rect.size.y * 0.11), 20.0, 48.0)
+	var interpretation_h := clampf(roundf(content_rect.size.y * 0.12), 24.0, 58.0)
+	var influence_h := clampf(roundf(content_rect.size.y * 0.18), 32.0, 78.0)
+	var price_h := clampf(roundf(content_rect.size.y * 0.12), 22.0, 48.0)
+	if display_size.y >= 230.0 and display_size.y <= 240.0:
+		# Approved 720p plan: 11px minimum body copy, two interpretation lines,
+		# a full wrapped influence block and four derived preview lines all fit.
+		# The decorative stat icon yields its compact slot to copy at this tier.
+		icon_side = 0.0
+		title_h = 18.0
+		interpretation_h = 30.0
+		influence_h = 42.0
+		price_h = 18.0
+	var fixed_h := icon_side + title_h + interpretation_h + influence_h + price_h + gap * 5.0
+	var preview_h := maxf(38.0, content_rect.size.y - fixed_h)
+	if fixed_h + preview_h > content_rect.size.y:
+		interpretation_h = maxf(20.0, interpretation_h - (fixed_h + preview_h - content_rect.size.y))
+		fixed_h = icon_side + title_h + interpretation_h + influence_h + price_h + gap * 5.0
+		preview_h = maxf(32.0, content_rect.size.y - fixed_h)
+	var y := content_rect.position.y
+	var icon := button.find_child("%sIcon" % button.name, false, false) as Control
+	if icon != null:
+		icon.visible = icon_side > 0.0
+		if icon.visible:
+			_apply_attribute_shop_rect(icon, Rect2(Vector2(content_rect.position.x + (content_rect.size.x - icon_side) * 0.5, y), Vector2(icon_side, icon_side)))
+	y += icon_side + gap
+	var title := button.find_child("%sTitle" % button.name, false, false) as Label
+	var interpretation := button.find_child("%sInterpretation" % button.name, false, false) as Label
+	var influence := button.find_child("%sInfluence" % button.name, false, false) as Label
+	var preview := button.find_child("%sPreview" % button.name, false, false) as Label
+	var price := button.find_child("%sAction" % button.name, false, false) as Label
+	_apply_attribute_shop_rect(title, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, title_h)))
+	y += title_h + gap
+	_apply_attribute_shop_rect(interpretation, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, interpretation_h)))
+	y += interpretation_h + gap
+	_apply_attribute_shop_rect(influence, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, influence_h)))
+	y += influence_h + gap
+	_apply_attribute_shop_rect(preview, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, preview_h)))
+	y += preview_h + gap
+	_apply_attribute_shop_rect(price, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, price_h)))
+	var minimum_body_font := 11.0 if display_size.y >= 230.0 else 9.0
+	var base_font := int(clampf(roundf(display_size.y * 0.040), minimum_body_font, 20.0))
+	if title != null:
+		title.add_theme_font_size_override("font_size", base_font + 2)
+	if interpretation != null:
+		interpretation.add_theme_font_size_override("font_size", base_font)
+	if influence != null:
+		influence.add_theme_font_size_override("font_size", base_font)
+	if preview != null:
+		preview.add_theme_font_size_override("font_size", base_font)
+	if price != null:
+		price.add_theme_font_size_override("font_size", base_font + 1)
 
 
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
@@ -2488,22 +2752,22 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if offers_box == null or money_label == null or reroll_button == null:
 		return
 	for child in offers_box.get_children():
+		offers_box.remove_child(child)
 		child.queue_free()
 
 	var buy_cost := _attribute_buy_cost()
 	var money := _run_money()
-	money_label.text = "Золото: %d   |   +1 к характеристике: %d зол." % [money, buy_cost]
-	reroll_button.text = "Обновить (%d зол.) — осталось %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
+	money_label.text = "Золото: %d · Цена +1: %d зол." % [money, buy_cost]
+	reroll_button.text = "Обновить · %d зол. · %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
 	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
 	for stat_id in game.attribute_offer:
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
-		var attr_offer_size := _economy_attribute_choice_display_size()
-		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, attr_offer_size)
-		offer_button.name = "AttributeOffer_%s" % stat_id
-		# SCRUM-883: карточка опции — чип-ряд Атласа из общей фабрики (единый стиль
-		# с экономикой/событием); отдельное переодевание в evt_card снято.
+		var influence_text := _attribute_influence_text(stat_id)
+		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
+		var attr_offer_size: Vector2 = _attribute_shop_layout_for_size(root.size)["offer_size"]
+		var offer_button := _make_attribute_offer_card(stat_id, stat_title, interpretation, influence_text, preview_lines, buy_cost, attr_offer_size)
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
@@ -2511,18 +2775,14 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		# SCRUM-525/SCRUM-851: тултип краткий и по делу — на что влияет атрибут и живой
 		# предпросмотр производных при +1; интерпретация класса уже написана на карточке.
 		offer_button.tooltip_text = "%s +1" % stat_title
-		var influence_text := _attribute_influence_text(stat_id)
+		if interpretation != "":
+			offer_button.tooltip_text += "\n%s" % interpretation
 		if influence_text != "":
 			offer_button.tooltip_text += "\nВлияет на: %s" % influence_text
-		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
 		if not preview_lines.is_empty():
 			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(preview_lines)
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
-		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(30, 30))
-		icon_control.name = "AttributeOfferIcon_%s" % stat_id
-		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_prepend_economy_choice_content(offer_button, icon_control)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
@@ -2536,9 +2796,11 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 				on_done.call()
 		)
 		offers_box.add_child(offer_button)
+	_layout_attribute_shop(root)
+	_layout_attribute_shop.call_deferred(root)
 
 	# SCRUM-813: докач-опции + Reroll/Skip проходимы с геймпада/стрелок; старт — первая
-	# доступная опция (иначе Reroll/Skip). follow_focus у скролла прокручивает к выбранной.
+	# доступная опция (иначе Reroll/Skip), без scroll-зависимости.
 	var attr_skip_button := root.find_child("AttributeSkipButton", true, false) as Button
 	var attr_focus: Array = []
 	for offer_child in offers_box.get_children():
@@ -2550,6 +2812,23 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if attr_skip_button != null:
 		attr_secondary.append(attr_skip_button)
 	_wire_run_ui_focus(attr_focus, true, attr_secondary, null)
+	# The action controls are visually horizontal, so Left/Right must traverse
+	# them. Map Down from the offer row to the nearest action and Up back.
+	var focusable_offers := _collect_focusable_controls(attr_focus)
+	var focusable_actions := _collect_focusable_controls(attr_secondary)
+	if focusable_actions.size() == 2:
+		var left_action := focusable_actions[0]
+		var right_action := focusable_actions[1]
+		left_action.focus_neighbor_left = right_action.get_path()
+		left_action.focus_neighbor_right = right_action.get_path()
+		right_action.focus_neighbor_left = left_action.get_path()
+		right_action.focus_neighbor_right = left_action.get_path()
+		if not focusable_offers.is_empty():
+			left_action.focus_neighbor_top = focusable_offers[0].get_path()
+			right_action.focus_neighbor_top = focusable_offers[focusable_offers.size() - 1].get_path()
+			for offer_index in range(focusable_offers.size()):
+				var action_target := left_action if offer_index < ceili(float(focusable_offers.size()) * 0.5) else right_action
+				focusable_offers[offer_index].focus_neighbor_bottom = action_target.get_path()
 
 
 func _spend_run_money(amount: int) -> bool:
@@ -2564,68 +2843,6 @@ func _spend_run_money(amount: int) -> bool:
 	game.combat._store_player_snapshot(temp_player)
 	temp_player.queue_free()
 	return true
-
-
-func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute_shop := true) -> void:
-	# При pending level-up единственная точка входа — нижняя кнопка
-	# "Повышение уровня (N)" с бейджем. FAB остается только для докачки за золото.
-	if game.pending_level_ups > 0:
-		_update_level_up_button()
-		return
-
-	# Желтая стрелка прокачки: докачка характеристик за деньги.
-	var fab := _make_compact_button("⬆")
-	fab.name = "UpgradeFabButton"
-	fab.custom_minimum_size = Vector2(50, 50)
-	fab.anchor_left = 1.0
-	fab.anchor_top = 1.0
-	fab.anchor_right = 1.0
-	fab.anchor_bottom = 1.0
-	fab.offset_left = -88.0
-	fab.offset_top = -88.0
-	fab.offset_right = -24.0
-	fab.offset_bottom = -24.0
-	fab.add_theme_font_size_override("font_size", _readable_font_size(30))
-	_apply_compact_button_theme(fab)
-	fab.tooltip_text = "Докачка характеристик за золото"
-	if not allow_attribute_shop:
-		fab.disabled = true
-		fab.tooltip_text = "Докачка здесь недоступна"
-	fab.pressed.connect(func() -> void:
-		if allow_attribute_shop:
-			_show_attribute_shop(return_action)
-	)
-	root.add_child(fab)
-	if root.has_meta("gold_shell_content_rect"):
-		_layout_gold_shell_fab(root, fab)
-		root.resized.connect(_layout_gold_shell_fab.bind(root, fab))
-		var shell_frame := root.find_child("*Frame", false, false) as Panel
-		if shell_frame != null and shell_frame.has_meta("gold_shell_asset"):
-			root.move_child(shell_frame, root.get_child_count() - 1)
-
-
-func _layout_gold_shell_fab(root: Control, fab: Button) -> void:
-	if root == null or fab == null or not is_instance_valid(root) or not is_instance_valid(fab):
-		return
-	var safe_rect := _unified_safe_rect_for_size(root.size)
-	var inner_rect := _gold_shell_inner_rect_for_size(root.size)
-	var socket_rect := Rect2(Vector2(inner_rect.end.x - 72.0, inner_rect.position.y), Vector2(72.0, 72.0))
-	fab.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	fab.scale = Vector2.ONE
-	fab.pivot_offset = Vector2.ZERO
-	fab.custom_minimum_size = socket_rect.size
-	var combined_min := fab.get_combined_minimum_size()
-	var source_side := maxf(socket_rect.size.x, maxf(combined_min.x, combined_min.y))
-	fab.custom_minimum_size = Vector2(source_side, source_side)
-	fab.size = Vector2(source_side, source_side)
-	var fit_scale := minf(socket_rect.size.x / source_side, socket_rect.size.y / source_side)
-	fab.scale = Vector2(fit_scale, fit_scale)
-	fab.position = socket_rect.position
-	fab.set_meta("gold_shell_content_rect", safe_rect)
-	fab.set_meta("gold_shell_inner_rect", inner_rect)
-	fab.set_meta("scrum1036_zone_rect", socket_rect)
-
-
 func _show_atlas_screen() -> void:
 	# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн §7 + мокап meta40_atlas_mockup).
 	# Две вкладки (Созвездие/Гильдия), созвездие класса ЦЕЛИКОМ без пан/зума на небе
@@ -9437,10 +9654,6 @@ func _show_rest_screen() -> void:
 	_create_menu_run_hud()
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
-	var rest_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
-	var rest_root := rest_panel.get_parent() as Control if rest_panel != null and rest_panel.get_parent() != null else null
-	if rest_root != null:
-		_create_upgrade_fab(rest_root, _show_rest_screen)
 	var rest_card_size := _gold_shell_economy_choice_display_size(2)
 	var choices := _make_economy_choice_row("RestChoiceRow", rest_card_size, 2)
 	box.add_child(choices)
@@ -10688,14 +10901,26 @@ func _update_level_up_button() -> void:
 
 	game.level_up_button.text = "+"
 	game.level_up_button.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	# A menu pass may have moved the persistent button into a gold-shell socket.
+	# Restore combat anchors before applying SCRUM-666 bottom-right offsets.
+	game.level_up_button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	game.level_up_button.scale = Vector2.ONE
+	game.level_up_button.pivot_offset = Vector2.ZERO
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var scale := _scrum666_hud_scale_for_size(viewport_size)
-	var plus_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BUTTON_2K, scale)
-	var base_size := COMBAT_BLOCK_DESIGN_BASE_2K * scale
+	var metrics := _configure_level_up_button_for_viewport(viewport_size)
+	var plus_rect: Rect2 = metrics["plus_rect"]
+	var base_size: Vector2 = metrics["base_size"]
 	game.level_up_button.offset_left = plus_rect.position.x - base_size.x
 	game.level_up_button.offset_right = plus_rect.position.x + plus_rect.size.x - base_size.x
 	game.level_up_button.offset_top = plus_rect.position.y - base_size.y
 	game.level_up_button.offset_bottom = plus_rect.position.y + plus_rect.size.y - base_size.y
+
+
+func _configure_level_up_button_for_viewport(viewport_size: Vector2) -> Dictionary:
+	var scale := _scrum666_hud_scale_for_size(viewport_size)
+	var plus_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BUTTON_2K, scale)
+	var badge_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BADGE_2K, scale)
+	var local_badge_pos := badge_rect.position - plus_rect.position
 	game.level_up_button.custom_minimum_size = plus_rect.size
 	game.level_up_button.size = plus_rect.size
 	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
@@ -10703,21 +10928,48 @@ func _update_level_up_button() -> void:
 	game.level_up_button.clip_text = true
 	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(roundf(24.0 * scale))), 0, 34))
 	_apply_fantasy_button_theme(game.level_up_button)
-
 	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
 	if badge_panel != null:
-		var badge_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BADGE_2K, scale)
-		var local_badge_pos := badge_rect.position - plus_rect.position
 		badge_panel.offset_left = local_badge_pos.x
 		badge_panel.offset_top = local_badge_pos.y
 		badge_panel.offset_right = local_badge_pos.x + badge_rect.size.x
 		badge_panel.offset_bottom = local_badge_pos.y + badge_rect.size.y
 		badge_panel.custom_minimum_size = badge_rect.size
+		badge_panel.size = badge_rect.size
 		badge_panel.set_meta("scrum666_content_zone", badge_rect)
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
 		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
+	return {
+		"plus_rect": plus_rect,
+		"base_size": COMBAT_BLOCK_DESIGN_BASE_2K * scale,
+		"badge_local_rect": Rect2(local_badge_pos, badge_rect.size),
+		"right_overhang": maxf(0.0, local_badge_pos.x + badge_rect.size.x - plus_rect.size.x),
+	}
+
+
+func _layout_level_up_button_in_gold_shell(viewport_size: Vector2) -> void:
+	if game.pending_level_ups <= 0 or game.level_up_button == null or not is_instance_valid(game.level_up_button):
+		return
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var metrics := _configure_level_up_button_for_viewport(viewport_size)
+	var button_size: Vector2 = (metrics["plus_rect"] as Rect2).size
+	var reserve := 24.0 if viewport_size.y >= 1000.0 else 16.0
+	var right_reserve := reserve + float(metrics["right_overhang"])
+	var target_rect := Rect2(
+		Vector2(inner_rect.end.x - right_reserve - button_size.x, inner_rect.end.y - reserve - button_size.y),
+		button_size
+	)
+	game.level_up_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	game.level_up_button.scale = Vector2.ONE
+	game.level_up_button.pivot_offset = Vector2.ZERO
+	game.level_up_button.position = target_rect.position
+	game.level_up_button.size = target_rect.size
+	game.level_up_button.set_meta("gold_shell_inner_rect", inner_rect)
+	game.level_up_button.set_meta("gold_shell_socket_rect", target_rect)
+	var badge_local_rect: Rect2 = metrics["badge_local_rect"]
+	game.level_up_button.set_meta("gold_shell_descendant_rect", target_rect.merge(Rect2(target_rect.position + badge_local_rect.position, badge_local_rect.size)))
 
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
@@ -13105,8 +13357,6 @@ func _button_asset_type(button: Button, variant := "default") -> String:
 		return "pause"
 	if button_name.begins_with("QuitConfirm"):
 		return "pause"
-	if button_name == "UpgradeFabButton":
-		return "fab"
 	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
 		return "rebind"
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 64.0:
@@ -13182,7 +13432,7 @@ func _text_button_unique_id(button: Button) -> String:
 	var button_name := button.name
 	var text := button.text.to_lower()
 	var size := button.custom_minimum_size
-	if button_name == "LevelUpPlusButton" or button_name == "UpgradeFabButton":
+	if button_name == "LevelUpPlusButton":
 		return ""
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
 		return ""
@@ -14799,6 +15049,12 @@ func _create_menu_run_hud() -> void:
 		call_deferred("_layout_combat_hud", root)
 	_update_hud()
 	_update_level_up_button()
+	if shell_safe_rect.has_area():
+		_layout_level_up_button_in_gold_shell(root.size)
+		root.resized.connect(func() -> void:
+			_layout_level_up_button_in_gold_shell(root.size)
+			_layout_level_up_button_in_gold_shell.call_deferred(root.size)
+		)
 
 
 func _layout_gold_shell_menu_resource_hud_current(root: Control) -> void:

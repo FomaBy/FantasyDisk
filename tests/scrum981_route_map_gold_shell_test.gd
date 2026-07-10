@@ -17,7 +17,6 @@ const MATRIX := {
 		"resources": Rect2(731, 149, 376, 68),
 		"scroll": Rect2(157, 245, 966, 322),
 		"scrollbar_lane": 14.0,
-		"fab": Rect2(1035, 479, 72, 72),
 	},
 	"1920x1080": {
 		"viewport": Vector2i(1920, 1080),
@@ -28,7 +27,6 @@ const MATRIX := {
 		"resources": Rect2(1128, 209, 544, 70),
 		"scroll": Rect2(224, 317, 1472, 550),
 		"scrollbar_lane": 18.0,
-		"fab": Rect2(1584, 779, 72, 72),
 	},
 	"2560x1440": {
 		"viewport": Vector2i(2560, 1440),
@@ -39,7 +37,6 @@ const MATRIX := {
 		"resources": Rect2(1573, 273, 664, 80),
 		"scroll": Rect2(299, 393, 1962, 766),
 		"scrollbar_lane": 18.0,
-		"fab": Rect2(2165, 1063, 72, 72),
 	},
 }
 
@@ -78,9 +75,10 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 	var resources := main.find_child("RunResourceHud", true, false) as Control
 	var scroll := main.find_child("RouteMapScroll", true, false) as ScrollContainer
 	var map_area := main.find_child("VerticalRouteMap", true, false) as Control
-	var fab := main.find_child("UpgradeFabButton", true, false) as Button
-	if screen == null or frame == null or header == null or title == null or resources == null or scroll == null or map_area == null or fab == null:
+	if screen == null or frame == null or header == null or title == null or resources == null or scroll == null or map_area == null:
 		return _fail("%s: missing Route Map shell/control node." % context)
+	if main.find_child("UpgradeFabButton", true, false) != null:
+		return _fail("%s: SCRUM-982 Route Map must not expose manual Attribute Shop FAB." % context)
 
 	if screen.get_child(screen.get_child_count() - 1) != frame:
 		return _fail("%s: RouteMapFrame must be the final child above all content." % context)
@@ -104,8 +102,6 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		return _fail("%s: title/progress rect drifted: %s vs %s." % [context, title.get_global_rect(), expected["title"]])
 	if not _rect_near(scroll.get_global_rect(), expected["scroll"]):
 		return _fail("%s: scroll rect drifted: %s vs %s." % [context, scroll.get_global_rect(), expected["scroll"]])
-	if not _rect_near(fab.get_global_rect(), expected["fab"]):
-		return _fail("%s: FAB rect drifted: %s vs %s." % [context, fab.get_global_rect(), expected["fab"]])
 
 	var inner_rect: Rect2 = expected["inner"]
 	var resource_zone: Rect2 = expected["resources"]
@@ -117,8 +113,6 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		return _fail("%s: resource HUD leaves its authored safe zone: %s not in %s." % [context, resources.get_global_rect(), resource_zone])
 	if not _encloses_with_epsilon(inner_rect, scroll.get_global_rect()):
 		return _fail("%s: route scroll touches the frame reserve/ornament." % context)
-	if not _encloses_with_epsilon(inner_rect, fab.get_global_rect()):
-		return _fail("%s: FAB touches the frame reserve/ornament." % context)
 	if header.get_global_rect().intersects(scroll.get_global_rect()):
 		return _fail("%s: header overlaps route scroll." % context)
 

@@ -1,0 +1,30 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#160B10",
+    "stroke_width": 1,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "money": "Золото: 9999",
+    "title": "ДОКАЧКА",
+    "strength": "СИЛА +1\nУрон: 120 → 126\n120 зол.",
+    "agility": "ЛОВКОСТЬ +1\nСкор. атаки: 1.2 → 1.3\nКрит: 10% → 11%\nСкорость: 220 → 222\nУклон: 5% → 6%\n120 зол.",
+    "endurance": "ВЫНОСЛИВОСТЬ +1\nHP: 500 → 525\nЗащита: 40 → 41\nПоглощение: 5% → 6%\nОтбрасывание: 90 → 93\n120 зол.",
+    "reroll": "ОБНОВИТЬ · 50 ЗОЛ.",
+    "skip": "ПРОПУСТИТЬ"
+  },
+  "zones": [
+    {"id": "money", "content_key": "money", "x": 94, "y": 55, "w": 88, "h": 32, "max_font": 11, "min_font": 7},
+    {"id": "title", "content_key": "title", "x": 274, "y": 50, "w": 142, "h": 45, "max_font": 18, "min_font": 11},
+    {"id": "strength", "content_key": "strength", "x": 205, "y": 147, "w": 69, "h": 91, "max_font": 10, "min_font": 6},
+    {"id": "agility", "content_key": "agility", "x": 308, "y": 147, "w": 69, "h": 91, "max_font": 9, "min_font": 5},
+    {"id": "endurance", "content_key": "endurance", "x": 412, "y": 147, "w": 69, "h": 91, "max_font": 9, "min_font": 5},
+    {"id": "reroll", "content_key": "reroll", "x": 212, "y": 297, "w": 105, "h": 31, "max_font": 11, "min_font": 7},
+    {"id": "skip", "content_key": "skip", "x": 371, "y": 297, "w": 105, "h": 31, "max_font": 12, "min_font": 8}
+  ]
+}

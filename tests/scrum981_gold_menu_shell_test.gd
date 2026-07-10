@@ -303,12 +303,14 @@ func _validate_live_resize() -> void:
 	viewport.size = compact_size
 	await _settle()
 	_assert_frame(main, "RouteMapFrame", compact_safe, compact_size)
-	for node_name in ["RouteMapHeader", "RouteMapTitleProgress", "RunResourceHud", "RouteMapScroll", "UpgradeFabButton"]:
+	for node_name in ["RouteMapHeader", "RouteMapTitleProgress", "RunResourceHud", "RouteMapScroll"]:
 		var control := main.find_child(node_name, true, false) as Control
 		if control == null:
 			_errors.append("live-resize Route Map: missing %s." % node_name)
 		else:
 			_assert_inside(control.get_global_rect(), compact_safe, "live-resize Route Map %s" % node_name)
+	if main.find_child("UpgradeFabButton", true, false) != null:
+		_errors.append("live-resize Route Map: SCRUM-982 manual Attribute Shop FAB must stay absent.")
 
 	main.queue_free()
 	viewport.queue_free()

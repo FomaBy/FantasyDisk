@@ -110,7 +110,8 @@ func _initialize() -> void:
 			"ShopItemButton2", "ShopItemButton3", "ShopLeaveButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "attribute_shop_economy", Callable(self, "_open_attribute_shop"), [
-			"AttributeShopPanel", "AttributeOffer_damage", "AttributeOffer_attack_speed",
+			"AttributeShopTitle", "AttributeShopMoney",
+			"AttributeOffer_strength", "AttributeOffer_agility", "AttributeOffer_endurance",
 			"AttributeRerollButton", "AttributeSkipButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "rest_economy", Callable(self, "_open_rest"), [
@@ -493,7 +494,7 @@ func _open_shop(main: Node) -> void:
 
 func _open_attribute_shop(main: Node) -> void:
 	main.set("selected_character_id", "berserk")
-	main.set("attribute_offer", ["damage", "attack_speed"])
+	main.set("attribute_offer", ["strength", "agility", "endurance"])
 	main.ui._show_attribute_shop(Callable())
 
 
@@ -955,14 +956,16 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if main.find_child("GlossaryTooltipPanel", true, false) != null:
 				return "%s: expected SCRUM-889 glossary tooltip popups to remain removed." % context
 		"attribute_shop_economy":
-			var panel := main.find_child("AttributeShopPanel", true, false) as Control
+			var screen := main.find_child("AttributeShopScreen", true, false) as Control
+			var frame := main.find_child("AttributeShopFrame", true, false) as Panel
 			var skip_button := main.find_child("AttributeSkipButton", true, false) as Button
-			if panel == null or not panel.get_global_rect().has_area():
-				return "%s: expected visible AttributeShopPanel." % context
-			# SCRUM-883: панель докачки — чип Атласа (StyleBoxFlat) вместо attr_panel @2K.
-			var attr_chip := panel.get_theme_stylebox("panel") as StyleBoxFlat
-			if attr_chip == null or attr_chip.bg_color.a < 0.9 or attr_chip.bg_color.v > 0.35:
-				return "%s: expected AttributeShopPanel to use a dark atlas chip StyleBoxFlat (alpha >= 0.9)." % context
+			if screen == null or frame == null or not screen.get_global_rect().has_area():
+				return "%s: expected visible AttributeShopScreen with shared frame." % context
+			if main.find_child("AttributeShopPanel", true, false) != null:
+				return "%s: redundant AttributeShopPanel must remain removed." % context
+			var frame_style := frame.get_theme_stylebox("panel") as StyleBoxTexture
+			if frame_style == null or frame_style.draw_center or screen.get_child(screen.get_child_count() - 1) != frame:
+				return "%s: AttributeShopFrame must be the final hollow child." % context
 			if skip_button == null or skip_button.disabled:
 				return "%s: expected AttributeSkipButton to remain reachable and enabled." % context
 			for node in main.find_children("AttributeOffer_*", "Button", true, false):
@@ -977,6 +980,10 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected zero-money attribute offers to be disabled." % context
 				if not offer.tooltip_text.contains("Недостаточно золота"):
 					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+				for suffix in ["Influence", "Preview"]:
+					var visible_label := offer.find_child("%s%s" % [offer.name, suffix], false, false) as Label
+					if visible_label == null or visible_label.text.strip_edges() == "":
+						return "%s: %s must show a visible %s block." % [context, offer.name, suffix]
 		"rest_economy":
 			var rest_panel := main.find_child("MenuPanel_campfire", true, false) as Control
 			if rest_panel == null or not rest_panel.visible or not rest_panel.get_global_rect().has_area():
@@ -1416,9 +1423,20 @@ func _economy_choice_card_contract_error(card: Button, context: String) -> Strin
 		return "%s: expected %s hover style to be an atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, card.name]
 	if hover.border_color.r < 0.85 or hover.border_color.g < 0.6 or hover.border_color.b > 0.6:
 		return "%s: expected %s hover chip to use the golden atlas border, got %s." % [context, card.name, str(hover.border_color)]
+	var attribute_card := context.contains("attribute_shop_economy")
 	var gold_shell_compact := bool(card.get_meta("gold_shell_compact", false)) \
 		and (context.contains("rest_economy") or context.contains("upgrade_economy"))
-	if gold_shell_compact:
+	if attribute_card:
+		var expected_attribute_size := Vector2(250.0, 185.0)
+		if context.contains("(1280, 720)"):
+			expected_attribute_size = Vector2(276.0, 232.0)
+		elif context.contains("(1920, 1080)"):
+			expected_attribute_size = Vector2(360.0, 360.0)
+		elif context.contains("(2560, 1440)"):
+			expected_attribute_size = Vector2(460.0, 500.0)
+		if card.custom_minimum_size.x + 2.0 < expected_attribute_size.x or card.custom_minimum_size.y + 2.0 < expected_attribute_size.y:
+			return "%s: expected %s to keep the responsive Attribute Shop target %s, got %s." % [context, card.name, str(expected_attribute_size), str(card.custom_minimum_size)]
+	elif gold_shell_compact:
 		var compact_min_width := 390.0 if context.contains("rest_economy") else 280.0
 		if card.custom_minimum_size.x < compact_min_width or card.custom_minimum_size.y < 150.0:
 			return "%s: expected %s to keep the SCRUM-981 compact gold-shell target, got %s." % [context, card.name, str(card.custom_minimum_size)]

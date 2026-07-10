@@ -1,0 +1,123 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "ornamental_frame",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "attribute_shell_inner",
+      "kind": "panel",
+      "rect": [
+        224,
+        193,
+        1472,
+        694
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "money_zone",
+      "kind": "text",
+      "rect": [
+        248,
+        213,
+        380,
+        50
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "rect": [
+        710,
+        200,
+        500,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "offer_1",
+      "kind": "button",
+      "rect": [
+        350,
+        330,
+        360,
+        360
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "offer_2",
+      "kind": "button",
+      "rect": [
+        780,
+        330,
+        360,
+        360
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "offer_3_optional",
+      "kind": "button",
+      "rect": [
+        1210,
+        330,
+        360,
+        360
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "reroll_button",
+      "kind": "button",
+      "rect": [
+        500,
+        785,
+        380,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "skip_button",
+      "kind": "button",
+      "rect": [
+        1040,
+        785,
+        380,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    }
+  ]
+}

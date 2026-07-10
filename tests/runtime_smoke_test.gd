@@ -1351,18 +1351,21 @@ func _initialize() -> void:
 	run_snapshot["money"] = int(run_snapshot.get("money", 0)) + 200
 	victory_banner.pressed.emit()
 	await process_frame
-	var attribute_panel := main.find_child("AttributeShopPanel", true, false)
-	if attribute_panel == null:
+	var attribute_screen := main.find_child("AttributeShopScreen", true, false) as Control
+	if attribute_screen == null:
 		_fail("Expected the attribute purchase window after the victory banner.")
 		return
-	var attribute_offers := main.find_child("AttributeOffers", true, false) as Container
-	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 8:
-		_fail("Expected 2-8 attribute offers in the post-battle window, including meta skill extra options.")
+	if main.find_child("AttributeShopPanel", true, false) != null:
+		_fail("Expected SCRUM-987 Attribute Shop to remove the redundant inner panel.")
 		return
-	# SCRUM-883: панель докачки — чип Атласа (StyleBoxFlat) вместо attr_panel @2K.
-	var attr_panel_chip := (attribute_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
-	if attr_panel_chip == null or attr_panel_chip.bg_color.a < 0.9 or attr_panel_chip.bg_color.v > 0.35:
-		_fail("Expected attribute shop panel to use the SCRUM-883 dark atlas chip panel.")
+	var attribute_offers := main.find_child("AttributeOffers", true, false) as Container
+	if attribute_offers == null or attribute_offers.get_child_count() < 2 or attribute_offers.get_child_count() > 3:
+		_fail("Expected 2 default or 3 Atlas attribute offers in the post-battle window.")
+		return
+	var attribute_frame := main.find_child("AttributeShopFrame", true, false) as Panel
+	var attribute_frame_style := attribute_frame.get_theme_stylebox("panel") as StyleBoxTexture if attribute_frame != null else null
+	if attribute_frame == null or attribute_screen.get_child(attribute_screen.get_child_count() - 1) != attribute_frame or attribute_frame_style == null or attribute_frame_style.draw_center:
+		_fail("Expected Attribute Shop to use one final hollow shared gold frame.")
 		return
 	var reroll_button := main.find_child("AttributeRerollButton", true, false) as Button
 	if reroll_button == null:
@@ -1383,7 +1386,12 @@ func _initialize() -> void:
 	if first_offer_hover == null or first_offer_hover.bg_color.a < 0.8 or first_offer_hover.border_color.r < 0.85 or first_offer_hover.border_color.b > 0.6:
 		_fail("Expected attribute offer hover chip to use the golden atlas border.")
 		return
-	_write_scrum437_attribute_offer_dump(attribute_panel as Control, attribute_offers)
+	for offer_node in attribute_offers.get_children():
+		var visible_offer := offer_node as Button
+		if visible_offer == null or visible_offer.find_child("%sInfluence" % visible_offer.name, false, false) == null or visible_offer.find_child("%sPreview" % visible_offer.name, false, false) == null:
+			_fail("Expected every attribute card to expose visible influence and derived preview zones.")
+			return
+	_write_scrum437_attribute_offer_dump(attribute_screen, attribute_offers)
 	var offered_stat := str(first_offer.name).replace("AttributeOffer_", "")
 	if first_offer.disabled:
 		_fail("Expected the attribute offer to be affordable in the test run (money %d)." % attr_money_before)
@@ -4037,7 +4045,7 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	if elite_main.find_child("EliteArtifactRewardScreen", true, false) != null:
 		_fail("Expected NO elite reward window when the elite survived (timer victory with a live elite).")
 		return
-	if elite_main.find_child("AttributeShopScreen", true, false) == null and elite_main.find_child("AttributeShopPanel", true, false) == null:
+	if elite_main.find_child("AttributeShopScreen", true, false) == null:
 		_fail("Expected the normal victory flow (attribute shop) when the elite survived.")
 		return
 	elite_main.queue_free()
@@ -7119,13 +7127,11 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	holder.queue_free()
 	current_scene = null
 
-	# При pending level-up не должно быть двух входов одновременно:
-	# нижняя кнопка с бейджем остается единственным входом, FAB сохраняется для докачки при pending=0.
+	# SCRUM-982: pending Level Up remains, while paid Attribute Shop has no manual FAB.
 	econ_main.set("pending_level_ups", 2)
 	econ_main.call("_show_battle_map")
 	await process_frame
-	var fab := econ_main.find_child("UpgradeFabButton", true, false) as Button
-	if fab != null:
+	if econ_main.find_child("UpgradeFabButton", true, false) != null:
 		_fail("Expected route map to hide UpgradeFabButton while pending level-up return button is visible.")
 		return
 	var level_return := econ_main.find_child("LevelUpPlusButton", true, false) as Button
@@ -7136,9 +7142,8 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	econ_main.set("pending_level_ups", 0)
 	econ_main.call("_show_battle_map")
 	await process_frame
-	fab = econ_main.find_child("UpgradeFabButton", true, false) as Button
-	if fab == null or fab.disabled:
-		_fail("Expected the attribute upgrade FAB to remain available when no level-up is pending.")
+	if econ_main.find_child("UpgradeFabButton", true, false) != null:
+		_fail("Expected SCRUM-982 Route Map to remove the manual paid Attribute Shop FAB.")
 		return
 	econ_main.queue_free()
 	await process_frame
@@ -8486,7 +8491,7 @@ func _write_scrum437_attribute_offer_dump(panel: Control, offers: Container) -> 
 	var dump := PackedStringArray()
 	dump.append("# SCRUM-437 Wide Economy Choice Card Runtime Dump")
 	dump.append("")
-	dump.append("- `AttributeShopPanel`: `%s`" % str(panel.get_global_rect() if panel != null else Rect2()))
+	dump.append("- `AttributeShopScreen`: `%s`" % str(panel.get_global_rect() if panel != null else Rect2()))
 	if offers != null:
 		dump.append("- `AttributeOffers`: `%s`, children `%d`" % [str(offers.get_global_rect()), offers.get_child_count()])
 		for node in offers.get_children():
@@ -8499,7 +8504,7 @@ func _write_scrum437_attribute_offer_dump(panel: Control, offers: Container) -> 
 				str(card.custom_minimum_size),
 				str(card.get_meta("economy_card_style", "")),
 				str(card.get_meta("economy_card_pad", 0.0)),
-				str(card.get_meta("economy_content_margins", Vector4.ZERO)),
+				str(card.get_meta("attribute_content_rect", Rect2())),
 			])
 	var file := FileAccess.open("%s/wide_economy_choice_card_runtime_dump.md" % qa_dir, FileAccess.WRITE)
 	if file != null:

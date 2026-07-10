@@ -1,5 +1,15 @@
 # SCRUM-568 — UI-редизайн «Докача (атрибут-шоп)» @2K (2560×1440)
 
+> **Historical / superseded.** Эта спецификация фиксирует прежний layout
+> SCRUM-568 и сохранена как архивная evidence. С SCRUM-982/987/988 актуальный
+> контракт удаляет ручной вход в Attribute Shop с Route/Rest/Shop/Event/Escape,
+> сохраняет обязательный post-combat normal/elite flow и отдельный
+> `LevelUpPlusButton`, использует shared hollow gold shell без второй центральной
+> рамы, размещает 2 default / 3 Atlas offers в одном горизонтальном ряду с
+> видимыми influence + derived previews и горизонтальными Reroll/Skip. Live
+> layout targets: 1280×720, 1920×1080 и 2560×1440. Таблицы и asset notes ниже
+> больше не являются источником runtime-геометрии.
+
 Эпик: SCRUM-481 (UI Overhaul 2K). Экран: **Докача (атрибут-шоп)** · нода
 `AttributeShopScreen` · вход `_show_attribute_shop` (`scripts/ui_screens.gd`).
 База 2560×1440, `stretch=canvas_items`, `aspect=keep`.

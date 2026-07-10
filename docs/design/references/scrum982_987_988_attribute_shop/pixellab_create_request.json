@@ -1,0 +1,26 @@
+{
+  "jsonrpc": "2.0",
+  "id": 982987988,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "SCRUM-982-987-988 Attribute Shop Gold Shell",
+      "description": "Textless full-page FantasyDisk post-combat Attribute Shop UI reference at 16:9. D&D dark fantasy dragon art direction, restrained brutal elegance, blackened iron, dark oxblood leather, worn antique gold, subtle amber embers. Exactly one hollow ornate outer gold frame around the screen. No opaque central modal and no second inner ornamental frame. Preserve calm empty content surfaces: one compact title zone centered at top, one compact money status zone at upper left, exactly three equal isolated attribute offer card wells in one horizontal left-to-right row, and exactly two equal action button wells in one horizontal bottom row. Each offer well must have a quiet empty interior suitable for an icon, title, class interpretation, influence line, four derived-stat preview lines, and price. Decorative rails must remain outside every empty content well. Full background composition visible. No text, no letters, no numbers, no pseudo-text, no runes resembling text, no characters, no portraits, no logos, no watermark, no circles, no fourth card, no extra buttons, no scrollbar.",
+      "width": 688,
+      "height": 384,
+      "no_background": false,
+      "seed": 982987988,
+      "color_palette": "obsidian black, blackened iron, dark oxblood leather, restrained worn antique gold, muted amber embers",
+      "pieces": [
+        {"id": "money_zone", "kind": "rounded_rect", "x": 66.1, "y": 56.8, "w": 101.3, "h": 13.3, "radius": 3, "label": "empty money status zone"},
+        {"id": "title_zone", "kind": "rounded_rect", "x": 189.3, "y": 53.3, "w": 133.3, "h": 16.0, "radius": 3, "label": "empty title zone"},
+        {"id": "offer_1", "kind": "rounded_rect", "x": 93.3, "y": 88.0, "w": 96.0, "h": 96.0, "radius": 4, "label": "empty attribute offer card well"},
+        {"id": "offer_2", "kind": "rounded_rect", "x": 208.0, "y": 88.0, "w": 96.0, "h": 96.0, "radius": 4, "label": "empty attribute offer card well"},
+        {"id": "offer_3", "kind": "rounded_rect", "x": 322.7, "y": 88.0, "w": 96.0, "h": 96.0, "radius": 4, "label": "empty attribute offer card well"},
+        {"id": "reroll_button", "kind": "rounded_rect", "x": 133.3, "y": 209.3, "w": 101.3, "h": 19.2, "radius": 4, "label": "empty reroll button well"},
+        {"id": "skip_button", "kind": "rounded_rect", "x": 277.3, "y": 209.3, "w": 101.3, "h": 19.2, "radius": 4, "label": "empty skip button well"}
+      ]
+    }
+  }
+}

@@ -105,6 +105,27 @@ Design-ready assets:
 | `ui_shop_purchased_overlay` | `assets/sprites/ui/shop/ui_shop_purchased_overlay.png` |
 | `ui_shop_tooltip_frame` | `assets/sprites/ui/shop/ui_shop_tooltip_frame.png` |
 
+## Attribute Shop UI
+
+SCRUM-982/987/988 supersede the repeatable/manual Attribute Shop flow and its
+old tall inner-panel layout. Route Map, Rest, Shop, Event and Escape/pause do not
+offer a paid attribute-upgrade entry. Normal victories still open Attribute
+Shop before returning to the map; elite victories still open it after the
+artifact reward. Pending Level Up rewards remain reachable through the separate
+`LevelUpPlusButton` on combat and non-combat screens and are not coupled to the
+removed gold-spend FAB.
+
+The live Attribute Shop reuses the shared hollow gold shell
+`assets/sprites/ui/meta40/frame_border.png`; it has no second central
+panel/frame. The shell is drawn last and all interactive content stays inside
+its true empty safe zone. The offer area is one horizontal, scroll-free row:
+two cards by default, or three when Atlas grants `attr_extra_options`. Every
+card visibly includes the class interpretation, the full attribute influence
+and derived before/after preview; a tooltip may only provide overflow/backstop
+detail. Reroll and Skip are a horizontal action pair below the cards. Authored
+metrics and live `resized` relayout cover 1280x720, 1920x1080 and 2560x1440,
+including switching among those sizes while the screen remains open.
+
 SCRUM-332 adds a Design-ready economy node frame kit for the broader shop/rest/
 upgrade/event/attribute cluster. Mockup and spec live in
 `docs/design/mockups/scrum332_shop_economy/`; generated source/reference art
@@ -132,13 +153,13 @@ is irregular: its content may only use the real inner rect to the right of the
 dragon head/wing, not the full bounding box. Runtime QA dump:
 `build/qa/scrum332/economy_ui_no_overlap_matrix.md`.
 
-SCRUM-413/SCRUM-415 harden the live economy screens for 720p and narrow
-viewports: Attribute Shop uses responsive panel width/height, scrollable
-content, grid-based attribute offers and compact reachable reroll/skip buttons;
-unaffordable attribute cards are disabled, greyed and explain insufficient gold
-in tooltip. Random event choices keep long descriptions inside the accepted
-choice-card safe zone and normalize risk text so player copy shows a single
-`Риск:` prefix, never `Риск: Риск:`.
+SCRUM-413/SCRUM-415 are the historical 720p hardening baseline. Their
+scrollable, grid-based Attribute Shop layout is superseded by SCRUM-987/988's
+single scroll-free offer row and horizontal actions; the unaffordable-card
+state remains disabled/greyed and still explains insufficient gold. Random
+event choices keep long descriptions inside the accepted choice-card safe zone
+and normalize risk text so player copy shows a single `Риск:` prefix, never
+`Риск: Риск:`.
 
 SCRUM-629 keeps the random event panel from rendering as an empty shell: the
 screen root is `EventScreen`, the actual frame stays named `MenuPanel_event`,
@@ -155,12 +176,12 @@ gray interior in screenshots, hiding title/story/choices/back even though basic
 rect checks still passed. The matrix now explicitly forbids `UpgradeFabButton`
 on Event and requires `EventContent`, title, story, choices and back to remain
 inside the scaled `evt_panel` content safe rect.
-SCRUM-672 applies the same release-gate lesson to Rest: `_show_rest_screen()`
-must keep `UpgradeFabButton` on the screen root, never inside
-`MenuPanel_campfire`, so the campfire panel continues to show `RestContent`,
-`RestTitle`, `RestSubtitle`, the two rest choice cards and `RestBackButton`.
-The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
-if the Rest content disappears from the campfire panel.
+SCRUM-672 historically moved `UpgradeFabButton` to the Rest screen root to
+protect the campfire panel layout. SCRUM-982 now removes that manual paid
+Attribute Shop entry from Rest entirely. The surviving invariant is that
+`MenuPanel_campfire` continues to show `RestContent`, `RestTitle`,
+`RestSubtitle`, the two rest choice cards and `RestBackButton`; the UI matrix
+still fails on a blank panel/up-arrow-only shell or missing Rest content.
 
 SCRUM-996 adds conditional/hidden outcomes to the Event screen without visual
 redesign (the visual layer is SCRUM-997):
@@ -268,11 +289,10 @@ sources and debug-overlay evidence live in
 not a claim that the fourth runtime tab is already integrated; SCRUM-1025 owns
 that Back-end integration after SCRUM-975 and SCRUM-976 are accepted.
 
-SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
-Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
-buttons only below 660px viewport height, while Settings permits a compressed
-content panel only when the v2 modal is height-constrained. This preserves the
-720p+ layout targets and keeps bottom actions reachable in the no-overlap matrix.
+SCRUM-471 is the historical 1152x648 short-height guard for the former Attribute
+Shop inner panel and Settings. Its Attribute Shop card/button metrics are
+superseded by SCRUM-987/988's gold-shell relayout at 720p/1080p/1440p; the
+Settings compression rule remains unchanged.
 
 SCRUM-437 makes the wide 0.1.6 economy choice-card frame live in runtime for
 rest, upgrade, event and Attribute Shop choices. Runtime now uses
@@ -281,10 +301,13 @@ rest, upgrade, event and Attribute Shop choices. Runtime now uses
 source size `Vector2(960, 640)`, texture margins `Vector4(96, 88, 96, 96)`,
 content margins `Vector4(132, 118, 132, 128)`, hover content margins
 `Vector4(140, 126, 140, 136)` and safe rect `Rect2(132, 118, 696, 394)`.
-Display targets are `360x240` at 1280x720, `420x300` at 1920x1080 and
-`480x340` at 2560x1440, with a compact 1152px matrix fallback. Attribute Shop
-uses extra vertical card space for stat icon/title/interpretation/price text.
-Runtime labels, icons and focus/click content stay inside the scaled safe rect;
+The historical display targets were `360x240` at 1280x720, `420x300` at
+1920x1080 and `480x340` at 2560x1440, with a compact 1152px matrix fallback;
+SCRUM-987/988 supersede those Attribute Shop geometry targets. The wide economy
+card art remains reusable, but the live Attribute Shop cards reserve visible
+space for icon/title, class interpretation, full stat influence, derived
+before/after preview and price in one horizontal row. Runtime labels, icons and
+focus/click content stay inside the scaled safe rect;
 QA dumps live in `build/qa/scrum437/`. Spec:
 `docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`.
 
@@ -912,8 +935,10 @@ text, while UI matrix dumps live under `build/qa/scrum331/`.
 
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
-and anchored bottom-right, and keeps its pending-count badge readable. Runtime
-smoke writes `build/qa/combat_level_up_button.md` and
+and anchored bottom-right, and keeps its pending-count badge readable. On Route
+Map and other non-combat screens it remains the dedicated entry for saved
+pending level-up offers after SCRUM-982 removes the unrelated paid Attribute
+Shop FAB. Runtime smoke writes `build/qa/combat_level_up_button.md` and
 `build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
@@ -1298,8 +1323,9 @@ B→ui_cancel, крестовину/стик к ui_*) и общий хелпер
   +/- + Выбрать + Назад) — уже был (SCRUM-664), сохранён.
 - Выбор оружия/боона (`_show_weapon_select`, `_show_start_boon_select`): карточки
   вертикально по кругу, «Назад»/«Без боона» ниже; старт — первая карточка.
-- Магазин атрибутов (`_show_attribute_shop`): докач-опции + Reroll/Skip, старт — первая
-  доступная опция; `follow_focus` прокручивает список.
+- Магазин атрибутов (`_show_attribute_shop`): 2 докач-опции по умолчанию или 3 с
+  Atlas-бонусом находятся в одном горизонтальном focus ring, старт — первая
+  доступная опция; Down ведёт к горизонтальной паре Reroll/Skip, scroll отсутствует.
 - Дерево умений (`_show_skill_tree_screen`): старт — селектор класса; кнопки хедера
   (зум/сброс/назад) достижимы направлением; узлы графа — мышь/зум (гео-навигация графа
   геймпадом — отдельная доработка).

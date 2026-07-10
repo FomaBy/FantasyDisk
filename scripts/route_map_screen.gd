@@ -210,11 +210,17 @@ func _show_battle_map() -> void:
 	_draw_map_connections(map_area, node_positions)
 	_draw_route_nodes(map_area, node_positions)
 	game.ui._create_resource_hud_panel(root, Vector2.ZERO)
-	game.ui._create_upgrade_fab(root, _show_battle_map)
+	# SCRUM-982: the paid Attribute Shop is mandatory post-combat only. Keep the
+	# independent pending Level Up affordance on Route Map without recreating the
+	# removed manual gold-stat entry.
+	game.ui._update_level_up_button()
+	game.ui._layout_level_up_button_in_gold_shell(root.size)
 	_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
 	root.resized.connect(func() -> void:
 		_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
 		_apply_route_map_shell_layout.call_deferred(root, header, title_box, scroll, map_area)
+		game.ui._layout_level_up_button_in_gold_shell(root.size)
+		game.ui._layout_level_up_button_in_gold_shell.call_deferred(root.size)
 	)
 	game.ui._update_hud()
 	game.route_map_pan_active = false
@@ -253,8 +259,6 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 	var resource_right_inset := 16.0
 	var body_gap := 16.0
 	var scrollbar_lane := 14.0
-	var fab_right_inset := 16.0
-	var fab_bottom_inset := 16.0
 	if viewport_size.y > 800.0 and viewport_size.y < 1200.0:
 		header_height = 104.0
 		header_inset = Vector2(24.0, 16.0)
@@ -265,7 +269,6 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 		resource_right_inset = 24.0
 		body_gap = 20.0
 		scrollbar_lane = 18.0
-		fab_right_inset = 40.0
 	elif viewport_size.y >= 1200.0:
 		header_height = 112.0
 		header_inset = Vector2(24.0, 16.0)
@@ -276,8 +279,6 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 		resource_right_inset = 24.0
 		body_gap = 24.0
 		scrollbar_lane = 18.0
-		fab_right_inset = 24.0
-		fab_bottom_inset = 24.0
 
 	var header_rect := Rect2(inner_rect.position, Vector2(inner_rect.size.x, header_height))
 	var title_rect := Rect2(
@@ -293,11 +294,6 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 		Vector2(inner_rect.position.x, header_rect.end.y + body_gap),
 		Vector2(inner_rect.size.x, maxf(1.0, inner_rect.end.y - body_gap - (header_rect.end.y + body_gap)))
 	)
-	var fab_size := Vector2(72.0, 72.0)
-	var fab_rect := Rect2(
-		Vector2(scroll_rect.end.x - fab_right_inset - fab_size.x, scroll_rect.end.y - fab_bottom_inset - fab_size.y),
-		fab_size
-	)
 	return {
 		"safe_rect": safe_rect,
 		"inner_rect": inner_rect,
@@ -307,7 +303,6 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 		"scroll_rect": scroll_rect,
 		"scrollbar_lane": scrollbar_lane,
 		"map_width": maxf(1.0, scroll_rect.size.x - scrollbar_lane),
-		"fab_rect": fab_rect,
 	}
 
 
@@ -332,11 +327,6 @@ func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Co
 		map_area.custom_minimum_size = expected_canvas_size
 		map_area.size = expected_canvas_size
 	_layout_route_map_resource_hud(root, layout["resource_rect"])
-
-	var fab := root.find_child("UpgradeFabButton", true, false) as Button
-	if fab != null:
-		_apply_route_map_fab_rect(fab, layout["fab_rect"])
-		fab.set_meta("scrum981_zone_rect", layout["fab_rect"])
 
 
 func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void:
@@ -366,24 +356,6 @@ func _apply_route_map_control_rect(control: Control, rect: Rect2) -> void:
 	control.position = rect.position
 	control.custom_minimum_size = rect.size
 	control.size = rect.size
-
-
-func _apply_route_map_fab_rect(fab: Button, rect: Rect2) -> void:
-	# The global compact-button kit has an 87px combined minimum because of its
-	# authored 9-slice margins. Preserve its aspect and shrink uniformly into the
-	# exact 72×72 route socket; never squash only one axis.
-	fab.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	fab.scale = Vector2.ONE
-	fab.custom_minimum_size = rect.size
-	var combined_min := fab.get_combined_minimum_size()
-	var source_side := maxf(rect.size.x, maxf(combined_min.x, combined_min.y))
-	fab.custom_minimum_size = Vector2(source_side, source_side)
-	fab.size = Vector2(source_side, source_side)
-	var fit_scale := minf(rect.size.x / source_side, rect.size.y / source_side)
-	fab.scale = Vector2(fit_scale, fit_scale)
-	fab.position = rect.position
-
-
 func _rebuild_route_map_canvas(map_area: Control, canvas_size: Vector2) -> void:
 	for child in map_area.get_children():
 		map_area.remove_child(child)

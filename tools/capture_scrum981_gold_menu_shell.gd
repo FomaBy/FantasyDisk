@@ -80,7 +80,7 @@ func _capture_screen(viewport_size: Vector2i, screen_id: String, qa_dir: String,
 		report.append("- logo: `%s`" % str(title.get_global_rect() if title != null else Rect2()))
 		report.append("- actions: `%s`" % str(actions.get_global_rect() if actions != null else Rect2()))
 	else:
-		var evidence_nodes: Array = ["RouteMapHeader", "RouteMapTitleProgress", "RunResourceHud", "RouteMapScroll", "UpgradeFabButton"] if screen_id == "route_map" else _screen_evidence_nodes(screen_id)
+		var evidence_nodes: Array = ["RouteMapHeader", "RouteMapTitleProgress", "RunResourceHud", "RouteMapScroll"] if screen_id == "route_map" else _screen_evidence_nodes(screen_id)
 		for node_name in evidence_nodes:
 			var node := main.find_child(node_name, true, false) as Control
 			report.append("- %s: `%s`" % [node_name, str(node.get_global_rect() if node != null else Rect2())])
@@ -99,7 +99,7 @@ func _capture_screen(viewport_size: Vector2i, screen_id: String, qa_dir: String,
 func _screen_evidence_nodes(screen_id: String) -> Array:
 	match screen_id:
 		"rest":
-			return ["MenuPanel_campfire", "RunResourceHud", "RestHealButton", "RestGuardButton", "RestBackButton", "UpgradeFabButton"]
+			return ["MenuPanel_campfire", "RunResourceHud", "RestHealButton", "RestGuardButton", "RestBackButton"]
 		"upgrade":
 			return ["MenuPanel_upgrade", "RunResourceHud", "UpgradeChoiceRow"]
 		"battle_reward":
