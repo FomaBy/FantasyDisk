@@ -112,7 +112,9 @@ func set_combat_profile(profile: Dictionary) -> void:
 	ranged_projectile_speed = maxf(float(profile.get("ranged_projectile_speed", ranged_projectile_speed)), 120.0)
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, _source := "", _attacker: Node2D = null) -> void:
+	# Сигнатура зеркалит Player.take_damage: по таунту (bastion_taunt) контактный
+	# удар врага приходит сюда с source/attacker вместо игрока.
 	if _death_lifecycle_started:
 		return
 	health -= maxf(amount, 0.0)
