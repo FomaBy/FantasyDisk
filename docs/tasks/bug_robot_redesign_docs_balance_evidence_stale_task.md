@@ -80,3 +80,15 @@ Locked paths: `docs/design/class_traits_registry.md`, Robot sections in current/
 
 Коммиты: `3d3446924` (SCRUM-1034 код/тест), docs-коммит — см. Jira-коммент.
 Disk cleanup: none created (worktree убирает оркестратор).
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+QA owner: Claude orchestrator
+Checked ref: origin/dev (после a56991648 / f6c26ca81)
+
+Verification:
+- robot_kit_test exit=0, «Lambda capture» в выводе = 0 (было 1).
+- runtime_smoke_weapon_mechanics_test exit=0, «Lambda capture» = 0 (было 2).
+- Побочный улов харнесса (SCRIPT ERROR take_damage в ally_minion) — отдельный SCRUM-1042 (ed651a4b4, закрыт).
+- Доки/registry/harness синхронизированы с рантаймом Робота (SCRUM-1035).
