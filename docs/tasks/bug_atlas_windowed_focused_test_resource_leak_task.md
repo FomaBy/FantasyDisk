@@ -100,3 +100,36 @@ Implementation landed in `origin/dev` as `365813dd8`; Jira routed to
 
 Disk cleanup: pending removal of task-only `.godot/`, `build/qa/scrum1024`, and
 the disposable worktree after push/QA handoff.
+
+## QA-Вердикт: PASSED
+
+Independent production QA on fresh `origin/dev` `8d0f4be31` verified landed
+implementation `365813dd8` without editing the test or production code:
+
+- landed scope is limited to
+  `tests/atlas_scrum970_clickability_test.gd`, the windowed lifecycle section
+  of `docs/process/qa_protocol.md`, and this mirror; Atlas production layout,
+  semantics, `scripts/ui_screens.gd`, and audio runtime are unchanged;
+- focused headless Atlas matrix: PASS, exit code `0`, unique isolated
+  `HOME`/`XDG_DATA_HOME` and required `--user-data-dir`;
+- focused windowed Atlas matrix: PASS `5/5`. Every process used a different
+  isolated HOME/user-data root, exercised all four `1280x720`, `1920x1080`,
+  `2048x1152`, and `2560x1440` viewports, and retained the real pointer,
+  preview-only, Buy, tooltip, dossier-scroll, medallion-scroll and gamepad-focus
+  assertions;
+- all five windowed process logs contain the functional success marker and no
+  `WARNING:`, `ERROR:`, `SCRIPT ERROR`, `ObjectDB instances were leaked`, or
+  `resources still in use at exit` diagnostics;
+- full `tests/runtime_smoke_test.gd`: PASS, exit code `0`, duplicate-artifact
+  guard PASS over `14408` files. The existing non-fatal dummy-renderer
+  null-texture screenshot diagnostic remains unchanged and outside this
+  lifecycle scope;
+- `git diff --check`: PASS.
+
+QA conclusion: the explicit child-first SubViewport/Main teardown and pre-quit
+AudioManager release barrier remove the intermittent windowed Ogg/ObjectDB
+lifecycle leak without weakening Atlas behavior or suppressing diagnostics.
+
+QA Disk cleanup: generated `build/qa/scrum1024`, disposable `.godot`, isolated
+QA scratch homes/logs, QA worktree and local branch removed after evidence push;
+no remote QA branch created.
