@@ -153,6 +153,7 @@ const ATTACK_MODE_EXECUTORS := {
 @export var curse_only := false
 @export var curse_tick_rate := 7.0
 @export var curse_tick_multiplier := 1.0
+@export var curse_int_scale := 0.0
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -282,6 +283,7 @@ func configure_weapon(config: Dictionary) -> void:
 	curse_only = bool(config.get("curse_only", curse_only))
 	curse_tick_rate = float(config.get("curse_tick_rate", curse_tick_rate))
 	curse_tick_multiplier = float(config.get("curse_tick_multiplier", curse_tick_multiplier))
+	curse_int_scale = float(config.get("curse_int_scale", curse_int_scale))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -1018,7 +1020,14 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, false)
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
-	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0)
+	# Документированный curse-пайплайн (SCRUM-940): сила тика = dot_damage *
+	# curse_tick_multiplier * (1 + Интеллект * curse_int_scale). Интеллект
+	# «углубляет» проклятие (канон identity), Знание/флэты дают dot_damage;
+	# магические множители не участвуют. Зеркало — _budget_dot_dps.
+	var owner_stats_raw = owner_node.get("stats")
+	var owner_stats: Dictionary = owner_stats_raw if owner_stats_raw is Dictionary else {}
+	var curse_depth := 1.0 + maxf(float(owner_stats.get("intelligence", 0.0)), 0.0) * maxf(curse_int_scale, 0.0)
+	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0) * curse_depth
 	var tick_speed := maxf(float(parameters.get("dot_speed", 1.0)), 0.2) * maxf(curse_tick_rate, 0.2)
 	# Floor 0.1с зеркалит кламп StatusEffects.tick: выше ~10 тик/с прожиг не
 	# ускоряется, но суммарный урон каста сохраняется (число тиков фиксировано).
@@ -3652,6 +3661,9 @@ func _estimated_windup_duration() -> float:
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			return 0.10
 		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
+			return 0.12
+		# SCRUM-939..941: касты кита Тёмного мага — короткий читаемый замах.
+		"dark_chain_burst", "skull_curse_burn", "dark_mirror_blast":
 			return 0.12
 	return 0.08
 

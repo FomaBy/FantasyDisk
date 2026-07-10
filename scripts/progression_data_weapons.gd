@@ -137,7 +137,16 @@ const DARK_MAGE_WEAPONS := {
 		"dot_ticks": 5,
 		# Базовый темп тиков (тик/с при dot_speed=1.0): «быстрый прожиг».
 		"curse_tick_rate": 7.0,
-		"curse_tick_multiplier": 1.05,
+		# ДОКУМЕНТИРОВАННЫЙ curse-пайплайн (AC SCRUM-940): сила тика =
+		# dot_damage * curse_tick_multiplier * (1 + Интеллект * curse_int_scale).
+		# Атрибуты проклятия: Знание (dot_damage), Интеллект (глубина проклятия,
+		# канон «Интеллект кормит тьму... глубже вгрызаются проклятия»),
+		# dot_damage_flat моды и dot_speed (темп). Чистые magic_damage-множители
+		# по-прежнему НЕ участвуют. Пара (0.58, 0.08) держит базовый тик на
+		# уровне ~8.3 и даёт киту int-скейл в SCRUM-469-коридоре lvl20-оптимума;
+		# формулы зеркалятся в бюджет-модели (_budget_dot_dps).
+		"curse_tick_multiplier": 0.58,
+		"curse_int_scale": 0.08,
 		"projectile_speed": 680.0,
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
 		"passive_mods": {"dot_speed_flat": 0.25},

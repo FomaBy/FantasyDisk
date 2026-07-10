@@ -880,7 +880,7 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 		direct_dps *= _budget_summon_role_damage_factor(config, params, stats)
 	var hit_model := _budget_hit_model(config)
 	var melee_unique_budget := _budget_melee_unique_bonus(config)
-	var dot_dps := _budget_dot_dps(config, params, interval)
+	var dot_dps := _budget_dot_dps(config, params, interval, stats)
 	var pool_dps := _budget_pool_dps(config, params, interval)
 	var summon_dps := _budget_summon_dps(config, params, stats)
 	# SCRUM-935 «Двойное действие»: echo-trait создаёт полную копию действия оружия
@@ -1168,14 +1168,18 @@ static func _budget_melee_unique_bonus(config: Dictionary) -> Dictionary:
 	return {"solo": solo_bonus, "aoe": aoe_bonus}
 
 
-static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
+static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float, stats := {}) -> float:
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
 		return 0.0
-	# SCRUM-940: curse_tick_multiplier — оружейный множитель силы тика проклятия
-	# (зеркалит class_weapon._apply_skull_curse_zone); для прочих оружий = 1.0.
+	# SCRUM-940: документированный curse-пайплайн черепа — сила тика =
+	# dot_damage * curse_tick_multiplier * (1 + Интеллект * curse_int_scale);
+	# зеркалит class_weapon._apply_skull_curse_zone. Для прочих оружий
+	# multiplier=1.0 / int_scale=0.0 — формула тождественна прежней.
 	var tick_multiplier := maxf(float(config.get("curse_tick_multiplier", 1.0)), 0.0)
-	return float(params.get("dot_damage", 1.0)) * tick_multiplier * ticks / maxf(interval, 0.18)
+	var stats_map: Dictionary = stats if stats is Dictionary else {}
+	var curse_depth := 1.0 + maxf(float(stats_map.get("intelligence", 0.0)), 0.0) * maxf(float(config.get("curse_int_scale", 0.0)), 0.0)
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * curse_depth * ticks / maxf(interval, 0.18)
 
 
 static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:

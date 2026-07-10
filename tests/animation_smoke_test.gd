@@ -535,11 +535,12 @@ func _test_weapon_animation_timing_events(player: Node) -> void:
 	_assert_weapon_timing_event(events, "amp", "deploy")
 	_assert_weapon_timing_event(events, "amp", "pulse")
 
+	# SCRUM-939: dark_wand — цепной снаряд (dark_chain_burst), каст даёт windup.
 	player.configure_character("dark_mage", "dark_wand")
-	var beam_weapon: Node = player.get("equipped_weapon")
-	beam_weapon.set_process(false)
-	beam_weapon.call("_emit_weapon_animation_event", player, "channel", 0.16, Vector2.RIGHT, {"beam_count": 2})
-	_assert_weapon_timing_event(events, "beam", "channel")
+	var chain_weapon: Node = player.get("equipped_weapon")
+	chain_weapon.set_process(false)
+	chain_weapon.call("_emit_weapon_animation_event", player, "windup", 0.12, Vector2.RIGHT, {"chain_targets": 3})
+	_assert_weapon_timing_event(events, "dark_chain_burst", "windup")
 
 	var last_event: Dictionary = player.get("last_weapon_animation_event")
 	if str(last_event.get("phase", "")) == "" or not last_event.has("duration") or not (last_event.get("metadata", {}) is Dictionary):

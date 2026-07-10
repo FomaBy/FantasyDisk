@@ -73,7 +73,7 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `engineer` | `engineer_repair_drone` | Ремонтный Дрон | `EngineerRepairDrone.tscn` | `engineer_repair_drone` | Chain drone links enemies and repairs owner from damage |
 | `engineer` | `engineer_pressure_mines` | Минная Сетка | `EngineerPressureMines.tscn` | `engineer_pressure_mines` | Three pressure mines fan out and trigger independently |
 | `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `dark_mirror_blast` | Пара взрывов: по цели и в зеркальной точке относительно мага (SCRUM-941) |
-| `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `skull_curse_burn` | Curse-only зона: без прямого урона, частые dot-тики по проклятым (SCRUM-940) |
+| `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `skull_curse_burn` | Curse-only зона: без прямого урона, частые dot-тики по проклятым; тик = dot_damage × mult × (1 + Int × curse_int_scale), magic-множители не участвуют (SCRUM-940) |
 | `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `dark_chain_burst` | Цепной снаряд до 3 целей с малым AoE-бурстом на каждом попадании (SCRUM-939) |
 | `guitarist` | `electric_guitar` | Электрогитара | `ElectricGuitar.tscn` | `sound_wave` | Направленная звуковая волна |
 | `guitarist` | `bass_guitar` | Бас-гитара | `BassGuitar.tscn` | `pulse` | Частый круговой pulse/knockback |

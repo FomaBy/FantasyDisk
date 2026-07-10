@@ -178,7 +178,7 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
 | Темный маг | Темная книга | `dark_book` | `dark_mirror_blast` | SCRUM-941: каждый каст = пара взрывов — по цели и в зеркальной точке M = 2*маг − P; оба по общим правилам урона, двойное накрытие легально |
-| Темный маг | Проклятый череп | `cursed_skull` | `skull_curse_burn` | SCRUM-940: curse-only зона — прямого урона нет; dot_ticks частых тиков dot-оси (скейл dot_damage/dot_speed, refresh без стаков) |
+| Темный маг | Проклятый череп | `cursed_skull` | `skull_curse_burn` | SCRUM-940: curse-only зона — прямого урона нет; dot_ticks частых тиков dot-оси, refresh без стаков. Статы проклятия: тик = dot_damage (Знание) × curse_tick_multiplier × (1 + Интеллект × curse_int_scale), темп = dot_speed; magic/physical-множители не участвуют |
 | Темный маг | Темный жезл | `dark_wand` | `dark_chain_burst` | SCRUM-939: цепной снаряд до 3 разных целей (спад по прыжкам, без повторов), малый магический бурст по соседям каждого попадания |
 | Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
 | Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
