@@ -136,9 +136,11 @@ Thread cleanup: not a disposable worker thread.
   gameplay batch; the QA branch was rebased and the complete focused matrix
   plus all relevant gates were repeated on intermediate production base
   `ee508d55977d`. A second parallel gameplay/UI batch advanced `origin/dev` to
-  final verified base `2ca08df63646`; focused headless/windowed, Meta40,
-  no-overlap, full gamepad flow and full runtime smoke were repeated there and
-  remained green. Production code/assets remained read-only.
+  `2ca08df63646`; focused headless/windowed, Meta40, no-overlap, full gamepad
+  flow and full runtime smoke were repeated there and remained green. Before
+  closure, further non-Atlas gameplay/UI batches were incorporated; final
+  focused headless and full runtime smoke passed again on production base
+  `b5e032ed5`. Production code/assets remained read-only.
 - `atlas_scrum970_clickability_test.gd` passed headless and with the actual
   windowed Metal/OpenGL DisplayServer. Each process used a unique scratch
   `user://`; both runs covered `1280×720`, `1920×1080`, `2048×1152` and
@@ -178,9 +180,10 @@ Thread cleanup: not a disposable worker thread.
 `SCRUM-1028`, `SCRUM-1029`; non-blocking windowed test-lifecycle follow-up
 `SCRUM-1031`.
 
-Disk cleanup: pending post-push removal of the single disposable QA worktree,
-its 445 MB `.godot` cache, 25 MB transient QA output and scratch roots; exact
-removal is recorded in the final Jira comment.
+Disk cleanup: removed the single QA worktree's 444 MB `.godot` cache, 27.2 MB
+transient `build/qa/scrum1024*` output and all owned scratch roots before the
+final routing commit. The clean worktree/branch removal is recorded in Jira
+after push.
 
 Thread cleanup: collaboration QA subagent under the active parent task; not a
 standalone disposable Codex app task.
