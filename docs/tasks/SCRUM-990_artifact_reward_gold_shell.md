@@ -31,3 +31,22 @@ Locked screen: elite/chest/boss Artifact Reward only.
 
 Disk cleanup: removed task `.godot` import cache (445 MB), Python caches and
 unrelated import-generated UID sidecars; only the task capture tool UID is kept.
+
+## QA-Вердикт — 2026-07-11
+
+Статус: PASSED
+
+- Independent SCRUM-992 QA ran from clean `origin/dev` at `ca61e83e8`
+  (implementation `715fc0aba`) in an isolated disposable worktree.
+- All six committed elite/boss captures at 1280x720, 1920x1080 and 2560x1440
+  were inspected: one final hollow gold shell, one horizontal three-card row,
+  readable copy and no content/card/frame-ornament overlap.
+- Focused geometry, exact inner rects, live resize, StyleBox content margins,
+  initial focus, circular navigation, mandatory no-Escape choice, exact selected
+  artifact id and one-shot apply/return flow passed.
+- Gates passed: focused Artifact Reward, UI no-overlap, progression/economy,
+  route/chest/artifact, boss heal, gamepad full-flow (3/3), full runtime,
+  animation, meta progression and melee targeting.
+- Bugs: none.
+- Disk cleanup: disposable QA `.godot` cache, generated UID sidecars, worktree
+  and local QA branch removed after Jira/Git synchronization.
