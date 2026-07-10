@@ -4249,9 +4249,19 @@ func _test_unique_class_identity_patterns() -> void:
 		if not engineer_modes.has(required_engineer_mode):
 			_fail("Expected Engineer to include unique %s attack mode." % required_engineer_mode)
 			return
-	if ProgressionData.weapon("doctor", "restore_potion").get("attack_mode", "") != "drain_link":
-		_fail("Expected Doctor restore potion slot to use the drain/lifesteal link pattern.")
-		return
+	# SCRUM-900: кит Доктора — три уникальных режима weapon-only sustain
+	# (зелье-бросок AoE / чумной дротик со спредом / melee-сектор пилы).
+	var doctor_modes := {}
+	for doctor_weapon_id in ProgressionData.weapon_ids("doctor"):
+		var doctor_mode := str(ProgressionData.weapon("doctor", doctor_weapon_id).get("attack_mode", ""))
+		if doctor_modes.has(doctor_mode):
+			_fail("Expected Doctor weapons to use three distinct attack modes.")
+			return
+		doctor_modes[doctor_mode] = true
+	for required_doctor_mode in ["aoe_projectile", "plague_dart", "saw_sector"]:
+		if not doctor_modes.has(required_doctor_mode):
+			_fail("Expected Doctor to include %s attack mode (SCRUM-900 kit)." % required_doctor_mode)
+			return
 	if float(ProgressionData.weapon("ranger", "moon_crossbow").get("charge_seconds", 0.0)) <= 0.0:
 		_fail("Expected Ranger moon crossbow to expose stance charge seconds.")
 		return
@@ -4304,21 +4314,24 @@ func _test_unique_class_identity_patterns() -> void:
 	holder.add_child(doctor)
 	doctor.global_position = Vector2(900, 700)
 	await process_frame
-	doctor.call("configure_character", "doctor", "restore_potion")
+	# SCRUM-900: живой sustain-контракт — пила лечит от фактически нанесённого
+	# урона (мгновенный melee-сектор; зелье/чума покрыты tests/doctor_kit_test.gd).
+	doctor.call("configure_character", "doctor", "bone_saw")
 	var doctor_weapon: Node = doctor.get("equipped_weapon")
 	doctor_weapon.set_process(false)
 	doctor.set("health", float(doctor.get("max_health")) * 0.5)
+	doctor.set("_drain_heal_budget", 3.0)
 	var doctor_enemy := enemy_scene.instantiate()
 	holder.add_child(doctor_enemy)
 	doctor_enemy.set("max_health", 100000.0)
 	doctor_enemy.set("health", 100000.0)
-	doctor_enemy.global_position = doctor.global_position + Vector2(220, 0)
+	doctor_enemy.global_position = doctor.global_position + Vector2(170, 0)
 	await process_frame
 	var doctor_health_before := float(doctor.get("health"))
 	doctor_weapon.call("_attack")
 	await process_frame
 	if float(doctor.get("health")) <= doctor_health_before:
-		_fail("Expected Doctor drain link to heal from dealt damage.")
+		_fail("Expected Doctor bone saw sector to heal from dealt damage (weapon-only sustain).")
 		return
 
 	var chemist := player_scene.instantiate()
