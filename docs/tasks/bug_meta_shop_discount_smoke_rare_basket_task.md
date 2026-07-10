@@ -1,11 +1,11 @@
 # BUG: Meta shop-discount smoke leaves artifact-family RNG unseeded
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1027
 Контур: Codex
-Owner: Backend/Codex `/root`
-Thread/Worker: `root-scrum-1027`
+Owner: QA/Codex `/root/review_scrum1027`
+Thread/Worker: `review_scrum1027-qa`
 Приоритет: medium
 Роль: Back-end
 Найдено при проверке: SCRUM-1024 / SCRUM-1026
@@ -89,7 +89,36 @@ stay stable while a real multiplier or basket-identity regression still fails.
 
 Landed: `f33e98ec4` on `origin/dev`; routed to independent QA.
 
+## QA-Вердикт
+
+Статус: PASSED
+
+Independent production QA accepted SCRUM-1027 on fresh `origin/dev`
+`3b038c7bf` (which contains implementation `f33e98ec4` and routing
+`ffcf27d6a`). The landed task diff changes only the deterministic test oracle,
+this mirror, and meta-test documentation; production shop/meta behavior is
+unchanged.
+
+- `meta_skill_tree_smoke_test.gd`: PASS on 18/18 isolated QA/review runs in
+  total, including 4/4 after the final fast-forward to `3b038c7bf`. Every run
+  exercises four paired seeds and proves identical `id`/`kind`/`tier`, exact
+  `max(1, round(base_cost * 0.96))`, and cleanup of deterministic global-RNG
+  state.
+- `meta40_atlas_screen_smoke_test.gd`: PASS on the final production snapshot.
+- `meta_progression_smoke_test.gd`: PASS on the final production snapshot.
+- `runtime_smoke_test.gd`: PASS, exit `0`, on the final production snapshot;
+  the known dummy-renderer null-texture screenshot diagnostic remained
+  non-fatal.
+- The unrelated pre-oracle Bastion/harness flake remains tracked only by
+  SCRUM-1028; QA did not create a duplicate or use it to weaken this verdict.
+
+Jira: QA PASSED and transitioned from `Контроль качества` to `Готово`.
+
 Disk cleanup: removed task `.godot` cache (~451 MB) and all isolated `/tmp`
 user-data directories; clean task worktree removal follows the routing commit.
+
+QA disk cleanup: removed QA `.godot` cache (~446 MB) and all
+`/tmp/fsd-qa-scrum1027-*` user-data directories; the clean disposable QA
+worktree is removed after the QA evidence push.
 
 Thread cleanup: not a disposable worker thread.
