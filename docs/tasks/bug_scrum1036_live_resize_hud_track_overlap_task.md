@@ -1,18 +1,21 @@
 # BUG: Gold menu HUD tracks overlap after 2K-to-720 live resize
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Back-end (UI runtime/tests)
 Контур: Codex
 Исполнитель: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Back-end / Codex
+Thread/Worker: root-scrum-1039-1040-ui-resize
 Jira: SCRUM-1039
 Версия: 0.2.1
 Найдено QA при тестировании: SCRUM-1036 / SCRUM-981
 Locked paths: `scripts/ui_screens.gd`;
 `tests/scrum981_gold_menu_shell_test.gd`;
 `tests/ui_no_overlap_matrix_test.gd`; this mirror/evidence
+
+Branch/worktree: `codex/scrum-1039-1040-ui-resize` /
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1039-1040-ui-resize`
 
 ## Контекст
 
@@ -85,3 +88,20 @@ the already tracked external SCRUM-1034 freed-lambda diagnostic and the known
 dummy-renderer screenshot warning.
 
 Product code/tests/art were read-only during QA.
+
+## Implementation result (2026-07-10)
+
+- `ProgressBar.custom_minimum_size` теперь уменьшается до назначения нового
+  rect/style родительского `PanelContainer`; stale 2K minimum больше не
+  удерживает завышенную физическую высоту после shrink.
+- Gold-shell menu HUD получает immediate и deferred current-size layout pass,
+  оба вычисляют inner rect из актуального viewport, а не из stale metadata.
+- Focused oracle сравнивает actual rect трёх tracks и трёх bars у независимо
+  созданного fresh 1280 layout с live `2560→1280`, проверяет sibling
+  disjointness и полную `2560→1280→2560` idempotency.
+- Независимый read-only subagent review: PASSED, blocking findings отсутствуют.
+
+Green gate: SCRUM-981 focused; exact Route Map; UI no-overlap matrix;
+dark-fantasy UI theme; runtime UI; gamepad full-flow 3/3; audio integration;
+full runtime — PASSED. Full runtime содержит только известные non-fatal headless
+lambda/dummy-renderer diagnostics.

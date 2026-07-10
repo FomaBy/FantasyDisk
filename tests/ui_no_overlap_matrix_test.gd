@@ -42,6 +42,7 @@ func _initialize() -> void:
 		await _check_screen(viewport_size, "main_menu", Callable(self, "_open_main_menu"), [
 			"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
 			"MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton",
+			"MainMenuCreditsButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "continue_run_dialog", Callable(self, "_open_continue_run_dialog"), [
 			"ContinueRunPanel", "ContinueRunButton", "ContinueRunNewGameButton",
@@ -571,6 +572,23 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if card_error != "":
 				return card_error
 	match screen_id:
+		"main_menu":
+			var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
+			if credits == null:
+				return "%s: expected MainMenuCreditsButton." % context
+			var viewport_size := main.get_viewport().get_visible_rect().size
+			var margins := Vector2(roundf(160.0 * viewport_size.x / 1536.0), roundf(160.0 * viewport_size.y / 1024.0))
+			var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+			var inner_rect := Rect2(margins, viewport_size - margins * 2.0).grow(-reserve)
+			var expected := Rect2(Vector2(inner_rect.end.x - 252.0, inner_rect.position.y + 12.0), Vector2(240.0, 36.0))
+			if not inner_rect.grow(1.0).encloses(credits.get_global_rect()):
+				return "%s: MainMenuCreditsButton %s escapes authored inner rect %s." % [context, str(credits.get_global_rect()), str(inner_rect)]
+			if not _rect_approximately_equal(credits.get_global_rect(), expected, 1.1):
+				return "%s: MainMenuCreditsButton %s != authored zone %s." % [context, str(credits.get_global_rect()), str(expected)]
+			for peer_name in ["MainMenuTitleLabel", "MainMenuActions", "MainMenuVersionLabel"]:
+				var peer := main.find_child(peer_name, true, false) as Control
+				if peer != null and credits.get_global_rect().intersects(peer.get_global_rect()):
+					return "%s: MainMenuCreditsButton overlaps %s." % [context, peer_name]
 		"weapon_select":
 			var layer := main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
 			if layer != null:
@@ -1313,6 +1331,14 @@ func _gold_shell_menu_hud_inner_error(main: Node, screen_id: String, context: St
 			continue
 		if not inner_rect.grow(1.0).encloses(control.get_global_rect()):
 			return "%s: %s rect %s escapes authored gold-shell inner rect %s (SCRUM-1036)." % [context, str(control.name), str(control.get_global_rect()), str(inner_rect)]
+	for suffix in ["Track", "Bar"]:
+		var names := ["HudHP%s" % suffix, "HudXP%s" % suffix, "HudULT%s" % suffix]
+		for i in range(names.size()):
+			for j in range(i + 1, names.size()):
+				var first := main.find_child(names[i], true, false) as Control
+				var second := main.find_child(names[j], true, false) as Control
+				if first != null and second != null and first.get_global_rect().intersects(second.get_global_rect()):
+					return "%s: %s %s overlaps %s %s after gold-shell layout (SCRUM-1039)." % [context, names[i], str(first.get_global_rect()), names[j], str(second.get_global_rect())]
 	var panel_names := {
 		"rest_economy": "MenuPanel_campfire",
 		"upgrade_economy": "MenuPanel_upgrade",

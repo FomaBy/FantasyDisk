@@ -658,12 +658,17 @@ func _show_main_menu() -> void:
 
 	# SCRUM-968: «Благодарности» — player-facing блок атрибуций CC BY (docs/CREDITS.md).
 	# Отдельная ссылка НА root (не в MainMenuActions — там контрактные 6 кнопок);
-	# позиционируется по золотому safe-rect (gold_shell_content_rect), чтобы держаться
-	# в пустой зоне рамы (frame-safe правило), низ safe-зоны у левого края.
+	# позиционируется внутри authored inner rect, то есть после обязательного
+	# дополнительного резерва SCRUM-1036 от орнамента золотой рамы.
 	var credits_button := Button.new()
 	credits_button.name = "MainMenuCreditsButton"
 	credits_button.text = "Благодарности"
 	credits_button.flat = true
+	# The global button skin carries 39px of minimum height. Credits is a plain
+	# text link in an authored 36px zone, so remove inherited box padding while
+	# preserving the text/focus behaviour and exact hitbox.
+	for credits_state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		credits_button.add_theme_stylebox_override(credits_state, StyleBoxEmpty.new())
 	credits_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	credits_button.add_theme_font_size_override("font_size", _readable_font_size(15))
 	credits_button.add_theme_color_override("font_color", Color(0.82, 0.78, 0.58, 0.92))
@@ -676,17 +681,19 @@ func _show_main_menu() -> void:
 	var reposition_credits := func() -> void:
 		if not is_instance_valid(credits_button):
 			return
-		var safe: Rect2 = root.get_meta("gold_shell_content_rect", Rect2())
-		if safe.size.x <= 1.0 or safe.size.y <= 1.0:
+		var inner := _gold_shell_inner_rect_for_size(root.size)
+		if inner.size.x <= 1.0 or inner.size.y <= 1.0:
 			return
-		# Верхний правый угол safe-зоны: напротив лого (верх-лево), ВЫШЕ сетки
+		# Верхний правый угол inner-зоны: напротив лого (верх-лево), ВЫШЕ сетки
 		# действий и метки версии — гарантированно вне их прямоугольников на 16:9
 		# (лого ≤ левой половины, сетка стартует ниже; см. _main_menu_gold_shell_metrics).
-		var cb_size := Vector2(minf(240.0, safe.size.x), 36.0)
+		var cb_size := Vector2(minf(240.0, inner.size.x), 36.0)
 		var pad := 12.0
 		credits_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		credits_button.position = Vector2(safe.end.x - cb_size.x - pad, safe.position.y + pad)
+		credits_button.position = Vector2(inner.end.x - cb_size.x - pad, inner.position.y + pad)
 		credits_button.size = cb_size
+		credits_button.set_meta("gold_shell_inner_rect", inner)
+		credits_button.set_meta("scrum1040_zone_rect", Rect2(credits_button.position, cb_size))
 	reposition_credits.call()
 	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
 	root.resized.connect(reposition_credits)
@@ -14104,13 +14111,16 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 		if track == null:
 			continue
 		var zone: Rect2 = track_zones[track_name]
-		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
 		var track_size := _scrum666_scaled_rect(zone, scale).size
 		var inset := maxf(2.0, roundf(4.0 * scale))
-		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
 		var bar := track.find_child(track_name.replace("Track", "Bar"), true, false) as ProgressBar
+		# SCRUM-1039: shrink the child minimum before assigning the smaller parent
+		# rect. PanelContainer otherwise retains the previous 2K child minimum for
+		# one sort pass and physically overlaps sibling tracks after 2K -> 720p.
 		if bar != null:
 			bar.custom_minimum_size = Vector2(0.0, maxf(4.0, track_size.y - inset * 2.0))
+		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
+		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
 	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
@@ -14444,11 +14454,11 @@ func _create_menu_run_hud() -> void:
 		var shell_inner_rect := _active_gold_shell_inner_rect()
 		root.set_meta("gold_shell_inner_rect", shell_inner_rect)
 		root.resized.connect(func() -> void:
-			var inner_rect := _active_gold_shell_inner_rect()
-			_layout_gold_shell_menu_resource_hud(root, inner_rect)
+			_layout_gold_shell_menu_resource_hud_current(root)
+			call_deferred("_layout_gold_shell_menu_resource_hud_current", root)
 		)
 		_layout_gold_shell_menu_resource_hud(root, shell_inner_rect)
-		call_deferred("_layout_gold_shell_menu_resource_hud", root, shell_inner_rect)
+		call_deferred("_layout_gold_shell_menu_resource_hud_current", root)
 	else:
 		root.resized.connect(func() -> void:
 			_layout_combat_hud(root)
@@ -14457,6 +14467,17 @@ func _create_menu_run_hud() -> void:
 		call_deferred("_layout_combat_hud", root)
 	_update_hud()
 	_update_level_up_button()
+
+
+func _layout_gold_shell_menu_resource_hud_current(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	# Derive from the current root size instead of frame metadata captured by a
+	# different resized signal. This makes the deferred pass resize-safe in both
+	# directions and keeps the HUD's acceptance metadata current.
+	var inner_rect := _gold_shell_inner_rect_for_size(root.size)
+	root.set_meta("gold_shell_inner_rect", inner_rect)
+	_layout_gold_shell_menu_resource_hud(root, inner_rect)
 
 
 func _active_gold_shell_content_rect() -> Rect2:

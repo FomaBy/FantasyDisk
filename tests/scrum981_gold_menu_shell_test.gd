@@ -94,12 +94,15 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	var title := main.find_child("MainMenuTitleLabel", true, false) as Control
 	var actions := main.find_child("MainMenuActions", true, false) as GridContainer
 	var version := main.find_child("MainMenuVersionLabel", true, false) as Control
-	if title == null or actions == null or version == null:
+	var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
+	if title == null or actions == null or version == null or credits == null:
 		_errors.append("%s: Main Menu gold-shell nodes are incomplete." % str(viewport_size))
 		return
-	_assert_inside(title.get_global_rect(), safe_rect, "%s MainMenuTitleLabel" % str(viewport_size))
+	var inner_rect := _inner_rect(Vector2(viewport_size))
+	_assert_inside(title.get_global_rect(), inner_rect, "%s MainMenuTitleLabel" % str(viewport_size))
 	_assert_inside(actions.get_global_rect(), safe_rect, "%s MainMenuActions" % str(viewport_size))
 	_assert_inside(version.get_global_rect(), safe_rect, "%s MainMenuVersionLabel" % str(viewport_size))
+	_assert_inside(credits.get_global_rect(), inner_rect, "%s MainMenuCreditsButton authored inner" % str(viewport_size))
 	if actions.columns != 2 or actions.get_child_count() != 6:
 		_errors.append("%s: MainMenuActions must be an exact 2x3 six-button grid." % str(viewport_size))
 	for child in actions.get_children():
@@ -110,6 +113,10 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	_assert_rect_near(title.get_global_rect(), expected["logo"], "%s Main Menu logo" % str(viewport_size))
 	_assert_rect_near(actions.get_global_rect(), expected["grid"], "%s Main Menu grid" % str(viewport_size))
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
+	_assert_rect_near(credits.get_global_rect(), expected["credits"], "%s Main Menu credits" % str(viewport_size))
+	for peer in [title, actions, version]:
+		if credits.get_global_rect().intersects((peer as Control).get_global_rect()):
+			_errors.append("%s: MainMenuCreditsButton overlaps %s." % [str(viewport_size), str((peer as Control).name)])
 	var first := actions.get_child(0) as Button
 	if first != null and absf(first.size.y - float(expected["button_height"])) > 1.0:
 		_errors.append("%s: Main Menu button height %.1f != %.1f." % [str(viewport_size), first.size.y, float(expected["button_height"])])
@@ -238,12 +245,20 @@ func _validate_live_resize() -> void:
 	main.set("selected_character_id", "berserk")
 	main.ui._show_rest_screen()
 	await _settle()
+	var fresh_large_hud := _hud_geometry(main)
+	_assert_hud_siblings_disjoint(main, "fresh 2560x1440 Rest")
 	viewport.size = compact_size
 	await _settle()
 	_assert_shell_screen(main, "RestFrame", "MenuPanel_campfire", compact_safe, compact_size, true)
+	var live_compact_hud := _hud_geometry(main)
+	_assert_hud_siblings_disjoint(main, "live 2560->1280 Rest")
+	var fresh_compact_hud: Dictionary = await _fresh_rest_hud_geometry(compact_size)
+	_assert_hud_geometry_equal(live_compact_hud, fresh_compact_hud, "live 2560->1280 vs fresh 1280 Rest")
 	viewport.size = Vector2i(2560, 1440)
 	await _settle()
 	_assert_shell_screen(main, "RestFrame", "MenuPanel_campfire", _safe_rect(Vector2(2560, 1440)), Vector2i(2560, 1440), true)
+	_assert_hud_siblings_disjoint(main, "live 1280->2560 Rest")
+	_assert_hud_geometry_equal(_hud_geometry(main), fresh_large_hud, "live 2560->1280->2560 Rest idempotency")
 
 	viewport.size = Vector2i(2560, 1440)
 	await _settle()
@@ -338,11 +353,61 @@ func _inner_rect(viewport_size: Vector2) -> Rect2:
 func _main_expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"logo": Rect2(157, 137, 460, 110), "grid": Rect2(157, 263, 776, 244), "version": Rect2(995, 543, 112, 24), "button_height": 72.0}
+			return {"logo": Rect2(157, 137, 460, 110), "grid": Rect2(157, 263, 776, 244), "version": Rect2(995, 543, 112, 24), "credits": Rect2(871, 149, 240, 36), "button_height": 72.0}
 		Vector2i(1920, 1080):
-			return {"logo": Rect2(224, 193, 620, 170), "grid": Rect2(224, 387, 780, 348), "version": Rect2(1546, 839, 126, 24), "button_height": 104.0}
+			return {"logo": Rect2(224, 193, 620, 170), "grid": Rect2(224, 387, 780, 348), "version": Rect2(1546, 839, 126, 24), "credits": Rect2(1444, 205, 240, 36), "button_height": 104.0}
 		_:
-			return {"logo": Rect2(299, 257, 720, 220), "grid": Rect2(299, 509, 780, 348), "version": Rect2(2105, 1127, 124, 24), "button_height": 104.0}
+			return {"logo": Rect2(299, 257, 720, 220), "grid": Rect2(299, 509, 780, 348), "version": Rect2(2105, 1127, 124, 24), "credits": Rect2(2009, 269, 240, 36), "button_height": 104.0}
+
+
+func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:
+	var viewport := SubViewport.new()
+	viewport.size = viewport_size
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+	var main := MAIN_SCENE.instantiate()
+	viewport.add_child(main)
+	await _settle()
+	main.set("selected_character_id", "berserk")
+	main.ui._show_rest_screen()
+	await _settle()
+	_assert_hud_siblings_disjoint(main, "fresh %s Rest" % str(viewport_size))
+	var result := _hud_geometry(main)
+	main.queue_free()
+	viewport.queue_free()
+	await process_frame
+	return result
+
+
+func _hud_geometry(main: Node) -> Dictionary:
+	var result := {}
+	for node_name in ["HudHPTrack", "HudHPBar", "HudXPTrack", "HudXPBar", "HudULTTrack", "HudULTBar"]:
+		var control := main.find_child(node_name, true, false) as Control
+		if control == null:
+			_errors.append("HUD geometry: missing %s." % node_name)
+			continue
+		result[node_name] = control.get_global_rect()
+	return result
+
+
+func _assert_hud_siblings_disjoint(main: Node, context: String) -> void:
+	for suffix in ["Track", "Bar"]:
+		var names := ["HudHP%s" % suffix, "HudXP%s" % suffix, "HudULT%s" % suffix]
+		for i in range(names.size()):
+			for j in range(i + 1, names.size()):
+				var first := main.find_child(names[i], true, false) as Control
+				var second := main.find_child(names[j], true, false) as Control
+				if first != null and second != null and first.get_global_rect().intersects(second.get_global_rect()):
+					_errors.append("%s: %s %s overlaps %s %s." % [context, names[i], str(first.get_global_rect()), names[j], str(second.get_global_rect())])
+
+
+func _assert_hud_geometry_equal(actual: Dictionary, expected: Dictionary, context: String) -> void:
+	for node_name in expected.keys():
+		if not actual.has(node_name):
+			_errors.append("%s: missing actual %s rect." % [context, str(node_name)])
+			continue
+		_assert_rect_near(actual[node_name] as Rect2, expected[node_name] as Rect2, "%s %s" % [context, str(node_name)])
 
 
 func _assert_inside(rect: Rect2, safe_rect: Rect2, label: String) -> void:
