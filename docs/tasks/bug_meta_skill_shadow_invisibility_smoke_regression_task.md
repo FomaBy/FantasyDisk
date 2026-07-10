@@ -1,6 +1,6 @@
 # BUG: meta_skill_tree live-combat keystone scenarios недетерминированы
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1028
 Контур: Codex
@@ -115,4 +115,7 @@ weapon behavior are correct and remain unchanged.
   dummy-renderer null-texture screenshot diagnostic remains outside this scope).
 - `git diff --check`: PASS; production scripts/data are unchanged.
 
-Disk cleanup: pending final `.godot` and worktree removal after push/routing.
+Landed: `190bec2be` on `origin/dev`; routed to independent QA.
+
+Disk cleanup: removed task `.godot` (~476 MB) and isolated `/tmp` user-data;
+clean task worktree removal follows the routing commit.
