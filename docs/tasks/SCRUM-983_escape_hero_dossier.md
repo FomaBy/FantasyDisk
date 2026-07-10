@@ -120,3 +120,38 @@ Final full runtime PASS scanned 14,633 files; only the known upstream
 freed-lambda/dummy-renderer diagnostics were emitted with exit code zero.
 Disk cleanup: task `.godot`, generated transient capture data, clean disposable
 worktree and merged local branch are removed after final Jira/map routing.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Независимый QA проверил `origin/dev` `74e770bda` с цепочкой
+SCRUM-983 через `ad23b51de` и routing `b6cc67239`. Production-код в QA
+не изменялся.
+
+Проверено:
+
+- `tests/scrum983_escape_dossier_test.gd` — PASS на 1280×720,
+  1920×1080, 2560×1440 и live resize 2K→720: exact safe/inner rect,
+  four opaque reserve masks, hollow final frame, compact localized stats,
+  bounded full tooltips, pointer/wheel/shoulder paths, every focus target and
+  no-trap graph, only End Run danger;
+- `tests/ui_no_overlap_matrix_test.gd`, `dark_fantasy_ui_theme_test.gd`,
+  `runtime_smoke_ui_test.gd` — PASS;
+- `gamepad_inrun_ui_test.gd` три раза подряд,
+  `gamepad_full_flow_smoke_test.gd`, `gamepad_core_input_test.gd`,
+  `gamepad_menu_focus_test.gd` — PASS;
+- `runtime_smoke_test.gd`, `animation_smoke_test.gd`,
+  `meta_progression_smoke_test.gd`, `melee_weapon_targeting_test.gd` — PASS;
+  full runtime duplicate guard scanned 14,783 files;
+- свежие Metal/OpenGL 4.1 captures на 720p/1080p/2K проверены
+  вручную: content/hitbox/focus/scroll lanes не касаются золотого
+  орнамента, combat HUD не просвечивает через reserve bands,
+  все длинные зоны доступны vertical scroll.
+
+Краевые случаи: fresh fixture на каждом target, live resize без
+rebuild, Druid summon-only stat, long tooltip tail, pointer-outside wheel
+ownership, independently scrolled columns, physical `ui_up`, repeated gamepad
+проходы и Escape/B resume flow.
+
+Баги: нет.
