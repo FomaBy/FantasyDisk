@@ -1,6 +1,6 @@
 # BUG SCRUM-1020: Druid Ghost Bear Move Identity Morph
 
-Статус: done (implementation complete; independent re-QA pending)
+Статус: done (independent re-QA FAILED — blocked by SCRUM-1022)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_qa`
@@ -143,3 +143,60 @@ No changes were made to `ally_minion.gd`, `FullFrameAnimationRegistry`, roster,
 spawn weights, targeting, damage, aura, balance, other ghost assets or
 SCRUM-902 paths. Jira must stop at `Контроль качества` after push;
 this implementation owner does not self-accept.
+
+## Independent Re-QA Verdict (2026-07-10)
+
+Status: **FAILED — blocked by SCRUM-1022**
+
+Independent reviewer: Animation/Design QA `/root/audit_ready` on fresh
+`origin/dev` `c1ddbed6c0134204e853dc5489b1120fd295d845`. The reviewer did not
+author SCRUM-1020 and treated production assets, scripts and tests as read-only.
+
+The bear remediation itself passes its visual and provenance criteria:
+
+- PixelLab MCP `get_balance` and live `get_character` passed for exact accepted
+  bear UUID `6805608a-b64a-471c-a1d9-9601a3062e2f`.
+- Live east-v3 job `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` exposes exactly
+  frames `0..5`; all six fresh downloads are byte-identical by SHA-256 to the
+  committed immutable raw sources.
+- All six `move_right` frames were reviewed at original resolution and in the
+  complete contact sheet. They preserve one heavy cyan spectral bear, a
+  grounded coherent four-paw gait and stable mass/palette, with no canine/fox,
+  rearing, crop or scale morph.
+- Independent PNG audit reproduced `256x256`, center X `128`, bbox bottom /
+  baseline `232`, minimum gutter `24 px`, six unique frames and meaningful-alpha
+  ratio `1.083628x` (below the `1.65x` guard; previous row `2.089121x`).
+- A clean isolated builder replay downloaded all five exact live PixelLab packs
+  and byte-matched all `120` raw PNGs, `120` runtime PNGs, five SpriteFrames and
+  the contact sheet (`246/246` deterministic files).
+- Remediation scope is narrow: only six bear east raw frames, six normalized
+  runtime frames, evidence/builder/test/docs changed; no gameplay, registry,
+  AllyMinion, SpriteFrames path, other ghost asset or SCRUM-902 change.
+
+### Blocking regression
+
+`tests/full_frame_registry_integrity_test.gd` exits `1`: all five new registry
+entries `ally/druid_ghost_wolf`, `ally/druid_ghost_bear`,
+`ally/druid_ghost_panther`, `ally/druid_ghost_stag` and
+`ally/druid_ghost_lion` omit the required boolean `source_faces_left` field.
+Runtime currently supplies a default, so the focused animation path works, but
+the repository's typed registry integrity contract is red.
+
+New Jira Bug **SCRUM-1022** was created in the active sprint and its corrected
+live Jira link payload exposes SCRUM-1020, SCRUM-1016 and SCRUM-901 as
+`outwardIssue` blocker targets. No production fix was made by QA.
+
+Other gates:
+
+- clean Godot 4.7 import: PASS (`120/120` ghost runtime `.ctex` resources);
+- `tests/animation_smoke_test.gd`: PASS;
+- `tests/asset_reference_integrity_test.gd`: PASS (`200` files / `2549` refs);
+- `tests/ally_minion_lifecycle_test.gd`: PASS;
+- `tests/runtime_smoke_test.gd`: PASS, exit `0` (known non-fatal dummy-renderer
+  screenshot warning only);
+- `tests/meta_progression_smoke_test.gd`: PASS;
+- `tests/melee_weapon_targeting_test.gd`: PASS;
+- static manifest/hash/PNG/SpriteFrames audit and `git diff --check`: PASS.
+
+Bugs: SCRUM-1022. SCRUM-1020 must remain in `Контроль качества` until the
+registry contract is fixed and independently re-verified.

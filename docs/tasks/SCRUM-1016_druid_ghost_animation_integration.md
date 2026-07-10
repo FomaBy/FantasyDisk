@@ -1,6 +1,6 @@
 # SCRUM-1016 — Druid Ghost Summon PixelLab Animation Integration
 
-Статус: done (independent QA FAILED — blocked by SCRUM-1020)
+Статус: done (independent re-QA FAILED — blocked by SCRUM-1022)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_ready`
@@ -156,3 +156,36 @@ QA pass.
 - `git diff --check`: PASS.
 
 Bugs: SCRUM-1020.
+
+## Independent Re-QA Verdict (2026-07-10)
+
+Status: **FAILED — blocked by SCRUM-1022**
+
+The new independent reviewer `/root/audit_ready` verified that SCRUM-1020 fully
+removes the original bear `move_right` identity morph: the exact same accepted
+bear UUID and selected live v3 job match all six committed raw-source hashes,
+the row is one grounded heavy-bear gait at original/contact-sheet scale, and its
+meaningful-alpha ratio is now `1.083628x`. The full five-creature live PixelLab
+rebuild byte-matched all `246` deterministic source/runtime/SpriteFrames/contact
+artifacts, and all pack geometry/direction/no-flip checks pass.
+
+SCRUM-1016 still cannot be accepted because the broader integration contract is
+red: `tests/full_frame_registry_integrity_test.gd` reports five errors, one for
+each `druid_ghost_*` registry entry, because `source_faces_left` is not an
+explicit bool. Jira Bug **SCRUM-1022** was created and corrected to outwardly
+block SCRUM-1020, SCRUM-1016 and parent SCRUM-901. Production was not modified
+by QA.
+
+Verification summary:
+
+- PASS live PixelLab UUID/job/frame URLs and six bear SHA-256 matches;
+- PASS visual bear continuity, all five ghost contact rows and role readability;
+- PASS 120 raw + 120 runtime PNG, `256x256`, center `128`, baseline `232`,
+  minimum gutter `20`, row uniqueness and movement ratios `<=1.65x`;
+- PASS clean Godot import, `animation_smoke_test.gd`,
+  `asset_reference_integrity_test.gd`, `ally_minion_lifecycle_test.gd`,
+  `runtime_smoke_test.gd`, `meta_progression_smoke_test.gd` and
+  `melee_weapon_targeting_test.gd`;
+- **FAIL** `full_frame_registry_integrity_test.gd` (five missing typed fields).
+
+Bugs: SCRUM-1022. Jira remains `Контроль качества` / QA failed.
