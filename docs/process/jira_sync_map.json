@@ -4370,8 +4370,8 @@
  },
  "bug_scrum912_storm_longbow_visual_cone_geometry_task.md": {
   "key": "SCRUM-1038",
-  "status": "В работе",
-  "desc_hash": "46c0c8211c527507784e9655aa37ca61"
+  "status": "Контроль качества",
+  "desc_hash": "4129c1180cacc757aaaa5393c09d790d"
  },
  "backend_scrum912_storm_longbow_vfx_runtime_hook_task.md": {
   "key": "SCRUM-1037",
