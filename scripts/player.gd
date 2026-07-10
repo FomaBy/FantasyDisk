@@ -359,6 +359,20 @@ func warmup_magic_bonus() -> float:
 	return minf(_warmup_no_hit_seconds * ramp, cap)
 
 
+# SCRUM-1004 «Ярость»: множитель исходящего урона Берсерка от НЕДОСТАЮЩЕГО
+# здоровья. НЕПРЕРЫВНАЯ линейная шкала (формула — единая точка
+# ProgressionData.class_rage_damage_bonus): ×1.0 на полном HP, ×1.2 на половине,
+# ровно ×1.4 (кап +40%) на пустом; невалидные значения зажаты (health<0 → кап,
+# health>max или max_health<=0 → ×1.0). Потребители — BerserkWeapon._rolled_damage
+# (все три оружия кита) и _trigger_berserk_ultimate_echo: слой применяется ПОСЛЕ
+# обычных модификаторов урона/крита и РОВНО один раз за хит (вторичные
+# melee-эффекты наследуют уже усиленный dealt — рекурсивного стака нет).
+# Артефактные low-HP эффекты (SCRUM-500) — отдельный слой и не меняются.
+# Классам без trait'а возвращает ровно 1.0 (data-driven, утечки нет).
+func rage_damage_multiplier() -> float:
+	return 1.0 + ProgressionData.class_rage_damage_bonus(character_id, health, max_health)
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()
@@ -2069,7 +2083,10 @@ func _trigger_berserk_ultimate_echo(enemy: Node2D) -> void:
 		return
 	var config := _ultimate_config()
 	var radius := float(config.get("radius", 180.0))
-	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.75)) * float(derived_parameters.get("ultimate_multiplier", 1.0))
+	# SCRUM-1004 «Ярость»: эхо-волна — вторая ось урона кита Берсерка, low-HP
+	# множитель применяется здесь один раз (сам эхо-триггер урон хита не
+	# ре-мультиплицирует — рекурсии нет).
+	var damage_amount := float(derived_parameters.get("damage", 10.0)) * float(config.get("damage", 0.75)) * float(derived_parameters.get("ultimate_multiplier", 1.0)) * rage_damage_multiplier()
 	AttackVfx.ring_pulse(_vfx_parent(), enemy.global_position, radius, Color(1.0, 0.26, 0.12, 0.34), false)
 	_damage_enemies_in_radius(enemy.global_position, radius, damage_amount)
 

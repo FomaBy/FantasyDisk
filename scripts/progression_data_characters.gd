@@ -138,10 +138,13 @@ const CHARACTER_CONFIGS := {
 	# SCRUM-887: описания = что ожидать от геймплея (дистанция, темп, риск, за
 	# счет чего убивает/выживает); сильные/слабые — только правда по механикам.
 	"berserk": {
+		# SCRUM-1004: trait «Ярость» — низкое HP непрерывно усиливает удары
+		# (до +40%); источник истины docs/design/class_traits_registry.md,
+		# механика — запись CLASS_TRAITS (rage_damage_bonus_cap).
 		"id": "berserk",
 		"title": "Берсерк",
-		"description": "Ближний рубака: тяжелые двуручные замахи кладут толпу вокруг. Живет в гуще боя — риск велик, но и запас крови огромен.",
-		"strengths": "тяжелый урон по толпе, большой запас здоровья, широкие дуги ударов.",
+		"description": "Ближний рубака: тяжелые двуручные замахи кладут толпу вокруг. Живет в гуще боя — риск велик, но и запас крови огромен, а ярость обращает боль в силу: чем меньше здоровья, тем сильнее удары (до +40%).",
+		"strengths": "тяжелый урон по толпе, большой запас здоровья, широкие дуги ударов, ярость на низком HP (до +40% урона).",
 		"weaknesses": "должен подойти вплотную, дальних ответов нет.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png",
 	},
@@ -321,6 +324,28 @@ const ULTIMATE_CONFIGS := {
 # (estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон кита.
 # Новые классы волны SCRUM-894..952 добавляют СВОИ записи сюда.
 const CLASS_TRAITS := {
+	"berserk": {
+		# SCRUM-1004 «Ярость» (реестр SCRUM-953): исходящий урон Берсерка растёт
+		# НЕПРЕРЫВНО от недостающего здоровья — бонус = rage_damage_bonus_cap ×
+		# missing_ratio (полное HP → +0%, половина → +20%, почти пустое → ровно
+		# +40%); линейная шкала без ступенек, невалидные значения HP зажимаются
+		# (health<0 → полный кап, health>max или max<=0 → без бонуса). ЕДИНАЯ
+		# точка формулы — ProgressionData.class_rage_damage_bonus →
+		# Player.rage_damage_multiplier; потребители: BerserkWeapon._rolled_damage
+		# (все ТРИ оружия кита — меч/топор/молот; вторичные melee-эффекты
+		# close/execute/followup наследуют уже усиленный dealt ровно один раз —
+		# рекурсивного стака нет) и эхо-волна ульты
+		# (Player._trigger_berserk_ultimate_echo). Слой ПОСЛЕ обычных
+		# модификаторов урона/крита; артефактные low-HP эффекты (SCRUM-500:
+		# «Кровавый Рубеж»/«Второе Дыхание») — отдельный стакующийся слой и не
+		# меняются. Матожидание учтено budget-моделью
+		# (class_rage_expected_damage_factor, RAGE_BUDGET_EXPECTED_MISSING_HP) —
+		# budget_tuning_for компенсирует кит. Покрыт tests/berserk_rage_trait_test.gd.
+		"id": "rage",
+		"title": "Ярость",
+		"description": "Чем меньше здоровья, тем сильнее удары: урон растёт непрерывно от недостающего запаса крови — до +40% на почти пустом.",
+		"rage_damage_bonus_cap": 0.40,
+	},
 	"soldier": {
 		"id": "double_action",
 		"title": "Двойное действие",

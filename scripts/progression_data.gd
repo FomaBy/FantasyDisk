@@ -891,6 +891,39 @@ static func class_wild_aura_damage_factor(character_id: String, params: Dictiona
 	return 1.0 + class_wild_aura_damage_bonus(character_id, float(params.get("buff_power", 1.0)))
 
 
+# SCRUM-1004 «Ярость»: средне-ожидаемая доля НЕДОСТАЮЩЕГО здоровья Берсерка за
+# забег для budget-зеркала trait'а. Берсерк живёт в гуще боя (постоянный
+# контакт-чип), но огромный запас крови + сустейн держат его большую часть
+# времени в средне-высоком HP: принято матожидание missing_hp = 30% ⇒
+# ожидаемый бонус 0.40×0.30 = +12% (фактор 1.12). budget_tuning_for
+# компенсирует кит этим фактором: на полном HP Берсерк слегка НИЖЕ коридора
+# (≈−11%), на почти пустом — до ≈+25% ВЫШЕ (риск/награда — решение SCRUM-1004).
+const RAGE_BUDGET_EXPECTED_MISSING_HP := 0.30
+
+
+# SCRUM-1004 «Ярость»: непрерывный бонус исходящего урона от недостающего HP.
+# ЕДИНАЯ точка формулы для рантайма (Player.rage_damage_multiplier), бюджета и
+# тестов: бонус = cap × clamp(1 − health/max_health, 0, 1) — полное HP → 0.0,
+# половина → cap/2 (+20%), пустое/отрицательное → ровно cap (+40%); линейная
+# шкала без ступенек. Невалидное max_health (<=0) и классы без rage-ключа
+# дают 0.0 — утечки другим классам нет, NaN/бесконечность невозможны.
+static func class_rage_damage_bonus(character_id: String, health: float, max_health: float) -> float:
+	var cap := maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("rage_damage_bonus_cap", 0.0)), 0.0)
+	if cap <= 0.0 or max_health <= 0.0:
+		return 0.0
+	var missing_ratio := clampf(1.0 - health / max_health, 0.0, 1.0)
+	return cap * missing_ratio
+
+
+# Бюджет-фактор «Ярости»: матожидание low-HP бонуса (кап × ожидаемое missing_hp,
+# см. RAGE_BUDGET_EXPECTED_MISSING_HP) — множит канальные выходы кита в
+# estimate_weapon_budget_for_stats (trait действует на весь исходящий урон
+# оружий Берсерка), budget_tuning_for компенсирует кит, как у ауры Друида.
+static func class_rage_expected_damage_factor(character_id: String) -> float:
+	var cap := maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("rage_damage_bonus_cap", 0.0)), 0.0)
+	return 1.0 + cap * RAGE_BUDGET_EXPECTED_MISSING_HP
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -1059,6 +1092,15 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var network_factor := _budget_network_factor(config, params, stats)
 	solo_dps *= network_factor
 	aoe_dps *= network_factor
+
+	# SCRUM-1004 «Ярость»: матожидание low-HP бонуса Берсерка (кап 0.40 ×
+	# ожидаемое missing_hp 0.30 ⇒ ×1.12) — trait множит ВЕСЬ исходящий урон
+	# оружий кита (BerserkWeapon._rolled_damage), поэтому фактор применяется ко
+	# всем канальным выходам ДО ульты (ульта не действие оружия — паттерн
+	# action_echo); budget_tuning_for компенсирует кит. Другим классам фактор 1.0.
+	var rage_factor := class_rage_expected_damage_factor(character_id)
+	solo_dps *= rage_factor
+	aoe_dps *= rage_factor
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))

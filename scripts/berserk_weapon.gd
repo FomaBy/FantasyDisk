@@ -604,17 +604,26 @@ func _take_damage_accepts_feedback(enemy: Node) -> bool:
 
 
 func _rolled_damage(owner_node: Node2D) -> float:
+	# SCRUM-1004 «Ярость»: классовый low-HP множитель владельца (Берсерк:
+	# непрерывно ×1.0 → ×1.4 от недостающего HP, см.
+	# Player.rage_damage_multiplier) — Berserk-only слой ПОСЛЕ обычных
+	# модификаторов урона и крита. Применяется РОВНО один раз за хит: вторичные
+	# melee-эффекты (close bonus/execute/followup) наследуют уже усиленный
+	# dealt и повторно не множат — рекурсивного стака нет. У владельцев без
+	# trait'а метод возвращает 1.0 (data-driven, другим классам не течёт).
+	var rage_multiplier := 1.0
+	if owner_node != null and owner_node.has_method("rage_damage_multiplier"):
+		rage_multiplier = maxf(float(owner_node.call("rage_damage_multiplier")), 0.0)
 	var raw_parameters = owner_node.get("derived_parameters")
 	if not (raw_parameters is Dictionary):
-		return damage
-
+		return damage * rage_multiplier
 	var parameters: Dictionary = raw_parameters
 	var result := damage
 	_last_attack_crit = false
 	if randf() < float(parameters.get("crit_chance", 0.0)):
 		result *= float(parameters.get("crit_damage_multiplier", 1.0))
 		_last_attack_crit = true
-	return result
+	return result * rage_multiplier
 
 
 func _show_hit_area(owner_node: Node2D, attack_direction: Vector2) -> void:
