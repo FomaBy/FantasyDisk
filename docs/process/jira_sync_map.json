@@ -4290,8 +4290,8 @@
  },
  "bug_meta_keystone_behavioral_gate_regression_task.md": {
   "key": "SCRUM-1029",
-  "status": "Контроль качества",
-  "desc_hash": "bc21f3e672eae0d6a491bfd259cf7f7a"
+  "status": "Готово",
+  "desc_hash": "6b67adb61b3b7e58cad8906bb01cf91d"
  },
  "bug_meta_skill_shadow_invisibility_smoke_regression_task.md": {
   "key": "SCRUM-1028",
