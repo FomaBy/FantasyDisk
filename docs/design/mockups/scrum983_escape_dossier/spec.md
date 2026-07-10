@@ -1,6 +1,6 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
-Status: Accepted and implemented; final repository-wide smoke pending active Priest test-lock release
+Status: Accepted and implemented; repository-wide smoke passed after Priest test-lock release
 Role owner: combined Design+Back-end `/root/scrum983_dossier`
 Task: `docs/tasks/SCRUM-983_escape_hero_dossier.md`
 Jira: SCRUM-983
@@ -199,7 +199,7 @@ icons, text-button states and the shared 9-slice frame.
 - [x] Continue/Main Menu neutral; End Run alone danger-red in the spec.
 - [x] Mouse/keyboard/gamepad tooltip and focus order specified.
 - [x] Runtime screenshots and focused/no-overlap/gamepad/UI-smoke gates complete.
-- [ ] Repository-wide runtime smoke complete after the active Priest test-lock release.
+- [x] Repository-wide runtime smoke complete after the Priest test-lock release.
 
 ## Deviations
 

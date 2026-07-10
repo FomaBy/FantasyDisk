@@ -26,7 +26,7 @@ reserved for the destructive End Run action.
 - [x] Continue and Main Menu are neutral with no red glow/tint; Settings is neutral; End Run alone remains danger red.
 - [x] Focus starts on Continue and reaches all actions and stat tooltip targets without a trap.
 - [x] Focused UI/no-overlap/gamepad/live-resize tests and real windowed screenshots cover the dossier.
-- [ ] Runtime smoke and full regression gate pass before push to `origin/dev`.
+- [x] Runtime smoke and full regression gate pass before push to `origin/dev`.
 
 ## Work Log
 
@@ -92,6 +92,12 @@ reserved for the destructive End Run action.
   longer steals wheel after the pointer leaves stat rows. Physical oracle proves
   wheel-outside scrolls Hero content without changing tooltip scroll, while
   wheel-on-hover still scrolls the bounded tooltip. Review verdict: PASS.
+- 2026-07-10: after the Priest owner pushed `e36dcaf3c`, `85d4c2433`,
+  `876718b18` and routed its package to QA, rebased on the released tree and
+  replaced only the obsolete pause-dossier umbrella assertions. Full
+  `tests/runtime_smoke_test.gd` PASS; duplicate-artifact guard scanned 14,628
+  files PASS. Godot still prints the upstream freed-lambda/dummy-renderer
+  diagnostics while returning zero and the suite reports PASS.
 
 ## Design Paths
 
@@ -103,10 +109,8 @@ reserved for the destructive End Run action.
 
 ## Current Blocker / Next Step
 
-Implementation and focused/UI regression gates are green. The only remaining
-gate is the repository-wide `tests/runtime_smoke_test.gd`: its legacy dossier
-assertion must be updated from the old VBox/button-height contract to the real
-`BaseStatsGrid` and exact 60/72px footer after the active Priest worker releases
-its current test lock. Then rebase on fresh `origin/dev`, run the full smoke,
-commit/push directly to `dev`, route Jira to `Контроль качества`, sync the
-targeted mirror and remove the disposable worktree/cache.
+Implementation, focused/UI regression gates and the repository-wide runtime
+smoke are green. Remaining process steps: commit the released umbrella-oracle
+update, rebase once more on fresh `origin/dev`, repeat the final gate, push
+directly to `dev`, route Jira to `Контроль качества`, sync the targeted mirror
+and remove the disposable worktree/cache.

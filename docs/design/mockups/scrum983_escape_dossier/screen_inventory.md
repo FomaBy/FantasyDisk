@@ -43,6 +43,6 @@ SCRUM-983 runtime migration described below.
 
 SCRUM-981 released its shared frame/pause lock before integration. SCRUM-983 now
 owns `scripts/pause_stats_menu.gd`, its unique focused/capture evidence and the
-targeted no-overlap oracle update. `scripts/ui_screens.gd` remains excluded for
-Claude SCRUM-968, and `tests/runtime_smoke_test.gd` remains read-only until the
-active Priest worker releases its test lock.
+targeted no-overlap and umbrella runtime-oracle updates. Claude SCRUM-968 and the
+Priest package both pushed/released their previous shared locks before final
+SCRUM-983 integration; their implementation paths remain otherwise untouched.

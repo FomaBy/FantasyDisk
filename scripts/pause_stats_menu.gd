@@ -274,12 +274,8 @@ func _make_section_divider() -> Control:
 func _action_button_height() -> float:
 	var vp_h := get_viewport_rect().size.y
 	if vp_h <= 0.0:
-		vp_h = 1440.0
-	if vp_h < 760.0:
-		return 72.0
-	if vp_h < 1000.0:
-		return 88.0
-	return 104.0
+		vp_h = 1080.0
+	return 60.0 if vp_h < 900.0 else 72.0
 
 
 func _build_layout() -> void:

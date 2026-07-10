@@ -1,8 +1,8 @@
 # SCRUM-983 Runtime Acceptance Test Plan
 
-Status: implemented. The focused oracle and capture helper now exercise the real
-pause dossier. The repository-wide runtime smoke remains pending only because
-its test file is under the active Priest worker lock.
+Status: implemented and green. The focused oracle and capture helper exercise
+the real pause dossier; the repository-wide runtime smoke passed after the
+Priest worker pushed and released its test file.
 
 ## Focused geometry oracle
 
@@ -67,4 +67,7 @@ stat chip or scrollbar entering a content lane.
 - After both content columns are physically scrolled, every footer Up neighbor
   is rebuilt/clipped-visible and a pushed `ui_up` event lands on that target;
   fixture `Main` and `SubViewport` WeakRefs clear after `queue_free`.
-- Full repository runtime smoke: pending the active Priest test-lock release.
+- Full repository runtime smoke: PASS after the Priest test-lock release;
+  duplicate-artifact guard scanned 14,628 files PASS. Godot emitted existing
+  freed-lambda and dummy-renderer diagnostics, but the suite returned zero and
+  reported `Runtime smoke test passed.`

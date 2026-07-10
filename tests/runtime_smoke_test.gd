@@ -1148,17 +1148,17 @@ func _initialize() -> void:
 	if pause_menu == null or not is_instance_valid(pause_menu):
 		_fail("Expected active-combat Esc to attach the pause stats character board.")
 		return
-	# SCRUM-890 вариант Б: шапка (титул-чип + кит-кнопки в ряд) + тело
-	# (карточка героя слева, «Боевые параметры» 2×2 справа).
+	# SCRUM-983: informational header + hero/derived body + fixed action footer.
 	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as HBoxContainer
 	var hero_card := pause_menu.find_child("HeroCard", true, false) as PanelContainer
 	var base_stats_list := pause_menu.find_child("BaseStatsList", true, false) as VBoxContainer
+	var base_stats_grid := pause_menu.find_child("BaseStatsGrid", true, false) as GridContainer
 	var derived_groups := pause_menu.find_child("DerivedStatsGroups", true, false) as GridContainer
-	if control_buttons == null or hero_card == null or base_stats_list == null or derived_groups == null:
-		_fail("Expected pause dossier to build the header button row, hero card, base stats, and grouped derived stats.")
+	if control_buttons == null or hero_card == null or base_stats_list == null or base_stats_grid == null or derived_groups == null:
+		_fail("Expected pause dossier to build the action footer, hero card, semantic base grid, and grouped derived stats.")
 		return
 	if control_buttons.get_child_count() != 4:
-		_fail("Expected exactly 4 run control buttons in the dossier header (SCRUM-890).")
+		_fail("Expected exactly 4 run control buttons in the dossier footer (SCRUM-983).")
 		return
 	if pause_menu.find_child("DossierTitleChip", true, false) == null:
 		_fail("Expected the dossier header title chip (SCRUM-890 atlas header).")
@@ -1166,8 +1166,11 @@ func _initialize() -> void:
 	if pause_menu.find_child("PauseDossierPortraitSlot", true, false) == null or pause_menu.find_child("PauseDossierTitle", true, false) == null:
 		_fail("Expected the hero card to show the portrait slot and class title.")
 		return
-	if base_stats_list.get_child_count() != UIIconRegistry.BASE_STAT_IDS.size():
-		_fail("Expected the hero card to list one compact row per base stat.")
+	if base_stats_grid.get_child_count() != UIIconRegistry.BASE_STAT_IDS.size():
+		_fail("Expected BaseStatsGrid to contain one real compact row per base stat.")
+		return
+	if not base_stats_list.find_children("BaseStatsCompatibilitySlot_*", "Control", true, false).is_empty():
+		_fail("Expected no dummy/compatibility nodes in the semantic base-stat grid.")
 		return
 	# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс),
 	# Защита, Уворот, Регенерация; ряд «Призывы» ТОЛЬКО у призывного кита
@@ -1185,13 +1188,13 @@ func _initialize() -> void:
 		return
 	var survival_hp_row := pause_menu.find_child("SurvivalStatRow_health_point", true, false) as Control
 	var survival_hp_value := pause_menu.find_child("SurvivalStatValue_health_point", true, false) as Label
-	if survival_hp_row == null or survival_hp_row.tooltip_text == "" or survival_hp_value == null or not survival_hp_value.text.contains("/"):
-		_fail("Expected the Survival HP row to show current/max HP with a tooltip.")
+	if survival_hp_row == null or str(survival_hp_row.get_meta("dossier_tooltip_text", "")) == "" or survival_hp_row.tooltip_text != "" or survival_hp_value == null or not survival_hp_value.text.contains("/"):
+		_fail("Expected the Survival HP row to show current/max HP with bounded dossier tooltip metadata only.")
 		return
 	for survival_row_name in ["SurvivalStatRow_defense", "SurvivalStatRow_dodge", "SurvivalStatRow_regeneration"]:
 		var survival_row := pause_menu.find_child(survival_row_name, true, false) as Control
-		if survival_row == null or survival_row.tooltip_text == "":
-			_fail("Expected Survival row %s with a hover tooltip." % survival_row_name)
+		if survival_row == null or str(survival_row.get_meta("dossier_tooltip_text", "")) == "" or survival_row.tooltip_text != "":
+			_fail("Expected Survival row %s with bounded dossier tooltip metadata." % survival_row_name)
 			return
 	# SCRUM-893: регресс «пустых значений» — clip_text без min-width схлопывал
 	# value-метку в 0 px рядом с EXPAND_FILL-именем (текст был, рендера не было).
@@ -1217,8 +1220,11 @@ func _initialize() -> void:
 		return
 	var strength_row := pause_menu.find_child("BaseStatRow_strength", true, false) as Control
 	var damage_chip := pause_menu.find_child("DerivedStatChip_damage", true, false) as Control
-	if strength_row == null or damage_chip == null or strength_row.tooltip_text == "" or damage_chip.tooltip_text == "":
-		_fail("Expected base and derived stats to expose hover tooltips.")
+	if strength_row == null or damage_chip == null \
+		or str(strength_row.get_meta("dossier_tooltip_text", "")) == "" \
+		or str(damage_chip.get_meta("dossier_tooltip_text", "")) == "" \
+		or strength_row.tooltip_text != "" or damage_chip.tooltip_text != "":
+		_fail("Expected base and derived stats to expose bounded internal tooltip metadata without engine popups.")
 		return
 	var escape_panel := pause_menu.find_child("EscapeStatsPanelFrame", true, false) as PanelContainer
 	var resume_button := pause_menu.find_child("PauseResumeButton", true, false) as Button
@@ -1235,15 +1241,14 @@ func _initialize() -> void:
 	if not dossier_panel_style.texture.resource_path.ends_with("meta40/frame_border.png"):
 		_fail("Expected the dossier frame to reuse the meta40 frame_border 9-slice.")
 		return
-	# Кит-кнопки шапки: нативные плиты глобального кита по size-маппингу
-	# (на 2560x1440 h=104 → back_260x104), НЕ растянутые контейнером.
+	# Fixed footer uses exact 60px compact / 72px wide global-kit plates.
 	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
 		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
 		if pd_button == null:
 			_fail("Expected pause dossier control button %s." % pd_btn_name)
 			return
-		if not [72.0, 88.0, 104.0].has(pd_button.custom_minimum_size.y):
-			_fail("Expected %s to use a kit action height (72/88/104), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
+		if not [60.0, 72.0].has(pd_button.custom_minimum_size.y):
+			_fail("Expected %s to use an exact SCRUM-983 footer height (60/72), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
 			return
 		var pd_style := pd_button.get_theme_stylebox("normal") as StyleBoxTexture
 		if pd_style == null or pd_style.texture == null:
@@ -1257,8 +1262,8 @@ func _initialize() -> void:
 		if absf(pd_rect.size.x - pd_button.custom_minimum_size.x) > 0.5 or absf(pd_rect.size.y - pd_button.custom_minimum_size.y) > 0.5:
 			_fail("Expected %s to keep its native kit size (no container stretch), got %s." % [pd_btn_name, str(pd_rect.size)])
 			return
-	if _button_uses_text_button_unique_id(resume_button, "back_260x104") != (resume_button.custom_minimum_size.y >= 96.0):
-		_fail("Expected the dossier header buttons to follow the kit size mapping (back_260x104 at h=104).")
+	if _button_uses_text_button_unique_id(resume_button, "back_260x104"):
+		_fail("Expected the 60/72px dossier footer not to use the obsolete 104px plate.")
 		return
 	# Ряды/чипы/секции — StyleBoxFlat-чипы атлас-языка (0.62 ряды, 0.86 секции).
 	var strength_row_style := strength_row.get_theme_stylebox("panel") as StyleBoxFlat
@@ -1274,47 +1279,33 @@ func _initialize() -> void:
 		_fail("Expected the section header to keep its colored accent marker (SCRUM-890).")
 		return
 	var stats_hint := pause_menu.find_child("DerivedStatsHint", true, false) as Label
-	if stats_hint == null or not stats_hint.text.contains("Наведи"):
-		_fail("Expected the derived stats header to keep the hover hint (SCRUM-890).")
+	if stats_hint == null or not stats_hint.text.contains("Фокус") or not stats_hint.text.contains("наведение"):
+		_fail("Expected the derived stats header to advertise focus and hover details.")
 		return
-	# SCRUM-851/SCRUM-890: тултип краткий; контент — титул золотом + тело светлым,
-	# единственная рамка — чип TooltipPanel попапа.
-	if strength_row.tooltip_text.contains("Формула:") or not strength_row.tooltip_text.contains(" — "):
-		_fail("Expected concise pause stat tooltip text (name — value + description).")
+	var strength_tooltip := str(strength_row.get_meta("dossier_tooltip_text", ""))
+	if not strength_tooltip.contains(" — ") or not strength_tooltip.contains("Формула / источник:") or not strength_tooltip.contains("Влияет:"):
+		_fail("Expected complete SCRUM-983 dossier tooltip metadata.")
 		return
-	var tooltip_content := pause_menu.call("_make_custom_tooltip", strength_row.tooltip_text) as VBoxContainer
-	if tooltip_content == null:
-		_fail("Expected custom stat tooltip content to be the SCRUM-890 title+body column.")
+	# Let the footer's deferred initial Continue focus settle before explicitly
+	# moving focus into the stat grid for the bounded-tooltip assertion.
+	await process_frame
+	await process_frame
+	strength_row.grab_focus()
+	await process_frame
+	await process_frame
+	var dossier_tooltip := pause_menu.find_child("DossierFocusTooltip", true, false) as PanelContainer
+	var dossier_tooltip_scroll := pause_menu.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
+	var dossier_tooltip_label := pause_menu.find_child("DossierFocusTooltipLabel", true, false) as Label
+	if dossier_tooltip == null or not dossier_tooltip.visible or dossier_tooltip_scroll == null or dossier_tooltip_label == null:
+		_fail("Expected focus to open the bounded internal dossier tooltip.")
 		return
-	var tooltip_title := tooltip_content.find_child("GlobalTooltipTitleLabel", true, false) as Label
-	var tooltip_body := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label
-	if tooltip_title == null or tooltip_body == null:
-		_fail("Expected the global tooltip to split into gold title and light body labels.")
+	if dossier_tooltip.get_global_rect().size.x > 430.1 or dossier_tooltip.get_global_rect().size.y > 288.1 \
+		or dossier_tooltip_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+		_fail("Expected dossier tooltip to stay within 430x288 and scroll vertically only.")
 		return
-	if not _color_approx(tooltip_title.get_theme_color("font_color"), Color(0.96, 0.90, 0.68, 1.0)):
-		_fail("Expected the tooltip title to use the gold atlas title color.")
+	if not dossier_tooltip_label.text.contains("Формула / источник:") or not dossier_tooltip_label.text.contains("Влияет:"):
+		_fail("Expected the bounded dossier tooltip to show complete formula/influence text.")
 		return
-	if tooltip_content.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		_fail("Expected custom stat tooltip content to ignore mouse input.")
-		return
-	if tooltip_title.get_theme_font_size("font_size") < 20 or tooltip_body.get_theme_font_size("font_size") < 20:
-		_fail("Expected custom stat tooltip labels to keep the enlarged SCRUM-851 font.")
-		return
-	if tooltip_body.custom_minimum_size.x > 620.0 * 1.01:
-		_fail("Expected custom stat tooltip wrap width to stay within the wide cap.")
-		return
-	# SCRUM-890: панель тултипа — чип 0.97 (числа = _atlas_chip_style).
-	var popup_tooltip_style := pause_menu.get_theme_stylebox("panel", "TooltipPanel") as StyleBoxFlat
-	if popup_tooltip_style == null or popup_tooltip_style.bg_color.a < 0.95:
-		_fail("Expected the tooltip popup panel to use the dense atlas chip StyleBoxFlat (SCRUM-890).")
-		return
-	if not _color_approx(popup_tooltip_style.border_color, Color(0.52, 0.41, 0.24, 0.90)):
-		_fail("Expected the tooltip popup chip to keep the brass atlas border.")
-		return
-	if popup_tooltip_style.content_margin_left < 12.0 or popup_tooltip_style.content_margin_top < 10.0:
-		_fail("Expected the tooltip popup chip to keep readable content margins.")
-		return
-	tooltip_content.queue_free()
 	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
 	var strength_value := pause_menu.find_child("BaseStatValue_strength", true, false) as Label
 	var strength_icon := pause_menu.find_child("UIIcon_strength", true, false) as Control
