@@ -1,6 +1,6 @@
 # SCRUM-917 — Robot Hydraulic Press compression animation/VFX
 
-Статус: review
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Контур: Codex

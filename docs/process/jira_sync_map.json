@@ -4417,5 +4417,10 @@
   "key": "SCRUM-988",
   "status": "Готово",
   "desc_hash": "fbfe0342425f376a3a0bcf23f51397e7"
+ },
+ "SCRUM-917_robot_hydraulic_press_compression_vfx.md": {
+  "key": "SCRUM-917",
+  "status": "Контроль качества",
+  "desc_hash": "1345f14ae326cbaeca8408efc9395eb0"
  }
 }
