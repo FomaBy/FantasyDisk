@@ -82,9 +82,9 @@ Disk cleanup: pending final gate; task worktree and `.godot` are active.
 
 Thread cleanup: not a disposable worker thread.
 
-## Независимый QA-вердикт — 2026-07-10
+## QA-Вердикт — 2026-07-10
 
-QA Status: **PASSED**
+Статус: PASSED
 
 - QA worker: `codex-qa-scrum-954-20260710` (`/root/audit_qa`), Codex lane.
 - Fresh base: `origin/dev` `6cf4d389201162fa385826d98e005f161189dcfb`.
