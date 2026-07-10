@@ -537,7 +537,43 @@ const CLASS_TRAITS := {
 		"network_cap_leadership_step": 6.0,
 		"network_mine_weight": 0.5,
 	},
+	"priest": {
+		# SCRUM-925 «Молитва боя»: на старте КАЖДОГО боя Священник выбирает одну
+		# из трёх молитв на раунд (пул — BATTLE_PRAYERS ниже, доступ через
+		# ProgressionData.class_battle_prayers). Ровно ОДИН выбор за бой; молитва
+		# живёт инстанс-состоянием Player (_battle_prayer_*) и честно очищается
+		# на конец боя/смерть/рестарт: player-узел пересоздаётся каждым боем, а
+		# снапшот между узлами (_store_player_snapshot) инстанс-поля не тащит.
+		# Потребители: Player.meta_damage_multiplier (+весь урон хитов) и
+		# Player._apply_ultimate_damage (+ульта), Player._apply_regeneration
+		# (+HP/с штатным regen-пайплайном), Player.take_damage (−входящий
+		# ПОСЛЕДНИМ множителем после поглощения/защиты — концепт «Бронекорпуса»
+		# Робота SCRUM-914, но только на текущий бой и только у Священника).
+		# ВРЕМЕННО до SCRUM-926 (UI выбора): автовыбор первой молитвы пула в
+		# Player.on_battle_start (_auto_select_battle_prayer). Budget-модель
+		# молитвы НЕ зеркалит: условный/выборный бафф (прецедент «Разогрева»
+		# Гитариста); сравнение веток — docs/design/class_traits_registry.md.
+		# Покрыт tests/priest_kit_test.gd.
+		"id": "battle_prayer",
+		"title": "Молитва боя",
+		"description": "В начале каждого боя Священник выбирает одну из трёх молитв на раунд: +20% урона, +2 HP/сек или −20% входящего урона.",
+		"battle_prayer_damage_bonus": 0.20,
+		"battle_prayer_regen_flat": 2.0,
+		"battle_prayer_incoming_reduction": 0.20,
+	},
 }
+
+# SCRUM-925 «Молитва боя»: пул молитв выбора на старте боя. Player-facing
+# русский текст для UI SCRUM-926 берётся ОТСЮДА (id/title/description);
+# численный эффект — trait-ключ класса в CLASS_TRAITS (value подставляет
+# ProgressionData.class_battle_prayers; молитва без ключа у класса в пул не
+# попадает — другим классам пул пуст). Порядок записей = порядок в UI;
+# ПЕРВАЯ запись — временный автовыбор до SCRUM-926.
+const BATTLE_PRAYERS := [
+	{"id": "prayer_wrath", "title": "Молитва кары", "description": "+20% ко всему урону Священника до конца боя.", "trait_key": "battle_prayer_damage_bonus"},
+	{"id": "prayer_mending", "title": "Молитва исцеления", "description": "+2 HP в секунду до конца боя.", "trait_key": "battle_prayer_regen_flat"},
+	{"id": "prayer_aegis", "title": "Молитва защиты", "description": "−20% входящего урона до конца боя.", "trait_key": "battle_prayer_incoming_reduction"},
+]
 
 const CLASS_MECHANIC_IDENTITIES := {
 	"berserk": {

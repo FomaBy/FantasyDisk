@@ -815,6 +815,26 @@ static func class_action_echo_chance(character_id: String) -> float:
 	return clampf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("action_echo_chance", 0.0)), 0.0, 1.0)
 
 
+# SCRUM-925 «Молитва боя»: пул молитв класса для выбора на старте боя.
+# Data-driven: молитва входит в пул, только если её trait-ключ задан у класса в
+# CLASS_TRAITS (у классов без battle_prayer-ключей пул пуст — утечки нет).
+# Записи: {id, title, description, trait_key, value} — русский player-facing
+# текст для UI SCRUM-926 и численный эффект. Порядок пула = порядок UI;
+# первая запись — временный автовыбор (Player._auto_select_battle_prayer).
+static func class_battle_prayers(character_id: String) -> Array:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var pool: Array = []
+	for prayer_raw in CharacterData.BATTLE_PRAYERS:
+		var prayer: Dictionary = prayer_raw
+		var value := float(trait_config.get(str(prayer.get("trait_key", "")), 0.0))
+		if value <= 0.0:
+			continue
+		var entry: Dictionary = prayer.duplicate(true)
+		entry["value"] = value
+		pool.append(entry)
+	return pool
+
+
 # SCRUM-894 «Хладнокровие»: крит-профиль класса из CLASS_TRAITS. Без trait-записи —
 # глобальные константы (кап 55%, diminish 0.45, без overflow). Ассасин: кап 1.0,
 # diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток

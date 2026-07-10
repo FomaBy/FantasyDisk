@@ -193,6 +193,16 @@ var _riff_streak_active := false
 # предотвращенные события (godmode, i-frames, невидимость, уворот) стек НЕ
 # сбрасывают — сброс в take_damage строго после гейтов предотвращения.
 var _warmup_no_hit_seconds := 0.0
+# SCRUM-925 «Молитва боя»: выбранная на ТЕКУЩИЙ бой молитва Священника
+# (data-driven пул — ProgressionData.class_battle_prayers). Инстанс-состояние,
+# НЕ run_modifiers: player-узел пересоздаётся каждым боем
+# (combat_director._start_combat), снапшот между узлами тащит только
+# run_modifiers — молитва честно очищается на конец боя/смерть/рестарт без
+# спец-ключей. Эффект кэшируется при выборе (горячий путь meta_damage_multiplier).
+var _battle_prayer_id := ""
+var _battle_prayer_damage_bonus := 0.0     # «Молитва кары»: +доля ко всему урону
+var _battle_prayer_regen := 0.0            # «Молитва исцеления»: +HP/с
+var _battle_prayer_protection := 0.0       # «Молитва защиты»: −доля входящего
 # SCRUM-961: латчи классовых артефактов (не run_modifiers — сброс в configure_character).
 var _rage_hit_stacks := 0                # «Багровая рукоять»: стаки ярости за melee-удары
 var _rage_hit_time_left := 0.0           # окно жизни стаков ярости
@@ -266,6 +276,60 @@ func class_trait_value(key: String, default_value := 0.0) -> float:
 # + отсечка базового регена в ProgressionData.derived_parameters).
 func blocks_generic_sustain() -> bool:
 	return class_trait_value("generic_sustain_blocked") > 0.0
+
+
+# SCRUM-925 «Молитва боя»: пул молитв текущего класса (пуст у классов без
+# battle_prayer-ключей в CLASS_TRAITS — утечки нет). Контракт для UI SCRUM-926:
+# записи {id, title, description, value, trait_key}; выбор — select_battle_prayer(id).
+func battle_prayer_choices() -> Array:
+	return ProgressionData.class_battle_prayers(character_id)
+
+
+func active_battle_prayer_id() -> String:
+	return _battle_prayer_id
+
+
+# SCRUM-925: выбор молитвы на ТЕКУЩИЙ бой. Ровно ОДИН выбор за бой — повторный
+# вызов отклоняется (переключение/стакинг молитв в раунде невозможны, AC).
+# Неизвестный id и класс без пула отклоняются. Возвращает true при применении.
+func select_battle_prayer(prayer_id: String) -> bool:
+	if _battle_prayer_id != "":
+		return false
+	var choice: Dictionary = {}
+	for prayer_raw in battle_prayer_choices():
+		var prayer: Dictionary = prayer_raw
+		if str(prayer.get("id", "")) == prayer_id:
+			choice = prayer
+			break
+	if choice.is_empty():
+		return false
+	_battle_prayer_id = prayer_id
+	var trait_key := str(choice.get("trait_key", ""))
+	var value := float(choice.get("value", 0.0))
+	match trait_key:
+		"battle_prayer_damage_bonus":
+			_battle_prayer_damage_bonus = value
+		"battle_prayer_regen_flat":
+			_battle_prayer_regen = value
+		"battle_prayer_incoming_reduction":
+			_battle_prayer_protection = value
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 150.0, Color(1.0, 0.97, 0.72, 0.42), false)
+	return true
+
+
+# SCRUM-925 — ВРЕМЕННЫЙ автовыбор (до SCRUM-926): пока экрана выбора молитвы
+# нет, на старте боя автоматически применяется ПЕРВАЯ молитва пула («Молитва
+# кары»). SCRUM-926 должен ЗАМЕНИТЬ этот вызов в on_battle_start открытием UI
+# выбора, который сам зовёт select_battle_prayer(id); автовыбор при этом
+# удаляется. Контракт «один выбор за бой» сохраняется в обоих режимах.
+func _auto_select_battle_prayer() -> void:
+	if _battle_prayer_id != "":
+		return
+	var choices := battle_prayer_choices()
+	if choices.is_empty():
+		return
+	select_battle_prayer(str((choices[0] as Dictionary).get("id", "")))
 
 
 # SCRUM-1006 «Разогрев»: аккумулятор no-hit времени. Детерминирован: бонус
@@ -813,6 +877,12 @@ func take_damage(amount: float, _source := "") -> bool:
 	# иммунитет; худший суммарный кап митигации Робота ≈ 94% < гейта 98%
 	# (tests/robot_kit_test.gd + global_survivability smoke).
 	final_damage *= clampf(class_trait_value("incoming_damage_multiplier", 1.0), 0.5, 1.0)
+	# SCRUM-925 «Молитва защиты»: −20% входящего финальным классовым множителем
+	# того же ранга, что «Бронекорпус» (взаимоисключимы по классам: молитва —
+	# только Священник и только пока активна). Порядок пайплайна:
+	# уворот → контр → reactor-heat → absorb → defense → финальные классовые скидки.
+	if _battle_prayer_protection > 0.0:
+		final_damage *= 1.0 - clampf(_battle_prayer_protection, 0.0, 0.9)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()
@@ -1209,6 +1279,12 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	# множитель ровно 1.0). Матожидание учтено budget-моделью
 	# (class_wild_aura_damage_factor) — кит скомпенсирован budget_tuning_for.
 	multiplier *= wild_aura_damage_multiplier()
+	# SCRUM-925 «Молитва кары»: +20% ко ВСЕМУ урону хитов на текущий бой
+	# (все hit-контексты владельца; ульта усилена отдельно в
+	# _apply_ultimate_damage — она идёт мимо этого множителя). У классов без
+	# выбранной молитвы бонус ровно 0.0 — утечки нет.
+	if _battle_prayer_damage_bonus > 0.0:
+		multiplier *= 1.0 + _battle_prayer_damage_bonus
 	var gold_cap := float(run_modifiers.get("gold_damage_bonus_cap", 0.0))
 	var gold_step := float(run_modifiers.get("gold_damage_per_50", 0.0))
 	if gold_cap > 0.0 and gold_step > 0.0:
@@ -1724,6 +1800,10 @@ func _apply_regeneration(delta: float) -> void:
 	# применяется (ключ и так гасится гейтом наград — здесь страховка рантайма).
 	if _low_hp_active and not blocks_generic_sustain():
 		regeneration += float(run_modifiers.get("lowhp_regen_bonus", 0.0))
+	# SCRUM-925 «Молитва исцеления»: +2 HP/с на текущий бой штатным
+	# regen-пайплайном (множитель исходящего лечения применяется как к любому
+	# регену). Прекращается с концом боя — узел игрока пересоздаётся.
+	regeneration += _battle_prayer_regen
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return
 	health = minf(health + regeneration * _effective_healing_multiplier() * delta, max_health)
@@ -2222,6 +2302,10 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
 		return
 	var final_amount := maxf(amount, 0.0)
+	# SCRUM-925 «Молитва кары»: ульта — тоже исходящий урон Священника (идёт
+	# мимо meta_damage_multiplier), усиливаем ДО boss-капа (кап остаётся капом).
+	if _battle_prayer_damage_bonus > 0.0:
+		final_amount *= 1.0 + _battle_prayer_damage_bonus
 	if enemy.is_in_group("bosses") and enemy.get("max_health") != null:
 		final_amount = minf(final_amount, float(enemy.get("max_health")) * float(_ultimate_config().get("boss_cap", 0.1)))
 	# SCRUM-1007: ульта — урон игрока; метка атрибутирует он-килл trait'ы, тип
@@ -2699,10 +2783,17 @@ func _charge_repair_subroutine(absorbed: float) -> void:
 	)
 
 
+# Триггеры старта боя. Диспетчеризуется combat_director._start_combat по
+# образцу on_room_clear/on_kill; каждый под-хук сам проверяет свои ключи.
+func on_battle_start() -> void:
+	# SCRUM-925 «Молитва боя»: временный автовыбор молитвы (до UI SCRUM-926).
+	_auto_select_battle_prayer()
+	_apply_prayer_beads_opening()
+
+
 # SCRUM-961 (on_battle_start): «Четки молитвы» — открывающий бафф первых 6с боя
 # (+магический урон и +исходящее лечение через prayer_opening_active-гейт).
-# Диспетчеризуется combat_director._start_combat по образцу on_room_clear/on_kill.
-func on_battle_start() -> void:
+func _apply_prayer_beads_opening() -> void:
 	if float(run_modifiers.get("prayer_opening_power", 0.0)) <= 0.0:
 		return
 	run_modifiers["prayer_opening_active"] = 1.0
