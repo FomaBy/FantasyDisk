@@ -4277,5 +4277,10 @@
   "key": "SCRUM-1026",
   "status": "К выполнению",
   "desc_hash": "eee0f6baeaab8a2ee2196a6e2726c1cc"
+ },
+ "bug_meta_shop_discount_smoke_rare_basket_task.md": {
+  "key": "SCRUM-1027",
+  "status": "К выполнению",
+  "desc_hash": "60ca6721435e758fe7b9aa11863150a9"
  }
 }
