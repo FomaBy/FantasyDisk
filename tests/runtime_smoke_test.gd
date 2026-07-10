@@ -3001,12 +3001,24 @@ func _test_noncombat_nodes(main: Node) -> void:
 		_fail("Expected shop offers to hang freely on the wall, not inside a card grid.")
 		return
 	var parchment_wall := main.find_child("ShopParchmentWall", true, false) as Control
-	if parchment_wall == null or parchment_wall.anchor_left > 0.25 or parchment_wall.anchor_right < 0.75:
-		_fail("Expected the shop grid to be anchored to the centered backdrop wall zone.")
+	var shop_inner: Rect2 = shop_screen.get_meta("gold_shell_inner_rect", Rect2())
+	if parchment_wall == null or not shop_inner.grow(1.0).encloses(parchment_wall.get_global_rect()):
+		_fail("Expected the shop wall to occupy only the authored gold-shell inner zone.")
+		return
+	var shop_frame := main.find_child("ShopGoldFrame", true, false) as Panel
+	var shop_backdrop := main.find_child("ShopGoldBackdrop", true, false) as TextureRect
+	if shop_frame == null or shop_backdrop == null or shop_backdrop.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+		_fail("Expected Shop to use the SCRUM-993 hollow gold shell and contained merchant backdrop.")
+		return
+	# Scope this assertion to the newly created Shop tree: previous screens are
+	# queue-freed by _clear_ui and can remain discoverable on Main until the next
+	# process frame during this single-frame smoke sequence.
+	if shop_screen.find_child("UpgradeFabButton", true, false) != null:
+		_fail("Expected Shop to remove the manual Attribute Shop FAB per SCRUM-982 reconciliation.")
 		return
 	var first_shop_button := main.find_child("ShopItemButton0", true, false) as Button
-	if first_shop_button == null or first_shop_button.text != "" or first_shop_button.tooltip_text == "":
-		_fail("Expected shop wall items to show icon/price only and move descriptions into hover tooltip.")
+	if first_shop_button == null or first_shop_button.text != "" or first_shop_button.tooltip_text != "" or str(first_shop_button.get_meta("shop_tooltip_text", "")).strip_edges() == "":
+		_fail("Expected shop wall items to show icon/price only and use the fixed SCRUM-993 tooltip band.")
 		return
 	var first_shop_icon := first_shop_button.find_child("ShopItemIcon", true, false) as TextureRect
 	var first_shop_price := first_shop_button.find_child("ShopItemPrice", true, false) as Label
@@ -3036,7 +3048,7 @@ func _test_noncombat_nodes(main: Node) -> void:
 	if first_shop_button.get_theme_stylebox("normal") is StyleBoxTexture or first_shop_button.get_theme_stylebox("hover") is StyleBoxTexture:
 		_fail("Expected wall shop items to avoid card/frame StyleBoxTexture slots.")
 		return
-	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as PanelContainer
+	var first_price_badge := first_shop_button.find_child("ShopPriceBadge", true, false) as Control
 	if first_price_badge == null or _stylebox_texture_path(first_price_badge.get_theme_stylebox("panel")) != MINIMAL_FIELD_TEXTURE:
 		_fail("Expected inline shop price badge to use the SCRUM-448 minimal field frame.")
 		return
@@ -3154,6 +3166,10 @@ func _has_unified_screen_background(node: Node, screen_id: String) -> bool:
 func _has_screen_background(node: Node, screen_background_id: String) -> bool:
 	var ui_layer = node.get("ui_layer")
 	if ui_layer is Node:
+		if screen_background_id == "shop":
+			var shop_backdrop := (ui_layer as Node).find_child("ShopGoldBackdrop", true, false) as TextureRect
+			if shop_backdrop != null and shop_backdrop.texture != null and shop_backdrop.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+				return true
 		if (ui_layer as Node).find_child("ScreenBackground_%s" % screen_background_id, true, false) != null:
 			return true
 		if (ui_layer as Node).find_child("ScreenBackgroundFallback_%s" % screen_background_id, true, false) != null:
@@ -8698,8 +8714,18 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 	if inline_items is GridContainer:
 		_fail("Expected frameless shop items to avoid GridContainer/card layout at %s." % context)
 		return
-	if wall.anchor_left > 0.25 or wall.anchor_right < 0.75:
-		_fail("Expected shop wall to cover the centered backdrop display area at %s." % context)
+	var shop_root := shop_main.find_child("ShopScreen", true, false) as Control
+	var shell_inner: Rect2 = shop_root.get_meta("gold_shell_inner_rect", Rect2()) if shop_root != null else Rect2()
+	if shop_root == null or not shell_inner.grow(1.0).encloses(wall.get_global_rect()):
+		_fail("Expected Shop wall to remain inside the authored gold-shell inner area at %s." % context)
+		return
+	var shop_frame := shop_main.find_child("ShopGoldFrame", true, false) as Panel
+	var shop_backdrop := shop_main.find_child("ShopGoldBackdrop", true, false) as TextureRect
+	if shop_frame == null or shop_backdrop == null or shop_backdrop.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+		_fail("Expected Shop gold frame and non-cropped contained backdrop at %s." % context)
+		return
+	if shop_main.find_child("UpgradeFabButton", true, false) != null:
+		_fail("Expected no manual Attribute Shop FAB on Shop at %s." % context)
 		return
 
 	var buttons := shop_main.find_children("ShopItemButton*", "Button", true, false)
@@ -8723,7 +8749,7 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 			_fail("Expected %s to be frameless, got StyleBoxTexture." % button.name)
 			return
 		var icon := button.find_child("ShopItemIcon", true, false) as TextureRect
-		var price := button.find_child("ShopPriceBadge", true, false) as PanelContainer
+		var price := button.find_child("ShopPriceBadge", true, false) as Control
 		var shadow := button.find_child("ShopItemContactShadow", true, false) as PanelContainer
 		if icon == null or icon.texture == null or price == null or shadow == null:
 			_fail("Expected %s to include icon, contact shadow, and compact price tag." % button.name)
@@ -8755,7 +8781,9 @@ func _assert_shop_wall_layout_at_size(main_scene: PackedScene, viewport_size: Ve
 		return
 
 	var layout_controls := button_controls + _visible_hud_top_controls(shop_main)
-	for name in ["ShopHeader", "ShopLeaveButton", "UpgradeFabButton"]:
+	# ShopHeader is the authored header coordinate zone and intentionally owns
+	# the same band as the HUD. Compare against its visible labels instead.
+	for name in ["ShopTitleLabel", "ShopSubtitleLabel", "ShopLeaveButton", "UpgradeFabButton"]:
 		var control := shop_main.find_child(name, true, false) as Control
 		if control != null and control.visible:
 			layout_controls.append(control)

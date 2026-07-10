@@ -104,7 +104,9 @@ func _initialize() -> void:
 			"EliteArtifactRewardButton0", "EliteArtifactRewardButton1", "EliteArtifactRewardButton2",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "shop_economy", Callable(self, "_open_shop"), [
-			"ShopHeader", "ShopParchmentWall", "ShopItemButton0", "ShopItemButton1",
+			# ShopParchmentWall is the non-rendering inner-content coordinate root,
+			# not a visual peer; its children are checked below against that root.
+			"ShopHeader", "ShopItemButton0", "ShopItemButton1",
 			"ShopItemButton2", "ShopItemButton3", "ShopLeaveButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "attribute_shop_economy", Callable(self, "_open_attribute_shop"), [
@@ -589,6 +591,44 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				var peer := main.find_child(peer_name, true, false) as Control
 				if peer != null and credits.get_global_rect().intersects(peer.get_global_rect()):
 					return "%s: MainMenuCreditsButton overlaps %s." % [context, peer_name]
+		"shop_economy":
+			var shop_root := main.find_child("ShopScreen", true, false) as Control
+			var shop_frame := main.find_child("ShopGoldFrame", true, false) as Panel
+			var shop_clip := main.find_child("ShopBackgroundClip", true, false) as Control
+			var shop_backdrop := main.find_child("ShopGoldBackdrop", true, false) as TextureRect
+			if shop_root == null or shop_frame == null or shop_clip == null or shop_backdrop == null:
+				return "%s: expected complete SCRUM-993 Shop gold shell." % context
+			var inner: Rect2 = shop_root.get_meta("gold_shell_inner_rect", Rect2())
+			var safe: Rect2 = shop_root.get_meta("gold_shell_content_rect", Rect2())
+			if not inner.has_area() or not safe.has_area() or not safe.grow(1.0).encloses(inner):
+				return "%s: expected valid Shop safe/inner metadata." % context
+			var frame_style := shop_frame.get_theme_stylebox("panel") as StyleBoxTexture
+			if frame_style == null or frame_style.texture == null or not frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX) or frame_style.draw_center:
+				return "%s: ShopGoldFrame must use the hollow production gold shell." % context
+			if shop_frame.get_parent().get_child(shop_frame.get_parent().get_child_count() - 1) != shop_frame or shop_frame.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+				return "%s: ShopGoldFrame must remain the final mouse-ignore visual child." % context
+			if not shop_clip.clip_contents or not _rect_approximately_equal(shop_clip.get_global_rect(), safe, 1.1):
+				return "%s: Shop background clip must exactly match frame-safe rect." % context
+			if shop_backdrop.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED or not bool(shop_backdrop.get_meta("scrum993_source_fully_contained", false)):
+				return "%s: Shop merchant art must use non-cropped contained scaling." % context
+			if main.find_child("UpgradeFabButton", true, false) != null:
+				return "%s: Shop must not expose the removed manual Attribute Shop FAB." % context
+			for node_name in ["ShopHeader", "ShopParchmentWall", "ShopTooltipPanel", "ShopLeaveButton", "RunResourceHud"]:
+				var control := main.find_child(node_name, true, false) as Control
+				if control == null or not inner.grow(1.0).encloses(control.get_global_rect()):
+					return "%s: %s must stay inside Shop authored inner rect %s." % [context, node_name, str(inner)]
+			var slot_rects: Array[Rect2] = []
+			for index in range(4):
+				var slot := main.find_child("ShopItemButton%d" % index, true, false) as Button
+				if slot == null or not inner.grow(1.0).encloses(slot.get_global_rect()):
+					return "%s: missing/out-of-inner ShopItemButton%d." % [context, index]
+				if slot.tooltip_text != "" or str(slot.get_meta("shop_tooltip_text", "")).strip_edges() == "":
+					return "%s: ShopItemButton%d must use only the fixed tooltip band." % [context, index]
+				slot_rects.append(slot.get_global_rect())
+			for i in range(slot_rects.size()):
+				for j in range(i + 1, slot_rects.size()):
+					if slot_rects[i].intersects(slot_rects[j]):
+						return "%s: Shop item slots %d/%d overlap." % [context, i, j]
 		"weapon_select":
 			var layer := main.find_child("WeaponSelectPixelLabRuntimeLayer", true, false) as TextureRect
 			if layer != null:

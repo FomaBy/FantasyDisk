@@ -1,8 +1,7 @@
 # SCRUM-993 Stage 2 verification plan
 
-This file is a design-time test contract, not a runtime implementation claim.
-The unique focused test should be `tests/scrum993_shop_gold_shell_test.gd` after
-SCRUM-981 releases shared runtime locks.
+This contract is implemented by `tests/scrum993_shop_gold_shell_test.gd` plus
+the shared gates listed below. SCRUM-981 locks were released before Stage 2.
 
 ## Geometry oracle
 
@@ -18,8 +17,10 @@ For 1280×720, 1920×1080 and 2560×1440:
 4. Assert the background path is the canonical merchant archive, clipped to
    frame safe rect, `STRETCH_KEEP_ASPECT_CENTERED`, and the visible image rect
    matches the non-cropped table. Alpha/source edges all remain represented.
-5. Assert HUD, title, subtitle, FAB, four slot hitboxes, tooltip and Back stay
+5. Assert HUD, title, subtitle, four slot hitboxes, tooltip and Back stay
    inside inner content and outside the ornament reserve.
+   Assert `UpgradeFabButton` is absent from Shop and the former FAB reserve has
+   no hitbox/focus target (SCRUM-982 reconciliation).
 6. Assert all sibling hitboxes are pairwise non-overlapping. Caption, icon,
    affinity badge and price stay inside their parent slot.
 7. Assert no horizontal/vertical Shop scrollbar exists: exactly four items fit.

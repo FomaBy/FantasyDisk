@@ -74,6 +74,27 @@ Combat HUD at `1280x720`, `1920x1080`, and `2560x1440`.
 
 Магазин должен ощущаться частью shop background, а не отдельным default modal window. Предметы располагаются в центральной свободной зоне canonical backdrop `assets/backgrounds/ui/ui_backdrop_merchant_archive.png`.
 
+SCRUM-993 makes that contract the live responsive gold-shell implementation.
+`ShopScreen` clips the complete 2560×1440 merchant archive with
+`STRETCH_KEEP_ASPECT_CENTERED` inside the SCRUM-981 safe rect, keeps the dark
+side gutters, and draws the shared hollow `meta40/frame_border.png` last at
+z=100. Authored geometry and ready/fit reports for 1280×720, 1920×1080 and
+2560×1440 live under `docs/design/mockups/scrum993_shop_gold_shell/`; renderer
+captures for default/focus/unaffordable/purchased states live under
+`docs/design/previews/scrum993_shop_gold_shell/runtime/`.
+
+The four product hitboxes remain one horizontal, scroll-free focus ring. Their
+caption plates use scaled source 9-slice margins and one-line ellipsis, price
+badges fit four digits, unavailable products keep the icon/caption visible with
+desaturated art and red price, and purchased products become a disabled
+`снято` hook. Descriptions no longer use the cursor-following global tooltip:
+hover/focus populates one fixed `ShopTooltipPanel` below the row. Its rails
+scale with the displayed panel and text begins beyond rail + reserve; the copy
+is compacted into title, effect, combined price/class and combined tier/state
+lines so no state is clipped at 720p. Leaving focus hides the panel. Shop does
+not create `UpgradeFabButton`; the manual Attribute Shop entry was removed by
+SCRUM-982, while the mandatory post-combat shop remains SCRUM-987-owned.
+
 Design-ready assets:
 
 | Asset ID | File |

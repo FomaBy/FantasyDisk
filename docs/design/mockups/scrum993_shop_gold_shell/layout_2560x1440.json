@@ -4,7 +4,7 @@
   "content": {
     "hud": "HP 8888/8888 · XP 999/999 · 99999g · ULT 100%",
     "title": "Магазин",
-    "subtitle": "Выбери предмет. Описание появляется при наведении.",
+    "subtitle": "Выбери предмет — описание появится ниже.",
     "item0": "Быстрые сапоги", "item1": "Кристальная сфера", "item2": "Учебник выживания", "item3": "Темный кристалл",
     "price": "9999",
     "tooltip": "Темный кристалл\n+12% магического урона. Полное описание эффекта остается читаемым.\nЦена: 9999g\nКласс: Темный маг\nНе хватает монет",
@@ -22,7 +22,7 @@
     {"id": "item1_price", "content_key": "price", "x": 1094, "y": 567, "w": 124, "h": 38, "max_font": 24, "min_font": 16, "debug_color": "#FB7185"},
     {"id": "item2_price", "content_key": "price", "x": 1342, "y": 567, "w": 124, "h": 38, "max_font": 24, "min_font": 16, "debug_color": "#FB7185"},
     {"id": "item3_price", "content_key": "price", "x": 1590, "y": 567, "w": 124, "h": 38, "max_font": 24, "min_font": 16, "debug_color": "#FB7185"},
-    {"id": "shop_tooltip", "content_key": "tooltip", "x": 1016, "y": 677, "w": 528, "h": 184, "align": "left", "valign": "top", "max_font": 23, "min_font": 16, "debug_color": "#60A5FA"},
+    {"id": "shop_tooltip", "content_key": "tooltip", "x": 1016, "y": 677, "w": 528, "h": 184, "align": "left", "valign": "top", "max_font": 17, "min_font": 16, "debug_color": "#60A5FA"},
     {"id": "shop_back", "content_key": "back", "x": 1120, "y": 1079, "w": 320, "h": 48, "max_font": 30, "min_font": 20, "debug_color": "#F97316"}
   ]
 }

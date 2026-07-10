@@ -1,6 +1,6 @@
 # UI Mockup Spec — SCRUM-993 Shop Gold Shell
 
-Status: Stage 1 ready for review; runtime integration waits for SCRUM-981 lock release
+Status: Stage 2 implemented; local green-gate complete, ready for independent QA
 Role owner: combined Design + Back-end `/root/scrum993_shop_design`
 Task: `docs/tasks/SCRUM-993_shop_gold_shell.md`
 Jira: SCRUM-993
@@ -15,7 +15,7 @@ PixelLab reference: `docs/design/references/scrum993_shop_gold_shell/pixellab_sh
 Join `ShopScreen` to the accepted SCRUM-981 gold-edge family while preserving
 the complete merchant archive illustration. The result must remain an illustrated
 shop, not a large opaque modal. Four products, captions, icons, prices,
-purchased/unaffordable states, tooltip, run resources, upgrade FAB and Back must
+purchased/unaffordable states, tooltip, run resources and Back must
 stay readable, clickable and outside every frame ornament.
 
 ## Production asset decision
@@ -70,9 +70,9 @@ Background rule:
 | Run HUD | `181,147,480,50` |
 | Title | `675,137,330,34` |
 | Subtitle | `675,173,330,24` |
-| Upgrade FAB | `1057,147,50,50` |
+| Reserved empty zone (no manual Attribute Shop FAB) | `1057,147,50,50` |
 | Item slots 0..3 | x=`340/496/652/808`, y=`219`, each `132×140` |
-| Tooltip frame/content | `430,371,420,128` / `450,383,380,104` |
+| Tooltip frame/content | `430,371,420,128` / `455,388,370,94` |
 | Back | `500,511,280,64` |
 
 ### 1920×1080
@@ -83,9 +83,9 @@ Background rule:
 | Run HUD | `248,209,720,72` |
 | Title | `996,193,560,52` |
 | Subtitle | `996,251,560,32` |
-| Upgrade FAB | `1622,220,50,50` |
+| Reserved empty zone (no manual Attribute Shop FAB) | `1622,220,50,50` |
 | Item slots 0..3 | x=`572/776/980/1184`, y=`325`, each `164×164` |
-| Tooltip frame/content | `690,513,540,200` / `718,533,484,160` |
+| Tooltip frame/content | `690,513,540,200` / `721,537,478,152` |
 | Back | `780,795,360,72` |
 
 ### 2560×1440
@@ -96,7 +96,7 @@ Background rule:
 | Run HUD | `323,273,930,88` |
 | Title | `1281,257,700,64` |
 | Subtitle | `1281,327,700,40` |
-| Upgrade FAB | `2187,292,50,50` |
+| Reserved empty zone (no manual Attribute Shop FAB) | `2187,292,50,50` |
 | Item slots 0..3 | x=`810/1058/1306/1554`, y=`421`, each `196×196` |
 | Tooltip frame/content | `980,649,600,240` / `1016,677,528,184` |
 | Back | `1100,1059,360,88` |
@@ -129,6 +129,9 @@ following the cursor into the frame ornament. It shows the full item title,
 description/effect, price, class/affinity, tier when applicable, and purchased
 or insufficient-money reason. It is `MOUSE_FILTER_IGNORE`, does not cover the
 four item hit areas, and is hidden/reset when focus leaves the products.
+Its 9-slice rails scale from the actual displayed panel (`5%` horizontal,
+`10%` vertical); text begins at least four pixels beyond those rails at every
+authored target. The revised content rects above are the acceptance oracle.
 
 ## Focus and interaction contract
 
@@ -159,7 +162,7 @@ four item hit areas, and is hidden/reset when focus leaves the products.
 Textless 688×384 full-page shop layout; one outer worn-gold/blackened-iron shell;
 complete merchant archive at left/right/top/bottom; calm dark center; exactly
 four equal empty square item wells in one horizontal row; one tooltip well
-below; one Back well; HUD/title/FAB reserves; no opaque modal, circles, portraits,
+below; one Back well; HUD/title/empty-header reserves; no opaque modal, circles, portraits,
 characters, extra cards, extra buttons, text, pseudo-text, logos or watermark.
 
 ## Acceptance checks
@@ -172,7 +175,11 @@ characters, extra cards, extra buttons, text, pseudo-text, logos or watermark.
 - [x] PixelLab source accepted after visual/provenance inspection.
 - [ ] Runtime screenshots match this spec after Stage 2.
 
-## Deviations
+## Stage 2 product reconciliation
 
-None at Stage 1. Any implementation-bound change must update this spec before
-runtime code is changed.
+SCRUM-982 is newer than the Stage 1 wording: direct/manual gold-funded
+Attribute Shop entry from Shop/Route/Rest/Escape must disappear. Therefore the
+former `upgrade_fab` rectangle remains an intentionally empty header reserve;
+it contains no control, hidden click handler or focus target. The mandatory
+post-combat Attribute Shop flow owned by SCRUM-987 remains separate. All other
+accepted PixelLab geometry and assets are unchanged.

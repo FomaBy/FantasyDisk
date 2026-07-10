@@ -112,11 +112,11 @@
       ],
       "ok": true,
       "warnings": [],
-      "fit_font_size": 12
+      "fit_font_size": 15
     },
     {
-      "id": "upgrade_fab",
-      "kind": "button",
+      "id": "manual_attribute_shop_reserved_empty",
+      "kind": "zone",
       "rect": [
         1057,
         147,
@@ -190,14 +190,14 @@
       "id": "shop_tooltip_content",
       "kind": "text",
       "rect": [
-        450,
-        383,
-        380,
-        104
+        455,
+        388,
+        370,
+        94
       ],
       "ok": true,
       "warnings": [],
-      "fit_font_size": 15
+      "fit_font_size": 11
     },
     {
       "id": "shop_back",
