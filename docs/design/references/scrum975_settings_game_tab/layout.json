@@ -31,7 +31,7 @@
     "reset": "Сбросить игровые настройки"
   },
   "zones": [
-    {"id": "settings_title", "content_key": "settings_title", "x": 224, "y": 124, "w": 620, "h": 88, "max_font": 56, "min_font": 32, "color": "#F5E6AE"},
+    {"id": "settings_title", "content_key": "settings_title", "x": 352, "y": 132, "w": 392, "h": 72, "max_font": 48, "min_font": 32, "color": "#F5E6AE"},
     {"id": "back", "content_key": "back", "x": 2124, "y": 140, "w": 164, "h": 72, "max_font": 38, "min_font": 24, "align": "center"},
     {"id": "tab_screen", "content_key": "tab_screen", "x": 752, "y": 266, "w": 204, "h": 72, "max_font": 30, "min_font": 20, "align": "center"},
     {"id": "tab_sound", "content_key": "tab_sound", "x": 1036, "y": 266, "w": 204, "h": 72, "max_font": 30, "min_font": 20, "align": "center"},

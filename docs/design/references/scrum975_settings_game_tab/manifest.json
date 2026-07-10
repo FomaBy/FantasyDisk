@@ -2,7 +2,7 @@
   "ticket": "SCRUM-975",
   "name": "settings_four_tab_game_design",
   "generated": "2026-07-10",
-  "owner": "Design/Codex /root/design_scrum975; SCRUM-1030 correction /root/scrum1030_design",
+  "owner": "Design/Codex /root/design_scrum975; SCRUM-1030 correction /root/scrum1030_design; SCRUM-1033 title-safe correction /root/scrum1033_design",
   "pipeline": "UI Director -> content-zone planning gate -> PixelLab MCP create_ui_asset -> deterministic checker-alpha cleanup -> accepted existing Settings backdrop underlay -> content-zone compositor",
   "pixellab_mcp": {
     "config_smoke": "PASS: get_balance returned a JSON-RPC result; no credentials printed or stored",
@@ -115,6 +115,18 @@
     "bug": "the original compact plan stopped after row 2 and the committed 2K guide did not reproduce from layout.json",
     "resolution": "complete compact logical scroll canvas plus top/bottom layouts and focused transform gate; 2K layout now carries exact label/value/slider rectangles and its guide/report are renderer outputs from that same canonical file",
     "reproducibility": "generate_responsive_layouts.py regenerates 1080p from layout.json; validate_scrum1030_geometry.py checks cross-file geometry; bundled validate_ui_layout_plan.py and render_content_zones.py regenerate all planning/compositor reports and guides"
+  },
+  "scrum1033_title_safe_correction": {
+    "bug": "the wide settings_title zone began at x=224 and rendered 2603 title pixels inside the left dragon ornament area",
+    "source_reuse": "accepted PixelLab wide source 105dd091-3096-41c5-a1e5-bc3277cfaef0 is unchanged because the art and ornament geometry are correct; only the content-zone contract and deterministic composites required correction",
+    "title_rect_2560": [352, 132, 392, 72],
+    "title_rect_1920": [264, 99, 294, 54],
+    "title_font_2560": 48,
+    "title_font_1920": 36,
+    "forbidden_bounds_2560": {"left_dragon_max_x": 339, "right_dragon_min_x": 773, "top_frame_max_y": 125, "bottom_frame_min_y": 212},
+    "minimum_reserve_2560": {"left": 13, "right": 29, "top": 6, "bottom": 8},
+    "pixel_oracle": "validate_scrum1033_title_safe.py / scrum1033_title_safe.report.json; zero title-diff pixels intersect conservative ornament/frame mask at 1920 and 2560",
+    "compact_contract": "1280x720 ui_plan/layout/final/debug/top-bottom scroll package is byte-identical to SCRUM-1030"
   },
   "runtime_promotion": "none in SCRUM-975/SCRUM-1030; Back-end handoff may promote ui_settings_game_tab_icon_44.png and must reuse current live shell/fields/sliders/buttons",
   "secrets": "none embedded"

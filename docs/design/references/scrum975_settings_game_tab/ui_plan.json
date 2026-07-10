@@ -52,7 +52,7 @@
   },
   "elements": [
     {"id": "screen_safe", "kind": "panel", "x": 120, "y": 72, "w": 2320, "h": 1296, "min_w": 912, "min_h": 576, "collision": false},
-    {"id": "settings_title", "kind": "text", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 224, "y": 124, "w": 620, "h": 88, "text_key": "settings_title", "max_font": 56, "min_font": 32},
+    {"id": "settings_title", "kind": "text", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 352, "y": 132, "w": 392, "h": 72, "text_key": "settings_title", "max_font": 48, "min_font": 32},
     {"id": "back_button", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 2076, "y": 124, "w": 260, "h": 104, "text_key": "back", "max_font": 38, "min_font": 24},
     {"id": "tab_screen", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 724, "y": 250, "w": 260, "h": 104, "text_key": "tab_screen", "max_font": 34, "min_font": 22},
     {"id": "tab_sound", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": true, "x": 1008, "y": 250, "w": 260, "h": 104, "text_key": "tab_sound", "max_font": 34, "min_font": 22},

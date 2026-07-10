@@ -17,7 +17,11 @@ Required structure on the 512×288 PixelLab virtual canvas:
 
 Strict empty content interiors:
 
-- header title/back and every tab's inner label field;
+- header title/back and every tab's inner label field. The accepted wide title
+  art is reused by SCRUM-1033 without regeneration; its measured 2560 title
+  content interior is exactly `x=352 y=132 w=392 h=72` (1920 exact 0.75
+  derivative `x=264 y=99 w=294 h=54`). Dragon heads and the gold perimeter
+  remain outside these rectangles;
 - content safe rectangle equivalent to 2560-space `[556,426,1448,770]`;
 - each modifier row label/slider/value rectangle;
 - reset label field.

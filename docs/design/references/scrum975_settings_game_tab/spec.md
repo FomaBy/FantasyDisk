@@ -1,8 +1,8 @@
 # SCRUM-975 UI Mockup Spec — Settings / Game sandbox
 
-Status: ready_for_reqa after SCRUM-1030 correction
-Role owner: Design/Codex (`/root/scrum1030_design` for the correction)
-Jira: SCRUM-975; QA-found Design correction: SCRUM-1030
+Status: ready_for_reqa after SCRUM-1030 and SCRUM-1033 corrections
+Role owner: Design/Codex (`/root/scrum1033_design` for the title-safe correction)
+Jira: SCRUM-975; QA-found Design corrections: SCRUM-1030, SCRUM-1033
 Dependency: SCRUM-976 (Back-end sandbox data/runtime layer)
 Base resolution: 2560x1440
 Responsive targets: 1280x720, 1920x1080, 2560x1440
@@ -21,7 +21,7 @@ the current D&D / dark-fantasy dragon visual family.
 
 | ID | Type | Runtime content | Rect | Anchors / state | Safe-zone parent |
 | --- | --- | --- | --- | --- | --- |
-| `SettingsTitleChip` | header chip | `Настройки` | `224,124,620,88` | top-left | fullscreen safe area |
+| `SettingsTitleChip` | header chip | `Настройки` | `352,132,392,72` | top-left; 48px title | title plate empty interior |
 | `SettingsBackButton` | action button | `Назад` | `2076,124,260,104` | top-right | own plate interior |
 | `SettingsTabButton_0` | tab plate | `Экран` | `724,250,260,104` | centered row, inactive | own plate interior |
 | `SettingsTabButton_1` | tab plate | `Звук` | `1008,250,260,104` | centered row, inactive | own plate interior |
@@ -50,6 +50,17 @@ All coordinates and text-fit ranges are also machine-readable in
 | Modifier row | current v6 field/slider/value-chip family | preserve existing metadata | labels/sliders/value chips stay within row rect | separators and field ends | yes where already supported |
 | Game tab icon | PixelLab source-sheet selection | n/a | 8px transparent reserve on 44×44 | no label in icon bitmap | no; square icon |
 
+The wide title plate uses the measured empty interior
+`Rect2(352,132,392,72)` at 2560×1440. Its forbidden ornament contract is:
+left dragon through `x=339`, right dragon from `x=773`, top frame through
+`y=125`, and bottom frame from `y=212`. The content zone therefore keeps at
+least `13px` left, `29px` right, `6px` top and `8px` bottom reserve from those
+conservative forbidden bounds. At 1920×1080 every value is an exact 0.75
+derivative: content `Rect2(264,99,294,54)` and forbidden bounds
+`x<=254`, `x>=580`, `y<=94`, `y>=159`. The title remains larger than the Back
+and tab labels while neither its declared zone nor any rendered glyph may
+touch the dragons or gold frame.
+
 The PixelLab full-page output is a proportional mockup/reference layer, not a
 runtime texture to stretch. Runtime integration should reuse the established
 shell and plates, plus promote only the isolated 44×44 Game icon if accepted.
@@ -76,7 +87,8 @@ five values to 1.0× in one atomic save and refreshes the status.
 - **2560x1440:** one row of four 260×104 tab plates with 24px gaps; all five
   modifier rows and reset visible; no scrollbar thumb required.
 - **1920x1080:** one row of four 260×88 tab plates with 24px gaps; all five
-  rows and reset visible in `1086×558` safe content; no scrollbar thumb.
+  rows and reset visible in `1086×558` safe content; title safe zone is the
+  exact 0.75 derivative `264,99,294,54`; no scrollbar thumb.
 - **1280x720:** reflow tabs to a centered 2×2 grid of 260×72 plates with
   24px horizontal / 12px vertical gaps. Never squeeze four labels into 130px
   plates. Content uses `SettingsGameScroll` (`892×306`, `content_h=520`,
@@ -136,4 +148,7 @@ disabled art must not resize or move the hitbox.
 - Compact top and bottom final/debug previews together show all five controls
   and reset inside the true empty panel interior.
 - No content touches frame ornament, dragon heads, gems, bevels or separators.
+- `validate_scrum1033_title_safe.py` proves exact 2K/1080 geometry, verifies
+  the declared title zone and rendered text bbox against conservative dragon /
+  gold-frame masks, and reports zero changed title pixels in forbidden areas.
 - Runtime implementation/behavior is a separate Back-end Jira issue.

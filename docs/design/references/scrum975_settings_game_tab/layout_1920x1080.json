@@ -37,11 +37,11 @@
     {
       "id": "settings_title",
       "content_key": "settings_title",
-      "x": 168,
-      "y": 93,
-      "w": 465,
-      "h": 66,
-      "max_font": 42,
+      "x": 264,
+      "y": 99,
+      "w": 294,
+      "h": 54,
+      "max_font": 36,
       "min_font": 24,
       "color": "#F5E6AE"
     },

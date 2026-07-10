@@ -4,10 +4,10 @@
     {
       "id": "settings_title",
       "rect": [
-        224,
-        124,
-        620,
-        88
+        352,
+        132,
+        392,
+        72
       ],
       "ok": true,
       "kind": "guide"

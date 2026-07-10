@@ -1,12 +1,14 @@
 # BUG: SCRUM-975 wide Settings title overlaps dragon ornament
 
-Статус: new
+Статус: review
 Приоритет: high
 Роль: Design
 Контур: Codex
-Owner: unassigned
-Thread: n/a
-Locked paths when claimed:
+Owner: Design/Codex `/root/scrum1033_design`
+Thread: `/root/scrum1033_design`
+Branch / worktree: `codex/scrum-1033-settings-title-safe` /
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1033-settings-title-safe`
+Locked paths:
 `docs/design/references/scrum975_settings_game_tab/**`,
 `docs/design/previews/scrum975_settings_game_tab/**`, and this mirror only
 Jira: SCRUM-1033
@@ -39,21 +41,21 @@ interior and fails SCRUM-975 acceptance even though SCRUM-1030 itself passed.
 
 ## Acceptance Criteria
 
-- [ ] Correct the 2560 title content zone to the measured empty plate interior
+- [x] Correct the 2560 title content zone to the measured empty plate interior
       with explicit ornament thickness plus reserve; regenerate an exact 0.75
       1920 derivative.
-- [ ] No title glyph or debug content rectangle overlaps the left/right dragon
+- [x] No title glyph or debug content rectangle overlaps the left/right dragon
       ornaments, gold border, bevel or corner decoration at 1920×1080 and
       2560×1440.
-- [ ] Regenerate the canonical guide/report and 1920/2560 final/debug
+- [x] Regenerate the canonical guide/report and 1920/2560 final/debug
       previews/reports from committed sources; an exact rerun matches them
       byte-for-byte.
-- [ ] Preserve SCRUM-1030 unchanged: complete compact `878×520` canvas,
+- [x] Preserve SCRUM-1030 unchanged: complete compact `878×520` canvas,
       `892×306` viewport, `14px` lane, scroll `0/214`, both compact states and
       PixelLab provenance.
-- [ ] Planning, focused geometry, all compositor reports, secret/Design-only
+- [x] Planning, focused geometry, all compositor reports, secret/Design-only
       scope/diff checks and full runtime smoke remain green.
-- [ ] No runtime GDScript, settings persistence, SCRUM-981/1032 or Claude-owned
+- [x] No runtime GDScript, settings persistence, SCRUM-981/1032 or Claude-owned
       paths are edited.
 - [ ] SCRUM-975 passes a fresh independent re-QA after the correction lands.
 
@@ -63,3 +65,30 @@ interior and fails SCRUM-975 acceptance even though SCRUM-1030 itself passed.
 - SCRUM-1030 exact correction: PASSED; Jira moved to `Готово`.
 - SCRUM-975 re-QA: FAILED only on this separate frame-safety defect.
 - PixelLab/compositor sources and runtime code were not modified by QA.
+
+## Design correction result (2026-07-10)
+
+- The 2560 title content rect is now `352,132,392,72`, font 48; the generated
+  1920 contract is its exact 0.75 derivative `264,99,294,54`, font 36.
+- Conservative ornament/frame bounds and minimum reserve are explicit in
+  `spec.md`, `manifest.json` and
+  `scrum1033_title_safe.report.json`. The measured reserves are
+  2K `13/29/7/8px` and 1080p `10/22/5/6px` (L/R/T/B).
+- `validate_scrum1033_title_safe.py` compares the textless PixelLab base with
+  each final composite at pixel level. It detects 5,759 changed title pixels at
+  2K and 3,770 at 1080p, with `forbidden_overlap_pixels: 0` at both targets.
+- Accepted PixelLab source `105dd091-3096-41c5-a1e5-bc3277cfaef0` is reused
+  byte-identically: the ornament art is correct, so regenerating it would add
+  visual drift without addressing the content-contract defect.
+- All affected planning/guide/final/debug/report artifacts were regenerated
+  twice from the committed sources and remained byte-identical. The full
+  SCRUM-1030 compact plan, top/bottom composites and reports are unchanged from
+  `origin/dev`.
+- Gates: both planning validators `ready_for_image`; all four compositor
+  reports `ok: true`; SCRUM-1030 focused geometry `ok: true`; SCRUM-1033 pixel
+  oracle `ok: true`; Python AST/JSON/image checks, secret/scope/diff checks and
+  Godot 4.7 `tests/runtime_smoke_test.gd` through the semaphore PASS.
+- Runtime/shared UI code, runtime tests, menus/current-state docs, SCRUM-981/
+  1032 and all Claude-owned paths were not changed.
+- Next owner/status: independent QA must recheck SCRUM-1033 and SCRUM-975 from
+  fresh `origin/dev`; Design does not mark either issue `Готово`.
