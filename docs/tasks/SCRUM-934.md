@@ -1,6 +1,6 @@
 # SCRUM-934 — Sniper projectile and telegraph VFX pack
 
-Статус: done
+Статус: done (QA PASSED)
 Версия: 0.2.1
 Jira: SCRUM-934
 Owner: Design/Codex `/root`
@@ -54,3 +54,37 @@ is changed here.
 
 This implementation report is ready for independent visual QA; it is not the
 final QA verdict.
+
+## QA-вердикт (2026-07-10)
+
+**PASSED** — independent Design QA by Codex `/root/audit_ready` on a fresh
+`origin/dev` worktree. Production code and assets were treated as read-only.
+
+- Live PixelLab `get_map_object` returned `completed` for all four manifest IDs;
+  prompts matched exactly. Fresh authenticated downloads were byte-identical to
+  the immutable committed sources for Shatter projectile, Deadeye endpoint,
+  Spotter telegraph and Spotter impact.
+- Raw and accepted layers are correctly separated. The accepted Spotter files
+  remove the service preview matte and the raw impact watermark; no watermark,
+  text, frame or background remains in runtime output. No generic OpenAI Images,
+  `image_gen`, manual-paint or legacy fallback was used.
+- Independent visual review at source and intended combat scale passed: Shatter
+  reads as a narrow repeatable projectile; Deadeye as a compact precision flash;
+  Spotter telegraph as a translucent red danger ring with a transparent center;
+  Spotter impact as a larger, distinct high-damage artillery burst.
+- Independent PNG audit passed for exact RGBA canvases, non-empty alpha,
+  transparent corners, safe gutters, accepted/runtime byte equality, telegraph
+  alpha cap and center hole, and cleaned lower-right impact region.
+- Deterministic builder replay in an isolated temporary tree passed twice with
+  byte-identical output for all 11 generated files. The four existing generic
+  Sniper plates were unchanged, and the implementation diff contains no scene,
+  gameplay, balance or script changes.
+- Clean Godot 4.7 import passed; all four lossless `CompressedTexture2D` imports
+  produced non-empty `.ctex` resources with mipmaps disabled.
+- `tests/asset_reference_integrity_test.gd`: PASS (200 files, 2549 unique
+  `res://` references).
+- `tests/runtime_smoke_test.gd`: PASS. The known non-fatal dummy-renderer
+  null-texture screenshot warning was emitted; exit code remained 0 with the
+  explicit `Runtime smoke test passed` result.
+
+Critical/major/minor defects: none. Remediation ticket: not required.
