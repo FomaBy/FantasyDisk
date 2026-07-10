@@ -1,6 +1,6 @@
 # BUG: SCRUM-975 compact scroll geometry and layout guide are incomplete
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Design
 Контур: Codex
@@ -65,22 +65,25 @@ therefore unproven.
 
 ## Acceptance Criteria
 
-- [ ] The 1280×720 plan includes all five row containers,
+- [x] The 1280×720 plan includes all five row containers,
       label/slider/value hitboxes, reset and the 14px scrollbar lane within an
       explicit scroll content canvas; fixed header/back/tabs remain outside it.
-- [ ] Top and bottom 720p debug evidence proves every scrolled control stays
+- [x] Top and bottom 720p debug evidence proves every scrolled control stays
       inside the true empty panel interior and does not overlap the scrollbar,
       scroll hint, separators or frame ornament.
-- [ ] `validate_ui_layout_plan.py` returns `ready_for_image` only after the
+- [x] `validate_ui_layout_plan.py` returns `ready_for_image` only after the
       complete content inventory is collision-checked.
-- [ ] The 2560 guide/report is regenerated from the committed canonical source;
+- [x] The 2560 guide/report is regenerated from the committed canonical source;
       an exact rerun matches it, and spec/ui_plan/layout rectangles no longer
       contradict each other.
-- [ ] 1280×720, 1920×1080 and 2560×1440 compositor reports remain `ok: true`;
+- [x] 1280×720, 1920×1080 and 2560×1440 compositor reports remain `ok: true`;
       PixelLab provenance/source layers remain intact and no runtime
       GDScript/settings/gameplay path changes.
 - [ ] The correction is pushed to `origin/dev` and SCRUM-975 passes an
       independent recheck.
+
+Correction push: complete in `origin/dev` commit `be136ca87`; independent
+SCRUM-975 recheck remains intentionally pending.
 
 ## Work Log
 
@@ -112,3 +115,22 @@ therefore unproven.
 - Godot 4.7 full runtime, UI, overlap, theme, animation, meta, targeting and
   gamepad regression gates all passed; this is a Design evidence/geometry bug,
   not a runtime regression.
+
+## Result
+
+- Design correction commit: `be136ca87`, pushed directly to `origin/dev`.
+- PixelLab bottom-scroll source:
+  `1b60618f-a8ad-4695-82d8-099fbf1ad516`, 688×384 RGBA, textless and visually
+  inspected. Deterministic source crop preserves the accepted compact fixed
+  title/Back/tabs and supplies the complete bottom content state.
+- Planning: base and compact `ready_for_image`; focused SCRUM-1030 report
+  `ok: true`; all four compositor state reports `ok: true`.
+- Reproducibility: PixelLab post-processing, responsive layout, planning
+  guides/reports, canonical 2K guide/report, 1280 top/bottom, 1920 and 2560
+  composites/debug/reports all reproduce byte-for-byte.
+- Validation: JSON/Python/image dimensions+alpha/secret/scope/diff checks PASS;
+  post-rebase Godot 4.7 `tests/runtime_smoke_test.gd` PASS via semaphore.
+- Runtime scope: no GDScript, gameplay, settings persistence, tests, shared
+  menus/current-state/content-registry or Claude-owned path changed.
+- Next state: SCRUM-1030 and SCRUM-975 require independent QA/re-QA; neither is
+  marked `Готово` by the Design worker.
