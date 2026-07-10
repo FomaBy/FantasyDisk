@@ -1,6 +1,6 @@
 # SCRUM-986 — Victory screen centering
 
-Статус: in_progress
+Статус: review
 Jira: SCRUM-986
 Версия: 0.2.1
 Контур: Codex
@@ -38,8 +38,9 @@ clipped by `112px` at 1280x720, and `+180px` below center at 1920x1080.
 - [x] Runtime geometry uses responsive center anchors.
 - [x] Focused test and no-overlap oracle are implemented.
 - [x] Focused/no-overlap/runtime UI/gamepad full-flow gates PASS.
-- [ ] Full runtime gate PASS after final rebase and Claude umbrella smoke lock
+- [x] Full runtime gate PASS after final rebase and Claude umbrella smoke lock
       release.
-- [ ] Result committed and pushed to `origin/dev`, then routed to independent QA.
+- [x] Result committed as `0617ad1f2`, pushed to `origin/dev` through
+      `575951159`, then routed to independent QA.
 
-Disk cleanup: pending shared SCRUM-981 final gate/landing.
+Disk cleanup: removed the shared `.godot` cache (444 MB) after final landing.

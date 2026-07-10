@@ -1,6 +1,6 @@
 # SCRUM-985 — Level Up: fit иконок, убрать внешнюю раму, осветлить фон
 
-Статус: blocked (QA FAILED; исправление SCRUM-1032 в работе)
+Статус: review
 Jira: SCRUM-985
 Версия: 0.2.1
 Контур: Codex
@@ -127,6 +127,15 @@ card plan теперь резервирует отдельный ряд advisor-
 на 1920x1080 и 2560x1440, полная подпись читаема, focus geometry stable.
 
 Focused capture, Level Up advisor, no-overlap, runtime UI и gamepad in-run/menu
-focus gates PASS. Полный smoke и push ожидают release физического Claude-lock
-на `tests/runtime_smoke_test.gd`; после landing SCRUM-985 должен вернуться в
-независимый QA, а не закрываться напрямую.
+focus gates PASS. После release физического Claude-lock полный smoke и push
+также завершены; SCRUM-985 возвращён в независимый QA, а не
+закрыт напрямую.
+
+## Re-QA routing (2026-07-10)
+
+SCRUM-1032 заленден в `origin/dev` коммитом `6b0e25cf6`; общий
+umbrella-коммит `575951159`. После финального rebase прошли capture,
+responsive no-overlap, runtime UI, gamepad full-flow и полный runtime smoke.
+Единственный QA-блокер устранён; SCRUM-985 вернут в `Контроль
+качества` для независимой перепроверки. Disk cleanup: удалён общий
+`.godot` cache (444 MB).

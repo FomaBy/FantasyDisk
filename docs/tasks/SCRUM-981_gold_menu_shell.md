@@ -1,6 +1,6 @@
 # SCRUM-981 — Unified Gold Menu Shell
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-981
 Контур: Codex
@@ -122,5 +122,13 @@ result screens, dialogs, Level Up and Combat HUD.
   worktree `/private/tmp/fsd_wt/w10-soldier` owns a dirty copy. Jira heartbeat
   records this live coordination; all other available gates continue.
 
-Disk cleanup: pending; disposable worktree and generated caches will be removed
-after pushed implementation and QA handoff.
+## Final routing (2026-07-10)
+
+- Landed directly in `origin/dev` through `575951159`; implementation commits
+  are `f818a89d6`, `fb48f077c` and umbrella assertion commit `575951159`.
+- Final merged-context PASS: focused Main Menu and Route Map shells,
+  SCRUM-986 centering, SCRUM-985/1032 capture, no-overlap matrix, dark-fantasy
+  theme, runtime UI, gamepad full-flow and full `runtime_smoke_test.gd`.
+- Jira routed to `Контроль качества`; shared UI and umbrella-test locks are released.
+- Disk cleanup: removed the shared `.godot` cache (444 MB); tracked QA evidence
+  remains in `build/qa/scrum981/`.

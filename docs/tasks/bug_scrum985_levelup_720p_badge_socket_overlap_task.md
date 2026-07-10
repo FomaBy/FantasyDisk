@@ -1,6 +1,6 @@
 # BUG: Level Up 720p — advisor-бейдж перекрывает сокет и наградную иконку
 
-Статус: in_progress
+Статус: review
 Jira: SCRUM-1032
 Версия: 0.2.1
 Контур: Codex
@@ -66,7 +66,7 @@ QA runtime не меняет. `/root` принял SCRUM-1032 как явно co
 `scripts/ui_screens.gd` и `tests/ui_no_overlap_matrix_test.gd`, поэтому второй
 конфликтующий worker/worktree не создаётся.
 
-## Implementation result (local, pending umbrella gate)
+## Implementation result
 
 - `_level_up_card_plan()` теперь всегда резервирует отдельный badge row для
   всего набора карточек, включая compact tier; бюджетный цикл уже умеет
@@ -91,5 +91,10 @@ QA runtime не меняет. `/root` принял SCRUM-1032 как явно co
 - Independent re-review: FINAL PASS; обязательное наличие бейджа и одинаковые
   socket/title tops всех трёх карточек проверены, остаточных findings нет.
 
-Disk cleanup: final cleanup pending because the same worktree still owns the
-blocked SCRUM-981 umbrella gate.
+## Final routing (2026-07-10)
+
+- Fix `6b0e25cf6` and umbrella acceptance `575951159` are in `origin/dev`.
+- Full merged-context runtime smoke passed after the final rebase.
+- SCRUM-1032 and parent SCRUM-985 are both back in independent QA; all shared
+  locks are released.
+- Disk cleanup: removed the shared `.godot` cache (444 MB).
