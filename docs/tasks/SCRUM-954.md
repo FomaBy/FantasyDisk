@@ -1,6 +1,6 @@
 # SCRUM-954 — Rebuild Codex navigation, list and dossier layout
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-954
 Owner: Backend/Codex `/root`
@@ -45,9 +45,11 @@ Controls: шесть читаемых русских разделов, спис�
 - `tests/codex_scrum954_layout_test.gd`;
 - this task mirror and Codex UI documentation.
 
-`tests/runtime_smoke_test.gd` временно исключён: активные Claude Dark Mage и
-Chemist пакеты имеют незапушенные коммиты в этом файле. Миграция устаревших
-Codex assertions выполняется только после их landing/release.
+`tests/runtime_smoke_test.gd` был исключён до формального release двух Claude
+пакетов. Read-only Claude UI подтвердил, что оба background worker завершились
+ошибкой session limit, а parent response finished. Dispatcher вернул восемь
+stale Jira claims в `К выполнению`, сохранил worktrees/commits и только после
+этого мигрировал Codex assertions; Claude production-файлы не затрагивались.
 
 ## Реализация и текущая проверка
 
@@ -60,7 +62,11 @@ PASS через `tools/godot_gate.py`:
 - `tests/ui_no_overlap_matrix_test.gd` — полный all-screen matrix;
 - `tests/codex_data_smoke_test.gd`;
 - `tests/dark_fantasy_ui_theme_test.gd`;
-- `tests/asset_reference_integrity_test.gd`.
+- `tests/asset_reference_integrity_test.gd`;
+- `tests/gamepad_menu_focus_test.gd`, `tests/gamepad_full_flow_smoke_test.gd`;
+- `tests/display_resolution_test.gd`;
+- `tests/runtime_smoke_ui_test.gd`;
+- полный `tests/runtime_smoke_test.gd` (sequential, exit 0).
 
 Windowed evidence (committed preview copies):
 
@@ -69,9 +75,8 @@ Windowed evidence (committed preview copies):
 - `docs/design/previews/scrum954_codex_runtime/codex_2560x1440.png`;
 - `build/qa/scrum954/codex_layout_matrix.md`.
 
-Оставшийся gate: после landing Claude обновить только Codex assertions в
-`runtime_smoke_test.gd`, затем последовательно пройти `runtime_smoke_ui` и full
-`runtime_smoke_test.gd`. До этого Jira правдиво остаётся `В работе`.
+Implementation готова к отдельному независимому QA. Jira переводится только в
+`Контроль качества`; `Готово` разрешено после независимого PASS.
 
 Disk cleanup: pending final gate; task worktree and `.godot` are active.
 

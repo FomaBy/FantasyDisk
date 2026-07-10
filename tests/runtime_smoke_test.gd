@@ -7370,7 +7370,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var codex_background := codex_main.find_child("UnifiedBackground_codex", true, false) as TextureRect
-	var codex_frame := codex_main.find_child("CodexFrame", true, false) as Panel
+	var codex_stage := codex_main.find_child("CodexStage", true, false) as Control
+	var codex_title_frame := codex_main.find_child("CodexTitleFrame", true, false) as PanelContainer
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
 	var codex_content := codex_main.find_child("CodexContent", true, false) as PanelContainer
@@ -7379,14 +7380,17 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var default_section := codex_main.find_child("CodexSection_characters", true, false) as Control
 	var default_entry := codex_main.find_child("CodexEntryCard", true, false) as Control
 	var default_portrait := codex_main.find_child("CodexPortraitSlot", true, false) as PanelContainer
+	var default_entry_name := codex_main.find_child("CodexEntryName", true, false) as Label
 	var detail_portrait := codex_main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
+	var detail_title := codex_main.find_child("CodexDetailTitle", true, false) as Label
 	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
 	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
-	if codex_background == null or codex_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or detail_portrait == null or detail_chip_row == null or detail_text_safe == null:
-		_fail("Expected SCRUM-879/884 atlas-style Codex layout to include background/frame, nav/list/detail panels, tabs, entry card, and portrait slots.")
+	if codex_background == null or codex_stage == null or codex_title_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or default_entry_name == null or detail_portrait == null or detail_title == null or detail_chip_row == null or detail_text_safe == null:
+		_fail("Expected SCRUM-954 Codex stage to include title/back, nav/list/detail panels, canonical row, and dossier zones.")
 		return
-	# SCRUM-884 (фидбек юзера): центральный предпросмотр (объект-сцена + сводка)
-	# упразднён — в центре только список карточек, картинку показывает досье.
+	if codex_main.find_child("CodexFrame", true, false) != null:
+		_fail("Expected SCRUM-954 to remove the full-screen CodexFrame that covered accepted header/nav zones.")
+		return
 	for codex_absent_name in ["CodexCenterOverviewRow", "CodexCenterObjectStage", "CodexCenterObjectTexture", "CodexCenterSummaryPanel", "CodexCenterSummaryBody"]:
 		if codex_main.find_child(str(codex_absent_name), true, false) != null:
 			_fail("Expected SCRUM-884 codex center preview node %s to be removed." % str(codex_absent_name))
@@ -7395,26 +7399,49 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-884 codex to open without glossary tooltip popups.")
 		return
 
-	# SCRUM-879: слои атлас-стиля — COVERED-фон без осевого stretch и полая
-	# рама meta40 (draw_center=false) поверх контента.
 	if codex_background.texture == null or codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
 		_fail("Expected UnifiedBackground_codex to cover the viewport without axis stretch.")
 		return
-	var codex_frame_style := codex_frame.get_theme_stylebox("panel") as StyleBoxTexture
-	if codex_frame_style == null or codex_frame_style.draw_center:
-		_fail("Expected hollow CodexFrame (StyleBoxTexture, draw_center=false).")
+
+	var codex_viewport_size := codex_screen.get_viewport_rect().size
+	var codex_scale := minf(codex_viewport_size.x / 1920.0, codex_viewport_size.y / 1080.0)
+	var codex_offset := (codex_viewport_size - Vector2(1920, 1080) * codex_scale) * 0.5
+	if absf(codex_stage.scale.x - codex_scale) > 0.01 or codex_stage.position.distance_to(codex_offset) > 1.5:
+		_fail("Expected CodexStage uniform scale/letterbox %.4f @ %s, got %s @ %s." % [codex_scale, str(codex_offset), str(codex_stage.scale), str(codex_stage.position)])
 		return
-	if codex_frame_style.texture == null or not codex_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
-		_fail("Expected CodexFrame to use the meta40 frame_border 9-slice.")
-		return
-	# Панели колонок — тёмные чипы Атласа (StyleBoxFlat, alpha >= 0.8).
+	var codex_rect_contract := {
+		"CodexTitleFrame": Rect2(72, 36, 340, 112),
+		"CodexBackButton": Rect2(1580, 46, 268, 96),
+		"CodexNavPanel": Rect2(72, 172, 324, 840),
+		"CodexContent": Rect2(420, 172, 620, 840),
+		"CodexCenterListHost": Rect2(452, 278, 556, 690),
+		"CodexEntryCard": Rect2(460, 290, 516, 154),
+		"CodexPortraitSlot": Rect2(480, 310, 122, 114),
+		"CodexEntryName": Rect2(616, 337, 330, 60),
+		"CodexDetailPanel": Rect2(1064, 172, 784, 840),
+		"CodexDetailTitle": Rect2(1200, 222, 508, 46),
+		"CodexDetailPortraitSlot": Rect2(1108, 284, 300, 300),
+		"CodexDetailPortraitTexture": Rect2(1140, 310, 236, 248),
+		"CodexDetailParchmentInset": Rect2(1108, 606, 684, 356),
+	}
+	for node_name in codex_rect_contract:
+		var control := codex_main.find_child(str(node_name), true, false) as Control
+		if control == null:
+			_fail("Expected SCRUM-954 Codex node %s." % node_name)
+			return
+		var design_rect: Rect2 = codex_rect_contract[node_name]
+		var expected_rect := Rect2(codex_offset + design_rect.position * codex_scale, design_rect.size * codex_scale)
+		var actual_rect := control.get_global_rect()
+		if actual_rect.position.distance_to(expected_rect.position) > 1.5 or actual_rect.size.distance_to(expected_rect.size) > 1.5:
+			_fail("Expected %s rect %s, got %s." % [node_name, str(expected_rect), str(actual_rect)])
+			return
+
 	for codex_panel in [codex_nav_panel, codex_content, codex_detail]:
 		var codex_chip := (codex_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
 		if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
 			_fail("Expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % str((codex_panel as Control).name))
 			return
 
-	# Слоты портретов — полупрозрачные StyleBoxFlat-подложки (без texture-стиля).
 	var slot_style := default_portrait.get_theme_stylebox("panel")
 	if not (slot_style is StyleBoxFlat):
 		_fail("Expected Codex entry portrait slot to use a translucent StyleBoxFlat, not a dark field texture.")
@@ -7423,7 +7450,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		_fail("Expected SCRUM-879 Codex detail portrait slot to use a translucent StyleBoxFlat.")
 		return
 	if not ((default_entry as Button).get_theme_stylebox("normal") is StyleBoxFlat):
-		_fail("Expected SCRUM-879 Codex list cards to use the unified leather row StyleBoxFlat.")
+		_fail("Expected SCRUM-954 Codex list cards to use the unified leather row StyleBoxFlat.")
+		return
+	if default_entry_name.text != "Берсерк" or default_entry_name.text.contains(" — ") or default_entry_name.horizontal_alignment != HORIZONTAL_ALIGNMENT_CENTER:
+		_fail("Expected SCRUM-954 center row to show only the centered canonical Russian name Берсерк.")
 		return
 
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
@@ -7434,44 +7464,21 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
 		_fail("Expected SCRUM-850 Codex detail object art to use contained scaling, not cover-crop.")
 		return
-	# SCRUM-884: освобождённая предпросмотром высота уходит списку — лента
-	# занимает >= 90% внутренней (за content-margins чипа) зоны CodexContent.
-	var codex_content_style := codex_content.get_theme_stylebox("panel")
-	var codex_center_inner_height := codex_content.get_global_rect().size.y
-	if codex_content_style != null:
-		codex_center_inner_height -= codex_content_style.get_content_margin(SIDE_TOP) + codex_content_style.get_content_margin(SIDE_BOTTOM)
-	if codex_center_list.get_global_rect().size.y < 0.9 * codex_center_inner_height:
-		_fail("Expected SCRUM-884 CodexCenterListHost to fill >= 90 percent of the CodexContent inner zone, got %.0f of %.0f." % [codex_center_list.get_global_rect().size.y, codex_center_inner_height])
-		return
-	# SCRUM-881: глубокое досье — у выбранного (дефолтного) персонажа минимум
-	# 3 структурные секции с бронзовыми заголовками.
+
 	var dossier_headings := codex_main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
 	if dossier_headings.size() < 3:
 		_fail("Expected SCRUM-881 character dossier to expose at least 3 structured sections, got %d." % dossier_headings.size())
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains(CODEX_TAB_KIT_TEXTURE_PART):
-		_fail("Expected SCRUM-879 Codex tabs to use the global codex_tab kit button.")
+	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("back_260x104"):
+		_fail("Expected SCRUM-954 Codex tabs to use centered Russian-only back/main-family buttons without category emblems.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):
 		_fail("Expected SCRUM-879 Codex back button to use the global minimal-metal kit.")
 		return
 
-	# SCRUM-879: контейнерный шелл — вместо абсолютных рект проверяем safe-зону
-	# рамы (маргины meta40 160px от базы 1536x1024) и сдерживание колонок.
-	var codex_viewport_size := codex_screen.get_viewport_rect().size
-	var codex_margin_x := roundf(160.0 * codex_viewport_size.x / 1536.0)
-	var codex_margin_y := roundf(160.0 * codex_viewport_size.y / 1024.0)
-	var codex_safe_rect := Rect2(
-		codex_margin_x, codex_margin_y,
-		codex_viewport_size.x - 2.0 * codex_margin_x, codex_viewport_size.y - 2.0 * codex_margin_y
-	).grow(2.0)
-	for safe_control in [codex_nav_panel, codex_content, codex_detail, codex_back_button]:
-		if not codex_safe_rect.encloses((safe_control as Control).get_global_rect()):
-			_fail("Expected %s to stay inside unified safe margins %s, got %s." % [str((safe_control as Control).name), str(codex_safe_rect), str((safe_control as Control).get_global_rect())])
-			return
 	var codex_center_rect := codex_content.get_global_rect().grow(1.0)
 	if not codex_center_rect.encloses(codex_center_list.get_global_rect()):
 		_fail("Expected CodexCenterListHost to stay inside CodexContent panel.")
@@ -7481,6 +7488,14 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		if not codex_detail_rect.encloses((detail_child as Control).get_global_rect()):
 			_fail("Expected %s to stay inside CodexDetailPanel." % str((detail_child as Control).name))
 			return
+	var active_codex_scrollbars := 0
+	for scroll_node in codex_main.find_children("*", "ScrollContainer", true, false):
+		var scroll := scroll_node as ScrollContainer
+		if scroll != null and scroll.is_visible_in_tree() and scroll.get_v_scroll_bar().is_visible_in_tree():
+			active_codex_scrollbars += 1
+	if active_codex_scrollbars != 2:
+		_fail("Expected exactly two active Codex vertical scrollbar lanes, got %d." % active_codex_scrollbars)
+		return
 
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum345")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -7648,7 +7663,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 			var related_panel := codex_main.find_child("CodexDetailRelatedPanel", true, false) as PanelContainer
 			var related_scroll := codex_main.find_child("CodexDetailRelatedScroll", true, false) as ScrollContainer
 			if related_panel == null or related_scroll == null or not related_panel.get_global_rect().has_area() or not related_scroll.get_global_rect().has_area():
-				_fail("Expected Codex %s dossier to expose the accepted scrollable related-parameter safe zone." % section_id)
+				_fail("Expected Codex %s dossier to expose its canonical related-parameter projection." % section_id)
+				return
+			if related_scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+				_fail("Expected Codex %s related projection to share the lower dossier scroll without a third scrollbar lane." % section_id)
 				return
 
 	var back_button := codex_main.find_child("CodexBackButton", true, false) as Button
