@@ -19,6 +19,7 @@ func _initialize() -> void:
 		return
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_viewport(viewport_size)
+	await _release_windowed_audio_before_quit()
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum1024")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var report_file := FileAccess.open("%s/atlas_clickability_matrix.md" % qa_dir, FileAccess.WRITE)
@@ -531,6 +532,42 @@ func _check_hitbox_inside_canvas(canvas: Control, node: TextureButton, context: 
 
 
 func _teardown(owned_viewport: SubViewport) -> void:
+	# SCRUM-1031: do not rely on deferred parent destruction alone. Windowed
+	# SubViewport textures can still have queued render work when the SceneTree
+	# quits immediately after the matrix. Stop new updates, release Main/children,
+	# flush their ObjectDB lifetime, then free the viewport before the next case.
+	if owned_viewport == null or not is_instance_valid(owned_viewport):
+		return
+	owned_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	var child_refs: Array[WeakRef] = []
+	for child in owned_viewport.get_children():
+		child_refs.append(weakref(child))
+		child.queue_free()
+	for _frame_index in range(3):
+		await process_frame
+	for child_ref in child_refs:
+		if child_ref.get_ref() != null:
+			errors.append("Atlas teardown retained a Main/SubViewport child after the deferred-free barrier.")
+	var viewport_ref: WeakRef = weakref(owned_viewport)
 	owned_viewport.queue_free()
+	for _frame_index in range(4):
+		await process_frame
+	if viewport_ref.get_ref() != null:
+		errors.append("Atlas teardown retained the owned SubViewport after the deferred-free barrier.")
+	await process_frame
+
+
+func _release_windowed_audio_before_quit() -> void:
+	# SCRUM-1031 verbose evidence identified the intermittent four leaked objects
+	# as the menu Ogg playback chain (AudioStreamOggVorbis/packet sequence and both
+	# playback objects), not SubViewport textures. AudioManager's autoload teardown
+	# happens during SceneTree quit, which is sometimes too late for AudioServer's
+	# windowed shutdown order. Stop/detach the public music channel before quit and
+	# give the audio thread several frames to release its playback handles.
+	if DisplayServer.get_name() == "headless":
+		return
+	var audio := root.get_node_or_null("AudioManager")
+	if audio != null and audio.has_method("stop_music"):
+		audio.call("stop_music")
 	for _frame_index in range(6):
 		await process_frame

@@ -69,6 +69,21 @@ QA сам находит done-задачи без QA-вердикта.
 6. **Производительность**, если задача массовая (волны/VFX): прогон с 100+
    врагами, без заметных просадок.
 
+## Windowed lifecycle gate (SCRUM-1031)
+
+Оконный focused test считается чистым только если он завершился не только с
+exit `0`, но и без `ObjectDB instances were leaked` / `resources still in use at
+exit`. При таком diagnostic QA повторяет запуск с `--verbose` и фиксирует точные
+типы объектов/ресурсов; скрывать warning или фильтровать stderr запрещено.
+
+Owned `SubViewport`/`Main` fixtures освобождаются child-first с ожидаемым
+frame-barrier и проверкой `WeakRef`. Если fixture запускает музыку глобального
+`AudioManager`, перед `SceneTree.quit()` тест вызывает публичный `stop_music()`
+и даёт audio thread несколько кадров снять Ogg playback handles: autoload
+`_exit_tree()` может выполняться слишком поздно относительно windowed
+`AudioServer` shutdown. Headless и production audio behavior этим test-only
+teardown не меняются.
+
 ## Мета 4.1 Keystone Behavioral Gate (SCRUM-837)
 
 Для задач Меты 4.1, которые меняют keystone-эффекты, QA обязан прогнать
