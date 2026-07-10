@@ -4300,8 +4300,8 @@
  },
  "bug_atlas_windowed_focused_test_resource_leak_task.md": {
   "key": "SCRUM-1031",
-  "status": "Контроль качества",
-  "desc_hash": "08891611f7cae8ebf5a44bce7056d2b9"
+  "status": "Готово",
+  "desc_hash": "ac65e3dbe07054cb0b6d163819e762dc"
  },
  "SCRUM-985_level_up_icon_frame_background_fix.md": {
   "key": "SCRUM-985",
