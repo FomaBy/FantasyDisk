@@ -1,6 +1,6 @@
 # BUG: behavioral gate Meta 4.1 загрязняет reactor heat и pierce fixtures
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1029
 Контур: Codex
@@ -114,4 +114,7 @@ targeting and pierce limits behaved correctly when given an isolated arena.
   Reactor probe. No production-code or balance finding remains.
 - `git diff --check`: PASS.
 
-Disk cleanup: pending final `.godot` and worktree removal after push/routing.
+Landed: `fbad9645c` on `origin/dev`; routed to independent QA.
+
+Disk cleanup: removed task `.godot` (~463 MB) and isolated `/tmp` user-data;
+clean task worktree removal follows the routing commit.
