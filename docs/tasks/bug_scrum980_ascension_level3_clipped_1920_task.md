@@ -140,3 +140,50 @@ Disk cleanup: removed the 444 MB task `.godot/` cache, 11 MB transient
 roots; the clean task worktree/branch is removed after the routing commit.
 
 Thread cleanup: not a disposable worker thread.
+
+## Independent Production QA — 2026-07-10
+
+Verdict: **PASSED**.
+
+- QA owner: `QA/Codex /root/qa_scrum1026`
+  (`codex-qa-scrum-1026-20260710`); production code, tests and art stayed
+  read-only. Verification ran from fresh `origin/dev` production content at
+  `7c6a66576` (SCRUM-1026 implementation `7aa4850bb` plus later unrelated
+  Chemist integration); the final QA mirror was rebased onto the newer
+  docs-only production tip before landing.
+- The focused all-level oracle passed headless and with the real macOS window
+  renderer under separate isolated `HOME` / `XDG_DATA_HOME` roots. It sent
+  viewport-bounded pointer motion/down/up through `−`, `+` and hero slots for
+  selectable levels `0..5`, checked the live hover target and exact cumulative
+  tooltip, exercised a physical wheel event, raw Arrow Down and raw D-pad Down,
+  reached the scroll boundary and transferred focus to Choose, and proved hero
+  switching resets the first line.
+- Measured matrix: at 1280×720 the band is exactly `69 px`, the utility row and
+  description viewport are `59 px`, the StyleBox content inset is `5 px`
+  top/bottom, and the two dossier/band/carousel gaps are positive `1 px` gaps.
+  Level 5 is the compact worst case (`112 / 59 / 53 px` label / viewport /
+  overflow) and is fully scroll-reachable. At 1920×1080 the band is `132 px`,
+  the worst valid label is `84 px` inside a `118 px` viewport with zero
+  overflow. At 2560×1440 the band is `132 px`, the worst label is `55 px`
+  inside a `114 px` viewport with zero overflow.
+- Real windowed screenshots at all three required viewports were inspected.
+  The stepper, full delta, eight stat rows, dossier, counter, carousel, CTA and
+  outer frame ornament remain visibly separated; every checked control is
+  inside the physical viewport and the StyleBox empty content rect.
+- Regression PASS: `hero_select_pixellab_layout_test.gd`,
+  `ui_no_overlap_matrix_test.gd`, `dark_fantasy_ui_theme_test.gd`,
+  `runtime_smoke_ui_test.gd`, `gamepad_menu_focus_test.gd`,
+  `gamepad_full_flow_smoke_test.gd`, `meta_progression_smoke_test.gd` and full
+  `runtime_smoke_test.gd`. Full runtime exited `0`; the known dummy-renderer
+  screenshot diagnostic remained non-fatal.
+
+No SCRUM-1026 defect or acceptance gap remains. Jira may move from
+`Контроль качества` to `Готово`; parent SCRUM-980 requires its own separate
+re-QA verdict before closure.
+
+Disk cleanup: pending final QA mirror/Jira routing, then remove the disposable
+worktree, its approximately 445 MiB `.godot/` cache, 7.7 MiB transient
+`build/qa/scrum1026/` renders and all scratch user roots.
+
+Thread cleanup: collaboration QA subagent under the active parent task; not a
+disposable standalone Codex app thread.
