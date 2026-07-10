@@ -79,3 +79,31 @@ the centre axis and the crush frame lands on the existing delayed hit.
   the Jira result comment after landing.
 - Disk cleanup: task worktree retained only through commit/rebase/push; `.godot`
   and generated unrelated UID/cache sidecars are removed before final handoff.
+
+## QA-Вердикт — 2026-07-11
+
+Статус: PASSED
+
+- Fresh `origin/dev` verification covered implementation commit `c651444c5` and
+  Jira-routing commit `04db0d35a` in an isolated disposable QA worktree.
+- PixelLab identity is consistent across Jira, the committed manifest/report,
+  runtime metadata and prompt evidence: object
+  `99b9c7ec-23d3-4110-a22a-912cf8b455b8`, v3 group
+  `659bdae5-22a9-4319-a3ca-57b972e5a9a3`, animation
+  `31a9bfff-ee16-4037-a8f5-32477c37a73c`; no legacy/OpenAI Images fallback is
+  recorded or present in the task-owned production path.
+- Independent image integrity check confirmed eight RGBA `256x256` runtime
+  frames, report SHA-256 matches, zero edge-visible pixels and a minimum runtime
+  gutter of `19px`. The contact sheet was visually inspected: the two hydraulic
+  jaws and teal pressure converge toward the centre, with the distinct peak on
+  frame 5 at `0.20s`, followed by release.
+- Runtime wiring remains isolated to `RobotHydraulicPressWeapon` and its VFX
+  scene; the accepted damage/control implementation in `class_weapon.gd` was not
+  modified. Both `430x300` and Calibrator `430x390` contracts are covered.
+- Gates through `tools/godot_gate.py` on the clean QA checkout:
+  - `tests/scrum917_robot_hydraulic_press_vfx_test.gd` — PASS;
+  - `tests/animation_smoke_test.gd` — PASS;
+  - `tests/runtime_smoke_test.gd` — PASS (exit `0`; known dummy-renderer texture
+    diagnostic only).
+- Disk cleanup: disposable QA `.godot` cache, generated UID sidecars, worktree
+  and local QA branch removed after Jira/Git synchronization.
