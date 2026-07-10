@@ -96,3 +96,48 @@ independent QA owner is still required before Jira may move from
 The full transient 3×3 section/resolution screenshot matrix and fit report are
 generated under `build/qa/scrum958/` during implementation and removed with the
 task worktree after committed evidence is pushed.
+
+## QA-Вердикт — 2026-07-10
+
+Статус: PASSED
+
+- QA worker: `codex-qa-scrum-958-20260710` (`/root/audit_qa`), Codex lane.
+- Fresh base: `origin/dev` `1b27a39b24112bc5ce053be8da2927fe7b39b323`.
+- Canonical inventory: PASSED — 17 characters, 31 monster projections and 161
+  artifact/shop projections resolve exact canonical paths and Russian titles;
+  every entry is checked in both list and dossier at 1280×720, 1920×1080 and
+  2560×1440. Generic fallback, raw ids and English duplicates were not found.
+- Independent alpha/AtlasTexture oracle: PASSED — 209 projections, 418
+  list/detail fit checks and 392 unique cached views. Real source pixels,
+  `AtlasTexture.region`, `margin`, `get_size()` and actual Canvas-rendered alpha
+  bboxes were derived independently of implementation metadata.
+- Reserve/anchor contract: PASSED — character 8% per side with bottom-center,
+  monster 4% centered and artifact/shop 10% centered. Four edge-touching and
+  three full-canvas canonical sources preserve virtual reserve without cropping
+  visible alpha.
+- Cache contract: PASSED — repeated list/detail/viewport visits reuse the same
+  immutable instances; cache remains exactly bounded to 392 unique
+  path/policy/aspect views.
+- Windowed visual matrix: PASSED for characters, monsters and artifacts on all
+  three supported resolutions. Separate 720p locked-artifact and 1080p
+  full-canvas elite captures also pass. Content remains inside empty image/list/
+  dossier zones and no image, label, chip, scrollbar or selection state covers
+  frame ornament.
+- Locked/discovery: PASSED — silhouette, dimmed row, `Заперто` chip and Russian
+  unlock condition remain intact; discovery persistence/reverse coverage is
+  unchanged.
+- Gamepad: menu/core/movement/combat/in-run/rebind PASS; full-flow smoke PASS in
+  three consecutive runs.
+- Regression PASS: SCRUM-954 layout, Codex data, asset references, dark-fantasy
+  theme, UI no-overlap matrix, display resolution, runtime UI, animation, meta
+  progression, melee targeting, target-query cache and full runtime smoke.
+- Defects in SCRUM-958 scope: none. Production code/assets were read-only during
+  independent QA.
+
+Transient QA evidence was created only under ignored `build/qa/scrum958/` and
+`build/qa/scrum958-independent-qa/`. The disposable QA worktree and `.godot`
+cache are removed after commit/push; the final Jira comment records exact disk
+cleanup.
+
+Thread cleanup: collaboration subagent QA is not a standalone Codex app worker
+task; the active parent user task must not be archived.
