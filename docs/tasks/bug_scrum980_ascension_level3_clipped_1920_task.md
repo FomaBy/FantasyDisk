@@ -1,6 +1,6 @@
 # BUG: Hero Select level-3 ascension delta is clipped at 1920×1080
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1026
 Контур: Codex
@@ -131,7 +131,12 @@ content insets, physical key/D-pad coverage and the compact dossier budget.
 All were fixed. Final read-only verdict: PASS, no actionable findings remain;
 the scoped Godot `.gd.uid` sidecar is included with the focused test.
 
-Disk cleanup: active task worktree; transient `.godot/`, `build/qa/scrum1026/`
-and scratch user roots will be removed after the landed/routing commits.
+Landed to `origin/dev` in implementation commit `7aa4850bb`. Jira moved to
+`Контроль качества`; independent production QA remains required before
+`Готово`.
+
+Disk cleanup: removed the 444 MB task `.godot/` cache, 11 MB transient
+`build/qa/scrum1026/` evidence and all `/tmp/fsd-scrum1026-*` scratch user
+roots; the clean task worktree/branch is removed after the routing commit.
 
 Thread cleanup: not a disposable worker thread.
