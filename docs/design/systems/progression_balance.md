@@ -51,7 +51,14 @@ committed-evidence 504/506).
 правки не вносятся.
 
 Tuning notes (наследие 504/506):
-- `guitarist` keeps AoE/control identity but uses a fairer solo target.
+- `guitarist` keeps AoE/control identity but uses a fairer solo target. SCRUM-899
+  перевёл кит на magic-caster формы (узкий `riff_strip`, большое кайт-кольцо баса,
+  амп-турели с правилами Лидерство=число+uptime / summon_amount=темп) — бюджет-зеркало
+  `riff_strip` добавлено в `_budget_hit_model` (archetype `aura`, толпа ~2.3 цели из 5
+  против ~4 у прежней широкой волны: узость — осознанная цена частых хитов). Trait
+  «Разогрев» (SCRUM-1006, до +20% магии при no-hit) в формульный бюджет НЕ зашит —
+  условный кайт-бонус, прецедент «Тёмного распада» (SCRUM-1007): формульный гейт
+  меряет устойчивую базу, condition-бонусы отражает live-плейтест.
 - `priest`, `robot`, and `knight` receive moderate solo/lvl20 growth support without breaching the class-kit 0.90..1.10 corridor.
 - `assassin` retains solo-class identity but loses the excessive lvl20 growth tail that was driving the non-berserk solo spread.
 - Headless scene-based checks may fall back to deterministic budget estimates when Player/Enemy scripts are unavailable because of resource import/cache noise; formula and registry gates still cover all 51 class/weapon pairs.

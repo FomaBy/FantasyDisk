@@ -109,7 +109,7 @@
 ## Weapons And Effects
 
 - Берсерк использует melee shapes: `strip`, `sweep`, `circle`.
-- Class weapons используют reusable modes: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
+- Class weapons используют reusable modes: `aoe_projectile`, `homing_curse`, `beam`, `dot_beam`, `sound_wave`, `riff_strip`, `pulse`, `amp`, `trap`, `boomerang`, `stab_flurry`.
 - Прицеливание имеет два runtime-режима. `nearest` оставляет автонаводку на ближайшего врага, `cursor` берет единые `Player.attack_aim_direction()` / `attack_aim_position()` для melee, projectiles, beams, deploys и point-AoE. Summoner commands в cursor mode выбирают цель рядом с точкой курсора.
 - SCRUM-886: contact-stuck enemies remain hittable when they overlap the player.
   `BerserkWeapon` accepts targets within a 40px close-contact rescue radius before
@@ -118,7 +118,7 @@
   40px back allowance. This is a hit-query fix only: attack ranges, cooldowns,
   target caps, falloff, DPS budgets and enemy movement/pathfinding are unchanged.
 - Темный маг использует AoE projectile, DoT и beam; новые caster/control классы переиспользуют эти режимы с другими параметрами.
-- Гитарист и Друид используют sound wave / pulse / deployable amp/totem; Рейнджер использует deploy trap.
+- Гитарист (SCRUM-899) — магический кастер с деплой-геймплеем: `riff_strip` (узкая передняя полоса постоянной ширины, частые низко-средние магические хиты, все цели в полосе без pierce-капа), большой кайт-`pulse` баса и амп-турели `amp` (Лидерство = число+uptime ампов, summon_amount = темп пульса, урон — magic_damage владельца); trait «Разогрев» (SCRUM-1006) копит +2 п.п./сек магического урона без полученных ударов (кап +20%, сброс при квалифицированном ударе). Друид использует pulse / deployable totem; Рейнджер использует deploy trap.
 - Друидский `druid_beast` summon использует `AllyMinion/AnimatedBody` с готовым `SpriteFrames`: `move` loop при движении/ожидании, `attack` one-shot при фактическом ударе и `flip_h` вправо по движению/атаке. Остальные ally visuals остаются статичными `Sprite2D` через fallback `Body`.
 - Мобильные summons получают групповые команды от `SummonerWeapon`: цели выбираются в leash radius вокруг владельца, назначенный burst damage учитывается как overkill pressure, поэтому несколько союзников расходятся по слабым врагам вместо погони всей стаей за одной целью. Если старая `command_target` ушла за leash radius, `AllyMinion` сбрасывает ее и возвращается к локальной цели/guard behavior.
 - Удар `AllyMinion` наносит основной цели полный урон один раз, затем бьет соседних врагов в data-driven малом splash radius (`summon_aoe_radius`, обычно 72-78 px) с `summon_aoe_damage_multiplier`, без повторного урона primary target.

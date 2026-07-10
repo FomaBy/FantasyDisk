@@ -466,6 +466,16 @@ completed, `route_stage` продвигается и autosave сохраняет
 
 Первые три игровых персонажа используют polished stylized cartoon fantasy full hero sprites без квадратных placeholder-форм и без вида минимальных технических болванок. Расширенный ростер 0.1.4 доведен до 17 классов; новые классы прошли Design art-review как polished cartoon dark fantasy full-art. SCRUM-168 добавил Back-end-класс `soldier`; Design pass 2026-06-13 подготовил финальные `soldier.png`, `soldier_rifle.png`, `soldier_grenade.png` и `soldier_bayonet.png`, а Animator pass 2026-06-13 добавил Soldier cutout rig, manifest/profile и weapon pose hooks. В бою `scripts/cutout_rig_2d.gd` собирает видимую фигуру из нарезанных кусков того же polished-арта (torso, arm_l/arm_r, leg_l/leg_r): в покое сборка пиксельно совпадает с исходным PNG, в движении конечности реально двигаются. Нарезка генерируется инструментом `tools/slice_rig_cutouts.py` в `assets/sprites/characters/cutout/`, метаданные частей — в сгенерированном `scripts/sliced_rig_manifest.gd`. Source PNG в `assets/sprites/characters/` используются меню и выбором персонажа и являются исходником нарезки. Берсерк остается без оружия в базовом спрайте, а оружие крепится отдельно через `WeaponSocket`.
 
+SCRUM-899/SCRUM-1006 (0.2.1): Гитарист — магический кастер с деплой-геймплеем.
+Электрогитара = `riff_strip` (узкая передняя полоса постоянной ширины, частые
+низко-средние магические хиты, без pierce-капа), бас = большое кольцо частых слабых
+магических тиков с сильным knockback под кайт, усилитель = ядро саммонер-петли
+(амп-турели; Лидерство = число и uptime ампов, summon_amount = темп пульса,
+attack_speed = каденция установки, урон пульса — magic_damage владельца). Класс-trait
+«Разогрев»: +2 п.п./сек магического урона без полученных ударов, кап +20%, сброс при
+квалифицированном ударе. Подробности: `docs/design/systems/characters_weapons.md`,
+`docs/design/class_traits_registry.md`; гейт — `tests/guitarist_kit_test.gd`.
+
 SCRUM-298 добавил Design standard для следующей волны playable full-frame sheets:
 `docs/design/references/character_animation_style_sheet_0_1_5.md`. Будущие
 redraw-задачи используют unarmed `assets/sprites/characters/<class_id>_sheet.png`,

@@ -166,7 +166,7 @@ const EFFECT_LABELS := {
 	"direct_damage_mult": {"ru": "к прямому урону", "pct": true},
 	"beam_duration_mult": {"ru": "к длительности лучей", "pct": true},
 	"explosion_radius_mult": {"ru": "к радиусу взрывов луча", "pct": true},
-	"guitar_aura_radius_mult": {"ru": "к ширине звуковых аур", "pct": true},
+	"guitar_aura_radius_mult": {"ru": "к ширине магических аур Гитариста", "pct": true},  # SCRUM-899: магическая идентичность
 	"riff_streak_damage_bonus": {"ru": "к урону при непрерывной рифф-серии", "pct": true},
 	"crit_execute_threshold": {"ru": "порог добивания критом не-элитных целей", "pct": true},
 	"shadow_burst_invisibility_time": {"ru": "сек. невидимости после теневого всплеска", "pct": false},
