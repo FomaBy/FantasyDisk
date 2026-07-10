@@ -595,38 +595,62 @@ const SOLDIER_WEAPONS := {
 }
 
 const THIEF_WEAPONS := {
+	# SCRUM-897: редизайн кита Вора поверх trait «Воровская хватка»
+	# (CLASS_TRAITS.thief в progression_data_characters.gd — магнит подбора).
+	# Ниши кита: экономический рикошет по толпе / контроль-кинжал с backstab-окном
+	# / защитная дым-зона с разовым AoE-взрывом. Константы механик — COIN_*/
+	# POISON_*/BACKSTAB_* в class_weapon.gd.
 	"thief_coin_pouch": {
+		# SCRUM-897 «Кошель Рикошета»: цепь из projectile_count прыжков (базово 6,
+		# прогрессия капится COIN_CHAIN_HARD_CAP=8 — не бесконечна и не лучший
+		# полнокартный клир). damage_falloff = ДОЛЯ УРОНА ПОСЛЕДНЕГО прыжка:
+		# урон убывает монотонно tail^(i/(n-1)) до ровно 50% к финальному звену.
+		# Золото начисляется МГНОВЕННО (gain_money) с первых steal_hits целей
+		# цепи — без спавна и сбора пикапа.
 		"id": "thief_coin_pouch", "title": "Кошель Рикошета",
-		"description": "Монета скачет между целями цепью, наносит убывающий урон и крадет немного золота с первых попаданий.",
+		"description": "Монета скачет цепью до 6 целей: урон плавно убывает до половины к последнему прыжку, а золото с первых трех попаданий сразу падает в кошель.",
 		"scene_path": "res://scenes/ThiefCoinPouch.tscn",
 		"attack_mode": "coin_ricochet", "damage_parameter": "damage",
 		"damage_multiplier": 0.82, "fire_interval": 0.88,
 		"attack_range": 520.0, "aoe_radius": 120.0,
-		"beam_width": 34.0, "projectile_count": 4,
-		"damage_falloff": 0.62, "steal_money": 1,
+		"beam_width": 34.0, "projectile_count": 6,
+		"damage_falloff": 0.5, "steal_money": 1, "steal_hits": 3,
 		"visual_color": Color(1.0, 0.78, 0.28, 0.44),
 		"passive_mods": {"money_gain_multiplier": 1.08},
 	},
 	"thief_shadow_cloak": {
-		"id": "thief_shadow_cloak", "title": "Плащ Захода",
-		"description": "Фантомный backstab: тень бьет за ближайшей целью, наносит усиленный урон и цепляет врагов рядом без смещения героя.",
+		# SCRUM-897 «Отравленный Кинжал» (ex-«Плащ Захода»): кинжал из тени бьёт
+		# за ближайшей целью БЕЗ движения/телепорта героя. Встроенный контроль:
+		# паралич-яд poison_paralysis_duration (кламп POISON_PARALYSIS_CAP, у
+		# боссов/элит срез POISON_PARALYSIS_BOSS_FACTOR). Позиционный пейофф:
+		# удар в спину (цель смотрит прочь от фантома) ×BACKSTAB_POSITIONAL_MULTIPLIER.
+		"id": "thief_shadow_cloak", "title": "Отравленный Кинжал",
+		"description": "Кинжал бьет из тени за ближайшей целью, не смещая героя: паралич-яд сковывает задетых, а удар в спину наносит повышенный урон.",
 		"scene_path": "res://scenes/ThiefShadowCloak.tscn",
 		"attack_mode": "shadow_backstab", "damage_parameter": "damage",
 		"damage_multiplier": 0.96, "fire_interval": 1.08,
 		"attack_range": 360.0, "aoe_radius": 140.0,
-		"knockback": 62.0,
+		"knockback": 62.0, "poison_paralysis_duration": 0.85,
 		"visual_color": Color(0.74, 0.30, 1.0, 0.42),
 		"passive_mods": {"dodge_flat": 0.04, "crit_chance_flat": 0.04},
 	},
 	"thief_smoke_bomb": {
+		# SCRUM-897 «Дымовая Бомба»: брошенный снаряд летит grenade_delay, на
+		# детонации — ОДНО AoE-событие урона (скейлится уроном/AoE/темпом билда),
+		# затем НЕдамажащее облако smoke_duration. Уклонение (+dodge_bonus)
+		# действует ТОЛЬКО пока герой внутри облака; суммарный шанс в дыму капится
+		# SMOKE_CLOUD_DODGE_CAP=0.90 (progression_data_balance.gd).
 		"id": "thief_smoke_bomb", "title": "Дымовая Бомба",
-		"description": "Бросает дым: после короткой задержки зона взрывается, а Вор получает временное уклонение.",
+		"description": "Бросок шашки: после задержки взрыв бьет по области, а осевшее облако укрывает Вора — внутри дыма уклонение резко растет.",
 		"scene_path": "res://scenes/ThiefSmokeBomb.tscn",
 		"attack_mode": "smoke_bomb", "damage_parameter": "damage",
-		"damage_multiplier": 1.02, "fire_interval": 1.34,
+		# damage_multiplier 1.02→1.34 (SCRUM-897): бюджетный тюнер дыма сидел в
+		# клэмп-сатурации 2.80 (кит не дотягивал до классового таргета) — поднятая
+		# база выводит budget_damage_multiplier в рабочий коридор (~2.2).
+		"damage_multiplier": 1.34, "fire_interval": 1.34,
 		"attack_range": 430.0, "aoe_radius": 170.0,
-		"grenade_delay": 0.26, "smoke_duration": 1.65,
-		"dodge_bonus": 0.10, "knockback": 54.0,
+		"grenade_delay": 0.50, "smoke_duration": 2.60,
+		"dodge_bonus": 0.35, "knockback": 54.0,
 		"visual_color": Color(0.45, 0.48, 0.58, 0.42),
 		"passive_mods": {"move_speed_multiplier": 1.04},
 	},

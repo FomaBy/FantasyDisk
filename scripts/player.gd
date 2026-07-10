@@ -134,6 +134,12 @@ var _uses_skeletal_visual := false
 var _damage_invulnerability_left := 0.0
 # SCRUM-831: неуязвимость из дев-консоли (godmode); take_damage игнорирует урон целиком.
 var debug_godmode := false
+# SCRUM-897 «Дымовая Бомба»: живые дым-облака (позиционное уклонение Вора).
+# Записи {center, radius_squared, until_msec, dodge_bonus}; регистрирует
+# ClassWeapon._detonate_smoke_bomb, читает smoke_cloud_dodge_bonus() (лениво
+# выбрасывая истёкшие). Бонус действует ТОЛЬКО пока герой стоит внутри облака;
+# суммарный шанс уворота в дыму капится ProgressionData.SMOKE_CLOUD_DODGE_CAP.
+var _smoke_clouds: Array[Dictionary] = []
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
 var _web_slow_factor := 1.0
@@ -278,6 +284,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_kill_growth_time_left = 0.0
 	_knight_counter_cooldown_left = 0.0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
+	_smoke_clouds.clear()  # SCRUM-897: дым-облака не переживают смену персонажа/забега
 	_reactor_heat = 0.0
 	_reactor_heat_active = false
 	_shadow_invisible_left = 0.0
@@ -650,6 +657,51 @@ func apply_web_slow(duration: float, factor: float) -> void:
 	_web_slow_factor = clampf(factor, 0.2, 1.0)
 
 
+# SCRUM-897 «Дымовая Бомба»: регистрация осевшего дым-облака. Облако урона не
+# наносит — оно даёт cloud_dodge_bonus к шансу уворота, ПОКА герой стоит внутри.
+func register_smoke_cloud(center: Vector2, radius: float, duration: float, cloud_dodge_bonus: float) -> void:
+	if duration <= 0.0 or radius <= 0.0 or cloud_dodge_bonus <= 0.0:
+		return
+	_smoke_clouds.append({
+		"center": center,
+		"radius_squared": radius * radius,
+		"until_msec": Time.get_ticks_msec() + int(duration * 1000.0),
+		"dodge_bonus": cloud_dodge_bonus,
+	})
+
+
+# Бонус уворота от дым-облаков: 0.0 вне дыма; внутри — максимальный бонус из
+# накрывающих облаков (перекрытия не стакаются — анти-runaway). Истёкшие облака
+# выбрасываются лениво при каждом запросе.
+func smoke_cloud_dodge_bonus() -> float:
+	if _smoke_clouds.is_empty():
+		return 0.0
+	var now_msec := Time.get_ticks_msec()
+	var best_bonus := 0.0
+	var alive_clouds: Array[Dictionary] = []
+	for cloud in _smoke_clouds:
+		if int(cloud.get("until_msec", 0)) <= now_msec:
+			continue
+		alive_clouds.append(cloud)
+		var center: Vector2 = cloud.get("center", global_position)
+		if global_position.distance_squared_to(center) <= float(cloud.get("radius_squared", 0.0)):
+			best_bonus = maxf(best_bonus, float(cloud.get("dodge_bonus", 0.0)))
+	_smoke_clouds = alive_clouds
+	return best_bonus
+
+
+# SCRUM-897: итоговый шанс уворота для ролла take_damage. Базовый dodge капится
+# обычным SURVIVABILITY_DODGE_CAP (0.55); бонус дым-облака добавляется ПОВЕРХ
+# капнутой базы и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
+# при тяжёлом dodge-билде», и только пока герой внутри облака.
+func _current_dodge_chance() -> float:
+	var dodge_chance := clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
+	var smoke_cloud_bonus := smoke_cloud_dodge_bonus()
+	if smoke_cloud_bonus > 0.0:
+		dodge_chance = minf(dodge_chance + smoke_cloud_bonus, ProgressionData.SMOKE_CLOUD_DODGE_CAP)
+	return dodge_chance
+
+
 func take_damage(amount: float, _source := "") -> bool:
 	if debug_godmode:
 		return false
@@ -664,7 +716,9 @@ func take_damage(amount: float, _source := "") -> bool:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
 		return true
 
-	if randf() < clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP):
+	# SCRUM-897: ролл уворота через _current_dodge_chance — базовый кап 0.55, а в
+	# дым-облаке Вора бонус облака поверх (суммарный кап 0.90 только внутри дыма).
+	if randf() < _current_dodge_chance():
 		_show_dodge_popup()
 		_play_sfx("dodge")
 		_trigger_dodge_rush()

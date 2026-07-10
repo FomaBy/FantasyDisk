@@ -15,9 +15,10 @@ damage = 12.0
 attack_range = 520.0
 aoe_radius = 120.0
 beam_width = 34.0
-projectile_count = 4
-damage_falloff = 0.62
+projectile_count = 6
+damage_falloff = 0.5
 steal_money = 1
+steal_hits = 3
 visual_color = Color(1, 0.78, 0.28, 0.44)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

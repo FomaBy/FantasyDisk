@@ -37,6 +37,7 @@ const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
 const SURVIVABILITY_DODGE_DIMINISH := BalanceData.SURVIVABILITY_DODGE_DIMINISH
+const SMOKE_CLOUD_DODGE_CAP := BalanceData.SMOKE_CLOUD_DODGE_CAP  # SCRUM-897: кап уворота в дым-облаке Вора
 const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := BalanceData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION
 const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLAT_DIMINISH
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
@@ -589,6 +590,17 @@ static func _magic_bonus_effectiveness_for(character_id: String) -> float:
 	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("magic_bonus_effectiveness", 1.0)), 1.0)
 
 
+# SCRUM-897 «Воровская хватка»: класс-trait Вора, data-driven запись
+# CLASS_TRAITS.thief.pickup_radius_multiplier = 1.85 (реестр class_traits_registry).
+# Множитель применяется к СТАРТОВОЙ части pickup_radius (база 105 + perception×7)
+# в derived_parameters; flat-источники забега/пассивов (pickup_radius_flat) идут
+# поверх БЕЗ усиления — «сильно увеличенный стартовый радиус», а не runaway-скейл.
+static func _pickup_radius_trait_multiplier(character_id: String) -> float:
+	if character_id == "":
+		return 1.0
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("pickup_radius_multiplier", 1.0)), 1.0)
+
+
 # Усиливает БОНУСНУЮ часть множителя: 1.15 → 1.0 + 0.15*effectiveness. Штрафы
 # (multiplier <= 1.0) проходят без изменения — trait усиливает бонусы, не дебаффы.
 static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float) -> float:
@@ -1066,10 +1078,23 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var cone_hits := 1.0 + (cone / 110.0) * (attack_range / 260.0) * 1.9
 			return {"solo_hits": 1.0 + shot_bonus, "five_hits": clampf(cone_hits + shot_bonus, 1.0, 4.4)}
 		"coin_ricochet":
-			var chain_count := float(config.get("projectile_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(chain_count * 0.76, 1.0, 5.0)}
+			# SCRUM-897 «Кошель Рикошета»: цепь = projectile_count прыжков (рантайм
+			# капит COIN_CHAIN_HARD_CAP=8 в class_weapon.gd), урон убывает монотонно
+			# до damage_falloff-доли (0.5) на ПОСЛЕДНЕМ прыжке: hit_i = tail^(i/(n-1)).
+			# Толпа из 5 = сумма долей первых 5 звеньев цепи (зеркало _fire_coin_ricochet).
+			var chain_count := clampf(float(config.get("projectile_count", 3.0)), 1.0, 8.0)
+			var chain_tail := clampf(float(config.get("damage_falloff", 0.5)), 0.1, 1.0)
+			var chain_crowd := 0.0
+			for chain_index in range(mini(int(chain_count), 5)):
+				chain_crowd += pow(chain_tail, float(chain_index) / maxf(chain_count - 1.0, 1.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(chain_crowd, 1.0, 5.0)}
 		"shadow_backstab":
-			return {"solo_hits": 1.22, "five_hits": clampf(1.22 + aoe_radius / 150.0, 1.22, 3.0)}
+			# SCRUM-897 «Отравленный Кинжал»: фантом бьёт 1.22 ролла; удар в спину
+			# (цель смотрит прочь от фантома — чейзеры, uptime ~0.75) даёт ×1.35
+			# (BACKSTAB_* в class_weapon.gd) → соло ≈ 1.22×(1+0.35×0.75) = 1.54.
+			# Соседи у точки удара получают 0.35 ролла (aoe/150 ≈ 2.7 соседа × 0.35).
+			var backstab_solo := 1.22 * (1.0 + 0.35 * 0.75)
+			return {"solo_hits": backstab_solo, "five_hits": clampf(backstab_solo + aoe_radius / 150.0, backstab_solo, 3.4)}
 		"smoke_bomb":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 84.0, 1.0, 4.4)}
 		"elemental_orbit":
@@ -1495,7 +1520,9 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + range_perception * 2.5 + range_intelligence * range_intelligence_weight + range_endurance * 0.25 + range_leadership * 0.35) * attack_range_multiplier,
 		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier,
-		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
+		# SCRUM-897 «Воровская хватка»: стартовая часть радиуса подбора усилена
+		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
+		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
 		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,

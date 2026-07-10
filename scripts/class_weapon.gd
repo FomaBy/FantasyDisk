@@ -106,9 +106,16 @@ const ATTACK_MODE_EXECUTORS := {
 @export var bayonet_shot_damage_multiplier := 0.7
 @export var damage_falloff := 0.55
 @export var pierce_damage_falloff := 1.0
+# SCRUM-897 «Кошель Рикошета»: steal_hits — сколько ПЕРВЫХ целей цепи обворовываются
+# детерминированно (золото начисляется мгновенно, без пикапа).
 @export var steal_money := 0
+@export var steal_hits := 0
 @export var dodge_bonus := 0.0
 @export var smoke_duration := 1.8
+# SCRUM-897 «Отравленный Кинжал»: встроенное окно паралича-яда (сек); артефакт
+# «Парализующее лезвие» (backstab_root_duration) добавляется поверх, суммарно
+# не выше POISON_PARALYSIS_CAP.
+@export var poison_paralysis_duration := 0.0
 @export var orbit_duration := 1.6
 @export var storm_ticks := 4
 @export var shard_count := 3
@@ -248,8 +255,10 @@ func configure_weapon(config: Dictionary) -> void:
 	damage_falloff = float(config.get("damage_falloff", damage_falloff))
 	pierce_damage_falloff = float(config.get("pierce_damage_falloff", pierce_damage_falloff))
 	steal_money = int(config.get("steal_money", steal_money))
+	steal_hits = int(config.get("steal_hits", steal_hits))
 	dodge_bonus = float(config.get("dodge_bonus", dodge_bonus))
 	smoke_duration = float(config.get("smoke_duration", smoke_duration))
+	poison_paralysis_duration = float(config.get("poison_paralysis_duration", poison_paralysis_duration))
 	orbit_duration = float(config.get("orbit_duration", orbit_duration))
 	storm_ticks = int(config.get("storm_ticks", storm_ticks))
 	shard_count = int(config.get("shard_count", shard_count))
@@ -1718,6 +1727,27 @@ func _find_bayonet_shot_target(owner_node: Node2D) -> Node2D:
 	return best
 
 
+# === SCRUM-897: кит Вора (редизайн поверх trait «Воровская хватка») ===
+# Ниши: экономический рикошет по толпе / контроль-кинжал с backstab-пейоффом /
+# защитная дым-зона с разовым AoE-взрывом. Константы ниже — единственный источник
+# истины по капам/долям; бюджетная модель (_budget_hit_model в progression_data.gd)
+# зеркалит эти же числа в комментариях.
+
+# «Кошель Рикошета»: жёсткий кап длины цепи. База 6 прыжков (projectile_count),
+# прогрессия (extra_projectile / артефакт «Счастливая монета») добирает до 8 —
+# цепь конечна и не становится лучшим полнокартным клиром (полоса AC 5..8).
+const COIN_CHAIN_HARD_CAP := 8
+
+# «Отравленный Кинжал»: базовый удар фантома в долях ролла и позиционный пейофф.
+const BACKSTAB_STRIKE_MULTIPLIER := 1.22       # базовый удар фантома
+const BACKSTAB_POSITIONAL_MULTIPLIER := 1.35   # доп. множитель удара В СПИНУ (цель смотрит прочь от фантома)
+const BACKSTAB_NEIGHBOR_SHARE := 0.35          # доля ролла соседям у точки удара
+const BACKSTAB_FACING_DOT_THRESHOLD := 0.25    # порог «спина отдана фантому» (dot facing · фантом→цель)
+const POISON_PARALYSIS_SPEED := 0.12           # целевой множитель скорости яда (StatusEffects клампит группу на 0.25)
+const POISON_PARALYSIS_CAP := 1.8              # кап суммарного окна паралича (база + артефакт), сек
+const POISON_PARALYSIS_BOSS_FACTOR := 0.35     # боссы/элиты: срезанная длительность контроля
+
+
 func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var current_target := target
 	if current_target == null:
@@ -1741,8 +1771,9 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 	var chain_targets := [current_target]
 	var used := {current_target.get_instance_id(): true}
 	var search_origin := current_target.global_position
-	# SCRUM-961 «Счастливая монета»: цепь скачет дольше (тот же falloff по хвосту).
-	var chain_count := maxi(projectile_count + _extra_projectiles() + int(_owner_mod("coin_extra_bounces")), 1)
+	# SCRUM-961 «Счастливая монета» / extra_projectile: цепь скачет дольше, но
+	# SCRUM-897 капит длину COIN_CHAIN_HARD_CAP — рикошет конечен по AC.
+	var chain_count := clampi(projectile_count + _extra_projectiles() + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
 	for chain_index in range(chain_count - 1):
 		var next_target := _find_nearest_enemy_from(search_origin, attack_range * 0.65, used)
 		if next_target == null:
@@ -1753,18 +1784,27 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 
 	var damage_value := _rolled_damage(owner_node)
 	var origin := owner_node.global_position + direction * 24.0
+	# SCRUM-897: монотонный спад до damage_falloff-доли (0.5) на ПОСЛЕДНЕМ
+	# ЗАДУМАННОМ прыжке: hit_i = ролл × tail^(i/(n-1)). Экспонента считается от
+	# полной длины цепи, поэтому спад читаем при любом числе реально найденных целей.
+	var chain_tail := clampf(damage_falloff, 0.1, 1.0)
+	var chain_span := maxf(float(chain_count - 1), 1.0)
 	for hit_index in range(chain_targets.size()):
 		var enemy_node := chain_targets[hit_index] as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		var segment := AttackVfx.beam(_projectile_parent(), origin, enemy_node.global_position, beam_width, visual_color)
 		_register_effect(segment)
-		var hit_damage := damage_value * pow(clampf(damage_falloff, 0.1, 1.0), float(hit_index))
+		var hit_damage := damage_value * pow(chain_tail, float(hit_index) / chain_span)
 		_damage_enemy(enemy_node, hit_damage)
 		_try_steal_money(owner_node, hit_index)
 		origin = enemy_node.global_position
 
 
+# SCRUM-897 «Отравленный Кинжал»: фантомный удар из тени ЗА ближайшей целью.
+# Герой НЕ двигается и НЕ телепортируется (позиционный пейофф в духе Dead Cells
+# Assassin's Dagger): кинжал материализуется за спиной цели, паралич-яд даёт окно
+# на побег или добивание, удар в спину бьёт больнее.
 func _fire_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var backstab_target := target
 	if backstab_target == null:
@@ -1787,65 +1827,118 @@ func _fire_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector
 	var slash := AttackVfx.slash(_projectile_parent(), strike_direction, aoe_radius, visual_color)
 	_register_effect(slash)
 	slash.global_position = back_position
-	_damage_enemy(backstab_target, _rolled_damage(owner_node) * 1.22)
-	# SCRUM-961 «Парализующее лезвие»: задетые ударом Плаща Захода коротко
-	# укореняются (кламп скорости движка 0.25 = «паралич-лайт»).
-	var root_duration := _owner_mod("backstab_root_duration")
-	if root_duration > 0.0:
-		_apply_backstab_root(backstab_target, root_duration)
+	var damage_value := _rolled_damage(owner_node)
+	var strike_damage := damage_value * BACKSTAB_STRIKE_MULTIPLIER
+	# Позиционный backstab: цель отдаёт спину фантому (смотрит/движется прочь) —
+	# чейзеры, идущие на героя, наказываются; враг, глядящий на фантом, видит удар.
+	if _is_backstab_hit(backstab_target, back_position, owner_node.global_position):
+		strike_damage *= BACKSTAB_POSITIONAL_MULTIPLIER
+	_damage_enemy(backstab_target, strike_damage)
+	# Встроенный контроль SCRUM-897: короткое окно паралича-яда (кап, босс-резист);
+	# SCRUM-961 «Парализующее лезвие» (backstab_root_duration) продлевает окно.
+	var paralysis_window := clampf(poison_paralysis_duration + _owner_mod("backstab_root_duration"), 0.0, POISON_PARALYSIS_CAP)
+	_apply_poison_paralysis(backstab_target, paralysis_window)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or enemy_node == backstab_target or not is_instance_valid(enemy_node):
 			continue
 		if back_position.distance_squared_to(enemy_node.global_position) <= pow(aoe_radius * 0.55, 2.0):
-			_damage_enemy(enemy_node, damage * 0.35)
-			if root_duration > 0.0:
-				_apply_backstab_root(enemy_node, root_duration)
+			_damage_enemy(enemy_node, damage_value * BACKSTAB_NEIGHBOR_SHARE)
+			_apply_poison_paralysis(enemy_node, paralysis_window)
 	var vanish := AttackVfx.ring_pulse(_projectile_parent(), back_position, 62.0, visual_color, false)
 	_register_effect(vanish)
 
 
-func _apply_backstab_root(enemy_node: Node2D, duration: float) -> void:
-	StatusEffects.apply_status(enemy_node, "backstab_paralysis", {
-		"duration": duration,
-		"speed_multiplier": 0.25,
-		"marker_color": Color(0.55, 0.70, 1.0, 1.0),
+# SCRUM-897: условие удара в спину — цель смотрит ПРОЧЬ от фантома. Направление
+# взгляда: живая скорость врага (движение), иначе фоллбэк «чейзер смотрит на
+# героя». Фантом появляется за спиной цели относительно героя, поэтому идущий на
+# героя враг отдаёт спину, а убегающий/идущий на фантом — видит кинжал.
+func _is_backstab_hit(enemy_node: Node2D, phantom_position: Vector2, owner_position: Vector2) -> bool:
+	var away_from_phantom := enemy_node.global_position - phantom_position
+	if away_from_phantom.length_squared() <= 0.001:
+		return true
+	var facing := Vector2.ZERO
+	var velocity_raw = enemy_node.get("velocity")
+	if velocity_raw is Vector2 and (velocity_raw as Vector2).length_squared() > 4.0:
+		facing = (velocity_raw as Vector2).normalized()
+	else:
+		facing = (owner_position - enemy_node.global_position).normalized()
+	if facing.length_squared() <= 0.001:
+		return true
+	return facing.dot(away_from_phantom.normalized()) >= BACKSTAB_FACING_DOT_THRESHOLD
+
+
+# SCRUM-897: боссы и элиты сопротивляются контролю — окно паралича срезано
+# (POISON_PARALYSIS_BOSS_FACTOR), пермалок невозможен (кап + короткая база).
+func _control_resist_factor(enemy_node: Node2D) -> float:
+	if enemy_node.is_in_group("bosses") or enemy_node.is_in_group("elite_enemies"):
+		return POISON_PARALYSIS_BOSS_FACTOR
+	return 1.0
+
+
+func _apply_poison_paralysis(enemy_node: Node2D, duration: float) -> void:
+	var effective_duration := duration * _control_resist_factor(enemy_node)
+	if effective_duration <= 0.0:
+		return
+	# Паралич-лайт: StatusEffects.speed_multiplier клампит группу статусов на 0.25 —
+	# жертва почти стоит, но контроль не абсолютен и всегда конечен.
+	StatusEffects.apply_status(enemy_node, "poison_paralysis", {
+		"duration": effective_duration,
+		"speed_multiplier": POISON_PARALYSIS_SPEED,
+		"marker_color": Color(0.50, 0.95, 0.45, 1.0),
 	})
 
 
+# SCRUM-897 «Дымовая Бомба»: брошенный снаряд с отложенной детонацией. Шашка
+# видимо летит в точку grenade_delay, на детонации — ОДНО AoE-событие урона
+# (скейлится уроном/AoE/темпом билда — реальный источник килов), затем на земле
+# остаётся НЕдамажащее облако smoke_duration. Уклонение действует ТОЛЬКО пока
+# герой стоит внутри облака (Player.register_smoke_cloud / smoke_cloud_dodge_bonus,
+# суммарный кап в дыму — SMOKE_CLOUD_DODGE_CAP=0.90).
 func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 240.0)
 	if target != null:
 		target_position = target.global_position
-	var smoke := AttackVfx.ring_pulse(_projectile_parent(), target_position, aoe_radius, visual_color, true)
-	_register_effect(smoke)
-	_apply_temporary_dodge(owner_node)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var tween := create_tween()
-	tween.tween_interval(maxf(grenade_delay, 0.10))
-	tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		if current_weapon == null:
-			if is_instance_valid(smoke):
-				smoke.queue_free()
-			return
-		var damage_value := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
-		if current_owner != null:
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", maxf(float(current_weapon.get("smoke_duration")), 0.2), direction, {"delayed": true})
-		current_weapon.call("_damage_enemies_in_circle", target_position, aoe_radius, damage_value)
-		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
-	)
-	tween.tween_interval(maxf(_effective_smoke_duration(), 0.2))
-	tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		if current_weapon != null:
-			current_weapon.call("_release_effect", smoke)
-		elif is_instance_valid(smoke):
-			smoke.queue_free()
-	)
+	var bomb := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 20.0, visual_color)
+	_register_effect(bomb)
+	var fuse := maxf(grenade_delay, 0.10)
+	var travel_tween := create_tween()
+	travel_tween.tween_property(bomb, "global_position", target_position, fuse)
+	# SCRUM-551: без захвата узлов в лямбду — Callable.bind по instance_id
+	# (tween умирает вместе с оружием, бесхозная детонация невозможна).
+	var detonation_tween := create_tween()
+	detonation_tween.tween_interval(fuse)
+	detonation_tween.tween_callback(Callable(self, "_detonate_smoke_bomb").bind(owner_node.get_instance_id(), bomb.get_instance_id(), target_position, direction))
+
+
+func _detonate_smoke_bomb(owner_instance_id: int, bomb_instance_id: int, target_position: Vector2, direction: Vector2) -> void:
+	var bomb := instance_from_id(bomb_instance_id) as Node
+	if bomb != null and is_instance_valid(bomb):
+		_release_effect(bomb)
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_instance_id) as Node2D
+	if current_owner != null and not is_instance_valid(current_owner):
+		current_owner = null
+	var damage_value := damage if current_owner == null else _rolled_damage(current_owner)
+	# Единственное дамажащее событие дыма — сам взрыв.
+	_damage_enemies_in_circle(target_position, aoe_radius, damage_value)
+	AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius, visual_color)
+	# Облако после взрыва урона НЕ наносит — только позиционное уклонение.
+	var cloud := AttackVfx.ring_pulse(_projectile_parent(), target_position, aoe_radius, visual_color, true)
+	_register_effect(cloud)
+	var cloud_duration := maxf(_effective_smoke_duration(), 0.2)
+	if current_owner != null:
+		_emit_weapon_animation_event(current_owner, "release", cloud_duration, direction, {"delayed": true})
+		# SCRUM-961 «Дымный тайник»: облако плотнее (+smoke_dodge_bonus) и дольше
+		# (_effective_smoke_duration); бонус живёт только внутри зоны облака.
+		var cloud_dodge := dodge_bonus + _owner_mod("smoke_dodge_bonus")
+		if current_owner.has_method("register_smoke_cloud"):
+			current_owner.call("register_smoke_cloud", target_position, aoe_radius, cloud_duration, cloud_dodge)
+	var cloud_tween := create_tween()
+	cloud_tween.tween_interval(cloud_duration)
+	cloud_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(cloud.get_instance_id()))
 
 
 # === SCRUM-947..950: кит Элементалиста (редизайн поверх trait «Проводник стихий») ===
@@ -3133,45 +3226,21 @@ func _compress_enemies_to_axis(origin: Vector2, direction: Vector2, perpendicula
 
 
 func _try_steal_money(owner_node: Node2D, hit_index: int) -> void:
+	# SCRUM-897: золото начисляется МГНОВЕННО в кошель забега (gain_money) — без
+	# спавна и сбора money-пикапа — и ДЕТЕРМИНИРОВАННО с первых steal_hits целей
+	# цепи (читаемая экономика вместо прежнего 42%-ролла по хвосту).
 	# SCRUM-961 «Счастливая монета»: coin_steal_bonus добавляет краденое золото.
 	var effective_steal := steal_money + int(_owner_mod("coin_steal_bonus")) if steal_money > 0 else steal_money
 	if effective_steal <= 0 or owner_node == null or not owner_node.has_method("gain_money"):
 		return
-	if hit_index > 0 and randf() > 0.42:
+	if hit_index >= maxi(steal_hits, 1):
 		return
 	owner_node.gain_money(effective_steal)
 
 
-func _apply_temporary_dodge(owner_node: Node2D) -> void:
-	if dodge_bonus <= 0.0 or owner_node == null:
-		return
-	# SCRUM-961 «Дымный тайник»: завеса плотнее (+smoke_dodge_bonus) и дольше
-	# (_effective_smoke_duration); снимаем ровно добавленное.
-	var effective_dodge := dodge_bonus + _owner_mod("smoke_dodge_bonus")
-	var modifiers_raw = owner_node.get("run_modifiers")
-	if not (modifiers_raw is Dictionary):
-		return
-	var modifiers: Dictionary = modifiers_raw
-	modifiers["dodge_flat"] = float(modifiers.get("dodge_flat", 0.0)) + effective_dodge
-	if owner_node.has_method("_apply_stat_scaling"):
-		owner_node.call("_apply_stat_scaling", false, owner_node.get("max_health"))
-	var owner_id := owner_node.get_instance_id()
-	var remove_tween := create_tween()
-	remove_tween.tween_interval(maxf(_effective_smoke_duration(), 0.2))
-	remove_tween.tween_callback(func() -> void:
-		var current_owner := instance_from_id(owner_id) as Node
-		if current_owner == null:
-			return
-		var current_modifiers_raw = current_owner.get("run_modifiers")
-		if not (current_modifiers_raw is Dictionary):
-			return
-		var current_modifiers: Dictionary = current_modifiers_raw
-		current_modifiers["dodge_flat"] = maxf(0.0, float(current_modifiers.get("dodge_flat", 0.0)) - effective_dodge)
-		if current_owner.has_method("_apply_stat_scaling"):
-			current_owner.call("_apply_stat_scaling", false, current_owner.get("max_health"))
-	)
-
-
+# SCRUM-897: прежний глобальный временный dodge (_apply_temporary_dodge через
+# run_modifiers) удалён — уклонение дыма стало ПОЗИЦИОННЫМ (только внутри облака,
+# см. _detonate_smoke_bomb + Player.smoke_cloud_dodge_bonus).
 # SCRUM-961 «Дымный тайник»: длительность завесы с бонусом артефакта.
 func _effective_smoke_duration() -> float:
 	return smoke_duration * (1.0 + _owner_mod("smoke_duration_mult"))

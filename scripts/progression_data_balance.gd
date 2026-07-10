@@ -178,6 +178,12 @@ const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
 const SURVIVABILITY_DODGE_CAP := 0.55
 const SURVIVABILITY_DODGE_DIMINISH := 1.15
+# SCRUM-897 «Дымовая Бомба»: потолок СУММАРНОГО шанса уворота внутри дым-облака
+# Вора (капнутый базовый dodge + бонус облака). Читается только пока герой стоит
+# в живом облаке (player.smoke_cloud_dodge_bonus); вне дыма действует обычный
+# SURVIVABILITY_DODGE_CAP. 0.90 = «почти неуязвим в дыму при тяжёлом dodge-билде,
+# но никогда не бессмертен и только внутри облака».
+const SMOKE_CLOUD_DODGE_CAP := 0.90
 # SCRUM-526: нерф защитной оси (absorb/regen/vampiric). Защитные механики были
 # супер-имбовыми — «закопаться в выживаемость» доминировало над уроном. Ослаблены
 # измеримо, чтобы выживаемость была полезной, но не доминирующей стратегией.

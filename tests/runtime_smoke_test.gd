@@ -5131,28 +5131,41 @@ func _test_thief_weapon_mechanics() -> void:
 		holder.add_child(enemy)
 		enemy.set("max_health", 100000.0)
 		enemy.set("health", 100000.0)
-		enemy.global_position = thief.global_position + Vector2(180, 0)
+		# SCRUM-897: для дыма враг ближе — облако садится на цель, и герой обязан
+		# оказаться ВНУТРИ зоны (уклонение дыма позиционное).
+		var enemy_offset := Vector2(120, 0) if weapon_id == "thief_smoke_bomb" else Vector2(180, 0)
+		enemy.global_position = thief.global_position + enemy_offset
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		var before_money := int(thief.get("money"))
-		var before_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
 		var before_position: Vector2 = thief.global_position
 		weapon.call("_attack")
 		await create_timer(0.85).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Thief weapon %s to damage its target." % weapon_id)
 			return
-		if weapon_id == "thief_shadow_cloak" and thief.global_position.distance_to(before_position) > 0.01:
-			_fail("Expected Thief shadow cloak to strike without moving the player body.")
-			return
+		if weapon_id == "thief_shadow_cloak":
+			if thief.global_position.distance_to(before_position) > 0.01:
+				_fail("Expected Thief poison dagger to strike without moving the player body.")
+				return
+			# SCRUM-897: встроенное окно паралича-яда (контроль без телепорта).
+			if not StatusEffects.has_status(enemy, "poison_paralysis"):
+				_fail("Expected Thief poison dagger to apply its paralysis window.")
+				return
 		if weapon_id == "thief_coin_pouch" and int(thief.get("money")) <= before_money:
-			_fail("Expected Thief coin pouch to steal money on hit.")
+			_fail("Expected Thief coin pouch to add stolen money instantly on hit.")
 			return
 		if weapon_id == "thief_smoke_bomb":
-			var current_dodge := float((thief.get("derived_parameters") as Dictionary).get("dodge", 0.0))
-			if current_dodge <= before_dodge:
-				_fail("Expected Thief smoke bomb to grant temporary dodge.")
+			# SCRUM-897: после детонации бонус уклонения живёт только внутри облака.
+			if float(thief.call("smoke_cloud_dodge_bonus")) <= 0.0:
+				_fail("Expected Thief smoke cloud to grant dodge while standing inside.")
 				return
+			var inside_position: Vector2 = thief.global_position
+			thief.global_position = inside_position + Vector2(4000, 0)
+			if float(thief.call("smoke_cloud_dodge_bonus")) > 0.0:
+				_fail("Expected Thief smoke dodge to stop outside the cloud.")
+				return
+			thief.global_position = inside_position
 		thief.queue_free()
 		enemy.queue_free()
 		await process_frame

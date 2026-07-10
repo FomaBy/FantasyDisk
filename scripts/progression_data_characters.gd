@@ -154,10 +154,13 @@ const CHARACTER_CONFIGS := {
 		"sprite_path": "res://assets/sprites/characters/full_frame/soldier_pixellab/soldier_idle_south.png",
 	},
 	"thief": {
+		# SCRUM-897: экономико-уклонительный трикстер — trait «Воровская
+		# хватка» (магнит подбора) + монета с мгновенным золотом + яд-кинжал
+		# контроля + дым-облако уклонения.
 		"id": "thief",
 		"title": "Вор",
-		"description": "Быстрый плут: монеты скачут рикошетом по толпе, тень бьет в спину, дым укрывает. Хрупок, но верток — и по пути набивает кошель.",
-		"strengths": "высокий темп и криты, удары в спину, рикошеты по толпе, добыча золота.",
+		"description": "Плут-добытчик: добыча сама тянется к нему, монеты скачут рикошетом и тут же пополняют кошель, яд-кинжал сковывает жертву, а дымовое облако укрывает от ударов. Хрупок, но верток.",
+		"strengths": "магнит добычи (радиус подбора), рикошеты с мгновенным золотом, паралич-яд, уклонение в дыму.",
 		"weaknesses": "мало здоровья, ошибку вплотную не прощает.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png",
 	},
@@ -355,6 +358,19 @@ const CLASS_TRAITS := {
 		"description": "Весь периодический урон Химика усилен на +50%: DoT-тики, тики кислотных луж, перманентные кислотные заряды и волны гомункула-кастера. Прямые попадания (включая взрыв Взрывной пыли) не усиливаются.",
 		"periodic_damage_multiplier": 1.5,
 	},
+	"thief": {
+		# SCRUM-897 «Воровская хватка»: сильно увеличенный СТАРТОВЫЙ радиус
+		# подбора — деньги, опыт и материалы сами тянутся к Вору (identity
+		# класса, не бонус одного оружия). Потребитель — множитель базовой
+		# (105 + perception×7) части pickup_radius в
+		# ProgressionData.derived_parameters; flat-источники забега
+		# (pickup_radius_flat) идут поверх БЕЗ усиления — рост ограничен.
+		# Покрыт tests/thief_kit_test.gd.
+		"id": "thief_grip",
+		"title": "Воровская хватка",
+		"description": "Стартовый радиус подбора почти вдвое больше обычного: деньги, опыт и материалы сами тянутся к Вору.",
+		"pickup_radius_multiplier": 1.85,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {
@@ -381,14 +397,17 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"thief": {
+		# SCRUM-897: trait «Воровская хватка» — источник истины в
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (pickup_radius_multiplier), потребитель — derived_parameters.
 		"main_attribute": "agility",
-		"identity_title": "Уловка и темп",
-		"summary": "Ловкость — его монета: чем быстрее руки, тем чаще криты, увороты и трюки, на которые враг не успевает ответить.",
-		"mechanic_tags": ["mobility", "ricochet", "backstab", "smoke_evasion"],
+		"identity_title": "Воровская хватка",
+		"summary": "Ловкость — его монета, а хватка — его кошель: добыча сама тянется к Вору (стартовый радиус подбора почти вдвое выше), монеты рикошетят с мгновенной прибылью, яд-кинжал и дым дают окно на побег или добивание.",
+		"mechanic_tags": ["pickup_magnet", "ricochet", "poison_control", "smoke_evasion"],
 		"weapon_identities": {
-			"thief_coin_pouch": "золотой рикошет по нескольким целям",
-			"thief_shadow_cloak": "рывок/удар в уязвимое окно",
-			"thief_smoke_bomb": "дымовая зона контроля и уклонения",
+			"thief_coin_pouch": "золотой рикошет по цепи целей с мгновенным воровством золота",
+			"thief_shadow_cloak": "яд-кинжал из тени: паралич-окно и удар в спину без смещения героя",
+			"thief_smoke_bomb": "бросок дыма: взрыв по области и облако уклонения",
 		},
 	},
 	"elementalist": {
@@ -594,10 +613,10 @@ const CLASS_INTERPRETATIONS := {
 		"summon_amount": "Повышает частоту эхо-залпов и поддержку строя.",
 	},
 	"thief": {
-		"strength": "Добавляет вес backstab-ударам и рикошетам.",
+		"strength": "Добавляет вес ударам кинжала и рикошетам.",
 		"agility": "Главный стат: ускоряет темп уловок, крит и выживание через движение.",
 		"intelligence": "Зачаровывает дым и монеты теневой искрой.",
-		"perception": "Расширяет цепь рикошета, дальность захода и зону дыма.",
+		"perception": "Расширяет цепь рикошета, дальность кинжала, зону дыма и магнит добычи.",
 		"energy": "Быстрее заряжает Большой Куш и снижает темп провалов.",
 		"knowledge": "Добавляет яд/кровотечение к скрытым ударам.",
 		"endurance": "Компенсирует низкое HP через устойчивость к ошибкам.",
@@ -807,7 +826,8 @@ const ATTRIBUTE_RELEVANCE := {
 	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "thief", "sniper", "priest", "engineer", "assassin", "ranger", "doctor"]},
 	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "elementalist", "sniper", "biologist", "dark_mage", "assassin", "chemist", "knight"]},
 	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "thief", "sniper", "priest", "robot", "engineer", "dark_mage", "ranger"]},
-	"pickup_radius": {"primary": ["robot", "engineer"], "secondary": ["berserk", "thief", "elementalist", "sniper", "assassin", "ranger", "chemist", "knight"]},
+	# SCRUM-897: pickup_radius — первичная сила Вора (trait «Воровская хватка»).
+	"pickup_radius": {"primary": ["thief", "robot", "engineer"], "secondary": ["berserk", "elementalist", "sniper", "assassin", "ranger", "chemist", "knight"]},
 	"defense": {"primary": ["knight", "priest"], "secondary": ["thief", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
 	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["sniper", "priest", "robot", "engineer", "assassin", "ranger", "doctor", "chemist"]},
 	"knockback": {"primary": ["berserk", "guitarist"], "secondary": ["soldier", "elementalist", "sniper", "priest", "biologist", "chemist", "knight", "druid"]},
