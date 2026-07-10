@@ -134,3 +134,19 @@ reported PASS.
 
 Disk cleanup: QA `.godot` и disposable worktree удалены после фиксации
 Jira/local evidence.
+
+## SCRUM-1038 Fix Candidate (2026-07-10)
+
+Блокирующая visual geometry исправлена в отдельном child issue `SCRUM-1038`.
+Принятый PixelLab source/signature и восемь release кадров теперь визуально
+следуют пяти authored centerlines `-17/-8.5/0/+8.5/+17°`; immutable raw PixelLab
+exports сохранены рядом для provenance. Новый focused oracle измеряет реальные
+alpha-weighted центры на `x=96/128/160/176/192` и фиксирует maximum absolute
+error `1.380°` при hard tolerance `1.5°`; metadata-only false green устранён.
+Обновлённая contact sheet подтверждает совпадение реальных cyan-коридоров с
+yellow authority rays и читаемость на `96/64/48 px`.
+
+Все focused/unique/attack-VFX/animation/Ranger/weapon/full-runtime gates прошли.
+Это QA-ready fix candidate: исходный `## QA-Вердикт: FAILED` остаётся историей
+проверки, а `SCRUM-912` остаётся в `Контроль качества` до нового независимого
+вердикта. Shared gameplay hook по-прежнему вынесен в `SCRUM-1037`.

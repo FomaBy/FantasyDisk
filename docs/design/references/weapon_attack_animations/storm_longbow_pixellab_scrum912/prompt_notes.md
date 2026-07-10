@@ -43,13 +43,21 @@ Prompt:
 > blast, no character, no enemies, no text, no UI, transparent background, safe
 > gutters.
 
-## Acceptance decision
+## SCRUM-1038 geometry correction
 
-Accepted without a revision pass. The source shows a real longbow silhouette,
-exactly five separate arrow trails, a narrow forward cone and clear continuation
-past the arrowheads. At `x=96`, alpha segmentation produces five distinct
-vertical trail clusters. The animation preserves the bow pivot while the five
-arrowheads separate, continue and dissolve into low-density through-hit sparks.
+The first acceptance decision was rejected by independent QA: although metadata
+declared `34°`, the actual PixelLab alpha centers curved through approximately
+`-29/-14/0/+15/+31°`, making the visible fan about `60°` wide. The raw PixelLab
+source and eight raw animation exports are now retained unchanged beside the
+accepted files.
+
+SCRUM-1038 applies a deterministic, pivot-preserving postprocess to those
+PixelLab pixels. It preserves the neutral longbow and remaps only arrow/electric
+energy with five piecewise centerline controls to
+`-17/-8.5/0/+8.5/+17°`. No new hand-drawn raster content was introduced.
+Image-derived probes at `x=96/128/160/176/192` measure each real
+alpha-weighted corridor center; the maximum target-specific error is `1.38°`.
+This executable oracle replaces the old metadata-plus-one-slice false green.
 
 The PixelLab source is intentionally east-facing. The isolated Godot visual
 scene rotates the whole resource to the aim vector and scales it uniformly from

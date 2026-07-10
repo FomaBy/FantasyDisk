@@ -1,10 +1,12 @@
 extends SceneTree
 
 const MANIFEST_PATH := "res://docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/manifest.json"
+const STATIC_REPORT_PATH := "res://docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/static_alpha_readability_report.json"
 const SIGNATURE_PATH := "res://assets/sprites/effects/vfx_weapon_storm_longbow.png"
 const SPRITEFRAMES_PATH := "res://assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres"
 const SCENE_PATH := "res://scenes/vfx/StormLongbowVolleyVfx.tscn"
 const EXPECTED_OFFSETS := [-17.0, -8.5, 0.0, 8.5, 17.0]
+const EXPECTED_PROBE_X := [96, 128, 160, 176, 192]
 
 
 func _initialize() -> void:
@@ -14,7 +16,7 @@ func _initialize() -> void:
 		return
 	if not _test_manifest(manifest):
 		return
-	if not _test_signature_alpha_and_five_trails(manifest):
+	if not _test_signature_alpha_and_corridor_centers(manifest):
 		return
 	if not _test_spriteframes(manifest):
 		return
@@ -57,6 +59,8 @@ func _test_manifest(manifest: Dictionary) -> bool:
 		return _fail("SCRUM-912 must record PixelLab-only production.")
 	if bool(manifest.get("openai_images_used", true)):
 		return _fail("SCRUM-912 must not use OpenAI Images or legacy generators.")
+	if str(manifest.get("fix_issue", "")) != "SCRUM-1038":
+		return _fail("Storm Longbow visual manifest must record SCRUM-1038 geometry correction.")
 
 	var geometry := manifest.get("geometry", {}) as Dictionary
 	if int(geometry.get("arrow_count", 0)) != 5:
@@ -80,7 +84,7 @@ func _test_manifest(manifest: Dictionary) -> bool:
 	return true
 
 
-func _test_signature_alpha_and_five_trails(manifest: Dictionary) -> bool:
+func _test_signature_alpha_and_corridor_centers(manifest: Dictionary) -> bool:
 	var image := Image.new()
 	var error := image.load(ProjectSettings.globalize_path(SIGNATURE_PATH))
 	if error != OK:
@@ -98,14 +102,115 @@ func _test_signature_alpha_and_five_trails(manifest: Dictionary) -> bool:
 	for point in [Vector2i.ZERO, Vector2i(255, 0), Vector2i(0, 255), Vector2i(255, 255)]:
 		if image.get_pixelv(point).a > 0.001:
 			return _fail("Storm Longbow signature corners must be transparent.")
-	var probe := (manifest.get("geometry", {}) as Dictionary).get("source_cluster_probe", {}) as Dictionary
-	var probe_x := int(probe.get("x", 96))
-	var alpha_threshold := int(probe.get("alpha_threshold", 8))
-	var max_gap := int(probe.get("max_gap", 2))
-	var clusters := _vertical_alpha_clusters(image, probe_x, alpha_threshold, max_gap)
-	if clusters != 5:
-		return _fail("PixelLab signature must visibly separate five trails at x=%d; got %d." % [probe_x, clusters])
+	var geometry := manifest.get("geometry", {}) as Dictionary
+	var oracle := geometry.get("image_corridor_oracle", {}) as Dictionary
+	var x_slices := oracle.get("x_slices", []) as Array
+	var expected_centers := oracle.get("expected_centers_degrees", []) as Array
+	var source_origin_values := geometry.get("source_origin_px", []) as Array
+	if x_slices.size() != EXPECTED_PROBE_X.size():
+		return _fail("SCRUM-1038 image oracle must probe five representative x slices.")
+	for index in range(EXPECTED_PROBE_X.size()):
+		if int(x_slices[index]) != int(EXPECTED_PROBE_X[index]):
+			return _fail("SCRUM-1038 image oracle probe mismatch at index %d." % index)
+	if expected_centers.size() != EXPECTED_OFFSETS.size():
+		return _fail("SCRUM-1038 image oracle must define all five authored centers.")
+	if source_origin_values.size() != 2:
+		return _fail("SCRUM-1038 image oracle requires the authored source pivot.")
+	var source_origin := Vector2(float(source_origin_values[0]), float(source_origin_values[1]))
+	if source_origin != Vector2(26.0, 128.0):
+		return _fail("SCRUM-1038 image oracle pivot must remain (26,128).")
+	var alpha_threshold := int(oracle.get("alpha_threshold", 8))
+	var minimum_weight := float(oracle.get("minimum_opaque_weight_per_corridor", 100))
+	var angle_tolerance := float(oracle.get("maximum_absolute_center_error_degrees", 1.5))
+	if angle_tolerance > 1.5:
+		return _fail("SCRUM-1038 centerline tolerance must not exceed 1.5 degrees.")
+	var measured_maximum_error := 0.0
+	for x_value in x_slices:
+		var probe_x := int(x_value)
+		var measurements := _measure_real_corridor_centers(
+			image, probe_x, source_origin, expected_centers, alpha_threshold
+		)
+		if measurements.size() != EXPECTED_OFFSETS.size():
+			return _fail("SCRUM-1038 could not measure five real corridors at x=%d." % probe_x)
+		for index in range(measurements.size()):
+			var measurement := measurements[index] as Dictionary
+			var opaque_weight := float(measurement.get("opaque_weight", 0.0))
+			var measured_angle := float(measurement.get("measured_angle_degrees", 999.0))
+			var expected_angle := float(EXPECTED_OFFSETS[index])
+			if opaque_weight < minimum_weight:
+				return _fail(
+					"SCRUM-1038 corridor %d lacks real opacity at x=%d: %.1f < %.1f."
+					% [index, probe_x, opaque_weight, minimum_weight]
+				)
+			var angle_error := absf(measured_angle - expected_angle)
+			measured_maximum_error = maxf(measured_maximum_error, angle_error)
+			if angle_error > angle_tolerance:
+				return _fail(
+					"SCRUM-1038 real corridor %d at x=%d measures %.3f degrees; expected %.3f +/- %.3f."
+					% [index, probe_x, measured_angle, expected_angle, angle_tolerance]
+				)
+	# Keep a distinctness guard at representative flight slices in addition to
+	# center-angle measurement. This prevents one thick alpha wedge from satisfying
+	# the five midpoint bands.
+	for probe_x in [96, 128, 160, 176]:
+		var clusters := _vertical_alpha_clusters(image, probe_x, alpha_threshold, 2)
+		if clusters != 5:
+			return _fail("PixelLab signature must visibly separate five trails at x=%d; got %d." % [probe_x, clusters])
+	var recorded_error := float(oracle.get("measured_maximum_absolute_center_error_degrees", -1.0))
+	if not is_equal_approx(snappedf(measured_maximum_error, 0.001), recorded_error):
+		return _fail(
+			"SCRUM-1038 manifest measured error %.3f does not match image-derived %.3f."
+			% [recorded_error, measured_maximum_error]
+		)
+	if not FileAccess.file_exists(STATIC_REPORT_PATH):
+		return _fail("Missing SCRUM-1038 static image measurement report.")
+	var report = JSON.parse_string(FileAccess.get_file_as_string(STATIC_REPORT_PATH))
+	if not report is Dictionary or str((report as Dictionary).get("issue", "")) != "SCRUM-1038":
+		return _fail("SCRUM-1038 static image measurement report is invalid.")
 	return true
+
+
+func _measure_real_corridor_centers(
+	image: Image,
+	x: int,
+	source_origin: Vector2,
+	expected_centers: Array,
+	alpha_threshold: int
+) -> Array:
+	if x <= int(source_origin.x):
+		return []
+	var target_y: Array[float] = []
+	for expected_angle in expected_centers:
+		target_y.append(
+			source_origin.y + tan(deg_to_rad(float(expected_angle))) * (float(x) - source_origin.x)
+		)
+	var boundaries: Array[float] = [-INF]
+	for index in range(target_y.size() - 1):
+		boundaries.append((target_y[index] + target_y[index + 1]) * 0.5)
+	boundaries.append(INF)
+	var measurements: Array = []
+	for corridor_index in range(target_y.size()):
+		var opaque_weight := 0.0
+		var weighted_y := 0.0
+		for y in range(image.get_height()):
+			if float(y) < boundaries[corridor_index] or float(y) >= boundaries[corridor_index + 1]:
+				continue
+			var alpha_byte := float(int(round(image.get_pixel(x, y).a * 255.0)))
+			if alpha_byte <= float(alpha_threshold):
+				continue
+			opaque_weight += alpha_byte
+			weighted_y += float(y) * alpha_byte
+		if opaque_weight <= 0.0:
+			return []
+		var center_y := weighted_y / opaque_weight
+		measurements.append({
+			"opaque_weight": opaque_weight,
+			"center_y": center_y,
+			"measured_angle_degrees": rad_to_deg(
+				atan2(center_y - source_origin.y, float(x) - source_origin.x)
+			),
+		})
+	return measurements
 
 
 func _test_spriteframes(manifest: Dictionary) -> bool:

@@ -1,5 +1,6 @@
 {
   "issue": "SCRUM-912",
+  "fix_issue": "SCRUM-1038",
   "weapon_id": "storm_longbow",
   "effect_id": "storm_longbow_piercing_release",
   "display_name": "Грозовой длинный лук — пробивающий грозовой залп",
@@ -9,6 +10,7 @@
   "pixel_lab": {
     "config_smoke_passed": true,
     "config_smoke_tool": "get_balance",
+    "config_smoke_reverified_for_fix": "2026-07-10",
     "tools_list_count": 49,
     "source_tool": "create_1_direction_object",
     "animation_tool": "animate_object",
@@ -40,11 +42,14 @@
     "knockback_direction": "away_from_ranger",
     "source_origin_px": [26, 128],
     "source_endpoint_x_px": 230,
-    "source_cluster_probe": {
-      "x": 96,
+    "image_corridor_oracle": {
+      "x_slices": [96, 128, 160, 176, 192],
       "alpha_threshold": 8,
-      "max_gap": 2,
-      "expected_vertical_clusters": 5
+      "minimum_opaque_weight_per_corridor": 100,
+      "expected_centers_degrees": [-17.0, -8.5, 0.0, 8.5, 17.0],
+      "maximum_absolute_center_error_degrees": 1.5,
+      "measured_maximum_absolute_center_error_degrees": 1.38,
+      "authority_pivot_px": [26, 128]
     }
   },
   "animation": {
@@ -66,6 +71,14 @@
   "source_files": [
     "storm_longbow_pixellab_source_raw.png",
     "storm_longbow_pixellab_source.png",
+    "pixellab_release_raw_00.png",
+    "pixellab_release_raw_01.png",
+    "pixellab_release_raw_02.png",
+    "pixellab_release_raw_03.png",
+    "pixellab_release_raw_04.png",
+    "pixellab_release_raw_05.png",
+    "pixellab_release_raw_06.png",
+    "pixellab_release_raw_07.png",
     "pixellab_release_00.png",
     "pixellab_release_01.png",
     "pixellab_release_02.png",
@@ -94,19 +107,22 @@
     "shared_backend_hook_added": false
   },
   "postprocess": {
-    "runtime_art_source": "PixelLab exports copied losslessly; no hand-drawn raster content",
+    "runtime_art_source": "PixelLab exports normalized by deterministic centerline remap; no new hand-drawn raster content",
     "steps": [
       "Downloaded the completed PixelLab RGBA source and eight v3 animation frames with a browser-like User-Agent.",
-      "Kept PixelLab pixels unchanged for source and runtime exports because alpha, count, silhouette and gutters already passed.",
-      "Replaced the existing 256x256 weapon-signature PNG with the accepted PixelLab source at the same runtime path.",
+      "Preserved the immutable raw PixelLab source and eight raw animation exports in the reference pack.",
+      "SCRUM-1038 fitted the rejected real PixelLab centers around pivot (26,128), then applied a deterministic piecewise vertical remap from about -29/-14/0/+15/+31 degrees to exact authored -17/-8.5/0/+8.5/+17 degree rays.",
+      "Preserved the neutral bow and pivot; remapped only PixelLab arrow/electricity pixels and added no painted raster content.",
+      "Promoted the corrected accepted source to the 256x256 signature and corrected all eight reference/runtime animation frames.",
       "Built a Godot SpriteFrames resource and isolated self-cleaning visual scene without editing shared gameplay code.",
-      "Generated a contact sheet with dark/light, geometry-overlay and combat-scale QA panels; overlays exist only in evidence, never runtime art."
+      "Generated a contact sheet with dark/light, geometry-overlay and combat-scale QA panels; overlays exist only in evidence, never runtime art.",
+      "Added an image-derived executable oracle that measures the five real alpha-weighted corridor centers at x=96/128/160/176/192 instead of trusting metadata."
     ]
   },
   "evidence": {
     "contact_sheet": "docs/design/previews/weapon_attack_animations/storm_longbow_pixellab_scrum912_contact.png",
     "focused_test": "tests/scrum912_storm_longbow_vfx_test.gd",
     "static_report": "static_alpha_readability_report.json",
-    "visual_decision": "accepted: exact five-trail silhouette, readable bow release, distinct from Moon Crossbow and generic beam channel"
+    "visual_decision": "SCRUM-1038 fix candidate: five real trail centers match the authored rays within 1.38 degrees; independent QA still required"
   }
 }

@@ -1,11 +1,11 @@
 # BUG: SCRUM-912 Storm Longbow VFX шире игрового конуса
 
-Статус: new
+Статус: done
 Приоритет: p1
 Роль: Design / Animator
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Codex Design/Animator `/root/fix_scrum1038`
+Thread: `/root/fix_scrum1038`
 Версия: 0.2.1
 Jira: SCRUM-1038
 Источник QA: SCRUM-912
@@ -77,3 +77,46 @@ manifest/scene metadata и считает пять vertical alpha clusters ли�
   `tests/scrum912_storm_longbow_vfx_test.gd.uid`.
 - Jira link: SCRUM-1038 blocks SCRUM-912; SCRUM-912 остаётся в
   `Контроль качества` до фикса и независимого retest.
+
+## Результат SCRUM-1038
+
+Исправление подготовлено как QA-ready fix candidate; независимый QA ещё
+обязателен. PixelLab MCP config smoke повторно прошёл через `get_balance`, а
+исходные PixelLab object/animation IDs сохранены. Immutable raw source и восемь
+raw release exports сохранены в reference pack. Принятый source, signature и
+все восемь reference/runtime кадров пересобраны детерминированным centerline
+remap без нового hand-drawn raster content: нейтральный лук и pivot `(26,128)`
+не менялись, ремапились только стрелы/электричество.
+
+Image-derived oracle измеряет реальные alpha-weighted центры на пяти срезах:
+
+| x | Реальные углы центров, ° |
+| --- | --- |
+| `96` | `-16.670 / -8.019 / -0.104 / +7.411 / +16.522` |
+| `128` | `-17.603 / -8.625 / -0.457 / +8.744 / +17.358` |
+| `160` | `-18.380 / -8.751 / +0.624 / +8.632 / +18.087` |
+| `176` | `-17.526 / -9.008 / +0.191 / +8.717 / +17.708` |
+| `192` | `-16.384 / -8.124 / -0.046 / +8.036 / +17.496` |
+
+Максимальная target-specific ошибка `1.380°` при допуске `1.5°`. На
+`x=96/128/160/176` дополнительно доказаны ровно пять раздельных alpha clusters,
+поэтому один широкий клин не может дать false green через midpoint bands.
+Старый raw source тем же измерением выходит примерно на `58–62°` и новый oracle
+не проходит.
+
+Проверки Godot 4.7 через `tools/godot_gate.py` — PASS:
+
+- `scrum912_storm_longbow_vfx_test.gd`;
+- `unique_weapon_vfx_assets_test.gd` (`51` plates);
+- `attack_vfx_smoke_test.gd`;
+- `animation_smoke_test.gd`;
+- `ranger_kit_test.gd` (`SCRUM-909..913`);
+- `runtime_smoke_weapon_mechanics_test.gd`;
+- `runtime_smoke_test.gd`.
+
+Полный runtime/weapon smoke сохранил известные non-fatal headless diagnostics
+про freed lambda/null dummy-renderer texture, но оба завершились exit `0` и
+явным `PASS`. Task-owned `.gd.uid` для VFX script и focused test добавлены и
+уникальны; случайные UID sidecars от общего импорта удалены. Shared gameplay
+hook и общие gameplay/runtime файлы не менялись. Parent `SCRUM-912` и bug
+`SCRUM-1038` направляются в `Контроль качества`, не в `Готово`.
