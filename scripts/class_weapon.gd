@@ -1531,6 +1531,9 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 # 1.0 — без спада). Дедуп по врагам НА ВЕСЬ залп: цель у вершины конуса, куда
 # попадают несколько стрел, получает ровно один хит (и один trait-отброс) —
 # видимая зона совпадает с фактической (QA: без «невидимого» двойного урона).
+# Уже поражённое залпом тело ВСЁ РАВНО тратит пирс-бюджет проходящей сквозь
+# него стрелы (тела блокируют стрелы): колонна из 6 получает ровно
+# pierce_count хитов, дедуп не превращается в бесплатное углубление пирса.
 func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 	var arrow_count := maxi(beam_count + _extra_projectiles(), 1)
 	_emit_weapon_animation_event(owner_node, "channel", 0.18, direction, {"beam_count": arrow_count, "cone_degrees": cone_degrees})
@@ -1562,6 +1565,7 @@ func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 			if enemy_node == null or not is_instance_valid(enemy_node):
 				continue
 			if hit_ids.has(enemy_node.get_instance_id()):
+				pierced += 1  # тело уже поражено другой стрелой — бюджет пирса съеден
 				continue
 			hit_ids[enemy_node.get_instance_id()] = true
 			_damage_enemy(enemy_node, damage_value * pow(falloff, float(pierced)))
@@ -2140,7 +2144,7 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	# «Капканщик» (trap_extra_count) и «Ядро Расщепления» (extra_projectile):
 	# дополнительные капканы одним броском, веером поперёк направления.
 	var extra_traps := maxi(_extra_projectiles(), 0)
-	var center := owner_node.global_position + direction * min(attack_range, 180.0)
+	var center := owner_node.global_position + direction * minf(attack_range, 180.0)
 	var side := direction.orthogonal().normalized()
 	for trap_index in range(1 + extra_traps):
 		# 0, +70, -70, +140, ... — веер поперёк направления броска.

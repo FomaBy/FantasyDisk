@@ -73,6 +73,14 @@ class NeutralBody extends Node2D:
 
 
 func _initialize() -> void:
+	# Гейт компиляции: если class_weapon.gd не собрался, ClassWeapon.new()
+	# в стендах молча возвращает null и сценарии абортятся ДО ассертов —
+	# получился бы ложный PASS с пустым errors. Красним сразу и громко.
+	var weapon_script: Script = ClassWeapon
+	if not weapon_script.can_instantiate():
+		push_error("Ranger kit: class_weapon.gd не компилируется — все стенды мертвы, см. Parse Error выше.")
+		quit(1)
+		return
 	var errors: Array = []
 	_test_trait_registry_contract(errors)
 	_test_kit_data_contracts(errors)
