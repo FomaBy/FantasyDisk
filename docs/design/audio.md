@@ -27,8 +27,9 @@ wav/mp3 удалены). Предыдущие ревизии: 2026-07-09 (SCRUM-
 
 **CC BY-атрибуции обязательны** — канонический player-facing файл
 `docs/CREDITS.md` (6 треков Kevin MacLeod, incompetech.com, CC BY 4.0; источник
-блока — SOURCES.md). Игровой экран «Об игре/Благодарности» — хвост
-`docs/tasks/SCRUM-968_ui_screens_tail.md` (ui_screens.gd был залочен).
+блока — SOURCES.md). В live UI `MainMenuCreditsButton` открывает
+player-facing `CreditsScreen` с обязательным CC BY-блоком, CC0-вкладом и
+атрибуцией Godot.
 
 ### Нормализация и лупы (замеры 2026-07-09)
 

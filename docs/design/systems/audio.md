@@ -10,9 +10,10 @@
 - **SCRUM-967** (готово) — 15 органических SFX + low-HP cue (`assets/audio/sfx/*.ogg`).
 - **SCRUM-968** (готово) — backend-интеграция: `MUSIC_META`, shuffle-bag ротация §4,
   round-timed playback §3 (outro/стингеры), новые SFX id §5, типизированные хиты,
-  low-HP луп. Вызовы внутри залоченного `ui_screens.gd` (purchase/ui_click/ui_back/
-  ui_error/artifact_reveal/credits-экран) отложены в
-  `docs/tasks/SCRUM-968_ui_screens_tail.md`.
+  low-HP луп и UI-хвост. В `ui_screens.gd` уже работают `purchase`/
+  `ui_error` для покупок и отказов, централизованные `ui_click`/`ui_back`,
+  `artifact_reveal` для баннера победы и экранов награды, а главное меню
+  открывает player-facing экран «Благодарности» с обязательными атрибуциями.
 
 Фактическая реализация описана в конце, в разделе «Current state».
 Snapshot полного состояния игры: `docs/design/current_game_state.md`. Канонические ID:
@@ -411,9 +412,12 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
   physical/magic/dot/true), `player_hit`, `dodge`, `pickup_xp`, `pickup_money`,
   `level_up`, `boss_phase` (boss.gd `_update_boss_phase`), `low_hp_pulse` (луп-канал
   вне пула: `set_sfx_loop`, гистерезис в player.gd ВКЛ<30%/ВЫКЛ≥34% зеркалит виньетку,
-  fade 0.42/0.50 c; гаснет на смерти/конце боя). `purchase`, `ui_click`, `ui_back`,
-  `ui_error`, `artifact_reveal` — ассеты и id готовы, вызовы в залоченном
-  `ui_screens.gd` отложены (`docs/tasks/SCRUM-968_ui_screens_tail.md`).
+  fade 0.42/0.50 c; гаснет на смерти/конце боя). `purchase`/`ui_error` озвучивают
+  успешные покупки и отказы в магазине узла, докачке характеристик, Атласе и
+  платных вариантах события; `_connect_ui_sfx` добавляет `ui_click`/`ui_back`
+  к штатным обработчикам кнопок; `artifact_reveal` звучит на баннере победы и
+  экранах elite/boss-артефакта. `MainMenuCreditsButton` открывает
+  player-facing `CreditsScreen`; его `CreditsBackButton` и Escape возвращают в меню.
 
 ### Музыка
 

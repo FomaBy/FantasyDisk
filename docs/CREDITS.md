@@ -2,9 +2,10 @@
 
 Обновлено: 2026-07-10 (SCRUM-968). Этот файл — канонический источник
 player-facing атрибуций. Блок «Музыка (CC BY)» ОБЯЗАН сопровождать
-дистрибуцию игры и попасть на игровой экран «Об игре/Благодарности», когда
-он появится (хвост: docs/tasks/SCRUM-968_ui_screens_tail.md). Полные
-технические детали сорсинга: docs/design/references/audio_sources/SOURCES.md.
+дистрибуцию игры. В live UI `MainMenuCreditsButton` уже открывает
+player-facing `CreditsScreen`, где этот блок показан вместе с CC0-вкладом и
+атрибуцией Godot. Полные технические детали сорсинга:
+docs/design/references/audio_sources/SOURCES.md.
 
 ## Музыка (CC BY — атрибуция обязательна)
 
