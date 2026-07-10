@@ -81,3 +81,35 @@ Implementation готова к отдельному независимому QA.
 Disk cleanup: pending final gate; task worktree and `.godot` are active.
 
 Thread cleanup: not a disposable worker thread.
+
+## Независимый QA-вердикт — 2026-07-10
+
+QA Status: **PASSED**
+
+- QA worker: `codex-qa-scrum-954-20260710` (`/root/audit_qa`), Codex lane.
+- Fresh base: `origin/dev` `6cf4d389201162fa385826d98e005f161189dcfb`.
+- Оконная матрица проверена для всех шести разделов на 1280×720,
+  1920×1080 и 2560×1440, включая отдельное locked-состояние артефакта.
+- Content-zone/frame rule: PASSED — навигация, строки, изображения, текст,
+  chips и scrollbars остаются внутри пустых зон; рамки и орнамент не перекрыты.
+- Live resize 1080p→720p→1440p: PASSED — instance ids всех шести lazy/cached
+  страниц стабильны, visual font bounds соблюдены, активны ровно две scrollbar
+  lanes.
+- Discovery/unlock и русский canonical content: PASSED; locked dossier
+  показывает silhouette, `Заперто` и условие открытия; Возвышение использует
+  canonical combat-HUD icon.
+- Gamepad: menu/core/movement/combat/in-run/rebind PASS; full-flow smoke PASS
+  в трёх последовательных прогонах.
+- Регрессия PASS: Codex focused/data/discovery/unlock, UI no-overlap/theme,
+  asset references, display resolution, runtime UI, animation, meta
+  progression, melee targeting, target-query cache и полный runtime smoke.
+- Обнаруженные дефекты в scope SCRUM-954: нет. Pixel crop/zoom и enlarged
+  source-pack остаются в scope SCRUM-958 и не являются блокером этой приёмки.
+
+QA evidence было создано только в ignored
+`build/qa/scrum954-independent-qa/`; disposable QA worktree, `.godot` cache и
+эта transient evidence удаляются после commit/push. Итоговый Jira-комментарий
+фиксирует завершённую очистку диска.
+
+Thread cleanup: subagent QA не является отдельным Codex app worker task;
+архивировать пользовательский parent-task нельзя.
