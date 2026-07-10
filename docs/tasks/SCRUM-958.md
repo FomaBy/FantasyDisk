@@ -1,6 +1,6 @@
 # SCRUM-958 — Enlarged Codex entity and artifact images
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-958
 Контур: Codex
