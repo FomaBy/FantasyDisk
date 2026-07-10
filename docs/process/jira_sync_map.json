@@ -4377,5 +4377,10 @@
   "key": "SCRUM-1039",
   "status": "К выполнению",
   "desc_hash": "cf1b5a22a750b2a6519da8a1790f481d"
+ },
+ "SCRUM-1004_berserk_rage_trait.md": {
+  "key": "SCRUM-1004",
+  "status": "Готово",
+  "desc_hash": "3a0a86851b4061399a1a9b51ecb9d028"
  }
 }
