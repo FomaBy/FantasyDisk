@@ -346,6 +346,8 @@ func _append_codex_split_errors(main: Node, context: String, errors: Array, dump
 			errors.append("%s: %s related title '%s' is not canonical." % [context, str(section_id), related_title.text])
 		if detail_title == null or detail_title.get_global_rect().size.y < 30.0:
 			errors.append("%s: %s selected-entry title zone collapsed below 30px." % [context, str(section_id)])
+		elif detail_title.get_visible_line_count() < 1:
+			errors.append("%s: %s selected-entry title has zero visible lines (rect=%s font=%d)." % [context, str(section_id), str(detail_title.get_global_rect()), detail_title.get_theme_font_size("font_size")])
 		if detail_chips == null or detail_chips.get_child_count() == 0:
 			errors.append("%s: %s semantic chip row is empty." % [context, str(section_id)])
 		else:

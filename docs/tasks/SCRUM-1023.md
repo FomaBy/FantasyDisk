@@ -1,9 +1,9 @@
 # SCRUM-1023 — Codex selected stat title is invisible at 1280×720
 
-Статус: new
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1023
-Owner: unassigned
+Owner: Backend/Codex `/root`
 Контур: Codex
 Parents: SCRUM-1021, SCRUM-955
 
@@ -47,3 +47,28 @@ Disk cleanup: none created by the unclaimed remediation task.
 
 Thread cleanup: task mirror created by collaboration QA subagent; no
 disposable remediation worker thread exists yet.
+
+## Реализация
+
+- `CodexDetailTitle` использует отдельную mockup-native шкалу от базы
+  1920×1080: `15 / 22 / 29 / 30px` на 720p / 1080p / 1440p / 4K.
+- Геометрия title/chip/body, обе rail-зоны и scroll-контролы не менялись.
+- Responsive-гейт теперь проверяет `get_visible_line_count() >= 1` для обоих
+  stat-разделов, поэтому существующий rect без реально нарисованной строки
+  больше не считается зелёным.
+
+## Проверка реализации
+
+После final-tree импорта через `tools/godot_gate.py` прошли:
+
+- `ui_no_overlap_matrix_test.gd` (включая 720p/1080p/1440p и фактическую
+  видимую строку обоих stat-разделов);
+- `runtime_smoke_ui_test.gd`, `codex_data_smoke_test.gd`;
+- `display_resolution_test.gd`, `dark_fantasy_ui_theme_test.gd`,
+  `asset_reference_integrity_test.gd`;
+- `codex_discovery_contract_test.gd`, `codex_unlock_tracking_test.gd`;
+- `gamepad_menu_focus_test.gd`, `gamepad_full_flow_smoke_test.gd`;
+- `stat_formulas_derived_sync_test.gd`, полный `runtime_smoke_test.gd`.
+
+Это implementation handoff, не независимый QA-вердикт. SCRUM-1023 и
+родительские SCRUM-1021/955 закрываются только после отдельной повторной QA.

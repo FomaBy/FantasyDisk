@@ -709,6 +709,11 @@ formula/influence prose is never parsed as data. Derived rows preserve
 Russian display titles remain presentation-only. `ultimate_multiplier` lists
 all eight base characteristics; derived attributes with no direct base input
 (range/vampiric run modifiers) correctly expose an empty relation set.
+SCRUM-1023 keeps the selected dossier title on a mockup-native resolution
+scale rather than the global readability boost: 15px at 1280x720, 22px at
+1920x1080, 29px at 2560x1440 and a 30px cap at 4K. This preserves the accepted
+title rect while guaranteeing at least one rendered line; the responsive
+Codex gate checks `Label.get_visible_line_count()`, not only rect height.
 The two rails, all six tabs, center rows and scrollbars remain inside the dark
 panel interiors; the hollow frame ornament stays unobstructed. No row or chip
 shows raw character, monster, artifact or stat ids. Focused coverage lives in

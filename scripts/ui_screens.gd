@@ -4396,6 +4396,19 @@ func _codex_font_size(base_size: int, min_size := 10, max_size := 44) -> int:
 	return _readable_font_size(base_size, min_size, max_size)
 
 
+func _codex_detail_title_font_size() -> int:
+	# SCRUM-1023: the generic readability boost turns a 22px design title into
+	# 30px even at 1280x720. Its 42px glyph box then exceeds the accepted 34px
+	# title zone and Label reports zero visible lines. This one bounded heading
+	# follows the accepted 1920x1080 mockup scale directly: 15 / 22 / 29px at
+	# 720p / 1080p / 1440p, capped at 30px for 4K.
+	var viewport_size := Vector2(1920.0, 1080.0)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var design_scale := minf(viewport_size.x / 1920.0, viewport_size.y / 1080.0)
+	return clampi(int(roundf(22.0 * design_scale)), 15, 30)
+
+
 func _codex_update_tab_selection(tabs_row: Control, section_id: String) -> void:
 	# Активный/неактивные табы — модуляцией, как _atlas_apply_tab_state.
 	if tabs_row == null:
@@ -4481,7 +4494,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	# accepted title zone explicitly so the selected Russian name cannot collapse
 	# to a one-pixel sliver above the chips (caught by SCRUM-955 visual QA).
 	title.custom_minimum_size.y = roundf(clampf(68.0 * s, 32.0, 68.0))
-	title.add_theme_font_size_override("font_size", _codex_font_size(22, 16, 30))
+	title.add_theme_font_size_override("font_size", _codex_detail_title_font_size())
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
