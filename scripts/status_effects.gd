@@ -128,6 +128,25 @@ static func has_status(target: Node, status_id: String) -> bool:
 	return _statuses(target).has(status_id)
 
 
+# SCRUM-1005 «Разбор образцов»: есть ли на цели ЖИВОЙ периодический эффект с
+# атрибуцией конкретного владельца. Владелец тегируется в конфиге статуса ключом
+# source_id (instance id узла-автора, см. ClassWeapon._apply_bio_infection).
+# Чужие статусы (другой владелец/без тега) и истёкшие (remaining<=0, ещё не
+# собранные tick'ом) бонусов не дают.
+static func has_dot_from_source(target: Node, source_id: int) -> bool:
+	if source_id == 0:
+		return false
+	for status in _statuses(target).values():
+		var status_config: Dictionary = status
+		if float(status_config.get("dot_damage", 0.0)) <= 0.0:
+			continue
+		if float(status_config.get("remaining", 0.0)) <= 0.0:
+			continue
+		if int(status_config.get("source_id", 0)) == source_id:
+			return true
+	return false
+
+
 static func snapshot(target: Node) -> Dictionary:
 	return _statuses(target).duplicate(true)
 

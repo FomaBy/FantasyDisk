@@ -842,6 +842,12 @@ static func class_veil_dodge_bonus(character_id: String, buff_power: float) -> f
 	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
 
 
+# SCRUM-1005 «Разбор образцов»: множитель ПРЯМОГО урона по целям под собственным
+# периодическим эффектом (Биолог = 1.20; классы без trait'а — 1.0).
+static func class_infected_direct_multiplier(character_id: String) -> float:
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("infected_direct_hit_multiplier", 1.0)), 1.0)
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -975,8 +981,17 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	# Волны — канал призыва (как summon_dps), echo-фактор действий на них не действует.
 	var wave_dps := _budget_summon_wave_dps(config, params)
 	var wave_targets := clampf(1.0 + float(config.get("summon_wave_radius", 130.0)) / 130.0, 1.0, 4.0)
-	var solo_dps := (direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps
-	var aoe_dps := (direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets
+	# SCRUM-1005 «Разбор образцов»: прямой урон по целям под собственным DoT
+	# усилен (Биолог ×1.20). Инфекция оружия с dot_ticks>0 живёт дольше
+	# интервала каста (калибровка длительности в SCRUM-896), но первый хит боя
+	# идёт по чистой цели — документированный uptime 0.75. Фактор применяется
+	# ТОЛЬКО к прямому компоненту (не к dot/pool/summon/wave/ульте); у оружия без
+	# собственного DoT (dot_ticks<=0) бонус в модели не учитывается.
+	var infected_direct_factor := 1.0
+	if float(config.get("dot_ticks", 0.0)) > 0.0:
+		infected_direct_factor = 1.0 + (class_infected_direct_multiplier(character_id) - 1.0) * 0.75
+	var solo_dps := (direct_dps * infected_direct_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps
+	var aoe_dps := (direct_dps * infected_direct_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))

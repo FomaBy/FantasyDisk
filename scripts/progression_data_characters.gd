@@ -415,6 +415,20 @@ const CLASS_TRAITS := {
 		"description": "Лечится только собственным оружием: общие регенерация, вампиризм, лечение за убийства и зачистку боя на Доктора не действуют.",
 		"generic_sustain_blocked": 1.0,
 	},
+	"biologist": {
+		# SCRUM-1005 «Разбор образцов»: пока на цели живёт периодический эффект
+		# САМОГО Биолога (status bio_infection с source_id владельца — см.
+		# ClassWeapon._apply_bio_infection), его ПРЯМЫЕ хиты по этой цели
+		# усилены ×infected_direct_hit_multiplier. Потребитель — generic-гейт в
+		# ClassWeapon._damage_enemy: тики DoT (hit_type "dot") НЕ усиливаются
+		# (не дублирует «Катализатор» Химика — у того сами тики), чужой или
+		# истёкший статус бонуса не даёт (StatusEffects.has_dot_from_source).
+		# Покрыт tests/biologist_kit_test.gd.
+		"id": "sample_analysis",
+		"title": "Разбор образцов",
+		"description": "Враги под периодическим уроном Биолога получают на 20% больше его прямого урона: сначала заражай — потом добивай.",
+		"infected_direct_hit_multiplier": 1.20,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {

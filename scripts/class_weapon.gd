@@ -3731,6 +3731,16 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		var final_amount := amount
 		if owner_node != null and owner_node.has_method("meta_damage_multiplier"):
 			final_amount *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy))
+		# SCRUM-1005 «Разбор образцов»: ПРЯМЫЕ хиты владельца по цели под ЕГО
+		# периодическим эффектом усилены data-driven множителем CLASS_TRAITS
+		# (infected_direct_hit_multiplier; есть только у Биолога — остальным
+		# generic-хук возвращает 1.0). Тики DoT сюда приходят с hit_type "dot"
+		# и НЕ усиливаются; чужой/истёкший статус отсекает
+		# StatusEffects.has_dot_from_source (атрибуция source_id владельца).
+		if hit_type != "dot" and owner_node != null and owner_node.has_method("class_trait_value"):
+			var infected_multiplier := maxf(float(owner_node.call("class_trait_value", "infected_direct_hit_multiplier", 1.0)), 1.0)
+			if infected_multiplier > 1.0 and StatusEffects.has_dot_from_source(enemy, owner_node.get_instance_id()):
+				final_amount *= infected_multiplier
 		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
 		if apply_unique_melee_effects:
