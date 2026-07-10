@@ -1,6 +1,6 @@
 # SCRUM-955 — split Codex Characteristics and Attributes
 
-Статус: done
+Статус: blocked
 Версия: 0.2.1
 Jira: SCRUM-955
 Owner: Codex `/root`
@@ -55,3 +55,53 @@ QA evidence and are intentionally not committed.
 The final latest-`origin/dev` verification and commit hashes are recorded in
 the Jira implementation handoff. This implementation report is not the final
 independent QA verdict.
+
+## QA-Вердикт (2026-07-10, `/root/audit_repo`) — FAILED
+
+Статус: FAILED
+
+Независимая проверка выполнена в отдельном fresh worktree на
+`origin/dev@1a5c211579d1723b435b84cf6cae0460cf2dc777`; production-код и тесты
+не изменялись. Реализация SCRUM-955 — `ff8f2e2ba731a740f85dd7178db0425e95a16245`.
+
+Подтверждено:
+
+- шесть вкладок имеют точные русские подписи; проекции содержат ровно 8
+  `BASE_STAT_ORDER` и 26 `DERIVED_STAT_ORDER` записей без пересечения;
+- player-facing названия, описания, влияния и формулы проекций русские, raw id
+  не отображаются;
+- title/chip не схлопываются, related/detail scroll — разные контролы, обе
+  rail-зоны находятся внутри пустой области рамы на 1280×720, 1920×1080 и
+  2560×1440;
+- compositor-перепроверка SCRUM-1013: planning gate
+  `ready_for_image/ok=true`, layout/final render `ok=true`, без warnings/errors;
+- PASS: `codex_data_smoke_test`, `stat_formulas_smoke_test`,
+  `stat_formulas_derived_sync_test`, `codex_discovery_contract_test`,
+  `codex_unlock_tracking_test`, `runtime_smoke_ui_test`,
+  `ui_no_overlap_matrix_test`, `display_resolution_test`,
+  `dark_fantasy_ui_theme_test`, `asset_reference_integrity_test`,
+  `gamepad_menu_focus_test`, `gamepad_full_flow_smoke_test`, полный
+  `runtime_smoke_test`. В headless screenshot-helper остаётся известный
+  нефатальный dummy-renderer warning `texture_2d_get`; тесты завершаются PASS.
+
+Блокер приёмки — related-проекция не канонична. Для `ultimate_multiplier`
+player-facing формула прямо содержит «Энергия × 0,02 + остальные базовые
+характеристики × 0,002», а влияние — «малый вклад всех базовых характеристик».
+Однако `CodexData.attributes()` возвращает только
+`ultimate_multiplier.related = [energy]`, и живой rail показывает только
+«Энергия». Причина — `_related_stats()` ищет точные русские названия внутри
+prose-строк; обобщённые канонические зависимости теряются. Текущий data smoke
+проверяет лишь тип/принадлежность related-id, но не точную матрицу, поэтому
+ошибка проходит все зелёные гейты.
+
+Remediation Bug: **SCRUM-1021** — `Codex: related characteristics omit
+canonical stat dependencies`; bug добавлен в активный спринт 0.2.1,
+fixVersion 0.2.1 и связан как blocker SCRUM-955. До его исправления и повторной
+независимой QA задача SCRUM-955 не принимается.
+
+Disk cleanup: удалены одноразовые windowed captures/logs/scripts из
+`/tmp/scrum955_qa`, импорт-кэш `.godot/` и только ignored QA-артефакты этого
+worktree; сам QA-worktree удаляется после commit/push evidence.
+
+Thread cleanup: collaboration subagent, не отдельный disposable top-level
+Codex worker; архивирование текущего пользовательского task не требуется.
