@@ -946,40 +946,53 @@ const SNIPER_WEAPONS := {
 	},
 }
 
+# SCRUM-927/928/929: редизайн кита Священника — оружейный сустейн выпилен
+# ПОЛНОСТЬЮ (никаких heal_percent_* / regen-пассивок: сустейном класса владеет
+# trait «Молитва боя», SCRUM-925), три РАЗНЫЕ ниши:
+#   реликварий — быстрый дальний бурст «тик-тик-тик»: серия storm_ticks быстрых
+#     святых вспышек МАЛОГО радиуса по цели (sanctify_tick_ratio ролла за тик),
+#     самый длинный range кита, самый быстрый темп;
+#   кадило — большой БЛИЗКИЙ AoE: редкие тяжёлые волны вокруг Священника,
+#     радиус много больше реликвария, range короче, кулдаун длиннее
+#     (AoE-специалист: соло ниже реликвария, толпа выше — geometric-mean
+#     тюнинг budget_tuning_for это гарантирует конструктивно);
+#   колокол — dual toll: каждый удар взрывается у ЦЕЛИ и у СВЯЩЕННИКА
+#     одновременно; перекрытие капится дедупом по instance id (враг ≤ 1
+#     полный взрыв за каст — документированное правило per-enemy max-hit).
 const PRIEST_WEAPONS := {
 	"priest_reliquary": {
 		"id": "priest_reliquary", "title": "Светлый Реликварий",
-		"description": "Sanctify: отмечает ближайшую цель святым знаком, затем знак взрывается и лечит Священника от нанесенного урона.",
+		"description": "Бурст: отмечает ближайшую цель святым знаком и бьет по ней серией из трех быстрых вспышек малого радиуса. Не лечит — сустейн Священника в молитвах.",
 		"scene_path": "res://scenes/PriestReliquary.tscn",
 		"attack_mode": "priest_sanctify", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.96, "fire_interval": 1.22,
-		"attack_range": 560.0, "aoe_radius": 190.0,
-		"beam_width": 46.0, "grenade_delay": 0.24,
-		"damage_falloff": 0.62, "heal_percent_of_damage": 0.08,
+		"damage_multiplier": 0.96, "fire_interval": 0.72,
+		"attack_range": 560.0, "aoe_radius": 150.0,
+		"beam_width": 46.0, "grenade_delay": 0.14,
+		"storm_ticks": 3, "burst_interval": 0.11,
+		"sanctify_tick_ratio": 0.38,
+		"damage_falloff": 0.62,
 		"visual_color": Color(1.0, 0.92, 0.48, 0.42),
-		"passive_mods": {"regeneration_flat": 0.18},
+		"passive_mods": {"attack_speed_multiplier": 1.04},
 	},
 	"priest_censer": {
 		"id": "priest_censer", "title": "Кадило Обета",
-		"description": "Ward pulses: вокруг Священника проходят несколько защитных волн, которые жгут врагов и дают малое лечение.",
+		"description": "Тяжелый обет: редкие широкие волны выжигают всё вокруг Священника — большой радиус, короткая дальность, долгий кулдаун.",
 		"scene_path": "res://scenes/PriestCenser.tscn",
 		"attack_mode": "priest_ward", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.58, "fire_interval": 1.08,
-		"attack_range": 260.0, "aoe_radius": 215.0,
-		"storm_ticks": 3, "burst_interval": 0.13,
-		"heal_percent_on_attack": 0.012,
+		"damage_multiplier": 0.58, "fire_interval": 2.05,
+		"attack_range": 235.0, "aoe_radius": 320.0,
+		"storm_ticks": 2, "burst_interval": 0.24,
 		"visual_color": Color(0.96, 1.0, 0.70, 0.36),
 		"passive_mods": {"defense_flat": 0.02},
 	},
 	"priest_chime": {
 		"id": "priest_chime", "title": "Колокол Молитвы",
-		"description": "Prayer chain: молитвенная нить перескакивает между врагами, каждый скачок возвращает часть силы Священнику.",
+		"description": "Двойной звон: удар колокола гремит сразу дважды — взрыв вокруг дальней цели и одновременно вокруг самого Священника; один враг не ловит оба взрыва разом.",
 		"scene_path": "res://scenes/PriestChime.tscn",
-		"attack_mode": "priest_prayer_chain", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.76, "fire_interval": 1.16,
-		"attack_range": 620.0, "aoe_radius": 300.0,
-		"projectile_count": 4, "beam_width": 34.0,
-		"damage_falloff": 0.78, "heal_percent_of_damage": 0.06,
+		"attack_mode": "priest_dual_toll", "damage_parameter": "magic_damage",
+		"damage_multiplier": 0.76, "fire_interval": 1.28,
+		"attack_range": 620.0, "aoe_radius": 205.0,
+		"beam_width": 34.0,
 		"visual_color": Color(0.72, 0.92, 1.0, 0.40),
 		"passive_mods": {"aura_radius_multiplier": 1.05},
 	},

@@ -202,18 +202,34 @@ func _test_thief_coin_ricochet_vs_sniper_shatter(errors: Array) -> void:
 	await _cleanup(split_holder)
 
 
+# SCRUM-929: цепи у колокола больше нет — dual toll. Контракт идентичности:
+# дальняя цель и враг у Жреца ловят урон ОДНИМ кастом (два центра), а враг в
+# перекрытии обоих взрывов — ровно один раз (общий дедуп per-cast).
 func _test_priest_chain_target_rule(errors: Array) -> void:
-	var holder := _new_scene("Scrum857PrayerChainContract")
+	var holder := _new_scene("Scrum929DualTollContract")
 	var owner := _new_owner(holder)
 	var weapon := _new_weapon(owner, "priest", "priest_chime")
-	var previous := owner.global_position + Vector2(300, 0)
-	var nearest_from_previous := _new_enemy(holder, previous + Vector2(42, 0))
-	var sustain_arc_target := _new_enemy(holder, previous + Vector2(-38, 82))
+	weapon.set("_cooldown", 1.0e9)
+	var far_target := _new_enemy(holder, owner.global_position + Vector2(500, 0))
+	var near_owner_enemy := _new_enemy(holder, owner.global_position + Vector2(60, 40))
 	await process_frame
 
-	var chosen = weapon.call("_find_prayer_chain_next", owner.global_position, previous, 160.0, {})
-	if chosen != sustain_arc_target:
-		errors.append("priest_chime should prefer sustain arc toward owner, not pure nearest bounce (chosen %s, nearest %s)" % [chosen, nearest_from_previous])
+	weapon.call("_fire_priest_dual_toll", owner, far_target, Vector2.RIGHT)
+	await process_frame
+	if far_target.total_damage <= 0.0:
+		errors.append("priest_chime dual toll must damage the distant target group")
+	if near_owner_enemy.total_damage <= 0.0:
+		errors.append("priest_chime dual toll must damage enemies near the Priest in the SAME cast")
+	if far_target.hit_count > 1 or near_owner_enemy.hit_count > 1:
+		errors.append("priest_chime dual toll must hit each enemy at most once per cast (dedup)")
+	# Перекрытие: цель вплотную к Жрецу — оба взрыва накрывают одного врага,
+	# общий дедуп обязан оставить ровно ОДИН полный хит за каст.
+	var overlap_enemy := _new_enemy(holder, owner.global_position + Vector2(50, -30))
+	await process_frame
+	weapon.call("_fire_priest_dual_toll", owner, overlap_enemy, Vector2.RIGHT)
+	await process_frame
+	if overlap_enemy.hit_count != 1:
+		errors.append("priest_chime overlap dedup failed: enemy got %d hits per cast (expected exactly 1)" % overlap_enemy.hit_count)
 	await _cleanup(holder)
 
 

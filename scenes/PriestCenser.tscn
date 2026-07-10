@@ -10,13 +10,12 @@ weapon_id = "priest_censer"
 display_name = "Кадило Обета"
 attack_mode = "priest_ward"
 damage_parameter = "magic_damage"
-fire_interval = 1.08
+fire_interval = 2.05
 damage = 12.0
-attack_range = 260.0
-aoe_radius = 215.0
-storm_ticks = 3
-burst_interval = 0.13
-heal_percent_on_attack = 0.012
+attack_range = 235.0
+aoe_radius = 320.0
+storm_ticks = 2
+burst_interval = 0.24
 visual_color = Color(0.96, 1, 0.7, 0.36)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

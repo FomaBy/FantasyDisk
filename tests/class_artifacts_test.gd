@@ -310,7 +310,9 @@ func _check_repair_subroutine_threshold() -> void:
 	await process_frame
 
 
-# (г6) «Двойной колокол»: враг в перекрытии двух взрывов ловит урон один раз за каст.
+# (г6) «Двойной колокол» (rework SCRUM-929): базовый колокол теперь сам dual toll,
+# артефакт = эхо-звон. Контракт дедупа волны прежний: враг в перекрытии двух
+# взрывов одной волны ловит урон ровно один раз.
 func _check_twin_toll_dedup() -> void:
 	var player := _make_player("priest", "priest_chime")
 	await process_frame
@@ -323,16 +325,16 @@ func _check_twin_toll_dedup() -> void:
 	await process_frame
 	# Базлайн: одиночный взрыв по врагу (урон идёт через meta_damage_multiplier —
 	# сравниваем с ним, а не с сырым amount).
-	weapon.call("_fire_twin_toll_blast", player.global_position, 10.0, {})
+	weapon.call("_fire_bell_toll_blast", player.global_position, 10.0, {})
 	var single_blast := float(enemy.get_meta("damage_taken", 0.0))
 	if single_blast <= 0.0:
 		_errors.append("twin_toll: враг в зоне взрыва не получил урона")
-	# Продакшен-каст: два взрыва (у цели и у жреца) с ОБЩИМ дедупом — враг в
-	# перекрытии обязан получить ровно один взрыв.
+	# Волна dual toll: два взрыва (у цели и у жреца) с ОБЩИМ дедупом — враг в
+	# перекрытии обязан получить ровно один взрыв (и в базовой волне, и в эхо).
 	enemy.set_meta("damage_taken", 0.0)
-	var blast_hit := {}
-	weapon.call("_fire_twin_toll_blast", player.global_position + Vector2(80.0, 0.0), 10.0, blast_hit)
-	weapon.call("_fire_twin_toll_blast", player.global_position, 10.0, blast_hit)
+	var toll_hit := {}
+	weapon.call("_fire_bell_toll_blast", player.global_position + Vector2(80.0, 0.0), 10.0, toll_hit)
+	weapon.call("_fire_bell_toll_blast", player.global_position, 10.0, toll_hit)
 	var taken := float(enemy.get_meta("damage_taken", 0.0))
 	if taken > single_blast * 1.01:
 		_errors.append("twin_toll: дедуп не сработал — %f против одиночного %f" % [taken, single_blast])

@@ -1466,13 +1466,27 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var spray_bullets := float(config.get("projectile_count", 6.0))
 			return {"solo_hits": minf(spray_bullets, 2.0), "five_hits": clampf(spray_bullets * 0.92, 1.0, 5.2)}
 		"priest_sanctify":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 78.0, 1.0, 4.8)}
+			# SCRUM-927: бурст «тик-тик-тик» — серия storm_ticks вспышек по
+			# sanctify_tick_ratio ролла каждая; соло-цель ловит ВСЕ тики (знак
+			# ведёт цель), толпа — по малому радиусу с falloff (зеркало
+			# class_weapon._sanctify_burst_tick). Лечения у оружия нет.
+			var sanctify_ticks := maxf(float(config.get("storm_ticks", 3.0)), 1.0)
+			var sanctify_ratio := clampf(float(config.get("sanctify_tick_ratio", 0.38)), 0.05, 1.0)
+			var sanctify_total := sanctify_ticks * sanctify_ratio
+			return {"solo_hits": clampf(sanctify_total, 0.5, 2.4), "five_hits": clampf(sanctify_total * (1.0 + aoe_radius / 145.0), 1.0, 4.8)}
 		"priest_ward":
-			var ward_ticks := float(config.get("storm_ticks", 3.0))
-			return {"solo_hits": clampf(ward_ticks * 0.72, 1.0, 2.6), "five_hits": clampf(1.0 + aoe_radius / 70.0, 1.0, 4.5)}
-		"priest_prayer_chain":
-			var prayer_jumps := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(prayer_jumps * 0.72, 1.0, 4.2)}
+			# SCRUM-928: редкие тяжёлые волны вокруг Священника, последняя —
+			# ПОЛНЫЙ aoe_radius (радиусный AoE-специалист с медленной каденцией;
+			# зеркало lerp(0.80,1.0) в class_weapon._fire_priest_ward — соло-цель
+			# вплотную ловит обе волны, 0.85-дисконт за раскрытие радиуса).
+			var ward_ticks := float(config.get("storm_ticks", 2.0))
+			return {"solo_hits": clampf(ward_ticks * 0.85, 1.0, 2.6), "five_hits": clampf(1.0 + aoe_radius / 70.0, 1.0, 4.5)}
+		"priest_dual_toll":
+			# SCRUM-929: dual toll — два одновременных взрыва (у цели и у Жреца)
+			# с общим дедупом (враг ≤ 1 взрыв за каст) → соло ровно 1 полный хит.
+			# Толпа: покрытие цели (1 + aoe/95 с запасом на второй центр у Жреца,
+			# ~0.55 средней добавки — часть толпы прессует героя), кап 4.4.
+			return {"solo_hits": 1.0, "five_hits": clampf(1.55 + aoe_radius / 105.0, 1.0, 4.4)}
 		"bio_spore_bloom":
 			# SCRUM-896: три расширяющихся кольца у персонажа — соло-цель ловит
 			# все кольца с falloff (1+0.7+0.49≈2.19 → сохранена 0.34-модель),

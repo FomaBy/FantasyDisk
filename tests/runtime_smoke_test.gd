@@ -3501,7 +3501,7 @@ func _test_class_weapon_configs() -> void:
 		"priest": {
 			"priest_reliquary": {"scene": "PriestReliquary", "mode": "priest_sanctify", "sprite": "res://assets/sprites/weapons/priest_reliquary.png"},
 			"priest_censer": {"scene": "PriestCenser", "mode": "priest_ward", "sprite": "res://assets/sprites/weapons/priest_censer.png"},
-			"priest_chime": {"scene": "PriestChime", "mode": "priest_prayer_chain", "sprite": "res://assets/sprites/weapons/priest_chime.png"},
+			"priest_chime": {"scene": "PriestChime", "mode": "priest_dual_toll", "sprite": "res://assets/sprites/weapons/priest_chime.png"},
 		},
 		"biologist": {
 			"biologist_spore_lens": {"scene": "BiologistSporeLens", "mode": "bio_spore_bloom", "sprite": "res://assets/sprites/weapons/biologist_spore_lens.png"},
@@ -4222,7 +4222,7 @@ func _test_unique_class_identity_patterns() -> void:
 			_fail("Expected Priest weapons to use three distinct attack modes.")
 			return
 		priest_modes[priest_mode] = true
-	for required_priest_mode in ["priest_sanctify", "priest_ward", "priest_prayer_chain"]:
+	for required_priest_mode in ["priest_sanctify", "priest_ward", "priest_dual_toll"]:
 		if not priest_modes.has(required_priest_mode):
 			_fail("Expected Priest to include unique %s attack mode." % required_priest_mode)
 			return
@@ -5348,7 +5348,7 @@ func _test_priest_weapon_mechanics() -> void:
 	var expected_modes := {
 		"priest_reliquary": "priest_sanctify",
 		"priest_censer": "priest_ward",
-		"priest_chime": "priest_prayer_chain",
+		"priest_chime": "priest_dual_toll",
 	}
 	for weapon_id in expected_modes.keys():
 		var config: Dictionary = ProgressionData.weapon("priest", weapon_id)
@@ -5384,14 +5384,20 @@ func _test_priest_weapon_mechanics() -> void:
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		var before_player_hp := float(priest.get("health"))
+		# SCRUM-927/928/929: оружейный сустейн кита выпилен — атака НЕ лечит
+		# Священника (сустейн класса — trait «Молитва боя», SCRUM-925).
+		var dp: Dictionary = priest.get("derived_parameters")
+		dp["regeneration"] = 0.0
+		priest.set("derived_parameters", dp)
 		priest.set("health", maxf(1.0, before_player_hp - 18.0))
+		var wounded_hp := float(priest.get("health"))
 		weapon.call("_attack")
 		await create_timer(0.85).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Priest weapon %s to damage its target." % weapon_id)
 			return
-		if weapon_id in ["priest_reliquary", "priest_chime"] and float(priest.get("health")) <= before_player_hp - 18.0:
-			_fail("Expected Priest weapon %s to return sustain healing." % weapon_id)
+		if float(priest.get("health")) > wounded_hp + 0.01:
+			_fail("Expected Priest weapon %s to deal damage WITHOUT healing (kit sustain removed)." % weapon_id)
 			return
 		priest.queue_free()
 		enemy.queue_free()

@@ -263,7 +263,7 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"sniper_lockshot": "projectile",
 	"sniper_kill_zone": "projectile",
 	"sniper_split_round": "projectile",
-	"priest_prayer_chain": "projectile",
+
 	"bio_sample_dart": "projectile",
 	"robot_reactor_vent": "projectile",
 	"beam": "beam",
@@ -283,6 +283,8 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"elemental_orbit": "aoe",
 	"priest_sanctify": "aoe",
 	"priest_ward": "aoe",
+	# SCRUM-929: dual toll — двойной AoE-взрыв (цель + Жрец), не снаряд/цепь.
+	"priest_dual_toll": "aoe",
 	"bio_spore_bloom": "aoe",
 	"bio_symbiote_web": "aoe",
 	"robot_magnetic_anchor": "aoe",

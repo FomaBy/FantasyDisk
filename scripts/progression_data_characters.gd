@@ -719,14 +719,18 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"priest": {
+		# SCRUM-925/927/928/929: trait «Молитва боя» — источник истины в
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (battle_prayer_*), потребители — meta_damage_multiplier /
+		# _apply_regeneration / take_damage. Оружейный сустейн кита выпилен.
 		"main_attribute": "knowledge",
-		"identity_title": "Священная формула",
-		"summary": "Знание — его псалтырь: чем оно глубже, тем крепче печати, злее кара и щедрее лечение от каждого удара.",
-		"mechanic_tags": ["sanctify", "ward", "heal_conversion", "holy_chain"],
+		"identity_title": "Молитва боя",
+		"summary": "Знание — его псалтырь, молитва — его оружие: перед каждым боем Священник выбирает одну из трёх молитв (кара, исцеление или защита), а кит бьет чистой святой магией — без лечения от ударов.",
+		"mechanic_tags": ["battle_prayer", "sanctify_burst", "close_ward_aoe", "dual_toll"],
 		"weapon_identities": {
-			"priest_reliquary": "освящение зоны вокруг цели",
-			"priest_censer": "ward-пульсы защиты и урона",
-			"priest_chime": "цепная молитва между врагами",
+			"priest_reliquary": "быстрый дальний бурст из трех святых вспышек по цели",
+			"priest_censer": "редкая широкая волна вокруг Священника",
+			"priest_chime": "двойной звон: взрыв у цели и у самого Священника",
 		},
 	},
 	"biologist": {

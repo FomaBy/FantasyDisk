@@ -649,7 +649,7 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["sniper", "sniper_shatter_rounds", "sniper_split_round", "shoot", "windup"],
 		["priest", "priest_reliquary", "priest_sanctify", "shoot", "windup"],
 		["priest", "priest_censer", "priest_ward", "shoot", "pulse"],
-		["priest", "priest_chime", "priest_prayer_chain", "cast", "channel"],
+		["priest", "priest_chime", "priest_dual_toll", "cast", "channel"],
 		["biologist", "biologist_spore_lens", "bio_spore_bloom", "shoot", "pulse"],
 		["biologist", "biologist_sample_injector", "bio_sample_dart", "shoot", "pulse"],
 		["biologist", "biologist_symbiote_seed", "bio_symbiote_web", "cast", "channel"],

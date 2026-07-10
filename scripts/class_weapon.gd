@@ -37,7 +37,7 @@ const EVENT_CAST_ACTION_MODES := {
 	"dot_beam": true,
 	"drain_link": true,
 	"plague_dart": true,  # SCRUM-900
-	"priest_prayer_chain": true,
+	"priest_dual_toll": true,
 	"bio_symbiote_web": true,
 	"dark_chain_burst": true,
 	"skull_curse_burn": true,
@@ -75,7 +75,7 @@ const ATTACK_MODE_EXECUTORS := {
 	"sniper_split_round": "_exec_sniper_split_round",
 	"priest_sanctify": "_exec_priest_sanctify",
 	"priest_ward": "_exec_priest_ward",
-	"priest_prayer_chain": "_exec_priest_prayer_chain",
+	"priest_dual_toll": "_exec_priest_dual_toll",
 	"bio_spore_bloom": "_exec_bio_spore_bloom",
 	"bio_sample_dart": "_exec_bio_sample_dart",
 	"bio_symbiote_web": "_exec_bio_symbiote_web",
@@ -140,6 +140,8 @@ const ATTACK_MODE_EXECUTORS := {
 @export var trap_bleed_tick_interval := 0.5
 @export var orbit_duration := 1.6
 @export var storm_ticks := 4
+# SCRUM-927: доля ролла на один тик бурста реликвария (серия storm_ticks вспышек).
+@export var sanctify_tick_ratio := 0.38
 @export var shard_count := 3
 @export var split_count := 3
 @export var mark_duration := 1.2
@@ -410,6 +412,7 @@ func configure_weapon(config: Dictionary) -> void:
 	trap_bleed_tick_interval = float(config.get("trap_bleed_tick_interval", trap_bleed_tick_interval))
 	orbit_duration = float(config.get("orbit_duration", orbit_duration))
 	storm_ticks = int(config.get("storm_ticks", storm_ticks))
+	sanctify_tick_ratio = float(config.get("sanctify_tick_ratio", sanctify_tick_ratio))
 	shard_count = int(config.get("shard_count", shard_count))
 	split_count = int(config.get("split_count", split_count))
 	mark_duration = float(config.get("mark_duration", mark_duration))
@@ -689,14 +692,14 @@ func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vect
 			center = owner_node.global_position
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			center = owner_node.global_position + direction * minf(attack_range, 150.0)
-		"grenade_fuse", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "bio_spore_bloom", "robot_magnetic_anchor":
+		"grenade_fuse", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "priest_dual_toll", "bio_spore_bloom", "robot_magnetic_anchor":
 			center = owner_node.global_position + direction * minf(attack_range, 360.0)
 			if target != null:
 				center = target.global_position
 		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line", "moon_split_shot", "storm_pierce_cone":
 			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
 			radius = maxf(beam_width * 2.2, 86.0)
-		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web":
+		"drain_link", "coin_ricochet", "bio_symbiote_web":
 			center = owner_node.global_position + direction * minf(attack_range * 0.32, 190.0)
 			if target != null:
 				center = (owner_node.global_position + target.global_position) * 0.5
@@ -838,8 +841,8 @@ func _exec_priest_ward(owner_node: Node2D, _target: Node2D, _direction: Vector2)
 	_fire_priest_ward(owner_node)
 
 
-func _exec_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_fire_priest_prayer_chain(owner_node, target, direction)
+func _exec_priest_dual_toll(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_priest_dual_toll(owner_node, target, direction)
 
 
 func _exec_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1693,9 +1696,6 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 	if heal_percent_of_damage <= 0.0 or owner_node == null or not is_instance_valid(owner_node):
 		return
 	if owner_node.get("health") == null or owner_node.get("max_health") == null:
-		return
-	# SCRUM-961 «Реликварный залп»: реликварий забывает лечение ради темпа/взрыва.
-	if attack_mode == "priest_sanctify" and _owner_mod("reliquary_barrage_mode") > 0.0:
 		return
 	# SCRUM-961 «Зубья костяной пилы»: пила возвращает больше здоровья с урона.
 	# Бонус только поверх живого heal-канала оружия — сустейн-гейт Доктора цел.
@@ -3295,8 +3295,15 @@ func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float)
 		_release_effect(bullet)
 
 
+# SCRUM-927: Реликварий — быстрый дальний бурст «тик-тик-тик» БЕЗ лечения
+# (весь оружейный сустейн выпилен: ни heal_percent_*, ни regen-пассивки — ни в
+# конфиге, ни в сцене; сустейн класса — trait «Молитва боя», SCRUM-925).
+# Помечает цель святым знаком, после короткого grenade_delay серия из
+# storm_ticks быстрых вспышек малого радиуса через burst_interval; каждый тик =
+# sanctify_tick_ratio ролла с falloff по области. Знак ведёт живую цель
+# (тики бьют по её актуальной позиции), без цели — по точке каста.
 func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
+	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.08), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 480.0)
 	var target_id := 0
 	if target != null:
@@ -3304,38 +3311,48 @@ func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector
 		target_id = target.get_instance_id()
 	var mark := AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
 	_register_effect(mark)
-	var mark_ref: WeakRef = weakref(mark)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var stored_center := center
-	# SCRUM-961 «Реликварный залп»: взрыв освящения сильнее (+20%); лечение и темп —
-	# в _heal_owner_from_damage / _fire_interval_artifact_factor.
+	# SCRUM-961 «Реликварный залп»: вспышки сильнее (+20%); темп — в
+	# _fire_interval_artifact_factor (лечения у реликвария больше нет, SCRUM-927).
 	var barrage_blast_mult := 1.2 if _owner_mod("reliquary_barrage_mode") > 0.0 else 1.0
-	var sanctify_tween := create_tween()
-	sanctify_tween.tween_interval(maxf(grenade_delay, 0.10))
-	sanctify_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		if current_weapon == null:
-			var invalid_mark := mark_ref.get_ref() as Node
-			if invalid_mark != null and is_instance_valid(invalid_mark):
-				invalid_mark.queue_free()
-			return
-		var impact_center: Vector2 = stored_center
-		var current_target := instance_from_id(target_id) as Node2D
-		if current_target != null:
-			impact_center = current_target.global_position
-		var damage_value: float = (float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))) * barrage_blast_mult
-		if current_owner != null:
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, direction, {"delayed": true})
-		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), impact_center, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
-		current_weapon.call("_damage_enemies_in_circle_falloff", impact_center, float(current_weapon.get("aoe_radius")), damage_value, float(current_weapon.get("damage_falloff")))
-		var release_mark := mark_ref.get_ref() as Node
-		if release_mark != null:
-			current_weapon.call("_release_effect", release_mark)
-	)
+	var tick_damage: float = _rolled_damage(owner_node) * clampf(sanctify_tick_ratio, 0.05, 1.0) * barrage_blast_mult
+	var pulse_count: int = maxi(storm_ticks, 1)
+	for tick_index in range(pulse_count):
+		var burst_tween := create_tween()
+		burst_tween.tween_interval(maxf(grenade_delay, 0.08) + float(tick_index) * maxf(burst_interval, 0.06))
+		# SCRUM-551: bound-метод вместо лямбды (анти use-after-free в tween).
+		burst_tween.tween_callback(Callable(self, "_sanctify_burst_tick").bind(owner_node.get_instance_id(), target_id, center, direction, tick_index, pulse_count, tick_damage))
+	# Снятие знака после последнего тика (mark по id — анти use-after-free).
+	var release_tween := create_tween()
+	release_tween.tween_interval(maxf(grenade_delay, 0.08) + float(pulse_count) * maxf(burst_interval, 0.06) + 0.18)
+	release_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(mark.get_instance_id()))
 
 
+# Один тик бурста реликвария: вспышка малого радиуса по живой позиции цели.
+func _sanctify_burst_tick(owner_id: int, target_id: int, stored_center: Vector2, direction: Vector2, tick_index: int, tick_count: int, tick_damage: float) -> void:
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	var impact_center := stored_center
+	var current_target := instance_from_id(target_id) as Node2D
+	if current_target != null and is_instance_valid(current_target):
+		impact_center = current_target.global_position
+	if tick_index == 0:
+		_emit_weapon_animation_event(current_owner, "release", 0.0, direction, {"delayed": true})
+	else:
+		_emit_weapon_animation_event(current_owner, "pulse", maxf(burst_interval, 0.06), direction, {"index": tick_index, "count": tick_count})
+	AttackVfx.orb_burst(_projectile_parent(), impact_center, aoe_radius * 0.72, visual_color)
+	_damage_enemies_in_circle_falloff(impact_center, aoe_radius, tick_damage, damage_falloff)
+
+
+# SCRUM-928: Кадило — большой БЛИЗКИЙ AoE с долгим кулдауном. Редкие тяжёлые
+# волны вокруг Священника: последняя волна достигает ПОЛНОГО aoe_radius (радиус
+# кита много больше реликвария, range короче, каденция медленнее). Лечения на
+# атаку больше нет (SCRUM-928: сустейн класса — trait «Молитва боя»);
+# meta_apply_priest_ward остаётся ОПЦИОНАЛЬНЫМ absorb-хуком мета-древа
+# («Заступник», ward_absorb_bonus) — это митигция по выбору игрока, не скрытый
+# оружейный хил.
 func _fire_priest_ward(owner_node: Node2D) -> void:
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
@@ -3358,57 +3375,70 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 			if current_weapon == null or current_owner == null:
 				return
 			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.06), Vector2.RIGHT, {"index": pulse_index, "count": pulse_count})
-			var radius: float = float(current_weapon.get("aoe_radius")) * (0.72 + 0.14 * float(pulse_index)) * vow_radius_mult
+			# SCRUM-928: волны раскрываются от 0.80 до ПОЛНОГО aoe_radius —
+			# «большой близкий AoE», заявленный радиус реально достигается.
+			var pulse_progress := 1.0 if pulse_count <= 1 else float(pulse_index) / float(pulse_count - 1)
+			var radius: float = float(current_weapon.get("aoe_radius")) * lerpf(0.80, 1.0, pulse_progress) * vow_radius_mult
 			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), current_owner.global_position, radius, current_weapon.get("visual_color"), false)
 			current_weapon.call("_damage_enemies_in_circle", current_owner.global_position, radius, damage_value)
 		)
 
 
-func _fire_priest_prayer_chain(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "channel", maxf(0.14, float(projectile_count + _extra_projectiles()) * 0.04), direction, {"chain": true})
-	var first_target: Node2D = target
-	if first_target == null:
-		first_target = _find_closest_enemy(owner_node, INF)
-	if first_target == null:
-		AttackVfx.beam(_projectile_parent(), owner_node.global_position + direction * 20.0, owner_node.global_position + direction * min(attack_range, 360.0), beam_width, visual_color)
-		return
+# SCRUM-929: Колокол Молитвы — dual toll. Каждый удар создаёт РОВНО два центра
+# взрыва В ОДИН момент атаки: вокруг выбранной цели (дальняя работа по группе)
+# и вокруг самого Священника (ближняя оборона). Перекрытие близкой цели капится
+# общим дедупом по instance id — враг получает не больше ОДНОГО полного взрыва
+# за каст (документированное правило per-enemy max-hit; двойного фулл-урона по
+# одному врагу нет by construction). Прежний chain-heal выпилен полностью —
+# сустейн класса в trait «Молитва боя» (SCRUM-925). Самоурона нет:
+# _damage_enemy бьёт только группу enemies.
+func _fire_priest_dual_toll(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var bell_target: Node2D = target
+	if bell_target == null:
+		bell_target = _find_closest_enemy(owner_node, INF)
+	var target_center: Vector2 = owner_node.global_position + direction * minf(attack_range, 480.0)
+	if bell_target != null and is_instance_valid(bell_target):
+		target_center = bell_target.global_position
+	_emit_weapon_animation_event(owner_node, "release", 0.14, direction, {"dual": true})
 	var damage_value: float = _rolled_damage(owner_node)
-	var used: Dictionary = {}
-	var previous_position := owner_node.global_position
-	var current_target := first_target
-	var jumps := maxi(projectile_count + _extra_projectiles(), 1)
-	for jump_index in range(jumps):
-		if current_target == null or not is_instance_valid(current_target):
-			break
-		used[current_target.get_instance_id()] = true
-		var tether := AttackVfx.beam(_projectile_parent(), previous_position, current_target.global_position, beam_width * maxf(0.42, pow(damage_falloff, float(jump_index)) + 0.12), visual_color)
-		_register_effect(tether)
-		_damage_enemy(current_target, damage_value * pow(damage_falloff, float(jump_index)))
-		previous_position = current_target.global_position
-		current_target = _find_prayer_chain_next(owner_node.global_position, previous_position, aoe_radius, used)
-	if owner_node != null and is_instance_valid(owner_node):
-		AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.42, Color(visual_color.r, visual_color.g, visual_color.b, 0.24))
-	# SCRUM-961 «Двойной колокол»: доп. взрывы 55% у первой цели И у жреца.
-	# Overlap-protection: общий дедуп по instance id — враг ловит взрыв один раз за каст.
+	# Резонанс-линия между центрами — читаемость связи двух взрывов (AC SCRUM-929).
+	AttackVfx.beam(_projectile_parent(), owner_node.global_position, target_center, beam_width * 0.5, Color(visual_color.r, visual_color.g, visual_color.b, 0.26))
+	var toll_hit := {}
+	_fire_bell_toll_blast(target_center, damage_value, toll_hit)
+	_fire_bell_toll_blast(owner_node.global_position, damage_value, toll_hit)
+	# SCRUM-961 «Двойной колокол» (rework под dual-toll базу SCRUM-929): эхо-звон —
+	# оба взрыва повторяются через 0.45с на 45% урона (свой дедуп на эхо-волну).
 	if _owner_mod("chime_twin_toll") > 0.0:
-		var blast_hit := {}
-		_fire_twin_toll_blast(first_target.global_position, damage_value * 0.55, blast_hit)
-		if owner_node != null and is_instance_valid(owner_node):
-			_fire_twin_toll_blast(owner_node.global_position, damage_value * 0.55, blast_hit)
+		var echo_tween := create_tween()
+		echo_tween.tween_interval(0.45)
+		# SCRUM-551: bound-метод вместо лямбды (анти use-after-free в tween).
+		echo_tween.tween_callback(Callable(self, "_fire_bell_echo_toll").bind(owner_node.get_instance_id(), target_center, damage_value * 0.45))
 
 
-# SCRUM-961 «Двойной колокол»: одиночный взрыв колокола с дедупом по инстансу.
-func _fire_twin_toll_blast(center: Vector2, amount: float, blast_hit: Dictionary) -> void:
-	var blast_radius := maxf(aoe_radius * 0.6, 110.0)
-	AttackVfx.ring_pulse(_projectile_parent(), center, blast_radius, visual_color, false)
-	for enemy in TARGET_QUERY.in_radius(self, center, blast_radius):
+# Эхо-волна «Двойного колокола»: повторный dual toll со своим дедупом.
+func _fire_bell_echo_toll(owner_id: int, target_center: Vector2, amount: float) -> void:
+	if _effects_shutdown:
+		return
+	var echo_hit := {}
+	_fire_bell_toll_blast(target_center, amount, echo_hit)
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner != null and is_instance_valid(current_owner):
+		_fire_bell_toll_blast(current_owner.global_position, amount, echo_hit)
+
+
+# Одиночный взрыв колокола с общим дедупом волны: враг в перекрытии двух
+# центров ловит урон ровно один раз (per-enemy max-hit, SCRUM-929).
+func _fire_bell_toll_blast(center: Vector2, amount: float, toll_hit: Dictionary) -> void:
+	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, false)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius * 0.55, visual_color)
+	for enemy in TARGET_QUERY.in_radius(self, center, aoe_radius):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null:
 			continue
 		var enemy_id := enemy_node.get_instance_id()
-		if blast_hit.has(enemy_id):
+		if toll_hit.has(enemy_id):
 			continue
-		blast_hit[enemy_id] = true
+		toll_hit[enemy_id] = true
 		_damage_enemy(enemy_node, amount)
 
 
@@ -4283,22 +4313,6 @@ func _nearest_enemies_from(origin: Vector2, range_limit: float, count: int, excl
 	return TARGET_QUERY.nearest_many(self, origin, range_limit, count, excluded_ids)
 
 
-func _find_prayer_chain_next(owner_position: Vector2, previous_position: Vector2, range_limit: float, excluded_ids: Dictionary) -> Node2D:
-	var best_enemy: Node2D = null
-	var best_score := INF
-	var range_squared := range_limit * range_limit
-	for enemy_node in TARGET_QUERY.enemies(self):
-		if enemy_node == null or not is_instance_valid(enemy_node) or excluded_ids.has(enemy_node.get_instance_id()):
-			continue
-		if previous_position.distance_squared_to(enemy_node.global_position) > range_squared:
-			continue
-		var score := owner_position.distance_squared_to(enemy_node.global_position) * 0.65 + previous_position.distance_squared_to(enemy_node.global_position) * 0.35
-		if score < best_score:
-			best_score = score
-			best_enemy = enemy_node
-	return best_enemy
-
-
 func _enemies_in_circle_sorted(origin: Vector2, radius: float, count: int) -> Array:
 	return _nearest_enemies_from(origin, radius, count)
 
@@ -4906,7 +4920,7 @@ func _estimated_windup_duration() -> float:
 			return maxf(burst_interval, 0.06)
 		"amp", "trap", "engineer_sentry_link", "engineer_orbit_drone", "engineer_pressure_mines":
 			return 0.10
-		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "moon_split_shot", "storm_pierce_cone":
+		"beam", "dot_beam", "drain_link", "priest_dual_toll", "bio_symbiote_web", "moon_split_shot", "storm_pierce_cone":
 			return 0.12
 		# SCRUM-939..941: касты кита Тёмного мага — короткий читаемый замах.
 		"dark_chain_burst", "skull_curse_burn", "dark_mirror_blast":
