@@ -106,3 +106,31 @@ Verification (Godot 4.7, semaphore gate):
 Known headless-only diagnostics from pre-existing runtime suites: freed lambda
 capture and null dummy-renderer texture warnings; both suites exited `0` and
 reported PASS.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: FAILED
+
+Проверено на `origin/dev` `d2cb3976d` в изолированном QA worktree:
+
+- PixelLab provenance, source object/project/animation/export IDs;
+- lossless source/runtime signature hash, восемь `256x256 RGBA` runtime frames,
+  alpha/gutters, contact sheet и отдельные scene/script/SpriteFrames;
+- отсутствие изменений shared gameplay paths;
+- уникальность восьми PNG import UID и корректность source/dest import paths;
+- `scrum912_storm_longbow_vfx_test.gd`,
+  `unique_weapon_vfx_assets_test.gd`, `attack_vfx_smoke_test.gd`,
+  `animation_smoke_test.gd`, `ranger_kit_test.gd`,
+  `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_test.gd` — PASS.
+
+Блокирующий дефект: `SCRUM-1038`. Пять трейлов присутствуют, но фактические
+центры альфа-кластеров не соответствуют `-17/-8.5/0/+8.5/+17°`. На `x=128`
+из pivot `(26,128)` измерены примерно `+27.7/+13.6/+0.8/-14.2/-29.0°`, а на
+`x=176` внешняя пара достигает примерно `+28.8/-30.7°`. VFX показывает около
+`58–62°` вместо игрового конуса `34°` и визуально обещает ложную область
+попадания. Focused smoke даёт false green: проверяет только metadata и число
+кластеров в одном срезе, но не их углы. Свежий Godot import также создаёт
+незакоммиченные task-owned `.gd.uid` для VFX script и focused test.
+
+Disk cleanup: QA `.godot` и disposable worktree удалены после фиксации
+Jira/local evidence.
