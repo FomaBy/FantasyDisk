@@ -120,3 +120,48 @@ Image-derived oracle измеряет реальные alpha-weighted центр
 уникальны; случайные UID sidecars от общего импорта удалены. Shared gameplay
 hook и общие gameplay/runtime файлы не менялись. Parent `SCRUM-912` и bug
 `SCRUM-1038` направляются в `Контроль качества`, не в `Готово`.
+
+## QA-Вердикт (2026-07-10, независимый retest)
+
+Статус: PASSED
+
+Проверено на `origin/dev` `86a084c0d` в изолированном QA worktree. Независимый
+alpha-derived замер accepted source и runtime signature вокруг pivot `(26,128)`
+на `x=96/128/160/176/192` воспроизвёл максимальную target-specific ошибку
+`1.380°` при hard tolerance `1.5°`; на representative flight slices сохранены
+ровно пять раздельных коридоров. Accepted source и signature побайтно совпадают.
+В runtime animation пять коридоров независимо измерены на нескольких срезах в
+release/flight/through-hit фазах.
+
+Негативный raw fixture доказал различающую способность oracle: тот же алгоритм
+на `storm_longbow_pixellab_source_raw.png` получает ошибки примерно до `8.6°`
+и пустой inner corridor на одном из срезов, поэтому прежний широкий fan не может
+дать false green. Contact sheet визуально принят на dark/light и
+`96/64/48 px`; у всех пяти lanes сохраняется ненулевая alpha mass. Neutral bow
+остаётся привязан к исходной позиции, а scene переводит authored pivot в local
+origin без неравномерного scale.
+
+PixelLab object/project/animation/export IDs присутствуют; immutable raw source
+и восемь raw exports сохранены. Восемь accepted/reference/runtime кадров —
+`256x256 RGBA` с настоящей прозрачностью, каждый accepted кадр побайтно совпадает
+с runtime. Восемь PNG import UID и task-owned `.gd.uid` глобально уникальны,
+source/dest import paths корректны. Initial SCRUM-912 и SCRUM-1038 commits не
+вносят gameplay hook или изменения в shared gameplay/runtime paths.
+
+Godot 4.7 через `tools/godot_gate.py` — PASS:
+
+- `scrum912_storm_longbow_vfx_test.gd`;
+- `unique_weapon_vfx_assets_test.gd` (`51` plates);
+- `attack_vfx_smoke_test.gd`;
+- `animation_smoke_test.gd`;
+- `ranger_kit_test.gd` (`SCRUM-909..913`);
+- `runtime_smoke_weapon_mechanics_test.gd`;
+- `runtime_smoke_test.gd` (`14581` files scanned after final latest-origin rebase).
+
+Оба runtime suites достигли явных PASS markers; известные headless diagnostics
+про freed lambda/null dummy texture остались non-fatal. Jira `SCRUM-1038` и
+parent `SCRUM-912` переведены в `Готово`. `SCRUM-1037` остаётся отдельным
+backend handoff для playback hook.
+
+Disk cleanup: QA `.godot`, временные логи/UID sidecars и disposable worktree
+удалены после push QA evidence; `git worktree prune` выполнен.

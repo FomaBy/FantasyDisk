@@ -150,3 +150,26 @@ yellow authority rays и читаемость на `96/64/48 px`.
 Это QA-ready fix candidate: исходный `## QA-Вердикт: FAILED` остаётся историей
 проверки, а `SCRUM-912` остаётся в `Контроль качества` до нового независимого
 вердикта. Shared gameplay hook по-прежнему вынесен в `SCRUM-1037`.
+
+## QA-Вердикт (2026-07-10, retest после SCRUM-1038)
+
+Статус: PASSED
+
+Независимый QA на `origin/dev` `86a084c0d` подтвердил реальную, а не только
+metadata-геометрию: alpha-derived centers accepted source/signature на
+`x=96/128/160/176/192` следуют `-17/-8.5/0/+8.5/+17°`, maximum absolute error
+`1.380°`, пять trails остаются раздельными. Старый immutable raw source тем же
+oracle проваливается, поэтому предыдущий false green закрыт. Contact sheet и
+combat samples `96/64/48 px` визуально PASS.
+
+PixelLab provenance/raw retention, восемь `256x256 RGBA` transparent frames,
+accepted-to-runtime hashes, global UID uniqueness, import source/dest paths,
+scene pivot/uniform scaling и отсутствие shared gameplay leakage проверены.
+Focused, unique VFX (`51`), attack VFX, animation, Ranger kit, weapon mechanics
+и full runtime (`14581` duplicate scan after final latest-origin rebase) через
+semaphore gate — PASS. Jira
+`SCRUM-912` и child `SCRUM-1038` переведены в `Готово`; playback integration
+по-прежнему принадлежит отдельному `SCRUM-1037`.
+
+Disk cleanup: QA `.godot`, временные логи/UID sidecars и disposable worktree
+удалены после push QA evidence; `git worktree prune` выполнен.

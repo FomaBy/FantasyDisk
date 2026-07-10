@@ -4360,12 +4360,12 @@
  },
  "animation_weapon_attack_storm_longbow_pixellab_task.md": {
   "key": "SCRUM-912",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "3e2bcbc36d02cf0229524979e450784e"
  },
  "bug_scrum912_storm_longbow_visual_cone_geometry_task.md": {
   "key": "SCRUM-1038",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "4129c1180cacc757aaaa5393c09d790d"
  },
  "backend_scrum912_storm_longbow_vfx_runtime_hook_task.md": {
