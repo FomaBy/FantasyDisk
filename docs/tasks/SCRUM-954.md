@@ -1,6 +1,6 @@
 # SCRUM-954 — Rebuild Codex navigation, list and dossier layout
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-954
 Owner: Backend/Codex `/root`
