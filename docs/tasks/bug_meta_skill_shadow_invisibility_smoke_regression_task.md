@@ -1,22 +1,22 @@
 # BUG: meta_skill_tree live-combat keystone scenarios недетерминированы
 
-Статус: new
+Статус: in_progress
 Версия: 0.2.1
 Jira: SCRUM-1028
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend/Codex `/root`
+Thread/Worker: `root-scrum-1028`
 Приоритет: high
 Роль: Back-end
 Найдено QA при тестировании: SCRUM-1024
 
 ## Scope And Locks
 
-До claim задача не владеет production-файлами. Ожидаемый focused scope после
-claim: `tests/meta_skill_tree_smoke_test.gd`, assassin shadow hook в
-`scripts/player.gd` и только реально необходимая test-harness изоляция. Не
-ослаблять behavioral assertion и не менять баланс invisibility без отдельного
-дизайн/баланс-решения.
+Claimed scope: `tests/meta_skill_tree_smoke_test.gd`, this mirror and focused
+meta test documentation. `scripts/player.gd`, combat/balance data and live
+behavioral harness remain read-only: diagnosis proved a test-fixture race, not a
+production invisibility or Bastion defect. Do not weaken behavioral assertions
+or change combat balance.
 
 ## Reproduction
 
@@ -64,6 +64,34 @@ SCRUM-1024 не меняет `player.gd`, этот тест, оружие или
 `Теневой шаг` проверки до недетерминированных live-combat keystone scenarios;
 отдельный Bastion-дубликат не нужен, пока диагностика не докажет иной root cause.
 
+## Confirmed Root Cause
+
+The SCRUM-835 block mixes two kinds of verification: direct calls to production
+combat API and fully live scene processing while its coroutine awaits frames.
+The equipped weapon inherits normal processing and can select/attack a newly
+spawned fixture, consume the Assassin shadow cooldown or remove the target
+before the manual oracle runs. Separately, the Bastion comparison calls real
+`take_damage()`, whose intentional global-RNG dodge check executes before
+defense; a dodge by only one side invalidates a defense-only comparison.
+
+This is harness contamination. Production invisibility, defense, dodge and
+weapon behavior are correct and remain unchanged.
+
+## Implementation Result
+
+- Manual semantic fixtures disable `_process`/`_physics_process` callbacks on
+  themselves and existing children before the first awaited frame. They stay in
+  scene/physics space, so explicit production calls and movement oracles remain
+  valid without automatic weapon/AI activity.
+- The Assassin mini-arena proves a clean cooldown, the immediate configured
+  two-second invisibility window and rejected damage with fixture dodge removed.
+- The Bastion pair removes dodge from both test dictionaries after stance has
+  recalculated `derived_parameters`, asserts both effective chances are zero,
+  explicitly proves stance activation, then compares pure damage reduction.
+- The separate live `meta_keystone_behavioral_smoke_test.gd` remains untouched.
+  Its existing reactor/pierce failures reproduced identically and are tracked by
+  SCRUM-1029; they predate and do not overlap this harness-only diff.
+
 ## Acceptance Criteria
 
 - focused assassin mini-arena доказывает реальную invisibility-семантику;
@@ -74,4 +102,17 @@ SCRUM-1024 не меняет `player.gd`, этот тест, оружие или
   зелёными;
 - Jira/документация/green-gate синхронизированы, результат landed в `dev`.
 
-Disk cleanup: none created by Jira-first QA registration.
+## Verification
+
+- Latest `origin/dev` `b5e032ed5`: `meta_skill_tree_smoke_test.gd` PASS 10/10
+  with clean stderr after the review fixes, then PASS 3/3 after the final rebase.
+- Independent pre-land review first reproduced three remaining races; all were
+  fixed. Re-review: PASS, no actionable findings.
+- `meta_keystone_behavioral_smoke_test.gd`: scoped baseline exception — the
+  untouched gate still reports only the two known Reactor failures in
+  SCRUM-1029; the prior pierce failure is now green on current production.
+- `runtime_smoke_test.gd`: PASS on the final rebased tip (the known non-fatal
+  dummy-renderer null-texture screenshot diagnostic remains outside this scope).
+- `git diff --check`: PASS; production scripts/data are unchanged.
+
+Disk cleanup: pending final `.godot` and worktree removal after push/routing.

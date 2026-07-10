@@ -539,13 +539,17 @@ func _test_player_application() -> void:
 # SCRUM-834 (Мета 4.1): каждый из 4 типов условных keystone поднимает урон ЛИШЬ
 # при выполнении условия; гейты ставит player (HP-порог, стойка, окно-после-
 # уклонения, счёт-в-радиусе). Минимум 1 поведенческий сценарий на тип условия.
-func _make_conditional_player(holder: Node2D, mods: Dictionary, class_id: String = "berserk", weapon_id: String = "sword") -> Node:
+func _make_conditional_player(holder: Node2D, mods: Dictionary, class_id: String = "berserk", weapon_id: String = "sword", manual_fixture := false) -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	holder.add_child(player)
 	if player.has_method("configure_character"):
 		player.configure_character(class_id, weapon_id)
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(player)
 	await process_frame
 	player.call("apply_meta_skill_modifiers", mods)
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(player)
 	await process_frame
 	return player
 
@@ -741,15 +745,29 @@ func _test_semantic_keystone_data_835() -> void:
 				return
 
 
-func _spawn_test_enemy(holder: Node2D, position: Vector2, max_hp := 100.0) -> Node2D:
+func _spawn_test_enemy(holder: Node2D, position: Vector2, max_hp := 100.0, manual_fixture := false) -> Node2D:
 	var enemy := ENEMY_SCENE.instantiate() as Node2D
 	holder.add_child(enemy)
 	enemy.global_position = position
 	enemy.add_to_group("enemies")
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(enemy)
 	await process_frame
 	enemy.set("max_health", max_hp)
 	enemy.set("health", max_hp)
 	return enemy
+
+
+func _quiesce_manual_combat_fixture(actor: Node) -> void:
+	# SCRUM-1028: semantic mini-arenas ниже вызывают runtime API напрямую. Пока
+	# coroutine ждёт process_frame, живое оружие/AI не должно успеть выбрать цель,
+	# потратить cooldown, убить fixture или сдвинуть его. Отключаем только
+	# callbacks (и у уже созданных детей), сохраняя CharacterBody2D в physics
+	# space для явных call("_physics_process")/move_and_slide() oracle ниже.
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for child in actor.get_children():
+		_quiesce_manual_combat_fixture(child)
 
 
 func _test_semantic_keystone_runtime_835() -> void:
@@ -919,10 +937,18 @@ func _test_semantic_keystone_runtime_835() -> void:
 	dot_source.queue_free()
 	dot_neighbor.queue_free()
 
-	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers")
-	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0)
+	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers", true)
+	var shadow_params := shadow.get("derived_parameters") as Dictionary
+	shadow_params["dodge"] = 0.0
+	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0, true)
 	shadow.set("health", shadow.get("max_health"))
+	if float(shadow.get("_assassin_crit_shadow_cooldown_left")) > 0.0:
+		_fail("SCRUM-1028 shadow mini-arena must begin before any automatic weapon consumes the cooldown.")
+		return
 	shadow.call("trigger_assassin_crit_shadow", shadow_target, 80.0)
+	if float(shadow.get("_shadow_invisible_left")) < 1.99:
+		_fail("SCRUM-835 Теневой шаг must open its configured two-second invisibility window immediately.")
+		return
 	var shadow_before := float(shadow.get("health"))
 	if bool(shadow.call("take_damage", 10.0, "semantic_835_shadow_invisible")) or float(shadow.get("health")) < shadow_before:
 		_fail("SCRUM-835 Теневой шаг must make the assassin ignore damage during shadow invisibility.")
@@ -956,12 +982,24 @@ func _test_semantic_keystone_runtime_835() -> void:
 	pack_druid.queue_free()
 
 	await process_frame
-	var plain := await _make_conditional_player(holder, {})
-	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0})
+	var plain := await _make_conditional_player(holder, {}, "berserk", "sword", true)
+	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0}, "berserk", "sword", true)
+	var plain_params := plain.get("derived_parameters") as Dictionary
+	plain_params["dodge"] = 0.0
 	plain.set("health", plain.get("max_health"))
 	bastion.set("health", bastion.get("max_health"))
 	bastion.set("velocity", Vector2.ZERO)
 	bastion.call("_update_conditional_keystones", 1.0)
+	if not bool(bastion.get("_stance_active")):
+		_fail("SCRUM-1028 Bastion mini-arena must deterministically enter stance before damage comparison.")
+		return
+	# Stance activation recalculates and replaces derived_parameters; remove the
+	# intentional runtime dodge only after that recalculation.
+	var bastion_params := bastion.get("derived_parameters") as Dictionary
+	bastion_params["dodge"] = 0.0
+	if float(plain.call("_current_dodge_chance")) > 0.0 or float(bastion.call("_current_dodge_chance")) > 0.0:
+		_fail("SCRUM-1028 Bastion defense comparison must neutralize random dodge on both fixtures.")
+		return
 	var plain_before := float(plain.get("health"))
 	var bastion_before := float(bastion.get("health"))
 	plain.call("take_damage", 10.0, "semantic_835_plain")
@@ -971,7 +1009,7 @@ func _test_semantic_keystone_runtime_835() -> void:
 		return
 	plain.global_position = Vector2(40.0, 0.0)
 	bastion.global_position = Vector2(240.0, 0.0)
-	var taunted_enemy := await _spawn_test_enemy(holder, Vector2(160.0, 0.0), 100.0)
+	var taunted_enemy := await _spawn_test_enemy(holder, Vector2(160.0, 0.0), 100.0, true)
 	taunted_enemy.set("move_speed", 120.0)
 	taunted_enemy.set("contact_range", 12.0)
 	bastion.call("_update_conditional_keystones", 0.10)

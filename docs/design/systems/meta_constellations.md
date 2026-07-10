@@ -468,6 +468,20 @@ SCRUM-835 одного wired-гейта недостаточно: `tests/meta_ke
 прогоняет его через `python3 tools/godot_gate.py` вместе с `meta_skill_tree`,
 `skill_tree_per_hero` и `runtime_smoke`.
 
+**Изоляция semantic mini-arena (SCRUM-1028).** Ручные сценарии
+`_test_semantic_keystone_runtime_835` проверяют production API прямыми вызовами,
+поэтому до первого ожидаемого кадра отключают `_process`/`_physics_process`
+callbacks тестового игрока, его дочернего оружия и ручных целей. Узлы остаются в
+scene/physics space, так что явные production-вызовы и `move_and_slide` oracle
+сохраняют реальную семантику. Это не заменяет отдельный live behavioral gate,
+зато не позволяет автоматической атаке потратить Assassin cooldown или
+уничтожить fixture во время `await process_frame`. Shadow oracle сначала доказывает
+немедленное двухсекундное invisible-window, затем гарантированно проверяет
+отказ `take_damage`. В парном Bastion oracle случайный dodge обеих сторон
+обнуляется только в fixture после stance-recalculation, нулевой итоговый шанс и
+активная стойка доказываются явно, затем сравнивается чистое снижение входящего
+урона. Production dodge, оружие и combat runtime при этом не изменяются.
+
 ## Приложение C — силуэты созвездий
 
 Список силуэтов — §7. Нормированные координаты узлов (npos 0..1) зафиксированы
