@@ -1067,10 +1067,14 @@ func _test_victory_shows_skill_points() -> void:
 
 
 func _test_shop_discount() -> void:
-	# Атлас, ветвь «Лавка»: узлы скидки снижают цены товаров.
+	# Атлас, ветвь «Лавка»: узлы скидки снижают цены ТОЙ ЖЕ корзины.
+	# SCRUM-1027: shop_items() материализует rarity-family tier через глобальный
+	# RNG, а _weighted_sample() использует main.rng. Оба источника обязаны иметь
+	# один seed для base/discount пары; иначе тест сравнивает разные tier/cost.
 	var main := MAIN_SCENE.instantiate()
 	root.add_child(main)
 	await process_frame
+	main.set("selected_character_id", "berserk")
 	main.set("selected_ascension_level", 0)
 	main.set("route_stage", 2)
 	if main.has_method("reset_run_ascension"):
@@ -1078,25 +1082,60 @@ func _test_shop_discount() -> void:
 
 	var base_state: Dictionary = main.get("meta_state")
 	base_state["skill_nodes"] = []
+	base_state["active_keystones"] = {}
 	main.set("meta_state", base_state)
-	(main.get("rng") as RandomNumberGenerator).seed = 4242
-	var full_items: Array = main.ui._random_shop_items(4)
-	var full_total := 0
-	for item in full_items:
-		full_total += int((item as Dictionary).get("cost", 0))
-
-	var disc_state: Dictionary = main.get("meta_state")
-	disc_state["skill_nodes"] = ["atlas_m4", "atlas_m5"]
-	main.set("meta_state", disc_state)
-	(main.get("rng") as RandomNumberGenerator).seed = 4242
-	var disc_items: Array = main.ui._random_shop_items(4)
-	var disc_total := 0
-	for item in disc_items:
-		disc_total += int((item as Dictionary).get("cost", 0))
-
-	if disc_total >= full_total or disc_total <= 0:
-		_fail("Expected Atlas shop nodes to lower prices (%d vs %d)." % [disc_total, full_total])
+	var discount_state: Dictionary = base_state.duplicate(true)
+	discount_state["skill_nodes"] = ["atlas_m4", "atlas_m5"]
+	var global_mods: Dictionary = Meta.skill_modifiers(discount_state)
+	var class_mods: Dictionary = Meta.skill_modifiers_for_class(discount_state, "berserk")
+	var global_shop_mult := float(global_mods.get("shop_price_mult", 0.0))
+	var class_shop_delta := float(class_mods.get("shop_price_mult", 0.0)) - global_shop_mult
+	var expected_price_mult := maxf(1.0 + global_shop_mult, 0.1) * maxf(1.0 + class_shop_delta, 0.1)
+	if not is_equal_approx(global_shop_mult, -0.04) or not is_equal_approx(expected_price_mult, 0.96):
+		_fail("Expected atlas_m4+m5 shop multiplier 0.96, got global %.3f / final %.3f." % [global_shop_mult, expected_price_mult])
 		return
+
+	for sample_seed in [17, 4242, 9001, 31337]:
+		main.set("meta_state", base_state)
+		(main.get("rng") as RandomNumberGenerator).seed = sample_seed
+		seed(sample_seed)
+		var full_items: Array = main.ui._random_shop_items(4)
+
+		main.set("meta_state", discount_state)
+		(main.get("rng") as RandomNumberGenerator).seed = sample_seed
+		seed(sample_seed)
+		var discounted_items: Array = main.ui._random_shop_items(4)
+		if discounted_items.size() != full_items.size() or full_items.is_empty():
+			_fail("Shop discount seed %d changed basket size (%d vs %d)." % [sample_seed, discounted_items.size(), full_items.size()])
+			return
+		for index in range(full_items.size()):
+			var base_item := full_items[index] as Dictionary
+			var discounted_item := discounted_items[index] as Dictionary
+			var base_signature := "%s|%s|%d" % [
+				str(base_item.get("id", "")),
+				str(base_item.get("kind", "")),
+				int(base_item.get("tier", 1)),
+			]
+			var discounted_signature := "%s|%s|%d" % [
+				str(discounted_item.get("id", "")),
+				str(discounted_item.get("kind", "")),
+				int(discounted_item.get("tier", 1)),
+			]
+			if discounted_signature != base_signature:
+				_fail("Shop discount seed %d changed item %d (%s -> %s); both RNG sources must be paired." % [
+					sample_seed, index, base_signature, discounted_signature])
+				return
+			var base_cost := int(base_item.get("cost", 0))
+			var expected_cost := maxi(1, int(round(float(base_cost) * expected_price_mult)))
+			var discounted_cost := int(discounted_item.get("cost", 0))
+			if discounted_cost != expected_cost or discounted_cost <= 0:
+				_fail("Shop discount seed %d item %s expected %d from %d, got %d." % [
+					sample_seed, base_signature, expected_cost, base_cost, discounted_cost])
+				return
+	# Не оставляем process-global RNG на последней SCRUM-1027
+	# последовательности: следующие независимые smoke-сценарии снова работают в
+	# обычном runtime-режиме. Failure paths завершают процесс через _fail().
+	randomize()
 	main.queue_free()
 	await process_frame
 

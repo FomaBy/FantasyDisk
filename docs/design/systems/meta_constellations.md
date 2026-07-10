@@ -450,6 +450,16 @@ runtime data state. SCRUM-835 закрыл semantic combat-пары на нов�
 Наследные v3-ключи (атрибутные `*_flat`/`*_mult`, `elite_boss_damage_mult`,
 `low_hp_damage_bonus`, `lowhp_regen_bonus` и т.д.) остаются разведёнными как были.
 
+**Детерминированный гейт скидки лавки (SCRUM-1027).**
+`tests/meta_skill_tree_smoke_test.gd::_test_shop_discount` сравнивает base и
+`atlas_m4 + atlas_m5` только как парные корзины. Для каждой пары тест одинаково
+инициализирует `Main.rng`, управляющий выборкой, и глобальный RNG, через который
+`ProgressionData.shop_items()` материализует tier семейства артефактов. Затем он
+доказывает равенство `id`/`kind`/`tier` каждого слота и проверяет точную цену
+`max(1, round(base_cost * 0.96))`. Гарантированный tier-3 от `atlas_k0`
+проверяется отдельно в `_test_guaranteed_rare_shop_capstone`; смешивать эти две
+механики в одном oracle нельзя.
+
 **Behavioral gate 4.1d (SCRUM-837).** Для semantic keystone-ключей после
 SCRUM-835 одного wired-гейта недостаточно: `tests/meta_keystone_behavioral_smoke_test.gd`
 проверяет реальные исходы в headless mini-arena (`Player`/`Enemy`/`ClassWeapon`/
