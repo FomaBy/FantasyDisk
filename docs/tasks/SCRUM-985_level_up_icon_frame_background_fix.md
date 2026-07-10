@@ -73,7 +73,7 @@ Branch/worktree: `dev`, `/Users/sergeyfomin/Documents/AI Agent`
   committed preview directory; `build/qa/scrum985/` удалён.
 - Thread cleanup: not a disposable worker thread.
 
-## QA-Вердикт (2026-07-10)
+## Первичный QA-Вердикт FAILED (2026-07-10)
 
 Статус: FAILED
 
@@ -139,3 +139,20 @@ responsive no-overlap, runtime UI, gamepad full-flow и полный runtime smo
 Единственный QA-блокер устранён; SCRUM-985 вернут в `Контроль
 качества` для независимой перепроверки. Disk cleanup: удалён общий
 `.godot` cache (444 MB).
+
+## QA-Вердикт (2026-07-10, re-QA)
+
+Статус: PASSED
+
+Проверено на свежем `origin/dev` `02fc618de`. Предыдущий единственный blocker
+SCRUM-1032 устранён коммитом `6b0e25cf6`: badge/socket/icon disjoint на
+1280x720, 1920x1080 и 2560x1440, полная подпись видима, три card stack
+выровнены, focus geometry stable. `LevelUpFrame` отсутствует; dim=`0.24`,
+shade=`0.12`, panel alpha=`0.20`; иконки внутри socket safe-zone.
+
+PASS: capture, Level Up advisor, no-overlap, theme, runtime UI, gamepad
+per-screen/full-flow 2/2, animation/meta/targeting и full runtime 2/2 exit 0.
+Freed-lambda output относится к внешнему Robot-багу SCRUM-1034.
+
+Баги: нет. Jira: `Готово`. Disk cleanup: combined disposable QA worktree
+удаляется после push verdict mirrors.

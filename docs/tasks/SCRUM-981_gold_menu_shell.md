@@ -63,9 +63,8 @@ result screens, dialogs, Level Up and Combat HUD.
 - [x] Combat HUD and Level Up remain intentionally without the large shell.
 - [x] No text, buttons, icons, portraits, hitboxes or scrollbars touch frame
       ornament at 1280×720, 1920×1080 or 2560×1440.
-- [ ] Focused UI, no-overlap, theme and full runtime gates pass (all listed
-      focused/matrix/theme/UI gates pass; full runtime awaits the active Claude
-      ownership release for `tests/runtime_smoke_test.gd`).
+- [x] Focused UI, no-overlap, theme and full runtime gates pass on the merged
+      implementation (external Robot lifecycle output is tracked by SCRUM-1034).
 - [x] Runtime screenshots/evidence cover the required resolution matrix.
 - [ ] Jira, docs and `origin/dev` are synchronized; task artifacts are cleaned.
 
@@ -132,3 +131,34 @@ result screens, dialogs, Level Up and Combat HUD.
 - Jira routed to `Контроль качества`; shared UI and umbrella-test locks are released.
 - Disk cleanup: removed the shared `.godot` cache (444 MB); tracked QA evidence
   remains in `build/qa/scrum981/`.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: FAILED
+
+Проверено независимо на свежем `origin/dev` `02fc618de`. PixelLab provenance,
+21 tracked screenshots, exact Main Menu 2x3, Route Map zones/no-horizontal-scroll,
+result layouts, live resize, focused 981/986/985/1032, no-overlap, theme,
+runtime UI, gamepad и полная регрессия проходят.
+
+Блокирующий дефект: `SCRUM-1036`. Generic menu HUD/FAB проверяются только
+относительно raw texture-safe rect, но фактические icon/text/button hitboxes
+выходят в объявленный forbidden inner-reserve из `spec.md`:
+
+- 1280x720 inner `157,137,966,446`: HP icon `154,125,21,21`, HP track/label
+  начинаются на `y=127`, FAB `1051,121,72,88`;
+- 1920x1080 inner `224,193,1472,694`: HP icon `224,182,32,32`, HP row `y=186`,
+  FAB `1624,177,74,91`;
+- 2560x1440 inner `299,257,1962,926`: HP icon `293,240,42,42`, HP row `y=245`,
+  XP/ULT icons `x=297`, FAB `2197,233,74,91`.
+
+Opaque local panel не считался нарушением: измерены реальные children и FAB
+hitbox. Текущие тесты false-green, потому что разрешают весь raw safe rect.
+SCRUM-981 остаётся в `Контроль качества`; runtime QA не менял.
+
+Полный runtime smoke прошёл 2/2 с exit 0. Повторяемый `Lambda capture at index
+3 was freed` дословно соответствует уже открытому Robot-багу SCRUM-1034, чьё
+описание прямо перечисляет full runtime suite; это внешний дефект.
+
+Disk cleanup: disposable QA worktree/cache/UID sidecars удаляются после push
+QA verdict mirrors. Thread cleanup: handled by parent dispatcher.

@@ -56,7 +56,7 @@ Locked paths: `scripts/ui_screens.gd`, `tests/ui_no_overlap_matrix_test.gd`,
 - [x] `runtime_smoke_ui_test.gd`, `gamepad_inrun_ui_test.gd` и
       `gamepad_menu_focus_test.gd` проходят.
 - [x] `gamepad_full_flow_smoke_test.gd` проходит.
-- [ ] Полный `runtime_smoke_test.gd` проходит после release активного
+- [x] Полный `runtime_smoke_test.gd` проходит после release активного
       Claude-lock на umbrella smoke.
 
 ## Handoff
@@ -98,3 +98,17 @@ QA runtime не меняет. `/root` принял SCRUM-1032 как явно co
 - SCRUM-1032 and parent SCRUM-985 are both back in independent QA; all shared
   locks are released.
 - Disk cleanup: removed the shared `.godot` cache (444 MB).
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+Независимый re-QA на `origin/dev` `02fc618de`: 720p badge
+`Rect2(334,240,150,31)`, socket `Rect2(379,278,60,60)`, icon
+`Rect2(392,291,34,34)` — intersections пусты. 1080p/1440p также чисты;
+полная подпись `ВЫЖИВАНИЕ` видима, socket/title tops трёх карточек выровнены,
+focus geometry stable. Capture, advisor, no-overlap/theme/runtime UI, gamepad
+full-flow 2/2 и full runtime 2/2 exit 0.
+
+Баги: нет. Jira: `Готово`. Внешний Robot freed-lambda output отслеживается
+SCRUM-1034. Disk cleanup: combined disposable QA worktree удаляется после push.
