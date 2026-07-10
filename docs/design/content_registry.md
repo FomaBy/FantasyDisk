@@ -641,9 +641,9 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `soldier_rifle` | Аркебуза строя | Солдат | Suppression burst: 3 коротких выстрела по линии; основная цель полный урон, соседи reduced damage | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierRifle.tscn` | Реализовано |
 | `soldier_grenade` | Граната с фитилем | Солдат | Delayed ground explosion: телеграф, короткий фитиль, falloff урона к краю | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierGrenade.tscn` | Реализовано |
 | `soldier_bayonet` | Штык-стойка | Солдат | Defensive brace corridor: каждый враг в стойке получает один укол и knockback | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierBayonet.tscn` | Реализовано |
-| `thief_coin_pouch` | Кошель Рикошета | Вор | Coin ricochet: цепь по ближайшим целям с убывающим уроном и малой кражей золота | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefCoinPouch.tscn`, `assets/sprites/weapons/thief_coin_pouch.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `thief_shadow_cloak` | Плащ Захода | Вор | Shadow backstab: мгновенный заход за ближайшую цель, усиленный удар и малый splash рядом | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefShadowCloak.tscn`, `assets/sprites/weapons/thief_shadow_cloak.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `thief_smoke_bomb` | Дымовая Бомба | Вор | Smoke bomb: delayed AoE + временное уклонение Вора | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefSmokeBomb.tscn`, `assets/sprites/weapons/thief_smoke_bomb.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_coin_pouch` | Кошель Рикошета | Вор | Coin ricochet (SCRUM-897): цепь 6 прыжков (кап 8), спад до 50% к последнему, мгновенное золото с первых 3 целей | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefCoinPouch.tscn`, `assets/sprites/weapons/thief_coin_pouch.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_shadow_cloak` | Отравленный Кинжал | Вор | Shadow backstab (SCRUM-897): фантомный кинжал без движения героя, паралич-яд и удар в спину ×1.35 | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefShadowCloak.tscn`, `assets/sprites/weapons/thief_shadow_cloak.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_smoke_bomb` | Дымовая Бомба | Вор | Smoke bomb (SCRUM-897): бросок → AoE-взрыв → недамажащее облако с позиционным dodge (кап 0.90 в дыму) | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefSmokeBomb.tscn`, `assets/sprites/weapons/thief_smoke_bomb.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `elementalist_orb_ring` | Кольцо Четырёх Стихий | Элементалист | SCRUM-948 square field: квадратная AoE в точке каста, тики трёх каналов (магия+физика+ожог) с отбросом от центра | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistOrbRing.tscn`, `assets/sprites/weapons/elementalist_orb_ring.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `elementalist_prism_focus` | Призматический Фокус | Элементалист | SCRUM-949 full-map X: диагональный разлом во всю арену через точку фокуса + центр-AoE | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistPrismFocus.tscn`, `assets/sprites/weapons/elementalist_prism_focus.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `elementalist_meteor_core` | Ядро Метеора | Элементалист | SCRUM-950 heavy meteor: самое медленное оружие игрока — телеграф+падение, тяжёлый удар, догорающая DoT-зона | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistMeteorCore.tscn`, `assets/sprites/weapons/elementalist_meteor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
@@ -1372,7 +1372,7 @@ bass_cable, split_core`) удалены вместе с иконками (`swift
 | `split_analysis` | Расщепленный анализ | Биолог | 3 | первичная цель сплэшит 40% двум соседям |
 | `lucky_coin` | Счастливая монета | Вор | 2 | +2 прыжка монеты, +1 краденое золото |
 | `magnetic_purse` | Магнитный кошель | Вор | 2 | +90 радиуса подбора, +10% золота |
-| `paralyzing_blade` | Парализующее лезвие | Вор | 3 | удар Плаща парализует (0.7с) |
+| `paralyzing_blade` | Парализующее лезвие | Вор | 3 | паралич-яд Кинжала дольше (+0.7с, кап 1.8с) |
 | `smoke_cache` | Дымный тайник | Вор | 2 | завеса +40% дольше, +12% уклонения |
 | `stolen_crest` | Украденный герб | Вор | 3 | 2 случайных чужих классовых в пул забега |
 | `overdrive_pick` | Медиатор овердрайва | Гитарист | 3 | рифф-серия: +10% урона, +12% темпа |

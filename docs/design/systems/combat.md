@@ -138,6 +138,25 @@
   `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.
   This keeps tank identity reactive without permanent immunity.
 - Support/Leadership classes (`guitarist`, `druid`, `engineer`, `priest`) обновляют class aura примерно раз в 0.55с. Союзники получают `command_aura`, враги в радиусе — `command_pressure`, Priest получает мягкий self-support tick.
+- SCRUM-897 «Отравленный Кинжал» (Вор): статус `poison_paralysis` —
+  `speed_multiplier 0.12` (движковый кламп группы статусов держит фактические
+  0.25 — «паралич-лайт», не абсолютный стан). Базовое окно 0.85с встроено в
+  оружие; артефакт «Парализующее лезвие» (`backstab_root_duration`) продлевает,
+  суммарно не выше `POISON_PARALYSIS_CAP` 1.8с; боссы/элиты (группы
+  `bosses`/`elite_enemies`) получают срез ×0.25 (`POISON_PARALYSIS_BOSS_FACTOR`)
+  — сохраняют мобильность заметную часть времени даже под фокусом. Паралич —
+  строгое замедление (не полный стан): на одиночной обычной жертве окно может
+  поддерживаться непрерывно — это ниша оружия («время сбежать или добить»),
+  остальная толпа не контролится.
+- SCRUM-897 «Дымовая Бомба» (Вор): позиционные дым-облака НЕ статусы — реестр
+  `Player._smoke_clouds` (`register_smoke_cloud`/`smoke_cloud_dodge_bonus`).
+  Бонус уклонения действует ТОЛЬКО пока герой стоит внутри живого облака;
+  перекрытия не стакаются (берётся максимум). Ролл уворота
+  `Player._current_dodge_chance()`: базовый dodge капится
+  `SURVIVABILITY_DODGE_CAP` 0.55, бонус облака добавляется поверх с суммарным
+  капом `SMOKE_CLOUD_DODGE_CAP` 0.90 — «почти неуязвим в дыму при тяжёлом
+  dodge-билде», вне облака кап обычный. Облако урона не наносит; единственное
+  дамажащее событие дыма — AoE-взрыв на детонации.
 - Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 
 ## Spawn And Waves

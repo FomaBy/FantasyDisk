@@ -14,9 +14,9 @@ Note: the current roster contains 17 classes, while the original task text menti
 | soldier | Base lvl1 | strength 7.00; agility 6.00; intelligence 2.00; perception 8.00; energy 4.00; knowledge 5.00; endurance 6.00; leadership 5.00 | 47.99 | 150.00 | 136.26 | 0.969 | 1.005 | ok |
 | soldier | Lvl20 optimum | strength 18.00; agility 14.00; intelligence 2.00; perception 8.00; energy 4.00; knowledge 5.00; endurance 6.00; leadership 5.00 | 241.21 | 751.94 | 683.29 | 4.864 | 0.927 | ok |
 | soldier | Lvl20 random avg | strength 9.00; agility 8.13; intelligence 4.34; perception 10.73; energy 6.28; knowledge 7.52; endurance 8.28; leadership 7.72 | 84.36 | 263.34 | 239.21 | 1.703 | 0.907 | ok |
-| thief | Base lvl1 | strength 5.00; agility 9.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 51.85 | 162.01 | 150.68 | 0.973 | 1.009 | ok |
-| thief | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 265.84 | 828.81 | 770.80 | 4.980 | 0.949 | ok |
-| thief | Lvl20 random avg | strength 7.13; agility 11.22; intelligence 5.73; perception 10.16; energy 7.20; knowledge 6.38; endurance 6.59; leadership 7.59 | 89.56 | 279.66 | 260.10 | 1.679 | 0.895 | ok |
+| thief | Base lvl1 | strength 5.00; agility 9.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 51.86 | 162.00 | 150.67 | 0.973 | 1.009 | ok |
+| thief | Lvl20 optimum | strength 16.00; agility 17.00; intelligence 3.00; perception 8.00; energy 5.00; knowledge 4.00; endurance 4.00; leadership 5.00 | 265.92 | 829.16 | 771.11 | 4.981 | 0.949 | ok |
+| thief | Lvl20 random avg | strength 7.13; agility 11.22; intelligence 5.73; perception 10.16; energy 7.20; knowledge 6.38; endurance 6.59; leadership 7.59 | 89.58 | 279.69 | 260.12 | 1.679 | 0.895 | ok |
 | elementalist | Base lvl1 | strength 2.00; agility 4.00; intelligence 9.00; perception 7.00; energy 8.00; knowledge 6.00; endurance 3.00; leadership 5.00 | 51.84 | 178.19 | 164.55 | 0.971 | 1.007 | ok |
 | elementalist | Lvl20 optimum | strength 2.00; agility 17.00; intelligence 15.00; perception 7.00; energy 8.00; knowledge 6.00; endurance 3.00; leadership 5.00 | 264.26 | 905.49 | 833.73 | 4.933 | 0.940 | ok |
 | elementalist | Lvl20 random avg | strength 4.27; agility 6.28; intelligence 11.53; perception 8.95; energy 10.45; knowledge 8.83; endurance 5.16; leadership 7.53 | 99.01 | 339.43 | 313.30 | 1.850 | 0.986 | ok |
@@ -94,15 +94,15 @@ Note: the current roster contains 17 classes, while the original task text menti
 | soldier | soldier_rifle | Lvl20 random avg | 84.28 | 262.95 | 237.28 | 1.697 |
 | soldier | soldier_grenade | Lvl20 random avg | 84.28 | 263.12 | 246.94 | 1.719 |
 | soldier | soldier_bayonet | Lvl20 random avg | 84.51 | 263.94 | 233.42 | 1.692 |
-| thief | thief_coin_pouch | Base lvl1 | 51.85 | 161.94 | 146.13 | 0.967 |
-| thief | thief_shadow_cloak | Base lvl1 | 51.87 | 162.02 | 146.21 | 0.968 |
-| thief | thief_smoke_bomb | Base lvl1 | 51.82 | 162.06 | 159.70 | 0.983 |
-| thief | thief_coin_pouch | Lvl20 optimum | 265.43 | 827.93 | 747.12 | 4.948 |
-| thief | thief_shadow_cloak | Lvl20 optimum | 267.09 | 831.33 | 750.19 | 4.972 |
-| thief | thief_smoke_bomb | Lvl20 optimum | 264.99 | 827.16 | 815.10 | 5.019 |
-| thief | thief_coin_pouch | Lvl20 random avg | 89.52 | 279.47 | 252.20 | 1.670 |
-| thief | thief_shadow_cloak | Lvl20 random avg | 89.72 | 279.96 | 252.63 | 1.673 |
-| thief | thief_smoke_bomb | Lvl20 random avg | 89.43 | 279.54 | 275.47 | 1.695 |
+| thief | thief_coin_pouch | Base lvl1 | 51.87 | 162.04 | 146.22 | 0.968 |
+| thief | thief_shadow_cloak | Base lvl1 | 51.86 | 162.01 | 146.20 | 0.968 |
+| thief | thief_smoke_bomb | Base lvl1 | 51.84 | 161.95 | 159.59 | 0.982 |
+| thief | thief_coin_pouch | Lvl20 optimum | 265.52 | 829.03 | 748.12 | 4.952 |
+| thief | thief_shadow_cloak | Lvl20 optimum | 267.13 | 831.86 | 750.67 | 4.974 |
+| thief | thief_smoke_bomb | Lvl20 optimum | 265.11 | 826.60 | 814.55 | 5.017 |
+| thief | thief_coin_pouch | Lvl20 random avg | 89.55 | 279.71 | 252.41 | 1.671 |
+| thief | thief_shadow_cloak | Lvl20 random avg | 89.71 | 280.00 | 252.67 | 1.673 |
+| thief | thief_smoke_bomb | Lvl20 random avg | 89.47 | 279.35 | 275.28 | 1.695 |
 | elementalist | elementalist_orb_ring | Base lvl1 | 51.84 | 178.11 | 168.76 | 0.970 |
 | elementalist | elementalist_prism_focus | Base lvl1 | 51.84 | 178.22 | 157.61 | 0.962 |
 | elementalist | elementalist_meteor_core | Base lvl1 | 51.85 | 178.23 | 167.27 | 0.980 |

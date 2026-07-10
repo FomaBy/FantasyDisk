@@ -1745,7 +1745,7 @@ const BACKSTAB_NEIGHBOR_SHARE := 0.35          # доля ролла сосед�
 const BACKSTAB_FACING_DOT_THRESHOLD := 0.25    # порог «спина отдана фантому» (dot facing · фантом→цель)
 const POISON_PARALYSIS_SPEED := 0.12           # целевой множитель скорости яда (StatusEffects клампит группу на 0.25)
 const POISON_PARALYSIS_CAP := 1.8              # кап суммарного окна паралича (база + артефакт), сек
-const POISON_PARALYSIS_BOSS_FACTOR := 0.35     # боссы/элиты: срезанная длительность контроля
+const POISON_PARALYSIS_BOSS_FACTOR := 0.25     # боссы/элиты: срезанное окно (~0.21с база; на скейле темпа аптайм <60%)
 
 
 func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:

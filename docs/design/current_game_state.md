@@ -1134,7 +1134,7 @@ SCRUM-860 добавил capped kill-growth как отдельную Assassin i
 | ID | Имя | Роль | Базовые характеристики |
 | --- | --- | --- | --- |
 | `soldier` | Солдат | Тактический физический контроль | Str 7, Agi 5, Int 3, Per 8, Energy 4, Know 3, End 7, Lead 5 |
-| `thief` | Вор | Уловки, рикошеты, backstab и дымовое уклонение | Str 5, Agi 9, Int 3, Per 8, Energy 5, Know 4, End 4, Lead 5 |
+| `thief` | Вор | Экономико-уклонительный трикстер (SCRUM-897): trait «Воровская хватка» (стартовый радиус подбора ×1.85), рикошеты с мгновенным золотом, паралич-кинжал, дым-облако | Str 5, Agi 9, Int 3, Per 8, Energy 5, Know 4, End 4, Lead 5 |
 | `elementalist` | Элементалист | Стихийные орбиты, призматические разломы и метеорные осколки | Str 2, Agi 4, Int 9, Per 7, Energy 8, Know 6, End 3, Lead 5 |
 | `sniper` | Снайпер | Дальний lockshot, kill-zone и осколочные выстрелы | Str 6, Agi 8, Int 2, Per 10, Energy 3, Know 3, End 7, Lead 1 |
 | `priest` | Священник | Священный sustain через освящение, ward-пульсы и молитвенную цепь | Str 2, Agi 4, Int 8, Per 6, Energy 7, Know 9, End 5, Lead 6 |
@@ -1216,9 +1216,9 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 коротких выстрела по линии; основная цель полный урон, соседние цели reduced suppression damage |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Бросок/посадка без урона, затем fuse-телеграф и взрыв с falloff урона |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Короткая defensive corridor-стойка: один укол на врага за brace window + knockback |
-| Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим врагам, урон убывает по цепи, первые попадания крадут золото |
-| Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и малый splash рядом, не двигая героя |
-| Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Delayed AoE дыма плюс временный dodge-window |
+| Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | SCRUM-897: цепь 6 прыжков (кап 8), монотонный спад до 50% ролла на последнем; золото мгновенно в кошель с первых 3 целей (без пикапа) |
+| Вор | Отравленный Кинжал | `thief_shadow_cloak` | `shadow_backstab` | SCRUM-897: фантомный кинжал без движения героя; паралич-яд 0.85с (кап 1.8с, боссы/элиты ×0.25), удар в спину ×1.35, splash 0.35 ролла |
+| Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | SCRUM-897: бросок с фитилём 0.5с, одно AoE-событие урона, затем недамажащее облако 2.6с; dodge +0.35 только внутри, кап в дыму 0.90 |
 | Элементалист | Кольцо Четырёх Стихий | `elementalist_orb_ring` | `elemental_orbit` | SCRUM-948: квадратная AoE в точке каста — три канала урона (магия+физика+ожог) и отброс от центра |
 | Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | SCRUM-949: полнокартный X-разлом через точку фокуса с центр-AoE и телеграфом |
 | Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | SCRUM-950: самое медленное оружие игрока — долгий телеграф+падение, тяжёлый удар и догорающая DoT-зона |
