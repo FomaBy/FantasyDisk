@@ -1,6 +1,6 @@
 # SCRUM-993 — Shop gold shell while preserving merchant art
 
-Статус: done (implementation landed; awaiting independent QA verdict)
+Статус: done (QA PASSED 2026-07-10; Jira `Готово`)
 Контур: Codex
 Owner: combined Design+Back-end `/root/scrum993_shop_design`
 Thread/Worker: `/root/scrum993_shop_design`
@@ -102,3 +102,32 @@ Shop remains a separate SCRUM-987 flow.
 - 2026-07-10: windowed capture ran on OpenGL 4.1 Metal / Apple M4 Pro; visual
   review accepted complete art, frame clearance, readable states and fully
   visible fixed tooltip copy at 1280×720, 1920×1080 and 2560×1440.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+Проверено независимо от свежего `origin/dev` (`3ea3e3c59`), без изменений
+implementation:
+
+- `scrum993_shop_gold_shell_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_ui_test.gd` и полный
+  `runtime_smoke_test.gd` — PASS через `tools/godot_gate.py`;
+- `gamepad_inrun_ui_test.gd`, `gamepad_menu_focus_test.gd`,
+  `gamepad_core_input_test.gd` — PASS; `gamepad_full_flow_smoke_test.gd` — два
+  последовательных PASS;
+- общая регрессия `animation_smoke_test.gd`,
+  `meta_progression_smoke_test.gd`, `melee_weapon_targeting_test.gd` — PASS;
+- fresh windowed OpenGL 4.1 Metal recapture и визуальная проверка 12 состояний:
+  `default/focus/unaffordable/purchased` при 1280×720, 1920×1080 и
+  2560×1440 — merchant art полностью видим в contain-rect, hollow gold frame
+  не перекрыт, HUD/title/четыре товара/fixed tooltip/Back находятся только во
+  внутренней content-zone.
+
+Краевые случаи: длинный caption с ellipsis, `9999g`, foreign-affinity marker,
+недостаток монет без списания, disabled purchased hook и focus skip,
+2560→1280→2560 live resize без перестройки stock, tooltip show/reset,
+кольцо focus/Back и отсутствие Shop FAB/scrollbar.
+
+Баги: нет. Известный dummy-renderer `texture_2d_get` diagnostic в umbrella
+screenshot helper не фатален; оба smoke-suite завершаются кодом `0` и PASS.
