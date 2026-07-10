@@ -1,0 +1,39 @@
+{
+  "issue": "SCRUM-912",
+  "decision": "pass",
+  "signature": {
+    "path": "assets/sprites/effects/vfx_weapon_storm_longbow.png",
+    "size": [256, 256],
+    "mode": "RGBA",
+    "bbox_alpha_gt_0": [17, 21, 243, 236],
+    "gutters_left_top_right_bottom": [17, 21, 13, 20],
+    "corner_alpha": [0, 0, 0, 0],
+    "visible_pixel_ratio_alpha_gt_8": 0.120544,
+    "max_source_alpha": 255,
+    "effective_body_alpha_after_attack_vfx_modulate": 153,
+    "vertical_clusters_at_x96_alpha_gt_8_gap2": 5
+  },
+  "animation_frames": [
+    {"frame": 0, "bbox": [18, 21, 248, 238], "gutters": [18, 21, 8, 18], "visible_ratio": 0.1423},
+    {"frame": 1, "bbox": [18, 23, 249, 236], "gutters": [18, 23, 7, 20], "visible_ratio": 0.1388},
+    {"frame": 2, "bbox": [17, 29, 230, 231], "gutters": [17, 29, 26, 25], "visible_ratio": 0.1290},
+    {"frame": 3, "bbox": [15, 23, 235, 238], "gutters": [15, 23, 21, 18], "visible_ratio": 0.1252},
+    {"frame": 4, "bbox": [15, 29, 239, 234], "gutters": [15, 29, 17, 22], "visible_ratio": 0.0894},
+    {"frame": 5, "bbox": [15, 29, 241, 234], "gutters": [15, 29, 15, 22], "visible_ratio": 0.0749},
+    {"frame": 6, "bbox": [15, 23, 239, 235], "gutters": [15, 23, 17, 21], "visible_ratio": 0.0383},
+    {"frame": 7, "bbox": [15, 42, 57, 213], "gutters": [15, 42, 199, 43], "visible_ratio": 0.0354}
+  ],
+  "checks": {
+    "all_frames_256_rgba": true,
+    "all_corners_transparent": true,
+    "minimum_frame_gutter_px": 7,
+    "stable_left_bow_pivot": true,
+    "five_arrow_readability_frames_0_to_5": true,
+    "through_hit_spark_readability_frame_6": true,
+    "dark_background_readable": true,
+    "light_background_readable": true,
+    "combat_scale_48_64_96_readable": true,
+    "text_or_baked_ui": false,
+    "opaque_background": false
+  }
+}

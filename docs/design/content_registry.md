@@ -672,7 +672,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
-| `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `storm_longbow` | Грозовой длинный лук | Рейнджер | SCRUM-911/912: stance-charged конус из 5 пробивающих стрел (34°, 980px, pierce 4) с PixelLab bow-release/through-hit VFX | `ProgressionData.RANGER_WEAPONS`, `assets/sprites/effects/vfx_weapon_storm_longbow.png`, `assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres`, `scenes/vfx/StormLongbowVolleyVfx.tscn` | Реализовано; PixelLab source/evidence в `docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/` |
 | `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `restore_potion` | Зелье восстановления | Доктор | Drain/lifesteal-связь к цели | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
 | `plague_syringe` | Чумной шприц | Доктор | Drain-связь с poison DoT и sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |

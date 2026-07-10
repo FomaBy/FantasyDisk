@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/vfx/storm_longbow_volley_vfx.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres" id="2_frames"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_storm"]
+blend_mode = 1
+light_mode = 1
+
+[node name="StormLongbowVolleyVfx" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_storm")
+modulate = Color(0.78, 0.92, 1, 0.62)
+position = Vector2(102, 0)
+z_index = 10
+sprite_frames = ExtResource("2_frames")
+animation = &"release"
+autoplay = "release"
