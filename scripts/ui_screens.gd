@@ -2567,6 +2567,11 @@ func _show_atlas_screen() -> void:
 	var frame_margins := _scaled_frame_margins_xy(
 		ATLAS_FRAME_SOURCE_SIZE, vp,
 		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+	# Full currency names plus three standard action plates need ~1.4K. At
+	# compact safe widths the icons keep the resource identity, labels show the
+	# exact count, and the full localized phrase moves to the tooltip.
+	var atlas_safe_width := maxf(0.0, vp.x - frame_margins.x - frame_margins.z)
+	var compact_header_currency := atlas_safe_width < 1420.0
 	var safe := MarginContainer.new()
 	safe.name = "AtlasSafeArea"
 	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -2601,6 +2606,7 @@ func _show_atlas_screen() -> void:
 	_atlas["tab_constellation"] = tab_constellation
 	var emblem_badge := _atlas_make_currency_chip("AtlasEmblemBadge", META40_CURRENCY_EMBLEM_PATH, "AtlasEmblemsLabel", s)
 	header.add_child(emblem_badge)
+	emblem_badge.tooltip_text = "Эмблемы класса"
 	_atlas["emblem_badge"] = emblem_badge
 	_atlas["emblems_label"] = emblem_badge.find_child("AtlasEmblemsLabel", true, false)
 	var header_spacer := Control.new()
@@ -2615,7 +2621,10 @@ func _show_atlas_screen() -> void:
 	_atlas["tab_guild"] = tab_guild
 	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
 	header.add_child(stardust_badge)
+	stardust_badge.tooltip_text = "Звёздная пыль"
+	_atlas["stardust_badge"] = stardust_badge
 	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
+	_atlas["compact_header_currency"] = compact_header_currency
 	var header_spacer_right := Control.new()
 	header_spacer_right.name = "AtlasHeaderSpacerRight"
 	header_spacer_right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2650,6 +2659,7 @@ func _show_atlas_screen() -> void:
 	var strip := ScrollContainer.new()
 	strip.name = "AtlasClassStrip"
 	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	strip.follow_focus = true
 	strip.custom_minimum_size = Vector2(medallion_px * 2.0 + float(strip_sep) + roundf(14.0 * s), 0.0)
 	strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(strip)
@@ -2767,7 +2777,11 @@ func _show_atlas_screen() -> void:
 	info_scroll.name = "AtlasNodeScroll"
 	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	info_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	info_scroll.focus_mode = Control.FOCUS_ALL
+	info_scroll.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	info_scroll.tooltip_text = "Описание звезды. Прокрутка: ↑/↓ или колесо мыши."
 	panel_box.add_child(info_scroll)
+	_atlas["panel_scroll"] = info_scroll
 	var info_box := VBoxContainer.new()
 	info_box.name = "AtlasNodeInfoBox"
 	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2840,7 +2854,10 @@ func _show_atlas_screen() -> void:
 	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	progress_label.add_theme_font_size_override("font_size", _readable_font_size(14))
 	progress_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.70, 0.95))
-	panel_box.add_child(progress_label)
+	# Variable progress/hint copy belongs to the existing dossier scroll. Keeping
+	# it outside forced a 420px panel minimum and expanded 1280x720 beyond the
+	# real viewport after node selection (SCRUM-1024).
+	info_box.add_child(progress_label)
 	_atlas["panel_progress"] = progress_label
 	var hidden_hint := Label.new()
 	hidden_hint.name = "AtlasHiddenHint"
@@ -2849,8 +2866,31 @@ func _show_atlas_screen() -> void:
 	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(12))
 	hidden_hint.add_theme_color_override("font_color", Color(0.72, 0.82, 0.98, 0.88))
 	hidden_hint.visible = false
-	panel_box.add_child(hidden_hint)
+	info_box.add_child(hidden_hint)
 	_atlas["panel_hidden_hint"] = hidden_hint
+	info_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := info_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(floor(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(info_scroll.size.y * 0.65)))
+		var previous_scroll := info_scroll.scroll_vertical
+		var target_scroll := clampi(previous_scroll + scroll_direction * scroll_step, 0, scroll_max)
+		if target_scroll == previous_scroll:
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := info_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				info_scroll.accept_event()
+			return
+		info_scroll.scroll_vertical = target_scroll
+		info_scroll.accept_event()
+	)
 
 	# --- Низ: «Сброс умений» (бесплатный респек — в тултипе) + легенда состояний ---
 	var footer := HBoxContainer.new()
@@ -3009,8 +3049,11 @@ func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name:
 	var chip := PanelContainer.new()
 	chip.name = chip_name
 	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.mouse_filter = Control.MOUSE_FILTER_STOP
+	chip.mouse_default_cursor_shape = Control.CURSOR_HELP
 	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
 	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
 	chip.add_child(row)
 	var icon := TextureRect.new()
@@ -3018,11 +3061,13 @@ func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name:
 	icon.texture = game._cached_texture(icon_path)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var icon_px := maxf(20.0, roundf(30.0 * s))
 	icon.custom_minimum_size = Vector2(icon_px, icon_px)
 	row.add_child(icon)
 	var label := Label.new()
 	label.name = label_name
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", _readable_font_size(16))
 	label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.74, 1.0))
@@ -3561,10 +3606,20 @@ func _atlas_refresh() -> void:
 	var emblems_label := _atlas.get("emblems_label") as Label
 	if emblems_label != null and is_instance_valid(emblems_label):
 		var genitive := str(ATLAS_CLASS_GENITIVE.get(class_id, "класса"))
-		emblems_label.text = "Эмблемы %s: %d" % [genitive, game.META_PROGRESSION.class_sigils_available(state, class_id)]
+		var emblem_count: int = game.META_PROGRESSION.class_sigils_available(state, class_id)
+		var emblem_text := "Эмблемы %s: %d" % [genitive, emblem_count]
+		emblems_label.text = str(emblem_count) if bool(_atlas.get("compact_header_currency", false)) else emblem_text
+		var emblem_badge := _atlas.get("emblem_badge") as Control
+		if emblem_badge != null:
+			emblem_badge.tooltip_text = emblem_text
 	var stardust_label := _atlas.get("stardust_label") as Label
 	if stardust_label != null and is_instance_valid(stardust_label):
-		stardust_label.text = "Звёздная пыль: %d" % game.META_PROGRESSION.stardust_available(state)
+		var stardust_count: int = game.META_PROGRESSION.stardust_available(state)
+		var stardust_text := "Звёздная пыль: %d" % stardust_count
+		stardust_label.text = str(stardust_count) if bool(_atlas.get("compact_header_currency", false)) else stardust_text
+		var stardust_badge := _atlas.get("stardust_badge") as Control
+		if stardust_badge != null:
+			stardust_badge.tooltip_text = stardust_text
 
 	# Медальоны: подсветка выбранного, прогресс x/N, бейдж непотраченных эмблем.
 	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
@@ -3755,6 +3810,10 @@ func _atlas_refresh_node_panel() -> void:
 		progress_label.text = "Созвездие: %d/%d · Сила класса: +%d%%" % [visible_bought, visible_total, int(roundf((power - 1.0) * 100.0))]
 	hidden_hint.text = hint_text
 	hidden_hint.visible = hint_text != ""
+	var info_scroll := _atlas.get("panel_scroll") as ScrollContainer
+	if info_scroll != null and is_instance_valid(info_scroll):
+		info_scroll.scroll_vertical = 0
+		info_scroll.set_deferred("scroll_vertical", 0)
 
 
 func _atlas_node_pressed(node_id: String) -> void:
@@ -3775,6 +3834,7 @@ func _atlas_select_node(node_id: String) -> void:
 		return
 	_atlas["selected"] = node_id
 	_atlas_refresh()
+	_atlas_wire_focus()
 
 
 func _atlas_select_class(class_id: String) -> void:
@@ -3960,11 +4020,12 @@ func _atlas_wire_focus(seed_initial_focus := false) -> void:
 	var back_button := _atlas.get("back_button") as Button
 	var respec_button := _atlas.get("respec_button") as Button
 	var buy_button := _atlas.get("buy_button") as Button
+	var info_scroll := _atlas.get("panel_scroll") as ScrollContainer
 	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
 	var medallions: Array = [] if on_guild else _atlas.get("medallions", [])
 	var buttons: Dictionary = _atlas.get("node_buttons", {})
 	var centers: Dictionary = _atlas.get("node_centers", {})
-	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button]:
+	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button, info_scroll]:
 		if control == null or not is_instance_valid(control):
 			return
 	# Шапка: горизонтальная цепь.
@@ -4019,7 +4080,7 @@ func _atlas_wire_focus(seed_initial_focus := false) -> void:
 			left_target = selected_medallion if selected_medallion != null else tab_constellation
 		var right_target := best["right"] as Control
 		if right_target == null:
-			right_target = buy_button if buy_button.visible and not buy_button.disabled else respec_button
+			right_target = buy_button if buy_button.visible and not buy_button.disabled else info_scroll
 		var top_target := best["top"] as Control
 		if top_target == null:
 			top_target = tab_guild if on_guild else tab_constellation
@@ -4034,6 +4095,12 @@ func _atlas_wire_focus(seed_initial_focus := false) -> void:
 	if core_button != null and is_instance_valid(core_button):
 		buy_button.focus_neighbor_left = core_button.get_path()
 		respec_button.focus_neighbor_top = core_button.get_path()
+		info_scroll.focus_neighbor_left = core_button.get_path()
+	var scroll_exit := buy_button if buy_button.visible and not buy_button.disabled else respec_button
+	info_scroll.focus_neighbor_right = scroll_exit.get_path()
+	info_scroll.focus_neighbor_top = back_button.get_path()
+	info_scroll.focus_neighbor_bottom = scroll_exit.get_path()
+	buy_button.focus_neighbor_top = info_scroll.get_path()
 	var keystone_toggle := _atlas.get("keystone_toggle") as Button
 	if keystone_toggle != null and is_instance_valid(keystone_toggle):
 		buy_button.focus_neighbor_bottom = keystone_toggle.get_path()

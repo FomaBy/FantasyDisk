@@ -10,7 +10,7 @@ const VIEWPORT_SIZES := [
 ]
 
 var errors := PackedStringArray()
-var report := PackedStringArray(["# SCRUM-970 Atlas pointer clickability matrix", ""])
+var report := PackedStringArray(["# SCRUM-970 / SCRUM-1024 Atlas pointer clickability matrix", ""])
 
 
 func _initialize() -> void:
@@ -19,7 +19,7 @@ func _initialize() -> void:
 		return
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_viewport(viewport_size)
-	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum970")
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum1024")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var report_file := FileAccess.open("%s/atlas_clickability_matrix.md" % qa_dir, FileAccess.WRITE)
 	if report_file != null:
@@ -44,6 +44,10 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	var main := MAIN_SCENE.instantiate()
 	viewport.add_child(main)
 	await process_frame
+	if main.get("ui") == null:
+		errors.append("Atlas viewport=%s: Main UI failed to initialize; refusing a false-positive layout pass." % str(viewport_size))
+		await _teardown(owned_viewport)
+		return
 	var state: Dictionary = main.get("meta_state")
 	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3]}
 	state["skill_nodes"] = []
@@ -94,6 +98,10 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 			or Meta.currency_available_for_node(main.get("meta_state"), "berserk_m0") != class_currency_before:
 		errors.append("%s: class-node preview changed purchases or emblem currency before explicit Buy." % context)
 	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	_check_atlas_layout_inside_viewport(viewport, main, "%s class" % context)
+	await _check_currency_pointer_hover(viewport, main, context)
+	await _check_atlas_dossier_scroll(viewport, main, class_node, context)
+	_save_viewport_screenshot(viewport, "class_%dx%d" % [viewport_size.x, viewport_size.y])
 	if buy == null or buy.disabled or not buy.is_visible_in_tree():
 		errors.append("%s: selected class node did not expose an enabled buy action." % context)
 	else:
@@ -103,6 +111,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		var class_cost := int(Meta.node_by_id("berserk_m0").get("cost", 0))
 		if Meta.currency_available_for_node(main.get("meta_state"), "berserk_m0") != class_currency_before - class_cost:
 			errors.append("%s: explicit class Buy did not spend exactly %d emblems." % [context, class_cost])
+	await _check_compact_medallion_scroll(viewport, main, context)
 
 	# Reopen from a clean state before the Guild path so stale selection/focus
 	# cannot make the pointer assertion pass accidentally.
@@ -137,6 +146,8 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		await process_frame
 	if str(main.ui._atlas.get("selected", "")) != "atlas_m0":
 		errors.append("%s: real pointer click was routed to %s and did not select atlas_m0." % [context, guild_hovered])
+	_check_atlas_layout_inside_viewport(viewport, main, "%s Guild" % context)
+	_save_viewport_screenshot(viewport, "guild_%dx%d" % [viewport_size.x, viewport_size.y])
 	if Meta.is_node_purchased(main.get("meta_state"), "atlas_m0") \
 			or (main.get("meta_state") as Dictionary).get("skill_nodes", []) != guild_nodes_before \
 			or Meta.currency_available_for_node(main.get("meta_state"), "atlas_m0") != guild_currency_before:
@@ -263,6 +274,16 @@ func _pointer_click(
 	context := ""
 ) -> String:
 	var point := control.get_global_rect().get_center()
+	var visible_rect := Rect2(Vector2.ZERO, viewport.get_visible_rect().size)
+	if not visible_rect.grow(1.0).encloses(control.get_global_rect()) or not visible_rect.has_point(point):
+		errors.append("%s: refusing synthetic pointer click on %s outside real viewport %s (rect %s, center %s)." % [
+			context,
+			control.name,
+			str(visible_rect),
+			str(control.get_global_rect()),
+			str(point),
+		])
+		return "<outside-viewport>"
 	var motion := InputEventMouseMotion.new()
 	motion.position = point
 	motion.global_position = point
@@ -292,6 +313,203 @@ func _pointer_click(
 	for _frame_index in range(2):
 		await process_frame
 	return hovered_name
+
+
+func _check_atlas_layout_inside_viewport(viewport: Viewport, main: Node, context: String) -> void:
+	var viewport_rect := Rect2(Vector2.ZERO, viewport.get_visible_rect().size).grow(1.0)
+	var safe := main.find_child("AtlasSafeArea", true, false) as Control
+	var layout := main.find_child("AtlasLayout", true, false) as Control
+	var layout_rect := layout.get_global_rect().grow(1.0) if layout != null else Rect2()
+	var viewport_size := viewport.get_visible_rect().size
+	var frame_margins := Vector4(
+		160.0 * viewport_size.x / 1536.0,
+		160.0 * viewport_size.y / 1024.0,
+		160.0 * viewport_size.x / 1536.0,
+		160.0 * viewport_size.y / 1024.0)
+	var expected_content_rect := Rect2(
+		Vector2(frame_margins.x, frame_margins.y * 0.86),
+		viewport_size - Vector2(frame_margins.x + frame_margins.z, (frame_margins.y + frame_margins.w) * 0.86)).grow(1.5)
+	for node_name in ["AtlasSafeArea", "AtlasLayout", "AtlasHeader", "AtlasBackButton", "AtlasBody", "AtlasCanvas", "AtlasNodePanel", "AtlasBuyButton", "AtlasFooter", "AtlasRespecButton"]:
+		var control := main.find_child(node_name, true, false) as Control
+		if control == null or not control.is_visible_in_tree():
+			errors.append("%s: missing visible %s in class layout." % [context, node_name])
+			continue
+		var rect := control.get_global_rect()
+		report.append("- %s rect `%s`, minimum `%s`" % [node_name, str(rect), str(control.get_combined_minimum_size())])
+		if not viewport_rect.encloses(rect):
+			errors.append("%s: %s escapes real viewport %s with rect %s." % [context, node_name, str(viewport_rect), str(rect)])
+		if node_name not in ["AtlasSafeArea", "AtlasLayout"] and layout != null and not layout_rect.encloses(rect):
+			errors.append("%s: %s escapes Atlas frame empty content zone %s with rect %s." % [context, node_name, str(layout_rect), str(rect)])
+	if safe != null and not viewport_rect.encloses(safe.get_global_rect()):
+		errors.append("%s: AtlasSafeArea expanded beyond its real viewport." % context)
+	var atlas_root := main.find_child("AtlasScreen", true, false) as Control
+	if atlas_root != null:
+		for node in atlas_root.find_children("*", "BaseButton", true, false):
+			var button := node as BaseButton
+			if button == null or not button.is_visible_in_tree() or not button.get_global_rect().has_area():
+				continue
+			if not viewport_rect.encloses(button.get_global_rect()):
+				errors.append("%s: live hitbox %s escapes viewport with rect %s." % [context, button.name, str(button.get_global_rect())])
+			if not expected_content_rect.encloses(button.get_global_rect()):
+				errors.append("%s: live hitbox %s escapes authored frame content rect %s with rect %s." % [context, button.name, str(expected_content_rect), str(button.get_global_rect())])
+	_check_all_canvas_nodes(main, context)
+	_check_currency_header(main, viewport_size, context)
+	if viewport.get_visible_rect().size == Vector2(1280, 720):
+		for parent_name in ["AtlasHeader", "AtlasNodePanelBox"]:
+			var parent := main.find_child(parent_name, true, false) as Control
+			if parent == null:
+				continue
+			for child in parent.get_children():
+				var child_control := child as Control
+				if child_control != null:
+					report.append("  - %s/%s minimum `%s`, visible `%s`" % [parent_name, child_control.name, str(child_control.get_combined_minimum_size()), str(child_control.visible)])
+
+
+func _check_all_canvas_nodes(main: Node, context: String) -> void:
+	var canvas := main.find_child("AtlasCanvas", true, false) as Control
+	if canvas == null:
+		return
+	var canvas_rect := canvas.get_global_rect().grow(1.0)
+	var nodes: Array = []
+	for candidate in canvas.find_children("AtlasNode_*", "TextureButton", true, false):
+		var button := candidate as TextureButton
+		if button == null or not button.is_visible_in_tree():
+			continue
+		nodes.append(button)
+		if not canvas_rect.encloses(button.get_global_rect()):
+			errors.append("%s: visible node %s escapes canvas %s with rect %s." % [context, button.name, str(canvas_rect), str(button.get_global_rect())])
+	for first_index in range(nodes.size()):
+		var first := nodes[first_index] as TextureButton
+		var first_rect := first.get_global_rect()
+		var first_radius := minf(first_rect.size.x, first_rect.size.y) * 0.5 - 2.0
+		for second_index in range(first_index + 1, nodes.size()):
+			var second := nodes[second_index] as TextureButton
+			var second_rect := second.get_global_rect()
+			var second_radius := minf(second_rect.size.x, second_rect.size.y) * 0.5 - 2.0
+			if first_rect.get_center().distance_to(second_rect.get_center()) < first_radius + second_radius:
+				errors.append("%s: visible node circles overlap: %s %s and %s %s." % [context, first.name, str(first_rect), second.name, str(second_rect)])
+
+
+func _check_currency_header(main: Node, viewport_size: Vector2, context: String) -> void:
+	var class_id := str(main.ui._atlas.get("class_id", "berserk"))
+	var emblem_count: int = Meta.class_sigils_available(main.get("meta_state"), class_id)
+	var stardust_count: int = Meta.stardust_available(main.get("meta_state"))
+	var stardust_full := "Звёздная пыль: %d" % stardust_count
+	var emblem_label := main.find_child("AtlasEmblemsLabel", true, false) as Label
+	var stardust_label := main.find_child("AtlasStardustLabel", true, false) as Label
+	var emblem_badge := main.find_child("AtlasEmblemBadge", true, false) as Control
+	var stardust_badge := main.find_child("AtlasStardustBadge", true, false) as Control
+	if emblem_label == null or stardust_label == null or emblem_badge == null or stardust_badge == null:
+		errors.append("%s: missing Atlas currency header controls." % context)
+		return
+	var emblem_full := emblem_badge.tooltip_text
+	if not emblem_full.begins_with("Эмблемы ") or not emblem_full.ends_with(": %d" % emblem_count):
+		errors.append("%s: emblem tooltip lost its full localized class/count phrase." % context)
+	var safe_width := viewport_size.x - 2.0 * 160.0 * viewport_size.x / 1536.0
+	if safe_width < 1420.0:
+		if emblem_label.text != str(emblem_count) or stardust_label.text != str(stardust_count):
+			errors.append("%s: compact currency chips must show exact numeric counts." % context)
+	else:
+		if emblem_label.text != emblem_full or stardust_label.text != stardust_full:
+			errors.append("%s: wide currency chips lost their full localized labels." % context)
+	if stardust_badge.tooltip_text != stardust_full:
+		errors.append("%s: currency chip tooltips do not preserve full localized names/counts." % context)
+
+
+func _check_compact_medallion_scroll(viewport: Viewport, main: Node, context: String) -> void:
+	if viewport.get_visible_rect().size.y > 720.0:
+		return
+	var strip := main.find_child("AtlasClassStrip", true, false) as ScrollContainer
+	var medallions: Array = main.ui._atlas.get("medallions", [])
+	if strip == null or medallions.is_empty() or not strip.follow_focus:
+		errors.append("%s: compact class strip is not focus-follow scrollable." % context)
+		return
+	var last := medallions.back() as TextureButton
+	last.grab_focus()
+	for _frame_index in range(4):
+		await process_frame
+	if viewport.gui_get_focus_owner() != last:
+		errors.append("%s: bottom class medallion cannot receive focus." % context)
+	var visible_part := strip.get_global_rect().intersection(last.get_global_rect())
+	if visible_part.size.y < last.get_global_rect().size.y - 1.0:
+		errors.append("%s: focusing the bottom class medallion does not scroll it fully into view." % context)
+	await _push_ui_action(viewport, "ui_up")
+	var previous_focus := viewport.gui_get_focus_owner()
+	if previous_focus == null or previous_focus == last or not previous_focus.is_visible_in_tree():
+		errors.append("%s: bottom class medallion cannot navigate back through the focus chain." % context)
+
+
+func _check_atlas_dossier_scroll(viewport: Viewport, main: Node, original_node: TextureButton, context: String) -> void:
+	var scroll := main.find_child("AtlasNodeScroll", true, false) as ScrollContainer
+	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	if scroll == null or buy == null or scroll.focus_mode != Control.FOCUS_ALL:
+		errors.append("%s: Atlas dossier scroll is not a focusable gamepad target." % context)
+		return
+	if buy.focus_neighbor_top != scroll.get_path():
+		errors.append("%s: Buy cannot navigate up into the Atlas dossier scroll." % context)
+	scroll.grab_focus()
+	await process_frame
+	var scrolled_with_action := false
+	for _press_index in range(12):
+		if viewport.gui_get_focus_owner() != scroll:
+			break
+		var before := scroll.scroll_vertical
+		await _push_ui_action(viewport, "ui_down")
+		if scroll.scroll_vertical > before:
+			scrolled_with_action = true
+	if viewport.get_visible_rect().size.y <= 720.0 and not scrolled_with_action:
+		errors.append("%s: compact Atlas dossier overflow cannot be scrolled by ui_down." % context)
+	if viewport.gui_get_focus_owner() != buy:
+		errors.append("%s: Atlas dossier Down boundary did not transfer focus to Buy." % context)
+
+	# Scroll a real node, then preview another node: fresh content must restart at
+	# its first line. Finally restore the original purchasable preview.
+	var alternate := main.find_child("AtlasNode_berserk_m1", true, false) as TextureButton
+	if alternate == null:
+		errors.append("%s: missing alternate class node for dossier reset coverage." % context)
+		return
+	await _pointer_click(viewport, alternate, main, "berserk_m1", context)
+	for _frame_index in range(4):
+		await process_frame
+	if scroll.scroll_vertical != 0:
+		errors.append("%s: selecting a new Atlas node did not reset dossier scroll to top." % context)
+	var info_box := main.find_child("AtlasNodeInfoBox", true, false) as Control
+	if info_box != null and info_box.get_global_rect().position.y < scroll.get_global_rect().position.y - 1.0:
+		errors.append("%s: new Atlas node opens with its first dossier line scrolled away." % context)
+	await _pointer_click(viewport, original_node, main, "berserk_m0", context)
+	for _frame_index in range(12):
+		await process_frame
+
+
+func _check_currency_pointer_hover(viewport: Viewport, main: Node, context: String) -> void:
+	for prefix in ["AtlasEmblemBadge", "AtlasStardustBadge"]:
+		var badge := main.find_child(prefix, true, false) as Control
+		var icon := main.find_child("%sIcon" % prefix, true, false) as Control
+		var label_name := "AtlasEmblemsLabel" if prefix == "AtlasEmblemBadge" else "AtlasStardustLabel"
+		var label := main.find_child(label_name, true, false) as Control
+		if badge == null or icon == null or label == null:
+			errors.append("%s: missing %s hover targets." % [context, prefix])
+			continue
+		for target in [icon, label]:
+			var point := (target as Control).get_global_rect().get_center()
+			var motion := InputEventMouseMotion.new()
+			motion.position = point
+			motion.global_position = point
+			viewport.push_input(motion, true)
+			await process_frame
+			var hovered := viewport.gui_get_hovered_control()
+			if hovered != badge or hovered.tooltip_text != badge.tooltip_text or badge.tooltip_text.strip_edges() == "":
+				errors.append("%s: pointer over %s child %s does not resolve the full parent currency tooltip." % [context, prefix, (target as Control).name])
+
+
+func _save_viewport_screenshot(viewport: Viewport, label: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum1024")
+	DirAccess.make_dir_recursive_absolute(qa_dir)
+	var image := viewport.get_texture().get_image()
+	if image != null and not image.is_empty():
+		image.save_png("%s/atlas_%s.png" % [qa_dir, label])
 
 
 func _check_hitbox_inside_canvas(canvas: Control, node: TextureButton, context: String) -> void:

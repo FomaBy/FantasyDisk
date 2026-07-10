@@ -1094,6 +1094,23 @@ collision-relax и финальный nearest-open placement. Acceptance rule: �
 2560×1440; тестовое покрытие — `runtime_smoke_test.gd`,
 `runtime_smoke_ui_test.gd` и `meta40_atlas_screen_smoke_test.gd`.
 
+SCRUM-1024 fixes the 1280×720 responsive minimum-size contract without changing
+Atlas art, graph or purchase semantics. The authored content rectangle remains
+the frame's scaled `160/1536` horizontal and `0.86 × 160/1024` vertical inset.
+When that safe width is below 1420 px, the two header currency chips keep their
+icons and exact numeric counts while the full localized currency/class phrase
+moves to the tooltip; the three standard 260 px action plates remain unchanged.
+All variable dossier copy — description, condition/lore, constellation progress
+and hidden-star hint — lives in `AtlasNodeScroll`; price and explicit Buy remain
+pinned below it. The dossier scroll is focusable, supports mouse/`ui_up/down`,
+resets to the first line on every node/class/tab refresh and hands focus to
+Back/Buy at its boundaries. Currency chip children are mouse-ignore so hovering
+either icon or number resolves the parent's full tooltip. `AtlasClassStrip.follow_focus` keeps the ninth
+row of the 17-hero grid reachable on 720p. The focused bounded oracle refuses
+synthetic off-viewport pointer coordinates and verifies every live hitbox,
+every socket/circle, class/Guild preview-only state and exact explicit spend on
+1280×720, 1920×1080, 2048×1152 and 2560×1440.
+
 ## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
 
 Все окна выбора, открывающиеся ВНУТРИ забега, полностью управляются геймпадом

@@ -1,11 +1,11 @@
 # BUG: Atlas class dossier and Buy are off-screen at 1280×720
 
-Статус: new
+Статус: in_progress
 Версия: 0.2.1
 Jira: SCRUM-1024
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend/Codex `/root`
+Thread/Worker: `root-scrum-1024`
 Приоритет: high
 Роль: Back-end
 Найдено QA при тестировании: SCRUM-970
@@ -22,7 +22,7 @@ worker/worktree/locked paths.
 
 ## Reproduction
 
-1. Run on fresh `origin/dev` `bcf966b9` with a unique scratch `user://` root.
+1. Run on fresh `origin/dev` `bb726a00` with a unique scratch `user://` root.
 2. Open Atlas at 1280×720 on `Созвездие`.
 3. Select `berserk_m0` with viewport mouse motion/down/up.
 4. Wait 12 deferred responsive layout frames.
@@ -70,3 +70,51 @@ The viewport-bounded independent pointer oracle rejects the unreachable target.
 - Independent bounded oracle error records the exact safe/header/dossier/Buy
   rectangles above.
 
+## Implementation Result
+
+Root cause was Container minimum propagation. At 1280×720 the authored frame
+content zone is 1014×526, but the header required 1335 px (`3×260` action plates,
+two verbose currency chips and gaps) and the dossier required 420 px height
+because progress/hint labels sat outside its scroll. `MarginContainer` therefore
+expanded `AtlasSafeArea` to 1601×768 and synthetic SubViewport coordinates hid
+the real reachability failure.
+
+The fix preserves the accepted art, margins, panel width, graph and explicit
+Buy contract:
+
+- at safe width below 1420 px currency chips show icon + exact numeric count;
+  the full localized phrase/count is always retained in the tooltip;
+- description, condition/lore, progress and hidden-star hint share the existing
+  focusable `AtlasNodeScroll`; price and Buy remain pinned below it, and every
+  node/class/tab refresh resets the scroll to its first line;
+- focused `ui_up/down` scrolls dossier overflow and transfers to Back/Buy at
+  boundaries; compact chip icon/label children route real hover to the full
+  currency tooltip on their parent;
+- `AtlasClassStrip.follow_focus` exposes the ninth row at 720p;
+- `tests/atlas_scrum970_clickability_test.gd` now refuses any pointer target
+  outside the real viewport, derives the frame content rect independently,
+  checks all live buttons and all visible node circles/canvas bounds, verifies
+  compact/full currency semantics and exercises the last medallion focus path.
+
+Post-fix 1280×720 metrics: `AtlasSafeArea` 1280×720, `AtlasLayout` 1014×526,
+header min 930, body 1014×372, panel min 280, canvas 629×372, Back
+`887..1147`, dossier `875..1147`, Buy `886..1135`. Full currency labels,
+wide-screen art/content zones and interaction semantics remain active at
+1920/2048/2560; internal scroll allocation is intentionally responsive.
+
+Focused headless + windowed class/Guild matrices PASS on 1280×720,
+1920×1080, 2048×1152 and 2560×1440. `meta40_atlas_screen_smoke_test.gd`,
+`ui_no_overlap_matrix_test.gd`, gamepad menu/full-flow, dark theme,
+meta progression, per-hero skill tree and full runtime smoke PASS. The unrelated
+legacy `meta_skill_tree_smoke_test.gd::_test_shop_discount` currently fails on
+the unchanged baseline because the seeded discounted sample is replaced by a
+higher-cost rare set; no Atlas UI code/data in this task touches that path.
+
+Independent pre-land review found dossier gamepad/reset and real tooltip-hover
+gaps; both were fixed and covered with physical `InputEventAction`/pointer
+events. Final read-only re-review: PASS, no actionable findings remain;
+`git diff --check` is clean.
+
+Disk cleanup: active task worktree; pending review, commit and push.
+
+Thread cleanup: not a disposable worker thread.
