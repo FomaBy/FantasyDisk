@@ -1,9 +1,9 @@
 # BUG SCRUM-1020: Druid Ghost Bear Move Identity Morph
 
-Статус: new
+Статус: done (implementation complete; independent re-QA pending)
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Animator/Codex
+Thread/Worker: `/root/audit_qa`
 Роль: Animator
 Jira: SCRUM-1020
 Found by QA: SCRUM-1016
@@ -17,6 +17,10 @@ change, bear-selected job/provenance records under
 `docs/design/references/druid_summons_ghost_animation_pack/**`,
 `docs/design/previews/druid_summons_ghost_animation_pack_contact.png`, focused
 animation evidence/tests if needed, this mirror, scoped Jira sync map.
+
+Branch: `codex/scrum-1020-bear-move-remediation`
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1020-bear-move-remediation`
+Base: `origin/dev` `5d585d7a788080f1e8e3a44cc0592e6b7c8692a1`
 
 ## Context
 
@@ -87,3 +91,55 @@ Actual: frames `00..02` read as a lean canine/fox-like animal, then frames
   failed.
 - Original Jira issue remains in `Контроль качества`, labeled `blocked` and
   `qa-failed`.
+
+## Implementation Result (2026-07-10)
+
+Animator remediation is complete and must be accepted by a different
+independent QA reviewer.
+
+- PixelLab MCP config `get_balance` passed without printing secrets.
+- Exact accepted bear UUID remained
+  `6805608a-b64a-471c-a1d9-9601a3062e2f`; no OpenAI/manual/legacy/different-
+  character source was used.
+- Existing live rows were inspected first. `ghost_move_centered` and
+  `ghost_move_quadruped` rear upright, `running` changes mass/crop, and the
+  selected `walking` row was the QA-rejected canine-to-bear morph.
+- Selected east-only v3 job:
+  `1585ff64-f3e8-4db7-aa8b-fd7631a40bae`, folder
+  `scrum1020_grounded_bear_walk_right_v1`, anchored with a same-UUID heavy-bear
+  frame. A second candidate `127fa29e-bafa-402f-bca2-4960e61644d1` was rejected
+  before import because its final frames gradually reared upright.
+- Replaced only six raw `pixellab_source/move/right` PNGs and the matching six
+  normalized runtime PNGs. SpriteFrames paths, 10fps loop, explicit right
+  direction, no-flip runtime hook, attacks and all gameplay data remain intact.
+- New runtime row: six unique RGBA `256x256` frames; center X error `<=0.5 px`,
+  bbox bottom/baseline `232`, minimum runtime gutter `24 px`, meaningful-alpha
+  counts `[15329,14577,14951,14457,14146,14964]` and max/min ratio
+  `1.083628x` (before: `2.089121x`).
+- All six committed raw sources match the selected live PixelLab job by
+  SHA-256. Source/runtime hashes and bboxes are committed in
+  `scrum1020_remediation_report.json`.
+- The pack builder now records hashes/meaningful alpha and rejects any movement
+  row above the coarse `1.65x` silhouette-continuity threshold. This does not
+  replace independent visual review.
+- The focused Godot smoke adds the same imported-texture alpha-area regression
+  assertion for bear `move_right`.
+- Full all-frame contact sheet was regenerated and visually self-checked: all
+  six right-move frames read as one grounded heavy bear without the rejected
+  species/scale jump. Independent re-QA remains mandatory.
+
+### Verification
+
+- `python3 docs/design/references/druid_summons_ghost_animation_pack/build_animation_pack.py`: PASS (`120` source, `120` runtime, `20 px` pack minimum gutter).
+- Live PixelLab UUID/job/frame URL + six-source SHA audit: PASS.
+- JSON validation and `python3 -m py_compile` for the builder: PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/animation_smoke_test.gd`: PASS.
+- `python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd`: PASS, exit `0`; known dummy-renderer `texture_2d_get` screenshot warning only.
+- `git diff --check`: PASS.
+
+### Ownership boundary
+
+No changes were made to `ally_minion.gd`, `FullFrameAnimationRegistry`, roster,
+spawn weights, targeting, damage, aura, balance, other ghost assets or
+SCRUM-902 paths. Jira must stop at `Контроль качества` after push;
+this implementation owner does not self-accept.

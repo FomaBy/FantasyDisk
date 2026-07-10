@@ -1022,6 +1022,22 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 				if str(file_name).contains(forbidden_direction):
 					_fail("Expected %s runtime folder to omit %s direction assets: %s." % [ghost_id, forbidden_direction, file_name])
 					return
+		if ghost_id == "druid_ghost_bear":
+			var smallest_alpha_area := 1 << 30
+			var largest_alpha_area := 0
+			for frame_index in range(frames.get_frame_count(&"move_right")):
+				var texture := frames.get_frame_texture(&"move_right", frame_index)
+				var image := texture.get_image() if texture != null else null
+				var meaningful_alpha_area := _meaningful_alpha_pixel_count(image, 4.0 / 255.0)
+				if meaningful_alpha_area <= 0:
+					_fail("Expected druid_ghost_bear move_right frame %d to contain meaningful alpha." % frame_index)
+					return
+				smallest_alpha_area = mini(smallest_alpha_area, meaningful_alpha_area)
+				largest_alpha_area = maxi(largest_alpha_area, meaningful_alpha_area)
+			var alpha_area_ratio := float(largest_alpha_area) / float(maxi(smallest_alpha_area, 1))
+			if alpha_area_ratio > 1.65:
+				_fail("Expected druid_ghost_bear move_right silhouette continuity <=1.65x, got %.3fx." % alpha_area_ratio)
+				return
 
 		var ally := ally_scene.instantiate()
 		root.add_child(ally)
@@ -1078,6 +1094,17 @@ func _test_druid_ghost_horizontal_ally_animations() -> void:
 			ally.queue_free()
 			return
 		ally.queue_free()
+
+
+func _meaningful_alpha_pixel_count(image: Image, threshold: float) -> int:
+	if image == null or image.is_empty():
+		return 0
+	var count := 0
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if image.get_pixel(x, y).a > threshold:
+				count += 1
+	return count
 
 
 func _test_full_frame_animation_registry() -> void:

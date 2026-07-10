@@ -1,0 +1,132 @@
+{
+  "jira": "SCRUM-1020",
+  "source_issue": "SCRUM-1016",
+  "status": "IMPLEMENTATION_SELF_CHECK_PASS_INDEPENDENT_REQA_PENDING",
+  "character_id": "druid_ghost_bear",
+  "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+  "replaced_job_id": "d3434d3a-b0b8-465f-833d-bd4164202f7e",
+  "selected_job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+  "selected_animation_folder": "scrum1020_grounded_bear_walk_right_v1",
+  "kind": "move",
+  "direction": "right",
+  "before_visible_alpha_pixels": [
+    8253,
+    7372,
+    7468,
+    15403,
+    14163,
+    13871
+  ],
+  "before_max_min_ratio": 2.089121,
+  "after_visible_alpha_pixels": [
+    15329,
+    14577,
+    14951,
+    14457,
+    14146,
+    14964
+  ],
+  "after_max_min_ratio": 1.083628,
+  "source_sha256": [
+    "3717aa3ab935f073bf774b52d7f88db46382be6d38bb36da39f9e17608bc7f07",
+    "4029200decc26ca32a6aad5371f93a26956c7a9d12bdd5badea66a392d67b4af",
+    "81469794864e0acf0d762248e05f2d75166e67b37c24950c4fc412609042184d",
+    "5f745e353488fe10193e6d0195774603083cfb72f3615a60690bf92cc84a58ed",
+    "840be1dee7b3c0cbe29e39c1ba3c5b19accbd36f85cc823f7817f99a63f14d73",
+    "3bd8f31a0ed821fd682c1b7ec8ea9c444e6d41e84454b2b853fc7c4e3d7adf59"
+  ],
+  "runtime_sha256": [
+    "772f6609d24607a4a8fa6af2d6ed3abe0c607dc0e85017ddaa08d7c8ad1ecebd",
+    "c0e99c6c45c571ae30fdc28dc8f270d4f939da24291a354ef19ea239cc3e2873",
+    "362c3a9334084bad4eb2d003229deb45a60e38f61ac49ae7e268081a55af8591",
+    "55b49a08a6dc05f4d28e56d498d9b9bff4ac6f617ca26f444a16cc7a0b050e7c",
+    "21f9a487258a01f5ef2324f18eef227ae13dc32f5c136bda2dc35e04980b306b",
+    "ef8a6f199a0c362f0fbc8fd224a2867143d95e35bcd551e2e6240fb5509b67f6"
+  ],
+  "runtime_bboxes": [
+    [
+      34,
+      100,
+      221,
+      232
+    ],
+    [
+      38,
+      106,
+      217,
+      232
+    ],
+    [
+      36,
+      100,
+      219,
+      232
+    ],
+    [
+      40,
+      103,
+      215,
+      232
+    ],
+    [
+      42,
+      98,
+      215,
+      232
+    ],
+    [
+      41,
+      100,
+      215,
+      232
+    ]
+  ],
+  "runtime_gutters": [
+    [
+      34,
+      100,
+      35,
+      24
+    ],
+    [
+      38,
+      106,
+      39,
+      24
+    ],
+    [
+      36,
+      100,
+      37,
+      24
+    ],
+    [
+      40,
+      103,
+      41,
+      24
+    ],
+    [
+      42,
+      98,
+      41,
+      24
+    ],
+    [
+      41,
+      100,
+      41,
+      24
+    ]
+  ],
+  "canvas": [
+    256,
+    256
+  ],
+  "center_x": 128,
+  "baseline_y": 232,
+  "horizontal_flip_required": false,
+  "frame_count": 6,
+  "all_frames_unique": true,
+  "visual_review": "PASS Animator self-check: all six selected frames preserve one grounded heavy-bear identity and coherent cyan/blue spectral palette without the rejected canine-to-bear or reared-pose morph; independent re-QA remains mandatory"
+}

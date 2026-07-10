@@ -1247,6 +1247,12 @@ Amulet ID `druid_ghost_wolf`, `druid_ghost_bear`, `druid_ghost_panther`,
 нормализованы в прозрачные `256x256` клетки с едиными center/baseline/gutter
 правилами. Это только визуальная готовность: `summoner_weapon.gd`, roster/spawn
 weighting, damage, aura и balance не менялись и остаются за SCRUM-902.
+SCRUM-1020 заменил только дефектный `druid_ghost_bear/move_right` на
+same-UUID PixelLab job `1585ff64-f3e8-4db7-aa8b-fd7631a40bae`: все шесть
+кадров сохраняют одну тяжёлую медвежью форму без прежнего
+canine-to-bear скачка, а alpha-area ratio снижен с `2.089121x` до
+`1.083628x`. Runtime/gameplay hooks не менялись; результат ждёт
+независимого re-QA.
 
 ## Боевые Эффекты (Attack VFX)
 

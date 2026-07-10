@@ -10,6 +10,7 @@ pack.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shutil
@@ -33,6 +34,7 @@ MAX_VISIBLE_WIDTH = 216
 MAX_VISIBLE_HEIGHT = 208
 MAX_GLOBAL_SCALE = 1.45
 ALPHA_THRESHOLD = 4
+MAX_MOVE_VISIBLE_ALPHA_RATIO = 1.65
 MOVE_SPEED = 10.0
 ATTACK_SPEED = 12.0
 DIRECTIONS = {"west": "left", "east": "right"}
@@ -226,6 +228,9 @@ def normalize_frame(source: Path, destination: Path, scale: float) -> dict:
     runtime_bbox = alpha_bbox(canvas)
     if runtime_bbox is None:
         raise RuntimeError(f"No visible runtime alpha in {destination}")
+    runtime_visible_alpha_pixels = sum(
+        1 for value in canvas.getchannel("A").getdata() if value > ALPHA_THRESHOLD
+    )
     gutters = [runtime_bbox[0], runtime_bbox[1], CELL_SIZE - runtime_bbox[2], CELL_SIZE - runtime_bbox[3]]
     if min(gutters) < 12:
         raise RuntimeError(f"Unsafe gutter {gutters} in {destination}")
@@ -236,10 +241,13 @@ def normalize_frame(source: Path, destination: Path, scale: float) -> dict:
         "source_bbox": list(bbox),
         "runtime_size": [CELL_SIZE, CELL_SIZE],
         "runtime_bbox": list(runtime_bbox),
+        "visible_alpha_pixels": runtime_visible_alpha_pixels,
         "gutters": gutters,
         "baseline_y": BASELINE_Y,
         "center_x": CELL_SIZE // 2,
         "global_scale": scale,
+        "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "runtime_sha256": hashlib.sha256(destination.read_bytes()).hexdigest(),
     }
 
 
@@ -255,8 +263,99 @@ def normalize_all(characters: list[dict], scale: float) -> dict[str, list[dict]]
                 for source in sorted((source_root / kind / direction).glob("*.png")):
                     index = int(source.stem.rsplit("_", 1)[1])
                     destination = runtime_root / f"{character_id}_{kind}_{direction}_{index:02d}.png"
-                    reports[character_id].append(normalize_frame(source, destination, scale))
+                    report = normalize_frame(source, destination, scale)
+                    report.update({"kind": kind, "direction": direction, "frame_index": index})
+                    reports[character_id].append(report)
     return reports
+
+
+def validate_movement_continuity(normalization: dict[str, list[dict]]) -> dict[str, dict[str, dict]]:
+    """Reject gross per-row silhouette/mass jumps before visual review.
+
+    This is deliberately a coarse guard, not an automated art acceptance. The
+    SCRUM-1020 defect passed crop/baseline checks while meaningful-alpha area
+    jumped 2.09x between halves of the selected bear row. A contact-sheet review
+    remains mandatory even when this numerical guard passes.
+    """
+    continuity: dict[str, dict[str, dict]] = {}
+    for character_id, reports in normalization.items():
+        continuity[character_id] = {}
+        for direction in ("left", "right"):
+            row = sorted(
+                (
+                    report
+                    for report in reports
+                    if report.get("kind") == "move" and report.get("direction") == direction
+                ),
+                key=lambda report: int(report.get("frame_index", -1)),
+            )
+            if len(row) != 6:
+                raise RuntimeError(f"Expected six {character_id} move_{direction} reports, got {len(row)}")
+            counts = [int(report["visible_alpha_pixels"]) for report in row]
+            ratio = max(counts) / float(max(1, min(counts)))
+            continuity[character_id][f"move_{direction}"] = {
+                "visible_alpha_pixels": counts,
+                "max_min_ratio": round(ratio, 6),
+                "maximum_allowed_ratio": MAX_MOVE_VISIBLE_ALPHA_RATIO,
+                "status": "PASS" if ratio <= MAX_MOVE_VISIBLE_ALPHA_RATIO else "FAIL",
+            }
+            if ratio > MAX_MOVE_VISIBLE_ALPHA_RATIO:
+                raise RuntimeError(
+                    f"{character_id} move_{direction} visible-alpha continuity ratio "
+                    f"{ratio:.4f} exceeds {MAX_MOVE_VISIBLE_ALPHA_RATIO:.2f}: {counts}"
+                )
+    return continuity
+
+
+def write_remediation_report(job_evidence: dict, normalization: dict[str, list[dict]], continuity: dict) -> Path | None:
+    remediation = job_evidence.get("remediation")
+    if not isinstance(remediation, dict):
+        return None
+    character_id = str(remediation.get("character_id", ""))
+    kind = str(remediation.get("kind", "move"))
+    direction = str(remediation.get("direction", "right"))
+    selected = sorted(
+        (
+            report
+            for report in normalization.get(character_id, [])
+            if report.get("kind") == kind and report.get("direction") == direction
+        ),
+        key=lambda report: int(report.get("frame_index", -1)),
+    )
+    if len(selected) != 6:
+        raise RuntimeError(
+            f"Remediation report expected six {character_id} {kind}_{direction} frames, got {len(selected)}"
+        )
+    report = {
+        "jira": str(remediation.get("jira", "SCRUM-1020")),
+        "source_issue": "SCRUM-1016",
+        "status": "AUTOMATED_PASS_VISUAL_REVIEW_REQUIRED",
+        "character_id": character_id,
+        "pixellab_character_id": str(remediation.get("pixellab_character_id", "")),
+        "replaced_job_id": str(remediation.get("replaced_job_id", "")),
+        "selected_job_id": str(remediation.get("selected_job_id", "")),
+        "selected_animation_folder": str(remediation.get("selected_animation_folder", "")),
+        "kind": kind,
+        "direction": direction,
+        "before_visible_alpha_pixels": remediation.get("before_visible_alpha_pixels", []),
+        "before_max_min_ratio": remediation.get("before_max_min_ratio"),
+        "after_visible_alpha_pixels": [int(item["visible_alpha_pixels"]) for item in selected],
+        "after_max_min_ratio": continuity[character_id][f"{kind}_{direction}"]["max_min_ratio"],
+        "source_sha256": [str(item["source_sha256"]) for item in selected],
+        "runtime_sha256": [str(item["runtime_sha256"]) for item in selected],
+        "runtime_bboxes": [item["runtime_bbox"] for item in selected],
+        "runtime_gutters": [item["gutters"] for item in selected],
+        "canvas": [CELL_SIZE, CELL_SIZE],
+        "center_x": CELL_SIZE // 2,
+        "baseline_y": BASELINE_Y,
+        "horizontal_flip_required": False,
+        "frame_count": len(selected),
+        "all_frames_unique": len({item["runtime_sha256"] for item in selected}) == len(selected),
+        "visual_review": "PENDING Animator implementation self-check and independent re-QA",
+    }
+    output = REFERENCE_DIR / "scrum1020_remediation_report.json"
+    write_json(output, report)
+    return output
 
 
 def frame_block(resource_ids: list[str], name: str, speed: float, loop: bool) -> str:
@@ -382,8 +481,10 @@ def main() -> int:
         raise RuntimeError(f"Expected exactly 120 west/east source frames, got {len(source_frames)}")
     scale, source_bboxes = global_scale_for(source_frames)
     normalization = normalize_all(characters, scale)
+    movement_continuity = validate_movement_continuity(normalization)
     spriteframes = [write_spriteframes(character["id"]) for character in characters]
     contact = build_contact_sheet(characters)
+    remediation_report = write_remediation_report(job_evidence, normalization, movement_continuity)
     manifest = {
         "jira": "SCRUM-1016",
         "source_issue": "SCRUM-1015",
@@ -407,6 +508,7 @@ def main() -> int:
             "source_bboxes": source_bboxes,
             "frames": normalization,
         },
+        "movement_continuity": movement_continuity,
         "characters": provenance,
         "spriteframes": [path.relative_to(ROOT).as_posix() for path in spriteframes],
         "contact_sheet": contact.relative_to(ROOT).as_posix(),
@@ -439,9 +541,13 @@ def main() -> int:
         "extra_runtime_directions": [],
         "horizontal_flip_required": False,
         "alpha_threshold": ALPHA_THRESHOLD,
+        "maximum_movement_visible_alpha_ratio": MAX_MOVE_VISIBLE_ALPHA_RATIO,
+        "movement_continuity": movement_continuity,
         "visual_review": "PENDING Animator implementation self-check of the generated contact sheet; independent QA follows after handoff",
         "contact_sheet": contact.relative_to(ROOT).as_posix(),
     }
+    if remediation_report is not None:
+        qa_report["remediation_report"] = remediation_report.relative_to(ROOT).as_posix()
     write_json(REFERENCE_DIR / "qa_report.json", qa_report)
     print(json.dumps({
         "status": "PASS",

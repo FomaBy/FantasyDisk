@@ -327,7 +327,10 @@
     "superseded_edge_touching_jobs": 5,
     "final_status": "PASS",
     "visual_quality_retake_animation_jobs": 4,
-    "superseded_after_contact_review": 4
+    "superseded_after_contact_review": 4,
+    "scrum1020_remediation_animation_jobs": 2,
+    "scrum1020_selected_job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+    "scrum1020_rejected_job_id": "127fa29e-bafa-402f-bca2-4960e61644d1"
   },
   "completed_at": "2026-07-09T23:01:10Z",
   "quality_retake_records": [
@@ -494,5 +497,46 @@
       "response_text": "character: 6805608a-b64a-471c-a1d9-9601a3062e2f\nanimation: walk-6-frames\ndirections: west, east (2 jobs)\neta: ~2-4 min\n\nhint: get_character(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\")\nif poor: delete_animation(character_id=\"6805608a-b64a-471c-a1d9-9601a3062e2f\", animation_type=\"...\", confirm=true) then retry with mode=\"v3\"",
       "accepted": true
     }
-  ]
+  ],
+  "scrum1020_remediation_records": [
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "move_right_identity_remediation",
+      "attempt": "v3_same_uuid_heavy_bear_anchor",
+      "job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+      "animation_folder": "scrum1020_grounded_bear_walk_right_v1",
+      "request": {
+        "directions": ["east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false,
+        "ai_freedom": 0,
+        "custom_start_frame": "same UUID walking/east/frame_003.png; payload not stored"
+      },
+      "live_result": "completed east 6f; frame URLs use job 1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+      "visual_result": "selected: coherent grounded heavy-bear identity across all six frames; 1.08x pre-normalization alpha-area ratio",
+      "accepted": true
+    },
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "kind": "move_right_palette_candidate",
+      "attempt": "v3_same_uuid_cyan_running_anchor",
+      "job_id": "127fa29e-bafa-402f-bca2-4960e61644d1",
+      "animation_folder": "scrum1020_cyan_bear_patrol_right_v2",
+      "request": {
+        "directions": ["east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false,
+        "ai_freedom": 0,
+        "custom_start_frame": "same UUID running/east/frame_002.png; payload not stored"
+      },
+      "live_result": "completed east 6f; frame URLs use job 127fa29e-bafa-402f-bca2-4960e61644d1",
+      "visual_result": "rejected before import: frames 03-05 gradually rear upright",
+      "accepted": false
+    }
+  ],
+  "remediation_completed_at": "2026-07-10T00:11:31Z"
 }

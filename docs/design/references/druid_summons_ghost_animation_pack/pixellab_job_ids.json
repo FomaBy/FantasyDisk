@@ -1,6 +1,6 @@
 {
   "jira": "SCRUM-1016",
-  "captured_at": "2026-07-09T23:12:51Z",
+  "captured_at": "2026-07-10T00:11:31Z",
   "source": "PixelLab get_character completed frame URLs",
   "characters": {
     "druid_ghost_wolf": {
@@ -37,8 +37,8 @@
           "exported_frame_count": 6
         },
         "right": {
-          "job_id": "d3434d3a-b0b8-465f-833d-bd4164202f7e",
-          "download_folder": "walking",
+          "job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+          "download_folder": "scrum1020_grounded_bear_walk_right_v1",
           "exported_frame_count": 6
         }
       },
@@ -135,5 +135,22 @@
     }
   },
   "quality_retake_selected": true,
-  "visual_quality_retake_selected": true
+  "visual_quality_retake_selected": true,
+  "remediation": {
+    "jira": "SCRUM-1020",
+    "character_id": "druid_ghost_bear",
+    "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+    "kind": "move",
+    "direction": "right",
+    "replaced_job_id": "d3434d3a-b0b8-465f-833d-bd4164202f7e",
+    "selected_job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+    "selected_animation_folder": "scrum1020_grounded_bear_walk_right_v1",
+    "same_uuid_start_anchor": "walking/east/frame_003.png from replaced same-character job",
+    "before_visible_alpha_pixels": [8253, 7372, 7468, 15403, 14163, 13871],
+    "before_max_min_ratio": 2.089121,
+    "rejected_candidate_job_ids": [
+      "127fa29e-bafa-402f-bca2-4960e61644d1"
+    ],
+    "selection_reason": "v1 keeps one heavy grounded bear identity across all six frames; v2 gradually reared upright and was rejected before import"
+  }
 }

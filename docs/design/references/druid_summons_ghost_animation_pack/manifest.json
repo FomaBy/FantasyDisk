@@ -1,7 +1,7 @@
 {
   "jira": "SCRUM-1016",
   "source_issue": "SCRUM-1015",
-  "generated_at": "2026-07-09T23:12:31+00:00",
+  "generated_at": "2026-07-10T00:13:05+00:00",
   "generator": "PixelLab MCP animate_character + character download",
   "policy": {
     "exact_character_ids_only": true,
@@ -787,108 +787,108 @@
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_00.png": {
         "bbox": [
           17,
-          63,
+          56,
           159,
-          135
+          156
         ],
         "gutters": [
           17,
-          63,
+          56,
           21,
-          45
+          24
         ],
-        "visible_fill_ratio": 0.464593,
-        "bbox_perimeter_coverage": 0.068396,
+        "visible_fill_ratio": 0.621127,
+        "bbox_perimeter_coverage": 0.104167,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_01.png": {
         "bbox": [
-          28,
-          66,
-          157,
-          135
+          23,
+          60,
+          159,
+          156
         ],
         "gutters": [
-          28,
-          66,
           23,
-          45
+          60,
+          21,
+          24
         ],
-        "visible_fill_ratio": 0.476463,
-        "bbox_perimeter_coverage": 0.07398,
+        "visible_fill_ratio": 0.645221,
+        "bbox_perimeter_coverage": 0.093478,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_02.png": {
         "bbox": [
-          26,
-          66,
-          154,
-          135
+          20,
+          57,
+          159,
+          157
         ],
         "gutters": [
-          26,
-          66,
-          26,
-          45
+          20,
+          57,
+          21,
+          23
         ],
-        "visible_fill_ratio": 0.486866,
-        "bbox_perimeter_coverage": 0.076923,
+        "visible_fill_ratio": 0.620791,
+        "bbox_perimeter_coverage": 0.052743,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_03.png": {
         "bbox": [
-          19,
+          24,
           54,
           157,
-          156
+          152
         ],
         "gutters": [
-          19,
+          24,
           54,
           23,
-          24
+          28
         ],
-        "visible_fill_ratio": 0.632282,
-        "bbox_perimeter_coverage": 0.107143,
+        "visible_fill_ratio": 0.641169,
+        "bbox_perimeter_coverage": 0.104803,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_04.png": {
         "bbox": [
-          25,
+          26,
           54,
-          158,
+          157,
           156
         ],
         "gutters": [
-          25,
+          26,
           54,
-          22,
+          23,
           24
         ],
-        "visible_fill_ratio": 0.604452,
-        "bbox_perimeter_coverage": 0.10515,
+        "visible_fill_ratio": 0.611286,
+        "bbox_perimeter_coverage": 0.077922,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
       "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_05.png": {
         "bbox": [
           26,
-          54,
-          157,
-          157
+          56,
+          158,
+          156
         ],
         "gutters": [
           26,
-          54,
-          23,
-          23
+          56,
+          22,
+          24
         ],
-        "visible_fill_ratio": 0.590825,
-        "bbox_perimeter_coverage": 0.12931,
+        "visible_fill_ratio": 0.651818,
+        "bbox_perimeter_coverage": 0.091304,
         "transparent_corners": true,
         "matte_rectangle_check": "PASS"
       },
@@ -2214,6 +2214,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 6772,
           "gutters": [
             39,
             135,
@@ -2222,7 +2223,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "6b50bd92805afcbd19753ea366f5ddb79a3c09220fd5db4b4092ba4de0070203",
+          "runtime_sha256": "5d3ae01ff2d995e049846e79a69d5d922cbb8b50b05b37446550c40033c14d05",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/left/druid_ghost_wolf_move_left_01.png",
@@ -2247,6 +2253,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 6283,
           "gutters": [
             38,
             148,
@@ -2255,7 +2262,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "25525aaec0b6980494db8a8966db97bd0d62afbd072a20e9c87aea9c77bf9773",
+          "runtime_sha256": "89b1be94a79b287623e7472afd02e854466536e3a027841df760cc62f4ad4169",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/left/druid_ghost_wolf_move_left_02.png",
@@ -2280,6 +2292,7 @@
             220,
             232
           ],
+          "visible_alpha_pixels": 6099,
           "gutters": [
             36,
             153,
@@ -2288,7 +2301,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "bc24e328d72e0cd54aae2d3be4465fa6a294f49d3ebbaec268db66b398f050cd",
+          "runtime_sha256": "f27bcd312e195805a2f0585c9279c749be01adefc1aa07c397cafe4dc447004b",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/left/druid_ghost_wolf_move_left_03.png",
@@ -2313,6 +2331,7 @@
             216,
             232
           ],
+          "visible_alpha_pixels": 6759,
           "gutters": [
             40,
             142,
@@ -2321,7 +2340,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "6ed390744710f0154cc7d52376132781f138069e44f9339c297fde7699457922",
+          "runtime_sha256": "37458172152ac51db9a9bfea9d3f038bc450fc97b7055dd9865be0b35722e569",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/left/druid_ghost_wolf_move_left_04.png",
@@ -2346,6 +2370,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 7071,
           "gutters": [
             41,
             141,
@@ -2354,7 +2379,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "bceee989c7792e52e874fb28fd5d6cd0f093f4473d814007297d29cbcae86cca",
+          "runtime_sha256": "d7951d99484914a1e5dd6989e419a5095516bd9a8757d87901533018b57566f8",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/left/druid_ghost_wolf_move_left_05.png",
@@ -2379,6 +2409,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 7515,
           "gutters": [
             41,
             135,
@@ -2387,7 +2418,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "e1e5effb26a6471d97ee19ecd92ae27496f2c5a7faab24d48355030d9c90965f",
+          "runtime_sha256": "5da7b44585f94c8faff6d2145db30ba75b9a435ee916d2211e35ff2781e8d557",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_00.png",
@@ -2412,6 +2448,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 6644,
           "gutters": [
             42,
             136,
@@ -2420,7 +2457,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ea4508a1f577b755425d093d235c05bdc171198daa3c9f989e80cd0bc441e57f",
+          "runtime_sha256": "1ea742d674063ca0ae303dc491d4de1fa70ba12bea235845ea36b959b2263265",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_01.png",
@@ -2445,6 +2487,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 6304,
           "gutters": [
             41,
             141,
@@ -2453,7 +2496,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5e973449695fa406dd4df8e31c577e3c3cc66567a39e6ed9591d19d44b27ddf2",
+          "runtime_sha256": "7694362d954f8e4d15fc218279746e0c9c8956acf362d700dd07190ab824420b",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_02.png",
@@ -2478,6 +2526,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 5913,
           "gutters": [
             45,
             144,
@@ -2486,7 +2535,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ecba431d401b1ae332696997ff60ede0090dec431154fd5e3099d585ca324ca7",
+          "runtime_sha256": "ec6ca8569f80681a57f347525002d5a5f04df229193e613e9c7ce1512ef6d6ad",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_03.png",
@@ -2511,6 +2565,7 @@
             226,
             232
           ],
+          "visible_alpha_pixels": 7585,
           "gutters": [
             30,
             132,
@@ -2519,7 +2574,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "15a08490a17f41873bfdfb680f690b5480215240c4645f60035cd6c543bfc71d",
+          "runtime_sha256": "5ee77e529f0dbf7a420f46976255cf81126b0cdf321023d018fdd6a827803c57",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_04.png",
@@ -2544,6 +2604,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 6743,
           "gutters": [
             32,
             132,
@@ -2552,7 +2613,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ca89875e631da21e8294d008e5992e4f44b6776469e14350fad99a7be7c5a044",
+          "runtime_sha256": "aaa5ea2324cc09939121d02798d250ca4d8b78745402083c58dd8d79aa527519",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/move/right/druid_ghost_wolf_move_right_05.png",
@@ -2577,6 +2643,7 @@
             226,
             232
           ],
+          "visible_alpha_pixels": 7779,
           "gutters": [
             30,
             140,
@@ -2585,7 +2652,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "6f2850f0c51d9760d6c244a4591521fa8a7b0d1c2f032e93b0ec993d991e8d4d",
+          "runtime_sha256": "ff5eb85db18ca63260bf10e1186fe30c3a42773f40b548f3b4b02d014f0c781f",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_00.png",
@@ -2610,6 +2682,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 7246,
           "gutters": [
             46,
             127,
@@ -2618,7 +2691,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "96d9d8c945b86849e4d02263191b7f1e5c5f0dfd528c01886eac7b7c8dd657e5",
+          "runtime_sha256": "cc75e880ef8ce333c96e850a91c39f02236bdc2a8d3ed0bc127ac682d315da21",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_01.png",
@@ -2643,6 +2721,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 7389,
           "gutters": [
             44,
             137,
@@ -2651,7 +2730,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "c85e30cb123d1d2dfaabfcb2b491c7455a9edaa6eb164bc8b350efd421eafbe7",
+          "runtime_sha256": "c7d2a997d1e8090260f57b78700d6a075bf594b2e9047a8ce64ac6956df52a03",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_02.png",
@@ -2676,6 +2760,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 7599,
           "gutters": [
             42,
             142,
@@ -2684,7 +2769,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1499b8c353fac3ca57d4bf5d3e27f747abd128e45f751b1e7b901511c04b06f7",
+          "runtime_sha256": "8aed594090ab8d991e1db28cf6e300bd7a4714711bcb5771c55ee3e213e88db3",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_03.png",
@@ -2709,6 +2799,7 @@
             218,
             232
           ],
+          "visible_alpha_pixels": 7673,
           "gutters": [
             38,
             145,
@@ -2717,7 +2808,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "29f7445cc0fc16f8c6a83384600effab3821da7cc963a08ede455d13e5c779dd",
+          "runtime_sha256": "bb832d3c4d355c6812267091ec4cee4d8e8592819d9ad4698c1f2d15af51e614",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_04.png",
@@ -2742,6 +2838,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 7373,
           "gutters": [
             43,
             144,
@@ -2750,7 +2847,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ca411ef4d5bdf0be20420cfff2e4d8f4eba10b6d5c65d8b4b8ea3cc1e5542074",
+          "runtime_sha256": "d6817033a216f132ea8fa7a96cbc5b69f34a692c541e7a3ea91b42773a55ae11",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/left/druid_ghost_wolf_attack_left_05.png",
@@ -2775,6 +2877,7 @@
             207,
             232
           ],
+          "visible_alpha_pixels": 7214,
           "gutters": [
             50,
             127,
@@ -2783,7 +2886,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "862d5b78e93e5b228b3c34d987acb4fde435d659d074c2f45fbb313849de57ee",
+          "runtime_sha256": "a83107382123448df918037cfb50ae94d4963acf138c400df9cea145978d127c",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_00.png",
@@ -2808,6 +2916,7 @@
             202,
             232
           ],
+          "visible_alpha_pixels": 6750,
           "gutters": [
             54,
             124,
@@ -2816,7 +2925,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "98df2d69a311c711eaa335a9379c7ee6d4fdbf480ac5dc21321df580f1f709ba",
+          "runtime_sha256": "94aa06e64b7726c649470ec19b9f8e44ea4ffecbd95918ec6df7859b314e3651",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_01.png",
@@ -2841,6 +2955,7 @@
             203,
             232
           ],
+          "visible_alpha_pixels": 6740,
           "gutters": [
             54,
             129,
@@ -2849,7 +2964,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1248f3b76efce40a9c9e6b16cd292b7bf0adacae5112bf9ba143cb29aea28a4a",
+          "runtime_sha256": "a6d59fc6bc28f4d79b688fe19f5adcca387eb9af3a273258ce87e24cbd550af8",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_02.png",
@@ -2874,6 +2994,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 7358,
           "gutters": [
             42,
             146,
@@ -2882,7 +3003,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4468369ea35e2483f31c7d46d381160ea7b81689803c801b51029aec5cac4dbd",
+          "runtime_sha256": "93dc13cd5243f7d2525a7a881a6be75cd80c40fc318e10fb23b98d85c6adfc6e",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_03.png",
@@ -2907,6 +3033,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 7570,
           "gutters": [
             34,
             145,
@@ -2915,7 +3042,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "68baf833cf1015c62c1725980588b743933eb2eb717b15010ad3cff173358ad8",
+          "runtime_sha256": "9a3d597efc8d33abc318643258499f61890a90d66e2dc293586165a202b9c0f8",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_04.png",
@@ -2940,6 +3072,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 6951,
           "gutters": [
             38,
             136,
@@ -2948,7 +3081,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "c567c41c93adbdd3e1b343ff20d8d4fd767ac1f08440f5ae6c28dabaa784482f",
+          "runtime_sha256": "5b37fe83c2c8c139dd8fbb871e375aa2c8429446efd958219a96119de6e1ab5f",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_wolf/pixellab_source/attack/right/druid_ghost_wolf_attack_right_05.png",
@@ -2973,6 +3111,7 @@
             203,
             232
           ],
+          "visible_alpha_pixels": 6820,
           "gutters": [
             52,
             131,
@@ -2981,7 +3120,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f0cab0ec5058b0e680cb5df0e0494b4c20385921182316552f3cc5b714095f50",
+          "runtime_sha256": "c5e46f90686f25e1bf4252db3f42042db76b23495e727f0740e9bbfcdd4844a4",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 5
         }
       ],
       "druid_ghost_bear": [
@@ -3008,6 +3152,7 @@
             222,
             232
           ],
+          "visible_alpha_pixels": 18653,
           "gutters": [
             34,
             87,
@@ -3016,7 +3161,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "00cbe4f3a16bf8dc471d343730d28341e80618963045eefb5656f024ca4b7209",
+          "runtime_sha256": "f88f1b46c8da74a5ca1b71c05e7885955669fdc5700fb4ece4cf7164d89b364c",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/left/druid_ghost_bear_move_left_01.png",
@@ -3041,6 +3191,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 18903,
           "gutters": [
             32,
             87,
@@ -3049,7 +3200,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "bd4ddd006c0cd366eacdabd264c9a7c794dd347b5c949bd7dde3cb5a073fc7c4",
+          "runtime_sha256": "8d255a9747d1a3a3aae2a9db404b970bfdd2b3027aa83ff18fcbd6fd15d7d158",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/left/druid_ghost_bear_move_left_02.png",
@@ -3074,6 +3230,7 @@
             227,
             232
           ],
+          "visible_alpha_pixels": 19295,
           "gutters": [
             28,
             86,
@@ -3082,7 +3239,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f44d3eb03a7eff08663febf0be59139aecebeca257ff7b41c32e6a792ef2c708",
+          "runtime_sha256": "a93840920e60727244dc42fb0158f8ed52f8355b13aaeae476799e9ddc147db3",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/left/druid_ghost_bear_move_left_03.png",
@@ -3107,6 +3269,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 13289,
           "gutters": [
             35,
             121,
@@ -3115,7 +3278,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "2df4084c1b59a4fe13e11de87effc1f8028a1ef76ba91efa77caa4b6101083d2",
+          "runtime_sha256": "758a235de63c8b7d434d7d46141f77208cc37c18fe7cdf557d7d7812144baa17",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/left/druid_ghost_bear_move_left_04.png",
@@ -3140,6 +3308,7 @@
             216,
             232
           ],
+          "visible_alpha_pixels": 12615,
           "gutters": [
             40,
             120,
@@ -3148,7 +3317,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "b2e32ec10fd5fe45738b47ed6dad47ad4a64f34bc3d5d1563022f9268ec50b1c",
+          "runtime_sha256": "035ef6b290b1fc44843232884cb866209fc646379a9119a23ae4f062888ce55f",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/left/druid_ghost_bear_move_left_05.png",
@@ -3173,6 +3347,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 12942,
           "gutters": [
             38,
             123,
@@ -3181,7 +3356,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "c0688eedcfada6faeb1eb10212663a5b2f8a984e1b3ac7727575c6e67e99ce46",
+          "runtime_sha256": "9060da16b6633b17306d6b0ec41bf10eb9bb14420d53217ecfd4d3abd98fbd3b",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_00.png",
@@ -3192,9 +3372,9 @@
           ],
           "source_bbox": [
             17,
-            63,
+            56,
             159,
-            135
+            156
           ],
           "runtime_size": [
             256,
@@ -3202,19 +3382,25 @@
           ],
           "runtime_bbox": [
             34,
-            137,
+            100,
             221,
             232
           ],
+          "visible_alpha_pixels": 15329,
           "gutters": [
             34,
-            137,
+            100,
             35,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3717aa3ab935f073bf774b52d7f88db46382be6d38bb36da39f9e17608bc7f07",
+          "runtime_sha256": "772f6609d24607a4a8fa6af2d6ed3abe0c607dc0e85017ddaa08d7c8ad1ecebd",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_01.png",
@@ -3224,30 +3410,36 @@
             180
           ],
           "source_bbox": [
-            28,
-            66,
-            157,
-            135
+            23,
+            60,
+            159,
+            156
           ],
           "runtime_size": [
             256,
             256
           ],
           "runtime_bbox": [
-            43,
-            141,
-            213,
+            38,
+            106,
+            217,
             232
           ],
+          "visible_alpha_pixels": 14577,
           "gutters": [
-            43,
-            141,
-            43,
+            38,
+            106,
+            39,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4029200decc26ca32a6aad5371f93a26956c7a9d12bdd5badea66a392d67b4af",
+          "runtime_sha256": "c0e99c6c45c571ae30fdc28dc8f270d4f939da24291a354ef19ea239cc3e2873",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_02.png",
@@ -3257,30 +3449,36 @@
             180
           ],
           "source_bbox": [
-            26,
-            66,
-            154,
-            135
+            20,
+            57,
+            159,
+            157
           ],
           "runtime_size": [
             256,
             256
           ],
           "runtime_bbox": [
-            44,
-            141,
-            213,
+            36,
+            100,
+            219,
             232
           ],
+          "visible_alpha_pixels": 14951,
           "gutters": [
-            44,
-            141,
-            43,
+            36,
+            100,
+            37,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "81469794864e0acf0d762248e05f2d75166e67b37c24950c4fc412609042184d",
+          "runtime_sha256": "362c3a9334084bad4eb2d003229deb45a60e38f61ac49ae7e268081a55af8591",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_03.png",
@@ -3290,30 +3488,36 @@
             180
           ],
           "source_bbox": [
-            19,
+            24,
             54,
             157,
-            156
+            152
           ],
           "runtime_size": [
             256,
             256
           ],
           "runtime_bbox": [
-            37,
-            98,
-            219,
+            40,
+            103,
+            215,
             232
           ],
+          "visible_alpha_pixels": 14457,
           "gutters": [
-            37,
-            98,
-            37,
+            40,
+            103,
+            41,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5f745e353488fe10193e6d0195774603083cfb72f3615a60690bf92cc84a58ed",
+          "runtime_sha256": "55b49a08a6dc05f4d28e56d498d9b9bff4ac6f617ca26f444a16cc7a0b050e7c",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_04.png",
@@ -3323,9 +3527,9 @@
             180
           ],
           "source_bbox": [
-            25,
+            26,
             54,
-            158,
+            157,
             156
           ],
           "runtime_size": [
@@ -3333,20 +3537,26 @@
             256
           ],
           "runtime_bbox": [
-            40,
+            42,
             98,
             215,
             232
           ],
+          "visible_alpha_pixels": 14146,
           "gutters": [
-            40,
+            42,
             98,
             41,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "840be1dee7b3c0cbe29e39c1ba3c5b19accbd36f85cc823f7817f99a63f14d73",
+          "runtime_sha256": "21f9a487258a01f5ef2324f18eef227ae13dc32f5c136bda2dc35e04980b306b",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/move/right/druid_ghost_bear_move_right_05.png",
@@ -3357,29 +3567,35 @@
           ],
           "source_bbox": [
             26,
-            54,
-            157,
-            157
+            56,
+            158,
+            156
           ],
           "runtime_size": [
             256,
             256
           ],
           "runtime_bbox": [
-            42,
-            96,
+            41,
+            100,
             215,
             232
           ],
+          "visible_alpha_pixels": 14964,
           "gutters": [
-            42,
-            96,
+            41,
+            100,
             41,
             24
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3bd8f31a0ed821fd682c1b7ec8ea9c444e6d41e84454b2b853fc7c4e3d7adf59",
+          "runtime_sha256": "ef8a6f199a0c362f0fbc8fd224a2867143d95e35bcd551e2e6240fb5509b67f6",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_00.png",
@@ -3404,6 +3620,7 @@
             216,
             232
           ],
+          "visible_alpha_pixels": 20678,
           "gutters": [
             40,
             49,
@@ -3412,7 +3629,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3243c521a85502ee484e37dde04f8a739f2aa10bda3101f92341492ad278d156",
+          "runtime_sha256": "a54fdb77cf709a5933b86c91dca819d1769c64cb13f87c52c9e1d8d883eca325",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_01.png",
@@ -3437,6 +3659,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 20647,
           "gutters": [
             40,
             46,
@@ -3445,7 +3668,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "16148cae0a1877f35e147a823e24b4073c80254c24ec240683eabb7fe2c15b52",
+          "runtime_sha256": "5285c5f8b45f0578c744c10900c53b6badd08b3cc383559f82e0b2fbfc6311e6",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_02.png",
@@ -3470,6 +3698,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 20429,
           "gutters": [
             41,
             46,
@@ -3478,7 +3707,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "a83985bd67f15f9601dd8dba3077a55bad643441d02bf010dc1d3f6039a23814",
+          "runtime_sha256": "626709f91c2d025f48792beca6c56a77f37ff78336e01f8e740ebf008742d04b",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_03.png",
@@ -3503,6 +3737,7 @@
             216,
             232
           ],
+          "visible_alpha_pixels": 20839,
           "gutters": [
             40,
             53,
@@ -3511,7 +3746,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "d6441a70bf67fa8e92f968c9d1b9eab103847d16b985ce3328b6c6bb6bf35dce",
+          "runtime_sha256": "677360cf81640bea7649d854036e5181fccba7176ce2430477801cd6d8f7bf78",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_04.png",
@@ -3536,6 +3776,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 20268,
           "gutters": [
             39,
             57,
@@ -3544,7 +3785,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "52388ad1f5c9358c38b1e0d667b9e1b8ca8bca883038cc81f277effac1218a94",
+          "runtime_sha256": "1665d248086b6181c61ff408bab66ce70fff642db63269928b18e845d5c0dac1",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/left/druid_ghost_bear_attack_left_05.png",
@@ -3569,6 +3815,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 19984,
           "gutters": [
             39,
             59,
@@ -3577,7 +3824,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3741531f980f415ec47726ca5b6b63f7447c5ccb6f33dd9924f988f5bd69e3e5",
+          "runtime_sha256": "97cfd2e95c0a0910f2fed07ee17fb29f0551eb9c61f33190f6214c0a257edbb4",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_00.png",
@@ -3602,6 +3854,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 20767,
           "gutters": [
             39,
             50,
@@ -3610,7 +3863,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "e3ce54bc958eb2382b96fbb596042ee58e97e4e8177940d7f31acdb8aff6c1f4",
+          "runtime_sha256": "34cd854bb2d11024ae1334a04d54a63facec2164aa15bfce21ac097c908a1b6b",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_01.png",
@@ -3635,6 +3893,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 20758,
           "gutters": [
             39,
             46,
@@ -3643,7 +3902,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5288ebabd64321b145b715eb7aac75b49e445f318e454b7361fb86c7be17cfc7",
+          "runtime_sha256": "b61442083eae3c2c66db04b38cbbe4be5f136835aec1be920a12ac09af526c91",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_02.png",
@@ -3668,6 +3932,7 @@
             222,
             232
           ],
+          "visible_alpha_pixels": 21965,
           "gutters": [
             34,
             48,
@@ -3676,7 +3941,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "50f77516a1ef24a73d6a73fb80ede7ea4f83adda92c878497763ff55f3c83813",
+          "runtime_sha256": "84b929839b494575acc702ffe85a783400d71a2529cf66708cde431dd5ac4cb0",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_03.png",
@@ -3701,6 +3971,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 22199,
           "gutters": [
             35,
             52,
@@ -3709,7 +3980,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "6fb72398e98a8c3158fc6831b3fe481ab930158c545d0a9ef2936efa899c305f",
+          "runtime_sha256": "990028deee074501155dbc173e53e65c14e281b6bea76df6e40a26908450abf0",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_04.png",
@@ -3734,6 +4010,7 @@
             217,
             232
           ],
+          "visible_alpha_pixels": 19850,
           "gutters": [
             38,
             57,
@@ -3742,7 +4019,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5a224ad8ef5baae5e1cd6f6df07754d0a29923c04329945d88cfe220be49367a",
+          "runtime_sha256": "c9cc249a4fbd4fd027a2249fc67df0576a33c69a597dcff15a2edd22694e47c1",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_bear/pixellab_source/attack/right/druid_ghost_bear_attack_right_05.png",
@@ -3767,6 +4049,7 @@
             218,
             232
           ],
+          "visible_alpha_pixels": 20499,
           "gutters": [
             38,
             58,
@@ -3775,7 +4058,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "cf5425ced8a36a77363779f5c47d3b3388b1c3904da99808d07c722cdee9720e",
+          "runtime_sha256": "aa5e3d9b964b53db3a3febaa559ddff6a62174f288996e57f2653bb7bad1c281",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 5
         }
       ],
       "druid_ghost_panther": [
@@ -3802,6 +4090,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 5914,
           "gutters": [
             42,
             148,
@@ -3810,7 +4099,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "d11cb42cae7c62875a0e23c2d11745f22c38f7b21f1424881f2e166a4692b5d4",
+          "runtime_sha256": "3a0d060a595a41a0f04df59e06406b04325dfd3cc5cbf82b7922e41ea23d743f",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/left/druid_ghost_panther_move_left_01.png",
@@ -3835,6 +4129,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 6088,
           "gutters": [
             46,
             140,
@@ -3843,7 +4138,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "d14d8790bcacdc4054bff451fd7dbacea8cf200f59a13b3a7fdb64687340bcc6",
+          "runtime_sha256": "9f285479da4ef67e2ab159eff049380f432ddfc583e8c32bcec0f0cd6c7101b0",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/left/druid_ghost_panther_move_left_02.png",
@@ -3868,6 +4168,7 @@
             207,
             232
           ],
+          "visible_alpha_pixels": 5622,
           "gutters": [
             50,
             131,
@@ -3876,7 +4177,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f703cb6ee57fb0e9fe2c06a8a7bebce2cedf8ff598dd38060051f071fb9a21b1",
+          "runtime_sha256": "6b1e475c8c4a391f277b0159fb1297ed60829a3e43fe0370da6e2dd6918f82b0",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/left/druid_ghost_panther_move_left_03.png",
@@ -3901,6 +4207,7 @@
             201,
             232
           ],
+          "visible_alpha_pixels": 6247,
           "gutters": [
             55,
             127,
@@ -3909,7 +4216,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "20e692e98bdad23e14a3f66f3c5b0b014be78638e221b4064c7f186585d7d1d9",
+          "runtime_sha256": "b82f9752ee649fdcf5e4a396e1d87952f198b81a1f96de38150d61e9eecaac10",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/left/druid_ghost_panther_move_left_04.png",
@@ -3934,6 +4246,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 6226,
           "gutters": [
             51,
             131,
@@ -3942,7 +4255,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f97d2289fd117c1a59d8878ed6b69c0b2fcc07e1bdd4bf9a408a127a3fb0b1f7",
+          "runtime_sha256": "1716c7c5d833cce82790b5d7d1d74b3375c5e2fc0c25541eed00f10cb1f5ca6f",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/left/druid_ghost_panther_move_left_05.png",
@@ -3967,6 +4285,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 6293,
           "gutters": [
             48,
             131,
@@ -3975,7 +4294,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "e5bb54e08e44c5bf06778dab7f0b1648c5c791b166e7c0ee8ed1a9de3fc2fee7",
+          "runtime_sha256": "566399165d1c25a3d1f875935ac7085ec5980bf504a4836c38a1526d47f31fa2",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_00.png",
@@ -4000,6 +4324,7 @@
             207,
             232
           ],
+          "visible_alpha_pixels": 5776,
           "gutters": [
             48,
             135,
@@ -4008,7 +4333,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "57c2ae93194f53266ed0cfed8f9641dfdcad56efa35d2a71554c9de54debe829",
+          "runtime_sha256": "4eb8b60cba2f532334e930b10fa9db76f28265ee8b792b21a67487c982c09abb",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_01.png",
@@ -4033,6 +4363,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 6458,
           "gutters": [
             48,
             138,
@@ -4041,7 +4372,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "25b8a0655ea3b45197883b1fb894d97224c98da4b7830e29eea807c1b3900a46",
+          "runtime_sha256": "9dcad2b302b59844332f3ae26ce3b3e6365d7ce97dcfb89a1c068d791be45054",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_02.png",
@@ -4066,6 +4402,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 4947,
           "gutters": [
             52,
             149,
@@ -4074,7 +4411,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4245671d3691635311ce14ade710d1e3bf82bf423670bf4d6bd6900ca6171be5",
+          "runtime_sha256": "adb42c0e1f17a730b16ee6ea515b8e845ef58cbc90ac889616316623b33e0543",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_03.png",
@@ -4099,6 +4441,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 6340,
           "gutters": [
             48,
             135,
@@ -4107,7 +4450,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "d8d92c0e22a18703babeb71ba7983e2f3ec241209e96de30af012a1357766a62",
+          "runtime_sha256": "327a4d0ce7b5e246b8417b108dc876bbcc35a7d77dca47020fd1d79f39f056e6",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_04.png",
@@ -4132,6 +4480,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 6036,
           "gutters": [
             45,
             145,
@@ -4140,7 +4489,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "83e7bc4c9e144f90050e72f27661faeae47aac7667db844855a249cf71718a2c",
+          "runtime_sha256": "342248ec0d49c3411e719dbac10403a13e2cba43c6dca250f371cddcb54c0462",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/move/right/druid_ghost_panther_move_right_05.png",
@@ -4165,6 +4519,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 5867,
           "gutters": [
             41,
             149,
@@ -4173,7 +4528,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4058871358c8608b5a1f9105536544bae9e6a321ed56a220a3c1c66d08e9bb92",
+          "runtime_sha256": "1faaae5fc42f8a7f02a95585499de87fa245c0f4b1d6838bf0bf3ccd952000c6",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_00.png",
@@ -4198,6 +4558,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 6365,
           "gutters": [
             52,
             146,
@@ -4206,7 +4567,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f6ec3378fee9ac04ac87937c242a72ace4088f01bc23fba0c4b9e25aa5700bec",
+          "runtime_sha256": "1a8b248052ca8304385fbc7d681f51d0042805530f24624be36e95a4a47fb8fb",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_01.png",
@@ -4231,6 +4597,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 6687,
           "gutters": [
             34,
             158,
@@ -4239,7 +4606,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5453688d3970148f829ed8df665dbab2c587ee2447db46554816620631440474",
+          "runtime_sha256": "06fcf73e5237b371d9738320e9387d867d3fbc8441a1988c673c48c2c179ff74",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_02.png",
@@ -4264,6 +4636,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 7751,
           "gutters": [
             32,
             148,
@@ -4272,7 +4645,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "2a25fbad5be0d3c9d84da9784c876425e4b89a850efa11ca106dab7279b87f94",
+          "runtime_sha256": "a88be10eecb21e7444a52d25f0217c9dbfa27d2e84a4ede3968720ecc5d0416e",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_03.png",
@@ -4297,6 +4675,7 @@
             219,
             232
           ],
+          "visible_alpha_pixels": 7040,
           "gutters": [
             37,
             148,
@@ -4305,7 +4684,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "06ae785a8a36f0d65c1b6f877fa1b52409d1b78119217901f81b9a675450f7ff",
+          "runtime_sha256": "085b6350cb63ad53402e56e06ef479e7684010ed30acbb042b4bab162b571806",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_04.png",
@@ -4330,6 +4714,7 @@
             195,
             232
           ],
+          "visible_alpha_pixels": 6016,
           "gutters": [
             61,
             153,
@@ -4338,7 +4723,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "baf4fed47b10d89ea162e31b690c2f7972ebfb23ee9949737b7bb285a1218937",
+          "runtime_sha256": "4baec4261532aee011bffb32878159c899cc237befd7a472c80f428ad16efa9f",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/left/druid_ghost_panther_attack_left_05.png",
@@ -4363,6 +4753,7 @@
             203,
             232
           ],
+          "visible_alpha_pixels": 6535,
           "gutters": [
             54,
             140,
@@ -4371,7 +4762,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "23b440ae6f9805339fa49f89066696e9ba886d3f6480ac460145e0edd80e68e5",
+          "runtime_sha256": "0c495b11ac7711bba9fc6f7e81008ad4282ee21b0c71db3fc2db80b5ad89426d",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_00.png",
@@ -4396,6 +4792,7 @@
             224,
             232
           ],
+          "visible_alpha_pixels": 7830,
           "gutters": [
             32,
             145,
@@ -4404,7 +4801,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "22b2fada4ee1244034d36b07c6e8f9ad3c8e9c7f60b13a6348efcfe2e75cf850",
+          "runtime_sha256": "4b22a15da3d94c4c6db14cdb5c78f3ace599cf5b6e72dae95c70e487b83c56b9",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_01.png",
@@ -4429,6 +4831,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 8636,
           "gutters": [
             32,
             149,
@@ -4437,7 +4840,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "39646405ffa577343e9485cc7177e49663b75aaf7d887c3991fe0589bb914ce9",
+          "runtime_sha256": "116dd682739532d0b68044c786d3868df35005434eda44137d652fab02b61c9e",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_02.png",
@@ -4462,6 +4870,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 8220,
           "gutters": [
             32,
             146,
@@ -4470,7 +4879,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "29992fb3e7fa7baa3b967fa6bee96d3544b9a89b6251ae0cacabb2e83e903ccf",
+          "runtime_sha256": "eae28e553e90113f8de9e1071372114b77ebe91e46084c8b9a2849ff2ae842f6",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_03.png",
@@ -4495,6 +4909,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 6924,
           "gutters": [
             33,
             152,
@@ -4503,7 +4918,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "7bbc1b4874ef3432d136f3f81120e1fb640933f4371af637322c3a236469c342",
+          "runtime_sha256": "39b705ca7ffe78f195acd46ec87c0c1c9d867bdc501a54217a807fc89b8268fe",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_04.png",
@@ -4528,6 +4948,7 @@
             203,
             232
           ],
+          "visible_alpha_pixels": 5981,
           "gutters": [
             53,
             149,
@@ -4536,7 +4957,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "8e5bd673e73826cd129973f2193e0126030c052fc4f91f81e4df162a2cdda8a5",
+          "runtime_sha256": "4f5c55b73461688c948ba4861f74553cbc4b2f4542299c2e8a9eedb3a1e949ce",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_panther/pixellab_source/attack/right/druid_ghost_panther_attack_right_05.png",
@@ -4561,6 +4987,7 @@
             203,
             232
           ],
+          "visible_alpha_pixels": 6514,
           "gutters": [
             54,
             142,
@@ -4569,7 +4996,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "830fb95771a5771581c174f1cc9033098407f6eba3c2980ccb203a745d7ac242",
+          "runtime_sha256": "2eb2dd64803e2759227676390bdf90c7ae0429aa53f236c347442fd4b03ae284",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 5
         }
       ],
       "druid_ghost_stag": [
@@ -4596,6 +5028,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 8727,
           "gutters": [
             45,
             61,
@@ -4604,7 +5037,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "796afe6d49274c92ce2fc64db07ccc5675b4a56cf17cbf0a27dc875331118e39",
+          "runtime_sha256": "18a04d462bf4e5b871fb29a7270e0dfae5a2baf639979c042a4cb772114db30a",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/left/druid_ghost_stag_move_left_01.png",
@@ -4629,6 +5067,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 8862,
           "gutters": [
             41,
             65,
@@ -4637,7 +5076,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "a5bc8382094da4df89af956c08fdf00107a2c24caf075efc6143d0f6124372a2",
+          "runtime_sha256": "1631873277726104bd32f876be9f13233499781f2157b2e0b000e35724cf28dc",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/left/druid_ghost_stag_move_left_02.png",
@@ -4662,6 +5106,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 8791,
           "gutters": [
             40,
             66,
@@ -4670,7 +5115,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "edcbe72ee0900548122766b09cfe3aa6f71e4fc9a03fd64a26d37c12c54127f7",
+          "runtime_sha256": "dfe838700f7415f604d79e0b665b2fbb771223ebb5db0f2c2dff10f8520c3077",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/left/druid_ghost_stag_move_left_03.png",
@@ -4695,6 +5145,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 8978,
           "gutters": [
             44,
             62,
@@ -4703,7 +5154,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1e8591188c730c8ea409fe23b72179df81654764d094d34fe289e09e3827283e",
+          "runtime_sha256": "cc3908ae87b7a35b25494a7b89b748f0ce384a25367e8d7fc707c9a2f82a299b",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/left/druid_ghost_stag_move_left_04.png",
@@ -4728,6 +5184,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 8956,
           "gutters": [
             44,
             63,
@@ -4736,7 +5193,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "14b91cc8c6888200d3d4ad6f4ac9b7f485c3a3f3a894f857d540432c0cb4e946",
+          "runtime_sha256": "76572c82a8165f98b953f009708b77de622a3892e7578d530b80c7b361508e91",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/left/druid_ghost_stag_move_left_05.png",
@@ -4761,6 +5223,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 8895,
           "gutters": [
             41,
             67,
@@ -4769,7 +5232,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ce0eab079c3c33c391edd3a8f9c1e176f0b5e8c2877e2ad6a9e1ca8ee5c7edc8",
+          "runtime_sha256": "c995a49047a2a098925d5f71883250bd6090f3d837d58af4e95cfac68e36141d",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_00.png",
@@ -4794,6 +5262,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 8222,
           "gutters": [
             51,
             66,
@@ -4802,7 +5271,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "9cc667c869aa6ea7a4a0836887bbb1620fb44e953bdd4dadb0eaccce6a013ebb",
+          "runtime_sha256": "0c8ddc39b999a95235721ae919213752cefe8cd4346f78d1bf2e4b5ae4890dc9",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_01.png",
@@ -4827,6 +5301,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 7924,
           "gutters": [
             52,
             71,
@@ -4835,7 +5310,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "b33b78dbfe70306ec482f6147ad315c191a0b15a4d0dd1eeee65b6a86ea3354a",
+          "runtime_sha256": "836351b5489a22189696c550db7c1a46763ad854b88567feeff46ce08d079a9f",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_02.png",
@@ -4860,6 +5340,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 8270,
           "gutters": [
             51,
             73,
@@ -4868,7 +5349,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "054e5b5127228dfbf39bb9d0020ced1cae556041656e206dc0a1b069e492bad0",
+          "runtime_sha256": "2be933da8df83371273312d6580f1afc30c23e39617bf45136048849dd8c9144",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_03.png",
@@ -4893,6 +5379,7 @@
             205,
             232
           ],
+          "visible_alpha_pixels": 8146,
           "gutters": [
             50,
             73,
@@ -4901,7 +5388,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4462c7015b50686063759f8a9d59a0172e9b6e04f756815da62eb776dc47224e",
+          "runtime_sha256": "27571669d1ad73fcdeafd7fcd6011c1e7fb5e95046b6d9deed6ae8194c358f73",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_04.png",
@@ -4926,6 +5418,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 8386,
           "gutters": [
             48,
             69,
@@ -4934,7 +5427,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "b8a34128af285e08963e80ac9c2f8b5fb2a2f657ddfaeb3607e90f60d6a51c2d",
+          "runtime_sha256": "e15f513c1d569e0c799329c69960a53d9fd122f26dbfa00063b54a65cfe71aa9",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/move/right/druid_ghost_stag_move_right_05.png",
@@ -4959,6 +5457,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 7920,
           "gutters": [
             47,
             71,
@@ -4967,7 +5466,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "dc73d15f0bec4af0d5c95c8303c43dba38518c6a1207c9dcfe59f3385240527c",
+          "runtime_sha256": "04d3a7c35ef860647c4c4ef73cc7fae875957564c2fc8f4f8db1452b0fbfd5ca",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_00.png",
@@ -4992,6 +5496,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 8764,
           "gutters": [
             46,
             61,
@@ -5000,7 +5505,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "5ddd23f8df3e86695838ff7c3602ee54cdefa3c6a1001b326ef11980f6a526f7",
+          "runtime_sha256": "aa1a7f7be22b562a52971580425ced3b134009d26f5c018b9b6b8c175fabdd03",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_01.png",
@@ -5025,6 +5535,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 8571,
           "gutters": [
             43,
             65,
@@ -5033,7 +5544,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "a51b6d65a5b60bd5b294fe8b0079360f54f75b9ef274050d259cea5d4f616719",
+          "runtime_sha256": "6d58d350ea97f0855a96d5463680c945cf585bc675cf4fd473cb6211516833d0",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_02.png",
@@ -5058,6 +5574,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 8687,
           "gutters": [
             42,
             67,
@@ -5066,7 +5583,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "62653d29f7086762c5c35edfc701e98916c42615866932ea0ef39391f309837a",
+          "runtime_sha256": "775249475efd7220827fbd21cb7b2afe694870d6771c315ccb07747e11331914",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_03.png",
@@ -5091,6 +5613,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 9202,
           "gutters": [
             35,
             69,
@@ -5099,7 +5622,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "c32a0ced41d676602a00da53f96132a18ae1e7a7a2443caaef1ade72c32d7a19",
+          "runtime_sha256": "4729a59a87e60c50c2d3f39736a4a4365e076b8d3d4d78b9098fdbc793198ce5",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_04.png",
@@ -5124,6 +5652,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 9464,
           "gutters": [
             35,
             67,
@@ -5132,7 +5661,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "7a5305cc1fa416d6498b791bba084ad1b727b98063a0ea17af2e5f9ffc044027",
+          "runtime_sha256": "0276a9c0023bc3745449c4a89c844dfe190ad05806cdc3c8b874c629c5c2f804",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/left/druid_ghost_stag_attack_left_05.png",
@@ -5157,6 +5691,7 @@
             219,
             232
           ],
+          "visible_alpha_pixels": 8977,
           "gutters": [
             37,
             63,
@@ -5165,7 +5700,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f048d553bd864ad9d9fd25e1cbf13c7059eb12531f843b481488a707b395869e",
+          "runtime_sha256": "06ea7724170946ea4d91dc654159e3673bc370bfc5e6f5a9f4778f4f8953246e",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_00.png",
@@ -5190,6 +5730,7 @@
             207,
             232
           ],
+          "visible_alpha_pixels": 8404,
           "gutters": [
             49,
             66,
@@ -5198,7 +5739,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1dca1ed6ecfb7fe85d8eb4be9aa1509ea691ef4d88ada0bf3cb6769c2f8a06f0",
+          "runtime_sha256": "bb8e92896a3587be58a813669e9ca66f93d8712eba8c4c269fc0189f7d2c1d29",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_01.png",
@@ -5223,6 +5769,7 @@
             207,
             232
           ],
+          "visible_alpha_pixels": 8341,
           "gutters": [
             48,
             69,
@@ -5231,7 +5778,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "2148fcfb64098fd37877597d14c8837a889a0a342ba3c811f7a56ab90513ee14",
+          "runtime_sha256": "5c59e3674db78ecbda0a54fd7288eb020b8d960b666dbb908dc281deeec38a59",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_02.png",
@@ -5256,6 +5808,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 9144,
           "gutters": [
             42,
             74,
@@ -5264,7 +5817,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "f80e87cebbe92a0f66fab7efc4b08d785ae3af0677a73032753ac3a3b1ebae4b",
+          "runtime_sha256": "049c557d22ce7843e77e409821bac87d6c1d9157918ba5cdac1984df35a6991a",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_03.png",
@@ -5289,6 +5847,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 9952,
           "gutters": [
             42,
             75,
@@ -5297,7 +5856,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "684027e1074d3d302365d6c0d06c18c64e01538603859a61349b7d14e6bc845f",
+          "runtime_sha256": "aaa1e8cef49134fe86f0b63d235c5d8f1fcdaa663bcd7bbc919cb96f648ad240",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_04.png",
@@ -5322,6 +5886,7 @@
             213,
             232
           ],
+          "visible_alpha_pixels": 9178,
           "gutters": [
             42,
             77,
@@ -5330,7 +5895,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "704f212f7367733ed4fdbfb33f35565ea2cb15a0eb13bcb94e7b2e7fd31440c5",
+          "runtime_sha256": "89a8a68e6bfc28c770059c38030b31d660bd335bafb33c2334658f193c0bdaa5",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_stag/pixellab_source/attack/right/druid_ghost_stag_attack_right_05.png",
@@ -5355,6 +5925,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 8316,
           "gutters": [
             44,
             77,
@@ -5363,7 +5934,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3bd8627fb124675d91db01f332d9ce5d9d8378649afcb7ada28e05bab1d3a491",
+          "runtime_sha256": "c2391baf5c5772b139f514eb8f19e3e6618be224bbc51a90ebdbaad79e39c3ed",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 5
         }
       ],
       "druid_ghost_lion": [
@@ -5390,6 +5966,7 @@
             219,
             232
           ],
+          "visible_alpha_pixels": 8860,
           "gutters": [
             37,
             127,
@@ -5398,7 +5975,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "e893891de7c0ea3ba36db1bd03df0770c8d705a5f630ba8a186aeb378e79c36e",
+          "runtime_sha256": "df730357f46e51c0608563dc5ff999bc0ea024ff1c2519841a967e338c18ed37",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/left/druid_ghost_lion_move_left_01.png",
@@ -5423,6 +6005,7 @@
             219,
             232
           ],
+          "visible_alpha_pixels": 9158,
           "gutters": [
             37,
             127,
@@ -5431,7 +6014,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "20fff8802f408211156d2f2eef0ec328816702b180725280a3b2381624b44975",
+          "runtime_sha256": "46a2cb3c5976836670c473d5d16373a67c29d2743f1d6eb95c8b64d49dde01b4",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/left/druid_ghost_lion_move_left_02.png",
@@ -5456,6 +6044,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 8686,
           "gutters": [
             44,
             131,
@@ -5464,7 +6053,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "a5df9b40b07bf341cc2717552dad8c7aa6946001973acf4601e6834cedfcd5db",
+          "runtime_sha256": "f9102ca707e4c50463a921ad0ff1620510ea67956f1205b1fd2bd0a9dec1b5b6",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/left/druid_ghost_lion_move_left_03.png",
@@ -5489,6 +6083,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 9933,
           "gutters": [
             35,
             125,
@@ -5497,7 +6092,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "8adadb30a5a8b8d88bddc65a79035af4cd69062f8540cdac90ebe66f761e6874",
+          "runtime_sha256": "5d35248f52a84f5dd9cfb65280553eb581b9c941a907c906b9e0e699ae13e6fa",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/left/druid_ghost_lion_move_left_04.png",
@@ -5522,6 +6122,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 10185,
           "gutters": [
             35,
             110,
@@ -5530,7 +6131,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "3f1efcc11f5361e03444218718a648b65305debe37f49b317115258dc6e043d2",
+          "runtime_sha256": "1b2589b39f8ee1a07c8f896f49067c02f7e2963b17d758a07e19ab09a38dbff2",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/left/druid_ghost_lion_move_left_05.png",
@@ -5555,6 +6161,7 @@
             221,
             232
           ],
+          "visible_alpha_pixels": 9695,
           "gutters": [
             35,
             110,
@@ -5563,7 +6170,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "0252b0ebaa7f8d46242b4591ba1eecd476ab9e600475b5405f0d4278956237a3",
+          "runtime_sha256": "ca8781b8dc52e13bf68c8305f2423081b0073bf0b712dcb66979f02ffe6abcc5",
+          "kind": "move",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_00.png",
@@ -5588,6 +6200,7 @@
             236,
             232
           ],
+          "visible_alpha_pixels": 9077,
           "gutters": [
             20,
             128,
@@ -5596,7 +6209,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "d523e29f203ec84e091ab4e0f4f1bd6c9838682a398e70f6a9d1dbeb75017ff0",
+          "runtime_sha256": "d5ad8f26eda263bc59d39d208c80653d44ec6dfa48fddb3de39e87bbe5e838cc",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_01.png",
@@ -5621,6 +6239,7 @@
             228,
             232
           ],
+          "visible_alpha_pixels": 8923,
           "gutters": [
             28,
             129,
@@ -5629,7 +6248,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "28a0553ba44dad376ddd52b1a71663351c6e4825e49ee4989f89b86cf4bc8861",
+          "runtime_sha256": "b0fe332b69763a2aa84873a660f1d804d022a304af7dac58b5e48557cbbbb591",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_02.png",
@@ -5654,6 +6278,7 @@
             230,
             232
           ],
+          "visible_alpha_pixels": 8445,
           "gutters": [
             26,
             135,
@@ -5662,7 +6287,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "8766ec8cd7a7e66157e46f96039b19224c6ce92fe106153e993725a309bf5e57",
+          "runtime_sha256": "0e6fe5f065dd5e06c36878a6a519f5055374e77621c8c7bbaca45307de827eeb",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_03.png",
@@ -5687,6 +6317,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 7035,
           "gutters": [
             48,
             145,
@@ -5695,7 +6326,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "84024a8213283dbdbacdf80b240db9030fbd221213a669439610414db656a5be",
+          "runtime_sha256": "cbdbf1b49cea5193a04395c65e42486410b330a567bdf7f13cae771ea73f8b0d",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_04.png",
@@ -5720,6 +6356,7 @@
             209,
             232
           ],
+          "visible_alpha_pixels": 7649,
           "gutters": [
             47,
             137,
@@ -5728,7 +6365,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ba9513d93b18efd79043a382faa0357bce006c623af2fc93e1c87b1bb2e66d68",
+          "runtime_sha256": "bb4b06ed5f83ec1a9140b948638526ab2d1b08284930bffdf0060595cc89d4a1",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/move/right/druid_ghost_lion_move_right_05.png",
@@ -5753,6 +6395,7 @@
             211,
             232
           ],
+          "visible_alpha_pixels": 7803,
           "gutters": [
             46,
             135,
@@ -5761,7 +6404,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "de5693ec9cdf0b25a73f3e3521a1a6d180bb8b19fa8605e53767cd896edb0150",
+          "runtime_sha256": "026193666562ced8b326bd41416b2fcdc4fc1db0dab6a46a1a0329e1139d62a9",
+          "kind": "move",
+          "direction": "right",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_00.png",
@@ -5786,6 +6434,7 @@
             224,
             232
           ],
+          "visible_alpha_pixels": 10863,
           "gutters": [
             32,
             110,
@@ -5794,7 +6443,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1d060d0ab649aa35383c211e90d7928b7720a047a2deebe0efa0529466f898ae",
+          "runtime_sha256": "38ef098302f1690128af1530ffc396a96227f1cf415d430ce744ab052f84bea1",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_01.png",
@@ -5819,6 +6473,7 @@
             233,
             232
           ],
+          "visible_alpha_pixels": 12112,
           "gutters": [
             24,
             117,
@@ -5827,7 +6482,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ff0d74fdf77a5dba841508c27fd7089d3639cba776b69131be5c01ab534984e8",
+          "runtime_sha256": "4a14f7ad2d89c68c606c6ccd345cbf865c4f3f61867111ccd4193271584aab0a",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_02.png",
@@ -5852,6 +6512,7 @@
             233,
             232
           ],
+          "visible_alpha_pixels": 12858,
           "gutters": [
             24,
             116,
@@ -5860,7 +6521,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "0f51dc8c171138a7e4ceba80da7b387dbd506e3cc14ce369cde0a29276e7bea1",
+          "runtime_sha256": "cc0e2c1f547948b49cdd0958caccdcbb0c466db42a13cf420fcf373dae2b741e",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_03.png",
@@ -5885,6 +6551,7 @@
             227,
             232
           ],
+          "visible_alpha_pixels": 13695,
           "gutters": [
             28,
             98,
@@ -5893,7 +6560,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "1ca7a76762fec3ec6eb461eb8cde134257a569abe055ef94155312d26acf4f27",
+          "runtime_sha256": "c45a7e7d505f69c93dd9d7682b864bb198e04be8e3f342a463c8a17810daac06",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_04.png",
@@ -5918,6 +6590,7 @@
             227,
             232
           ],
+          "visible_alpha_pixels": 12453,
           "gutters": [
             29,
             94,
@@ -5926,7 +6599,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "ab2393622b737fe65064159850af8566f5a9a2e6d8bd21a2adeeabf158b7a57a",
+          "runtime_sha256": "b8244c7b560c83c76acc9f3b05fb785d788a9f5a8fc357509785f93e508d2e64",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/left/druid_ghost_lion_attack_left_05.png",
@@ -5951,6 +6629,7 @@
             223,
             232
           ],
+          "visible_alpha_pixels": 10930,
           "gutters": [
             32,
             104,
@@ -5959,7 +6638,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "7477243d6657bc83cdc8a8912ede06ce466a5ab67d04204c30f7b8d7ef3d8f08",
+          "runtime_sha256": "301fcdb59f846f438ae1280e7da2ed322f1e55bce74ee1c19c2d52235c453395",
+          "kind": "attack",
+          "direction": "left",
+          "frame_index": 5
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_00.png",
@@ -5984,6 +6668,7 @@
             215,
             232
           ],
+          "visible_alpha_pixels": 10874,
           "gutters": [
             41,
             124,
@@ -5992,7 +6677,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "235098f5ff51e8ebfb0c9b07e1a8188150a2cb49544e4c64656f9314bc6a3db4",
+          "runtime_sha256": "f5e07a7dffe75bab15ad21fbeb275fb5b22669b55065a2128cf5d6f597883c8b",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 0
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_01.png",
@@ -6017,6 +6707,7 @@
             225,
             232
           ],
+          "visible_alpha_pixels": 12555,
           "gutters": [
             31,
             121,
@@ -6025,7 +6716,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "4bae38a19c939a35cd6304a76fee8a04554ba10afc11c7031635e78ddd24ca56",
+          "runtime_sha256": "74dde83af8bda993cc31081368d53539e1241ed95f4eff90bdfc3b79022aa607",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 1
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_02.png",
@@ -6050,6 +6746,7 @@
             233,
             232
           ],
+          "visible_alpha_pixels": 13399,
           "gutters": [
             24,
             102,
@@ -6058,7 +6755,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "369d7b29ac2e7d1a97ec1de506cf136b039c6fe0e9acba40fef236f19c29905f",
+          "runtime_sha256": "752d65deb7fd7e22ea98fc67b0e44ef4ce4629c9aab6492950471505246a5262",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 2
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_03.png",
@@ -6083,6 +6785,7 @@
             235,
             232
           ],
+          "visible_alpha_pixels": 11590,
           "gutters": [
             22,
             79,
@@ -6091,7 +6794,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "2cd12440f8fb494c37dbaa568475f35371e4173613ce6865d93eda7b71e97598",
+          "runtime_sha256": "c0739813a56f9ec37382d5527047c6f274c3396120a8edc3aacfcb366005eca2",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 3
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_04.png",
@@ -6116,6 +6824,7 @@
             233,
             232
           ],
+          "visible_alpha_pixels": 10369,
           "gutters": [
             24,
             79,
@@ -6124,7 +6833,12 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "9eeca960c76862acfe70bf4ef4a3e8e4f3f8c490dc189125dc8a7d68a29c01c8",
+          "runtime_sha256": "419dc94abc92d8b395e00932ea1580e7377b5678ed406fe34092b819b287ab95",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 4
         },
         {
           "source": "assets/sprites/allies/druid_ghost_lion/pixellab_source/attack/right/druid_ghost_lion_attack_right_05.png",
@@ -6149,6 +6863,7 @@
             229,
             232
           ],
+          "visible_alpha_pixels": 10583,
           "gutters": [
             27,
             116,
@@ -6157,9 +6872,156 @@
           ],
           "baseline_y": 232,
           "center_x": 128,
-          "global_scale": 1.3170731707317074
+          "global_scale": 1.3170731707317074,
+          "source_sha256": "dceb9e0198c64b82e126f6d91fb2946ecc5a51558ab9c56a95c239348b2e6109",
+          "runtime_sha256": "13e877763351bf147d9a4a5165272298eb6b2d9a49d277526975eccdcf881b35",
+          "kind": "attack",
+          "direction": "right",
+          "frame_index": 5
         }
       ]
+    }
+  },
+  "movement_continuity": {
+    "druid_ghost_wolf": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          6772,
+          6283,
+          6099,
+          6759,
+          7071,
+          7515
+        ],
+        "max_min_ratio": 1.232169,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          6644,
+          6304,
+          5913,
+          7585,
+          6743,
+          7779
+        ],
+        "max_min_ratio": 1.315576,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_bear": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          18653,
+          18903,
+          19295,
+          13289,
+          12615,
+          12942
+        ],
+        "max_min_ratio": 1.529528,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          15329,
+          14577,
+          14951,
+          14457,
+          14146,
+          14964
+        ],
+        "max_min_ratio": 1.083628,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_panther": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          5914,
+          6088,
+          5622,
+          6247,
+          6226,
+          6293
+        ],
+        "max_min_ratio": 1.119353,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          5776,
+          6458,
+          4947,
+          6340,
+          6036,
+          5867
+        ],
+        "max_min_ratio": 1.305438,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_stag": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          8727,
+          8862,
+          8791,
+          8978,
+          8956,
+          8895
+        ],
+        "max_min_ratio": 1.028761,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          8222,
+          7924,
+          8270,
+          8146,
+          8386,
+          7920
+        ],
+        "max_min_ratio": 1.058838,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_lion": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          8860,
+          9158,
+          8686,
+          9933,
+          10185,
+          9695
+        ],
+        "max_min_ratio": 1.172577,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          9077,
+          8923,
+          8445,
+          7035,
+          7649,
+          7803
+        ],
+        "max_min_ratio": 1.290263,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
     }
   },
   "characters": {
@@ -6168,7 +7030,7 @@
       "pixellab_name": "druid_ghost_wolf",
       "role": "physical_melee_aoe",
       "action_description": "lunging forward with a wide claw and body sweep, then returning to the ready pose",
-      "pixellab_export_date": "2026-07-09T23:12:24.363452",
+      "pixellab_export_date": "2026-07-10T00:12:55.724598",
       "pixellab_export_version": "3.0",
       "pixellab_job_ids": {
         "move": {
@@ -6256,7 +7118,7 @@
       "pixellab_name": "druid_ghost_bear",
       "role": "physical_melee_aoe",
       "action_description": "raising both forepaws and slamming them heavily onto the ground, then returning to the ready pose",
-      "pixellab_export_date": "2026-07-09T23:12:25.678745",
+      "pixellab_export_date": "2026-07-10T00:12:57.112654",
       "pixellab_export_version": "3.0",
       "pixellab_job_ids": {
         "move": {
@@ -6266,8 +7128,8 @@
             "exported_frame_count": 6
           },
           "right": {
-            "job_id": "d3434d3a-b0b8-465f-833d-bd4164202f7e",
-            "download_folder": "walking",
+            "job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+            "download_folder": "scrum1020_grounded_bear_walk_right_v1",
             "exported_frame_count": 6
           }
         },
@@ -6293,7 +7155,7 @@
       "selected_folders": {
         "move": {
           "left": "walking",
-          "right": "walking"
+          "right": "scrum1020_grounded_bear_walk_right_v1"
         },
         "attack": {
           "left": "ghost_ground_slam",
@@ -6344,7 +7206,7 @@
       "pixellab_name": "druid_ghost_panther",
       "role": "physical_melee_aoe",
       "action_description": "making a short forward pounce followed by a wide circular claw rake, then returning to the ready pose",
-      "pixellab_export_date": "2026-07-09T23:12:27.589475",
+      "pixellab_export_date": "2026-07-10T00:13:01.664527",
       "pixellab_export_version": "3.0",
       "pixellab_job_ids": {
         "move": {
@@ -6432,7 +7294,7 @@
       "pixellab_name": "druid_ghost_stag",
       "role": "magical_ranged_caster",
       "action_description": "bracing and lifting the antlers to cast a focused spirit lance forward, then returning to the ready pose",
-      "pixellab_export_date": "2026-07-09T23:12:29.055369",
+      "pixellab_export_date": "2026-07-10T00:13:03.309586",
       "pixellab_export_version": "3.0",
       "pixellab_job_ids": {
         "move": {
@@ -6520,7 +7382,7 @@
       "pixellab_name": "druid_ghost_lion",
       "role": "magical_ranged_caster",
       "action_description": "planting all paws and releasing a powerful spectral roar projectile forward while the mane surges, then returning to the ready pose",
-      "pixellab_export_date": "2026-07-09T23:12:30.605501",
+      "pixellab_export_date": "2026-07-10T00:13:04.965888",
       "pixellab_export_version": "3.0",
       "pixellab_job_ids": {
         "move": {

@@ -711,6 +711,15 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   stage sweep/slam/pounce actions, while stag/lion rows stage spirit-lance/roar
   casts. This is a visual-only hook: Summon Amulet roster, spawn weighting,
   damage, aura and balance remain Backend SCRUM-902 scope.
+- SCRUM-1020 (2026-07-10) replaces only the failed
+  `druid_ghost_bear/move_right` row with PixelLab job
+  `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` from the same accepted bear UUID
+  `6805608a-b64a-471c-a1d9-9601a3062e2f`. The six-frame grounded bear loop
+  reduces meaningful-alpha max/min discontinuity from `2.089121x` to
+  `1.083628x` while preserving `256x256`, center X `128`, baseline Y `232`,
+  10fps, explicit `move_right` and no-flip contracts. The pack builder now
+  rejects movement rows above `1.65x` as a coarse silhouette-continuity guard;
+  contact-sheet review remains mandatory and independent re-QA is pending.
 
 ## Hit / Death
 

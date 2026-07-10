@@ -1,6 +1,6 @@
 {
   "jira": "SCRUM-1016",
-  "status": "IMPLEMENTATION_SELF_CHECK_PASS_INDEPENDENT_QA_PENDING",
+  "status": "IMPLEMENTATION_SELF_CHECK_PASS_INDEPENDENT_REQA_PENDING",
   "source_png_count": 120,
   "runtime_png_count": 120,
   "source_canvas": [
@@ -27,6 +27,150 @@
   "extra_runtime_directions": [],
   "horizontal_flip_required": false,
   "alpha_threshold": 4,
-  "visual_review": "PASS Animator implementation self-check: all 20 rows are readable left/right cycles, the final bear walking-template retake stays quadruped, stag/lion casts show cyan-blue spectral cues, the allied palette is preserved, and no frame is visibly cropped; independent QA remains pending",
-  "contact_sheet": "docs/design/previews/druid_summons_ghost_animation_pack_contact.png"
+  "maximum_movement_visible_alpha_ratio": 1.65,
+  "movement_continuity": {
+    "druid_ghost_wolf": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          6772,
+          6283,
+          6099,
+          6759,
+          7071,
+          7515
+        ],
+        "max_min_ratio": 1.232169,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          6644,
+          6304,
+          5913,
+          7585,
+          6743,
+          7779
+        ],
+        "max_min_ratio": 1.315576,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_bear": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          18653,
+          18903,
+          19295,
+          13289,
+          12615,
+          12942
+        ],
+        "max_min_ratio": 1.529528,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          15329,
+          14577,
+          14951,
+          14457,
+          14146,
+          14964
+        ],
+        "max_min_ratio": 1.083628,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_panther": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          5914,
+          6088,
+          5622,
+          6247,
+          6226,
+          6293
+        ],
+        "max_min_ratio": 1.119353,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          5776,
+          6458,
+          4947,
+          6340,
+          6036,
+          5867
+        ],
+        "max_min_ratio": 1.305438,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_stag": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          8727,
+          8862,
+          8791,
+          8978,
+          8956,
+          8895
+        ],
+        "max_min_ratio": 1.028761,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          8222,
+          7924,
+          8270,
+          8146,
+          8386,
+          7920
+        ],
+        "max_min_ratio": 1.058838,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    },
+    "druid_ghost_lion": {
+      "move_left": {
+        "visible_alpha_pixels": [
+          8860,
+          9158,
+          8686,
+          9933,
+          10185,
+          9695
+        ],
+        "max_min_ratio": 1.172577,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      },
+      "move_right": {
+        "visible_alpha_pixels": [
+          9077,
+          8923,
+          8445,
+          7035,
+          7649,
+          7803
+        ],
+        "max_min_ratio": 1.290263,
+        "maximum_allowed_ratio": 1.65,
+        "status": "PASS"
+      }
+    }
+  },
+  "visual_review": "PASS Animator SCRUM-1020 self-check: the selected same-UUID bear move_right row keeps one grounded heavy-bear identity across all six frames, has no canine/fox morph, crop, rearing or within-row palette/scale jump, and reduces meaningful-alpha ratio from 2.089121x to 1.083628x; independent re-QA is still required",
+  "contact_sheet": "docs/design/previews/druid_summons_ghost_animation_pack_contact.png",
+  "remediation_report": "docs/design/references/druid_summons_ghost_animation_pack/scrum1020_remediation_report.json"
 }
