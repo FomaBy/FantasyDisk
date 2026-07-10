@@ -26,7 +26,9 @@ Live application inventory:
   reserved in-frame HUD/FAB strip; 720–900p uses explicit compact card tiers.
 - Victory and Defeat keep their local result modal, summary and action inside
   the shell; the smallest legacy matrix uses compact summary typography and a
-  content-width action plate.
+  content-width action plate. SCRUM-986 also centers the transient 960x224
+  Victory banner on both axes at every target viewport; the old absolute 2K
+  top offset is forbidden because it clipped the banner at 720p.
 - Every listed shell has a live `resized` relayout path. Shrinking an existing
   2560×1440 screen to 1280×720 recomputes panel/card/result/FAB geometry and
   Route Map canvas width; it is not valid to rely only on screen reconstruction.

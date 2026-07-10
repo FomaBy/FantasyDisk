@@ -326,9 +326,9 @@ const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление 
 const CTB_SMALL_2K := Rect2(100, 92, 2360, 56)             # появление элитки
 
 # #30 Баннер победы — _show_victory_banner: дим + компактный чип Атласа с золотым
-# титулом «ПОБЕДА» по вертикальному центру 2K-холста (SCRUM-883, ранее vbn_frame @2K).
+# титулом «ПОБЕДА», центрированный по обеим осям любого viewport (SCRUM-986;
+# ранее абсолютный 2K top=608 обрезал нижние 112px на 1280x720).
 const VICTORY_BANNER_CHIP_SIZE := Vector2(960.0, 224.0)
-const VICTORY_BANNER_CHIP_TOP := 608.0
 const VICTORY_BANNER_CHIP_PAD := 26.0
 # === конец спеки SCRUM-487 ===
 
@@ -2246,15 +2246,15 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	frame.anchor_left = 0.5
 	frame.anchor_right = 0.5
-	frame.anchor_top = 0.0
-	frame.anchor_bottom = 0.0
+	frame.anchor_top = 0.5
+	frame.anchor_bottom = 0.5
 	# SCRUM-883: транзиентный оверлей поверх боя — компактный чип Атласа вместо
 	# тяжёлой vbn_frame @2K-рамы (просто и торжественно; дим сохранён, растяжек нет).
 	var banner_size := VICTORY_BANNER_CHIP_SIZE
 	frame.offset_left = -banner_size.x * 0.5
 	frame.offset_right = banner_size.x * 0.5
-	frame.offset_top = VICTORY_BANNER_CHIP_TOP
-	frame.offset_bottom = VICTORY_BANNER_CHIP_TOP + banner_size.y
+	frame.offset_top = -banner_size.y * 0.5
+	frame.offset_bottom = banner_size.y * 0.5
 	frame.pivot_offset = banner_size * 0.5
 	frame.scale = Vector2(0.92, 0.92)
 	frame.modulate.a = 0.0

@@ -1292,7 +1292,7 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 
 
 func _requires_viewport_fit(screen_id: String) -> bool:
-	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy", "combat_hud"]
+	return screen_id in ["level_up", "attribute_shop_economy", "rest_economy", "upgrade_economy", "event_economy", "combat_hud", "victory_banner"]
 
 
 # SCRUM-883: карточки экономики — чип-ряды Атласа: тёмный StyleBoxFlat (a >= 0.8)
