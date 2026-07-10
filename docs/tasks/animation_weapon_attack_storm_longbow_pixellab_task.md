@@ -76,7 +76,7 @@ backend hook, Design/Animator создаёт Jira-first handoff и не внед
 - [x] Bow release, piercing flight и through-hit фазы различимы на combat scale.
 - [x] Все exports RGBA с прозрачным фоном, стабильным origin/pivot и safe gutter.
 - [x] Manifest, source, runtime assets, contact sheet и focused smoke подготовлены.
-- [ ] Jira/GitHub/dev синхронизированы, disposable cache/worktree удалены.
+- [x] Jira/GitHub/dev синхронизированы, disposable cache/worktree удалены.
 
 ## Result
 
