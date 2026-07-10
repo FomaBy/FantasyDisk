@@ -12,6 +12,8 @@ const ProgressionData := preload("res://scripts/progression_data.gd")
 # Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
 const GROUND_POOL_Z := -3
 const CONTACT_STUCK_HIT_BACK_ALLOWANCE := 40.0
+# SCRUM-894: число сегментов полилинии дуги возврата чакрамов (урон + полёт орба).
+const BOOMERANG_ARC_SAMPLES := 12
 
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const PRIMARY_CAST_ACTION_MODES := {
@@ -146,6 +148,12 @@ const ATTACK_MODE_EXECUTORS := {
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var crit_shadow_burst_radius := 0.0
+# SCRUM-894 (кит Ассасина): дуга возврата чакрамов / point-blank покрытие серии
+# кинжалов / близкий контакт и крит-снапшот яда струны. 0 = поведение без фичи.
+@export var return_arc_offset := 0.0
+@export var point_blank_radius := 0.0
+@export var close_contact_radius := 0.0
+@export var dot_crit_snapshot_ratio := 0.0
 @export var melee_close_bonus_radius := 0.0
 @export var melee_close_damage_multiplier := 1.0
 @export var melee_execute_threshold := 0.0
@@ -285,6 +293,10 @@ func configure_weapon(config: Dictionary) -> void:
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
+	return_arc_offset = float(config.get("return_arc_offset", return_arc_offset))
+	point_blank_radius = float(config.get("point_blank_radius", point_blank_radius))
+	close_contact_radius = float(config.get("close_contact_radius", close_contact_radius))
+	dot_crit_snapshot_ratio = float(config.get("dot_crit_snapshot_ratio", dot_crit_snapshot_ratio))
 	melee_close_bonus_radius = float(config.get("melee_close_bonus_radius", melee_close_bonus_radius))
 	melee_close_damage_multiplier = float(config.get("melee_close_damage_multiplier", melee_close_damage_multiplier))
 	melee_execute_threshold = float(config.get("melee_execute_threshold", melee_execute_threshold))
@@ -675,6 +687,11 @@ func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2
 
 func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	# Чакрамы: урон по коридору к цели сразу и повторно на «возврате» через 0.25с.
+	# SCRUM-894: при return_arc_offset > 0 возврат идёт НЕ тем же коридором, а
+	# видимой квадратичной дугой через ЛЕВУЮ сторону от направления броска
+	# (от точки разворота к герою). Гейт per-cast/per-target: outbound — один
+	# проход-скан, возврат — один дедуп-скан дуги ⇒ максимум 1+1 хита на цель
+	# за каст, бесконечных повторных хитов нет.
 	var origin := owner_node.global_position
 	_damage_enemies_in_corridor(origin, direction, _rolled_damage(owner_node))
 	var orb := AttackVfx.orb_projectile(_projectile_parent(), origin + direction * 24.0, visual_color)
@@ -682,12 +699,15 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	var far_point := origin + direction * attack_range
 	var orb_tween := create_tween()
 	orb_tween.tween_property(orb, "global_position", far_point, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	orb_tween.tween_property(orb, "global_position", origin, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	# SCRUM-551: захват owner_node/orb (Node) в lambda интермиттентно «освобождался»
 	# под быстрым create/free в balance-CSV. Резолвим по instance_id внутри + гвард.
 	var owner_id := owner_node.get_instance_id()
 	var orb_id := orb.get_instance_id()
 	var weapon_self_id := get_instance_id()
+	if return_arc_offset > 0.0:
+		orb_tween.tween_callback(Callable(self, "_begin_boomerang_return_arc").bind(owner_id, orb_id, far_point, direction))
+		return
+	orb_tween.tween_property(orb, "global_position", origin, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	orb_tween.tween_callback(func() -> void:
 		var w := instance_from_id(weapon_self_id) as Node
 		var o := instance_from_id(owner_id) as Node2D
@@ -709,19 +729,93 @@ func _damage_boomerang_return(origin: Vector2, direction: Vector2, amount: float
 		_damage_enemy(hit["node"], return_damage)
 
 
+# SCRUM-894: разворот чакрамов — считаем дугу от точки разворота к текущей позиции
+# героя, наносим return-урон вдоль дуги и ведём орб по той же кривой. Bound-метод
+# вместо лямбды с захватом узлов (канон SCRUM-551), резолв по instance_id + гварды.
+func _begin_boomerang_return_arc(owner_id: int, orb_id: int, far_point: Vector2, direction: Vector2) -> void:
+	var owner_node := instance_from_id(owner_id) as Node2D
+	var orb := instance_from_id(orb_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node) or not is_inside_tree():
+		if orb != null and is_instance_valid(orb):
+			_release_effect(orb)
+		return
+	var home := owner_node.global_position
+	var control := _boomerang_return_control_point(far_point, home, direction)
+	_damage_boomerang_return_arc(far_point, control, home, _rolled_damage(owner_node))
+	if orb == null or not is_instance_valid(orb):
+		return
+	var arc_tween := create_tween()
+	arc_tween.tween_method(Callable(self, "_step_orb_along_return_arc").bind(orb_id, far_point, control, home), 0.0, 1.0, 0.25)
+	arc_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(orb_id))
+
+
+# Контрольная точка возврата: середина хорды + смещение в ЛЕВУЮ сторону
+# относительно направления броска (в экранных координатах Godot y вниз,
+# левая нормаль = (dir.y, -dir.x)).
+func _boomerang_return_control_point(from_point: Vector2, home: Vector2, direction: Vector2) -> Vector2:
+	var left_normal := Vector2(direction.y, -direction.x)
+	return (from_point + home) * 0.5 + left_normal * return_arc_offset
+
+
+func _quadratic_bezier_point(from_point: Vector2, control: Vector2, to_point: Vector2, t: float) -> Vector2:
+	var inv := 1.0 - t
+	return from_point * (inv * inv) + control * (2.0 * inv * t) + to_point * (t * t)
+
+
+# Возврат-урон вдоль дуги: сэмплируем кривую полилинией и бьём каждого врага
+# коридора НЕ БОЛЕЕ ОДНОГО РАЗА (дедуп по instance_id — per-cast/per-target гейт).
+# Артефактные ключи SCRUM-961 (ширина/урон возврата) продолжают действовать.
+func _damage_boomerang_return_arc(from_point: Vector2, control: Vector2, home: Vector2, amount: float) -> void:
+	var return_width := beam_width * (1.0 + _owner_mod("boomerang_return_width_mult"))
+	var return_damage := amount * (1.0 + _owner_mod("boomerang_return_damage_mult"))
+	var hit_ids := {}
+	var previous := from_point
+	for step in range(1, BOOMERANG_ARC_SAMPLES + 1):
+		var point := _quadratic_bezier_point(from_point, control, home, float(step) / float(BOOMERANG_ARC_SAMPLES))
+		for enemy_node in TARGET_QUERY.in_segment(self, previous, point, return_width):
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			var enemy_id := enemy_node.get_instance_id()
+			if hit_ids.has(enemy_id):
+				continue
+			hit_ids[enemy_id] = true
+			_damage_enemy(enemy_node, return_damage)
+		previous = point
+
+
+func _step_orb_along_return_arc(progress: float, orb_id: int, from_point: Vector2, control: Vector2, home: Vector2) -> void:
+	var orb := instance_from_id(orb_id) as Node2D
+	if orb == null or not is_instance_valid(orb):
+		return
+	orb.global_position = _quadratic_bezier_point(from_point, control, home, clampf(progress, 0.0, 1.0))
+
+
+func _release_effect_by_id(effect_id: int) -> void:
+	var effect := instance_from_id(effect_id) as Node
+	if effect != null and is_instance_valid(effect):
+		_release_effect(effect)
+
+
 func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 	# Быстрый ближний веер: несколько целей в короткой зоне перед персонажем.
+	# SCRUM-894: при point_blank_radius > 0 (Теневые кинжалы) серия дополнительно
+	# покрывает врагов вплотную ВОКРУГ героя (под ногами/за спиной) — мёртвой зоны
+	# в упор нет. Лимит целей общий (projectile_count) — бесплатных хитов нет.
 	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
 	_register_effect(slash)
+	if point_blank_radius > 0.0:
+		AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, point_blank_radius, Color(visual_color.r, visual_color.g, visual_color.b, 0.20), false)
 	var candidates := []
 	for enemy_node in TARGET_QUERY.enemies(self):
 		if not is_instance_valid(enemy_node):
 			continue
-		if not _is_enemy_inside_wave(owner_node.global_position, enemy_node.global_position, direction):
+		var distance_squared := owner_node.global_position.distance_squared_to(enemy_node.global_position)
+		var inside_point_blank := point_blank_radius > 0.0 and distance_squared <= point_blank_radius * point_blank_radius
+		if not inside_point_blank and not _is_enemy_inside_wave(owner_node.global_position, enemy_node.global_position, direction):
 			continue
 		candidates.append({
 			"node": enemy_node,
-			"distance": owner_node.global_position.distance_squared_to(enemy_node.global_position),
+			"distance": distance_squared,
 		})
 	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return float(a["distance"]) < float(b["distance"])
@@ -738,6 +832,11 @@ func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 		else:
 			_damage_enemy(enemy_node, damage_value)
 		hit_count += 1
+	# SCRUM-894 «Рывок темпа»: серия, задевшая врага, даёт короткий бафф
+	# скорости+уворота. Величины/кулдаун — data-driven из weapon_config владельца
+	# (Player.trigger_flurry_tempo — no-op у оружий без flurry_tempo_* ключей).
+	if hit_count > 0 and owner_node.has_method("trigger_flurry_tempo"):
+		owner_node.call("trigger_flurry_tempo")
 
 
 func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
@@ -1230,13 +1329,34 @@ func _fire_moon_splits(first_hit: Node2D, damage_value: float, split_targets: in
 
 
 func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
-	var start := owner_node.global_position + direction * 26.0
+	# SCRUM-894: при close_contact_radius > 0 (Ядовитая струна) линия начинается
+	# у самого героя, а враги вплотную (с любой стороны) становятся ПЕРВЫМИ
+	# кандидатами — точка в упор не мёртвая. Пирс-лимит общий для близких и
+	# коридорных целей — бесплатных дополнительных хитов нет.
+	var beam_visual_offset := 6.0 if close_contact_radius > 0.0 else 26.0
+	var start := owner_node.global_position + direction * beam_visual_offset
 	var finish := owner_node.global_position + direction * attack_range
 	var beam_visual := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
 	_register_effect(beam_visual)
 
 	var hits := []
-	for hit in _enemies_in_corridor(start, direction, beam_width, attack_range):
+	var seen_ids := {}
+	if close_contact_radius > 0.0:
+		AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, close_contact_radius, Color(visual_color.r, visual_color.g, visual_color.b, 0.18), false)
+		for enemy_node in TARGET_QUERY.in_radius(self, owner_node.global_position, close_contact_radius):
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			seen_ids[enemy_node.get_instance_id()] = true
+			# Отрицательный forward ставит цели в упор впереди коридорных при сортировке.
+			hits.append({
+				"node": enemy_node,
+				"forward": owner_node.global_position.distance_to(enemy_node.global_position) - close_contact_radius,
+			})
+	var corridor_origin := owner_node.global_position if close_contact_radius > 0.0 else start
+	for hit in _enemies_in_corridor(corridor_origin, direction, beam_width, attack_range):
+		var corridor_enemy := hit["node"] as Node2D
+		if corridor_enemy != null and seen_ids.has(corridor_enemy.get_instance_id()):
+			continue
 		hits.append(hit)
 
 	hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
@@ -3423,6 +3543,12 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
 	var tick_damage := float(parameters.get("dot_damage", max(1.0, direct_damage * 0.22)))
+	# SCRUM-894: крит-снапшот яда (dot_crit_snapshot_ratio > 0, Ядовитая струна) —
+	# критовый прямой удар усиливает тики долей крит-множителя, зафиксированного
+	# на момент каста (_last_attack_crit из _rolled_damage). Множитель уже зажат
+	# CRIT_DAMAGE_CAP в derived_parameters — runaway исключён.
+	if dot_crit_snapshot_ratio > 0.0 and _last_attack_crit:
+		tick_damage *= 1.0 + maxf(float(parameters.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0) * clampf(dot_crit_snapshot_ratio, 0.0, 1.0)
 	var tick_speed: float = max(float(parameters.get("dot_speed", 1.0)), 0.2)
 	if dot_ticks <= 0:
 		return

@@ -234,8 +234,10 @@ const CHARACTER_CONFIGS := {
 	},
 	"assassin": {
 		"id": "assassin", "title": "Ассасин",
-		"description": "Хладнокровный резчик: чакрамы режут коридор туда и обратно, кинжалы шинкуют в упор, струна душит ядом. Живет критами и уворотом.",
-		"strengths": "частые криты, высокий темп ударов, уворот, яд.",
+		# SCRUM-894: описание обязано явно заявлять кап крита 100% и опору на
+		# крит-урон + уворот/позиционирование (копирайт-пасс — SCRUM-952).
+		"description": "Хладнокровие: единственный класс, разгоняющий шанс крита до 100% — и каждый крит жиреет от крит-урона. Чакрамы режут туда и обратно дугой, кинжалы шинкуют в упор, струна душит ядом. Выживает уворотом и позиционированием, не здоровьем.",
+		"strengths": "кап крита 100%, рост от крит-урона, темп, уворот и теневая завеса, яд.",
 		"weaknesses": "мало здоровья, промах стоит крови.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/assassin_pixellab/assassin_idle_south.png",
 	},
@@ -371,6 +373,28 @@ const CLASS_TRAITS := {
 		"description": "Стартовый радиус подбора почти вдвое больше обычного: деньги, опыт и материалы сами тянутся к Вору.",
 		"pickup_radius_multiplier": 1.85,
 	},
+	"assassin": {
+		# SCRUM-894 «Хладнокровие»: кап шанса крита Ассасина — 100% (у остальных
+		# глобальный CRIT_CHANCE_CAP 55%), и крит-вложения не размываются
+		# (diminishing-делитель CRIT_CHANCE_DIMINISH выключен). Избыток raw-крита
+		# сверх капа переливается в крит-урон (crit_overflow_to_crit_damage;
+		# итог всё равно ограничен CRIT_DAMAGE_CAP). Потребители —
+		# ProgressionData.class_crit_profile → derived_parameters (crit_chance /
+		# crit_damage_multiplier). veil_* — «Теневая завеса»: самоцентричная
+		# аура уворота против ближнего прессинга (Player.current_dodge_chance:
+		# бонус только когда враг внутри derived aura_radius; величина =
+		# veil_dodge_bonus × buff_power, кап veil_dodge_cap; суммарный уворот
+		# по-прежнему ≤ SURVIVABILITY_DODGE_CAP — бессмертия нет).
+		# Покрыто tests/assassin_kit_test.gd.
+		"id": "cold_blood",
+		"title": "Хладнокровие",
+		"description": "Кап шанса крита — 100% вместо 55%, крит-вложения окупаются полностью: избыток шанса сверх капа переходит в критический урон. Теневая завеса добавляет уворот, пока враги рядом.",
+		"crit_chance_cap": 1.0,
+		"crit_chance_diminish": 0.0,
+		"crit_overflow_to_crit_damage": 0.5,
+		"veil_dodge_bonus": 0.10,
+		"veil_dodge_cap": 0.18,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {
@@ -503,14 +527,18 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"assassin": {
+		# SCRUM-894: trait «Хладнокровие» — источник истины в
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (crit_chance_cap/diminish/overflow + veil_*), потребители —
+		# derived_parameters и Player.current_dodge_chance.
 		"main_attribute": "agility",
-		"identity_title": "Критический танец",
-		"summary": "Ловкость — его клинок: чем быстрее руки, тем плотнее ложатся криты и тем труднее его задеть.",
-		"mechanic_tags": ["crit_window", "boomerang", "flurry", "poison_line", "shadow_burst"],
+		"identity_title": "Хладнокровие",
+		"summary": "Ловкость — его клинок: только Ассасин разгоняет шанс крита до 100%, избыток переливает в крит-урон, а теневая завеса помогает уворачиваться, пока враги дышат в спину.",
+		"mechanic_tags": ["crit_cap_100", "boomerang_arc", "point_blank_flurry", "poison_line", "dodge_veil"],
 		"weapon_identities": {
-			"chakrams": "boomerang-коридор туда и обратно",
-			"shadow_daggers": "короткая stab flurry серия",
-			"venom_wire": "ядовитая pierce-линия",
+			"chakrams": "boomerang: прямой коридор туда, левая дуга обратно (двойной проход при позиционировании)",
+			"shadow_daggers": "point-blank flurry вокруг себя + рывок темпа (скорость и уворот) после серии",
+			"venom_wire": "ядовитая pierce-линия от самого героя: душит и тех, кто вплотную",
 		},
 	},
 	"ranger": {

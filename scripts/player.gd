@@ -175,8 +175,10 @@ var _take_hit_pulse_cooldown_left := 0.0 # «Контр-волна»: перез
 var _kill_streak_counter := 0            # «Сбор Душ»: счётчик убийств до лечения
 var _doctor_ult_absorb_total := 0.0      # SCRUM-595: суммарный absorb от ульты Доктора за забег (капится)
 var _assassin_crit_shadow_cooldown_left := 0.0
-var _kill_growth_stacks := 0
-var _kill_growth_time_left := 0.0
+# SCRUM-894 «Рывок темпа» (Теневые кинжалы): окно баффа + внутренний кулдаун —
+# замена нечитаемого Shadow Momentum (kill_growth_*). Data-driven из weapon_config.
+var _flurry_tempo_time_left := 0.0
+var _flurry_tempo_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
 var _reactor_heat := 0.0
@@ -280,8 +282,8 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_lowhp_guard_cooldown_left = 0.0
 	_take_hit_pulse_cooldown_left = 0.0
 	_kill_streak_counter = 0
-	_kill_growth_stacks = 0
-	_kill_growth_time_left = 0.0
+	_flurry_tempo_time_left = 0.0
+	_flurry_tempo_cooldown_left = 0.0
 	_knight_counter_cooldown_left = 0.0
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
 	_smoke_clouds.clear()  # SCRUM-897: дым-облака не переживают смену персонажа/забега
@@ -368,7 +370,7 @@ func equip_weapon(new_weapon_id: String) -> void:
 	weapon_id = str(config["id"])
 	weapon_config = config
 	var old_max_health := max_health
-	_clear_kill_growth(false)
+	_clear_flurry_tempo(false)
 	_apply_stat_scaling(false, old_max_health)
 	_attach_weapon_scene(weapon_scene, weapon_config)
 
@@ -478,7 +480,7 @@ func _physics_process(_delta: float) -> void:
 	# SCRUM-961: перезаряд триажа + окно стаков ярости.
 	_triage_cooldown_left = max(_triage_cooldown_left - _delta, 0.0)
 	_update_rage_hit_stacks(_delta)
-	_update_kill_growth(_delta)
+	_update_flurry_tempo(_delta)
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down", _gamepad_deadzone())
 	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
@@ -699,6 +701,12 @@ func _current_dodge_chance() -> float:
 	var smoke_cloud_bonus := smoke_cloud_dodge_bonus()
 	if smoke_cloud_bonus > 0.0:
 		dodge_chance = minf(dodge_chance + smoke_cloud_bonus, ProgressionData.SMOKE_CLOUD_DODGE_CAP)
+	# SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина — бонус
+	# только пока враг внутри derived aura_radius; суммарный уворот класса
+	# по-прежнему ≤ SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
+	# не пересекаются: дым — оружие Вора, завеса — trait Ассасина.
+	if _assassin_veil_engaged():
+		dodge_chance = clampf(dodge_chance + assassin_veil_dodge_bonus(), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
 	return dodge_chance
 
 
@@ -716,11 +724,14 @@ func take_damage(amount: float, _source := "") -> bool:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
 		return true
 
-	# SCRUM-897: ролл уворота через _current_dodge_chance — базовый кап 0.55, а в
-	# дым-облаке Вора бонус облака поверх (суммарный кап 0.90 только внутри дыма).
+	# SCRUM-897 + SCRUM-894: ролл уворота через _current_dodge_chance — базовый
+	# кап 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
+	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог ≤ 0.55).
 	if randf() < _current_dodge_chance():
 		_show_dodge_popup()
 		_play_sfx("dodge")
+		if _assassin_veil_engaged():
+			AttackVfx.ring_pulse(_vfx_parent(), global_position, minf(assassin_veil_radius(), 220.0), Color(0.55, 0.20, 0.90, 0.26), false)
 		_trigger_dodge_rush()
 		_trigger_rush_window()
 		return false
@@ -772,6 +783,33 @@ func take_damage(amount: float, _source := "") -> bool:
 		died.emit()
 		queue_free()
 	return true
+
+
+# SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина (не саппорт
+# союзников). Бонус действует ТОЛЬКО под ближним прессингом — когда враг внутри
+# derived aura_radius (радиус растёт от aura_radius-статов, величина — от
+# buff_power через ProgressionData.class_veil_dodge_bonus с жёстким капом).
+# Итоговый шанс уворота всё равно зажат SURVIVABILITY_DODGE_CAP — бессмертия
+# на высоком доджe нет, дальние выстрелы без прессинга бонуса не получают.
+func current_dodge_chance() -> float:
+	return _current_dodge_chance()
+
+
+func assassin_veil_dodge_bonus() -> float:
+	return ProgressionData.class_veil_dodge_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+
+
+func assassin_veil_radius() -> float:
+	if assassin_veil_dodge_bonus() <= 0.0:
+		return 0.0
+	return maxf(float(derived_parameters.get("aura_radius", 0.0)), 0.0)
+
+
+func _assassin_veil_engaged() -> bool:
+	var veil_radius := assassin_veil_radius()
+	if veil_radius <= 0.0 or not is_inside_tree():
+		return false
+	return TARGET_QUERY.has_in_radius(self, global_position, veil_radius)
 
 
 func trigger_assassin_dash(target: Node2D, burst_radius: float) -> void:
@@ -2305,7 +2343,6 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 func on_enemy_killed(enemy: Node2D) -> void:
 	_trigger_class_on_kill_trait(enemy)
 	_apply_dot_death_spread(enemy)
-	_trigger_kill_growth(enemy)
 	# «Цепная Искра»: шанс взрыва по области у трупа.
 	var explosion_chance := clampf(float(run_modifiers.get("kill_explosion_chance", 0.0)), 0.0, 1.0)
 	if explosion_chance > 0.0 and enemy != null and is_instance_valid(enemy) and is_inside_tree() and randf() < explosion_chance:
@@ -2379,55 +2416,43 @@ func on_curse_applied(expected_burn_damage: float) -> void:
 	_gain_ultimate_charge(maxf(expected_burn_damage, 0.0) * float(_ultimate_config().get("damage_charge_rate", 0.03)))
 
 
-func _trigger_kill_growth(enemy: Node2D) -> void:
-	if character_id != "assassin" or str(weapon_config.get("kill_growth_role", "")) == "":
+# SCRUM-894 «Рывок темпа» (замена Shadow Momentum): после серии Теневых кинжалов,
+# задевшей врага, — короткий бафф скорости и уворота. Data-driven из weapon_config
+# (flurry_tempo_*): у оружий без ключей — no-op. Не стакается (одно окно, refresh
+# только после кулдауна), внутренний кулдаун исключает перманентный аптайм:
+# аптайм ≤ duration/cooldown. Величины дополнительно зажаты в derived_parameters.
+func trigger_flurry_tempo() -> void:
+	var duration := maxf(float(weapon_config.get("flurry_tempo_duration", 0.0)), 0.0)
+	if duration <= 0.0 or _flurry_tempo_cooldown_left > 0.0:
 		return
-	if not _is_non_elite_enemy(enemy):
-		return
-	var max_stacks := maxi(int(weapon_config.get("kill_growth_max_stacks", 0)), 0)
-	if max_stacks <= 0:
-		return
-	_kill_growth_stacks = mini(_kill_growth_stacks + 1, max_stacks)
-	_kill_growth_time_left = maxf(float(weapon_config.get("kill_growth_duration", 0.0)), 0.0)
-	_refresh_kill_growth_modifiers()
+	_flurry_tempo_time_left = duration
+	_flurry_tempo_cooldown_left = maxf(float(weapon_config.get("flurry_tempo_cooldown", duration)), duration)
+	_refresh_flurry_tempo_modifiers()
 	if is_inside_tree():
-		AttackVfx.ring_pulse(_vfx_parent(), global_position, 76.0 + float(_kill_growth_stacks) * 5.0, Color(0.72, 0.24, 1.0, 0.30), false)
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 86.0, Color(0.62, 0.22, 0.95, 0.32), false)
 
 
-func _update_kill_growth(delta: float) -> void:
-	if _kill_growth_stacks <= 0:
+func _update_flurry_tempo(delta: float) -> void:
+	_flurry_tempo_cooldown_left = maxf(_flurry_tempo_cooldown_left - delta, 0.0)
+	if _flurry_tempo_time_left <= 0.0:
 		return
-	if str(weapon_config.get("kill_growth_role", "")) == "":
-		_clear_kill_growth()
+	_flurry_tempo_time_left = maxf(_flurry_tempo_time_left - delta, 0.0)
+	if _flurry_tempo_time_left <= 0.0:
+		_clear_flurry_tempo()
+
+
+func _clear_flurry_tempo(refresh_stats := true) -> void:
+	if _flurry_tempo_time_left <= 0.0 and float(run_modifiers.get("flurry_tempo_active", 0.0)) <= 0.0:
 		return
-	_kill_growth_time_left = maxf(_kill_growth_time_left - delta, 0.0)
-	if _kill_growth_time_left <= 0.0:
-		_clear_kill_growth()
+	_flurry_tempo_time_left = 0.0
+	_refresh_flurry_tempo_modifiers(refresh_stats)
 
 
-func _clear_kill_growth(refresh_stats := true) -> void:
-	if _kill_growth_stacks == 0 and float(run_modifiers.get("kill_momentum_stacks", 0.0)) <= 0.0:
-		return
-	_kill_growth_stacks = 0
-	_kill_growth_time_left = 0.0
-	_refresh_kill_growth_modifiers(refresh_stats)
-
-
-func _refresh_kill_growth_modifiers(refresh_stats := true) -> void:
-	var attack_bonus := 0.0
-	var crit_bonus := 0.0
-	if _kill_growth_stacks > 0 and str(weapon_config.get("kill_growth_role", "")) != "":
-		attack_bonus = minf(
-			float(weapon_config.get("kill_growth_attack_speed_per_stack", 0.0)) * float(_kill_growth_stacks),
-			float(weapon_config.get("kill_growth_attack_speed_cap", 0.12))
-		)
-		crit_bonus = minf(
-			float(weapon_config.get("kill_growth_crit_damage_per_stack", 0.0)) * float(_kill_growth_stacks),
-			float(weapon_config.get("kill_growth_crit_damage_cap", 0.09))
-		)
-	run_modifiers["kill_momentum_stacks"] = float(_kill_growth_stacks)
-	run_modifiers["kill_momentum_attack_speed_bonus"] = attack_bonus
-	run_modifiers["kill_momentum_crit_damage_bonus"] = crit_bonus
+func _refresh_flurry_tempo_modifiers(refresh_stats := true) -> void:
+	var active := _flurry_tempo_time_left > 0.0
+	run_modifiers["flurry_tempo_active"] = 1.0 if active else 0.0
+	run_modifiers["flurry_tempo_speed_bonus"] = clampf(float(weapon_config.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.25) if active else 0.0
+	run_modifiers["flurry_tempo_dodge_bonus"] = clampf(float(weapon_config.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) if active else 0.0
 	if refresh_stats:
 		_apply_stat_scaling(false, max_health)
 		for weapon in _equipped_weapons():

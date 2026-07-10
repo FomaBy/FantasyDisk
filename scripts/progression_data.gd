@@ -641,10 +641,13 @@ static func effective_vampiric_cap(raw_cap: float) -> float:
 	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
 
 
-static func effective_crit_chance(raw_chance: float) -> float:
+# SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»
+# (class_crit_profile). Дефолты — прежние глобальные константы, все старые
+# вызовы без аргументов тождественны.
+static func effective_crit_chance(raw_chance: float, cap := CRIT_CHANCE_CAP, diminish := CRIT_CHANCE_DIMINISH) -> float:
 	var raw := maxf(raw_chance, 0.0)
-	var softened := raw / (1.0 + raw * CRIT_CHANCE_DIMINISH)
-	return clampf(softened, 0.0, CRIT_CHANCE_CAP)
+	var softened := raw / (1.0 + raw * maxf(diminish, 0.0))
+	return clampf(softened, 0.0, clampf(cap, 0.0, 1.0))
 
 
 static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
@@ -776,6 +779,33 @@ static func class_trait(character_id: String) -> Dictionary:
 # SCRUM-935 «Двойное действие»: шанс полной копии действия оружия (Солдат = 0.5).
 static func class_action_echo_chance(character_id: String) -> float:
 	return clampf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("action_echo_chance", 0.0)), 0.0, 1.0)
+
+
+# SCRUM-894 «Хладнокровие»: крит-профиль класса из CLASS_TRAITS. Без trait-записи —
+# глобальные константы (кап 55%, diminish 0.45, без overflow). Ассасин: кап 1.0,
+# diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток
+# raw-шанса сверх капа переливается в crit_damage_flat (итог по-прежнему зажат
+# CRIT_DAMAGE_CAP в effective_crit_damage_multiplier — runaway невозможен).
+static func class_crit_profile(character_id: String) -> Dictionary:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	return {
+		"cap": clampf(float(trait_config.get("crit_chance_cap", CRIT_CHANCE_CAP)), 0.0, 1.0),
+		"diminish": maxf(float(trait_config.get("crit_chance_diminish", CRIT_CHANCE_DIMINISH)), 0.0),
+		"overflow": clampf(float(trait_config.get("crit_overflow_to_crit_damage", 0.0)), 0.0, 1.0),
+	}
+
+
+# SCRUM-894 «Теневая завеса»: величина бонуса уворота самоцентричной ауры класса
+# (у классов без veil-записи — 0). Масштаб от buff_power, жёсткий кап
+# veil_dodge_cap; применяется Player.current_dodge_chance ТОЛЬКО при враге внутри
+# derived aura_radius; суммарный уворот всё равно ≤ SURVIVABILITY_DODGE_CAP.
+static func class_veil_dodge_bonus(character_id: String, buff_power: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var base := float(trait_config.get("veil_dodge_bonus", 0.0))
+	if base <= 0.0:
+		return 0.0
+	var cap := maxf(float(trait_config.get("veil_dodge_cap", 0.18)), 0.0)
+	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
 
 
 static func berserk_weapon(weapon_id: String) -> Dictionary:
@@ -1052,7 +1082,11 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
 			return {"solo_hits": clampf(active_ratio / 4.0, 1.0, 2.0), "five_hits": clampf((1.0 + aoe_radius / 80.0) * active_ratio / 3.5, 1.0, 5.0)}
 		"boomerang":
-			return {"solo_hits": 2.0, "five_hits": clampf(2.0 + float(config.get("beam_width", 48.0)) / 36.0, 2.0, 4.0)}
+			# SCRUM-894: возврат идёт ЛЕВОЙ дугой, а не тем же коридором — соло-цель
+			# на прямой получает гарантированно 1 проход, двойной проход требует
+			# позиционирования (у разворота/у героя). Бюджетное матожидание 1.6
+			# (позиционная средняя), навык двойного прохода — награда сверх бюджета.
+			return {"solo_hits": 1.6, "five_hits": clampf(1.6 + float(config.get("beam_width", 48.0)) / 34.0, 1.6, 3.4)}
 		"stab_flurry":
 			var targets := float(config.get("projectile_count", 1.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(targets, 1.0, 4.0), "dot_targets": clampf(targets, 1.0, 4.0)}
@@ -1430,6 +1464,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
 	# SCRUM-500 «Импульс Крита»: короткий рывок скорости по криту (crit_speed_burst_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("crit_speed_burst", 0.0)) * float(run_modifiers.get("crit_speed_burst_active", 0.0))
+	# SCRUM-894 «Рывок темпа»: короткий бафф скорости+уворота после серии Теневых
+	# кинжалов (flurry_tempo_active ставит Player.trigger_flurry_tempo с внутренним
+	# кулдауном — перманентного аптайма нет; величины зажаты от runaway).
+	var flurry_tempo_active := clampf(float(run_modifiers.get("flurry_tempo_active", 0.0)), 0.0, 1.0)
+	move_speed_multiplier *= 1.0 + clampf(float(run_modifiers.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.25) * flurry_tempo_active
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
 	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
@@ -1454,6 +1493,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + kill_momentum_crit_damage_bonus + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):
 		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
+	# SCRUM-894 «Хладнокровие»: per-class крит-профиль (кап/diminish из
+	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
+	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
+	# с trait-ключом; итоговый крит-урон всё равно зажат CRIT_DAMAGE_CAP).
+	var crit_profile := class_crit_profile(character_id)
+	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
+	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))
+	if crit_overflow_ratio > 0.0:
+		crit_damage_flat += maxf(crit_chance_raw - float(crit_profile.get("cap", CRIT_CHANCE_CAP)), 0.0) * crit_overflow_ratio
 	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
 	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
 	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
@@ -1512,10 +1560,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
 		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
-		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
+		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0))),
+		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active),
 		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
 		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + range_perception * 2.5 + range_intelligence * range_intelligence_weight + range_endurance * 0.25 + range_leadership * 0.35) * attack_range_multiplier,

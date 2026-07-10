@@ -232,56 +232,67 @@ const GUITARIST_WEAPONS := {
 	},
 }
 
+# SCRUM-894: кит Ассасина — хрупкий crit-скейлер (trait «Хладнокровие»: кап крита
+# 100%, см. CLASS_TRAITS). Shadow Momentum (kill_growth_*) удалён как нечитаемый —
+# его заменил «Рывок темпа» Теневых кинжалов (flurry_tempo_*). Контракты кита —
+# tests/assassin_kit_test.gd + tests/kill_scaling_identity_test.gd.
 const ASSASSIN_WEAPONS := {
 	"chakrams": {
 		"id": "chakrams", "title": "Чакрамы",
-		"description": "Возвращающиеся клинки: режут коридор до цели и обратно (два прохода урона).",
+		"description": "Возвращающиеся клинки: режут коридор до цели, а назад летят левой дугой. Правильная позиция — и враг получает оба прохода.",
 		"scene_path": "res://scenes/Chakrams.tscn",
 		"attack_mode": "boomerang", "damage_parameter": "damage",
 		"damage_multiplier": 0.45, "fire_interval": 0.62,
 		"attack_range": 460.0, "aoe_radius": 60.0, "beam_width": 56.0,
 		"projectile_speed": 760.0,
+		# Возврат — квадратичная дуга через ЛЕВУЮ сторону от направления броска;
+		# смещение середины дуги. Гейт: максимум 1 outbound + 1 return хит на цель
+		# за каст (см. ClassWeapon._fire_boomerang).
+		"return_arc_offset": 170.0,
 		"crit_shadow_burst_radius": 115.0,
 		"visual_color": Color(0.72, 0.30, 1.0, 0.40),
 		"passive_mods": {"crit_chance_flat": 0.06},
 	},
 	"shadow_daggers": {
 		"id": "shadow_daggers", "title": "Теневые кинжалы",
-		"description": "Серия быстрых коротких выпадов по ближайшим целям в узкой зоне. Критовый мили-стиль Ассасина.",
+		"description": "Веер коротких выпадов: сектор перед собой плюс всё вплотную вокруг героя. После серии по врагам — рывок темпа: короткий бонус скорости и уворота.",
 		"scene_path": "res://scenes/ShadowDaggers.tscn",
 		"attack_mode": "stab_flurry", "damage_parameter": "damage",
 		"damage_multiplier": 0.54, "fire_interval": 0.38,
 		"attack_range": 230.0, "aoe_radius": 82.0, "wave_width": 190.0,
 		"projectile_count": 3, "knockback": 35.0,
+		# SCRUM-894: мёртвой зоны в упор нет — враги в радиусе point_blank_radius
+		# вокруг героя попадают в кандидаты серии независимо от направления.
+		"point_blank_radius": 95.0,
 		"melee_close_bonus_radius": 135.0, "melee_close_damage_multiplier": 1.18,
 		"melee_execute_threshold": 0.35, "melee_execute_multiplier": 1.24,
+		# SCRUM-894 «Рывок темпа» (замена Shadow Momentum): после серии, задевшей
+		# хотя бы одного врага, — flurry_tempo_duration секунд +speed/+dodge.
+		# Не стакается (только refresh), внутренний кулдаун flurry_tempo_cooldown
+		# исключает перманентный аптайм (Player.trigger_flurry_tempo).
+		"flurry_tempo_duration": 1.6,
+		"flurry_tempo_cooldown": 4.0,
+		"flurry_tempo_speed_bonus": 0.14,
+		"flurry_tempo_dodge_bonus": 0.10,
 		"crit_shadow_burst_radius": 78.0,
-		"kill_growth_role": "shadow_momentum",
-		"kill_growth_max_stacks": 6,
-		"kill_growth_duration": 6.0,
-		"kill_growth_attack_speed_per_stack": 0.02,
-		"kill_growth_attack_speed_cap": 0.12,
-		"kill_growth_crit_damage_per_stack": 0.015,
-		"kill_growth_crit_damage_cap": 0.09,
 		"visual_color": Color(0.55, 0.18, 0.88, 0.42),
 		"passive_mods": {"crit_chance_flat": 0.10, "attack_speed_multiplier": 1.08},
 	},
 	"venom_wire": {
 		"id": "venom_wire", "title": "Ядовитая струна",
-		"description": "Тонкая ядовитая линия-гаррота: пробивает ряд врагов и оставляет poison DoT.",
+		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Крит-удар делает яд злее.",
 		"scene_path": "res://scenes/VenomWire.tscn",
 		"attack_mode": "dot_beam", "damage_parameter": "damage",
 		"damage_multiplier": 0.68, "fire_interval": 0.78,
-		"attack_range": 520.0, "aoe_radius": 75.0, "beam_width": 32.0,
+		"attack_range": 420.0, "aoe_radius": 75.0, "beam_width": 32.0,
 		"pierce_count": 4, "dot_ticks": 4,
+		# SCRUM-894: линия начинается у героя, и враги в close_contact_radius
+		# вокруг него ловят струну с любой стороны (пирс-лимит общий — без
+		# бесплатных лишних хитов). dot_crit_snapshot_ratio — крит прямого удара
+		# усиливает тики яда долей крит-множителя (снапшот на момент каста).
+		"close_contact_radius": 80.0,
+		"dot_crit_snapshot_ratio": 0.6,
 		"crit_shadow_burst_radius": 92.0,
-		"kill_growth_role": "shadow_momentum",
-		"kill_growth_max_stacks": 6,
-		"kill_growth_duration": 6.0,
-		"kill_growth_attack_speed_per_stack": 0.02,
-		"kill_growth_attack_speed_cap": 0.12,
-		"kill_growth_crit_damage_per_stack": 0.015,
-		"kill_growth_crit_damage_cap": 0.09,
 		"visual_color": Color(0.32, 0.95, 0.28, 0.46),
 		"passive_mods": {"crit_chance_flat": 0.04},
 	},
