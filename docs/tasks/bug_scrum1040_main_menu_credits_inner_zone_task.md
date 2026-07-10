@@ -57,3 +57,17 @@ lambda/dummy-renderer diagnostics.
 Commit/push: `9f04dc59e` → `origin/dev`. Jira: `Контроль качества`.
 Disk cleanup: removed task `.godot` cache (445 MB); generated UID sidecars
 removed; clean disposable worktree is removed after final routing sync.
+
+## QA-Вердикт — independent production acceptance (2026-07-10)
+
+Статус: PASSED
+
+Actual rect подтверждён независимо: `1280 (871,149,240,36)`,
+`1920 (1444,205,240,36)`, `2560 (2009,269,240,36)`. Весь hitbox лежит
+в authored inner reserve, не пересекает logo/actions/version; fresh,
+`2560→1280` и `1280→2560` совпадают. Credits open/focus/Back/Escape,
+обязательные атрибуции и оконная визуальная матрица `720p/1080p/1440p`
+прошли.
+
+Focused/no-overlap/theme/runtime UI/audio/gamepad/full runtime gates зелёные.
+Jira: `Готово`. Product code/tests/assets QA не менял.

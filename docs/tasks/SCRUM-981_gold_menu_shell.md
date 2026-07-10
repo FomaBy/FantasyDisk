@@ -66,7 +66,7 @@ result screens, dialogs, Level Up and Combat HUD.
 - [x] Focused UI, no-overlap, theme and full runtime gates pass on the merged
       implementation (external Robot lifecycle output is tracked by SCRUM-1034).
 - [x] Runtime screenshots/evidence cover the required resolution matrix.
-- [ ] Jira, docs and `origin/dev` are synchronized; task artifacts are cleaned.
+- [x] Jira, docs and `origin/dev` are synchronized; task artifacts are cleaned.
 
 ## Work Log
 
@@ -132,7 +132,7 @@ result screens, dialogs, Level Up and Combat HUD.
 - Disk cleanup: removed the shared `.godot` cache (444 MB); tracked QA evidence
   remains in `build/qa/scrum981/`.
 
-## QA-Вердикт (2026-07-10)
+## Historical QA verdict (2026-07-10)
 
 Статус: FAILED
 
@@ -173,3 +173,15 @@ fresh 720p/1080p/1440p; exact Route Map, Combat/frameless Level Up и весь
 live `2560 -> 1280` оставляет завышенные minimum sizes resource tracks, из-за
 чего HP/XP пересекаются на `10px`, XP/ULT — на `9px`. Parent остаётся в
 `Контроль качества`; product code/tests/art QA не менял.
+
+## QA-Вердикт — final independent re-QA after SCRUM-1039/1040 (2026-07-10)
+
+Статус: PASSED
+
+Все блокирующие children закрыты. Independently verified: PixelLab provenance;
+hollow frame-last rendering; exact Main Menu and Route Map geometry; actual
+content/hitbox containment in authored reserve; generic HUD/FAB fresh and live
+resize; Rest/Upgrade/Reward/result screens; Combat/Level Up exclusions;
+Credits inner placement; gamepad navigation. Windowed `1280/1920/2560`
+visual matrix and focused/no-overlap/theme/runtime UI/audio/gamepad/full runtime
+gates прошли. Jira: `Готово`; product code/tests/assets QA не менял.

@@ -105,7 +105,7 @@ follows after this routing mirror lands.
 менял. Связанный Jira verdict содержит полную матрицу rect и список зелёных
 регрессионных гейтов.
 
-## QA-Вердикт — independent re-QA (2026-07-10)
+## Historical QA verdict — independent re-QA (2026-07-10)
 
 Статус: FAILED
 
@@ -126,3 +126,14 @@ containment и возврат к 2K, но не sibling disjointness/совпад
 Disk cleanup: removed QA `.godot` cache (`~450 MB`), temporary probe and
 generated UID sidecars; disposable clean worktree/branch removal follows after
 the routing commit is pushed. Thread cleanup: handled by parent dispatcher.
+
+## QA-Вердикт — final independent re-QA after SCRUM-1039 (2026-07-10)
+
+Статус: PASSED
+
+Исходный inner-reserve/FAB дефект и blocking child SCRUM-1039 закрыты.
+Fresh `1280/1920/2560`, live `2560→1280→2560`, каждый HUD child,
+попарная disjointness tracks/bars, authored `+24/+32` reserve и uniform exact
+`72x72` generic FAB проверены фактическими rect. Exact Route Map, Combat и
+frameless Level Up не изменились. Focused/no-overlap/theme/runtime UI,
+gamepad `2/2`, audio и full runtime прошли. Jira: `Готово`.

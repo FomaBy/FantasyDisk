@@ -109,3 +109,20 @@ lambda/dummy-renderer diagnostics.
 Commit/push: `9f04dc59e` → `origin/dev`. Jira: `Контроль качества`.
 Disk cleanup: removed task `.godot` cache (445 MB); generated UID sidecars
 removed; clean disposable worktree is removed after final routing sync.
+
+## QA-Вердикт — independent production acceptance (2026-07-10)
+
+Статус: PASSED
+
+Проверено read-only на свежем `origin/dev`: focused SCRUM-981 фактически
+сравнивает шесть `Track`/`Bar` rect у fresh `1280x720` и live
+`2560→1280`, sibling intersections отсутствуют, обратный
+`1280→2560` совпадает с fresh 2K. Authored inner reserve, exact generic
+`72x72` FAB, panel separation, Route Map specialized geometry, Combat и
+frameless Level Up сохранились.
+
+Green gate: exact Route Map; seven-viewport no-overlap; dark theme; runtime
+UI; audio integration/manager; gamepad full-flow `2/2`; animation/meta/
+targeting; full runtime `exit 0`. В полном runtime остались только внешние
+известные SCRUM-1034 freed-lambda и dummy-renderer diagnostics. Jira:
+`Готово`. Product code/tests/assets QA не менял.

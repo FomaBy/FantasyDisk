@@ -4345,8 +4345,8 @@
  },
  "SCRUM-981_gold_menu_shell.md": {
   "key": "SCRUM-981",
-  "status": "Контроль качества",
-  "desc_hash": "6d5277ff58cab01abf011eb3f66f4092"
+  "status": "Готово",
+  "desc_hash": "e33df8fad45e2077de74df0db78e032c"
  },
  "SCRUM-986_victory_screen_centering.md": {
   "key": "SCRUM-986",
@@ -4355,7 +4355,7 @@
  },
  "bug_scrum981_gold_shell_menu_hud_inner_reserve_task.md": {
   "key": "SCRUM-1036",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "9b7244324ca86071b02d91c0384a889d"
  },
  "animation_weapon_attack_storm_longbow_pixellab_task.md": {
@@ -4375,7 +4375,7 @@
  },
  "bug_scrum1036_live_resize_hud_track_overlap_task.md": {
   "key": "SCRUM-1039",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "90b2dd1df9c67463d9b8d48f5723935d"
  },
  "SCRUM-1004_berserk_rage_trait.md": {
@@ -4385,12 +4385,17 @@
  },
  "bug_scrum1040_main_menu_credits_inner_zone_task.md": {
   "key": "SCRUM-1040",
-  "status": "Контроль качества",
-  "desc_hash": "7522ecf35966df2024f18da5132c2606"
+  "status": "Готово",
+  "desc_hash": "03a6fd04df1c84bb565f3f4d24fe5841"
  },
  "SCRUM-983_escape_hero_dossier.md": {
   "key": "SCRUM-983",
   "status": "Контроль качества",
   "desc_hash": "2d50b21a6b42028a0fac486f2b72a868"
+ },
+ "bug_scrum1041_audio_ui_tail_docs_stale_task.md": {
+  "key": "SCRUM-1041",
+  "status": "К выполнению",
+  "desc_hash": "c86baeef3a9fe790bf50892e5b7dc750"
  }
 }
