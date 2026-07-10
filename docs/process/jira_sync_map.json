@@ -4296,7 +4296,7 @@
  "bug_meta_skill_shadow_invisibility_smoke_regression_task.md": {
   "key": "SCRUM-1028",
   "status": "К выполнению",
-  "desc_hash": "d604318f2160206c990f7d8982cacde1"
+  "desc_hash": "d0206048d9eed9aad8f9a3b9f8d19d9b"
  },
  "bug_atlas_windowed_focused_test_resource_leak_task.md": {
   "key": "SCRUM-1031",

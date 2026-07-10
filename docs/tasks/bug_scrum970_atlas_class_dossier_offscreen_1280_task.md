@@ -134,8 +134,11 @@ Thread cleanup: not a disposable worker thread.
   `b243d6e26f219bf12dc2c2bef1fb4dc6ecdb0d5b`; implementation commit
   `5f39a56ea`. While QA was running, production advanced through a parallel
   gameplay batch; the QA branch was rebased and the complete focused matrix
-  plus all relevant gates were repeated on final verified production base
-  `ee508d55977d`. Production code/assets remained read-only.
+  plus all relevant gates were repeated on intermediate production base
+  `ee508d55977d`. A second parallel gameplay/UI batch advanced `origin/dev` to
+  final verified base `2ca08df63646`; focused headless/windowed, Meta40,
+  no-overlap, full gamepad flow and full runtime smoke were repeated there and
+  remained green. Production code/assets remained read-only.
 - `atlas_scrum970_clickability_test.gd` passed headless and with the actual
   windowed Metal/OpenGL DisplayServer. Each process used a unique scratch
   `user://`; both runs covered `1280×720`, `1920×1080`, `2048×1152` and
