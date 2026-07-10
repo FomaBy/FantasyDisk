@@ -93,6 +93,47 @@ Disk cleanup: active task worktree; pending final gates and push.
 
 Thread cleanup: not a disposable worker thread.
 
+## QA-Вердикт (re-QA 2026-07-10)
+
+Статус: PASSED
+
+- QA worker: `qa_scrum1024` (`/root/qa_scrum1024`), Codex lane.
+- Fresh production base: `origin/dev` `adf0682383f7`; blocking `SCRUM-1024`
+  is QA PASSED / `Готово`, with its closure map landed in `0b79b5469`.
+  Production code/assets remained read-only.
+- The separate parent re-QA reran
+  `atlas_scrum970_clickability_test.gd` headless and through the actual
+  windowed Metal/OpenGL DisplayServer. Each process used a unique scratch
+  `user://`; both covered class and Guild at `1280×720`, `1920×1080`,
+  `2048×1152` and `2560×1440`.
+- PASS: viewport-bounded real mouse motion/down/up; live STOP socket targets
+  and mouse-ignore overlays; 12-frame preview-only state neutrality; exact
+  explicit class/Guild Buy allocation and spend; reset/cancel and Back;
+  compact currency/full real-hover tooltip; dossier scroll/reset/focus
+  boundary; bottom medallion `follow_focus`; every viewport/frame/content/
+  canvas/hitbox bound and node-circle no-overlap.
+- The original 1920 clickability defect and the later 1280 off-screen blocker
+  are both resolved. Windowed class/Guild screenshots were regenerated and
+  inspected; no clipping, hidden action, overlap or frame-ornament intrusion.
+- Same-path regression evidence remains green: Meta40/per-hero/progression,
+  no-overlap/theme, gamepad menu/full-flow, runtime UI/full,
+  animation/combat/targeting. Focused and full runtime gates were repeated
+  after every intervening production batch that touched UI/runtime; since the
+  last green run, diff audit shows only SCRUM-1028 test/docs/map changes.
+- Separate baseline `SCRUM-1029` and non-blocking QA-lifecycle `SCRUM-1031`
+  remain independently tracked and do not regress this Atlas acceptance.
+
+Баги: нет открытых blocker-багов для SCRUM-970; `SCRUM-1024` исправлен и
+принят.
+
+Disk cleanup: removed the recreated 497 MB `.godot` QA import cache, 25 MB
+transient `build/qa/scrum1024` + `scrum970-parent-reqa` screenshots/logs and all
+owned scratch roots before the final routing commit. The clean worktree/local
+branch removal is recorded in Jira after push.
+
+Thread cleanup: collaboration QA subagent under the active parent task; not a
+standalone disposable Codex app task.
+
 ## QA-Вердикт — 2026-07-10
 
 Статус: FAILED
