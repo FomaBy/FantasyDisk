@@ -119,3 +119,37 @@ Landed: `190bec2be` on `origin/dev`; routed to independent QA.
 
 Disk cleanup: removed task `.godot` (~476 MB) and isolated `/tmp` user-data;
 clean task worktree removal follows the routing commit.
+
+## QA-Вердикт: PASSED
+
+Independent QA on fresh `origin/dev` `adf068238` verified the landed test-only
+diff without changing implementation code:
+
+- `tests/meta_skill_tree_smoke_test.gd`: PASS 3/3 with separate isolated
+  `HOME`/`XDG_DATA_HOME`, exit code `0`, expected success marker, and clean
+  stderr on every run;
+- Shadow fixture is paused recursively before its first awaited frame, proves a
+  clean cooldown, opens the configured two-second invisibility window, and
+  rejects immediate production `take_damage()`;
+- Bastion fixture activates stance first, then re-zeroes the newly recalculated
+  `derived_parameters.dodge`, asserts zero effective dodge for both sides, and
+  compares pure production damage reduction; the paused Enemy remains in the
+  physics space and its explicit taunt/fallback movement oracle is clean;
+- `tests/runtime_smoke_test.gd`: PASS, exit code `0`. The existing non-fatal
+  dummy-renderer null-texture diagnostic in weapon-select screenshot capture is
+  unchanged and outside this test-harness scope;
+- `tests/meta_keystone_behavioral_smoke_test.gd`: scoped baseline exception,
+  exit code `1` in 2/2 runs with exactly the already registered SCRUM-1029
+  failures: Reactor outgoing `16.30/16.30`, Reactor incoming `8.08/8.08`, and
+  the known flaky Pierce enabled-hit-`0`; no SCRUM-1028 file changes this live
+  gate or production combat semantics, and the exact rerun was recorded in
+  SCRUM-1029;
+- `git diff --check`: PASS; landed scope is limited to the focused smoke,
+  meta-test documentation, and this evidence mirror.
+
+QA conclusion: SCRUM-1028 deterministically fixes the Shadow/Bastion fixture
+contamination it owns. Remaining live behavioral failures stay owned by
+SCRUM-1029 and do not block this scoped acceptance.
+
+QA Disk cleanup: isolated QA `/tmp` homes/logs and disposable worktree `.godot`
+removed after evidence capture; QA worktree/branch removed after push.
