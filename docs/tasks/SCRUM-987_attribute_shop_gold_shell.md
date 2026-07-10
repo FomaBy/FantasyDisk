@@ -24,3 +24,15 @@
 - Focused combined, full runtime and UI no-overlap gates: PASS.
 - Independent read-only code review: PASS; 720p renderer copy-fit and frame rules re-verified.
 - Disk cleanup: removed task `.godot` import cache; disposable worktree retained only through `dev` landing.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+Проверено: UI Director/PixelLab provenance, три content-zone plan report (`ready_for_image`, 0 ошибок/предупреждений), compositor `ok=true`, focused acceptance, runtime/UI-overlap/regression gates и независимый осмотр committed renderer captures `1280×720`, `1920×1080`, `2560×1440`.
+
+Краевые случаи: live resize `2560→1280→1920`; 720p copy-fit с body font ≥ 11 px; frame — последний прямой mouse-ignore child, `draw_center=false`; title/money/cards/actions и все дочерние labels/hitboxes остаются внутри exact `gold_shell_inner_rect`; ScrollContainer и вторая центральная рама отсутствуют.
+
+Баги: нет. Hard-правило «контент только в пустой зоне фрейма» выполнено на всей responsive-матрице.
+
+Disk cleanup: QA import cache/generated UID sidecars are removed after the verdict push; final Jira comment records deletion of the disposable QA worktree.

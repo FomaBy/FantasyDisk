@@ -21,3 +21,15 @@
 - Focused combined test, Route Map shell test, runtime smoke, progression/economy smoke and UI no-overlap matrix: PASS.
 - Independent read-only code review: PASS after gold-shell Level Up descendant containment fixes.
 - Disk cleanup: removed task `.godot` import cache; disposable worktree retained only through `dev` landing.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+Проверено: реализация `66021bbdb` на свежем `origin/dev`; focused acceptance, полный runtime smoke, progression/economy, UI no-overlap, animation/meta/targeting regression, Route Map gold-shell и полный gamepad-набор. На Route Map, Rest, Shop и Event отсутствует `UpgradeFabButton` и ручной вход в Attribute Shop; обязательный post-combat flow и legacy save-поля сохранены.
+
+Краевые случаи: `pending_level_ups = 0/2`, Route/Rest live resize `2560→1280→1920`, buy/reroll/skip с точной проверкой денег/статов/charges, malformed legacy offer с дубликатами и удалённым stat ID.
+
+Баги: нет.
+
+Disk cleanup: QA import cache/generated UID sidecars are removed after the verdict push; final Jira comment records deletion of the disposable QA worktree.
