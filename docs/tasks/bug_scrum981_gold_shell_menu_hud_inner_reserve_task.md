@@ -62,16 +62,16 @@ icons/labels/tracks и button hitbox. Outer ornament визуально не с�
 
 ## Acceptance Criteria
 
-- [ ] Menu-only resource HUD, его видимые дети и FAB полностью находятся внутри
+- [x] Menu-only resource HUD, его видимые дети и FAB полностью находятся внутри
       authored inner rect на 720p/1080p/1440p.
-- [ ] Live resize 2560x1440 -> 1280x720 пересчитывает те же inner-safe rect.
-- [ ] Route Map сохраняет собственные точные header/resource/scroll/FAB зоны.
-- [ ] Combat HUD и Level Up exceptions не меняются.
-- [ ] Focused SCRUM-981 и no-overlap oracle проверяют actual child/icon/text/
+- [x] Live resize 2560x1440 -> 1280x720 пересчитывает те же inner-safe rect.
+- [x] Route Map сохраняет собственные точные header/resource/scroll/FAB зоны.
+- [x] Combat HUD и Level Up exceptions не меняются.
+- [x] Focused SCRUM-981 и no-overlap oracle проверяют actual child/icon/text/
       button rect, а не только raw texture-safe rect.
-- [ ] Focused 981, no-overlap, theme, runtime UI, gamepad full-flow и полный
+- [x] Focused 981, no-overlap, theme, runtime UI, gamepad full-flow и полный
       runtime smoke проходят; внешний Robot-дефект SCRUM-1034 не маскируется.
-- [ ] Результат закоммичен, запушен в `origin/dev` и передан в независимый QA.
+- [x] Результат закоммичен, запушен в `origin/dev` и передан в независимый QA.
 
 ## Implementation result (2026-07-10)
 
@@ -94,8 +94,10 @@ Verification PASS: `scrum981_gold_menu_shell_test`, `ui_no_overlap_matrix_test`,
 `freed lambda capture` сообщения принадлежат отдельному Robot-багу SCRUM-1034;
 smoke завершён `exit 0`.
 
-Git/Jira routing: pending final rebase/push and independent QA.
-Disk cleanup: pending final post-rebase gate.
+Git/Jira routing: implementation `144371177` is in `origin/dev`; SCRUM-1036
+and parent SCRUM-981 routed to independent production QA.
+Disk cleanup: removed task `.godot` (445 MB); clean task worktree/branch removal
+follows after this routing mirror lands.
 
 ## QA evidence
 
