@@ -4265,8 +4265,8 @@
  },
  "SCRUM-975_settings_four_tab_game_design.md": {
   "key": "SCRUM-975",
-  "status": "Контроль качества",
-  "desc_hash": "7c0c16fbc11c21b60d64777bad671566"
+  "status": "Готово",
+  "desc_hash": "62ab6eb8bc7ec3c8e9a31eadc60a6a35"
  },
  "backend_settings_game_four_tab_integration_task.md": {
   "key": "SCRUM-1025",
@@ -4335,7 +4335,7 @@
  },
  "bug_scrum975_wide_title_frame_overlap_task.md": {
   "key": "SCRUM-1033",
-  "status": "К выполнению",
-  "desc_hash": "07cb8f833b3c2a2ac5c33a185fa89342"
+  "status": "Готово",
+  "desc_hash": "f6f208d5321a6528b029b6859ceaf5ae"
  }
 }

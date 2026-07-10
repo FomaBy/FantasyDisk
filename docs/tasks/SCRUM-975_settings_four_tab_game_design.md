@@ -1,11 +1,11 @@
 # SCRUM-975 — Design: four-tab Settings / Game sandbox page
 
-Статус: review
+Статус: done
 Контур: Codex
-Owner: Design/Codex result; QA/Codex recheck complete
-Thread: `/root/design_scrum975`; re-QA `/root/reqa_scrum975`
-Locked paths: released by QA; overall acceptance waits on separate Design bug
-SCRUM-1033; runtime integration remains owned by SCRUM-1025
+Owner: Design/Codex result; independently accepted by QA/Codex
+Thread: `/root/design_scrum975`; prior re-QA `/root/reqa_scrum975`; final re-QA `/root/reqa_scrum975_title`
+Locked paths: released; Design package accepted, while runtime integration
+remains separately owned by SCRUM-1025
 Jira: SCRUM-975
 Sprint / fixVersion: `Спринт 0.2.1` / `0.2.1`
 Branch / worktree: `codex/scrum-975-settings-game-design` / `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-975-design`
@@ -90,7 +90,7 @@ neutral action. Back-end remains authoritative for clamping and propagation.
 - Disk cleanup: generated `.godot/` import cache removed; task worktree and
   local branch are removed after the final bookkeeping commit is pushed.
 
-## QA-Вердикт (2026-07-10)
+## Исторический QA-Вердикт (2026-07-10)
 
 Статус: FAILED
 
@@ -139,7 +139,7 @@ it does not reproduce from committed `layout.json` and reports different tab,
 label, value and slider zones. SCRUM-975 remains in Jira `Контроль
 качества` until the Design correction is independently rechecked.
 
-## QA-Вердикт повторной проверки (2026-07-10)
+## Исторический QA-Вердикт повторной проверки (2026-07-10)
 
 Статус: FAILED
 
@@ -172,3 +172,29 @@ inside an empty frame interior.
 Jira routing: SCRUM-1030 is scoped `Готово`; SCRUM-975 remains `Контроль
 качества` until Design/Codex fixes SCRUM-1033 and a fresh independent QA
 passes. SCRUM-1025 runtime handoff remains untouched.
+
+## QA-Вердикт (финальный, после SCRUM-1033; 2026-07-10)
+
+Статус: PASSED
+
+- Fresh source: `origin/dev` `37cbb1c06`, including Design correction
+  `40e968c3d` and routing commit `3542b6e87`.
+- SCRUM-1033 exact gate passed: at 2560×1440 the title rect is
+  `[352,132,392,72]`, rendered glyph bbox `[352,144,241,49]`; at 1920×1080
+  the exact 0.75 derivative is `[264,99,294,54]`, glyph bbox
+  `[264,108,180,37]`. The pixel oracle reports
+  `forbidden_overlap_pixels=0` at both targets.
+- All affected postprocess/layout/planning/guide/final/debug/report artifacts
+  regenerated twice byte-for-byte. PixelLab UUID/source/alpha, JSON/Python,
+  image, secret, Design-only scope and diff checks passed.
+- The SCRUM-1030 compact contract remained unchanged and green: `878×520`
+  logical canvas, `892×306` viewport, exclusive 14px lane, five complete
+  rows with label/slider/value hitboxes, reset, scroll transforms `0/214`, and
+  fixed title/Back/2×2 tabs. Final and debug previews were visually inspected
+  at compact top/bottom, 1920×1080 and 2560×1440.
+- Godot 4.7 semaphore gates passed: `runtime_smoke_test.gd`,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` and
+  `dark_fantasy_ui_theme_test.gd`. Runtime/UI emitted only the known non-fatal
+  dummy-renderer screenshot warning.
+- Jira SCRUM-975 and SCRUM-1033 moved to `Готово`. Runtime
+  integration stays separate under SCRUM-1025 and was not edited by QA.

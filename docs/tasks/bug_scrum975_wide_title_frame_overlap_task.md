@@ -1,16 +1,14 @@
 # BUG: SCRUM-975 wide Settings title overlaps dragon ornament
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Design
 Контур: Codex
-Owner: Design/Codex `/root/scrum1033_design`
-Thread: `/root/scrum1033_design`
-Branch / worktree: `codex/scrum-1033-settings-title-safe` /
-`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1033-settings-title-safe`
-Locked paths:
-`docs/design/references/scrum975_settings_game_tab/**`,
-`docs/design/previews/scrum975_settings_game_tab/**`, and this mirror only
+Owner: Design/Codex result; independently accepted by QA/Codex
+Thread: `/root/scrum1033_design`; final QA `/root/reqa_scrum975_title`
+Branch / worktree: result landed directly in `origin/dev` at `40e968c3d`;
+Design and QA worktrees removed after their respective bookkeeping
+Locked paths: released
 Jira: SCRUM-1033
 Sprint / fixVersion: `Спринт 0.2.1` / `0.2.1`
 Blocked issue: SCRUM-975
@@ -57,7 +55,7 @@ interior and fails SCRUM-975 acceptance even though SCRUM-1030 itself passed.
       scope/diff checks and full runtime smoke remain green.
 - [x] No runtime GDScript, settings persistence, SCRUM-981/1032 or Claude-owned
       paths are edited.
-- [ ] SCRUM-975 passes a fresh independent re-QA after the correction lands.
+- [x] SCRUM-975 passes a fresh independent re-QA after the correction lands.
 
 ## QA Evidence
 
@@ -94,3 +92,26 @@ interior and fails SCRUM-975 acceptance even though SCRUM-1030 itself passed.
   1032 and all Claude-owned paths were not changed.
 - Next owner/status: independent QA must recheck SCRUM-1033 and SCRUM-975 from
   fresh `origin/dev`; Design does not mark either issue `Готово`.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+- Independently verified from fresh `origin/dev` `37cbb1c06`.
+- Exact title/frame defect is closed: 2560 title rect
+  `[352,132,392,72]`, glyph bbox `[352,144,241,49]`, 5,759 changed title
+  pixels and zero forbidden overlap; 1920 exact 0.75 derivative
+  `[264,99,294,54]`, glyph bbox `[264,108,180,37]`, 3,770 changed pixels and
+  zero forbidden overlap. The title remains readable and hierarchical inside
+  the empty plate at both targets.
+- Canonical plans/layouts/finals/debug/guides/reports regenerated twice with
+  byte-identical hashes. The accepted PixelLab sources and every compact
+  SCRUM-1030 artifact remained unchanged.
+- Compact top/bottom and wide final/debug previews were visually inspected;
+  all five rows, hitboxes, reset, exclusive 14px lane and fixed header/Back/
+  2×2 tabs stay frame-safe.
+- Planning, compositor, focused geometry, pixel, JSON/Python/image, secret,
+  Design-only scope and diff gates passed. Godot 4.7 full runtime, runtime UI,
+  UI no-overlap and dark-fantasy theme gates passed through the semaphore.
+- Jira SCRUM-1033 and parent SCRUM-975 moved to `Готово`. No runtime
+  product path was edited; SCRUM-1025 remains the separate integration task.
