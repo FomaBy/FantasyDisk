@@ -956,6 +956,9 @@ const ROBOT_WEAPONS := {
 		# (конвергенция 0.85 пути к центру за каст, элитки/боссы не смещаются);
 		# медленный базовый темп (fire_interval 2.05) разгоняется скоростью
 		# атаки, aoe_radius растёт AoE-прогрессией — группировка «точка за точкой».
+		# Легаси melee-identity ключи (arc followup / stagger) сняты редизайном:
+		# стаггер расталкивал врагов ОТ игрока против собственного пулла и
+		# смещал элиток/боссов вопреки AC SCRUM-915.
 		"description": "Magnetic anchor: тяжелый якорь бьет по большой площади и стягивает рядовых врагов в центр зоны; элитки и боссы не смещаются, но урон получают полностью.",
 		"scene_path": "res://scenes/RobotMagneticAnchor.tscn",
 		"attack_mode": "robot_magnetic_anchor", "damage_parameter": "damage",
@@ -963,8 +966,6 @@ const ROBOT_WEAPONS := {
 		"attack_range": 520.0, "aoe_radius": 250.0,
 		"grenade_delay": 0.34, "knockback": 170.0,
 		"damage_falloff": 0.72, "beam_width": 44.0,
-		"melee_arc_followup_radius": 190.0, "melee_arc_followup_multiplier": 0.10,
-		"melee_stagger_knockback_multiplier": 0.75,
 		"visual_color": Color(0.42, 0.82, 1.0, 0.42),
 		"passive_mods": {"absorb_flat": 2.0},
 	},
@@ -974,7 +975,9 @@ const ROBOT_WEAPONS := {
 		# suppression_width (300; ×1.30 с «Калибратором пресса»), рядовых
 		# прижимает к осевой линии (конвергенция 0.80), элитки/боссы — резист
 		# смещения x0.25 при полном уроне; beam_width = центральная «губка»/ось
-		# для VFX. knockback = сила компрессии.
+		# для VFX. knockback = сила компрессии. Легаси melee-identity ключи
+		# (close bonus / stagger) сняты редизайном: стаггер выталкивал врагов
+		# вбок ОТ оси против собственной компрессии.
 		"description": "Compression line: широкий коридор перед роботом давит врагов и сжимает их к осевой линии, выстраивая толпу в ровный ряд; элитки и боссы почти не смещаются.",
 		"scene_path": "res://scenes/RobotHydraulicPress.tscn",
 		"attack_mode": "robot_compression_line", "damage_parameter": "damage",
@@ -983,8 +986,6 @@ const ROBOT_WEAPONS := {
 		"beam_width": 120.0, "suppression_width": 300.0,
 		"grenade_delay": 0.20, "knockback": 130.0,
 		"damage_falloff": 0.55,
-		"melee_close_bonus_radius": 190.0, "melee_close_damage_multiplier": 1.10,
-		"melee_stagger_knockback_multiplier": 0.95,
 		"visual_color": Color(0.94, 0.72, 0.36, 0.42),
 		"passive_mods": {"defense_flat": 0.018},
 	},
