@@ -1,21 +1,22 @@
-# BUG: behavioral gate Meta 4.1 не видит reactor heat и флейкает pierce
+# BUG: behavioral gate Meta 4.1 загрязняет reactor heat и pierce fixtures
 
-Статус: new
+Статус: in_progress
 Версия: 0.2.1
 Jira: SCRUM-1029
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend/Codex `/root`
+Thread/Worker: `root-scrum-1029`
 Приоритет: high
 Роль: Back-end
 Найдено QA при тестировании: SCRUM-1024
 
 ## Scope And Locks
 
-До claim задача не владеет production-файлами. Ожидаемый focused scope после
-claim: `tests/meta_keystone_behavioral_smoke_test.gd`, reactor heat hook и
-pierce target-query path только после точной диагностики. Нельзя заменять
-реальные combat outcomes проверкой словарей или ослаблять пороги.
+Claimed scope: `tests/meta_keystone_behavioral_smoke_test.gd`, this mirror and
+focused meta test documentation. Production reactor, player, weapon, target
+query and balance paths remain read-only: diagnosis proved fixture lifecycle
+contamination rather than a production combat defect. Real outcome assertions
+and thresholds remain unchanged.
 
 ## Reproduction
 
@@ -56,6 +57,41 @@ SCRUM-1024 не меняет `player.gd`, weapon/meta runtime или этот г
 enabled pierce также упал `3/3`. Задача остаётся воспроизводимым release-gate
 дефектом, отдельным от Atlas UI.
 
+На production `b5e032ed5` pierce иногда проходил, но fresh import снова дал
+`enabled hit 0`; точная диагностика ниже объясняет обе формы одним lifecycle
+дефектом и не требует runtime-правки.
+
+## Confirmed Root Cause
+
+The live mini-arena did not own the complete lifetime of its fixtures:
+
+- `_make_weapon()` added the custom Reactor probe and then awaited a frame while
+  that probe's callbacks were live against unrelated enemies (the surrounding
+  player/target fixture lifecycle was likewise not owned). The supposed cold
+  sample began at heat `0.994` with `_reactor_heat_active = true`; cold and hot
+  were therefore both valid hot production outcomes.
+- The earlier swarm scenario left all `SwarmCounter_*` enemies alive. Beam
+  corridor selection sorted those behind/contact-range leftovers before the
+  three pierce probes and spent the hit limit on them, leaving the measured
+  targets untouched.
+
+Production heat accumulation, active-state damage/incoming multipliers, beam
+targeting and pierce limits behaved correctly when given an isolated arena.
+
+## Implementation Result
+
+- Added opt-in manual-fixture isolation that pauses automatic callbacks before
+  every awaited frame while keeping nodes in scene/physics space for explicit
+  production method calls.
+- Reactor oracle now proves zero initial heat, cold hit/incoming outcomes,
+  charge above `0.70`, runtime transition to active state, then distinct hot
+  outgoing and incoming outcomes.
+- Swarm fixtures are released and flushed after their own assertion, so they
+  cannot consume later beam hit limits.
+- Pierce enabled/disabled scenarios isolate player, custom weapon and targets;
+  they still call the real `_fire_single_beam()` and inspect live enemy health.
+- No production script, data, threshold or balance value changed.
+
 ## Acceptance Criteria
 
 - focused reactor scenario доказывает production active-state transition и
@@ -66,4 +102,16 @@ enabled pierce также упал `3/3`. Задача остаётся восп
 - `meta_skill_tree_smoke_test.gd` и полный runtime smoke остаются зелёными;
 - Jira/документация/green-gate синхронизированы, результат landed в `dev`.
 
-Disk cleanup: none created by Jira-first QA registration.
+## Verification
+
+- `meta_keystone_behavioral_smoke_test.gd`: PASS 3/3 on isolated scratch
+  `user://`; enabled and disabled mutation/self-check paths are green.
+- `meta_skill_tree_smoke_test.gd`: PASS.
+- `runtime_smoke_test.gd`: PASS (known non-fatal dummy-renderer null-texture
+  screenshot diagnostic only).
+- Two independent pre-land reviews: logic PASS; the second review corrected the
+  root-cause wording above from an assumed equipped weapon to the actual custom
+  Reactor probe. No production-code or balance finding remains.
+- `git diff --check`: PASS.
+
+Disk cleanup: pending final `.godot` and worktree removal after push/routing.

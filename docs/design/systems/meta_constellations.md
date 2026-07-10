@@ -468,6 +468,19 @@ SCRUM-835 одного wired-гейта недостаточно: `tests/meta_ke
 прогоняет его через `python3 tools/godot_gate.py` вместе с `meta_skill_tree`,
 `skill_tree_per_hero` и `runtime_smoke`.
 
+**Live behavioral fixture contract (SCRUM-1029).**
+`tests/meta_keystone_behavioral_smoke_test.gd` по-прежнему проверяет реальные
+`Player`/`Enemy`/`ClassWeapon` outcomes, но ручные Reactor и pierce mini-arena
+отключают автоматические `_process`/`_physics_process` callbacks до первого
+ожидаемого кадра. Reactor oracle обязан начинать с heat `0`, получить холодный
+удар, зарядиться реальными weapon hits выше `0.70`, активироваться только через
+runtime update и после этого показать больший исходящий и входящий урон.
+Временные swarm-счётчики удаляются и flush-ятся сразу после своего сценария,
+чтобы не расходовать hit limit последующих beam/pierce проверок. Ручные вызовы
+production API, target query и live health outcomes сохраняются; проверки
+словарей вместо боя, ослабление порогов и production balance overrides не
+допускаются.
+
 **Изоляция semantic mini-arena (SCRUM-1028).** Ручные сценарии
 `_test_semantic_keystone_runtime_835` проверяют production API прямыми вызовами,
 поэтому до первого ожидаемого кадра отключают `_process`/`_physics_process`

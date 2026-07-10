@@ -222,15 +222,21 @@ func _test_existing_condition_outcomes(holder: Node2D, errors: Array) -> void:
 	player = await _make_player(holder, "berserk", {"swarm_damage_bonus": 0.28})
 	weapon = await _make_weapon(player, {"damage": 100.0})
 	base_loss = await _weapon_hit_loss(holder, player, weapon)
+	var swarm_foes: Array = []
 	for index in range(int(PlayerScript.SWARM_CAP)):
 		var foe := await _make_enemy(holder, player.global_position + Vector2(12.0 + index, 0.0), 100.0)
 		foe.name = "SwarmCounter_%d" % index
+		swarm_foes.append(foe)
 	player.call("_update_conditional_keystones", PlayerScript.SWARM_SCAN_INTERVAL + 0.1)
 	player.call("_apply_weapon_scaling", weapon)
 	var swarm_loss := await _weapon_hit_loss(holder, player, weapon)
 	if swarm_loss <= base_loss * 1.15:
 		errors.append("Count-in-radius keystone did not increase real weapon damage (base %.2f, swarm %.2f)." % [base_loss, swarm_loss])
 	_cleanup_player(player)
+	for foe in swarm_foes:
+		if foe != null and is_instance_valid(foe):
+			foe.queue_free()
+	await process_frame
 
 
 func _test_semantic_condition_outcomes(holder: Node2D, errors: Array) -> void:
@@ -292,19 +298,31 @@ func _test_elemental_mark(holder: Node2D, errors: Array) -> void:
 
 
 func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
-	var player := await _make_player(holder, "robot", {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15})
-	var weapon := await _make_weapon(player, {"damage": 100.0, "attack_mode": "robot_reactor_vent", "weapon_id": "robot_reactor_vent"})
-	var cold_loss := await _weapon_hit_loss(holder, player, weapon)
+	# SCRUM-1029: this is a controlled cold→hot production transition. Automatic
+	# callbacks from the configured/equipped weapon must not preheat the Robot on
+	# unrelated live fixtures while helper coroutines await process frames.
+	var player := await _make_player(holder, "robot", {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15}, true)
+	var weapon := await _make_weapon(player, {"damage": 100.0, "attack_mode": "robot_reactor_vent", "weapon_id": "robot_reactor_vent"}, true)
+	if float(player.get("_reactor_heat")) > 0.001 or bool(player.get("_reactor_heat_active")):
+		errors.append("Reactor fixture was preheated before the cold sample (heat %.3f)." % float(player.get("_reactor_heat")))
+		_cleanup_player(player)
+		return
+	var cold_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
 	_disable_random_damage_avoidance(player)
 	var hp_before := float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_cold_test")
 	var cold_taken := hp_before - float(player.get("health"))
 	player.set("health", hp_before)
 	player.set("_damage_invulnerability_left", 0.0)
-	for _i in range(5):
-		await _weapon_hit_loss(holder, player, weapon)
+	for _i in range(4):
+		await _weapon_hit_loss(holder, player, weapon, -1.0, true)
+	var charged_heat := float(player.get("_reactor_heat"))
+	if charged_heat < 0.70 or bool(player.get("_reactor_heat_active")):
+		errors.append("Reactor hits must charge past threshold before, but activate only on, runtime update (heat %.3f)." % charged_heat)
 	player.call("_update_meta_keystone_runtime", 0.05)
-	var hot_loss := await _weapon_hit_loss(holder, player, weapon)
+	if not bool(player.get("_reactor_heat_active")) or float((player.get("run_modifiers") as Dictionary).get("reactor_heat_active", 0.0)) < 0.99:
+		errors.append("Reactor runtime update did not expose the charged hot state (heat %.3f)." % float(player.get("_reactor_heat")))
+	var hot_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
 	_disable_random_damage_avoidance(player)
 	hp_before = float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_test")
@@ -358,7 +376,7 @@ func _test_invisibility(holder: Node2D, errors: Array) -> void:
 
 
 func _test_pierce(holder: Node2D, errors: Array, enabled: bool) -> bool:
-	var player := await _make_player(holder, "ranger", {"charged_shot_extra_pierce": 2.0 if enabled else 0.0})
+	var player := await _make_player(holder, "ranger", {"charged_shot_extra_pierce": 2.0 if enabled else 0.0}, true)
 	var weapon := await _make_weapon(player, {
 		"attack_mode": "beam",
 		"weapon_id": "charged_pierce_probe",
@@ -367,10 +385,10 @@ func _test_pierce(holder: Node2D, errors: Array, enabled: bool) -> bool:
 		"charge_seconds": 0.4,
 		"attack_range": 520.0,
 		"beam_width": 80.0,
-	})
+	}, true)
 	var enemies := []
 	for index in range(3):
-		enemies.append(await _make_enemy(holder, player.global_position + Vector2(110.0 + 70.0 * index, 0.0), 100.0))
+		enemies.append(await _make_enemy(holder, player.global_position + Vector2(110.0 + 70.0 * index, 0.0), 100.0, true))
 	weapon.call("_fire_single_beam", player, Vector2.RIGHT)
 	var hit_count := 0
 	for enemy in enemies:
@@ -486,42 +504,50 @@ func _test_mutation_self_checks(holder: Node2D, errors: Array) -> void:
 		errors.append("Mutation/self-check disabled wiring cases failed: %s" % str(mutation_errors))
 
 
-func _make_player(holder: Node2D, class_id: String, mods: Dictionary) -> Node:
+func _make_player(holder: Node2D, class_id: String, mods: Dictionary, manual_fixture := false) -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	holder.add_child(player)
 	player.global_position = Vector2(600.0, 600.0)
+	if manual_fixture:
+		_quiesce_manual_fixture(player)
 	await process_frame
 	player.call("configure_character", class_id)
 	if not mods.is_empty():
 		player.call("apply_meta_skill_modifiers", mods)
+	if manual_fixture:
+		_quiesce_manual_fixture(player)
 	await process_frame
 	return player
 
 
-func _make_weapon(player: Node, config: Dictionary) -> Node:
+func _make_weapon(player: Node, config: Dictionary, manual_fixture := false) -> Node:
 	var weapon := ClassWeaponScript.new()
 	for key in config.keys():
 		weapon.set(str(key), config[key])
 	player.add_child(weapon)
+	if manual_fixture:
+		_quiesce_manual_fixture(weapon)
 	await process_frame
 	weapon.call("_capture_base_values")
 	player.call("_apply_weapon_scaling", weapon)
 	return weapon
 
 
-func _make_enemy(holder: Node2D, position: Vector2, max_hp: float) -> Node:
+func _make_enemy(holder: Node2D, position: Vector2, max_hp: float, manual_fixture := false) -> Node:
 	var enemy := ENEMY_SCENE.instantiate()
 	enemy.set("max_health", max_hp)
 	holder.add_child(enemy)
 	enemy.global_position = position
+	if manual_fixture:
+		_quiesce_manual_fixture(enemy)
 	await process_frame
 	enemy.set("max_health", max_hp)
 	enemy.set("health", max_hp)
 	return enemy
 
 
-func _weapon_hit_loss(holder: Node2D, player: Node, weapon: Node, override_amount := -1.0) -> float:
-	var enemy := await _make_enemy(holder, player.global_position + Vector2(90.0, 0.0), 1000.0)
+func _weapon_hit_loss(holder: Node2D, player: Node, weapon: Node, override_amount := -1.0, manual_fixture := false) -> float:
+	var enemy := await _make_enemy(holder, player.global_position + Vector2(90.0, 0.0), 1000.0, manual_fixture)
 	var before := float(enemy.get("health"))
 	var amount := override_amount if override_amount >= 0.0 else float(weapon.get("damage"))
 	weapon.call("_damage_enemy", enemy, amount)
@@ -546,6 +572,16 @@ func _disable_random_damage_avoidance(player: Node) -> void:
 	params["dodge"] = 0.0
 	player.set("derived_parameters", params)
 	player.set("_damage_invulnerability_left", 0.0)
+
+
+func _quiesce_manual_fixture(actor: Node) -> void:
+	# Manual mini-arenas call production API explicitly. Pause callbacks before
+	# every awaited frame so equipped/custom weapons and AI cannot mutate the
+	# fixture, while keeping nodes in the scene/physics space for real methods.
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for child in actor.get_children():
+		_quiesce_manual_fixture(child)
 
 
 func _method_arg_count(obj: Object, method_name: String) -> int:
