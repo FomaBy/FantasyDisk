@@ -14,7 +14,7 @@
 | `elementalist` | pure-mage зонер (SCRUM-947..950): trait «Проводник стихий» — все magic-tagged бонусы ×1.30; квадрат четырёх стихий, полнокартный X-разлом, самый медленный тяжёлый метеор |
 | `sniper` | long-range precision class: lockshot, kill-zone marking, split rounds |
 | `priest` | holy sustain caster: sanctify marks, ward pulses, prayer chains |
-| `biologist` | bio-reaction scientist: spore blooms, sample analysis, symbiote webs |
+| `biologist` | хрупкий био-реактивный гибрид (SCRUM-896): trait «Разбор образцов» — прямой урон по целям под своим DoT ×1.20 (SCRUM-1005); локальные споровые кольца+замедление, длинный пирсинг-луч с бурстом анализа, дальнее темпоральное семя |
 | `robot` | heavy tank-control construct: magnetic pulls, compression lines, reactor vents |
 | `engineer` | mechanical summoner/support: sentry links, repair drone sustain, pressure mine grid |
 | `dark_mage` | caster: цепные снаряды, curse-прожиг, зеркальные AoE-взрывы; убитые взрываются (trait «Тёмный распад») |
@@ -63,9 +63,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `priest` | `priest_reliquary` | Светлый Реликварий | `PriestReliquary.tscn` | `priest_sanctify` | Отмечает ближайшую цель и взрывает священную область с sustain-heal от урона |
 | `priest` | `priest_censer` | Кадило Обета | `PriestCenser.tscn` | `priest_ward` | Несколько защитных волн вокруг героя, ближний контроль и малое лечение |
 | `priest` | `priest_chime` | Колокол Молитвы | `PriestChime.tscn` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal |
-| `biologist` | `biologist_spore_lens` | Споровая Линза | `BiologistSporeLens.tscn` | `bio_spore_bloom` | Три расширяющихся споровых кольца на цели с убывающим уроном |
-| `biologist` | `biologist_sample_injector` | Инъектор Образцов | `BiologistSampleInjector.tscn` | `bio_sample_dart` | Прямой sample dart и delayed analysis pulses по ближайшим тканям |
-| `biologist` | `biologist_symbiote_seed` | Семя Симбионта | `BiologistSymbioteSeed.tscn` | `bio_symbiote_web` | Симбиотическая сеть связывает первичную цель с соседними врагами |
+| `biologist` | `biologist_spore_lens` | Споровая Линза | `BiologistSporeLens.tscn` | `bio_spore_bloom` | ЛОКАЛЬНЫЙ AoE у персонажа (range 235): три расширяющихся кольца с falloff; задетые замедлены 5→20% по прогрессии и заражены bio_infection (SCRUM-896) |
+| `biologist` | `biologist_sample_injector` | Инъектор Образцов | `BiologistSampleInjector.tscn` | `bio_sample_dart` | Длинный пирсинг-луч (640): полный маг.ролл + физ.доля всем на линии, малый бурст анализа на конце (96); ближайший получает пробу-инфекцию (SCRUM-896) |
+| `biologist` | `biologist_symbiote_seed` | Семя Симбионта | `BiologistSymbioteSeed.tscn` | `bio_symbiote_web` | Дальнее темпоральное семя (700): прорастание 0.55с, стартовый маг.хит 0.85 с falloff (зона 150), главный пейофф — биоинфекция 6×1.6 тиков (SCRUM-896) |
 | `robot` | `robot_magnetic_anchor` | Магнитный Якорь | `RobotMagneticAnchor.tscn` | `robot_magnetic_anchor` | Target-centered magnetic anchor pulls nearby enemies inward and detonates |
 | `robot` | `robot_hydraulic_press` | Гидравлический Пресс | `RobotHydraulicPress.tscn` | `robot_compression_line` | Two pressure jaws compress a line corridor and push enemies toward its axis |
 | `robot` | `robot_reactor_core` | Реакторное Ядро | `RobotReactorCore.tscn` | `robot_reactor_vent` | Four directional reactor vents clear close-range space around the player |
@@ -136,6 +136,40 @@ physical-only и periodic-only (`dot_*`) источники, штрафы (<1.0)
 primary-статы Вора). Flat-источники забега (артефакт «Магнитный кошель» +90 и
 т.п.) добавляются ПОВЕРХ без trait-усиления — рост ограничен, runaway невозможен.
 Покрыт `tests/thief_kit_test.gd`.
+
+## Class Kit: Биолог — гибридные оси и trait «Разбор образцов» (SCRUM-896/1005)
+
+Биолог — хрупкий био-реактивный AoE-класс с несколькими равноправными осями
+сборки. Аудит вклада параметров по оружиям (изоляция типов SCRUM-524 не
+нарушается — каждый канал скейлится только своим атрибутом):
+
+| Ось | Спор. Линза | Инъектор | Семя | Скейл |
+| --- | --- | --- | --- | --- |
+| `magic_damage` (Интеллект) | кольца (полный ролл × falloff^i) | луч (полный ролл каждому) + бурст анализа ×0.55 | стартовый хит ×0.85 с falloff | основной прямой канал всех трёх |
+| `damage` (Сила) | — | +`INJECTOR_PHYSICAL_SHARE` (0.50 канала damage) КАЖДОМУ на луче, тип "physical" | — | физическая ось сборки (паттерн SQUARE_PHYSICAL_SHARE) |
+| `dot_damage` (Знание) | тик инфекции ×1.0 | тик пробы ×0.6 | тик инфекции ×1.6 — главный пейофф | размер тика bio_infection |
+| `dot_speed` (Знание/Энергия/Ловкость) | каденция ×2.0 | каденция ×1.2 | каденция ×1.0 | скорость тиков инфекции (устоявшийся DPS = тик × каденция) |
+| `aoe_radius` | кольца 210 (сохранён «нравящийся») | бурст 96 (<< Линзы) | зона 150 (между Линзой и бурстом) | покрытие/инфекция толпы |
+| `attack_range` | 235 — ЛОКАЛЬНЫЙ (через экран не стреляет) | 640 — длинный пирсинг-инструмент | 700 — самое дальнобойное | позиционирование/риск |
+
+Механика инфекции: status `bio_infection` (refresh, 1 стак, `source_id`
+владельца, тики `player_owned`); устоявшийся DPS = тик × каденция — перекаст НЕ
+мультиплицирует тики (bio-ветка `_budget_dot_dps` зеркалит это в бюджете, ось
+НЕ зависит от скорости атаки). Замедление Линзы: 5%→20% по нормированной
+прогрессии (эффективный `magic_damage` к lvl1-базе класса, кап на ×3), refresh
+без стака, поверх — артефакт «Споровый конденсатор»; движковый кламп скорости
+≥0.25 исключает стоп-лок.
+
+Trait «Разбор образцов» (SCRUM-1005, реестр `CLASS_TRAITS.biologist`): пока на
+цели живёт периодический эффект САМОГО Биолога, его прямые хиты по этой цели
+×1.20 (`infected_direct_hit_multiplier`, generic-гейт в
+`ClassWeapon._damage_enemy`). Тики DoT НЕ усиливаются (не дублирует
+«Катализатор» Химика), чужой/истёкший статус бонуса не даёт
+(`StatusEffects.has_dot_from_source`), ульта — не оружейный прямой урон и в
+trait не входит (аналогично исключению ульты из «Двойного действия»). В
+budget-модели trait учтён фактором ×(1+0.20×0.75) на прямой компонент оружий с
+`dot_ticks>0` — тюнер компенсирует кит автоматически. Покрыт
+`tests/biologist_kit_test.gd`.
 
 ## Backend Modes
 

@@ -521,6 +521,32 @@ fallen_star (Инт/Сила). Гейты: `event_data_contract_check` (12 со�
   каждый рантайм-источник id реально записывается метой, и что нет «мёртвых»
   codex-монстров без рантайм-пути открытия (двусторонняя сверка).
 
+## SCRUM-896/1005 Biologist Budget Mirrors (2026-07-10)
+
+- Dot-ось Биолога в бюджете считается по SUSTAINED-модели (bio-ветка
+  `_budget_dot_dps`): биоинфекция — status-based с refresh (1 стак), перекаст
+  НЕ мультиплицирует тики, поэтому устоявшийся DPS = тик
+  (`dot_damage × curse_tick_multiplier`) × каденция
+  (`dot_speed × curse_tick_rate`, интервал ≥0.1с), а не `ticks/каст`, как у
+  tween-DoT других классов. Ось скейлится Знанием/Энергией (dot_damage,
+  dot_speed), НЕ скоростью атаки; длительность `(dot_ticks+0.99)×интервал`
+  перекрывает интервал каста — uptime в затяжном бою ≈1.
+- Trait «Разбор образцов» (SCRUM-1005) учтён фактором
+  `infected_direct_factor = 1 + (×1.20 − 1) × uptime 0.75` ТОЛЬКО на прямой
+  компонент оружия с `dot_ticks>0` (не dot/pool/summon/ульта) — тюнер
+  `budget_tuning_for` компенсирует кит автоматически.
+- Hit-модели кита зеркалят новые механики: bloom — соло все кольца с falloff
+  (0.34-модель) + `dot_targets` по радиусу; dart — линия на всю длину +
+  tip-бурст + физ-фактор 1.13 (`INJECTOR_PHYSICAL_SHARE` 0.50 × базовое
+  соотношение damage/magic 3/11.2), инфекция только ближайшему
+  (`dot_targets` 1); web/seed — стартовый хит `seed_impact_ratio` с falloff по
+  области + `dot_targets` по радиусу.
+- Тюнеры кита после редизайна: линза 0.852, инъектор 1.623, семя 1.615 — все
+  строго внутри коридора клампа (0.28..2.80); до редизайна семя сидело НА
+  клампе 2.80 (runtime недобирал модельные цели). Targets класса пиннед:
+  solo 47.69 / aoe 191.16. Comfort-гейт (`comfort_band_cross_class_gate`)
+  зелёный без изменения весов.
+
 ## Balance Validation
 
 - Формульный харнесс: `tools/balance_harness.gd` → `build/balance_report.md` (бюджеты классов `CLASS_BUDGET_PROFILES`).

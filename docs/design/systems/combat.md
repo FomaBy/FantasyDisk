@@ -140,6 +140,14 @@
   при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
+- Биолог (SCRUM-896/1005): статус `bio_infection` — периодический урон с
+  атрибуцией владельца (`source_id`, тики `player_owned`; refresh, 1 стак —
+  устоявшийся DPS = тик × каденция, перекаст не мультиплицирует тики); статус
+  `bio_spore_slow` — замедление колец Линзы 5→20% от прогрессии (refresh, 1
+  стак, поверх — артефакт «Споровый конденсатор»). Прямые хиты Биолога по
+  целям под его `bio_infection` усилены ×1.20 (trait «Разбор образцов»,
+  generic-гейт в `ClassWeapon._damage_enemy`; тики не усиливаются,
+  `StatusEffects.has_dot_from_source` отсекает чужие/истёкшие статусы).
 - Knight block/counter uses weapon passive data on `Player.take_damage()`:
   incoming damage reduction, incoming-scaled retaliation, `counter_radius`,
   `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.
