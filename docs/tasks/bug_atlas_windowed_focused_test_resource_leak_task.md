@@ -1,6 +1,6 @@
 # BUG: Atlas windowed focused test оставляет ObjectDB/resources
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1031
 Контур: Codex
@@ -94,6 +94,9 @@ fixture и остановленной только слишком поздно �
 - focused headless run: PASS;
 - `tests/runtime_smoke_test.gd`: PASS;
 - independent pre-land code/evidence review: PASS, no actionable findings.
+
+Implementation landed in `origin/dev` as `365813dd8`; Jira routed to
+`Контроль качества` for an independent runtime verdict.
 
 Disk cleanup: pending removal of task-only `.godot/`, `build/qa/scrum1024`, and
 the disposable worktree after push/QA handoff.
