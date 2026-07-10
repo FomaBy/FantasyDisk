@@ -78,3 +78,38 @@ Disk cleanup: removed 444 MiB `.godot`, 7.7 MiB transient
 `build/qa/scrum980/`, and all per-run scratch `user://` roots.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт — 2026-07-10
+
+Статус: FAILED
+
+- Independent QA worker: `codex-qa-scrum-980-20260710`
+  (`/root/audit_qa`), Codex lane; production code/assets stayed read-only.
+- Fresh base: `origin/dev` `bb726a00cab3641d0a8eecb8a43a875267c25b76`
+  containing implementation `91a221aa`.
+- Official focused test: PASS headless/windowed, but it seeds only the shorter
+  level-2 delta.
+- Independent viewport-bounded oracle: FAILED at 1920×1080 for a valid
+  selectable level 3. `AscensionModsLabel` is `84.0 px` high inside a
+  `71.33 px` `HS4AscensionDescriptionScroll`; the third line is clipped and the
+  scrollbar remains active. This contradicts the Jira requirement that
+  1920×1080 and 2560×1440 show the selected-level delta in full.
+- Passing independent scope: actual 1280×720/1920×1080/2560×1440 renders and
+  viewport-contained rects; real pointer `−`/`+` and hero switching; mouse
+  wheel; physical keyboard Down and D-pad Down to bottom plus boundary focus;
+  reset-to-top; exact visible delta and cumulative tooltip; default focus;
+  major zones and outer-frame safe margins.
+- Regression PASS: Hero Select PixelLab layout, UI no-overlap matrix, dark
+  fantasy theme, runtime UI, gamepad menu/core/in-run, three consecutive full
+  gamepad flows, meta progression, animation, melee targeting and full runtime
+  smoke. The known dummy-renderer screenshot diagnostic remained non-fatal.
+
+Blocking bug: `SCRUM-1026` /
+`docs/tasks/bug_scrum980_ascension_level3_clipped_1920_task.md`.
+
+Disk cleanup: transient `build/qa/scrum980*`, scratch `user://`, disposable QA
+worktree and `.godot` are removed after this verdict mirror is committed and
+pushed; final Jira comments record the exact cleanup.
+
+Thread cleanup: collaboration QA subagent under the active parent task; not a
+disposable standalone Codex app thread.

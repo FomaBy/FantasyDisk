@@ -4261,7 +4261,7 @@
  "SCRUM-980.md": {
   "key": "SCRUM-980",
   "status": "Контроль качества",
-  "desc_hash": "f89ecba304a1a4de0f88a75c2885bf4f"
+  "desc_hash": "f8157f60bc6d6bdbd473a4d4d58c5b48"
  },
  "SCRUM-975_settings_four_tab_game_design.md": {
   "key": "SCRUM-975",
@@ -4272,5 +4272,10 @@
   "key": "SCRUM-1025",
   "status": "К выполнению",
   "desc_hash": "88970248dc316d8bcbd885363716824e"
+ },
+ "bug_scrum980_ascension_level3_clipped_1920_task.md": {
+  "key": "SCRUM-1026",
+  "status": "К выполнению",
+  "desc_hash": "bce928813a1a0068bc2a7b6da17066d7"
  }
 }
