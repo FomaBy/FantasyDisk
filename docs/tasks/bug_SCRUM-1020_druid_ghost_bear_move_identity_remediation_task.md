@@ -1,6 +1,6 @@
 # BUG SCRUM-1020: Druid Ghost Bear Move Identity Morph
 
-Статус: done (independent re-QA FAILED — blocked by SCRUM-1022)
+Статус: done (QA PASSED)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_qa`
@@ -200,3 +200,24 @@ Other gates:
 
 Bugs: SCRUM-1022. SCRUM-1020 must remain in `Контроль качества` until the
 registry contract is fixed and independently re-verified.
+
+## QA-Вердикт (2026-07-10, after SCRUM-1022)
+
+Статус: PASSED
+
+SCRUM-1022 is independently accepted on fresh `origin/dev` after adding the
+five explicit typed registry fields. The previously accepted bear remediation
+remains unchanged and valid:
+
+- exact live PixelLab bear UUID and job remain available;
+- all six live east frames still SHA-match committed raw sources;
+- visual review still shows one grounded heavy cyan bear without canine/fox,
+  rearing, crop, palette or scale morph;
+- `256x256`, center X `128`, baseline `232`, minimum gutter `24 px`, six unique
+  frames and `1.083628x` continuity remain unchanged;
+- no bear/ghost asset, SpriteFrames, manifest or provenance hash changed during
+  SCRUM-1022.
+
+Registry integrity (`36` entries), animation/no-flip, asset references,
+AllyMinion lifecycle, summon regression, targeting, meta and full runtime gates
+all pass. Баги: нет. SCRUM-1020 may move to `Готово`.

@@ -1,6 +1,6 @@
 # SCRUM-1016 — Druid Ghost Summon PixelLab Animation Integration
 
-Статус: done (independent re-QA FAILED — blocked by SCRUM-1022)
+Статус: done (QA PASSED)
 Контур: Codex
 Owner: Animator/Codex
 Thread/Worker: `/root/audit_ready`
@@ -189,3 +189,34 @@ Verification summary:
 - **FAIL** `full_frame_registry_integrity_test.gd` (five missing typed fields).
 
 Bugs: SCRUM-1022. Jira remains `Контроль качества` / QA failed.
+
+## QA-Вердикт (2026-07-10, final chain re-QA)
+
+Статус: PASSED
+
+SCRUM-1020 and SCRUM-1022 are independently accepted. Final SCRUM-1016
+acceptance on fresh `origin/dev` confirms:
+
+- five distinct friendly spectral creatures: wolf, bear, panther, stag and
+  lion; physical melee roles remain distinct from magical caster roles;
+- exact accepted PixelLab identities/provenance and all source/runtime hashes;
+- only west/left and east/right repository directions, six unique movement and
+  action frames per row, transparent `256x256`, center X `128`, baseline `232`
+  and safe gutters;
+- all five SpriteFrames expose generic + explicit left/right move/action rows;
+  movement loops at 10fps, actions are 12fps one-shots;
+- registry lookup, explicit horizontal selection, caster aliases, last-facing
+  fallback and `flip_h=false` operate correctly for every ghost ID;
+- legacy allies and gameplay/roster/spawn/damage/aura/balance behavior remain
+  unchanged and regression-green.
+
+Godot gates PASS: full-frame registry integrity (`36`), animation smoke,
+asset-reference integrity, AllyMinion lifecycle, summoner strengthening, melee
+targeting, meta progression and full runtime smoke. Баги: нет.
+
+SCRUM-1015 is already `Готово`; together both decomposed children satisfy
+SCRUM-901: 3 physical + 2 magical archetypes, bright ally-like ghost style,
+left/right 5+ frame move and action/cast readability, no vertical/diagonal
+runtime dependency, transparent stable pivots/gutters and complete
+manifest/contact evidence. SCRUM-1016 and conditional parent SCRUM-901 may move
+to `Готово`.

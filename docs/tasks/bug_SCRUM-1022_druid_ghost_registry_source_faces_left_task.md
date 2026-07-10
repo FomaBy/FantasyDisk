@@ -1,6 +1,6 @@
 # BUG SCRUM-1022: Druid Ghost Registry Omits `source_faces_left` Bool
 
-Статус: done
+Статус: done (QA PASSED)
 Контур: Codex
 Owner: /root/audit_qa
 Thread/Worker: collaboration subagent `/root/audit_qa`
@@ -117,3 +117,50 @@ Verification through `tools/godot_gate.py`:
 
 Next status: independent QA must verify this remediation before SCRUM-1022 or
 its blocked source tickets can move to `Готово`.
+
+## QA-Вердикт (2026-07-10, independent re-QA)
+
+Статус: PASSED
+
+Independent reviewer: Animation/Design QA `/root/audit_ready` on fresh
+`origin/dev` `8916613f62eba05bd74be8417d72e233210ea155`. The reviewer found
+SCRUM-1022 and did not author remediation commits `d19e4bdd` / `b649f70c`.
+Production scripts, tests, assets and SpriteFrames were read-only during QA.
+
+- Scope PASS: the implementation adds exactly one explicit
+  `"source_faces_left": true` field to each of `druid_ghost_wolf`,
+  `druid_ghost_bear`, `druid_ghost_panther`, `druid_ghost_stag` and
+  `druid_ghost_lion`. Each still declares
+  `"explicit_horizontal_directions": true`; paths, scale and position are
+  unchanged.
+- Runtime PASS: all five spirits select `move_left/right` and
+  `attack_left/right`; stag/lion cast aliases resolve to the matching attack
+  row; vertical action preserves last horizontal facing; `flip_h` remains
+  `false` throughout.
+- Asset immutability PASS: all ghost PixelLab sources, 120 runtime PNGs, five
+  SpriteFrames, manifest/provenance files and contact sheet are byte-identical
+  to pre-remediation QA commit `66d6a2d3`.
+- PixelLab regression PASS: live bear UUID
+  `6805608a-b64a-471c-a1d9-9601a3062e2f`, east-v3 job
+  `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` and all six live source SHA-256
+  matches remain valid. Contact review still shows one grounded heavy bear; the
+  accepted continuity ratio remains `1.083628x`.
+- Clean Godot 4.7 import PASS; all 120 ghost runtime textures produced imported
+  `.ctex` resources.
+- `tests/full_frame_registry_integrity_test.gd`: PASS (`36` entries).
+- `tests/animation_smoke_test.gd`: PASS (all-five explicit direction/no-flip).
+- `tests/asset_reference_integrity_test.gd`: PASS (`200` files / `2549` refs).
+- `tests/ally_minion_lifecycle_test.gd`: PASS.
+- `tests/summoner_strengthening_test.gd`: PASS.
+- `tests/melee_weapon_targeting_test.gd`: PASS.
+- `tests/meta_progression_smoke_test.gd`: PASS.
+- `tests/runtime_smoke_test.gd`: PASS, exit `0` (known non-fatal headless
+  dummy-renderer screenshot warning only).
+- Static registry/hash/geometry/scope audit and `git diff --check`: PASS.
+
+Краевые случаи: left/right movement, left/right melee action, caster
+aliases, vertical-target last-facing fallback, legacy allies, resource loading
+and full runtime regression.
+
+Баги: нет. SCRUM-1022 may move to `Готово` and release SCRUM-1020,
+SCRUM-1016 and SCRUM-901 for final acceptance.
