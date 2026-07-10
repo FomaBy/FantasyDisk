@@ -1,0 +1,482 @@
+{
+  "issue": "SCRUM-917",
+  "weapon_id": "robot_hydraulic_press",
+  "pixel_lab_source_object_id": "99b9c7ec-23d3-4110-a22a-912cf8b455b8",
+  "pixel_lab_animation_group_id": "659bdae5-22a9-4319-a3ca-57b972e5a9a3",
+  "pixel_lab_animation_id": "31a9bfff-ee16-4037-a8f5-32477c37a73c",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "normalization": {
+    "source_canvas": [
+      256,
+      256
+    ],
+    "runtime_canvas": [
+      256,
+      256
+    ],
+    "content_inset": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "resampling": "nearest",
+    "pivot": [
+      128,
+      128
+    ]
+  },
+  "animation": {
+    "name": "compress",
+    "frame_count": 8,
+    "fps": 25.0,
+    "loop": false,
+    "active_frame_index": 5,
+    "active_frame_time_seconds": 0.2
+  },
+  "geometry": {
+    "start_offset_px": 28.0,
+    "attack_range_px": 430.0,
+    "corridor_width_px": 300.0,
+    "calibrator_corridor_width_px": 390.0,
+    "centre_beam_width_px": 120.0,
+    "compression_axis": "perpendicular_to_attack"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "time_seconds": 0.0,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_00.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_00.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          25,
+          8,
+          232,
+          244
+        ],
+        "gutters_px": [
+          25,
+          8,
+          24,
+          12
+        ],
+        "minimum_gutter_px": 8,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 37248,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          38,
+          23,
+          219,
+          230
+        ],
+        "gutters_px": [
+          38,
+          23,
+          37,
+          26
+        ],
+        "minimum_gutter_px": 23,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 28501,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "c18baea5c1aa97139014bd9eb16e6d79c9b3724d57edc5fc40ece8603a7a49e9"
+    },
+    {
+      "index": 1,
+      "time_seconds": 0.04,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_01.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_01.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          28,
+          3,
+          229,
+          250
+        ],
+        "gutters_px": [
+          28,
+          3,
+          27,
+          6
+        ],
+        "minimum_gutter_px": 3,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 36269,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          41,
+          19,
+          216,
+          235
+        ],
+        "gutters_px": [
+          41,
+          19,
+          40,
+          21
+        ],
+        "minimum_gutter_px": 19,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 27735,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "ffc538b83633d88ae9611a95d0ba8394f0603220cf51b337387c43dd14ea6b0f"
+    },
+    {
+      "index": 2,
+      "time_seconds": 0.08,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_02.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_02.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          32,
+          13,
+          225,
+          238
+        ],
+        "gutters_px": [
+          32,
+          13,
+          31,
+          18
+        ],
+        "minimum_gutter_px": 13,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 34991,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          44,
+          27,
+          213,
+          224
+        ],
+        "gutters_px": [
+          44,
+          27,
+          43,
+          32
+        ],
+        "minimum_gutter_px": 27,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 26818,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "487888d07f4f29acb48ddbcfe696e4ccfc74aa930b1f6ec05598ff244d9f5d1b"
+    },
+    {
+      "index": 3,
+      "time_seconds": 0.12,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_03.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_03.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          36,
+          14,
+          220,
+          250
+        ],
+        "gutters_px": [
+          36,
+          14,
+          36,
+          6
+        ],
+        "minimum_gutter_px": 6,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 33758,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          47,
+          28,
+          209,
+          235
+        ],
+        "gutters_px": [
+          47,
+          28,
+          47,
+          21
+        ],
+        "minimum_gutter_px": 21,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 25996,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "7146774c771e99620b02a9af7493df1071301a80dce5fd1f1ce6273c8a3fc86d"
+    },
+    {
+      "index": 4,
+      "time_seconds": 0.16,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_04.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_04.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          23,
+          13,
+          235,
+          245
+        ],
+        "gutters_px": [
+          23,
+          13,
+          21,
+          11
+        ],
+        "minimum_gutter_px": 11,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 34294,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          36,
+          27,
+          222,
+          230
+        ],
+        "gutters_px": [
+          36,
+          27,
+          34,
+          26
+        ],
+        "minimum_gutter_px": 26,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 26371,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "849ad1dbf70f239de01102c4adf670dab8744cb9cdf15215f9d14c56eea7a8f2"
+    },
+    {
+      "index": 5,
+      "time_seconds": 0.2,
+      "active_crush": true,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_05.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_05.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          14,
+          5,
+          243,
+          251
+        ],
+        "gutters_px": [
+          14,
+          5,
+          13,
+          5
+        ],
+        "minimum_gutter_px": 5,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 35623,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          28,
+          20,
+          229,
+          236
+        ],
+        "gutters_px": [
+          28,
+          20,
+          27,
+          20
+        ],
+        "minimum_gutter_px": 20,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 27399,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "b89a32d48bb855a7fa575ae3ffa6bf3c7e694ad419e77db23c32111846126005"
+    },
+    {
+      "index": 6,
+      "time_seconds": 0.24,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_06.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_06.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          28,
+          12,
+          230,
+          249
+        ],
+        "gutters_px": [
+          28,
+          12,
+          26,
+          7
+        ],
+        "minimum_gutter_px": 7,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 34630,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          41,
+          27,
+          217,
+          234
+        ],
+        "gutters_px": [
+          41,
+          27,
+          39,
+          22
+        ],
+        "minimum_gutter_px": 22,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 26472,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "14efc315f1638d695d79abed39caba0aaf1abc9cedfa8173c1fc11a4b4357b24"
+    },
+    {
+      "index": 7,
+      "time_seconds": 0.28,
+      "active_crush": false,
+      "raw_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_07.png",
+      "runtime_path": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_07.png",
+      "raw_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          30,
+          12,
+          227,
+          238
+        ],
+        "gutters_px": [
+          30,
+          12,
+          29,
+          18
+        ],
+        "minimum_gutter_px": 12,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 35937,
+        "max_alpha": 255
+      },
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox": [
+          42,
+          27,
+          215,
+          224
+        ],
+        "gutters_px": [
+          42,
+          27,
+          41,
+          32
+        ],
+        "minimum_gutter_px": 27,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 27600,
+        "max_alpha": 255
+      },
+      "runtime_sha256": "f6cb3a62d9ca1afcf397db67b0a200cdbb9b6e776d0317fc8d1b733da76876d3"
+    }
+  ],
+  "preview": "docs/design/previews/weapon_attack_animations/robot_hydraulic_press_compression_contact.png",
+  "decision": "pass"
+}

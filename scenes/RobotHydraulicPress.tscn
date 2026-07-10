@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/class_weapon.gd" id="1_class_weapon"]
+[ext_resource type="Script" path="res://scripts/robot_hydraulic_press_weapon.gd" id="1_press_weapon"]
 [ext_resource type="Texture2D" path="res://assets/sprites/weapons/robot_hydraulic_press.png" id="2_weapon_texture"]
 
 [node name="RobotHydraulicPress" type="Node2D" groups=["player_weapons"]]
 z_index = 8
-script = ExtResource("1_class_weapon")
+script = ExtResource("1_press_weapon")
 weapon_id = "robot_hydraulic_press"
 display_name = "Гидравлический Пресс"
 attack_mode = "robot_compression_line"

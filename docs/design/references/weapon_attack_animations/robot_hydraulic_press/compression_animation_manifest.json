@@ -1,0 +1,68 @@
+{
+  "issue": "SCRUM-917",
+  "source_issue": "SCRUM-759",
+  "weapon_id": "robot_hydraulic_press",
+  "weapon_name_ru": "Гидравлический Пресс",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "pixel_lab": {
+    "source_object_id": "99b9c7ec-23d3-4110-a22a-912cf8b455b8",
+    "animation_group_id": "659bdae5-22a9-4319-a3ca-57b972e5a9a3",
+    "animation_id": "31a9bfff-ee16-4037-a8f5-32477c37a73c",
+    "tool": "animate_object",
+    "mode": "v3",
+    "display_name": "hydraulic_press_side_to_center_crush",
+    "config_smoke_passed": true
+  },
+  "source": {
+    "raw_frames": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/pixellab_animation_raw/robot_hydraulic_press_compress_00.png .. _07.png",
+    "runtime_frames": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compress_00.png .. _07.png",
+    "spriteframes": "assets/sprites/effects/robot_hydraulic_press_compression/robot_hydraulic_press_compression_spriteframes.tres",
+    "frame_count": 8,
+    "canvas": [256, 256],
+    "pivot": [128, 128],
+    "runtime_safe_gutter_px": 16,
+    "runtime_edge_visible_pixels": 0,
+    "normalization": "PixelLab pixels scaled to a centred 224x224 nearest-neighbour inset on transparent 256x256 runtime canvases; no repaint"
+  },
+  "animation": {
+    "runtime_name": "compress",
+    "fps": 25.0,
+    "loop": false,
+    "active_crush_frame": 5,
+    "active_crush_time_seconds": 0.2,
+    "frame_roles": [
+      "open jaws / corridor anticipation",
+      "pressure begins",
+      "centre energy builds",
+      "squeeze accelerates",
+      "pre-impact convergence",
+      "active crush / maximum side pressure",
+      "small rebound / pressure release",
+      "settle and fade"
+    ]
+  },
+  "geometry": {
+    "corridor_start": "owner + direction * 28px",
+    "length_px": 430,
+    "full_width_px": 300,
+    "calibrator_full_width_px": 390,
+    "centre_beam_width_px": 120,
+    "compression_axis": "perpendicular to attack direction, converging to centre axis",
+    "source_rotation_degrees": 90,
+    "runtime_scale": "source x -> corridor width; source y -> corridor length"
+  },
+  "runtime": {
+    "weapon_scene": "scenes/RobotHydraulicPress.tscn",
+    "weapon_visual_bridge": "scripts/robot_hydraulic_press_weapon.gd",
+    "vfx_scene": "scenes/vfx/RobotHydraulicPressCompressionVfx.tscn",
+    "vfx_script": "scripts/vfx/robot_hydraulic_press_compression_vfx.gd",
+    "gameplay_changed": false,
+    "shared_class_weapon_changed": false
+  },
+  "evidence": {
+    "alpha_gutter_report": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/compression_animation_report.json",
+    "contact_sheet": "docs/design/previews/weapon_attack_animations/robot_hydraulic_press_compression_contact.png",
+    "focused_smoke": "tests/scrum917_robot_hydraulic_press_vfx_test.gd"
+  }
+}

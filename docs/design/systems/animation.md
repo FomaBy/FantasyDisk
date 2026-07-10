@@ -635,6 +635,14 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - Priest shoot pose получает animation variant из текущего `weapon_id`: `priest_reliquary` = sanctify blessing hand and release, `priest_censer` = outward ward pulse gesture, `priest_chime` = lifted chime/chant pose. Это только motion layer; `priest_sanctify`, `priest_ward` и `priest_prayer_chain` gameplay/timing остаются в Back-end.
 - Biologist shoot pose получает animation variant из текущего `weapon_id`: `biologist_spore_lens` = raised inspection/bloom lens stance, `biologist_sample_injector` = precise forward dart pose, `biologist_symbiote_seed` = low planting/web gesture. Это только motion layer; `bio_spore_bloom`, `bio_sample_dart` и `bio_symbiote_web` gameplay/timing остаются в Back-end.
 - Robot shoot pose получает animation variant из текущего `weapon_id`: `robot_magnetic_anchor` = heavy plant and low pull, `robot_hydraulic_press` = forward dual-arm compression drive, `robot_reactor_core` = wide reactor vent stance. Это только motion layer; `robot_magnetic_anchor`, `robot_compression_line` и `robot_reactor_vent` gameplay/timing остаются в Back-end.
+- SCRUM-917 добавляет для `robot_hydraulic_press` отдельный PixelLab v3
+  8-frame VFX `compress`: две стальные губки и бирюзовые pressure-waves сходятся
+  с краёв широкого коридора к центральной оси. Кадр 5 играет на `0.20s` и
+  совпадает с уже существующим delayed hit SCRUM-916. Animator scene масштабирует
+  визуал под live `430x300` и `430x390` (Press Calibrator), сохраняет
+  центрированный pivot `(128,128)`, `16px` runtime gutters и нулевой edge-touch;
+  gameplay остаётся в `ClassWeapon`, а scene-specific visual bridge не меняет
+  damage/targeting/compression/cooldown.
 - Engineer shoot pose получает animation variant из текущего `weapon_id`: `engineer_sentry_wrench` = lifted wrench deploy gesture, `engineer_repair_drone` = upward drone launch/guide pose, `engineer_pressure_mines` = crouched mine placement. Это только motion layer; `engineer_sentry_link`, `engineer_repair_drone` и `engineer_pressure_mines` gameplay/timing остаются в Back-end.
 
 ## Enemy Motion
