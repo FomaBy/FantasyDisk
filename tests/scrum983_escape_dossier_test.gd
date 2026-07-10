@@ -20,6 +20,23 @@ const DERIVED_IDS := [
 	"magic_damage", "aoe_radius", "projectile_speed", "attack_range", "range_multiplier",
 	"aura_radius", "buff_power", "knockback_distance", "dot_damage", "dot_speed",
 ]
+const DERIVED_COMPACT_LABELS := {
+	"damage": "Урон",
+	"attack_speed": "Скор. атаки",
+	"crit_chance": "Шанс крит.",
+	"crit_damage_multiplier": "Сила крита",
+	"knockback_power": "Сила отт.",
+	"magic_damage": "Маг. урон",
+	"aoe_radius": "Ширина",
+	"projectile_speed": "Скор. снар.",
+	"attack_range": "Дальность",
+	"range_multiplier": "Дальн. ×",
+	"aura_radius": "Радиус а.",
+	"buff_power": "Сила бафа",
+	"knockback_distance": "Отталк.",
+	"dot_damage": "Период. ур.",
+	"dot_speed": "Частота",
+}
 const SURVIVAL_IDS := ["health_point", "defense", "dodge", "regeneration"]
 const ACTION_NAMES := [
 	"PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton",
@@ -49,7 +66,7 @@ func _validate_resolution(viewport_size: Vector2i) -> void:
 	var context := "%dx%d" % [viewport_size.x, viewport_size.y]
 	if pause == null:
 		_errors.append("%s: pause dossier did not open." % context)
-		_cleanup_fixture(viewport, main)
+		await _cleanup_fixture(viewport, main, context)
 		return
 
 	var contract := _expected_contract(Vector2(viewport_size))
@@ -59,8 +76,7 @@ func _validate_resolution(viewport_size: Vector2i) -> void:
 	_assert_semantic_stats(pause, viewport_size, contract, context)
 	await _assert_focus_contract(pause, contract, context)
 	_assert_action_styles(pause, context)
-	_cleanup_fixture(viewport, main)
-	await process_frame
+	await _cleanup_fixture(viewport, main, context)
 
 
 func _validate_live_resize() -> void:
@@ -77,8 +93,7 @@ func _validate_live_resize() -> void:
 	var base_grid := pause.find_child("BaseStatsGrid", true, false) as GridContainer
 	if base_grid == null or base_grid.columns != 1:
 		_errors.append("live resize: BaseStatsGrid must relayout to one compact column.")
-	_cleanup_fixture(viewport, main)
-	await process_frame
+	await _cleanup_fixture(viewport, main, "live 2560x1440 -> 1280x720")
 
 
 func _open_fixture(viewport_size: Vector2i) -> Dictionary:
@@ -104,11 +119,19 @@ func _open_fixture(viewport_size: Vector2i) -> Dictionary:
 	}
 
 
-func _cleanup_fixture(viewport: SubViewport, main: Node) -> void:
+func _cleanup_fixture(viewport: SubViewport, main: Node, context: String) -> void:
+	var main_ref: WeakRef = weakref(main) if main != null else null
+	var viewport_ref: WeakRef = weakref(viewport) if viewport != null else null
 	if main != null and is_instance_valid(main):
 		main.queue_free()
 	if viewport != null and is_instance_valid(viewport):
 		viewport.queue_free()
+	for _frame in range(4):
+		await process_frame
+	if main_ref != null and main_ref.get_ref() != null:
+		_errors.append("%s: fixture Main leaked after queue_free." % context)
+	if viewport_ref != null and viewport_ref.get_ref() != null:
+		_errors.append("%s: fixture SubViewport leaked after queue_free." % context)
 
 
 func _assert_frame(pause: Control, contract: Dictionary, context: String) -> void:
@@ -229,6 +252,17 @@ func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: D
 		_validate_stat_target(pause, "SurvivalStatRow_%s" % stat_id, "SurvivalStatName_%s" % stat_id, "SurvivalStatValue_%s" % stat_id, contract["inner"], context, stat_targets)
 	for stat_id in DERIVED_IDS:
 		_validate_stat_target(pause, "DerivedStatChip_%s" % stat_id, "DerivedStatName_%s" % stat_id, "DerivedStatValue_%s" % stat_id, contract["inner"], context, stat_targets)
+		var compact_name := pause.find_child("DerivedStatName_%s" % stat_id, true, false) as Label
+		var compact_value := pause.find_child("DerivedStatValue_%s" % stat_id, true, false) as Label
+		var expected_alias := str(DERIVED_COMPACT_LABELS[stat_id])
+		if compact_name == null or compact_name.text != expected_alias:
+			_errors.append("%s: %s compact label must be deterministic alias '%s'." % [context, stat_id, expected_alias])
+		elif compact_name.size.x + 0.5 < _rendered_width(compact_name, expected_alias):
+			_errors.append("%s: %s alias '%s' needs %.1fpx but lane is %.1fpx." % [context, stat_id, expected_alias, _rendered_width(compact_name, expected_alias), compact_name.size.x])
+		if compact_value != null and compact_value.size.x + 0.5 < _rendered_width(compact_value, compact_value.text):
+			_errors.append("%s: %s value '%s' needs %.1fpx but lane is %.1fpx." % [context, stat_id, compact_value.text, _rendered_width(compact_value, compact_value.text), compact_value.size.x])
+		if viewport_size == Vector2i(1920, 1080) and compact_value != null and compact_value.custom_minimum_size.x > 64.0:
+			_errors.append("%s: %s value reserve %.1fpx steals the readable alias lane." % [context, stat_id, compact_value.custom_minimum_size.x])
 	var attack_speed := pause.find_child("DerivedStatValue_attack_speed", true, false) as Label
 	var crit_chance := pause.find_child("DerivedStatValue_crit_chance", true, false) as Label
 	var crit_power := pause.find_child("DerivedStatValue_crit_damage_multiplier", true, false) as Label
@@ -292,23 +326,42 @@ func _assert_focus_contract(pause: Control, contract: Dictionary, context: Strin
 			var expected_up := rows[row_index - 2]
 			if _resolved_neighbor(current, current.focus_neighbor_top) != expected_up:
 				_errors.append("%s: base-stat up focus changes logical column at %s." % [context, current.name])
-	var focus_target := pause.find_child("DerivedStatChip_dot_speed", true, false) as Control
-	if focus_target != null:
+	for button_name in ACTION_NAMES:
+		var button := pause.find_child(button_name, true, false) as Button
+		var up_target: Control = _resolved_neighbor(button, button.focus_neighbor_top) if button != null else null
+		if up_target == null or not _clipped_visible_rect(up_target).has_area():
+			_errors.append("%s: %s Up neighbor must resolve to a clipped-visible stat target." % [context, button_name])
+	var tooltip := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
+	var tooltip_scroll := pause.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
+	var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
+	if tooltip_scroll == null or tooltip_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+		_errors.append("%s: focus tooltip must use a vertically clipped scroll viewport." % context)
+	for focus_target in required.slice(ACTION_NAMES.size()):
+		if focus_target == null:
+			continue
 		focus_target.grab_focus()
-		await _settle()
-		var tooltip := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
-		var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
-		if tooltip == null or not tooltip.visible or tooltip_label == null or not tooltip_label.text.contains("Формула / источник:"):
-			_errors.append("%s: focus does not expose the complete stat tooltip." % context)
-		elif tooltip.size.x > 430.1 or tooltip.size.y > 288.1:
-			_errors.append("%s: focus tooltip exceeds 430x288." % context)
+		for _frame in range(4):
+			await process_frame
+		if tooltip == null or not tooltip.visible or tooltip_label == null \
+			or not tooltip_label.text.contains("Формула / источник:") or not tooltip_label.text.contains("Влияет:"):
+			_errors.append("%s: %s focus does not expose its complete tooltip." % [context, focus_target.name])
+			continue
+		var tooltip_rect := tooltip.get_global_rect()
+		if tooltip_rect.size.x > 430.1 or tooltip_rect.size.y > 288.1:
+			_errors.append("%s: %s tooltip %s exceeds 430x288." % [context, focus_target.name, str(tooltip_rect.size)])
 		else:
-			_assert_inside(tooltip.get_global_rect(), contract["inner"], "%s focus tooltip" % context)
-		var derived_scroll := pause.find_child("DerivedStatsScroll", true, false) as ScrollContainer
-		if derived_scroll != null:
-			_assert_inside(_clipped_visible_rect(focus_target), derived_scroll.get_global_rect().grow(1.0), "%s focused derived row" % context)
+			_assert_inside(tooltip_rect, contract["inner"], "%s %s focus tooltip" % [context, focus_target.name])
+		if not _clipped_visible_rect(focus_target).has_area():
+			_errors.append("%s: focus-follow did not reveal %s in its scroll viewport." % [context, focus_target.name])
 	resume.grab_focus()
 	await process_frame
+
+
+func _rendered_width(label: Label, text: String) -> float:
+	return label.get_theme_font("font").get_string_size(
+		text, HORIZONTAL_ALIGNMENT_LEFT, -1.0,
+		label.get_theme_font_size("font_size")
+	).x
 
 
 func _resolved_neighbor(source: Control, path: NodePath) -> Control:

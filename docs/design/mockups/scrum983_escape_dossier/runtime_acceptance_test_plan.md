@@ -55,4 +55,9 @@ stat chip or scrollbar entering a content lane.
 - Runtime UI smoke: PASS (known headless dummy-renderer capture warning only).
 - Windowed Metal capture: PASS at 1280×720, 1920×1080 and 2560×1440;
   `build/qa/scrum983/escape_dossier_visual_matrix.md` records exact rectangles.
+- Every derived compact alias and value fits its actual rendered lane at all
+  three targets; every base/survival/derived focus target was exercised and its
+  actual tooltip remained within 430×288 and the inner rect.
+- Footer Up neighbors are clipped-visible at every target; fixture `Main` and
+  `SubViewport` WeakRefs clear after `queue_free`.
 - Full repository runtime smoke: pending the active Priest test-lock release.

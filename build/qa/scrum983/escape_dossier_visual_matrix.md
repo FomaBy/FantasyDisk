@@ -15,6 +15,7 @@ Display driver: `macOS`
 - Hero scroll: vertical max `778.0`, horizontal mode `0`, follow_focus `true`
 - Derived scroll: vertical max `928.0`, horizontal mode `0`, follow_focus `true`
 - compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. атаки 1,82/с; Маг. урон 3,1; Ширина 350; Скор. снар. 619; Период. ур. 8,6; Частота 1,08/с`
 
 ## 1920x1080
 - frame safe rect: `[P: (200.0, 169.0), S: (1520.0, 742.0)]`
@@ -29,6 +30,7 @@ Display driver: `macOS`
 - Hero scroll: vertical max `647.0`, horizontal mode `0`, follow_focus `true`
 - Derived scroll: vertical max `784.0`, horizontal mode `0`, follow_focus `true`
 - compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. атаки 1,82/с; Маг. урон 3,1; Ширина 350; Скор. снар. 619; Период. ур. 8,6; Частота 1,08/с`
 
 ## 2560x1440
 - frame safe rect: `[P: (267.0, 225.0), S: (2026.0, 990.0)]`
@@ -43,3 +45,4 @@ Display driver: `macOS`
 - Hero scroll: vertical max `706.0`, horizontal mode `0`, follow_focus `true`
 - Derived scroll: vertical max `751.0`, horizontal mode `0`, follow_focus `true`
 - compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. атаки 1,82/с; Маг. урон 3,1; Ширина 350; Скор. снар. 619; Период. ур. 8,6; Частота 1,08/с`

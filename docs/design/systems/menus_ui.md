@@ -989,9 +989,13 @@ eight semantic rows in `BaseStatsGrid` (1 column compact, 2 columns wide);
 the 1080p two-column name lane must fit at least the rendered short localized
 label `Сила`. Four opaque reserve masks cover everything outside the inner rect
 below the content/final frame, preventing any combat HUD from showing through
-gold ornament. Derived stat groups remain 2×2. Every stat target is keyboard/gamepad focusable,
+gold ornament. Derived stat groups remain 2×2 and show deterministic readable
+compact aliases without clipping either aliases or localized numeric values;
+canonical names remain in tooltips. Every stat target is keyboard/gamepad focusable,
 uses geometric D-pad neighbors, and exposes the same complete
-description/formula/source/influences as hover. Runtime oracle:
+description/formula/source/influences as hover. The focus tooltip uses a clipped
+vertical scroll viewport and never exceeds 430×288; footer Up selects only
+clipped-visible stat rows. Runtime oracle:
 `tests/scrum983_escape_dossier_test.gd`; visual evidence:
 `build/qa/scrum983/`.
 

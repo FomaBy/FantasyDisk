@@ -87,6 +87,23 @@ const DERIVED_GROUPS := [
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
 	},
 ]
+const DERIVED_COMPACT_LABELS := {
+	"damage": "Урон",
+	"attack_speed": "Скор. атаки",
+	"crit_chance": "Шанс крит.",
+	"crit_damage_multiplier": "Сила крита",
+	"knockback_power": "Сила отт.",
+	"magic_damage": "Маг. урон",
+	"aoe_radius": "Ширина",
+	"projectile_speed": "Скор. снар.",
+	"attack_range": "Дальность",
+	"range_multiplier": "Дальн. ×",
+	"aura_radius": "Радиус а.",
+	"buff_power": "Сила бафа",
+	"knockback_distance": "Отталк.",
+	"dot_damage": "Период. ур.",
+	"dot_speed": "Частота",
+}
 
 # SCRUM-890: кнопка «Завершить забег» открывает модалку EndRunConfirm ui_screens
 # (SCRUM-883) через этот хук; standalone-сцена (тесты/превью) падает в
@@ -114,6 +131,7 @@ var _title_label: Label = null
 var _header_summary: Label = null
 var _frame_panel: PanelContainer = null
 var _focus_tooltip: PanelContainer = null
+var _focus_tooltip_scroll: ScrollContainer = null
 var _focus_tooltip_label: Label = null
 var _focus_tooltip_anchor: Control = null
 var _base_focus_targets: Array[Control] = []
@@ -578,17 +596,29 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip.name = "DossierFocusTooltip"
 	_focus_tooltip.visible = false
 	_focus_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip.clip_contents = true
 	_focus_tooltip.z_index = 100
 	_focus_tooltip.add_theme_stylebox_override("panel", _chip_style(0.98, 12.0))
 	parent.add_child(_focus_tooltip)
 
+	_focus_tooltip_scroll = ScrollContainer.new()
+	_focus_tooltip_scroll.name = "DossierFocusTooltipScroll"
+	_focus_tooltip_scroll.custom_minimum_size = Vector2(390.0, 0.0)
+	_focus_tooltip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_focus_tooltip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_focus_tooltip.add_child(_focus_tooltip_scroll)
+
 	_focus_tooltip_label = Label.new()
 	_focus_tooltip_label.name = "DossierFocusTooltipLabel"
-	_focus_tooltip_label.custom_minimum_size = Vector2(390.0, 0.0)
+	_focus_tooltip_label.custom_minimum_size = Vector2(380.0, 0.0)
 	_focus_tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_focus_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_focus_tooltip_label.add_theme_font_size_override("font_size", _readable_px(15.0))
 	_focus_tooltip_label.add_theme_color_override("font_color", COLOR_BODY)
-	_focus_tooltip.add_child(_focus_tooltip_label)
+	_focus_tooltip_scroll.add_child(_focus_tooltip_label)
 
 
 func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
@@ -744,7 +774,7 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 		(node as Label).add_theme_font_size_override("font_size", _readable_px(15.0))
 	for node in find_children("DerivedStatValue_*", "Label", true, false):
 		var label := node as Label
-		label.custom_minimum_size = Vector2(_readable_px(84.0), 0.0)
+		label.custom_minimum_size = Vector2(_readable_px(54.0), 0.0)
 		label.add_theme_font_size_override("font_size", _readable_px(17.0))
 
 
@@ -774,8 +804,7 @@ func _position_focus_tooltip() -> void:
 		return
 	var viewport_size := get_viewport_rect().size
 	var inner_rect: Rect2 = _responsive_contract(viewport_size)["inner_rect"]
-	var minimum := _focus_tooltip.get_combined_minimum_size()
-	var tooltip_size := Vector2(minf(430.0, maxf(260.0, minimum.x)), minf(288.0, maxf(80.0, minimum.y)))
+	var tooltip_size := Vector2(minf(430.0, inner_rect.size.x), minf(288.0, inner_rect.size.y))
 	_focus_tooltip.size = tooltip_size
 	var anchor_rect := _focus_tooltip_anchor.get_global_rect()
 	var candidate := Vector2(anchor_rect.end.x + 12.0, anchor_rect.position.y)
@@ -791,6 +820,7 @@ func _show_focus_tooltip(anchor: Control) -> void:
 		return
 	_focus_tooltip_anchor = anchor
 	_focus_tooltip_label.text = anchor.tooltip_text
+	_focus_tooltip_scroll.scroll_vertical = 0
 	_focus_tooltip.visible = true
 	call_deferred("_position_focus_tooltip")
 
@@ -872,21 +902,38 @@ func _nearest_action_by_x(source: Control) -> Button:
 
 
 func _nearest_stat_edge_by_x(source: Control, candidates: Array[Control], bottom_edge: bool) -> Control:
-	var edge_y := -INF if bottom_edge else INF
+	var visible_candidates: Array[Control] = []
 	for candidate in candidates:
-		var y := candidate.get_global_rect().get_center().y
+		var visible_rect := _focus_visible_rect(candidate)
+		if visible_rect.has_area() and visible_rect.size.y >= minf(12.0, candidate.size.y * 0.25):
+			visible_candidates.append(candidate)
+	if visible_candidates.is_empty():
+		visible_candidates = candidates
+	var edge_y := -INF if bottom_edge else INF
+	for candidate in visible_candidates:
+		var y := _focus_visible_rect(candidate).get_center().y
 		edge_y = maxf(edge_y, y) if bottom_edge else minf(edge_y, y)
 	var source_x := source.get_global_rect().get_center().x
 	var best: Control = null
 	var best_score := INF
-	for candidate in candidates:
-		var center := candidate.get_global_rect().get_center()
+	for candidate in visible_candidates:
+		var center := _focus_visible_rect(candidate).get_center()
 		var row_distance := absf(center.y - edge_y)
 		var score := row_distance * 4.0 + absf(center.x - source_x)
 		if score < best_score:
 			best_score = score
 			best = candidate
 	return best
+
+
+func _focus_visible_rect(control: Control) -> Rect2:
+	var rect := control.get_global_rect()
+	var ancestor := control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer:
+			rect = rect.intersection((ancestor as ScrollContainer).get_global_rect())
+		ancestor = ancestor.get_parent()
+	return rect
 
 
 func _refresh_hero_card() -> void:
@@ -1326,7 +1373,7 @@ func _make_survival_stat_row(entry: Dictionary, display_name := "", value_overri
 	_wire_stat_focus(row, _survival_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 6)
 	row.add_child(line)
 
 	var icon := UIIconRegistry.make_icon(stat_id, Vector2(24, 24))
@@ -1505,23 +1552,23 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_STOP
 	chip.tooltip_text = _tooltip_for_entry(entry)
-	chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+	chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	chip.mouse_entered.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _stat_row_style(true))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(true))
 	)
 	chip.mouse_exited.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	)
 	chip.focus_entered.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _stat_row_style(true))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(true))
 	)
 	chip.focus_exited.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	)
 	_wire_stat_focus(chip, _derived_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 4)
 	chip.add_child(line)
 
 	var icon := UIIconRegistry.make_icon(stat_id, Vector2(32, 32))
@@ -1530,7 +1577,7 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 
 	var name_label := Label.new()
 	name_label.name = "DerivedStatName_%s" % stat_id
-	name_label.text = str(entry.get("name_ru", ""))
+	name_label.text = _derived_compact_label(entry)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
@@ -1543,7 +1590,7 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	value_label.name = "DerivedStatValue_%s" % stat_id
 	value_label.text = _compact_value_text(entry)
 	# SCRUM-893: см. SurvivalStatValue — clip_text без min-width схлопывал значение в 0.
-	value_label.custom_minimum_size = Vector2(_readable_px(84.0), 0)
+	value_label.custom_minimum_size = Vector2(_readable_px(54.0), 0)
 	value_label.clip_text = true
 	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -1552,6 +1599,11 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	value_label.add_theme_color_override("font_color", _value_color(entry))
 	line.add_child(value_label)
 	return chip
+
+
+func _derived_compact_label(entry: Dictionary) -> String:
+	var stat_id := str(entry.get("id", ""))
+	return str(DERIVED_COMPACT_LABELS.get(stat_id, entry.get("name_ru", "")))
 
 
 # Чип-ряд контента (0.62, hover 0.82) — язык рядов Атласа
@@ -1575,6 +1627,13 @@ func _base_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFla
 	# In the 1080p 2x4 grid every row is only ~205px wide. Six-pixel side
 	# padding preserves a readable localized-name lane without shrinking icons,
 	# font sizes or the accepted grid topology.
+	style.content_margin_left = 6.0
+	style.content_margin_right = 6.0
+	return style
+
+
+func _derived_stat_row_style(is_hovered: bool) -> StyleBoxFlat:
+	var style := _stat_row_style(is_hovered)
 	style.content_margin_left = 6.0
 	style.content_margin_right = 6.0
 	return style

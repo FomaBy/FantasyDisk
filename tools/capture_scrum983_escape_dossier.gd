@@ -87,6 +87,13 @@ func _capture(viewport_size: Vector2i, qa_dir: String, lines: PackedStringArray)
 		var crit_chance := main.find_child("DerivedStatValue_crit_chance", true, false) as Label
 		var crit_power := main.find_child("DerivedStatValue_crit_damage_multiplier", true, false) as Label
 		lines.append("- compact units: attack `%s`, crit `%s`, crit power `%s`" % [attack_speed.text, crit_chance.text, crit_power.text])
+		var alias_pairs := PackedStringArray()
+		for stat_id in ["attack_speed", "magic_damage", "aoe_radius", "projectile_speed", "dot_damage", "dot_speed"]:
+			var alias_label := main.find_child("DerivedStatName_%s" % stat_id, true, false) as Label
+			var value_label := main.find_child("DerivedStatValue_%s" % stat_id, true, false) as Label
+			if alias_label != null and value_label != null:
+				alias_pairs.append("%s %s" % [alias_label.text, value_label.text])
+		lines.append("- measured compact aliases: `%s`" % "; ".join(alias_pairs))
 	lines.append("")
 
 	if DisplayServer.get_name() != "headless" and complete:

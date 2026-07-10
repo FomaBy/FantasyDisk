@@ -73,6 +73,14 @@ reserved for the destructive End Run action.
   alpha-1 reserve masks cover the complete viewport-minus-inner area below
   content/final frame so the underlying combat HUD cannot bleed through the
   ornament. Focused gate and all three windowed captures were regenerated PASS.
+- 2026-07-10: independent implementation review closed three additional
+  false-green risks. Derived chips now use measured compact Russian aliases and
+  a responsive 54–64px value reserve with both text lanes asserted uncut;
+  every stat (including long priority/formula cases) is focus-tested against an
+  actual clipped 430×288 tooltip viewport; and footer Up neighbors are selected
+  from clipped-visible rows only. Fixture Main/SubViewport WeakRefs are asserted
+  released after every case. Focused/capture/overlap/theme/gamepad×3/full-flow/
+  runtime-UI gates were rerun PASS.
 
 ## Design Paths
 

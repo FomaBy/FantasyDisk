@@ -99,9 +99,11 @@ equipment or arsenal overflow may remain below in the existing vertical scroll.
 | Radius/range/speed | compact integer | `Дальность 616` | unit meaning and influences |
 
 Visible chips contain icon, one-line localized label and value only. Long names
-ellipsis inside their fixed label lane; the complete name is present in the
-tooltip. The tooltip content comes from `scripts/stat_formulas.gd`, never from a
-second manually maintained formula table.
+use deterministic meaningful compact Russian aliases inside their fixed label
+lane (`Скор. атаки`, `Маг. урон`, `Скор. снар.`, `Период. ур.` and equivalents);
+the complete canonical name is present in the tooltip. Neither the alias nor the
+compact numeric value may be clipped. The tooltip content comes from
+`scripts/stat_formulas.gd`, never from a second manually maintained formula table.
 
 ## Local Component Geometry
 
@@ -132,6 +134,11 @@ chip, icon or pointer hitbox enters the scrollbar lane.
 - Up from an action moves to the nearest final visible stat chip; down from the
   final stat row returns to the nearest action. Stat chips are `FOCUS_ALL` even
   though activation is not required; focus opens the same explanation as hover.
+- Visibility for footer/stat transfers is computed after intersection with the
+  owning `ScrollContainer`; an off-screen row is never a footer neighbor.
+- Focus tooltip content lives in a clipped vertical `ScrollContainer`. Its
+  actual panel rectangle, including the longest priority/formula text, is capped
+  at 430×288 and clamped to the inner content rect.
 - Within stats, geometric left/right/up/down neighbors cover every base and
   derived chip. Both scroll containers use `follow_focus=true` and boundary
   neighbors transfer between columns/action row instead of trapping focus.
