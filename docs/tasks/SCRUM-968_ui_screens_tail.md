@@ -1,6 +1,16 @@
 # SCRUM-968 — хвост интеграции аудио: scripts/ui_screens.gd
 
-Статус: todo
+Статус: in_progress
+Jira: SCRUM-968
+Контур: Claude
+Owner: Claude orchestrator tail worker (dispatcher-observed live work)
+Thread/Worker: `/private/tmp/fsd_wt/wqa`
+Locked paths: `scripts/ui_screens.gd` — только audio/UI SFX + credits tail
+Ветка/worktree: detached task worktree `/private/tmp/fsd_wt/wqa`
+
+Dispatcher heartbeat 2026-07-10 15:31 EEST: physical Claude-lane work is
+active; `scripts/ui_screens.gd` contains the first `artifact_reveal` tail edit.
+Codex shared-UI work excludes this file until the owner lands or releases it.
 
 ## Контекст
 
