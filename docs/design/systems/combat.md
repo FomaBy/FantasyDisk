@@ -148,6 +148,20 @@
   целям под его `bio_infection` усилены ×1.20 (trait «Разбор образцов»,
   generic-гейт в `ClassWeapon._damage_enemy`; тики не усиливаются,
   `StatusEffects.has_dot_from_source` отсекает чужие/истёкшие статусы).
+- Рейнджер (SCRUM-913): статус `hunter_trap_paralysis` — ЖЁСТКИЙ паралич
+  (`movement_locked: true`, новый generic-ключ статусов): враг под ним
+  полностью стоит (`Enemy._physics_process` гейтит скорость в ноль —
+  перемещение/рывки/стрельба/призыв заморожены; `StatusEffects.is_movement_locked`),
+  двигают его только внешние импульсы `apply_knockback`, контактный урон
+  сохраняется. В отличие от `speed_multiplier`-статусов движковый кламп ≥0.25
+  здесь не применяется — это осознанный полный стоп; конечность гарантирована
+  длительностью (2.2с базы) и контроль-резистом боссов/элит ×0.25
+  (`POISON_PARALYSIS_BOSS_FACTOR` — пермалок босса невозможен). Статус
+  `hunter_trap_bleed` — зелёное кровотечение по dot-оси (тик = `dot_damage`
+  владельца, `apply_status_from` — «Катализатор»-паттерн атрибуции), 10 тиков
+  × 0.5с = 5с: течёт во время паралича и продолжается после его конца.
+  Отброса на триггере капкана нет — паралич держит жертву; trait-отброс
+  «Сторожевого лука» распространяется только на лучные хиты (SCRUM-909).
 - Knight block/counter uses weapon passive data on `Player.take_damage()`:
   incoming damage reduction, incoming-scaled retaliation, `counter_radius`,
   `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.
