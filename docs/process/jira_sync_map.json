@@ -4422,5 +4422,15 @@
   "key": "SCRUM-917",
   "status": "Готово",
   "desc_hash": "cacbf5b97617c7fd691c61ccc832444a"
+ },
+ "SCRUM-990_artifact_reward_gold_shell.md": {
+  "key": "SCRUM-990",
+  "status": "Контроль качества",
+  "desc_hash": "510e63dfc86d761e8afb3cfa32cb2765"
+ },
+ "SCRUM-991_artifact_reward_resolved_text.md": {
+  "key": "SCRUM-991",
+  "status": "Контроль качества",
+  "desc_hash": "7fbb5ad6c07a0f5cea768f9bf542333a"
  }
 }

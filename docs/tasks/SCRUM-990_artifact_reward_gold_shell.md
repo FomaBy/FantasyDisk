@@ -1,6 +1,6 @@
 # SCRUM-990 — Artifact Reward gold-frame hall
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: `/root/scrum990_artifact_reward`
 Combined scope: `SCRUM-990` + `SCRUM-991`
@@ -29,4 +29,5 @@ Locked screen: elite/chest/boss Artifact Reward only.
   `route_chest_artifact_test.gd`, `boss_act_reward_heal_test.gd`,
   `gamepad_full_flow_smoke_test.gd`, and `runtime_smoke_test.gd`.
 
-Disk cleanup: pending task completion.
+Disk cleanup: removed task `.godot` import cache (445 MB), Python caches and
+unrelated import-generated UID sidecars; only the task capture tool UID is kept.

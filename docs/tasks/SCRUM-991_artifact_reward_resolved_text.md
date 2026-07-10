@@ -1,6 +1,6 @@
 # SCRUM-991 — resolved Artifact Reward text and badges
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: `/root/scrum990_artifact_reward`
 Combined scope: `SCRUM-990` + `SCRUM-991`
@@ -29,4 +29,5 @@ Combined scope: `SCRUM-990` + `SCRUM-991`
   progression/economy, route/chest/artifact, boss heal, gamepad full-flow and
   the full runtime smoke.
 
-Disk cleanup: pending task completion.
+Disk cleanup: removed task `.godot` import cache (445 MB), Python caches and
+unrelated import-generated UID sidecars; only the task capture tool UID is kept.
