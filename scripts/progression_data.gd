@@ -1151,6 +1151,19 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var beam_count := float(config.get("beam_count", 1.0))
 			var pierce := float(config.get("pierce_count", 1.0))
 			return {"solo_hits": clampf(beam_count, 1.0, 2.0), "five_hits": clampf(beam_count * pierce, 1.0, 5.0)}
+		"moon_split_shot":
+			# SCRUM-910: болт бьёт первичную цель + расщепляется в до split_count
+			# РАЗНЫХ соседей с тем же уроном. Соло — ровно 1 хит (веткам нужны
+			# соседи), 5-пак — первичная + все ветки (без повторных хитов).
+			var moon_splits := clampf(float(config.get("split_count", 4.0)), 0.0, 4.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + moon_splits, 1.0, 5.0)}
+		"storm_pierce_cone":
+			# SCRUM-911: конус пробивающих стрел. Соло — один хит (дедуп на весь
+			# залп: цель у вершины не собирает несколько стрел). Толпа — покрытие
+			# раствором конуса на дальней дистанции (модель sweep) + пирс вглубь.
+			var storm_cone := float(config.get("cone_degrees", 34.0))
+			var cone_range := float(config.get("attack_range", 900.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (storm_cone / 45.0) * (cone_range / 320.0), 1.0, 5.0)}
 		"sound_wave":
 			var wave_width := float(config.get("wave_width", 180.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + wave_width / 78.0, 1.0, 5.0)}

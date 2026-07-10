@@ -313,39 +313,79 @@ const ASSASSIN_WEAPONS := {
 	},
 }
 
+# SCRUM-909..913: редизайн кита Рейнджера — «сторожевой лук» (контроль дистанции).
+# Trait «Сторожевой лук» (CLASS_TRAITS.ranger, SCRUM-909): попадания оружий с
+# bow_knockback_trait=true отбрасывают жертву ОТ ИГРОКА (не по полёту снаряда);
+# сила = derived knockback_power (конфиг knockback + endurance×4 + leadership×3,
+# ×knockback_multiplier — артефакт «Ударная тетива»), боссы/элиты ×0.25
+# (общий контроль-резист POISON_PARALYSIS_BOSS_FACTOR). Урон кита физический
+# (damage ← Сила; magic/DoT-апгрейды прямые хиты не трогают), стойка-заряд
+# (charge_seconds) сохранена как identity класса.
 const RANGER_WEAPONS := {
 	"moon_crossbow": {
+		# SCRUM-910: одиночный физический болт в ближайшую цель; после попадания
+		# расщепляется в до split_count РАЗНЫХ соседей в радиусе aoe_radius
+		# (скейлится Radius-наградами) с ТЕМ ЖЕ уроном: без спада, без повторных
+		# хитов по одной цели, вторичные хиты дальше НЕ ветвятся (рекурсии нет).
+		# Артефакт «Лунный расщепитель» (moon_split_targets) добавляет цели
+		# сверх базы. knockback 175 — «высокий против обычного дальнобоя»
+		# (дефолт поля 80); каждый хит (и первичный, и сплит) толкает от героя.
 		"id": "moon_crossbow", "title": "Лунный арбалет",
-		"description": "Заряжаемый болт: чем дольше Рейнджер стоит на месте, тем сильнее пробивающий выстрел.",
+		"description": "Заряжаемый болт по ближней цели: после попадания расщепляется в 4 соседних врагов с тем же уроном. Каждое попадание отбрасывает от Рейнджера.",
 		"scene_path": "res://scenes/MoonCrossbow.tscn",
-		"attack_mode": "beam", "damage_parameter": "damage",
-		"damage_multiplier": 1.55, "fire_interval": 0.95,
-		"attack_range": 900.0, "aoe_radius": 40.0, "beam_width": 26.0,
-		"beam_count": 1, "pierce_count": 1,
+		"attack_mode": "moon_split_shot", "damage_parameter": "damage",
+		"damage_multiplier": 1.05, "fire_interval": 0.95,
+		"attack_range": 900.0, "aoe_radius": 260.0, "beam_width": 26.0,
+		"split_count": 4, "knockback": 175.0, "bow_knockback_trait": true,
 		"charge_seconds": 1.25, "charge_max_multiplier": 1.70,
 		"visual_color": Color(0.75, 0.85, 1.0, 0.50),
 		"passive_mods": {"range_multiplier": 1.10},
 	},
 	"storm_longbow": {
+		# SCRUM-911: дальнобойный КОНУС пробивающих стрел — beam_count стрел
+		# равномерно по полному раствору cone_degrees, каждая летит на
+		# attack_range и пробивает до pierce_count врагов БЕЗ спада урона
+		# (pierce_damage_falloff по умолчанию 1.0); одна цель получает не
+		# больше одного хита за залп (дедуп у вершины конуса — и урона, и
+		# отброса). Артефакт «Грозовой пробойник» (+2 пирса) и «Ядро
+		# Расщепления» (extra_projectile → +стрела в конусе) работают поверх.
+		# Геометрия для VFX SCRUM-912: вершина у героя (+26px по направлению
+		# атаки), 5 коридоров шириной 30px равномерно через раствор 34°
+		# (офсеты -17°/-8.5°/0°/+8.5°/+17°), длина 980 (×1.06 range passive).
 		"id": "storm_longbow", "title": "Грозовой длинный лук",
-		"description": "Заряжаемый грозовой веер: стойка усиливает дальние линии и пробивание.",
+		"description": "Дальний конус из 5 пробивающих стрел: каждая проходит врагов насквозь, каждое попадание отбрасывает от Рейнджера. Стойка заряжает залп.",
 		"scene_path": "res://scenes/StormLongbow.tscn",
-		"attack_mode": "beam", "damage_parameter": "damage",
-		"damage_multiplier": 0.88, "fire_interval": 1.05,
-		"attack_range": 780.0, "aoe_radius": 72.0, "beam_width": 34.0,
-		"beam_count": 3, "beam_fan_degrees": 16.0, "pierce_count": 3,
+		"attack_mode": "storm_pierce_cone", "damage_parameter": "damage",
+		"damage_multiplier": 1.55, "fire_interval": 1.15,
+		"attack_range": 980.0, "aoe_radius": 72.0, "beam_width": 30.0,
+		"beam_count": 5, "cone_degrees": 34.0, "pierce_count": 4,
+		"knockback": 150.0, "bow_knockback_trait": true,
 		"charge_seconds": 1.45, "charge_max_multiplier": 1.55,
 		"visual_color": Color(0.28, 0.72, 1.0, 0.48),
 		"passive_mods": {"range_multiplier": 1.06, "attack_speed_multiplier": 0.96},
 	},
 	"hunter_trap": {
+		# SCRUM-913: ПЕРМАНЕНТНЫЙ капкан — не истекает по таймеру, живёт до
+		# срабатывания либо штатной очистки (смена оружия/смерть/сброс сцены).
+		# Игрок капкан не запускает (проверка только по группе enemies).
+		# Триггер: физический AoE-хлопок + жёсткий паралич trap_paralyze_seconds
+		# (movement_locked — жертва реально стоит; боссы/элиты ×0.25) + зелёное
+		# кровотечение по dot-оси (dot_damage ← Знание): dot_ticks тиков ×
+		# trap_bleed_tick_interval = 5.0с — течёт во время паралича и ~2.8с
+		# после него. Кап поля — ClassWeapon.HUNTER_TRAP_ACTIVE_CAP=6 живых
+		# капканов (кап, НЕ таймер: старейший тихо снимается); артефакт
+		# «Корневой капкан» — +2 к капу и +0.6с параличу. Отброса на триггере
+		# больше НЕТ (паралич держит жертву в капкане) — trait «Сторожевой лук»
+		# на капкан не распространяется, ключ knockback капкану не нужен.
 		"id": "hunter_trap", "title": "Охотничий капкан",
-		"description": "Ставит ловушку перед Рейнджером: стойка ускоряет подготовку, первый враг запускает взрыв и отбрасывание.",
+		"description": "Ставит вечный капкан перед Рейнджером: игроку безопасен, а первого врага захлопывает — урон по области, паралич и зелёное кровотечение.",
 		"scene_path": "res://scenes/HunterTrap.tscn",
 		"attack_mode": "trap", "damage_parameter": "damage",
-		"damage_multiplier": 1.18, "fire_interval": 1.65,
-		"attack_range": 380.0, "aoe_radius": 150.0, "pool_duration": 4.0,
-		"pool_tick_interval": 0.20, "knockback": 150.0,
+		"damage_multiplier": 1.02, "fire_interval": 1.65,
+		"attack_range": 380.0, "aoe_radius": 150.0,
+		"pool_tick_interval": 0.20,
+		"trap_paralyze_seconds": 2.2,
+		"dot_ticks": 10, "trap_bleed_tick_interval": 0.5,
 		"charge_seconds": 1.15, "charge_max_multiplier": 1.35,
 		"visual_color": Color(0.86, 0.62, 0.22, 0.42),
 		"passive_mods": {"pickup_radius_flat": 18.0},

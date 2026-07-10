@@ -26,6 +26,9 @@ const PRIMARY_CAST_ACTION_MODES := {
 	"skull_curse_burn": true,
 	"dark_mirror_blast": true,
 	"plague_dart": true,  # SCRUM-900: бросок чумного дротика — каст-жест
+	# SCRUM-910/911: лучные режимы Рейнджера сохраняют каст-жест прежнего beam.
+	"moon_split_shot": true,
+	"storm_pierce_cone": true,
 }
 const EVENT_CAST_ACTION_MODES := {
 	"aoe_projectile": true,
@@ -40,6 +43,8 @@ const EVENT_CAST_ACTION_MODES := {
 	"dark_chain_burst": true,
 	"skull_curse_burn": true,
 	"dark_mirror_blast": true,
+	"moon_split_shot": true,   # SCRUM-910
+	"storm_pierce_cone": true,  # SCRUM-911
 }
 const ATTACK_MODE_EXECUTORS := {
 	"aoe_projectile": "_exec_aoe_projectile",
@@ -83,6 +88,8 @@ const ATTACK_MODE_EXECUTORS := {
 	"engineer_pressure_mines": "_exec_engineer_pressure_mines",
 	"plague_dart": "_exec_plague_dart",  # SCRUM-900 doctor/plague_syringe
 	"saw_sector": "_exec_saw_sector",  # SCRUM-900 doctor/bone_saw
+	"moon_split_shot": "_exec_moon_split_shot",  # SCRUM-910 ranger/moon_crossbow
+	"storm_pierce_cone": "_exec_storm_pierce_cone",  # SCRUM-911 ranger/storm_longbow
 }
 
 @export var weapon_id := "dark_book"
@@ -123,6 +130,15 @@ const ATTACK_MODE_EXECUTORS := {
 # «Парализующее лезвие» (backstab_root_duration) добавляется поверх, суммарно
 # не выше POISON_PARALYSIS_CAP.
 @export var poison_paralysis_duration := 0.0
+# SCRUM-909 «Сторожевой лук»: опт-ин лучного оружия Рейнджера — каждый прямой
+# хит отбрасывает жертву ОТ ИГРОКА (см. _apply_ranger_bow_knockback). Классы
+# без trait'а bow_hit_knockback (CLASS_TRAITS) флаг игнорируют — утечки нет.
+@export var bow_knockback_trait := false
+# SCRUM-913 «Охотничий капкан»: жёсткий паралич на триггере (сек; боссы/элиты
+# ×POISON_PARALYSIS_BOSS_FACTOR) и интервал тика зелёного кровотечения
+# (dot-ось: dot_ticks тиков по dot_damage владельца).
+@export var trap_paralyze_seconds := 0.0
+@export var trap_bleed_tick_interval := 0.5
 @export var orbit_duration := 1.6
 @export var storm_ticks := 4
 @export var shard_count := 3
@@ -371,6 +387,9 @@ func configure_weapon(config: Dictionary) -> void:
 	dodge_bonus = float(config.get("dodge_bonus", dodge_bonus))
 	smoke_duration = float(config.get("smoke_duration", smoke_duration))
 	poison_paralysis_duration = float(config.get("poison_paralysis_duration", poison_paralysis_duration))
+	bow_knockback_trait = bool(config.get("bow_knockback_trait", bow_knockback_trait))
+	trap_paralyze_seconds = float(config.get("trap_paralyze_seconds", trap_paralyze_seconds))
+	trap_bleed_tick_interval = float(config.get("trap_bleed_tick_interval", trap_bleed_tick_interval))
 	orbit_duration = float(config.get("orbit_duration", orbit_duration))
 	storm_ticks = int(config.get("storm_ticks", storm_ticks))
 	shard_count = int(config.get("shard_count", shard_count))
@@ -640,7 +659,7 @@ func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vect
 			center = owner_node.global_position + direction * minf(attack_range, 360.0)
 			if target != null:
 				center = target.global_position
-		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line":
+		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line", "moon_split_shot", "storm_pierce_cone":
 			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
 			radius = maxf(beam_width * 2.2, 86.0)
 		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
@@ -719,6 +738,14 @@ func _exec_amp(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
 
 func _exec_trap(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
 	_fire_trap(owner_node, direction)
+
+
+func _exec_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_moon_split_shot(owner_node, target, direction)
+
+
+func _exec_storm_pierce_cone(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_storm_pierce_cone(owner_node, direction)
 
 
 func _exec_arquebus_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -1451,31 +1478,94 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var hit_count := 0
 	var hit_limit := _effective_pierce_count()
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
-	# SCRUM-961: «Лунный расщепитель» ветвит болт с первой цели.
 	# SCRUM-939: хук «Цепной палочки» (wand_chain_blasts) удалён — dark_wand
 	# ушёл с beam на dark_chain_burst, артефакт репозиционирован (wand_extra_chain).
-	var moon_splits := int(_owner_mod("moon_split_targets")) if weapon_id == "moon_crossbow" else 0
+	# SCRUM-910: moon-сплит переехал из beam-хука в собственный режим
+	# moon_split_shot (_fire_moon_split_shot) — beam снова универсален.
 	for hit in hits:
 		if hit_count >= hit_limit:
 			break
 		_damage_enemy(hit["node"], damage_value * pow(falloff, float(hit_count)))
-		if hit_count == 0 and moon_splits > 0:
-			_fire_moon_splits(hit["node"] as Node2D, damage_value, moon_splits)
 		hit_count += 1
 
 
-# SCRUM-961 «Лунный расщепитель»: болт ветвится с первой пробитой цели в соседние —
-# под-лучи бьют 45% урона и дальше НЕ ветвятся (прямой удар без повторного сплита).
-func _fire_moon_splits(first_hit: Node2D, damage_value: float, split_targets: int) -> void:
-	if first_hit == null or not is_instance_valid(first_hit):
+# SCRUM-910 «Лунный арбалет»: одиночный физический болт в цель; после попадания
+# расщепляется в до (split_count + артефакт «Лунный расщепитель») РАЗНЫХ соседей
+# первичной жертвы в радиусе aoe_radius с ТЕМ ЖЕ уроном (без спада; повторных
+# хитов по одной цели нет — при нехватке соседей бьём меньше). Рекурсии нет:
+# вторичные хиты дальше не ветвятся (одноуровневый сплит по построению — ветки
+# создаются только из первичного попадания). Каждый хит идёт через _damage_enemy
+# → trait «Сторожевой лук» толкает и первичную, и вторичные цели ОТ ИГРОКА.
+func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_emit_weapon_animation_event(owner_node, "channel", 0.16, direction, {"split_count": split_count})
+	var primary := target
+	if primary == null or not is_instance_valid(primary):
+		primary = _find_closest_enemy(owner_node)
+	var start := owner_node.global_position + direction * 26.0
+	if primary == null:
+		# Холостой болт: цели нет — рисуем трассер по направлению, урона нет.
+		var miss_visual := AttackVfx.beam(_projectile_parent(), start, owner_node.global_position + direction * attack_range, beam_width, visual_color)
+		_register_effect(miss_visual)
 		return
-	var excluded := {first_hit.get_instance_id(): true}
-	for branch_target in TARGET_QUERY.nearest_many(self, first_hit.global_position, maxf(aoe_radius, 240.0), split_targets, excluded):
+	var bolt_visual := AttackVfx.beam(_projectile_parent(), start, primary.global_position, beam_width, visual_color)
+	_register_effect(bolt_visual)
+	var damage_value := _rolled_damage(owner_node)
+	_damage_enemy(primary, damage_value)
+	var split_targets := maxi(split_count + int(_owner_mod("moon_split_targets")), 0)
+	if split_targets <= 0 or not is_instance_valid(primary):
+		return
+	var excluded := {primary.get_instance_id(): true}
+	for branch_raw in TARGET_QUERY.nearest_many(self, primary.global_position, maxf(aoe_radius, 120.0), split_targets, excluded):
+		var branch_target := branch_raw as Node2D
 		if branch_target == null or not is_instance_valid(branch_target):
 			continue
-		var branch := AttackVfx.beam(_projectile_parent(), first_hit.global_position, branch_target.global_position, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
+		var branch := AttackVfx.beam(_projectile_parent(), primary.global_position, branch_target.global_position, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
 		_register_effect(branch)
-		_damage_enemy(branch_target, damage_value * 0.45)
+		_damage_enemy(branch_target, damage_value)
+
+
+# SCRUM-911 «Грозовой длинный лук»: дальнобойный КОНУС пробивающих стрел.
+# beam_count (+extra_projectile артефакты) коридоров-стрел равномерно по полному
+# раствору cone_degrees, каждая — прямая линия на attack_range шириной beam_width
+# с пирсом до _effective_pierce_count целей (спад pierce_damage_falloff, у лука
+# 1.0 — без спада). Дедуп по врагам НА ВЕСЬ залп: цель у вершины конуса, куда
+# попадают несколько стрел, получает ровно один хит (и один trait-отброс) —
+# видимая зона совпадает с фактической (QA: без «невидимого» двойного урона).
+func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
+	var arrow_count := maxi(beam_count + _extra_projectiles(), 1)
+	_emit_weapon_animation_event(owner_node, "channel", 0.18, direction, {"beam_count": arrow_count, "cone_degrees": cone_degrees})
+	var damage_value := _rolled_damage(owner_node)
+	var hit_limit := _effective_pierce_count()
+	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
+	var hit_ids := {}
+	for arrow_index in range(arrow_count):
+		var fan_offset := 0.0
+		if arrow_count > 1:
+			fan_offset = deg_to_rad(cone_degrees) * (float(arrow_index) / float(arrow_count - 1) - 0.5)
+		var arrow_direction := direction.rotated(fan_offset)
+		var start := owner_node.global_position + arrow_direction * 26.0
+		var finish := owner_node.global_position + arrow_direction * attack_range
+		var arrow_visual := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
+		_register_effect(arrow_visual)
+
+		var hits := []
+		for hit in _enemies_in_corridor(start, arrow_direction, beam_width, attack_range):
+			hits.append(hit)
+		hits.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a["forward"]) < float(b["forward"])
+		)
+		var pierced := 0
+		for hit in hits:
+			if pierced >= hit_limit:
+				break
+			var enemy_node := hit["node"] as Node2D
+			if enemy_node == null or not is_instance_valid(enemy_node):
+				continue
+			if hit_ids.has(enemy_node.get_instance_id()):
+				continue
+			hit_ids[enemy_node.get_instance_id()] = true
+			_damage_enemy(enemy_node, damage_value * pow(falloff, float(pierced)))
+			pierced += 1
 
 
 func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
@@ -2028,8 +2118,39 @@ func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
 	_release_effect(raven)
 
 
+# SCRUM-913 «Охотничий капкан»: ПЕРМАНЕНТНЫЙ контрольный капкан.
+#   - Не истекает по таймеру: цикл проверки бесконечен (tween.set_loops на узле
+#     капкана — умирает вместе с капканом). Жизненный цикл — до срабатывания
+#     либо штатной очистки (cleanup_effects при смене оружия/смерти/сбросе сцены).
+#   - Игрок капкан НЕ запускает и не снимает: проверка только по группе enemies
+#     (_has_enemy_in_circle).
+#   - Кап поля HUNTER_TRAP_ACTIVE_CAP (+trap_cap_bonus артефакта «Корневой
+#     капкан») — это КАП, а не таймер: старейший капкан тихо снимается.
+#   - Триггер (_trigger_hunter_trap): физический AoE-хлопок (ролл на момент
+#     срабатывания × заряд стойки, снапшот на установке) + жёсткий паралич +
+#     зелёное кровотечение по dot-оси. Отброса нет — паралич держит жертву.
+#   - Keystone «Капканщик» (trap_extra_count): каждый бросок ставит
+#     дополнительные капканы веером; instant_arm (meta_trap_instant_arm)
+#     вооружает без задержки первой проверки.
+const HUNTER_TRAP_ACTIVE_CAP := 6
+
+
 func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "deploy", pool_duration, direction, {"check_interval": pool_tick_interval})
+	_emit_weapon_animation_event(owner_node, "deploy", 0.6, direction, {"check_interval": pool_tick_interval})
+	# «Капканщик» (trap_extra_count) и «Ядро Расщепления» (extra_projectile):
+	# дополнительные капканы одним броском, веером поперёк направления.
+	var extra_traps := maxi(_extra_projectiles(), 0)
+	var center := owner_node.global_position + direction * min(attack_range, 180.0)
+	var side := direction.orthogonal().normalized()
+	for trap_index in range(1 + extra_traps):
+		# 0, +70, -70, +140, ... — веер поперёк направления броска.
+		var lateral := float((trap_index + 1) / 2) * 70.0 * (1.0 if trap_index % 2 == 1 else -1.0)
+		if trap_index == 0:
+			lateral = 0.0
+		_deploy_hunter_trap(owner_node, center + side * lateral)
+
+
+func _deploy_hunter_trap(owner_node: Node2D, trap_position: Vector2) -> void:
 	var trap := Node2D.new()
 	trap.name = "WeaponTrapNode"
 	_register_effect(trap)
@@ -2039,62 +2160,107 @@ func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	trap_visual.scale = Vector2(0.34, 0.34)
 	trap.add_child(trap_visual)
 	_projectile_parent().add_child(trap)
-	trap.global_position = owner_node.global_position + direction * min(attack_range, 180.0)
+	trap.global_position = trap_position
+	trap.set_meta("hunter_trap", true)
+	# Снапшот заряда стойки: капкан, поставленный из полной стойки, хлопает
+	# сильнее (identity «терпеливого охотника»); сам ролл — на момент триггера.
+	trap.set_meta("charge_snapshot", _current_charge_multiplier)
+	_retire_excess_hunter_traps(trap)
 
-	# SCRUM-961 «Корневой капкан»: капкан живёт до срабатывания (практичный потолок
-	# волны 30с, кап 4 живых), жертвы укореняются и кровоточат; «Полевой чертеж»
-	# продлевает жизнь обычных капканов от Лидерства.
-	var root_mode := _owner_mod("trap_root_mode") > 0.0
-	var effective_duration := 30.0 if root_mode else pool_duration * _blueprint_lifetime_multiplier()
-	if root_mode:
-		trap.set_meta("root_trap", true)
-		_retire_excess_root_traps(trap)
 	var state := {"triggered": false}
 	var check_interval := maxf(pool_tick_interval, 0.15)
-	var check_count := maxi(int(floor(effective_duration / check_interval)), 1)
-	var trap_tween := trap.create_tween()
-	var trap_id := trap.get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var weapon_id := get_instance_id()
 	var instant_arm := false
 	if owner_node.has_method("meta_trap_instant_arm"):
 		instant_arm = bool(owner_node.call("meta_trap_instant_arm", _meta_context()))
-	for check_index in range(check_count):
-		if check_index > 0 or not instant_arm:
-			trap_tween.tween_interval(check_interval)
-		trap_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_trap := instance_from_id(trap_id) as Node2D
-			if current_weapon == null or current_trap == null or bool(state["triggered"]):
-				return
-			if not current_weapon.call("_has_enemy_in_circle", current_trap.global_position, aoe_radius):
-				return
-			state["triggered"] = true
-			var current_owner := instance_from_id(owner_id) as Node2D
-			var trap_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else damage
-			current_weapon.call("_damage_enemies_in_circle", current_trap.global_position, aoe_radius, trap_damage)
-			if root_mode:
-				current_weapon.call("_apply_trap_root_bleed", current_trap.global_position)
-			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), current_trap.global_position, aoe_radius, visual_color, false)
-			for enemy in current_weapon.get_tree().get_nodes_in_group("enemies"):
-				var enemy_node := enemy as Node2D
-				if enemy_node == null or not is_instance_valid(enemy_node):
-					continue
-				var away := enemy_node.global_position - current_trap.global_position
-				if away.length_squared() > 0.001 and away.length() <= aoe_radius:
-					current_weapon.call("_push_enemy", enemy_node, away.normalized())
-			current_weapon.call("_release_effect", current_trap)
-		)
-	trap_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_trap := instance_from_id(trap_id) as Node
-		if current_trap == null:
-			return
-		if current_weapon != null and not bool(state["triggered"]):
-			current_weapon.call("_release_effect", current_trap)
-		else:
-			current_trap.queue_free()
-		)
+	var check_callable := Callable(self, "_hunter_trap_check").bind(trap.get_instance_id(), owner_node.get_instance_id(), state)
+	# Вечный цикл проверки: интервал → проверка; живёт, пока жив узел капкана.
+	var trap_tween := trap.create_tween()
+	trap_tween.set_loops()
+	trap_tween.tween_interval(check_interval)
+	trap_tween.tween_callback(check_callable)
+	if instant_arm:
+		check_callable.call_deferred()
+
+
+# Периодическая проверка капкана (Callable без лямбды — SCRUM-551): первый враг
+# в радиусе захлопывает капкан. Игрок и союзные сущности проверку не проходят
+# (только группа enemies).
+func _hunter_trap_check(trap_id: int, owner_id: int, state: Dictionary) -> void:
+	var trap := instance_from_id(trap_id) as Node2D
+	if trap == null or not is_instance_valid(trap) or bool(state.get("triggered", false)):
+		return
+	if not _has_enemy_in_circle(trap.global_position, aoe_radius):
+		return
+	state["triggered"] = true
+	_trigger_hunter_trap(trap, instance_from_id(owner_id) as Node2D)
+
+
+# Срабатывание: физический AoE-хлопок по всем врагам в радиусе + контроль
+# (_apply_hunter_trap_control: паралич + кровотечение). Урон и статусы идут
+# по ОДНОМУ набору целей — читаемая зона совпадает с фактической.
+func _trigger_hunter_trap(trap: Node2D, owner_node: Node2D) -> void:
+	var trap_damage := damage
+	if owner_node != null and is_instance_valid(owner_node):
+		trap_damage = _rolled_damage(owner_node)
+	trap_damage *= maxf(float(trap.get_meta("charge_snapshot", 1.0)), 1.0)
+	var center := trap.global_position
+	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, false)
+	for enemy_raw in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		var enemy_node := enemy_raw as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		_damage_enemy(enemy_node, trap_damage)
+		if is_instance_valid(enemy_node):
+			_apply_hunter_trap_control(enemy_node, owner_node)
+	_release_effect(trap)
+
+
+# Контроль капкана (SCRUM-913):
+#   Паралич — РЕАЛЬНЫЙ стоп-статус (movement_locked → enemy._physics_process
+#   гейтит скорость в ноль), длительность trap_paralyze_seconds ×
+#   контроль-резист боссов/элит (_control_resist_factor, ×0.25 — пермалок
+#   босса невозможен) + бонус артефакта «Корневой капкан». speed_multiplier
+#   0.0 в статусе — маркер «обездвижен» для «Метки охотника».
+#   Кровотечение — dot-ось: тик = dot_damage владельца (Знание), dot_ticks
+#   тиков каждые trap_bleed_tick_interval; длительность НЕ режется резистом —
+#   течёт во время паралича и продолжается после его конца (у боссов почти
+#   вся длительность — уже после паралича).
+func _apply_hunter_trap_control(enemy_node: Node2D, owner_node: Node2D) -> void:
+	var paralyze_duration := (trap_paralyze_seconds + _owner_mod("trap_paralysis_bonus")) * _control_resist_factor(enemy_node)
+	if paralyze_duration > 0.0:
+		StatusEffects.apply_status(enemy_node, "hunter_trap_paralysis", {
+			"duration": paralyze_duration,
+			"movement_locked": true,
+			"speed_multiplier": 0.0,
+			"marker_color": Color(0.45, 0.90, 0.40, 1.0),
+		})
+	if dot_ticks <= 0:
+		return
+	var bleed_tick := 3.0
+	if owner_node != null and is_instance_valid(owner_node):
+		var parameters_raw = owner_node.get("derived_parameters")
+		if parameters_raw is Dictionary:
+			bleed_tick = maxf(float((parameters_raw as Dictionary).get("dot_damage", 3.0)), 1.0)
+	var tick_interval := maxf(trap_bleed_tick_interval, 0.1)
+	StatusEffects.apply_status_from(owner_node, enemy_node, "hunter_trap_bleed", {
+		"duration": float(dot_ticks) * tick_interval,
+		"dot_damage": bleed_tick,
+		"dot_interval": tick_interval,
+		"marker_color": Color(0.35, 0.85, 0.30, 1.0),
+	})
+
+
+# Кап живых капканов (перманентность без замусоривания поля): старейшие сверх
+# капа тихо снимаются. Это КАП, а не таймер — одинокий капкан живёт вечно.
+func _retire_excess_hunter_traps(new_trap: Node2D) -> void:
+	var cap := maxi(HUNTER_TRAP_ACTIVE_CAP + int(_owner_mod("trap_cap_bonus")), 1)
+	var alive_traps: Array[Node2D] = []
+	for effect in _alive_effects():
+		if effect is Node2D and effect.has_meta("hunter_trap") and effect != new_trap:
+			alive_traps.append(effect as Node2D)
+	while alive_traps.size() >= cap:
+		var oldest := alive_traps.pop_front() as Node2D
+		_release_effect(oldest)
 
 
 # SCRUM-936 «Аркебуза»: одна быстрая взрывная пуля — видимый снаряд летит далеко
@@ -2447,10 +2613,39 @@ func _is_backstab_hit(enemy_node: Node2D, phantom_position: Vector2, owner_posit
 
 # SCRUM-897: боссы и элиты сопротивляются контролю — окно паралича срезано
 # (POISON_PARALYSIS_BOSS_FACTOR), пермалок невозможен (кап + короткая база).
+# SCRUM-909/913: тот же общий резист режет и trait-отброс лука, и паралич капкана.
 func _control_resist_factor(enemy_node: Node2D) -> float:
 	if enemy_node.is_in_group("bosses") or enemy_node.is_in_group("elite_enemies"):
 		return POISON_PARALYSIS_BOSS_FACTOR
 	return 1.0
+
+
+# SCRUM-909 «Сторожевой лук» (CLASS_TRAITS.ranger, data-driven): каждый прямой
+# хит лучного оружия (конфиг-флаг bow_knockback_trait) отбрасывает жертву ОТ
+# ИГРОКА на момент попадания — вектор игрок→монстр, НЕ направление полёта
+# снаряда: сплит-ветки, пирс и удары «в спину» всё равно толкают прочь от героя.
+# Сила = weapon.knockback (рантайм-поле уже деривировано игроком: конфиг +
+# endurance×4 + leadership×3, ×knockback_multiplier артефакта «Ударная тетива»)
+# × trait-скаляр bow_hit_knockback; уроном НЕ скейлится. Боссы/элиты — общий
+# контроль-резист ×0.25 (_control_resist_factor). Классы без trait'а получают
+# скаляр 0.0 → no-op (утечка другим классам исключена, тест ranger_kit_test).
+# Сам игрок никуда не толкается — импульс получает только жертва.
+func _apply_ranger_bow_knockback(enemy: Node) -> void:
+	if not bow_knockback_trait:
+		return
+	var enemy_node := enemy as Node2D
+	if enemy_node == null or not is_instance_valid(enemy_node):
+		return
+	var owner_node := _owner_node()
+	if owner_node == null or not owner_node.has_method("class_trait_value"):
+		return
+	var trait_scale := float(owner_node.call("class_trait_value", "bow_hit_knockback"))
+	if trait_scale <= 0.0:
+		return
+	var away := enemy_node.global_position - owner_node.global_position
+	if away.length_squared() <= 0.001:
+		return
+	_push_enemy_scaled(enemy_node, away.normalized(), trait_scale * _control_resist_factor(enemy_node))
 
 
 func _apply_poison_paralysis(enemy_node: Node2D, duration: float) -> void:
@@ -3818,35 +4013,10 @@ func _arm_persistent_mine(mine: Node2D, owner_node: Node2D, mine_index: int) -> 
 
 # SCRUM-961 «Корневой капкан»: сработавший капкан укореняет жертв (кламп движка
 # 0.25) и вешает кровотечение ~3 тика по dot_damage владельца.
-func _apply_trap_root_bleed(center: Vector2) -> void:
-	var owner_node := _owner_node()
-	var bleed_tick := 3.0
-	if owner_node != null:
-		var parameters_raw = owner_node.get("derived_parameters")
-		if parameters_raw is Dictionary:
-			bleed_tick = maxf(float((parameters_raw as Dictionary).get("dot_damage", 3.0)), 1.0)
-	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
-		StatusEffects.apply_status(enemy_node, "trap_root_snare", {
-			"duration": 1.1,
-			"speed_multiplier": 0.25,
-			"marker_color": Color(0.60, 0.42, 0.20, 1.0),
-		})
-		StatusEffects.apply_status(enemy_node, "trap_bleed", {
-			"duration": 1.6,
-			"dot_damage": bleed_tick,
-			"dot_interval": 0.5,
-			"marker_color": Color(0.85, 0.20, 0.15, 1.0),
-		})
-
-
-func _retire_excess_root_traps(new_trap: Node2D) -> void:
-	var alive_traps: Array[Node2D] = []
-	for effect in _alive_effects():
-		if effect is Node2D and effect.has_meta("root_trap") and effect != new_trap:
-			alive_traps.append(effect as Node2D)
-	while alive_traps.size() >= 4:
-		var oldest := alive_traps.pop_front() as Node2D
-		_release_effect(oldest)
+# SCRUM-913: старые trap_root_mode-хелперы (_apply_trap_root_bleed /
+# _retire_excess_root_traps, SCRUM-961) удалены — перманентность, контроль и
+# кровотечение стали БАЗОЙ капкана (_deploy_hunter_trap/_trigger_hunter_trap),
+# артефакт «Корневой капкан» репозиционирован в trap_cap_bonus/trap_paralysis_bonus.
 
 
 func _alive_persistent_mines(exclude: Node2D = null) -> Array[Node2D]:
@@ -4117,6 +4287,7 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
 		if apply_unique_melee_effects:
 			_apply_class_on_hit_statuses(enemy)
+			_apply_ranger_bow_knockback(enemy)  # SCRUM-909 «Сторожевой лук»
 			_maybe_duplicate_hit(enemy, final_amount, hit_type)
 		if notify_owner_hit and owner_node != null and owner_node.has_method("on_weapon_hit"):
 			owner_node.on_weapon_hit(enemy, final_amount, _last_attack_crit, hit_context)  # SCRUM-500/SCRUM-835: крит + semantic hit context
@@ -4588,7 +4759,7 @@ func _estimated_windup_duration() -> float:
 			return maxf(burst_interval, 0.06)
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			return 0.10
-		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
+		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone", "moon_split_shot", "storm_pierce_cone":
 			return 0.12
 		# SCRUM-939..941: касты кита Тёмного мага — короткий читаемый замах.
 		"dark_chain_burst", "skull_curse_burn", "dark_mirror_blast":

@@ -172,6 +172,20 @@ static func speed_multiplier(target: Node) -> float:
 	return clampf(multiplier, 0.25, 1.75)
 
 
+# SCRUM-913: жёсткий контроль (паралич капкана Рейнджера) — статус с
+# movement_locked=true ПОЛНОСТЬЮ останавливает перемещение жертвы
+# (enemy._physics_process гейтит velocity в ноль; внешние импульсы
+# apply_knockback продолжают действовать), в отличие от speed_multiplier,
+# который клампится снизу на 0.25. Конечность гарантирована штатным
+# истечением статуса в tick(); длительность у боссов/элит режется
+# контроль-резистом источника (ClassWeapon._control_resist_factor).
+static func is_movement_locked(target: Node) -> bool:
+	for status in _statuses(target).values():
+		if bool((status as Dictionary).get("movement_locked", false)):
+			return true
+	return false
+
+
 static func _stacked_multiplier(status: Dictionary, key: String) -> float:
 	if not status.has(key):
 		return 1.0

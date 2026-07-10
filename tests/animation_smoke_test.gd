@@ -622,8 +622,9 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["assassin", "chakrams", "boomerang", "shoot", "windup"],
 		["assassin", "shadow_daggers", "stab_flurry", "shoot", "burst"],
 		["assassin", "venom_wire", "dot_beam", "cast", "channel"],
-		["ranger", "moon_crossbow", "beam", "cast", "channel"],
-		["ranger", "storm_longbow", "beam", "cast", "channel"],
+		# SCRUM-910/911: кит Рейнджера ушёл с beam на собственные режимы.
+		["ranger", "moon_crossbow", "moon_split_shot", "cast", "channel"],
+		["ranger", "storm_longbow", "storm_pierce_cone", "cast", "channel"],
 		["ranger", "hunter_trap", "trap", "shoot", "deploy"],
 		["doctor", "restore_potion", "drain_link", "cast", "channel"],
 		["doctor", "plague_syringe", "drain_link", "cast", "channel"],

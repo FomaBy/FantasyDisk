@@ -391,11 +391,12 @@ const ARTIFACTS := [
 	{"id": "mine_satchel", "title": "Минная сумка", "tier": 3, "cost": 95, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "Мины лежат до срабатывания (до 5 живых), автоподрыв через 6с.", "mods": {"mine_persistent_arm": 1.0}},
 	{"id": "field_blueprint", "title": "Полевой чертеж", "tier": 3, "cost": 95, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "Каждые 6 Лидерства: +1 к пределу устройств, +2 выстрела турели, +12% жизни мин.", "mods": {"blueprint_leadership_scaling": 1.0}},
 	{"id": "salvage_core", "title": "Ядро утилизации", "tier": 2, "cost": 55, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "Отжившие и подорванные устройства возвращают 35% перезарядки.", "mods": {"salvage_refund_ratio": 0.35}},
-	# Ranger — Охотничья стойка:
-	{"id": "impact_string", "title": "Ударная тетива", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+35% отталкивания: попадания лука отбрасывают врагов от Рейнджера.", "mods": {"knockback_multiplier": 1.35}},
-	{"id": "moon_splitter", "title": "Лунный расщепитель", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Болт Лунного арбалета ветвится с первой цели в 4 соседних (45% урона).", "mods": {"moon_split_targets": 4.0}},
+	# Ranger — Сторожевой лук (SCRUM-909..913: кит редизайнут — сплит-болт,
+	# пирсинг-конус, перманентный капкан с параличом; артефакты дополняют базу):
+	{"id": "impact_string", "title": "Ударная тетива", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+35% отталкивания: попадания лука отбрасывают врагов от Рейнджера ещё дальше.", "mods": {"knockback_multiplier": 1.35}},
+	{"id": "moon_splitter", "title": "Лунный расщепитель", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Болт Лунного арбалета расщепляется в +2 дополнительные цели (всего 6) с тем же уроном.", "mods": {"moon_split_targets": 2.0}},
 	{"id": "storm_piercer", "title": "Грозовой пробойник", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+2 пробития заряженным выстрелам, +15% дальности.", "mods": {"charged_shot_extra_pierce": 2.0, "range_multiplier": 1.15}},
-	{"id": "root_snare", "title": "Корневой капкан", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Капканы вечны до срабатывания (до 4): жертву укореняет, затем кровотечение.", "mods": {"trap_root_mode": 1.0}},
+	{"id": "root_snare", "title": "Корневой капкан", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+2 к пределу живых капканов (всего 8), паралич захлопнутых дольше на 0.6с.", "mods": {"trap_cap_bonus": 2.0, "trap_paralysis_bonus": 0.6}},
 	{"id": "hunters_mark", "title": "Метка охотника", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Отброшенные и обездвиженные враги получают +25% урона.", "mods": {"hunter_mark_bonus": 0.25}},
 	# Robot — Бронеконтур:
 	{"id": "armor_protocol", "title": "Бронепротокол", "tier": 2, "cost": 55, "class_affinity": ["robot"], "requires_ascension": 5, "description": "+5 поглощения урона, +8% защиты.", "mods": {"absorb_flat": 5.0, "defense_flat": 0.08}},

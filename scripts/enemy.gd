@@ -226,6 +226,20 @@ func _physics_process(delta: float) -> void:
 	var direction := target.global_position - global_position
 	var distance := direction.length()
 
+	# SCRUM-913: жёсткий паралич (капкан Рейнджера, movement_locked-статус) —
+	# жертва полностью стоит: перемещение, рывки, стрельба и призыв заморожены
+	# до истечения статуса; двигают её только внешние импульсы apply_knockback.
+	# Контактный урон СОХРАНЯЕТСЯ — наступать на захлопнутого врага всё ещё
+	# больно. Конечность: длительность статуса конечна, у боссов/элит срезана
+	# контроль-резистом источника (×0.25) — пермалок невозможен.
+	if StatusEffects.is_movement_locked(self):
+		velocity = _consume_knockback(delta)
+		move_and_slide()
+		global_position = _clamp_to_arena(global_position)
+		_update_movement_animation(delta)
+		_update_contact_damage(delta, target, distance)
+		return
+
 	if _update_elite_dash(delta, target, distance):
 		move_and_slide()
 		global_position = _clamp_to_arena(global_position)
