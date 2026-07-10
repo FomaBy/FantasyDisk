@@ -1,0 +1,45 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F0E2B9",
+    "stroke_fill": "#160E0A",
+    "stroke_width": 1,
+    "line_spacing": 1.04,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "settings_title": "Настройки",
+    "back": "Назад",
+    "tab_screen": "Экран",
+    "tab_sound": "Звук",
+    "tab_controls": "Управление",
+    "tab_game": "Игра",
+    "player_damage": "Урон игрока",
+    "player_attack_speed": "Скорость атак игрока",
+    "monster_attack_speed": "Скорость атак монстров",
+    "neutral": "1.0×",
+    "reset": "Сбросить игровые настройки"
+  },
+  "scroll_state": {"scroll_y": 214, "viewport_rect": [194, 332, 892, 306], "scrollbar_lane_rect": [1072, 332, 14, 306]},
+  "zones": [
+    {"id": "settings_title", "content_key": "settings_title", "x": 112, "y": 56, "w": 320, "h": 56, "max_font": 34, "min_font": 22, "color": "#F5E6AE"},
+    {"id": "back", "content_key": "back", "x": 1010, "y": 60, "w": 144, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_screen", "content_key": "tab_screen", "x": 396, "y": 144, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_sound", "content_key": "tab_sound", "x": 680, "y": 144, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center"},
+    {"id": "tab_controls", "content_key": "tab_controls", "x": 396, "y": 228, "w": 204, "h": 48, "max_font": 22, "min_font": 17, "align": "center"},
+    {"id": "tab_game", "content_key": "tab_game", "x": 680, "y": 228, "w": 204, "h": 48, "max_font": 25, "min_font": 18, "align": "center", "color": "#F7D475"},
+    {"id": "label_player_damage", "content_key": "player_damage", "x": 220, "y": 396, "w": 310, "h": 40, "max_font": 20, "min_font": 14},
+    {"id": "slider_player_damage", "x": 546, "y": 396, "w": 346, "h": 40, "required": false, "debug_color": "#5BBFF2"},
+    {"id": "value_player_damage", "content_key": "neutral", "x": 906, "y": 396, "w": 126, "h": 40, "max_font": 20, "min_font": 14, "align": "center", "color": "#F0CC75"},
+    {"id": "label_player_attack_speed", "content_key": "player_attack_speed", "x": 220, "y": 460, "w": 310, "h": 40, "max_font": 20, "min_font": 14},
+    {"id": "slider_player_attack_speed", "x": 546, "y": 460, "w": 346, "h": 40, "required": false, "debug_color": "#5BBFF2"},
+    {"id": "value_player_attack_speed", "content_key": "neutral", "x": 906, "y": 460, "w": 126, "h": 40, "max_font": 20, "min_font": 14, "align": "center", "color": "#F0CC75"},
+    {"id": "label_monster_attack_speed", "content_key": "monster_attack_speed", "x": 220, "y": 524, "w": 310, "h": 40, "max_font": 20, "min_font": 14},
+    {"id": "slider_monster_attack_speed", "x": 546, "y": 524, "w": 346, "h": 40, "required": false, "debug_color": "#5BBFF2"},
+    {"id": "value_monster_attack_speed", "content_key": "neutral", "x": 906, "y": 524, "w": 126, "h": 40, "max_font": 20, "min_font": 14, "align": "center", "color": "#F0CC75"},
+    {"id": "reset", "content_key": "reset", "x": 664, "y": 586, "w": 344, "h": 38, "max_font": 19, "min_font": 14, "align": "center", "color": "#F7D475"},
+    {"id": "scrollbar_thumb_bottom", "x": 1072, "y": 514, "w": 14, "h": 118, "required": false, "debug_color": "#F0B84F"}
+  ]
+}

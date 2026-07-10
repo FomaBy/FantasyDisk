@@ -216,7 +216,7 @@
       "rect": [
         510,
         498,
-        465,
+        435,
         42
       ],
       "ok": true,
@@ -235,7 +235,7 @@
     {
       "id": "value_monster_hp",
       "rect": [
-        1005,
+        990,
         498,
         128,
         42
@@ -247,18 +247,28 @@
         "1.0×"
       ],
       "text_bbox": [
-        1046,
+        1031,
         510,
         46,
         19
       ]
     },
     {
+      "id": "slider_monster_hp",
+      "rect": [
+        1140,
+        498,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
       "id": "label_monster_damage",
       "rect": [
         510,
         566,
-        465,
+        435,
         42
       ],
       "ok": true,
@@ -277,7 +287,7 @@
     {
       "id": "value_monster_damage",
       "rect": [
-        1005,
+        990,
         566,
         128,
         42
@@ -289,18 +299,28 @@
         "1.0×"
       ],
       "text_bbox": [
-        1046,
+        1031,
         578,
         46,
         19
       ]
     },
     {
+      "id": "slider_monster_damage",
+      "rect": [
+        1140,
+        566,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
       "id": "label_player_damage",
       "rect": [
         510,
         633,
-        465,
+        435,
         42
       ],
       "ok": true,
@@ -319,7 +339,7 @@
     {
       "id": "value_player_damage",
       "rect": [
-        1005,
+        990,
         633,
         128,
         42
@@ -331,18 +351,28 @@
         "1.0×"
       ],
       "text_bbox": [
-        1046,
+        1031,
         644,
         46,
         19
       ]
     },
     {
+      "id": "slider_player_damage",
+      "rect": [
+        1140,
+        633,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
       "id": "label_player_attack_speed",
       "rect": [
         510,
         700,
-        465,
+        435,
         42
       ],
       "ok": true,
@@ -361,7 +391,7 @@
     {
       "id": "value_player_attack_speed",
       "rect": [
-        1005,
+        990,
         700,
         128,
         42
@@ -373,18 +403,28 @@
         "1.0×"
       ],
       "text_bbox": [
-        1046,
+        1031,
         712,
         46,
         19
       ]
     },
     {
+      "id": "slider_player_attack_speed",
+      "rect": [
+        1140,
+        700,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
       "id": "label_monster_attack_speed",
       "rect": [
         510,
         768,
-        465,
+        435,
         42
       ],
       "ok": true,
@@ -403,7 +443,7 @@
     {
       "id": "value_monster_attack_speed",
       "rect": [
-        1005,
+        990,
         768,
         128,
         42
@@ -415,11 +455,21 @@
         "1.0×"
       ],
       "text_bbox": [
-        1046,
+        1031,
         780,
         46,
         19
       ]
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "rect": [
+        1140,
+        768,
+        315,
+        42
+      ],
+      "ok": true
     },
     {
       "id": "reset",

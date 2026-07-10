@@ -2,7 +2,7 @@
   "ticket": "SCRUM-975",
   "name": "settings_four_tab_game_design",
   "generated": "2026-07-10",
-  "owner": "Design/Codex /root/design_scrum975",
+  "owner": "Design/Codex /root/design_scrum975; SCRUM-1030 correction /root/scrum1030_design",
   "pipeline": "UI Director -> content-zone planning gate -> PixelLab MCP create_ui_asset -> deterministic checker-alpha cleanup -> accepted existing Settings backdrop underlay -> content-zone compositor",
   "pixellab_mcp": {
     "config_smoke": "PASS: get_balance returned a JSON-RPC result; no credentials printed or stored",
@@ -34,6 +34,18 @@
         "notes": "four 260x72-equivalent plates in a 2x2 grid; generated vertical scrollbar lane; disconnected tinted checker export artifacts behind the active tab removed by exact, documented cleanup regions"
       },
       {
+        "purpose": "1280x720 bottom-scroll state reference with rows 3-5, reset plate and scrollbar thumb at bottom",
+        "ui_asset_id": "1b60618f-a8ad-4695-82d8-099fbf1ad516",
+        "name": "scrum1030_settings_game_720_bottom_scroll",
+        "source_size": [688, 384],
+        "seed": 1030,
+        "source": "pixellab_settings_four_tab_layout_720_bottom_source.png",
+        "alpha_layer": "pixellab_settings_four_tab_layout_720_bottom_alpha.png",
+        "mockup_base": "pixellab_settings_four_tab_layout_1280x720_bottom.png",
+        "composition": "postprocess_assets.py nearest-resizes to 1280x720 and alpha-composites only crop [145,300,1130,680] over the accepted compact fixed shell; title/back/tabs remain byte-identical between states",
+        "notes": "SCRUM-1030 PixelLab source generated only for the maximum-scroll visual state; it provides the three complete slider rows, reset plate and bottom scrollbar thumb. The content-zone compositor adds runtime copy only inside approved row/reset fields"
+      },
+      {
         "purpose": "Game tab icon source sheet",
         "ui_asset_id": "62c4a582-2b12-4a3e-9b41-6d747caa7b6a",
         "name": "scrum975_settings_game_tab_medallion",
@@ -60,7 +72,10 @@
     "base_decision": "ready_for_image",
     "compact": "ui_plan_1280x720.json",
     "compact_report": "ui_plan_1280x720.report.json",
-    "compact_decision": "ready_for_image"
+    "compact_decision": "ready_for_image",
+    "compact_complete_inventory": "five rows with row/label/slider/value rectangles, reset action, explicit 878x520 logical content canvas and 14px scrollbar lane",
+    "focused_geometry_gate": "scrum1030_geometry.report.json",
+    "focused_geometry_ok": true
   },
   "composite_outputs": [
     {
@@ -70,6 +85,14 @@
       "report": "render_1280x720.report.json",
       "fit": true,
       "scroll": "required; 14px lane; initial view shows first two rows"
+    },
+    {
+      "size": [1280, 720],
+      "preview": "docs/design/previews/scrum975_settings_game_tab/settings_game_1280x720_scroll_bottom.png",
+      "debug": "docs/design/previews/scrum975_settings_game_tab/settings_game_1280x720_scroll_bottom.debug.png",
+      "report": "render_1280x720_scroll_bottom.report.json",
+      "fit": true,
+      "scroll": "maximum scroll_y=214; shows rows 3-5 and reset; fixed title/back/tabs unchanged"
     },
     {
       "size": [1920, 1080],
@@ -88,6 +111,11 @@
       "scroll": "not required"
     }
   ],
-  "runtime_promotion": "none in SCRUM-975; Back-end handoff may promote ui_settings_game_tab_icon_44.png and must reuse current live shell/fields/sliders/buttons",
+  "scrum1030_correction": {
+    "bug": "the original compact plan stopped after row 2 and the committed 2K guide did not reproduce from layout.json",
+    "resolution": "complete compact logical scroll canvas plus top/bottom layouts and focused transform gate; 2K layout now carries exact label/value/slider rectangles and its guide/report are renderer outputs from that same canonical file",
+    "reproducibility": "generate_responsive_layouts.py regenerates 1080p from layout.json; validate_scrum1030_geometry.py checks cross-file geometry; bundled validate_ui_layout_plan.py and render_content_zones.py regenerate all planning/compositor reports and guides"
+  },
+  "runtime_promotion": "none in SCRUM-975/SCRUM-1030; Back-end handoff may promote ui_settings_game_tab_icon_44.png and must reuse current live shell/fields/sliders/buttons",
   "secrets": "none embedded"
 }

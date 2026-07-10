@@ -128,213 +128,191 @@
       ]
     },
     {
-      "id": "game_title",
+      "id": "label_player_damage",
       "rect": [
-        208,
-        340,
-        400,
-        34
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 25,
-      "lines": [
-        "Песочница забега"
-      ],
-      "text_bbox": [
-        208,
-        344,
-        214,
-        26
-      ]
-    },
-    {
-      "id": "game_status",
-      "rect": [
-        730,
-        340,
-        328,
-        34
+        220,
+        396,
+        310,
+        40
       ],
       "ok": true,
       "kind": "text",
       "font_size": 20,
       "lines": [
-        "Обычный режим · 1.0×"
+        "Урон игрока"
       ],
       "text_bbox": [
-        844,
+        220,
+        406,
+        115,
+        20
+      ]
+    },
+    {
+      "id": "slider_player_damage",
+      "rect": [
+        546,
+        396,
         346,
-        214,
+        40
+      ],
+      "ok": true
+    },
+    {
+      "id": "value_player_damage",
+      "rect": [
+        906,
+        396,
+        126,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        948,
+        408,
+        42,
+        16
+      ]
+    },
+    {
+      "id": "label_player_attack_speed",
+      "rect": [
+        220,
+        460,
+        310,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Скорость атак игрока"
+      ],
+      "text_bbox": [
+        220,
+        470,
+        200,
+        20
+      ]
+    },
+    {
+      "id": "slider_player_attack_speed",
+      "rect": [
+        546,
+        460,
+        346,
+        40
+      ],
+      "ok": true
+    },
+    {
+      "id": "value_player_attack_speed",
+      "rect": [
+        906,
+        460,
+        126,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        948,
+        472,
+        42,
+        16
+      ]
+    },
+    {
+      "id": "label_monster_attack_speed",
+      "rect": [
+        220,
+        524,
+        310,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Скорость атак монстров"
+      ],
+      "text_bbox": [
+        220,
+        534,
+        227,
+        20
+      ]
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "rect": [
+        546,
+        524,
+        346,
+        40
+      ],
+      "ok": true
+    },
+    {
+      "id": "value_monster_attack_speed",
+      "rect": [
+        906,
+        524,
+        126,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        948,
+        536,
+        42,
+        16
+      ]
+    },
+    {
+      "id": "reset",
+      "rect": [
+        664,
+        586,
+        344,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 19,
+      "lines": [
+        "Сбросить игровые настройки"
+      ],
+      "text_bbox": [
+        703,
+        594,
+        266,
         21
       ]
     },
     {
-      "id": "game_desc",
+      "id": "scrollbar_thumb_bottom",
       "rect": [
-        208,
-        384,
-        850,
-        30
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 18,
-      "lines": [
-        "Настройки применятся со следующего забега."
-      ],
-      "text_bbox": [
-        208,
-        389,
-        392,
-        20
-      ]
-    },
-    {
-      "id": "game_warning",
-      "rect": [
-        208,
-        424,
-        850,
-        42
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 17,
-      "lines": [
-        "Пользовательский режим отключает обычный прогресс и достижения."
-      ],
-      "text_bbox": [
-        208,
-        436,
-        562,
-        18
-      ]
-    },
-    {
-      "id": "label_monster_hp",
-      "rect": [
-        220,
-        482,
-        310,
-        40
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 20,
-      "lines": [
-        "Здоровье монстров"
-      ],
-      "text_bbox": [
-        220,
-        492,
-        185,
-        20
-      ]
-    },
-    {
-      "id": "slider_monster_hp",
-      "rect": [
-        546,
-        482,
-        346,
-        40
+        1072,
+        514,
+        14,
+        118
       ],
       "ok": true
-    },
-    {
-      "id": "value_monster_hp",
-      "rect": [
-        906,
-        482,
-        126,
-        40
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 20,
-      "lines": [
-        "1.0×"
-      ],
-      "text_bbox": [
-        948,
-        494,
-        42,
-        16
-      ]
-    },
-    {
-      "id": "label_monster_damage",
-      "rect": [
-        220,
-        546,
-        310,
-        40
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 20,
-      "lines": [
-        "Урон монстров"
-      ],
-      "text_bbox": [
-        220,
-        556,
-        142,
-        20
-      ]
-    },
-    {
-      "id": "slider_monster_damage",
-      "rect": [
-        546,
-        546,
-        346,
-        40
-      ],
-      "ok": true
-    },
-    {
-      "id": "value_monster_damage",
-      "rect": [
-        906,
-        546,
-        126,
-        40
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 20,
-      "lines": [
-        "1.0×"
-      ],
-      "text_bbox": [
-        948,
-        558,
-        42,
-        16
-      ]
-    },
-    {
-      "id": "scroll_hint",
-      "rect": [
-        250,
-        604,
-        730,
-        24
-      ],
-      "ok": true,
-      "kind": "text",
-      "font_size": 16,
-      "lines": [
-        "Прокрутите вниз: ещё 3 параметра и сброс"
-      ],
-      "text_bbox": [
-        454,
-        608,
-        323,
-        17
-      ]
     }
   ]
 }

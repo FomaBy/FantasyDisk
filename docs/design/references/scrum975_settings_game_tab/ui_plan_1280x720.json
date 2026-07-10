@@ -1,5 +1,5 @@
 {
-  "ticket": "SCRUM-975",
+  "ticket": "SCRUM-975 / SCRUM-1030",
   "canvas": {"width": 1280, "height": 720},
   "policy": {"min_gap": 5, "allow_overlap": false},
   "content": {
@@ -12,7 +12,27 @@
     "game_title": "Песочница забега",
     "game_status": "Обычный режим · 1.0×",
     "game_desc": "Настройки применятся со следующего забега.",
-    "game_warning": "Пользовательский режим отключает обычный прогресс и достижения."
+    "game_warning": "Пользовательский режим отключает обычный прогресс и достижения.",
+    "monster_hp": "Здоровье монстров",
+    "monster_damage": "Урон монстров",
+    "player_damage": "Урон игрока",
+    "player_attack_speed": "Скорость атак игрока",
+    "monster_attack_speed": "Скорость атак монстров",
+    "neutral": "1.0×",
+    "reset": "Сбросить игровые настройки"
+  },
+  "scroll_contract": {
+    "viewport_rect": [194, 332, 892, 306],
+    "content_origin_screen": [194, 332],
+    "content_size": [878, 520],
+    "scrollbar_lane_rect": [1072, 332, 14, 306],
+    "top_scroll_y": 0,
+    "bottom_scroll_y": 214,
+    "coordinate_rule": "Elements parented to scroll_content_canvas use logical scroll-content coordinates. Screen y = 332 + logical y - scroll_y; x is already screen-space.",
+    "evidence_layouts": {
+      "top": "layout_1280x720.json",
+      "bottom": "layout_1280x720_scroll_bottom.json"
+    }
   },
   "elements": [
     {"id": "screen_safe", "kind": "panel", "x": 48, "y": 28, "w": 1184, "h": 664, "collision": false},
@@ -25,11 +45,40 @@
     {"id": "content_panel", "kind": "panel", "parent": "screen_safe", "x": 160, "y": 306, "w": 960, "h": 364, "collision": false},
     {"id": "content_safe", "kind": "zone", "parent": "content_panel", "content_zone": true, "x": 184, "y": 322, "w": 912, "h": 326, "collision": false},
     {"id": "game_scroll", "kind": "scroll_area", "parent": "content_safe", "content_zone": true, "x": 194, "y": 332, "w": 892, "h": 306, "scroll": "auto", "content_h": 520, "scrollbar_w": 14, "min_content_w": 780, "collision": false},
-    {"id": "game_title", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 340, "w": 400, "h": 34, "text_key": "game_title", "max_font": 25, "min_font": 18},
-    {"id": "game_status", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 730, "y": 340, "w": 330, "h": 34, "text_key": "game_status", "max_font": 21, "min_font": 16},
-    {"id": "game_desc", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 384, "w": 852, "h": 30, "text_key": "game_desc", "max_font": 19, "min_font": 15},
-    {"id": "game_warning", "kind": "text", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 208, "y": 424, "w": 852, "h": 42, "text_key": "game_warning", "max_font": 18, "min_font": 14},
-    {"id": "row_monster_hp", "kind": "panel", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 204, "y": 478, "w": 842, "h": 56},
-    {"id": "row_monster_damage", "kind": "panel", "parent": "game_scroll", "content_zone": true, "collision": true, "x": 204, "y": 546, "w": 842, "h": 56}
+    {"id": "scrollbar_lane", "kind": "scrollbar", "parent": "game_scroll", "content_zone": false, "x": 1072, "y": 332, "w": 14, "h": 306, "collision": false},
+
+    {"id": "scroll_content_canvas", "kind": "scroll_content", "x": 194, "y": 0, "w": 878, "h": 520, "coordinate_space": "logical_scroll_content", "collision": false},
+    {"id": "game_title", "kind": "text", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 208, "y": 8, "w": 400, "h": 34, "text_key": "game_title", "max_font": 25, "min_font": 18},
+    {"id": "game_status", "kind": "text", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 730, "y": 8, "w": 328, "h": 34, "text_key": "game_status", "max_font": 21, "min_font": 16},
+    {"id": "game_desc", "kind": "text", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 208, "y": 52, "w": 850, "h": 30, "text_key": "game_desc", "max_font": 19, "min_font": 15},
+    {"id": "game_warning", "kind": "text", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 208, "y": 92, "w": 850, "h": 42, "text_key": "game_warning", "max_font": 18, "min_font": 14},
+
+    {"id": "row_monster_hp", "kind": "panel", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 204, "y": 142, "w": 842, "h": 56},
+    {"id": "label_monster_hp", "kind": "text", "parent": "row_monster_hp", "content_zone": true, "collision": false, "x": 220, "y": 150, "w": 310, "h": 40, "text_key": "monster_hp", "max_font": 20, "min_font": 14},
+    {"id": "slider_monster_hp", "kind": "slider", "parent": "row_monster_hp", "content_zone": true, "collision": false, "x": 546, "y": 150, "w": 346, "h": 40},
+    {"id": "value_monster_hp", "kind": "value", "parent": "row_monster_hp", "content_zone": true, "collision": false, "x": 906, "y": 150, "w": 126, "h": 40, "text_key": "neutral", "max_font": 20, "min_font": 14},
+
+    {"id": "row_monster_damage", "kind": "panel", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 204, "y": 206, "w": 842, "h": 56},
+    {"id": "label_monster_damage", "kind": "text", "parent": "row_monster_damage", "content_zone": true, "collision": false, "x": 220, "y": 214, "w": 310, "h": 40, "text_key": "monster_damage", "max_font": 20, "min_font": 14},
+    {"id": "slider_monster_damage", "kind": "slider", "parent": "row_monster_damage", "content_zone": true, "collision": false, "x": 546, "y": 214, "w": 346, "h": 40},
+    {"id": "value_monster_damage", "kind": "value", "parent": "row_monster_damage", "content_zone": true, "collision": false, "x": 906, "y": 214, "w": 126, "h": 40, "text_key": "neutral", "max_font": 20, "min_font": 14},
+
+    {"id": "row_player_damage", "kind": "panel", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 204, "y": 270, "w": 842, "h": 56},
+    {"id": "label_player_damage", "kind": "text", "parent": "row_player_damage", "content_zone": true, "collision": false, "x": 220, "y": 278, "w": 310, "h": 40, "text_key": "player_damage", "max_font": 20, "min_font": 14},
+    {"id": "slider_player_damage", "kind": "slider", "parent": "row_player_damage", "content_zone": true, "collision": false, "x": 546, "y": 278, "w": 346, "h": 40},
+    {"id": "value_player_damage", "kind": "value", "parent": "row_player_damage", "content_zone": true, "collision": false, "x": 906, "y": 278, "w": 126, "h": 40, "text_key": "neutral", "max_font": 20, "min_font": 14},
+
+    {"id": "row_player_attack_speed", "kind": "panel", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 204, "y": 334, "w": 842, "h": 56},
+    {"id": "label_player_attack_speed", "kind": "text", "parent": "row_player_attack_speed", "content_zone": true, "collision": false, "x": 220, "y": 342, "w": 310, "h": 40, "text_key": "player_attack_speed", "max_font": 20, "min_font": 14},
+    {"id": "slider_player_attack_speed", "kind": "slider", "parent": "row_player_attack_speed", "content_zone": true, "collision": false, "x": 546, "y": 342, "w": 346, "h": 40},
+    {"id": "value_player_attack_speed", "kind": "value", "parent": "row_player_attack_speed", "content_zone": true, "collision": false, "x": 906, "y": 342, "w": 126, "h": 40, "text_key": "neutral", "max_font": 20, "min_font": 14},
+
+    {"id": "row_monster_attack_speed", "kind": "panel", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 204, "y": 398, "w": 842, "h": 56},
+    {"id": "label_monster_attack_speed", "kind": "text", "parent": "row_monster_attack_speed", "content_zone": true, "collision": false, "x": 220, "y": 406, "w": 310, "h": 40, "text_key": "monster_attack_speed", "max_font": 20, "min_font": 14},
+    {"id": "slider_monster_attack_speed", "kind": "slider", "parent": "row_monster_attack_speed", "content_zone": true, "collision": false, "x": 546, "y": 406, "w": 346, "h": 40},
+    {"id": "value_monster_attack_speed", "kind": "value", "parent": "row_monster_attack_speed", "content_zone": true, "collision": false, "x": 906, "y": 406, "w": 126, "h": 40, "text_key": "neutral", "max_font": 20, "min_font": 14},
+
+    {"id": "reset_game", "kind": "button", "parent": "scroll_content_canvas", "content_zone": true, "collision": false, "x": 640, "y": 462, "w": 392, "h": 50},
+    {"id": "reset_label", "kind": "text", "parent": "reset_game", "content_zone": true, "collision": false, "x": 664, "y": 468, "w": 344, "h": 38, "text_key": "reset", "max_font": 19, "min_font": 14}
   ]
 }

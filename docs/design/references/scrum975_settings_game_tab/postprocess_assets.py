@@ -119,6 +119,30 @@ def build_layout_bases() -> None:
     )
 
 
+def build_bottom_scroll_base() -> None:
+    """Compose the SCRUM-1030 PixelLab bottom-state panel into the fixed shell.
+
+    The accepted compact title/back/tabs must not move between scroll states.
+    The new PixelLab source therefore contributes only its generated content
+    panel rectangle. No panel or backing box is drawn in post-processing.
+    """
+
+    source_path = ROOT / "pixellab_settings_four_tab_layout_720_bottom_source.png"
+    if not source_path.exists():
+        return
+    source = Image.open(source_path).convert("RGBA")
+    source.save(ROOT / "pixellab_settings_four_tab_layout_720_bottom_alpha.png")
+    scaled = source.resize((1280, 720), Image.Resampling.NEAREST)
+    fixed_shell = Image.open(ROOT / "pixellab_settings_four_tab_layout_1280x720.png").convert("RGBA")
+    # Source-space content frame maps to approximately x=160..1120,
+    # y=313..675. The wider crop includes its antialiased outer edge only;
+    # title/back/tab source pieces are intentionally excluded.
+    content_crop = (145, 300, 1130, 680)
+    fixed_shell.alpha_composite(scaled.crop(content_crop), content_crop[:2])
+    fixed_shell.save(ROOT / "pixellab_settings_four_tab_layout_1280x720_bottom.png")
+
+
 if __name__ == "__main__":
     build_game_icon()
     build_layout_bases()
+    build_bottom_scroll_base()

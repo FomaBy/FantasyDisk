@@ -151,7 +151,7 @@
       "content_key": "monster_hp",
       "x": 510,
       "y": 498,
-      "w": 465,
+      "w": 435,
       "h": 42,
       "max_font": 21,
       "min_font": 14
@@ -159,7 +159,7 @@
     {
       "id": "value_monster_hp",
       "content_key": "neutral",
-      "x": 1005,
+      "x": 990,
       "y": 498,
       "w": 128,
       "h": 42,
@@ -169,11 +169,20 @@
       "color": "#F0CC75"
     },
     {
+      "id": "slider_monster_hp",
+      "x": 1140,
+      "y": 498,
+      "w": 315,
+      "h": 42,
+      "required": false,
+      "debug_color": "#5BBFF2"
+    },
+    {
       "id": "label_monster_damage",
       "content_key": "monster_damage",
       "x": 510,
       "y": 566,
-      "w": 465,
+      "w": 435,
       "h": 42,
       "max_font": 21,
       "min_font": 14
@@ -181,7 +190,7 @@
     {
       "id": "value_monster_damage",
       "content_key": "neutral",
-      "x": 1005,
+      "x": 990,
       "y": 566,
       "w": 128,
       "h": 42,
@@ -191,11 +200,20 @@
       "color": "#F0CC75"
     },
     {
+      "id": "slider_monster_damage",
+      "x": 1140,
+      "y": 566,
+      "w": 315,
+      "h": 42,
+      "required": false,
+      "debug_color": "#5BBFF2"
+    },
+    {
       "id": "label_player_damage",
       "content_key": "player_damage",
       "x": 510,
       "y": 633,
-      "w": 465,
+      "w": 435,
       "h": 42,
       "max_font": 21,
       "min_font": 14
@@ -203,7 +221,7 @@
     {
       "id": "value_player_damage",
       "content_key": "neutral",
-      "x": 1005,
+      "x": 990,
       "y": 633,
       "w": 128,
       "h": 42,
@@ -213,11 +231,20 @@
       "color": "#F0CC75"
     },
     {
+      "id": "slider_player_damage",
+      "x": 1140,
+      "y": 633,
+      "w": 315,
+      "h": 42,
+      "required": false,
+      "debug_color": "#5BBFF2"
+    },
+    {
       "id": "label_player_attack_speed",
       "content_key": "player_attack_speed",
       "x": 510,
       "y": 700,
-      "w": 465,
+      "w": 435,
       "h": 42,
       "max_font": 21,
       "min_font": 14
@@ -225,7 +252,7 @@
     {
       "id": "value_player_attack_speed",
       "content_key": "neutral",
-      "x": 1005,
+      "x": 990,
       "y": 700,
       "w": 128,
       "h": 42,
@@ -235,11 +262,20 @@
       "color": "#F0CC75"
     },
     {
+      "id": "slider_player_attack_speed",
+      "x": 1140,
+      "y": 700,
+      "w": 315,
+      "h": 42,
+      "required": false,
+      "debug_color": "#5BBFF2"
+    },
+    {
       "id": "label_monster_attack_speed",
       "content_key": "monster_attack_speed",
       "x": 510,
       "y": 768,
-      "w": 465,
+      "w": 435,
       "h": 42,
       "max_font": 21,
       "min_font": 14
@@ -247,7 +283,7 @@
     {
       "id": "value_monster_attack_speed",
       "content_key": "neutral",
-      "x": 1005,
+      "x": 990,
       "y": 768,
       "w": 128,
       "h": 42,
@@ -255,6 +291,15 @@
       "min_font": 14,
       "align": "center",
       "color": "#F0CC75"
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "x": 1140,
+      "y": 768,
+      "w": 315,
+      "h": 42,
+      "required": false,
+      "debug_color": "#5BBFF2"
     },
     {
       "id": "reset",

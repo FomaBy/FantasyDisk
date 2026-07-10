@@ -1,12 +1,14 @@
 # BUG: SCRUM-975 compact scroll geometry and layout guide are incomplete
 
-Статус: new
+Статус: in_progress
 Приоритет: high
 Роль: Design
 Контур: Codex
-Owner: unassigned
-Thread: n/a
-Locked paths: unclaimed; expected Design scope is
+Owner: Design/Codex
+Thread: `/root/scrum1030_design`
+Branch / worktree: `codex/scrum-1030-settings-design-fix` /
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1030-settings-design-fix`
+Locked paths: claimed Design scope is
 `docs/design/references/scrum975_settings_game_tab/**`,
 `docs/design/previews/scrum975_settings_game_tab/**`, and this mirror
 Jira: SCRUM-1030
@@ -79,6 +81,27 @@ therefore unproven.
       GDScript/settings/gameplay path changes.
 - [ ] The correction is pushed to `origin/dev` and SCRUM-975 passes an
       independent recheck.
+
+## Work Log
+
+- 2026-07-10: Jira claimed before edits by Design/Codex
+  `/root/scrum1030_design`; scoped dirty-path audit was clean and a fresh
+  worktree was created from `origin/dev` `23e15aed0`.
+- 2026-07-10: the compact plan now contains an explicit `878×520` logical
+  scroll-content canvas, all five 842×56 rows, separate label/slider/value
+  fields, reset, physical `892×306` viewport and a reserved 14px scrollbar
+  lane. Header, Back and the 2×2 tab grid remain fixed outside the viewport.
+- 2026-07-10: top (`scroll_y=0`) and bottom (`scroll_y=214`) compositor layouts
+  and final/debug evidence were added. The focused geometry gate proves their
+  transforms, row-child containment, lane exclusion and fixed-zone identity.
+- 2026-07-10: the canonical 2K layout now includes exact slider fields and
+  matching label/value rectangles. Its guide/report and the 1080p derivative
+  were regenerated from the canonical source instead of preserving the stale
+  manual guide geometry.
+- 2026-07-10: PixelLab MCP config access remained healthy. A dedicated
+  textless bottom-scroll state source was queued as
+  `1b60618f-a8ad-4695-82d8-099fbf1ad516`; no generic image fallback or runtime
+  path was used.
 
 ## QA Evidence
 

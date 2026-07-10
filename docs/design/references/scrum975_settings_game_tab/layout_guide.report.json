@@ -26,9 +26,9 @@
     {
       "id": "tab_screen",
       "rect": [
-        772,
+        752,
         266,
-        164,
+        204,
         72
       ],
       "ok": true,
@@ -37,9 +37,9 @@
     {
       "id": "tab_sound",
       "rect": [
-        1056,
+        1036,
         266,
-        164,
+        204,
         72
       ],
       "ok": true,
@@ -48,9 +48,9 @@
     {
       "id": "tab_controls",
       "rect": [
-        1340,
+        1320,
         266,
-        164,
+        204,
         72
       ],
       "ok": true,
@@ -59,9 +59,9 @@
     {
       "id": "tab_game",
       "rect": [
-        1624,
+        1604,
         266,
-        164,
+        204,
         72
       ],
       "ok": true,
@@ -114,20 +114,9 @@
     {
       "id": "label_monster_hp",
       "rect": [
-        612,
-        664,
-        430,
-        56
-      ],
-      "ok": true,
-      "kind": "guide"
-    },
-    {
-      "id": "slider_monster_hp",
-      "rect": [
-        1060,
-        664,
         680,
+        664,
+        580,
         56
       ],
       "ok": true,
@@ -136,7 +125,7 @@
     {
       "id": "value_monster_hp",
       "rect": [
-        1770,
+        1320,
         664,
         170,
         56
@@ -145,22 +134,22 @@
       "kind": "guide"
     },
     {
-      "id": "label_monster_damage",
+      "id": "slider_monster_hp",
       "rect": [
-        612,
-        754,
-        430,
+        1520,
+        664,
+        420,
         56
       ],
       "ok": true,
       "kind": "guide"
     },
     {
-      "id": "slider_monster_damage",
+      "id": "label_monster_damage",
       "rect": [
-        1060,
-        754,
         680,
+        754,
+        580,
         56
       ],
       "ok": true,
@@ -169,7 +158,7 @@
     {
       "id": "value_monster_damage",
       "rect": [
-        1770,
+        1320,
         754,
         170,
         56
@@ -178,22 +167,22 @@
       "kind": "guide"
     },
     {
-      "id": "label_player_damage",
+      "id": "slider_monster_damage",
       "rect": [
-        612,
-        844,
-        430,
+        1520,
+        754,
+        420,
         56
       ],
       "ok": true,
       "kind": "guide"
     },
     {
-      "id": "slider_player_damage",
+      "id": "label_player_damage",
       "rect": [
-        1060,
-        844,
         680,
+        844,
+        580,
         56
       ],
       "ok": true,
@@ -202,7 +191,7 @@
     {
       "id": "value_player_damage",
       "rect": [
-        1770,
+        1320,
         844,
         170,
         56
@@ -211,22 +200,22 @@
       "kind": "guide"
     },
     {
-      "id": "label_player_attack_speed",
+      "id": "slider_player_damage",
       "rect": [
-        612,
-        934,
-        430,
+        1520,
+        844,
+        420,
         56
       ],
       "ok": true,
       "kind": "guide"
     },
     {
-      "id": "slider_player_attack_speed",
+      "id": "label_player_attack_speed",
       "rect": [
-        1060,
-        934,
         680,
+        934,
+        580,
         56
       ],
       "ok": true,
@@ -235,7 +224,7 @@
     {
       "id": "value_player_attack_speed",
       "rect": [
-        1770,
+        1320,
         934,
         170,
         56
@@ -244,22 +233,22 @@
       "kind": "guide"
     },
     {
-      "id": "label_monster_attack_speed",
+      "id": "slider_player_attack_speed",
       "rect": [
-        612,
-        1024,
-        430,
+        1520,
+        934,
+        420,
         56
       ],
       "ok": true,
       "kind": "guide"
     },
     {
-      "id": "slider_monster_attack_speed",
+      "id": "label_monster_attack_speed",
       "rect": [
-        1060,
-        1024,
         680,
+        1024,
+        580,
         56
       ],
       "ok": true,
@@ -268,9 +257,20 @@
     {
       "id": "value_monster_attack_speed",
       "rect": [
-        1770,
+        1320,
         1024,
         170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "rect": [
+        1520,
+        1024,
+        420,
         56
       ],
       "ok": true,
