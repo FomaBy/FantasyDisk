@@ -18,6 +18,7 @@ func _initialize() -> void:
 	var errors: Array = []
 
 	_check_definitions(errors)
+	_check_dependency_matrix(errors)
 	_check_base_stats(errors)
 	_check_formulas(errors)
 	_check_formatting(errors)
@@ -54,6 +55,30 @@ func _check_definitions(errors: Array) -> void:
 	for stat_id in SF.DERIVED_STAT_ORDER:
 		if not SF.STAT_DEFINITIONS.has(stat_id):
 			errors.append("производный стат '%s' без STAT_DEFINITIONS" % stat_id)
+
+
+func _check_dependency_matrix(errors: Array) -> void:
+	if SF.DERIVED_BASE_DEPENDENCIES.size() != SF.DERIVED_STAT_ORDER.size():
+		errors.append("DERIVED_BASE_DEPENDENCIES (%d) не покрывает все %d производных статов" % [SF.DERIVED_BASE_DEPENDENCIES.size(), SF.DERIVED_STAT_ORDER.size()])
+	for derived_id_value in SF.DERIVED_STAT_ORDER:
+		var derived_id := str(derived_id_value)
+		if not SF.DERIVED_BASE_DEPENDENCIES.has(derived_id):
+			errors.append("DERIVED_BASE_DEPENDENCIES без строки '%s'" % derived_id)
+			continue
+		var dependencies: Array = SF.DERIVED_BASE_DEPENDENCIES[derived_id]
+		var seen := {}
+		var previous_index := -1
+		for base_id_value in dependencies:
+			var base_id := str(base_id_value)
+			var canonical_index := SF.BASE_STAT_ORDER.find(base_id)
+			if canonical_index < 0:
+				errors.append("dependency '%s' -> неизвестная базовая характеристика '%s'" % [derived_id, base_id])
+			elif canonical_index <= previous_index:
+				errors.append("dependency '%s' нарушает BASE_STAT_ORDER: %s" % [derived_id, str(dependencies)])
+			previous_index = canonical_index
+			if seen.has(base_id):
+				errors.append("dependency '%s' дублирует '%s'" % [derived_id, base_id])
+			seen[base_id] = true
 
 
 func _check_base_stats(errors: Array) -> void:

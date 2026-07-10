@@ -701,8 +701,14 @@ margins scale so the longest label plus icon fits without ellipsis at
 The dossier follows the accepted split content zones: `CodexDetailLeftRail`
 contains the centered, aspect-preserving icon and
 `CodexDetailRelatedScroll`; `CodexDetailRightRail` contains title, semantic
-Russian chip, and `CodexDetailParchmentInset`. The related list is derived from
-the canonical formula/influence registry and uses Russian display titles only.
+Russian chip, and `CodexDetailParchmentInset`. SCRUM-1021 makes the related list
+an exact projection of `StatFormulas.DERIVED_BASE_DEPENDENCIES`, a canonical
+26-row matrix mirroring `ProgressionData.derived_parameters`; localized
+formula/influence prose is never parsed as data. Derived rows preserve
+`BASE_STAT_ORDER`, base rows are the exact inverse in `DERIVED_STAT_ORDER`, and
+Russian display titles remain presentation-only. `ultimate_multiplier` lists
+all eight base characteristics; derived attributes with no direct base input
+(range/vampiric run modifiers) correctly expose an empty relation set.
 The two rails, all six tabs, center rows and scrollbars remain inside the dark
 panel interiors; the hollow frame ornament stays unobstructed. No row or chip
 shows raw character, monster, artifact or stat ids. Focused coverage lives in

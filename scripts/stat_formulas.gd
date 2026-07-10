@@ -50,6 +50,40 @@ const DERIVED_STAT_ORDER := [
 	"pickup_radius",
 ]
 
+# SCRUM-1021: machine-readable base-characteristic dependencies for every
+# player-facing derived attribute. This matrix mirrors the real equations in
+# ProgressionData.derived_parameters(); localized prose is presentation only
+# and must never be parsed as data. Each row is filtered from BASE_STAT_ORDER so
+# Codex related rails remain stable and auditable in canonical order.
+const DERIVED_BASE_DEPENDENCIES := {
+	"damage": [STRENGTH],
+	"magic_damage": [INTELLIGENCE],
+	"crit_chance": [AGILITY],
+	"crit_damage_multiplier": [AGILITY],
+	"attack_speed": [AGILITY, PERCEPTION, ENERGY, ENDURANCE],
+	"dodge": [AGILITY],
+	"move_speed": [AGILITY],
+	"defense": [ENDURANCE],
+	"absorb": [ENDURANCE],
+	"health_point": [ENDURANCE],
+	"knockback_distance": [ENDURANCE, LEADERSHIP],
+	"summon_amount": [INTELLIGENCE, ENERGY, KNOWLEDGE, LEADERSHIP],
+	"attack_range": [INTELLIGENCE, PERCEPTION, ENDURANCE, LEADERSHIP],
+	"range_multiplier": [],
+	"regeneration": [KNOWLEDGE],
+	"vampiric_amount": [],
+	"vampiric_chance": [],
+	"dot_damage": [KNOWLEDGE],
+	"dot_speed": [AGILITY, ENERGY, KNOWLEDGE],
+	"aoe_radius": [INTELLIGENCE, PERCEPTION, KNOWLEDGE, LEADERSHIP],
+	"aura_radius": [PERCEPTION, ENERGY, KNOWLEDGE, LEADERSHIP],
+	"buff_power": [ENERGY, KNOWLEDGE, LEADERSHIP],
+	"knockback_power": [ENDURANCE, LEADERSHIP],
+	"projectile_speed": [AGILITY, PERCEPTION, ENERGY, KNOWLEDGE],
+	"ultimate_multiplier": [STRENGTH, AGILITY, INTELLIGENCE, PERCEPTION, ENERGY, KNOWLEDGE, ENDURANCE, LEADERSHIP],
+	"pickup_radius": [PERCEPTION],
+}
+
 const STAT_DEFINITIONS := {
 	STRENGTH: {
 		"name_ru": "Сила",
@@ -220,8 +254,8 @@ const STAT_DEFINITIONS := {
 		"name_en": "Knockback Distance",
 		"type": "derived",
 		"description": "Отображаемая дистанция отталкивания врагов.",
-		"formula": "Сила отталкивания × Выносливость / 20; в бою действует итоговая сила отталкивания.",
-		"influences": "Выносливость и оружейные эффекты.",
+		"formula": "(Отталкивание оружия + Выносливость × 4 + Лидерство × 3) × множитель отталкивания × Выносливость / 20.",
+		"influences": "Выносливость, Лидерство и оружейные эффекты.",
 		"format": "decimal",
 		"default_value": 0.0,
 	},
@@ -239,8 +273,8 @@ const STAT_DEFINITIONS := {
 		"name_en": "Attack Range",
 		"type": "derived",
 		"description": "Дальность текущей атаки/оружия.",
-		"formula": "(Дальность оружия + профильные добавки) × множитель дальности; отдельные сектора ближнего боя также растут от радиуса.",
-		"influences": "Восприятие, Выносливость, Лидерство, оружие, множитель дальности и особенности геометрии оружия.",
+		"formula": "(Дальность оружия + Восприятие × 2,5 + Интеллект × вес оружия + Выносливость × 0,25 + Лидерство × 0,35) × множитель дальности.",
+		"influences": "Интеллект, Восприятие, Выносливость, Лидерство, оружие и множитель дальности.",
 		"format": "units",
 	},
 	"range_multiplier": {
@@ -269,7 +303,7 @@ const STAT_DEFINITIONS := {
 		"type": "derived",
 		"description": "Малое лечение от вампирического эффекта.",
 		"formula": "55% от наград + 3,5% нанесённого урона при срабатывании; лечение ограничено секундным бюджетом.",
-		"influences": "Энергия, текущий урон и предметы.",
+		"influences": "Награды, текущий урон и предметы; базовые характеристики не входят в прямую формулу.",
 		"format": "decimal",
 		"default_value": 0.0,
 	},
@@ -279,7 +313,7 @@ const STAT_DEFINITIONS := {
 		"type": "derived",
 		"description": "Шанс срабатывания вампиризма.",
 		"formula": "Награды на шанс вампиризма; предел 22%.",
-		"influences": "Энергия, Знание и предметы.",
+		"influences": "Награды и предметы; базовые характеристики не входят в прямую формулу.",
 		"format": "percent",
 		"default_value": 0.0,
 	},
@@ -288,8 +322,8 @@ const STAT_DEFINITIONS := {
 		"name_en": "DoT Damage",
 		"type": "derived",
 		"description": "Урон периодических эффектов: кровотечения, горения и отравления.",
-		"formula": "(4 + Знание × 0,65 + малые профильные вклады характеристик + плоская прибавка) × множитель урона.",
-		"influences": "Знание и дополнительные вклады базовых характеристик, заданные механикой оружия.",
+		"formula": "(4 + Знание × 0,65 + плоская прибавка) × множитель урона.",
+		"influences": "Знание, плоские награды периодического урона и общий множитель урона.",
 		"format": "decimal",
 		"default_value": 0.0,
 	},
@@ -307,9 +341,9 @@ const STAT_DEFINITIONS := {
 		"name_ru": "Ширина сектора",
 		"name_en": "Sector Width",
 		"type": "derived",
-		"description": "Ширина или угол направленных атак по области.",
-		"formula": "Множитель сектора изменяет угол и ширину направленных атак, но не расширяет круговые удары.",
-		"influences": "Награды на ширину сектора и особая секторная геометрия оружия.",
+		"description": "Отображаемый размер области оружия; для направленных атак участвует в ширине их коридора или сектора.",
+		"formula": "(Радиус оружия + Восприятие × 3,5 + Интеллект × вес оружия + Знание × 0,35 + Лидерство × 0,30) × множитель радиуса.",
+		"influences": "Интеллект, Восприятие, Знание, Лидерство, профиль оружия и награды на радиус области.",
 		"format": "units",
 	},
 	"aura_radius": {

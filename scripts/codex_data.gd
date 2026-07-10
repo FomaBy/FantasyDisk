@@ -375,30 +375,32 @@ static func ascensions() -> Array:
 
 
 static func _related_stats(stat_id: String, stat_type: String) -> Array:
-	# Связи выводятся из живого канонического реестра, а не из отдельной копии:
-	# формула/описание влияния производного атрибута прямо называют базовые
-	# характеристики через канонический name_ru. Технический id остаётся только
-	# внутренним ключом (SCRUM-955).
+	# SCRUM-1021: relationships come exclusively from the canonical machine-
+	# readable matrix that mirrors ProgressionData.derived_parameters(). Parsing
+	# localized formula prose lost generic dependencies ("all base stats") and
+	# produced lexical false positives such as base Strength inside the derived
+	# phrase "Сила отталкивания".
 	var result := []
-	var candidates: Array = STAT_FORMULAS.DERIVED_STAT_ORDER if stat_type == "base" else STAT_FORMULAS.BASE_STAT_ORDER
-	var source_definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(stat_id, {})
-	var source_name_ru := str(source_definition.get("name_ru", ""))
-	for candidate_id_value in candidates:
+	var related_ids := []
+	if stat_type == "base":
+		for derived_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+			var derived_id := str(derived_id_value)
+			var dependencies: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(derived_id, [])
+			if dependencies.has(stat_id):
+				related_ids.append(derived_id)
+	else:
+		var dependency_ids: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(stat_id, [])
+		for base_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+			var base_id := str(base_id_value)
+			if dependency_ids.has(base_id):
+				related_ids.append(base_id)
+	for candidate_id_value in related_ids:
 		var candidate_id := str(candidate_id_value)
 		var candidate: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(candidate_id, {})
-		var related := false
-		if stat_type == "base":
-			var haystack := "%s %s" % [str(candidate.get("formula", "")), str(candidate.get("influences", ""))]
-			related = source_name_ru != "" and haystack.findn(source_name_ru) >= 0
-		else:
-			var candidate_name_ru := str(candidate.get("name_ru", ""))
-			var source_haystack := "%s %s" % [str(source_definition.get("formula", "")), str(source_definition.get("influences", ""))]
-			related = candidate_name_ru != "" and source_haystack.findn(candidate_name_ru) >= 0
-		if related:
-			result.append({
-				"id": candidate_id,
-				"title": str(candidate.get("name_ru", candidate_id)),
-			})
+		result.append({
+			"id": candidate_id,
+			"title": str(candidate.get("name_ru", candidate_id)),
+		})
 	return result
 
 

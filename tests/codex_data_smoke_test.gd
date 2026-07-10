@@ -26,6 +26,34 @@ const SCRUM_956_SHOP_TITLES := {
 	"shop_weapon_cooldown": "Масло темпа",
 	"shop_artifact": "Пыльный артефакт",
 }
+const SCRUM_1021_EXPECTED_DEPENDENCIES := {
+	"damage": ["strength"],
+	"magic_damage": ["intelligence"],
+	"crit_chance": ["agility"],
+	"crit_damage_multiplier": ["agility"],
+	"attack_speed": ["agility", "perception", "energy", "endurance"],
+	"dodge": ["agility"],
+	"move_speed": ["agility"],
+	"defense": ["endurance"],
+	"absorb": ["endurance"],
+	"health_point": ["endurance"],
+	"knockback_distance": ["endurance", "leadership"],
+	"summon_amount": ["intelligence", "energy", "knowledge", "leadership"],
+	"attack_range": ["intelligence", "perception", "endurance", "leadership"],
+	"range_multiplier": [],
+	"regeneration": ["knowledge"],
+	"vampiric_amount": [],
+	"vampiric_chance": [],
+	"dot_damage": ["knowledge"],
+	"dot_speed": ["agility", "energy", "knowledge"],
+	"aoe_radius": ["intelligence", "perception", "knowledge", "leadership"],
+	"aura_radius": ["perception", "energy", "knowledge", "leadership"],
+	"buff_power": ["energy", "knowledge", "leadership"],
+	"knockback_power": ["endurance", "leadership"],
+	"projectile_speed": ["agility", "perception", "energy", "knowledge"],
+	"ultimate_multiplier": ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"],
+	"pickup_radius": ["perception"],
+}
 
 
 func _initialize() -> void:
@@ -201,6 +229,13 @@ func _projection_ids(entries: Array) -> Array:
 	return result
 
 
+func _related_ids(entry: Dictionary) -> Array:
+	var result := []
+	for related_entry in entry.get("related", []):
+		result.append(str((related_entry as Dictionary).get("id", "")))
+	return result
+
+
 func _check_stat_projection(entries: Array, expected_ids: Array, expected_type: String, other_ids: Array, errors: Array) -> void:
 	var ids := _projection_ids(entries)
 	if ids != expected_ids:
@@ -249,6 +284,32 @@ func _check_stat_split(errors: Array) -> void:
 		errors.append("attributes() пуст")
 	_check_stat_projection(characteristics, base_ids, "base", derived_ids, errors)
 	_check_stat_projection(attributes, derived_ids, "derived", base_ids, errors)
+	# SCRUM-1021: assert the full runtime dependency matrix, not merely that
+	# related ids have the opposite type. This catches generic prose omissions
+	# (ultimate_multiplier must expose all eight) and lexical false positives.
+	if SCRUM_1021_EXPECTED_DEPENDENCIES.size() != derived_ids.size():
+		errors.append("SCRUM-1021 expected matrix has %d rows, canonical derived order has %d" % [SCRUM_1021_EXPECTED_DEPENDENCIES.size(), derived_ids.size()])
+	for attribute in attributes:
+		var attribute_dict := attribute as Dictionary
+		var attribute_id := str(attribute_dict.get("id", ""))
+		var expected_dependencies: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(attribute_id, [])
+		var actual_dependencies := _related_ids(attribute_dict)
+		if actual_dependencies != expected_dependencies:
+			errors.append("SCRUM-1021 derived '%s' related %s != exact runtime matrix %s" % [attribute_id, str(actual_dependencies), str(expected_dependencies)])
+		var canonical_dependencies: Array = StatFormulas.DERIVED_BASE_DEPENDENCIES.get(attribute_id, [])
+		if canonical_dependencies != expected_dependencies:
+			errors.append("SCRUM-1021 canonical matrix '%s' %s != audited runtime matrix %s" % [attribute_id, str(canonical_dependencies), str(expected_dependencies)])
+	for characteristic in characteristics:
+		var characteristic_dict := characteristic as Dictionary
+		var characteristic_id := str(characteristic_dict.get("id", ""))
+		var expected_attributes := []
+		for derived_id in derived_ids:
+			var dependencies: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(str(derived_id), [])
+			if dependencies.has(characteristic_id):
+				expected_attributes.append(str(derived_id))
+		var actual_attributes := _related_ids(characteristic_dict)
+		if actual_attributes != expected_attributes:
+			errors.append("SCRUM-1021 base '%s' inverse related %s != %s" % [characteristic_id, str(actual_attributes), str(expected_attributes)])
 	for characteristic in characteristics:
 		if (characteristic as Dictionary).get("related", []).is_empty():
 			errors.append("base: '%s' не имеет ни одного связанного атрибута из канонических формул" % str((characteristic as Dictionary).get("id", "")))
