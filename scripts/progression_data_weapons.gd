@@ -887,42 +887,62 @@ const ELEMENTALIST_WEAPONS := {
 }
 
 const SNIPER_WEAPONS := {
+	# SCRUM-930..933: редизайн кита Снайпера. Все три оружия физические
+	# (damage_parameter "damage") и скейлятся trait'ом «Дальний расчёт»
+	# (CLASS_TRAITS.sniper; дистанция замеряется per-enemy в момент применения
+	# урона — см. ClassWeapon._damage_enemy). Оси кита: винтовка — дальняя
+	# дуэль + страховочный самоподрыв; наводчик — отложенный тяжёлый AoE по
+	# красной метке; осколочные — скорострельный ближний круговой веер.
 	"sniper_deadeye_rifle": {
+		# SCRUM-931 PREFERRED-вариант (зафиксирован): всегда САМАЯ ДАЛЬНЯЯ цель
+		# в радиусе + ближний самоподрыв close_burst_ratio (80% от хита
+		# винтовки) по врагам в close_burst_radius у ног + читаемый терминальный
+		# взрыв на конце линии (DEADEYE_ENDPOINT_BLAST_RATIO в class_weapon.gd).
 		"id": "sniper_deadeye_rifle", "title": "Винтовка Мертвого Глаза",
-		"description": "Lockshot: короткая фиксация линии, затем тяжелый точный выстрел с узким overpenetration.",
+		"description": "Lockshot: короткая фиксация, затем тяжелый выстрел в самую дальнюю цель — пробивает линию насквозь и взрывается на конце. Подошедших вплотную встречает ближний самоподрыв (80% урона выстрела).",
 		"scene_path": "res://scenes/SniperDeadeyeRifle.tscn",
 		"attack_mode": "sniper_lockshot", "damage_parameter": "damage",
 		"damage_multiplier": 1.22, "fire_interval": 1.42,
 		"attack_range": 940.0, "aoe_radius": 220.0,
 		"beam_width": 34.0, "grenade_delay": 0.20,
 		"damage_falloff": 0.38,
+		"close_burst_radius": 150.0, "close_burst_ratio": 0.80,
 		"visual_color": Color(0.92, 0.96, 1.0, 0.46),
 		"passive_mods": {"crit_chance_flat": 0.04},
 	},
 	"sniper_spotter_scope": {
+		# SCRUM-932: отложенный артиллерийский AoE — красный полупрозрачный
+		# телеграф на месте цели, через grenade_delay (~1с) туда падает тяжёлый
+		# снаряд и накрывает ВСЕХ внутри финальной зоны (falloff к краю).
+		# Неудобство задержки оплачено тяжёлым уроном и большой зоной.
 		"id": "sniper_spotter_scope", "title": "Прицел Наводчика",
-		"description": "Kill-zone: отмечает область вокруг цели и вызывает серию прицельных ударов по врагам внутри.",
+		"description": "Kill-zone: помечает область красным кругом, через секунду туда прилетает тяжелый артиллерийский снаряд. Врагов надо ловить меткой на упреждение — зато накрывает всю зону разом.",
 		"scene_path": "res://scenes/SniperSpotterScope.tscn",
 		"attack_mode": "sniper_kill_zone", "damage_parameter": "damage",
-		"damage_multiplier": 0.82, "fire_interval": 1.34,
-		"attack_range": 760.0, "aoe_radius": 210.0,
-		"beam_width": 30.0, "projectile_count": 4,
-		"grenade_delay": 0.22, "damage_falloff": 0.74,
+		"damage_multiplier": 2.05, "fire_interval": 2.25,
+		"attack_range": 760.0, "aoe_radius": 240.0,
+		"beam_width": 30.0,
+		"grenade_delay": 1.0, "damage_falloff": 0.62,
 		"visual_color": Color(1.0, 0.62, 0.18, 0.42),
 		"passive_mods": {"range_multiplier": 1.04},
 	},
 	"sniper_shatter_rounds": {
+		# SCRUM-933: скорострельный круговой веер пуль — projectile_count пуль
+		# за залп, каждая летит в ближнего монстра в радиусе aoe_radius
+		# (round-robin, не больше SHATTER_VOLLEY_HIT_LIMIT хитов по одному
+		# врагу за залп); пустые направления уходят ровным радиальным веером
+		# без урона. Ключевые оси — скорость атаки (каденция залпов) и
+		# скорость снаряда (полет пуль, база projectile_speed + статы).
 		"id": "sniper_shatter_rounds", "title": "Осколочные Патроны",
-		"description": "Split-round: основной выстрел по ближайшей цели, затем осколки расходятся веером по траекториям и могут пробить вторую цель.",
+		"description": "Split-round: очередь мелких пуль веером во все стороны — каждая сама находит ближнего монстра. Очень быстрый темп; скорость атаки и полета пуль превращают Снайпера в упор в турель.",
 		"scene_path": "res://scenes/SniperShatterRounds.tscn",
 		"attack_mode": "sniper_split_round", "damage_parameter": "damage",
-		"damage_multiplier": 0.98, "fire_interval": 1.08,
-		"attack_range": 820.0, "aoe_radius": 260.0,
-		"beam_width": 38.0, "split_count": 3,
-		"pierce_count": 2,
-		"damage_falloff": 0.55,
+		"damage_multiplier": 0.42, "fire_interval": 0.55,
+		"attack_range": 380.0, "aoe_radius": 340.0,
+		"beam_width": 24.0, "projectile_count": 6,
+		"projectile_speed": 560.0,
 		"visual_color": Color(0.50, 0.88, 1.0, 0.42),
-		"passive_mods": {"crit_damage_multiplier": 1.08},
+		"passive_mods": {"attack_speed_multiplier": 1.06},
 	},
 }
 

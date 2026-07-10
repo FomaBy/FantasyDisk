@@ -258,6 +258,10 @@ const ATTACK_MODE_EXECUTORS := {
 @export var spore_slow_max := 0.0
 @export var tip_burst_ratio := 0.0
 @export var seed_impact_ratio := 0.0
+# SCRUM-931: ближний самоподрыв Винтовки Мертвого Глаза — доля урона выстрела
+# по врагам в радиусе вокруг САМОГО Снайпера (страховка «беззащитен вплотную»).
+@export var close_burst_radius := 0.0
+@export var close_burst_ratio := 0.0
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -497,6 +501,8 @@ func configure_weapon(config: Dictionary) -> void:
 	spore_slow_max = float(config.get("spore_slow_max", spore_slow_max))
 	tip_burst_ratio = float(config.get("tip_burst_ratio", tip_burst_ratio))
 	seed_impact_ratio = float(config.get("seed_impact_ratio", seed_impact_ratio))
+	close_burst_radius = float(config.get("close_burst_radius", close_burst_radius))
+	close_burst_ratio = float(config.get("close_burst_ratio", close_burst_ratio))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -4286,6 +4292,13 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 			var infected_multiplier := maxf(float(owner_node.call("class_trait_value", "infected_direct_hit_multiplier", 1.0)), 1.0)
 			if infected_multiplier > 1.0 and StatusEffects.has_dot_from_source(enemy, owner_node.get_instance_id()):
 				final_amount *= infected_multiplier
+			# SCRUM-930 «Дальний расчёт»: урон оружия Снайпера растёт с дистанцией
+			# владелец→цель, замеренной ЗДЕСЬ — в момент применения урона (AC:
+			# отложенные атаки честны, никакого «угадывания» на спавне снаряда).
+			# Data-driven из CLASS_TRAITS (ключи только у Снайпера — остальным
+			# generic-хук возвращает нейтраль 1.0); тики DoT (hit_type "dot") не
+			# скейлятся — гейт hit_type общий с trait'ом Биолога выше.
+			final_amount *= _class_distance_trait_multiplier(owner_node, enemy as Node2D)
 		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
 		if apply_unique_melee_effects:
@@ -4299,6 +4312,24 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)
 		if apply_unique_melee_effects and owner_node != null:
 			_apply_unique_melee_hit_effects(owner_node, enemy, final_amount)
+
+
+# SCRUM-930 «Дальний расчёт»: множитель дистанции для прямого хита владельца.
+# Читает data-driven ключи trait'а через generic-хук class_trait_value (есть
+# только у Снайпера) и считает по канонической формуле
+# ProgressionData.distance_trait_multiplier (единая точка правды с budget-моделью
+# и тестами): ×1.0 в пределах free_range, далее +per_100px за каждые 100px,
+# жёсткий кап +cap_bonus. Классам без ключей возвращает ровно 1.0 (утечки нет).
+func _class_distance_trait_multiplier(owner_node: Node2D, enemy_node: Node2D) -> float:
+	if owner_node == null or enemy_node == null or not is_instance_valid(enemy_node):
+		return 1.0
+	var per_100 := float(owner_node.call("class_trait_value", "distance_damage_per_100px", 0.0))
+	if per_100 <= 0.0:
+		return 1.0
+	var cap_bonus := float(owner_node.call("class_trait_value", "distance_damage_cap_bonus", 0.0))
+	var free_range := float(owner_node.call("class_trait_value", "distance_damage_free_range", 0.0))
+	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
+	return ProgressionData.distance_trait_multiplier(per_100, cap_bonus, free_range, distance)
 
 
 func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: float) -> void:

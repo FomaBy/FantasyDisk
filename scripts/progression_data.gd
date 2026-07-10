@@ -924,6 +924,62 @@ static func class_rage_expected_damage_factor(character_id: String) -> float:
 	return 1.0 + cap * RAGE_BUDGET_EXPECTED_MISSING_HP
 
 
+# SCRUM-930 «Дальний расчёт»: каноническая формула множителя дистанции —
+# ЕДИНАЯ точка правды для рантайма (ClassWeapon._class_distance_trait_multiplier),
+# budget-модели (_budget_distance_trait_factors) и тестов. В пределах free_range
+# ровно ×1.0 (AC: близкая цель получает базовый урон), дальше линейный рост
+# per_100 за каждые 100px, жёсткий кап +cap_bonus (с дефолтами Снайпера кап
+# ×1.60 достигается на 120 + 0.60/0.10×100 = 720px и держится дальше).
+static func distance_trait_multiplier(per_100: float, cap_bonus: float, free_range: float, distance: float) -> float:
+	if per_100 <= 0.0:
+		return 1.0
+	var scaled := maxf(distance - maxf(free_range, 0.0), 0.0) / 100.0 * per_100
+	return 1.0 + minf(scaled, maxf(cap_bonus, 0.0))
+
+
+# Множитель «Дальнего расчёта» класса на конкретной дистанции (1.0 у классов
+# без distance-ключей в CLASS_TRAITS — утечки другим классам нет).
+static func class_distance_multiplier_at(character_id: String, distance: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	return distance_trait_multiplier(
+		float(trait_config.get("distance_damage_per_100px", 0.0)),
+		float(trait_config.get("distance_damage_cap_bonus", 0.0)),
+		float(trait_config.get("distance_damage_free_range", 0.0)),
+		distance
+	)
+
+
+# Бюджет-зеркало «Дальнего расчёта»: матожидание множителя по ТИПОВОЙ дистанции
+# боя оружия (документированные допущения по attack_mode; budget_tuning_for
+# затем компенсирует кит — инвестиция в позиционирование остаётся живой наградой):
+#   sniper_lockshot   — винтовка сама берёт САМУЮ ДАЛЬНЮЮ цель: соло-дуэль
+#     ~0.75×attack_range (около капа); по толпе часть выхода — ближний
+#     самоподрыв у ног (×1.0) → бонус срезается вдвое (доля дальних хитов 0.55);
+#   sniper_kill_zone  — снаряд по метке у выбранной цели: типовая зона
+#     ~0.55×attack_range, все жертвы в зоне на схожей дистанции;
+#   sniper_split_round — круговой веер по БЛИЖНИМ монстрам: типовая цель
+#     ~0.60×aoe_radius (радиус разлёта пуль) — почти без бонуса;
+#   иное оружие класса с trait'ом — консервативно 0.5×attack_range.
+static func _budget_distance_trait_factors(character_id: String, config: Dictionary) -> Dictionary:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	if float(trait_config.get("distance_damage_per_100px", 0.0)) <= 0.0:
+		return {"solo": 1.0, "aoe": 1.0}
+	var attack_range := float(config.get("attack_range", 240.0))
+	var aoe_radius := float(config.get("aoe_radius", 120.0))
+	match str(config.get("attack_mode", config.get("attack_shape", "single"))):
+		"sniper_lockshot":
+			var far_mult := class_distance_multiplier_at(character_id, attack_range * 0.75)
+			return {"solo": far_mult, "aoe": 1.0 + (far_mult - 1.0) * 0.55}
+		"sniper_kill_zone":
+			var zone_mult := class_distance_multiplier_at(character_id, attack_range * 0.55)
+			return {"solo": zone_mult, "aoe": zone_mult}
+		"sniper_split_round":
+			var spray_mult := class_distance_multiplier_at(character_id, aoe_radius * 0.60)
+			return {"solo": spray_mult, "aoe": spray_mult}
+	var default_mult := class_distance_multiplier_at(character_id, attack_range * 0.5)
+	return {"solo": default_mult, "aoe": default_mult}
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -1081,12 +1137,21 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var infected_direct_factor := 1.0
 	if float(config.get("dot_ticks", 0.0)) > 0.0:
 		infected_direct_factor = 1.0 + (class_infected_direct_multiplier(character_id) - 1.0) * 0.75
+	# SCRUM-930 «Дальний расчёт»: матожидание дистанс-множителя Снайпера по
+	# типовой дистанции боя оружия (только ПРЯМОЙ компонент — тики DoT trait не
+	# скейлит, зеркало гейта в ClassWeapon._damage_enemy). budget_tuning_for
+	# компенсирует кит, как у прочих trait-факторов.
+	var distance_factors := _budget_distance_trait_factors(character_id, config)
+	var distance_solo_factor := float(distance_factors.get("solo", 1.0))
+	var distance_aoe_factor := float(distance_factors.get("aoe", 1.0))
 	# SCRUM-902 «Аура дикой силы»: постоянный классовый бафф урона владельца И
 	# призывов — множит ВСЕ каналы выхода (в отличие от echo, который не трогает
 	# призывы). budget_tuning_for компенсирует кит (см. class_wild_aura_damage_factor).
 	var wild_aura_factor := class_wild_aura_damage_factor(character_id, params)
-	var solo_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps) * wild_aura_factor
-	var aoe_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets) * wild_aura_factor
+	# SCRUM-930 «Дальний расчёт» (distance_*_factor) впаян в объявления; сеть
+	# устройств и Ярость домножают ниже — все trait-факторы кита сохранены.
+	var solo_dps := ((direct_dps * infected_direct_factor * distance_solo_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps) * wild_aura_factor
+	var aoe_dps := ((direct_dps * infected_direct_factor * distance_aoe_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets) * wild_aura_factor
 	# SCRUM-908 «Сеть мастерской»: ожидаемые стеки устройств усиливают выход
 	# оружия-устройства (ульта НЕ устройство — фактор до её добавления).
 	var network_factor := _budget_network_factor(config, params, stats)
@@ -1373,13 +1438,33 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			# (METEOR_ZONE_* в class_weapon.gd → dot_targets ≈ 3 на 5 целях).
 			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 95.0) * 0.78, 1.0, 5.0), "dot_targets": 3.0}
 		"sniper_lockshot":
-			return {"solo_hits": 1.34, "five_hits": clampf(1.34 + float(config.get("beam_width", 34.0)) / 38.0, 1.34, 2.4)}
+			# SCRUM-931 (preferred-вариант): тяжёлый хит ×1.34 по САМОЙ ДАЛЬНЕЙ
+			# цели + терминальный взрыв на конце (DEADEYE_ENDPOINT_BLAST_RATIO
+			# 0.35, цель в центре ловит полную долю) → соло 1.69. Толпа: соло +
+			# overpen-коридор (damage_falloff-доля ~1 попутчику) + сосед взрыва
+			# (×0.7 средний falloff) + ближний самоподрыв close_burst_ratio от
+			# хита винтовки по врагам у ног (зеркало _fire_sniper_lockshot).
+			var endpoint_ratio := 0.35
+			var lockshot_solo := 1.34 * (1.0 + endpoint_ratio / 1.34)
+			var close_targets := clampf(float(config.get("close_burst_radius", 150.0)) / 95.0, 1.0, 2.2)
+			var close_share := clampf(float(config.get("close_burst_ratio", 0.8)), 0.0, 1.5) * 1.34 * close_targets
+			return {"solo_hits": lockshot_solo, "five_hits": clampf(lockshot_solo + float(config.get("damage_falloff", 0.38)) + endpoint_ratio * 0.7 + close_share, lockshot_solo, 4.6)}
 		"sniper_kill_zone":
-			var kill_zone_shots := float(config.get("projectile_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(kill_zone_shots * 0.82, 1.0, 4.2)}
+			# SCRUM-932: отложенный артиллерийский снаряд по красной метке —
+			# ОДИН тяжёлый AoE через grenade_delay (~1с), серия прицельных
+			# ударов удалена. Соло: полный ролл в центре зоны. Толпа: по площади
+			# зоны с усреднённой falloff-долей 0.85 (зеркало
+			# _damage_enemies_in_circle_falloff в _land_spotter_shell).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 85.0) * 0.85, 1.0, 4.6)}
 		"sniper_split_round":
-			var split_targets := float(config.get("split_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + split_targets * 0.55, 1.0, 3.4)}
+			# SCRUM-933: скорострельный круговой веер пуль по ближним монстрам
+			# (сплит-чейн удалён). Соло: одна цель ловит не больше
+			# SHATTER_VOLLEY_HIT_LIMIT (2) пуль за залп (анти-runaway кап,
+			# зеркало _fire_sniper_split_round). Толпа: почти все пули находят
+			# цель round-robin'ом (эффективность прицеливания 0.92); пули без
+			# цели уходят радиально и урона не наносят.
+			var spray_bullets := float(config.get("projectile_count", 6.0))
+			return {"solo_hits": minf(spray_bullets, 2.0), "five_hits": clampf(spray_bullets * 0.92, 1.0, 5.2)}
 		"priest_sanctify":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 78.0, 1.0, 4.8)}
 		"priest_ward":
