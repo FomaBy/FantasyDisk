@@ -4266,7 +4266,7 @@
  "SCRUM-975_settings_four_tab_game_design.md": {
   "key": "SCRUM-975",
   "status": "Контроль качества",
-  "desc_hash": "c0eefc7cde5dff77a7102710bf26fbb1"
+  "desc_hash": "534c6338039c766c27cc2000fbf19eb2"
  },
  "backend_settings_game_four_tab_integration_task.md": {
   "key": "SCRUM-1025",
@@ -4282,5 +4282,10 @@
   "key": "SCRUM-1027",
   "status": "К выполнению",
   "desc_hash": "60ca6721435e758fe7b9aa11863150a9"
+ },
+ "bug_scrum975_settings_game_scroll_geometry_task.md": {
+  "key": "SCRUM-1030",
+  "status": "К выполнению",
+  "desc_hash": "2eaaeef705e234b346af602572f1f267"
  }
 }

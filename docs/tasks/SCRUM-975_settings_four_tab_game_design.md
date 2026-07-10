@@ -88,3 +88,52 @@ neutral action. Back-end remains authoritative for clamping and propagation.
   package after SCRUM-975 and SCRUM-976 acceptance; SCRUM-977 remains blocked.
 - Disk cleanup: generated `.godot/` import cache removed; task worktree and
   local branch are removed after the final bookkeeping commit is pushed.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: FAILED
+
+Проверено:
+
+- independent production QA from fresh `origin/dev` (`b243d6e26`) in the
+  disposable worktree
+  `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-975-qa`;
+- PixelLab manifest/provenance: three valid source UUIDs, all referenced files
+  present, textless alpha layers and the 44×44 Game icon inspected directly;
+- `ui_plan.json` and `ui_plan_1280x720.json` rerun through
+  `validate_ui_layout_plan.py`; both report `ready_for_image` with no reported
+  errors or warnings;
+- all three compositor renders rerun from committed bases/layouts; final PNGs
+  reproduce byte-for-byte and reports remain `ok: true` at 1280×720,
+  1920×1080 and 2560×1440;
+- final/debug previews inspected at all three targets: visible content is
+  readable, four tab plates remain separate, header/back/tabs stay fixed at
+  720p, and visible content does not cover frame ornament;
+- deterministic `postprocess_assets.py` rerun in an isolated temporary copy;
+  all alpha layers, responsive bases and icon outputs reproduce byte-for-byte;
+- JSON parse, Python syntax, secret-pattern scan, manifest path/dimension/alpha
+  checks, `git diff --check`, and the no-runtime-path scope check passed;
+- Godot 4.7 semaphore gates passed: `runtime_smoke_test.gd`,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`, `animation_smoke_test.gd`,
+  `meta_progression_smoke_test.gd`, `melee_weapon_targeting_test.gd`,
+  `gamepad_menu_focus_test.gd`, and two consecutive
+  `gamepad_full_flow_smoke_test.gd` runs. Runtime/UI smokes emitted only the
+  known non-fatal dummy-renderer screenshot warning and ended PASS.
+
+Краевые случаи:
+
+- 1280×720 2×2 tab reflow with fixed header/back and a dedicated 14px
+  scroll lane;
+- 1920×1080 and 2560×1440 one-row tabs with five visible modifier rows and
+  reset without scrolling;
+- reproducibility audit of committed plans, guides, reports, composited images
+  and PixelLab post-processing rather than relying on the executor report.
+
+Баги: `SCRUM-1030` — the compact plan/layout contains only the two
+initially visible rows and omits exact geometry for the three scrolled rows,
+their slider/value hitboxes and reset, so frame safety of the complete 720p
+scroll content is not proven. The committed 2560 guide/report is also stale:
+it does not reproduce from committed `layout.json` and reports different tab,
+label, value and slider zones. SCRUM-975 remains in Jira `Контроль
+качества` until the Design correction is independently rechecked.
