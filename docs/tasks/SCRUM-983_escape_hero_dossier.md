@@ -81,6 +81,17 @@ reserved for the destructive End Run action.
   from clipped-visible rows only. Fixture Main/SubViewport WeakRefs are asserted
   released after every case. Focused/capture/overlap/theme/gamepad×3/full-flow/
   runtime-UI gates were rerun PASS.
+- 2026-07-10: second independent review removed the remaining dynamic
+  false-greens. Stat hover no longer invokes the generic 460/620px engine path;
+  hover and focus share the bounded 430×288 panel, with wheel/Page/gamepad-
+  shoulder access to long tails. Scroll changes now rebuild footer neighbors;
+  the focused oracle scrolls both columns, checks all four actions and performs
+  a physical `ui_up` transition. A Druid/summon-amulet fixture adds the
+  summoner-only `summon_amount` row to the exhaustive tooltip/cleanup matrix.
+- 2026-07-10: manual re-review closed wheel ownership: a focus-only tooltip no
+  longer steals wheel after the pointer leaves stat rows. Physical oracle proves
+  wheel-outside scrolls Hero content without changing tooltip scroll, while
+  wheel-on-hover still scrolls the bounded tooltip. Review verdict: PASS.
 
 ## Design Paths
 

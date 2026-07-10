@@ -662,7 +662,7 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс)
 			# с тултипом; ряд призывов только у призывного кита (berserk+sword — нет).
 			var survival_hp := main.find_child("SurvivalStatRow_health_point", true, false) as Control
-			if survival_hp == null or survival_hp.tooltip_text == "":
+			if survival_hp == null or str(survival_hp.get_meta("dossier_tooltip_text", "")) == "" or survival_hp.tooltip_text != "":
 				return "%s: expected the hero card Survival block to expose the HP row with a tooltip (SCRUM-890)." % context
 			var survival_hp_value := main.find_child("SurvivalStatValue_health_point", true, false) as Label
 			if survival_hp_value == null or not survival_hp_value.text.contains("/"):

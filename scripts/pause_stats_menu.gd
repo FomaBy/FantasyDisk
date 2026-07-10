@@ -104,6 +104,8 @@ const DERIVED_COMPACT_LABELS := {
 	"dot_damage": "Период. ур.",
 	"dot_speed": "Частота",
 }
+const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
+const TOOLTIP_SCROLL_STEP := 88
 
 # SCRUM-890: кнопка «Завершить забег» открывает модалку EndRunConfirm ui_screens
 # (SCRUM-883) через этот хук; standalone-сцена (тесты/превью) падает в
@@ -134,10 +136,13 @@ var _focus_tooltip: PanelContainer = null
 var _focus_tooltip_scroll: ScrollContainer = null
 var _focus_tooltip_label: Label = null
 var _focus_tooltip_anchor: Control = null
+var _focused_tooltip_anchor: Control = null
+var _hovered_tooltip_anchor: Control = null
 var _base_focus_targets: Array[Control] = []
 var _survival_focus_targets: Array[Control] = []
 var _derived_focus_targets: Array[Control] = []
 var _reserve_masks: Array[ColorRect] = []
+var _focus_rebuild_queued := false
 
 # SCRUM-890 (доработка): derived-статы выживания живут в карточке героя
 # компактным блоком под базовыми статами; «Призывы» добавляются одной строкой
@@ -412,6 +417,8 @@ func _build_action_footer(parent: Control) -> void:
 	)
 	_button_box.add_child(menu_button)
 	_action_buttons = [resume_button, settings_button, end_run_button, menu_button]
+	for button in _action_buttons:
+		button.focus_entered.connect(_schedule_focus_navigation_rebuild)
 
 	# SCRUM-812: досье проходимо с геймпада/стрелок — горизонтальное кольцо фокуса,
 	# стартовый фокус «Продолжить». B/Esc (resume) — централизованно в main._input.
@@ -448,6 +455,7 @@ func _build_body(parent: Control, s: float) -> void:
 	_hero_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hero_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_hero_scroll.follow_focus = true
+	_hero_scroll.get_v_scroll_bar().value_changed.connect(_schedule_focus_navigation_rebuild.unbind(1))
 	_hero_card.add_child(_hero_scroll)
 
 	_hero_card_container = VBoxContainer.new()
@@ -495,6 +503,7 @@ func _build_body(parent: Control, s: float) -> void:
 	_derived_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_derived_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_derived_scroll.follow_focus = true
+	_derived_scroll.get_v_scroll_bar().value_changed.connect(_schedule_focus_navigation_rebuild.unbind(1))
 	_right_column.add_child(_derived_scroll)
 
 	# Скролл держит и сетку, и снаряжение: на 1440p всё помещается без скролла,
@@ -606,6 +615,7 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip_scroll.custom_minimum_size = Vector2(390.0, 0.0)
 	_focus_tooltip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_focus_tooltip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_focus_tooltip_scroll.focus_mode = Control.FOCUS_NONE
 	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -816,20 +826,83 @@ func _position_focus_tooltip() -> void:
 
 
 func _show_focus_tooltip(anchor: Control) -> void:
-	if anchor == null or anchor.tooltip_text.strip_edges() == "" or _focus_tooltip == null:
-		return
-	_focus_tooltip_anchor = anchor
-	_focus_tooltip_label.text = anchor.tooltip_text
-	_focus_tooltip_scroll.scroll_vertical = 0
-	_focus_tooltip.visible = true
-	call_deferred("_position_focus_tooltip")
+	_focused_tooltip_anchor = anchor
+	_refresh_dossier_tooltip()
 
 
 func _hide_focus_tooltip(anchor: Control) -> void:
-	if _focus_tooltip_anchor != anchor:
+	if _focused_tooltip_anchor == anchor:
+		_focused_tooltip_anchor = null
+	_refresh_dossier_tooltip()
+
+
+func _show_hover_tooltip(anchor: Control) -> void:
+	_hovered_tooltip_anchor = anchor
+	_refresh_dossier_tooltip()
+
+
+func _hide_hover_tooltip(anchor: Control) -> void:
+	if _hovered_tooltip_anchor == anchor:
+		_hovered_tooltip_anchor = null
+	_refresh_dossier_tooltip()
+
+
+func _refresh_dossier_tooltip() -> void:
+	var anchor := _hovered_tooltip_anchor if _hovered_tooltip_anchor != null else _focused_tooltip_anchor
+	if anchor == null or not is_instance_valid(anchor):
+		_focus_tooltip_anchor = null
+		_focus_tooltip.visible = false
+		_focus_tooltip.set_meta("dossier_anchor_name", "")
 		return
-	_focus_tooltip_anchor = null
-	_focus_tooltip.visible = false
+	var text := str(anchor.get_meta(DOSSIER_TOOLTIP_META, ""))
+	if text.strip_edges() == "":
+		return
+	_focus_tooltip_anchor = anchor
+	_focus_tooltip_label.text = text
+	_focus_tooltip_scroll.scroll_vertical = 0
+	_focus_tooltip.visible = true
+	_focus_tooltip.set_meta("dossier_anchor_name", str(anchor.name))
+	call_deferred("_position_focus_tooltip")
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _focus_tooltip == null or not _focus_tooltip.visible or _focus_tooltip_anchor == null:
+		return
+	var direction := 0
+	if event.is_action_pressed("ui_page_down"):
+		direction = 1
+	elif event.is_action_pressed("ui_page_up"):
+		direction = -1
+	elif event is InputEventJoypadButton and event.pressed:
+		if event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+			direction = 1
+		elif event.button_index == JOY_BUTTON_LEFT_SHOULDER:
+			direction = -1
+	if direction == 0:
+		return
+	_focus_tooltip_scroll.scroll_vertical += direction * TOOLTIP_SCROLL_STEP
+	get_viewport().set_input_as_handled()
+
+
+func _input(event: InputEvent) -> void:
+	# Wheel events are normally consumed by the dossier's underlying content
+	# ScrollContainer before _unhandled_input. Capture them early while a bounded
+	# hover/focus tooltip is open so its hidden tail remains reachable.
+	if _focus_tooltip == null or not _focus_tooltip.visible or _hovered_tooltip_anchor == null \
+		or not is_instance_valid(_hovered_tooltip_anchor) or not (event is InputEventMouseButton):
+		return
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed:
+		return
+	var direction := 0
+	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		direction = 1
+	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		direction = -1
+	if direction == 0:
+		return
+	_focus_tooltip_scroll.scroll_vertical += direction * TOOLTIP_SCROLL_STEP
+	get_viewport().set_input_as_handled()
 
 
 func _wire_stat_focus(control: Control, target_list: Array[Control]) -> void:
@@ -838,6 +911,20 @@ func _wire_stat_focus(control: Control, target_list: Array[Control]) -> void:
 	target_list.append(control)
 	control.focus_entered.connect(_show_focus_tooltip.bind(control))
 	control.focus_exited.connect(_hide_focus_tooltip.bind(control))
+	control.mouse_entered.connect(_show_hover_tooltip.bind(control))
+	control.mouse_exited.connect(_hide_hover_tooltip.bind(control))
+
+
+func _schedule_focus_navigation_rebuild() -> void:
+	if _focus_rebuild_queued:
+		return
+	_focus_rebuild_queued = true
+	call_deferred("_flush_focus_navigation_rebuild")
+
+
+func _flush_focus_navigation_rebuild() -> void:
+	_focus_rebuild_queued = false
+	_rebuild_focus_navigation()
 
 
 func _rebuild_focus_navigation() -> void:
@@ -1356,7 +1443,8 @@ func _make_survival_stat_row(entry: Dictionary, display_name := "", value_overri
 	row.custom_minimum_size = Vector2(0, 40.0)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
-	row.tooltip_text = _tooltip_for_entry(entry)
+	row.set_meta(DOSSIER_TOOLTIP_META, _tooltip_for_entry(entry))
+	row.tooltip_text = ""
 	row.add_theme_stylebox_override("panel", _stat_row_style(false))
 	row.mouse_entered.connect(func() -> void:
 		row.add_theme_stylebox_override("panel", _stat_row_style(true))
@@ -1427,9 +1515,11 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	row.custom_minimum_size = Vector2(0, READABLE_BASE_ROW_HEIGHT)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
-	row.tooltip_text = _tooltip_for_entry(entry)
+	var dossier_tooltip := _tooltip_for_entry(entry)
 	if is_priority:
-		row.tooltip_text += "\n\n%s" % ProgressionData.attribute_priority_reason(character_id, stat_id)
+		dossier_tooltip += "\n\n%s" % ProgressionData.attribute_priority_reason(character_id, stat_id)
+	row.set_meta(DOSSIER_TOOLTIP_META, dossier_tooltip)
+	row.tooltip_text = ""
 	row.add_theme_stylebox_override("panel", _base_stat_row_style(false, is_priority))
 	row.mouse_entered.connect(func() -> void:
 		row.add_theme_stylebox_override("panel", _base_stat_row_style(true, is_priority))
@@ -1551,7 +1641,8 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	chip.custom_minimum_size = Vector2(READABLE_CHIP_WIDTH, READABLE_CHIP_HEIGHT)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_STOP
-	chip.tooltip_text = _tooltip_for_entry(entry)
+	chip.set_meta(DOSSIER_TOOLTIP_META, _tooltip_for_entry(entry))
+	chip.tooltip_text = ""
 	chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	chip.mouse_entered.connect(func() -> void:
 		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(true))

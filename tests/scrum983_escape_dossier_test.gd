@@ -41,14 +41,19 @@ const SURVIVAL_IDS := ["health_point", "defense", "dodge", "regeneration"]
 const ACTION_NAMES := [
 	"PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton",
 ]
+const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 
 var _errors := PackedStringArray()
+var _tooltip_scroll_exercised := false
 
 
 func _initialize() -> void:
 	for viewport_size in TARGETS:
 		await _validate_resolution(viewport_size)
+	await _validate_summoner_target()
 	await _validate_live_resize()
+	if not _tooltip_scroll_exercised:
+		_errors.append("No long tooltip exercised the physical gamepad scroll path.")
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error(error)
@@ -96,7 +101,25 @@ func _validate_live_resize() -> void:
 	await _cleanup_fixture(viewport, main, "live 2560x1440 -> 1280x720")
 
 
-func _open_fixture(viewport_size: Vector2i) -> Dictionary:
+func _validate_summoner_target() -> void:
+	var fixture := await _open_fixture(Vector2i(1920, 1080), "druid", "summon_amulet")
+	var viewport := fixture["viewport"] as SubViewport
+	var main := fixture["main"] as Node
+	var pause := fixture["pause"] as Control
+	var context := "1920x1080 summoner"
+	var summon_row := pause.find_child("SurvivalStatRow_summon_amount", true, false) as Control
+	var summon_name := pause.find_child("SurvivalStatName_summon_amount", true, false) as Label
+	var summon_value := pause.find_child("SurvivalStatValue_summon_amount", true, false) as Label
+	if summon_row == null or summon_name == null or summon_value == null:
+		_errors.append("%s: summon kit must expose semantic summon_amount row." % context)
+	else:
+		var targets: Array[Control] = []
+		_validate_stat_target(pause, summon_row.name, summon_name.name, summon_value.name, _expected_contract(Vector2(1920, 1080))["inner"], context, targets)
+		await _assert_single_tooltip_target(pause, summon_row, _expected_contract(Vector2(1920, 1080))["inner"], context)
+	await _cleanup_fixture(viewport, main, context)
+
+
+func _open_fixture(viewport_size: Vector2i, character_id := "berserk", weapon_id := "sword") -> Dictionary:
 	var viewport := SubViewport.new()
 	viewport.size = viewport_size
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -105,8 +128,8 @@ func _open_fixture(viewport_size: Vector2i) -> Dictionary:
 	var main := MAIN_SCENE.instantiate()
 	viewport.add_child(main)
 	await _settle()
-	main.set("selected_character_id", "berserk")
-	main.set("selected_weapon_id", "sword")
+	main.set("selected_character_id", character_id)
+	main.set("selected_weapon_id", weapon_id)
 	main.set("route_stage", 2)
 	main.call("_start_combat")
 	await _settle()
@@ -283,8 +306,11 @@ func _validate_stat_target(pause: Control, row_name: String, label_name: String,
 		return
 	if row.focus_mode != Control.FOCUS_ALL:
 		_errors.append("%s: %s is not keyboard/gamepad focusable." % [context, row_name])
-	if row.tooltip_text.strip_edges() == "" or not row.tooltip_text.contains("Формула / источник:") or not row.tooltip_text.contains("Влияет:"):
+	var tooltip_text := str(row.get_meta(DOSSIER_TOOLTIP_META, ""))
+	if tooltip_text.strip_edges() == "" or not tooltip_text.contains("Формула / источник:") or not tooltip_text.contains("Влияет:"):
 		_errors.append("%s: %s lacks complete StatFormulas tooltip data." % [context, row_name])
+	if row.tooltip_text != "":
+		_errors.append("%s: %s must disable the unbounded engine/global hover popup." % [context, row_name])
 	if label.text.strip_edges() == "" or value.text.strip_edges() == "":
 		_errors.append("%s: %s has an empty compact label/value." % [context, row_name])
 	var visible_rect := _clipped_visible_rect(row)
@@ -326,35 +352,164 @@ func _assert_focus_contract(pause: Control, contract: Dictionary, context: Strin
 			var expected_up := rows[row_index - 2]
 			if _resolved_neighbor(current, current.focus_neighbor_top) != expected_up:
 				_errors.append("%s: base-stat up focus changes logical column at %s." % [context, current.name])
-	for button_name in ACTION_NAMES:
-		var button := pause.find_child(button_name, true, false) as Button
-		var up_target: Control = _resolved_neighbor(button, button.focus_neighbor_top) if button != null else null
-		if up_target == null or not _clipped_visible_rect(up_target).has_area():
-			_errors.append("%s: %s Up neighbor must resolve to a clipped-visible stat target." % [context, button_name])
 	var tooltip := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
 	var tooltip_scroll := pause.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
-	var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
 	if tooltip_scroll == null or tooltip_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
 		_errors.append("%s: focus tooltip must use a vertically clipped scroll viewport." % context)
 	for focus_target in required.slice(ACTION_NAMES.size()):
 		if focus_target == null:
 			continue
-		focus_target.grab_focus()
-		for _frame in range(4):
+		await _assert_single_tooltip_target(pause, focus_target, contract["inner"], context)
+
+	# The longest available text must either fit or scroll through a physical
+	# gamepad shoulder path while focus remains on the stat row.
+	var longest_target: Control = null
+	for focus_target in required.slice(ACTION_NAMES.size()):
+		if focus_target != null and (longest_target == null or str(focus_target.get_meta(DOSSIER_TOOLTIP_META, "")).length() > str(longest_target.get_meta(DOSSIER_TOOLTIP_META, "")).length()):
+			longest_target = focus_target
+	if longest_target != null and tooltip_scroll != null:
+		await _assert_single_tooltip_target(pause, longest_target, contract["inner"], "%s longest" % context)
+		var scroll_bar := tooltip_scroll.get_v_scroll_bar()
+		if scroll_bar.max_value > scroll_bar.page + 1.0:
+			var shoulder := InputEventJoypadButton.new()
+			shoulder.button_index = JOY_BUTTON_RIGHT_SHOULDER
+			shoulder.pressed = true
+			pause.get_viewport().push_input(shoulder, true)
 			await process_frame
-		if tooltip == null or not tooltip.visible or tooltip_label == null \
-			or not tooltip_label.text.contains("Формула / источник:") or not tooltip_label.text.contains("Влияет:"):
-			_errors.append("%s: %s focus does not expose its complete tooltip." % [context, focus_target.name])
-			continue
-		var tooltip_rect := tooltip.get_global_rect()
-		if tooltip_rect.size.x > 430.1 or tooltip_rect.size.y > 288.1:
-			_errors.append("%s: %s tooltip %s exceeds 430x288." % [context, focus_target.name, str(tooltip_rect.size)])
-		else:
-			_assert_inside(tooltip_rect, contract["inner"], "%s %s focus tooltip" % [context, focus_target.name])
-		if not _clipped_visible_rect(focus_target).has_area():
-			_errors.append("%s: focus-follow did not reveal %s in its scroll viewport." % [context, focus_target.name])
+			if tooltip_scroll.scroll_vertical <= 0:
+				_errors.append("%s: right shoulder does not scroll long focus tooltip." % context)
+			else:
+				_tooltip_scroll_exercised = true
+		elif tooltip.find_child("DossierFocusTooltipLabel", true, false).get_combined_minimum_size().y > tooltip_scroll.size.y + 1.0:
+			_errors.append("%s: longest tooltip neither fits nor exposes a scroll range." % context)
+
+	# Exercise real pointer hover. Stat rows have engine tooltip_text disabled,
+	# so mouse and focus must resolve the same bounded internal panel.
+	var hover_target := required[ACTION_NAMES.size()] as Control
+	if hover_target != null:
+		# Focus may keep its tooltip open while the pointer is elsewhere. In that
+		# state wheel belongs to the underlying dossier ScrollContainer, not the
+		# tooltip; this guards ordinary mouse scrolling after keyboard navigation.
+		hover_target.grab_focus()
+		for _frame in range(3):
+			await process_frame
+		var hero_scroll_for_wheel := pause.find_child("HeroCardScroll", true, false) as ScrollContainer
+		var portrait := pause.find_child("PauseDossierPortraitSlot", true, false) as Control
+		if hero_scroll_for_wheel != null and portrait != null:
+			hero_scroll_for_wheel.scroll_vertical = 0
+			tooltip_scroll.scroll_vertical = 0
+			for _frame in range(3):
+				await process_frame
+			var outside_motion := InputEventMouseMotion.new()
+			outside_motion.position = _clipped_visible_rect(portrait).get_center()
+			outside_motion.global_position = outside_motion.position
+			pause.get_viewport().push_input(outside_motion, true)
+			for _frame in range(2):
+				await process_frame
+			var dossier_wheel := InputEventMouseButton.new()
+			dossier_wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+			dossier_wheel.pressed = true
+			dossier_wheel.factor = 1.0
+			dossier_wheel.position = outside_motion.position
+			dossier_wheel.global_position = outside_motion.position
+			pause.get_viewport().push_input(dossier_wheel, true)
+			for _frame in range(10):
+				await process_frame
+			if hero_scroll_for_wheel.scroll_vertical <= 0:
+				var hovered_outside := pause.get_viewport().gui_get_hovered_control()
+				_errors.append("%s: wheel outside stat rows does not scroll hero dossier (hovered=%s point=%s max=%.1f page=%.1f)." % [context, str(hovered_outside.name) if hovered_outside != null else "<none>", str(outside_motion.position), hero_scroll_for_wheel.get_v_scroll_bar().max_value, hero_scroll_for_wheel.get_v_scroll_bar().page])
+			if tooltip_scroll.scroll_vertical != 0:
+				_errors.append("%s: focus-only tooltip hijacks wheel after pointer leaves stat rows." % context)
+
+		hover_target.grab_focus()
+		for _frame in range(3):
+			await process_frame
+		resume.grab_focus()
+		await process_frame
+		var motion := InputEventMouseMotion.new()
+		motion.position = _clipped_visible_rect(hover_target).get_center()
+		motion.global_position = motion.position
+		pause.get_viewport().push_input(motion, true)
+		for _frame in range(3):
+			await process_frame
+		var hovered := pause.get_viewport().gui_get_hovered_control()
+		if not _is_control_within(hovered, hover_target):
+			_errors.append("%s: physical pointer did not hover %s." % [context, hover_target.name])
+		if tooltip == null or not tooltip.visible or str(tooltip.get_meta("dossier_anchor_name", "")) != str(hover_target.name):
+			_errors.append("%s: mouse hover did not use bounded dossier tooltip path." % context)
+		elif tooltip.get_global_rect().size.x > 430.1 or tooltip.get_global_rect().size.y > 288.1:
+			_errors.append("%s: mouse-hover tooltip exceeds 430x288." % context)
+		elif tooltip_scroll != null and tooltip_scroll.get_v_scroll_bar().max_value > tooltip_scroll.get_v_scroll_bar().page + 1.0:
+			var wheel := InputEventMouseButton.new()
+			wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+			wheel.pressed = true
+			wheel.position = motion.position
+			wheel.global_position = motion.position
+			pause.get_viewport().push_input(wheel, true)
+			await process_frame
+			if tooltip_scroll.scroll_vertical <= 0:
+				_errors.append("%s: mouse wheel cannot reach the hover tooltip tail." % context)
+
+	# Move both content columns away from their initial scroll position, then
+	# focus each footer action so its deferred neighbor rebuild sees live clipping.
+	var hero_scroll := pause.find_child("HeroCardScroll", true, false) as ScrollContainer
+	var derived_scroll := pause.find_child("DerivedStatsScroll", true, false) as ScrollContainer
+	if hero_scroll != null:
+		hero_scroll.scroll_vertical = int(hero_scroll.get_v_scroll_bar().max_value)
+	if derived_scroll != null:
+		derived_scroll.scroll_vertical = int(derived_scroll.get_v_scroll_bar().max_value)
+	for _frame in range(4):
+		await process_frame
+	for button_name in ACTION_NAMES:
+		var button := pause.find_child(button_name, true, false) as Button
+		button.grab_focus()
+		for _frame in range(3):
+			await process_frame
+		var up_target := _resolved_neighbor(button, button.focus_neighbor_top)
+		if up_target == null or not _clipped_visible_rect(up_target).has_area():
+			_errors.append("%s: %s Up neighbor is stale/offscreen after live scroll." % [context, button_name])
+	resume.grab_focus()
+	for _frame in range(3):
+		await process_frame
+	var physical_target := _resolved_neighbor(resume, resume.focus_neighbor_top)
+	var up_event := InputEventAction.new()
+	up_event.action = "ui_up"
+	up_event.pressed = true
+	pause.get_viewport().push_input(up_event, true)
+	for _frame in range(3):
+		await process_frame
+	if physical_target == null or pause.get_viewport().gui_get_focus_owner() != physical_target or not _clipped_visible_rect(physical_target).has_area():
+		_errors.append("%s: physical footer Up did not land on its clipped-visible neighbor." % context)
 	resume.grab_focus()
 	await process_frame
+
+
+func _assert_single_tooltip_target(pause: Control, focus_target: Control, inner: Rect2, context: String) -> void:
+	var tooltip := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
+	var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
+	focus_target.grab_focus()
+	for _frame in range(4):
+		await process_frame
+	if tooltip == null or not tooltip.visible or tooltip_label == null \
+		or not tooltip_label.text.contains("Формула / источник:") or not tooltip_label.text.contains("Влияет:"):
+		_errors.append("%s: %s focus does not expose its complete tooltip." % [context, focus_target.name])
+		return
+	var tooltip_rect := tooltip.get_global_rect()
+	if tooltip_rect.size.x > 430.1 or tooltip_rect.size.y > 288.1:
+		_errors.append("%s: %s tooltip %s exceeds 430x288." % [context, focus_target.name, str(tooltip_rect.size)])
+	else:
+		_assert_inside(tooltip_rect, inner, "%s %s focus tooltip" % [context, focus_target.name])
+	if not _clipped_visible_rect(focus_target).has_area():
+		_errors.append("%s: focus-follow did not reveal %s in its scroll viewport." % [context, focus_target.name])
+
+
+func _is_control_within(candidate: Control, ancestor: Control) -> bool:
+	var current: Node = candidate
+	while current != null:
+		if current == ancestor:
+			return true
+		current = current.get_parent()
+	return false
 
 
 func _rendered_width(label: Label, text: String) -> float:

@@ -138,7 +138,14 @@ chip, icon or pointer hitbox enters the scrollbar lane.
   owning `ScrollContainer`; an off-screen row is never a footer neighbor.
 - Focus tooltip content lives in a clipped vertical `ScrollContainer`. Its
   actual panel rectangle, including the longest priority/formula text, is capped
-  at 430×288 and clamped to the inner content rect.
+  at 430×288 and clamped to the inner content rect. Stat hover uses that same
+  bounded panel instead of the generic engine/global tooltip; wheel, Page
+  Up/Down and gamepad shoulders scroll long content while focus stays on the row.
+  Wheel belongs to the tooltip only with an active stat hover; outside stat rows
+  it continues to scroll the underlying Hero/Derived column.
+- Scroll-value changes and footer focus trigger a deferred geometric-neighbor
+  rebuild, so a footer action never retains an off-screen stat neighbor after
+  focus-follow scrolling.
 - Within stats, geometric left/right/up/down neighbors cover every base and
   derived chip. Both scroll containers use `follow_focus=true` and boundary
   neighbors transfer between columns/action row instead of trapping focus.

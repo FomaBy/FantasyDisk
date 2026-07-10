@@ -58,6 +58,13 @@ stat chip or scrollbar entering a content lane.
 - Every derived compact alias and value fits its actual rendered lane at all
   three targets; every base/survival/derived focus target was exercised and its
   actual tooltip remained within 430×288 and the inner rect.
-- Footer Up neighbors are clipped-visible at every target; fixture `Main` and
-  `SubViewport` WeakRefs clear after `queue_free`.
+- A real pointer motion proves hover uses the same bounded internal panel with
+  the generic engine popup disabled; mouse wheel and physical gamepad shoulder
+  events reach long tooltip tails. A separate focus-only/pointer-outside case
+  proves wheel scrolls Hero content without moving tooltip scroll. A Druid
+  `summon_amulet` fixture covers the
+  summoner-only `summon_amount` row.
+- After both content columns are physically scrolled, every footer Up neighbor
+  is rebuilt/clipped-visible and a pushed `ui_up` event lands on that target;
+  fixture `Main` and `SubViewport` WeakRefs clear after `queue_free`.
 - Full repository runtime smoke: pending the active Priest test-lock release.

@@ -993,9 +993,13 @@ gold ornament. Derived stat groups remain 2×2 and show deterministic readable
 compact aliases without clipping either aliases or localized numeric values;
 canonical names remain in tooltips. Every stat target is keyboard/gamepad focusable,
 uses geometric D-pad neighbors, and exposes the same complete
-description/formula/source/influences as hover. The focus tooltip uses a clipped
-vertical scroll viewport and never exceeds 430×288; footer Up selects only
-clipped-visible stat rows. Runtime oracle:
+description/formula/source/influences through one shared hover/focus tooltip.
+Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
+clipped vertical viewport that never exceeds 430×288 and scrolls by wheel,
+Page Up/Down or gamepad shoulders. Wheel is captured only during an actual stat
+hover; after the pointer leaves stat rows it scrolls the underlying dossier even
+if a focus tooltip remains open. Footer Up neighbors rebuild after scroll and
+select only currently clipped-visible stat rows. Runtime oracle:
 `tests/scrum983_escape_dossier_test.gd`; visual evidence:
 `build/qa/scrum983/`.
 
