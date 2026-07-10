@@ -4225,12 +4225,17 @@
  },
  "SCRUM-1021.md": {
   "key": "SCRUM-1021",
-  "status": "Контроль качества",
-  "desc_hash": "3896045b64a8c158ab80cc6a8ffd563a"
+  "status": "К выполнению",
+  "desc_hash": "5058d7f42e8c01aee3678cb4cc3a12ee"
  },
  "bug_SCRUM-1022_druid_ghost_registry_source_faces_left_task.md": {
   "key": "SCRUM-1022",
   "status": "К выполнению",
   "desc_hash": "8eb788149cfe9a7cea5efe6dd1911402"
+ },
+ "SCRUM-1023.md": {
+  "key": "SCRUM-1023",
+  "status": "К выполнению",
+  "desc_hash": "1e17b631b9c68c33f588c15605ba98c4"
  }
 }

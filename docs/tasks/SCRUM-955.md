@@ -105,3 +105,29 @@ worktree; сам QA-worktree удаляется после commit/push evidence.
 
 Thread cleanup: collaboration subagent, не отдельный disposable top-level
 Codex worker; архивирование текущего пользовательского task не требуется.
+
+## QA-Вердикт (повторный, 2026-07-10, `/root/audit_repo`) — FAILED
+
+Статус: FAILED
+
+SCRUM-1021 исправляет исходный data-блокер: независимый численный probe и все
+focused/runtime тесты подтверждают каноническую матрицу 26×8, точную обратную
+проекцию, все восемь характеристик у `ultimate_multiplier` и отсутствие
+лексических false positives.
+
+Полная приёмка SCRUM-955 всё ещё не проходит обязательный 1280×720 visual
+gate. В обоих split-разделах выбранный заголовок не рисуется: rect `284×34`,
+шрифт 30 px даёт glyph height 42 px, `line_count=1`, `visible_lines=0`. Дефект
+повторён в fresh-процессах после 120 settle-кадров; 1920×1080, ultrawide,
+2560×1440 и 4K зелёные. Frame safe zones, шесть русских вкладок, два
+независимых scroll-контрола и связанные списки иначе корректны.
+
+Blocking Bug: **SCRUM-1023**. SCRUM-955 остаётся `К выполнению` до исправления
+и повторной независимой QA. Production-код и тесты QA не изменяла; скриншоты
+блокера сохранены в `docs/design/previews/scrum1023_codex_title_missing_*`.
+
+Disk cleanup: removed временные captures/logs/probes в `/tmp/scrum1021_qa`,
+ignored `build/qa` и `.godot`; удаление QA-worktree после evidence push
+фиксируется финальным Jira-комментарием.
+
+Thread cleanup: collaboration subagent, не disposable top-level worker.
