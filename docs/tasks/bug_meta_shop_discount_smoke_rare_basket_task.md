@@ -1,6 +1,6 @@
 # BUG: Meta shop-discount smoke leaves artifact-family RNG unseeded
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1027
 Контур: Codex
@@ -87,6 +87,9 @@ stay stable while a real multiplier or basket-identity regression still fails.
   diagnostic remained non-fatal and the suite exited `0`).
 - Independent pre-land code review: PASS; no actionable findings remain.
 
-Disk cleanup: pending final test/cache cleanup.
+Landed: `f33e98ec4` on `origin/dev`; routed to independent QA.
+
+Disk cleanup: removed task `.godot` cache (~451 MB) and all isolated `/tmp`
+user-data directories; clean task worktree removal follows the routing commit.
 
 Thread cleanup: not a disposable worker thread.
