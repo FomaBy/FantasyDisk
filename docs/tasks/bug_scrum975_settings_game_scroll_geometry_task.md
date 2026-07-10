@@ -4,13 +4,11 @@
 Приоритет: high
 Роль: Design
 Контур: Codex
-Owner: Design/Codex
-Thread: `/root/scrum1030_design`
-Branch / worktree: `codex/scrum-1030-settings-design-fix` /
-`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1030-settings-design-fix`
-Locked paths: claimed Design scope is
-`docs/design/references/scrum975_settings_game_tab/**`,
-`docs/design/previews/scrum975_settings_game_tab/**`, and this mirror
+Owner: Design/Codex; independently accepted by QA/Codex
+Thread: `/root/scrum1030_design`; QA `/root/reqa_scrum975`
+Branch / worktree: result landed directly in `origin/dev` at `be136ca87`
+Locked paths: released after independent QA; overall SCRUM-975 now waits on
+the separate wide-title frame-safety bug SCRUM-1033
 Jira: SCRUM-1030
 Sprint / fixVersion: `Спринт 0.2.1` / `0.2.1`
 Blocked issue: SCRUM-975
@@ -79,8 +77,9 @@ therefore unproven.
 - [x] 1280×720, 1920×1080 and 2560×1440 compositor reports remain `ok: true`;
       PixelLab provenance/source layers remain intact and no runtime
       GDScript/settings/gameplay path changes.
-- [ ] The correction is pushed to `origin/dev` and SCRUM-975 passes an
-      independent recheck.
+- [x] The correction is pushed to `origin/dev` and its exact defect passes an
+      independent recheck. Overall SCRUM-975 remains in QA only because the
+      separate pre-existing wide title/frame overlap was filed as SCRUM-1033.
 
 Correction push: complete in `origin/dev` commit `be136ca87`; independent
 SCRUM-975 recheck remains intentionally pending.
@@ -110,8 +109,8 @@ SCRUM-975 recheck remains intentionally pending.
 
 - PixelLab/source post-processing and all three final composites reproduce
   byte-for-byte from committed sources.
-- Visible final/debug previews are visually clean; the failure is the missing
-  proof/contract for offscreen controls and the stale canonical guide.
+- Compact top/bottom final/debug previews are visually clean and now prove the
+  complete scroll content; the stale canonical guide defect is fixed.
 - Godot 4.7 full runtime, UI, overlap, theme, animation, meta, targeting and
   gamepad regression gates all passed; this is a Design evidence/geometry bug,
   not a runtime regression.
@@ -134,3 +133,26 @@ SCRUM-975 recheck remains intentionally pending.
   menus/current-state/content-registry or Claude-owned path changed.
 - Next state: SCRUM-1030 and SCRUM-975 require independent QA/re-QA; neither is
   marked `Готово` by the Design worker.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+- Verified independently from fresh `origin/dev` `be136ca87` in disposable
+  worktree `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-975-reqa`.
+- PixelLab post-processing, responsive layout generation, both planning
+  guides/reports, the focused geometry report, canonical 2K guide/report, all
+  four composites/debug images/reports and the isolated icon reproduced
+  byte-for-byte: 29 checked outputs.
+- Exact contract passed: `878×520` logical canvas, `892×306` viewport,
+  exclusive `14px` lane, five complete rows and reset, scroll transforms
+  `0/214`, fixed compact shell identity, canonical 2K geometry and exact 0.75
+  1080p derivative.
+- JSON, Python compile, PixelLab UUID/source/alpha, secret scan, Design-only
+  scope and `git diff --check` passed.
+- Godot 4.7 semaphore gates passed: `runtime_smoke_test.gd`,
+  `runtime_smoke_ui_test.gd`, `ui_no_overlap_matrix_test.gd` and
+  `dark_fantasy_ui_theme_test.gd`. The runtime suites emitted only the known
+  non-fatal dummy-renderer screenshot warning.
+- SCRUM-1030 was moved to Jira `Готово`. SCRUM-1033 is a separate
+  wide title/frame-safety defect and does not invalidate this focused fix.

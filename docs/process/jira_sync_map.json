@@ -3800,7 +3800,7 @@
  },
  "bug_gamepad_global_input_actions_codex_task.md": {
   "key": "SCRUM-846",
-  "status": "В работе",
+  "status": "Контроль качества",
   "desc_hash": "1be93c700c33cdc196d58cebd56309ea"
  },
  "backend_codex_object_first_runtime_integration_task.md": {
@@ -4266,7 +4266,7 @@
  "SCRUM-975_settings_four_tab_game_design.md": {
   "key": "SCRUM-975",
   "status": "Контроль качества",
-  "desc_hash": "534c6338039c766c27cc2000fbf19eb2"
+  "desc_hash": "7c0c16fbc11c21b60d64777bad671566"
  },
  "backend_settings_game_four_tab_integration_task.md": {
   "key": "SCRUM-1025",
@@ -4285,8 +4285,8 @@
  },
  "bug_scrum975_settings_game_scroll_geometry_task.md": {
   "key": "SCRUM-1030",
-  "status": "Контроль качества",
-  "desc_hash": "4de55aab21286669e6c5d0405a27c807"
+  "status": "Готово",
+  "desc_hash": "a22018a62300c6176d348f5e62017c02"
  },
  "bug_meta_keystone_behavioral_gate_regression_task.md": {
   "key": "SCRUM-1029",
@@ -4332,5 +4332,10 @@
   "key": "SCRUM-969",
   "status": "Контроль качества",
   "desc_hash": "15aee0808faea10bc6b8b09ba3a77d00"
+ },
+ "bug_scrum975_wide_title_frame_overlap_task.md": {
+  "key": "SCRUM-1033",
+  "status": "К выполнению",
+  "desc_hash": "07cb8f833b3c2a2ac5c33a185fa89342"
  }
 }
