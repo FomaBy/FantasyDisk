@@ -124,3 +124,52 @@ Disk cleanup: removed the 444 MB task `.godot/` import cache, 31 MB transient
 user roots; the clean task worktree/branch is removed after this routing commit.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт (2026-07-10)
+
+Статус: PASSED
+
+- QA worker: `qa_scrum1024` (`/root/qa_scrum1024`), Codex lane.
+- Fresh production base: `origin/dev`
+  `b243d6e26f219bf12dc2c2bef1fb4dc6ecdb0d5b`; implementation commit
+  `5f39a56ea`. Production code/assets remained read-only.
+- `atlas_scrum970_clickability_test.gd` passed headless and with the actual
+  windowed Metal/OpenGL DisplayServer. Each process used a unique scratch
+  `user://`; both runs covered `1280×720`, `1920×1080`, `2048×1152` and
+  `2560×1440`.
+- At `1280×720`: `AtlasSafeArea 1280×720`, `AtlasLayout 1014×526`, Back
+  `x=887..1147`, dossier `x=875..1147`, Buy `x=886.2..1135.2`. Every visible
+  hitbox and node circle stayed inside the physical viewport, authored empty
+  frame content rect and canvas; circles did not overlap.
+- Real pointer motion/down/up kept the class preview purchase/currency-neutral
+  through 12 deferred frames; the visible explicit Buy allocated `berserk_m0`
+  and spent exactly one emblem. The Guild preview/Buy, reset/cancel and Back
+  paths passed independently.
+- Compact currency showed exact numeric counts; real hover over each icon and
+  label resolved the full localized parent tooltip. Wide viewports retained
+  the full labels. Dossier `ui_down` scrolling, boundary transfer to Buy,
+  alternate-node reset-to-top and the 720p bottom-medallion
+  `follow_focus`/`ui_up` path passed.
+- All eight windowed class/Guild screenshots were inspected visually: no
+  clipping, overlap, hidden action or content on frame ornament.
+- Green gates: Meta40 Atlas, per-hero tree, meta progression,
+  `ui_no_overlap_matrix_test.gd`, dark theme, gamepad menu focus, gamepad full
+  flow 3/3, runtime UI, full runtime, animation, combat and melee targeting.
+  The full runtime emitted only the known dummy-renderer screenshot diagnostic.
+- Separate baseline regressions found by the broad regression sweep were
+  registered Jira-first and left unassigned in the active sprint:
+  `SCRUM-1028` (`meta_skill_tree`, SCRUM-835 shadow scenario, 3/3) and
+  `SCRUM-1029` (SCRUM-837 reactor heat 3/3 plus intermittent pierce). This task
+  changes none of their player/weapon/meta/test paths; the Atlas-focused meta
+  gates are green, so they are not attributed to or used to block SCRUM-1024.
+  `SCRUM-1027` separately tracks the pre-existing shop-basket smoke defect.
+
+Баги: no SCRUM-1024 regression; separate baseline follow-ups `SCRUM-1028`,
+`SCRUM-1029`.
+
+Disk cleanup: pending post-push removal of the single disposable QA worktree,
+its 445 MB `.godot` cache, 25 MB transient QA output and scratch roots; exact
+removal is recorded in the final Jira comment.
+
+Thread cleanup: collaboration QA subagent under the active parent task; not a
+standalone disposable Codex app task.

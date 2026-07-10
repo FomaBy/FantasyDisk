@@ -4287,5 +4287,15 @@
   "key": "SCRUM-1030",
   "status": "К выполнению",
   "desc_hash": "2eaaeef705e234b346af602572f1f267"
+ },
+ "bug_meta_keystone_behavioral_gate_regression_task.md": {
+  "key": "SCRUM-1029",
+  "status": "К выполнению",
+  "desc_hash": "07a79e050ab79a6d1d78bd8f589c90f7"
+ },
+ "bug_meta_skill_shadow_invisibility_smoke_regression_task.md": {
+  "key": "SCRUM-1028",
+  "status": "К выполнению",
+  "desc_hash": "0d3cde37d9ee7a74b43dd986d5e05c41"
  }
 }
