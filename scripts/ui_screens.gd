@@ -23,6 +23,7 @@ const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 # SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
 const LevelUpAdvisor := preload("res://scripts/level_up_advisor.gd")
+const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presenter.gd")
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
@@ -7912,78 +7913,93 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 
 func _show_elite_artifact_reward(on_done: Callable) -> void:
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
+	_show_artifact_reward_screen(
+		"Elite",
+		"Трофей элитки",
+		"Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи.",
+		choices,
+		on_done
+	)
+
+
+func _show_boss_artifact_reward(on_done: Callable) -> void:
+	# SCRUM-873: награда за акт-босса — выбор 1 из 3 СУПЕРРЕДКИХ артефактов
+	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
+	# Пул пуст (теоретический случай) — не запирать игрока на экране без карт.
+	if choices.is_empty():
+		push_warning("Boss artifact reward: пул суперредких пуст — экран пропущен.")
+		game._clear_ui()
+		if on_done.is_valid():
+			on_done.call()
+		return
+	_show_artifact_reward_screen(
+		"Boss",
+		"Трофей босса",
+		"Акт пройден! Выбери 1 из 3 эпических артефактов.",
+		choices,
+		on_done
+	)
+
+
+# SCRUM-990/991: единый reward-hall builder для элитного/сундукового и boss
+# путей. Фон — канонический reward hall, единственная внешняя ornament-рама
+# добавляется ПОСЛЕДНЕЙ и остаётся полой; центрального modal/panel больше нет.
+func _show_artifact_reward_screen(
+		prefix: String,
+		title_text: String,
+		subtitle_text: String,
+		choices: Array,
+		on_done: Callable) -> void:
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
-	root.name = "EliteArtifactRewardScreen"
+	root.name = "%sArtifactRewardScreen" % prefix
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.ui_layer.add_child(root)
 	_prepare_global_tooltips(root)
-	_add_screen_background(root, "elite_reward")
+	_add_screen_background(root, "artifact_reward")
 
-	var shade := ColorRect.new()
-	shade.name = "EliteArtifactRewardShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.02, 0.015, 0.025, 0.76)
-	root.add_child(shade)
-
-	var center := CenterContainer.new()
-	center.name = "EliteArtifactRewardCenter"
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(center)
-
-	var panel := PanelContainer.new()
-	panel.name = "EliteArtifactRewardPanel"
-	panel.custom_minimum_size = Vector2(1140, 640)
-	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-883: панель трофея — чип Атласа; дим-фон сохранён.
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
-	center.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 20)
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(box)
+	var content_root := Control.new()
+	content_root.name = "%sArtifactRewardContentRoot" % prefix
+	content_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(content_root)
 
 	var title := Label.new()
-	title.name = "EliteArtifactRewardTitle"
-	title.text = "Трофей элитки"
+	title.name = "%sArtifactRewardTitle" % prefix
+	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title.add_theme_color_override("font_color", TIER_COLORS[3] if prefix == "Boss" else Color(0.96, 0.90, 0.68, 1.0))
+	content_root.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.name = "EliteArtifactRewardSubtitle"
-	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
+	subtitle.name = "%sArtifactRewardSubtitle" % prefix
+	subtitle.text = subtitle_text
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
+	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	box.add_child(subtitle)
+	content_root.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
-	rewards_row.name = "EliteArtifactRewardRow"
+	rewards_row.name = "%sArtifactRewardRow" % prefix
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_ELITE_CARD_SIZE.y)
-	rewards_row.add_theme_constant_override("separation", 22)
-	box.add_child(rewards_row)
+	rewards_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_root.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
+	var presentations := _artifact_reward_presentations(choices)
 	var reward_cards: Array[Button] = []
-	for reward in choices:
-		var reward_data: Dictionary = reward
-		var button := _make_elite_artifact_card(reward_data)
-		button.name = "EliteArtifactRewardButton%d" % rewards_row.get_child_count()
+	for index in range(choices.size()):
+		var reward_data := choices[index] as Dictionary
+		var presentation := presentations[index] as Dictionary
+		var button := _make_elite_artifact_card(reward_data, presentation)
+		button.name = "%sArtifactRewardButton%d" % [prefix, index]
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward_data)
 			game._clear_ui()
@@ -7993,7 +8009,6 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 		rewards_row.add_child(button)
 		reward_cards.append(button)
 
-	# Клавиатура/геймпад: стрелки двигают фокус по кругу, Enter/Space выбирают.
 	for index in range(reward_cards.size()):
 		var card := reward_cards[index]
 		var left := reward_cards[(index - 1 + reward_cards.size()) % reward_cards.size()]
@@ -8005,120 +8020,102 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	if not reward_cards.is_empty():
 		reward_cards[0].grab_focus()
 
-	# Выбор обязателен: Escape ничего не закрывает.
 	game.ui_escape_action = Callable()
-	# SCRUM-968: показ артефакта элитки — акцент artifact_reveal (не level_up).
+	_unified_add_frame(root, "%sArtifactReward" % prefix)
+	_layout_artifact_reward_screen(root, prefix)
+	root.resized.connect(func() -> void:
+		_layout_artifact_reward_screen(root, prefix)
+		call_deferred("_layout_artifact_reward_screen", root, prefix)
+	)
 	game._play_sfx("artifact_reveal")
 
 
-func _show_boss_artifact_reward(on_done: Callable) -> void:
-	# SCRUM-873: награда за акт-босса — выбор 1 из 3 СУПЕРРЕДКИХ артефактов
-	# (верхний тир, boss-only оффер). Паттерн и карточки — как у трофея элитки.
-	game._clear_ui()
-	game.ui_layer = CanvasLayer.new()
-	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.ui_layer)
+func _artifact_reward_layout_metrics(viewport_size: Vector2) -> Dictionary:
+	var inner := _gold_shell_inner_rect_for_size(viewport_size)
+	var card_size: Vector2
+	var gap: float
+	var title_size: Vector2
+	var subtitle_size: Vector2
+	var title_top: float
+	var subtitle_top: float
+	var row_top: float
+	var bottom_reserve: float
+	if viewport_size.y < 900.0:
+		card_size = Vector2(286.0, 344.0)
+		gap = 21.0
+		title_size = Vector2(520.0, 38.0)
+		subtitle_size = Vector2(760.0, 28.0)
+		title_top = 4.0
+		subtitle_top = 44.0
+		row_top = 82.0
+		bottom_reserve = 20.0
+	elif viewport_size.y < 1200.0:
+		card_size = Vector2(360.0, 520.0)
+		gap = 36.0
+		title_size = Vector2(640.0, 52.0)
+		subtitle_size = Vector2(960.0, 34.0)
+		title_top = 16.0
+		subtitle_top = 76.0
+		row_top = 130.0
+		bottom_reserve = 44.0
+	else:
+		card_size = Vector2(430.0, 660.0)
+		gap = 60.0
+		title_size = Vector2(920.0, 70.0)
+		subtitle_size = Vector2(1280.0, 42.0)
+		title_top = 24.0
+		subtitle_top = 108.0
+		row_top = 186.0
+		bottom_reserve = 80.0
 
-	var root := Control.new()
-	root.name = "BossArtifactRewardScreen"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.ui_layer.add_child(root)
-	_prepare_global_tooltips(root)
-	_add_screen_background(root, "elite_reward")
+	card_size.x = minf(card_size.x, floorf((inner.size.x - gap * 2.0) / 3.0))
+	card_size.y = minf(card_size.y, maxf(180.0, inner.size.y - row_top - bottom_reserve))
+	var row_size := Vector2(card_size.x * 3.0 + gap * 2.0, card_size.y)
+	return {
+		"inner_rect": inner,
+		"title_rect": Rect2(Vector2(inner.get_center().x - title_size.x * 0.5, inner.position.y + title_top), title_size),
+		"subtitle_rect": Rect2(Vector2(inner.get_center().x - subtitle_size.x * 0.5, inner.position.y + subtitle_top), subtitle_size),
+		"row_rect": Rect2(Vector2(inner.get_center().x - row_size.x * 0.5, inner.position.y + row_top), row_size),
+		"card_size": card_size,
+		"gap": gap,
+	}
 
-	var shade := ColorRect.new()
-	shade.name = "BossArtifactRewardShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.02, 0.015, 0.025, 0.76)
-	root.add_child(shade)
 
-	var center := CenterContainer.new()
-	center.name = "BossArtifactRewardCenter"
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(center)
-
-	var panel := PanelContainer.new()
-	panel.name = "BossArtifactRewardPanel"
-	panel.custom_minimum_size = Vector2(1140, 640)
-	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-883: панель трофея босса — чип Атласа; дим-фон сохранён.
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 20.0))
-	center.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 20)
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(box)
-
-	var title := Label.new()
-	title.name = "BossArtifactRewardTitle"
-	title.text = "Трофей босса"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
-	title.add_theme_color_override("font_color", TIER_COLORS[3])
-	box.add_child(title)
-
-	var subtitle := Label.new()
-	subtitle.name = "BossArtifactRewardSubtitle"
-	# SCRUM-963: канон редкости — боссовые трофеи фиксированно эпические (тир 3).
-	subtitle.text = "Акт пройден! Выбери 1 из 3 эпических артефактов."
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 12, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	box.add_child(subtitle)
-
-	var rewards_row := HBoxContainer.new()
-	rewards_row.name = "BossArtifactRewardRow"
-	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_ELITE_CARD_SIZE.y)
-	rewards_row.add_theme_constant_override("separation", 22)
-	box.add_child(rewards_row)
-
-	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
-	var reward_cards: Array[Button] = []
-	for reward in choices:
-		var reward_data: Dictionary = reward
-		var button := _make_elite_artifact_card(reward_data)
-		button.name = "BossArtifactRewardButton%d" % rewards_row.get_child_count()
-		button.pressed.connect(func() -> void:
-			_apply_reward_to_run(reward_data)
-			game._clear_ui()
-			if on_done.is_valid():
-				on_done.call()
-		)
-		rewards_row.add_child(button)
-		reward_cards.append(button)
-
-	# Пул пуст (теоретический случай) — не запирать игрока на экране без карт.
-	if reward_cards.is_empty():
-		push_warning("Boss artifact reward: пул суперредких пуст — экран пропущен.")
-		game._clear_ui()
-		if on_done.is_valid():
-			on_done.call()
+func _layout_artifact_reward_screen(root: Control, prefix: String) -> void:
+	if root == null or not is_instance_valid(root) or root.size.x <= 1.0 or root.size.y <= 1.0:
 		return
+	var metrics := _artifact_reward_layout_metrics(root.size)
+	var inner := metrics["inner_rect"] as Rect2
+	root.set_meta("gold_shell_inner_rect", inner)
+	var content_root := root.find_child("%sArtifactRewardContentRoot" % prefix, false, false) as Control
+	if content_root == null:
+		return
+	content_root.position = inner.position
+	content_root.size = inner.size
+	content_root.set_meta("gold_shell_inner_rect", inner)
 
-	# Клавиатура/геймпад: стрелки двигают фокус по кругу, Enter/Space выбирают.
-	for index in range(reward_cards.size()):
-		var card := reward_cards[index]
-		var left := reward_cards[(index - 1 + reward_cards.size()) % reward_cards.size()]
-		var right := reward_cards[(index + 1) % reward_cards.size()]
-		card.focus_neighbor_left = left.get_path()
-		card.focus_neighbor_right = right.get_path()
-		card.focus_neighbor_top = card.get_path()
-		card.focus_neighbor_bottom = card.get_path()
-	reward_cards[0].grab_focus()
-
-	# Выбор обязателен: Escape ничего не закрывает.
-	game.ui_escape_action = Callable()
-	# SCRUM-968: показ артефакта босса — акцент artifact_reveal (не level_up).
-	game._play_sfx("artifact_reveal")
+	var title := content_root.find_child("%sArtifactRewardTitle" % prefix, false, false) as Label
+	var subtitle := content_root.find_child("%sArtifactRewardSubtitle" % prefix, false, false) as Label
+	var row := content_root.find_child("%sArtifactRewardRow" % prefix, false, false) as HBoxContainer
+	var title_rect := metrics["title_rect"] as Rect2
+	var subtitle_rect := metrics["subtitle_rect"] as Rect2
+	var row_rect := metrics["row_rect"] as Rect2
+	if title != null:
+		title.position = title_rect.position - inner.position
+		title.size = title_rect.size
+		title.add_theme_font_size_override("font_size", _readable_font_size(30 if root.size.y < 900.0 else (42 if root.size.y < 1200.0 else 54), 20, 54))
+	if subtitle != null:
+		subtitle.position = subtitle_rect.position - inner.position
+		subtitle.size = subtitle_rect.size
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(14 if root.size.y < 900.0 else (17 if root.size.y < 1200.0 else 20), 11, 24))
+	if row != null:
+		row.position = row_rect.position - inner.position
+		row.size = row_rect.size
+		row.custom_minimum_size = row_rect.size
+		row.add_theme_constant_override("separation", int(roundf(float(metrics["gap"]))))
+		for child in row.get_children():
+			if child is Button:
+				_resize_elite_artifact_card(child as Button, metrics["card_size"] as Vector2)
 
 
 # SCRUM-892: план стека карточек на весь набор наград — карточки контентной
@@ -8680,27 +8677,37 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	return button
 
 
-func _make_elite_artifact_card(reward: Dictionary) -> Button:
-	# Крупная карточка трофея элитки: иконка 112px, название/тир цветом тира,
-	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
+func _make_elite_artifact_card(reward: Dictionary, presentation := {}) -> Button:
+	# SCRUM-990/991: одна карточка трофея для elite/chest/boss. Содержит только
+	# concrete current-class effect и безопасные recommendation badges; старой
+	# отдельной строки «Интерпретация» больше нет.
+	var resolved_presentation: Dictionary = presentation as Dictionary
+	if resolved_presentation.is_empty():
+		resolved_presentation = _artifact_reward_single_presentation(reward)
 	var tier_color := _artifact_tier_color(reward)
 	var button := Button.new()
 	button.text = ""
-	button.custom_minimum_size = REWARD_ELITE_CARD_SIZE
+	button.custom_minimum_size = (_artifact_reward_layout_metrics(game.get_viewport().get_visible_rect().size)["card_size"] as Vector2)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = false
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = _format_level_up_reward_text(reward)
+	button.tooltip_text = "%s\n%s" % [_format_level_up_reward_text(reward), str(resolved_presentation.get("resolved_effect", ""))]
 	button.set_meta("reward_frame_kind", "elite_artifact")
-	_apply_reward_card_theme(button, true)
+	button.set_meta("artifact_reward_id", str(reward.get("id", "")))
+	_resize_elite_artifact_card(button, button.custom_minimum_size)
 
-	var content := _add_reward_card_content_container(button, true)
+	var content := VBoxContainer.new()
 	content.name = "EliteArtifactRewardContent"
-	content.add_theme_constant_override("separation", 3)
+	content.clip_contents = true
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	button.add_child(content)
 
 	var icon_row := HBoxContainer.new()
+	icon_row.name = "EliteArtifactRewardIconRow"
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
@@ -8708,13 +8715,12 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	icon_row.add_child(_make_reward_card_icon(reward, Vector2(52, 52)))
 
 	var title_label := Label.new()
+	title_label.name = "EliteArtifactRewardCardTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Артефакт"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
-	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 22))
 	title_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(title_label)
 
@@ -8724,47 +8730,121 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	tier_label.text = _artifact_tier_text(reward)
 	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_label.max_lines_visible = 1
-	tier_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	tier_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 16))
 	tier_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(tier_label)
 
-	var effect_label := Label.new()
-	effect_label.name = "EliteArtifactRewardDescription"
-	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_label.text = str(reward.get("description", ""))
-	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.max_lines_visible = 2
-	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 15))
-	effect_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	content.add_child(effect_label)
+	var badge_label := Label.new()
+	badge_label.name = "EliteArtifactRewardBadge"
+	badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_label.text = str(resolved_presentation.get("badge_text", ""))
+	badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	badge_label.add_theme_color_override("font_color", Color(0.98, 0.80, 0.32, 1.0))
+	content.add_child(badge_label)
 
-	# SCRUM-963: нижняя строка карточки — у классового артефакта классовая пометка
-	# («Класс: Вор · Возвышение 5», цвет пометки), у универсального — прежняя
-	# классовая интерпретация эффекта (бронза).
-	var interpretation := _reward_interpretation_text(reward)
-	var footnote_color := Color(0.78, 0.66, 0.44, 1.0)
-	if interpretation == "":
-		var note := _artifact_affinity_note(reward)
-		if not note.is_empty():
-			interpretation = str(note["text"])
-			footnote_color = note["color"]
-	if interpretation != "":
-		var interp_label := Label.new()
-		interp_label.name = "EliteArtifactRewardInterpretation"
-		interp_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		interp_label.text = interpretation
-		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		interp_label.max_lines_visible = 1
-		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
-		interp_label.add_theme_color_override("font_color", footnote_color)
-		content.add_child(interp_label)
+	var resolved_label := Label.new()
+	resolved_label.name = "EliteArtifactRewardResolvedEffect"
+	resolved_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	resolved_label.text = str(resolved_presentation.get("resolved_effect", ""))
+	resolved_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	resolved_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	resolved_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	resolved_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	resolved_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	content.add_child(resolved_label)
+
+	var action_label := Label.new()
+	action_label.name = "EliteArtifactRewardAction"
+	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	action_label.text = "Выбрать"
+	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	content.add_child(action_label)
+
+	_resize_elite_artifact_card(button, button.custom_minimum_size)
 
 	return button
+
+
+func _artifact_reward_weapon_config() -> Dictionary:
+	var config: Dictionary = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id).duplicate(true)
+	config["character_id"] = game.selected_character_id
+	return config
+
+
+func _artifact_reward_presentations(rewards: Array) -> Array:
+	return ArtifactRewardPresenter.build_offer_presentations(
+		rewards,
+		game.selected_character_id,
+		_active_stats_snapshot(),
+		_active_modifiers_snapshot(),
+		_artifact_reward_weapon_config()
+	)
+
+
+func _artifact_reward_single_presentation(reward: Dictionary) -> Dictionary:
+	return ArtifactRewardPresenter.build_single_presentation(
+		reward,
+		game.selected_character_id,
+		_active_stats_snapshot(),
+		_active_modifiers_snapshot(),
+		_artifact_reward_weapon_config()
+	)
+
+
+func _artifact_reward_card_pad(display_size: Vector2) -> float:
+	if display_size.y < 400.0:
+		return 16.0
+	if display_size.y < 600.0:
+		return 20.0
+	return 24.0
+
+
+func _resize_elite_artifact_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	button.size = display_size
+	var pad := _artifact_reward_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, pad)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("artifact_reward_display_size", display_size)
+	button.set_meta("artifact_reward_content_margins", margins)
+	var content := button.find_child("EliteArtifactRewardContent", false, false) as VBoxContainer
+	if content == null:
+		return
+	content.offset_left = margins.x
+	content.offset_top = margins.y
+	content.offset_right = -margins.z
+	content.offset_bottom = -margins.w
+	var compact := display_size.y < 400.0
+	var medium := display_size.y < 600.0 and not compact
+	content.add_theme_constant_override("separation", 2 if compact else (5 if medium else 7))
+	var icon := content.find_child("UIIcon_*", true, false) as Control
+	if icon != null:
+		var icon_size := Vector2(52.0, 52.0) if compact else (Vector2(68.0, 68.0) if medium else Vector2(94.0, 94.0))
+		icon.custom_minimum_size = icon_size
+	var title := content.find_child("EliteArtifactRewardCardTitle", false, false) as Label
+	if title != null:
+		title.custom_minimum_size.y = 42.0 if compact else (58.0 if medium else 72.0)
+		title.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else (16 if medium else 19), 11, 16 if compact else (20 if medium else 25)))
+	var tier := content.find_child("EliteArtifactRewardTier", false, false) as Label
+	if tier != null:
+		tier.custom_minimum_size.y = 18.0 if compact else (24.0 if medium else 30.0)
+		tier.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else (12 if medium else 14), 10, 13 if compact else (16 if medium else 19)))
+	var badge := content.find_child("EliteArtifactRewardBadge", false, false) as Label
+	if badge != null:
+		badge.custom_minimum_size.y = 28.0 if compact else (34.0 if medium else 42.0)
+		badge.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else (11 if medium else 13), 9, 11 if compact else (15 if medium else 18)))
+	var resolved := content.find_child("EliteArtifactRewardResolvedEffect", false, false) as Label
+	if resolved != null:
+		resolved.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else (12 if medium else 14), 9, 11 if compact else (16 if medium else 19)))
+	var action := content.find_child("EliteArtifactRewardAction", false, false) as Label
+	if action != null:
+		action.custom_minimum_size.y = 22.0 if compact else (28.0 if medium else 34.0)
+		action.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else (13 if medium else 16), 10, 14 if compact else (18 if medium else 22)))
 
 
 func _current_shop_node_key() -> String:

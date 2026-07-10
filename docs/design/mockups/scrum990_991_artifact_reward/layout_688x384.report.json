@@ -1,0 +1,297 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        243,
+        66,
+        202,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "ТРОФЕЙ ЭЛИТКИ"
+      ],
+      "text_bbox": [
+        278,
+        73,
+        131,
+        16
+      ]
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        239,
+        125,
+        210,
+        17
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "ВЫБЕРИ 1 ИЗ 3 АРТЕФАКТОВ"
+      ],
+      "text_bbox": [
+        276,
+        129,
+        136,
+        9
+      ]
+    },
+    {
+      "id": "card_1_title",
+      "rect": [
+        171,
+        184,
+        79,
+        23
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "СЕРДЦЕ",
+        "МЕТЕОРА"
+      ],
+      "text_bbox": [
+        186,
+        184,
+        48,
+        23
+      ]
+    },
+    {
+      "id": "card_1_badge",
+      "rect": [
+        171,
+        210,
+        79,
+        13
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 7,
+      "lines": [
+        "ЛУЧШИЙ УРОН"
+      ],
+      "text_bbox": [
+        184,
+        212,
+        53,
+        10
+      ]
+    },
+    {
+      "id": "card_1_effect",
+      "rect": [
+        171,
+        226,
+        79,
+        55
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "Элементалист:",
+        "центр +55% урона;",
+        "зона +2 тика"
+      ],
+      "text_bbox": [
+        176,
+        236,
+        69,
+        34
+      ]
+    },
+    {
+      "id": "card_1_action",
+      "rect": [
+        178,
+        286,
+        65,
+        15
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        191,
+        290,
+        39,
+        8
+      ]
+    },
+    {
+      "id": "card_2_title",
+      "rect": [
+        302,
+        184,
+        84,
+        23
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "ПОКРОВ",
+        "МУЧЕНИКА"
+      ],
+      "text_bbox": [
+        317,
+        184,
+        54,
+        23
+      ]
+    },
+    {
+      "id": "card_2_badge",
+      "rect": [
+        302,
+        210,
+        84,
+        13
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 7,
+      "lines": [
+        "ЛУЧШАЯ ЗАЩИТА"
+      ],
+      "text_bbox": [
+        312,
+        212,
+        64,
+        10
+      ]
+    },
+    {
+      "id": "card_2_effect",
+      "rect": [
+        302,
+        226,
+        84,
+        55
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "Священник:",
+        "ниже 30% HP",
+        "+12% защиты"
+      ],
+      "text_bbox": [
+        318,
+        236,
+        53,
+        36
+      ]
+    },
+    {
+      "id": "card_2_action",
+      "rect": [
+        312,
+        286,
+        64,
+        15
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        324,
+        290,
+        39,
+        8
+      ]
+    },
+    {
+      "id": "card_3_title",
+      "rect": [
+        438,
+        184,
+        84,
+        23
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 7,
+      "lines": [
+        "ЧЁРНАЯ",
+        "СДЕЛКА"
+      ],
+      "text_bbox": [
+        464,
+        184,
+        32,
+        23
+      ]
+    },
+    {
+      "id": "card_3_badge",
+      "rect": [
+        438,
+        210,
+        84,
+        13
+      ],
+      "ok": true
+    },
+    {
+      "id": "card_3_effect",
+      "rect": [
+        438,
+        226,
+        84,
+        55
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "Тёмный маг:",
+        "DoT +4 за тик;",
+        "макс. HP -15%"
+      ],
+      "text_bbox": [
+        453,
+        236,
+        54,
+        35
+      ]
+    },
+    {
+      "id": "card_3_action",
+      "rect": [
+        448,
+        286,
+        64,
+        15
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "ВЫБРАТЬ"
+      ],
+      "text_bbox": [
+        460,
+        290,
+        39,
+        8
+      ]
+    }
+  ]
+}

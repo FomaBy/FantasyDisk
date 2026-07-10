@@ -1,0 +1,42 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4E5BC",
+    "stroke_fill": "#150C0C",
+    "stroke_width": 1,
+    "line_spacing": 1.02,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "ТРОФЕЙ ЭЛИТКИ",
+    "subtitle": "ВЫБЕРИ 1 ИЗ 3 АРТЕФАКТОВ",
+    "card_1_title": "СЕРДЦЕ\nМЕТЕОРА",
+    "card_1_badge": "ЛУЧШИЙ УРОН",
+    "card_1_effect": "Элементалист:\nцентр +55% урона;\nзона +2 тика",
+    "card_2_title": "ПОКРОВ\nМУЧЕНИКА",
+    "card_2_badge": "ЛУЧШАЯ ЗАЩИТА",
+    "card_2_effect": "Священник:\nниже 30% HP\n+12% защиты",
+    "card_3_title": "ЧЁРНАЯ\nСДЕЛКА",
+    "card_3_badge": "",
+    "card_3_effect": "Тёмный маг:\nDoT +4 за тик;\nмакс. HP -15%",
+    "action": "ВЫБРАТЬ"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "x": 243, "y": 66, "w": 202, "h": 30, "max_font": 15, "min_font": 9},
+    {"id": "subtitle", "content_key": "subtitle", "x": 239, "y": 125, "w": 210, "h": 17, "max_font": 9, "min_font": 7},
+    {"id": "card_1_title", "content_key": "card_1_title", "x": 171, "y": 184, "w": 79, "h": 23, "max_font": 9, "min_font": 6},
+    {"id": "card_1_badge", "content_key": "card_1_badge", "x": 171, "y": 210, "w": 79, "h": 13, "max_font": 7, "min_font": 6, "color": "#F6C85C"},
+    {"id": "card_1_effect", "content_key": "card_1_effect", "x": 171, "y": 226, "w": 79, "h": 55, "max_font": 8, "min_font": 6},
+    {"id": "card_1_action", "content_key": "action", "x": 178, "y": 286, "w": 65, "h": 15, "max_font": 8, "min_font": 6, "color": "#F6C85C"},
+    {"id": "card_2_title", "content_key": "card_2_title", "x": 302, "y": 184, "w": 84, "h": 23, "max_font": 9, "min_font": 6},
+    {"id": "card_2_badge", "content_key": "card_2_badge", "x": 302, "y": 210, "w": 84, "h": 13, "max_font": 7, "min_font": 6, "color": "#7FE4C2"},
+    {"id": "card_2_effect", "content_key": "card_2_effect", "x": 302, "y": 226, "w": 84, "h": 55, "max_font": 8, "min_font": 6},
+    {"id": "card_2_action", "content_key": "action", "x": 312, "y": 286, "w": 64, "h": 15, "max_font": 8, "min_font": 6, "color": "#F6C85C"},
+    {"id": "card_3_title", "content_key": "card_3_title", "x": 438, "y": 184, "w": 84, "h": 23, "max_font": 9, "min_font": 6},
+    {"id": "card_3_badge", "content_key": "card_3_badge", "x": 438, "y": 210, "w": 84, "h": 13, "max_font": 7, "min_font": 6, "required": false},
+    {"id": "card_3_effect", "content_key": "card_3_effect", "x": 438, "y": 226, "w": 84, "h": 55, "max_font": 8, "min_font": 6},
+    {"id": "card_3_action", "content_key": "action", "x": 448, "y": 286, "w": 64, "h": 15, "max_font": 8, "min_font": 6, "color": "#F6C85C"}
+  ]
+}

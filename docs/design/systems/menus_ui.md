@@ -742,6 +742,27 @@ rims, or badges.
 - SCRUM-571 adds the Design-source 2K ordinary reward mockup/spec package for the post-battle reward selection screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum571_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png`, and previews under `docs/design/previews/scrum571_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-572 adds the Design-source 2K elite artifact reward mockup/spec package for the elite victory artifact-choice screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum572_elite_artifact_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_base.png`, and previews under `docs/design/previews/scrum572_elite_artifact_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 elite reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.
+- SCRUM-990/991 supersede the elite/boss full-screen portion of that historical
+  package. Elite/chest and boss artifact choices now share one responsive
+  reward-hall builder: canonical `ui_backdrop_reward_hall.png` below, one hollow
+  `meta40/frame_border.png` shell above, and no visible central modal or second
+  ornamental screen frame. The outer frame is the final mouse-ignore child.
+  Exact inner content rects are `157,137 966×446` at 1280×720,
+  `224,193 1472×694` at 1920×1080 and `299,257 1962×926` at 2560×1440.
+  Title, subtitle and all three Atlas-chip cards remain in that empty zone on
+  live resize. The PixelLab-first component mockup, validated UI plans and
+  compositor proof live under
+  `docs/design/{mockups,references,previews}/scrum990_991_artifact_reward/`;
+  production intentionally reuses the ticket-required shared frame/background.
+- Artifact reward cards no longer expose a separate generic `Interpretation`
+  line. `ArtifactRewardPresenter` dry-runs each reward with the same stats/mods
+  semantics and `ProgressionData.derived_parameters()` formulas as runtime,
+  names the current class and shows concise concrete before/after deltas or the
+  artifact's concrete conditional description. Across the three offers only a
+  unique positive, safely modelled top gain receives `Лучший урон` or
+  `Лучшая выживаемость`; a unique hybrid may receive both. Ties, zero/negative
+  gains and mechanics outside the derived model receive no badge rather than a
+  guessed recommendation. Full detail remains in the card tooltip.
 
 ## Button Height / Minimal Metal Rule
 

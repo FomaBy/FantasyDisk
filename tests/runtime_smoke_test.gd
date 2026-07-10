@@ -3971,14 +3971,14 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	if elite_reward_buttons.size() != 3:
 		_fail("Expected elite victory reward to offer exactly 3 artifact choices.")
 		return
-	var elite_reward_panel := elite_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	var elite_reward_panel := elite_main.find_child("EliteArtifactRewardContentRoot", true, false) as Control
 	if elite_reward_panel == null:
-		_fail("Expected elite reward panel.")
+		_fail("Expected elite reward gold-shell content root.")
 		return
 	if not _control_center_matches_viewport(elite_reward_panel, 2.0):
 		var panel_rect := elite_reward_panel.get_global_rect()
 		var viewport_center := root.get_visible_rect().size * 0.5
-		_fail("Expected elite reward panel global center %s to match viewport center %s." % [panel_rect.get_center(), viewport_center])
+		_fail("Expected elite reward content-root global center %s to match viewport center %s." % [panel_rect.get_center(), viewport_center])
 		return
 	# Клавиатура/геймпад: первая карточка получает фокус.
 	if not (elite_reward_buttons[0] as Control).has_focus():
@@ -8105,18 +8105,18 @@ func _assert_elite_reward_panel_centered(main_scene: PackedScene, viewport_size:
 	await process_frame
 	await process_frame
 
-	var panel := modal_main.find_child("EliteArtifactRewardPanel", true, false) as Control
+	var panel := modal_main.find_child("EliteArtifactRewardContentRoot", true, false) as Control
 	if panel == null:
-		_fail("Expected elite reward panel at viewport %s." % viewport_size)
+		_fail("Expected elite reward gold-shell content root at viewport %s." % viewport_size)
 		return
 	if not _control_center_matches_viewport_size(panel, Vector2(viewport_size), 2.0):
 		var rect := panel.get_global_rect()
-		_fail("Expected elite reward panel global center %s to match viewport center %s at viewport %s." % [rect.get_center(), Vector2(viewport_size) * 0.5, viewport_size])
+		_fail("Expected elite reward content-root global center %s to match viewport center %s at viewport %s." % [rect.get_center(), Vector2(viewport_size) * 0.5, viewport_size])
 		return
 	var rect := panel.get_global_rect()
 	var visible_size := Vector2(viewport_size)
 	if rect.position.x < -2.0 or rect.position.y < -2.0 or rect.end.x > visible_size.x + 2.0 or rect.end.y > visible_size.y + 2.0:
-		_fail("Expected elite reward panel rect %s to stay inside viewport %s." % [rect, visible_size])
+		_fail("Expected elite reward content-root rect %s to stay inside viewport %s." % [rect, visible_size])
 		return
 
 	viewport.queue_free()
