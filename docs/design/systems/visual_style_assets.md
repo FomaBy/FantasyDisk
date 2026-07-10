@@ -259,6 +259,22 @@ runtime asset at
 `UIThemePaths.OVERHAUL_2K_FRAME_*`, and the tooltip label uses the documented
 `342 px` safe width.
 
+SCRUM-983 adds a PixelLab-first page composition reference without replacing
+the production outer frame. Accepted source
+`docs/design/references/scrum983_escape_dossier/pixellab_escape_dossier_v1_688x384.png`
+(PixelLab asset `ccc0e262-f062-4eb3-90d5-71c68c7db203`) has real transparency,
+one title well, one hero well, four stat wells and four footer actions; only the
+third action is crimson. Runtime reconstructs that composition from Controls,
+reuses `assets/sprites/ui/meta40/frame_border.png`, and keeps all text/icons/
+hitboxes/focus/scroll lanes inside the published 24/32px-reserved inner zones.
+Because the shared frame has transparent/hollow regions, four opaque dark
+reserve masks render below dossier content and below the final frame over the
+entire viewport-minus-inner area; lower combat HUD pixels must never appear in
+the ornamental rails or reserve band.
+Plans, fit reports, composite/debug overlay and provenance live under
+`docs/design/mockups/scrum983_escape_dossier/` and
+`docs/design/previews/scrum983_escape_dossier/`.
+
 SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
 the level-up toast frame. It is a generated transparent RGBA `480x300` asset
 with texture margins `58/48/58/48` and content margins `70/112/70/112`. It must

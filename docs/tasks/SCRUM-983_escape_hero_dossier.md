@@ -7,8 +7,8 @@ Thread/Worker: `/root/scrum983_dossier`
 Jira: SCRUM-983  
 Branch: `codex/scrum-983-escape-dossier`  
 Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-983-escape-dossier`  
-Locked paths (Design stage): `docs/design/mockups/scrum983_escape_dossier/**`, `docs/design/references/scrum983_escape_dossier/**`, `docs/design/previews/scrum983_escape_dossier/**`, this task mirror, SCRUM-983 unique test-plan files  
-Explicitly excluded until SCRUM-981 release: `scripts/ui_screens.gd`, `scripts/pause_stats_menu.gd`, shared menu/current-state/content-registry docs, `tests/runtime_smoke_test.gd`, SCRUM-981/SCRUM-1030/SCRUM-985/Claude paths
+Locked paths: `scripts/pause_stats_menu.gd`, `tests/scrum983_escape_dossier_test.gd`, `tools/capture_scrum983_escape_dossier.gd`, `tests/ui_no_overlap_matrix_test.gd`, `build/qa/scrum983/**`, SCRUM-983 design package, this mirror, and the touched current/menu/visual-style docs
+Explicitly excluded: `scripts/ui_screens.gd` (Claude SCRUM-968), `tests/runtime_smoke_test.gd` until the active Priest test lock is released, SCRUM-993/Atlas and every other worker path
 
 ## Context
 
@@ -19,13 +19,13 @@ reserved for the destructive End Run action.
 
 ## Acceptance Criteria
 
-- [ ] Hero dossier shows compact localized stat labels plus numeric values, not always-visible explanatory paragraphs.
-- [ ] Attack speed, crit chance, crit damage and the other important derived stats use correct compact units.
-- [ ] Hover and keyboard/gamepad focus expose a complete tooltip for every stat.
-- [ ] All content/hitboxes/focus/scroll lanes stay inside the exact shared gold-shell safe zone at 1280×720, 1920×1080 and 2560×1440.
-- [ ] Continue and Main Menu are neutral with no red glow/tint; Settings is neutral; End Run alone remains danger red.
-- [ ] Focus starts on Continue and reaches all actions and stat tooltip targets without a trap.
-- [ ] Focused UI/no-overlap/gamepad/live-resize tests and real windowed screenshots cover the dossier.
+- [x] Hero dossier shows compact localized stat labels plus numeric values, not always-visible explanatory paragraphs.
+- [x] Attack speed, crit chance, crit damage and the other important derived stats use correct compact units.
+- [x] Hover and keyboard/gamepad focus expose a complete tooltip for every stat.
+- [x] All content/hitboxes/focus/scroll lanes stay inside the exact shared gold-shell safe zone at 1280×720, 1920×1080 and 2560×1440.
+- [x] Continue and Main Menu are neutral with no red glow/tint; Settings is neutral; End Run alone remains danger red.
+- [x] Focus starts on Continue and reaches all actions and stat tooltip targets without a trap.
+- [x] Focused UI/no-overlap/gamepad/live-resize tests and real windowed screenshots cover the dossier.
 - [ ] Runtime smoke and full regression gate pass before push to `origin/dev`.
 
 ## Work Log
@@ -49,6 +49,30 @@ reserved for the destructive End Run action.
   Visual QA confirms exactly one title well, one hero dossier, four stat wells
   2×2 and four actions with only End Run crimson. Compositor/debug report:
   all 10 zones `ok:true`.
+- 2026-07-10: after SCRUM-981 release, rebased the accepted design package and
+  implemented the responsive dossier in `scripts/pause_stats_menu.gd`. The
+  shared frame is now a visual-only final layer; header, independently scrolling
+  hero/derived columns and the fixed action footer use the exact 720p/1080p/2K
+  rectangles from the accepted spec.
+- 2026-07-10: base stats are 8 real semantic rows (one compact column at 720p,
+  two at wider targets). Every base/survival/derived row is focusable and opens
+  a complete localized tooltip with value, explanation, formula/source and
+  influences. Focus navigation is geometric across grids and transfers to the
+  nearest footer action without traps.
+- 2026-07-10: focused geometry/content/tooltip/focus/live-resize gate PASS;
+  dark-fantasy theme PASS; gamepad in-run PASS three consecutive times;
+  gamepad full-flow PASS; runtime UI smoke PASS (known dummy-renderer capture
+  warning only); no-overlap matrix PASS after replacing its obsolete visual
+  frame peer with semantic header/body/footer peers.
+- 2026-07-10: real windowed Metal captures PASS at 1280×720, 1920×1080 and
+  2560×1440. Visual review confirms all labels, hitboxes, scroll lanes and focus
+  art remain inside the inner content rect and no action/stat covers the frame.
+- 2026-07-10: post-review fixed two screenshot-only defects that structural
+  bounds checks could miss. The 1080p two-column base-stat rows now preserve a
+  readable localized-name lane (oracle minimum: rendered `Сила`), and four
+  alpha-1 reserve masks cover the complete viewport-minus-inner area below
+  content/final frame so the underlying combat HUD cannot bleed through the
+  ornament. Focused gate and all three windowed captures were regenerated PASS.
 
 ## Design Paths
 
@@ -60,7 +84,10 @@ reserved for the destructive End Run action.
 
 ## Current Blocker / Next Step
 
-Design generation/acceptance continues now. Runtime integration is deliberately
-blocked by the active SCRUM-981 shared-UI locks. After the Design commit, keep
-the Jira issue `В работе` with a fresh heartbeat and wait for explicit release;
-do not push the design-only commit to `dev` until safe rebase/integration.
+Implementation and focused/UI regression gates are green. The only remaining
+gate is the repository-wide `tests/runtime_smoke_test.gd`: its legacy dossier
+assertion must be updated from the old VBox/button-height contract to the real
+`BaseStatsGrid` and exact 60/72px footer after the active Priest worker releases
+its current test lock. Then rebase on fresh `origin/dev`, run the full smoke,
+commit/push directly to `dev`, route Jira to `Контроль качества`, sync the
+targeted mirror and remove the disposable worktree/cache.

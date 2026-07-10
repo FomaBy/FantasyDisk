@@ -1,11 +1,12 @@
 # SCRUM-983 Runtime Acceptance Test Plan
 
-This is a Design-stage oracle only. It does not lock or edit shared runtime
-tests before SCRUM-981 releases its UI paths.
+Status: implemented. The focused oracle and capture helper now exercise the real
+pause dossier. The repository-wide runtime smoke remains pending only because
+its test file is under the active Priest worker lock.
 
 ## Focused geometry oracle
 
-Create `tests/scrum983_escape_dossier_test.gd` after runtime lock release. For
+`tests/scrum983_escape_dossier_test.gd` instantiates the real pause dossier. For
 1280×720, 1920×1080 and 2560×1440 it must instantiate the real pause dossier
 with a configured player and assert:
 
@@ -44,3 +45,14 @@ Windowed capture must save real 720p/1080p/2K screenshots and a rect/focus dump
 under `build/qa/scrum983/`. Visual QA fails on any content touching frame
 ornament, clipped numeric value, red Continue/Main Menu state, hidden/unreachable
 stat chip or scrollbar entering a content lane.
+
+## Result — 2026-07-10
+
+- Focused geometry/content/tooltip/focus/live-resize gate: PASS.
+- UI no-overlap matrix: PASS at its complete resolution matrix.
+- Dark-fantasy theme: PASS.
+- Gamepad in-run: PASS three consecutive runs; full-flow smoke: PASS.
+- Runtime UI smoke: PASS (known headless dummy-renderer capture warning only).
+- Windowed Metal capture: PASS at 1280×720, 1920×1080 and 2560×1440;
+  `build/qa/scrum983/escape_dossier_visual_matrix.md` records exact rectangles.
+- Full repository runtime smoke: pending the active Priest test-lock release.

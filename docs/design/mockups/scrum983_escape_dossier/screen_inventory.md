@@ -1,7 +1,7 @@
 # SCRUM-983 Escape Dossier Runtime Inventory
 
-Read-only inventory from `origin/dev` `23e15aed0`. This file does not authorize
-editing shared runtime before SCRUM-981 release.
+Inventory captured from `origin/dev` `23e15aed0`, followed by the accepted
+SCRUM-983 runtime migration described below.
 
 ## Current hierarchy and behavior
 
@@ -25,7 +25,7 @@ editing shared runtime before SCRUM-981 release.
 - Existing button danger is a tint variant on the shared action family; runtime
   tests must prove Resume/Main Menu never inherit that tint in any state.
 
-## Planned migration without node-contract breakage
+## Implemented migration without node-contract breakage
 
 | Existing node/contract | SCRUM-983 action |
 | --- | --- |
@@ -41,6 +41,8 @@ editing shared runtime before SCRUM-981 release.
 
 ## Locked-path boundary
 
-Stage 1 owns only the adjacent SCRUM-983 mockup/reference/preview/task files.
-`scripts/pause_stats_menu.gd`, shared tests and system docs remain read-only until
-the dispatcher confirms SCRUM-981 has landed and released its locks.
+SCRUM-981 released its shared frame/pause lock before integration. SCRUM-983 now
+owns `scripts/pause_stats_menu.gd`, its unique focused/capture evidence and the
+targeted no-overlap oracle update. `scripts/ui_screens.gd` remains excluded for
+Claude SCRUM-968, and `tests/runtime_smoke_test.gd` remains read-only until the
+active Priest worker releases its test lock.

@@ -1,6 +1,6 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
-Status: Design stage accepted; runtime integration waiting for SCRUM-981 lock release  
+Status: Accepted and implemented; final repository-wide smoke pending active Priest test-lock release
 Role owner: combined Design+Back-end `/root/scrum983_dossier`  
 Task: `docs/tasks/SCRUM-983_escape_hero_dossier.md`  
 Jira: SCRUM-983  
@@ -67,6 +67,12 @@ The outer frame is visual-only, mouse-ignore and drawn last. Local hero/stat
 surfaces stay inside the inner content rect and retain at least 12px local
 content padding; focus/hover art may not grow their rectangles.
 
+Four opaque mouse-ignore reserve masks cover `viewport − inner content rect`:
+top, bottom, left and right. They render above the shared gameplay dim but below
+dossier content and the final hollow frame. This prevents combat HUD text or
+effects from showing through transparent ornament/reserve pixels while leaving
+the inner gameplay backdrop dimly visible.
+
 ## Responsive Geometry
 
 | Viewport | Header | Hero dossier | Derived stats | Action row |
@@ -101,7 +107,10 @@ second manually maintained formula table.
 
 At 1920×1080 the left dossier has 16px padding, a 120px identity row, then an
 8-row base-stat grid arranged as two columns × four rows. Base rows are at least
-44px tall with 44px icons. The right area has 16px padding and a 12px group gap;
+44px tall with 44px icons. Row-side padding and numeric reserve must still leave
+every localized name lane at least as wide as the rendered short label `Сила`;
+longer names may ellipsize only after a meaningful visible prefix. The right
+area has 16px padding and a 12px group gap;
 each group gets a 30px title lane and compact chips at least 236×54px. The
 physical/magic groups use up to three chip rows, support/control up to two and
 periodic damage one. This preserves the SCRUM-839 readable minima while removing
@@ -146,14 +155,19 @@ The accepted PixelLab base remains immutable during compositing; the compositor
 adds sample content only inside declared zones and writes a separate debug image
 and fit report.
 
-## Planned Runtime Integration
+## Runtime Integration
 
-Runtime integration starts only after `/root` confirms SCRUM-981 landed and
-released shared UI locks. Expected runtime owner paths are
-`scripts/pause_stats_menu.gd` plus new focused SCRUM-983 tests/capture helpers.
-Shared `scripts/ui_screens.gd`, `tests/runtime_smoke_test.gd` and menu/current
-state docs remain excluded until their active owners release them and a new Jira
-heartbeat expands the lock.
+The accepted contract is implemented in `scripts/pause_stats_menu.gd` with
+focused coverage in `tests/scrum983_escape_dossier_test.gd` and real windowed
+capture in `tools/capture_scrum983_escape_dossier.gd`. The implementation keeps
+`scripts/ui_screens.gd` untouched, preserves the centralized pause/action
+signals and uses the existing global icon/button/frame families.
+
+The old umbrella no-overlap oracle now checks the semantic `DossierHeader`,
+`DossierBody` and `PauseControlButtons` peers instead of treating the required
+full-screen visual-only frame as a content peer. The shared runtime-smoke dossier
+assertion remains read-only until the active Priest worker releases its test
+lock, after which it will be aligned with the implemented semantic grid/footer.
 
 The PixelLab image is a design reference, not a TextureRect screenshot to show
 at runtime. Godot rebuilds the composition from responsive Controls, existing
@@ -170,7 +184,8 @@ icons, text-button states and the shared 9-slice frame.
 - [x] Compositor report `ok:true`; debug overlay proves content remains inside zones.
 - [x] Continue/Main Menu neutral; End Run alone danger-red in the spec.
 - [x] Mouse/keyboard/gamepad tooltip and focus order specified.
-- [ ] Runtime screenshots and focused/no-overlap/gamepad/full-smoke gates complete after lock release.
+- [x] Runtime screenshots and focused/no-overlap/gamepad/UI-smoke gates complete.
+- [ ] Repository-wide runtime smoke complete after the active Priest test-lock release.
 
 ## Deviations
 

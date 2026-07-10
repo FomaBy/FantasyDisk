@@ -77,12 +77,12 @@ func _initialize() -> void:
 		# (pause_menu исторический и pause_stats) показывают ОДИН экран PauseStatsMenu;
 		# id сохранены ради непрерывности дампов scrum330/design-review.
 		await _check_screen(viewport_size, "pause_menu", Callable(self, "_open_pause_menu"), [
-			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
+			"DossierHeader", "DossierBody", "PauseControlButtons", "PauseResumeButton",
 			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
 			"DerivedStatsGroups", "RunEquipmentPanel",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "pause_stats", Callable(self, "_open_pause_stats"), [
-			"EscapeStatsPanelFrame", "PauseControlButtons", "PauseResumeButton",
+			"DossierHeader", "DossierBody", "PauseControlButtons", "PauseResumeButton",
 			"PauseEndRunButton", "HeroCard", "BaseStatsList", "SurvivalStatsList",
 			"DerivedStatsGroups", "RunEquipmentPanel",
 		], dump_lines, errors)

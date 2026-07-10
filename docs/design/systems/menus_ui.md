@@ -959,8 +959,10 @@ decorative art, not text containers. QA dump:
 `PauseEndModalScroll_death` returns.
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
-is covering gameplay, Escape opens the pause dossier / character board directly
-and uses its left run-control column as the available pause actions. The old
+is covering gameplay, Escape opens the pause dossier / character board directly.
+SCRUM-983 moves the four run actions from the old left/header placement into a
+fixed bottom footer, with Continue focused first and End Run as the only
+danger-red action. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and
@@ -976,6 +978,22 @@ at 44px+ for base attributes and 46px+ for derived attributes. Long Russian stat
 names are clipped with ellipsis or wrapped only inside their existing containers;
 content remains inside the frame safe-zone. The update note lives in
 `docs/design/mockups/scrum839_pause_dossier_readability/spec.md`.
+
+SCRUM-983 supersedes the old pause-dossier placement while preserving those
+readability minima. The live screen reuses the SCRUM-981 hollow gold shell and
+adds a real inner reserve beyond the scaled 160px rails: exact inner rects are
+`157,137,966,446` at 1280×720, `224,193,1472,694` at 1920×1080 and
+`299,257,1962,926` at 2560×1440. Header, hero/derived body, both vertical-only
+scrollbar lanes and the fixed footer remain inside those rects. Base stats are
+eight semantic rows in `BaseStatsGrid` (1 column compact, 2 columns wide);
+the 1080p two-column name lane must fit at least the rendered short localized
+label `Сила`. Four opaque reserve masks cover everything outside the inner rect
+below the content/final frame, preventing any combat HUD from showing through
+gold ornament. Derived stat groups remain 2×2. Every stat target is keyboard/gamepad focusable,
+uses geometric D-pad neighbors, and exposes the same complete
+description/formula/source/influences as hover. Runtime oracle:
+`tests/scrum983_escape_dossier_test.gd`; visual evidence:
+`build/qa/scrum983/`.
 
 SCRUM-840 unifies global hover tooltip behavior without generating new bitmap
 assets. Generic `tooltip_text` controls inherit the existing minimal-metal
@@ -1214,8 +1232,10 @@ every socket/circle, class/Guild preview-only state and exact explicit spend on
   старт — первая карточка (награды обязательны — cancel не выходит).
 - Пауза (`_build_run_pause_menu`): вертикальное меню, старт — «Продолжить»;
   B/Esc = продолжить игру.
-- Досье паузы (`PauseStatsMenu`): кнопки фокусируемы, старт — «Продолжить»; B/Esc
-  обрабатывается централизованно в `main._input`.
+- Досье паузы (`PauseStatsMenu`): старт — «Продолжить» в fixed footer;
+  left/right cycles the four actions, up/down enters the closest semantic stat
+  row, stat navigation preserves geometric rows/columns and focus-follow scroll;
+  B/Esc обрабатывается централизованно в `main._input`.
 - Смерть/победа (`_show_death_screen`, `_show_victory_screen`): старт — основная
   кнопка; B/Esc = основная кнопка (нет «пустого» закрытия).
 - Магазин/отдых/улучшение (`_show_shop_screen`, `_show_rest_screen`,
