@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        267,
+        225,
+        2026,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "inner_content",
+      "kind": "panel",
+      "rect": [
+        299,
+        257,
+        1962,
+        926
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_zone",
+      "kind": "text",
+      "rect": [
+        299,
+        257,
+        1962,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "hero_dossier",
+      "kind": "panel",
+      "rect": [
+        299,
+        385,
+        520,
+        650
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "derived_stats",
+      "kind": "panel",
+      "rect": [
+        843,
+        385,
+        1418,
+        650
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "continue_button",
+      "kind": "button",
+      "rect": [
+        660,
+        1075,
+        280,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "settings_button",
+      "kind": "button",
+      "rect": [
+        960,
+        1075,
+        280,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "end_run_button",
+      "kind": "button",
+      "rect": [
+        1260,
+        1075,
+        320,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "main_menu_button",
+      "kind": "button",
+      "rect": [
+        1600,
+        1075,
+        300,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    }
+  ]
+}

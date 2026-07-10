@@ -1,0 +1,23 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "policy": {"min_gap": 16, "allow_overlap": false},
+  "content": {
+    "title": "ДОСЬЕ ГЕРОЯ",
+    "continue": "ПРОДОЛЖИТЬ",
+    "settings": "НАСТРОЙКИ",
+    "end_run": "ЗАВЕРШИТЬ ЗАБЕГ",
+    "main_menu": "ГЛАВНОЕ МЕНЮ"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 2560, "h": 1440, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 267, "y": 225, "w": 2026, "h": 990, "content_zone": true, "collision": false},
+    {"id": "inner_content", "kind": "panel", "parent": "frame_safe_area", "x": 299, "y": 257, "w": 1962, "h": 926, "content_zone": true, "collision": false},
+    {"id": "header_zone", "kind": "text", "parent": "inner_content", "x": 299, "y": 257, "w": 1962, "h": 104, "content_zone": true, "text_key": "title", "max_font": 36, "min_font": 24},
+    {"id": "hero_dossier", "kind": "panel", "parent": "inner_content", "x": 299, "y": 385, "w": 520, "h": 650, "content_zone": true},
+    {"id": "derived_stats", "kind": "panel", "parent": "inner_content", "x": 843, "y": 385, "w": 1418, "h": 650, "content_zone": true},
+    {"id": "continue_button", "kind": "button", "parent": "inner_content", "x": 660, "y": 1075, "w": 280, "h": 72, "content_zone": true, "text_key": "continue", "max_font": 20, "min_font": 16},
+    {"id": "settings_button", "kind": "button", "parent": "inner_content", "x": 960, "y": 1075, "w": 280, "h": 72, "content_zone": true, "text_key": "settings", "max_font": 20, "min_font": 16},
+    {"id": "end_run_button", "kind": "button", "parent": "inner_content", "x": 1260, "y": 1075, "w": 320, "h": 72, "content_zone": true, "text_key": "end_run", "max_font": 20, "min_font": 16},
+    {"id": "main_menu_button", "kind": "button", "parent": "inner_content", "x": 1600, "y": 1075, "w": 300, "h": 72, "content_zone": true, "text_key": "main_menu", "max_font": 20, "min_font": 16}
+  ]
+}

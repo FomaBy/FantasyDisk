@@ -1,0 +1,115 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        86,
+        70,
+        516,
+        24
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "hero",
+      "rect": [
+        86,
+        103,
+        143,
+        162
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "physical",
+      "rect": [
+        244,
+        104,
+        175,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "magic",
+      "rect": [
+        427,
+        104,
+        175,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "support",
+      "rect": [
+        244,
+        188,
+        175,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "dot",
+      "rect": [
+        427,
+        188,
+        175,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "continue",
+      "rect": [
+        142,
+        278,
+        93,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "settings",
+      "rect": [
+        241,
+        278,
+        93,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "end_run",
+      "rect": [
+        340,
+        278,
+        100,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "main_menu",
+      "rect": [
+        446,
+        278,
+        100,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "policy": {"min_gap": 8, "allow_overlap": false},
+  "content": {
+    "title": "ДОСЬЕ ГЕРОЯ",
+    "hero": "БЕРСЕРК · ДВУРУЧНЫЙ МЕЧ · УРОВЕНЬ 8",
+    "stats": "КОМПАКТНЫЕ ЧИСЛОВЫЕ ПАРАМЕТРЫ",
+    "continue": "ПРОДОЛЖИТЬ",
+    "settings": "НАСТРОЙКИ",
+    "end_run": "ЗАВЕРШИТЬ ЗАБЕГ",
+    "main_menu": "ГЛАВНОЕ МЕНЮ"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1280, "h": 720, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 133, "y": 113, "w": 1014, "h": 494, "content_zone": true, "collision": false},
+    {"id": "inner_content", "kind": "panel", "parent": "frame_safe_area", "x": 157, "y": 137, "w": 966, "h": 446, "content_zone": true, "collision": false},
+    {"id": "header_zone", "kind": "text", "parent": "inner_content", "x": 157, "y": 137, "w": 966, "h": 60, "content_zone": true, "text_key": "title", "max_font": 24, "min_font": 18},
+    {"id": "hero_dossier_scroll", "kind": "scroll_area", "parent": "inner_content", "x": 157, "y": 209, "w": 320, "h": 286, "content_zone": true, "scroll": "auto", "content_h": 390, "scrollbar_w": 14},
+    {"id": "derived_stats_scroll", "kind": "scroll_area", "parent": "inner_content", "x": 489, "y": 209, "w": 634, "h": 286, "content_zone": true, "scroll": "required", "content_h": 546, "scrollbar_w": 14},
+    {"id": "continue_button", "kind": "button", "parent": "inner_content", "x": 168, "y": 507, "w": 220, "h": 60, "content_zone": true, "text_key": "continue", "max_font": 17, "min_font": 14},
+    {"id": "settings_button", "kind": "button", "parent": "inner_content", "x": 396, "y": 507, "w": 220, "h": 60, "content_zone": true, "text_key": "settings", "max_font": 17, "min_font": 14},
+    {"id": "end_run_button", "kind": "button", "parent": "inner_content", "x": 624, "y": 507, "w": 260, "h": 60, "content_zone": true, "text_key": "end_run", "max_font": 17, "min_font": 14},
+    {"id": "main_menu_button", "kind": "button", "parent": "inner_content", "x": 892, "y": 507, "w": 220, "h": 60, "content_zone": true, "text_key": "main_menu", "max_font": 17, "min_font": 14}
+  ]
+}

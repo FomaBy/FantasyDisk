@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        133,
+        113,
+        1014,
+        494
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "inner_content",
+      "kind": "panel",
+      "rect": [
+        157,
+        137,
+        966,
+        446
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_zone",
+      "kind": "text",
+      "rect": [
+        157,
+        137,
+        966,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "hero_dossier_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        157,
+        209,
+        320,
+        286
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 390,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        463,
+        209,
+        14,
+        286
+      ]
+    },
+    {
+      "id": "derived_stats_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        489,
+        209,
+        634,
+        286
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 546,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1109,
+        209,
+        14,
+        286
+      ]
+    },
+    {
+      "id": "continue_button",
+      "kind": "button",
+      "rect": [
+        168,
+        507,
+        220,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "settings_button",
+      "kind": "button",
+      "rect": [
+        396,
+        507,
+        220,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "end_run_button",
+      "kind": "button",
+      "rect": [
+        624,
+        507,
+        260,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "main_menu_button",
+      "kind": "button",
+      "rect": [
+        892,
+        507,
+        220,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    }
+  ]
+}
