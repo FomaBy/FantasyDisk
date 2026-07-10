@@ -4205,8 +4205,8 @@
  },
  "SCRUM-1016_druid_ghost_animation_integration.md": {
   "key": "SCRUM-1016",
-  "status": "Контроль качества",
-  "desc_hash": "db5ffb52133e2ccc54d894554ba45079"
+  "status": "Готово",
+  "desc_hash": "778d10fdb155db44c5bc28e7efb6514c"
  },
  "SCRUM-955.md": {
   "key": "SCRUM-955",
@@ -4215,8 +4215,8 @@
  },
  "bug_SCRUM-1020_druid_ghost_bear_move_identity_remediation_task.md": {
   "key": "SCRUM-1020",
-  "status": "Контроль качества",
-  "desc_hash": "3a56ffae0bb740051a7680b18d9e2f75"
+  "status": "Готово",
+  "desc_hash": "9ddb322932849c7cc6689da53f7277a0"
  },
  "SCRUM-934.md": {
   "key": "SCRUM-934",
@@ -4230,8 +4230,8 @@
  },
  "bug_SCRUM-1022_druid_ghost_registry_source_faces_left_task.md": {
   "key": "SCRUM-1022",
-  "status": "Контроль качества",
-  "desc_hash": "98122c9375f65e29f03bb68b407bcedf"
+  "status": "Готово",
+  "desc_hash": "31707497198648d595b21daffc9f2520"
  },
  "SCRUM-1023.md": {
   "key": "SCRUM-1023",
