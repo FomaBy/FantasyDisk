@@ -805,6 +805,14 @@ func take_damage(amount: float, _source := "") -> bool:
 	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
 	_charge_repair_subroutine(defended_amount - absorbed_amount)
 	var final_damage := absorbed_amount * (1.0 - defense)
+	# SCRUM-914 «Бронекорпус»: классовый финальный игнор входящего урона —
+	# ПОСЛЕДНИЙ множитель пайплайна (после блока/absorb/defense; dodge отроллен
+	# выше). Data-driven из CLASS_TRAITS.robot (incoming_damage_multiplier 0.8:
+	# 100 post-mitigation → 80, 5 → 4); классы без trait'а получают 1.0 —
+	# утечки нет. Кламп-пол 0.5 страхует от стакинга будущих скидок в полный
+	# иммунитет; худший суммарный кап митигации Робота ≈ 94% < гейта 98%
+	# (tests/robot_kit_test.gd + global_survivability smoke).
+	final_damage *= clampf(class_trait_value("incoming_damage_multiplier", 1.0), 0.5, 1.0)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()

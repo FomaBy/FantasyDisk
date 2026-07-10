@@ -947,15 +947,22 @@ const BIOLOGIST_WEAPONS := {
 }
 
 const ROBOT_WEAPONS := {
+	# SCRUM-915/916/918: редизайн кита Робота (trait «Бронекорпус» — SCRUM-914,
+	# см. CLASS_TRAITS.robot). Механики — ClassWeapon._fire_robot_*; зеркала
+	# бюджета — ProgressionData._budget_hit_model.
 	"robot_magnetic_anchor": {
 		"id": "robot_magnetic_anchor", "title": "Магнитный Якорь",
-		"description": "Magnetic anchor: ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом.",
+		# SCRUM-915: редкий тяжёлый AoE-пулл. knockback = базовая мощь пулла
+		# (конвергенция 0.85 пути к центру за каст, элитки/боссы не смещаются);
+		# медленный базовый темп (fire_interval 2.05) разгоняется скоростью
+		# атаки, aoe_radius растёт AoE-прогрессией — группировка «точка за точкой».
+		"description": "Magnetic anchor: тяжелый якорь бьет по большой площади и стягивает рядовых врагов в центр зоны; элитки и боссы не смещаются, но урон получают полностью.",
 		"scene_path": "res://scenes/RobotMagneticAnchor.tscn",
 		"attack_mode": "robot_magnetic_anchor", "damage_parameter": "damage",
-		"damage_multiplier": 0.86, "fire_interval": 1.14,
-		"attack_range": 520.0, "aoe_radius": 230.0,
-		"grenade_delay": 0.22, "knockback": 150.0,
-		"damage_falloff": 0.68, "beam_width": 44.0,
+		"damage_multiplier": 1.55, "fire_interval": 2.05,
+		"attack_range": 520.0, "aoe_radius": 250.0,
+		"grenade_delay": 0.34, "knockback": 170.0,
+		"damage_falloff": 0.72, "beam_width": 44.0,
 		"melee_arc_followup_radius": 190.0, "melee_arc_followup_multiplier": 0.10,
 		"melee_stagger_knockback_multiplier": 0.75,
 		"visual_color": Color(0.42, 0.82, 1.0, 0.42),
@@ -963,13 +970,18 @@ const ROBOT_WEAPONS := {
 	},
 	"robot_hydraulic_press": {
 		"id": "robot_hydraulic_press", "title": "Гидравлический Пресс",
-		"description": "Compression line: две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором.",
+		# SCRUM-916: широкий коридор компрессии. Урон по ВСЕЙ ширине
+		# suppression_width (300; ×1.30 с «Калибратором пресса»), рядовых
+		# прижимает к осевой линии (конвергенция 0.80), элитки/боссы — резист
+		# смещения x0.25 при полном уроне; beam_width = центральная «губка»/ось
+		# для VFX. knockback = сила компрессии.
+		"description": "Compression line: широкий коридор перед роботом давит врагов и сжимает их к осевой линии, выстраивая толпу в ровный ряд; элитки и боссы почти не смещаются.",
 		"scene_path": "res://scenes/RobotHydraulicPress.tscn",
 		"attack_mode": "robot_compression_line", "damage_parameter": "damage",
-		"damage_multiplier": 0.98, "fire_interval": 1.22,
+		"damage_multiplier": 1.05, "fire_interval": 1.35,
 		"attack_range": 430.0, "aoe_radius": 180.0,
-		"beam_width": 150.0, "suppression_width": 260.0,
-		"grenade_delay": 0.20, "knockback": 115.0,
+		"beam_width": 120.0, "suppression_width": 300.0,
+		"grenade_delay": 0.20, "knockback": 130.0,
 		"damage_falloff": 0.55,
 		"melee_close_bonus_radius": 190.0, "melee_close_damage_multiplier": 1.10,
 		"melee_stagger_knockback_multiplier": 0.95,
@@ -978,12 +990,17 @@ const ROBOT_WEAPONS := {
 	},
 	"robot_reactor_core": {
 		"id": "robot_reactor_core", "title": "Реакторное Ядро",
-		"description": "Reactor vent: выпускает четыре направленных выброса вокруг корпуса, отталкивая врагов и контролируя ближнюю толпу.",
+		# SCRUM-918: вращающийся 4-направленный веер. Ровно 4 вентиля 90°,
+		# паттерн +6° по часовой после каждой атаки, БЕЗ самонаведения; урон
+		# вентиля = ролл × 0.42 (REACTOR_VENT_DAMAGE_RATIO), extra_projectile
+		# расширяет лопасти. projectile_count фиксирует 4 направления для
+		# бюджет-модели/доков.
+		"description": "Reactor vent: четыре фиксированных выброса крестом вокруг корпуса; после каждой атаки крест доворачивается на 6 градусов по часовой — веер обходит весь круг.",
 		"scene_path": "res://scenes/RobotReactorCore.tscn",
 		"attack_mode": "robot_reactor_vent", "damage_parameter": "damage",
-		"damage_multiplier": 0.74, "fire_interval": 1.05,
+		"damage_multiplier": 0.70, "fire_interval": 0.92,
 		"attack_range": 300.0, "aoe_radius": 155.0,
-		"beam_width": 92.0, "projectile_count": 4,
+		"beam_width": 96.0, "projectile_count": 4,
 		"knockback": 135.0, "damage_falloff": 0.70,
 		"visual_color": Color(0.36, 1.0, 0.86, 0.40),
 		"passive_mods": {"regeneration_flat": 0.16},

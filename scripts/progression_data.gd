@@ -1302,13 +1302,28 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var impact_ratio := clampf(float(config.get("seed_impact_ratio", 0.85)), 0.0, 1.5)
 			return {"solo_hits": impact_ratio, "five_hits": clampf(impact_ratio * (1.0 + aoe_radius / 110.0), 0.5, 4.0), "dot_targets": clampf(1.0 + aoe_radius / 95.0, 1.0, 4.0)}
 		"robot_magnetic_anchor":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 80.0, 1.0, 4.8)}
+			# SCRUM-915: тяжёлый AoE-пулл — рядовые стягиваются к центру зоны
+			# (конвергенция 0.85, ClassWeapon._pull_enemies_toward), поэтому
+			# следующие касты бьют сгруппированную толпу ближе к falloff-центру:
+			# группировка учтена мягким бонусом плотности +12% к толпе. Элитки/
+			# боссы не смещаются (контроль-ось, в DPS-модель не входит).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 80.0) * 1.12, 1.0, 4.8)}
 		"robot_compression_line":
+			# SCRUM-916: урон по ВСЕЙ ширине коридора suppression_width
+			# (зеркало _fire_robot_compression_line: width_override), компрессия
+			# к оси — контроль-ось. Толпа — от полной ширины коридора.
 			var compression_width := float(config.get("suppression_width", 220.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + compression_width / 82.0, 1.0, 4.6)}
 		"robot_reactor_vent":
+			# SCRUM-918: вращающийся веер — ровно 4 фикс-вентиля (без
+			# самонаведения), пер-вентильный урон = ролл × vent_ratio (зеркало
+			# ClassWeapon.REACTOR_VENT_DAMAGE_RATIO). Соло: identity ближнего
+			# контроля — чейзер на контактной дистанции покрыт лопастью
+			# (coverage ~1.0) => один вентиль за каст = vent_ratio ролла; толпа —
+			# прежняя форма «вентили + площадь», масштабированная vent_ratio.
 			var vent_count := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + vent_count * 0.70 + aoe_radius / 150.0, 1.0, 5.0)}
+			var vent_ratio := 0.42
+			return {"solo_hits": vent_ratio, "five_hits": clampf((1.0 + vent_count * 0.70 + aoe_radius / 150.0) * vent_ratio, 0.5, 5.0)}
 		"engineer_sentry_link":
 			# SCRUM-888: турели. Прямой компонент — мгновенный первый выстрел при
 			# развёртке (1 цель); сустейн стрельбы турелей считает _budget_summon_dps

@@ -238,10 +238,49 @@ var _current_charge_multiplier := 1.0
 var _deployed_amps: Array[Node] = []
 var _spawned_effects: Array[Node] = []
 var _effects_shutdown := false
-# SCRUM-961: состояние классовых артефактов (счётчик ритма / фаза реактора / эхо-скейл).
+# SCRUM-961: состояние классовых артефактов (счётчик ритма / эхо-скейл).
 var _rhythm_cast_counter := 0
 var _rhythm_echo_scale := 1.0
+# SCRUM-918: каноническое состояние ротации Реакторного Ядра. Старт всегда 0°
+# (восток): аттач оружия/новый забег пересоздают инстанс ClassWeapon, поэтому
+# застарелой фазы между забегами/сменами оружия нет. После КАЖДОЙ атаки фаза
+# доворачивается на REACTOR_ROTATION_STEP_DEG по часовой (см.
+# _fire_robot_reactor_vent); скорость атаки ускоряет только частоту шагов.
 var _reactor_vent_phase := 0.0
+
+# SCRUM-915/916/918: константы редизайна кита Робота.
+# Импульс knockback гасится врагом с постоянным замедлением 2400 px/s^2
+# (enemy._consume_knockback: move_toward(ZERO, 2400*delta)) => путь = v^2/4800.
+# Для смещения на d нужен импульс sqrt(4800*d) — этим зеркалом пулл/компрессия
+# переводят «долю пути» в импульс.
+const KNOCKBACK_IMPULSE_TRAVEL_FACTOR := 4800.0
+# Якорь (SCRUM-915): рядовые враги стягиваются к ЦЕНТРУ AoE на долю пути
+# ANCHOR_PULL_CONVERGENCE за каст (без овершута через центр); элитки/боссы НЕ
+# смещаются вовсе (урон полный). Импульс зажат капом — анти-runaway физики.
+# Конфиг-ключ knockback якоря = базовая мощь пулла (норма ANCHOR_PULL_FORCE_NORM).
+const ANCHOR_PULL_CONVERGENCE := 0.85
+const ANCHOR_PULL_CONVERGENCE_CAP := 0.95
+const ANCHOR_PULL_IMPULSE_CAP := 1500.0
+const ANCHOR_PULL_FORCE_NORM := 170.0
+# Пресс (SCRUM-916): врагов в коридоре прижимает к осевой линии на долю бокового
+# отступа PRESS_COMPRESSION_CONVERGENCE за каст (ось не пересекается —
+# «выравнивание в линию»). Элитки/боссы смещаются с резистом x0.25 (прецедент
+# Thief-паралича POISON_PARALYSIS_BOSS_FACTOR — вечный стаклок недопустим),
+# урон по ним полный. Конфиг-ключ knockback пресса = сила компрессии (норма 130).
+const PRESS_COMPRESSION_CONVERGENCE := 0.80
+const PRESS_COMPRESSION_IMPULSE_CAP := 1100.0
+const PRESS_COMPRESSION_FORCE_NORM := 130.0
+const PRESS_ELITE_BOSS_COMPRESSION_FACTOR := 0.25
+# Реактор (SCRUM-918): ровно 4 вентиля с шагом 90°, ротация паттерна +6° по
+# часовой после каждой атаки, направления НЕ зависят от целей (самонаведения
+# нет). Пер-вентильный урон = ролл × REACTOR_VENT_DAMAGE_RATIO (деления на
+# счётчик вентилей больше нет — вентилей всегда 4, зеркало в
+# ProgressionData._budget_hit_model). extra_projectile расширяет лопасти
+# (+14% ширины за снаряд) вместо добавления направлений (AC: ровно четыре).
+const REACTOR_VENT_COUNT := 4
+const REACTOR_ROTATION_STEP_DEG := 6.0
+const REACTOR_VENT_DAMAGE_RATIO := 0.42
+const REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS := 0.14
 # SCRUM-900 plague_dart: реестр живых зараз этого оружия (enemy_id → Tween).
 # Дедуп повторного заражения (рефреш), spread-исключение и кап plague_max_infected.
 var _plague_tweens := {}
@@ -938,8 +977,11 @@ func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:
 		owner_node.call("trigger_flurry_tempo")
 
 
-func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float) -> void:
-	for hit in _enemies_in_corridor(origin, direction, beam_width, attack_range):
+func _damage_enemies_in_corridor(origin: Vector2, direction: Vector2, amount: float, width_override := -1.0) -> void:
+	# SCRUM-916: width_override позволяет бить ПОЛНУЮ ширину коридора компрессии
+	# (suppression_width Пресса), не только центральный beam_width.
+	var corridor_hit_width := width_override if width_override > 0.0 else beam_width
+	for hit in _enemies_in_corridor(origin, direction, corridor_hit_width, attack_range):
 		_damage_enemy(hit["node"], amount)
 
 
@@ -3367,6 +3409,12 @@ func _maybe_duplicate_hit(enemy: Node, amount: float, hit_type: String) -> void:
 
 
 func _fire_robot_magnetic_anchor(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	# SCRUM-915: редкий ТЯЖЁЛЫЙ AoE-пулл. Центр = точка якоря (цель/направление),
+	# НЕ позиция игрока. Телеграф на grenade_delay, затем удар с falloff и
+	# стягивание выживших рядовых К ЦЕНТРУ зоны (_pull_enemies_toward:
+	# конвергенция 0.85 пути за каст, элитки/боссы не смещаются, урон полный).
+	# Группировка «точка за точкой»: AoE-прогрессия растит радиус, скорость
+	# атаки — частоту якорей; сжатая толпа ловит полные хиты следующих кастов.
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		center = target.global_position
@@ -3398,6 +3446,13 @@ func _fire_robot_magnetic_anchor(owner_node: Node2D, target: Node2D, direction: 
 
 
 func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	# SCRUM-916: широкий коридор компрессии. Урон наносится по ВСЕЙ ширине
+	# коридора (suppression_width), рядовых врагов прижимает к осевой линии
+	# (см. _compress_enemies_to_axis: конвергенция 0.80, элитки/боссы ×0.25).
+	# Робот при касте не смещается — атака двигает только врагов.
+	# Геометрия для VFX (SCRUM-917): старт = owner + direction*28, длина =
+	# attack_range, полная ширина = suppression_width (×1.30 с «Калибратором
+	# пресса»), центральная «губка»-ось = beam_width, задержка удара = grenade_delay.
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range * 0.58, 260.0)
 	if target != null:
 		var to_target := target.global_position - owner_node.global_position
@@ -3439,7 +3494,8 @@ func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction:
 		var damage_value: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
 		var impact := AttackVfx.beam(current_weapon.call("_projectile_parent"), line_start, line_finish, float(current_weapon.get("beam_width")), current_weapon.get("visual_color"))
 		current_weapon.call("_register_effect", impact)
-		current_weapon.call("_damage_enemies_in_corridor", line_start, line_direction, damage_value)
+		# SCRUM-916: урон по полной ширине коридора, затем компрессия к оси.
+		current_weapon.call("_damage_enemies_in_corridor", line_start, line_direction, damage_value, corridor_width)
 		current_weapon.call("_compress_enemies_to_axis", line_start, line_direction, line_perpendicular, corridor_width, float(current_weapon.get("attack_range")), float(current_weapon.get("knockback")))
 		AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), clamp_center, float(current_weapon.get("aoe_radius")) * 0.42, current_weapon.get("visual_color"), false)
 		current_weapon.call("_release_effect", left)
@@ -3447,43 +3503,60 @@ func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction:
 	)
 
 
-func _fire_robot_reactor_vent(owner_node: Node2D, direction: Vector2) -> void:
-	var vent_count := maxi(projectile_count + _extra_projectiles(), 4)
-	var damage_value := _rolled_damage(owner_node) / float(maxi(vent_count, 1))
+func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
+	# SCRUM-918: Реакторное Ядро — вращающийся четырёхнаправленный веер.
+	# Ровно REACTOR_VENT_COUNT (4) вентиля с шагом 90° от МИРОВОЙ фазы
+	# _reactor_vent_phase (старт 0° = восток; направление атаки/ближайший враг
+	# ИГНОРИРУЮТСЯ — самонаведения нет, параметр _direction не используется).
+	# После каждой атаки паттерн доворачивается на REACTOR_ROTATION_STEP_DEG=6°
+	# по часовой (y-вниз => положительный угол); скорость атаки ускоряет только
+	# частоту шагов — за счёт неё веер «заметает» круг быстрее (полный цикл
+	# паттерна = 90°/6° = 15 атак). Пер-вентильный урон = ролл ×
+	# REACTOR_VENT_DAMAGE_RATIO; extra_projectile расширяет лопасти
+	# (+14% ширины за снаряд) вместо добавления направлений (AC: ровно четыре).
+	var damage_value := _rolled_damage(owner_node) * REACTOR_VENT_DAMAGE_RATIO
+	var vent_width := beam_width * (1.0 + REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS * float(maxi(_extra_projectiles(), 0)))
+	var base_phase := _reactor_vent_phase
+	_reactor_vent_phase = fmod(_reactor_vent_phase + deg_to_rad(REACTOR_ROTATION_STEP_DEG), TAU)
 	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius * 0.62, visual_color, true)
-	# SCRUM-961 «Реакторный хронометр»: выбросы идут последовательной ротацией с
-	# накоплением фазы между кастами — круг покрывается без «мёртвых секторов»;
-	# цикл наследует скорость атаки через fire_interval, выбросы не теряются.
+	# SCRUM-961 «Реакторный хронометр»: вентили этого каста идут последовательной
+	# волной внутри интервала (без мёртвых пауз); канонический шаг паттерна
+	# остаётся +6°/атака — артефакт меняет только развёртку внутри каста.
 	if _owner_mod("reactor_smooth_rotation") > 0.0:
-		_reactor_vent_phase = fmod(_reactor_vent_phase + TAU / float(vent_count) * 0.5, TAU)
-		var step := maxf(fire_interval, 0.2) * 0.85 / float(vent_count)
-		var weapon_self_id := get_instance_id()
+		var step := maxf(fire_interval, 0.2) * 0.85 / float(REACTOR_VENT_COUNT)
 		var owner_id := owner_node.get_instance_id()
 		var rotation_tween := create_tween()
-		for vent_index in range(vent_count):
-			var vent_direction := direction.rotated(_reactor_vent_phase + TAU * float(vent_index) / float(vent_count))
+		for vent_index in range(REACTOR_VENT_COUNT):
+			var vent_direction := Vector2.RIGHT.rotated(base_phase + TAU * float(vent_index) / float(REACTOR_VENT_COUNT))
 			if vent_index > 0:
 				rotation_tween.tween_interval(step)
-			rotation_tween.tween_callback(func() -> void:
-				var current_weapon := instance_from_id(weapon_self_id) as ClassWeapon
-				var current_owner := instance_from_id(owner_id) as Node2D
-				if current_weapon == null or current_owner == null or not is_instance_valid(current_weapon) or not is_instance_valid(current_owner) or current_weapon._effects_shutdown:
-					return
-				current_weapon._fire_reactor_single_vent(current_owner, vent_direction, damage_value)
-			)
+			# SCRUM-551: Callable+bind вместо лямбды с захватом узлов.
+			rotation_tween.tween_callback(Callable(self, "_fire_reactor_vent_step").bind(owner_id, vent_direction, damage_value, vent_width))
 		return
-	for vent_index in range(vent_count):
-		var vent_direction := direction.rotated(TAU * float(vent_index) / float(vent_count))
-		_fire_reactor_single_vent(owner_node, vent_direction, damage_value)
+	for vent_index in range(REACTOR_VENT_COUNT):
+		var vent_direction := Vector2.RIGHT.rotated(base_phase + TAU * float(vent_index) / float(REACTOR_VENT_COUNT))
+		_fire_reactor_single_vent(owner_node, vent_direction, damage_value, vent_width)
 
 
-func _fire_reactor_single_vent(owner_node: Node2D, vent_direction: Vector2, damage_value: float) -> void:
+func _fire_reactor_vent_step(owner_id: int, vent_direction: Vector2, damage_value: float, vent_width: float) -> void:
+	# Отложенный вентиль «Реакторного хронометра». Твин принадлежит оружию
+	# (умирает вместе с ним), владелец перепроверяется по instance id (SCRUM-551).
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	_fire_reactor_single_vent(current_owner, vent_direction, damage_value, vent_width)
+
+
+func _fire_reactor_single_vent(owner_node: Node2D, vent_direction: Vector2, damage_value: float, vent_width := -1.0) -> void:
+	var effective_width := vent_width if vent_width > 0.0 else beam_width
 	var start := owner_node.global_position + vent_direction * 22.0
 	var finish := owner_node.global_position + vent_direction * attack_range
-	var beam := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
+	var beam := AttackVfx.beam(_projectile_parent(), start, finish, effective_width, visual_color)
 	_register_effect(beam)
-	_damage_enemies_in_segment(start, finish, beam_width, damage_value)
-	for enemy in _enemies_in_corridor(start, vent_direction, beam_width, attack_range):
+	_damage_enemies_in_segment(start, finish, effective_width, damage_value)
+	for enemy in _enemies_in_corridor(start, vent_direction, effective_width, attack_range):
 		var enemy_node := enemy["node"] as Node2D
 		if enemy_node == null:
 			continue
@@ -3807,23 +3880,34 @@ func _blueprint_lifetime_multiplier() -> float:
 
 
 func _pull_enemies_toward(center: Vector2, radius: float, force: float) -> void:
-	# SCRUM-961 «Ядро якоря»: обычных (не элита/босс) врагов стягивает сильнее.
+	# SCRUM-915: тяжёлый пулл Магнитного Якоря. Рядовые враги стягиваются К
+	# ЦЕНТРУ AoE — за каст покрывается ANCHOR_PULL_CONVERGENCE доли пути до
+	# центра (овершута через центр нет по построению: смещение всегда < дистанции).
+	# Элитки и боссы НЕ смещаются вовсе (AC SCRUM-915; анти-стаклок боссов),
+	# урон по ним при этом остаётся полным — гейта в damage-хелперах нет.
+	# force = конфиг-knockback якоря (базовая мощь пулла, норма 170); импульсный
+	# путь зажат капом ANCHOR_PULL_IMPULSE_CAP против разгона физики/патфайндинга.
+	# SCRUM-961 «Ядро якоря»: рядовых стягивает сильнее (конвергенция выше).
 	var anchor_bonus := _owner_mod("anchor_pull_power") if attack_mode == "robot_magnetic_anchor" else 0.0
+	var convergence := clampf(
+		ANCHOR_PULL_CONVERGENCE * (force / ANCHOR_PULL_FORCE_NORM) * (1.0 + maxf(anchor_bonus, 0.0)),
+		0.10, ANCHOR_PULL_CONVERGENCE_CAP)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if not _is_non_elite_target(enemy_node):
 			continue
 		var to_center := center - enemy_node.global_position
 		var distance := to_center.length()
 		if distance <= 0.001 or distance > radius:
 			continue
-		var pull_strength := force * lerpf(1.0, 0.35, distance / maxf(radius, 1.0))
-		if anchor_bonus > 0.0 and _is_non_elite_target(enemy_node):
-			pull_strength *= 1.0 + anchor_bonus
+		var travel := distance * convergence
 		if enemy_node.has_method("apply_knockback"):
-			enemy_node.apply_knockback(to_center.normalized() * pull_strength)
+			var impulse := minf(sqrt(KNOCKBACK_IMPULSE_TRAVEL_FACTOR * travel), ANCHOR_PULL_IMPULSE_CAP)
+			enemy_node.apply_knockback(to_center.normalized() * impulse)
 		else:
-			enemy_node.global_position += to_center.normalized() * pull_strength * 0.10
+			enemy_node.global_position += to_center.normalized() * travel
 
 
 # SCRUM-961: рядовой враг (не элитка/босс) — для эффектов, которые по контракту
@@ -3837,6 +3921,15 @@ func _is_non_elite_target(enemy_node: Node2D) -> bool:
 
 
 func _compress_enemies_to_axis(origin: Vector2, direction: Vector2, perpendicular: Vector2, width: float, range_limit: float, force: float) -> void:
+	# SCRUM-916: компрессия Гидравлического Пресса. Врагов в коридоре прижимает
+	# к осевой линии: за каст гасится PRESS_COMPRESSION_CONVERGENCE доли
+	# бокового отступа (ось не пересекается по построению — толпа «выравнивается
+	# в линию» вдоль пути пресса). Элитки/боссы получают сниженное смещение
+	# ×PRESS_ELITE_BOSS_COMPRESSION_FACTOR (0.25, прецедент Thief-паралича),
+	# урон по ним полный — гейтится только смещение. force = конфиг-knockback
+	# пресса (норма PRESS_COMPRESSION_FORCE_NORM); импульс зажат капом.
+	var force_scale := clampf(force / PRESS_COMPRESSION_FORCE_NORM, 0.25, 1.6)
+	var convergence := clampf(PRESS_COMPRESSION_CONVERGENCE * force_scale, 0.10, 0.95)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
@@ -3846,15 +3939,20 @@ func _compress_enemies_to_axis(origin: Vector2, direction: Vector2, perpendicula
 		if forward < -CONTACT_STUCK_HIT_BACK_ALLOWANCE or forward > range_limit:
 			continue
 		var side := to_enemy.dot(perpendicular)
-		if abs(side) > width * 0.5:
+		if absf(side) > width * 0.5 or absf(side) <= 0.001:
 			continue
-		var push_direction := -perpendicular if side > 0.0 else perpendicular
+		var resist := 1.0 if _is_non_elite_target(enemy_node) else PRESS_ELITE_BOSS_COMPRESSION_FACTOR
+		var travel := absf(side) * convergence * resist
+		if travel <= 0.001:
+			continue
+		var push_direction := (-perpendicular if side > 0.0 else perpendicular).normalized()
 		if push_direction.length_squared() <= 0.001:
 			continue
 		if enemy_node.has_method("apply_knockback"):
-			enemy_node.apply_knockback(push_direction.normalized() * force)
+			var impulse := minf(sqrt(KNOCKBACK_IMPULSE_TRAVEL_FACTOR * travel), PRESS_COMPRESSION_IMPULSE_CAP)
+			enemy_node.apply_knockback(push_direction * impulse)
 		else:
-			enemy_node.global_position += push_direction.normalized() * force * 0.08
+			enemy_node.global_position += push_direction * travel
 
 
 func _try_steal_money(owner_node: Node2D, hit_index: int) -> void:
