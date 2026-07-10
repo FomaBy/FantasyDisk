@@ -337,39 +337,55 @@ const RANGER_WEAPONS := {
 	},
 }
 
+# SCRUM-900: редизайн кита «чумного доктора» — сустейн ТОЛЬКО от оружия (trait
+# plague_oath, см. CLASS_TRAITS). Иерархия лечения: bone_saw (0.30, ближний
+# позиционный риск) > restore_potion (0.20, безопасный AoE) > plague_syringe
+# (0.14, пассивное давление чумы). Всё лечение идёт от ФАКТИЧЕСКИ нанесённого
+# урона через apply_drain_heal (per-second бюджет SCRUM-517 — бессмертие
+# недостижимо даже при полном заражении карты).
 const DOCTOR_WEAPONS := {
 	"restore_potion": {
 		"id": "restore_potion", "title": "Зелье восстановления",
-		"description": "Дренажная связь: вытягивает жизнь из ближайшей цели и лечит Доктора от нанесенного урона.",
+		"description": "Бросок зелья: магический взрыв по области; Доктор лечится на долю фактически нанесенного урона.",
 		"scene_path": "res://scenes/RestorePotion.tscn",
-		"attack_mode": "drain_link", "damage_parameter": "magic_damage",
-		"damage_multiplier": 1.0, "fire_interval": 1.05,
-		"attack_range": 560.0, "aoe_radius": 150.0, "beam_width": 46.0,
-		"heal_percent_of_damage": 0.34,
+		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"damage_multiplier": 2.7, "fire_interval": 1.15,
+		"attack_range": 520.0, "aoe_radius": 150.0,
+		"projectile_speed": 620.0,
+		"heal_percent_of_damage": 0.16,
 		"visual_color": Color(0.35, 0.95, 0.55, 0.42),
 		"passive_mods": {"max_health_multiplier": 1.10},
 	},
 	"plague_syringe": {
 		"id": "plague_syringe", "title": "Чумной шприц",
-		"description": "Тонкая чумная связь: одиночная цель получает яд, часть урона возвращается лечением.",
+		"description": "Чумной дротик: долгая зараза (24с) с медленно растущими тиками, перескакивающая на соседей; часть чумного урона лечит Доктора.",
 		"scene_path": "res://scenes/PlagueSyringe.tscn",
-		"attack_mode": "drain_link", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.64, "fire_interval": 0.78,
-		"attack_range": 590.0, "aoe_radius": 80.0, "beam_width": 30.0, "dot_ticks": 6,
-		"projectile_speed": 700.0, "heal_percent_of_damage": 0.26,
+		"attack_mode": "plague_dart", "damage_parameter": "magic_damage",
+		"damage_multiplier": 2.4, "fire_interval": 1.35,
+		"attack_range": 590.0, "aoe_radius": 90.0,
+		"projectile_speed": 760.0,
+		# Чума (профиль — ProgressionData.plague_tick_profile, единый для
+		# рантайма и бюджета): длительность в целевом коридоре 20-30с тикета.
+		"plague_duration": 24.0, "plague_tick_interval": 2.0,
+		"plague_tick_ratio": 0.22, "plague_dot_coupling": 0.6,
+		"plague_ramp_ticks": 5,
+		"plague_spread_chance": 0.22, "plague_spread_radius": 200.0,
+		"plague_max_infected": 10,
+		"heal_percent_of_damage": 0.12,
 		"visual_color": Color(0.36, 0.95, 0.42, 0.46),
 		"passive_mods": {"max_health_multiplier": 1.04},
 	},
 	"bone_saw": {
 		"id": "bone_saw", "title": "Костяная пила",
-		"description": "Короткий кровавый arc: ближний риск, частые удары и малое лечение за атаку.",
+		"description": "Широкий сектор 135° перед Доктором: пила рвет несколько целей и возвращает больше всего здоровья — пока враги перед зубьями, а не за спиной.",
 		"scene_path": "res://scenes/BoneSaw.tscn",
-		"attack_mode": "stab_flurry", "damage_parameter": "damage",
-		"damage_multiplier": 0.82, "fire_interval": 0.58,
-		"attack_range": 190.0, "aoe_radius": 70.0, "wave_width": 220.0,
-		"projectile_count": 2, "dot_ticks": 3, "heal_percent_of_damage": 0.18,
-		"melee_close_bonus_radius": 118.0, "melee_close_damage_multiplier": 1.10,
-		"melee_heal_percent_on_hit": 0.002,
+		"attack_mode": "saw_sector", "damage_parameter": "damage",
+		"damage_multiplier": 4.6, "fire_interval": 0.62,
+		"attack_range": 215.0, "aoe_radius": 215.0,
+		"cone_degrees": 135.0,
+		"sector_full_targets": 4, "sector_target_diminish": 0.72,
+		"heal_percent_of_damage": 0.34,
+		"melee_close_bonus_radius": 110.0, "melee_close_damage_multiplier": 1.12,
 		"visual_color": Color(0.88, 0.22, 0.18, 0.42),
 		"passive_mods": {"defense_flat": 0.02},
 	},

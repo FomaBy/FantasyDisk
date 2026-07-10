@@ -253,6 +253,14 @@ func class_trait_value(key: String, default_value := 0.0) -> float:
 	return float(trait_config.get(key, default_value))
 
 
+# SCRUM-900 «Клятва чумного доктора»: сустейн только от собственного оружия.
+# true — generic-сустейн (реген/вампиризм/kill-heal/room-clear/low-HP regen)
+# не применяется к этому классу (см. _apply_reward_mods / apply_meta_skill_modifiers
+# + отсечка базового регена в ProgressionData.derived_parameters).
+func blocks_generic_sustain() -> bool:
+	return class_trait_value("generic_sustain_blocked") > 0.0
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()
@@ -263,7 +271,10 @@ func _ready() -> void:
 func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	character_id = new_character_id
 	weapon_id = ""
-	weapon_config = {}
+	# SCRUM-900: даже без экипированного оружия derived_parameters обязан знать
+	# класс — class-gated формулы (отсечка базового регена «Клятвы чумного
+	# доктора», growth-скейлы) читают character_id из weapon_config.
+	weapon_config = {"character_id": character_id}
 	var config: Dictionary = CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"])
 
 	stats = PROGRESSION_DATA.base_stats(character_id)
@@ -1193,7 +1204,9 @@ func meta_extra_projectiles(context := {}) -> int:
 		return int(run_modifiers.get("mine_extra_count", 0.0))
 	if mode == "trap":
 		return int(run_modifiers.get("trap_extra_count", 0.0))
-	if mode == "drain_link":
+	if mode == "drain_link" or mode == "plague_dart":
+		# SCRUM-900: ветка «drain_extra_targets» для нового кита Доктора —
+		# дополнительные чумные дротики по соседям первичной цели.
 		return int(run_modifiers.get("drain_extra_targets", 0.0))
 	return 0
 
@@ -1401,15 +1414,18 @@ func apply_reward(reward: Dictionary) -> void:
 		for stat_id in reward["stats"].keys():
 			stats[stat_id] = float(stats.get(stat_id, 0.0)) + float(reward["stats"][stat_id])
 
+	# SCRUM-900: явная пометка doctor_friendly пропускает sustain-моды предмета
+	# сквозь гейт «Клятвы чумного доктора» (см. _apply_reward_mods).
+	var reward_doctor_friendly := bool(reward.get("doctor_friendly", false))
 	if reward.has("mods"):
-		_apply_reward_mods(reward["mods"])
+		_apply_reward_mods(reward["mods"], reward_doctor_friendly)
 		# SCRUM-961 «Украденный герб» (§5): слоты роллят чужие классовые id забега.
 		if float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0)) > 0.0:
 			_roll_cross_class_artifacts(int(float((reward.get("mods") as Dictionary).get("cross_class_artifact_slots", 0.0))))
 	if reward.has("affinity_mods"):
 		# С 0.2 affinity_mods больше не пропадают у «чужого» класса: это
 		# универсальная интерпретация артефакта через текущий class kit.
-		_apply_reward_mods(reward["affinity_mods"])
+		_apply_reward_mods(reward["affinity_mods"], reward_doctor_friendly)
 
 	if reward.get("kind", "") == "artifact":
 		# Храним id и title: id нужен для иконок HUD/паузы, title — для текстов.
@@ -1425,14 +1441,26 @@ func apply_reward(reward: Dictionary) -> void:
 	_apply_stat_scaling(false, old_max_health)
 
 	if reward.has("heal_percent"):
-		heal_percent(float(reward["heal_percent"]))
+		# SCRUM-900: прямой heal-бонус награды — generic-сустейн, «Клятва чумного
+		# доктора» его гасит (кроме явно doctor_friendly предметов). Route/rest/
+		# shop-лечение вне apply_reward не трогаем (решение тикета).
+		if not blocks_generic_sustain() or reward_doctor_friendly:
+			heal_percent(float(reward["heal_percent"]))
 
 	for weapon in _equipped_weapons():
 		_apply_weapon_scaling(weapon)
 
 
-func _apply_reward_mods(mods: Dictionary) -> void:
+# SCRUM-900: allow_generic_sustain=true (пометка doctor_friendly на награде)
+# пропускает sustain-моды в обычные run-ключи — предмет работает штатными
+# формулами. Без пометки запрещённые ключи (ProgressionData.is_blocked_sustain_mod_key)
+# для класса с trait'ом plague_oath НЕ применяются: наградные регены/вампиризм/
+# триггерные хилы становятся задокументированным no-op (AC SCRUM-900).
+func _apply_reward_mods(mods: Dictionary, allow_generic_sustain := false) -> void:
+	var sustain_blocked := blocks_generic_sustain() and not allow_generic_sustain
 	for modifier_id in mods.keys():
+		if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(str(modifier_id)):
+			continue
 		if modifier_id.ends_with("_multiplier"):
 			run_modifiers[modifier_id] = float(run_modifiers.get(modifier_id, 1.0)) * float(mods[modifier_id])
 		else:
@@ -1587,6 +1615,10 @@ const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 
 func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	var old_max_health := max_health
+	# SCRUM-900 «Клятва чумного доктора»: мета-дерево — тоже generic-источник;
+	# regen/vampirism/low-HP regen звёзды для класса с trait'ом не применяются
+	# (задокументированный no-op, как у наградного пула).
+	var sustain_blocked := blocks_generic_sustain()
 	for key in META_SKILL_ATTRIBUTE_FLAT_MAP:
 		if mods.has(key):
 			var stat_key: String = META_SKILL_ATTRIBUTE_FLAT_MAP[key]
@@ -1599,6 +1631,8 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	for key in META_SKILL_FLAT_MAP:
 		if mods.has(key):
 			var run_key: String = META_SKILL_FLAT_MAP[key]
+			if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(run_key):
+				continue
 			run_modifiers[run_key] = float(run_modifiers.get(run_key, 0.0)) + float(mods[key])
 	_apply_stat_scaling(false, old_max_health)
 	for weapon in _equipped_weapons():
@@ -1625,7 +1659,9 @@ func _apply_regeneration(delta: float) -> void:
 	_drain_heal_budget = minf(_drain_heal_budget + drain_cap * delta, drain_cap)
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	# SCRUM-500 (on_low_hp): «Второе Дыхание» — усиленный реген, пока HP ниже порога.
-	if _low_hp_active:
+	# SCRUM-900: для «Клятвы чумного доктора» low-HP реген — generic-сустейн, не
+	# применяется (ключ и так гасится гейтом наград — здесь страховка рантайма).
+	if _low_hp_active and not blocks_generic_sustain():
 		regeneration += float(run_modifiers.get("lowhp_regen_bonus", 0.0))
 	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
 		return

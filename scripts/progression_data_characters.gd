@@ -250,9 +250,9 @@ const CHARACTER_CONFIGS := {
 	},
 	"doctor": {
 		"id": "doctor", "title": "Доктор",
-		"description": "Врач без жалости: тянет жизнь из пациентов зельем, чумой и пилой. Каждая рана врага — его лекарство; не бьет — не лечится.",
-		"strengths": "лечение собственным уроном, яд, живучесть в затяжном бою.",
-		"weaknesses": "низкий разовый урон, без ударов не лечится.",
+		"description": "Врач без жалости: лечит себя зельем, чумой и пилой — и только ими. Каждая рана врага — его лекарство; не бьет — не лечится, а чужие снадобья на него не действуют.",
+		"strengths": "лечение собственным уроном, чума на всю карту, живучесть в затяжном бою.",
+		"weaknesses": "низкий разовый урон; внешние регенерация и вампиризм не работают.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/doctor_pixellab/doctor_idle_south.png",
 	},
 	"chemist": {
@@ -394,6 +394,26 @@ const CLASS_TRAITS := {
 		"crit_overflow_to_crit_damage": 0.5,
 		"veil_dodge_bonus": 0.10,
 		"veil_dodge_cap": 0.18,
+	},
+	"doctor": {
+		# SCRUM-900 «Клятва чумного доктора»: сустейн ТОЛЬКО от собственного
+		# оружия (heal_percent_of_damage → apply_drain_heal, per-second бюджет).
+		# generic_sustain_blocked — точки отсечки generic-сустейна:
+		#   1) пул наград: ProgressionData.is_reward_relevant не предлагает
+		#      regen/vampirism/kill-heal/room-clear/low-HP regen (SCRUM-862 +
+		#      trait-гейт; пометка reward["doctor_friendly"]=true пропускает);
+		#   2) применение: Player._apply_reward_mods / apply_meta_skill_modifiers
+		#      молча гасят запрещённые sustain-моды (см.
+		#      ProgressionData.is_blocked_sustain_mod_key) для не-friendly наград;
+		#   3) формула: derived_parameters отрезает базовый пассивный реген
+		#      (константа+knowledge) — остаётся только doctor-friendly flat;
+		#   4) рантайм: Player._apply_regeneration не добавляет lowhp_regen_bonus.
+		# Doctor-friendly предметы применяются в обычные run-ключи и работают
+		# штатными формулами (см. tests/doctor_kit_test.gd).
+		"id": "plague_oath",
+		"title": "Клятва чумного доктора",
+		"description": "Лечится только собственным оружием: общие регенерация, вампиризм, лечение за убийства и зачистку боя на Доктора не действуют.",
+		"generic_sustain_blocked": 1.0,
 	},
 }
 
@@ -553,14 +573,16 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"doctor": {
+		# SCRUM-900: кит «чумного доктора» — сустейн только от своего оружия
+		# (trait plague_oath), три разных петли лечения-от-урона.
 		"main_attribute": "knowledge",
-		"identity_title": "Клинический drain",
-		"summary": "Знание сшивает урон и лечение: чем глубже познания, тем больше чужой боли возвращается к нему здоровьем.",
-		"mechanic_tags": ["drain_link", "self_sustain_only", "plague", "surgical_melee"],
+		"identity_title": "Клятва чумного доктора",
+		"summary": "Лечится только собственным оружием: зелье и чума возвращают часть нанесенного урона, пила лечит сильнее всех — пока враги перед зубьями. Чужой реген и вампиризм на него не действуют.",
+		"mechanic_tags": ["weapon_only_sustain", "plague_spread", "aoe_potion", "sector_saw"],
 		"weapon_identities": {
-			"restore_potion": "лечащая drain-связь",
-			"plague_syringe": "чумная DoT-связь",
-			"bone_saw": "ближняя saw flurry с sustain",
+			"restore_potion": "бросок зелья: магический AoE-взрыв, лечит от нанесенного урона",
+			"plague_syringe": "чумной дротик: долгая зараза 24с, перескакивает на соседей, тики лечат",
+			"bone_saw": "сектор 135° перед собой: сильнейший селф-хил при верном позиционировании",
 		},
 	},
 	"chemist": {

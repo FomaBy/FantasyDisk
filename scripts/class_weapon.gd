@@ -25,6 +25,7 @@ const PRIMARY_CAST_ACTION_MODES := {
 	"dark_chain_burst": true,
 	"skull_curse_burn": true,
 	"dark_mirror_blast": true,
+	"plague_dart": true,  # SCRUM-900: бросок чумного дротика — каст-жест
 }
 const EVENT_CAST_ACTION_MODES := {
 	"aoe_projectile": true,
@@ -32,6 +33,7 @@ const EVENT_CAST_ACTION_MODES := {
 	"beam": true,
 	"dot_beam": true,
 	"drain_link": true,
+	"plague_dart": true,  # SCRUM-900
 	"priest_prayer_chain": true,
 	"bio_symbiote_web": true,
 	"engineer_repair_drone": true,
@@ -78,6 +80,8 @@ const ATTACK_MODE_EXECUTORS := {
 	"engineer_sentry_link": "_exec_engineer_sentry_link",
 	"engineer_repair_drone": "_exec_engineer_repair_drone",
 	"engineer_pressure_mines": "_exec_engineer_pressure_mines",
+	"plague_dart": "_exec_plague_dart",  # SCRUM-900 doctor/plague_syringe
+	"saw_sector": "_exec_saw_sector",  # SCRUM-900 doctor/bone_saw
 }
 
 @export var weapon_id := "dark_book"
@@ -162,6 +166,20 @@ const ATTACK_MODE_EXECUTORS := {
 @export var melee_arc_followup_radius := 0.0
 @export var melee_arc_followup_multiplier := 0.0
 @export var melee_heal_percent_on_hit := 0.0
+# SCRUM-900 doctor/bone_saw (saw_sector): диминиш урона по целям сверх
+# sector_full_targets — сектор чистит толпу, но не масштабируется линейно.
+@export var sector_full_targets := 4
+@export var sector_target_diminish := 0.72
+# SCRUM-900 doctor/plague_syringe (plague_dart): параметры чумы. Профиль тика —
+# ProgressionData.plague_tick_profile (единый источник для боя и budget-модели).
+@export var plague_duration := 24.0
+@export var plague_tick_interval := 2.0
+@export var plague_tick_ratio := 0.22
+@export var plague_dot_coupling := 0.6
+@export var plague_ramp_ticks := 5
+@export var plague_spread_chance := 0.22
+@export var plague_spread_radius := 200.0
+@export var plague_max_infected := 10
 @export var summon_role := ""
 @export var summon_role_damage_multiplier := 1.0
 @export var summon_support_heal_percent := 0.0
@@ -193,6 +211,9 @@ var _effects_shutdown := false
 var _rhythm_cast_counter := 0
 var _rhythm_echo_scale := 1.0
 var _reactor_vent_phase := 0.0
+# SCRUM-900 plague_dart: реестр живых зараз этого оружия (enemy_id → Tween).
+# Дедуп повторного заражения (рефреш), spread-исключение и кап plague_max_infected.
+var _plague_tweens := {}
 
 
 # SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
@@ -226,6 +247,12 @@ func _exit_tree() -> void:
 
 func cleanup_effects() -> void:
 	_effects_shutdown = true
+	# SCRUM-900: гасим живые заразы чумы (tween'ы) вместе с эффектами.
+	for enemy_id in _plague_tweens.keys():
+		var plague_tween: Tween = _plague_tweens[enemy_id]
+		if plague_tween != null and plague_tween.is_valid():
+			plague_tween.kill()
+	_plague_tweens.clear()
 	# Самоочищающиеся VFX могли уже освободиться — отфильтровать мертвые ссылки.
 	var tracked_effects := _alive_effects()
 	_spawned_effects.clear()
@@ -305,6 +332,17 @@ func configure_weapon(config: Dictionary) -> void:
 	melee_arc_followup_radius = float(config.get("melee_arc_followup_radius", melee_arc_followup_radius))
 	melee_arc_followup_multiplier = float(config.get("melee_arc_followup_multiplier", melee_arc_followup_multiplier))
 	melee_heal_percent_on_hit = float(config.get("melee_heal_percent_on_hit", melee_heal_percent_on_hit))
+	# SCRUM-900: докторский кит — сектор пилы и профиль чумы.
+	sector_full_targets = int(config.get("sector_full_targets", sector_full_targets))
+	sector_target_diminish = float(config.get("sector_target_diminish", sector_target_diminish))
+	plague_duration = float(config.get("plague_duration", plague_duration))
+	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
+	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
+	plague_dot_coupling = float(config.get("plague_dot_coupling", plague_dot_coupling))
+	plague_ramp_ticks = int(config.get("plague_ramp_ticks", plague_ramp_ticks))
+	plague_spread_chance = float(config.get("plague_spread_chance", plague_spread_chance))
+	plague_spread_radius = float(config.get("plague_spread_radius", plague_spread_radius))
+	plague_max_infected = int(config.get("plague_max_infected", plague_max_infected))
 	summon_role = str(config.get("summon_role", summon_role))
 	summon_role_damage_multiplier = float(config.get("summon_role_damage_multiplier", summon_role_damage_multiplier))
 	summon_support_heal_percent = float(config.get("summon_support_heal_percent", summon_support_heal_percent))
@@ -556,6 +594,14 @@ func _exec_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vect
 
 func _exec_beam(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
 	_fire_beam(owner_node, direction)
+
+
+func _exec_plague_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_fire_plague_dart(owner_node, target, direction)
+
+
+func _exec_saw_sector(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_saw_sector(owner_node, direction)
 
 
 func _exec_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -985,6 +1031,10 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 			# SCRUM-941: старый хук «Зеркальной страницы» удалён — dark_book ушёл
 			# с aoe_projectile на dark_mirror_blast (зеркало теперь база оружия,
 			# артефакт репозиционирован в book_mirror_echo).
+			# SCRUM-961 «Восстановительный пар» (SCRUM-900: хук на взрыве зелья —
+			# restore_potion теперь aoe_projectile, а не drain_link).
+			if current_owner != null and str(current_weapon.get("weapon_id")) == "restore_potion" and float(current_weapon.call("_owner_mod", "restore_vapor_power")) > 0.0:
+				current_weapon.call("_spawn_restore_vapor", current_owner, target_position, explosion_damage)
 			# SCRUM-961 «Летучая пыль»: blast_powder без облака-DoT (трейд на темп).
 			if leaves_pool and not bool(current_weapon.call("_volatile_powder_active")):
 				var parameters_raw = current_owner.get("derived_parameters") if current_owner != null else null
@@ -1385,9 +1435,6 @@ func _fire_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 		_damage_enemy_with_dot(target, damage_value, owner_node)
 	else:
 		_damage_enemy(target, damage_value)
-	# SCRUM-961 «Восстановительный пар»: по завершении связи — паровая зона у цели.
-	if _owner_mod("restore_vapor_power") > 0.0:
-		_spawn_restore_vapor(owner_node, target.global_position, damage_value)
 	var extra_links := int(_extra_projectiles())
 	if extra_links <= 0:
 		return
@@ -1419,8 +1466,9 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 		return
 	# SCRUM-961 «Зубья костяной пилы»: пила возвращает больше здоровья с урона.
 	# Бонус только поверх живого heal-канала оружия — сустейн-гейт Доктора цел.
+	# SCRUM-900: пила переехала на режим saw_sector.
 	var heal_ratio := heal_percent_of_damage
-	if attack_mode == "stab_flurry":
+	if attack_mode == "saw_sector":
 		heal_ratio += _owner_mod("saw_heal_ratio_bonus")
 	var heal_amount := dealt_damage * heal_ratio * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
 	if heal_amount <= 0.0:
@@ -1440,9 +1488,204 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 		owner_node.show_combat_feedback_number(healed, "heal")
 
 
-# SCRUM-961 «Восстановительный пар»: короткая паровая зона у цели связи — 2 тика
-# за 1.4с, тик жжёт 28% урона связи (диминиш по толпе), 20% урона пара лечит
-# Доктора через apply_drain_heal (капы drain-бюджета соблюдены).
+# ============================ SCRUM-900: кит Доктора ============================
+# «Клятва чумного доктора»: весь сустейн класса — heal_percent_of_damage от
+# ФАКТИЧЕСКИ нанесённого урона (_damage_enemy → _heal_owner_from_damage →
+# apply_drain_heal с per-second бюджетом SCRUM-517). Нет урона — нет лечения.
+
+
+# Чумной дротик: летящий снаряд в цель; на попадании — малый прямой урон и
+# долгая зараза (см. _apply_plague_infection). Мета-ветка drain_extra_targets
+# (Атлас Доктора) добавляет дротики по ближайшим соседям первичной цели.
+func _fire_plague_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	if target == null:
+		return
+	var targets: Array = [target]
+	var extra_darts := _extra_projectiles()
+	if extra_darts > 0:
+		var used := {target.get_instance_id(): true}
+		var previous_position := target.global_position
+		for _extra_index in range(extra_darts):
+			var next_target := _find_nearest_enemy_from(previous_position, maxf(plague_spread_radius, aoe_radius), used)
+			if next_target == null:
+				break
+			used[next_target.get_instance_id()] = true
+			targets.append(next_target)
+			previous_position = next_target.global_position
+	for dart_target_raw in targets:
+		var dart_target := dart_target_raw as Node2D
+		if dart_target == null or not is_instance_valid(dart_target):
+			continue
+		_launch_plague_dart_at(owner_node, dart_target, direction)
+
+
+func _launch_plague_dart_at(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var dart := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 26.0, visual_color)
+	_register_effect(dart)
+	var travel_time: float = clampf(dart.global_position.distance_to(target.global_position) / maxf(projectile_speed, 1.0), 0.06, 0.42)
+	var tween := create_tween()
+	tween.tween_property(dart, "global_position", target.global_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# SCRUM-551: bound-метод вместо лямбды (захват узлов в лямбде — use-after-free).
+	tween.tween_callback(Callable(self, "_plague_dart_arrive").bind(dart.get_instance_id(), owner_node.get_instance_id(), target.get_instance_id()))
+
+
+func _plague_dart_arrive(dart_id: int, owner_id: int, target_id: int) -> void:
+	var dart := instance_from_id(dart_id) as Node
+	if dart != null:
+		_release_effect(dart)
+	if _effects_shutdown:
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	var target := instance_from_id(target_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node) or target == null or not is_instance_valid(target):
+		return
+	# Прямой урон дротика: небольшой укол (magic), лечит через heal_percent_of_damage.
+	_damage_enemy(target, _rolled_damage(owner_node))
+	_apply_plague_infection(target, owner_node)
+
+
+# Профиль чумы из текущих полей оружия + derived-статов владельца.
+func _plague_runtime_profile(owner_node: Node2D) -> Dictionary:
+	var params_raw = owner_node.get("derived_parameters") if owner_node != null else null
+	var params: Dictionary = params_raw if params_raw is Dictionary else {}
+	return ProgressionData.plague_tick_profile({
+		"plague_duration": plague_duration,
+		"plague_tick_interval": plague_tick_interval,
+		"plague_tick_ratio": plague_tick_ratio,
+		"plague_dot_coupling": plague_dot_coupling,
+		"plague_ramp_ticks": plague_ramp_ticks,
+	}, params)
+
+
+func _plague_active_count() -> int:
+	# Чистка мёртвых записей (враг умер/освобождён — tween-тики уже no-op).
+	for enemy_id in _plague_tweens.keys().duplicate():
+		var enemy := instance_from_id(int(enemy_id)) as Node2D
+		if enemy == null or not is_instance_valid(enemy):
+			var stale_tween: Tween = _plague_tweens[enemy_id]
+			if stale_tween != null and stale_tween.is_valid():
+				stale_tween.kill()
+			_plague_tweens.erase(enemy_id)
+	return _plague_tweens.size()
+
+
+# Заражение цели чумой: долгий DoT с медленным ramp'ом тиков. Повторное
+# попадание РЕФРЕШИТ заразу (полная длительность, ramp заново — без стакинга).
+# Кап одновременных зараз plague_max_infected — «бессмертие от полного
+# заражения карты» отрезано и здесь, и per-second drain-бюджетом лечения.
+func _apply_plague_infection(enemy: Node2D, owner_node: Node2D) -> void:
+	if enemy == null or not is_instance_valid(enemy) or owner_node == null or not is_instance_valid(owner_node):
+		return
+	if _effects_shutdown:
+		return
+	var enemy_id := enemy.get_instance_id()
+	var refreshing := _plague_tweens.has(enemy_id)
+	if not refreshing and _plague_active_count() >= maxi(plague_max_infected, 1):
+		return
+	if refreshing:
+		var old_tween: Tween = _plague_tweens[enemy_id]
+		if old_tween != null and old_tween.is_valid():
+			old_tween.kill()
+		_plague_tweens.erase(enemy_id)
+	var profile := _plague_runtime_profile(owner_node)
+	var tick_interval := maxf(float(profile.get("tick_interval", 1.0)), 0.2)
+	var ticks := maxi(int(profile.get("ticks", 1)), 1)
+	AttackVfx.ring_pulse(_projectile_parent(), enemy.global_position, 44.0, visual_color, false)
+	var tween := create_tween()
+	_plague_tweens[enemy_id] = tween
+	var owner_id := owner_node.get_instance_id()
+	for tick_index in range(ticks):
+		tween.tween_interval(tick_interval)
+		tween.tween_callback(Callable(self, "_plague_tick").bind(enemy_id, owner_id, tick_index))
+	tween.tween_callback(Callable(self, "_end_plague_infection").bind(enemy_id))
+
+
+func _plague_tick(enemy_id: int, owner_id: int, tick_index: int) -> void:
+	if _effects_shutdown:
+		return
+	var enemy := instance_from_id(enemy_id) as Node2D
+	if enemy == null or not is_instance_valid(enemy):
+		_end_plague_infection(enemy_id)
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	var profile := _plague_runtime_profile(owner_node)
+	var tick_damage := float(profile.get("tick_damage", 0.0)) * ProgressionData.plague_ramp_factor(tick_index, plague_ramp_ticks)
+	if tick_damage <= 0.0:
+		return
+	# Тик чумы: dot-канал, без melee-эффектов и без owner-hit нотификаций;
+	# лечение Доктора идёт внутри _damage_enemy → _heal_owner_from_damage.
+	_damage_enemy(enemy, tick_damage, false, "dot", false)
+	HazardVfx.dot_tick(enemy, Color(visual_color.r, visual_color.g, visual_color.b, 1.0))
+	# Распространение: тикающая зараза с ограниченным шансом перескакивает на
+	# ближайшего НЕзаражённого соседа (кап учтён в _apply_plague_infection).
+	if plague_spread_chance > 0.0 and randf() < plague_spread_chance:
+		_spread_plague_from(enemy, owner_node)
+
+
+func _spread_plague_from(enemy: Node2D, owner_node: Node2D) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	if _plague_active_count() >= maxi(plague_max_infected, 1):
+		return
+	var excluded := {}
+	for infected_id in _plague_tweens.keys():
+		excluded[int(infected_id)] = true
+	var next_target := _find_nearest_enemy_from(enemy.global_position, plague_spread_radius, excluded)
+	if next_target == null:
+		return
+	AttackVfx.beam(_projectile_parent(), enemy.global_position, next_target.global_position, 10.0, Color(visual_color.r, visual_color.g, visual_color.b, 0.30))
+	_apply_plague_infection(next_target, owner_node)
+
+
+func _end_plague_infection(enemy_id: int) -> void:
+	_plague_tweens.erase(enemy_id)
+
+
+# Костяная пила: melee-сектор cone_degrees (120-150°) перед Доктором с реальной
+# дальностью. Бьёт все цели в дуге (диминиш сверх sector_full_targets), лечит
+# сильнее всех оружий Доктора (heal_percent_of_damage) — но только по фронту:
+# враги с флангов/спины давят безнаказанно, позиционирование = выживание.
+func _fire_saw_sector(owner_node: Node2D, direction: Vector2) -> void:
+	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
+	_register_effect(slash)
+	var params_raw = owner_node.get("derived_parameters")
+	var params: Dictionary = params_raw if params_raw is Dictionary else {}
+	# Ширина дуги растёт от секторных улучшений (+«Зубья костяной пилы»).
+	var cone_effective := clampf(
+		cone_degrees * maxf(float(params.get("sector_multiplier", 1.0)), 0.1) * (1.0 + _owner_mod("saw_arc_width_mult")),
+		20.0, 360.0)
+	var half_angle := deg_to_rad(cone_effective * 0.5)
+	var candidates := []
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(enemy_node):
+			continue
+		var offset: Vector2 = enemy_node.global_position - owner_node.global_position
+		var distance := offset.length()
+		if distance > attack_range:
+			continue
+		if distance > 0.001 and absf(direction.angle_to(offset)) > half_angle:
+			continue
+		candidates.append({"node": enemy_node, "distance": distance})
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["distance"]) < float(b["distance"])
+	)
+	var damage_value := _rolled_damage(owner_node)
+	var hit_index := 0
+	for candidate in candidates:
+		var hit_damage := damage_value
+		if hit_index >= maxi(sector_full_targets, 1) and sector_target_diminish > 0.0:
+			hit_damage *= pow(sector_target_diminish, float(hit_index - maxi(sector_full_targets, 1) + 1))
+		_damage_enemy(candidate["node"], hit_damage)
+		hit_index += 1
+# ========================== конец кита Доктора (SCRUM-900) ==========================
+
+
+# SCRUM-961 «Восстановительный пар»: короткая паровая зона у цели — 2 тика
+# за 1.4с, тик жжёт 28% урона, 20% урона пара лечит Доктора через
+# apply_drain_heal (капы drain-бюджета соблюдены). SCRUM-900: хук переехал с
+# drain_link-связи на взрыв зелья (см. _launch_aoe_projectile).
 func _spawn_restore_vapor(owner_node: Node2D, center: Vector2, link_damage: float) -> void:
 	var vapor_radius := maxf(aoe_radius * 0.8, 90.0)
 	var tick_damage := link_damage * 0.28

@@ -220,6 +220,17 @@ static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
 	return true
 
 
+# SCRUM-862 + SCRUM-900 «Клятва чумного доктора»: реестр generic-сустейна,
+# отрезанного trait'ом CLASS_TRAITS.*.generic_sustain_blocked (data-driven —
+# сейчас только doctor). Три потребителя:
+#   - is_reward_relevant: не предлагать такие награды в пулах level-up/артефактов;
+#   - Player._apply_reward_mods / apply_meta_skill_modifiers: не применять моды
+#     (is_blocked_sustain_mod_key), если награда не помечена doctor_friendly;
+#   - derived_parameters: отрезать базовый пассивный реген (константа+knowledge).
+# Пометка reward["doctor_friendly"] = true — явный допуск предмета для Доктора:
+# оффер проходит фильтр, моды применяются в обычные run-ключи и работают штатно.
+# Route/rest/shop-лечение (аптечки-пикапы, отдых на маршруте) сознательно НЕ
+# блокируется — отсекается именно КОМБАТ/билд-сустейн (решение тикета).
 const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
 	"regeneration": true,
 	"vampiric_amount": true,
@@ -265,8 +276,22 @@ static func _is_doctor_forbidden_sustain_reward(reward: Dictionary) -> bool:
 	return false
 
 
+# SCRUM-900: data-driven чтение trait-флага «сустейн только от оружия».
+static func class_blocks_generic_sustain(character_id: String) -> bool:
+	return float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("generic_sustain_blocked", 0.0)) > 0.0
+
+
+# SCRUM-900: запрещён ли run-ключ мода для класса с trait'ом plague_oath.
+# Потребители — Player._apply_reward_mods / apply_meta_skill_modifiers.
+static func is_blocked_sustain_mod_key(key: String) -> bool:
+	return DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(key)
+
+
 static func is_reward_relevant(reward: Dictionary, character_id: String, ascension_level := 0, cross_class_ids: Array = []) -> bool:
-	if character_id == "doctor" and _is_doctor_forbidden_sustain_reward(reward):
+	# SCRUM-900: trait-гейт вместо хардкода класса; явная пометка doctor_friendly
+	# пропускает предмет в пул (и Player применит его моды штатно).
+	if class_blocks_generic_sustain(character_id) and not bool(reward.get("doctor_friendly", false)) \
+			and _is_doctor_forbidden_sustain_reward(reward):
 		return false
 	# SCRUM-961 (artifact_system_matrix §1.4): классовые артефакты заперты гейтом
 	# «свой класс И мета-Возвышение >= requires_ascension». Пустой class_affinity =
@@ -631,6 +656,15 @@ static func effective_regeneration(knowledge: float, flat_regeneration: float) -
 	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
 	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
 	return regen_base * knowledge_scale
+
+
+# SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
+# только дельта от явно применённых flat'ов (base-константа+knowledge отрезаны).
+# Для остальных классов — прежняя формула без изменений.
+static func _class_gated_regeneration(character_id: String, knowledge: float, flat_regeneration: float) -> float:
+	if not class_blocks_generic_sustain(character_id):
+		return effective_regeneration(knowledge, flat_regeneration)
+	return maxf(effective_regeneration(knowledge, flat_regeneration) - effective_regeneration(knowledge, 0.0), 0.0)
 
 
 static func effective_vampiric_chance(raw_chance: float) -> float:
@@ -1090,6 +1124,20 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"stab_flurry":
 			var targets := float(config.get("projectile_count", 1.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(targets, 1.0, 4.0), "dot_targets": clampf(targets, 1.0, 4.0)}
+		"saw_sector":
+			# SCRUM-900 bone_saw: melee-сектор 120-150° — покрытие толпы растёт от
+			# ширины дуги и дистанции; диминиш по целям учтён sector_full_targets.
+			var cone := float(config.get("cone_degrees", 130.0))
+			var full_targets := float(config.get("sector_full_targets", 4.0))
+			var sector_hits := clampf(1.0 + (cone / 52.0) * (attack_range / 300.0), 1.0, minf(full_targets + 0.6, 5.0))
+			return {"solo_hits": 1.0, "five_hits": sector_hits}
+		"plague_dart":
+			# SCRUM-900 plague_syringe: прямой дротик бьёт одну цель; ценность в
+			# толпе — распространение заразы (dot_targets = ожидаемое число
+			# одновременно заражённых из 5-пака при spread-шансе за тик).
+			var spread_chance := clampf(float(config.get("plague_spread_chance", 0.0)), 0.0, 1.0)
+			var infected := clampf(1.0 + spread_chance * 10.0, 1.0, minf(float(config.get("plague_max_infected", 5.0)), 4.4))
+			return {"solo_hits": 1.0, "five_hits": 1.0, "dot_targets": infected}
 		"dot_beam":
 			var pierce := float(config.get("pierce_count", 1.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(pierce, 1.0, 5.0), "dot_targets": clampf(pierce, 1.0, 5.0)}
@@ -1237,7 +1285,50 @@ static func _budget_melee_unique_bonus(config: Dictionary) -> Dictionary:
 	return {"solo": solo_bonus, "aoe": aoe_bonus}
 
 
+# SCRUM-900: старт ramp-фактора чумного тика (первые тики слабее — «давление
+# по карте», а не мгновенный бурст; растёт до 1.0 за plague_ramp_ticks).
+const PLAGUE_RAMP_START := 0.45
+
+
+# SCRUM-900: единый профиль чумного DoT — источник истины и для рантайма
+# (ClassWeapon._apply_plague_infection), и для budget-модели (_budget_dot_dps),
+# чтобы тюнинг-гейт считал ту же чуму, что тикает в бою.
+# Скейл: тик = magic_damage × plague_tick_ratio + dot_damage × plague_dot_coupling;
+# интервал тика ускоряется статом dot_speed; длительность фиксирована конфигом.
+static func plague_tick_profile(config: Dictionary, params: Dictionary) -> Dictionary:
+	var magic := float(params.get("magic_damage", params.get("damage", 1.0)))
+	var dot_damage := float(params.get("dot_damage", 1.0))
+	var dot_speed := maxf(float(params.get("dot_speed", 1.0)), 0.2)
+	var tick_interval := maxf(float(config.get("plague_tick_interval", 2.0)) / dot_speed, 0.45)
+	var duration := maxf(float(config.get("plague_duration", 24.0)), tick_interval)
+	var ticks := maxi(int(floor(duration / tick_interval)), 1)
+	var ramp_ticks := maxi(int(config.get("plague_ramp_ticks", 5)), 1)
+	var tick_damage := magic * float(config.get("plague_tick_ratio", 0.22)) \
+		+ dot_damage * float(config.get("plague_dot_coupling", 0.6))
+	var ramp_sum := 0.0
+	for tick_index in range(ticks):
+		ramp_sum += plague_ramp_factor(tick_index, ramp_ticks)
+	return {
+		"tick_damage": tick_damage,
+		"tick_interval": tick_interval,
+		"ticks": ticks,
+		"ramp_average": ramp_sum / float(ticks),
+	}
+
+
+static func plague_ramp_factor(tick_index: int, ramp_ticks: int) -> float:
+	var progress := clampf(float(tick_index) / float(maxi(ramp_ticks, 1)), 0.0, 1.0)
+	return lerpf(PLAGUE_RAMP_START, 1.0, progress)
+
+
 static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float, stats := {}) -> float:
+	# SCRUM-900 plague_dart: длинная зараза (24с) с рефрешем при повторном
+	# попадании ⇒ на одиночной цели устойчивый DoT-поток, независимый от
+	# fire_interval (перезаражение лишь поддерживает 100% uptime).
+	if str(config.get("attack_mode", "")) == "plague_dart":
+		var profile := plague_tick_profile(config, params)
+		return float(profile.get("tick_damage", 0.0)) * float(profile.get("ramp_average", 1.0)) \
+			/ maxf(float(profile.get("tick_interval", 1.0)), 0.18)
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
 		return 0.0
@@ -1584,7 +1675,11 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"leadership": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
 		"absorb": effective_absorb(endurance, absorb_flat),
-		"regeneration": effective_regeneration(knowledge, regeneration_flat),
+		# SCRUM-900 «Клятва чумного доктора»: при generic_sustain_blocked базовый
+		# пассивный реген (константа 0.16 + скейл knowledge) отрезан — остаётся
+		# только вклад явно применённых flat'ов (их пускает лишь doctor_friendly
+		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
+		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
 		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
 		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,

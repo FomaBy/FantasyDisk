@@ -248,7 +248,9 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"strip": "melee",
 	"bayonet_cone": "melee",
 	"stab_flurry": "melee",
+	"saw_sector": "melee",  # SCRUM-900 bone_saw: melee-сектор 135°
 	"aoe_projectile": "projectile",
+	"plague_dart": "projectile",  # SCRUM-900 plague_syringe: чумной дротик
 	"homing_curse": "projectile",
 	"arquebus_shot": "projectile",
 	"grenade_fuse": "projectile",
