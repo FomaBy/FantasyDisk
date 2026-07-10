@@ -113,3 +113,50 @@ pushed; final Jira comments record the exact cleanup.
 
 Thread cleanup: collaboration QA subagent under the active parent task; not a
 disposable standalone Codex app thread.
+
+## Re-QA-Вердикт — 2026-07-10
+
+Статус: **PASSED**.
+
+- Re-QA owner: `QA/Codex /root/qa_scrum1026`
+  (`codex-qa-scrum-980-reqa-20260710`), after blocker SCRUM-1026 independently
+  reached `Готово`. Production code, tests and art stayed read-only.
+- Final production tip verification: fresh `origin/dev` `05b31e588`
+  (SCRUM-980 implementation `91a221aa`, blocker fix `7aa4850bb`, SCRUM-1026
+  QA verdict `3f8783d01`, plus later unrelated gameplay integration). No later
+  commit in the tested range changed Hero Select paths.
+- The original dedicated-band contract is now fully true: the stepper occupies
+  the left empty content segment; the exact selected-level delta occupies the
+  independent right `HS4AscensionDescriptionScroll`; counter, dossier,
+  carousel, portrait and Choose keep disjoint zones; content remains off the
+  outer frame ornament.
+- Exhaustive levels `0..5` passed with viewport-bounded real pointer `−` / `+`
+  and hero-slot switching, exact visible delta and cumulative tooltip on the
+  live hovered ScrollContainer, wheel input, raw Arrow Down and D-pad Down,
+  scroll-to-boundary focus transfer, and reset to the first line after every
+  level/hero refresh.
+- Responsive result: 1280×720 intentionally scrolls inside a `69 px` band with
+  `59 px` viewport and positive `1 px` peer gaps; the worst level-5 copy is
+  fully reachable. At 1920×1080 and 2560×1440 the `132 px` band has zero
+  overflow for every valid level (`84/118 px` and `55/114 px` worst
+  label/viewport measurements respectively). All three actual-windowed renders
+  were inspected and match the accepted frame/content-zone hierarchy.
+- Re-QA PASS headless and actual macOS windowed:
+  `hero_select_scrum980_ascension_layout_test.gd`. Regression PASS:
+  `hero_select_pixellab_layout_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_ui_test.gd`,
+  `gamepad_menu_focus_test.gd`, `gamepad_full_flow_smoke_test.gd`,
+  `meta_progression_smoke_test.gd` and full `runtime_smoke_test.gd`. The final
+  umbrella rerun on `05b31e588` exited `0`; only the known dummy-renderer
+  screenshot diagnostic appeared.
+
+The previous FAILED verdict is superseded by this dependency-complete re-QA.
+No original SCRUM-980 acceptance gap remains; Jira may move from
+`Контроль качества` to `Готово`.
+
+Disk cleanup: pending final re-QA mirror/Jira routing, then remove the shared
+disposable worktree, its approximately 445 MiB `.godot/` cache, 7.7 MiB
+transient SCRUM-1026/SCRUM-980 renders and all scratch user roots.
+
+Thread cleanup: collaboration QA subagent under the active parent task; not a
+disposable standalone Codex app thread.
