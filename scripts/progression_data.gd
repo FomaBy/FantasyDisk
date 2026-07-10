@@ -15,7 +15,6 @@ const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 const ATTRIBUTE_REGISTRY := CharacterData.ATTRIBUTE_REGISTRY  # SCRUM-695: канон-реестр атрибутов
 const ATTRIBUTE_RELEVANCE := CharacterData.ATTRIBUTE_RELEVANCE  # SCRUM-695: матрица 2/8/7
-const CLASS_ON_KILL_TRAITS := CharacterData.CLASS_ON_KILL_TRAITS  # SCRUM-1007: он-килл trait'ы
 
 const BalanceData := preload("res://scripts/progression_data_balance.gd")
 const CLASS_BUDGET_PROFILES := BalanceData.CLASS_BUDGET_PROFILES
@@ -214,11 +213,6 @@ static func start_boon_mods(boon_id: String, character_id := "") -> Dictionary:
 static func damage_parameter_for(character_id: String) -> String:
 	return str(CLASS_DAMAGE_PARAMETER.get(character_id, "damage"))
 
-
-# SCRUM-1007: конфиг классового он-килл trait'а (пусто = trait'а нет).
-static func class_on_kill_trait(character_id: String) -> Dictionary:
-	var raw = CLASS_ON_KILL_TRAITS.get(character_id, {})
-	return (raw as Dictionary).duplicate(true) if raw is Dictionary else {}
 
 
 static func is_stat_relevant(stat_id: String, character_id: String) -> bool:

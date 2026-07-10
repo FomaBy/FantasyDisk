@@ -299,6 +299,9 @@ const ULTIMATE_CONFIGS := {
 #     полную копию себя (второй выстрел/бросок/укол). Копия помечена и НЕ роллит
 #     новую копию — цепочки невозможны (см. ClassWeapon._maybe_fire_action_echo).
 #   action_echo_delay — читаемый сдвиг копии в секундах (QA видит два действия).
+#   on_kill_blast_radius / on_kill_blast_magic_ratio — «Тёмный распад»: он-килл
+#     магический AoE вокруг жертвы (см. Player._trigger_class_on_kill_trait);
+#     классы без этих ключей он-килл взрыва не имеют.
 # Матожидание выхода оружия ×(1+chance) учтено в budget-модели
 # (estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон кита.
 # Новые классы волны SCRUM-894..952 добавляют СВОИ записи сюда.
@@ -321,6 +324,21 @@ const CLASS_TRAITS := {
 		"title": "Проводник стихий",
 		"description": "Все бонусы к магическому урону на 30% эффективнее: источник «+15%» даёт около +20%. Каждый источник усиливается ровно один раз.",
 		"magic_bonus_effectiveness": 1.30,
+	},
+	"dark_mage": {
+		# SCRUM-1007 «Тёмный распад»: КВАЛИФИЦИРОВАННЫЕ убийства (killing-hit
+		# feedback с player_owned=true: оружие класса, тики проклятия черепа,
+		# ульта) взрываются магическим AoE вокруг жертвы. Урон = derived
+		# magic_damage * on_kill_blast_magic_ratio — ФИКС ОТ СТАТОВ, а не доля
+		# убившего хита: кит черепа добивает мелкими dot-тиками, и «доля хита»
+		# обесценила бы trait (решение задокументировано в реестре).
+		# АНТИ-РЕКУРСИЯ: урон взрыва помечен dark_decay=true, жертвы взрыва
+		# новых взрывов не порождают. Покрыт tests/dark_mage_kit_test.gd.
+		"id": "dark_decay",
+		"title": "Тёмный распад",
+		"description": "Убитые Тёмным магом враги взрываются магическим уроном по области; взрывы не порождают новых взрывов.",
+		"on_kill_blast_radius": 120.0,
+		"on_kill_blast_magic_ratio": 0.85,
 	},
 }
 
@@ -515,26 +533,6 @@ const CLASS_MECHANIC_IDENTITIES := {
 			"briar_staff": "терновая зона контроля",
 			"raven_totem": "raven/totem support pulses",
 		},
-	},
-}
-
-# SCRUM-1007: data-driven классовые он-килл trait'ы (канон —
-# docs/design/class_traits_registry.md). Потребитель: player.on_enemy_killed →
-# _trigger_class_on_kill_trait (гейт по character_id + атрибуции убившего хита).
-# dark_mage «Тёмный распад»: КВАЛИФИЦИРОВАННЫЕ убийства (killing-hit feedback с
-# player_owned=true: оружие класса, тики проклятия черепа, ульта) взрываются
-# магическим AoE вокруг жертвы. Урон = derived magic_damage * magic_damage_ratio
-# — ФИКС ОТ СТАТОВ, а не доля убившего хита: кит черепа добивает мелкими
-# dot-тиками, и «доля хита» обесценила бы trait (решение задокументировано).
-# АНТИ-РЕКУРСИЯ: урон взрыва помечен dark_decay=true, жертвы взрыва новых
-# взрывов не порождают.
-const CLASS_ON_KILL_TRAITS := {
-	"dark_mage": {
-		"id": "dark_decay",
-		"title": "Тёмный распад",
-		"description": "Убитые Тёмным магом враги взрываются магическим уроном по области; взрывы не порождают новых взрывов.",
-		"radius": 120.0,
-		"magic_damage_ratio": 0.85,
 	},
 }
 

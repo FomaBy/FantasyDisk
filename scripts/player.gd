@@ -2256,23 +2256,30 @@ func on_enemy_killed(enemy: Node2D) -> void:
 			heal_percent(0.03)
 
 
-# SCRUM-1007: классовый он-килл trait «Тёмный распад» (data-driven,
-# ProgressionData.class_on_kill_trait — сейчас только class_id=dark_mage).
-# КВАЛИФИЦИРОВАННАЯ смерть порождает РОВНО ОДИН магический AoE-взрыв вокруг
-# жертвы. Атрибуция: enemy._record_kill_attribution кладёт feedback убившего
-# хита в мету "killing_hit_feedback"; квалифицируют только хиты с
-# player_owned=true (урон оружия класса через class_weapon._call_take_damage,
-# тики проклятия черепа через tick_feedback, ульта через _apply_ultimate_damage).
+# SCRUM-1007: классовый он-килл trait «Тёмный распад» (data-driven запись
+# CLASS_TRAITS.dark_mage реестра SCRUM-935; generic-гейт — ключи
+# on_kill_blast_radius/on_kill_blast_magic_ratio, классы без них хук молча
+# пропускает). КВАЛИФИЦИРОВАННАЯ смерть порождает РОВНО ОДИН магический
+# AoE-взрыв вокруг жертвы. Атрибуция: enemy._record_kill_attribution кладёт
+# feedback убившего хита в мету "killing_hit_feedback"; квалифицируют только
+# хиты с player_owned=true (урон оружия класса через
+# class_weapon._call_take_damage, тики проклятия черепа через tick_feedback,
+# ульта через _apply_ultimate_damage).
 # Убийства чужих источников (hazard, боссы, неатрибутированные) trait НЕ триггерят.
 # АНТИ-РЕКУРСИЯ: урон взрыва помечен dark_decay=true → жертвы взрыва новых
 # взрывов НЕ порождают (плотная группа не цепляет каскад; покрыто
-# tests/dark_mage_kit_test.gd). Урон = derived magic_damage * magic_damage_ratio
-# (фикс от статов, а не доля убившего хита — иначе dot-тики черепа обесценили
-# бы trait). Эффект мгновенный (orb_burst самоочищается твином) — к концу боя
-# на игроке/арене состояния trait'а не остаётся.
+# tests/dark_mage_kit_test.gd). Урон = derived magic_damage *
+# on_kill_blast_magic_ratio (фикс от статов, а не доля убившего хита — иначе
+# dot-тики черепа обесценили бы trait). Эффект мгновенный (orb_burst
+# самоочищается твином) — к концу боя на игроке/арене состояния trait'а не
+# остаётся.
 func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
-	var trait_config := ProgressionData.class_on_kill_trait(character_id)
-	if trait_config.is_empty() or enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
+	var trait_config := ProgressionData.class_trait(character_id)
+	var radius := float(trait_config.get("on_kill_blast_radius", 0.0))
+	var magic_ratio := float(trait_config.get("on_kill_blast_magic_ratio", 0.0))
+	if radius <= 0.0 or magic_ratio <= 0.0:
+		return
+	if enemy == null or not is_instance_valid(enemy) or not is_inside_tree():
 		return
 	var attribution_raw = enemy.get_meta("killing_hit_feedback") if enemy.has_meta("killing_hit_feedback") else null
 	var attribution: Dictionary = attribution_raw if attribution_raw is Dictionary else {}
@@ -2280,9 +2287,8 @@ func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
 		return
 	if bool(attribution.get("dark_decay", false)):
 		return
-	var radius := float(trait_config.get("radius", 120.0))
-	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * float(trait_config.get("magic_damage_ratio", 0.85))
-	if damage_amount <= 0.0 or radius <= 0.0:
+	var damage_amount := float(derived_parameters.get("magic_damage", 10.0)) * magic_ratio
+	if damage_amount <= 0.0:
 		return
 	var blast_position := enemy.global_position
 	AttackVfx.orb_burst(_vfx_parent(), blast_position, radius, Color(0.52, 0.16, 0.95, 0.50))

@@ -370,13 +370,15 @@ func _test_dark_decay_trait(errors: Array) -> void:
 	player.call("configure_character", "dark_mage", "dark_wand")
 	_mute_equipped_weapon(player)  # авто-атаки не должны трогать постановку
 	await process_frame
-	var trait_config: Dictionary = PD.class_on_kill_trait("dark_mage")
-	if trait_config.is_empty():
-		errors.append("dark_mage must expose a data-driven on-kill trait config")
+	# SCRUM-1007: trait живёт data-driven записью в каноническом реестре
+	# CLASS_TRAITS (паттерн SCRUM-935), on-kill ключи generic.
+	var trait_config: Dictionary = PD.class_trait("dark_mage")
+	if trait_config.is_empty() or str(trait_config.get("id", "")) != "dark_decay":
+		errors.append("dark_mage must expose the dark_decay trait via the CLASS_TRAITS registry")
 		await _cleanup(holder)
 		return
-	var trait_radius := float(trait_config.get("radius", 0.0))
-	var expected_blast := float((player.get("derived_parameters") as Dictionary).get("magic_damage", 0.0)) * float(trait_config.get("magic_damage_ratio", 0.0))
+	var trait_radius := float(trait_config.get("on_kill_blast_radius", 0.0))
+	var expected_blast := float((player.get("derived_parameters") as Dictionary).get("magic_damage", 0.0)) * float(trait_config.get("on_kill_blast_magic_ratio", 0.0))
 	if trait_radius <= 0.0 or expected_blast <= 0.0:
 		errors.append("trait radius/damage must be positive (r %.1f, dmg %.2f)" % [trait_radius, expected_blast])
 
