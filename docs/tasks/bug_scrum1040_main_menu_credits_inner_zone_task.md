@@ -1,6 +1,6 @@
 # BUG: Main Menu Credits button violates authored gold-shell inner reserve
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI runtime/tests)
 Контур: Codex
@@ -26,15 +26,15 @@ SCRUM-968 добавил `MainMenuCreditsButton` в сырой `gold_shell_conte
 
 ## Acceptance Criteria
 
-- [ ] Полный rect `MainMenuCreditsButton` находится внутри authored inner rect
+- [x] Полный rect `MainMenuCreditsButton` находится внутри authored inner rect
       после резерва 24/32px на 1280x720, 1920x1080 и 2560x1440.
-- [ ] Точная зона: верхний правый угол inner rect, внутренний pad 12px, размер
+- [x] Точная зона: верхний правый угол inner rect, внутренний pad 12px, размер
       240x36 (или уже, если inner rect меньше).
-- [ ] Кнопка не пересекает логотип, сетку действий и версию.
-- [ ] Fresh и live-resize раскладки совпадают.
-- [ ] Focused SCRUM-981 и no-overlap matrix имеют независимые геометрические
+- [x] Кнопка не пересекает логотип, сетку действий и версию.
+- [x] Fresh и live-resize раскладки совпадают.
+- [x] Focused SCRUM-981 и no-overlap matrix имеют независимые геометрические
       проверки inner containment и exact placement.
-- [ ] Результат прошёл UI/runtime гейты, запушен в `origin/dev` и передан QA.
+- [x] Результат прошёл UI/runtime гейты, запушен в `origin/dev` и передан QA.
 
 ## Implementation result (2026-07-10)
 
@@ -53,3 +53,7 @@ Green gate: SCRUM-981 focused; exact Route Map; UI no-overlap matrix;
 dark-fantasy UI theme; runtime UI; gamepad full-flow 3/3; audio integration;
 full runtime — PASSED. Full runtime содержит только известные non-fatal headless
 lambda/dummy-renderer diagnostics.
+
+Commit/push: `9f04dc59e` → `origin/dev`. Jira: `Контроль качества`.
+Disk cleanup: removed task `.godot` cache (445 MB); generated UID sidecars
+removed; clean disposable worktree is removed after final routing sync.

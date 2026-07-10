@@ -1,6 +1,6 @@
 # BUG: Gold menu HUD tracks overlap after 2K-to-720 live resize
 
-Статус: in_progress
+Статус: done
 Приоритет: high
 Роль: Back-end (UI runtime/tests)
 Контур: Codex
@@ -62,17 +62,17 @@ pass; QA код не менял.
 
 ## Acceptance Criteria
 
-- [ ] Fresh 1280 и live 2560→1280 дают одинаковые rect всех видимых HUD
+- [x] Fresh 1280 и live 2560→1280 дают одинаковые rect всех видимых HUD
       children, кроме динамического текста/значений.
-- [ ] HP/XP/ULT sibling tracks и их ProgressBar children попарно не
+- [x] HP/XP/ULT sibling tracks и их ProgressBar children попарно не
       пересекаются после resize в обе стороны.
-- [ ] Каждый HUD child остаётся внутри authored `+24/+32` inner reserve;
+- [x] Каждый HUD child остаётся внутри authored `+24/+32` inner reserve;
       generic FAB остаётся exact visible `72x72` с uniform scale.
-- [ ] `2560 -> 1280 -> 2560` остаётся полностью idempotent.
-- [ ] Route Map specialized layout, Combat HUD и frameless Level Up не меняются.
-- [ ] Focused SCRUM-981 и no-overlap oracles проверяют fresh-vs-live child rect
+- [x] `2560 -> 1280 -> 2560` остаётся полностью idempotent.
+- [x] Route Map specialized layout, Combat HUD и frameless Level Up не меняются.
+- [x] Focused SCRUM-981 и no-overlap oracles проверяют fresh-vs-live child rect
       equality и sibling disjointness, а не только outer containment.
-- [ ] Focused shell/Route Map, no-overlap, theme, runtime UI, gamepad full-flow
+- [x] Focused shell/Route Map, no-overlap, theme, runtime UI, gamepad full-flow
       и full runtime проходят; результат запушен в `origin/dev` и передан QA.
 
 ## QA evidence (2026-07-10)
@@ -105,3 +105,7 @@ Green gate: SCRUM-981 focused; exact Route Map; UI no-overlap matrix;
 dark-fantasy UI theme; runtime UI; gamepad full-flow 3/3; audio integration;
 full runtime — PASSED. Full runtime содержит только известные non-fatal headless
 lambda/dummy-renderer diagnostics.
+
+Commit/push: `9f04dc59e` → `origin/dev`. Jira: `Контроль качества`.
+Disk cleanup: removed task `.godot` cache (445 MB); generated UID sidecars
+removed; clean disposable worktree is removed after final routing sync.
