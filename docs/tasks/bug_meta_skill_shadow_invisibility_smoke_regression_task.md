@@ -53,6 +53,11 @@ race либо настоящая production-регрессия — исправ�
 SCRUM-1024 не меняет `player.gd`, этот тест, оружие или Meta data; дефект
 зарегистрирован как отдельная baseline-регрессия.
 
+После параллельного production batch и rebase на `origin/dev` `ee508d559`
+ошибка осталась флейки: два из трёх изолированных прогонов прошли, один из трёх
+упал в той же строке 928. Задача остаётся актуальной: обязательный gate не
+детерминирован, а focused production-семантика ещё не отделена от harness race.
+
 ## Acceptance Criteria
 
 - focused assassin mini-arena доказывает реальную invisibility-семантику;
@@ -64,4 +69,3 @@ SCRUM-1024 не меняет `player.gd`, этот тест, оружие или
 - Jira/документация/green-gate синхронизированы, результат landed в `dev`.
 
 Disk cleanup: none created by Jira-first QA registration.
-

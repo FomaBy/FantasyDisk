@@ -51,6 +51,11 @@ Pierce scenario enabled hit 0 targets.
 SCRUM-1024 не меняет `player.gd`, weapon/meta runtime или этот гейт; дефект
 зарегистрирован как отдельная baseline-регрессия.
 
+После параллельного production batch и rebase на `origin/dev` `ee508d559`
+повторная серия подтвердила reactor heat failures `3/3` с теми же значениями;
+enabled pierce также упал `3/3`. Задача остаётся воспроизводимым release-gate
+дефектом, отдельным от Atlas UI.
+
 ## Acceptance Criteria
 
 - focused reactor scenario доказывает production active-state transition и

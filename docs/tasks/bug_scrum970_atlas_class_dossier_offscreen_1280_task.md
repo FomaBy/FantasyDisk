@@ -130,9 +130,12 @@ Thread cleanup: not a disposable worker thread.
 Статус: PASSED
 
 - QA worker: `qa_scrum1024` (`/root/qa_scrum1024`), Codex lane.
-- Fresh production base: `origin/dev`
+- Initial production base: `origin/dev`
   `b243d6e26f219bf12dc2c2bef1fb4dc6ecdb0d5b`; implementation commit
-  `5f39a56ea`. Production code/assets remained read-only.
+  `5f39a56ea`. While QA was running, production advanced through a parallel
+  gameplay batch; the QA branch was rebased and the complete focused matrix
+  plus all relevant gates were repeated on final verified production base
+  `ee508d55977d`. Production code/assets remained read-only.
 - `atlas_scrum970_clickability_test.gd` passed headless and with the actual
   windowed Metal/OpenGL DisplayServer. Each process used a unique scratch
   `user://`; both runs covered `1280×720`, `1920×1080`, `2048×1152` and
@@ -156,6 +159,10 @@ Thread cleanup: not a disposable worker thread.
   `ui_no_overlap_matrix_test.gd`, dark theme, gamepad menu focus, gamepad full
   flow 3/3, runtime UI, full runtime, animation, combat and melee targeting.
   The full runtime emitted only the known dummy-renderer screenshot diagnostic.
+  The final windowed focused run passed functionally and produced every
+  screenshot, but repeated the non-blocking exit diagnostic `4 ObjectDB`
+  instances / `2 resources`; separate QA-tooling follow-up `SCRUM-1031` tracks
+  it without hiding or weakening the Atlas acceptance assertions.
 - Separate baseline regressions found by the broad regression sweep were
   registered Jira-first and left unassigned in the active sprint:
   `SCRUM-1028` (`meta_skill_tree`, SCRUM-835 shadow scenario, 3/3) and
@@ -164,8 +171,9 @@ Thread cleanup: not a disposable worker thread.
   gates are green, so they are not attributed to or used to block SCRUM-1024.
   `SCRUM-1027` separately tracks the pre-existing shop-basket smoke defect.
 
-Баги: no SCRUM-1024 regression; separate baseline follow-ups `SCRUM-1028`,
-`SCRUM-1029`.
+Баги: no SCRUM-1024 behavior/layout regression; separate baseline follow-ups
+`SCRUM-1028`, `SCRUM-1029`; non-blocking windowed test-lifecycle follow-up
+`SCRUM-1031`.
 
 Disk cleanup: pending post-push removal of the single disposable QA worktree,
 its 445 MB `.godot` cache, 25 MB transient QA output and scratch roots; exact
