@@ -1,6 +1,6 @@
 # SCRUM-983 — Escape Hero Dossier: compact numeric stats and clean pause buttons
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: combined Design+Back-end `/root/scrum983_dossier`
 Thread/Worker: `/root/scrum983_dossier`
@@ -107,10 +107,16 @@ reserved for the destructive End Run action.
 - Guides/previews: `docs/design/previews/scrum983_escape_dossier/`
 - PixelLab manifest/source: `docs/design/references/scrum983_escape_dossier/`
 
-## Current Blocker / Next Step
+## Final result
 
 Implementation, focused/UI regression gates and the repository-wide runtime
-smoke are green. Remaining process steps: commit the released umbrella-oracle
-update, rebase once more on fresh `origin/dev`, repeat the final gate, push
-directly to `dev`, route Jira to `Контроль качества`, sync the targeted mirror
-and remove the disposable worktree/cache.
+smoke are green after the final rebase onto `origin/dev` `4f595af3c`.
+Design/runtime/hardening/oracle chain is landed through `ad23b51de` directly in
+`origin/dev`; Jira is routed to independent QA. Shared Pause dossier,
+`ui_no_overlap_matrix`, `runtime_smoke`, menus/current-state and visual-style
+locks are released.
+
+Final full runtime PASS scanned 14,633 files; only the known upstream
+freed-lambda/dummy-renderer diagnostics were emitted with exit code zero.
+Disk cleanup: task `.godot`, generated transient capture data, clean disposable
+worktree and merged local branch are removed after final Jira/map routing.

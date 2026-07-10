@@ -4387,5 +4387,10 @@
   "key": "SCRUM-1040",
   "status": "Контроль качества",
   "desc_hash": "7522ecf35966df2024f18da5132c2606"
+ },
+ "SCRUM-983_escape_hero_dossier.md": {
+  "key": "SCRUM-983",
+  "status": "Контроль качества",
+  "desc_hash": "2d50b21a6b42028a0fac486f2b72a868"
  }
 }
