@@ -1,6 +1,6 @@
 # SCRUM-993 — Shop gold shell while preserving merchant art
 
-Статус: review (Stage 2 implementation and local green-gate complete)
+Статус: done (implementation landed; awaiting independent QA verdict)
 Контур: Codex
 Owner: combined Design+Back-end `/root/scrum993_shop_design`
 Thread/Worker: `/root/scrum993_shop_design`

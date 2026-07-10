@@ -4397,5 +4397,10 @@
   "key": "SCRUM-1041",
   "status": "К выполнению",
   "desc_hash": "c86baeef3a9fe790bf50892e5b7dc750"
+ },
+ "SCRUM-993_shop_gold_shell.md": {
+  "key": "SCRUM-993",
+  "status": "Контроль качества",
+  "desc_hash": "eecd0dc1ca51558f576db4419969a700"
  }
 }
