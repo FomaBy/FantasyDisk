@@ -1022,6 +1022,9 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var later_path := _stylebox_texture_path(later_button.get_theme_stylebox("normal")) if later_button != null else ""
 			if later_button == null or not (later_path.contains("text_buttons_unique/") or later_path.contains("minimal_metal_buttons/")):
 				return "%s: expected LevelUpLaterButton to use the global button kit, got %s." % [context, later_path]
+			var advisor_badge_count := 0
+			var reward_socket_tops := PackedFloat32Array()
+			var reward_title_tops := PackedFloat32Array()
 			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
 				var reward_button := node as Button
 				if reward_button == null:
@@ -1060,10 +1063,40 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if reward_icon == null:
 					return "%s: expected %s to expose a reward icon." % [context, reward_button.name]
 				var socket_rect := reward_socket.get_global_rect()
+				reward_socket_tops.append(socket_rect.position.y)
+				var reward_title := reward_button.find_child("LevelUpRewardTitle", true, false) as Label
+				if reward_title == null:
+					return "%s: %s must expose LevelUpRewardTitle for row-alignment QA." % [context, reward_button.name]
+				reward_title_tops.append(reward_title.get_global_rect().position.y)
 				var icon_inset := maxf(2.0, roundf(socket_rect.size.x * 0.18))
 				var icon_safe := socket_rect.grow(-icon_inset).grow(1.0)
 				if not icon_safe.encloses(reward_icon.get_global_rect()):
 					return "%s: expected %s icon %s inside socket inner safe rect %s." % [context, reward_button.name, str(reward_icon.get_global_rect()), str(icon_safe)]
+				# SCRUM-1032: на compact 720p advisor-плашка раньше начиналась на
+				# той же y-координате, что и сокет, и закрывала половину иконки.
+				var reward_badge := reward_button.find_child("LevelUpRewardBadge", true, false) as Control
+				if reward_badge != null:
+					advisor_badge_count += 1
+					var badge_rect := reward_badge.get_global_rect()
+					var reward_icon_rect := reward_icon.get_global_rect()
+					if badge_rect.intersects(socket_rect):
+						return "%s: %s advisor badge %s overlaps socket ornament %s (SCRUM-1032)." % [context, reward_button.name, str(badge_rect), str(socket_rect)]
+					if badge_rect.intersects(reward_icon_rect):
+						return "%s: %s advisor badge %s overlaps reward icon %s (SCRUM-1032)." % [context, reward_button.name, str(badge_rect), str(reward_icon_rect)]
+					var badge_label := reward_badge.find_child("LevelUpRewardBadgeLabel", true, false) as Label
+					if badge_label == null or badge_label.text.strip_edges() == "":
+						return "%s: %s advisor badge must expose a non-empty label." % [context, reward_button.name]
+					var badge_font: Font = badge_label.get_theme_font("font")
+					if badge_font == null:
+						badge_font = ThemeDB.fallback_font
+					var badge_text_width := badge_font.get_string_size(
+						badge_label.text,
+						HORIZONTAL_ALIGNMENT_LEFT,
+						-1.0,
+						badge_label.get_theme_font_size("font_size")
+					).x
+					if badge_text_width > badge_label.size.x + 1.0:
+						return "%s: %s advisor label needs %.1fpx but has %.1fpx; ellipsis is forbidden." % [context, reward_button.name, badge_text_width, badge_label.size.x]
 				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
 					var child := reward_button.find_child(child_name, true, false) as Control
 					if child == null or not child.visible or not child.get_global_rect().has_area():
@@ -1076,6 +1109,15 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
 				if effect_text == null or not effect_text.text.contains("->"):
 					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
+			if advisor_badge_count < 1:
+				return "%s: deterministic Level Up fixture must expose at least one advisor badge (SCRUM-1032 oracle)." % context
+			if reward_socket_tops.size() != 3 or reward_title_tops.size() != 3:
+				return "%s: expected exactly three socket/title stack positions, got %d/%d." % [context, reward_socket_tops.size(), reward_title_tops.size()]
+			for aligned_index in range(1, 3):
+				if absf(reward_socket_tops[aligned_index] - reward_socket_tops[0]) > 1.0:
+					return "%s: all three cards must reserve the same badge row; socket tops are %s." % [context, str(reward_socket_tops)]
+				if absf(reward_title_tops[aligned_index] - reward_title_tops[0]) > 1.0:
+					return "%s: all three cards must keep aligned titles; title tops are %s." % [context, str(reward_title_tops)]
 		"event_economy":
 			# SCRUM-997: иллюстрированный event-диалог (спека docs/design/mockups/
 			# scrum997_event_dialog/spec.md): фон-арт на весь экран, диалог-панель

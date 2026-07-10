@@ -682,7 +682,12 @@ rims, or badges.
   readable shade, and a `0.24` intro dim instead of the SCRUM-892 `0.82` dim.
   Local card/socket ornament stays visible. Level Up explicitly opts out of the
   registry's small-icon readability enlargement, so each reward icon keeps the
-  exact calculated inner socket rect and never crosses the ring. PixelLab-first
+  exact calculated inner socket rect and never crosses the ring. SCRUM-1032
+  makes the advisor badge a separate stack row even in the compact 720p tier;
+  it never overlays the socket ornament or reward icon, and every card reserves
+  the same row so sockets/titles remain aligned. The responsive matrix also
+  verifies that the full Russian badge label fits and focus does not move the
+  badge/socket/icon geometry. PixelLab-first
   provenance and the accepted no-shell mockup live under
   `docs/design/mockups/scrum985_level_up_cleanup/` and
   `docs/design/references/scrum985_level_up_cleanup/`; runtime captures for

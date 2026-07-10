@@ -7729,9 +7729,10 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 	var title_line_h := _level_up_probe_line_height(title_font)
 	var desc_line_h := _level_up_probe_line_height(desc_font) + 3.0
 	var effect_row_h := _level_up_probe_line_height(effect_font) + 4.0
-	# Бейдж: на просторных вьюпортах — отдельный слот на весь ряд (выравнивает
-	# сокеты трёх карточек); на compact слот не резервируем — плашка ложится
-	# поверх верхнего края сокет-зоны (экономия вертикали).
+	# Бейдж всегда занимает отдельный слот на весь ряд. До SCRUM-1032 compact-
+	# режим накладывал плашку на верх сокета: при 1280x720 она закрывала 31px
+	# орнамента и 18px самой reward-иконки. Бюджетный цикл ниже уже умеет ужимать
+	# описание/дельты, поэтому безопаснее сохранять отдельный ряд на всех scale.
 	var badges: Array = advice.get("badges", [])
 	var forecasts: Array = advice.get("forecasts", [])
 	var badge_any := false
@@ -7739,7 +7740,7 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 		if str(badge_kind) != "":
 			badge_any = true
 			break
-	var badge_slot := badge_any and not compact
+	var badge_slot := badge_any
 	# Глубина описания: 2 строки; 3 — если просторно и хоть одному описанию
 	# набора мало двух (меряем той же гарнитурой, что и line height).
 	var measure_probe := Label.new()
@@ -7947,15 +7948,6 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		star.position = socket.position + Vector2(socket_box - star_px - star_inset, star_inset)
 		star.size = Vector2(star_px, star_px)
 		content.add_child(star)
-
-	# Compact: бейдж-плашка поверх верхнего края сокет-зоны (слот не резервируем,
-	# полупрозрачный чип читается поверх арта сокета; добавлен после — выше по z).
-	if has_badge and not bool(plan.get("badge_slot", false)):
-		_add_level_up_badge(
-			content, badge_kind,
-			Rect2(roundf((content_width - badge_w) * 0.5), 0.0, badge_w, badge_h),
-			int(plan.get("badge_font", 12))
-		)
 
 	# Лёгкий подсвет сокета при hover/focus карточки — существующие сигналы кнопки.
 	var glow_callable := Callable(self, "_update_level_up_socket_glow").bind(button, socket)

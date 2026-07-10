@@ -116,3 +116,17 @@ Disk cleanup: disposable QA `.godot`, `build/qa/scrum985`, временные л
 worktree и локальная QA-ветка удаляются после commit/push этого verdict mirror.
 Thread cleanup: not a disposable standalone Codex thread; subagent returns to
 the parent dispatcher after cleanup.
+
+## Rework SCRUM-1032 (2026-07-10)
+
+QA-дефект принят `/root` как combined scope с SCRUM-981 под уже существующими
+lock `scripts/ui_screens.gd` и `tests/ui_no_overlap_matrix_test.gd`. Compact
+card plan теперь резервирует отдельный ряд advisor-бейджа вместо overlay на
+сокет. На новой 1280x720 capture badge находится на `y=240..271`, socket — на
+`y=278..338`, icon — на `y=291..325`; пересечений нет. Тот же контракт проходит
+на 1920x1080 и 2560x1440, полная подпись читаема, focus geometry stable.
+
+Focused capture, Level Up advisor, no-overlap, runtime UI и gamepad in-run/menu
+focus gates PASS. Полный smoke и push ожидают release физического Claude-lock
+на `tests/runtime_smoke_test.gd`; после landing SCRUM-985 должен вернуться в
+независимый QA, а не закрываться напрямую.
