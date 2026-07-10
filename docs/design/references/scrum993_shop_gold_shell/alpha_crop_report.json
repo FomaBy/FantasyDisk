@@ -1,0 +1,40 @@
+{
+  "pixel_lab_mockup": {
+    "path": "docs/design/references/scrum993_shop_gold_shell/pixellab_shop_gold_shell_688x384.png",
+    "size": [688, 384],
+    "mode": "RGBA",
+    "alpha_extrema": [255, 255],
+    "opaque_pixels": 264192,
+    "partial_alpha_pixels": 0,
+    "transparent_pixels": 0,
+    "alpha_bbox": [0, 0, 688, 384],
+    "decision": "PASS full-page reference"
+  },
+  "production_background": {
+    "path": "assets/backgrounds/ui/ui_backdrop_merchant_archive.png",
+    "size": [2560, 1440],
+    "mode": "RGBA",
+    "alpha_extrema": [255, 255],
+    "opaque_pixels": 3686400,
+    "mapping": {
+      "1280x720": [201, 113, 878, 494],
+      "1920x1080": [300, 169, 1320, 742],
+      "2560x1440": [400, 225, 1760, 990]
+    },
+    "crop": "none; contain and center within frame safe rect",
+    "decision": "PASS complete source retained"
+  },
+  "production_frame": {
+    "path": "assets/sprites/ui/meta40/frame_border.png",
+    "size": [1536, 1024],
+    "mode": "RGBA",
+    "alpha_extrema": [0, 255],
+    "opaque_pixels": 593156,
+    "partial_alpha_pixels": 0,
+    "transparent_pixels": 979708,
+    "texture_margins": [160, 160, 160, 160],
+    "content_margins": [160, 160, 160, 160],
+    "draw_center": false,
+    "decision": "PASS reusable hollow 9-slice shell"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "color": "#F4DEAF",
+    "stroke_fill": "#160B08",
+    "stroke_width": 2,
+    "max_font": 16,
+    "min_font": 10,
+    "align": "center",
+    "valign": "middle"
+  },
+  "zones": [
+    {"id": "frame_safe_area", "text": "", "required": false, "x": 72, "y": 60, "w": 544, "h": 264, "debug_color": "#36D399"},
+    {"id": "merchant_art_visible", "text": "", "required": false, "x": 108, "y": 60, "w": 473, "h": 264, "debug_color": "#7DD3FC"},
+    {"id": "run_hud", "text": "", "required": false, "x": 89, "y": 74, "w": 258, "h": 26, "debug_color": "#F59E0B"},
+    {"id": "shop_title", "text": "", "required": false, "x": 357, "y": 69, "w": 201, "h": 18, "debug_color": "#FDE68A"},
+    {"id": "shop_subtitle", "text": "", "required": false, "x": 357, "y": 89, "w": 201, "h": 11, "debug_color": "#FDE68A"},
+    {"id": "upgrade_fab", "text": "", "required": false, "x": 581, "y": 78, "w": 18, "h": 18, "debug_color": "#FB7185"},
+    {"id": "shop_item_0", "text": "", "required": false, "x": 205, "y": 116, "w": 59, "h": 58, "debug_color": "#A78BFA"},
+    {"id": "shop_item_1", "text": "", "required": false, "x": 278, "y": 116, "w": 59, "h": 58, "debug_color": "#A78BFA"},
+    {"id": "shop_item_2", "text": "", "required": false, "x": 351, "y": 116, "w": 59, "h": 58, "debug_color": "#A78BFA"},
+    {"id": "shop_item_3", "text": "", "required": false, "x": 424, "y": 116, "w": 59, "h": 58, "debug_color": "#A78BFA"},
+    {"id": "shop_tooltip", "text": "", "required": false, "x": 247, "y": 182, "w": 194, "h": 71, "debug_color": "#60A5FA"},
+    {"id": "shop_back", "text": "", "required": false, "x": 280, "y": 283, "w": 129, "h": 26, "debug_color": "#F97316"}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 18, "allow_overlap": false},
+  "content": {
+    "title": "Магазин",
+    "subtitle": "Выбери предмет. Описание появляется при наведении.",
+    "tooltip": "Название предмета\nПолное описание и эффект предмета.\nЦена: 9999g\nКласс: Темный маг\nНе хватает монет",
+    "back": "Назад"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": true, "collision": false, "min_w": 1520, "min_h": 742},
+    {"id": "shop_background_clip", "kind": "panel", "parent": "frame_safe_area", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": false, "collision": false},
+    {"id": "shop_background_visible", "kind": "portrait", "parent": "shop_background_clip", "x": 300, "y": 169, "w": 1320, "h": 742, "content_zone": false, "collision": false},
+    {"id": "inner_content", "kind": "zone", "parent": "frame_safe_area", "x": 224, "y": 193, "w": 1472, "h": 694, "content_zone": true, "collision": false},
+    {"id": "header_zone", "kind": "zone", "parent": "inner_content", "x": 224, "y": 193, "w": 1472, "h": 100, "content_zone": true, "collision": false},
+    {"id": "run_hud", "kind": "panel", "parent": "header_zone", "x": 248, "y": 209, "w": 720, "h": 72, "content_zone": true, "min_w": 720, "min_h": 72},
+    {"id": "shop_title", "kind": "text", "parent": "header_zone", "x": 996, "y": 193, "w": 560, "h": 52, "text_key": "title", "content_zone": true, "max_font": 42, "min_font": 28},
+    {"id": "shop_subtitle", "kind": "text", "parent": "header_zone", "x": 996, "y": 251, "w": 560, "h": 32, "text_key": "subtitle", "content_zone": true, "max_font": 18, "min_font": 13},
+    {"id": "upgrade_fab", "kind": "button", "parent": "header_zone", "x": 1622, "y": 220, "w": 50, "h": 50, "content_zone": true, "min_w": 50, "min_h": 50},
+    {"id": "shop_item_0", "kind": "slot", "parent": "inner_content", "x": 572, "y": 325, "w": 164, "h": 164, "content_zone": true, "min_w": 148, "min_h": 148},
+    {"id": "shop_item_1", "kind": "slot", "parent": "inner_content", "x": 776, "y": 325, "w": 164, "h": 164, "content_zone": true, "min_w": 148, "min_h": 148},
+    {"id": "shop_item_2", "kind": "slot", "parent": "inner_content", "x": 980, "y": 325, "w": 164, "h": 164, "content_zone": true, "min_w": 148, "min_h": 148},
+    {"id": "shop_item_3", "kind": "slot", "parent": "inner_content", "x": 1184, "y": 325, "w": 164, "h": 164, "content_zone": true, "min_w": 148, "min_h": 148},
+    {"id": "shop_tooltip", "kind": "panel", "parent": "inner_content", "x": 690, "y": 513, "w": 540, "h": 200, "content_zone": true, "min_w": 480, "min_h": 180},
+    {"id": "shop_tooltip_content", "kind": "text", "parent": "shop_tooltip", "x": 718, "y": 533, "w": 484, "h": 160, "text_key": "tooltip", "content_zone": true, "max_font": 19, "min_font": 14},
+    {"id": "shop_back", "kind": "button", "parent": "inner_content", "x": 780, "y": 795, "w": 360, "h": 72, "text_key": "back", "content_zone": true, "max_font": 26, "min_font": 18, "min_w": 360, "min_h": 72}
+  ]
+}
