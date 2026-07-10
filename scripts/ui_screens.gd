@@ -2774,13 +2774,15 @@ func _show_atlas_screen() -> void:
 	_atlas["panel_price_icon"] = price_icon
 	var buy_button := _make_button("Вложить эмблему")
 	buy_button.name = "AtlasBuyButton"
-	_set_action_button_size(buy_button, 360.0, 88.0)
+	# Let the action fill the responsive dossier width without imposing the
+	# legacy 360 px minimum that widened the panel after selection on 720p/1080p.
+	_set_action_button_size(buy_button, 0.0, 88.0)
 	buy_button.pressed.connect(Callable(self, "_atlas_buy_selected"))
 	panel_box.add_child(buy_button)
 	_atlas["buy_button"] = buy_button
 	var keystone_toggle := _make_button("Сделать активной")
 	keystone_toggle.name = "AtlasKeystoneToggle"
-	_set_action_button_size(keystone_toggle, 360.0, 88.0)
+	_set_action_button_size(keystone_toggle, 0.0, 88.0)
 	keystone_toggle.pressed.connect(Callable(self, "_atlas_toggle_keystone"))
 	keystone_toggle.visible = false
 	panel_box.add_child(keystone_toggle)
@@ -2879,7 +2881,7 @@ func _show_atlas_screen() -> void:
 	_atlas_apply_tab_state()
 	_atlas_build_canvas()
 	_atlas_refresh()
-	_atlas_wire_focus()
+	_atlas_wire_focus(true)
 
 
 # Масштаб UI Атласа: min-ось от дизайн-окна 2560×1440 (ассеты кита нарисованы
@@ -3190,6 +3192,11 @@ func _atlas_build_canvas() -> void:
 		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * socket_scale))
 		nb.custom_minimum_size = Vector2(disp, disp)
 		nb.size = Vector2(disp, disp)
+		# SCRUM-970: keep the visible socket itself as the authoritative pointer
+		# target at every stretch ratio. Previewing on button-down also prevents a
+		# responsive relayout/focus change from stealing the release phase.
+		nb.mouse_filter = Control.MOUSE_FILTER_STOP
+		nb.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 		nb.focus_mode = Control.FOCUS_ALL
 		nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		nb.tooltip_text = "%s\n%s" % [str(node_data.get("title", "")), str(node_data.get("desc", ""))]
@@ -3744,7 +3751,10 @@ func _atlas_switch_tab(tab: String) -> void:
 	_atlas_apply_tab_state()
 	_atlas_build_canvas()
 	_atlas_refresh()
-	_atlas_wire_focus()
+	# The old tab's focused node/medallion may be hidden or queued for deletion.
+	# Reseed only in that case; the guarded deferred helper preserves a still-live
+	# header focus and deferred resize passes remain non-seeding (SCRUM-970).
+	_atlas_wire_focus(true)
 
 
 # LB/RB (и Tab) листают вкладки Созвездие↔Гильдия (паттерн SCRUM-813).
@@ -3895,7 +3905,7 @@ func _atlas_finish_fog(node_id: String) -> void:
 
 # SCRUM-812/813: фокус-цепочки — лента классов вертикальной цепью, узлы по
 # adj-соседям созвездия (гео-направления), шапка/низ достижимы направлениями.
-func _atlas_wire_focus() -> void:
+func _atlas_wire_focus(seed_initial_focus := false) -> void:
 	if _atlas.is_empty():
 		return
 	var tab_constellation := _atlas.get("tab_constellation") as Button
@@ -3983,14 +3993,36 @@ func _atlas_wire_focus() -> void:
 		keystone_toggle.focus_neighbor_top = buy_button.get_path()
 		if core_button != null and is_instance_valid(core_button):
 			keystone_toggle.focus_neighbor_left = core_button.get_path()
-	# Стартовый фокус: медальон выбранного класса (вкладка Гильдии — ядро Атласа).
+	# Стартовый фокус нужен только при первом открытии экрана. Deferred responsive
+	# layout passes may rewire neighbours, but must never steal a live pointer or
+	# gamepad selection back to the class medallion/Guild hub (SCRUM-970).
+	if not seed_initial_focus:
+		return
 	var initial: Control = selected_medallion
 	if initial == null:
 		initial = core_button
 	if initial == null and not buttons.is_empty():
 		initial = buttons.values()[0] as Control
 	if initial != null and is_instance_valid(initial):
-		initial.call_deferred("grab_focus")
+		call_deferred("_atlas_grab_initial_focus_if_outside", initial)
+
+
+func _atlas_grab_initial_focus_if_outside(initial: Control) -> void:
+	if _atlas.is_empty() or initial == null or not is_instance_valid(initial):
+		return
+	var atlas_root := _atlas.get("root") as Control
+	if atlas_root == null or not is_instance_valid(atlas_root):
+		return
+	var viewport: Viewport = null
+	if game != null:
+		viewport = game.get_viewport()
+	var current: Control = null
+	if viewport != null:
+		current = viewport.gui_get_focus_owner()
+	if current != null and is_instance_valid(current) and not current.is_queued_for_deletion() \
+			and current.is_visible_in_tree() and (current == atlas_root or atlas_root.is_ancestor_of(current)):
+		return
+	initial.grab_focus()
 
 
 func _show_patch_notes_screen() -> void:

@@ -1,0 +1,94 @@
+# SCRUM-970 — Atlas/Guild skill-node clickability at 1920×1080
+
+Статус: review
+Версия: 0.2.1
+Jira: SCRUM-970
+Контур: Codex
+Owner: Backend/Codex `/root`
+Thread/Worker: `root-scrum-970`
+Branch: `codex/scrum-970-atlas-click`
+
+## Scope And Locks
+
+Только Atlas/Guild input/focus responsive hunks в `scripts/ui_screens.gd`,
+focused pointer regression, этот mirror и документация input-контракта.
+Существующий Atlas art, progression data, баланс и unrelated UI read-only.
+
+## Diagnosis And Decision
+
+Канон SCRUM-838 новее исходной формулировки Jira: клик по сокету только
+выбирает preview; покупка выполняется отдельной `AtlasBuyButton`. Прямую покупку
+по сокету добавлять нельзя.
+
+Реальный `SubViewport.push_input()` probe показал, что на 1280/1920/2048
+курсор попадает точно в видимый `TextureButton`, а overlays и frame имеют
+`MOUSE_FILTER_IGNORE`. После выбора Guild-узла появление action-кнопки с
+legacy minimum width 360 px расширяло responsive dossier. Шесть deferred
+layout-проходов повторно вызывали focus wiring, безусловный initial `grab_focus`
+возвращал фокус на `atlas_hub`, а `focus_entered` перезаписывал selection и
+отменял button cycle. На 2560 панель уже была достаточно широкой, поэтому
+гонка не проявлялась.
+
+Минимальное исправление сохраняет визуальный арт и content zones:
+
+- Atlas socket — явная `MOUSE_FILTER_STOP`-цель с preview на button-down;
+- focus-neighbour wiring отделён от однократного initial focus seed;
+- deferred layout только обновляет направления и не крадёт текущий Atlas focus;
+- отложенный initial seed сначала проверяет, не получил ли уже фокус элемент
+  внутри Atlas;
+- смена вкладки reseed-ит Guild core/медальон только если прежний focus скрыт,
+  удаляется или исчез; живой header focus сохраняется;
+- Buy/keystone actions заполняют доступную ширину dossier без 360 px minimum.
+
+## Focused Verification
+
+`tests/atlas_scrum970_clickability_test.gd` отправляет настоящие viewport-local
+mouse motion/down/up, а не вызывает `pressed.emit()`. Матрица:
+1280×720, 1920×1080, 2048×1152, 2560×1440.
+
+Проверяемый путь: soldier/berserk selectors → class-node preview → explicit
+Buy → Guild tab → Guild-node preview → explicit Buy → respec/cancel → Back.
+Тест ждёт все responsive layout passes, проверяет visible hitboxes, STOP target,
+overlay IGNORE, tooltip и сохранение selection после reflow. До каждой explicit
+Buy отдельно проверяется, что preview не меняет `skill_nodes` и валюту; после
+Buy проверяется точный расход эмблем/пыли. LB/RB/Tab проверяются в обе стороны,
+после каждого rebuild должен оставаться видимый Atlas focus и достижимый d-pad
+сосед.
+
+Тест принципиально отказывается запускаться против default `user://`. Runner
+передаёт test-only user argument `-- --user-data-dir=<unique scratch root>` и
+направляет platform user-data environment в тот же временный root; тест сверяет
+`OS.get_user_data_dir()` до создания Main. Поэтому production Buy никогда не
+касается реального `fantasydisk_meta.cfg`, а scratch root удаляется runner после
+process exit, включая аварийный.
+
+Фактический macOS/Linux invocation pattern (внешний runner владеет cleanup):
+
+```bash
+scratch=$(mktemp -d /tmp/fsd-scrum970.XXXXXX)
+trap 'rm -rf "$scratch"' EXIT
+HOME="$scratch" XDG_DATA_HOME="$scratch" \
+  GODOT_BIN=/path/to/Godot \
+  python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/atlas_scrum970_clickability_test.gd -- \
+  --user-data-dir="$scratch"
+```
+
+PASS до pre-land review:
+
+- focused real-pointer matrix — headless и windowed;
+- `meta40_atlas_screen_smoke_test.gd`, `meta_skill_tree_smoke_test.gd`,
+  `skill_tree_per_hero_test.gd`, `meta_progression_smoke_test.gd`;
+- `gamepad_menu_focus_test.gd`, `gamepad_full_flow_smoke_test.gd`;
+- `dark_fantasy_ui_theme_test.gd`, `ui_no_overlap_matrix_test.gd`;
+- `runtime_smoke_ui_test.gd`, полный `runtime_smoke_test.gd` (exit 0; только
+  известный dummy-renderer screenshot diagnostic).
+
+Первый независимый read-only review нашёл gamepad reseed, save isolation и
+preview-only assertion gaps; все три исправлены, focused/gamepad/no-overlap
+повторно PASS. Финальный fresh-disk re-review: PASS, оставшихся actionable
+findings нет; `git diff --check` чистый.
+
+Disk cleanup: active task worktree; pending final gates and push.
+
+Thread cleanup: not a disposable worker thread.
