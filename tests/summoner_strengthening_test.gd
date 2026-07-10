@@ -299,8 +299,11 @@ func _test_summon_prefill_and_scoped_limit(errors: Array) -> void:
 	await process_frame
 
 	var active: Array = weapon.call("_active_weapon_summons", player)
-	if active.size() != 3:
-		errors.append("Expected starting prefill to create ceil(5/2)=3 summons, got %d." % active.size())
+	# SCRUM-902: ростер-амулет Друида стартует с ПОЛНОЙ стаей (AC «минимум 5
+	# активных призывов без прокачки» с первого кадра); легаси-оружия без
+	# ростера сохраняют прифилл половины лимита.
+	if active.size() != 5:
+		errors.append("Expected SCRUM-902 roster weapon to prefill the full pack (5), got %d." % active.size())
 	for _index in range(5):
 		weapon.call("_summon", false)
 		await process_frame

@@ -4440,17 +4440,16 @@ func _test_unique_class_identity_patterns() -> void:
 		var ally_target = ally.get("command_target")
 		if ally.get("owner_node") == druid and ally_target != null and is_instance_valid(ally_target) and ally.get("command_mode") == "attack_target":
 			commanded = true
-			var ally_texture_path := _node_sprite_texture_path(ally, "Body")
-			if ally_texture_path in [
-				"res://assets/sprites/allies/ally_druid_beast.png",
-				"res://assets/sprites/allies/ally_druid_pack_spirit.png",
-			]:
+			# SCRUM-902: стая — призрачный ростер (арт SCRUM-901/1015/1016);
+			# каждый дух — одна из пяти ghost-записей с живым AnimatedBody.
+			var ally_visual := str(ally.get("ally_visual_id"))
+			if ally_visual.begins_with("druid_ghost_") and bool(ally.call("is_using_animated_ally_visual")):
 				druid_visual_ok = true
 	if not commanded:
 		_fail("Expected Druid pets to receive an attack-target command.")
 		return
 	if not druid_visual_ok:
-		_fail("Expected Druid pets to use a source-specific beast/pack-spirit sprite.")
+		_fail("Expected Druid pets to use the SCRUM-902 ghost roster visuals.")
 		return
 	for ally in get_nodes_in_group("allies"):
 		if ally != null and is_instance_valid(ally):

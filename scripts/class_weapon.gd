@@ -158,6 +158,21 @@ const ATTACK_MODE_EXECUTORS := {
 @export var pool_charge_tick_multiplier := 0.30
 @export var pool_charge_tick_interval := 0.9
 @export var pool_charge_cap := 5
+# SCRUM-903 briar_staff: терновая зона — слоу + ПОВТОРНЫЕ ФИЗИЧЕСКИЕ хиты
+# (masштаб от стата damage/Сила, НЕ dot-ось). Кап briar_hit_cap хитов на одного
+# врага с ОДНОЙ зоны (время внутри / проход сквозь зону), интервал —
+# pool_tick_interval; анти-runaway: повторный вход хиты не сбрасывает, общий
+# потолок живых зон MAX_ACTIVE_DAMAGE_POOLS. Зеркало бюджета — _budget_pool_dps.
+@export var briar_zone := false
+@export var briar_hit_multiplier := 0.34
+@export var briar_hit_cap := 5
+@export var briar_slow_multiplier := 0.62
+# SCRUM-903 raven_totem: тотем-деплой пускает самонаводящихся воронов (кривая
+# Безье с живым доведением); взрыв по области в точке попадания (полный урон
+# первым RAVEN_EXPLOSION_FULL_TARGETS, дальше диминиш). Зеркало — _budget_hit_model.
+@export var raven_homing := false
+@export var raven_damage_multiplier := 0.85
+@export var raven_explosion_radius := 120.0
 @export var charge_seconds := 0.0
 @export var charge_max_multiplier := 1.0
 @export var crit_shadow_burst_radius := 0.0
@@ -343,6 +358,15 @@ func configure_weapon(config: Dictionary) -> void:
 	pool_charge_tick_multiplier = float(config.get("pool_charge_tick_multiplier", pool_charge_tick_multiplier))
 	pool_charge_tick_interval = float(config.get("pool_charge_tick_interval", pool_charge_tick_interval))
 	pool_charge_cap = int(config.get("pool_charge_cap", pool_charge_cap))
+	# SCRUM-903: терновая зона Друида (слоу + повторные физ-хиты с капом).
+	briar_zone = bool(config.get("briar_zone", briar_zone))
+	briar_hit_multiplier = maxf(float(config.get("briar_hit_multiplier", briar_hit_multiplier)), 0.0)
+	briar_hit_cap = maxi(int(config.get("briar_hit_cap", briar_hit_cap)), 1)
+	briar_slow_multiplier = clampf(float(config.get("briar_slow_multiplier", briar_slow_multiplier)), 0.25, 1.0)
+	# SCRUM-903: вороний тотем — самонаводящиеся вороны с AoE-взрывом.
+	raven_homing = bool(config.get("raven_homing", raven_homing))
+	raven_damage_multiplier = maxf(float(config.get("raven_damage_multiplier", raven_damage_multiplier)), 0.0)
+	raven_explosion_radius = maxf(float(config.get("raven_explosion_radius", raven_explosion_radius)), 24.0)
 	charge_seconds = float(config.get("charge_seconds", charge_seconds))
 	charge_max_multiplier = float(config.get("charge_max_multiplier", charge_max_multiplier))
 	crit_shadow_burst_radius = float(config.get("crit_shadow_burst_radius", config.get("dash_on_crit_distance", crit_shadow_burst_radius)))
@@ -984,9 +1008,14 @@ func _spawn_damage_pool(pool_position: Vector2, tick_damage: float) -> void:
 			var current_weapon := instance_from_id(weapon_id) as Node
 			var current_pool := instance_from_id(pool_id) as Node2D
 			if current_weapon != null and current_pool != null:
-				# SCRUM-944: лужа передаёт себя тику — контактные заряды с per-pool
-				# идентичностью («одна лужа = один вечный заряд», без повторов).
-				current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage, current_pool)
+				# SCRUM-903: терновая зона — слоу + повторные ФИЗИЧЕСКИЕ хиты с
+				# капом на врага/зону (не dot-тик; см. _briar_zone_tick).
+				if bool(current_weapon.get("briar_zone")):
+					current_weapon.call("_briar_zone_tick", current_pool)
+				else:
+					# SCRUM-944: лужа передаёт себя тику — контактные заряды с per-pool
+					# идентичностью («одна лужа = один вечный заряд», без повторов).
+					current_weapon.call("_damage_enemies_in_pool", current_pool.global_position, aoe_radius * 0.7, tick_damage, current_pool)
 		)
 	pool_tween.tween_property(pool_sprite, "modulate:a", 0.0, 0.2)
 	pool_tween.tween_callback(func() -> void:
@@ -1772,13 +1801,20 @@ func _fire_riff_strip(owner_node: Node2D, direction: Vector2) -> void:
 		_push_enemy(enemy_node, direction)
 
 
+# SCRUM-903: маршрутизация «пульса» деплой-устройства: вороний тотем
+# (raven_homing) вместо зонного пульса пускает самонаводящегося ворона;
+# остальные ампы (sound_amp и т.п.) пульсируют как прежде.
+func _fire_deployable_pulse(owner_node: Node2D, origin: Vector2) -> void:
+	if raven_homing:
+		_launch_totem_raven(owner_node, origin)
+		return
+	_fire_pulse(owner_node, origin)
+
+
 func _fire_pulse(owner_node: Node2D, origin: Vector2) -> void:
 	if owner_node == null or not is_instance_valid(owner_node):
 		return
 	var pulse_damage := _rolled_damage(owner_node)
-	# SCRUM-961 «Голубой тотем»: пульс вороньего тотема злее (+raven_pulse_bonus).
-	if weapon_id == "raven_totem":
-		pulse_damage *= 1.0 + _owner_mod("raven_pulse_bonus")
 	_damage_enemies_in_circle(origin, aoe_radius, pulse_damage)
 	var pulse_visual := AttackVfx.ring_pulse(_projectile_parent(), origin, aoe_radius, visual_color, attack_mode in ["pulse", "amp"])
 	_register_effect(pulse_visual)
@@ -1849,7 +1885,8 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 				if current_owner != null:
 					var pulse_direction := current_amp.global_position - current_owner.global_position
 					current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("amp_pulse_interval")), 0.2), pulse_direction.normalized(), {"index": pulse_index, "count": pulse_count})
-				current_weapon.call("_fire_pulse", current_owner, current_amp.global_position)
+				# SCRUM-903: вороний тотем пускает homing-ворона вместо зонного пульса.
+				current_weapon.call("_fire_deployable_pulse", current_owner, current_amp.global_position)
 		)
 	pulse_tween.tween_callback(func() -> void:
 		var current_weapon := instance_from_id(weapon_id) as Node
@@ -1867,7 +1904,86 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 
 	# Первый пульс сразу при установке.
 	_emit_weapon_animation_event(owner_node, "pulse", maxf(effective_pulse_interval, 0.2), direction, {"index": 0, "count": pulse_count})
-	_fire_pulse(owner_node, amp.global_position)
+	_fire_deployable_pulse(owner_node, amp.global_position)
+
+
+# ==================== SCRUM-903: вороны тотема (raven_homing) ====================
+# Каждый «пульс» тотема выпускает ОДНОГО самонаводящегося ворона по ближайшему
+# монстру в радиусе atack_range от тотема (нет целей — тотем молчит, выстрелов в
+# пустоту не бывает). Полёт — квадратичная Безье с ЖИВЫМ доведением: конец кривой
+# следует за целью каждый кадр (умерла — летим в последнюю известную точку),
+# бок изгиба чередуется — вороны видимо ЗАКРУЧИВАЮТСЯ, а не летят прямо.
+# Взрыв в точке попадания: полный урон первым RAVEN_EXPLOSION_FULL_TARGETS целям,
+# дальше диминиш (анти-стакинг). Все колбэки — bound-методы по instance id
+# (канон SCRUM-551, без лямбд с захватом узлов); вороны в реестре эффектов
+# оружия (_register_effect) — смена оружия/смерть/ресет сцены зачищает их.
+const RAVEN_EXPLOSION_FULL_TARGETS := 3
+const RAVEN_EXPLOSION_TARGET_DIMINISH := 0.60
+const RAVEN_CURVE_BEND := 0.38
+
+var _raven_side_toggle := 1.0
+
+
+func _launch_totem_raven(owner_node: Node2D, origin: Vector2) -> void:
+	if _effects_shutdown or not is_inside_tree():
+		return
+	var target := TARGET_QUERY.nearest(self, origin, attack_range) as Node2D
+	if target == null or not is_instance_valid(target):
+		return
+	var raven := AttackVfx.orb_projectile(_projectile_parent(), origin + Vector2(0.0, -34.0), Color(0.30, 0.24, 0.44, 0.95))
+	_register_effect(raven)
+	raven.set_meta("raven_last_target_position", target.global_position)
+	_raven_side_toggle = -_raven_side_toggle
+	var travel_time := clampf(origin.distance_to(target.global_position) / maxf(projectile_speed, 120.0), 0.28, 0.75)
+	var owner_id := owner_node.get_instance_id() if owner_node != null and is_instance_valid(owner_node) else 0
+	var flight_tween := create_tween()
+	flight_tween.tween_method(
+		Callable(self, "_step_raven_flight").bind(raven.get_instance_id(), target.get_instance_id(), raven.global_position, _raven_side_toggle),
+		0.0, 1.0, travel_time)
+	flight_tween.tween_callback(Callable(self, "_resolve_raven_impact").bind(raven.get_instance_id(), owner_id))
+
+
+func _step_raven_flight(progress: float, raven_id: int, target_id: int, start_position: Vector2, side_sign: float) -> void:
+	var raven := instance_from_id(raven_id) as Node2D
+	if raven == null or not is_instance_valid(raven):
+		return
+	var end_position: Vector2 = raven.get_meta("raven_last_target_position", start_position)
+	var target := instance_from_id(target_id) as Node2D
+	if target != null and is_instance_valid(target):
+		end_position = target.global_position
+		raven.set_meta("raven_last_target_position", end_position)
+	var chord := end_position - start_position
+	if chord.length_squared() < 1.0:
+		raven.global_position = end_position
+		return
+	var control := (start_position + end_position) * 0.5 + Vector2(chord.y, -chord.x).normalized() * chord.length() * RAVEN_CURVE_BEND * side_sign
+	raven.global_position = _quadratic_bezier_point(start_position, control, end_position, clampf(progress, 0.0, 1.0))
+
+
+func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
+	var raven := instance_from_id(raven_id) as Node2D
+	if raven == null or not is_instance_valid(raven):
+		return
+	var impact_position := raven.global_position
+	if _effects_shutdown or not is_inside_tree():
+		_release_effect(raven)
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var explosion_damage := damage * raven_damage_multiplier
+	if current_owner != null and is_instance_valid(current_owner):
+		explosion_damage = _rolled_damage(current_owner) * raven_damage_multiplier
+	# SCRUM-961 «Голубой тотем» поверх SCRUM-903: вороны бьют злее (+25%).
+	explosion_damage *= 1.0 + _owner_mod("raven_pulse_bonus")
+	AttackVfx.orb_burst(_projectile_parent(), impact_position, raven_explosion_radius, visual_color)
+	_damage_enemies_in_circle_capped(impact_position, raven_explosion_radius, explosion_damage, RAVEN_EXPLOSION_FULL_TARGETS, RAVEN_EXPLOSION_TARGET_DIMINISH)
+	for enemy in TARGET_QUERY.in_radius(self, impact_position, raven_explosion_radius):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		var away := enemy_node.global_position - impact_position
+		if away.length_squared() > 0.001:
+			_push_enemy(enemy_node, away.normalized())
+	_release_effect(raven)
 
 
 func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
@@ -4086,30 +4202,27 @@ const ACID_CHARGE_ARTIFACT_CAP_BONUS := 3
 # свой статус; их тики складываются и живут до смерти носителя. Балансовый кап:
 # pool_charge_cap зарядов на цель (артефакт «Кислотный катализатор» +3).
 # Trait «Катализатор» (+50% периодики) запекается через apply_status_from.
-# «Печать терновника» (briar_staff) — стабильный слоу, без изменений.
+# SCRUM-903: терновая зона Друида сюда больше не ходит — её слоу/хиты ведёт
+# _briar_zone_tick (базовый слоу + углубление артефактом briar_slow_power).
 func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) -> void:
 	var acid_charges := pool_contact_charges and source_pool != null and is_instance_valid(source_pool)
-	var briar_slow := weapon_id == "briar_staff" and _owner_mod("briar_slow_power") > 0.0
-	if not acid_charges and not briar_slow:
+	if not acid_charges:
 		return
 	var owner_node := _owner_node()
-	var charge_status_id := ""
-	var charge_tick := 0.0
 	var charge_cap := pool_charge_cap
-	if acid_charges:
-		charge_status_id = "%s_p%d" % [ACID_CHARGE_STATUS_PREFIX, source_pool.get_instance_id()]
-		if _owner_mod("acid_charge_stacks") > 0.0:
-			charge_cap += ACID_CHARGE_ARTIFACT_CAP_BONUS
-		var parameters_raw = owner_node.get("derived_parameters") if owner_node != null else null
-		var dot_damage := 2.0
-		if parameters_raw is Dictionary:
-			dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
-		charge_tick = maxf(dot_damage * pool_charge_tick_multiplier, 0.30)
+	var charge_status_id := "%s_p%d" % [ACID_CHARGE_STATUS_PREFIX, source_pool.get_instance_id()]
+	if _owner_mod("acid_charge_stacks") > 0.0:
+		charge_cap += ACID_CHARGE_ARTIFACT_CAP_BONUS
+	var parameters_raw = owner_node.get("derived_parameters") if owner_node != null else null
+	var dot_damage := 2.0
+	if parameters_raw is Dictionary:
+		dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
+	var charge_tick := maxf(dot_damage * pool_charge_tick_multiplier, 0.30)
 	for enemy in enemies:
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		if acid_charges and not StatusEffects.has_status(enemy_node, charge_status_id) \
+		if not StatusEffects.has_status(enemy_node, charge_status_id) \
 				and StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX) < charge_cap:
 			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
 				"duration": ACID_CHARGE_PERSIST_SECONDS,
@@ -4118,12 +4231,44 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 				"max_stacks": 1,
 				"marker_color": Color(0.62, 0.95, 0.25, 1.0),
 			})
-		if briar_slow:
-			StatusEffects.apply_status(enemy_node, "briar_seal_slow", {
-				"duration": 1.2,
-				"speed_multiplier": maxf(1.0 - _owner_mod("briar_slow_power"), 0.25),
-				"marker_color": Color(0.35, 0.70, 0.25, 1.0),
-			})
+
+
+# SCRUM-903: тик терновой зоны — контракт повторных ФИЗИЧЕСКИХ хитов:
+#   1) слоу: все враги внутри замедлены (статус "briar_zone_slow" спадает сам
+#      после выхода; артефакт «Печать терновника» углубляет слоу briar_slow_power);
+#   2) хиты: враг получает удар = damage(физ., Сила) × briar_hit_multiplier раз в
+#      pool_tick_interval, но НЕ БОЛЬШЕ briar_hit_cap хитов С ОДНОЙ зоны
+#      (per-enemy счёт в meta зоны). Проход сквозь AoE даёт несколько читаемых
+#      ударов; стояние внутри не превращается в бесконечный DoT, повторный вход
+#      хиты не сбрасывает. Хиты идут damage_type="physical" (без крита и без
+#      периодик-множителей) — это НЕ dot-ось. Зеркало бюджета — _budget_pool_dps.
+func _briar_zone_tick(pool: Node2D) -> void:
+	if pool == null or not is_instance_valid(pool):
+		return
+	var origin := pool.global_position
+	var zone_radius := aoe_radius * 0.7
+	var hit_counts: Dictionary = pool.get_meta("briar_hit_counts", {})
+	var slow_multiplier := briar_slow_multiplier
+	var seal_power := _owner_mod("briar_slow_power")
+	if seal_power > 0.0:
+		slow_multiplier = minf(slow_multiplier, maxf(1.0 - seal_power, 0.25))
+	var hit_damage := damage * briar_hit_multiplier
+	for enemy in TARGET_QUERY.in_radius(self, origin, zone_radius):
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		StatusEffects.apply_status(enemy_node, "briar_zone_slow", {
+			"duration": maxf(pool_tick_interval * 1.6, 0.7),
+			"speed_multiplier": slow_multiplier,
+			"marker_color": Color(0.35, 0.70, 0.25, 1.0),
+		})
+		var enemy_id := enemy_node.get_instance_id()
+		var hits := int(hit_counts.get(enemy_id, 0))
+		if hits >= briar_hit_cap:
+			continue
+		hit_counts[enemy_id] = hits + 1
+		_damage_enemy(enemy_node, hit_damage, false, "physical", false)
+	pool.set_meta("briar_hit_counts", hit_counts)
 
 
 func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: float, full_targets: int, diminish: float) -> void:

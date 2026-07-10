@@ -450,6 +450,31 @@ const CLASS_TRAITS := {
 		"no_hit_magic_bonus_per_second": 0.02,
 		"no_hit_magic_bonus_cap": 0.20,
 	},
+	"druid": {
+		# SCRUM-902 «Аура дикой силы»: ПОСТОЯННАЯ классовая аура урона с видимым
+		# полупрозрачным радиусом (Player.WildForceAuraRing). Баффает ТОЛЬКО
+		# Друида и его призывы (группа "allies" с owner_node == друид) внутри
+		# derived aura_radius × wild_aura_radius_ratio; враги/чужие сущности не
+		# затрагиваются. Величина = wild_aura_damage_bonus × buff_power, кап
+		# wild_aura_damage_cap. Потребители:
+		#   - призывы: статус "wild_force_aura" (damage_multiplier) в
+		#     Player._update_class_status_auras → StatusEffects.damage_multiplier
+		#     в ally_minion._try_attack (позиционный — призыв вне ауры не баффнут);
+		#   - сам Друид: он всегда в центре собственной ауры, поэтому его хиты
+		#     усиливаются безусловно через Player.meta_damage_multiplier
+		#     (wild_aura_damage_multiplier).
+		# Матожидание аура-баффа учтено budget-моделью
+		# (ProgressionData.class_wild_aura_damage_factor в
+		# estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон
+		# кита, инвестиции в buff_power/aura_radius сверх базы остаются наградой.
+		# Покрыт tests/druid_kit_test.gd.
+		"id": "wild_force_aura",
+		"title": "Аура дикой силы",
+		"description": "Постоянная аура с видимым радиусом усиливает урон Друида и его призывов; сила растёт от мощи баффов, радиус — от радиуса ауры.",
+		"wild_aura_damage_bonus": 0.10,
+		"wild_aura_damage_cap": 0.30,
+		"wild_aura_radius_ratio": 0.85,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {

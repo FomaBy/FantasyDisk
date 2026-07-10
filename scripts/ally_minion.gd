@@ -53,6 +53,13 @@ const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 @export var aoe_damage_multiplier := 0.55
 @export var leash_radius := 520.0
 
+# SCRUM-902: семья урона и вид атаки записи ростера (см. summoner_weapon
+# ._summon_profile). physical-melee — контактный AoE-удар, magic-ranged —
+# магический снаряд по цели. Урон красится своим каналом (damage_type feedback).
+@export var damage_family := "physical"
+@export var attack_kind := "melee"
+@export var ranged_projectile_speed := 620.0
+
 var _attack_cooldown := 0.0
 var _attack_anim_time := 0.0
 var _last_facing_right := false
@@ -99,6 +106,10 @@ func set_combat_profile(profile: Dictionary) -> void:
 	aoe_damage_multiplier = clampf(float(profile.get("aoe_damage_multiplier", aoe_damage_multiplier)), 0.0, 1.0)
 	leash_radius = maxf(float(profile.get("leash_radius", leash_radius)), 120.0)
 	taunt_pulse = bool(profile.get("taunt_pulse", taunt_pulse))
+	# SCRUM-902: семья урона / вид атаки ростера.
+	damage_family = str(profile.get("damage_family", damage_family))
+	attack_kind = str(profile.get("attack_kind", attack_kind))
+	ranged_projectile_speed = maxf(float(profile.get("ranged_projectile_speed", ranged_projectile_speed)), 120.0)
 
 
 func take_damage(amount: float) -> void:
@@ -231,10 +242,18 @@ func _try_attack(target: Node2D) -> void:
 		return
 
 	var final_damage := damage * StatusEffects.damage_multiplier(self)
+	# SCRUM-902: попадания призыва красятся семьёй урона записи ростера
+	# (physical-melee / magic-ranged) — единый feedback-контракт enemy.take_damage.
+	var hit_feedback := {"damage_type": "magic" if damage_family == "magic" else "physical"}
 	var hit_ids := {}
-	if target.has_method("take_damage"):
-		target.take_damage(final_damage)
+	_deal_typed_damage(target, final_damage, hit_feedback)
 	hit_ids[target.get_instance_id()] = true
+	if attack_kind == "ranged":
+		# SCRUM-902: магический дух — снаряд. Урон применён мгновенно (контракт
+		# take_damage выше), болт — чисто визуальный: твин живёт НА болте и
+		# завершается его же queue_free (Callable без чужих захватов — канон
+		# SCRUM-551, гонок с freed-целью/духом нет).
+		_spawn_ranged_bolt_visual(target.global_position)
 	if control_knockback > 0.0 and target.has_method("apply_knockback"):
 		var push_origin := owner_node.global_position if owner_node != null and is_instance_valid(owner_node) else global_position
 		var push_direction := target.global_position - push_origin
@@ -245,8 +264,7 @@ func _try_attack(target: Node2D) -> void:
 			var enemy_node := enemy as Node2D
 			if enemy_node == null or not is_instance_valid(enemy_node) or hit_ids.has(enemy_node.get_instance_id()):
 				continue
-			if enemy_node.has_method("take_damage"):
-				enemy_node.take_damage(final_damage * aoe_damage_multiplier)
+			_deal_typed_damage(enemy_node, final_damage * aoe_damage_multiplier, hit_feedback)
 			if control_knockback > 0.0 and enemy_node.has_method("apply_knockback"):
 				var splash_direction := enemy_node.global_position - target.global_position
 				if splash_direction.length_squared() > 0.001:
@@ -259,6 +277,48 @@ func _try_attack(target: Node2D) -> void:
 
 	_attack_cooldown = attack_interval
 	_play_attack_animation(target.global_position - global_position)
+
+
+# SCRUM-902: типизированный урон призыва. Реальный Enemy принимает feedback
+# (окраска цифр каналом physical/magic), легаси/тестовые цели с 1-арговым
+# take_damage получают классический вызов (зеркало канона
+# class_weapon._call_take_damage — без падений на моках).
+func _deal_typed_damage(target: Node, amount: float, feedback: Dictionary) -> void:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
+		return
+	for method in target.get_method_list():
+		if str(method.get("name", "")) == "take_damage":
+			if (method.get("args", []) as Array).size() >= 2:
+				target.call("take_damage", amount, feedback)
+			else:
+				target.call("take_damage", amount)
+			return
+
+
+# SCRUM-902: косметический магический болт дальнего духа — самодостаточный
+# узел: летит твином к точке цели и сам себя освобождает (владелец твина и
+# цель Callable — сам болт; смерть духа/цели в полёте ничего не ломает).
+func _spawn_ranged_bolt_visual(target_position: Vector2) -> void:
+	if not is_inside_tree():
+		return
+	var parent := get_parent()
+	if parent == null:
+		return
+	var bolt := Node2D.new()
+	bolt.name = "GhostSpiritBolt"
+	bolt.z_index = 6
+	var glow := Sprite2D.new()
+	glow.texture = load("res://assets/sprites/effects/spark_pool.png") as Texture2D
+	glow.scale = Vector2.ONE * 0.055
+	glow.modulate = Color(0.55, 0.85, 1.0, 0.85)
+	bolt.add_child(glow)
+	parent.add_child(bolt)
+	bolt.global_position = global_position + Vector2(0.0, -26.0)
+	var flight_time := clampf(bolt.global_position.distance_to(target_position) / maxf(ranged_projectile_speed, 120.0), 0.08, 0.45)
+	var bolt_tween := bolt.create_tween()
+	bolt_tween.tween_property(bolt, "global_position", target_position, flight_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	bolt_tween.tween_property(glow, "modulate:a", 0.0, 0.08)
+	bolt_tween.tween_callback(Callable(bolt, "queue_free"))
 
 
 func _update_visual_animation() -> void:

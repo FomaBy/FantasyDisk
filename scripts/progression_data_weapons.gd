@@ -527,10 +527,15 @@ const KNIGHT_WEAPONS := {
 	},
 }
 
+# SCRUM-902/903: редизайн кита Друида. Амулет — случайный ростер призраков
+# (3 melee physical + 2 magic ranged, арт SCRUM-901/1015/1016) с классовой
+# «Аурой дикой силы» (CLASS_TRAITS.druid); Посох терний — полупрозрачная зона
+# шипов (слоу + повторные ФИЗИЧЕСКИЕ хиты с капом на врага/зону, не DoT-ось);
+# Вороний тотем — деплой-тотемы, пускающие самонаводящихся воронов с AoE-взрывом.
 const DRUID_WEAPONS := {
 	"summon_amulet": {
 		"id": "summon_amulet", "title": "Амулет призыва",
-		"description": "Зовет зверей: стая бьется за друида, размер растет от Лидерства.",
+		"description": "Зовет призрачный ростер: ближние духи рвут физически по площади, дальние бьют магическими снарядами; состав случаен, стая растет от Лидерства.",
 		"scene_path": "res://scenes/SummonAmulet.tscn",
 		"damage_parameter": "magic_damage",
 		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
@@ -544,7 +549,10 @@ const DRUID_WEAPONS := {
 		# здесь только lvl1-нейтральный flat-base. См. summoner_weapon._summon_profile.
 		"summon_aoe_radius": 78.0, "summon_aoe_damage_multiplier": 0.82,  # SCRUM-505 lvl1-нейтральный base (было 72/0.80); рост покрытия splash — от (level-1) в _summon_profile
 		"summon_leash_radius": 560.0,
-		"max_summons": 3,  # base 3 (lvl1-safe); рой растёт от Лидерства через floor(summon_amount/4)
+		# SCRUM-902: baseline-стая ≥5 активных призывов БЕЗ прокачки: base 5 +
+		# floor(leadership/4) (player._apply_weapon_scaling) = 7 у стартового
+		# Друида (Лидерство 9); дальше слоты растут от Лидерства/summon_bonus.
+		"max_summons": 5,
 		"command_mode": "attack_target",
 		"summon_role": "pack_damage",
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.06)
@@ -553,31 +561,78 @@ const DRUID_WEAPONS := {
 		"summon_speed_multiplier": 1.15,
 		"summon_lifetime_multiplier": 1.12,
 		"summon_control_knockback": 34.0,
-		"ally_visual_ids": ["druid_beast", "druid_pack_spirit"],
+		# SCRUM-902: канонический ростер призраков (арт SCRUM-901/1015/1016).
+		# Каждый призыв — СЛУЧАЙНАЯ запись ростера: melee-звери бьют ФИЗИЧЕСКИ по
+		# площади (family=physical ← стат damage/Сила), дальние — МАГИЧЕСКИМ
+		# снарядом (family=magic ← стат magic_damage/Интеллект). Зеркало бюджета —
+		# ProgressionData._budget_summon_dps (композиционно-взвешенная семья).
+		"summon_roster": [
+			{"visual_id": "druid_ghost_wolf", "family": "physical", "attack_kind": "melee"},
+			{"visual_id": "druid_ghost_bear", "family": "physical", "attack_kind": "melee"},
+			{"visual_id": "druid_ghost_panther", "family": "physical", "attack_kind": "melee"},
+			{"visual_id": "druid_ghost_stag", "family": "magic", "attack_kind": "ranged"},
+			{"visual_id": "druid_ghost_lion", "family": "magic", "attack_kind": "ranged"},
+		],
+		# SCRUM-902: параметры снаряда дальних духов (см. ally_minion.gd).
+		"summon_ranged_range": 240.0,
+		"summon_ranged_projectile_speed": 620.0,
 		"visual_color": Color(0.45, 0.80, 0.35, 0.42),
 		"passive_mods": {"buff_power_note": 0.0},
 	},
 	"briar_staff": {
 		"id": "briar_staff", "title": "Посох терний",
-		"description": "Бросок семени-терновника: зона шипов наносит DoT и держит толпу на дистанции.",
+		"description": "Бросок семени-терновника: полупрозрачная зона шипов замедляет и наносит повторные физические удары идущим сквозь нее.",
 		"scene_path": "res://scenes/BriarStaff.tscn",
-		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		# SCRUM-903: шипы — ФИЗИЧЕСКИЕ повторные хиты (damage ← Сила), не DoT-ось.
+		"attack_mode": "aoe_projectile", "damage_parameter": "damage",
 		"damage_multiplier": 0.70, "fire_interval": 1.20,
 		"attack_range": 560.0, "aoe_radius": 190.0, "projectile_speed": 500.0,
 		"leaves_pool": true, "pool_duration": 3.6, "pool_tick_interval": 0.55,
 		"pool_element": "briar",
+		# SCRUM-903: контракт терновой зоны (зеркало бюджета — _budget_pool_dps,
+		# briar-ветка; рантайм — class_weapon._briar_zone_tick):
+		#   briar_zone         — зона работает повторными физ-хитами вместо
+		#                        generic dot-тиков (dot_damage НЕ участвует);
+		#   briar_hit_multiplier — урон одного хита = физ. damage × множитель;
+		#   briar_hit_cap      — КАП хитов на ОДНОГО врага с ОДНОЙ зоны (время
+		#                        внутри/проход сквозь зону дают до cap читаемых
+		#                        ударов раз в pool_tick_interval; повторный вход
+		#                        в ту же зону хиты не сбрасывает — анти-runaway,
+		#                        общий потолок зон MAX_ACTIVE_DAMAGE_POOLS=6);
+		#   briar_slow_multiplier — слоу внутри зоны (спадает при выходе).
+		"briar_zone": true,
+		"briar_hit_multiplier": 0.34,
+		"briar_hit_cap": 5,
+		"briar_slow_multiplier": 0.62,
+		# SCRUM-903: зона полупрозрачна — поле боя читается сквозь шипы.
+		"pool_translucent": true,
 		"visual_color": Color(0.32, 0.78, 0.28, 0.44),
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 	"raven_totem": {
 		"id": "raven_totem", "title": "Вороний тотем",
-		"description": "Ставит тотем воронов: автономные пульсы зоны, лимит растет от Лидерства.",
+		"description": "Ставит наземные тотемы: каждый пускает самонаводящихся воронов, взрывающихся по области; лимит и сила растут от Лидерства.",
 		"scene_path": "res://scenes/RavenTotem.tscn",
 		"attack_mode": "amp", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.66, "fire_interval": 2.35,
 		"attack_range": 470.0, "aoe_radius": 255.0, "knockback": 70.0,
-		"amp_lifetime": 6.5, "amp_pulse_interval": 0.95, "max_summons": 1,
-		"max_summons_cap": 3,
+		# SCRUM-903: деплой-тотем живёт ~8с (AC 6-10с) и раз в amp_pulse_interval
+		# выпускает самонаводящегося ворона; baseline-лимит = base 2 +
+		# floor(Лидерство 9 / 4) = 4 активных тотема (кап 6 — рост от Лидерства).
+		"amp_lifetime": 8.0, "amp_pulse_interval": 1.10, "max_summons": 2,
+		"max_summons_cap": 6,
+		# SCRUM-903: контракт воронов (рантайм — class_weapon._launch_totem_raven;
+		# зеркало бюджета — _budget_hit_model, amp+raven_homing ветка):
+		#   raven_homing            — пульс тотема = самонаводящийся ворон-снаряд
+		#                             (кривая Безье с живым доведением до цели),
+		#                             взрыв по области в точке попадания;
+		#   raven_damage_multiplier — урон взрыва = _rolled_damage × множитель;
+		#   raven_explosion_radius  — радиус взрыва (полный урон первым
+		#                             RAVEN_EXPLOSION_FULL_TARGETS целям, дальше
+		#                             диминиш — анти-стакинг толпы).
+		"raven_homing": true,
+		"raven_damage_multiplier": 0.85,
+		"raven_explosion_radius": 120.0,
 		"deploy_role": "support_totem",
 		"summon_role": "support_totem",
 		"summon_role_damage_multiplier": 1.08,

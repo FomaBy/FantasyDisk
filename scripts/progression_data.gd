@@ -848,6 +848,29 @@ static func class_infected_direct_multiplier(character_id: String) -> float:
 	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("infected_direct_hit_multiplier", 1.0)), 1.0)
 
 
+# SCRUM-902 «Аура дикой силы»: величина постоянного аура-баффа урона класса
+# (у классов без wild_aura-записи — 0). Масштаб от buff_power, жёсткий кап
+# wild_aura_damage_cap. ЕДИНАЯ точка чтения для рантайма
+# (Player.wild_aura_damage_multiplier + статус "wild_force_aura" призывам) и
+# budget-модели (class_wild_aura_damage_factor в estimate_weapon_budget_for_stats):
+# live-бой и формульный гейт видят один и тот же бафф.
+static func class_wild_aura_damage_bonus(character_id: String, buff_power: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var base := float(trait_config.get("wild_aura_damage_bonus", 0.0))
+	if base <= 0.0:
+		return 0.0
+	var cap := maxf(float(trait_config.get("wild_aura_damage_cap", 0.30)), 0.0)
+	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
+
+
+# Бюджет-фактор ауры: аура постоянна и баффает И владельца, И призывы — фактор
+# применяется ко ВСЕМ каналам выхода кита (budget_tuning_for компенсирует урон,
+# как у action_echo Солдата) — кит остаётся в общем коридоре, а инвестиции в
+# buff_power/aura_radius сверх базы остаются живой наградой в забеге.
+static func class_wild_aura_damage_factor(character_id: String, params: Dictionary) -> float:
+	return 1.0 + class_wild_aura_damage_bonus(character_id, float(params.get("buff_power", 1.0)))
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -990,8 +1013,12 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var infected_direct_factor := 1.0
 	if float(config.get("dot_ticks", 0.0)) > 0.0:
 		infected_direct_factor = 1.0 + (class_infected_direct_multiplier(character_id) - 1.0) * 0.75
-	var solo_dps := (direct_dps * infected_direct_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps
-	var aoe_dps := (direct_dps * infected_direct_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets
+	# SCRUM-902 «Аура дикой силы»: постоянный классовый бафф урона владельца И
+	# призывов — множит ВСЕ каналы выхода (в отличие от echo, который не трогает
+	# призывы). budget_tuning_for компенсирует кит (см. class_wild_aura_damage_factor).
+	var wild_aura_factor := class_wild_aura_damage_factor(character_id, params)
+	var solo_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps) * wild_aura_factor
+	var aoe_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets) * wild_aura_factor
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -1135,6 +1162,20 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var strip_width := float(config.get("wave_width", 118.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + strip_width / 105.0 + attack_range / 2600.0, 1.0, 2.6)}
 		"amp":
+			# SCRUM-903 raven_homing: тотемы пускают самонаводящихся воронов раз в
+			# amp_pulse_interval каждый; взрыв кроет explosion_targets целей
+			# (зеркало _launch_totem_raven/_resolve_raven_impact: полный урон
+			# первым 3, дальше диминиш). Одновременные тотемы ограничены
+			# lifetime/deploy-темпом и жёстким капом (Leadership-скейл лимита
+			# сверх — рантайм-бонус, как у прочих лимитов вне модели).
+			if bool(config.get("raven_homing", false)):
+				var deploy_interval := maxf(float(config.get("fire_interval", 2.35)), 0.25)
+				var raven_pulse := maxf(float(config.get("amp_pulse_interval", 1.1)), 0.2)
+				var raven_lifetime := maxf(float(config.get("amp_lifetime", 8.0)), deploy_interval)
+				var totems := minf(raven_lifetime / deploy_interval, maxf(float(config.get("max_summons_cap", 6.0)), 1.0))
+				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * maxf(float(config.get("raven_damage_multiplier", 0.85)), 0.0)
+				var explosion_targets := clampf(1.0 + float(config.get("raven_explosion_radius", 120.0)) / 145.0, 1.0, 3.0)
+				return {"solo_hits": clampf(ravens_per_deploy, 1.0, 8.0), "five_hits": clampf(ravens_per_deploy * explosion_targets, 1.0, 16.0)}
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
 			return {"solo_hits": clampf(active_ratio / 4.0, 1.0, 2.0), "five_hits": clampf((1.0 + aoe_radius / 80.0) * active_ratio / 3.5, 1.0, 5.0)}
 		"boomerang":
@@ -1401,6 +1442,16 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
 	if not bool(config.get("leaves_pool", false)):
 		return 0.0
+	# SCRUM-903: терновая зона Друида — повторные ФИЗИЧЕСКИЕ хиты с капом на
+	# врага/зону (зеркало class_weapon._briar_zone_tick): хит = damage-параметр
+	# оружия × briar_hit_multiplier, хитов на врага с одной зоны =
+	# min(briar_hit_cap, duration/tick). Периодик-множители НЕ применяются —
+	# это не dot-ось (dot_damage в терновом канале не участвует).
+	if bool(config.get("briar_zone", false)):
+		var briar_tick := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
+		var briar_hits := minf(float(config.get("briar_hit_cap", 5)), floor(maxf(float(config.get("pool_duration", 3.0)), briar_tick) / briar_tick))
+		var briar_hit_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * maxf(float(config.get("briar_hit_multiplier", 0.34)), 0.0)
+		return briar_hit_damage * briar_hits / maxf(interval, 0.18)
 	var tick_interval := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
 	var uptime := minf(float(config.get("pool_duration", 3.0)) / maxf(interval, 0.18), 1.0)
 	# SCRUM-944: per-weapon скалер тика лужи (зеркало ClassWeapon._spawn_damage_pool).
@@ -1445,12 +1496,31 @@ static func _budget_summon_wave_dps(config: Dictionary, params: Dictionary) -> f
 static func _budget_summon_dps(config: Dictionary, params: Dictionary, stats := {}) -> float:
 	if int(config.get("max_summons", 0)) <= 0 and not config.has("summon_damage_multiplier"):
 		return 0.0
+	# SCRUM-903: выход вороньего тотема ЦЕЛИКОМ смоделирован amp-веткой
+	# _budget_hit_model (raven_homing) — фантомный summon-канал от max_summons
+	# создал бы двойной счёт одного и того же урона.
+	if bool(config.get("raven_homing", false)):
+		return 0.0
 	var summon_count: float = maxf(float(config.get("max_summons", 1.0)), 1.0) + floor(float(params.get("summon_amount", 0.0)) / 4.0)
 	var summon_amount := float(params.get("summon_amount", 0.0))
 	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
 	var attack_interval := maxf(float(config.get("summon_attack_interval", 0.45)) / (1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)), 0.18)
 	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
-	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
+	# SCRUM-902: ростер-оружие (амулет Друида) — базовый стат КОМПОЗИЦИОННО
+	# взвешен по семьям ростера: physical-звери растут от damage (Сила),
+	# magic-духи — от magic_damage (Интеллект). Зеркалит summoner_weapon
+	# ._summon_profile (family_parameter per запись; дальние духи бьют реже, но
+	# тяжелее — per-body DPS равен melee, отдельная модель темпа не нужна).
+	var base_stat := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0)))
+	var roster: Array = config.get("summon_roster", [])
+	if not roster.is_empty():
+		var weighted := 0.0
+		for entry_raw in roster:
+			var entry: Dictionary = entry_raw if entry_raw is Dictionary else {}
+			var family_parameter := "magic_damage" if str(entry.get("family", "")) == "magic" else "damage"
+			weighted += float(params.get(family_parameter, params.get("damage", 1.0)))
+		base_stat = weighted / float(roster.size())
+	var summon_damage := base_stat * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
 	return summon_count * summon_damage / attack_interval
 
 

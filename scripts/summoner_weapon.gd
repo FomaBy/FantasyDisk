@@ -30,6 +30,18 @@ var _cooldown := 0.0
 var _command_refresh := 0.0
 var _initial_prefill_done := false
 var ally_visual_ids: Array[String] = []
+# SCRUM-902: случайный ростер призывов (амулет Друида). Каждая запись:
+# {visual_id, family: "physical"/"magic", attack_kind: "melee"/"ranged"}.
+# Melee-звери бьют физически по площади (урон ← стат damage/Сила), дальние —
+# магическим снарядом (урон ← magic_damage/Интеллект): physical- и magic-билды
+# усиливают СВОЮ половину стаи. Пустой ростер = легаси-поведение (visual ids).
+var summon_roster: Array[Dictionary] = []
+var summon_ranged_range := 240.0
+var summon_ranged_projectile_speed := 620.0
+
+# SCRUM-902: дальние духи — редкие тяжёлые снаряды (интервал и урон ×2.2,
+# per-body DPS равен melee-семье; см. _summon_profile).
+const RANGED_CADENCE_SCALE := 2.2
 # SCRUM-961 «Гомункул-реактор»: особый юнит вне боевого лимита + таймер его волн.
 var _reactor_unit: Node2D = null
 var _reactor_pulse_left := 0.0
@@ -115,6 +127,14 @@ func configure_weapon(config: Dictionary) -> void:
 	var configured_visuals: Array = config.get("ally_visual_ids", [])
 	for visual_id in configured_visuals:
 		ally_visual_ids.append(str(visual_id))
+	# SCRUM-902: ростер призраков — источник выбора визуала/семьи урона.
+	summon_roster.clear()
+	var configured_roster: Array = config.get("summon_roster", [])
+	for entry in configured_roster:
+		if entry is Dictionary:
+			summon_roster.append(entry as Dictionary)
+	summon_ranged_range = maxf(float(config.get("summon_ranged_range", summon_ranged_range)), 60.0)
+	summon_ranged_projectile_speed = maxf(float(config.get("summon_ranged_projectile_speed", summon_ranged_projectile_speed)), 120.0)
 
 
 func _ready() -> void:
@@ -153,7 +173,10 @@ func _prefill_starting_summons() -> void:
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return
-	var target_count := maxi(int(ceil(float(max_summons) * 0.5)), 1)
+	# SCRUM-902: ростер-оружие (амулет Друида) стартует с ПОЛНОЙ стаей — AC
+	# «минимум 5 активных призывов без прокачки» выполняется с первого кадра боя.
+	# Легаси-оружия без ростера сохраняют прежний прифилл половины лимита.
+	var target_count := max_summons if not summon_roster.is_empty() else maxi(int(ceil(float(max_summons) * 0.5)), 1)
 	while _active_weapon_summons(owner_node).size() < mini(target_count, max_summons):
 		if not _summon(false):
 			break
@@ -181,11 +204,17 @@ func _summon(play_cast_animation := true) -> bool:
 	parent.add_child(ally)
 	ally.add_to_group("player_weapon_effects")
 	ally.set_meta("summon_weapon_owner", get_instance_id())
-	var selected_visual_id := _selected_ally_visual_id()
-	# SCRUM-961 «Зов волков»: состав стаи смещается к melee-зверям.
+	# SCRUM-902: выбор из случайного ростера (или легаси-выбор по visual ids).
+	var roster_entry := _selected_roster_entry()
+	var selected_visual_id := str(roster_entry.get("visual_id", "")) if not roster_entry.is_empty() else _selected_ally_visual_id()
+	# SCRUM-961 «Зов волков»: состав стаи смещается к волкам-melee.
 	var pack_bias := weapon_id == "summon_amulet" and _owner_mod("pack_wolf_bias") > 0.0
 	if pack_bias and randf() < 0.8:
-		selected_visual_id = "druid_beast"
+		if summon_roster.is_empty():
+			selected_visual_id = "druid_beast"
+		else:
+			roster_entry = _wolf_roster_entry()
+			selected_visual_id = str(roster_entry.get("visual_id", selected_visual_id))
 	if ally.has_method("set_visual_id"):
 		ally.call("set_visual_id", selected_visual_id)
 	else:
@@ -194,9 +223,9 @@ func _summon(play_cast_animation := true) -> bool:
 	ally.set("command_mode", command_mode)
 	var angle := randf() * TAU
 	ally.global_position = owner_node.global_position + Vector2.RIGHT.rotated(angle) * 48.0
-	var profile := _summon_profile(owner_node)
+	var profile := _summon_profile(owner_node, roster_entry)
 	# SCRUM-961 «Зов волков»: ближние (melee) духи рвут сильнее (+20% урона).
-	if pack_bias and selected_visual_id == "druid_beast":
+	if pack_bias and (selected_visual_id == "druid_beast" or str(roster_entry.get("attack_kind", "")) == "melee"):
 		profile["damage"] = float(profile.get("damage", 1.0)) * 1.2
 	if ally.has_method("set_combat_profile"):
 		ally.call("set_combat_profile", profile)
@@ -211,7 +240,28 @@ func _summon(play_cast_animation := true) -> bool:
 	return true
 
 
-func _summon_profile(owner_node: Node) -> Dictionary:
+# SCRUM-902: выбор случайной записи ростера (пустой ростер = легаси-путь).
+func _selected_roster_entry() -> Dictionary:
+	if summon_roster.is_empty():
+		return {}
+	return summon_roster[randi() % summon_roster.size()]
+
+
+# SCRUM-961 «Зов волков» поверх ростера SCRUM-902: смещение к волку (fallback —
+# первый melee-зверь ростера, затем первая запись).
+func _wolf_roster_entry() -> Dictionary:
+	var first_melee := {}
+	for entry in summon_roster:
+		if str(entry.get("visual_id", "")).contains("wolf"):
+			return entry
+		if first_melee.is_empty() and str(entry.get("attack_kind", "")) == "melee":
+			first_melee = entry
+	if not first_melee.is_empty():
+		return first_melee
+	return summon_roster[0] if not summon_roster.is_empty() else {}
+
+
+func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Dictionary:
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
 	var stats_raw = owner_node.get("stats")
@@ -221,7 +271,17 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 	var intelligence := float(stats.get("intelligence", 0.0))
 	var energy := float(stats.get("energy", 0.0))
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
-	var base_damage := float(parameters.get(damage_parameter, parameters.get("damage", damage)))
+	# SCRUM-902: семья урона записи ростера выбирает СВОЙ стат: physical-звери
+	# растут от damage (Сила), magic-духи — от magic_damage (Интеллект). Без
+	# ростера — прежний damage_parameter оружия (легаси-саммоны не затронуты).
+	var family := str(roster_entry.get("family", ""))
+	var family_parameter := damage_parameter
+	match family:
+		"physical":
+			family_parameter = "damage"
+		"magic":
+			family_parameter = "magic_damage"
+	var base_damage := float(parameters.get(family_parameter, parameters.get("damage", damage)))
 	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
 	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
 	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
@@ -255,20 +315,37 @@ func _summon_profile(owner_node: Node) -> Dictionary:
 			taunt_pulse = true
 	if weapon_id == "summon_amulet":
 		meta_damage_mult *= 1.0 + float(run_modifiers.get("pet_damage_mult", 0.0))
+	# SCRUM-902: дальние духи держат дистанцию снаряда (масштаб от attack_range
+	# оружия относительно базы 420) и бьют одиночным магическим снарядом — их
+	# splash-покрытие выключено (melee-звери остаются AoE-осью стаи).
+	var attack_kind := str(roster_entry.get("attack_kind", "melee"))
+	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0)
+	# SCRUM-902: дальние духи бьют РЕЖЕ, но ТЯЖЕЛЕЕ (×RANGED_CADENCE_SCALE к
+	# интервалу И к урону хита) — per-body DPS семьи равен melee-темпу, поэтому
+	# budget-зеркало (_budget_summon_dps) остаётся композиционно-взвешенным по
+	# семьям без отдельной модели темпа.
+	var cadence_scale := 1.0
+	if attack_kind == "ranged":
+		profile_attack_range = maxf(summon_ranged_range * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		cadence_scale = RANGED_CADENCE_SCALE
 	return {
-		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult, 1.0),
+		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult * cadence_scale, 1.0),
 		"move_speed": 230.0 * summon_speed_multiplier * (1.0 + minf(leadership * 0.010, 0.28)),
-		"attack_range": maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0),
-		"attack_interval": maxf(summon_attack_interval / (1.0 + summon_haste), 0.18),
+		"attack_range": profile_attack_range,
+		"attack_interval": maxf(summon_attack_interval * cadence_scale / (1.0 + summon_haste), 0.18),
 		"lifetime": 12.0 * summon_lifetime_multiplier * (1.0 + minf(leadership * 0.026, 0.48)),
 		"max_health": owner_max_hp * summon_health_multiplier * (1.0 + summon_bulk) * meta_health_mult,
 		"summon_role": summon_role,
 		"control_knockback": summon_control_knockback,
 		"support_heal_percent": summon_support_heal_percent,
-		"aoe_radius": summon_radius,
+		"aoe_radius": summon_radius if attack_kind != "ranged" else 0.0,
 		"aoe_damage_multiplier": summon_splash_damage,
 		"leash_radius": summon_leash_radius,
 		"taunt_pulse": taunt_pulse,
+		# SCRUM-902: семья/вид атаки записи ростера (ally_minion).
+		"damage_family": family if family != "" else ("magic" if damage_parameter == "magic_damage" else "physical"),
+		"attack_kind": attack_kind,
+		"ranged_projectile_speed": summon_ranged_projectile_speed,
 	}
 
 
@@ -528,21 +605,22 @@ func _command_existing_summons() -> void:
 	var owned_allies := _owned_allies(owner_node)
 	var targets := _target_candidates(owner_node, max(owned_allies.size() * 3, 6))
 	var assigned_damage := {}
+	var assigned_counts := {}
 	for ally in get_tree().get_nodes_in_group("allies"):
 		var ally_node := ally as Node2D
 		if ally_node == null or not is_instance_valid(ally_node):
 			continue
 		if not _is_owned_weapon_summon(ally_node, owner_node):
 			continue
-		_command_ally(ally_node, owner_node, targets, assigned_damage)
+		_command_ally(ally_node, owner_node, targets, assigned_damage, assigned_counts)
 
 
-func _command_ally(ally: Node2D, owner_node: Node2D, targets: Array = [], assigned_damage: Dictionary = {}) -> void:
+func _command_ally(ally: Node2D, owner_node: Node2D, targets: Array = [], assigned_damage: Dictionary = {}, assigned_counts: Dictionary = {}) -> void:
 	if ally == null or not is_instance_valid(ally):
 		return
 	ally.set("command_mode", command_mode)
 	ally.set("owner_node", owner_node)
-	var target := _best_group_target(ally, owner_node, targets, assigned_damage)
+	var target := _best_group_target(ally, owner_node, targets, assigned_damage, assigned_counts)
 	if target != null:
 		ally.set("command_target", target)
 	else:
@@ -588,7 +666,7 @@ func _target_candidates(owner_node: Node2D, count: int) -> Array:
 	return TARGET_QUERY.nearest_many(self, owner_node.global_position, summon_leash_radius, count)
 
 
-func _best_group_target(ally: Node2D, owner_node: Node2D, targets: Array, assigned_damage: Dictionary) -> Node2D:
+func _best_group_target(ally: Node2D, owner_node: Node2D, targets: Array, assigned_damage: Dictionary, assigned_counts: Dictionary = {}) -> Node2D:
 	if targets.is_empty():
 		return TARGET_QUERY.nearest(self, owner_node.global_position, summon_leash_radius)
 	var best_target: Node2D = null
@@ -607,7 +685,12 @@ func _best_group_target(ally: Node2D, owner_node: Node2D, targets: Array, assign
 		var distance_score := ally.global_position.distance_squared_to(target.global_position)
 		var owner_score := owner_node.global_position.distance_squared_to(target.global_position) * 0.20
 		var overkill_pressure := (already_assigned / maxf(health, 1.0)) * 180000.0
-		var score := distance_score + owner_score + overkill_pressure
+		# SCRUM-902: давление РАСПРЕДЕЛЕНИЯ — каждый уже назначенный на цель
+		# призыв дорожает как ~350px дистанции, поэтому при нескольких валидных
+		# целях стая расползается по паку, а не догпайлит ближайшего; при
+		# единственной цели штраф не меняет выбор (все идут в неё).
+		var spread_pressure := float(assigned_counts.get(target_id, 0)) * 120000.0
+		var score := distance_score + owner_score + overkill_pressure + spread_pressure
 		if score < best_score:
 			best_score = score
 			best_target = target
@@ -615,6 +698,7 @@ func _best_group_target(ally: Node2D, owner_node: Node2D, targets: Array, assign
 		var ally_damage := _ally_expected_damage(ally)
 		var best_id := best_target.get_instance_id()
 		assigned_damage[best_id] = float(assigned_damage.get(best_id, 0.0)) + ally_damage
+		assigned_counts[best_id] = int(assigned_counts.get(best_id, 0)) + 1
 	return best_target
 
 

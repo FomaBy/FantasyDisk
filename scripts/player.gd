@@ -1196,6 +1196,11 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 		var warmup_bonus := warmup_magic_bonus()
 		if warmup_bonus > 0.0:
 			multiplier *= 1.0 + warmup_bonus
+	# SCRUM-902 «Аура дикой силы»: владелец ауры всегда в её центре — его
+	# исходящие хиты усилены постоянным классовым баффом (у классов без trait'а
+	# множитель ровно 1.0). Матожидание учтено budget-моделью
+	# (class_wild_aura_damage_factor) — кит скомпенсирован budget_tuning_for.
+	multiplier *= wild_aura_damage_multiplier()
 	var gold_cap := float(run_modifiers.get("gold_damage_bonus_cap", 0.0))
 	var gold_step := float(run_modifiers.get("gold_damage_per_50", 0.0))
 	if gold_cap > 0.0 and gold_step > 0.0:
@@ -2346,6 +2351,10 @@ func _trigger_class_status_effects(enemy: Node2D) -> void:
 func _update_class_status_auras() -> void:
 	if _status_aura_cooldown_left > 0.0 or not is_inside_tree():
 		return
+	# SCRUM-902 «Аура дикой силы»: классовый trait-канал (data-driven — активен
+	# только у классов с wild_aura_* в CLASS_TRAITS). Идёт ДО generic-ветки и на
+	# том же кадансе 0.55с; generic command-ауру не подменяет.
+	_update_wild_force_aura()
 	if character_id not in ["guitarist", "druid", "engineer", "priest"]:
 		return
 	var aura_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.62, 120.0, 280.0)
@@ -2385,6 +2394,84 @@ func _update_class_status_auras() -> void:
 	if applied:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, aura_radius, Color(0.44, 0.82, 1.0, 0.20), false)
 	_status_aura_cooldown_left = 0.55
+
+
+# ==================== SCRUM-902: «Аура дикой силы» (Друид) ====================
+# Постоянная классовая аура урона (CLASS_TRAITS.druid, data-driven — без
+# хардкода класса): полупрозрачное кольцо показывает фактический радиус,
+# внутри баффаются ТОЛЬКО сам Друид и ЕГО призывы (группа "allies" с
+# owner_node == self). Враги и чужие сущности статус не получают.
+#   - величина баффа = wild_aura_damage_bonus × buff_power, кап wild_aura_damage_cap
+#     (ProgressionData.class_wild_aura_damage_bonus — то же значение видит бюджет);
+#   - радиус = derived aura_radius × wild_aura_radius_ratio;
+#   - призывы: статус "wild_force_aura" → StatusEffects.damage_multiplier в
+#     ally_minion._try_attack (позиционный: дух вне кольца не усилен);
+#   - сам Друид всегда в центре собственной ауры → его хиты усиливаются
+#     безусловно в meta_damage_multiplier (wild_aura_damage_multiplier).
+const WILD_AURA_RING_NAME := "WildForceAuraRing"
+const WILD_AURA_COLOR := Color(0.46, 0.84, 0.34, 1.0)
+
+
+class WildForceAuraRing extends Node2D:
+	var radius := 0.0:
+		set(value):
+			if not is_equal_approx(radius, value):
+				radius = value
+				queue_redraw()
+
+	func _draw() -> void:
+		if radius <= 0.0:
+			return
+		# Прозрачная заливка + мягкая кромка: радиус читается, поле боя — тоже.
+		draw_circle(Vector2.ZERO, radius, Color(0.46, 0.84, 0.34, 0.045))
+		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 96, Color(0.46, 0.84, 0.34, 0.20), 2.5, true)
+
+
+func wild_aura_damage_bonus() -> float:
+	return ProgressionData.class_wild_aura_damage_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+
+
+# Множитель исходящего урона владельца ауры (Друид всегда внутри своего кольца).
+func wild_aura_damage_multiplier() -> float:
+	return 1.0 + wild_aura_damage_bonus()
+
+
+func wild_aura_radius() -> float:
+	if wild_aura_damage_bonus() <= 0.0:
+		return 0.0
+	var ratio := clampf(class_trait_value("wild_aura_radius_ratio", 1.0), 0.1, 2.0)
+	return maxf(float(derived_parameters.get("aura_radius", 0.0)) * ratio, 0.0)
+
+
+func _update_wild_force_aura() -> void:
+	var ring := get_node_or_null(WILD_AURA_RING_NAME) as WildForceAuraRing
+	var aura_bonus := wild_aura_damage_bonus()
+	if aura_bonus <= 0.0:
+		if ring != null:
+			ring.queue_free()
+		return
+	var radius := wild_aura_radius()
+	if ring == null:
+		ring = WildForceAuraRing.new()
+		ring.name = WILD_AURA_RING_NAME
+		# Наземная декаль: над лужами (GROUND_POOL_Z −3), под боевыми сущностями.
+		ring.z_as_relative = false
+		ring.z_index = -2
+		add_child(ring)
+	ring.radius = radius
+	for ally in get_tree().get_nodes_in_group("allies"):
+		var ally_node := ally as Node2D
+		if ally_node == null or not is_instance_valid(ally_node):
+			continue
+		if ally_node.get("owner_node") != self:
+			continue
+		if ally_node.global_position.distance_to(global_position) > radius:
+			continue
+		StatusEffects.apply_status(ally_node, "wild_force_aura", {
+			"duration": 0.85,
+			"damage_multiplier": 1.0 + aura_bonus,
+			"marker_color": Color(0.46, 0.84, 0.34, 1.0),
+		})
 
 
 func _trigger_leadership_echo(enemy: Node2D) -> void:
