@@ -803,43 +803,42 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if not content_safe.encloses(child.get_global_rect()):
 					return "%s: expected %s to stay inside ResultContent safe rect %s, got %s." % [context, child_name, str(content_safe), str(child.get_global_rect())]
 		"codex":
-			# SCRUM-879: единый атлас-стиль — фон COVERED без осевого stretch,
-			# полая рама meta40 поверх, панели-чипы StyleBoxFlat в safe-зоне рамы.
+			# SCRUM-954: exact SCRUM-1017 1920x1080 stage with uniform scaling.
 			var codex_background := main.find_child("UnifiedBackground_codex", true, false) as TextureRect
 			if codex_background == null or codex_background.texture == null:
 				return "%s: expected UnifiedBackground_codex with a loaded texture." % context
 			if codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
 				return "%s: expected UnifiedBackground_codex to cover the viewport without axis stretch." % context
-			var codex_frame := main.find_child("CodexFrame", true, false) as Panel
-			if codex_frame == null:
-				return "%s: expected CodexFrame ornament overlay." % context
-			var codex_frame_style := codex_frame.get_theme_stylebox("panel") as StyleBoxTexture
-			if codex_frame_style == null or codex_frame_style.draw_center:
-				return "%s: expected hollow CodexFrame (StyleBoxTexture, draw_center=false)." % context
-			if codex_frame_style.texture == null or not codex_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
-				return "%s: expected CodexFrame to use the meta40 frame_border 9-slice." % context
-			var codex_vp := codex_frame.get_viewport_rect().size
-			var codex_margin_x := roundf(160.0 * codex_vp.x / 1536.0)
-			var codex_margin_y := roundf(160.0 * codex_vp.y / 1024.0)
-			var codex_safe := Rect2(
-				codex_margin_x, codex_margin_y,
-				codex_vp.x - 2.0 * codex_margin_x, codex_vp.y - 2.0 * codex_margin_y
-			).grow(2.0)
-			for codex_panel_name in ["CodexNavPanel", "CodexContent", "CodexDetailPanel"]:
+			if main.find_child("CodexFrame", true, false) != null:
+				return "%s: SCRUM-954 removes the full-screen CodexFrame that covered header/nav content zones." % context
+			var codex_screen := main.find_child("CodexScreen", true, false) as Control
+			if codex_screen == null:
+				return "%s: expected CodexScreen." % context
+			var codex_vp := codex_screen.get_viewport_rect().size
+			var panel_contract := {
+				"CodexNavPanel": Rect2(72, 172, 324, 840),
+				"CodexContent": Rect2(420, 172, 620, 840),
+				"CodexDetailPanel": Rect2(1064, 172, 784, 840),
+			}
+			for codex_panel_name in panel_contract:
 				var codex_panel := main.find_child(str(codex_panel_name), true, false) as PanelContainer
 				if codex_panel == null or not codex_panel.get_global_rect().has_area():
 					return "%s: expected visible %s." % [context, codex_panel_name]
 				var codex_chip := codex_panel.get_theme_stylebox("panel") as StyleBoxFlat
 				if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
 					return "%s: expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, codex_panel_name]
-				if not codex_safe.encloses(codex_panel.get_global_rect()):
-					return "%s: expected %s to stay inside unified safe margins %s, got %s." % [context, codex_panel_name, str(codex_safe), str(codex_panel.get_global_rect())]
+				var expected_panel_rect := _codex_scaled_design_rect(codex_vp, panel_contract[codex_panel_name])
+				if not _rect_approximately_equal(codex_panel.get_global_rect(), expected_panel_rect, 1.5):
+					return "%s: expected %s rect %s, got %s." % [context, codex_panel_name, str(expected_panel_rect), str(codex_panel.get_global_rect())]
 			var entry_card := main.find_child("CodexEntryCard", true, false) as Button
 			if entry_card == null or not (entry_card.get_theme_stylebox("normal") is StyleBoxFlat):
 				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
-			if tab_button == null or not _stylebox_texture_path(tab_button.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
-				return "%s: expected CodexTab_characters to use the global codex_tab kit button." % context
+			var tab_style_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) if tab_button != null else ""
+			if tab_button == null or not tab_style_path.contains("back_260x104") or tab_style_path.contains("codex_tab"):
+				return "%s: expected CodexTab_characters to use the main/back minimal-metal family without a category emblem." % context
+			if tab_button.icon != null:
+				return "%s: Codex navigation must not render generic category emblems." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control
 			var center_list := main.find_child("CodexCenterListHost", true, false) as Control
 			var detail_panel := main.find_child("CodexDetailPanel", true, false) as Control
@@ -852,22 +851,15 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if required_control == null or not required_control.get_global_rect().has_area():
 					var required_name := str(required_control.name) if required_control != null else "<missing>"
 					return "%s: expected SCRUM-884 Codex list/dossier zone %s to be visible." % [context, required_name]
-			# SCRUM-884 (фидбек юзера): центральный предпросмотр упразднён — в центре
-			# только список карточек, арт и полное описание живут в правом досье.
 			for absent_name in ["CodexCenterOverviewRow", "CodexCenterObjectStage", "CodexCenterObjectTexture", "CodexCenterSummaryPanel", "CodexCenterSummaryBody"]:
 				if main.find_child(str(absent_name), true, false) != null:
 					return "%s: expected SCRUM-884 codex center preview node %s to be removed." % [context, str(absent_name)]
 			var center_rect := center_panel.get_global_rect().grow(1.0)
 			if not center_rect.encloses(center_list.get_global_rect()):
 				return "%s: expected CodexCenterListHost to stay inside CodexContent safe panel." % context
-			# SCRUM-884: освобождённая высота уходит списку — лента занимает >= 90%
-			# внутренней (за content-margins чипа) зоны центральной колонки.
-			var center_style := (center_panel as PanelContainer).get_theme_stylebox("panel")
-			var center_inner_height := center_panel.get_global_rect().size.y
-			if center_style != null:
-				center_inner_height -= center_style.get_content_margin(SIDE_TOP) + center_style.get_content_margin(SIDE_BOTTOM)
-			if center_list.get_global_rect().size.y < 0.9 * center_inner_height:
-				return "%s: expected SCRUM-884 CodexCenterListHost to fill >= 90 percent of the CodexContent inner zone, got %.0f of %.0f." % [context, center_list.get_global_rect().size.y, center_inner_height]
+			var expected_list := _codex_scaled_design_rect(codex_vp, Rect2(452, 278, 556, 690))
+			if not _rect_approximately_equal(center_list.get_global_rect(), expected_list, 1.5):
+				return "%s: expected accepted center-list rect %s, got %s." % [context, str(expected_list), str(center_list.get_global_rect())]
 			var detail_rect := detail_panel.get_global_rect().grow(1.0)
 			for child in [detail_portrait, detail_chips, detail_text]:
 				var child_control := child as Control
@@ -875,6 +867,15 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s to stay inside CodexDetailPanel safe panel." % [context, str(child_control.name)]
 			if detail_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
 				return "%s: expected Codex dossier object art to use contained centered scaling." % context
+			var expected_preview := _codex_scaled_design_rect(codex_vp, Rect2(1140, 310, 236, 248))
+			if not _rect_approximately_equal(detail_texture.get_global_rect(), expected_preview, 1.5):
+				return "%s: expected accepted 236x248 preview safe rect %s, got %s." % [context, str(expected_preview), str(detail_texture.get_global_rect())]
+			var entry_name := main.find_child("CodexEntryName", true, false) as Label
+			if entry_name == null or entry_name.text.strip_edges() == "" or entry_name.text.contains(" — ") or entry_name.horizontal_alignment != HORIZONTAL_ALIGNMENT_CENTER:
+				return "%s: center rows must contain only one centered Russian display-name." % context
+			var row_texture := main.find_child("CodexPortraitSlotTexture", true, false) as TextureRect
+			if row_texture == null or row_texture.texture == null:
+				return "%s: center row must use the canonical entry image." % context
 			var dossier_headings := main.find_children("CodexDetailSectionHeading_*", "Label", true, false)
 			if dossier_headings.size() < 3:
 				return "%s: expected SCRUM-881 structured dossier sections (>= 3) for the default entry, got %d." % [context, dossier_headings.size()]
@@ -1375,6 +1376,8 @@ func _text_control_contract_error(control: Control, context: String) -> String:
 			return "%s: text control %s rect %s escapes parent content rect %s." % [context, control.name, str(rect), str(parent_control.get_global_rect())]
 
 	var needed := _text_control_needed_size(control)
+	var visual_scale := control.get_global_transform().get_scale().abs()
+	needed *= visual_scale
 	if needed.y > rect.size.y + TEXT_OVERFLOW_TOLERANCE:
 		return "%s: text control %s needs height %.1f but has %.1f." % [context, control.name, needed.y, rect.size.y]
 	if not _text_control_wraps(control) and needed.x > rect.size.x + TEXT_OVERFLOW_TOLERANCE:
@@ -1401,7 +1404,10 @@ func _button_label_content_fit_error(button: Button, state: String, context: Str
 	var style := button.get_theme_stylebox(state) as StyleBoxTexture
 	if style == null:
 		return "%s: expected %s %s style to be StyleBoxTexture." % [context, button.name, state]
-	var rect := button.get_global_rect()
+	# Style content margins and font metrics are local design pixels. Using the
+	# global rect here makes uniformly transformed/letterboxed screens compare a
+	# scaled box against unscaled text.
+	var rect := Rect2(Vector2.ZERO, button.size)
 	var content_rect := Rect2(
 		rect.position + Vector2(style.content_margin_left, style.content_margin_top),
 		Vector2(
@@ -1500,6 +1506,18 @@ func _scaled_source_rect(frame_rect: Rect2, source_size: Vector2, source_rect: R
 		frame_rect.position + Vector2(source_rect.position.x * scale_x, source_rect.position.y * scale_y),
 		Vector2(source_rect.size.x * scale_x, source_rect.size.y * scale_y)
 	)
+
+
+func _codex_scaled_design_rect(viewport_size: Vector2, design_rect: Rect2) -> Rect2:
+	var design_size := Vector2(1920, 1080)
+	var scale := minf(viewport_size.x / design_size.x, viewport_size.y / design_size.y)
+	var offset := (viewport_size - design_size * scale) * 0.5
+	return Rect2(offset + design_rect.position * scale, design_rect.size * scale)
+
+
+func _rect_approximately_equal(actual: Rect2, expected: Rect2, tolerance: float) -> bool:
+	return actual.position.distance_to(expected.position) <= tolerance \
+		and actual.size.distance_to(expected.size) <= tolerance
 
 
 func _filter_dump_sections(lines: PackedStringArray, markers: Array) -> PackedStringArray:

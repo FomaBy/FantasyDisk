@@ -720,6 +720,32 @@ shows raw character, monster, artifact or stat ids. Focused coverage lives in
 `codex_data_smoke_test.gd`, `runtime_smoke_test.gd` and the 720p/1080p/1440p
 Codex branch of `ui_no_overlap_matrix_test.gd`.
 
+SCRUM-954 supersedes the previous container geometry with the independently
+accepted SCRUM-1017 PixelLab/content-zone contract. Runtime uses a real
+1920x1080 `CodexStage`, uniformly scaled by
+`min(viewport_width/1920, viewport_height/1080)` and letterboxed for other
+aspect ratios. Base panel rects are `CodexNavPanel 72,172,324,840`,
+`CodexContent 420,172,620,840` and `CodexDetailPanel 1064,172,784,840`.
+The old full-screen `CodexFrame` is removed because its 160px rails covered the
+new header/nav zones at 720p and 1080p; the title, Back control and each panel
+now own explicit safe margins. The six navigation controls contain only
+centered Russian labels on the shared back/main button family, with no category
+emblems. Center rows are 516x154 design pixels and expose exactly one canonical
+image plus one centered Russian display-name; summary prose, raw ids and English
+duplicates live outside the list. The right dossier uses a contained 236x248
+image zone and a single 610x304 lower text scroll. Stat relations are projected
+inside that lower scroll, so only the center list and dossier have visible
+scrollbar lanes. The stage-aware font clamp keeps nav/names/title within
+15–30 visual px and dossier text within 17–32 visual px. Ascension rows reuse
+the canonical combat-HUD ascension icon; shop-derived artifact rows resolve the
+existing `shop/shop_<id>.png` family before the fail-safe icon. Exact
+720p/1080p/1440p coverage and windowed screenshots are
+produced by `codex_scrum954_layout_test.gd`; the Codex branch of
+`ui_no_overlap_matrix_test.gd` checks the same transformed rects and content
+zones. Font metadata is refreshed on live window resize without rebuilding the
+six cached sections. Persistent windowed previews live under
+`docs/design/previews/scrum954_codex_runtime/`.
+
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
 SCRUM-574 is the live Codex 2K frame baseline. Mockup/spec:

@@ -249,11 +249,18 @@ Shop style alpha:
 
 ## Codex
 
-- Glossary tooltip minimum width: `360`.
-- Artifact codex icon: `96 x 96`.
-- Tab action button: `230 x 104`.
-- Dotted hover terms use hit-area stable labels; tooltip visibility must not resize surrounding grid.
-- Glossary grid columns: `2`; horizontal separation `14`; vertical separation `10`.
+- Design stage: `1920 x 1080`, uniform scale + letterbox.
+- Header title frame: `72,36,340,112`; Back: `1580,46,268,96`.
+- Panels: navigation `72,172,324,840`; list `420,172,620,840`; detail `1064,172,784,840`.
+- Navigation safe zone: `104,210,260,752`; six `260 x 104` Russian-only buttons at authored y `222,340,458,576,694,812`.
+- Center list viewport: `452,278,556,690`; entry rows `516 x 154`, with a `122 x 114` image well containing an `88 x 96` live image and a centered Russian name.
+- Detail preview frame: `1108,284,300,300`; live contained image: `1140,310,236,248`.
+- Detail body frame: `1108,606,684,356`; text safe zone `1140,632,610,304`.
+- Effective visual fonts: navigation/list/title `15..30px`; dossier body `17..32px`.
+- Live resize must recompute stage scale and all Codex font overrides without rebuilding lazy section caches.
+- Visible vertical scrollbar lanes: center list and lower dossier only.
+- Full-screen Codex ornament shell is forbidden: it overlaps the accepted header/nav zones. Each panel's content margins are authoritative.
+- Glossary remains absent from the live Codex.
 
 ## Settings
 
