@@ -3515,7 +3515,7 @@ func _test_class_weapon_configs() -> void:
 			"dark_wand": {"scene": "DarkWand", "mode": "dark_chain_burst", "sprite": "res://assets/sprites/weapons/dark_wand.png"},
 		},
 		"guitarist": {
-			"electric_guitar": {"scene": "ElectricGuitar", "mode": "sound_wave", "sprite": "res://assets/sprites/weapons/electric_guitar.png"},
+			"electric_guitar": {"scene": "ElectricGuitar", "mode": "riff_strip", "sprite": "res://assets/sprites/weapons/electric_guitar.png"},
 			"bass_guitar": {"scene": "BassGuitar", "mode": "pulse", "sprite": "res://assets/sprites/weapons/bass_guitar.png"},
 			"sound_amp": {"scene": "SoundAmp", "mode": "amp", "sprite": "res://assets/sprites/weapons/sound_amp.png"},
 		},

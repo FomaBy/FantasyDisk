@@ -226,10 +226,12 @@ const CHARACTER_CONFIGS := {
 	},
 	"guitarist": {
 		"id": "guitarist",
+		# SCRUM-899/SCRUM-1006: магический кастер с деплой-геймплеем и trait'ом
+		# «Разогрев» — тексты без звука-как-стата (звук = флейвор магии).
 		"title": "Гитарист",
-		"description": "Заклинатель звука: волны бьют вперед, бас расталкивает кольцом, усилители гремят сами. Держит толпу на расстоянии рева.",
-		"strengths": "отталкивание толпы, волны по области, усилители-помощники, темп.",
-		"weaknesses": "по боссам заметно слабее.",
+		"description": "Магический кастер сцены: узкий рифф бьет вперед, бас-кольцо расталкивает, усилители гремят сами. Пока не ловит удары — разогревается и бьет магией больнее.",
+		"strengths": "магический AoE-контроль, деплой-усилители, разогрев без урона, кайт.",
+		"weaknesses": "по боссам заметно слабее; полученный удар сбрасывает разогрев.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/guitarist_pixellab/guitarist_idle_south.png",
 	},
 	"assassin": {
@@ -289,7 +291,7 @@ const ULTIMATE_CONFIGS := {
 	"robot": {"title": "Аварийная Перегрузка", "description": "Робот включает аварийный контур: получает временное поглощение, выпускает ударную волну и несколько раз прожигает ближайших врагов.", "duration": 4.5, "radius": 380.0, "damage": 0.78, "target_count": 8, "damage_charge_rate": 0.030, "taken_charge_rate": 1.55, "boss_cap": 0.08},
 	"engineer": {"title": "Аварийная Мастерская", "description": "Инженер быстро разворачивает временную сеть устройств: лучи, ремонт и взрывные узлы вокруг себя.", "duration": 4.2, "radius": 430.0, "damage": 0.92, "target_count": 9, "heal_ratio": 0.12, "damage_charge_rate": 0.031, "taken_charge_rate": 1.18, "boss_cap": 0.08},
 	"dark_mage": {"title": "Темная буря", "description": "Вихрь темной магии проклинает всех врагов вокруг.", "duration": 0.0, "radius": 360.0, "damage": 1.35, "damage_charge_rate": 0.034, "taken_charge_rate": 1.05, "boss_cap": 0.11},
-	"guitarist": {"title": "Соло", "description": "Гигантская звуковая волна отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
+	"guitarist": {"title": "Соло", "description": "Гигантская волна магического резонанса отбрасывает и глушит толпу.", "duration": 0.0, "radius": 430.0, "damage": 1.15, "damage_charge_rate": 0.033, "taken_charge_rate": 1.10, "boss_cap": 0.09},
 	"assassin": {"title": "Танец клинков", "description": "Серия мгновенных рывков-ударов по ближайшим целям.", "duration": 0.0, "radius": 520.0, "damage": 1.05, "target_count": 7, "damage_charge_rate": 0.036, "taken_charge_rate": 1.05, "boss_cap": 0.08},
 	"ranger": {"title": "Лунный залп", "description": "Дождь болтов поражает большую область вокруг героя.", "duration": 0.0, "radius": 480.0, "damage": 1.18, "target_count": 14, "damage_charge_rate": 0.034, "taken_charge_rate": 1.0, "boss_cap": 0.09},
 	"doctor": {"title": "Переливание", "description": "Массовый drain врагов вокруг; избыток лечения становится щитом-поглощением.", "duration": 0.0, "radius": 360.0, "damage": 0.95, "damage_charge_rate": 0.032, "taken_charge_rate": 1.25, "boss_cap": 0.08},
@@ -429,6 +431,25 @@ const CLASS_TRAITS := {
 		"description": "Враги под периодическим уроном Биолога получают на 20% больше его прямого урона: сначала заражай — потом добивай.",
 		"infected_direct_hit_multiplier": 1.20,
 	},
+	"guitarist": {
+		# SCRUM-1006 «Разогрев» (реестр SCRUM-953): пока Гитарист НЕ получает
+		# фактического урона, его МАГИЧЕСКИЙ урон растёт на no_hit_magic_bonus_per_second
+		# в секунду (линейно, детерминированно: 0→кап ровно за cap/ramp = 10с)
+		# до капа no_hit_magic_bonus_cap. КВАЛИФИЦИРОВАННЫЙ удар (прошедший
+		# гейты предотвращения в Player.take_damage) сбрасывает стек в 0;
+		# полностью предотвращенные события — godmode, i-frames, невидимость,
+		# уворот — НЕ сбрасывают (явное правило, покрыто тестом). Потребитель —
+		# Player.meta_damage_multiplier ТОЛЬКО для hit-контекстов
+		# damage_type=="magic": physical/dot оси и другие классы не затронуты;
+		# деплой-ампы бьют через владельца → бонус покрывает весь кит SCRUM-899
+		# и награждает кайт-петлю «бегай и расставляй усилители».
+		# Покрыт tests/guitarist_kit_test.gd.
+		"id": "warm_up",
+		"title": "Разогрев",
+		"description": "Пока Гитарист не получает урона, его магический урон растёт на +2% в секунду — до +20%. Полученный удар сбрасывает разогрев.",
+		"no_hit_magic_bonus_per_second": 0.02,
+		"no_hit_magic_bonus_cap": 0.20,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {
@@ -554,14 +575,17 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"guitarist": {
+		# SCRUM-899/SCRUM-1006: trait «Разогрев» — источник истины в
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (no_hit_magic_bonus_*), потребитель — Player.meta_damage_multiplier.
 		"main_attribute": "leadership",
-		"identity_title": "Сценический контроль",
-		"summary": "Лидерство собирает толпу на его концерт: чем громче имя, тем тяжелее волны и чаще гремят усилители.",
-		"mechanic_tags": ["rhythm", "knockback", "aura", "deploy_amp"],
+		"identity_title": "Разогрев",
+		"summary": "Магический кастер сцены: пока не ловит удары — разогрев копит до +20% магического урона (+2%/сек), полученный удар обнуляет кураж. Лидерство держит на сцене больше усилителей и дольше.",
+		"mechanic_tags": ["warm_up", "magic_caster", "kiting", "deploy_amp"],
 		"weapon_identities": {
-			"electric_guitar": "направленная звуковая волна",
-			"bass_guitar": "частый круговой бас-пульс",
-			"sound_amp": "deploy-усилитель с самостоятельными пульсами",
+			"electric_guitar": "узкая передняя полоса частых магических риффов",
+			"bass_guitar": "большое кольцо слабых частых бас-пульсов под кайт",
+			"sound_amp": "деплой-усилители: магические AoE-турели на земле",
 		},
 	},
 	"assassin": {
@@ -779,11 +803,14 @@ const CLASS_INTERPRETATIONS := {
 		"summon_amount": "Учащает вспомогательные эхо-срабатывания.",
 	},
 	"guitarist": {
-		"strength": "Делает волны тяжелее и сильнее отталкивает.",
-		"intelligence": "Основной драйвер урона: волны бьют магическим резонансом.",
-		"magic_damage": "Главный канал урона Гитариста: все волны и усилители бьют магией.",
+		# SCRUM-899: тексты соответствуют magic-caster идентичности и правилам
+		# саммонер-скейлинга ампов (см. GUITARIST_WEAPONS в progression_data_weapons.gd).
+		"strength": "Делает рифф и пульсы тяжелее и сильнее отталкивает.",
+		"intelligence": "Основной драйвер урона: рифф, бас и усилители бьют магией.",
+		"magic_damage": "Главный канал урона Гитариста: весь кит бьёт магией, и именно её усиливает «Разогрев».",
 		"dot_damage": "Добавляет жгучий feedback-DoT.",
-		"summon_amount": "Увеличивает сценические deploy/echo-срабатывания.",
+		"leadership": "Больше активных усилителей на сцене и дольше их жизнь.",
+		"summon_amount": "Учащает пульс усилителей — сценический темп турелей.",
 	},
 	"assassin": {
 		"intelligence": "Зачаровывает лезвия фиолетовой искрой по области.",

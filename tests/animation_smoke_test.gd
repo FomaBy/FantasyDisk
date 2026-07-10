@@ -616,7 +616,7 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 	# Dark Mage/Knight body attack animation is out of scope here; their weapons
 	# still emit timing events, and body SpriteFrames stay idle/walk/move only.
 	var phase_samples := [
-		["guitarist", "electric_guitar", "sound_wave", "shoot", "windup"],
+		["guitarist", "electric_guitar", "riff_strip", "shoot", "windup"],
 		["guitarist", "bass_guitar", "pulse", "shoot", "pulse"],
 		["guitarist", "sound_amp", "amp", "shoot", "deploy"],
 		["assassin", "chakrams", "boomerang", "shoot", "windup"],

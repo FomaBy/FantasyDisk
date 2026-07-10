@@ -177,34 +177,46 @@ const DARK_MAGE_WEAPONS := {
 	},
 }
 
+# SCRUM-899: Гитарист = магический кастер с барбар-формами атак и деплой-геймплеем.
+# Электрогитара — УЗКАЯ передняя полоса riff_strip (частые низко-средние маг. хиты,
+# позиционирование важно; НЕ широкая generic-волна). Бас — большое кольцо частых
+# слабых пульсов под кайт (ранняя слабость — урон, не радиус). Усилитель — ядро
+# саммонер-петли: наземные маг. AoE-турели. Канон саммонер-скейлинга ампа:
+#   • число ампов: 1 + floor(Лидерство/4), кап max_summons_cap (+amp_cap_bonus);
+#   • uptime: Лидерство продлевает жизнь ампа (amp_leadership_lifetime_*);
+#   • сила: summon_amount учащает пульс (amp_summon_haste, формула канона
+#     summoner_weapon: min(summon_amount*0.014 + leadership*0.006, 0.30));
+#   • каденция установки: attack_speed через generic fire_interval-скейл;
+#   • урон пульса — ТОЛЬКО magic_damage (никакой «лидерской» оси урона).
+# Trait «Разогрев» (SCRUM-1006) — CLASS_TRAITS.guitarist в progression_data_characters.gd.
 const GUITARIST_WEAPONS := {
 	"electric_guitar": {
 		"id": "electric_guitar",
 		"title": "Электрогитара",
-		"description": "Направленная звуковая волна: широкий удар вперед с легким отталкиванием.",
+		"description": "Узкий магический рифф вперед: частые удары в короткой полосе, важно вести корпус на цель.",
 		"scene_path": "res://scenes/ElectricGuitar.tscn",
-		"attack_mode": "sound_wave",
+		"attack_mode": "riff_strip",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 1.0,
-		"fire_interval": 0.96,
-		"attack_range": 560.0,
-		"aoe_radius": 230.0,
-		"wave_width": 240.0,
-		"knockback": 90.0,
+		"damage_multiplier": 0.66,
+		"fire_interval": 0.55,
+		"attack_range": 520.0,
+		"aoe_radius": 110.0,
+		"wave_width": 118.0,
+		"knockback": 70.0,
 		"visual_color": Color(0.18, 0.95, 0.85, 0.36),
 		"passive_mods": {"attack_speed_multiplier": 1.15},
 	},
 	"bass_guitar": {
 		"id": "bass_guitar",
 		"title": "Бас-гитара",
-		"description": "Частый слабый бас-пульс вокруг героя: минимальный урон, максимальный контроль отталкиванием.",
+		"description": "Большое кольцо баса с первого уровня: частые слабые магические тики и жесткое отталкивание — веди толпу сквозь ауру.",
 		"scene_path": "res://scenes/BassGuitar.tscn",
 		"attack_mode": "pulse",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.30,
-		"fire_interval": 0.85,
-		"attack_range": 280.0,
-		"aoe_radius": 280.0,
+		"damage_multiplier": 0.26,
+		"fire_interval": 0.78,
+		"attack_range": 330.0,
+		"aoe_radius": 330.0,
 		"knockback": 180.0,
 		"visual_color": Color(1.0, 0.78, 0.18, 0.34),
 		"passive_mods": {"attack_speed_multiplier": 1.10},
@@ -212,19 +224,22 @@ const GUITARIST_WEAPONS := {
 	"sound_amp": {
 		"id": "sound_amp",
 		"title": "Звуковой усилитель",
-		"description": "Деплой: усилитель стоит на земле ~7с и пульсирует сам; одновременно 1 + Лидерство/4 ампов.",
+		"description": "Деплой: усилитель гремит на месте ~7с магическими пульсами; Лидерство добавляет ампы и продлевает им жизнь.",
 		"scene_path": "res://scenes/SoundAmp.tscn",
 		"attack_mode": "amp",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.82,
-		"fire_interval": 2.80,
+		"damage_multiplier": 0.85,
+		"fire_interval": 2.40,
 		"attack_range": 520.0,
 		"aoe_radius": 235.0,
 		"knockback": 130.0,
 		"amp_lifetime": 7.0,
-		"amp_pulse_interval": 1.1,
+		"amp_pulse_interval": 1.0,
 		"max_summons": 1,
 		"max_summons_cap": 3,
+		"amp_leadership_lifetime_per_point": 0.12,
+		"amp_leadership_lifetime_cap": 3.0,
+		"amp_summon_haste": true,
 		"deploy_role": "stage_pulse",
 		"deploy_texture_path": "res://assets/sprites/allies/deploy_sound_amp_field.png",
 		"visual_color": Color(1.0, 0.35, 0.72, 0.35),

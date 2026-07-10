@@ -186,6 +186,13 @@ var _reactor_heat_active := false
 var _shadow_invisible_left := 0.0
 var _riff_streak_time := 0.0
 var _riff_streak_active := false
+# SCRUM-1006 «Разогрев»: секунды с последнего ФАКТИЧЕСКИ прошедшего удара по
+# игроку (data-driven CLASS_TRAITS.guitarist.no_hit_magic_*). Копится в
+# _physics_process только у класса с trait-ключами; бонус = min(t*ramp, cap)
+# применяется в meta_damage_multiplier ТОЛЬКО к magic-контекстам. Полностью
+# предотвращенные события (godmode, i-frames, невидимость, уворот) стек НЕ
+# сбрасывают — сброс в take_damage строго после гейтов предотвращения.
+var _warmup_no_hit_seconds := 0.0
 # SCRUM-961: латчи классовых артефактов (не run_modifiers — сброс в configure_character).
 var _rage_hit_stacks := 0                # «Багровая рукоять»: стаки ярости за melee-удары
 var _rage_hit_time_left := 0.0           # окно жизни стаков ярости
@@ -261,6 +268,30 @@ func blocks_generic_sustain() -> bool:
 	return class_trait_value("generic_sustain_blocked") > 0.0
 
 
+# SCRUM-1006 «Разогрев»: аккумулятор no-hit времени. Детерминирован: бонус
+# растёт линейно ramp за секунду и капится cap (0→кап ровно за cap/ramp секунд).
+# У классов без trait-ключей ramp = 0 → счётчик обнулён, утечки другим классам
+# нет. Счётчик времени сам капится на cap/ramp — бесконечного роста float нет.
+func _update_warmup_trait(delta: float) -> void:
+	var ramp := class_trait_value("no_hit_magic_bonus_per_second", 0.0)
+	if ramp <= 0.0:
+		if _warmup_no_hit_seconds != 0.0:
+			_warmup_no_hit_seconds = 0.0
+		return
+	var cap := maxf(class_trait_value("no_hit_magic_bonus_cap", 0.0), 0.0)
+	_warmup_no_hit_seconds = minf(_warmup_no_hit_seconds + delta, cap / ramp)
+
+
+# Текущий бонус «Разогрева» (0.0..cap). Потребитель — meta_damage_multiplier
+# (только magic-контексты); публичен для HUD/тестов.
+func warmup_magic_bonus() -> float:
+	var ramp := class_trait_value("no_hit_magic_bonus_per_second", 0.0)
+	if ramp <= 0.0:
+		return 0.0
+	var cap := maxf(class_trait_value("no_hit_magic_bonus_cap", 0.0), 0.0)
+	return minf(_warmup_no_hit_seconds * ramp, cap)
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()
@@ -303,6 +334,9 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_shadow_invisible_left = 0.0
 	_riff_streak_time = 0.0
 	_riff_streak_active = false
+	# SCRUM-1006 «Разогрев»: смена персонажа/перезапуск забега не переносит
+	# накопленные no-hit стеки (AC: transitions не оставляют stale-стеков).
+	_warmup_no_hit_seconds = 0.0
 	# SCRUM-961: сброс латчей классовых артефактов.
 	_rage_hit_stacks = 0
 	_rage_hit_time_left = 0.0
@@ -485,6 +519,7 @@ func _physics_process(_delta: float) -> void:
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
 	_update_meta_keystone_runtime(_delta)
+	_update_warmup_trait(_delta)  # SCRUM-1006 «Разогрев»
 	# SCRUM-500: триггер-кулдауны (Рубеж Стража / Контр-волна).
 	_lowhp_guard_cooldown_left = max(_lowhp_guard_cooldown_left - _delta, 0.0)
 	_take_hit_pulse_cooldown_left = max(_take_hit_pulse_cooldown_left - _delta, 0.0)
@@ -746,6 +781,13 @@ func take_damage(amount: float, _source := "") -> bool:
 		_trigger_dodge_rush()
 		_trigger_rush_window()
 		return false
+
+	# SCRUM-1006 «Разогрев»: КВАЛИФИЦИРОВАННЫЙ удар = прошёл все гейты
+	# предотвращения выше (godmode, i-frames, невидимость, ульта Рыцаря,
+	# уворот) — сбрасываем no-hit стек ДО смягчений: даже почти съеденный
+	# защитой удар считается «получил урон». Полностью предотвращенные
+	# события до этой строки не доходят и разогрев НЕ сбрасывают.
+	_warmup_no_hit_seconds = 0.0
 
 	var defended_amount := _try_knight_counter(amount)
 	if _reactor_heat_active and float(run_modifiers.get("reactor_heat_incoming_damage", 0.0)) > 0.0:
@@ -1095,7 +1137,8 @@ func meta_context_for_weapon(weapon: Node, extra := {}) -> Dictionary:
 	context["is_cloud"] = wid in ["acid_flask", "volatile_vial", "blast_powder"] or bool(context.get("leaves_pool", false))
 	# SCRUM-898: «звуковая» тематика — по геометрии атаки (волны/пульсы/усилители);
 	# тип урона sound_wave_damage удалён, гитарные оружия бьют магией.
-	context["is_sound"] = mode in ["sound_wave", "pulse", "amp"]
+	# SCRUM-899: узкая рифф-полоса электрогитары — тоже «звуковая» геометрия.
+	context["is_sound"] = mode in ["sound_wave", "riff_strip", "pulse", "amp"]
 	context["is_charged"] = weapon != null and weapon.get("charge_seconds") != null and float(weapon.get("charge_seconds")) > 0.0
 	return context
 
@@ -1145,6 +1188,14 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	# damage_type="dot" — усиливаем классовым trait-множителем периодики.
 	if str(ctx.get("damage_type", "")) == "dot":
 		multiplier *= periodic_damage_multiplier()
+	# SCRUM-1006 «Разогрев»: no-hit стек усиливает ТОЛЬКО магические
+	# hit-контексты Гитариста (physical/dot оси не трогаем — AC). Деплой-ампы
+	# бьют через meta_damage_multiplier владельца → ownership сохранён и
+	# бонус покрывает весь кит; другим классам warmup_magic_bonus() == 0.
+	if str(ctx.get("damage_type", "")) == "magic":
+		var warmup_bonus := warmup_magic_bonus()
+		if warmup_bonus > 0.0:
+			multiplier *= 1.0 + warmup_bonus
 	var gold_cap := float(run_modifiers.get("gold_damage_bonus_cap", 0.0))
 	var gold_step := float(run_modifiers.get("gold_damage_per_50", 0.0))
 	if gold_cap > 0.0 and gold_step > 0.0:

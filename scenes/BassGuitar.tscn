@@ -10,10 +10,10 @@ weapon_id = "bass_guitar"
 display_name = "Бас-гитара"
 attack_mode = "pulse"
 damage_parameter = "magic_damage"
-fire_interval = 0.84
+fire_interval = 0.78
 damage = 9.0
-attack_range = 280.0
-aoe_radius = 280.0
+attack_range = 330.0
+aoe_radius = 330.0
 knockback = 180.0
 visual_color = Color(1, 0.78, 0.18, 0.34)
 

@@ -53,6 +53,7 @@ const ATTACK_MODE_EXECUTORS := {
 	"beam": "_exec_beam",
 	"drain_link": "_exec_drain_link",
 	"sound_wave": "_exec_sound_wave",
+	"riff_strip": "_exec_riff_strip",
 	"pulse": "_exec_pulse",
 	"amp": "_exec_amp",
 	"trap": "_exec_trap",
@@ -129,6 +130,14 @@ const ATTACK_MODE_EXECUTORS := {
 @export var mark_duration := 1.2
 @export var amp_lifetime := 7.0
 @export var amp_pulse_interval := 1.1
+# SCRUM-899: opt-in правила саммонер-скейлинга деплой-ампов (включает ТОЛЬКО
+# sound_amp Гитариста через конфиг; raven_totem Друида не подписан и не меняется):
+# Лидерство продлевает жизнь ампа (uptime), summon_amount учащает пульс (сила
+# через темп, канон summoner_weapon._summon_profile). Полные правила —
+# progression_data_weapons.GUITARIST_WEAPONS + docs/design/systems/characters_weapons.md.
+@export var amp_leadership_lifetime_per_point := 0.0
+@export var amp_leadership_lifetime_cap := 0.0
+@export var amp_summon_haste := false
 @export var max_summons := 0
 @export var max_summons_cap := 0
 @export var heal_percent_on_attack := 0.0
@@ -315,6 +324,9 @@ func configure_weapon(config: Dictionary) -> void:
 	mark_duration = float(config.get("mark_duration", mark_duration))
 	amp_lifetime = float(config.get("amp_lifetime", amp_lifetime))
 	amp_pulse_interval = float(config.get("amp_pulse_interval", amp_pulse_interval))
+	amp_leadership_lifetime_per_point = float(config.get("amp_leadership_lifetime_per_point", amp_leadership_lifetime_per_point))
+	amp_leadership_lifetime_cap = float(config.get("amp_leadership_lifetime_cap", amp_leadership_lifetime_cap))
+	amp_summon_haste = bool(config.get("amp_summon_haste", amp_summon_haste))
 	max_summons = int(config.get("max_summons", max_summons))
 	max_summons_cap = int(config.get("max_summons_cap", max_summons_cap))
 	heal_percent_on_attack = float(config.get("heal_percent_on_attack", heal_percent_on_attack))
@@ -628,6 +640,10 @@ func _exec_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 
 func _exec_sound_wave(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
 	_fire_sound_wave(owner_node, direction)
+
+
+func _exec_riff_strip(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_riff_strip(owner_node, direction)
 
 
 func _exec_pulse(owner_node: Node2D, _target: Node2D, _direction: Vector2) -> void:
@@ -1739,6 +1755,23 @@ func _fire_sound_wave(owner_node: Node2D, direction: Vector2) -> void:
 		_push_enemy(enemy_node, direction)
 
 
+# SCRUM-899: «рифф-полоса» Электрогитары — узкий передний коридор ПОСТОЯННОЙ
+# полной ширины wave_width на всю attack_range (в духе берсерк-форм, но магией).
+# Отличия от generic-волны (sound_wave): ширина не расширяется к концу; от
+# лучей (beam): бьёт ВСЕХ врагов в полосе без pierce-капа. Частые низко-средние
+# магические хиты — позиционирование корпусом обязательно. Бюджет-зеркало —
+# ветка "riff_strip" в ProgressionData._budget_hit_model.
+func _fire_riff_strip(owner_node: Node2D, direction: Vector2) -> void:
+	var origin := owner_node.global_position
+	var strip_visual := AttackVfx.beam(_projectile_parent(), origin + direction * 18.0, origin + direction * attack_range, maxf(wave_width, 24.0), visual_color)
+	_register_effect(strip_visual)
+	var damage_value := _rolled_damage(owner_node)
+	for hit in _enemies_in_corridor(origin, direction, wave_width, attack_range):
+		var enemy_node: Node2D = hit["node"]
+		_damage_enemy(enemy_node, damage_value)
+		_push_enemy(enemy_node, direction)
+
+
 func _fire_pulse(owner_node: Node2D, origin: Vector2) -> void:
 	if owner_node == null or not is_instance_valid(owner_node):
 		return
@@ -1762,8 +1795,12 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	# SCRUM-961: «Сценический усилитель» продлевает жизнь ампа (+amp_lifetime_bonus,
 	# кап деплоя — через amp_cap_bonus в player._apply_weapon_scaling); «Голубой
 	# тотем» учащает пульс вороньего тотема (−15% интервала).
-	var effective_amp_lifetime := amp_lifetime + _owner_mod("amp_lifetime_bonus")
+	# SCRUM-899: поверх — opt-in саммонер-скейлинг (только sound_amp): Лидерство
+	# продлевает uptime ампа, summon_amount учащает пульс (сила через темп).
+	var effective_amp_lifetime := amp_lifetime + _owner_mod("amp_lifetime_bonus") + _amp_leadership_lifetime_bonus(owner_node)
 	var effective_pulse_interval := amp_pulse_interval
+	if amp_summon_haste:
+		effective_pulse_interval /= 1.0 + _amp_summon_haste_value(owner_node)
 	if weapon_id == "raven_totem" and _owner_mod("raven_pulse_bonus") > 0.0:
 		effective_pulse_interval *= 0.85
 	_emit_weapon_animation_event(owner_node, "deploy", effective_amp_lifetime, direction, {"pulse_interval": effective_pulse_interval})
@@ -4205,6 +4242,36 @@ func _summon_role_damage_factor(parameters: Dictionary) -> float:
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
 	var leadership := float(parameters.get("leadership", 0.0))
 	return summon_role_damage_multiplier * (1.0 + minf(leadership * 0.060 + summon_amount * 0.016, 1.15))
+
+
+# SCRUM-899: Лидерство = uptime деплой-ампа — продлевает жизнь усилителя на
+# amp_leadership_lifetime_per_point за очко (кап amp_leadership_lifetime_cap).
+# Opt-in через конфиг оружия (sound_amp); у неподписанных амп-оружий
+# per_point = 0 → бонус нулевой.
+func _amp_leadership_lifetime_bonus(owner_node: Node2D) -> float:
+	if amp_leadership_lifetime_per_point <= 0.0 or owner_node == null:
+		return 0.0
+	var owner_stats = owner_node.get("stats")
+	if not (owner_stats is Dictionary):
+		return 0.0
+	var leadership := float((owner_stats as Dictionary).get("leadership", 0.0))
+	return minf(leadership * amp_leadership_lifetime_per_point, maxf(amp_leadership_lifetime_cap, 0.0))
+
+
+# SCRUM-899: «сила» ампа от summon_amount — учащение пульса по КАНОНУ
+# саммон-хейста (summoner_weapon._summon_profile: min(summon_amount*0.014 +
+# leadership*0.006, 0.30)). Урон отдельного пульса остаётся чистой magic_damage
+# осью — никакой «лидерской» оси урона (политика SCRUM-899).
+func _amp_summon_haste_value(owner_node: Node2D) -> float:
+	if owner_node == null:
+		return 0.0
+	var raw_parameters = owner_node.get("derived_parameters")
+	if not (raw_parameters is Dictionary):
+		return 0.0
+	var parameters: Dictionary = raw_parameters
+	var summon_amount := float(parameters.get("summon_amount", 0.0))
+	var leadership := float(parameters.get("leadership", 0.0))
+	return minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
 
 
 func _update_charge(delta: float) -> void:

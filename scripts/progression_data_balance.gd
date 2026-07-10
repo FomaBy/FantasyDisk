@@ -273,6 +273,9 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"prism_rift": "beam",
 	"robot_compression_line": "beam",
 	"sound_wave": "aura",
+	# SCRUM-899: узкая полоса Гитариста — фронтальная aura-ось класса (identity
+	# кита сохраняется: density/target-факторы толпы как у прежней волны).
+	"riff_strip": "aura",
 	"amp": "aura",
 	"pulse": "aura",
 	"trap": "aoe",

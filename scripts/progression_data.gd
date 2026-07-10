@@ -1127,6 +1127,13 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"sound_wave":
 			var wave_width := float(config.get("wave_width", 180.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + wave_width / 78.0, 1.0, 5.0)}
+		"riff_strip":
+			# SCRUM-899: узкая передняя полоса Гитариста — ПОСТОЯННАЯ полная
+			# ширина wave_width на всю attack_range (в отличие от расширяющейся
+			# sound_wave). В кластере из 5 ловит ~2 цели: узость — цена частых
+			# хитов, позиционирование корпусом обязательное.
+			var strip_width := float(config.get("wave_width", 118.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + strip_width / 105.0 + attack_range / 2600.0, 1.0, 2.6)}
 		"amp":
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
 			return {"solo_hits": clampf(active_ratio / 4.0, 1.0, 2.0), "five_hits": clampf((1.0 + aoe_radius / 80.0) * active_ratio / 3.5, 1.0, 5.0)}
