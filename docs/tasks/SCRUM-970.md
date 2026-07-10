@@ -92,3 +92,34 @@ findings нет; `git diff --check` чистый.
 Disk cleanup: active task worktree; pending final gates and push.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт — 2026-07-10
+
+Статус: FAILED
+
+- QA worker: `codex-qa-scrum-970-20260710` (`/root/audit_qa`), Codex lane.
+- Fresh base: `origin/dev` `bcf966b9f44a8af23db6d3c5dfccc1690dd532f6`.
+- Official scratch-isolated focused test: PASS headless/windowed, but QA found
+  that its pointer helper permits synthetic coordinates outside the real
+  viewport.
+- Independent viewport-bounded pointer oracle: FAILED at 1280×720
+  class/Constellation. `AtlasSafeArea` is 1601 px wide; Back is
+  `x=1208..1468`, dossier `x=1196..1468`, and Buy center `x=1331.7` outside the
+  1280 px window. The explicit Buy is therefore not physically clickable.
+- Windowed evidence confirms that the class dossier and Back are clipped beyond
+  the right frame edge. This violates the real-pointer and frame content-zone
+  acceptance rules.
+- Passing scope: 1280×720 Guild and both tabs at 1920×1080, 2048×1152 and
+  2560×1440. Preview-only state remains unchanged for 12 deferred frames;
+  class/Guild overlay/STOP hitboxes, explicit Buy and real shoulder/d-pad
+  traversal pass whenever the controls are inside the viewport.
+- Production code/assets were not changed by QA.
+
+Blocking bug: `SCRUM-1024` / `docs/tasks/bug_scrum970_atlas_class_dossier_offscreen_1280_task.md`.
+
+Disk cleanup: transient `build/qa/scrum970*`, scratch `user://`, disposable QA
+worktree and `.godot` cache are removed after this verdict mirror is committed
+and pushed; final Jira comments record exact cleanup.
+
+Thread cleanup: collaboration subagent QA is not a standalone Codex app worker
+task; the active parent user task must not be archived.
