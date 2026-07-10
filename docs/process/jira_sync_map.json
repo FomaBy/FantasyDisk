@@ -4335,13 +4335,13 @@
  },
  "bug_robot_delayed_attack_freed_lambda_capture_task.md": {
   "key": "SCRUM-1034",
-  "status": "К выполнению",
-  "desc_hash": "29c7e7c829170b5923aeb2fe6ba69318"
+  "status": "Готово",
+  "desc_hash": "e9eb8e1285d0cd84a8eb52c4e39503c3"
  },
  "bug_robot_redesign_docs_balance_evidence_stale_task.md": {
   "key": "SCRUM-1035",
-  "status": "К выполнению",
-  "desc_hash": "0ea41d902a66db3dd37cbb67265e0892"
+  "status": "Готово",
+  "desc_hash": "2c4758e2fda87f58282da870e3f45c04"
  },
  "SCRUM-981_gold_menu_shell.md": {
   "key": "SCRUM-981",
@@ -4402,5 +4402,20 @@
   "key": "SCRUM-993",
   "status": "Готово",
   "desc_hash": "dd15278dbbc541a79c65df9e03290791"
+ },
+ "SCRUM-982_remove_manual_gold_stat_entry.md": {
+  "key": "SCRUM-982",
+  "status": "Контроль качества",
+  "desc_hash": "8c7355c6d82abc43f46538ffe7f910ab"
+ },
+ "SCRUM-987_attribute_shop_gold_shell.md": {
+  "key": "SCRUM-987",
+  "status": "Контроль качества",
+  "desc_hash": "b87e0f9137bd43ab2e0a69b80a0a7dfb"
+ },
+ "SCRUM-988_attribute_shop_three_offer_row.md": {
+  "key": "SCRUM-988",
+  "status": "Контроль качества",
+  "desc_hash": "1ce8efd3f17b22f97d5565d3e5a5f0c6"
  }
 }

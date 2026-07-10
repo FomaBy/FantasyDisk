@@ -1,6 +1,6 @@
 # SCRUM-988 — третья Atlas-характеристика в том же ряду
 
-- Статус: `review`
+Статус: done
 - Контур: `Codex`
 - Owner: `/root/scrum982_remove_gold_stat`
 - Combined scope: `SCRUM-982` + `SCRUM-987` + `SCRUM-988`

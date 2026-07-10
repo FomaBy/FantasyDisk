@@ -1,6 +1,6 @@
 # SCRUM-987 — Attribute Shop gold shell
 
-- Статус: `review`
+Статус: done
 - Контур: `Codex`
 - Owner: `/root/scrum982_remove_gold_stat`
 - Combined scope: `SCRUM-982` + `SCRUM-987` + `SCRUM-988`
