@@ -1,0 +1,94 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "header_zone",
+      "rect": [
+        224,
+        193,
+        1472,
+        88
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "SCREEN TITLE / BACK / PRIMARY STATUS"
+      ],
+      "text_bbox": [
+        671,
+        225,
+        578,
+        24
+      ]
+    },
+    {
+      "id": "body_zone",
+      "rect": [
+        224,
+        301,
+        1456,
+        458
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 32,
+      "lines": [
+        "EMPTY RUNTIME CONTENT INTERIOR",
+        "SCROLLABLE WHEN CONTENT EXCEEDS THE VIEWPORT"
+      ],
+      "text_bbox": [
+        504,
+        495,
+        895,
+        70
+      ]
+    },
+    {
+      "id": "scrollbar_lane",
+      "rect": [
+        1680,
+        301,
+        16,
+        458
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "S",
+        "C",
+        "R",
+        "O",
+        "LL"
+      ],
+      "text_bbox": [
+        1680,
+        490,
+        16,
+        79
+      ]
+    },
+    {
+      "id": "footer_zone",
+      "rect": [
+        224,
+        779,
+        1472,
+        88
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "ACTIONS / PAGING / SCROLL END"
+      ],
+      "text_bbox": [
+        760,
+        812,
+        400,
+        21
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        200,
+        169,
+        1520,
+        742
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "route_header",
+      "kind": "panel",
+      "rect": [
+        224,
+        193,
+        1472,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "route_title",
+      "kind": "text",
+      "rect": [
+        248,
+        209,
+        700,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "route_resources",
+      "kind": "text",
+      "rect": [
+        1128,
+        209,
+        544,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "route_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        224,
+        317,
+        1472,
+        550
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 1840,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1678,
+        317,
+        18,
+        550
+      ]
+    },
+    {
+      "id": "route_map_content",
+      "kind": "text",
+      "rect": [
+        248,
+        341,
+        1396,
+        494
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "upgrade_fab",
+      "kind": "button",
+      "rect": [
+        1584,
+        779,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    }
+  ]
+}

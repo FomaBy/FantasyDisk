@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        200,
+        169,
+        1520,
+        742
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_zone",
+      "kind": "text",
+      "rect": [
+        224,
+        193,
+        1472,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "body_zone",
+      "kind": "scroll_area",
+      "rect": [
+        224,
+        301,
+        1472,
+        458
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 720,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1680,
+        301,
+        16,
+        458
+      ]
+    },
+    {
+      "id": "footer_zone",
+      "kind": "text",
+      "rect": [
+        224,
+        779,
+        1472,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    }
+  ]
+}

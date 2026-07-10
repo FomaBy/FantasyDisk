@@ -1,0 +1,16 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 10, "allow_overlap": false},
+  "content": {
+    "header": "SCREEN TITLE / BACK / PRIMARY STATUS",
+    "body": "EMPTY RUNTIME CONTENT INTERIOR",
+    "footer": "ACTIONS / PAGING / SCROLL END"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false, "required": true},
+    {"id": "frame_safe_area", "kind": "panel", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": true, "collision": false, "min_w": 1014, "min_h": 494},
+    {"id": "header_zone", "kind": "text", "parent": "frame_safe_area", "x": 224, "y": 193, "w": 1472, "h": 88, "content_zone": true, "collision": true, "text_key": "header", "max_font": 28, "min_font": 18},
+    {"id": "body_zone", "kind": "scroll_area", "parent": "frame_safe_area", "x": 224, "y": 301, "w": 1472, "h": 458, "content_zone": true, "collision": true, "scroll": "auto", "content_h": 720, "scrollbar_w": 16, "min_content_w": 1200},
+    {"id": "footer_zone", "kind": "text", "parent": "frame_safe_area", "x": 224, "y": 779, "w": 1472, "h": 88, "content_zone": true, "collision": true, "text_key": "footer", "max_font": 24, "min_font": 16}
+  ]
+}

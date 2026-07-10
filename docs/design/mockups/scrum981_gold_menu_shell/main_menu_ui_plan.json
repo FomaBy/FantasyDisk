@@ -1,0 +1,21 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 9, "allow_overlap": false},
+  "content": {
+    "logo": "FANTASY DISK LOGO SAFE ZONE",
+    "action": "ACTION",
+    "version": "v0.2.1"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": true, "collision": false},
+    {"id": "logo_zone", "kind": "text", "parent": "frame_safe_area", "x": 224, "y": 193, "w": 620, "h": 170, "content_zone": true, "collision": true, "text_key": "logo", "max_font": 28, "min_font": 18},
+    {"id": "action_1", "kind": "button", "parent": "frame_safe_area", "x": 224, "y": 387, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "action_2", "kind": "button", "parent": "frame_safe_area", "x": 624, "y": 387, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "action_3", "kind": "button", "parent": "frame_safe_area", "x": 224, "y": 509, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "action_4", "kind": "button", "parent": "frame_safe_area", "x": 624, "y": 509, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "action_5", "kind": "button", "parent": "frame_safe_area", "x": 224, "y": 631, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "action_6", "kind": "button", "parent": "frame_safe_area", "x": 624, "y": 631, "w": 380, "h": 104, "content_zone": true, "collision": true, "text_key": "action", "max_font": 24, "min_font": 16},
+    {"id": "version_zone", "kind": "text", "parent": "frame_safe_area", "x": 1546, "y": 839, "w": 126, "h": 24, "content_zone": true, "collision": true, "text_key": "version", "max_font": 16, "min_font": 12}
+  ]
+}

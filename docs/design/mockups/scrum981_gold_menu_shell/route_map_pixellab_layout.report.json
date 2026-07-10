@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "frame_safe_area",
+      "rect": [
+        71,
+        60,
+        546,
+        264
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_header",
+      "rect": [
+        81,
+        68,
+        528,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "title_progress",
+      "rect": [
+        89,
+        73,
+        251,
+        25
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "resources",
+      "rect": [
+        404,
+        73,
+        195,
+        25
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_scroll",
+      "rect": [
+        81,
+        113,
+        528,
+        196
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "scrollbar_lane",
+      "rect": [
+        596,
+        119,
+        7,
+        184
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

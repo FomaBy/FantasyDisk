@@ -1,0 +1,11 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "zones": [
+    {"id": "frame_safe_area", "text": "", "required": false, "x": 71, "y": 60, "w": 546, "h": 264, "debug_color": "#36D399"},
+    {"id": "route_header", "text": "", "required": false, "x": 81, "y": 68, "w": 528, "h": 37, "debug_color": "#E3B95D"},
+    {"id": "title_progress", "text": "", "required": false, "x": 89, "y": 73, "w": 251, "h": 25, "debug_color": "#E38C5D"},
+    {"id": "resources", "text": "", "required": false, "x": 404, "y": 73, "w": 195, "h": 25, "debug_color": "#A67CFF"},
+    {"id": "route_scroll", "text": "", "required": false, "x": 81, "y": 113, "w": 528, "h": 196, "debug_color": "#58D6C7"},
+    {"id": "scrollbar_lane", "text": "", "required": false, "x": 596, "y": 119, "w": 7, "h": 184, "debug_color": "#A67CFF"}
+  ]
+}

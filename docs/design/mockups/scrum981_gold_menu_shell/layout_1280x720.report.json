@@ -1,0 +1,90 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "header_zone",
+      "rect": [
+        157,
+        137,
+        966,
+        72
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "TITLE / BACK / STATUS"
+      ],
+      "text_bbox": [
+        516,
+        162,
+        247,
+        21
+      ]
+    },
+    {
+      "id": "body_zone",
+      "rect": [
+        157,
+        225,
+        952,
+        255
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "EMPTY RUNTIME CONTENT INTERIOR",
+        "SCROLLABLE COMPACT MODE"
+      ],
+      "text_bbox": [
+        408,
+        326,
+        449,
+        54
+      ]
+    },
+    {
+      "id": "scrollbar_lane",
+      "rect": [
+        1109,
+        225,
+        14,
+        255
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "S"
+      ],
+      "text_bbox": [
+        1110,
+        347,
+        11,
+        11
+      ]
+    },
+    {
+      "id": "footer_zone",
+      "rect": [
+        157,
+        496,
+        966,
+        72
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "ACTIONS / PAGING"
+      ],
+      "text_bbox": [
+        546,
+        523,
+        189,
+        18
+      ]
+    }
+  ]
+}
