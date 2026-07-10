@@ -396,6 +396,24 @@ Cursor variants:
 
 All cursor variants must import cleanly in Godot and keep the active tip inside the hotspot tolerance used by tests.
 
+### Codex entity image-fit contract (SCRUM-958)
+
+- Authored row image area: `88×96` inside the existing `122×114` empty frame
+  content zone; dossier image area: `236×248` inside the existing `300×300`
+  frame content zone.
+- Runtime images use `STRETCH_KEEP_ASPECT_CENTERED`; enlargement comes from a
+  cached `AtlasTexture` alpha-view, never cover-stretch or source mutation.
+- Character policy: 8% reserve and bottom-center anchor. Monster policy: 4%
+  reserve, centered contain. Artifact/shop policy: 10% reserve, centered
+  contain.
+- The fitted region must enclose the complete non-transparent source rectangle.
+  Canonical source path, policy, visible rect and view region are mandatory
+  metadata for focused tests.
+- `codex_scrum958_image_fit_test.gd` must cover every character, monster and
+  artifact/shop row and its dossier at 1280×720, 1920×1080 and 2560×1440. No
+  generic fallback, frame-zone escape or raw/English duplicate label is
+  accepted.
+
 ## Accessibility And Input
 
 - Interactive controls must set pointing-hand cursor where appropriate.

@@ -7458,7 +7458,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 
 	var codex_portrait_texture := _first_child_texture_rect(detail_portrait)
 	var expected_default_portrait := _expected_character_portrait_path("berserk")
-	if codex_portrait_texture == null or codex_portrait_texture.texture == null or codex_portrait_texture.texture.resource_path != expected_default_portrait:
+	if codex_portrait_texture == null or codex_portrait_texture.texture == null or _canonical_texture_path(codex_portrait_texture.texture) != expected_default_portrait:
 		_fail("Expected default Codex character portrait to use new full-frame portrait %s." % expected_default_portrait)
 		return
 	if codex_portrait_texture.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
@@ -7570,7 +7570,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	# SCRUM-884: предпросмотра в центре больше нет — канонический арт записи
 	# показывает правое досье.
 	var artifact_detail_texture := codex_main.find_child("CodexDetailPortraitTexture", true, false) as TextureRect
-	if artifact_detail_texture == null or artifact_detail_texture.texture == null or not artifact_detail_texture.texture.resource_path.contains("/artifacts/"):
+	if artifact_detail_texture == null or artifact_detail_texture.texture == null or not _canonical_texture_path(artifact_detail_texture.texture).contains("/artifacts/"):
 		_fail("Expected SCRUM-884 Codex artifacts section to show the canonical artifact icon in the right dossier.")
 		return
 
@@ -8164,6 +8164,17 @@ func _first_child_texture_rect(parent: Node) -> TextureRect:
 		if nested != null:
 			return nested
 	return null
+
+
+func _canonical_texture_path(texture: Texture2D) -> String:
+	if texture == null:
+		return ""
+	if texture.has_meta("codex_source_path"):
+		return str(texture.get_meta("codex_source_path"))
+	if texture is AtlasTexture:
+		var atlas := (texture as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return texture.resource_path
 
 
 func _test_parchment_button_seal_sizes(main_scene: PackedScene) -> void:

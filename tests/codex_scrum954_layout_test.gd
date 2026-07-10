@@ -123,7 +123,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		var preview := main.find_child("CodexDetailPortraitTexture", true, false) as TextureRect
 		if not expected_entries.is_empty():
 			var expected_preview_path := str((expected_entries[0] as Dictionary)["texture"])
-			if preview == null or preview.texture == null or preview.texture.resource_path != expected_preview_path or preview.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
+			if preview == null or preview.texture == null or _canonical_texture_path(preview.texture) != expected_preview_path or preview.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_CENTERED:
 				errors.append("%s: %s dossier preview is not the first canonical entry image %s." % [context, section_id, expected_preview_path])
 		if section_id == "artifacts":
 			await _check_locked_artifact(main, cards, context)
@@ -214,8 +214,8 @@ func _check_entry_card(card: Button, expected: Dictionary, stage_scale: float, c
 	var texture_rect := textures[0] as TextureRect
 	if name.text != str(expected["title"]) or name.text.contains(" — ") or name.horizontal_alignment != HORIZONTAL_ALIGNMENT_CENTER:
 		errors.append("%s: row label '%s' is not the exact centered canonical display-name '%s'." % [context, name.text, str(expected["title"])])
-	if texture_rect.texture == null or texture_rect.texture.resource_path != str(expected["texture"]):
-		errors.append("%s: image path '%s' != canonical '%s'." % [context, texture_rect.texture.resource_path if texture_rect.texture != null else "", str(expected["texture"])])
+	if texture_rect.texture == null or _canonical_texture_path(texture_rect.texture) != str(expected["texture"]):
+		errors.append("%s: image path '%s' != canonical '%s'." % [context, _canonical_texture_path(texture_rect.texture), str(expected["texture"])])
 	var image_well := texture_rect.get_parent() as Control
 	if image_well == null or image_well.get_global_rect().size.x + 1.0 < 122.0 * stage_scale or image_well.get_global_rect().size.y + 1.0 < 114.0 * stage_scale:
 		errors.append("%s: image well is smaller than 122x114 design pixels." % context)
@@ -293,3 +293,14 @@ func _scaled_rect(viewport_size: Vector2, design_rect: Rect2) -> Rect2:
 func _rect_near(actual: Rect2, expected: Rect2, tolerance: float) -> bool:
 	return actual.position.distance_to(expected.position) <= tolerance \
 		and actual.size.distance_to(expected.size) <= tolerance
+
+
+func _canonical_texture_path(texture: Texture2D) -> String:
+	if texture == null:
+		return ""
+	if texture.has_meta("codex_source_path"):
+		return str(texture.get_meta("codex_source_path"))
+	if texture is AtlasTexture:
+		var atlas := (texture as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return texture.resource_path

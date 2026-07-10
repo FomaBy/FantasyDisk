@@ -2024,3 +2024,13 @@ Design source pack and static/VFX runtime candidates under
 and runtime wiring remain Animator/Back-end scope. Balance benchmark at Act 3 L5
 stage 18: about `47.6k` HP; L20 optimum estimated TTK `121.5s..231.8s`, L20
 random-average estimated TTK `347.3s..559.6s`.
+
+## SCRUM-958 Codex Image State
+
+Codex now routes all actual character, monster and artifact/shop images through
+a cached alpha-fit layer instead of shrinking their complete transparent source
+canvases. The accepted SCRUM-954 three-column layout is unchanged. Characters
+are bottom-centered, monsters are centered without visible-alpha cropping, and
+artifact/shop icons use padded contain. The runtime projection covers 17
+characters, 31 monster entries and 161 artifact/shop entries with exact Russian
+names and canonical paths at 1280×720, 1920×1080 and 2560×1440.

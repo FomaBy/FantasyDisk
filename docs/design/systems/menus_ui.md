@@ -1190,3 +1190,20 @@ CLASS_RU покрывает 17/17 классов (дословно titles CHARAC
 
 **Run summary.** Имена артефактов остаются компактным списком без тиров
 (решение по лаконичности; редкость доступна в тултипах HUD/паузы).
+
+## SCRUM-958 — Canonical Codex image fit
+
+Codex character, monster and artifact rows keep the accepted SCRUM-954 geometry
+but no longer display full transparent source canvases as micro-previews.
+`scripts/ui/codex_image_fit.gd` supplies cached, non-destructive `AtlasTexture`
+views for both the 88×96 row image and 236×248 dossier preview. Character views
+use an 8% alpha reserve with bottom-center anchoring; monsters use 4% centered
+contain; artifact and shop icons use 10% centered contain. Visible alpha is
+never cropped, and each view keeps its canonical source path/policy metadata.
+
+The player-facing contract is unchanged: one actual canonical image and one
+centered Russian name per row, no category emblem, English duplicate or raw id.
+All 17 characters, 31 monster projections and 161 artifact/shop projections
+resolve their canonical runtime source. Missing entity/artifact art is rejected
+by `codex_scrum958_image_fit_test.gd`; the old generic registry fallback is not
+an accepted Codex result.

@@ -32,6 +32,7 @@ const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
+const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
 
 # SCRUM-816: человекочитаемые подписи кнопок геймпада для вкладки «Управление».
 # Локальная копия имён (не зависим от автолоада InputDeviceManager в тестах).
@@ -4386,15 +4387,15 @@ func _codex_entry_portrait_size() -> Vector2:
 	return Vector2(88.0, 96.0)
 
 
-func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2) -> Texture2D:
+func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2, image_policy := CodexImageFit.POLICY_CHARACTER) -> Texture2D:
 	var texture: Texture2D = null
 	if sprite_path != "" and ResourceLoader.exists(sprite_path):
 		texture = game._cached_texture(sprite_path)
-	_codex_icon_slot(row, texture, size, "CodexPortraitSlot")
+	_codex_icon_slot(row, texture, size, "CodexPortraitSlot", image_policy, sprite_path)
 	return texture
 
 
-func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
+func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot", image_policy := CodexImageFit.POLICY_CONTAIN, source_path := "") -> void:
 	var slot := PanelContainer.new()
 	slot.name = node_name
 	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4417,8 +4418,10 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if node_name == "CodexPortraitSlot" else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.texture = texture
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.texture = CodexImageFit.texture_view(texture, source_path, image_policy, size)
+	portrait.set_meta("codex_source_path", source_path if not source_path.is_empty() else CodexImageFit.canonical_path(texture))
+	portrait.set_meta("codex_image_policy", image_policy)
 	_codex_pl_make_nearest(portrait)
 	slot.add_child(portrait)
 
@@ -4578,7 +4581,11 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.texture = texture
+	var source_path := str(detail_data.get("texture_path", CodexImageFit.canonical_path(texture)))
+	var image_policy := str(detail_data.get("image_policy", CodexImageFit.POLICY_CONTAIN))
+	portrait.texture = CodexImageFit.texture_view(texture, source_path, image_policy, Vector2(236.0, 248.0))
+	portrait.set_meta("codex_source_path", source_path)
+	portrait.set_meta("codex_image_policy", image_policy)
 	portrait.self_modulate = detail_data.get("texture_tint", Color.WHITE)
 	_codex_pl_make_nearest(portrait)
 	portrait_slot.add_child(portrait)
@@ -4987,12 +4994,14 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"title": str(character["title"]),
 			"summary": str(character["playstyle"]),
 			"texture": texture,
+			"texture_path": str(character["sprite"]),
+			"image_policy": CodexImageFit.POLICY_CHARACTER,
 			"covered_portrait": true,
 			"chips": ["Герой"],
 			"body_lines": body_lines,
 			"sections": _codex_character_sections(character),
 		})
-		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size())
+		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_CHARACTER)
 		_codex_add_entry_name(row, str(character["title"]))
 
 
@@ -5012,12 +5021,14 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				"title": str(monster["title"]),
 				"summary": str(monster["behavior"]),
 				"texture": texture,
+				"texture_path": str(monster["sprite"]),
+				"image_policy": CodexImageFit.POLICY_MONSTER,
 				"covered_portrait": false,
 				"chips": [str(kind_titles[kind])],
 				"body_lines": body_lines,
 				"sections": _codex_monster_sections(monster),
 			})
-			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size())
+			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
 			_codex_add_entry_name(row, str(monster["title"]))
 
 
@@ -5057,17 +5068,20 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			if not affinity_note.is_empty():
 				body_lines.append(str(affinity_note["text"]))
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
+		var icon_path := _artifact_icon_path(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(artifact["title"]),
 			"summary": summary,
 			"texture": icon_texture,
+			"texture_path": icon_path,
+			"image_policy": CodexImageFit.POLICY_ARTIFACT,
 			"texture_tint": CODEX_LOCKED_SILHOUETTE_TINT if locked else Color.WHITE,
 			"covered_portrait": false,
 			"chips": chips,
 			"body_lines": body_lines,
 			"sections": _codex_artifact_sections(artifact, artifact_definition, locked),
 		})
-		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot")
+		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot", CodexImageFit.POLICY_ARTIFACT, icon_path)
 		if locked:
 			# Запертая запись: силуэт иконки, дим ряда, вместо эффекта — условие.
 			var slot_texture := row.get_node_or_null("CodexArtifactIconSlot/CodexArtifactIconSlotTexture") as TextureRect
@@ -13369,15 +13383,22 @@ func _player_artifacts() -> Array:
 	return normalized
 
 
-func _artifact_icon_texture(artifact_id: String) -> Texture2D:
+func _artifact_icon_path(artifact_id: String) -> String:
 	var path := "%sartifact_%s.png" % [ARTIFACT_ICON_DIR, artifact_id]
 	if artifact_id != "" and ResourceLoader.exists(path):
-		return game._cached_texture(path)
+		return path
 	# CodexData appends SHOP_ITEMS to the artifact section. Their canonical icons
 	# use the existing shop/shop_<id>.png family, not artifact_<id>.png.
 	var shop_path := "%sshop_%s.png" % [SHOP_ICON_DIR, artifact_id]
 	if artifact_id.begins_with("shop_") and ResourceLoader.exists(shop_path):
-		return game._cached_texture(shop_path)
+		return shop_path
+	return ""
+
+
+func _artifact_icon_texture(artifact_id: String) -> Texture2D:
+	var path := _artifact_icon_path(artifact_id)
+	if not path.is_empty():
+		return game._cached_texture(path)
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
