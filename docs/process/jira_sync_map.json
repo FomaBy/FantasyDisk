@@ -3800,8 +3800,8 @@
  },
  "bug_gamepad_global_input_actions_codex_task.md": {
   "key": "SCRUM-846",
-  "status": "Контроль качества",
-  "desc_hash": "1be93c700c33cdc196d58cebd56309ea"
+  "status": "Готово",
+  "desc_hash": "a17723377821bf6d450e2a39b28c22f2"
  },
  "backend_codex_object_first_runtime_integration_task.md": {
   "key": "SCRUM-850",
@@ -4286,7 +4286,7 @@
  "bug_scrum975_settings_game_scroll_geometry_task.md": {
   "key": "SCRUM-1030",
   "status": "Готово",
-  "desc_hash": "a22018a62300c6176d348f5e62017c02"
+  "desc_hash": "491701f1520e8c68e338bcdd77d501c7"
  },
  "bug_meta_keystone_behavioral_gate_regression_task.md": {
   "key": "SCRUM-1029",

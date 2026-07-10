@@ -1,5 +1,5 @@
 # Bug: Gamepad global input actions do not confirm UI or move player
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Back-end
 Контур: Codex
@@ -53,3 +53,9 @@ Review every current player-facing action and make it work from gamepad without 
 
 ## Cleanup
 - Disk cleanup: removed `/Users/sergeyfomin/Documents/FantasyDisk_gamepad_input/.godot` and transient Godot `.import` sidecars created by headless import.
+
+## QA result
+- PASSED on 2026-07-03 against `origin/dev` at `d158fae3`.
+- Confirmed implementation commits are ancestors of `origin/dev`.
+- All focused gamepad checks and `tests/runtime_smoke_test.gd` passed in the independent QA run.
+- Jira stale-state cleanup completed on 2026-07-10; no active implementation lock remains.
