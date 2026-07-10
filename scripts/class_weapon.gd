@@ -1807,9 +1807,15 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 	# Деплой: усилитель ставится на землю, живет amp_lifetime секунд и пульсирует
 	# самостоятельно. Лимит одновременных ампов растет от Лидерства через
 	# max_summons (player._apply_weapon_scaling: base + floor(leadership / 4)).
-	_deployed_amps = _deployed_amps.filter(func(amp: Node) -> bool:
-		return amp != null and is_instance_valid(amp)
-	)
+	# SCRUM-899: чистка без типизированной лямбды — hard-freed нода в массиве
+	# роняла filter(func(amp: Node)) («Cannot convert argument») и абортила
+	# ВЕСЬ _fire_amp: оружие переставало деплоить. Ручной alive-скан (паттерн
+	# _alive_effects) переживает freed-объекты любого происхождения.
+	var alive_amps: Array[Node] = []
+	for tracked_amp in _deployed_amps:
+		if tracked_amp != null and is_instance_valid(tracked_amp):
+			alive_amps.append(tracked_amp)
+	_deployed_amps = alive_amps
 
 	var amp := Node2D.new()
 	amp.name = "SoundAmpPulseNode"
