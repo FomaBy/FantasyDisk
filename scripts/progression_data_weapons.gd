@@ -1050,25 +1050,31 @@ const ROBOT_WEAPONS := {
 
 const ENGINEER_WEAPONS := {
 	"engineer_sentry_wrench": {
-		"id": "engineer_sentry_wrench", "title": "Ключ Часового",
-		"description": "Sentry turret: разворачивает стационарную турель (лимит 2, новая заменяет старейшую); турели сами обстреливают ближайших врагов снарядами.",
+		# SCRUM-904/905: title «Ключ Часового» → «Часовая турель» (иконка и
+		# геймплей — турель); внутренний id сохранён для save-совместимости.
+		"id": "engineer_sentry_wrench", "title": "Часовая турель",
+		"description": "Sentry turret: разворачивает турели с боезапасом 15 выстрелов — расстрелявшая магазин турель сворачивается; Лидерство поднимает предел активных турелей.",
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
-		# SCRUM-888: переосмысление — РАЗВОРАЧИВАЕМЫЕ ПЕРСИСТЕНТНЫЕ ТУРЕЛИ.
-		# damage_multiplier — урон одного снаряда турели; сустейн (2 турели ×
-		# выстрел каждые amp_pulse_interval) моделируется summon-компонентом
-		# бюджета: summon_attack_interval/summon_damage_multiplier зеркалят
-		# реальный цикл scripts/sentry_turret.gd 1:1 (_budget_summon_dps).
-		"damage_multiplier": 0.71, "fire_interval": 2.70,
+		# SCRUM-905: ТУРЕЛИ С БОЕЗАПАСОМ. Турель не живёт по таймеру и не
+		# заменяется старейшей: каждая несёт sentry_shot_magazine выстрелов и
+		# сворачивается, расстреляв их. Темп стрельбы = amp_pulse_interval /
+		# (tempo-lift Лидерства) / attack_speed — скорость атаки ускоряет
+		# стрельбу и, следовательно, расход боезапаса. Предел активных турелей =
+		# max_summons + floor(summon_amount/4), жёсткий рельс max_summons_cap;
+		# при полном парке новый деплой пропускается (SCRUM-964-паттерн).
+		# Бюджет: _budget_sentry_ammo_model (пропускная способность боезапаса =
+		# min(спрос парка, magazine/деплой) зеркалит рантайм 1:1).
+		"damage_multiplier": 0.55, "fire_interval": 2.70,
 		"upgrade_damage_exponent": 2.45,  # SCRUM-505: sentry scales from lvl20 DPS upgrades, not lvl1 flat damage
 		"attack_range": 560.0, "aoe_radius": 170.0,
 		# Залп = projectile_count + extra_projectile снарядов по РАЗНЫМ ближайшим
-		# целям (damage_falloff^i на доп. снаряды). Одна цель в радиусе получает
-		# ТОЛЬКО первый снаряд — соло не перегревается, толпа получает покрытие
-		# (crowd-ось инженера aoe_target 1.12; residual-пара тюнера = старой).
+		# целям (damage_falloff^i на доп. снаряды); каждый снаряд тратит 1 заряд
+		# магазина — толпа осушает турель быстрее (AC SCRUM-905).
 		"projectile_count": 2,
-		"amp_pulse_interval": 0.55,  # базовый темп турели; ÷ (1 + min(summon_amount*0.014 + leadership*0.006, 0.30))
-		"max_summons": 2, "max_summons_cap": 2,  # SCRUM-888: жёсткий лимит 2 турели, старейшая заменяется с мини-VFX
+		"amp_pulse_interval": 0.55,  # базовый темп; ÷ tempo-lift ÷ attack_speed (SCRUM-905)
+		"sentry_shot_magazine": 15,  # SCRUM-905: базовый боезапас турели
+		"max_summons": 2, "max_summons_cap": 6,  # SCRUM-905: 2 + floor(summon_amount/4), рельс 6
 		"damage_falloff": 0.55,  # спад на доп. снаряды залпа (2-й и далее)
 		"summon_attack_interval": 0.55, "summon_damage_multiplier": 1.0,  # бюджет-зеркало цикла турели (не геймплей)
 		"deploy_role": "turret_dps",
@@ -1076,34 +1082,61 @@ const ENGINEER_WEAPONS := {
 		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.10)
 		"sentry_splash_radius": 82.0,
 		"sentry_splash_damage_multiplier": 0.24,
-		"sentry_splash_target_cap": 2,
+		"sentry_splash_target_cap": 3,  # SCRUM-905: +1 цель сплэша — толпу под ammo-bound добирает качество снаряда
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
 		"passive_mods": {"summon_bonus": 1.0},
 	},
 	"engineer_repair_drone": {
-		"id": "engineer_repair_drone", "title": "Ремонтный Дрон",
-		"description": "Repair drone: дрон связывает несколько целей дугой и возвращает часть нанесенного урона в ремонт корпуса.",
+		# SCRUM-906: редизайн — ОРБИТАЛЬНЫЙ БОЕВОЙ ДРОН (id сохранён для
+		# save-совместимости). Ремонт/цепь удалены: дроны кружат вокруг
+		# Инженера по спирали и наносят физический контактный урон.
+		"id": "engineer_repair_drone", "title": "Орбитальный Дрон",
+		"description": "Orbit drone: боевые дроны кружат вокруг инженера по спирали и таранят всех врагов на пути; Лидерство добавляет дроны, скорость атаки раскручивает орбиту.",
 		"scene_path": "res://scenes/EngineerRepairDrone.tscn",
-		"attack_mode": "engineer_repair_drone", "damage_parameter": "damage",
-		"damage_multiplier": 0.82, "fire_interval": 1.08,
-		"attack_range": 540.0, "aoe_radius": 260.0,
-		"beam_width": 30.0, "projectile_count": 4,
-		"damage_falloff": 0.68, "heal_percent_of_damage": 0.045,
-		"deploy_role": "repair_chain",
-		"summon_role": "support_drone",
-		"summon_role_damage_multiplier": 0.92,
-		"summon_support_heal_percent": 0.006,
+		"attack_mode": "engineer_orbit_drone", "damage_parameter": "damage",
+		# fire_interval — каданс обслуживания парка (доспавн недостающих дронов),
+		# НЕ канал урона: весь урон — контактный (summon-канал бюджета,
+		# _budget_orbit_drone_dps). Число дронов = 1 + floor(max(summon_amount -
+		# drone_count_threshold, 0) / drone_count_step), рельс max_summons_cap:
+		# базовый профиль Инженера (summon_amount ~12.5) даёт РОВНО 1 дрон,
+		# прокачка Лидерства добирает 2..6 (AC SCRUM-906: >=5 на хай-энде).
+		"damage_multiplier": 2.4, "fire_interval": 1.20,
+		"attack_range": 540.0, "aoe_radius": 150.0,
+		"max_summons": 1, "max_summons_cap": 6,
+		"drone_orbit_radius": 78.0,     # базовый радиус орбиты (спираль: +14% за слот)
+		"drone_orbit_speed": 3.6,       # рад/с; × attack_speed (RPM растёт от скорости атаки)
+		"drone_contact_radius": 44.0,   # радиус контакта дрона
+		"drone_hit_cooldown": 0.85,     # per-enemy кулдаун (защита от every-frame урона)
+		"drone_count_threshold": 12.0,  # порог summon_amount базового профиля
+		"drone_count_step": 4.0,        # +1 дрон за каждые step сверх порога
+		"summon_attack_interval": 0.85, "summon_damage_multiplier": 0.90,  # бюджет-зеркало контакта
+		"deploy_role": "orbit_drone",
+		"summon_role": "orbit_drone",
+		"summon_role_damage_multiplier": 1.10,
 		"visual_color": Color(0.48, 0.90, 1.0, 0.40),
-		"passive_mods": {"regeneration_flat": 0.14},
+		"passive_mods": {"summon_bonus": 1.0},
 	},
 	"engineer_pressure_mines": {
 		"id": "engineer_pressure_mines", "title": "Минная Сетка",
-		"description": "Pressure mine grid: раскладывает три малые мины веером; каждая срабатывает отдельно при касании врагом.",
+		"description": "Pressure mines: раскладывает по две усиленные мины в случайных точках рядом; мины лежат до срабатывания — враг подрывает сразу, свою можно толкнуть через 3 секунды.",
 		"scene_path": "res://scenes/EngineerPressureMines.tscn",
 		"attack_mode": "engineer_pressure_mines", "damage_parameter": "damage",
-		"damage_multiplier": 0.96, "fire_interval": 1.46,
+		# SCRUM-907: ПЕРСИСТЕНТНЫЕ ПАРНЫЕ МИНЫ. Каждый деплой — 2 мины в
+		# случайных точках кольца [mine_place_min..max] вокруг игрока; таймера
+		# жизни НЕТ (только триггер/lifecycle-чистка). Враг подрывает мину сразу
+		# (радиус mine_trigger_radius); сам игрок — только после
+		# mine_self_arm_delay (до того наступание НЕ тратит мину). Кап живых мин
+		# mine_active_cap: при полном поле новые НЕ ставятся (SCRUM-964-паттерн,
+		# не тихий retire). Урон одной мины поднят против веерной тройки —
+		# damage_multiplier 0.96 → 1.90 (двойка обязана бить больнее).
+		"damage_multiplier": 3.60, "fire_interval": 1.46,
 		"attack_range": 390.0, "aoe_radius": 125.0,
-		"projectile_count": 3, "pool_duration": 3.0, "pool_tick_interval": 0.16,
+		"projectile_count": 2,
+		"mine_trigger_radius": 84.0,     # радиус срабатывания от врага
+		"mine_self_arm_delay": 3.0,      # сек до возможности самоподрыва игроком
+		"mine_active_cap": 6,            # кап живых мин (3 деплоя)
+		"mine_place_min_distance": 110.0,
+		"mine_place_max_distance": 260.0,
 		"damage_falloff": 0.62, "knockback": 82.0,
 		"deploy_role": "mine_grid",
 		"visual_color": Color(1.0, 0.54, 0.24, 0.42),

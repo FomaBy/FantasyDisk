@@ -212,9 +212,12 @@ const CHARACTER_CONFIGS := {
 	"engineer": {
 		"id": "engineer",
 		"title": "Инженер",
-		"description": "Мастер расстановки: турели бьют сами, дроны чинят, мины стерегут подходы. Побеждает подготовкой поля, а не собственной рукой.",
-		"strengths": "самостоятельные турели, ремонт на ходу, минный контроль подходов.",
-		"weaknesses": "слаб, пока устройства не расставлены.",
+		# SCRUM-905..908: кит устройств — турели с боезапасом, орбитальные дроны,
+		# персистентные мины; trait «Сеть мастерской» (описание игроку — в
+		# CLASS_TRAITS.engineer).
+		"description": "Мастер расстановки: турели с боезапасом бьют сами, боевые дроны кружат по спирали, вечные мины стерегут подходы. Каждое живое устройство питает Сеть мастерской — вместе они бьют сильнее. Побеждает подготовкой поля, а не собственной рукой.",
+		"strengths": "самостоятельные турели, орбитальные дроны, вечный минный контроль, сеть устройств от Лидерства.",
+		"weaknesses": "слаб, пока устройства не расставлены; турели кончаются вместе с боезапасом.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/engineer_pixellab/engineer_idle_south.png",
 	},
 	"dark_mage": {
@@ -513,6 +516,27 @@ const CLASS_TRAITS := {
 		"description": "Каждое попадание лука и арбалета отбрасывает врага прочь от Рейнджера — всегда от героя, даже при расщеплении болта и сквозном пробитии. Боссы и элиты сопротивляются отбросу.",
 		"bow_hit_knockback": 1.0,
 	},
+	"engineer": {
+		# SCRUM-908 «Сеть мастерской» (workshop_network, подтверждён реестром
+		# docs/design/class_traits_registry.md): активные устройства дают стеки
+		# сети — турель/дрон = 1.0, персистентная мина = 0.5 (мета network_weight
+		# на узле устройства; пониженный вес мин — предохранитель от мин-спама,
+		# вечные мины не дают uncapped-силы). Кап стеков = network_stack_cap_base
+		# + floor(Лидерство / network_cap_leadership_step) — Лидерство буквально
+		# «поднимает кап сети» (командир устройств). Каждый стек даёт
+		# +network_damage_per_stack к урону ТОЛЬКО устройств (потребитель —
+		# ClassWeapon._workshop_network_factor в _rolled_damage: снаряды турелей,
+		# контакт дронов, взрывы мин); generic-урон игрока и ульту не трогает.
+		# Бюджет-зеркало — ProgressionData._budget_network_factor. Покрыт
+		# tests/engineer_kit_test.gd.
+		"id": "workshop_network",
+		"title": "Сеть мастерской",
+		"description": "Каждое активное устройство даёт стек сети (мины — половину стека); каждый стек усиливает урон устройств на 6%. Лидерство поднимает предел сети: чем твёрже рука мастера, тем громче гремит вся мастерская.",
+		"network_damage_per_stack": 0.06,
+		"network_stack_cap_base": 3.0,
+		"network_cap_leadership_step": 6.0,
+		"network_mine_weight": 0.5,
+	},
 }
 
 const CLASS_MECHANIC_IDENTITIES := {
@@ -616,13 +640,13 @@ const CLASS_MECHANIC_IDENTITIES := {
 	},
 	"engineer": {
 		"main_attribute": "leadership",
-		"identity_title": "Мастерская приказов",
-		"summary": "Лидерство командует железом: чем тверже рука мастера, тем больше турелей, дронов и мин служат ему разом.",
-		"mechanic_tags": ["deployable_network", "device_command", "repair_support", "minefield"],
+		"identity_title": "Сеть мастерской",
+		"summary": "Лидерство командует железом: живые турели, дроны и мины дают стеки сети и бьют сильнее разом; чем твёрже рука мастера — тем больше устройств и выше предел сети.",
+		"mechanic_tags": ["deployable_network", "device_command", "orbit_drones", "minefield"],
 		"weapon_identities": {
-			"engineer_sentry_wrench": "развёртка стационарных турелей и удержание зоны",
-			"engineer_repair_drone": "repair drone с поддержкой",
-			"engineer_pressure_mines": "pressure mines для контроля маршрутов",
+			"engineer_sentry_wrench": "турели с боезапасом 15 выстрелов, предел парка растёт от Лидерства",
+			"engineer_repair_drone": "орбитальные боевые дроны: спираль контактного физического урона",
+			"engineer_pressure_mines": "пары вечных нажимных мин в случайных точках рядом",
 		},
 	},
 	"dark_mage": {

@@ -39,7 +39,6 @@ const EVENT_CAST_ACTION_MODES := {
 	"plague_dart": true,  # SCRUM-900
 	"priest_prayer_chain": true,
 	"bio_symbiote_web": true,
-	"engineer_repair_drone": true,
 	"dark_chain_burst": true,
 	"skull_curse_burn": true,
 	"dark_mirror_blast": true,
@@ -84,7 +83,7 @@ const ATTACK_MODE_EXECUTORS := {
 	"robot_compression_line": "_exec_robot_compression_line",
 	"robot_reactor_vent": "_exec_robot_reactor_vent",
 	"engineer_sentry_link": "_exec_engineer_sentry_link",
-	"engineer_repair_drone": "_exec_engineer_repair_drone",
+	"engineer_orbit_drone": "_exec_engineer_orbit_drone",
 	"engineer_pressure_mines": "_exec_engineer_pressure_mines",
 	"plague_dart": "_exec_plague_dart",  # SCRUM-900 doctor/plague_syringe
 	"saw_sector": "_exec_saw_sector",  # SCRUM-900 doctor/bone_saw
@@ -227,6 +226,21 @@ const ATTACK_MODE_EXECUTORS := {
 @export var sentry_splash_radius := 0.0
 @export var sentry_splash_damage_multiplier := 0.0
 @export var sentry_splash_target_cap := 0
+# SCRUM-905: боезапас турели (выстрелов на турель; расстреляла — свернулась).
+@export var sentry_shot_magazine := 15
+# SCRUM-906: орбитальные дроны (см. scripts/engineer_orbit_drone.gd).
+@export var drone_orbit_radius := 78.0
+@export var drone_orbit_speed := 3.6
+@export var drone_contact_radius := 44.0
+@export var drone_hit_cooldown := 0.85
+@export var drone_count_threshold := 12.0
+@export var drone_count_step := 4.0
+# SCRUM-907: персистентные мины (см. scripts/engineer_mine.gd).
+@export var mine_trigger_radius := 84.0
+@export var mine_self_arm_delay := 3.0
+@export var mine_active_cap := 6
+@export var mine_place_min_distance := 110.0
+@export var mine_place_max_distance := 260.0
 @export var deploy_texture_path := ""
 # SCRUM-939..941: параметры кита Тёмного мага (цепь / curse-прожиг / зеркало).
 @export var chain_targets := 3
@@ -458,6 +472,18 @@ func configure_weapon(config: Dictionary) -> void:
 	sentry_splash_radius = float(config.get("sentry_splash_radius", sentry_splash_radius))
 	sentry_splash_damage_multiplier = float(config.get("sentry_splash_damage_multiplier", sentry_splash_damage_multiplier))
 	sentry_splash_target_cap = int(config.get("sentry_splash_target_cap", sentry_splash_target_cap))
+	sentry_shot_magazine = int(config.get("sentry_shot_magazine", sentry_shot_magazine))
+	drone_orbit_radius = float(config.get("drone_orbit_radius", drone_orbit_radius))
+	drone_orbit_speed = float(config.get("drone_orbit_speed", drone_orbit_speed))
+	drone_contact_radius = float(config.get("drone_contact_radius", drone_contact_radius))
+	drone_hit_cooldown = float(config.get("drone_hit_cooldown", drone_hit_cooldown))
+	drone_count_threshold = float(config.get("drone_count_threshold", drone_count_threshold))
+	drone_count_step = float(config.get("drone_count_step", drone_count_step))
+	mine_trigger_radius = float(config.get("mine_trigger_radius", mine_trigger_radius))
+	mine_self_arm_delay = float(config.get("mine_self_arm_delay", mine_self_arm_delay))
+	mine_active_cap = int(config.get("mine_active_cap", mine_active_cap))
+	mine_place_min_distance = float(config.get("mine_place_min_distance", mine_place_min_distance))
+	mine_place_max_distance = float(config.get("mine_place_max_distance", mine_place_max_distance))
 	deploy_texture_path = str(config.get("deploy_texture_path", deploy_texture_path))
 	chain_targets = int(config.get("chain_targets", chain_targets))
 	chain_hop_range = float(config.get("chain_hop_range", chain_hop_range))
@@ -586,11 +612,13 @@ func _maybe_fire_rhythm_echo(owner_node: Node2D, target: Node2D, direction: Vect
 # rhythm-эха НЕ переприменяются (без двойных классовых сайд-эффектов).
 const ACTION_ECHO_EXCLUDED_MODES := {
 	"amp": true, "trap": true,
-	"engineer_sentry_link": true, "engineer_repair_drone": true, "engineer_pressure_mines": true,
+	"engineer_sentry_link": true, "engineer_orbit_drone": true, "engineer_pressure_mines": true,
 }
 const ACTION_ECHO_DEFAULT_DELAY := 0.18
 
 var _action_echo_active := false
+# SCRUM-908: последний целый уровень стеков «Сети мастерской» (для VFX-кью).
+var _network_cue_tier := 0.0
 
 
 func _maybe_fire_action_echo(owner_node: Node2D, target: Node2D, direction: Vector2) -> bool:
@@ -651,7 +679,7 @@ func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vect
 	var center := owner_node.global_position + direction * minf(maxf(aoe_radius * 0.55, 72.0), 180.0)
 	var radius := maxf(aoe_radius, beam_width * 1.4)
 	match attack_mode:
-		"pulse", "priest_ward", "elemental_orbit", "robot_reactor_vent":
+		"pulse", "priest_ward", "elemental_orbit", "robot_reactor_vent", "engineer_orbit_drone":
 			center = owner_node.global_position
 		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
 			center = owner_node.global_position + direction * minf(attack_range, 150.0)
@@ -662,7 +690,7 @@ func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vect
 		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line", "moon_split_shot", "storm_pierce_cone":
 			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
 			radius = maxf(beam_width * 2.2, 86.0)
-		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone":
+		"drain_link", "coin_ricochet", "priest_prayer_chain", "bio_symbiote_web":
 			center = owner_node.global_position + direction * minf(attack_range * 0.32, 190.0)
 			if target != null:
 				center = (owner_node.global_position + target.global_position) * 0.5
@@ -836,8 +864,8 @@ func _exec_engineer_sentry_link(owner_node: Node2D, _target: Node2D, direction: 
 	_fire_engineer_sentry_link(owner_node, direction)
 
 
-func _exec_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_fire_engineer_repair_drone(owner_node, target, direction)
+func _exec_engineer_orbit_drone(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
+	_fire_engineer_orbit_drone(owner_node, direction)
 
 
 func _exec_engineer_pressure_mines(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
@@ -3763,19 +3791,26 @@ func _fire_reactor_single_vent(owner_node: Node2D, vent_direction: Vector2, dama
 
 
 func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
-	# SCRUM-888: «Ключ Часового» = развёртка стационарных турелей.
-	# По кулдауну оружия ставится турель (scripts/sentry_turret.gd); лимит
-	# max_summons (жёсткий кап 2) — старейшая заменяется с мини-VFX. Турель
-	# живёт до конца боя (чистка: player_weapon_effects / cleanup_effects) и
-	# сама обстреливает ближайших врагов снарядами. Мгновенный первый выстрел
-	# при развёртке — прямой компонент бюджет-модели (_budget_hit_model),
-	# сустейн турелей моделирует _budget_summon_dps.
-	_emit_weapon_animation_event(owner_node, "deploy", 0.62, direction, {"pulse_interval": amp_pulse_interval})
+	# SCRUM-905: «Часовая турель» = развёртка турелей С БОЕЗАПАСОМ.
+	# По кулдауну оружия ставится турель (scripts/sentry_turret.gd, магазин
+	# sentry_shot_magazine=15); турель уходит ТОЛЬКО расстреляв боезапас (плюс
+	# штатные lifecycle-чистки: player_weapon_effects / cleanup_effects — конец
+	# боя, смена оружия, смерть). Замены старейшей и таймера жизни НЕТ.
+	# Предел активных турелей растёт от Лидерства: max_summons +
+	# floor(summon_amount/4), рельс max_summons_cap (+«Полевой чертеж» поверх);
+	# при полном парке деплой ПРОПУСКАЕТСЯ (SCRUM-964-паттерн, не тихий retire).
+	# Мгновенный первый выстрел при развёртке — прямой компонент бюджет-модели
+	# (_budget_hit_model), сустейн — _budget_sentry_ammo_model (min(спрос
+	# парка, magazine/деплой) зеркалит рантайм).
 	var alive_turrets: Array[Node] = []
 	for device in _deployed_amps:
 		if device != null and is_instance_valid(device):
 			alive_turrets.append(device)
 	_deployed_amps = alive_turrets
+	var turret_limit := _engineer_turret_limit(owner_node)
+	if _deployed_amps.size() >= turret_limit:
+		return
+	_emit_weapon_animation_event(owner_node, "deploy", 0.62, direction, {"pulse_interval": amp_pulse_interval})
 	var turret_scene := load("res://scenes/SentryTurret.tscn") as PackedScene
 	if turret_scene == null:
 		return
@@ -3788,22 +3823,26 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(turret)
 	turret.global_position = owner_node.global_position + direction * 92.0
 	_deployed_amps.append(turret)
-	# SCRUM-961 «Магазин турели»: в режиме магазина турели уходят по расстрелу
-	# боезапаса (sentry_turret), а не заменой старейшей — потолок мягко выше (+2).
-	var turret_limit := maxi(max_summons, 1)
-	if _owner_mod("sentry_magazine_bonus") > 0.0:
-		turret_limit += 2
-	while _deployed_amps.size() > turret_limit:
-		var oldest: Node = _deployed_amps.pop_front()
-		if oldest != null and is_instance_valid(oldest) and oldest is Node2D:
-			AttackVfx.ring_pulse(_projectile_parent(), (oldest as Node2D).global_position, aoe_radius * 0.30, visual_color, false)
-		_release_effect(oldest)
-		_salvage_device_refund()  # SCRUM-961 «Ядро утилизации»
-
 	AttackVfx.ring_pulse(_projectile_parent(), turret.global_position, aoe_radius * 0.45, visual_color, false)
 	# Мгновенное включение: турель сразу обстреливает ближайшего врага.
 	if turret.has_method("try_fire"):
 		turret.call("try_fire", self)
+
+
+func _engineer_turret_limit(owner_node: Node2D) -> int:
+	# SCRUM-905: предел парка = max_summons + floor(summon_amount/4)
+	# (зеркало summon_count бюджет-модели), жёсткий рельс max_summons_cap;
+	# бонус «Полевого чертежа» (+1 за каждые 6 Лидерства) добавляется ПОВЕРХ
+	# рельса — иначе артефакт мёртв на раскачанном Лидерстве.
+	var summon_amount := 0.0
+	if owner_node != null and is_instance_valid(owner_node):
+		var params = owner_node.get("derived_parameters")
+		if params is Dictionary:
+			summon_amount = maxf(float((params as Dictionary).get("summon_amount", 0.0)), 0.0)
+	var limit := maxi(max_summons, 1) + int(floor(summon_amount / 4.0))
+	if max_summons_cap > 0:
+		limit = mini(limit, max_summons_cap)
+	return maxi(limit + _blueprint_device_cap_bonus(owner_node), 1)
 
 
 func _engineer_turret_projectile_hit(target_instance_id: int, shot_damage: float) -> void:
@@ -3833,78 +3872,93 @@ func _damage_engineer_sentry_splash(primary_target: Node2D, shot_damage: float) 
 		_damage_enemy(splash_target, shot_damage * factor, false, _weapon_damage_type(), false)
 
 
-func _fire_engineer_repair_drone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(projectile_count + _extra_projectiles()) * 0.05), direction, {"chain": true})
-	var first_target: Node2D = target
-	if first_target == null:
-		first_target = _find_closest_enemy(owner_node, INF)
-	if first_target == null:
-		AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position + direction * 120.0, aoe_radius * 0.34, visual_color, false)
+func _fire_engineer_orbit_drone(owner_node: Node2D, direction: Vector2) -> void:
+	# SCRUM-906: «Орбитальный Дрон» — обслуживание ПОСТОЯННОГО парка орбитальных
+	# дронов (scripts/engineer_orbit_drone.gd). Каждый тик оружия доспавнивает
+	# недостающие дроны до целевого числа (растёт от Лидерства/summon_amount) и
+	# перераспределяет фазы спирали. Урон — ТОЛЬКО контактный физический от
+	# самих дронов (per-enemy кулдаун drone_hit_cooldown); прежний ремонт/цепь
+	# удалены (AC: никакого скрытого сустейна). Бюджет-зеркало —
+	# _budget_orbit_drone_dps.
+	var alive_drones := _alive_orbit_drones()
+	var target_count := _engineer_drone_target_count(owner_node)
+	if alive_drones.size() >= target_count:
 		return
-	var damage_value := _rolled_damage(owner_node)
-	var used := {first_target.get_instance_id(): true}
-	var previous_position := owner_node.global_position + direction * 28.0
-	var current_target := first_target
-	var healed := 0.0
-	# SCRUM-961 «Гироскоп дрона»: +1 цель цепи (drone_extra_links).
-	var links := maxi(projectile_count + _extra_projectiles() + int(_owner_mod("drone_extra_links")), 1)
-	for link_index in range(links):
-		if current_target == null or not is_instance_valid(current_target):
-			break
-		var width: float = beam_width * maxf(0.42, pow(damage_falloff, float(link_index)) + 0.10)
-		var tether := AttackVfx.beam(_projectile_parent(), previous_position, current_target.global_position, width, visual_color)
-		_register_effect(tether)
-		var hit_damage := damage_value * pow(damage_falloff, float(link_index))
-		_damage_enemy(current_target, hit_damage)
-		healed += hit_damage * heal_percent_of_damage * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
-		previous_position = current_target.global_position
-		current_target = _find_nearest_enemy_from(previous_position, aoe_radius, used)
-		if current_target != null:
-			used[current_target.get_instance_id()] = true
-	AttackVfx.beam(_projectile_parent(), previous_position, owner_node.global_position, beam_width * 0.44, Color(visual_color.r, visual_color.g, visual_color.b, 0.25))
-	if healed > 0.01 and owner_node.get("health") != null and owner_node.get("max_health") != null:
-		# SCRUM-517: _damage_enemy выше уже провёл drain через capped apply_drain_heal,
-		# поэтому этот батч-heal — двойное лечение в обход бюджета. Маршрутизируем его
-		# через тот же per-second бюджет (для owner-ов без метода — прежнее поведение).
-		var actual_healed := 0.0
-		if owner_node.has_method("apply_drain_heal"):
-			actual_healed = float(owner_node.call("apply_drain_heal", healed))
-		else:
-			var before := float(owner_node.get("health"))
-			owner_node.set("health", minf(float(owner_node.get("max_health")), before + healed))
-			actual_healed = float(owner_node.get("health")) - before
-		if actual_healed > 0.01 and owner_node.has_method("_show_heal_vfx"):
-			owner_node.call("_show_heal_vfx")
-		if actual_healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
-			owner_node.show_combat_feedback_number(actual_healed, "heal")
-	# SCRUM-603: summon-support лечение тоже через per-second бюджет (capped).
-	if summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent_capped"):
-		owner_node.heal_percent_capped(summon_support_heal_percent)
-	elif summon_support_heal_percent > 0.0 and owner_node.has_method("heal_percent"):
-		owner_node.heal_percent(summon_support_heal_percent)
+	_emit_weapon_animation_event(owner_node, "deploy", 0.30, direction, {"drones": target_count})
+	while alive_drones.size() < target_count:
+		var drone := Node2D.new()
+		drone.name = "EngineerOrbitDrone"
+		drone.set_script(load("res://scripts/engineer_orbit_drone.gd"))
+		var visual := Sprite2D.new()
+		visual.texture = _weapon_visual_texture()
+		visual.scale = Vector2.ONE * 0.16
+		visual.modulate = Color(1.0, 1.0, 1.0, 0.92)
+		drone.add_child(visual)
+		_projectile_parent().add_child(drone)
+		_register_effect(drone)
+		if drone.has_method("setup"):
+			drone.call("setup", self, owner_node, alive_drones.size(), target_count)
+		alive_drones.append(drone)
+	# Перераспределение фаз: спираль читается при любом числе дронов.
+	for slot_index in range(alive_drones.size()):
+		var slot_drone := alive_drones[slot_index]
+		if slot_drone != null and is_instance_valid(slot_drone) and slot_drone.has_method("set_slot"):
+			slot_drone.call("set_slot", slot_index, alive_drones.size())
+	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, drone_orbit_radius, visual_color, false)
+
+
+func _engineer_drone_target_count(owner_node: Node2D) -> int:
+	# SCRUM-906: 1 дрон на базовом профиле Инженера; +1 за каждые
+	# drone_count_step summon_amount сверх drone_count_threshold (порог ~
+	# базовый summon_amount класса), рельс max_summons_cap. Задокументированные
+	# пороги (threshold 12, step 4): 16 → 2, 20 → 3, 24 → 4, 28 → 5, 32 → 6.
+	var summon_amount := 0.0
+	if owner_node != null and is_instance_valid(owner_node):
+		var params = owner_node.get("derived_parameters")
+		if params is Dictionary:
+			summon_amount = maxf(float((params as Dictionary).get("summon_amount", 0.0)), 0.0)
+	var extra := int(floor(maxf(summon_amount - drone_count_threshold, 0.0) / maxf(drone_count_step, 0.5)))
+	var count := maxi(max_summons, 1) + extra
+	if max_summons_cap > 0:
+		count = mini(count, max_summons_cap)
+	return maxi(count, 1)
+
+
+func _alive_orbit_drones() -> Array[Node2D]:
+	var drones: Array[Node2D] = []
+	for effect in _alive_effects():
+		if effect is Node2D and effect.has_meta("orbit_drone"):
+			drones.append(effect as Node2D)
+	return drones
 
 
 func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> void:
+	# SCRUM-907: каждый деплой — 2 персистентные мины (projectile_count; extra-
+	# снаряды апгрейдов добавляют мины) в СЛУЧАЙНЫХ точках кольца
+	# [mine_place_min_distance..mine_place_max_distance] вокруг игрока —
+	# полезно рядом, но не на весь экран. Кап живых мин _engineer_mine_cap:
+	# при полном поле новые НЕ ставятся (SCRUM-964-паттерн). Таймера жизни нет —
+	# жизненный цикл в scripts/engineer_mine.gd (враг триггерит сразу, свой
+	# подрыв через mine_self_arm_delay).
 	var mine_count := maxi(projectile_count + _extra_projectiles(), 1)
-	_emit_weapon_animation_event(owner_node, "deploy", pool_duration, direction, {"count": mine_count, "check_interval": pool_tick_interval})
-	var spread := deg_to_rad(46.0)
+	_emit_weapon_animation_event(owner_node, "deploy", 0.40, direction, {"count": mine_count})
+	var mine_cap := _engineer_mine_cap(owner_node)
+	var alive_count := _alive_persistent_mines().size()
+	var placement_min := maxf(mine_place_min_distance, 24.0)
+	var placement_max := maxf(mine_place_max_distance, placement_min + 1.0)
 	for mine_index in range(mine_count):
-		var offset := 0.0
-		if mine_count > 1:
-			offset = lerpf(-spread * 0.5, spread * 0.5, float(mine_index) / float(mine_count - 1))
-		var mine_direction := direction.rotated(offset)
-		var distance := minf(attack_range, 150.0 + 54.0 * float(mine_index))
+		if alive_count >= mine_cap:
+			return
+		var mine_direction := Vector2.RIGHT.rotated(randf() * TAU)
+		var distance := randf_range(placement_min, placement_max)
 		_spawn_engineer_pressure_mine(owner_node, owner_node.global_position + mine_direction * distance, mine_index)
+		alive_count += 1
 
 
 func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, mine_index: int) -> void:
 	var mine := Node2D.new()
 	mine.name = "EngineerPressureMine"
-	mine.add_to_group("engineer_devices")
-	mine.set_meta("pool_duration", pool_duration)
-	mine.set_meta("pool_tick_interval", pool_tick_interval)
-	mine.set_meta("persistent_hazard", true)
-	mine.z_index = 6
+	mine.set_script(load("res://scripts/engineer_mine.gd"))
 	var visual := Sprite2D.new()
 	visual.texture = _weapon_visual_texture()
 	visual.scale = Vector2.ONE * 0.18
@@ -3913,106 +3967,49 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 	_projectile_parent().add_child(mine)
 	_register_effect(mine)
 	mine.global_position = mine_position
+	if mine.has_method("setup"):
+		mine.call("setup", self, owner_node, mine_index)
 	AttackVfx.ring_pulse(_projectile_parent(), mine_position, aoe_radius * 0.52, visual_color, true)
-	# SCRUM-961 «Минная сумка»: мина лежит до срабатывания (одноразовый подрыв,
-	# кап 5 живых, автоподрыв на исходе окна) — отдельный жизненный цикл.
-	if _owner_mod("mine_persistent_arm") > 0.0:
-		_arm_persistent_mine(mine, owner_node, mine_index)
+
+
+# SCRUM-907: подрыв персистентной мины (зовёт scripts/engineer_mine.gd по
+# триггеру врага/игрока). Урон по области с damage_falloff от эпицентра;
+# «Ядро утилизации» возвращает долю перезарядки.
+func _detonate_engineer_mine(mine_instance_id: int, owner_instance_id: int, mine_index: int) -> void:
+	var mine := instance_from_id(mine_instance_id) as Node2D
+	if mine == null or not is_instance_valid(mine):
 		return
-	var state := {"trigger_count": 0}
-	var check_interval := maxf(pool_tick_interval, 0.10)
-	# SCRUM-961 «Полевой чертеж»: Лидерство продлевает жизнь минного поля.
-	var effective_duration := pool_duration * _blueprint_lifetime_multiplier()
-	var check_count := maxi(int(floor(effective_duration / check_interval)) + 1, 1)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var mine_id := mine.get_instance_id()
-	var mine_tween := mine.create_tween()
-	for check_index in range(check_count):
-		if check_index > 0:
-			mine_tween.tween_interval(check_interval)
-		mine_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			var current_mine := instance_from_id(mine_id) as Node2D
-			if current_weapon == null or current_mine == null:
-				return
-			if not current_weapon.call("_has_enemy_in_circle", current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.62):
-				return
-			state["trigger_count"] = int(state["trigger_count"]) + 1
-			if current_owner != null:
-				current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
-			var mine_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
-			mine_damage *= pow(float(current_weapon.get("damage_falloff")), float(mine_index) * 0.35)
-			current_weapon.call("_damage_enemies_in_circle_falloff", current_mine.global_position, float(current_weapon.get("aoe_radius")), mine_damage, float(current_weapon.get("damage_falloff")))
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
-		)
-	var elapsed_checks := float(check_count - 1) * check_interval
-	var remaining_lifetime := maxf(effective_duration - elapsed_checks, 0.0)
-	if remaining_lifetime > 0.001:
-		mine_tween.tween_interval(remaining_lifetime)
-	mine_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_mine := instance_from_id(mine_id) as Node
-		if current_mine == null:
-			return
-		if current_weapon != null:
-			current_weapon.call("_release_effect", current_mine)
-			current_weapon.call("_salvage_device_refund")  # SCRUM-961 «Ядро утилизации»
-		else:
-			current_mine.queue_free()
-	)
+	var current_owner := instance_from_id(owner_instance_id) as Node2D
+	var owner_alive := current_owner != null and is_instance_valid(current_owner)
+	if owner_alive:
+		_emit_weapon_animation_event(current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
+	var mine_damage := _rolled_damage(current_owner) if owner_alive else damage
+	_damage_enemies_in_circle_falloff(mine.global_position, aoe_radius, mine_damage, damage_falloff)
+	AttackVfx.orb_burst(_projectile_parent(), mine.global_position, aoe_radius * 0.72, visual_color)
+	_release_effect(mine)
+	_salvage_device_refund()  # SCRUM-961 «Ядро утилизации»
 
 
-# SCRUM-961 «Минная сумка»: жизненный цикл персистентной мины — лежит до
-# срабатывания (враг в радиусе после safe-задержки 2.5с), автоподрыв через 6с;
-# один подрыв на мину, кап 5 живых (при полном поле новые мины не ставятся,
-# пока слот не освободится подрывом/тайм-аутом — см. SCRUM-964 QA-фикс ниже).
-const PERSISTENT_MINE_SAFE_DELAY := 2.5
-const PERSISTENT_MINE_AUTO_DETONATE := 6.0
-const PERSISTENT_MINE_CAP := 5
+func _engineer_mine_cap(owner_node: Node2D) -> int:
+	# SCRUM-907: кап живых мин = mine_active_cap (база 6) + «Минная сумка»
+	# (mine_cap_bonus) + «Полевой чертеж» (+1 за каждые 6 Лидерства).
+	var cap := maxi(mine_active_cap, 1) + int(_owner_mod("mine_cap_bonus")) + _blueprint_device_cap_bonus(owner_node)
+	return maxi(cap, 1)
 
 
-func _arm_persistent_mine(mine: Node2D, owner_node: Node2D, mine_index: int) -> void:
-	# SCRUM-964 QA-фикс: при полном поле (кап 5) НОВАЯ мина не ставится (skip),
-	# вместо тихого снятия старейшей. Прежний retire-oldest под живым автоогнём
-	# (fire_interval ~0.79с × залп 3) вытеснял мины в ~1.3с — раньше армирования
-	# 2.5с, из-за чего ни одна мина не доживала ни до proximity-подрыва, ни до
-	# автоподрыва 6с: оружие с «Минной сумкой» давало 0 урона в непрерывном бою.
-	if _alive_persistent_mines(mine).size() >= PERSISTENT_MINE_CAP:
-		_release_effect(mine)
-		return
-	mine.set_meta("persistent_mine", true)
-	var check_interval := maxf(pool_tick_interval, 0.10)
-	var check_count := maxi(int(ceil(PERSISTENT_MINE_AUTO_DETONATE / check_interval)), 1)
-	var state := {"triggered": false}
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var mine_id := mine.get_instance_id()
-	var mine_tween := mine.create_tween()
-	for check_index in range(check_count):
-		mine_tween.tween_interval(check_interval)
-		var elapsed := float(check_index + 1) * check_interval
-		var timeout := check_index >= check_count - 1
-		mine_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_mine := instance_from_id(mine_id) as Node2D
-			if current_weapon == null or current_mine == null or bool(state["triggered"]):
-				return
-			var armed := elapsed >= PERSISTENT_MINE_SAFE_DELAY
-			var enemy_near: bool = current_weapon.call("_has_enemy_in_circle", current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.62)
-			if not timeout and not (armed and enemy_near):
-				return
-			state["triggered"] = true
-			var current_owner := instance_from_id(owner_id) as Node2D
-			if current_owner != null:
-				current_weapon.call("_emit_weapon_animation_event", current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
-			var mine_damage: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
-			current_weapon.call("_damage_enemies_in_circle_falloff", current_mine.global_position, float(current_weapon.get("aoe_radius")), mine_damage, float(current_weapon.get("damage_falloff")))
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_mine.global_position, float(current_weapon.get("aoe_radius")) * 0.72, current_weapon.get("visual_color"))
-			current_weapon.call("_release_effect", current_mine)
-			current_weapon.call("_salvage_device_refund")  # SCRUM-961 «Ядро утилизации»
-		)
+# SCRUM-961 «Полевой чертеж» (SCRUM-905/907 rework): +1 к пределу устройств
+# (турели и мины) за каждые 6 Лидерства. Прежний lifetime-бонус мин умер вместе
+# с таймером жизни (мины теперь персистентные, SCRUM-907).
+func _blueprint_device_cap_bonus(owner_node: Node2D) -> int:
+	if _owner_mod("blueprint_leadership_scaling") <= 0.0:
+		return 0
+	var reference: Node2D = owner_node if owner_node != null and is_instance_valid(owner_node) else _owner_node()
+	if reference == null:
+		return 0
+	var stats = reference.get("stats")
+	if not (stats is Dictionary):
+		return 0
+	return int(floor(float((stats as Dictionary).get("leadership", 0.0)) / 6.0))
 
 
 # SCRUM-961 «Корневой капкан»: сработавший капкан укореняет жертв (кламп движка
@@ -4040,7 +4037,9 @@ func _salvage_device_refund() -> void:
 	_cooldown = maxf(_cooldown - fire_interval * refund_ratio, 0.0)
 
 
-# SCRUM-961 «Полевой чертеж»: Лидерство продлевает жизнь мин/ловушек (+12% за 6 LDR).
+# SCRUM-961 «Полевой чертеж»: Лидерство продлевает жизнь ловушек (+12% за 6 LDR).
+# SCRUM-907: мины инженера персистентны и этот множитель больше НЕ используют —
+# остаётся только generic trap-путь; для устройств см. _blueprint_device_cap_bonus.
 func _blueprint_lifetime_multiplier() -> float:
 	if _owner_mod("blueprint_leadership_scaling") <= 0.0:
 		return 1.0
@@ -4653,6 +4652,9 @@ func _rolled_damage(owner_node: Node2D) -> float:
 		result *= _current_charge_multiplier
 	if not summon_role.is_empty():
 		result *= _summon_role_damage_factor(parameters)
+	# SCRUM-908 «Сеть мастерской»: живые устройства инженера усиливают урон
+	# устройств (data-driven через CLASS_TRAITS; для прочих классов фактор 1.0).
+	result *= _workshop_network_factor(owner_node)
 	# SCRUM-961 «Счетчик ритма»: ослабленный повтор каста (эхо активно только
 	# внутри _maybe_fire_rhythm_echo, обычные касты не задевает).
 	result *= _rhythm_echo_scale
@@ -4696,6 +4698,56 @@ func _amp_summon_haste_value(owner_node: Node2D) -> float:
 	var summon_amount := float(parameters.get("summon_amount", 0.0))
 	var leadership := float(parameters.get("leadership", 0.0))
 	return minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+
+
+# SCRUM-908 «Сеть мастерской» (workshop_network): активные устройства инженера
+# дают стеки сети — вес устройства из меты network_weight (турель 1.0, дрон 1.0,
+# мина 0.5 — предохранитель от мин-спама), кап = network_stack_cap_base +
+# floor(Лидерство / network_cap_leadership_step). Каждый стек даёт
+# +network_damage_per_stack к урону УСТРОЙСТВ: фактор входит ТОЛЬКО в
+# _rolled_damage (урон оружия/устройств этого класса — все три оружия Инженера
+# устройства), generic-урон игрока/ульту не трогает. Data-driven через
+# CLASS_TRAITS (Player.class_trait_value): у классов без trait'а per_stack = 0 →
+# фактор 1.0 (не течёт). Зеркало бюджета — ProgressionData._budget_network_factor.
+func _workshop_network_factor(owner_node: Node2D) -> float:
+	if owner_node == null or not is_instance_valid(owner_node) or not owner_node.has_method("class_trait_value"):
+		return 1.0
+	var per_stack := float(owner_node.call("class_trait_value", "network_damage_per_stack", 0.0))
+	if per_stack <= 0.0:
+		return 1.0
+	var stacks := _workshop_network_stacks(owner_node)
+	if stacks <= 0.0:
+		return 1.0
+	return 1.0 + stacks * per_stack
+
+
+func _workshop_network_stacks(owner_node: Node2D) -> float:
+	var weight_sum := 0.0
+	for effect in _alive_effects():
+		if effect is Node2D and effect.has_meta("network_weight"):
+			weight_sum += maxf(float(effect.get_meta("network_weight")), 0.0)
+	var cap_base := float(owner_node.call("class_trait_value", "network_stack_cap_base", 3.0))
+	var cap_step := maxf(float(owner_node.call("class_trait_value", "network_cap_leadership_step", 6.0)), 1.0)
+	var leadership := 0.0
+	var stats = owner_node.get("stats")
+	if stats is Dictionary:
+		leadership = maxf(float((stats as Dictionary).get("leadership", 0.0)), 0.0)
+	var cap := maxf(cap_base + floor(leadership / cap_step), 0.0)
+	var stacks := minf(weight_sum, cap)
+	_maybe_pulse_network_cue(owner_node, stacks)
+	return stacks
+
+
+# Лёгкий фидбек сети (AC SCRUM-908): при смене ЦЕЛОГО числа стеков — короткий
+# ринг-пульс вокруг инженера (существующий VFX-паттерн, без новых UI-файлов).
+func _maybe_pulse_network_cue(owner_node: Node2D, stacks: float) -> void:
+	var tier := floorf(stacks)
+	if is_equal_approx(tier, _network_cue_tier):
+		return
+	_network_cue_tier = tier
+	if tier <= 0.0 or _effects_shutdown or not is_inside_tree():
+		return
+	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, 54.0 + 8.0 * tier, Color(0.98, 0.82, 0.30, 0.30), false)
 
 
 func _update_charge(delta: float) -> void:
@@ -4761,9 +4813,9 @@ func _estimated_windup_duration() -> float:
 			return maxf(grenade_delay, 0.08)
 		"priest_ward", "bio_spore_bloom", "bio_sample_dart":
 			return maxf(burst_interval, 0.06)
-		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
+		"amp", "trap", "engineer_sentry_link", "engineer_orbit_drone", "engineer_pressure_mines":
 			return 0.10
-		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "engineer_repair_drone", "moon_split_shot", "storm_pierce_cone":
+		"beam", "dot_beam", "drain_link", "priest_prayer_chain", "bio_symbiote_web", "moon_split_shot", "storm_pierce_cone":
 			return 0.12
 		# SCRUM-939..941: касты кита Тёмного мага — короткий читаемый замах.
 		"dark_chain_burst", "skull_curse_burn", "dark_mirror_blast":

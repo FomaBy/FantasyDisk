@@ -15,9 +15,12 @@ damage = 12.0
 attack_range = 390.0
 aoe_radius = 125.0
 knockback = 82.0
-projectile_count = 3
-pool_duration = 3.0
-pool_tick_interval = 0.16
+projectile_count = 2
+mine_trigger_radius = 84.0
+mine_self_arm_delay = 3.0
+mine_active_cap = 6
+mine_place_min_distance = 110.0
+mine_place_max_distance = 260.0
 damage_falloff = 0.62
 visual_color = Color(1, 0.54, 0.24, 0.42)
 

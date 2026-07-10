@@ -986,6 +986,10 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 		# SCRUM-940: curse-only оружие (cursed_skull) прямого урона не наносит —
 		# весь его выход идёт через dot-ось (_budget_dot_dps), как и в рантайме.
 		direct_dps = 0.0
+	elif str(config.get("attack_mode", "")) == "engineer_orbit_drone":
+		# SCRUM-906: оружие само не стреляет — обслуживает парк дронов; весь
+		# урон контактный (summon-канал, _budget_orbit_drone_dps).
+		direct_dps = 0.0
 	elif str(config.get("summon_role", "")) != "":
 		direct_dps *= _budget_summon_role_damage_factor(config, params, stats)
 	var hit_model := _budget_hit_model(config)
@@ -993,6 +997,17 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var dot_dps := _budget_dot_dps(config, params, interval, stats)
 	var pool_dps := _budget_pool_dps(config, params, interval)
 	var summon_dps := _budget_summon_dps(config, params, stats)
+	# SCRUM-905/906: у устройств инженера собственные summon-модели, зеркалящие
+	# рантайм (боезапас турелей / орбитальный контакт дронов); они замещают
+	# generic _budget_summon_dps и пишут свой crowd-фактор в summon_targets.
+	var sentry_model := _budget_sentry_ammo_model(config, params, stats)
+	if not sentry_model.is_empty():
+		summon_dps = float(sentry_model.get("summon_dps", summon_dps))
+		hit_model["summon_targets"] = float(sentry_model.get("summon_targets", 1.0))
+	var orbit_model := _budget_orbit_drone_dps(config, params, stats)
+	if not orbit_model.is_empty():
+		summon_dps = float(orbit_model.get("summon_dps", summon_dps))
+		hit_model["summon_targets"] = float(orbit_model.get("summon_targets", 1.0))
 	# SCRUM-935 «Двойное действие»: echo-trait создаёт полную копию действия оружия
 	# с шансом p ⇒ матожидание выхода действия ×(1+p). Фактор применяется к
 	# action-компонентам (direct/dot/pool), но НЕ к призывам (деплой исключён из
@@ -1019,6 +1034,11 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var wild_aura_factor := class_wild_aura_damage_factor(character_id, params)
 	var solo_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps) * wild_aura_factor
 	var aoe_dps := ((direct_dps * infected_direct_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets) * wild_aura_factor
+	# SCRUM-908 «Сеть мастерской»: ожидаемые стеки устройств усиливают выход
+	# оружия-устройства (ульта НЕ устройство — фактор до её добавления).
+	var network_factor := _budget_network_factor(config, params, stats)
+	solo_dps *= network_factor
+	aoe_dps *= network_factor
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -1358,9 +1378,10 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 				sentry_volley_crowd += pow(sentry_volley_falloff, float(sentry_volley_index))
 			var sentry_crowd_factor := sentry_volley_crowd * (1.0 + sentry_splash_bonus)
 			return {"solo_hits": 1.0, "five_hits": sentry_crowd_factor, "summon_targets": sentry_crowd_factor}
-		"engineer_repair_drone":
-			var drone_links := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + drone_links * 0.68, 1.0, 4.6)}
+		"engineer_orbit_drone":
+			# SCRUM-906: прямого канала нет (direct_dps = 0); crowd-фактор
+			# контакта пишет _budget_orbit_drone_dps в summon_targets.
+			return {"solo_hits": 1.0, "five_hits": 1.0}
 		"engineer_pressure_mines":
 			var mine_count := float(config.get("projectile_count", 3.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(mine_count * (1.0 + aoe_radius / 170.0), 1.0, 5.0)}
@@ -1550,6 +1571,125 @@ static func _budget_summon_dps(config: Dictionary, params: Dictionary, stats := 
 		base_stat = weighted / float(roster.size())
 	var summon_damage := base_stat * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
 	return summon_count * summon_damage / attack_interval
+
+
+# SCRUM-905: пропускная способность турелей с боезапасом — зеркало
+# scripts/sentry_turret.gd + class_weapon._engineer_turret_limit 1:1.
+# Спрос парка = capacity выстрелов раз в effective-pulse (pulse / tempo-lift /
+# attack_speed, пол 0.10с; соло — 1 снаряд/пульс на турель, толпа — залп
+# projectile_count); предложение = magazine выстрелов с каждым деплоем
+# (fire_interval / attack_speed). Устойчивый DPS = min(спрос, предложение) —
+# скорость атаки ускоряет и стрельбу, и восполнение (AC SCRUM-905), Лидерство
+# растит capacity (2 + floor(summon_amount/4), рельс max_summons_cap).
+static func _budget_sentry_ammo_model(config: Dictionary, params: Dictionary, stats := {}) -> Dictionary:
+	if str(config.get("attack_mode", "")) != "engineer_sentry_link" or int(config.get("sentry_shot_magazine", 0)) <= 0:
+		return {}
+	var magazine := float(config.get("sentry_shot_magazine", 15))
+	var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+	var deploy_interval := maxf(float(config.get("fire_interval", 2.7)) / attack_speed, 0.18)
+	var supply_rate := magazine / deploy_interval
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var tempo := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+	var pulse := maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / attack_speed, 0.10)
+	var capacity := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(summon_amount / 4.0), 1.0)
+	if int(config.get("max_summons_cap", 0)) > 0:
+		capacity = minf(capacity, float(config.get("max_summons_cap", 6)))
+	var demand_solo := capacity / pulse
+	var volley := maxi(int(config.get("projectile_count", 1)), 1)
+	var falloff := clampf(float(config.get("damage_falloff", 0.55)), 0.05, 1.0)
+	var volley_quality := 0.0
+	for volley_index in range(volley):
+		volley_quality += pow(falloff, float(volley_index))
+	var splash_bonus := 0.0
+	if float(config.get("sentry_splash_radius", 0.0)) > 0.0:
+		var splash_cap := maxi(int(config.get("sentry_splash_target_cap", 0)), 0)
+		var splash_mult := maxf(float(config.get("sentry_splash_damage_multiplier", 0.0)), 0.0)
+		for splash_index in range(splash_cap):
+			splash_bonus += splash_mult / (1.0 + float(splash_index) * 0.75)
+	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
+	var shot_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 1.0)) * role_factor
+	var solo_dps := minf(demand_solo, supply_rate) * shot_damage
+	var aoe_dps := minf(demand_solo * float(volley), supply_rate) * shot_damage 		* (volley_quality / float(volley)) * (1.0 + splash_bonus)
+	return {
+		"summon_dps": solo_dps,
+		"summon_targets": aoe_dps / maxf(solo_dps, 0.001),
+	}
+
+
+# SCRUM-906: контактный DPS орбитальных дронов — зеркало
+# scripts/engineer_orbit_drone.gd + class_weapon._engineer_drone_target_count.
+# Число дронов = max_summons + floor(max(summon_amount - threshold, 0) / step),
+# рельс max_summons_cap (база Инженера ~12.5 → ровно 1 дрон). Оборотов/с =
+# drone_orbit_speed × attack_speed / TAU (скорость атаки крутит RPM, AC);
+# хитов/с на дрона по одной цели = min(обороты, 1/hit_cooldown) — дрон
+# пересекает угловую позицию цели раз за оборот, per-enemy кулдаун гейтит
+# сверху. Толпа: кольцо орбиты накрывает clamp(1 + (внешний радиус спирали +
+# контакт)/58, 1, 5) целей бюджет-пятёрки.
+static func _budget_orbit_drone_dps(config: Dictionary, params: Dictionary, stats := {}) -> Dictionary:
+	if str(config.get("attack_mode", "")) != "engineer_orbit_drone":
+		return {}
+	var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+	var rev_rate := maxf(float(config.get("drone_orbit_speed", 3.6)), 0.5) * attack_speed / TAU
+	var hit_cooldown := maxf(float(config.get("drone_hit_cooldown", 0.85)), 0.1)
+	var pass_rate := minf(rev_rate, 1.0 / hit_cooldown)
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var threshold := float(config.get("drone_count_threshold", 12.0))
+	var step := maxf(float(config.get("drone_count_step", 4.0)), 0.5)
+	var count := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(maxf(summon_amount - threshold, 0.0) / step), 1.0)
+	if int(config.get("max_summons_cap", 0)) > 0:
+		count = minf(count, float(config.get("max_summons_cap", 6)))
+	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
+	var contact_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 0.9)) * role_factor
+	var solo_dps := count * contact_damage * pass_rate
+	var outer_radius := maxf(float(config.get("drone_orbit_radius", 78.0)), 24.0) * (1.0 + 0.14 * (count - 1.0))
+	var ring_coverage := clampf(1.0 + (outer_radius + maxf(float(config.get("drone_contact_radius", 44.0)), 8.0)) / 58.0, 1.0, 5.0)
+	return {
+		"summon_dps": solo_dps,
+		"summon_targets": ring_coverage,
+	}
+
+
+# SCRUM-908 «Сеть мастерской»: бюджет-зеркало ClassWeapon._workshop_network_factor.
+# Ожидаемые стеки в устойчивом бою (по типу устройства):
+#   - турели: min(capacity, жизнь магазина / интервал деплоя) — боезапас
+#     ограничивает одновременный парк;
+#   - дроны: постоянный парк = число дронов;
+#   - мины: кап × вес 0.5 × заполненность 0.33 (в бою мины детонируют быстро).
+# Стеки клампятся капом сети (cap_base + floor(Лидерство/step)); фактор =
+# 1 + стеки × per_stack. У классов без trait'а per_stack = 0 → фактор 1.0.
+static func _budget_network_factor(config: Dictionary, params: Dictionary, stats := {}) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(str(config.get("character_id", "")), {}) as Dictionary
+	var per_stack := float(trait_config.get("network_damage_per_stack", 0.0))
+	if per_stack <= 0.0:
+		return 1.0
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var cap := maxf(float(trait_config.get("network_stack_cap_base", 3.0)) 		+ floor(maxf(leadership, 0.0) / maxf(float(trait_config.get("network_cap_leadership_step", 6.0)), 1.0)), 0.0)
+	var mode := str(config.get("attack_mode", ""))
+	var expected := 0.0
+	match mode:
+		"engineer_sentry_link":
+			var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+			var tempo := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+			var pulse := maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / attack_speed, 0.10)
+			var magazine_life := float(config.get("sentry_shot_magazine", 15)) * pulse
+			var deploy_interval := maxf(float(config.get("fire_interval", 2.7)) / attack_speed, 0.18)
+			var capacity := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(summon_amount / 4.0), 1.0)
+			if int(config.get("max_summons_cap", 0)) > 0:
+				capacity = minf(capacity, float(config.get("max_summons_cap", 6)))
+			expected = minf(capacity, magazine_life / deploy_interval)
+		"engineer_orbit_drone":
+			var threshold := float(config.get("drone_count_threshold", 12.0))
+			var step := maxf(float(config.get("drone_count_step", 4.0)), 0.5)
+			expected = maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(maxf(summon_amount - threshold, 0.0) / step), 1.0)
+			if int(config.get("max_summons_cap", 0)) > 0:
+				expected = minf(expected, float(config.get("max_summons_cap", 6)))
+		"engineer_pressure_mines":
+			expected = float(config.get("mine_active_cap", 6)) * float(trait_config.get("network_mine_weight", 0.5)) * 0.33
+		_:
+			return 1.0
+	return 1.0 + minf(expected, cap) * per_stack
 
 
 static func _is_pure_summon_weapon(config: Dictionary) -> bool:

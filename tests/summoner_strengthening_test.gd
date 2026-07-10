@@ -69,7 +69,7 @@ func _test_summon_configs(errors: Array) -> void:
 		"druid/raven_totem": "support_totem",
 		"chemist/homunculus_vial": "tank_control",
 		"engineer/engineer_sentry_wrench": "engineer_sentry",
-		"engineer/engineer_repair_drone": "support_drone",
+		"engineer/engineer_repair_drone": "orbit_drone",  # SCRUM-906: орбитальный боевой дрон
 	}
 	for key in expected:
 		var parts := str(key).split("/")
@@ -87,7 +87,7 @@ func _test_deploy_role_configs(errors: Array) -> void:
 		"guitarist/sound_amp": "stage_pulse",
 		"druid/raven_totem": "support_totem",
 		"engineer/engineer_sentry_wrench": "turret_dps",
-		"engineer/engineer_repair_drone": "repair_chain",
+		"engineer/engineer_repair_drone": "orbit_drone",  # SCRUM-906
 		"engineer/engineer_pressure_mines": "mine_grid",
 	}
 	for key in expected:
@@ -96,10 +96,12 @@ func _test_deploy_role_configs(errors: Array) -> void:
 		if str(config.get("deploy_role", "")) != str(expected[key]):
 			errors.append("Expected %s deploy_role=%s, got %s." % [key, expected[key], config.get("deploy_role", "")])
 	var sentry: Dictionary = ProgressionData.weapon("engineer", "engineer_sentry_wrench")
-	# SCRUM-888: турели — жёсткий лимит 2 одновременно (старейшая заменяется),
-	# кап держит и Leadership-скейл, и ульту (+2 summon_bonus) на отметке 2.
-	if int(sentry.get("max_summons_cap", 0)) != 2:
-		errors.append("Expected Engineer sentry turret hard cap of 2, got %s." % sentry.get("max_summons_cap", 0))
+	# SCRUM-905: турели с боезапасом — предел парка растёт от Лидерства
+	# (2 + floor(summon_amount/4)), жёсткий рельс max_summons_cap = 6.
+	if int(sentry.get("max_summons_cap", 0)) != 6:
+		errors.append("Expected Engineer sentry turret hard cap rail of 6, got %s." % sentry.get("max_summons_cap", 0))
+	if int(sentry.get("sentry_shot_magazine", 0)) != 15:
+		errors.append("Expected Engineer sentry shot magazine of 15, got %s." % sentry.get("sentry_shot_magazine", 0))
 	if float(sentry.get("sentry_splash_radius", 0.0)) <= 0.0 or float(sentry.get("sentry_splash_damage_multiplier", 0.0)) <= 0.0:
 		errors.append("Expected Engineer sentry to define small capped splash knobs.")
 

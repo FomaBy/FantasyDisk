@@ -1,12 +1,16 @@
 extends Node2D
 
-# SCRUM-888: стационарная sentry-турель инженера («Ключ Часового»).
-# Разворачивается оружием (class_weapon._fire_engineer_sentry_link) по кулдауну;
-# живёт до конца боя или до замены старейшей (лимит max_summons оружия, жёсткий
-# кап 2). Автострельба: каждый пульс — снаряд (orb_projectile) в БЛИЖАЙШЕГО
-# врага в радиусе оружия; урон идёт через weapon._rolled_damage (крит +
-# summon_role-фактор Лидерства), темп зеркалит бюджет-модель
-# (_budget_summon_dps): pulse / (1 + min(summon_amount*0.014 + leadership*0.006, 0.30)).
+# SCRUM-888/905: стационарная sentry-турель инженера («Часовая турель»).
+# Разворачивается оружием (class_weapon._fire_engineer_sentry_link) по кулдауну.
+# SCRUM-905: турель ВСЕГДА несёт боезапас (sentry_shot_magazine оружия, база 15
+# выстрелов; «Магазин турели» и «Полевой чертеж» добавляют заряды) и
+# сворачивается, расстреляв его; таймера жизни/замены старейшей НЕТ.
+# Автострельба: каждый пульс — залп (orb_projectile) по БЛИЖАЙШИМ врагам в
+# радиусе оружия; урон идёт через weapon._rolled_damage (крит + summon_role-
+# фактор Лидерства), темп = amp_pulse_interval / tempo-lift / attack_speed —
+# зеркало бюджет-модели (_budget_sentry_ammo_model): tempo-lift =
+# 1 + min(summon_amount*0.014 + leadership*0.006, 0.30), скорость атаки
+# ускоряет стрельбу и расход боезапаса (AC SCRUM-905).
 # Чистка без утечек: узел зарегистрирован как player_weapon_effects
 # (weapon._register_effect) — его освобождают cleanup_effects оружия, смена
 # оружия/смерть игрока (player._clear_detached_weapon_effects) и конец боя
@@ -20,20 +24,22 @@ const PROJECTILE_SPEED := 950.0
 const MUZZLE_OFFSET := Vector2(0.0, -14.0)
 const IDLE_RETRY_INTERVAL := 0.2
 const FIRST_AUTO_SHOT_DELAY := 0.35
-# SCRUM-961 «Магазин турели»: базовый боезапас режима магазина.
-const SENTRY_MAGAZINE_BASE := 14
+# SCRUM-905: fallback боезапаса, если у оружия нет sentry_shot_magazine.
+const SENTRY_MAGAZINE_BASE := 15
+# SCRUM-908 «Сеть мастерской»: вес турели в стеках сети устройств.
+const NETWORK_WEIGHT := 1.0
 
 var _weapon_instance_id := 0
 var _owner_instance_id := 0
 var _fire_cooldown := FIRST_AUTO_SHOT_DELAY
-# SCRUM-961: -1 = без магазина (легаси-поведение «живёт до замены»); >0 = осталось
-# выстрелов, по расстрелу турель деспаунится сама (см. try_fire).
-var _shots_left := -1
+# SCRUM-905: осталось выстрелов; по расстрелу турель деспаунится сама (try_fire).
+var _shots_left := SENTRY_MAGAZINE_BASE
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("engineer_devices")
+	set_meta("network_weight", NETWORK_WEIGHT)  # SCRUM-908
 	z_index = 7
 	_play_deploy_pop()
 
@@ -41,23 +47,27 @@ func _ready() -> void:
 func setup(weapon: Node, owner_node: Node2D) -> void:
 	_weapon_instance_id = weapon.get_instance_id() if weapon != null else 0
 	_owner_instance_id = owner_node.get_instance_id() if owner_node != null else 0
-	# SCRUM-961 «Магазин турели»/«Полевой чертеж»: магазин активируется ключом
-	# sentry_magazine_bonus (14 базовых + бонус ключа + 2 за каждые 6 Лидерства
-	# чертежа); без ключа поведение турели не меняется.
-	if owner_node == null:
-		return
-	var mods = owner_node.get("run_modifiers")
-	if not (mods is Dictionary):
-		return
-	var magazine_bonus := float((mods as Dictionary).get("sentry_magazine_bonus", 0.0))
-	if magazine_bonus <= 0.0:
-		return
+	# SCRUM-905: базовый магазин из конфига оружия (15); «Магазин турели»
+	# (sentry_magazine_bonus) и «Полевой чертеж» (+2 за каждые 6 Лидерства)
+	# добавляют заряды поверх базы.
+	var base_magazine := SENTRY_MAGAZINE_BASE
+	if weapon != null and weapon.get("sentry_shot_magazine") != null:
+		base_magazine = maxi(int(weapon.get("sentry_shot_magazine")), 1)
+	var magazine_bonus := 0
 	var blueprint_shots := 0
-	if float((mods as Dictionary).get("blueprint_leadership_scaling", 0.0)) > 0.0:
-		var stats = owner_node.get("stats")
-		if stats is Dictionary:
-			blueprint_shots = int(floor(float((stats as Dictionary).get("leadership", 0.0)) / 6.0)) * 2
-	_shots_left = SENTRY_MAGAZINE_BASE + int(magazine_bonus) + blueprint_shots
+	if owner_node != null:
+		var mods = owner_node.get("run_modifiers")
+		if mods is Dictionary:
+			magazine_bonus = int(float((mods as Dictionary).get("sentry_magazine_bonus", 0.0)))
+			if float((mods as Dictionary).get("blueprint_leadership_scaling", 0.0)) > 0.0:
+				var stats = owner_node.get("stats")
+				if stats is Dictionary:
+					blueprint_shots = int(floor(float((stats as Dictionary).get("leadership", 0.0)) / 6.0)) * 2
+	_shots_left = base_magazine + magazine_bonus + blueprint_shots
+
+
+func shots_left() -> int:
+	return _shots_left
 
 
 func _play_deploy_pop() -> void:
@@ -85,11 +95,13 @@ func _physics_process(delta: float) -> void:
 
 
 func effective_pulse_interval(weapon: Node) -> float:
-	# Темп растёт от Лидерства/summon_amount с капом +30% — зеркало
-	# progression_data._budget_summon_dps (модель и рантайм считают одинаково).
+	# Темп растёт от Лидерства/summon_amount с капом +30% и от СКОРОСТИ АТАКИ
+	# (SCRUM-905: attack_speed ускоряет выстрелы/сек и расход боезапаса) —
+	# зеркало progression_data._budget_sentry_ammo_model.
 	var pulse := maxf(float(weapon.get("amp_pulse_interval")), 0.18)
 	var leadership := 0.0
 	var summon_amount := 0.0
+	var attack_speed := 1.0
 	var owner_node := instance_from_id(_owner_instance_id) as Node2D
 	if owner_node != null and is_instance_valid(owner_node):
 		var stats = owner_node.get("stats")
@@ -98,8 +110,9 @@ func effective_pulse_interval(weapon: Node) -> float:
 		var params = owner_node.get("derived_parameters")
 		if params is Dictionary:
 			summon_amount = float((params as Dictionary).get("summon_amount", 0.0))
+			attack_speed = maxf(float((params as Dictionary).get("attack_speed", 1.0)), 0.1)
 	var tempo_lift := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
-	return pulse / tempo_lift
+	return maxf(pulse / tempo_lift / attack_speed, 0.10)
 
 
 func try_fire(weapon: Node) -> bool:
