@@ -772,7 +772,8 @@ func _damage_boomerang_return_arc(from_point: Vector2, control: Vector2, home: V
 	var previous := from_point
 	for step in range(1, BOOMERANG_ARC_SAMPLES + 1):
 		var point := _quadratic_bezier_point(from_point, control, home, float(step) / float(BOOMERANG_ARC_SAMPLES))
-		for enemy_node in TARGET_QUERY.in_segment(self, previous, point, return_width):
+		for enemy_raw in TARGET_QUERY.in_segment(self, previous, point, return_width):
+			var enemy_node := enemy_raw as Node2D
 			if enemy_node == null or not is_instance_valid(enemy_node):
 				continue
 			var enemy_id := enemy_node.get_instance_id()
@@ -788,12 +789,6 @@ func _step_orb_along_return_arc(progress: float, orb_id: int, from_point: Vector
 	if orb == null or not is_instance_valid(orb):
 		return
 	orb.global_position = _quadratic_bezier_point(from_point, control, home, clampf(progress, 0.0, 1.0))
-
-
-func _release_effect_by_id(effect_id: int) -> void:
-	var effect := instance_from_id(effect_id) as Node
-	if effect != null and is_instance_valid(effect):
-		_release_effect(effect)
 
 
 func _fire_stab_flurry(owner_node: Node2D, direction: Vector2) -> void:

@@ -1,5 +1,20 @@
 extends SceneTree
 
+# Kill-scaling identity: убийства НЕ дают скрытых стаков силы и не лечат.
+#
+# SCRUM-894 переписал ассасинскую часть: нечитаемый Shadow Momentum
+# (kill_growth_* стаки за убийства) УДАЛЁН из кита — его заменил явный
+# «Рывок темпа» Теневых кинжалов (flurry_tempo_*: короткий бафф скорости и
+# уворота ПОСЛЕ серии по врагам, bounded duration + внутренний кулдаун, без
+# перманентного аптайма). Этот тест держит инварианты:
+#   1) ни одно оружие Ассасина не несёт kill_growth_*;
+#   2) убийства не дают Ассасину ни стаков, ни лечения;
+#   3) «Рывок темпа» ограничен (нет стакинга, нет аптайма > duration/cooldown,
+#      не трогает attack_speed, не лечит) и чистится при смене оружия;
+#   4) классы без sustain-идентичности не получают kill-стаков и лечения от убийств.
+#
+# Запуск: Godot --headless --path . --script res://tests/kill_scaling_identity_test.gd
+
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
@@ -16,9 +31,9 @@ class TestEnemy:
 
 func _initialize() -> void:
 	var errors: Array = []
-	await _test_assassin_kill_growth_configs(errors)
-	await _test_shadow_momentum_caps_and_never_heals(errors)
-	await _test_shadow_momentum_expiry_and_exclusions(errors)
+	_test_assassin_shadow_momentum_removed(errors)
+	await _test_kills_grant_no_stacks_or_heal(errors)
+	await _test_flurry_tempo_bounded(errors)
 	await _test_non_sustain_classes_do_not_gain_kill_growth(errors)
 
 	if not errors.is_empty():
@@ -31,28 +46,28 @@ func _initialize() -> void:
 	quit(0)
 
 
-func _test_assassin_kill_growth_configs(errors: Array) -> void:
-	var shadow: Dictionary = ProgressionData.weapon("assassin", "shadow_daggers")
-	var venom: Dictionary = ProgressionData.weapon("assassin", "venom_wire")
-	var chakrams: Dictionary = ProgressionData.weapon("assassin", "chakrams")
-	for config in [shadow, venom]:
-		if str(config.get("kill_growth_role", "")) != "shadow_momentum":
-			errors.append("Expected %s to use shadow_momentum kill growth." % config.get("id", "unknown"))
-		if int(config.get("kill_growth_max_stacks", 0)) != 6:
-			errors.append("Expected %s kill growth cap to be exactly 6 stacks." % config.get("id", "unknown"))
-		if float(config.get("kill_growth_attack_speed_cap", 0.0)) > 0.121:
-			errors.append("Expected %s attack-speed kill growth cap <= 12%%." % config.get("id", "unknown"))
-	if str(chakrams.get("kill_growth_role", "")) != "":
-		errors.append("Expected chakrams to keep boomerang/crit identity without kill-growth role.")
+func _test_assassin_shadow_momentum_removed(errors: Array) -> void:
+	for weapon_id in ["chakrams", "shadow_daggers", "venom_wire"]:
+		var config: Dictionary = ProgressionData.weapon("assassin", str(weapon_id))
+		if str(config.get("kill_growth_role", "")) != "":
+			errors.append("SCRUM-894: %s всё ещё несёт kill_growth_role (Shadow Momentum должен быть удалён)." % weapon_id)
+		for key in config.keys():
+			if str(key).begins_with("kill_growth_"):
+				errors.append("SCRUM-894: %s несёт остаточный ключ %s." % [weapon_id, key])
+	var daggers: Dictionary = ProgressionData.weapon("assassin", "shadow_daggers")
+	if float(daggers.get("flurry_tempo_duration", 0.0)) <= 0.0:
+		errors.append("SCRUM-894: у Теневых кинжалов нет «Рывка темпа» (flurry_tempo_duration).")
+	if float(daggers.get("flurry_tempo_cooldown", 0.0)) < float(daggers.get("flurry_tempo_duration", 0.0)):
+		errors.append("SCRUM-894: кулдаун «Рывка темпа» меньше длительности — перманентный аптайм.")
 
 
-func _test_shadow_momentum_caps_and_never_heals(errors: Array) -> void:
+func _test_kills_grant_no_stacks_or_heal(errors: Array) -> void:
 	var holder := Node2D.new()
 	root.add_child(holder)
 	var assassin := await _new_player(holder, "assassin", "shadow_daggers")
 	var base_params: Dictionary = assassin.get("derived_parameters")
 	var base_attack_speed := float(base_params.get("attack_speed", 0.0))
-	var base_crit_damage := float(base_params.get("crit_damage_multiplier", 0.0))
+	var base_move_speed := float(base_params.get("move_speed", 0.0))
 	assassin.set("health", float(assassin.get("max_health")) - 18.0)
 	var health_before := float(assassin.get("health"))
 
@@ -64,58 +79,62 @@ func _test_shadow_momentum_caps_and_never_heals(errors: Array) -> void:
 
 	var mods: Dictionary = assassin.get("run_modifiers")
 	var params: Dictionary = assassin.get("derived_parameters")
-	if int(mods.get("kill_momentum_stacks", 0.0)) != 6:
-		errors.append("Expected shadow momentum to cap at 6 stacks after 8 kills, got %s." % mods.get("kill_momentum_stacks", null))
-	_assert_close(errors, float(mods.get("kill_momentum_attack_speed_bonus", 0.0)), 0.12, 0.001, "attack-speed bonus cap")
-	_assert_close(errors, float(mods.get("kill_momentum_crit_damage_bonus", 0.0)), 0.09, 0.001, "crit-damage bonus cap")
-	if float(params.get("attack_speed", 0.0)) < base_attack_speed * 1.10:
-		errors.append("Expected shadow momentum to noticeably raise attack speed.")
-	if float(params.get("crit_damage_multiplier", 0.0)) <= base_crit_damage:
-		errors.append("Expected shadow momentum to raise crit damage multiplier.")
-	_assert_close(errors, float(assassin.get("health")), health_before, 0.05, "shadow momentum no-heal")
+	if float(mods.get("kill_momentum_stacks", 0.0)) != 0.0:
+		errors.append("Убийства дали kill-стаки Ассасину — Shadow Momentum должен быть удалён.")
+	if float(mods.get("flurry_tempo_active", 0.0)) != 0.0:
+		errors.append("Убийства активировали «Рывок темпа» — бафф положен только за серию по врагам.")
+	_assert_close(errors, float(params.get("attack_speed", 0.0)), base_attack_speed, 0.02, "attack speed after kills")
+	_assert_close(errors, float(params.get("move_speed", 0.0)), base_move_speed, 0.02, "move speed after kills")
+	_assert_close(errors, float(assassin.get("health")), health_before, 0.05, "kills no-heal")
 	holder.queue_free()
 	await process_frame
 
 
-func _test_shadow_momentum_expiry_and_exclusions(errors: Array) -> void:
+func _test_flurry_tempo_bounded(errors: Array) -> void:
 	var holder := Node2D.new()
 	root.add_child(holder)
-	var assassin := await _new_player(holder, "assassin", "venom_wire")
-	var base_attack_speed := float((assassin.get("derived_parameters") as Dictionary).get("attack_speed", 0.0))
+	var assassin := await _new_player(holder, "assassin", "shadow_daggers")
+	var config: Dictionary = assassin.get("weapon_config")
+	var duration := float(config.get("flurry_tempo_duration", 0.0))
+	var base_params: Dictionary = assassin.get("derived_parameters")
+	var base_attack_speed := float(base_params.get("attack_speed", 0.0))
+	var base_move_speed := float(base_params.get("move_speed", 0.0))
+	assassin.set("health", float(assassin.get("max_health")) - 12.0)
+	var health_before := float(assassin.get("health"))
 
-	var boss := _new_enemy(holder)
-	boss.add_to_group("bosses")
-	assassin.call("on_enemy_killed", boss)
-	var elite := _new_enemy(holder)
-	elite.add_to_group("elite_enemies")
-	assassin.call("on_enemy_killed", elite)
-	if int((assassin.get("run_modifiers") as Dictionary).get("kill_momentum_stacks", 0.0)) != 0:
-		errors.append("Expected boss/elite kills to be excluded from shadow momentum.")
+	assassin.call("trigger_flurry_tempo")
+	var boosted: Dictionary = assassin.get("derived_parameters")
+	var boosted_move := float(boosted.get("move_speed", 0.0))
+	if boosted_move <= base_move_speed:
+		errors.append("«Рывок темпа» не поднял move_speed.")
+	if boosted_move > base_move_speed * 1.26:
+		errors.append("«Рывок темпа» поднял move_speed выше страховочного капа +25%: %.2f -> %.2f." % [base_move_speed, boosted_move])
+	_assert_close(errors, float(boosted.get("attack_speed", 0.0)), base_attack_speed, 0.02, "tempo attack speed")
+	_assert_close(errors, float(assassin.get("health")), health_before, 0.05, "tempo no-heal")
 
-	for index in range(2):
-		assassin.call("on_enemy_killed", _new_enemy(holder))
-	if int((assassin.get("run_modifiers") as Dictionary).get("kill_momentum_stacks", 0.0)) != 2:
-		errors.append("Expected two normal kills to grant two shadow momentum stacks.")
-	assassin.call("equip_weapon", "shadow_daggers")
+	# Стакинга нет: повторный триггер в окне не наращивает бафф.
+	assassin.call("trigger_flurry_tempo")
+	_assert_close(errors, float((assassin.get("derived_parameters") as Dictionary).get("move_speed", 0.0)), boosted_move, 0.02, "tempo no-stack")
+
+	# Истечение: бафф спадает, кулдаун блокирует мгновенный retrigger.
+	assassin.call("_update_flurry_tempo", duration + 0.1)
+	var expired: Dictionary = assassin.get("run_modifiers")
+	if float(expired.get("flurry_tempo_active", 0.0)) != 0.0:
+		errors.append("«Рывок темпа» не истёк после duration.")
+	_assert_close(errors, float((assassin.get("derived_parameters") as Dictionary).get("move_speed", 0.0)), base_move_speed, 0.02, "tempo expiry move speed")
+	assassin.call("trigger_flurry_tempo")
+	if float((assassin.get("run_modifiers") as Dictionary).get("flurry_tempo_active", 0.0)) != 0.0:
+		errors.append("«Рывок темпа» перезапустился в кулдауне — перманентный аптайм.")
+
+	# Смена оружия чистит бафф.
+	assassin.call("_update_flurry_tempo", float(config.get("flurry_tempo_cooldown", 0.0)))
+	assassin.call("trigger_flurry_tempo")
+	assassin.call("equip_weapon", "venom_wire")
 	await process_frame
 	var swapped_mods: Dictionary = assassin.get("run_modifiers")
-	if int(swapped_mods.get("kill_momentum_stacks", 0.0)) != 0:
-		errors.append("Expected shadow momentum to clear on weapon swap.")
-	_assert_close(errors, float(swapped_mods.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.001, "weapon-swap attack bonus")
-	base_attack_speed = float((assassin.get("derived_parameters") as Dictionary).get("attack_speed", 0.0))
-	for index in range(2):
-		assassin.call("on_enemy_killed", _new_enemy(holder))
-	assassin.call("_update_kill_growth", 6.2)
-	var expired_mods: Dictionary = assassin.get("run_modifiers")
-	if int(expired_mods.get("kill_momentum_stacks", 0.0)) != 0:
-		errors.append("Expected shadow momentum to expire after duration.")
-	_assert_close(errors, float(expired_mods.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.001, "expired attack bonus")
-	_assert_close(errors, float((assassin.get("derived_parameters") as Dictionary).get("attack_speed", 0.0)), base_attack_speed, 0.02, "expired attack speed")
-
-	var chakram_assassin := await _new_player(holder, "assassin", "chakrams")
-	chakram_assassin.call("on_enemy_killed", _new_enemy(holder))
-	if int((chakram_assassin.get("run_modifiers") as Dictionary).get("kill_momentum_stacks", 0.0)) != 0:
-		errors.append("Expected chakrams to avoid shadow momentum stacks.")
+	if float(swapped_mods.get("flurry_tempo_active", 0.0)) != 0.0:
+		errors.append("«Рывок темпа» пережил смену оружия.")
+	_assert_close(errors, float(swapped_mods.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.001, "weapon-swap tempo bonus")
 	holder.queue_free()
 	await process_frame
 
@@ -134,8 +153,12 @@ func _test_non_sustain_classes_do_not_gain_kill_growth(errors: Array) -> void:
 		var health_before := float(player.get("health"))
 		player.call("on_enemy_killed", _new_enemy(holder))
 		var mods: Dictionary = player.get("run_modifiers")
-		if int(mods.get("kill_momentum_stacks", 0.0)) != 0:
-			errors.append("Expected %s to have no shadow momentum stacks." % class_id)
+		if float(mods.get("kill_momentum_stacks", 0.0)) != 0.0:
+			errors.append("Expected %s to have no kill momentum stacks." % class_id)
+		# «Рывок темпа» — data-driven: у оружий без flurry_tempo_* ключей триггер no-op.
+		player.call("trigger_flurry_tempo")
+		if float((player.get("run_modifiers") as Dictionary).get("flurry_tempo_active", 0.0)) != 0.0:
+			errors.append("Expected %s trigger_flurry_tempo to be a no-op without config keys." % class_id)
 		_assert_close(errors, float(player.get("health")), health_before, 0.05, "%s kill-growth no-heal" % class_id)
 	holder.queue_free()
 	await process_frame
@@ -158,7 +181,10 @@ func _new_enemy(holder: Node) -> TestEnemy:
 	var enemy := TestEnemy.new()
 	holder.add_child(enemy)
 	enemy.add_to_group("enemies")
-	enemy.global_position = Vector2(720, 420)
+	# Далеко за радиусами всех оружий: авто-атака экипированного оружия не должна
+	# случайно попадать по стендовым врагам (иначе «Рывок темпа» и drain-лечение
+	# срабатывают легитимно и шумят в kill-инвариантах).
+	enemy.global_position = Vector2(4200, 3200)
 	return enemy
 
 
