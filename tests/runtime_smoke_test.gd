@@ -5391,6 +5391,12 @@ func _test_priest_weapon_mechanics() -> void:
 		priest.set("derived_parameters", dp)
 		priest.set("health", maxf(1.0, before_player_hp - 18.0))
 		var wounded_hp := float(priest.get("health"))
+		# Замораживаем ПАССИВ Священника на время замера: player._process заново
+		# считает derived (регенерация возвращается) и тикает _apply_regeneration —
+		# это КЛАССОВЫЙ сустейн (regen), не оружейный. Изолируем именно heal оружия:
+		# tween'ы оружия живут на дереве независимо от set_process узла игрока.
+		priest.set_process(false)
+		priest.set_physics_process(false)
 		weapon.call("_attack")
 		await create_timer(0.85).timeout
 		if float(enemy.get("health")) >= before_hp:
