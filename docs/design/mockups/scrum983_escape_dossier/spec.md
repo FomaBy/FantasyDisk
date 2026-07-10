@@ -1,12 +1,12 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
 Status: Accepted and implemented; final repository-wide smoke pending active Priest test-lock release
-Role owner: combined Design+Back-end `/root/scrum983_dossier`  
-Task: `docs/tasks/SCRUM-983_escape_hero_dossier.md`  
-Jira: SCRUM-983  
-Base resolution: 1920×1080  
-Responsive targets: 1280×720, 1920×1080, 2560×1440  
-Production outer frame: `assets/sprites/ui/meta40/frame_border.png`  
+Role owner: combined Design+Back-end `/root/scrum983_dossier`
+Task: `docs/tasks/SCRUM-983_escape_hero_dossier.md`
+Jira: SCRUM-983
+Base resolution: 1920×1080
+Responsive targets: 1280×720, 1920×1080, 2560×1440
+Production outer frame: `assets/sprites/ui/meta40/frame_border.png`
 PixelLab source/preview: recorded in `docs/design/references/scrum983_escape_dossier/manifest.json`
 
 ## Source Request

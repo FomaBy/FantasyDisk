@@ -1,12 +1,12 @@
 # SCRUM-983 — Escape Hero Dossier: compact numeric stats and clean pause buttons
 
-Статус: in_progress  
-Контур: Codex  
-Owner: combined Design+Back-end `/root/scrum983_dossier`  
-Thread/Worker: `/root/scrum983_dossier`  
-Jira: SCRUM-983  
-Branch: `codex/scrum-983-escape-dossier`  
-Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-983-escape-dossier`  
+Статус: in_progress
+Контур: Codex
+Owner: combined Design+Back-end `/root/scrum983_dossier`
+Thread/Worker: `/root/scrum983_dossier`
+Jira: SCRUM-983
+Branch: `codex/scrum-983-escape-dossier`
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-983-escape-dossier`
 Locked paths: `scripts/pause_stats_menu.gd`, `tests/scrum983_escape_dossier_test.gd`, `tools/capture_scrum983_escape_dossier.gd`, `tests/ui_no_overlap_matrix_test.gd`, `build/qa/scrum983/**`, SCRUM-983 design package, this mirror, and the touched current/menu/visual-style docs
 Explicitly excluded: `scripts/ui_screens.gd` (Claude SCRUM-968), `tests/runtime_smoke_test.gd` until the active Priest test lock is released, SCRUM-993/Atlas and every other worker path
 
