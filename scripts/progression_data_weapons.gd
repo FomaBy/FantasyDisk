@@ -819,40 +819,58 @@ const PRIEST_WEAPONS := {
 	},
 }
 
+# SCRUM-896: редизайн кита Биолога — хрупкий био-реактивный класс с гибридным
+# скейлом (физ/маг/DoT) и тремя РАЗНЫМИ нишами:
+#   линза — ЛОКАЛЬНЫЙ AoE у персонажа (range резко срезан) + замедление всех
+#     задетых 5%→20% от нормированной прогрессии (spore_slow_base/max);
+#   инъектор — самый длинный пирсинг-луч: урон по всей длине (маг.ролл +
+#     INJECTOR_PHYSICAL_SHARE канала damage — ось Силы) и малый бурст анализа
+#     на конце (tip_burst_ratio, aoe_radius много меньше Линзы);
+#   семя — дальняя темпоральная зона: прорастание через grenade_delay,
+#     стартовый маг.хит (seed_impact_ratio), главный пейофф — биоинфекция
+#     (dot_ticks × curse_tick_multiplier; generic-ключи периодики).
+# Периодика всех трёх — status bio_infection с source_id владельца (топливо
+# trait'а «Разбор образцов» SCRUM-1005). Оси скейла по оружиям задокументированы
+# в docs/design/systems/characters_weapons.md; зеркала бюджета — bio-ветки
+# _budget_hit_model/_budget_dot_dps.
 const BIOLOGIST_WEAPONS := {
 	"biologist_spore_lens": {
 		"id": "biologist_spore_lens", "title": "Споровая Линза",
-		"description": "Spore bloom: выращивает на цели три расширяющихся споровых кольца с убывающим уроном.",
+		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят, заражают и замедляют задетых (замедление растёт с прогрессией).",
 		"scene_path": "res://scenes/BiologistSporeLens.tscn",
 		"attack_mode": "bio_spore_bloom", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.66, "fire_interval": 1.18,
-		"attack_range": 560.0, "aoe_radius": 210.0,
+		"attack_range": 235.0, "aoe_radius": 210.0,
 		"storm_ticks": 3, "burst_interval": 0.16,
 		"damage_falloff": 0.70, "dot_ticks": 2,
+		"curse_tick_rate": 2.0, "curse_tick_multiplier": 1.0,
+		"spore_slow_base": 0.05, "spore_slow_max": 0.20,
 		"visual_color": Color(0.46, 1.0, 0.42, 0.40),
 		"passive_mods": {"dot_damage_flat": 1.0},
 	},
 	"biologist_sample_injector": {
 		"id": "biologist_sample_injector", "title": "Инъектор Образцов",
-		"description": "Sample dart: берет образец у цели, затем два анализа бьют ее и ближайшие ткани.",
+		"description": "Sample beam: пирсинг-луч ранит всех на своей длине (магия + доля физики), на конце — малый бурст анализа; ближайший враг получает пробу-инфекцию.",
 		"scene_path": "res://scenes/BiologistSampleInjector.tscn",
 		"attack_mode": "bio_sample_dart", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.92, "fire_interval": 1.05,
-		"attack_range": 620.0, "aoe_radius": 170.0,
-		"projectile_count": 2, "burst_interval": 0.18,
-		"beam_width": 30.0, "damage_falloff": 0.64,
+		"damage_multiplier": 0.85, "fire_interval": 1.05,
+		"attack_range": 640.0, "aoe_radius": 96.0,
+		"beam_width": 46.0, "damage_falloff": 0.64,
+		"dot_ticks": 1, "curse_tick_rate": 1.2, "curse_tick_multiplier": 0.6,
+		"tip_burst_ratio": 0.55,
 		"visual_color": Color(0.70, 1.0, 0.28, 0.42),
 		"passive_mods": {"crit_chance_flat": 0.025},
 	},
 	"biologist_symbiote_seed": {
 		"id": "biologist_symbiote_seed", "title": "Семя Симбионта",
-		"description": "Symbiote web: первичная цель связывается с несколькими соседними врагами и делит биоурон по сети.",
+		"description": "Symbiote seed: дальнее семя прорастает с задержкой — стартовый магический удар и долгие пульсы заражения; главный урон приходит со временем.",
 		"scene_path": "res://scenes/BiologistSymbioteSeed.tscn",
 		"attack_mode": "bio_symbiote_web", "damage_parameter": "magic_damage",
-		"damage_multiplier": 0.82, "fire_interval": 1.24,
-		"attack_range": 580.0, "aoe_radius": 260.0,
-		"projectile_count": 4, "beam_width": 34.0,
-		"damage_falloff": 0.58, "heal_percent_of_damage": 0.03,
+		"damage_multiplier": 0.60, "fire_interval": 1.24,
+		"attack_range": 700.0, "aoe_radius": 150.0,
+		"grenade_delay": 0.55, "damage_falloff": 0.58,
+		"dot_ticks": 6, "curse_tick_rate": 1.0, "curse_tick_multiplier": 1.6,
+		"seed_impact_ratio": 0.85,
 		"visual_color": Color(0.36, 0.92, 0.58, 0.42),
 		"passive_mods": {"aura_radius_multiplier": 1.04},
 	},

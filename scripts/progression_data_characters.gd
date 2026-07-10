@@ -193,9 +193,9 @@ const CHARACTER_CONFIGS := {
 	"biologist": {
 		"id": "biologist",
 		"title": "Биолог",
-		"description": "Испытатель плоти: засевает врагов спорами, берет образцы и вяжет их в зараженные сети. Урон тикает и расползается по толпе.",
-		"strengths": "урон со временем, цепные заражения, давление по группам.",
-		"weaknesses": "медленный разгон, нужны цели для цепей.",
+		"description": "Испытатель плоти: споры замедляют толпу вплотную, луч-инъектор пробивает ряды насквозь, а дальнее семя прорастает заразой. Заражённые получают от него больше прямого урона.",
+		"strengths": "урон со временем, замедление толпы, гибкие оси сборки (физика/магия/DoT), добивание заражённых.",
+		"weaknesses": "хрупкость, медленный разгон, споры бьют только рядом.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/biologist_pixellab/biologist_idle_south.png",
 	},
 	"robot": {
@@ -505,14 +505,18 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"biologist": {
+		# SCRUM-896: кит редизайна — локальные споры+замедление / пирсинг-луч
+		# с бурстом анализа / дальнее темпоральное семя; SCRUM-1005: trait
+		# «Разбор образцов» — источник истины docs/design/class_traits_registry.md,
+		# механика — запись CLASS_TRAITS (infected_direct_hit_multiplier).
 		"main_attribute": "knowledge",
 		"identity_title": "Биореакция",
-		"summary": "Знание превращает врага в подопытного: чем оно выше, тем злее споры, точнее анализ и живучее зараза.",
-		"mechanic_tags": ["sample_analysis", "spores", "biomass", "adaptive_dot"],
+		"summary": "Знание превращает врага в подопытного: споры замедляют, инъекции заражают, а по заражённым Биолог бьёт на 20% больнее.",
+		"mechanic_tags": ["sample_analysis", "spores", "local_aoe_slow", "pierce_beam", "temporal_dot"],
 		"weapon_identities": {
-			"biologist_spore_lens": "spore bloom зона с тиками",
-			"biologist_sample_injector": "sample dart для анализа и фокус-урона",
-			"biologist_symbiote_seed": "симбиотическая web-сетка контроля",
+			"biologist_spore_lens": "локальные споровые кольца у персонажа: заражение + замедление",
+			"biologist_sample_injector": "длинный пирсинг-луч с малым бурстом анализа на конце",
+			"biologist_symbiote_seed": "дальнее семя: прорастание с задержкой и главный урон со временем",
 		},
 	},
 	"robot": {

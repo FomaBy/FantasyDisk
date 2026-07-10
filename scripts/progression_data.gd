@@ -1229,14 +1229,30 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var prayer_jumps := float(config.get("projectile_count", 4.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(prayer_jumps * 0.72, 1.0, 4.2)}
 		"bio_spore_bloom":
+			# SCRUM-896: три расширяющихся кольца у персонажа — соло-цель ловит
+			# все кольца с falloff (1+0.7+0.49≈2.19 → сохранена 0.34-модель),
+			# толпа — по радиусу; биоинфекция вешается на ВСЕХ задетых
+			# (dot_targets), зеркало class_weapon._bio_spore_pulse.
 			var bloom_ticks := float(config.get("storm_ticks", 3.0))
-			return {"solo_hits": clampf(1.0 + bloom_ticks * 0.34, 1.0, 2.4), "five_hits": clampf(1.0 + aoe_radius / 58.0, 1.0, 5.0)}
+			return {"solo_hits": clampf(1.0 + bloom_ticks * 0.34, 1.0, 2.4), "five_hits": clampf(1.0 + aoe_radius / 58.0, 1.0, 5.0), "dot_targets": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.0)}
 		"bio_sample_dart":
-			var analysis_pulses := float(config.get("projectile_count", 2.0))
-			return {"solo_hits": clampf(1.0 + analysis_pulses * 0.52, 1.0, 2.5), "five_hits": clampf(1.0 + analysis_pulses * 0.72 + aoe_radius / 115.0, 1.0, 4.8)}
+			# SCRUM-896: пирсинг-луч на всю длину (полный ролл каждому на линии)
+			# + малый бурст анализа на конце (tip_burst_ratio) + физ.доля
+			# INJECTOR_PHYSICAL_SHARE канала damage на каждый хит луча: базовый
+			# факт-фактор 1.13 = 1 + 0.5×(damage/magic на базе Биолога 3/11.2),
+			# зеркало class_weapon._fire_bio_sample_dart. Инфекция — только
+			# ближайший на луче (dot_targets 1).
+			var tip_ratio := clampf(float(config.get("tip_burst_ratio", 0.55)), 0.0, 1.0)
+			var line_hits := clampf(1.0 + (attack_range / 420.0) * (float(config.get("beam_width", 46.0)) / 60.0), 1.0, 3.2)
+			var injector_phys_factor := 1.13
+			return {"solo_hits": (1.0 + tip_ratio) * injector_phys_factor, "five_hits": clampf((line_hits + tip_ratio * clampf(aoe_radius / 145.0, 0.0, 2.0)) * injector_phys_factor, 1.0, 4.8), "dot_targets": 1.0}
 		"bio_symbiote_web":
-			var web_links := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.18, "five_hits": clampf(1.0 + web_links * 0.62, 1.0, 4.6)}
+			# SCRUM-896: семя-зона с прорастанием — стартовый маг.хит
+			# seed_impact_ratio с falloff по области, главный пейофф в
+			# биоинфекции всех задетых (dot-ось), зеркало
+			# class_weapon._germinate_symbiote_seed.
+			var impact_ratio := clampf(float(config.get("seed_impact_ratio", 0.85)), 0.0, 1.5)
+			return {"solo_hits": impact_ratio, "five_hits": clampf(impact_ratio * (1.0 + aoe_radius / 110.0), 0.5, 4.0), "dot_targets": clampf(1.0 + aoe_radius / 95.0, 1.0, 4.0)}
 		"robot_magnetic_anchor":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 80.0, 1.0, 4.8)}
 		"robot_compression_line":
@@ -1353,6 +1369,17 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 	# зеркалит class_weapon._apply_skull_curse_zone. Для прочих оружий
 	# multiplier=1.0 / int_scale=0.0 — формула тождественна прежней.
 	var tick_multiplier := maxf(float(config.get("curse_tick_multiplier", 1.0)), 0.0)
+	# SCRUM-896: биоинфекции — status-based с refresh (1 стак): перекаст НЕ
+	# мультиплицирует тики, поэтому устоявшийся DPS = тик × каденция
+	# (dot_speed × curse_tick_rate; интервал ≥0.1с — кламп StatusEffects.tick),
+	# а НЕ ticks/каст. Ось скейлится dot_damage/dot_speed (Знание/Энергия), не
+	# скоростью атаки; длительность (dot_ticks+0.99)×интервал перекрывает
+	# интервал каста — uptime в затяжном бою ≈1. Зеркало —
+	# class_weapon._apply_bio_infection.
+	if str(config.get("attack_mode", "")).begins_with("bio_"):
+		var bio_rate := maxf(float(config.get("curse_tick_rate", 1.0)), 0.2)
+		var bio_interval := maxf(1.0 / (maxf(float(params.get("dot_speed", 1.0)), 0.2) * bio_rate), 0.1)
+		return float(params.get("dot_damage", 1.0)) * tick_multiplier / bio_interval
 	var stats_map: Dictionary = stats if stats is Dictionary else {}
 	var curse_depth := 1.0 + maxf(float(stats_map.get("intelligence", 0.0)), 0.0) * maxf(float(config.get("curse_int_scale", 0.0)), 0.0)
 	# SCRUM-942: DoT-тики — периодический канал, множится классовым trait'ом

@@ -12,12 +12,14 @@ attack_mode = "bio_symbiote_web"
 damage_parameter = "magic_damage"
 fire_interval = 1.24
 damage = 12.0
-attack_range = 580.0
-aoe_radius = 260.0
-projectile_count = 4
-beam_width = 34.0
+attack_range = 700.0
+aoe_radius = 150.0
+grenade_delay = 0.55
 damage_falloff = 0.58
-heal_percent_of_damage = 0.03
+dot_ticks = 6
+curse_tick_rate = 1.0
+curse_tick_multiplier = 1.6
+seed_impact_ratio = 0.85
 visual_color = Color(0.36, 0.92, 0.58, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

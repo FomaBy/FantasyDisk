@@ -12,12 +12,14 @@ attack_mode = "bio_sample_dart"
 damage_parameter = "magic_damage"
 fire_interval = 1.05
 damage = 12.0
-attack_range = 620.0
-aoe_radius = 170.0
-projectile_count = 2
-burst_interval = 0.18
-beam_width = 30.0
+attack_range = 640.0
+aoe_radius = 96.0
+beam_width = 46.0
 damage_falloff = 0.64
+dot_ticks = 1
+curse_tick_rate = 1.2
+curse_tick_multiplier = 0.6
+tip_burst_ratio = 0.55
 visual_color = Color(0.7, 1, 0.28, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

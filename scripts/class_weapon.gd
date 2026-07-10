@@ -197,6 +197,13 @@ const ATTACK_MODE_EXECUTORS := {
 @export var curse_tick_rate := 7.0
 @export var curse_tick_multiplier := 1.0
 @export var curse_int_scale := 0.0
+# SCRUM-896: параметры кита Биолога (локальные споры / пирсинг-луч / семя).
+# curse_tick_rate/curse_tick_multiplier переиспользуются биоинфекцией как
+# generic-ключи каденции/силы периодики (см. _apply_bio_infection).
+@export var spore_slow_base := 0.0
+@export var spore_slow_max := 0.0
+@export var tip_burst_ratio := 0.0
+@export var seed_impact_ratio := 0.0
 @export var visual_color := Color(0.5, 0.8, 1.0, 0.35)
 
 var _cooldown := 0.0
@@ -214,6 +221,13 @@ var _reactor_vent_phase := 0.0
 # SCRUM-900 plague_dart: реестр живых зараз этого оружия (enemy_id → Tween).
 # Дедуп повторного заражения (рефреш), spread-исключение и кап plague_max_infected.
 var _plague_tweens := {}
+# SCRUM-896: гибрид Биолога — доля канала damage (ось Силы) на КАЖДЫЙ хит луча
+# Инъектора (паттерн SQUARE_PHYSICAL_SHARE Элементалиста). Базовый факт-фактор
+# 1.13 задокументирован в _budget_hit_model (bio_sample_dart).
+const INJECTOR_PHYSICAL_SHARE := 0.50
+# SCRUM-896: кэш lvl1-базы magic_damage класса владельца для нормированной
+# прогрессии замедления линзы (_spore_slow_power).
+var _bio_magic_baseline := 0.0
 
 
 # SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
@@ -359,6 +373,10 @@ func configure_weapon(config: Dictionary) -> void:
 	curse_tick_rate = float(config.get("curse_tick_rate", curse_tick_rate))
 	curse_tick_multiplier = float(config.get("curse_tick_multiplier", curse_tick_multiplier))
 	curse_int_scale = float(config.get("curse_int_scale", curse_int_scale))
+	spore_slow_base = float(config.get("spore_slow_base", spore_slow_base))
+	spore_slow_max = float(config.get("spore_slow_max", spore_slow_max))
+	tip_burst_ratio = float(config.get("tip_burst_ratio", tip_burst_ratio))
+	seed_impact_ratio = float(config.get("seed_impact_ratio", seed_impact_ratio))
 	visual_color = config.get("visual_color", visual_color)
 	_capture_base_values()
 
@@ -2900,16 +2918,18 @@ func _fire_twin_toll_blast(center: Vector2, amount: float, blast_hit: Dictionary
 		_damage_enemy(enemy_node, amount)
 
 
+# SCRUM-896: Споровая Линза — ЛОКАЛЬНЫЙ AoE у персонажа. Стартовый attack_range
+# резко срезан данными (через экран не стреляет), «нравящийся» радиус колец
+# сохранён. Три расширяющихся кольца бьют с falloff; КАЖДЫЙ задетый кольцом враг
+# получает замедление (_apply_bio_spore_slow, AC SCRUM-896) и биоинфекцию
+# (_apply_bio_infection — топливо trait'а «Разбор образцов», SCRUM-1005).
 func _fire_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08) * float(maxi(storm_ticks - 1, 1)), direction, {"count": maxi(storm_ticks, 1)})
-	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 420.0)
+	var center: Vector2 = owner_node.global_position + direction * minf(attack_range, 420.0)
 	var target_id := 0
 	if target != null:
 		center = target.global_position
 		target_id = target.get_instance_id()
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var stored_center := center
 	var damage_value: float = _rolled_damage(owner_node)
 	# SCRUM-961 «Расщепленный анализ»: первый задетый враг делится спорами с соседями.
 	_apply_bio_split_analysis(TARGET_QUERY.nearest(self, center, aoe_radius), damage_value)
@@ -2917,115 +2937,208 @@ func _fire_bio_spore_bloom(owner_node: Node2D, target: Node2D, direction: Vector
 	for pulse_index in range(pulse_count):
 		var bloom_tween := create_tween()
 		bloom_tween.tween_interval(float(pulse_index) * maxf(burst_interval, 0.08))
-		bloom_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			if current_weapon == null or current_owner == null:
-				return
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.08), direction, {"index": pulse_index, "count": pulse_count})
-			var impact_center: Vector2 = stored_center
-			var current_target := instance_from_id(target_id) as Node2D
-			if current_target != null:
-				impact_center = current_target.global_position
-			var radius: float = float(current_weapon.get("aoe_radius")) * (0.44 + 0.24 * float(pulse_index + 1))
-			var factor: float = pow(float(current_weapon.get("damage_falloff")), float(pulse_index))
-			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), impact_center, radius, current_weapon.get("visual_color"), pulse_index == 0)
-			current_weapon.call("_damage_enemies_in_circle_falloff", impact_center, radius, damage_value * factor, float(current_weapon.get("damage_falloff")))
-			# SCRUM-961 «Споровый конденсатор»: кольцо спор вешает замедление.
-			current_weapon.call("_apply_bio_spore_slow", impact_center, radius)
-		)
+		# SCRUM-551: bound-метод вместо лямбды (анти use-after-free в tween).
+		bloom_tween.tween_callback(Callable(self, "_bio_spore_pulse").bind(owner_node.get_instance_id(), target_id, center, direction, pulse_index, pulse_count, damage_value))
 
 
+# Одно кольцо линзы: урон с диминишингом по дистанции, затем замедление и
+# инфекция ВСЕХ задетых (порядок «урон → статусы»: бонус trait'а по заражённым
+# окупается со следующего кольца/каста, не в момент заражения).
+func _bio_spore_pulse(owner_id: int, target_id: int, stored_center: Vector2, direction: Vector2, pulse_index: int, pulse_count: int, damage_value: float) -> void:
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	_emit_weapon_animation_event(current_owner, "pulse", maxf(burst_interval, 0.08), direction, {"index": pulse_index, "count": pulse_count})
+	var impact_center := stored_center
+	var current_target := instance_from_id(target_id) as Node2D
+	if current_target != null and is_instance_valid(current_target):
+		impact_center = current_target.global_position
+	var radius: float = aoe_radius * (0.44 + 0.24 * float(pulse_index + 1))
+	var factor: float = pow(damage_falloff, float(pulse_index))
+	AttackVfx.ring_pulse(_projectile_parent(), impact_center, radius, visual_color, pulse_index == 0)
+	_damage_enemies_in_circle_falloff(impact_center, radius, damage_value * factor, damage_falloff)
+	_apply_bio_spore_slow(current_owner, impact_center, radius)
+	for enemy_node in TARGET_QUERY.in_radius(self, impact_center, radius):
+		_apply_bio_infection(enemy_node, current_owner)
+
+
+# SCRUM-896: Инъектор Образцов — длинный пирсинг-луч Биолога. Урон получают ВСЕ
+# враги по всей длине луча (полный маг.ролл каждому), гибрид добавляет каждому
+# хиту луча долю канала damage (INJECTOR_PHYSICAL_SHARE — ось Силы, тип
+# "physical"; паттерн SQUARE_PHYSICAL_SHARE Элементалиста, зеркало в
+# _budget_hit_model). На конце луча — малый «бурст анализа» (tip_burst_ratio,
+# радиус много меньше Линзы). Ближайший к Биологу враг на луче получает
+# пробу-инфекцию ПОСЛЕ прямого урона каста («сначала заражай — потом добивай»,
+# SCRUM-1005). Артефакт «Цепь образцов» (sample_beam_full_damage): луч +30%
+# урона, бурст анализа шире (+25% радиуса).
 func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	var first_target: Node2D = target
-	if first_target == null:
-		first_target = _find_closest_enemy(owner_node, INF)
-	if first_target == null:
-		_damage_enemies_in_segment(owner_node.global_position, owner_node.global_position + direction * min(attack_range, 420.0), beam_width, _rolled_damage(owner_node))
-		return
-	var start: Vector2 = owner_node.global_position + direction * 26.0
-	var tracer := AttackVfx.beam(_projectile_parent(), start, first_target.global_position, beam_width, visual_color)
-	_register_effect(tracer)
-	var damage_value: float = _rolled_damage(owner_node)
-	_damage_enemy_with_dot(first_target, damage_value, owner_node)
-	# SCRUM-961 «Цепь образцов»: дротик бьёт всех врагов на пути луча (70% основного),
-	# терминальные пульсы анализа расцветают шире (+25% радиуса).
-	var full_beam := _owner_mod("sample_beam_full_damage") > 0.0
-	if full_beam:
-		var to_target := first_target.global_position - start
+	var beam_direction := direction
+	if target != null and is_instance_valid(target):
+		var to_target := target.global_position - owner_node.global_position
 		if to_target.length_squared() > 0.001:
-			for hit in _enemies_in_corridor(start, to_target.normalized(), beam_width, to_target.length()):
-				var line_enemy := hit["node"] as Node2D
-				if line_enemy == null or line_enemy == first_target:
-					continue
-				_damage_enemy(line_enemy, damage_value * 0.7)
-	var terminal_radius_mult := 1.25 if full_beam else 1.0
-	# SCRUM-961 «Расщепленный анализ»: первичная цель делится образцами с соседями.
-	_apply_bio_split_analysis(first_target, damage_value)
-	var weapon_id := get_instance_id()
-	var owner_id := owner_node.get_instance_id()
-	var target_id := first_target.get_instance_id()
-	var pulse_count: int = maxi(projectile_count, 1)
-	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08) * float(pulse_count), direction, {"count": pulse_count})
-	for pulse_index in range(pulse_count):
-		var sample_tween := create_tween()
-		sample_tween.tween_interval(maxf(burst_interval, 0.08) * float(pulse_index + 1))
-		sample_tween.tween_callback(func() -> void:
-			var current_weapon := instance_from_id(weapon_id) as Node
-			var current_owner := instance_from_id(owner_id) as Node2D
-			var current_target := instance_from_id(target_id) as Node2D
-			if current_weapon == null or current_owner == null or current_target == null:
-				return
-			current_weapon.call("_emit_weapon_animation_event", current_owner, "pulse", maxf(float(current_weapon.get("burst_interval")), 0.08), direction, {"index": pulse_index, "count": pulse_count})
-			var radius: float = float(current_weapon.get("aoe_radius")) * (0.70 + 0.16 * float(pulse_index)) * terminal_radius_mult
-			var pulse_damage: float = damage_value * pow(float(current_weapon.get("damage_falloff")), float(pulse_index + 1))
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), current_target.global_position, radius * 0.42, current_weapon.get("visual_color"))
-			current_weapon.call("_damage_enemies_in_circle_falloff", current_target.global_position, radius, pulse_damage, float(current_weapon.get("damage_falloff")))
-		)
-
-
-func _fire_bio_symbiote_web(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(projectile_count + _extra_projectiles()) * 0.05), direction, {"chain": true})
-	var first_target: Node2D = target
-	if first_target == null:
-		first_target = _find_closest_enemy(owner_node, INF)
-	if first_target == null:
-		AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position + direction * 120.0, aoe_radius * 0.45, visual_color, true)
-		return
+			beam_direction = to_target.normalized()
+	if beam_direction.length_squared() <= 0.001:
+		beam_direction = Vector2.RIGHT
+	var start: Vector2 = owner_node.global_position + beam_direction * 26.0
+	var beam_length: float = maxf(attack_range - 26.0, 60.0)
+	var tip_center: Vector2 = start + beam_direction * beam_length
+	if target != null and is_instance_valid(target):
+		tip_center = target.global_position
+	var tracer := AttackVfx.beam(_projectile_parent(), start, start + beam_direction * beam_length, beam_width, visual_color)
+	_register_effect(tracer)
+	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08), direction, {"count": 1})
 	var damage_value: float = _rolled_damage(owner_node)
-	var used := {first_target.get_instance_id(): true}
-	AttackVfx.ring_pulse(_projectile_parent(), first_target.global_position, aoe_radius * 0.36, visual_color, true)
-	# SCRUM-961 «Симбиотическая оболочка»: первичный хит семени сильнее (+35%);
-	# продление тиков сети — в _damage_enemy_with_dot (symbiote_dot_extra_ticks).
-	var impact_damage := damage_value * 0.72 * (1.0 + _owner_mod("symbiote_impact_bonus"))
-	_damage_enemy_with_dot(first_target, impact_damage, owner_node)
-	# SCRUM-961 «Расщепленный анализ»: первичная цель делится образцами с соседями.
-	_apply_bio_split_analysis(first_target, impact_damage)
-	var linked_targets: Array = _nearest_enemies_from(first_target.global_position, aoe_radius, maxi(projectile_count + _extra_projectiles(), 1), used)
-	for link_index in range(linked_targets.size()):
-		var enemy_node := linked_targets[link_index] as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
+	var chain_artifact := _owner_mod("sample_beam_full_damage") > 0.0
+	var line_multiplier := 1.3 if chain_artifact else 1.0
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var physical_bonus := maxf(float(parameters.get("damage", 0.0)), 0.0) * INJECTOR_PHYSICAL_SHARE * line_multiplier
+	var injected: Node2D = null
+	var injected_forward := INF
+	for hit in _enemies_in_corridor(start, beam_direction, beam_width, beam_length):
+		var line_enemy := hit["node"] as Node2D
+		if line_enemy == null or not is_instance_valid(line_enemy):
 			continue
-		var width: float = beam_width * maxf(0.42, pow(damage_falloff, float(link_index)) + 0.10)
-		var web := AttackVfx.beam(_projectile_parent(), first_target.global_position, enemy_node.global_position, width, visual_color)
-		_register_effect(web)
-		_damage_enemy_with_dot(enemy_node, damage_value * pow(damage_falloff, float(link_index + 1)), owner_node)
-	if linked_targets.is_empty():
-		_damage_enemies_in_circle_falloff(first_target.global_position, aoe_radius * 0.56, damage_value * damage_falloff, damage_falloff)
+		_damage_enemy(line_enemy, damage_value * line_multiplier)
+		if physical_bonus > 0.0:
+			_damage_enemy(line_enemy, physical_bonus, false, "physical", false)
+		var forward := float(hit.get("forward", INF))
+		if forward < injected_forward:
+			injected_forward = forward
+			injected = line_enemy
+	var tip_radius := aoe_radius * (1.25 if chain_artifact else 1.0)
+	AttackVfx.orb_burst(_projectile_parent(), tip_center, tip_radius * 0.42, visual_color)
+	_damage_enemies_in_circle_falloff(tip_center, tip_radius, damage_value * tip_burst_ratio, damage_falloff)
+	if injected != null:
+		_apply_bio_infection(injected, owner_node)
+		# SCRUM-961 «Расщепленный анализ»: взятый образец делится с соседями.
+		_apply_bio_split_analysis(injected, damage_value)
 
 
-# SCRUM-961 «Споровый конденсатор»: кольца Споровой линзы вешают замедление
-# (кламп движка ≥0.25 в StatusEffects.speed_multiplier — stack-safe).
-func _apply_bio_spore_slow(center: Vector2, radius: float) -> void:
-	var slow_power := _owner_mod("spore_slow_power")
+# SCRUM-896: Семя Симбионта — самое дальнобойное оружие кита с ТЕМПОРАЛЬНОЙ
+# идентичностью: семя летит в точку цели (позиция телеграфирована на момент
+# каста — от зоны можно уйти), прорастает через grenade_delay, наносит
+# стартовый магический удар (seed_impact_ratio с falloff по области) и заражает
+# всех задетых биоинфекцией (dot_ticks × curse_tick_multiplier) — главный
+# пейофф уходит в DoT со временем. Радиус области — между кольцами Линзы и
+# бурстом Инъектора (данные). Артефакты SCRUM-961: «Симбиотическая оболочка» —
+# стартовый хит +35% и +2 тика инфекции; «Расщепленный анализ» — ближайший к
+# центру делится уроном с соседями.
+func _fire_bio_symbiote_web(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	var germination_center: Vector2 = owner_node.global_position + direction * minf(attack_range, 720.0)
+	if target != null and is_instance_valid(target):
+		germination_center = target.global_position
+	_emit_weapon_animation_event(owner_node, "channel", maxf(grenade_delay, 0.16), direction, {"seed": true})
+	var seed_flight := AttackVfx.beam(_projectile_parent(), owner_node.global_position + direction * 24.0, germination_center, beam_width * 0.5, Color(visual_color.r, visual_color.g, visual_color.b, 0.30))
+	_register_effect(seed_flight)
+	var telegraph := AttackVfx.ring_pulse(_projectile_parent(), germination_center, aoe_radius, Color(visual_color.r, visual_color.g, visual_color.b, 0.22), false)
+	_register_effect(telegraph)
+	var damage_value: float = _rolled_damage(owner_node)
+	var seed_tween := create_tween()
+	seed_tween.tween_interval(maxf(grenade_delay, 0.08))
+	# SCRUM-551: bound-метод вместо лямбды (анти use-after-free в tween).
+	seed_tween.tween_callback(Callable(self, "_germinate_symbiote_seed").bind(owner_node.get_instance_id(), germination_center, damage_value))
+
+
+# Прорастание семени: стартовый маг.хит по области, затем инфекция всех задетых
+# (порядок «урон → статусы»: trait-бонус окупается со следующего каста).
+func _germinate_symbiote_seed(owner_id: int, center: Vector2, damage_value: float) -> void:
+	if _effects_shutdown:
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	if current_owner == null or not is_instance_valid(current_owner):
+		return
+	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
+	var impact_damage := damage_value * maxf(seed_impact_ratio, 0.0) * (1.0 + _owner_mod("symbiote_impact_bonus"))
+	_damage_enemies_in_circle_falloff(center, aoe_radius, impact_damage, damage_falloff)
+	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		_apply_bio_infection(enemy_node, current_owner)
+	# SCRUM-961 «Расщепленный анализ»: ближайший к центру делится с соседями.
+	_apply_bio_split_analysis(TARGET_QUERY.nearest(self, center, aoe_radius), impact_damage)
+
+
+# SCRUM-896: базовое замедление Споровой Линзы (AC). Каждый задетый кольцом
+# враг замедлен; сила = spore_slow_base→spore_slow_max по НОРМИРОВАННОЙ
+# прогрессии оружия (_spore_slow_power), НЕ по сырому урону. Артефакт
+# «Споровый конденсатор» (spore_slow_power) добавляет замедление СВЕРХУ.
+# refresh + 1 стак: перекасты обновляют длительность (в перманентный рут не
+# стакуется), суммарную скорость движок клампит ≥0.25
+# (StatusEffects.speed_multiplier) — стоп-лок невозможен.
+func _apply_bio_spore_slow(owner_node: Node2D, center: Vector2, radius: float) -> void:
+	var slow_power := _spore_slow_power(owner_node) + maxf(_owner_mod("spore_slow_power"), 0.0)
 	if slow_power <= 0.0:
 		return
 	for enemy_node in TARGET_QUERY.in_radius(self, center, radius):
 		StatusEffects.apply_status(enemy_node, "bio_spore_slow", {
 			"duration": 1.6,
 			"speed_multiplier": maxf(1.0 - slow_power, 0.25),
+			"max_stacks": 1,
+			"stack_mode": "refresh",
 			"marker_color": Color(0.55, 0.95, 0.35, 1.0),
 		})
+
+
+# SCRUM-896: сила замедления линзы от прогрессии. spore_slow_base (5%) на
+# старте, линейный рост к spore_slow_max (20%) к ~×3 эффективного magic_damage
+# владельца от lvl1-базы класса; кламп с обеих сторон (AC: 5% мин, 20% макс) —
+# сырой ростом урона потолок не пробивается.
+func _spore_slow_power(owner_node: Node2D) -> float:
+	if spore_slow_max <= 0.0:
+		return 0.0
+	if owner_node == null or not is_instance_valid(owner_node):
+		return spore_slow_base
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var current_magic := maxf(float(parameters.get("magic_damage", 0.0)), 0.0)
+	if _bio_magic_baseline <= 0.0:
+		var raw_character = owner_node.get("character_id")
+		var owner_class := str(raw_character) if raw_character != null and str(raw_character) != "" else "biologist"
+		var baseline: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats(owner_class), {}, ProgressionData.weapon(owner_class, weapon_id))
+		_bio_magic_baseline = maxf(float(baseline.get("magic_damage", 1.0)), 0.001)
+	var progress := clampf((current_magic / _bio_magic_baseline - 1.0) * 0.5, 0.0, 1.0)
+	return clampf(spore_slow_base + (spore_slow_max - spore_slow_base) * progress, spore_slow_base, spore_slow_max)
+
+
+# SCRUM-896/1005: биоинфекция — status-based DoT Биолога с атрибуцией владельца.
+# Тик = derived dot_damage × curse_tick_multiplier (generic-ключ силы периодики,
+# зеркало _budget_dot_dps); каденция = dot_speed × curse_tick_rate (интервал
+# ≥0.1с — кламп StatusEffects.tick); refresh + 1 стак: перекаст обновляет
+# длительность, НЕ мультиплицируя тики (устоявшийся DPS = тик × каденция — см.
+# bio-ветку _budget_dot_dps). source_id — атрибуция для trait'а «Разбор
+# образцов» (SCRUM-1005): прямые хиты владельца по заражённым усиливает
+# generic-гейт в _damage_enemy. Тики идут через StatusEffects.tick напрямую в
+# take_damage — трейт их НЕ усиливает. «Симбиотическая оболочка» продлевает
+# инфекцию семени (+symbiote_dot_extra_ticks). +0.99 тика запаса — как у
+# проклятия черепа (последний тик не теряется, лишний не рождается).
+func _apply_bio_infection(enemy: Node, owner_node: Node2D) -> void:
+	if dot_ticks <= 0 or enemy == null or not is_instance_valid(enemy):
+		return
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	var parameters_raw = owner_node.get("derived_parameters")
+	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
+	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0)
+	if tick_damage <= 0.0:
+		return
+	var tick_speed := maxf(float(parameters.get("dot_speed", 1.0)), 0.2) * maxf(curse_tick_rate, 0.2)
+	var tick_interval := maxf(1.0 / tick_speed, 0.1)
+	var total_ticks := dot_ticks
+	if attack_mode == "bio_symbiote_web":
+		total_ticks += int(_owner_mod("symbiote_dot_extra_ticks"))
+	StatusEffects.apply_status(enemy, "bio_infection", {
+		"duration": (float(maxi(total_ticks, 1)) + 0.99) * tick_interval,
+		"dot_damage": tick_damage,
+		"dot_interval": tick_interval,
+		"max_stacks": 1,
+		"stack_mode": "refresh",
+		"source_id": owner_node.get_instance_id(),
+		"marker_color": Color(0.55, 0.95, 0.35, 1.0),
+		"tick_feedback": {"damage_type": "dot", "player_owned": true, "bio_infection": true},
+	})
+	if enemy is Node2D:
+		HazardVfx.dot_tick(enemy as Node2D, Color(visual_color.r, visual_color.g, visual_color.b, 1.0))
 
 
 # SCRUM-961 «Расщепленный анализ»: первичная цель каста сплэшит долю урона на
@@ -3801,12 +3914,12 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	if dot_ticks <= 0:
 		return
 	# SCRUM-961: классовые артефакты продлевают DoT-идентичность конкретных линий
-	# («Ядовитая катушка» — Ядовитая струна, «Симбиотическая оболочка» — сеть).
+	# («Ядовитая катушка» — Ядовитая струна). SCRUM-896: биологические оружия
+	# сюда больше не ходят — их периодика живёт статусом bio_infection
+	# (_apply_bio_infection, symbiote_dot_extra_ticks учитывается там).
 	var extra_ticks := 0
 	if attack_mode == "dot_beam":
 		extra_ticks = int(_owner_mod("venom_dot_extra_ticks"))
-	elif attack_mode == "bio_symbiote_web":
-		extra_ticks = int(_owner_mod("symbiote_dot_extra_ticks"))
 	# Tween на оружии замораживается паузой, в отличие от SceneTreeTimer.
 	var dot_color := Color(visual_color.r, visual_color.g, visual_color.b, 1.0)
 	var dot_tween := create_tween()
