@@ -3127,7 +3127,9 @@ func _apply_bio_infection(enemy: Node, owner_node: Node2D) -> void:
 	var total_ticks := dot_ticks
 	if attack_mode == "bio_symbiote_web":
 		total_ticks += int(_owner_mod("symbiote_dot_extra_ticks"))
-	StatusEffects.apply_status(enemy, "bio_infection", {
+	# SCRUM-942 паритет: классовый периодический множитель источника (у Биолога
+	# 1.0) запекается в dot_damage на моменте применения — как у Химика.
+	StatusEffects.apply_status_from(owner_node, enemy, "bio_infection", {
 		"duration": (float(maxi(total_ticks, 1)) + 0.99) * tick_interval,
 		"dot_damage": tick_damage,
 		"dot_interval": tick_interval,

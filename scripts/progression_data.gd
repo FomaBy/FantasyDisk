@@ -1375,11 +1375,14 @@ static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: fl
 	# а НЕ ticks/каст. Ось скейлится dot_damage/dot_speed (Знание/Энергия), не
 	# скоростью атаки; длительность (dot_ticks+0.99)×интервал перекрывает
 	# интервал каста — uptime в затяжном бою ≈1. Зеркало —
-	# class_weapon._apply_bio_infection.
+	# class_weapon._apply_bio_infection (рантайм применяет статус через
+	# StatusEffects.apply_status_from — классовый периодический множитель
+	# SCRUM-942 запекается там же; у Биолога он 1.0).
 	if str(config.get("attack_mode", "")).begins_with("bio_"):
 		var bio_rate := maxf(float(config.get("curse_tick_rate", 1.0)), 0.2)
 		var bio_interval := maxf(1.0 / (maxf(float(params.get("dot_speed", 1.0)), 0.2) * bio_rate), 0.1)
-		return float(params.get("dot_damage", 1.0)) * tick_multiplier / bio_interval
+		return float(params.get("dot_damage", 1.0)) * tick_multiplier / bio_interval \
+			* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 	var stats_map: Dictionary = stats if stats is Dictionary else {}
 	var curse_depth := 1.0 + maxf(float(stats_map.get("intelligence", 0.0)), 0.0) * maxf(float(config.get("curse_int_scale", 0.0)), 0.0)
 	# SCRUM-942: DoT-тики — периодический канал, множится классовым trait'ом
