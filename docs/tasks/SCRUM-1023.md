@@ -72,3 +72,20 @@ disposable remediation worker thread exists yet.
 
 Это implementation handoff, не независимый QA-вердикт. SCRUM-1023 и
 родительские SCRUM-1021/955 закрываются только после отдельной повторной QA.
+
+## Независимый QA-вердикт (2026-07-10, `/root/audit_repo`) — PASSED
+
+Два fresh windowed-процесса после 120 settle-кадров подтвердили на 1280×720
+для «Лидерство» и «Сила ульты»: `font_size=15`, glyph height `22`, title rect
+height `34`, `line_count=1`, `visible_lines=1`; оба заголовка визуально видны
+на сохранённых QA-capture. Та же проверка обоих разделов прошла на 1920×1080,
+2560×1080, 2560×1440 и 3840×2160. Title/chip/body, обе rail-зоны и scroll
+остаются внутри пустых областей рамы.
+
+Независимый численный probe повторно подтвердил матрицу 26×8, exact inverse,
+все восемь зависимостей `ultimate_multiplier` и отсутствие lexical false
+positive. Последовательный прогон focused stat/Codex/UI, display/theme/assets,
+gamepad и полного `runtime_smoke_test.gd` через `tools/godot_gate.py` — PASS.
+Production-код и тесты QA не изменяла. Вердикт выполнен `/root/audit_repo`;
+центральный `/root` записал уже завершённый PASS в mirrors/Jira после
+прерывания зависшего bookkeeping-turn.

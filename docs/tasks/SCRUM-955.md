@@ -1,6 +1,6 @@
 # SCRUM-955 — split Codex Characteristics and Attributes
 
-Статус: blocked
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-955
 Owner: Codex `/root`
@@ -131,3 +131,13 @@ ignored `build/qa` и `.godot`; удаление QA-worktree после evidence
 фиксируется финальным Jira-комментарием.
 
 Thread cleanup: collaboration subagent, не disposable top-level worker.
+
+## Финальный независимый QA (2026-07-10, `/root/audit_repo`) — PASSED
+
+SCRUM-1021 и SCRUM-1023 приняты на fresh `origin/dev`. Шесть русских вкладок,
+точные проекции 8/26, canonical related matrix/inverse, Russian-only текст,
+раздельные related/detail scroll и frame-safe rails подтверждены. Два fresh
+1280×720 windowed capture показывают «Лидерство» и «Сила ульты» с
+`visible_lines=1`; 1080p, ultrawide, 1440p и 4K также прошли visual review.
+Последовательный stat/Codex/UI/display/theme/assets/gamepad/full-runtime suite
+через `tools/godot_gate.py` — PASS. Production-код и тесты QA не изменяла.

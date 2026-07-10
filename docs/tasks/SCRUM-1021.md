@@ -1,6 +1,6 @@
 # SCRUM-1021 — exact Codex stat dependency matrix
 
-Статус: blocked
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1021
 Owner: Backend/Codex `/root`
@@ -103,3 +103,13 @@ ignored `build/qa` и `.godot`; удаление QA-worktree после evidence
 
 Thread cleanup: collaboration subagent, не disposable top-level worker;
 архивирование пользовательского task не требуется.
+
+## Повторный независимый QA (2026-07-10, `/root/audit_repo`) — PASSED
+
+После SCRUM-1023 независимый fresh-tree прогон подтвердил точную матрицу 26×8,
+обратную base→derived-проекцию, `ultimate_multiplier` со всеми восемью
+характеристиками и отсутствие false positive у `knockback_distance`. Оба
+split-раздела прошли 720p/1080p/ultrawide/1440p/4K visual/content-zone matrix;
+на 720p выбранный title имеет одну видимую строку. Все focused stat/Codex/UI,
+display/theme/assets, gamepad и full-runtime гейты — PASS. Production/test
+файлы QA не меняла; blocker SCRUM-1023 устранён и принят.
