@@ -68,6 +68,8 @@ interior and fails SCRUM-975 acceptance even though SCRUM-1030 itself passed.
 
 ## Design correction result (2026-07-10)
 
+- Design commit `40e968c3d` is pushed directly to `origin/dev`; Jira SCRUM-1033
+  is routed to `Контроль качества`, and SCRUM-975 has a fresh re-QA-ready note.
 - The 2560 title content rect is now `352,132,392,72`, font 48; the generated
   1920 contract is its exact 0.75 derivative `264,99,294,54`, font 36.
 - Conservative ornament/frame bounds and minimum reserve are explicit in
