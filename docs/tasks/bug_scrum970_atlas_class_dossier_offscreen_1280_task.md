@@ -1,6 +1,6 @@
 # BUG: Atlas class dossier and Buy are off-screen at 1280×720
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1024
 Контур: Codex
@@ -115,6 +115,12 @@ gaps; both were fixed and covered with physical `InputEventAction`/pointer
 events. Final read-only re-review: PASS, no actionable findings remain;
 `git diff --check` is clean.
 
-Disk cleanup: active task worktree; pending review, commit and push.
+Landed to `origin/dev` in commit `5f39a56ea`. Jira moved to
+`Контроль качества`; independent production QA remains required before
+`Готово`.
+
+Disk cleanup: removed the 444 MB task `.godot/` import cache, 31 MB transient
+`build/qa/scrum1024/` evidence and the three isolated `/tmp/fsd-scrum1024-*`
+user roots; the clean task worktree/branch is removed after this routing commit.
 
 Thread cleanup: not a disposable worker thread.
