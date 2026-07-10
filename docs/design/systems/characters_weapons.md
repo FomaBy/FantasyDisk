@@ -23,7 +23,7 @@
 | `ranger` | «сторожевой лук» (SCRUM-909..913): trait — каждый лучный хит отбрасывает ОТ героя; сплит-болт 1→4, дальний пирс-конус, перманентные капканы с параличом и зелёным кровотечением |
 | `doctor` | weapon-only sustain (SCRUM-900): trait «Клятва чумного доктора» — generic реген/вампиризм/kill-heal не действуют; лечится только уроном своего оружия (зелье-AoE, чума со спредом, сектор-пила) |
 | `chemist` | catalyst-периодика (+50%): быстрый физический AoE, вечные кислотные заряды из луж, постоянная пара гомункулов танк+кастер |
-| `knight` | tank/control melee: spear strip, shield bash, circular flail |
+| `knight` | tank-отражатель (SCRUM-920..923): trait «Возмездие» — контактный атакующий отлетает прочь (боссы/главные элиты не смещаются); тройной секвенс-укол копья, конус-баш щита к ближайшей цели с масштабируемым отбросом, расширяющаяся спираль кистеня |
 | `druid` | summon/nature control: beast pack, thorn zones, raven totem |
 
 ## Weapon Matrix
@@ -90,9 +90,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `chemist` | `blast_powder` | Взрывная пыль | `BlastPowder.tscn` | `aoe_projectile` | SCRUM-943: быстрый ПРЯМОЙ физический close-mid AoE (fire 0.62, r150, range 430), без луж/DoT; trait периодики его не усиливает |
 | `chemist` | `acid_flask` | Кислотная колба | `AcidFlask.tscn` | `aoe_projectile` | SCRUM-944: долгая (7с) полупрозрачная лужа; тики пока враг внутри + один ВЕЧНЫЙ кислотный заряд с каждой отдельной лужи (кап 5, артефакт +3), заряды тикают по dot-оси до смерти носителя |
 | `chemist` | `homunculus_vial` | Склянка гомункула | `HomunculusVial.tscn` | `summon` | SCRUM-946: постоянная пара — танк (4x max HP Химика, таунт-пульсы, смертен, респавн 4с) + неуязвимый кастер (вне боевого лимита, волны каждые 1.7с вешают вечный DoT-заряд, кап 4; fallback-позиция — плечо Химика) |
-| `knight` | `long_spear` | Копье | `LongSpear.tscn` | `strip` | Длинный точечный выпад, легкий frontal block/counter |
-| `knight` | `tower_shield` | Башенный щит | `TowerShield.tscn` | `sweep` | Frontal guard/counter, contact-pack control |
-| `knight` | `holy_flail` | Освященный кистень | `HolyFlail.tscn` | `circle` | Circular holy control, broad soft counter |
+| `knight` | `long_spear` | Копье | `LongSpear.tscn` | `strip` | SCRUM-921: тройной секвенс-укол лево→центр→право (±16°, окно 0.11с, полоса 110×540); одна цель ≤ 1 укола за цикл (анти-triple-dip, budget solo=1.0); лёгкий frontal block/counter |
+| `knight` | `tower_shield` | Башенный щит | `TowerShield.tscn` | `sweep` | SCRUM-922: конус 95° в направлении БЛИЖАЙШЕГО монстра, все цели конуса отлетают прочь; импульс (260 + knockback_power×3.0)×1.15 растёт от вложений в отброс; боссы/главные элиты ×0.25, мини-элиты полноценно; сильнейший block/counter |
+| `knight` | `holy_flail` | Освященный кистень | `HolyFlail.tscn` | `circle` | SCRUM-923: расширяющаяся спираль — фронт-дуга 150° делает полный оборот за 7 шагов×0.085с, радиус растёт 22%→100% (r235); урон от центра наружу, максимум 1 хит/цель/каст; круговая мягкая ответка |
 | `druid` | `summon_amulet` | Амулет призыва | `SummonAmulet.tscn` | `summon` | `pack_damage` beast pack scaling from Leadership |
 | `druid` | `briar_staff` | Посох терний | `BriarStaff.tscn` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
 | `druid` | `raven_totem` | Вороний тотем | `RavenTotem.tscn` | `amp` | `support_totem` pulses, Leadership-scaled deploy limit with deploy cap |
@@ -218,6 +218,68 @@ Signature trait Химика (канон: `docs/design/class_traits_registry.md`
 +3, до 8); повторное стояние в одной луже второй заряд НЕ даёт (per-pool
 идентичность статуса `acid_charge_p<pool_id>`); волны кастера — стак до 4 вечных
 зарядов `homunculus_caster_dot` на цель.
+
+## Knight Class Trait — «Возмездие» + кит редизайна (SCRUM-920..923)
+
+Signature trait Рыцаря (канон: `docs/design/class_traits_registry.md`, данные:
+`ProgressionData.CLASS_TRAITS.knight`): враг, нанёсший Рыцарю КОНТАКТНЫЙ удар,
+отбрасывается прочь (`retaliation_knockback: 760` — при декее 2400 px/s² это
+≈120px смещения, за пределы типового contact_range 40-90px: серия контактных
+тычков рвётся, windup врага сбрасывается). Потребитель —
+`Player._try_retaliation_knockback`; атакующий приходит 3-м аргументом
+`take_damage` ТОЛЬКО из `enemy._update_contact_damage` (снаряды/зоны/элитные
+страйки атакующего не передают — дальнобой трейтом не отбрасывается).
+Правила смещения (единая таксономия `CombatTargetQuery.is_epic_displacement_immune`):
+
+- обычные монстры и МИНИ-элиты волн (`epic_scale_profile == "mini_elite"`) —
+  полный отброс;
+- боссы и ГЛАВНЫЕ элиты карты (группы `bosses`/`elite_enemies`, профили
+  `boss`/`elite`) — не смещаются трейтом вовсе;
+- внутренний кулдаун `retaliation_cooldown: 0.4с` — предохранитель от
+  физ/пафинг-раскачки паков (частота событий урона и так зажата i-frames 0.32с);
+- полностью предотвращённые удары (godmode/i-frames/невидимость/ульта/уворот)
+  отброса не дают; другим классам trait не течёт (data-driven ключи).
+
+Отдельный слой от block/counter пассива оружий (`_try_knight_counter`): counter —
+урон+стаггер по дуге с оружейным кулдауном, trait — гарантированный отброс
+именно атакующего.
+
+Кит (все три оружия — `BerserkWeapon`, data-driven конфиг-ключи):
+
+- `long_spear` «Тройной укол» (SCRUM-921): цикл = три быстрых последовательных
+  укола лево→центр→право (`thrust_count: 3`, `thrust_fan_degrees: 16`,
+  `thrust_step_time: 0.11с`), полоса шире старой (90→110×540). Одна цель ловит
+  максимум ОДИН укол за цикл (дедуп `_hit_targets` на весь цикл —
+  документированное анти-triple-dip решение). Бюджет-зеркало: solo_hits=1.0,
+  five_hits растёт от углового размаха веера (`_budget_hit_model`, ветка strip).
+  Артефакт «Веер уколов» (`spear_triple_thrust`) добавляет два крайних укола
+  ±32° на 55% урона.
+- `tower_shield` «Конус-баш» (SCRUM-922): конус 95° целится в направление
+  БЛИЖАЙШЕГО монстра (штатный `_target_direction`), все цели конуса получают
+  урон и отброс прочь от Рыцаря. Формула импульса:
+  `(260 + knockback_power × stagger_knockback_stat_ratio(3.0)) × melee_stagger_knockback_multiplier(1.15)`,
+  где `knockback_power` = derived (база 60 + endurance×4 + leadership×3) ×
+  `knockback_multiplier` × meta — вложения в отброс видимо усиливают смещение
+  (база Рыцаря ≈705 импульса ≈ 104px; глубокие вложения — 250px+). Боссы/главные
+  элиты капятся `epic_stagger_knockback_factor: 0.25` (урон — полный, капится
+  только смещение), мини-элиты отлетают полноценно. Контроль-оружие: урон ниже
+  офф-опций (dmg_mult 0.72 против 3.0 у копья).
+- `holy_flail` «Расширяющаяся спираль» (SCRUM-923): каст = `spiral_steps: 7`
+  шагов по `spiral_step_time: 0.085с`; фронт-дуга `spiral_arm_degrees: 150°`
+  делает ПОЛНЫЙ оборот (360°×(k+1)/steps от направления атаки), радиус фронта
+  растёт от `spiral_start_radius_ratio: 0.22`×R до полного R (235) — урон
+  ложится от центра наружу, враги на разных радиусах страдают в разные моменты
+  каста. Максимум ОДИН хит по цели за каст (дедуп — анти-runaway правило);
+  последний шаг замыкает оборот на стартовом угле с полным радиусом (соло-цель
+  гарантированно накрыта). Бюджет-зеркало: спиральное покрытие диска 0.85 в
+  ветке circle `_budget_hit_model`. Параметры для VFX (SCRUM-924): см.
+  коммент в Jira SCRUM-923.
+
+Покрытие: `tests/knight_kit_test.gd` (trait: направление/сила/таксономия/кулдаун/
+утечка/предотвращённые удары + сквозной контактный путь; копьё: геометрия веера,
+дедуп, порядок окон по кадрам, артефакт; щит: выбор ближайшей цели, членство
+конуса, скейл отброса, кап эпиков; кистень: прогрессия радиуса, полный оборот,
+max-hit, cleanup).
 
 ## Targeting Rule
 

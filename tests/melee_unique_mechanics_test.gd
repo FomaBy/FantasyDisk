@@ -27,11 +27,15 @@ func _test_melee_unique_configs(errors: Array) -> void:
 		"berserk/hammer": ["melee_stagger_knockback_multiplier"],
 		"soldier/soldier_bayonet": ["melee_close_bonus_radius", "melee_stagger_knockback_multiplier"],
 		"assassin/shadow_daggers": ["melee_close_bonus_radius", "melee_execute_threshold"],
-		"doctor/bone_saw": ["melee_close_bonus_radius", "melee_heal_percent_on_hit"],
-		"knight/long_spear": ["melee_execute_threshold"],
-		"knight/tower_shield": ["melee_stagger_knockback_multiplier"],
-		"knight/holy_flail": ["melee_arc_followup_radius"],
-		"robot/robot_hydraulic_press": ["melee_close_bonus_radius", "melee_stagger_knockback_multiplier"],
+		# SCRUM-900: сустейн пилы = heal_percent_of_damage (weapon-only «Клятва
+		# чумного доктора»), легаси melee_heal_percent_on_hit удалён из конфига.
+		"doctor/bone_saw": ["melee_close_bonus_radius", "heal_percent_of_damage"],
+		# SCRUM-921/922: тройной секвенс-укол копья и масштабируемый конус-баш щита.
+		"knight/long_spear": ["melee_execute_threshold", "thrust_count", "thrust_fan_degrees"],
+		"knight/tower_shield": ["melee_stagger_knockback_multiplier", "stagger_knockback_stat_ratio"],
+		"knight/holy_flail": ["melee_arc_followup_radius", "spiral_steps"],
+		# SCRUM-914..918: robot_hydraulic_press больше не melee-identity оружие —
+		# кит Робота снёс легаси melee-ключи (4fc0472ac), пресс покрыт robot_kit_test.
 	}
 	for key in required:
 		var parts := str(key).split("/")
