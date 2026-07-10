@@ -96,6 +96,7 @@ func _initialize() -> void:
 	await _test_press_corridor_compression(errors)
 	await _test_reactor_rotating_fan(errors)
 	await _test_reactor_blade_width_and_reset(errors)
+	await _test_delayed_callbacks_survive_vfx_teardown(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -534,3 +535,74 @@ func _test_reactor_blade_width_and_reset(errors: Array) -> void:
 	if diagonal.hit_count != 0:
 		errors.append("widened blades must still be blades, not a circle (diagonal hits %d)" % diagonal.hit_count)
 	await _cleanup(holder)
+
+
+# --- SCRUM-1034: lifecycle-safe отложенные колбэки ---------------------------------
+
+
+func _free_all_weapon_effects() -> void:
+	# Симулируем само-освобождение VFX (телеграф/тезер/боковые лучи) ДО того, как
+	# сработает отложенный удар — именно эта гонка раньше держала в лямбде
+	# освобождённый Node и печатала engine-ERROR «Lambda capture was freed».
+	for effect in get_nodes_in_group("player_weapon_effects"):
+		if is_instance_valid(effect):
+			effect.queue_free()
+	await process_frame
+	await process_frame
+
+
+func _test_delayed_callbacks_survive_vfx_teardown(errors: Array) -> void:
+	# SCRUM-1034 focused lifecycle assertion: отложенные удары Робота обязаны
+	# довершаться БЕЗ обращения к освобождённым Node (никаких Node-захватов в
+	# колбэке — только instance id + Callable.bind), а после cleanup_effects —
+	# вовсе не наносить урон (shutdown-гард), не задевая мёртвые VFX.
+
+	# Якорь: VFX рвутся ДО удара, но полный ролл всё равно должен лечь.
+	var anchor_holder := _new_scene("Scrum1034AnchorTeardown")
+	var anchor_owner := _new_owner(anchor_holder)
+	var anchor_weapon := _new_weapon(anchor_owner, "robot", "robot_magnetic_anchor")
+	var anchor_center := anchor_owner.global_position + Vector2(400, 0)
+	var anchor_target := _new_enemy(anchor_holder, anchor_center)
+	await process_frame
+	anchor_weapon.call("_fire_robot_magnetic_anchor", anchor_owner, anchor_target, Vector2.RIGHT)
+	await _free_all_weapon_effects()
+	await create_timer(maxf(float(anchor_weapon.get("grenade_delay")), 0.08) + 0.30).timeout
+	if anchor_target.hit_count != 1 or absf(anchor_target.total_damage - 100.0) > 0.5:
+		errors.append("anchor delayed hit must still land after its VFX are torn down (hits %d, dmg %.2f)" % [anchor_target.hit_count, anchor_target.total_damage])
+	if not is_instance_valid(anchor_weapon):
+		errors.append("anchor weapon must survive its delayed callback")
+	await _cleanup(anchor_holder)
+
+	# Пресс: боковые телеграфы рвутся ДО удара, коридорный урон всё равно ложится.
+	var press_holder := _new_scene("Scrum1034PressTeardown")
+	var press_owner := _new_owner(press_holder)
+	var press_weapon := _new_weapon(press_owner, "robot", "robot_hydraulic_press")
+	var press_origin := press_owner.global_position + Vector2(28, 0)
+	var press_target := _new_enemy(press_holder, press_origin + Vector2(300, 90))
+	await process_frame
+	press_weapon.call("_fire_robot_compression_line", press_owner, null, Vector2.RIGHT)
+	await _free_all_weapon_effects()
+	await create_timer(maxf(float(press_weapon.get("grenade_delay")), 0.08) + 0.30).timeout
+	if press_target.hit_count != 1 or absf(press_target.total_damage - 100.0) > 0.5:
+		errors.append("press delayed corridor hit must still land after its VFX are torn down (hits %d, dmg %.2f)" % [press_target.hit_count, press_target.total_damage])
+	if not is_instance_valid(press_weapon):
+		errors.append("press weapon must survive its delayed callback")
+	await _cleanup(press_holder)
+
+	# Shutdown-гард: после cleanup_effects отложенный удар НЕ наносится и не лезет
+	# в освобождённые узлы (старый лямбда-колбэк без shutdown-гарда ударил бы).
+	var shut_holder := _new_scene("Scrum1034ShutdownGuard")
+	var shut_owner := _new_owner(shut_holder)
+	var shut_weapon := _new_weapon(shut_owner, "robot", "robot_magnetic_anchor")
+	var shut_center := shut_owner.global_position + Vector2(400, 0)
+	var shut_target := _new_enemy(shut_holder, shut_center)
+	await process_frame
+	shut_weapon.call("_fire_robot_magnetic_anchor", shut_owner, shut_target, Vector2.RIGHT)
+	shut_weapon.call("cleanup_effects")
+	await _free_all_weapon_effects()
+	await create_timer(maxf(float(shut_weapon.get("grenade_delay")), 0.08) + 0.30).timeout
+	if shut_target.hit_count != 0:
+		errors.append("delayed anchor must not fire after cleanup_effects tears the weapon down (hits %d)" % shut_target.hit_count)
+	if not is_instance_valid(shut_weapon):
+		errors.append("weapon must stay valid through the shutdown-guarded callback")
+	await _cleanup(shut_holder)

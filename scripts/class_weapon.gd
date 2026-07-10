@@ -3745,27 +3745,35 @@ func _fire_robot_magnetic_anchor(owner_node: Node2D, target: Node2D, direction: 
 	_register_effect(telegraph)
 	var tether := AttackVfx.beam(_projectile_parent(), owner_node.global_position + direction * 24.0, center, beam_width, Color(visual_color.r, visual_color.g, visual_color.b, 0.26))
 	_register_effect(tether)
-	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var stored_center := center
+	# SCRUM-1034: удар отложен на grenade_delay. Раньше колбэк был лямбдой с
+	# ПРЯМЫМ захватом Node-ов telegraph/tether; эти VFX само-освобождаются раньше
+	# удара, и Godot писал engine-ERROR «Lambda capture at index N was freed».
+	# Канон SCRUM-551: Callable+bind по instance id, VFX/владелец — через id.
+	var telegraph_id := telegraph.get_instance_id()
+	var tether_id := tether.get_instance_id()
 	var anchor_tween := create_tween()
 	anchor_tween.tween_interval(maxf(grenade_delay, 0.08))
-	anchor_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		if current_weapon == null:
-			if is_instance_valid(telegraph):
-				telegraph.queue_free()
-			if is_instance_valid(tether):
-				tether.queue_free()
-			return
-		var damage_value: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
-		current_weapon.call("_damage_enemies_in_circle_falloff", stored_center, float(current_weapon.get("aoe_radius")), damage_value, float(current_weapon.get("damage_falloff")))
-		current_weapon.call("_pull_enemies_toward", stored_center, float(current_weapon.get("aoe_radius")), float(current_weapon.get("knockback")))
-		AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), stored_center, float(current_weapon.get("aoe_radius")) * 0.62, current_weapon.get("visual_color"))
-		current_weapon.call("_release_effect", telegraph)
-		current_weapon.call("_release_effect", tether)
-	)
+	anchor_tween.tween_callback(Callable(self, "_resolve_robot_anchor").bind(owner_id, stored_center, telegraph_id, tether_id))
+
+
+func _resolve_robot_anchor(owner_id: int, center: Vector2, telegraph_id: int, tether_id: int) -> void:
+	# Отложенный удар Магнитного Якоря. Твин принадлежит оружию (умирает вместе с
+	# ним); владелец и VFX перепроверяются по instance id, поэтому освобождённый
+	# телеграф/тезер даёт null без engine-ERROR (SCRUM-1034/551).
+	if _effects_shutdown:
+		_release_effect_by_id(telegraph_id)
+		_release_effect_by_id(tether_id)
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var damage_value: float = _rolled_damage(current_owner) if (current_owner != null and is_instance_valid(current_owner)) else damage
+	# Контракт SCRUM-915 не меняется: полный ролл с falloff от ЦЕНТРА якоря + пулл.
+	_damage_enemies_in_circle_falloff(center, aoe_radius, damage_value, damage_falloff)
+	_pull_enemies_toward(center, aoe_radius, knockback)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius * 0.62, visual_color)
+	_release_effect_by_id(telegraph_id)
+	_release_effect_by_id(tether_id)
 
 
 func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -3796,34 +3804,39 @@ func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction:
 	var right := AttackVfx.beam(_projectile_parent(), right_start, right_finish, beam_width * 0.42, Color(visual_color.r, visual_color.g, visual_color.b, 0.28))
 	_register_effect(left)
 	_register_effect(right)
-	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	var line_start := start
 	var line_finish := finish
 	var line_direction := direction
 	var line_perpendicular := perpendicular
 	var clamp_center := center
+	# SCRUM-1034: как и якорь — раньше колбэк был лямбдой с прямым захватом боковых
+	# телеграфов left/right, которые само-освобождаются до удара (engine-ERROR
+	# «Lambda capture was freed»). Канон SCRUM-551: Callable+bind по instance id.
+	var left_id := left.get_instance_id()
+	var right_id := right.get_instance_id()
 	var press_tween := create_tween()
 	press_tween.tween_interval(maxf(grenade_delay, 0.08))
-	press_tween.tween_callback(func() -> void:
-		var current_weapon := instance_from_id(weapon_id) as Node
-		var current_owner := instance_from_id(owner_id) as Node2D
-		if current_weapon == null:
-			if is_instance_valid(left):
-				left.queue_free()
-			if is_instance_valid(right):
-				right.queue_free()
-			return
-		var damage_value: float = float(current_weapon.call("_rolled_damage", current_owner)) if current_owner != null else float(current_weapon.get("damage"))
-		var impact := AttackVfx.beam(current_weapon.call("_projectile_parent"), line_start, line_finish, float(current_weapon.get("beam_width")), current_weapon.get("visual_color"))
-		current_weapon.call("_register_effect", impact)
-		# SCRUM-916: урон по полной ширине коридора, затем компрессия к оси.
-		current_weapon.call("_damage_enemies_in_corridor", line_start, line_direction, damage_value, corridor_width)
-		current_weapon.call("_compress_enemies_to_axis", line_start, line_direction, line_perpendicular, corridor_width, float(current_weapon.get("attack_range")), float(current_weapon.get("knockback")))
-		AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), clamp_center, float(current_weapon.get("aoe_radius")) * 0.42, current_weapon.get("visual_color"), false)
-		current_weapon.call("_release_effect", left)
-		current_weapon.call("_release_effect", right)
-	)
+	press_tween.tween_callback(Callable(self, "_resolve_robot_press").bind(owner_id, line_start, line_finish, line_direction, line_perpendicular, clamp_center, corridor_width, left_id, right_id))
+
+
+func _resolve_robot_press(owner_id: int, line_start: Vector2, line_finish: Vector2, line_direction: Vector2, line_perpendicular: Vector2, clamp_center: Vector2, corridor_width: float, left_id: int, right_id: int) -> void:
+	# Отложенная компрессия Гидравлического Пресса. Твин принадлежит оружию;
+	# владелец и боковые VFX перепроверяются по instance id (SCRUM-1034/551).
+	if _effects_shutdown:
+		_release_effect_by_id(left_id)
+		_release_effect_by_id(right_id)
+		return
+	var current_owner := instance_from_id(owner_id) as Node2D
+	var damage_value: float = _rolled_damage(current_owner) if (current_owner != null and is_instance_valid(current_owner)) else damage
+	var impact := AttackVfx.beam(_projectile_parent(), line_start, line_finish, beam_width, visual_color)
+	_register_effect(impact)
+	# SCRUM-916: урон по полной ширине коридора, затем компрессия к оси (контракт не меняется).
+	_damage_enemies_in_corridor(line_start, line_direction, damage_value, corridor_width)
+	_compress_enemies_to_axis(line_start, line_direction, line_perpendicular, corridor_width, attack_range, knockback)
+	AttackVfx.ring_pulse(_projectile_parent(), clamp_center, aoe_radius * 0.42, visual_color, false)
+	_release_effect_by_id(left_id)
+	_release_effect_by_id(right_id)
 
 
 func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
