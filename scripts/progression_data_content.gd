@@ -404,9 +404,11 @@ const ARTIFACTS := [
 	{"id": "press_calibrator", "title": "Калибратор пресса", "tier": 2, "cost": 55, "class_affinity": ["robot"], "requires_ascension": 5, "description": "Коридор Пресса на 30% шире и прижимает врагов к осевой линии.", "mods": {"press_corridor_bonus": 1.0}},
 	{"id": "reactor_chronometer", "title": "Реакторный хронометр", "tier": 3, "cost": 95, "class_affinity": ["robot"], "requires_ascension": 5, "description": "Выбросы реактора идут плавной ротацией без мёртвых секторов; +10% скорости атаки.", "mods": {"reactor_smooth_rotation": 1.0, "attack_speed_multiplier": 1.10}},
 	{"id": "repair_subroutine", "title": "Ремонтная подпрограмма", "tier": 3, "cost": 95, "class_affinity": ["robot"], "requires_ascension": 5, "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — поглощённый бронёй урон копит заряд: при 8% max HP — +3 поглощения на 5с.", "mods": {"repair_charge_ratio": 0.5}},
-	# Knight — Щитовая клятва:
+	# Knight — Возмездие (SCRUM-920..923):
 	{"id": "rebound_plate", "title": "Отбойная пластина", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "+40% отталкивания ударов по рядовым врагам.", "mods": {"knockback_multiplier": 1.40}},
-	{"id": "triple_thrust", "title": "Тройной укол", "tier": 3, "cost": 95, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Копьё колет трижды: центральный укол и два боковых (55%) под ±14°.", "mods": {"spear_triple_thrust": 1.0}},
+	# SCRUM-921: база копья теперь сама колет трижды (лево-центр-право) — артефакт
+	# переосмыслен в «Веер уколов»: два ДОПОЛНИТЕЛЬНЫХ крайних укола ±32° (55%).
+	{"id": "triple_thrust", "title": "Веер уколов", "tier": 3, "cost": 95, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Веер копья шире: два дополнительных крайних укола (55%) под ±32°.", "mods": {"spear_triple_thrust": 1.0}},
 	{"id": "tower_slam", "title": "Башенный удар", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Конус Башенного щита на 20% шире; +20% отталкивания.", "mods": {"sector_multiplier": 1.20, "knockback_multiplier": 1.20}},
 	{"id": "holy_chain", "title": "Святая цепь", "tier": 3, "cost": 95, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Спираль Кистеня раскручивается: +12% радиуса за каст подряд, до +36%.", "mods": {"flail_spiral_growth": 1.0}},
 	{"id": "vanguard_oath", "title": "Авангардная клятва", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "+5% защиты; в стойке (неподвижность) — ещё +10%.", "mods": {"bastion_defense_bonus": 0.10, "defense_flat": 0.05}},

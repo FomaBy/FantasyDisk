@@ -30,6 +30,26 @@ const CONTACT_STUCK_HIT_RADIUS := 40.0
 @export var melee_arc_followup_radius := 0.0
 @export var melee_arc_followup_multiplier := 0.0
 @export var visual_color := Color(0.62, 0.82, 1.0, 0.30)
+# SCRUM-922: база отброса для derived knockback_power; свойство скейлится
+# пайплайном Player._apply_weapon_scaling (эндуранс/лидерство/knockback_multiplier
+# × meta-множитель), потребитель — формула stagger-импульса ниже.
+@export var knockback := 60.0
+# SCRUM-922: доля knockback-стата в stagger-импульсе (0 = прежний фикс 260) и
+# кап отброса для боссов/главных элит (1.0 = прежнее поведение без капа).
+@export var stagger_knockback_stat_ratio := 0.0
+@export var epic_stagger_knockback_factor := 1.0
+# SCRUM-921 «Тройной укол»: strip-оружие с thrust_count>1 колет секвенсом полос
+# лево→центр→право под ±thrust_fan_degrees с окном thrust_step_time на укол.
+@export var thrust_count := 1
+@export var thrust_fan_degrees := 0.0
+@export var thrust_step_time := 0.11
+# SCRUM-923 «Расширяющаяся спираль»: circle-оружие со spiral_steps>0 бьёт
+# фронтом-дугой spiral_arm_degrees, совершающим полный оборот за каст, пока
+# радиус фронта растёт от aoe_radius×spiral_start_radius_ratio до полного.
+@export var spiral_steps := 0
+@export var spiral_step_time := 0.085
+@export var spiral_arm_degrees := 150.0
+@export var spiral_start_radius_ratio := 0.22
 
 var _cooldown := 0.0
 var _last_direction := Vector2.RIGHT
@@ -85,6 +105,16 @@ func configure_weapon(config: Dictionary) -> void:
 	melee_arc_followup_radius = float(config.get("melee_arc_followup_radius", melee_arc_followup_radius))
 	melee_arc_followup_multiplier = float(config.get("melee_arc_followup_multiplier", melee_arc_followup_multiplier))
 	visual_color = config.get("visual_color", visual_color)
+	knockback = float(config.get("knockback", knockback))
+	stagger_knockback_stat_ratio = float(config.get("stagger_knockback_stat_ratio", stagger_knockback_stat_ratio))
+	epic_stagger_knockback_factor = float(config.get("epic_stagger_knockback_factor", epic_stagger_knockback_factor))
+	thrust_count = int(config.get("thrust_count", thrust_count))
+	thrust_fan_degrees = float(config.get("thrust_fan_degrees", thrust_fan_degrees))
+	thrust_step_time = float(config.get("thrust_step_time", thrust_step_time))
+	spiral_steps = int(config.get("spiral_steps", spiral_steps))
+	spiral_step_time = float(config.get("spiral_step_time", spiral_step_time))
+	spiral_arm_degrees = float(config.get("spiral_arm_degrees", spiral_arm_degrees))
+	spiral_start_radius_ratio = float(config.get("spiral_start_radius_ratio", spiral_start_radius_ratio))
 	_capture_base_values()
 
 
@@ -120,8 +150,17 @@ func _start_swing(immediate_damage := false) -> void:
 		owner_node.play_action_animation("attack", _last_direction)
 
 	_animate_weapon(_last_direction)
+	var owner_id := owner_node.get_instance_id()
+	var thrust_sequence := _thrust_sequence_entries()
 	if immediate_damage:
-		_damage_window(owner_node, _last_direction)
+		if thrust_sequence.size() > 1:
+			for step_index in range(thrust_sequence.size()):
+				_run_thrust_step(owner_id, step_index)
+		elif _uses_spiral():
+			for step_index in range(spiral_steps):
+				_run_spiral_step(owner_id, step_index)
+		else:
+			_damage_window(owner_node, _last_direction)
 		_finish_swing()
 		return
 
@@ -130,16 +169,37 @@ func _start_swing(immediate_damage := false) -> void:
 	# (mass-free между замерами в character_balance_csv.gd) висящий swing-таймер дёргал
 	# _finish_swing/lambda на уже освобождённом узле → нативный SIGABRT (freed object/lambda),
 	# из-за чего balance-CSV падал на berserk-строках и не собирался.
+	# SCRUM-921/923: секвенс-шаги планируются ТОЛЬКО bound-Callable'ами (без
+	# лямбда-захвата узлов, урок SCRUM-551) — владелец резолвится по instance_id.
 	if _swing_timing_tween != null and _swing_timing_tween.is_valid():
 		_swing_timing_tween.kill()
 	_swing_timing_tween = create_tween()
-	_swing_timing_tween.tween_interval(windup_time)
-	_swing_timing_tween.tween_callback(func() -> void:
-		if is_instance_valid(owner_node):
-			_damage_window(owner_node, _last_direction)
-	)
-	_swing_timing_tween.tween_interval(swing_time + recover_time)
+	if thrust_sequence.size() > 1:
+		# SCRUM-921: окна урона лево→центр→право, каждое со своим тайминг-слотом.
+		for step_index in range(thrust_sequence.size()):
+			_swing_timing_tween.tween_interval(windup_time if step_index == 0 else maxf(thrust_step_time, 0.02))
+			_swing_timing_tween.tween_callback(Callable(self, "_run_thrust_step").bind(owner_id, step_index))
+		_swing_timing_tween.tween_interval(swing_time + recover_time)
+	elif _uses_spiral():
+		# SCRUM-923: фронт спирали шагает от центра наружу полный оборот.
+		for step_index in range(spiral_steps):
+			_swing_timing_tween.tween_interval(windup_time if step_index == 0 else maxf(spiral_step_time, 0.02))
+			_swing_timing_tween.tween_callback(Callable(self, "_run_spiral_step").bind(owner_id, step_index))
+		_swing_timing_tween.tween_interval(recover_time)
+	else:
+		_swing_timing_tween.tween_interval(windup_time)
+		_swing_timing_tween.tween_callback(Callable(self, "_run_classic_damage_window").bind(owner_id))
+		_swing_timing_tween.tween_interval(swing_time + recover_time)
 	_swing_timing_tween.tween_callback(_finish_swing)
+
+
+func _run_classic_damage_window(owner_id: int) -> void:
+	if is_queued_for_deletion():
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	_damage_window(owner_node, _last_direction)
 
 
 func _finish_swing() -> void:
@@ -165,6 +225,9 @@ func _animate_weapon(direction: Vector2) -> void:
 		_swing_tween.kill()
 
 	if attack_shape == "circle":
+		if _uses_spiral():
+			_animate_spiral_spin(direction)
+			return
 		_animate_hammer_slam(direction)
 		return
 
@@ -189,8 +252,32 @@ func _animate_thrust(direction: Vector2) -> void:
 	position = -direction.normalized() * 14.0
 
 	_swing_tween = create_tween()
+	var entries := _thrust_sequence_entries()
+	if entries.size() > 1:
+		# SCRUM-921: три быстрых тычка спрайтом под углы секвенса (лево→центр→право);
+		# косметика — окна урона планирует _swing_timing_tween независимо.
+		for entry in entries:
+			var thrust_direction: Vector2 = direction.normalized().rotated(deg_to_rad(float((entry as Dictionary).get("angle", 0.0))))
+			_swing_tween.tween_property(self, "rotation", thrust_direction.angle(), 0.02)
+			_swing_tween.tween_property(self, "position", thrust_direction * 40.0, maxf(thrust_step_time * 0.6, 0.04)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			_swing_tween.tween_property(self, "position", -direction.normalized() * 8.0, maxf(thrust_step_time * 0.35, 0.03))
+		_swing_tween.tween_property(self, "rotation", base_angle, recover_time)
+		_swing_tween.parallel().tween_property(self, "position", Vector2.ZERO, recover_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		return
 	_swing_tween.tween_property(self, "position", direction.normalized() * 40.0, windup_time + swing_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_swing_tween.tween_property(self, "position", Vector2.ZERO, recover_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+# SCRUM-923: раскрутка кистеня — спрайт совершает полный оборот вокруг героя
+# синхронно с фронтом спирали (косметика; урон планирует _swing_timing_tween).
+func _animate_spiral_spin(direction: Vector2) -> void:
+	var base_angle := direction.angle()
+	rotation = base_angle
+	position = direction.normalized() * 26.0
+	var spin_time := windup_time + maxf(spiral_step_time, 0.02) * float(maxi(spiral_steps - 1, 1))
+	_swing_tween = create_tween()
+	_swing_tween.tween_property(self, "rotation", base_angle + TAU, spin_time)
+	_swing_tween.tween_property(self, "position", Vector2.ZERO, recover_time * 2.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 func _animate_hammer_slam(direction: Vector2) -> void:
@@ -223,30 +310,122 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		)
 	for index in range(candidates.size()):
 		_damage_target(owner_node, candidates[index] as Node2D, attack_direction, _circle_damage_factor(index))
-	# SCRUM-961 «Тройной укол»: копьё колет тремя полосами (центр уже отработал).
-	if attack_shape == "strip" and _owner_mod("spear_triple_thrust") > 0.0:
-		_damage_triple_thrust_sides(owner_node, attack_direction)
 	# SCRUM-961 «Призрачный топор»: видимый спектральный повтор взмаха.
 	if melee_arc_followup_radius > 0.0 and _owner_mod("spectral_followup_bonus") > 0.0 and not candidates.is_empty():
 		_show_spectral_followup(owner_node, attack_direction)
 
 
-# SCRUM-961 «Тройной укол»: боковые быстрые уколы ±14° (55% урона) закрывают
-# слабость узкой полосы копья против веера врагов; дедуп через _hit_targets.
-func _damage_triple_thrust_sides(owner_node: Node2D, attack_direction: Vector2) -> void:
+# SCRUM-921 «Тройной укол»: секвенс углов укола в порядке AC лево→центр→право.
+# «Лево» относительно направления атаки = поворот на -fan° (экранные координаты
+# Y-вниз: facing вправо ⇒ отрицательный угол смотрит вверх-влево от луча).
+# SCRUM-961 «Веер уколов» (классовый артефакт, бывш. «Тройной укол» до редизайна
+# базы): добавляет два КРАЙНИХ укола ±2×fan° на 55% урона в конец секвенса.
+func _thrust_sequence_entries() -> Array:
+	var count := maxi(thrust_count, 1)
+	if attack_shape != "strip" or count <= 1 or thrust_fan_degrees <= 0.0:
+		return []
+	var entries: Array = []
+	for entry_index in range(count):
+		var spread := float(entry_index) / float(count - 1)
+		entries.append({"angle": lerpf(-thrust_fan_degrees, thrust_fan_degrees, spread), "factor": 1.0})
+	if _owner_mod("spear_triple_thrust") > 0.0:
+		entries.append({"angle": -thrust_fan_degrees * 2.0, "factor": 0.55})
+		entries.append({"angle": thrust_fan_degrees * 2.0, "factor": 0.55})
+	return entries
+
+
+func _uses_spiral() -> bool:
+	return attack_shape == "circle" and spiral_steps > 0
+
+
+# SCRUM-921: одно окно укола — полоса под углом шага; дедуп _hit_targets живёт
+# ВЕСЬ цикл (одна цель ≤ 1 укола за цикл — документированное анти-triple-dip
+# решение, зеркалится budget-моделью solo_hits=1.0).
+func _run_thrust_step(owner_id: int, step_index: int) -> void:
+	if is_queued_for_deletion() or not is_inside_tree():
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	var entries := _thrust_sequence_entries()
+	if step_index < 0 or step_index >= entries.size():
+		return
+	var entry: Dictionary = entries[step_index]
+	var thrust_direction := _last_direction.rotated(deg_to_rad(float(entry.get("angle", 0.0)))).normalized()
+	if step_index == 0:
+		_show_weapon_signature(owner_node, thrust_direction)
+	_show_thrust_step_area(owner_node, thrust_direction)
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
+			continue
+		if not _is_enemy_inside_attack(owner_node, enemy_node, thrust_direction):
+			continue
+		if enemy_node.has_method("take_damage"):
+			_damage_target(owner_node, enemy_node, thrust_direction, float(entry.get("factor", 1.0)))
+
+
+func _show_thrust_step_area(owner_node: Node2D, thrust_direction: Vector2) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		scene = get_tree().root
-	for side in [-1.0, 1.0]:
-		var side_direction := attack_direction.rotated(deg_to_rad(14.0) * float(side))
-		AttackVfx.beam(scene, owner_node.global_position + side_direction * start_distance, owner_node.global_position + side_direction * attack_range, inner_width * 0.7, Color(visual_color.r, visual_color.g, visual_color.b, 0.22))
-		for enemy_node in TARGET_QUERY.enemies(self):
-			if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
-				continue
-			if not _is_enemy_inside_frustum(owner_node, enemy_node, side_direction):
-				continue
-			if enemy_node.has_method("take_damage"):
-				_damage_target(owner_node, enemy_node, side_direction, 0.55)
+	AttackVfx.beam(scene, owner_node.global_position + thrust_direction * start_distance, owner_node.global_position + thrust_direction * attack_range, inner_width, visual_color)
+	_show_exact_zone_overlay(owner_node, _strip_zone_points(thrust_direction))
+
+
+# SCRUM-923: шаг спирали — фронт-дуга spiral_arm_degrees под углом
+# base + 360°×(k+1)/steps с радиусом фронта от start_ratio×R до R. Дедуп
+# _hit_targets на весь каст (максимум один хит по цели — анти-runaway правило
+# AC). Последний шаг замыкает оборот на стартовом угле с полным радиусом —
+# соло-цель по направлению атаки гарантированно накрыта к концу каста.
+func _run_spiral_step(owner_id: int, step_index: int) -> void:
+	if is_queued_for_deletion() or not is_inside_tree():
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	if spiral_steps <= 0 or step_index < 0 or step_index >= spiral_steps:
+		return
+	var progress := float(step_index + 1) / float(spiral_steps)
+	var full_radius := _effective_circle_radius()
+	var front_radius := lerpf(full_radius * clampf(spiral_start_radius_ratio, 0.05, 1.0), full_radius, progress)
+	var arm_angle := _last_direction.angle() + TAU * progress
+	if step_index == 0:
+		_show_weapon_signature(owner_node, _last_direction)
+	_show_spiral_step_area(owner_node, arm_angle, front_radius)
+	var half_arm := deg_to_rad(maxf(spiral_arm_degrees, 10.0) * 0.5)
+	for enemy_node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(enemy_node) or _hit_targets.has(enemy_node):
+			continue
+		if not enemy_node.has_method("take_damage"):
+			continue
+		var to_enemy := enemy_node.global_position - owner_node.global_position
+		var inside := false
+		if to_enemy.length_squared() <= CONTACT_STUCK_HIT_RADIUS * CONTACT_STUCK_HIT_RADIUS:
+			inside = true
+		elif to_enemy.length_squared() <= front_radius * front_radius:
+			var angle_delta: float = absf(wrapf(to_enemy.angle() - arm_angle, -PI, PI))
+			inside = angle_delta <= half_arm
+		if inside:
+			var hit_direction := to_enemy.normalized() if to_enemy.length_squared() > 0.001 else _last_direction
+			_damage_target(owner_node, enemy_node, hit_direction, 1.0)
+
+
+func _show_spiral_step_area(owner_node: Node2D, arm_angle: float, front_radius: float) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		scene = get_tree().root
+	var arm_direction := Vector2.from_angle(arm_angle)
+	AttackVfx.beam(scene, owner_node.global_position, owner_node.global_position + arm_direction * front_radius, 26.0, visual_color)
+	_show_exact_zone_overlay(owner_node, _spiral_zone_points(arm_angle, front_radius))
+
+
+func _spiral_zone_points(arm_angle: float, front_radius: float) -> PackedVector2Array:
+	var half_arm := deg_to_rad(maxf(spiral_arm_degrees, 10.0) * 0.5)
+	var points := PackedVector2Array([Vector2.ZERO])
+	for point_index in range(13):
+		var angle := arm_angle + lerpf(-half_arm, half_arm, float(point_index) / 12.0)
+		points.append(Vector2.from_angle(angle) * front_radius)
+	return points
 
 
 # SCRUM-961 «Призрачный топор»: полупрозрачный призрачный взмах-афтеримидж
@@ -319,7 +498,18 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 		if push_direction.length_squared() <= 0.001:
 			push_direction = attack_direction
 		if enemy_node.has_method("apply_knockback"):
-			enemy_node.apply_knockback(push_direction.normalized() * 260.0 * melee_stagger_knockback_multiplier)
+			# SCRUM-922: импульс = (260 фикс + knockback-стат × ratio) × множитель
+			# оружия. knockback скейлится пайплайном Player._apply_weapon_scaling
+			# (derived knockback_power × meta-множитель) — вложения в отброс дают
+			# видимо большее смещение. При ratio=0 поведение прежнее (фикс 260).
+			# Боссы/главные элиты капятся epic_stagger_knockback_factor
+			# (таксономия CombatTargetQuery.is_epic_displacement_immune;
+			# мини-элиты волн отбрасываются полноценно).
+			var stagger_impulse := (260.0 + maxf(knockback, 0.0) * maxf(stagger_knockback_stat_ratio, 0.0)) * melee_stagger_knockback_multiplier
+			if TARGET_QUERY.is_epic_displacement_immune(enemy_node):
+				stagger_impulse *= clampf(epic_stagger_knockback_factor, 0.0, 1.0)
+			if stagger_impulse > 0.0:
+				enemy_node.apply_knockback(push_direction.normalized() * stagger_impulse)
 	# SCRUM-961 «Призрачный топор»: спектральный повтор усиливает followup-дугу
 	# (0.12→0.37 у топора); работает только на оружии с followup-геометрией.
 	var followup_multiplier := melee_arc_followup_multiplier

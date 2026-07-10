@@ -1154,9 +1154,26 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var sweep := float(config.get("sweep_degrees", config.get("cone_degrees", 90.0)))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (sweep / 45.0) * (attack_range / 320.0), 1.0, 5.0)}
 		"circle", "pulse":
+			# SCRUM-923: спиральный каст (spiral_steps>0) кроет диск не мгновенно —
+			# фронт дуги достигает внешнего кольца только к концу оборота, часть
+			# внешних целей остаётся за фронтом (рантайм: BerserkWeapon._run_spiral_step,
+			# 1 хит/цель/каст). Документированное среднее покрытие диска за оборот 0.85.
+			if float(config.get("spiral_steps", 0.0)) > 0.0:
+				return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (aoe_radius / 72.0) * 0.85, 1.0, 5.0)}
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
 		"strip":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("inner_width", 60.0)) / 160.0, 1.0, 2.1)}
+			# SCRUM-921: тройной укол (thrust_count>1) — веер полос под ±fan°:
+			# покрытие толпы растёт от углового размаха на дистанции. Дедуп
+			# рантайма (1 хит/цель/цикл, BerserkWeapon._run_thrust_step) держит
+			# solo_hits=1.0 — по одиночной цели цикл стоит столько же, сколько
+			# один укол; веер оплачивается aoe-осью тюнинга.
+			var strip_five := 1.0 + float(config.get("inner_width", 60.0)) / 160.0
+			var thrust_count := float(config.get("thrust_count", 1.0))
+			var thrust_fan := float(config.get("thrust_fan_degrees", 0.0))
+			if thrust_count > 1.0 and thrust_fan > 0.0:
+				strip_five += (attack_range * sin(deg_to_rad(thrust_fan))) / 260.0
+				return {"solo_hits": 1.0, "five_hits": clampf(strip_five, 1.0, 3.2)}
+			return {"solo_hits": 1.0, "five_hits": clampf(strip_five, 1.0, 2.1)}
 		"aoe_projectile":
 			var projectile_count := float(config.get("projectile_count", 1.0))
 			var blast_hits := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)

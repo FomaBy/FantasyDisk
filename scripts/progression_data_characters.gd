@@ -271,10 +271,12 @@ const CHARACTER_CONFIGS := {
 		"sprite_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
 	},
 	"knight": {
+		# SCRUM-920: player-facing текст читает identity тяжёлого танка,
+		# отбрасывающего атакующих при получении удара (trait «Возмездие»).
 		"id": "knight", "title": "Рыцарь",
-		"description": "Латная стена: держит удар щитом, отвечает контрударом и достает копьем через ряд. Медленный, зато почти не продавливается.",
-		"strengths": "отличная защита и здоровье, блок с контрударом, контроль строя.",
-		"weaknesses": "медленный, догоняет плохо.",
+		"description": "Латная стена возмездия: каждый ударивший его враг отлетает прочь, щит бьёт конусом с отбросом, копьё колет тройным веером, а кистень раскручивает спираль. Медленный, зато не продавливается.",
+		"strengths": "отличная защита и здоровье, ответный отброс атакующих, блок с контрударом, контроль строя.",
+		"weaknesses": "медленный, догоняет плохо; боссы и главные элиты его отбросу не поддаются.",
 		"sprite_path": "res://assets/sprites/characters/full_frame/knight_pixellab/knight_idle_south.png",
 	},
 	"druid": {
@@ -561,6 +563,31 @@ const CLASS_TRAITS := {
 		"battle_prayer_regen_flat": 2.0,
 		"battle_prayer_incoming_reduction": 0.20,
 	},
+	"knight": {
+		# SCRUM-920 «Возмездие» (реестр class_traits_registry.md, строка 16):
+		# нанёсший Рыцарю КОНТАКТНЫЙ удар враг отбрасывается прочь от Рыцаря —
+		# melee-контроль, прерывающий серию контактных тычков (contact-цикл
+		# сбрасывается выходом за contact_range). Потребитель —
+		# Player._try_retaliation_knockback (generic class_trait_value, у классов
+		# без ключей отброс = 0 — утечки нет). Атакующий приходит 3-м аргументом
+		# take_damage ТОЛЬКО из контактного пути (enemy._update_contact_damage);
+		# снаряды/зоны/элитные страйки атакующего не передают — дальнобой трейтом
+		# не отбрасывается (AC: monster hit/contact attack). Таксономия исключений —
+		# CombatTargetQuery.is_epic_displacement_immune: боссы и главные элиты
+		# карты НЕ смещаются, мини-элиты волн отбрасываются как обычные монстры.
+		# retaliation_knockback — импульс apply_knockback (декей 2400 px/s² в
+		# enemy._consume_knockback ⇒ смещение ≈ v²/4800 ≈ 120px — за пределы
+		# типового contact_range 40-90px, серия контактных ударов рвётся).
+		# retaliation_cooldown — внутренний интервал против физ/пафинг-раскачки
+		# паков (i-frames 0.32с и так ограничивают частоту событий урона; кулдаун
+		# 0.4с — документированный предохранитель поверх, AC «cooldown/cap»).
+		# Покрыт tests/knight_kit_test.gd.
+		"id": "retaliation",
+		"title": "Возмездие",
+		"description": "Ударивший Рыцаря враг отбрасывается прочь: обычные монстры и мини-элиты теряют контактный прессинг. Боссы и главные элиты не смещаются.",
+		"retaliation_knockback": 760.0,
+		"retaliation_cooldown": 0.4,
+	},
 }
 
 # SCRUM-925 «Молитва боя»: пул молитв выбора на старте боя. Player-facing
@@ -765,14 +792,20 @@ const CLASS_MECHANIC_IDENTITIES := {
 		},
 	},
 	"knight": {
+		# SCRUM-920..923: trait «Возмездие» — источник истины в
+		# docs/design/class_traits_registry.md; механика — запись CLASS_TRAITS
+		# (retaliation_knockback/retaliation_cooldown), потребитель —
+		# Player._try_retaliation_knockback. Кит редизайна: тройной секвенс-укол
+		# копья / конус-баш щита к ближайшей цели с масштабируемым отбросом /
+		# расширяющаяся спираль кистеня (BerserkWeapon, data-driven конфиги).
 		"main_attribute": "endurance",
-		"identity_title": "Щитовая клятва",
-		"summary": "Выносливость — его клятва: чем крепче рыцарь, тем тверже блок и тяжелее ответный удар.",
-		"mechanic_tags": ["block", "counter", "frontal_control", "tank_pressure"],
+		"identity_title": "Возмездие",
+		"summary": "Латный танк-отражатель: ударивший его враг отлетает прочь (боссы и главные элиты стоят), копьё колет веером из трёх уколов, щит бьёт конусом в ближайшую цель с отбросом, а кистень раскручивает спираль от центра наружу.",
+		"mechanic_tags": ["retaliation_knockback", "block", "counter", "triple_thrust", "cone_bash", "expanding_spiral", "tank_pressure"],
 		"weapon_identities": {
-			"long_spear": "длинный strip-контроль копьем",
-			"tower_shield": "shield bash и frontal block",
-			"holy_flail": "круговой тяжелый holy control",
+			"long_spear": "тройной секвенс-укол лево-центр-право широким веером полос",
+			"tower_shield": "конусный баш в направлении ближайшего врага с масштабируемым отбросом",
+			"holy_flail": "расширяющаяся от центра спираль с прогрессивным уроном по радиусу",
 		},
 	},
 	"druid": {

@@ -1297,7 +1297,10 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		if player_max_health > 0.0:
 			contact_hit = minf(contact_hit, player_max_health * 0.20)
 		contact_hit = _outgoing_damage(contact_hit)
-		player.take_damage(contact_hit, "contact")
+		# SCRUM-920: контактный удар передаёт атакующего 3-м аргументом — trait
+		# «Возмездие» Рыцаря отбрасывает именно нанёсшего удар (боссы/главные
+		# элиты гейтятся на стороне Player; другие классы хук игнорируют).
+		player.take_damage(contact_hit, "contact", self)
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0

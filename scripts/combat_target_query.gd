@@ -30,6 +30,28 @@ static func cache_generation() -> int:
 	return _cache_generation
 
 
+# SCRUM-920/922: единая таксономия «эпиков» для правил смещения (knockback).
+# Боссы и ГЛАВНЫЕ элиты карты не смещаются (или капятся потребителем); мини-элиты
+# волн (профиль epic_scale_profile == "mini_elite", спавн:
+# combat_director._maybe_spawn_mini_elite) считаются обычными целями и отбрасываются
+# полноценно. Порядок проверок важен: мини-элитки тоже состоят в группе
+# elite_enemies — профиль-мета решает раньше группового признака.
+static func is_epic_displacement_immune(node: Node) -> bool:
+	if node == null or not is_instance_valid(node):
+		return false
+	if node.is_in_group("bosses"):
+		return true
+	var profile := str(node.get_meta("epic_scale_profile", ""))
+	if profile == "mini_elite":
+		return false
+	if profile == "boss" or profile == "elite":
+		return true
+	if node.is_in_group("elite_enemies"):
+		return true
+	var elite_behavior = node.get("elite_behavior")
+	return elite_behavior != null and str(elite_behavior) != ""
+
+
 static func nearest(source: Node, origin: Vector2, range_limit := INF, excluded_ids: Dictionary = {}) -> Node2D:
 	var closest_enemy: Node2D = null
 	var closest_distance := range_limit * range_limit

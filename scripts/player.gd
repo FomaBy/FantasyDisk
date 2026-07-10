@@ -180,6 +180,9 @@ var _assassin_crit_shadow_cooldown_left := 0.0
 var _flurry_tempo_time_left := 0.0
 var _flurry_tempo_cooldown_left := 0.0
 var _knight_counter_cooldown_left := 0.0
+# SCRUM-920 «Возмездие»: внутренний интервал ответного отброса атакующего
+# (data-driven CLASS_TRAITS.knight.retaliation_*; у прочих классов не активен).
+var _retaliation_cooldown_left := 0.0
 var _status_aura_cooldown_left := 0.0
 var _reactor_heat := 0.0
 var _reactor_heat_active := false
@@ -391,6 +394,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	_flurry_tempo_time_left = 0.0
 	_flurry_tempo_cooldown_left = 0.0
 	_knight_counter_cooldown_left = 0.0
+	_retaliation_cooldown_left = 0.0  # SCRUM-920: смена персонажа/забега сбрасывает интервал «Возмездия»
 	_doctor_ult_absorb_total = 0.0  # SCRUM-595: сброс накопленного доктор-щита при смене персонажа/старте забега
 	_smoke_clouds.clear()  # SCRUM-897: дым-облака не переживают смену персонажа/забега
 	_reactor_heat = 0.0
@@ -581,6 +585,7 @@ func _physics_process(_delta: float) -> void:
 	_damage_invulnerability_left = max(_damage_invulnerability_left - _delta, 0.0)
 	_assassin_crit_shadow_cooldown_left = max(_assassin_crit_shadow_cooldown_left - _delta, 0.0)
 	_knight_counter_cooldown_left = max(_knight_counter_cooldown_left - _delta, 0.0)
+	_retaliation_cooldown_left = max(_retaliation_cooldown_left - _delta, 0.0)  # SCRUM-920
 	_status_aura_cooldown_left = max(_status_aura_cooldown_left - _delta, 0.0)
 	_update_meta_keystone_runtime(_delta)
 	_update_warmup_trait(_delta)  # SCRUM-1006 «Разогрев»
@@ -820,7 +825,10 @@ func _current_dodge_chance() -> float:
 	return dodge_chance
 
 
-func take_damage(amount: float, _source := "") -> bool:
+# SCRUM-920: attacker — узел, нанёсший КОНТАКТНЫЙ удар (enemy._update_contact_damage
+# передаёт self); снаряды/зоны/элитные страйки атакующего не передают (null).
+# Используется только trait'ом «Возмездие» — ответным отбросом атакующего.
+func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	if debug_godmode:
 		return false
 	if _damage_invulnerability_left > 0.0:
@@ -891,6 +899,10 @@ func take_damage(amount: float, _source := "") -> bool:
 	damaged.emit(final_damage)
 	_gain_ultimate_charge(final_damage * float(_ultimate_config().get("taken_charge_rate", 1.0)))
 	_trigger_thorn_reflect(final_damage)
+	# SCRUM-920 «Возмездие»: КВАЛИФИЦИРОВАННЫЙ контактный удар (дошёл до урона)
+	# отбрасывает атакующего прочь от Рыцаря; полностью предотвращённые события
+	# (godmode/i-frames/невидимость/ульта/уворот) выше не доходят и отброс не дают.
+	_try_retaliation_knockback(attacker)
 	# SCRUM-500 (on_take_hit): «Контр-волна» — шанс выпустить отталкивающую волну.
 	_trigger_take_hit_pulse(final_damage)
 	# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый щит при падении ниже порога.
@@ -973,6 +985,34 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	if invis_time > 0.0:
 		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
 		_damage_invulnerability_left = maxf(_damage_invulnerability_left, minf(invis_time, 2.0))
+
+
+# SCRUM-920 «Возмездие»: ответный отброс АТАКУЮЩЕГО (контактный удар) прочь от
+# героя. Полностью data-driven через CLASS_TRAITS (class_trait_value): у классов
+# без retaliation_knockback выход 0 — утечки нет. Отдельный слой от block/counter
+# оружия (_try_knight_counter): counter — пассив оружия с уроном по дуге, trait —
+# гарантированный отброс именно атакующего. Боссы и главные элиты карты не
+# смещаются, мини-элиты волн отлетают как обычные монстры
+# (CombatTargetQuery.is_epic_displacement_immune). Внутренний кулдаун
+# retaliation_cooldown — предохранитель от физ/пафинг-раскачки паков (частота
+# событий урона и так ограничена i-frames 0.32с).
+func _try_retaliation_knockback(attacker: Node2D) -> void:
+	if attacker == null or not is_instance_valid(attacker):
+		return
+	var impulse := class_trait_value("retaliation_knockback")
+	if impulse <= 0.0 or _retaliation_cooldown_left > 0.0:
+		return
+	if not attacker.has_method("apply_knockback"):
+		return
+	if TARGET_QUERY.is_epic_displacement_immune(attacker):
+		return
+	var away := attacker.global_position - global_position
+	if away.length_squared() <= 0.001:
+		away = Vector2.RIGHT
+	_retaliation_cooldown_left = maxf(class_trait_value("retaliation_cooldown", 0.4), 0.05)
+	attacker.apply_knockback(away.normalized() * impulse)
+	if is_inside_tree():
+		AttackVfx.ring_pulse(_vfx_parent(), global_position, 120.0, Color(0.85, 0.92, 1.0, 0.35), false)
 
 
 func _try_knight_counter(incoming_amount: float) -> float:

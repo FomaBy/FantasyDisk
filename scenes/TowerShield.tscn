@@ -17,6 +17,9 @@ inner_width = 150.0
 outer_width = 290.0
 aoe_radius = 215.0
 sweep_degrees = 95.0
+knockback = 60.0
+stagger_knockback_stat_ratio = 3.0
+epic_stagger_knockback_factor = 0.25
 visual_color = Color(0.74, 0.78, 0.92, 0.36)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

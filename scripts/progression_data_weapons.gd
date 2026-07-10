@@ -526,40 +526,76 @@ const CHEMIST_WEAPONS := {
 }
 
 const KNIGHT_WEAPONS := {
+	# SCRUM-921..923: редизайн кита Рыцаря (BerserkWeapon, data-driven ключи).
+	# thrust_*/spiral_*/stagger_knockback_stat_ratio читают berserk_weapon.gd и
+	# budget-зеркала ProgressionData._budget_hit_model — ключи без класса-хардкода,
+	# у оружий без них поведение прежнее.
 	"long_spear": {
+		# SCRUM-921 «Тройной укол»: цикл атаки = ТРИ быстрых последовательных
+		# укола лево→центр→право (thrust_count полос под ±thrust_fan_degrees,
+		# окно каждого сдвинуто на thrust_step_time). Полоса чуть шире старой
+		# (90→110), веер шире одиночной линии, но НЕ generic-конус. Одна цель за
+		# цикл получает не больше ОДНОГО укола (дедуп _hit_targets на весь цикл —
+		# документированное решение против triple-dip; бюджет: solo_hits=1.0,
+		# покрытие веера — в five_hits «strip»-ветки budget-модели).
 		"id": "long_spear", "title": "Копье",
-		"description": "Длинный точечный выпад: узкая полоса 90 x 540, медленно и тяжело. Пассив: +5% защиты и легкий single-target block/counter.",
+		"description": "Тройной укол: три быстрых выпада лево-центр-право веером полос 110 x 540. Одна цель ловит один укол за цикл. Пассив: +5% защиты и легкий single-target block/counter.",
 		"scene_path": "res://scenes/LongSpear.tscn",
 		"attack_shape": "strip", "cone_degrees": 24.0,
 		"attack_range": 540.0, "start_distance": 0.0,
-		"inner_width": 90.0, "outer_width": 90.0, "aoe_radius": 540.0,
+		"inner_width": 110.0, "outer_width": 110.0, "aoe_radius": 540.0,
 		"sweep_degrees": 24.0, "damage_multiplier": 3.0, "fire_interval": 1.0,
+		"thrust_count": 3, "thrust_fan_degrees": 16.0, "thrust_step_time": 0.11,
 		"melee_execute_threshold": 0.36, "melee_execute_multiplier": 1.20,
 		"melee_stagger_knockback_multiplier": 0.35,
 		"visual_color": Color(0.80, 0.86, 0.95, 0.36),
 		"passive_mods": {"defense_flat": 0.05, "block_reduction": 0.38, "counter_damage_multiplier": 0.32, "counter_incoming_multiplier": 2.4, "counter_cap_multiplier": 0.60, "counter_radius": 145.0, "counter_arc_degrees": 60.0, "counter_target_cap": 2, "counter_full_targets": 1, "counter_target_diminish": 1.10, "counter_cooldown": 2.8, "counter_knockback": 120.0, "counter_stagger_duration": 0.55},
 	},
 	"tower_shield": {
+		# SCRUM-922 «Конусный баш»: конус целится в НАПРАВЛЕНИЕ ближайшего
+		# монстра (штатный _target_direction BerserkWeapon), все цели конуса
+		# получают урон И отброс прочь от Рыцаря. Формула импульса:
+		# (260 + knockback_power×stagger_knockback_stat_ratio) ×
+		# melee_stagger_knockback_multiplier, где knockback_power = derived
+		# (база оружия + endurance×4 + leadership×3) × knockback_multiplier ×
+		# meta-множитель — вложения в отброс видимо усиливают смещение.
+		# Боссы/главные элиты: импульс × epic_stagger_knockback_factor (кап 25%,
+		# таксономия CombatTargetQuery.is_epic_displacement_immune; мини-элиты —
+		# полный отброс). Контроль-оружие: урон ниже офф-опций (dmg 0.72).
 		"id": "tower_shield", "title": "Башенный щит",
-		"description": "Короткий фронтальный bash: меньше урона, сильная защита и мощная block/counter ответка по контактной стае.",
+		"description": "Конусный баш в сторону ближайшего врага: вся стая в конусе 95° отлетает прочь, сила отброса растет от вложений в отброс. Меньше урона, сильная защита и мощная block/counter ответка.",
 		"scene_path": "res://scenes/TowerShield.tscn",
 		"attack_shape": "sweep", "cone_degrees": 95.0,
 		"attack_range": 215.0, "start_distance": 0.0,
 		"inner_width": 150.0, "outer_width": 290.0, "aoe_radius": 215.0,
 		"sweep_degrees": 95.0, "damage_multiplier": 0.72, "fire_interval": 0.82,
+		"knockback": 60.0,
+		"stagger_knockback_stat_ratio": 3.0, "epic_stagger_knockback_factor": 0.25,
 		"melee_close_bonus_radius": 185.0, "melee_close_damage_multiplier": 1.08,
 		"melee_stagger_knockback_multiplier": 1.15,
 		"visual_color": Color(0.74, 0.78, 0.92, 0.36),
 		"passive_mods": {"defense_flat": 0.08, "max_health_multiplier": 1.08, "block_reduction": 0.62, "counter_damage_multiplier": 0.55, "counter_incoming_multiplier": 5.0, "counter_cap_multiplier": 1.45, "counter_radius": 195.0, "counter_arc_degrees": 135.0, "counter_target_cap": 4, "counter_full_targets": 3, "counter_target_diminish": 0.55, "counter_cooldown": 1.7, "counter_knockback": 230.0, "counter_stagger_duration": 0.85},
 	},
 	"holy_flail": {
+		# SCRUM-923 «Расширяющаяся спираль»: каст = spiral_steps шагов через
+		# spiral_step_time; на шаге k дуга шириной spiral_arm_degrees стоит под
+		# углом base + 360°×(k+1)/steps, радиус фронта растёт от
+		# aoe_radius×spiral_start_radius_ratio до полного aoe_radius — урон
+		# ложится ОТ ЦЕНТРА НАРУЖУ по спирали, а не мгновенным кругом. Правило
+		# анти-runaway: максимум ОДИН хит по цели за каст (дедуп _hit_targets).
+		# Последний шаг замыкает оборот на стартовом углу с полным радиусом —
+		# соло-цель гарантированно накрыта к концу каста. Бюджет: спиральное
+		# покрытие диска 0.85 в «circle»-ветке budget-модели. Параметры спирали
+		# для VFX (SCRUM-924) — см. комментарий в Jira SCRUM-923.
 		"id": "holy_flail", "title": "Освященный кистень",
-		"description": "Тяжелый круговой замах средней дальности: медленнее щита, зато держит holy-control круг и мягкую круговую ответку.",
+		"description": "Спираль от центра наружу: цепь кистеня раскручивается за 7 шагов до полного радиуса, накрывая врагов на разных дистанциях по мере роста. Одна цель — один удар за оборот.",
 		"scene_path": "res://scenes/HolyFlail.tscn",
 		"attack_shape": "circle", "cone_degrees": 360.0,
 		"attack_range": 235.0, "start_distance": 0.0,
 		"inner_width": 180.0, "outer_width": 360.0, "aoe_radius": 235.0,
 		"sweep_degrees": 360.0, "damage_multiplier": 0.86, "fire_interval": 1.18,
+		"spiral_steps": 7, "spiral_step_time": 0.085,
+		"spiral_arm_degrees": 150.0, "spiral_start_radius_ratio": 0.22,
 		"melee_arc_followup_radius": 175.0, "melee_arc_followup_multiplier": 0.16,
 		"melee_stagger_knockback_multiplier": 0.45,
 		"visual_color": Color(1.0, 0.84, 0.32, 0.34),
