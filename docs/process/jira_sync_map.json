@@ -4362,5 +4362,10 @@
   "key": "SCRUM-1036",
   "status": "К выполнению",
   "desc_hash": "0e09b94791f2c92be1958a56278f8195"
+ },
+ "animation_weapon_attack_storm_longbow_pixellab_task.md": {
+  "key": "SCRUM-912",
+  "status": "Контроль качества",
+  "desc_hash": "3e2bcbc36d02cf0229524979e450784e"
  }
 }

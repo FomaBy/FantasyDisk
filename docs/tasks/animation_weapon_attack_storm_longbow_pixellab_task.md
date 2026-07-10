@@ -1,6 +1,6 @@
 # SCRUM-912: Storm Longbow piercing-cone VFX
 
-Статус: review
+Статус: done
 Приоритет: p2
 Роль: Design / Animator (единый visual owner)
 Контур: Codex
