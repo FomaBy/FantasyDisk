@@ -4302,5 +4302,10 @@
   "key": "SCRUM-1031",
   "status": "К выполнению",
   "desc_hash": "630e2d227b9e2427935d334342c9baae"
+ },
+ "SCRUM-985_level_up_icon_frame_background_fix.md": {
+  "key": "SCRUM-985",
+  "status": "В работе",
+  "desc_hash": "8b57f6418d46e73d0cdd4026d36338ed"
  }
 }

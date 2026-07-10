@@ -944,14 +944,25 @@ func _initialize() -> void:
 		if level_up_overlay.find_child(level_up_class_icon, true, false) != null:
 			_fail("Expected level-up screen to drop the class icon/portrait (%s found)." % level_up_class_icon)
 			return
-	# SCRUM-892: торжественный шелл атласа — полая рама meta40 и орнамент шапки.
-	var level_up_frame := level_up_overlay.find_child("LevelUpFrame", true, false) as Panel
-	if level_up_frame == null:
-		_fail("Expected level-up overlay to draw the hollow meta40 atlas frame.")
+	# SCRUM-985: большая общая рама удалена, фон открыт и заметно ярче.
+	if level_up_overlay.find_child("LevelUpFrame", true, false) != null:
+		_fail("Expected LevelUpFrame to stay removed after SCRUM-985.")
 		return
-	var level_up_frame_style := level_up_frame.get_theme_stylebox("panel") as StyleBoxTexture
-	if level_up_frame_style == null or level_up_frame_style.draw_center or level_up_frame_style.texture == null or not level_up_frame_style.texture.resource_path.ends_with("meta40/frame_border.png"):
-		_fail("Expected LevelUpFrame to be a hollow meta40 frame_border 9-slice.")
+	var level_up_panel_style := level_up_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if level_up_panel_style == null or level_up_panel_style.bg_color.a > 0.30 \
+			or level_up_panel_style.get_border_width(SIDE_LEFT) != 0 \
+			or level_up_panel_style.get_border_width(SIDE_TOP) != 0 \
+			or level_up_panel_style.get_border_width(SIDE_RIGHT) != 0 \
+			or level_up_panel_style.get_border_width(SIDE_BOTTOM) != 0:
+		_fail("Expected LevelUpPanel to keep layout margins without a visible large enclosing frame.")
+		return
+	var level_up_dim := level_up_overlay.get_node_or_null("LevelUpDim") as ColorRect
+	if level_up_dim == null or level_up_dim.color.a > 0.30:
+		_fail("Expected Level Up dim alpha <= 0.30 for the brighter backdrop.")
+		return
+	var level_up_readable_shade := level_up_overlay.find_child("ScreenBackgroundReadableShade", true, false) as ColorRect
+	if level_up_readable_shade == null or level_up_readable_shade.color.a > 0.20:
+		_fail("Expected Level Up background readable shade alpha <= 0.20.")
 		return
 	if level_up_overlay.find_child("LevelUpTitleDivider", true, false) == null:
 		_fail("Expected level-up header to include the ceremonial divider ornament.")
@@ -967,8 +978,19 @@ func _initialize() -> void:
 		if button_rect.size.x < 190.0 or button_rect.size.y < 120.0:
 			_fail("Expected level-up reward buttons to keep readable card dimensions.")
 			return
-		if reward_button.find_child("UIIcon_*", true, false) == null:
+		var reward_icon := reward_button.find_child("UIIcon_*", true, false) as Control
+		if reward_icon == null:
 			_fail("Expected each level-up reward button to show a stat or artifact icon.")
+			return
+		var reward_socket := reward_button.find_child("LevelUpRewardSocket*", true, false) as TextureRect
+		if reward_socket == null:
+			_fail("Expected each level-up reward button to preserve its local icon socket.")
+			return
+		var socket_rect := reward_socket.get_global_rect()
+		var icon_inset := maxf(2.0, roundf(socket_rect.size.x * 0.18))
+		var icon_safe := socket_rect.grow(-icon_inset).grow(1.0)
+		if not icon_safe.encloses(reward_icon.get_global_rect()):
+			_fail("Expected level-up reward icon %s inside socket safe rect %s." % [str(reward_icon.get_global_rect()), str(icon_safe)])
 			return
 		if not bool(reward_button.get_meta("level_up_text_field_card", false)):
 			_fail("Expected level-up reward cards to be styled as clickable text-field panels.")

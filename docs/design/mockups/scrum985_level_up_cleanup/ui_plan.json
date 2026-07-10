@@ -1,0 +1,52 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 24, "allow_overlap": false},
+  "content": {
+    "title": "Повышение уровня",
+    "subtitle": "Выбери 1 из 3 усилений. Один выбор за уровень.",
+    "card_1_badge": "ВЫЖИВАНИЕ",
+    "card_1_title": "+Регенерация",
+    "card_1_desc": "+1.3 здоровья в секунду к восстановлению.",
+    "card_1_effect": "Реген/с: 0.13 → 0.48 (+284%)",
+    "card_2_title": "+Сила ультимейта",
+    "card_2_desc": "+12% к силе эффектов классового ультимейта.",
+    "card_2_effect": "Сила ульты: ×1.14 → ×1.26 (+11%)",
+    "card_3_title": "+Скорость движения",
+    "card_3_desc": "+10% к скорости движения.",
+    "card_3_effect": "Скорость: 301 → 331 (+10%)",
+    "later": "Позже"
+  },
+  "elements": [
+    {"id": "background_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false},
+    {"id": "content_field", "kind": "panel", "x": 96, "y": 24, "w": 1728, "h": 1032, "min_w": 1152, "min_h": 648},
+
+    {"id": "title", "kind": "text", "parent": "content_field", "content_zone": true, "x": 480, "y": 42, "w": 960, "h": 72, "text_key": "title", "max_font": 58, "min_font": 38, "scroll": "never", "collision": false},
+    {"id": "subtitle", "kind": "text", "parent": "content_field", "content_zone": true, "x": 420, "y": 126, "w": 1080, "h": 46, "text_key": "subtitle", "max_font": 30, "min_font": 20, "scroll": "never", "collision": false},
+
+    {"id": "card_1", "kind": "panel", "parent": "content_field", "x": 135, "y": 315, "w": 520, "h": 445, "min_w": 320, "min_h": 300, "collision": false},
+    {"id": "card_1_badge", "kind": "text", "parent": "card_1", "content_zone": true, "x": 175, "y": 327, "w": 440, "h": 36, "text_key": "card_1_badge", "max_font": 18, "min_font": 12, "scroll": "never", "collision": false},
+    {"id": "card_1_icon_slot", "kind": "slot", "parent": "card_1", "content_zone": true, "x": 335, "y": 380, "w": 120, "h": 120, "min_w": 88, "min_h": 88, "collision": false},
+    {"id": "card_1_icon_safe", "kind": "icon", "parent": "card_1_icon_slot", "content_zone": true, "x": 359, "y": 404, "w": 72, "h": 72, "min_w": 56, "min_h": 56, "collision": false},
+    {"id": "card_1_title", "kind": "text", "parent": "card_1", "content_zone": true, "x": 175, "y": 515, "w": 440, "h": 44, "text_key": "card_1_title", "max_font": 30, "min_font": 20, "scroll": "never", "collision": false},
+    {"id": "card_1_desc", "kind": "text", "parent": "card_1", "content_zone": true, "x": 175, "y": 565, "w": 440, "h": 60, "text_key": "card_1_desc", "max_font": 22, "min_font": 16, "scroll": "never", "collision": false},
+    {"id": "card_1_effect", "kind": "text", "parent": "card_1", "content_zone": true, "x": 165, "y": 650, "w": 460, "h": 70, "text_key": "card_1_effect", "max_font": 20, "min_font": 14, "scroll": "never", "collision": false},
+
+    {"id": "card_2", "kind": "panel", "parent": "content_field", "x": 700, "y": 315, "w": 520, "h": 445, "min_w": 320, "min_h": 300, "collision": false},
+    {"id": "card_2_badge", "kind": "zone", "parent": "card_2", "content_zone": true, "x": 740, "y": 327, "w": 440, "h": 36, "collision": false},
+    {"id": "card_2_icon_slot", "kind": "slot", "parent": "card_2", "content_zone": true, "x": 900, "y": 380, "w": 120, "h": 120, "min_w": 88, "min_h": 88, "collision": false},
+    {"id": "card_2_icon_safe", "kind": "icon", "parent": "card_2_icon_slot", "content_zone": true, "x": 924, "y": 404, "w": 72, "h": 72, "min_w": 56, "min_h": 56, "collision": false},
+    {"id": "card_2_title", "kind": "text", "parent": "card_2", "content_zone": true, "x": 740, "y": 515, "w": 440, "h": 44, "text_key": "card_2_title", "max_font": 30, "min_font": 20, "scroll": "never", "collision": false},
+    {"id": "card_2_desc", "kind": "text", "parent": "card_2", "content_zone": true, "x": 740, "y": 565, "w": 440, "h": 60, "text_key": "card_2_desc", "max_font": 22, "min_font": 16, "scroll": "never", "collision": false},
+    {"id": "card_2_effect", "kind": "text", "parent": "card_2", "content_zone": true, "x": 730, "y": 650, "w": 460, "h": 70, "text_key": "card_2_effect", "max_font": 20, "min_font": 14, "scroll": "never", "collision": false},
+
+    {"id": "card_3", "kind": "panel", "parent": "content_field", "x": 1265, "y": 315, "w": 520, "h": 445, "min_w": 320, "min_h": 300, "collision": false},
+    {"id": "card_3_badge", "kind": "zone", "parent": "card_3", "content_zone": true, "x": 1305, "y": 327, "w": 440, "h": 36, "collision": false},
+    {"id": "card_3_icon_slot", "kind": "slot", "parent": "card_3", "content_zone": true, "x": 1465, "y": 380, "w": 120, "h": 120, "min_w": 88, "min_h": 88, "collision": false},
+    {"id": "card_3_icon_safe", "kind": "icon", "parent": "card_3_icon_slot", "content_zone": true, "x": 1489, "y": 404, "w": 72, "h": 72, "min_w": 56, "min_h": 56, "collision": false},
+    {"id": "card_3_title", "kind": "text", "parent": "card_3", "content_zone": true, "x": 1305, "y": 515, "w": 440, "h": 44, "text_key": "card_3_title", "max_font": 30, "min_font": 20, "scroll": "never", "collision": false},
+    {"id": "card_3_desc", "kind": "text", "parent": "card_3", "content_zone": true, "x": 1305, "y": 565, "w": 440, "h": 60, "text_key": "card_3_desc", "max_font": 22, "min_font": 16, "scroll": "never", "collision": false},
+    {"id": "card_3_effect", "kind": "text", "parent": "card_3", "content_zone": true, "x": 1295, "y": 650, "w": 460, "h": 70, "text_key": "card_3_effect", "max_font": 20, "min_font": 14, "scroll": "never", "collision": false},
+
+    {"id": "later_button", "kind": "button", "parent": "content_field", "content_zone": true, "x": 790, "y": 900, "w": 340, "h": 76, "text_key": "later", "max_font": 30, "min_font": 20, "scroll": "never", "collision": false}
+  ]
+}

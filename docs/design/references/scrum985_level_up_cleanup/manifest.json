@@ -1,0 +1,39 @@
+{
+  "jira": "SCRUM-985",
+  "pipeline": "PixelLab MCP create_ui_asset via config-based JSON-RPC bridge",
+  "config_smoke": "PASS: get_balance isError=false; no secret values recorded",
+  "source_id": "d3e5030c-b61d-4899-83ba-04fd6ccafaa9",
+  "source_name": "scrum985_level_up_cleanup_components",
+  "source_size": {"width": 688, "height": 384},
+  "target_preview_size": {"width": 1920, "height": 1080},
+  "prompt": "Transparent component-only Level Up art layer: three local reward cards, three empty icon halos and one bottom button; no enclosing panel, no outer frame, no text, transparent RGBA outside components; restrained dark-fantasy D&D material language.",
+  "source_files": [
+    "pixellab_level_up_components_688x384.png",
+    "scrum985_level_up_cleanup_base_with_icons_1920x1080.png"
+  ],
+  "runtime_assets": [],
+  "rejected_candidates": [
+    {
+      "source_id": "87b81cec-94a2-41cd-be7e-c2177dd8bc2a",
+      "name": "scrum985_level_up_cleanup_mockup",
+      "file": "pixellab_level_up_cleanup_base_688x384.png",
+      "reason": "Generated an enclosing outer frame contrary to the accepted no-frame requirement."
+    }
+  ],
+  "qa": {
+    "planning_gate": "ready_for_image",
+    "layout_render_ok": true,
+    "source_alpha_bbox": [48, 113, 642, 352],
+    "source_transparent_percent": 64.11,
+    "preview": "../../previews/scrum985_level_up_cleanup/mockup_1920x1080.png",
+    "debug_preview": "../../previews/scrum985_level_up_cleanup/mockup_1920x1080_debug.png",
+    "runtime_previews": [
+      "../../previews/scrum985_level_up_cleanup/runtime_1280x720.png",
+      "../../previews/scrum985_level_up_cleanup/runtime_1920x1080.png",
+      "../../previews/scrum985_level_up_cleanup/runtime_2560x1440.png"
+    ],
+    "runtime_matrix_report": "../../previews/scrum985_level_up_cleanup/runtime_matrix.md",
+    "runtime_matrix": "PASS: LevelUpFrame absent; dim 0.24; shade 0.12; panel alpha 0.20; all three icons remain inside inset socket safe-zones at every target resolution."
+  },
+  "notes": "Mockup-only source. Runtime reuses accepted background/card/icon assets and changes layout/opacity; no generated bitmap is promoted to assets/."
+}

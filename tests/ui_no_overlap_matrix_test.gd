@@ -968,35 +968,32 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if not pn_safe.grow(2.0).encloses(pn_panel.get_global_rect()):
 				return "%s: expected PatchNotesPanel %s inside frame safe rect %s." % [context, str(pn_panel.get_global_rect()), str(pn_safe)]
 		"level_up":
-			# SCRUM-883 → SCRUM-892: торжественный шелл атласа — дим + полая рама
-			# meta40 на весь экран (LevelUpFrame ПОД панелью), панель-чип строго в
-			# пустой safe-зоне рамы, карточки = чип-ряды с золотым hover-кантом и
-			# сокетами за иконками наград, «Позже» = глобальный кнопочный кит.
+			# SCRUM-883 → SCRUM-892 → SCRUM-985: большая внешняя рама и визуальный
+			# борт общей панели сняты по пользовательскому фидбэку. Фон остаётся
+			# заметно видимым; локальные карточки сохраняют золотой hover-кант,
+			# сокеты/иконки держат строгий внутренний inset, «Позже» = глобальный кит.
 			# Safe-ректы считаются от фактических content margins чип-стилей.
 			var level_panel := main.find_child("LevelUpPanel", true, false) as Control
 			if level_panel == null or not level_panel.visible or not level_panel.get_global_rect().has_area():
 				return "%s: expected visible LevelUpPanel." % context
 			var level_style := level_panel.get_theme_stylebox("panel") as StyleBoxFlat
-			if level_style == null or level_style.bg_color.a < 0.9:
-				return "%s: expected LevelUpPanel to use a dense StyleBoxFlat chip (bg alpha >= 0.9)." % context
+			if level_style == null or level_style.bg_color.a > 0.30:
+				return "%s: expected LevelUpPanel to stay visually light/transparent (bg alpha <= 0.30)." % context
+			if level_style.get_border_width(SIDE_LEFT) != 0 or level_style.get_border_width(SIDE_TOP) != 0 \
+					or level_style.get_border_width(SIDE_RIGHT) != 0 or level_style.get_border_width(SIDE_BOTTOM) != 0:
+				return "%s: expected LevelUpPanel to drop its large enclosing border." % context
 			if str(level_panel.get_meta("level_up_slot", "")) != "level_up_panel":
 				return "%s: expected LevelUpPanel slot metadata to be level_up_panel." % context
 			var level_rect := level_panel.get_global_rect()
-			# SCRUM-892: полая рама атласа на весь экран (9-slice meta40, центр пуст).
-			var lu_frame := main.find_child("LevelUpFrame", true, false) as Panel
-			if lu_frame == null or not lu_frame.visible:
-				return "%s: expected LevelUpFrame hollow atlas frame overlay." % context
-			var lu_frame_style := lu_frame.get_theme_stylebox("panel") as StyleBoxTexture
-			if lu_frame_style == null or lu_frame_style.draw_center:
-				return "%s: expected hollow LevelUpFrame (StyleBoxTexture, draw_center=false)." % context
-			if lu_frame_style.texture == null or not lu_frame_style.texture.resource_path.ends_with(CODEX_FRAME_BORDER_SUFFIX):
-				return "%s: expected LevelUpFrame to use the meta40 frame_border 9-slice." % context
-			# Панель целиком в пустой зоне рамы: маргины 160·vp/1536|1024 (±2px).
-			var lu_vp := lu_frame.get_viewport_rect().size
-			var lu_margin := Vector2(roundf(160.0 * lu_vp.x / 1536.0), roundf(160.0 * lu_vp.y / 1024.0))
-			var lu_safe := Rect2(lu_margin, lu_vp - lu_margin * 2.0).grow(2.0)
-			if not lu_safe.encloses(level_rect):
-				return "%s: expected LevelUpPanel to stay inside unified frame safe margins %s, got %s." % [context, str(lu_safe), str(level_rect)]
+			# SCRUM-985: самая большая полая рама экрана удалена целиком.
+			if main.find_child("LevelUpFrame", true, false) != null:
+				return "%s: LevelUpFrame must stay removed." % context
+			var lu_dim := main.find_child("LevelUpDim", true, false) as ColorRect
+			if lu_dim == null or lu_dim.color.a > 0.30:
+				return "%s: expected a brighter Level Up overlay (LevelUpDim alpha <= 0.30)." % context
+			var lu_readable_shade := main.find_child("ScreenBackgroundReadableShade", true, false) as ColorRect
+			if lu_readable_shade == null or lu_readable_shade.color.a > 0.20:
+				return "%s: expected the Level Up background shade alpha <= 0.20." % context
 			var scaled_level_safe := Rect2(
 				level_rect.position + Vector2(level_style.content_margin_left, level_style.content_margin_top),
 				level_rect.size - Vector2(
@@ -1059,6 +1056,14 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return "%s: expected %s socket to keep aspect centered in its fixed box." % [context, reward_button.name]
 				if not scaled_card_safe.encloses(reward_socket.get_global_rect()):
 					return "%s: expected %s socket to stay inside card chip safe rect %s." % [context, reward_button.name, str(scaled_card_safe)]
+				var reward_icon := reward_button.find_child("UIIcon_*", true, false) as Control
+				if reward_icon == null:
+					return "%s: expected %s to expose a reward icon." % [context, reward_button.name]
+				var socket_rect := reward_socket.get_global_rect()
+				var icon_inset := maxf(2.0, roundf(socket_rect.size.x * 0.18))
+				var icon_safe := socket_rect.grow(-icon_inset).grow(1.0)
+				if not icon_safe.encloses(reward_icon.get_global_rect()):
+					return "%s: expected %s icon %s inside socket inner safe rect %s." % [context, reward_button.name, str(reward_icon.get_global_rect()), str(icon_safe)]
 				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
 					var child := reward_button.find_child(child_name, true, false) as Control
 					if child == null or not child.visible or not child.get_global_rect().has_area():

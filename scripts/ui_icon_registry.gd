@@ -195,8 +195,8 @@ static func texture_for(icon_id: String) -> Texture2D:
 	return texture
 
 
-static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Control:
-	var display_size := _readable_icon_size(size)
+static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42), apply_readability_scale := true) -> Control:
+	var display_size := _readable_icon_size(size) if apply_readability_scale else size
 	var texture := texture_for(icon_id)
 	if texture != null:
 		var texture_rect := TextureRect.new()

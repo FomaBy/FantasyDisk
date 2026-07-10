@@ -233,6 +233,19 @@ HUD/theme assets mapped into the SCRUM-666 safe zones. The combat HUD is now
 essential-only: no artifact row, character stat strip, duplicate FAB or extra
 combat panel belongs in the in-run overlay.
 
+SCRUM-985 refreshes the Level Up composition without promoting new bitmap
+assets into runtime. The PixelLab-first component source and rejected
+outer-shell candidate are recorded under
+`docs/design/references/scrum985_level_up_cleanup/`; the accepted mockup and
+exact content-zone plan live under `docs/design/mockups/scrum985_level_up_cleanup/`.
+Runtime reuses the canonical `ui_backdrop_arcane_lab.png`, Atlas card/socket
+materials, and global later button, but removes the viewport-wide
+`LevelUpFrame`. Only local reward-card ornament remains. The backdrop is
+brightened under a `0.12` shade and `0.24` dim, while reward icons are rendered
+at their exact inner socket size rather than receiving the icon registry's
+small-size readability enlargement. Verified captures at 720p, 1080p and 2K
+live under `docs/design/previews/scrum985_level_up_cleanup/`.
+
 SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
 `StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;
 SCRUM-593 makes it live in runtime.

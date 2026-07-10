@@ -1,0 +1,42 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "color": "#F5E6AE",
+    "stroke_fill": "#160E0B",
+    "stroke_width": 2,
+    "line_spacing": 1.05,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "Повышение уровня",
+    "subtitle": "Выбери 1 из 3 усилений. Один выбор за уровень.",
+    "card_1_badge": "ВЫЖИВАНИЕ",
+    "card_1_title": "+Регенерация",
+    "card_1_desc": "+1.3 здоровья в секунду к восстановлению.",
+    "card_1_effect": "Реген/с: 0.13 → 0.48 (+284%)",
+    "card_2_title": "+Сила ультимейта",
+    "card_2_desc": "+12% к силе эффектов классового ультимейта.",
+    "card_2_effect": "Сила ульты: ×1.14 → ×1.26 (+11%)",
+    "card_3_title": "+Скорость движения",
+    "card_3_desc": "+10% к скорости движения.",
+    "card_3_effect": "Скорость: 301 → 331 (+10%)",
+    "later": "Позже"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "x": 480, "y": 42, "w": 960, "h": 72, "max_font": 58, "min_font": 38, "debug_color": "#FFD76A"},
+    {"id": "subtitle", "content_key": "subtitle", "x": 420, "y": 126, "w": 1080, "h": 46, "max_font": 30, "min_font": 20, "color": "#C7A870", "debug_color": "#C7A870"},
+    {"id": "card_1_badge", "content_key": "card_1_badge", "x": 175, "y": 327, "w": 440, "h": 36, "max_font": 18, "min_font": 12, "color": "#8FE09C", "debug_color": "#78D595"},
+    {"id": "card_1_title", "content_key": "card_1_title", "x": 175, "y": 515, "w": 440, "h": 44, "max_font": 30, "min_font": 20, "debug_color": "#FFD76A"},
+    {"id": "card_1_desc", "content_key": "card_1_desc", "x": 175, "y": 565, "w": 440, "h": 60, "max_font": 22, "min_font": 16, "color": "#D8DDEA", "debug_color": "#9BB7E0"},
+    {"id": "card_1_effect", "content_key": "card_1_effect", "x": 165, "y": 650, "w": 460, "h": 70, "max_font": 20, "min_font": 14, "color": "#A9DDB8", "debug_color": "#78D595"},
+    {"id": "card_2_title", "content_key": "card_2_title", "x": 740, "y": 515, "w": 440, "h": 44, "max_font": 30, "min_font": 20, "debug_color": "#FFD76A"},
+    {"id": "card_2_desc", "content_key": "card_2_desc", "x": 740, "y": 565, "w": 440, "h": 60, "max_font": 22, "min_font": 16, "color": "#D8DDEA", "debug_color": "#9BB7E0"},
+    {"id": "card_2_effect", "content_key": "card_2_effect", "x": 730, "y": 650, "w": 460, "h": 70, "max_font": 20, "min_font": 14, "color": "#A9DDB8", "debug_color": "#78D595"},
+    {"id": "card_3_title", "content_key": "card_3_title", "x": 1305, "y": 515, "w": 440, "h": 44, "max_font": 30, "min_font": 20, "debug_color": "#FFD76A"},
+    {"id": "card_3_desc", "content_key": "card_3_desc", "x": 1305, "y": 565, "w": 440, "h": 60, "max_font": 22, "min_font": 16, "color": "#D8DDEA", "debug_color": "#9BB7E0"},
+    {"id": "card_3_effect", "content_key": "card_3_effect", "x": 1295, "y": 650, "w": 460, "h": 70, "max_font": 20, "min_font": 14, "color": "#A9DDB8", "debug_color": "#78D595"},
+    {"id": "later", "content_key": "later", "x": 790, "y": 900, "w": 340, "h": 76, "max_font": 30, "min_font": 20, "debug_color": "#FFD76A"}
+  ]
+}

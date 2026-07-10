@@ -1,0 +1,333 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "background_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "content_field",
+      "kind": "panel",
+      "rect": [
+        96,
+        24,
+        1728,
+        1032
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        480,
+        42,
+        960,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 58
+    },
+    {
+      "id": "subtitle",
+      "kind": "text",
+      "rect": [
+        420,
+        126,
+        1080,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_1",
+      "kind": "panel",
+      "rect": [
+        135,
+        315,
+        520,
+        445
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_badge",
+      "kind": "text",
+      "rect": [
+        175,
+        327,
+        440,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "card_1_icon_slot",
+      "kind": "slot",
+      "rect": [
+        335,
+        380,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_icon_safe",
+      "kind": "icon",
+      "rect": [
+        359,
+        404,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_title",
+      "kind": "text",
+      "rect": [
+        175,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_1_desc",
+      "kind": "text",
+      "rect": [
+        175,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "card_1_effect",
+      "kind": "text",
+      "rect": [
+        165,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "card_2",
+      "kind": "panel",
+      "rect": [
+        700,
+        315,
+        520,
+        445
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_badge",
+      "kind": "zone",
+      "rect": [
+        740,
+        327,
+        440,
+        36
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_icon_slot",
+      "kind": "slot",
+      "rect": [
+        900,
+        380,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_icon_safe",
+      "kind": "icon",
+      "rect": [
+        924,
+        404,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_title",
+      "kind": "text",
+      "rect": [
+        740,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_2_desc",
+      "kind": "text",
+      "rect": [
+        740,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "card_2_effect",
+      "kind": "text",
+      "rect": [
+        730,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "card_3",
+      "kind": "panel",
+      "rect": [
+        1265,
+        315,
+        520,
+        445
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_badge",
+      "kind": "zone",
+      "rect": [
+        1305,
+        327,
+        440,
+        36
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_icon_slot",
+      "kind": "slot",
+      "rect": [
+        1465,
+        380,
+        120,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_icon_safe",
+      "kind": "icon",
+      "rect": [
+        1489,
+        404,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_3_title",
+      "kind": "text",
+      "rect": [
+        1305,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "card_3_desc",
+      "kind": "text",
+      "rect": [
+        1305,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "card_3_effect",
+      "kind": "text",
+      "rect": [
+        1295,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "later_button",
+      "kind": "button",
+      "rect": [
+        790,
+        900,
+        340,
+        76
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    }
+  ]
+}

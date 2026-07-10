@@ -273,19 +273,21 @@ const HUD_V2_ASCENSION_GAP_2K := 8.0
 # #14 Улучшение — _show_upgrade_screen (economy-панель "upgrade"; target 1720×730, центр)
 
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
-# SCRUM-892 (фидбек на SCRUM-883 «коряво и некрасиво — возьми за пример атлас»):
-# торжественный шелл атласа — дим 0.82, полая рама meta40 на весь экран
-# (LevelUpFrame, рисуется ПОД панелью), панель-чип строго в пустой зоне рамы
-# (масштаб от safe-зоны, не от вьюпорта), титул золотом + церемониальный
-# divider_ornament, иконки наград в сокетах socket_notable/keystone
-# (advisor-акцент + звезда star_alloc); иконки/портрета класса на экране НЕТ
-# (директива пользователя). «Позже» — глобальный кит (LevelUpLaterButton →
+# SCRUM-892 → SCRUM-985: титул/divider и локальные сокеты Атласа сохранены,
+# но самая большая внешняя frame_border-рама и видимый борт общей панели сняты.
+# Arcane-lab фон открыт светлее; только карточки остаются плотными локальными
+# поверхностями. Иконки наград живут в строгом inner-safe rect сокета; иконки/
+# портрета класса на экране НЕТ. «Позже» — глобальный кит (LevelUpLaterButton →
 # later_260x72).
 # Дизайн-база 2K 1720×1040; контент-зона панели = фактические margins чипа
 # (pad 20 → 28/20 @2K); карточки — контентной высоты (стек сокет→титул→
 # описание→дельты без пустых зон), ряд центрируется в зоне между шапкой и «Позже».
 const LU_PANEL_2K := Rect2(420, 205, 1720, 1040)
 const LU_PANEL_CHIP_PAD_2K := 20.0
+const LU_PANEL_BACKGROUND_ALPHA := 0.20
+const LU_BACKGROUND_SHADE_ALPHA := 0.12
+const LU_DIM_ALPHA := 0.24
+const LU_BACKGROUND_BRIGHTEN := Color(1.15, 1.12, 1.18, 1.0)
 const LU_CARD_2K := Rect2(0, 0, 470, 560)                   # ширина карточки @2K (высота — от контента)
 const LU_CARD_GAP_2K := 24.0
 const LU_CARD_CHIP_PAD_2K := 12.0
@@ -7846,11 +7848,14 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 
 	var icon_px := float(plan.get("icon_px", 40.0))
 	var icon_size := Vector2(icon_px, icon_px)
-	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size) as Control
+	# Сокет уже задаёт читаемый визуальный масштаб: registry-scale здесь нельзя
+	# применять, иначе Control становится в 1.45x больше строгой inner safe-zone.
+	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size, false) as Control
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.position = socket.position + Vector2(roundf((socket_box - icon_px) * 0.5), roundf((socket_box - icon_px) * 0.5))
-	icon.size = icon_size
+	# Фиксируем Control ровно в рассчитанной inner safe-zone.
 	icon.custom_minimum_size = icon_size
+	icon.size = icon_size
 	content.add_child(icon)
 
 	if advisor_keystone:
@@ -11742,6 +11747,8 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 		background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		background.texture = texture
+		if screen_background_id == "level_up":
+			background.modulate = LU_BACKGROUND_BRIGHTEN
 		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.add_child(background)
 	else:
@@ -11757,7 +11764,12 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	# SCRUM-684: кодекс рисуется поверх детального гримуар-разворота — гасим фон
 	# сильнее, чтобы орнаментные панели читались как передний план.
-	shade.color = Color(0.02, 0.015, 0.03, 0.62) if screen_background_id == "codex" else Color(0.0, 0.0, 0.0, 0.44)
+	if screen_background_id == "codex":
+		shade.color = Color(0.02, 0.015, 0.03, 0.62)
+	elif screen_background_id == "level_up":
+		shade.color = Color(0.015, 0.010, 0.030, LU_BACKGROUND_SHADE_ALPHA)
+	else:
+		shade.color = Color(0.0, 0.0, 0.0, 0.44)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
@@ -11778,9 +11790,9 @@ func _level_up_layout_metrics() -> Dictionary:
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	# SCRUM-892: панель живёт в пустой зоне полой рамы meta40 (эталон атласа) —
-	# масштаб считается от safe-зоны рамы (160·vp/1536|1024), не от полного
-	# вьюпорта: центрированная панель гарантированно внутри рамы на всей матрице.
+	# SCRUM-985: внешняя рама больше не рисуется, но её консервативный safe-inset
+	# остаётся геометрическим viewport reserve — карточки и «Позже» не липнут к
+	# краям экрана на компактной матрице.
 	var safe_margins := _unified_safe_margins()
 	var safe_size := Vector2(
 		maxf(viewport_size.x - safe_margins.x - safe_margins.z, 96.0),
@@ -11878,12 +11890,6 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(dim)
 
-	# SCRUM-892: торжественная полая рама атласа на весь экран поверх дима и ПОД
-	# панелью (9-slice meta40/frame_border, draw_center=false, NEAREST, mouse
-	# ignore — _unified_add_frame, узел LevelUpFrame). Панель ниже целиком живёт
-	# в пустой safe-зоне рамы (метрики считаются от неё).
-	_unified_add_frame(root, "LevelUp")
-
 	var sparkle_root := Control.new()
 	sparkle_root.name = "LevelUpParticles"
 	sparkle_root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -11912,8 +11918,11 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	panel.modulate.a = 0.0
 	panel.custom_minimum_size = panel_size
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-883: плотная кожа атласа поверх замороженного боя (дим ниже остаётся).
-	var panel_style := _atlas_chip_style(0.96, panel_pad)
+	# SCRUM-985: PanelContainer остаётся layout/safe-margin хостом, но большая
+	# общая рамка визуально снята. Контраст обеспечивают локальные reward cards.
+	var panel_style := _atlas_chip_style(LU_PANEL_BACKGROUND_ALPHA, panel_pad)
+	panel_style.border_color = Color.TRANSPARENT
+	panel_style.set_border_width_all(0)
 	panel.add_theme_stylebox_override("panel", panel_style)
 	panel.set_meta("level_up_slot", "level_up_panel")
 	panel.set_meta("level_up_content_margins", Vector4(
@@ -12021,9 +12030,8 @@ func _start_level_up_intro(panel: Node, title_label: Node, reward_buttons: Array
 	if dim != null:
 		var dim_tween = dim.create_tween()
 		dim_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-		# SCRUM-892: дим глубже (0.82) — замороженный бой уходит в тень, золотая
-		# рама и панель читаются как церемония.
-		dim_tween.tween_property(dim, "color:a", 0.82, 0.16)
+		# SCRUM-985: arcane-lab остаётся заметным вместо почти чёрной подложки.
+		dim_tween.tween_property(dim, "color:a", LU_DIM_ALPHA, 0.16)
 
 	# SCRUM-552: панель раскрываем только fade'ом (modulate.a). Scale-«поп» убран —
 	# он сжимал глобальные rect'ы текстовых лейблов (LevelUpTitle/RewardDescription),
