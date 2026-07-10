@@ -4257,5 +4257,10 @@
   "key": "SCRUM-1024",
   "status": "К выполнению",
   "desc_hash": "4fa89c010b243789d8ee2b5a46b6104e"
+ },
+ "SCRUM-980.md": {
+  "key": "SCRUM-980",
+  "status": "Контроль качества",
+  "desc_hash": "f89ecba304a1a4de0f88a75c2885bf4f"
  }
 }

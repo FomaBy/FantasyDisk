@@ -1,6 +1,6 @@
 # SCRUM-980 — Hero Select ascension description responsive layout
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-980
 Контур: Codex
@@ -71,6 +71,10 @@ focused test отправляет настоящие `InputEventAction ui_down`,
 Финальный re-review: PASS, actionable findings не осталось; `git diff --check`
 чистый.
 
-Disk cleanup: active task worktree; pending pre-land review, commit and push.
+Implementation landed in `origin/dev` as `91a221aa` and Jira moved to
+`Контроль качества`; an independent QA owner is required before `Готово`.
+
+Disk cleanup: removed 444 MiB `.godot`, 7.7 MiB transient
+`build/qa/scrum980/`, and all per-run scratch `user://` roots.
 
 Thread cleanup: not a disposable worker thread.
