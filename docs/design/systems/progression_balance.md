@@ -340,10 +340,29 @@ weapon-числа), а не здесь, чтобы не пересекать dam
   мягче `damage_falloff`) плюс `upgrade_damage_exponent`, чтобы рост был lvl20/progression,
   а не flat-buff на старте.
 - SCRUM-859 caps ClassWeapon deploy counts after Leadership scaling: `sound_amp` and
-  `raven_totem` cap at 3 active devices, while `engineer_sentry_wrench` caps at 5.
-  Engineer sentry also gets per-cycle target memory and small `sentry_splash_*` knobs
-  (`82px`, x0.24, cap 2) so turret gameplay clears crowds without turning every beam
+  `raven_totem` cap at 3 active devices; `engineer_sentry_wrench` после SCRUM-905 держит
+  предел парка `max_summons 2 + floor(summon_amount/4)` с рельсом `max_summons_cap 6`
+  (+«Полевой чертеж» поверх рельса), при полном парке деплой пропускается.
+  Engineer sentry also gets small `sentry_splash_*` knobs
+  (`82px`, x0.24, cap 3) so turret gameplay clears crowds without turning every beam
   into an uncapped AoE.
+- **SCRUM-905..908 бюджет-зеркала кита Инженера** (все — статические функции
+  `progression_data.gd`, зеркалят рантайм 1:1, покрыты `tests/engineer_kit_test.gd`):
+  - `_budget_sentry_ammo_model` — sustain турелей ограничен боезапасом: throughput =
+    `min(спрос парка (capacity/pulse), supply (magazine/деплой))`; attack_speed ускоряет и
+    пульс, и расход магазина (турели исчезают быстрее, AC SCRUM-905); AoE-срез добирается
+    залпом по разным целям (`volley_quality`) и capped-сплэшем.
+  - `_budget_orbit_drone_dps` — контактный DPS дронов: `число дронов × урон контакта ×
+    min(обороты/с (drone_orbit_speed × attack_speed / TAU), 1/drone_hit_cooldown)`;
+    покрытие толпы — кольцо орбиты `clamp(1 + (внешний радиус спирали + контакт)/58, 1, 5)`.
+  - `_budget_network_factor` — фактор trait'а «Сеть мастерской»: ожидаемые стеки в
+    устойчивом бою (турели — min(парк, жизнь магазина/деплой); дроны — постоянный парк;
+    мины — кап × вес 0.5 × заполненность 0.33), кламп капом сети
+    `network_stack_cap_base 3 + floor(Лидерство/6)`, +6% урона устройств за стек; у классов
+    без trait'а фактор ровно 1.0 (не течёт).
+  - Мины SCRUM-907: урон пары поднят против старой веерной тройки (скаляр 0.96 → 3.60),
+    тюнер кита в коридоре без клампов; персистентность не даёт uncapped-силы благодаря
+    `mine_active_cap 6` и пониженному весу мин в сети.
 - Уровень 0 сохраняет базовый баланс: все множители начинаются с 1.0, caps ограничивают high-stat runaway.
 - **Принцип «summon не дед-слот» (SCRUM-505, согласован с comfort-полосой SCRUM-544/546):**
   цель — поднять каждое summon-оружие минимум к **0.5x профильной summon-медианы** на 20t-оси

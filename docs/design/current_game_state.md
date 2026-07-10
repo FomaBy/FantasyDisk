@@ -2174,3 +2174,45 @@ drain-бюджет SCRUM-517 (7 hp/s default, 11 hard cap — бессмерти
 weapon_tuning_application_test, weapon_integrity_test,
 damage_type_isolation_test, global_survivability_balance_smoke_test,
 runtime_smoke_test.
+
+## SCRUM-905..908 Engineer Device-Commander Kit State
+
+Инженер — «командир устройств»: все три оружия — физические устройства
+(damage_parameter `damage`), объединённые data-driven trait'ом «Сеть мастерской»
+(`CLASS_TRAITS.engineer.workshop_network`, SCRUM-908): живые устройства дают
+стеки сети (турель/дрон 1.0, персистентная мина 0.5 — мета `network_weight` на
+узле), кап `3 + floor(Лидерство/6)`, каждый стек +6% к урону ТОЛЬКО устройств
+(потребитель `ClassWeapon._workshop_network_factor` в `_rolled_damage`;
+generic-урон игрока не трогает, классам без trait'а фактор ровно 1.0). Смена
+целого числа стеков подсвечивается ринг-пульсом вокруг героя.
+
+- `engineer_sentry_wrench` («Часовая турель», SCRUM-904/905, id сохранён):
+  турель с боезапасом `sentry_shot_magazine` 15 — расстреляла магазин →
+  свернулась; таймера жизни/замены старейшей НЕТ; залп по разным ближайшим
+  целям, каждый снаряд тратит заряд; пульс = amp_pulse_interval / tempo-lift /
+  attack_speed (скорость атаки буквально осушает магазин быстрее); предел парка
+  `2 + floor(summon_amount/4)`, рельс 6, при полном парке деплой пропускается.
+- `engineer_repair_drone` («Орбитальный Дрон», SCRUM-906, id сохранён, ремонт
+  удалён): постоянный парк боевых дронов на орбите-спирали вокруг героя (радиус
+  слота +14%), физический контакт с per-enemy кулдауном 0.85с; число дронов
+  `1 + floor(max(summon_amount − 12, 0)/4)` (база РОВНО 1, рельс 6, sa=28 → 5);
+  attack_speed раскручивает обороты (RPM), гироскоп-артефакт +20%.
+- `engineer_pressure_mines` («Минная Сетка», SCRUM-907): 2 персистентные мины
+  за деплой в случайном кольце 110..260 вокруг героя; таймера жизни НЕТ; враг
+  подрывает мину сразу (включая первые 3с), сам игрок — только после 3с; кап
+  живых 6 (skip, не retire); урон пары поднят против старой веерной тройки
+  (скаляр 0.96 → 3.60).
+
+Generic-скейл Лидерства `max_summons` в `player._apply_weapon_scaling` для
+устройств Инженера ВЫКЛЮЧЕН (двойной счёт с summon_amount-формулами кита);
+кап-рост отдан киту и артефактам SCRUM-961 (магазин +6 выстрелов, гироскоп,
+сумка +2 капа мин, «Полевой чертеж» +1 предел турелей/мин за 6 LDR — поверх
+рельса). Бюджет-зеркала: `_budget_sentry_ammo_model` (min(спрос парка,
+magazine/деплой)), `_budget_orbit_drone_dps` (контакт × min(обороты,
+1/hit_cd)), `_budget_network_factor` (ожидаемые стеки, кламп капом сети).
+Тюнеры кита в коридоре без клампов (0.627/1.460/1.476), cct10-отклонения
+±0.09. Гейты: tests/engineer_kit_test.gd (data+live: магазин/деспаун/парк,
+орбита/контакт/спираль, пара мин/триггеры/кап, стеки сети/кап от
+Лидерства/без утечки), engineer_turret_test, persistent_hazard_contract_test,
+class_artifacts_test, summoner_strengthening_test, weapon_tuning_application,
+weapon_integrity, damage_type_isolation, animation_smoke, runtime_smoke.
