@@ -319,6 +319,16 @@ Signature trait Рыцаря (канон: `docs/design/class_traits_registry.md`
   ветке circle `_budget_hit_model`. Параметры для VFX (SCRUM-924): см.
   коммент в Jira SCRUM-923.
 
+SCRUM-924 синхронизирует визуальный ритм с этой механикой без изменения её
+формул. `HolyFlail.tscn` использует узкий Animator-bridge
+`scripts/holy_flail_weapon.gd`: каждый из семи live-шагов передаёт фактические
+угол и радиус в `HolyFlailSpiralVfx`. Полупрозрачная цепь растёт по спирали от
+центра, PixelLab-ghost кистеня проходит 8-кадровый source pack и на седьмом шаге
+замыкает оборот при `235px`. Source/object/group/animation IDs, `256x256` RGBA
+frames, pivot `(128,128)`, `>=16px` gutters и contact sheet находятся в
+`docs/design/references/scrum924_holy_flail_spiral_vfx/`; shared
+`berserk_weapon.gd`, damage windows и анти-double-hit дедуп не менялись.
+
 Покрытие: `tests/knight_kit_test.gd` (trait: направление/сила/таксономия/кулдаун/
 утечка/предотвращённые удары + сквозной контактный путь; копьё: геометрия веера,
 дедуп, порядок окон по кадрам, артефакт; щит: выбор ближайшей цели, членство

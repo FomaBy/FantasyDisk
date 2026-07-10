@@ -351,6 +351,16 @@ SCRUM-261 обновил enemy/boss skill VFX под runtime mechanics SCRUM-259
 
 SCRUM-258 добавил per-weapon visual signature layer для всех 51 оружий ростера 0.1.5: `assets/sprites/effects/vfx_weapon_<weapon_id>.png`. `ClassWeapon` перед исполнением текущего attack mode вызывает `AttackVfx.weapon_signature()` и размещает короткую полупрозрачную D&D/painterly пластину по `weapon_id` в зоне атаки/цели/ауры. SCRUM-335 расширил это покрытие на `BerserkWeapon`, поэтому `sword`, `axe`, `hammer`, `long_spear`, `tower_shield` и `holy_flail` тоже показывают dedicated `vfx_weapon_*` signature поверх своих slash/slam/strip VFX. Это только визуальный слой: урон, радиусы, формулы, targeting, cooldowns, delay и status mechanics остаются из Back-end SCRUM-256/251/254/245. Preview-листы: `docs/design/previews/scrum258_unique_weapon_vfx_contact.png`, `docs/design/previews/scrum258_unique_weapon_vfx_readability.png`.
 
+SCRUM-924 дополняет статичную signature-пластину `holy_flail` отдельным
+PixelLab-first runtime VFX расширяющейся спирали. Семь кадровых шагов следуют
+live-окнам SCRUM-923 (`0.085с`, radius `22%→100%`, полный `235px`), поэтому
+цепь/кистень читаются как постепенный center-out «vroom-vroom» оборот, а не как
+мгновенный полный круг. Animator-bridge изолирован в Holy Flail scene/script;
+shared damage, targeting, radius, dedup и balance не менялись. Evidence/contact:
+`docs/design/references/scrum924_holy_flail_spiral_vfx/` и
+`docs/design/previews/scrum924_holy_flail_spiral_vfx_contact.png`; actual Godot
+inner/mid/outer capture: `docs/design/previews/scrum924_holy_flail_spiral_vfx_runtime.png`.
+
 SCRUM-730 перерисовал `vfx_weapon_biologist_sample_injector.png` для Инъектора Образцов через OpenAI Images override: эффект теперь читается как точная sample-dart injection line с двумя biochemical analysis echoes у ткани цели и полупрозрачным ghost-силуэтом самого инъектора. Runtime path/API не менялись; mechanics, damage, cooldowns, targeting и attack shapes остаются прежними. Evidence: `docs/design/references/weapon_attack_animations/biologist_sample_injector/manifest.json`, preview `docs/design/previews/weapon_attack_animations/biologist_sample_injector_contact.png`.
 
 SCRUM-741 перерисовал `vfx_weapon_elementalist_meteor_core.png` для Ядра Метеора через PixelLab MCP override: эффект теперь читается как круг отложенного meteor impact с вторичными shard-burst маркерами рядом и полупрозрачным ghost-силуэтом самого meteor core поверх VFX. Runtime path/API не менялись; mechanics, damage, cooldowns, targeting, задержка удара и secondary shard behavior остаются прежними. Evidence: `docs/design/references/weapon_attack_animations/elementalist_meteor_core/manifest.json`, preview `docs/design/previews/weapon_attack_animations/elementalist_meteor_core_contact.png`.

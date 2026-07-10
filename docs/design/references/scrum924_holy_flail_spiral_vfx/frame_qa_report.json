@@ -1,0 +1,283 @@
+{
+  "issue": "SCRUM-924",
+  "weapon_id": "holy_flail",
+  "pixel_lab_object_id": "b1089fd9-a4c7-49ce-aec2-af62fb0317b6",
+  "pixel_lab_animation_group_id": "50cb9b87-58b3-411e-af3e-caabce8b4cb4",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "normalization": "PixelLab RGB retained; edge-connected flat preview background removed; alpha capped at 190; full canvas nearest-neighbour inset 16px",
+  "pivot": [
+    128,
+    128
+  ],
+  "frame_count": 8,
+  "runtime_step_count": 7,
+  "step_time_seconds": 0.085,
+  "frames": [
+    {
+      "index": 0,
+      "runtime_step": 0,
+      "time_seconds": 0.0,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_00.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_00.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_00.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          90,
+          24,
+          167,
+          231
+        ],
+        "gutters_px": [
+          90,
+          24,
+          89,
+          25
+        ],
+        "minimum_gutter_px": 24,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 1787,
+        "visible_ratio_alpha_gt_8": 0.0273,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "e11cf849bbac4cf23847325505411f8907fd758c43b13cc78dd28700a0f6460e"
+    },
+    {
+      "index": 1,
+      "runtime_step": 1,
+      "time_seconds": 0.085,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_01.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_01.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_01.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          87,
+          26,
+          168,
+          231
+        ],
+        "gutters_px": [
+          87,
+          26,
+          88,
+          25
+        ],
+        "minimum_gutter_px": 25,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 1828,
+        "visible_ratio_alpha_gt_8": 0.0279,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "baac7661a6d402232eb828af67c076d41b1a728d8ab4c1bf070639e686bb87c2"
+    },
+    {
+      "index": 2,
+      "runtime_step": 2,
+      "time_seconds": 0.17,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_02.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_02.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_02.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          80,
+          20,
+          174,
+          232
+        ],
+        "gutters_px": [
+          80,
+          20,
+          82,
+          24
+        ],
+        "minimum_gutter_px": 20,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 2332,
+        "visible_ratio_alpha_gt_8": 0.0356,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "cdeb4b7d357292dae5695583a923630344f457f5e366dced00158a6aaead3257"
+    },
+    {
+      "index": 3,
+      "runtime_step": 3,
+      "time_seconds": 0.255,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_03.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_03.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_03.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          91,
+          26,
+          164,
+          234
+        ],
+        "gutters_px": [
+          91,
+          26,
+          92,
+          22
+        ],
+        "minimum_gutter_px": 22,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 2788,
+        "visible_ratio_alpha_gt_8": 0.0425,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "d904a87bb8510c7dd49f7a030160db3e3404831f86873321e62cc2dc345946ab"
+    },
+    {
+      "index": 4,
+      "runtime_step": 4,
+      "time_seconds": 0.34,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_04.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_04.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_04.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          89,
+          26,
+          166,
+          231
+        ],
+        "gutters_px": [
+          89,
+          26,
+          90,
+          25
+        ],
+        "minimum_gutter_px": 25,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 2714,
+        "visible_ratio_alpha_gt_8": 0.0414,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "0f1e53069296e8c2a31f75864b430cbbf3ddb63991301310ce0d19621d01d295"
+    },
+    {
+      "index": 5,
+      "runtime_step": 5,
+      "time_seconds": 0.425,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_05.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_05.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_05.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          89,
+          26,
+          167,
+          232
+        ],
+        "gutters_px": [
+          89,
+          26,
+          89,
+          24
+        ],
+        "minimum_gutter_px": 24,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 1985,
+        "visible_ratio_alpha_gt_8": 0.0303,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "2552b05b25dcb2674b98307da7fb74913d55518b2302180c77ea4906f3686bfe"
+    },
+    {
+      "index": 6,
+      "runtime_step": 6,
+      "time_seconds": 0.51,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_06.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_06.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_06.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          89,
+          25,
+          167,
+          232
+        ],
+        "gutters_px": [
+          89,
+          25,
+          89,
+          24
+        ],
+        "minimum_gutter_px": 24,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 2610,
+        "visible_ratio_alpha_gt_8": 0.0398,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "d2652e4d594e06507a2937db27a25e2f94e68c56408dc0ccbf1b262ab69550b5"
+    },
+    {
+      "index": 7,
+      "runtime_step": null,
+      "time_seconds": 0.595,
+      "raw_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_07.png",
+      "clean_path": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_07.png",
+      "runtime_path": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_07.png",
+      "runtime_metrics": {
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGBA",
+        "alpha_bbox_gt_8": [
+          89,
+          26,
+          167,
+          231
+        ],
+        "gutters_px": [
+          89,
+          26,
+          89,
+          25
+        ],
+        "minimum_gutter_px": 25,
+        "edge_visible_pixels": 0,
+        "visible_pixels_alpha_gt_8": 2160,
+        "visible_ratio_alpha_gt_8": 0.033,
+        "max_alpha": 190
+      },
+      "runtime_sha256": "41338ba73292088047e565f95854b5ae2ba007647c7d8c26062865557f55ba34"
+    }
+  ],
+  "decision": "pass"
+}

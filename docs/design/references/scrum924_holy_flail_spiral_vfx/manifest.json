@@ -1,0 +1,56 @@
+{
+  "issue": "SCRUM-924",
+  "weapon_id": "holy_flail",
+  "weapon_name_ru": "Освященный кистень",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "pixel_lab": {
+    "tool_chain": [
+      "create_map_object",
+      "animate_object mode=v3",
+      "get_object"
+    ],
+    "object_id": "b1089fd9-a4c7-49ce-aec2-af62fb0317b6",
+    "animation_group_id": "50cb9b87-58b3-411e-af3e-caabce8b4cb4",
+    "animation_id": "0ff0ce1e-e95c-409a-b542-e50b606fd928",
+    "display_name": "holy_flail_center_out_spiral",
+    "direction": "unknown (one-direction object)",
+    "frame_count": 8,
+    "canvas": [256, 256],
+    "config_smoke_passed": true
+  },
+  "mechanical_contract": {
+    "source_issue": "SCRUM-923",
+    "spiral_steps": 7,
+    "spiral_step_time": 0.085,
+    "spiral_arm_degrees": 150.0,
+    "spiral_start_radius_ratio": 0.22,
+    "aoe_radius": 235,
+    "full_turn_seconds_after_first_step": 0.51,
+    "target_hit_limit_per_cast": 1
+  },
+  "source": {
+    "raw_object": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/holy_flail_spiral_source.png",
+    "raw_animation": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_raw/animation/holy_flail_spiral_00.png .. _07.png",
+    "alpha_clean_animation": "docs/design/references/scrum924_holy_flail_spiral_vfx/pixellab_alpha_clean/holy_flail_spiral_00.png .. _07.png",
+    "runtime_animation": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_00.png .. _07.png",
+    "spriteframes": "assets/sprites/effects/holy_flail_spiral/holy_flail_spiral_spriteframes.tres",
+    "pivot": [128, 128],
+    "runtime_safe_gutter_px": 16
+  },
+  "runtime": {
+    "weapon_scene": "scenes/HolyFlail.tscn",
+    "scene_specific_bridge": "scripts/holy_flail_weapon.gd",
+    "vfx_scene": "scenes/vfx/HolyFlailSpiralVfx.tscn",
+    "vfx_script": "scripts/vfx/holy_flail_spiral_vfx.gd",
+    "choreography": "PixelLab flail ghost advances one frame per live damage step while an authored visual-only chain trail grows as an Archimedean center-out spiral to the exact current front radius.",
+    "gameplay_changed": false,
+    "shared_berserk_weapon_changed": false
+  },
+  "evidence": {
+    "frame_report": "docs/design/references/scrum924_holy_flail_spiral_vfx/frame_qa_report.json",
+    "contact_sheet": "docs/design/previews/scrum924_holy_flail_spiral_vfx_contact.png",
+    "runtime_capture": "docs/design/previews/scrum924_holy_flail_spiral_vfx_runtime.png",
+    "focused_smoke": "tests/scrum924_holy_flail_spiral_vfx_test.gd"
+  }
+}

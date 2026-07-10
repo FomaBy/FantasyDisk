@@ -682,7 +682,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `homunculus_vial` | Склянка гомункула | Химик | Temporary minion scaling from magic damage | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
 | `long_spear` | Копье | Рыцарь | Длинный точечный strip + block/counter passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
 | `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control + сильный block/counter | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
-| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing + сильнее counter damage | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `holy_flail` | Освященный кистень | Рыцарь | 7-step center-out spiral (`0.085с`, `22%→100%` radius) + broad holy-control counter; SCRUM-924 PixelLab chain/flail VFX follows each live step | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
 | `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
