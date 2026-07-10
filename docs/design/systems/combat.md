@@ -53,6 +53,13 @@
 ## Damage And Feedback
 
 - У игрока есть HP, defense и dodge.
+- SCRUM-894: итоговый шанс уворота считает `Player.current_dodge_chance()`:
+  derived dodge (кап `SURVIVABILITY_DODGE_CAP` 55%) плюс, только для Ассасина,
+  ситуативный бонус «Теневой завесы» — самоцентричной ауры уворота, активной
+  лишь пока враг находится внутри derived `aura_radius` (величина =
+  `veil_dodge_bonus × buff_power`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
+  бессмертия нет). Крит-шанс игрока капится per-class
+  (`ProgressionData.class_crit_profile`): Ассасин — 100%, остальные — 55%.
 - Враги наносят contact damage по `contact_range`, который подгоняется под видимый размер спрайта.
 - При любом уроне по игроку HUD показывает `DamageFlashOverlay`: alpha peak ~0.20, fade ~0.32с, без стакания до непрозрачности, пауза-aware.
 - SCRUM-497 добавляет visual-only боевой feedback над целями: каждый hit по `Enemy`

@@ -2070,3 +2070,21 @@ are bottom-centered, monsters are centered without visible-alpha cropping, and
 artifact/shop icons use padded contain. The runtime projection covers 17
 characters, 31 monster entries and 161 artifact/shop entries with exact Russian
 names and canonical paths at 1280×720, 1920×1080 and 2560×1440.
+
+## SCRUM-894 Assassin Crit-Cap Kit State
+
+Assassin — единственный класс со снятым крит-потолком: trait «Хладнокровие»
+(`ProgressionData.CLASS_TRAITS.assassin`) даёт кап шанса крита 100% (у остальных
+глобальные 55%), убирает diminishing крит-вложений и переливает избыток raw-шанса
+сверх капа в крит-урон (кап `CRIT_DAMAGE_CAP` сохраняется). Кит: Чакрамы летят
+прямым коридором и возвращаются левой дугой (double-pass за позиционирование,
+жёсткий гейт 1+1 хит на цель за каст); Теневые кинжалы кроют сектор и врагов
+вплотную вокруг героя, серия по врагам даёт «Рывок темпа» (короткий бафф
+скорости+уворота с кулдауном; заменил Shadow Momentum kill-стаки); Ядовитая
+струна стартует от самого героя, душит целей в упор в `close_contact_radius`
+и усиливает DoT-тики крит-снапшотом. Защита класса — «Теневая завеса»:
+самоцентричная аура уворота, работающая только под ближним прессингом
+(масштаб от `aura_radius`/`buff_power`, суммарный уворот ≤ 55% — бессмертия
+нет). Hero Select описание заявляет 100%-кап; копирайт-пасс — SCRUM-952.
+Гейты: `tests/assassin_kit_test.gd`, `tests/kill_scaling_identity_test.gd`,
+tuning 51/51, weapon integrity, global damage/survivability smokes — зелёные.
