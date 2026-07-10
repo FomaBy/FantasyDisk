@@ -102,10 +102,12 @@ func _test_engineer_mine_detonates_once_and_persists(errors: Array) -> void:
 	elif not bool(mine.get_meta("persistent_hazard", false)):
 		errors.append("Expected engineer mine to be tagged as a persistent hazard.")
 
-	# Враг рядом: детонация одним взрывом (полный урон, falloff 1.0) и уборка.
+	# Враг рядом: детонация одним взрывом (полный ролл 10.0 = derived damage
+	# владельца через _rolled_damage; weapon.damage=8 — только fallback без
+	# владельца) и уборка.
 	await create_timer(0.30).timeout
-	if absf(enemy.damage_taken - 8.0) > 0.01:
-		errors.append("Expected single full-damage detonation of 8.0, got %.2f." % enemy.damage_taken)
+	if absf(enemy.damage_taken - 10.0) > 0.01:
+		errors.append("Expected single full-damage detonation of 10.0 (owner derived damage), got %.2f." % enemy.damage_taken)
 	if mine != null and is_instance_valid(mine) and not mine.is_queued_for_deletion():
 		errors.append("Expected engineer mine to be consumed by detonation.")
 

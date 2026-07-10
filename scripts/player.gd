@@ -2940,7 +2940,15 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	if weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
 		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
 
-	if weapon.get("max_summons") != null:
+	if weapon.get("max_summons") != null and str(weapon.get("attack_mode")) in ["engineer_sentry_link", "engineer_orbit_drone"]:
+		# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
+		# summon_amount (ClassWeapon._engineer_turret_limit /
+		# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
+		# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
+		# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
+		# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
+		weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
+	elif weapon.get("max_summons") != null:
 		var base_max_summons := int(weapon.get_meta("base_max_summons"))
 		var scaled_max_summons := base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0))
 		if weapon.get("max_summons_cap") != null and int(weapon.get("max_summons_cap")) > 0:
