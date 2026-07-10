@@ -1,6 +1,6 @@
 # Backend handoff: play SCRUM-912 Storm Longbow release VFX scene
 
-Статус: blocked
+Статус: new
 Приоритет: p2
 Роль: Back-end
 Контур: Codex
@@ -16,15 +16,19 @@ Locked paths after claim:
 - `tests/scrum912_storm_longbow_vfx_runtime_hook_test.gd`
 - SCRUM-1037-only current-state note after active documentation locks release
 
-## Blocker
+## Dependency gate — resolved 2026-07-10
 
-Не брать задачу, пока одновременно не выполнены оба условия:
+Оба условия повторно проверены dispatcher-ом и выполнены:
 
 1. SCRUM-912 asset/resource commit находится в `origin/dev`.
 2. Все активные Claude/другие владельцы освободили dirty lock на
    `scripts/class_weapon.gd`.
 
-Jira label `blocked` намеренный; dispatcher снимает его после обеих проверок.
+SCRUM-912/1038 находятся в `origin/dev` и приняты независимым QA; все
+зарегистрированные worktree показали чистый `scripts/class_weapon.gd` после
+закрытия Priest/Sniper owner-ов. Jira label `blocked` снят. Задача остаётся
+unassigned в `К выполнению` и готова к будущему single-owner Codex claim после
+освобождения текущей root-задачи.
 
 ## Готовый Animator API
 
