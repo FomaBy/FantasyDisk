@@ -4337,5 +4337,15 @@
   "key": "SCRUM-1033",
   "status": "Готово",
   "desc_hash": "f6f208d5321a6528b029b6859ceaf5ae"
+ },
+ "bug_robot_delayed_attack_freed_lambda_capture_task.md": {
+  "key": "SCRUM-1034",
+  "status": "К выполнению",
+  "desc_hash": "29c7e7c829170b5923aeb2fe6ba69318"
+ },
+ "bug_robot_redesign_docs_balance_evidence_stale_task.md": {
+  "key": "SCRUM-1035",
+  "status": "К выполнению",
+  "desc_hash": "0ea41d902a66db3dd37cbb67265e0892"
  }
 }
