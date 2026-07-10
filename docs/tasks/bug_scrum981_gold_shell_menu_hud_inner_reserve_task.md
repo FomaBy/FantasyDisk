@@ -1,17 +1,20 @@
 # BUG: Gold shell menu HUD/FAB violate authored inner reserve
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end (UI runtime/tests)
 Контур: Codex
 Исполнитель: Codex
-Owner: unassigned
-Thread/Worker: n/a
+Owner: Backend/Codex `/root`
+Thread/Worker: `root-scrum-1036-gold-inner-reserve`
 Jira: SCRUM-1036
 Версия: 0.2.1
 Найдено QA при тестировании: SCRUM-981
 Locked paths: `scripts/ui_screens.gd`; `tests/scrum981_gold_menu_shell_test.gd`;
 `tests/ui_no_overlap_matrix_test.gd`; SCRUM-981 geometry evidence/docs only
+
+Branch/worktree: `codex/scrum-1036-gold-inner-reserve` /
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1036-gold-inner-reserve`
 
 ## Контекст
 
@@ -69,6 +72,30 @@ icons/labels/tracks и button hitbox. Outer ornament визуально не с�
 - [ ] Focused 981, no-overlap, theme, runtime UI, gamepad full-flow и полный
       runtime smoke проходят; внешний Robot-дефект SCRUM-1034 не маскируется.
 - [ ] Результат закоммичен, запушен в `origin/dev` и передан в независимый QA.
+
+## Implementation result (2026-07-10)
+
+- Raw `gold_shell_content_rect` сохранён как texture-safe контракт; отдельный
+  `gold_shell_inner_rect` добавляет обязательный резерв `24px` / `32px`.
+- Общий menu `RunResourceHud` заново раскладывается без накопленного scale и
+  равномерно вписывается в authored header-left `72/88/104px`.
+- Общий `UpgradeFabButton` равномерно вписан в точный top-right socket `72x72`;
+  специализированная Route Map раскладка не менялась.
+- На 720p Rest/Upgrade/Battle Reward используют единый верхний резерв `96px`;
+  compact Battle Reward card height `224px` сохраняет panel/HUD gap и нижний
+  texture-safe край.
+- Focused oracle теперь проверяет реальные HUD icons/tracks/labels/FAB против
+  inner rect и проход `2560 -> 1280 -> 2560`; no-overlap matrix проверяет тот же
+  контракт на всей своей матрице.
+
+Verification PASS: `scrum981_gold_menu_shell_test`, `ui_no_overlap_matrix_test`,
+`dark_fantasy_ui_theme_test`, `runtime_smoke_ui_test`,
+`gamepad_full_flow_smoke_test`, полный `runtime_smoke_test`. Известные два
+`freed lambda capture` сообщения принадлежат отдельному Robot-багу SCRUM-1034;
+smoke завершён `exit 0`.
+
+Git/Jira routing: pending final rebase/push and independent QA.
+Disk cleanup: pending final post-rebase gate.
 
 ## QA evidence
 

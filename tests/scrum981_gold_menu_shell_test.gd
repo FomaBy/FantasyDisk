@@ -117,6 +117,7 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 
 func _assert_shell_screen(main: Node, frame_name: String, panel_name: String, safe_rect: Rect2, viewport_size: Vector2i, expect_hud: bool) -> void:
 	_assert_frame(main, frame_name, safe_rect, viewport_size)
+	var inner_rect := _inner_rect(Vector2(viewport_size))
 	var panel := main.find_child(panel_name, true, false) as Control
 	if panel == null:
 		_errors.append("%s: missing %s." % [str(viewport_size), panel_name])
@@ -131,7 +132,18 @@ func _assert_shell_screen(main: Node, frame_name: String, panel_name: String, sa
 		if resource_hud == null:
 			_errors.append("%s %s: missing menu resource HUD." % [str(viewport_size), panel_name])
 		else:
-			_assert_inside(resource_hud.get_global_rect(), safe_rect, "%s %s RunResourceHud" % [str(viewport_size), panel_name])
+			_assert_inside(resource_hud.get_global_rect(), inner_rect, "%s %s RunResourceHud authored inner" % [str(viewport_size), panel_name])
+			for node in resource_hud.find_children("*", "Control", true, false):
+				var control := node as Control
+				if control != null and control.visible and control.is_visible_in_tree() and control.get_global_rect().has_area():
+					_assert_inside(control.get_global_rect(), inner_rect, "%s %s %s authored inner" % [str(viewport_size), panel_name, str(control.name)])
+			if panel != null and resource_hud.get_global_rect().intersects(panel.get_global_rect()):
+				_errors.append("%s %s: menu HUD %s overlaps content panel %s." % [str(viewport_size), panel_name, str(resource_hud.get_global_rect()), str(panel.get_global_rect())])
+		var fab := main.find_child("UpgradeFabButton", true, false) as Button
+		if fab != null and fab.visible and fab.is_visible_in_tree():
+			_assert_inside(fab.get_global_rect(), inner_rect, "%s %s UpgradeFabButton authored inner" % [str(viewport_size), panel_name])
+			if fab.get_global_rect().size.distance_to(Vector2(72.0, 72.0)) > 1.1:
+				_errors.append("%s %s: generic FAB visible rect %s must fit the exact 72x72 socket." % [str(viewport_size), panel_name, str(fab.get_global_rect())])
 	if panel_name.begins_with("PauseEndModalPanel_"):
 		_assert_result_summary_visible(main, panel_name, "%s %s" % [str(viewport_size), panel_name])
 	elif panel_name == "MenuPanel_artifact_reward":
@@ -229,6 +241,9 @@ func _validate_live_resize() -> void:
 	viewport.size = compact_size
 	await _settle()
 	_assert_shell_screen(main, "RestFrame", "MenuPanel_campfire", compact_safe, compact_size, true)
+	viewport.size = Vector2i(2560, 1440)
+	await _settle()
+	_assert_shell_screen(main, "RestFrame", "MenuPanel_campfire", _safe_rect(Vector2(2560, 1440)), Vector2i(2560, 1440), true)
 
 	viewport.size = Vector2i(2560, 1440)
 	await _settle()
@@ -301,6 +316,8 @@ func _assert_frame(main: Node, frame_name: String, safe_rect: Rect2, viewport_si
 		_errors.append("%s %s: outer shell must remain hollow (draw_center=false)." % [str(viewport_size), frame_name])
 	var recorded: Rect2 = frame.get_meta("gold_shell_content_rect", Rect2()) as Rect2
 	_assert_rect_near(recorded, safe_rect, "%s %s safe rect" % [str(viewport_size), frame_name])
+	var recorded_inner: Rect2 = frame.get_meta("gold_shell_inner_rect", Rect2()) as Rect2
+	_assert_rect_near(recorded_inner, _inner_rect(Vector2(viewport_size)), "%s %s authored inner rect" % [str(viewport_size), frame_name])
 
 
 func _safe_rect(viewport_size: Vector2) -> Rect2:
@@ -311,6 +328,11 @@ func _safe_rect(viewport_size: Vector2) -> Rect2:
 		roundf(160.0 * viewport_size.y / 1024.0)
 	)
 	return Rect2(Vector2(margins.x, margins.y), viewport_size - Vector2(margins.x + margins.z, margins.y + margins.w))
+
+
+func _inner_rect(viewport_size: Vector2) -> Rect2:
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	return _safe_rect(viewport_size).grow(-reserve)
 
 
 func _main_expected(viewport_size: Vector2i) -> Dictionary:

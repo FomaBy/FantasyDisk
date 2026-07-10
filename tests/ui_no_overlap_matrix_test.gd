@@ -558,6 +558,10 @@ func _open_route_map(main: Node) -> void:
 func _screen_specific_assertions(main: Node, screen_id: String, context: String) -> String:
 	# SCRUM-565/568 → атлас-миграция: карточки События и Докачи на собственном
 	# choice_card-контракте, общий minimal-metal card-контракт к ним не применяется.
+	if ["rest_economy", "upgrade_economy", "battle_reward"].has(screen_id):
+		var shell_error := _gold_shell_menu_hud_inner_error(main, screen_id, context)
+		if shell_error != "":
+			return shell_error
 	if ["rest_economy", "upgrade_economy"].has(screen_id):
 		for node in main.find_children("*", "Button", true, false):
 			var card := node as Button
@@ -1288,6 +1292,41 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected VictoryBannerLabel runtime text inside the frame." % context
 			if not frame.get_global_rect().grow(1.0).encloses(victory_label.get_global_rect()):
 				return "%s: expected VictoryBannerLabel to stay inside the victory banner chip %s." % [context, str(frame.get_global_rect())]
+	return ""
+
+
+func _gold_shell_menu_hud_inner_error(main: Node, screen_id: String, context: String) -> String:
+	var viewport_size := main.get_viewport().get_visible_rect().size
+	var margins := Vector2(
+		roundf(160.0 * viewport_size.x / 1536.0),
+		roundf(160.0 * viewport_size.y / 1024.0)
+	)
+	var raw_safe := Rect2(margins, viewport_size - margins * 2.0)
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	var inner_rect := raw_safe.grow(-reserve)
+	var resource := main.find_child("RunResourceHud", true, false) as Control
+	if resource == null or not resource.visible or not resource.get_global_rect().has_area():
+		return "%s: expected live RunResourceHud on gold-shell menu." % context
+	for candidate in [resource] + resource.find_children("*", "Control", true, false):
+		var control := candidate as Control
+		if control == null or not control.visible or not control.is_visible_in_tree() or not control.get_global_rect().has_area():
+			continue
+		if not inner_rect.grow(1.0).encloses(control.get_global_rect()):
+			return "%s: %s rect %s escapes authored gold-shell inner rect %s (SCRUM-1036)." % [context, str(control.name), str(control.get_global_rect()), str(inner_rect)]
+	var panel_names := {
+		"rest_economy": "MenuPanel_campfire",
+		"upgrade_economy": "MenuPanel_upgrade",
+		"battle_reward": "MenuPanel_artifact_reward",
+	}
+	var panel := main.find_child(str(panel_names.get(screen_id, "")), true, false) as Control
+	if panel != null and resource.get_global_rect().intersects(panel.get_global_rect()):
+		return "%s: RunResourceHud %s overlaps gold-shell content panel %s." % [context, str(resource.get_global_rect()), str(panel.get_global_rect())]
+	var fab := main.find_child("UpgradeFabButton", true, false) as Button
+	if fab != null and fab.visible and fab.is_visible_in_tree():
+		if not inner_rect.grow(1.0).encloses(fab.get_global_rect()):
+			return "%s: UpgradeFabButton %s escapes authored inner rect %s." % [context, str(fab.get_global_rect()), str(inner_rect)]
+		if fab.get_global_rect().size.distance_to(Vector2(72.0, 72.0)) > 1.1:
+			return "%s: UpgradeFabButton visible rect %s must fit exact 72x72 socket." % [context, str(fab.get_global_rect())]
 	return ""
 
 

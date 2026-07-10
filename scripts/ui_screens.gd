@@ -2551,10 +2551,22 @@ func _layout_gold_shell_fab(root: Control, fab: Button) -> void:
 	if root == null or fab == null or not is_instance_valid(root) or not is_instance_valid(fab):
 		return
 	var safe_rect := _unified_safe_rect_for_size(root.size)
+	var inner_rect := _gold_shell_inner_rect_for_size(root.size)
+	var socket_rect := Rect2(Vector2(inner_rect.end.x - 72.0, inner_rect.position.y), Vector2(72.0, 72.0))
 	fab.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	fab.position = Vector2(safe_rect.end.x - 96.0, safe_rect.position.y + 8.0)
-	fab.size = Vector2(72.0, 88.0)
+	fab.scale = Vector2.ONE
+	fab.pivot_offset = Vector2.ZERO
+	fab.custom_minimum_size = socket_rect.size
+	var combined_min := fab.get_combined_minimum_size()
+	var source_side := maxf(socket_rect.size.x, maxf(combined_min.x, combined_min.y))
+	fab.custom_minimum_size = Vector2(source_side, source_side)
+	fab.size = Vector2(source_side, source_side)
+	var fit_scale := minf(socket_rect.size.x / source_side, socket_rect.size.y / source_side)
+	fab.scale = Vector2(fit_scale, fit_scale)
+	fab.position = socket_rect.position
 	fab.set_meta("gold_shell_content_rect", safe_rect)
+	fab.set_meta("gold_shell_inner_rect", inner_rect)
+	fab.set_meta("scrum1036_zone_rect", socket_rect)
 
 
 func _show_atlas_screen() -> void:
@@ -3188,6 +3200,14 @@ func _unified_safe_rect_for_size(viewport_size: Vector2) -> Rect2:
 	)
 
 
+# SCRUM-1036: the texture-safe rect only clears the 9-slice border. Authored
+# gold-shell screens reserve another 24px (32px on the 2K tier) before any live
+# control, label, icon or hitbox may begin.
+func _gold_shell_inner_rect_for_size(viewport_size: Vector2) -> Rect2:
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	return _unified_safe_rect_for_size(viewport_size).grow(-reserve)
+
+
 func _unified_make_safe_area(root: Control, prefix: String) -> MarginContainer:
 	var margins := _unified_safe_margins()
 	var safe := MarginContainer.new()
@@ -3223,9 +3243,12 @@ func _refresh_unified_frame(root: Control, frame: Panel) -> void:
 		viewport_size = game.get_viewport().get_visible_rect().size
 	var margins := _unified_safe_margins_for_size(viewport_size)
 	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
 	frame.add_theme_stylebox_override("panel", _atlas_frame_style(margins))
 	frame.set_meta("gold_shell_content_rect", safe_rect)
+	frame.set_meta("gold_shell_inner_rect", inner_rect)
 	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_inner_rect", inner_rect)
 
 
 # Кожаный чип-заголовок экрана: эмблема PixelLab + титул золотом (шапка как
@@ -11456,7 +11479,7 @@ func _gold_shell_menu_hud_reserve(screen_background_id := "") -> float:
 func _gold_shell_menu_hud_reserve_for_size(screen_background_id: String, viewport_size: Vector2) -> float:
 	var viewport_height: float = viewport_size.y
 	if viewport_height < 900.0:
-		return 96.0 if screen_background_id == "campfire" else 76.0
+		return 96.0
 	if viewport_height >= 1200.0:
 		return 140.0
 	return 112.0
@@ -11612,6 +11635,7 @@ func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxC
 	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
 		return
 	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
 	var reserve := _gold_shell_menu_hud_reserve_for_size(screen_background_id, viewport_size)
 	var panel_size := _gold_shell_panel_size_for_safe(_gold_menu_target_size(screen_background_id), safe_rect.size, Vector2(16.0, 0.0), reserve)
 	var half_size := panel_size * 0.5
@@ -11620,6 +11644,7 @@ func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxC
 	panel.offset_right = half_size.x
 	panel.offset_bottom = half_size.y + reserve * 0.5
 	panel.set_meta("gold_shell_content_rect", safe_rect)
+	panel.set_meta("gold_shell_inner_rect", inner_rect)
 
 	var compact_economy := viewport_size.y < 800.0 and ["campfire", "upgrade"].has(screen_background_id)
 	if screen_background_id in ["campfire", "upgrade"]:
@@ -11638,6 +11663,7 @@ func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxC
 				if child is Button:
 					_resize_economy_choice_card(child as Button, card_size)
 	elif screen_background_id == "artifact_reward":
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 18.0))
 		var reward_size := _battle_reward_card_size_for_viewport(viewport_size)
 		var rewards_row := box.find_child("BattleRewardCardsRow", true, false) as HBoxContainer
 		if rewards_row != null:
@@ -13365,7 +13391,9 @@ func _battle_reward_card_size() -> Vector2:
 
 func _battle_reward_card_size_for_viewport(viewport_size: Vector2) -> Vector2:
 	if viewport_size.y < 800.0:
-		return Vector2(270.0, 230.0)
+		# SCRUM-1036: 224px leaves the exact 96px authored header reserve while
+		# preserving the compact single-line reward-card layout at 720p.
+		return Vector2(270.0, 224.0)
 	if viewport_size.y < 1000.0:
 		return Vector2(280.0, 300.0)
 	return REWARD_CARD_SIZE
@@ -13764,6 +13792,36 @@ func _layout_menu_resource_hud(root: Control, origin: Vector2) -> void:
 	_apply_chud_rect(resource, Rect2(origin, combat_rect.size), "scrum666_frame_rect")
 	resource.add_theme_stylebox_override("panel", _hud_v2_cluster_style(combat_rect.size))
 	_layout_hud_v2_cluster(resource, combat_rect, scale)
+
+
+func _layout_gold_shell_menu_resource_hud(root: Control, inner_rect: Rect2) -> void:
+	if root == null or not is_instance_valid(root) or not inner_rect.has_area():
+		return
+	# Rebuild the canonical unscaled HUD for this viewport first, then fit the
+	# entire composition uniformly into the authored header-left zone. Resetting
+	# scale before every pass keeps 2K -> 720p -> 2K resize idempotent.
+	_layout_menu_resource_hud(root, Vector2.ZERO)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	resource.scale = Vector2.ONE
+	resource.pivot_offset = Vector2.ZERO
+	var source_size := resource.size
+	if source_size.x <= 0.0 or source_size.y <= 0.0:
+		source_size = resource.custom_minimum_size
+	var header_height := 72.0 if root.size.y < 900.0 else (104.0 if root.size.y >= 1200.0 else 88.0)
+	var header_rect := Rect2(
+		inner_rect.position,
+		Vector2(maxf(1.0, inner_rect.size.x - 96.0), minf(header_height, inner_rect.size.y))
+	)
+	var fit_scale := minf(1.0, minf(header_rect.size.x / source_size.x, header_rect.size.y / source_size.y))
+	resource.scale = Vector2(fit_scale, fit_scale)
+	resource.position = Vector2(
+		header_rect.position.x,
+		header_rect.position.y
+	)
+	resource.set_meta("gold_shell_inner_rect", inner_rect)
+	resource.set_meta("scrum1036_zone_rect", header_rect)
 
 
 func _layout_combat_hud(root: Control) -> void:
@@ -14182,12 +14240,14 @@ func _create_menu_run_hud() -> void:
 	var shell_safe_rect := _active_gold_shell_content_rect()
 	if shell_safe_rect.has_area():
 		root.set_meta("gold_shell_content_rect", shell_safe_rect)
+		var shell_inner_rect := _active_gold_shell_inner_rect()
+		root.set_meta("gold_shell_inner_rect", shell_inner_rect)
 		root.resized.connect(func() -> void:
-			var safe_rect := _active_gold_shell_content_rect()
-			_layout_menu_resource_hud(root, safe_rect.position + Vector2(16.0, 8.0))
+			var inner_rect := _active_gold_shell_inner_rect()
+			_layout_gold_shell_menu_resource_hud(root, inner_rect)
 		)
-		_layout_menu_resource_hud(root, shell_safe_rect.position + Vector2(16.0, 8.0))
-		call_deferred("_layout_menu_resource_hud", root, shell_safe_rect.position + Vector2(16.0, 8.0))
+		_layout_gold_shell_menu_resource_hud(root, shell_inner_rect)
+		call_deferred("_layout_gold_shell_menu_resource_hud", root, shell_inner_rect)
 	else:
 		root.resized.connect(func() -> void:
 			_layout_combat_hud(root)
@@ -14204,6 +14264,15 @@ func _active_gold_shell_content_rect() -> Rect2:
 	for child in game.ui_layer.get_children():
 		if child is Control and child.has_meta("gold_shell_content_rect"):
 			return child.get_meta("gold_shell_content_rect", Rect2()) as Rect2
+	return Rect2()
+
+
+func _active_gold_shell_inner_rect() -> Rect2:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return Rect2()
+	for child in game.ui_layer.get_children():
+		if child is Control and child.has_meta("gold_shell_inner_rect"):
+			return child.get_meta("gold_shell_inner_rect", Rect2()) as Rect2
 	return Rect2()
 
 
