@@ -57,6 +57,8 @@ final QA verdict.
 
 ## QA-вердикт (2026-07-10)
 
+Статус: PASSED
+
 **PASSED** — independent Design QA by Codex `/root/audit_ready` on a fresh
 `origin/dev` worktree. Production code and assets were treated as read-only.
 
