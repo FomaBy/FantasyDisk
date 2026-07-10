@@ -1,6 +1,6 @@
 # SCRUM-981 — Unified Gold Menu Shell
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-981
 Контур: Codex

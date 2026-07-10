@@ -4305,13 +4305,13 @@
  },
  "SCRUM-985_level_up_icon_frame_background_fix.md": {
   "key": "SCRUM-985",
-  "status": "К выполнению",
-  "desc_hash": "91652a4e286ede418f3c4b6366b6893b"
+  "status": "Контроль качества",
+  "desc_hash": "75f91103b6ef53211d7e9467e9b98892"
  },
  "bug_scrum985_levelup_720p_badge_socket_overlap_task.md": {
   "key": "SCRUM-1032",
-  "status": "В работе",
-  "desc_hash": "c5e50d5e16f3570e1686a46aa94c4d4b"
+  "status": "Контроль качества",
+  "desc_hash": "01c8ccd5b589516f1c14a54577e61a3c"
  },
  "SCRUM-1002_editor_preview_window_qa.md": {
   "key": "SCRUM-1002",
@@ -4347,5 +4347,15 @@
   "key": "SCRUM-1035",
   "status": "К выполнению",
   "desc_hash": "0ea41d902a66db3dd37cbb67265e0892"
+ },
+ "SCRUM-981_gold_menu_shell.md": {
+  "key": "SCRUM-981",
+  "status": "Контроль качества",
+  "desc_hash": "738ebf0a4439ee2f0f963cc6680a45d5"
+ },
+ "SCRUM-986_victory_screen_centering.md": {
+  "key": "SCRUM-986",
+  "status": "Контроль качества",
+  "desc_hash": "2921b57247e530ad2a8317070a4b2419"
  }
 }

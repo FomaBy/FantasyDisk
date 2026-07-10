@@ -1,6 +1,6 @@
 # SCRUM-986 — Victory screen centering
 
-Статус: review
+Статус: done
 Jira: SCRUM-986
 Версия: 0.2.1
 Контур: Codex
