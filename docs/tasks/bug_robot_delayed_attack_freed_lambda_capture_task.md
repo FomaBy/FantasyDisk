@@ -1,6 +1,6 @@
 # BUG: Robot delayed attack callbacks emit freed lambda-capture errors
 
-Статус: new
+Статус: done
 Приоритет: high
 Роль: Back-end
 Контур: Claude
@@ -44,3 +44,36 @@ ERROR, утечек и обращения к освобождённым объе
 - Усилить focused lifecycle assertion так, чтобы этот дефект не оставался
   exit-0 false-green.
 - Результат закоммичен, запушен в `origin/dev` и возвращён на независимый QA.
+
+## Результат (SCRUM-1034)
+
+Root cause: отложенные удары `_fire_robot_magnetic_anchor` и
+`_fire_robot_compression_line` вызывали импакт из `tween_callback`-лямбды,
+которая ПРЯМО захватывала Node-ссылки на VFX (telegraph/tether и left/right).
+Эти VFX само-освобождаются раньше `grenade_delay`, поэтому Godot подставлял
+`null` и печатал engine-ERROR «Lambda capture at index N was freed», а suite всё
+равно возвращал exit 0 (false-green).
+
+Фикс (канон SCRUM-551, как `_fire_prism_rift`/`_fire_reactor_vent_step`): твины
+теперь зовут именованные методы `_resolve_robot_anchor` / `_resolve_robot_press`
+через `Callable(self, ...).bind()` только по instance id (owner + id VFX);
+VFX резолвятся `_release_effect_by_id`, владелец — `instance_from_id`. Оба
+резолвера отсекаются на `_effects_shutdown` (отложенный удар не наносится после
+`cleanup_effects`). Damage/pull/compression/rotation-числа и путь Реактора не
+тронуты.
+
+Усиление теста: `tests/robot_kit_test.gd::_test_delayed_callbacks_survive_vfx_teardown`
+принудительно рвёт все `player_weapon_effects` VFX ДО удара, прогоняет твин и
+проверяет, что отложенный урон всё равно ложится (teardown-safe), а после
+`cleanup_effects` — shutdown-гард гасит удар (старая лямбда без гарда ударила бы).
+
+Доказательство (fdengine, `tools/godot_gate.py`, `${pipestatus[1]}`+текст):
+- `robot_kit_test`: exit 0, «Lambda capture» 0 (было 1), SCRIPT ERROR/leaks 0, `Robot kit test passed`.
+- `runtime_smoke_weapon_mechanics_test`: exit 0, «Lambda capture» 0 (было 2), `passed`.
+- `runtime_smoke_test`: exit 0, «Lambda capture» 0, `Runtime smoke test passed`.
+- `weapon_integrity_test`: exit 0, `passed (17 classes, 51 weapons)`.
+- `global_survivability_balance_smoke_test`: exit 0, `passed` (митигация<98%, бессмертие недостижимо).
+- `live_combat_harness` (Robot-секция): «Lambda capture» 0 (было 6).
+
+Коммит: `3d3446924` (scripts/class_weapon.gd, tests/robot_kit_test.gd).
+Disk cleanup: none created (worktree убирает оркестратор).
