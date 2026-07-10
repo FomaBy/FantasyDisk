@@ -40,7 +40,6 @@ const REQUIRED_SEMANTIC_KEYS := [
 	"device_attack_speed_bonus",
 	"non_device_damage_mult",
 	"mine_extra_count",
-	"repair_radius_mult",
 	"dot_death_spread_duration",
 	"direct_damage_mult",
 	"beam_duration_mult",

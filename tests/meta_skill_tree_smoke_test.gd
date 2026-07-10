@@ -707,7 +707,7 @@ func _test_semantic_keystone_data_835() -> void:
 		"robot_k0": {"title": "Перегрев", "effects": {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15}},
 		"robot_k1": {"title": "Сверхпроводник", "effects": {"magnet_radius_mult": 0.50, "max_health_mult": -0.12}},
 		"engineer_k0": {"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
-		"engineer_k1": {"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
+		"engineer_k1": {"title": "Минёр", "effects": {"mine_extra_count": 2.0, "device_attack_speed_bonus": -0.12}},
 		"dark_mage_k0": {"title": "Пожинатель", "effects": {"dot_death_spread_duration": 2.0, "direct_damage_mult": -0.15}},
 		"dark_mage_k1": {"title": "Ненасытный луч", "effects": {"beam_duration_mult": 0.30, "explosion_radius_mult": -0.20}},
 		"guitarist_k0": {"title": "Хедлайнер", "effects": {"guitar_aura_radius_mult": 0.30, "knockback_mult": -0.50}},

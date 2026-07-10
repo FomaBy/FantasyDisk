@@ -1138,7 +1138,7 @@ func meta_context_for_weapon(weapon: Node, extra := {}) -> Dictionary:
 	context["damage_parameter"] = damage_param
 	context["damage_type"] = str(context.get("damage_type", _damage_type_for_parameter(damage_param)))
 	context["element"] = str(context.get("element", _element_for_weapon_context(wid, mode, weapon)))
-	context["is_device"] = mode in ["amp", "engineer_sentry_link", "engineer_repair_drone", "engineer_pressure_mines"]
+	context["is_device"] = mode in ["amp", "engineer_sentry_link", "engineer_orbit_drone", "engineer_pressure_mines"]
 	context["is_trap"] = mode in ["trap", "engineer_pressure_mines"]
 	context["is_pet"] = wid in ["summon_amulet", "homunculus_vial"] or str(context.get("summon_role", "")) != ""
 	context["is_briar"] = wid == "briar_staff" or str(context.get("pool_element", "")) == "briar"
@@ -1299,8 +1299,6 @@ func meta_radius_multiplier(context := {}) -> float:
 	var multiplier := 1.0
 	if mode == "robot_magnetic_anchor":
 		multiplier *= 1.0 + float(run_modifiers.get("magnet_radius_mult", 0.0))
-	if mode == "engineer_repair_drone":
-		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("repair_radius_mult", 0.0)))
 	if mode == "prism_rift":
 		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("prism_rift_radius_mult", 0.0)))
 	if mode in ["beam", "dot_beam"] or wid in ["dark_beam", "void_ray"]:
@@ -1639,7 +1637,6 @@ const META_SKILL_FLAT_MAP := {
 	"device_attack_speed_bonus": "device_attack_speed_bonus",
 	"non_device_damage_mult": "non_device_damage_mult",
 	"mine_extra_count": "mine_extra_count",
-	"repair_radius_mult": "repair_radius_mult",
 	"dot_death_spread_duration": "dot_death_spread_duration",
 	"direct_damage_mult": "direct_damage_mult",
 	"beam_duration_mult": "beam_duration_mult",

@@ -86,7 +86,7 @@ const POWER_WEIGHTS := {
 	"reactor_heat_damage_bonus": 0.37, "reactor_heat_incoming_damage": -0.45,
 	"magnet_radius_mult": 0.33,
 	"device_attack_speed_bonus": 0.45, "non_device_damage_mult": 0.35,
-	"mine_extra_count": 0.06, "repair_radius_mult": 0.25,
+	"mine_extra_count": 0.06,
 	"dot_death_spread_duration": 0.055, "direct_damage_mult": 0.45,
 	"beam_duration_mult": 0.30, "explosion_radius_mult": 0.25,
 	"guitar_aura_radius_mult": 0.80, "riff_streak_damage_bonus": 0.58,
@@ -161,7 +161,6 @@ const EFFECT_LABELS := {
 	"device_attack_speed_bonus": {"ru": "к темпу устройств", "pct": true},
 	"non_device_damage_mult": {"ru": "к личному урону вне устройств", "pct": true},
 	"mine_extra_count": {"ru": "дополнительных мин", "pct": false},
-	"repair_radius_mult": {"ru": "к радиусу ремонтной сети", "pct": true},
 	"dot_death_spread_duration": {"ru": "сек. продления DoT вокруг погибшей проклятой цели", "pct": false},
 	"direct_damage_mult": {"ru": "к прямому урону", "pct": true},
 	"beam_duration_mult": {"ru": "к длительности лучей", "pct": true},
@@ -404,7 +403,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"keystones": [
 			{"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
-			{"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
+			{"title": "Минёр", "effects": {"mine_extra_count": 2.0, "device_attack_speed_bonus": -0.12}},
 			{"title": "Перегретые стволы", "effects": {"projectile_speed_flat": 33.0, "attack_speed_mult": 0.05, "defense_flat": -0.022}},
 		],
 		"hidden": [

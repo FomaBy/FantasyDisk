@@ -1,9 +1,11 @@
 extends SceneTree
 
-# SCRUM-888: focused-тест турелей «Ключа Часового» (engineer_sentry_wrench).
+# SCRUM-888/905: focused-тест турелей «Часовой турели» (engineer_sentry_wrench).
 # Гарды:
-#   - развёртка по атаке создаёт турель (engineer_devices + player_weapon_effects);
-#   - жёсткий лимит 2: третья развёртка заменяет СТАРЕЙШУЮ турель;
+#   - развёртка по атаке создаёт турель (engineer_devices + player_weapon_effects)
+#     с боезапасом 15 (SCRUM-905);
+#   - предел парка реального Инженера = 2 + floor(summon_amount/4) (база ~12.5 →
+#     5); при полном парке деплой ПРОПУСКАЕТСЯ — старейшая НЕ заменяется;
 #   - турель автострельбой наносит урон БЛИЖАЙШЕМУ врагу в радиусе;
 #   - урон снаряда скейлится от Лидерства (summon_role-фактор);
 #   - чистка при завершении боя/уходе оружия — без осиротевших турелей.
@@ -72,7 +74,14 @@ func _test_turret_deploy_and_limit(errors: Array) -> void:
 	weapon.set_process(false)
 
 	if int(weapon.get("max_summons")) != 2:
-		errors.append("Expected runtime turret limit of 2 (max_summons_cap), got %d." % int(weapon.get("max_summons")))
+		errors.append("Expected turret base max_summons of 2, got %d." % int(weapon.get("max_summons")))
+	if int(weapon.get("sentry_shot_magazine")) != 15:
+		errors.append("Expected sentry_shot_magazine of 15, got %d." % int(weapon.get("sentry_shot_magazine")))
+
+	# Реальный Инженер: summon_amount ~12.5 → предел парка 2 + 3 = 5.
+	var expected_limit := int(weapon.call("_engineer_turret_limit", player))
+	if expected_limit != 5:
+		errors.append("Expected real-engineer turret limit of 5 (2 + floor(sa/4)), got %d." % expected_limit)
 
 	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
 	await process_frame
@@ -82,22 +91,20 @@ func _test_turret_deploy_and_limit(errors: Array) -> void:
 	var first_turret: Node = first_wave[0] if not first_wave.is_empty() else null
 	if first_turret != null and not first_turret.is_in_group("player_weapon_effects"):
 		errors.append("Expected deployed turret to be tracked in player_weapon_effects.")
+	if first_turret != null and int(first_turret.call("shots_left")) != 15:
+		errors.append("Expected fresh turret magazine of 15, got %s." % first_turret.call("shots_left"))
 
-	player.global_position = Vector2(520, 400)
-	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
-	await process_frame
-	if _alive_turrets().size() != 2:
-		errors.append("Expected 2 turrets after second deploy, got %d." % _alive_turrets().size())
-
-	player.global_position = Vector2(640, 400)
-	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
+	# Добиваем парк до предела и пробуем сверх: деплой пропускается, старейшая ЖИВА.
+	for deploy_index in range(expected_limit + 2):
+		player.global_position = Vector2(520.0 + 40.0 * float(deploy_index), 400)
+		weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
 	await process_frame
 	await process_frame
 	var final_wave := _alive_turrets()
-	if final_wave.size() != 2:
-		errors.append("Expected turret hard cap 2 after third deploy, got %d." % final_wave.size())
-	if first_turret != null and is_instance_valid(first_turret):
-		errors.append("Expected the OLDEST turret to be replaced by the third deploy.")
+	if final_wave.size() != expected_limit:
+		errors.append("Expected turret park capped at %d, got %d." % [expected_limit, final_wave.size()])
+	if first_turret == null or not is_instance_valid(first_turret):
+		errors.append("Expected the OLDEST turret to survive: full park must SKIP deploys, not retire.")
 
 	holder.queue_free()
 	await process_frame

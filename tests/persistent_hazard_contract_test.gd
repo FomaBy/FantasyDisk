@@ -29,7 +29,7 @@ func _initialize() -> void:
 	var errors: Array = []
 	await process_frame
 	await _test_multiple_damage_pools_can_overlap(errors)
-	await _test_engineer_mine_ticks_until_duration(errors)
+	await _test_engineer_mine_detonates_once_and_persists(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -72,7 +72,10 @@ func _test_multiple_damage_pools_can_overlap(errors: Array) -> void:
 	await process_frame
 
 
-func _test_engineer_mine_ticks_until_duration(errors: Array) -> void:
+func _test_engineer_mine_detonates_once_and_persists(errors: Array) -> void:
+	# SCRUM-907: контракт мин сменился — мина ПЕРСИСТЕНТНА (нет таймера жизни),
+	# детонирует ОДИН раз при контакте врага (немедленно, без safe-окна для
+	# врагов) и исчезает; без врага лежит дольше любого старого pool-таймера.
 	var weapon := ClassWeaponScript.new()
 	var owner := TestOwner.new()
 	var enemy := TestEnemy.new()
@@ -87,8 +90,8 @@ func _test_engineer_mine_ticks_until_duration(errors: Array) -> void:
 	weapon.damage_parameter = "damage"
 	weapon.aoe_radius = 64.0
 	weapon.damage_falloff = 1.0
-	weapon.pool_duration = 0.36
-	weapon.pool_tick_interval = 0.10
+	weapon.mine_trigger_radius = 84.0
+	weapon.mine_self_arm_delay = 3.0
 	weapon.visual_color = Color(0.4, 0.7, 1.0, 0.4)
 	weapon.call("_spawn_engineer_pressure_mine", owner, Vector2(220, 200), 0)
 	await process_frame
@@ -96,29 +99,32 @@ func _test_engineer_mine_ticks_until_duration(errors: Array) -> void:
 	var mine := _first_named_node("EngineerPressureMine") as Node2D
 	if mine == null:
 		errors.append("Expected engineer pressure mine to spawn.")
-	else:
-		if not bool(mine.get_meta("persistent_hazard", false)):
-			errors.append("Expected engineer mine to be tagged as a persistent hazard.")
-		if absf(float(mine.get_meta("pool_duration", 0.0)) - 0.36) > 0.01:
-			errors.append("Expected engineer mine duration metadata.")
+	elif not bool(mine.get_meta("persistent_hazard", false)):
+		errors.append("Expected engineer mine to be tagged as a persistent hazard.")
 
-	await create_timer(0.26).timeout
-	if enemy.damage_taken <= 8.01:
-		errors.append("Expected engineer mine to tick repeatedly before expiring, damage %.2f." % enemy.damage_taken)
-	if mine == null or not is_instance_valid(mine):
-		errors.append("Expected engineer mine to remain valid before configured duration expires.")
-	elif mine.is_queued_for_deletion():
-		errors.append("Expected engineer mine not to queue_free before configured duration expires.")
-
-	await create_timer(0.16).timeout
+	# Враг рядом: детонация одним взрывом (полный урон, falloff 1.0) и уборка.
+	await create_timer(0.30).timeout
+	if absf(enemy.damage_taken - 8.0) > 0.01:
+		errors.append("Expected single full-damage detonation of 8.0, got %.2f." % enemy.damage_taken)
 	if mine != null and is_instance_valid(mine) and not mine.is_queued_for_deletion():
-		errors.append("Expected engineer mine to clean up after configured duration expires.")
+		errors.append("Expected engineer mine to be consumed by detonation.")
+
+	# Без врага: мина лежит дольше старого pool-окна (персистентность).
+	enemy.queue_free()
+	await process_frame
+	weapon.call("_spawn_engineer_pressure_mine", owner, Vector2(400, 200), 1)
+	await process_frame
+	var lasting_mine := _first_named_node("EngineerPressureMine") as Node2D
+	if lasting_mine == null:
+		errors.append("Expected second engineer mine to spawn.")
+	await create_timer(0.6).timeout
+	if lasting_mine == null or not is_instance_valid(lasting_mine) or lasting_mine.is_queued_for_deletion():
+		errors.append("Expected idle engineer mine to persist (no lifetime timer).")
 
 	weapon.queue_free()
 	owner.queue_free()
-	enemy.queue_free()
-	if mine != null and is_instance_valid(mine):
-		mine.queue_free()
+	if lasting_mine != null and is_instance_valid(lasting_mine):
+		lasting_mine.queue_free()
 	await process_frame
 
 

@@ -30,6 +30,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("engineer_devices")
 	set_meta("persistent_mine", true)
+	set_meta("persistent_hazard", true)  # контракт SCRUM-854: наземный хазард
 	set_meta("network_weight", NETWORK_WEIGHT)  # SCRUM-908
 	z_index = 6
 

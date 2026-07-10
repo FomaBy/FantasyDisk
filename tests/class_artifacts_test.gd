@@ -9,7 +9,7 @@ extends SceneTree
 #   в) удаление: ни один из 17 легаси-id не остался в ARTIFACTS/SHOP_ITEMS;
 #   г) поведение самых рискованных хуков (анти-runaway §8.4):
 #      rage_hit_stacks (кап 5 + таймаут), duplicate_hit (жёсткий кап 0.65),
-#      mine_persistent_arm (кап 5 живых), acid_charge_stacks (кап 5),
+#      mine_cap_bonus (кап 6+2 живых, SCRUM-907), acid_charge_stacks (кап 5),
 #      repair_subroutine (порог заряда 8% max HP), chime_twin_toll (дедуп за каст),
 #      homunculus_reactor (вне боевого лимита саммонов).
 #
@@ -212,7 +212,7 @@ func _check_duplicate_hit_cap() -> void:
 	await process_frame
 
 
-# (г3) «Минная сумка»: не больше 5 живых персистентных мин.
+# (г3) «Минная сумка» (SCRUM-907 rework): +2 к базовому капу живых мин 6.
 func _check_persistent_mine_cap() -> void:
 	var player := _make_player("engineer", "engineer_pressure_mines")
 	await process_frame
@@ -221,19 +221,30 @@ func _check_persistent_mine_cap() -> void:
 		_errors.append("mine_persistent: у инженера не экипировалась минная сетка")
 		player.free()
 		return
-	(player.get("run_modifiers") as Dictionary)["mine_persistent_arm"] = 1.0
-	for i in range(8):
-		weapon.call("_spawn_engineer_pressure_mine", player, player.global_position + Vector2(40.0 * float(i), 120.0), i)
+	weapon.set_process(false)
+	# База: кап 6 — пятый деплой (2 мины/деплой) пропускается.
+	for _cast in range(5):
+		weapon.call("_fire_engineer_pressure_mines", player, Vector2.RIGHT)
+	if _alive_persistent_mine_count(weapon) != 6:
+		_errors.append("mine_cap: базовый кап должен держать 6 мин, живых %d" % _alive_persistent_mine_count(weapon))
+	weapon.call("cleanup_effects")
+	await process_frame
+	# «Минная сумка»: mine_cap_bonus 2 → кап 8.
+	(player.get("run_modifiers") as Dictionary)["mine_cap_bonus"] = 2.0
+	for _cast in range(6):
+		weapon.call("_fire_engineer_pressure_mines", player, Vector2.RIGHT)
+	if _alive_persistent_mine_count(weapon) != 8:
+		_errors.append("mine_cap: с «Минной сумкой» кап должен стать 8, живых %d" % _alive_persistent_mine_count(weapon))
+	player.free()
+	await process_frame
+
+
+func _alive_persistent_mine_count(weapon: Node) -> int:
 	var alive_mines := 0
 	for effect in weapon.call("_alive_effects"):
 		if (effect as Node).has_meta("persistent_mine"):
 			alive_mines += 1
-	if alive_mines > 5:
-		_errors.append("mine_persistent: %d живых мин > кап 5" % alive_mines)
-	if alive_mines < 5:
-		_errors.append("mine_persistent: после 8 установок должно жить ровно 5 мин, живых %d" % alive_mines)
-	player.free()
-	await process_frame
+	return alive_mines
 
 
 # (г4) Кислотные заряды (SCRUM-944 базовая механика + артефакт «Кислотный

@@ -657,7 +657,7 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["robot", "robot_hydraulic_press", "robot_compression_line", "shoot", "windup"],
 		["robot", "robot_reactor_core", "robot_reactor_vent", "shoot", "windup"],
 		["engineer", "engineer_sentry_wrench", "engineer_sentry_link", "shoot", "deploy"],
-		["engineer", "engineer_repair_drone", "engineer_repair_drone", "cast", "channel"],
+		["engineer", "engineer_repair_drone", "engineer_orbit_drone", "shoot", "deploy"],  # SCRUM-906
 		["engineer", "engineer_pressure_mines", "engineer_pressure_mines", "shoot", "deploy"],
 	]
 

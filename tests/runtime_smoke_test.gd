@@ -3505,7 +3505,7 @@ func _test_class_weapon_configs() -> void:
 		},
 		"engineer": {
 			"engineer_sentry_wrench": {"scene": "EngineerSentryWrench", "mode": "engineer_sentry_link", "sprite": "res://assets/sprites/weapons/engineer_sentry_wrench.png"},
-			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_repair_drone", "sprite": "res://assets/sprites/weapons/engineer_repair_drone.png"},
+			"engineer_repair_drone": {"scene": "EngineerRepairDrone", "mode": "engineer_orbit_drone", "sprite": "res://assets/sprites/weapons/engineer_repair_drone.png"},  # SCRUM-906
 			"engineer_pressure_mines": {"scene": "EngineerPressureMines", "mode": "engineer_pressure_mines", "sprite": "res://assets/sprites/weapons/engineer_pressure_mines.png"},
 		},
 		"dark_mage": {
@@ -4245,7 +4245,7 @@ func _test_unique_class_identity_patterns() -> void:
 			_fail("Expected Engineer weapons to use three distinct attack modes.")
 			return
 		engineer_modes[engineer_mode] = true
-	for required_engineer_mode in ["engineer_sentry_link", "engineer_repair_drone", "engineer_pressure_mines"]:
+	for required_engineer_mode in ["engineer_sentry_link", "engineer_orbit_drone", "engineer_pressure_mines"]:
 		if not engineer_modes.has(required_engineer_mode):
 			_fail("Expected Engineer to include unique %s attack mode." % required_engineer_mode)
 			return
@@ -5525,7 +5525,7 @@ func _test_engineer_weapon_mechanics() -> void:
 		return
 	var expected_modes := {
 		"engineer_sentry_wrench": "engineer_sentry_link",
-		"engineer_repair_drone": "engineer_repair_drone",
+		"engineer_repair_drone": "engineer_orbit_drone",  # SCRUM-906
 		"engineer_pressure_mines": "engineer_pressure_mines",
 	}
 	for weapon_id in expected_modes.keys():
@@ -5567,18 +5567,43 @@ func _test_engineer_weapon_mechanics() -> void:
 		await process_frame
 		var before_hp := float(enemy.get("health"))
 		var before_second_hp := float(second_enemy.get("health"))
-		var before_player_hp := float(engineer.get("health"))
-		engineer.set("health", maxf(1.0, before_player_hp - 15.0))
 		weapon.call("_attack")
-		await create_timer(1.35).timeout
+		if weapon_id == "engineer_repair_drone":
+			# SCRUM-906: орбитальный дрон бьёт КОНТАКТОМ — приклеиваем цели к
+			# дрону на ~0.7с (по одному хиту на цель за per-enemy кулдаун).
+			var drone: Node2D = null
+			for device in get_nodes_in_group("engineer_devices"):
+				if (device as Node).has_meta("orbit_drone"):
+					drone = device as Node2D
+					break
+			if drone == null:
+				_fail("Expected Engineer orbit drone to deploy.")
+				return
+			for _glue_frame in range(40):
+				if is_instance_valid(drone):
+					enemy.set("global_position", drone.global_position)
+					second_enemy.set("global_position", drone.global_position + Vector2(18, 0))
+				await process_frame
+		elif weapon_id == "engineer_pressure_mines":
+			# SCRUM-907: мины ложатся в случайное кольцо и лежат вечно — ведём
+			# врага на мину (враг подрывает сразу, без safe-окна).
+			var mine: Node2D = null
+			for device in get_nodes_in_group("engineer_devices"):
+				if (device as Node).has_meta("persistent_mine"):
+					mine = device as Node2D
+					break
+			if mine == null:
+				_fail("Expected Engineer pressure mines to deploy.")
+				return
+			enemy.set("global_position", mine.global_position)
+			await create_timer(0.45).timeout
+		else:
+			await create_timer(1.35).timeout
 		if float(enemy.get("health")) >= before_hp:
 			_fail("Expected Engineer weapon %s to damage its primary target." % weapon_id)
 			return
 		if weapon_id in ["engineer_sentry_wrench", "engineer_repair_drone"] and float(second_enemy.get("health")) >= before_second_hp:
 			_fail("Expected Engineer weapon %s to affect a secondary target." % weapon_id)
-			return
-		if weapon_id == "engineer_repair_drone" and float(engineer.get("health")) <= before_player_hp - 15.0:
-			_fail("Expected Engineer repair drone to restore health from damage.")
 			return
 		engineer.queue_free()
 		enemy.queue_free()
