@@ -1,26 +1,26 @@
 # Main Menu Title No-Overlap
 
 ## (1920, 1080)
-- MainMenuTitleLabel: `[P: (56.0, 44.0), S: (720.0, 270.0)]`
-- MainMenuStartButton: `[P: (72.0, 394.0), S: (380.0, 104.0)]`, gap=80.0
-- MainMenuSettingsButton: `[P: (72.0, 508.0), S: (380.0, 104.0)]`, gap=194.0
-- MainMenuSkillTreeButton: `[P: (72.0, 622.0), S: (380.0, 104.0)]`, gap=308.0
-- MainMenuPatchNotesButton: `[P: (72.0, 736.0), S: (380.0, 104.0)]`, gap=422.0
-- MainMenuCodexButton: `[P: (72.0, 850.0), S: (380.0, 104.0)]`, gap=536.0
-- MainMenuExitButton: `[P: (72.0, 964.0), S: (380.0, 104.0)]`, gap=650.0
+- MainMenuTitleLabel: `[P: (224.0, 193.0), S: (620.0, 170.0)]`
+- MainMenuStartButton: `[P: (224.0, 387.0), S: (380.0, 104.0)]`, gap=24.0
+- MainMenuSettingsButton: `[P: (624.0, 387.0), S: (380.0, 104.0)]`, gap=24.0
+- MainMenuSkillTreeButton: `[P: (224.0, 509.0), S: (380.0, 104.0)]`, gap=146.0
+- MainMenuPatchNotesButton: `[P: (624.0, 509.0), S: (380.0, 104.0)]`, gap=146.0
+- MainMenuCodexButton: `[P: (224.0, 631.0), S: (380.0, 104.0)]`, gap=268.0
+- MainMenuExitButton: `[P: (624.0, 631.0), S: (380.0, 104.0)]`, gap=268.0
 ## (2560, 1440)
-- MainMenuTitleLabel: `[P: (56.0, 44.0), S: (720.0, 270.0)]`
-- MainMenuStartButton: `[P: (72.0, 394.0), S: (380.0, 104.0)]`, gap=80.0
-- MainMenuSettingsButton: `[P: (72.0, 508.0), S: (380.0, 104.0)]`, gap=194.0
-- MainMenuSkillTreeButton: `[P: (72.0, 622.0), S: (380.0, 104.0)]`, gap=308.0
-- MainMenuPatchNotesButton: `[P: (72.0, 736.0), S: (380.0, 104.0)]`, gap=422.0
-- MainMenuCodexButton: `[P: (72.0, 850.0), S: (380.0, 104.0)]`, gap=536.0
-- MainMenuExitButton: `[P: (72.0, 964.0), S: (380.0, 104.0)]`, gap=650.0
+- MainMenuTitleLabel: `[P: (299.0, 257.0), S: (720.0, 220.0)]`
+- MainMenuStartButton: `[P: (299.0, 509.0), S: (380.0, 104.0)]`, gap=32.0
+- MainMenuSettingsButton: `[P: (699.0, 509.0), S: (380.0, 104.0)]`, gap=32.0
+- MainMenuSkillTreeButton: `[P: (299.0, 631.0), S: (380.0, 104.0)]`, gap=154.0
+- MainMenuPatchNotesButton: `[P: (699.0, 631.0), S: (380.0, 104.0)]`, gap=154.0
+- MainMenuCodexButton: `[P: (299.0, 753.0), S: (380.0, 104.0)]`, gap=276.0
+- MainMenuExitButton: `[P: (699.0, 753.0), S: (380.0, 104.0)]`, gap=276.0
 ## (1080, 1920)
-- MainMenuTitleLabel: `[P: (56.0, 44.0), S: (720.0, 270.0)]`
-- MainMenuStartButton: `[P: (72.0, 623.0), S: (380.0, 104.0)]`, gap=309.0
-- MainMenuSettingsButton: `[P: (72.0, 737.0), S: (380.0, 104.0)]`, gap=423.0
-- MainMenuSkillTreeButton: `[P: (72.0, 851.0), S: (380.0, 104.0)]`, gap=537.0
-- MainMenuPatchNotesButton: `[P: (72.0, 965.0), S: (380.0, 104.0)]`, gap=651.0
-- MainMenuCodexButton: `[P: (72.0, 1079.0), S: (380.0, 104.0)]`, gap=765.0
-- MainMenuExitButton: `[P: (72.0, 1193.0), S: (380.0, 104.0)]`, gap=879.0
+- MainMenuTitleLabel: `[P: (145.0, 332.0), S: (720.0, 220.0)]`
+- MainMenuStartButton: `[P: (145.0, 584.0), S: (380.0, 104.0)]`, gap=32.0
+- MainMenuSettingsButton: `[P: (545.0, 584.0), S: (380.0, 104.0)]`, gap=32.0
+- MainMenuSkillTreeButton: `[P: (145.0, 706.0), S: (380.0, 104.0)]`, gap=154.0
+- MainMenuPatchNotesButton: `[P: (545.0, 706.0), S: (380.0, 104.0)]`, gap=154.0
+- MainMenuCodexButton: `[P: (145.0, 828.0), S: (380.0, 104.0)]`, gap=276.0
+- MainMenuExitButton: `[P: (545.0, 828.0), S: (380.0, 104.0)]`, gap=276.0

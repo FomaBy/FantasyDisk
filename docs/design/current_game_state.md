@@ -1613,20 +1613,29 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 
 | Экран | Описание |
 | --- | --- |
-| Главное меню | Эпичный battle-art фон и левая колонка из шести стандартных action-кнопок: начать новую игру, настройки, древо умений, что нового, кодекс, выйти из игры |
+| Главное меню | SCRUM-981: эпичный battle-art фон внутри полой `meta40/frame_border.png` рамы; логотип и шесть действий размещены в safe-zone как responsive сетка 2×3 (380×72 на 720p, 380×104 на 1080p/1440p), с явной 2D focus-навигацией |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe dossier; между dossier и нижней carousel находится SCRUM-980 `HS4AscensionFrame` с focusable `-`/value/`+` и keyboard/gamepad/mouse-scroll описанием выбранного уровня в отдельной content-zone; strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance сохраняются |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
-| Карта маршрута | Вертикальная карта с иконками и tooltip |
+| Карта маршрута | SCRUM-981: вертикальная карта внутри общей полой gold shell; header/title, боевой resource HUD, scroll/canvas, отдельная scrollbar lane и FAB находятся в точных safe-зонах, горизонтальный scroll отключён |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
 | Level-up | Экран выбора 1 из 3 наград с частицами, advisor-акцентом и отложенным выбором через нижнюю кнопку; SCRUM-985 убирает крупную внешнюю раму, оставляет яркий arcane-lab фон и локальные карточки/сокеты, а reward icon строго удерживает внутри socket safe-zone; visible formula-driven effect-preview и полноразмерная кликабельная карточка сохранены |
-| Награда за бой / элитку | Боевые награды и трофеи элитки показывают 3 отдельные framed-карточки SCRUM-338; иконка, заголовок, описание, тир артефакта и `Получить`/choice content сидят внутри metadata safe-zone, а вся карточка остается кликабельной и фокусируемой |
+| Награда за бой / элитку | Обычная Battle Reward страница получила SCRUM-981 outer gold shell и compact 720–900p card tier; три локальные карточки остаются полностью кликабельными внутри body safe-zone. Elite/boss reward variants сохраняют собственные child-task contracts |
 | Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
-| Отдых | Лечение или защитный бонус поверх canonical system/campfire backdrop `ui_backdrop_system_cathedral.png`; описание бонуса находится внутри SCRUM-437 wide economy choice-card content-zone |
+| Отдых | SCRUM-981 outer gold shell поверх canonical system/campfire backdrop; общий resource HUD и FAB занимают отдельную верхнюю safe-полосу, лечение/защитный бонус/Back остаются внутри scroll-safe локальной панели с compact tier |
 | Pause menu / stats | В активном бою Escape сразу открывает досье/доску персонажа с левыми кнопками управления забегом; старое standalone run menu не появляется поверх или вместо доски. На небоевых run-экранах компактное run menu остаётся оболочкой с Continue/Досье/Settings/End Run/Main Menu. Досье показывает кнопки слева, приоритетные базовые характеристики сверху с бейджем/tooltip, производные параметры справа в логических группах; SCRUM-839 закрепляет увеличенные readable rows/chips/icons внутри существующей SCRUM-580/SCRUM-486 safe-zone без новых bitmap frame assets |
-| Смерть | Завершение забега; SCRUM-330 result crest/modal kit подготовлен как Design package |
-| Победа | Русский пользовательский итог без внутренних ID: победа над боссом, очки наследия, прогресс Возвышения и смысл новой награды; SCRUM-330 result crest/modal kit подготовлен как Design package |
+| Смерть | SCRUM-981 outer gold shell вокруг локального Defeat result modal; summary и responsive action plate остаются внутри frame safe-zone |
+| Победа | SCRUM-981 outer gold shell вокруг локального Victory result modal; русский итог, crest, summary и responsive action plate остаются внутри frame safe-zone |
+
+SCRUM-981 применяет один runtime asset
+`assets/sprites/ui/meta40/frame_border.png` как полую outer shell (`1536×1024`,
+160 px rails, `draw_center=false`) к Main Menu, Route Map, Rest, Upgrade,
+Battle Reward, Victory и Defeat. Точные safe-зоны: `[133,113,1014,494]` @720p,
+`[200,169,1520,742]` @1080p, `[267,225,2026,990]` @1440p. Codex,
+Level Up, Combat/HUD, transient overlays и specialist child-task screens остаются
+явными исключениями. Source/evidence:
+`docs/design/mockups/scrum981_gold_menu_shell/`, `build/qa/scrum981/`.
 
 HP, XP и деньги должны оставаться видимыми на карте, в событиях и в магазине.
 

@@ -117,11 +117,7 @@ const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
 const MAIN_MENU_BUTTON_COUNT := 6.0
-const MAIN_MENU_BUTTON_SEPARATION := 10.0
-const MAIN_MENU_ACTION_COLUMN_HEIGHT := STANDARD_ACTION_BUTTON_HEIGHT * MAIN_MENU_BUTTON_COUNT + MAIN_MENU_BUTTON_SEPARATION * (MAIN_MENU_BUTTON_COUNT - 1.0)
-const MAIN_MENU_LOGO_RECT := Rect2(56.0, 44.0, 720.0, 270.0)
-const MAIN_MENU_LOGO_ACTION_GAP := 80.0
-const MAIN_MENU_ACTION_BOTTOM_MARGIN := 10.0
+const GOLD_SHELL_SCREEN_IDS := ["campfire", "upgrade", "artifact_reward", "victory", "death"]
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
 const READABILITY_FONT_SCALE_MIN := 1.32
@@ -475,22 +471,67 @@ func _init(game_ref) -> void:
 	game = game_ref
 
 
-# SCRUM-484: координатная спека @2560×1440 — блок Меню/Навигация (главное меню).
-# Документирующие const рядом с билдером: x,y,w,h каждого слота контента @2K, плюс
-# safe-area (пустая зона внутри рамки, куда можно класть контент). База дизайна 2K
-# (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
-# вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
-# Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
-# 6 кнопок 380×104, separation 10 → высота 674; top рассчитывается ниже лого).
+# SCRUM-981 supersedes the historical SCRUM-484 single action column. Main
+# Menu now follows the UI Director gold-shell contract: logo and six actions
+# occupy the real frame interior as an exact responsive 2×3 grid.
 
 
-func _main_menu_actions_top(viewport_size: Vector2, title_bottom: float) -> float:
-	var preferred_top := roundf((viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT) * 0.5)
-	var min_top := roundf(title_bottom + MAIN_MENU_LOGO_ACTION_GAP)
-	var max_top := roundf(viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT - MAIN_MENU_ACTION_BOTTOM_MARGIN)
-	if max_top >= min_top:
-		return clampf(maxf(preferred_top, min_top), min_top, max_top)
-	return maxf(0.0, max_top)
+func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
+	# SCRUM-981: exact UI Director content-zone contract for the three acceptance
+	# resolutions. Intermediate sizes select the nearest readable tier while the
+	# outer safe rect remains continuously derived from the 9-slice source.
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	var safe_rect := Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, viewport_size.x - margins.x - margins.z), maxf(1.0, viewport_size.y - margins.y - margins.w))
+	)
+	var is_720 := viewport_size.y < 900.0
+	var is_1440 := viewport_size.y >= 1200.0
+	var edge_pad := 32.0 if is_1440 else 24.0
+	var logo_size := Vector2(460.0, 110.0) if is_720 else (Vector2(720.0, 220.0) if is_1440 else Vector2(620.0, 170.0))
+	var button_height := 72.0 if is_720 else 104.0
+	var column_gap := 16.0 if is_720 else 20.0
+	var row_gap := 14.0 if is_720 else 18.0
+	var logo_rect := Rect2(safe_rect.position + Vector2(edge_pad, edge_pad), logo_size)
+	var grid_rect := Rect2(
+		Vector2(logo_rect.position.x, logo_rect.end.y + (16.0 if is_720 else (32.0 if is_1440 else 24.0))),
+		Vector2(MAIN_MENU_ACTION_BUTTON_WIDTH * 2.0 + column_gap, button_height * 3.0 + row_gap * 2.0)
+	)
+	var version_size := Vector2(112.0, 24.0) if is_720 else (Vector2(124.0, 24.0) if is_1440 else Vector2(126.0, 24.0))
+	var version_offset := Vector2(152.0, 64.0) if is_720 else (Vector2(188.0, 88.0) if is_1440 else Vector2(174.0, 72.0))
+	return {
+		"safe_rect": safe_rect,
+		"logo_rect": logo_rect,
+		"grid_rect": grid_rect,
+		"button_height": button_height,
+		"column_gap": column_gap,
+		"row_gap": row_gap,
+		"version_rect": Rect2(safe_rect.end - version_offset, version_size),
+	}
+
+
+func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action_box: GridContainer, version_label: Label, buttons: Array) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var metrics := _main_menu_gold_shell_metrics(viewport_size)
+	var logo_rect: Rect2 = metrics["logo_rect"]
+	var grid_rect: Rect2 = metrics["grid_rect"]
+	_apply_control_rect(title_logo, logo_rect)
+	_apply_control_rect(action_box, grid_rect)
+	action_box.custom_minimum_size = grid_rect.size
+	action_box.add_theme_constant_override("h_separation", int(metrics["column_gap"]))
+	action_box.add_theme_constant_override("v_separation", int(metrics["row_gap"]))
+	for candidate in buttons:
+		var button := candidate as Button
+		if button != null:
+			_set_action_button_size(button, MAIN_MENU_ACTION_BUTTON_WIDTH, float(metrics["button_height"]))
+	var safe_rect: Rect2 = metrics["safe_rect"]
+	_apply_control_rect(version_label, metrics["version_rect"])
+	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_screen_id", "main_menu")
 
 
 func _show_main_menu() -> void:
@@ -538,47 +579,19 @@ func _show_main_menu() -> void:
 
 	var title_logo := TextureRect.new()
 	title_logo.name = "MainMenuTitleLabel"
-	title_logo.anchor_left = 0.0
-	title_logo.anchor_top = 0.0
-	title_logo.anchor_right = 0.0
-	title_logo.anchor_bottom = 0.0
-	title_logo.offset_left = MAIN_MENU_LOGO_RECT.position.x
-	title_logo.offset_top = MAIN_MENU_LOGO_RECT.position.y
-	title_logo.offset_right = MAIN_MENU_LOGO_RECT.position.x + MAIN_MENU_LOGO_RECT.size.x
-	title_logo.offset_bottom = MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y
 	title_logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	title_logo.texture = game._cached_texture("res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png")
 	title_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_logo)
 
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var action_top := _main_menu_actions_top(viewport_size, MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y)
-	var layout := MarginContainer.new()
-	layout.anchor_left = 0.0
-	layout.anchor_top = 0.0
-	layout.anchor_right = 0.0
-	layout.anchor_bottom = 0.0
-	layout.offset_left = 72.0
-	layout.offset_top = action_top
-	layout.offset_right = 452.0
-	layout.offset_bottom = action_top + MAIN_MENU_ACTION_COLUMN_HEIGHT
-	layout.add_theme_constant_override("margin_left", 0)
-	layout.add_theme_constant_override("margin_top", 0)
-	layout.add_theme_constant_override("margin_right", 0)
-	layout.add_theme_constant_override("margin_bottom", 0)
-	root.add_child(layout)
-
-	var action_box := VBoxContainer.new()
+	var action_box := GridContainer.new()
 	action_box.name = "MainMenuActions"
-	action_box.custom_minimum_size = Vector2(380, MAIN_MENU_ACTION_COLUMN_HEIGHT)
-	action_box.alignment = BoxContainer.ALIGNMENT_BEGIN
-	action_box.add_theme_constant_override("separation", int(MAIN_MENU_BUTTON_SEPARATION))
-	layout.add_child(action_box)
+	action_box.columns = 2
+	root.add_child(action_box)
 
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
-	_set_action_button_size(start_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	start_button.pressed.connect(func() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
@@ -589,7 +602,6 @@ func _show_main_menu() -> void:
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
-	_set_action_button_size(settings_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	settings_button.pressed.connect(func() -> void:
 		_show_settings_menu(SETTINGS_RETURN_MAIN_MENU)
 	)
@@ -598,23 +610,14 @@ func _show_main_menu() -> void:
 	var version_label := Label.new()
 	version_label.name = "MainMenuVersionLabel"
 	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
-	version_label.anchor_left = 1.0
-	version_label.anchor_top = 1.0
-	version_label.anchor_right = 1.0
-	version_label.anchor_bottom = 1.0
-	version_label.offset_left = -120.0
-	version_label.offset_top = -34.0
-	version_label.offset_right = -16.0
-	version_label.offset_bottom = -10.0
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	version_label.add_theme_font_size_override("font_size", 12)
 	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
 	var skill_tree_button := _make_button("Атлас героев")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
-	_set_action_button_size(skill_tree_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	skill_tree_button.pressed.connect(_show_atlas_screen)
 	action_box.add_child(skill_tree_button)
 
@@ -624,7 +627,6 @@ func _show_main_menu() -> void:
 	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
 	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
 	patch_notes_button.name = "MainMenuPatchNotesButton"
-	_set_action_button_size(patch_notes_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	patch_notes_button.pressed.connect(func() -> void:
 		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
 		var saved: Dictionary = settings_module.load_settings()
@@ -636,22 +638,23 @@ func _show_main_menu() -> void:
 
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
-	_set_action_button_size(codex_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
-	_set_action_button_size(exit_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	exit_button.pressed.connect(_show_quit_confirmation_dialog)
 	action_box.add_child(exit_button)
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
-	# SCRUM-813: главное меню проходимо с геймпада/стрелок — вертикальный круг кнопок,
-	# стартовый фокус «Начать новую игру»; B/Esc = подтверждение выхода (ui_escape_action).
-	_wire_run_ui_focus([
+	var action_buttons := [
 		start_button, settings_button, skill_tree_button, patch_notes_button, codex_button, exit_button,
-	], false, [], start_button)
+	]
+	_layout_main_menu_gold_shell(root, title_logo, action_box, version_label, action_buttons)
+	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
+	_wire_main_menu_grid_focus(action_buttons, start_button)
+	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
+	_unified_add_frame(root, "MainMenu")
 
 
 # SCRUM-484: координатная спека @2560×1440 — подтверждение выхода (модалка).
@@ -2536,6 +2539,22 @@ func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute
 			_show_attribute_shop(return_action)
 	)
 	root.add_child(fab)
+	if root.has_meta("gold_shell_content_rect"):
+		_layout_gold_shell_fab(root, fab)
+		root.resized.connect(_layout_gold_shell_fab.bind(root, fab))
+		var shell_frame := root.find_child("*Frame", false, false) as Panel
+		if shell_frame != null and shell_frame.has_meta("gold_shell_asset"):
+			root.move_child(shell_frame, root.get_child_count() - 1)
+
+
+func _layout_gold_shell_fab(root: Control, fab: Button) -> void:
+	if root == null or fab == null or not is_instance_valid(root) or not is_instance_valid(fab):
+		return
+	var safe_rect := _unified_safe_rect_for_size(root.size)
+	fab.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	fab.position = Vector2(safe_rect.end.x - 96.0, safe_rect.position.y + 8.0)
+	fab.size = Vector2(72.0, 88.0)
+	fab.set_meta("gold_shell_content_rect", safe_rect)
 
 
 func _show_atlas_screen() -> void:
@@ -3147,9 +3166,26 @@ func _unified_add_background(root: Control, screen_id: String, shade_alpha := 0.
 
 func _unified_safe_margins() -> Vector4:
 	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	return _unified_safe_margins_for_size(vp)
+
+
+func _unified_safe_margins_for_size(viewport_size: Vector2) -> Vector4:
 	return _scaled_frame_margins_xy(
-		ATLAS_FRAME_SOURCE_SIZE, vp,
+		ATLAS_FRAME_SOURCE_SIZE, viewport_size,
 		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+
+
+func _unified_safe_rect() -> Rect2:
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	return _unified_safe_rect_for_size(viewport_size)
+
+
+func _unified_safe_rect_for_size(viewport_size: Vector2) -> Rect2:
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	return Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, viewport_size.x - margins.x - margins.z), maxf(1.0, viewport_size.y - margins.y - margins.w))
+	)
 
 
 func _unified_make_safe_area(root: Control, prefix: String) -> MarginContainer:
@@ -3169,11 +3205,27 @@ func _unified_add_frame(root: Control, prefix: String) -> Panel:
 	var frame := Panel.new()
 	frame.name = "%sFrame" % prefix
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
-	frame.add_theme_stylebox_override("panel", _atlas_frame_style(_unified_safe_margins()))
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	frame.set_meta("gold_shell_asset", META40_FRAME_BORDER_PATH)
+	frame.set_meta("gold_shell_draw_center", false)
 	root.add_child(frame)
+	_refresh_unified_frame(root, frame)
+	root.resized.connect(_refresh_unified_frame.bind(root, frame))
 	return frame
+
+
+func _refresh_unified_frame(root: Control, frame: Panel) -> void:
+	if root == null or frame == null or not is_instance_valid(root) or not is_instance_valid(frame):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	frame.add_theme_stylebox_override("panel", _atlas_frame_style(margins))
+	frame.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_content_rect", safe_rect)
 
 
 # Кожаный чип-заголовок экрана: эмблема PixelLab + титул золотом (шапка как
@@ -7167,6 +7219,29 @@ func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], ini
 		target.call_deferred("grab_focus")
 
 
+func _wire_main_menu_grid_focus(buttons: Array, initial: Control = null) -> void:
+	# SCRUM-981: deterministic 2×3 navigation mirrors the visual grid. Horizontal
+	# movement swaps columns; vertical movement wraps within the same column.
+	_ensure_run_ui_gamepad_bindings()
+	var grid := _collect_focusable_controls(buttons)
+	if grid.size() != 6:
+		_wire_run_ui_focus(grid, false, [], initial)
+		return
+	for index in range(grid.size()):
+		var current := grid[index]
+		var row := index / 2
+		var column := index % 2
+		var other_column := row * 2 + (1 - column)
+		var row_above := (row - 1 + 3) % 3
+		var row_below := (row + 1) % 3
+		current.focus_neighbor_left = (grid[other_column] as Control).get_path()
+		current.focus_neighbor_right = (grid[other_column] as Control).get_path()
+		current.focus_neighbor_top = (grid[row_above * 2 + column] as Control).get_path()
+		current.focus_neighbor_bottom = (grid[row_below * 2 + column] as Control).get_path()
+	var target := initial if initial != null and is_instance_valid(initial) else grid[0]
+	(target as Control).call_deferred("grab_focus")
+
+
 # SCRUM-812: собирает валидные фокусируемые контролы (не disabled), проставляя им
 # FOCUS_ALL. Порядок сохраняется — соседи разводятся по позиции в списке.
 func _collect_focusable_controls(controls: Array) -> Array[Control]:
@@ -7273,10 +7348,11 @@ func _show_reward_screen() -> void:
 	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward", _atlas_chip_style(0.94, 18.0))
 	_create_menu_run_hud()
 	var rewards_row := HBoxContainer.new()
+	var reward_card_size := _battle_reward_card_size()
 	rewards_row.name = "BattleRewardCardsRow"
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_CARD_SIZE.y)
+	rewards_row.custom_minimum_size = Vector2(0.0, reward_card_size.y)
 	rewards_row.add_theme_constant_override("separation", 18)
 	box.add_child(rewards_row)
 	var reward_buttons: Array[Button] = []
@@ -8101,7 +8177,7 @@ func _add_level_up_badge(content: Control, badge_kind: String, badge_rect: Rect2
 func _make_battle_reward_card(reward: Dictionary) -> Button:
 	var button := Button.new()
 	button.text = ""
-	button.custom_minimum_size = REWARD_CARD_SIZE
+	button.custom_minimum_size = _battle_reward_card_size()
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
@@ -8191,6 +8267,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
 	content.add_child(action_label)
+	_resize_reward_card(button, button.custom_minimum_size)
 	return button
 
 
@@ -8842,7 +8919,7 @@ func _show_rest_screen() -> void:
 	var rest_root := rest_panel.get_parent() as Control if rest_panel != null and rest_panel.get_parent() != null else null
 	if rest_root != null:
 		_create_upgrade_fab(rest_root, _show_rest_screen)
-	var rest_card_size := _economy_choice_display_size(2)
+	var rest_card_size := _gold_shell_economy_choice_display_size(2)
 	var choices := _make_economy_choice_row("RestChoiceRow", rest_card_size, 2)
 	box.add_child(choices)
 	var heal_button := _make_economy_choice_card("Передышка", "Восстановить 35% максимального здоровья.", "Отдохнуть", "RestHealButton", rest_card_size)
@@ -8875,7 +8952,7 @@ func _show_upgrade_screen() -> void:
 	# upgrade_panel @2K-рамки; карточки — чип-ряды общей фабрики.
 	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
-	var upgrade_card_size := _economy_choice_display_size(3)
+	var upgrade_card_size := _gold_shell_economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
 	box.add_child(choices)
 	var index := 0
@@ -9090,7 +9167,7 @@ func _show_victory_screen() -> void:
 		_show_main_menu()
 	var restart_button := _make_button("Новый забег")
 	restart_button.name = "VictoryNewRunButton"
-	_set_action_button_size(restart_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
+	_set_action_button_size(restart_button, _pause_end_result_button_width("victory"), _pause_end_result_button_height())
 	restart_button.pressed.connect(finish_run)
 	(result_layout["button_slot"] as Control).add_child(restart_button)
 	game.ui_escape_action = finish_run
@@ -9122,7 +9199,7 @@ func _show_death_screen(reason := "") -> void:
 		_show_main_menu()
 	var retry_button := _make_button("Начать заново")
 	retry_button.name = "DeathRetryButton"
-	_set_action_button_size(retry_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
+	_set_action_button_size(retry_button, _pause_end_result_button_width("death"), _pause_end_result_button_height())
 	retry_button.pressed.connect(back_to_menu)
 	(result_layout["button_slot"] as Control).add_child(retry_button)
 	game.ui_escape_action = back_to_menu
@@ -9140,6 +9217,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 	var summary_parent := _result_summary_parent(box)
 	var target: VBoxContainer = summary_parent if summary_parent != null else box
 	var compact := force_compact or summary_parent != null
+	var ultra_compact: bool = compact and game.get_viewport().get_visible_rect().size.y < 800.0
 
 	if outcome != "":
 		var outcome_label := Label.new()
@@ -9147,7 +9225,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 17, 12, 22))
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (13 if compact else 17), 10 if ultra_compact else 12, 22))
 		outcome_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(outcome_label)
@@ -9155,8 +9233,8 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 	var grid := GridContainer.new()
 	grid.name = "RunSummaryStats"
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 14 if compact else 28)
-	grid.add_theme_constant_override("v_separation", 2 if compact else 6)
+	grid.add_theme_constant_override("h_separation", 8 if ultra_compact else (14 if compact else 28))
+	grid.add_theme_constant_override("v_separation", 0 if ultra_compact else (2 if compact else 6))
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact else Control.SIZE_SHRINK_CENTER
 	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	target.add_child(grid)
@@ -9177,7 +9255,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 16, 12, 20))
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (12 if compact else 16), 10 if ultra_compact else 12, 20))
 		name_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
@@ -9185,7 +9263,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 12, 20))
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (13 if compact else 16), 10 if ultra_compact else 12, 20))
 		value_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
@@ -9202,7 +9280,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 14, 12, 18))
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (11 if compact else 14), 10 if ultra_compact else 12, 18))
 		artifacts_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(artifacts_label)
@@ -11365,6 +11443,44 @@ func _current_ui_screen_name() -> String:
 	return "World"
 
 
+func _uses_gold_menu_shell(screen_background_id: String) -> bool:
+	return GOLD_SHELL_SCREEN_IDS.has(screen_background_id)
+
+
+func _gold_menu_shell_prefix(screen_background_id: String) -> String:
+	return {
+		"campfire": "Rest",
+		"upgrade": "Upgrade",
+		"artifact_reward": "BattleReward",
+		"victory": "Victory",
+		"death": "Defeat",
+	}.get(screen_background_id, screen_background_id.capitalize())
+
+
+func _gold_shell_menu_hud_reserve(screen_background_id := "") -> float:
+	return _gold_shell_menu_hud_reserve_for_size(screen_background_id, game.get_viewport().get_visible_rect().size)
+
+
+func _gold_shell_menu_hud_reserve_for_size(screen_background_id: String, viewport_size: Vector2) -> float:
+	var viewport_height: float = viewport_size.y
+	if viewport_height < 900.0:
+		return 96.0 if screen_background_id == "campfire" else 76.0
+	if viewport_height >= 1200.0:
+		return 140.0
+	return 112.0
+
+
+func _gold_shell_panel_size(target_size: Vector2, inset := Vector2(16.0, 12.0), top_reserve := 0.0) -> Vector2:
+	return _gold_shell_panel_size_for_safe(target_size, _unified_safe_rect().size, inset, top_reserve)
+
+
+func _gold_shell_panel_size_for_safe(target_size: Vector2, safe_size: Vector2, inset: Vector2, top_reserve: float) -> Vector2:
+	return Vector2(
+		minf(target_size.x, maxf(1.0, safe_size.x - inset.x * 2.0)),
+		minf(target_size.y, maxf(1.0, safe_size.y - inset.y * 2.0 - top_reserve))
+	)
+
+
 func _create_menu_box(title: String, subtitle: String, screen_background_id := "", panel_style_override: StyleBox = null, panel_display_size := Vector2.ZERO) -> VBoxContainer:
 	game._clear_ui()
 
@@ -11373,6 +11489,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
+	root.name = "MenuScreen_%s" % screen_background_id if screen_background_id != "" else "MenuScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
@@ -11392,10 +11509,14 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	var result_panel := _is_result_screen_background(screen_background_id)
 	var display_size := _pause_end_modal_display_size(screen_background_id) if pause_end_panel else Vector2.ZERO
 	var half_size := panel_display_size * 0.5 if panel_display_size != Vector2.ZERO else (display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0)))
+	var shell_top_reserve := _gold_shell_menu_hud_reserve(screen_background_id) if _uses_gold_menu_shell(screen_background_id) and not result_panel else 0.0
+	if _uses_gold_menu_shell(screen_background_id):
+		var shell_panel_size := _gold_shell_panel_size(half_size * 2.0, Vector2(16.0, 0.0), shell_top_reserve)
+		half_size = shell_panel_size * 0.5
 	panel.offset_left = -half_size.x
-	panel.offset_top = -half_size.y
+	panel.offset_top = -half_size.y + shell_top_reserve * 0.5
 	panel.offset_right = half_size.x
-	panel.offset_bottom = half_size.y
+	panel.offset_bottom = half_size.y + shell_top_reserve * 0.5
 	if pause_end_panel:
 		panel.name = "PauseEndModalPanel_%s" % screen_background_id
 		panel.clip_contents = true
@@ -11406,14 +11527,18 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	elif panel_style_override != null:
 		panel.add_theme_stylebox_override("panel", panel_style_override)
 	else:
-		panel.add_theme_stylebox_override("panel", _economy_panel_style() if economy_panel else _panel_style())
+		var compact_gold_panel: bool = economy_panel and _uses_gold_menu_shell(screen_background_id) \
+			and game.get_viewport().get_visible_rect().size.y < 800.0
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 6.0) if compact_gold_panel else (_economy_panel_style() if economy_panel else _panel_style()))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", (8 if result_panel and display_size.y < 660.0 else 10) if result_panel else (12 if pause_end_panel else (16 if economy_panel else 14)))
+	var compact_gold_layout: bool = economy_panel and _uses_gold_menu_shell(screen_background_id) \
+		and game.get_viewport().get_visible_rect().size.y < 800.0
+	box.add_theme_constant_override("separation", (8 if result_panel and display_size.y < 660.0 else 10) if result_panel else (12 if pause_end_panel else ((8 if compact_gold_layout else 16) if economy_panel else 14)))
 	if pause_end_panel and not result_panel:
 		var scroll := ScrollContainer.new()
 		scroll.name = "PauseEndModalScroll_%s" % screen_background_id
@@ -11466,8 +11591,139 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	box.add_child(subtitle_label)
 	if result_panel:
 		_configure_result_menu_layout(box, screen_background_id, display_size)
+	if _uses_gold_menu_shell(screen_background_id):
+		panel.set_meta("gold_shell_content_rect", _unified_safe_rect())
+		_unified_add_frame(root, _gold_menu_shell_prefix(screen_background_id))
+		root.resized.connect(func() -> void:
+			_relayout_gold_menu_screen(root, panel, box, screen_background_id)
+			call_deferred("_relayout_gold_menu_screen", root, panel, box, screen_background_id)
+		)
 
 	return box
+
+
+func _gold_menu_target_size(screen_background_id: String) -> Vector2:
+	match screen_background_id:
+		"campfire":
+			return Vector2(1180.0, 716.0)
+		"upgrade":
+			return Vector2(1720.0, 730.0)
+		"artifact_reward":
+			return Vector2(1120.0, 660.0)
+	return Vector2(1120.0, 660.0)
+
+
+func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxContainer, screen_background_id: String) -> void:
+	if root == null or panel == null or box == null or not is_instance_valid(root) or not is_instance_valid(panel) or not is_instance_valid(box):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var reserve := _gold_shell_menu_hud_reserve_for_size(screen_background_id, viewport_size)
+	var panel_size := _gold_shell_panel_size_for_safe(_gold_menu_target_size(screen_background_id), safe_rect.size, Vector2(16.0, 0.0), reserve)
+	var half_size := panel_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y + reserve * 0.5
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y + reserve * 0.5
+	panel.set_meta("gold_shell_content_rect", safe_rect)
+
+	var compact_economy := viewport_size.y < 800.0 and ["campfire", "upgrade"].has(screen_background_id)
+	if screen_background_id in ["campfire", "upgrade"]:
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 6.0 if compact_economy else 18.0))
+		box.add_theme_constant_override("separation", 8 if compact_economy else 16)
+		var cards_in_row := 2 if screen_background_id == "campfire" else 3
+		var card_size := _gold_shell_economy_choice_display_size_for_viewport(cards_in_row, viewport_size)
+		var row_name := "RestChoiceRow" if screen_background_id == "campfire" else "UpgradeChoiceRow"
+		var row := box.find_child(row_name, true, false) as HBoxContainer
+		if row != null:
+			var gap := _economy_choice_row_gap(card_size)
+			row.custom_minimum_size.x = card_size.x * float(cards_in_row) + float(gap * maxi(cards_in_row - 1, 0))
+			row.custom_minimum_size.y = card_size.y
+			row.add_theme_constant_override("separation", gap)
+			for child in row.get_children():
+				if child is Button:
+					_resize_economy_choice_card(child as Button, card_size)
+	elif screen_background_id == "artifact_reward":
+		var reward_size := _battle_reward_card_size_for_viewport(viewport_size)
+		var rewards_row := box.find_child("BattleRewardCardsRow", true, false) as HBoxContainer
+		if rewards_row != null:
+			rewards_row.custom_minimum_size.y = reward_size.y
+			for child in rewards_row.get_children():
+				if child is Button:
+					_resize_reward_card(child as Button, reward_size)
+
+	var title := box.find_child("MenuTitle_%s" % screen_background_id, true, false) as Label
+	if title == null and screen_background_id == "campfire":
+		title = box.find_child("RestTitle", true, false) as Label
+	if title != null:
+		title.add_theme_font_size_override("font_size", _readable_font_size(42, 0, 60))
+	var subtitle := box.find_child("MenuSubtitle_%s" % screen_background_id, true, false) as Label
+	if subtitle == null and screen_background_id == "campfire":
+		subtitle = box.find_child("RestSubtitle", true, false) as Label
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 24))
+
+
+func _resize_economy_choice_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	button.set_meta("economy_display_size", display_size)
+	button.set_meta("gold_shell_compact", display_size.y < ECONOMY_CHOICE_TARGET_720.y)
+	var pad := _atlas_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, pad)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("economy_content_margins", margins)
+	var content := button.find_child("%sContent" % button.name, true, false) as Control
+	if content != null:
+		content.offset_left = margins.x
+		content.offset_top = margins.y
+		content.offset_right = -margins.z
+		content.offset_bottom = -margins.w
+	call_deferred("_fit_economy_choice_card_content", button)
+
+
+func _resize_reward_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	_apply_reward_card_theme(button, false)
+	var margins := _atlas_chip_content_margins(_atlas_card_pad(display_size))
+	var content := button.find_child("BattleRewardCardContent", true, false) as Control
+	if content != null:
+		content.offset_left = margins.x
+		content.offset_top = margins.y
+		content.offset_right = -margins.z
+		content.offset_bottom = -margins.w
+	var compact := display_size.y <= 300.0
+	var content_box := content as VBoxContainer
+	if content_box != null:
+		content_box.add_theme_constant_override("separation", 2 if compact else 5)
+	var icon := button.find_child("UIIcon_*", true, false) as Control
+	if icon != null:
+		icon.custom_minimum_size = Vector2(32.0, 32.0) if compact else Vector2(40.0, 40.0)
+	var title := button.find_child("BattleRewardTitle", true, false) as Label
+	if title != null:
+		title.max_lines_visible = 1 if compact else 2
+		title.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 17, 10 if compact else 12, 15 if compact else 22))
+	var preview := button.find_child("BattleRewardPreview", true, false) as Label
+	if preview != null:
+		preview.max_lines_visible = 2 if compact else -1
+		preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		preview.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else 14, 10, 13 if compact else 16))
+	var description := button.find_child("BattleRewardDescription", true, false) as Label
+	if description != null:
+		description.max_lines_visible = 1 if compact else 2
+		description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		description.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else 12, 9 if compact else 12, 12 if compact else 14))
+	var note := button.find_child("BattleRewardClassNote", true, false) as Label
+	if note != null:
+		note.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else 11, 9 if compact else 12, 12 if compact else 14))
+	var action := button.find_child("BattleRewardActionLabel", true, false) as Label
+	if action != null:
+		action.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else 15, 10, 13 if compact else 16))
 
 
 func _create_result_menu_box(title: String, subtitle: String, screen_background_id: String) -> Dictionary:
@@ -11478,6 +11734,7 @@ func _create_result_menu_box(title: String, subtitle: String, screen_background_
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
+	root.name = "ResultScreen_%s" % screen_background_id
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
@@ -11566,6 +11823,12 @@ func _create_result_menu_box(title: String, subtitle: String, screen_background_
 	)
 	_layout_result_content(content, screen_background_id)
 	call_deferred("_layout_result_content", content, screen_background_id)
+	panel.set_meta("gold_shell_content_rect", _unified_safe_rect())
+	_unified_add_frame(root, _gold_menu_shell_prefix(screen_background_id))
+	root.resized.connect(func() -> void:
+		_relayout_gold_result_screen(root, panel, content, screen_background_id)
+		call_deferred("_relayout_gold_result_screen", root, panel, content, screen_background_id)
+	)
 
 	return {
 		"content": content,
@@ -11573,6 +11836,61 @@ func _create_result_menu_box(title: String, subtitle: String, screen_background_
 		"summary_column": summary_column,
 		"button_slot": button_slot,
 	}
+
+
+func _relayout_gold_result_screen(root: Control, panel: PanelContainer, content: Control, screen_background_id: String) -> void:
+	if root == null or panel == null or content == null or not is_instance_valid(root) or not is_instance_valid(panel) or not is_instance_valid(content):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	var display_size := _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+	var half_size := display_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y
+	var content_margins := _pause_end_modal_content_margins(display_size, screen_background_id)
+	var content_rect := _pause_end_modal_content_rect(display_size, screen_background_id)
+	panel.set_meta("pause_end_display_size", display_size)
+	panel.set_meta("pause_end_content_margins", content_margins)
+	panel.set_meta("pause_end_content_rect", content_rect)
+	panel.set_meta("gold_shell_content_rect", _unified_safe_rect_for_size(viewport_size))
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
+	content.set_meta("result_content_rect", content_rect)
+
+	var crest_size := _pause_end_result_crest_size_for_viewport(viewport_size.y)
+	var crest := content.find_child("ResultCrest", true, false) as TextureRect
+	if crest != null:
+		crest.custom_minimum_size = Vector2(crest_size, crest_size)
+	var action_name := "VictoryNewRunButton" if screen_background_id == "victory" else "DeathRetryButton"
+	var action := content.find_child(action_name, true, false) as Button
+	if action != null:
+		_set_action_button_size(action, _pause_end_result_button_width_for_viewport(screen_background_id, viewport_size), _pause_end_result_button_height_for_viewport(viewport_size.y))
+	_layout_result_content(content, screen_background_id)
+	_relayout_result_summary_typography(content, viewport_size.y)
+
+
+func _relayout_result_summary_typography(content: Control, viewport_height: float) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var ultra_compact: bool = viewport_height < 800.0
+	var outcome := content.find_child("RunSummaryOutcome", true, false) as Label
+	if outcome != null:
+		outcome.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else 13, 10 if ultra_compact else 12, 22))
+	var grid := content.find_child("RunSummaryStats", true, false) as GridContainer
+	if grid != null:
+		grid.add_theme_constant_override("h_separation", 8 if ultra_compact else 14)
+		grid.add_theme_constant_override("v_separation", 0 if ultra_compact else 2)
+		for label_node in grid.get_children():
+			var label := label_node as Label
+			if label == null:
+				continue
+			var base_size := 10 if ultra_compact else (12 if str(label.name).begins_with("RunSummaryStatName_") else 13)
+			label.add_theme_font_size_override("font_size", _readable_font_size(base_size, 10 if ultra_compact else 12, 20))
+	var artifacts := content.find_child("RunSummaryArtifacts", true, false) as Label
+	if artifacts != null:
+		artifacts.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else 11, 10 if ultra_compact else 12, 18))
 
 
 func _layout_result_content(content: Control, screen_background_id: String) -> void:
@@ -11586,7 +11904,7 @@ func _layout_result_content(content: Control, screen_background_id: String) -> v
 	var button_height := minf(_pause_end_result_button_height(), maxf(56.0, size.y * 0.20))
 	var available_height := maxf(1.0, size.y - button_height - gap * 3.0)
 	var title_height := clampf(available_height * 0.12, 28.0 if compact else 34.0, 42.0)
-	var subtitle_height := clampf(available_height * (0.23 if compact else 0.25), 76.0 if compact else 104.0, 112.0 if compact else 128.0)
+	var subtitle_height := clampf(available_height * (0.23 if compact else 0.25), 58.0 if compact else 104.0, 112.0 if compact else 128.0)
 	var body_height := maxf(1.0, available_height - title_height - subtitle_height)
 	var minimum_body := 162.0 if compact else 220.0
 	if body_height < minimum_body:
@@ -11724,6 +12042,10 @@ func _make_result_crest(kind: String) -> TextureRect:
 
 func _pause_end_result_crest_size() -> float:
 	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	return _pause_end_result_crest_size_for_viewport(viewport_height)
+
+
+func _pause_end_result_crest_size_for_viewport(viewport_height: float) -> float:
 	if viewport_height < 760.0:
 		return clampf(viewport_height * 0.15, 88.0, 112.0)
 	return clampf(viewport_height * 0.16, 112.0, 168.0)
@@ -11731,11 +12053,25 @@ func _pause_end_result_crest_size() -> float:
 
 func _pause_end_result_button_height() -> float:
 	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	return _pause_end_result_button_height_for_viewport(viewport_height)
+
+
+func _pause_end_result_button_height_for_viewport(viewport_height: float) -> float:
 	if viewport_height < 800.0:
 		return 72.0
 	if viewport_height < 1000.0:
 		return 88.0
 	return STANDARD_ACTION_BUTTON_HEIGHT
+
+
+func _pause_end_result_button_width(screen_background_id: String) -> float:
+	return _pause_end_result_button_width_for_viewport(screen_background_id, game.get_viewport().get_visible_rect().size)
+
+
+func _pause_end_result_button_width_for_viewport(screen_background_id: String, viewport_size: Vector2) -> float:
+	var display_size := _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+	var content_width := _pause_end_modal_content_rect(display_size, screen_background_id).size.x
+	return clampf(floorf(content_width), 260.0, STANDARD_ACTION_BUTTON_WIDTH)
 
 
 func _add_screen_background(root: Control, screen_background_id: String) -> void:
@@ -12301,6 +12637,8 @@ func _text_button_unique_id(button: Button) -> String:
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
 		return ""
 	if button_name.begins_with("MainMenu"):
+		if size.y <= 76.0:
+			return "continue_run_long_420x72"
 		return "main_menu_380x104"
 	if button_name == "HS4ChooseButton":
 		# Фидбек 2026-07-08: CTA «Выбрать» — на плите кнопок главного меню.
@@ -12429,14 +12767,20 @@ func _is_result_screen_background(screen_background_id: String) -> bool:
 
 func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	return _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+
+
+func _pause_end_modal_display_size_for_viewport(screen_background_id: String, viewport_size: Vector2) -> Vector2:
 	var max_width := viewport_size.x * 0.84
 	var max_height := viewport_size.y * 0.90
 	if screen_background_id == "victory" or screen_background_id == "death":
-		max_width = viewport_size.x * 0.82
-		max_height = viewport_size.y * 0.88
+		var safe_size := _unified_safe_rect_for_size(viewport_size).size
+		max_width = minf(viewport_size.x * 0.82, maxf(1.0, safe_size.x - 48.0))
+		max_height = minf(viewport_size.y * 0.88, maxf(1.0, safe_size.y - 40.0))
 	var source_aspect := PAUSE_END_MODAL_SOURCE_SIZE.x / PAUSE_END_MODAL_SOURCE_SIZE.y
 	var height := minf(max_height, max_width / source_aspect)
-	height = clampf(height, 520.0, 820.0)
+	var minimum_height := minf(520.0, max_height)
+	height = clampf(height, minimum_height, 820.0)
 	var width := height * source_aspect
 	if width > max_width:
 		width = max_width
@@ -12855,6 +13199,24 @@ func _economy_choice_display_size(cards_in_row := 3) -> Vector2:
 	return ECONOMY_CHOICE_TARGET_720
 
 
+func _gold_shell_economy_choice_display_size(cards_in_row: int) -> Vector2:
+	return _gold_shell_economy_choice_display_size_for_viewport(cards_in_row, game.get_viewport().get_visible_rect().size)
+
+
+func _gold_shell_economy_choice_display_size_for_viewport(cards_in_row: int, viewport_size: Vector2) -> Vector2:
+	if viewport_size.y < 800.0:
+		return Vector2(390.0, 150.0) if cards_in_row <= 2 else Vector2(280.0, 180.0)
+	if viewport_size.y < 1000.0:
+		return Vector2(390.0, 200.0) if cards_in_row <= 2 else Vector2(320.0, 220.0)
+	if cards_in_row <= 2:
+		return ECONOMY_CHOICE_TARGET_1440 if viewport_size.x >= 1920.0 and viewport_size.y >= 1000.0 else ECONOMY_CHOICE_TARGET_1080
+	if viewport_size.x >= 2400.0 and viewport_size.y >= 1200.0:
+		return ECONOMY_CHOICE_TARGET_1440
+	if viewport_size.x >= 1800.0 and viewport_size.y >= 900.0:
+		return ECONOMY_CHOICE_TARGET_1080
+	return ECONOMY_CHOICE_TARGET_720
+
+
 func _economy_attribute_choice_display_size() -> Vector2:
 	var size := _economy_choice_display_size(3)
 	var viewport_size := Vector2(1280.0, 720.0)
@@ -12895,6 +13257,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	var compact_attribute := button.name.begins_with("AttributeOffer_")
 	button.set_meta("economy_frame_kind", "choice_card")
 	button.set_meta("economy_display_size", display_size)
+	button.set_meta("gold_shell_compact", display_size.y < ECONOMY_CHOICE_TARGET_720.y)
 	button.text = ""
 	button.custom_minimum_size = display_size
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -13002,14 +13365,30 @@ func _reward_card_pad(elite := false) -> float:
 	return _atlas_card_pad(REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
 
 
+func _battle_reward_card_size() -> Vector2:
+	# The 720p gold-shell interior is 1014×494. Three compact cards remain fully
+	# inside it together with title/subtitle; larger tiers keep the accepted size.
+	return _battle_reward_card_size_for_viewport(game.get_viewport().get_visible_rect().size)
+
+
+func _battle_reward_card_size_for_viewport(viewport_size: Vector2) -> Vector2:
+	if viewport_size.y < 800.0:
+		return Vector2(270.0, 230.0)
+	if viewport_size.y < 1000.0:
+		return Vector2(280.0, 300.0)
+	return REWARD_CARD_SIZE
+
+
 # SCRUM-883: карточки наград — чип-ряды Атласа (общий язык с карточками экономики);
 # текстурные reward-рамки SCRUM-338/448 сняты.
 func _apply_reward_card_theme(button: Button, elite := false) -> void:
-	_apply_atlas_choice_card_theme(button, _reward_card_pad(elite))
+	var display_size := button.custom_minimum_size if button != null else (REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
 
 
 func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
-	var margins := _atlas_chip_content_margins(_reward_card_pad(elite))
+	var display_size := button.custom_minimum_size if button != null else (REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
+	var margins := _atlas_chip_content_margins(_atlas_card_pad(display_size))
 	var content := VBoxContainer.new()
 	content.clip_contents = true
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -13808,13 +14187,32 @@ func _create_menu_run_hud() -> void:
 	# что и бой — один вид HUD во всех местах. Боевые-only элементы (таймер,
 	# боссбар, ascension-пипсы) здесь не создаются; _layout_combat_hud null-safe.
 	_create_resource_hud_panel(root, Vector2(20, 18))
-	root.resized.connect(func() -> void:
+	var shell_safe_rect := _active_gold_shell_content_rect()
+	if shell_safe_rect.has_area():
+		root.set_meta("gold_shell_content_rect", shell_safe_rect)
+		root.resized.connect(func() -> void:
+			var safe_rect := _active_gold_shell_content_rect()
+			_layout_menu_resource_hud(root, safe_rect.position + Vector2(16.0, 8.0))
+		)
+		_layout_menu_resource_hud(root, shell_safe_rect.position + Vector2(16.0, 8.0))
+		call_deferred("_layout_menu_resource_hud", root, shell_safe_rect.position + Vector2(16.0, 8.0))
+	else:
+		root.resized.connect(func() -> void:
+			_layout_combat_hud(root)
+		)
 		_layout_combat_hud(root)
-	)
-	_layout_combat_hud(root)
-	call_deferred("_layout_combat_hud", root)
+		call_deferred("_layout_combat_hud", root)
 	_update_hud()
 	_update_level_up_button()
+
+
+func _active_gold_shell_content_rect() -> Rect2:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return Rect2()
+	for child in game.ui_layer.get_children():
+		if child is Control and child.has_meta("gold_shell_content_rect"):
+			return child.get_meta("gold_shell_content_rect", Rect2()) as Rect2
+	return Rect2()
 
 
 func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:

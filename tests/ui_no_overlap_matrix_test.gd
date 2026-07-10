@@ -1254,8 +1254,10 @@ func _requires_viewport_fit(screen_id: String) -> bool:
 
 
 # SCRUM-883: карточки экономики — чип-ряды Атласа: тёмный StyleBoxFlat (a >= 0.8)
-# с латунным кантом, hover — золотой кант; min-ширины по вьюпорту сохранены,
-# контент держится внутри чип-пэддингов карточки.
+# с латунным кантом, hover — золотой кант. SCRUM-981 adds an explicit compact
+# tier for Rest/Upgrade inside the 720/864/900p gold-shell safe zone; larger
+# tiers keep the historical viewport targets. Content always stays inside the
+# card chip padding.
 func _economy_choice_card_contract_error(card: Button, context: String) -> String:
 	if str(card.get_meta("economy_card_style", "")) != "atlas_chip":
 		return "%s: expected %s to expose SCRUM-883 atlas chip style metadata." % [context, card.name]
@@ -1267,13 +1269,20 @@ func _economy_choice_card_contract_error(card: Button, context: String) -> Strin
 		return "%s: expected %s hover style to be an atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, card.name]
 	if hover.border_color.r < 0.85 or hover.border_color.g < 0.6 or hover.border_color.b > 0.6:
 		return "%s: expected %s hover chip to use the golden atlas border, got %s." % [context, card.name, str(hover.border_color)]
-	var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
-	if context.contains("(1920, 1080)"):
-		expected_min_width = 420.0
-	elif context.contains("(2560, 1440)"):
-		expected_min_width = 480.0
-	if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
-		return "%s: expected %s to keep the per-viewport economy card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+	var gold_shell_compact := bool(card.get_meta("gold_shell_compact", false)) \
+		and (context.contains("rest_economy") or context.contains("upgrade_economy"))
+	if gold_shell_compact:
+		var compact_min_width := 390.0 if context.contains("rest_economy") else 280.0
+		if card.custom_minimum_size.x < compact_min_width or card.custom_minimum_size.y < 150.0:
+			return "%s: expected %s to keep the SCRUM-981 compact gold-shell target, got %s." % [context, card.name, str(card.custom_minimum_size)]
+	else:
+		var expected_min_width := 320.0 if context.contains("(1152, 648)") else 360.0
+		if context.contains("(1920, 1080)"):
+			expected_min_width = 420.0
+		elif context.contains("(2560, 1440)"):
+			expected_min_width = 480.0
+		if card.custom_minimum_size.x < expected_min_width or card.custom_minimum_size.y < 240.0:
+			return "%s: expected %s to keep the per-viewport economy card display target, got %s." % [context, card.name, str(card.custom_minimum_size)]
 	var display_size: Vector2 = card.get_meta("economy_display_size", Vector2.ZERO)
 	var margins: Vector4 = card.get_meta("economy_content_margins", Vector4.ZERO)
 	if display_size == Vector2.ZERO or margins == Vector4.ZERO:

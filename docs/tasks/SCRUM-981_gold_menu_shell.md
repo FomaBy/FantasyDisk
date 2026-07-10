@@ -55,16 +55,18 @@ result screens, dialogs, Level Up and Combat HUD.
 
 ## Acceptance Criteria
 
-- [ ] UI Director mockup/spec records exact frame and content zones before
+- [x] UI Director mockup/spec records exact frame and content zones before
       runtime edits, with PixelLab provenance or accepted source reuse.
-- [ ] A complete screen inventory documents every applied and excluded shell.
-- [ ] Escape dossier/pause and route/menu surfaces use the shared family where
+- [x] A complete screen inventory documents every applied and excluded shell.
+- [x] Escape dossier/pause and route/menu surfaces use the shared family where
       appropriate without hiding gameplay or map-critical content.
-- [ ] Combat HUD and Level Up remain intentionally without the large shell.
-- [ ] No text, buttons, icons, portraits, hitboxes or scrollbars touch frame
+- [x] Combat HUD and Level Up remain intentionally without the large shell.
+- [x] No text, buttons, icons, portraits, hitboxes or scrollbars touch frame
       ornament at 1280×720, 1920×1080 or 2560×1440.
-- [ ] Focused UI, no-overlap, theme and full runtime gates pass.
-- [ ] Runtime screenshots/evidence cover the required resolution matrix.
+- [ ] Focused UI, no-overlap, theme and full runtime gates pass (all listed
+      focused/matrix/theme/UI gates pass; full runtime awaits the active Claude
+      ownership release for `tests/runtime_smoke_test.gd`).
+- [x] Runtime screenshots/evidence cover the required resolution matrix.
 - [ ] Jira, docs and `origin/dev` are synchronized; task artifacts are cleaned.
 
 ## Work Log
@@ -74,6 +76,51 @@ result screens, dialogs, Level Up and Combat HUD.
   were explicitly excluded before work began.
 - 2026-07-10: UI Director required reading completed. Design inventory/spec was
   delegated inside the same `/root` ownership while runtime remains untouched.
+- 2026-07-10: UI plan validation returned `ready_for_image` with zero errors or
+  warnings. Accepted PixelLab references: Main Menu v3
+  `7d9c5262-5448-40c0-beaf-2b7d4b6b1f58` (exact six 2×3 slots, SHA
+  `a3f446d54cf2b1c2bdfbd2a4f2a097962aadf8c166c0a99869bf9a50597dbd85`)
+  and Route Map v2 `1df5105f-5469-4a93-b93c-ebe839831ed0` (SHA
+  `647fe73e85e3777dc6401f2fe9f920a411802d314f883f35eca04d2a8a62b0d6`).
+  Rejected checkerboard and incorrect four-slot generations remain recorded in
+  `docs/design/references/scrum981_gold_menu_shell/manifest.json`.
+- 2026-07-10: runtime integrated the hollow production
+  `assets/sprites/ui/meta40/frame_border.png` shell into Main Menu, Route Map,
+  Rest, Upgrade, Battle Reward, Victory and Defeat. Main Menu uses exact 2×3
+  geometry and 2D focus navigation; Route Map reserves header/title/resource,
+  scroll, scrollbar and FAB zones; compact menu/result tiers keep 720–900p
+  content inside the real frame interior. Codex, Level Up, Combat and specialist
+  child-task screens remain explicit exceptions.
+- 2026-07-10: focused gates PASS:
+  `tests/scrum981_gold_menu_shell_test.gd`,
+  `tests/scrum981_route_map_gold_shell_test.gd`,
+  `tests/main_menu_title_no_overlap_test.gd`,
+  `tests/ui_no_overlap_matrix_test.gd`,
+  `tests/dark_fantasy_ui_theme_test.gd`, and
+  `tests/runtime_smoke_ui_test.gd` (the known dummy-renderer screenshot warning
+  remains non-fatal; suite prints PASS).
+- 2026-07-10: windowed OpenGL capture PASS at 1280×720, 1920×1080 and
+  2560×1440 for all seven live screens (21 PNGs: Main Menu, Route Map, Rest,
+  Upgrade, Battle Reward, Victory and Defeat). Runtime screenshots and rect
+  report: `build/qa/scrum981/`. Visual review confirms no content or hitbox
+  touches the ornamental rails; the compact result summary remains fully
+  visible above its action plate.
+- 2026-07-10: independent review found a false-green live-resize gap, a version
+  slot drift and incomplete screenshot coverage. Runtime now relayouts existing
+  generic/result shells, cards, HUD/FAB and Route Map canvas on `resized`; the
+  focused gate explicitly shrinks 2560×1440 to 1280×720 without rebuilding the
+  screen. Main Menu version rects now match the spec exactly, and focused QA
+  checks visible labels/icons/scroll lanes plus unclipped result summaries.
+- 2026-07-10: final independent re-review PASSED after one additional compact
+  Battle Reward defect was caught. `BattleRewardPreview` is capped to two lines
+  and description to one line with intentional ellipsis (full copy remains in
+  tooltip); the focused oracle now rejects both combined-minimum overflow and
+  any full child rect outside `BattleRewardCardContent`. Regenerated 720p visual
+  evidence is clean; no remaining actionable finding in reviewed scope.
+- 2026-07-10: full `runtime_smoke_test.gd` and its obsolete Main Menu/Route Map
+  assertions are intentionally not edited yet because active Claude engineer
+  worktree `/private/tmp/fsd_wt/w10-soldier` owns a dirty copy. Jira heartbeat
+  records this live coordination; all other available gates continue.
 
 Disk cleanup: pending; disposable worktree and generated caches will be removed
 after pushed implementation and QA handoff.

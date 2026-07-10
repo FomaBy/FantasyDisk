@@ -4,6 +4,46 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## SCRUM-981 Unified Gold Menu Shell
+
+SCRUM-981 promotes `assets/sprites/ui/meta40/frame_border.png` to the shared
+hollow outer shell for appropriate non-combat pages. The runtime
+`StyleBoxTexture` uses the 1536×1024 source with 160 px texture/content rails
+and `draw_center=false`; the frame is always the final, mouse-ignoring child.
+Its exact empty interiors are `Rect2(133,113,1014,494)` at 1280×720,
+`Rect2(200,169,1520,742)` at 1920×1080 and
+`Rect2(267,225,2026,990)` at 2560×1440. Every label, icon, hitbox, scroll lane
+and local panel must remain inside those rectangles.
+
+Live application inventory:
+
+- Main Menu uses one logo well plus six buttons in an exact 2×3 grid; the
+  compact 720p tier uses 380×72 buttons and larger tiers use 380×104.
+- Route Map insets header/title, shared resource HUD, vertical scroll/canvas,
+  scrollbar lane and upgrade FAB into authored inner zones. Horizontal scroll
+  remains disabled and map nodes are rebuilt safely when available width changes.
+- Rest, Upgrade and Battle Reward keep their local Atlas chips/cards below a
+  reserved in-frame HUD/FAB strip; 720–900p uses explicit compact card tiers.
+- Victory and Defeat keep their local result modal, summary and action inside
+  the shell; the smallest legacy matrix uses compact summary typography and a
+  content-width action plate.
+- Every listed shell has a live `resized` relayout path. Shrinking an existing
+  2560×1440 screen to 1280×720 recomputes panel/card/result/FAB geometry and
+  Route Map canvas width; it is not valid to rely only on screen reconstruction.
+- Existing Hero/Weapon Select, Settings, Patch Notes, Atlas and Pause dossier
+  shells remain unchanged. Codex intentionally keeps the SCRUM-954 frameless
+  three-column contract. Level Up remains frameless under SCRUM-985. Combat,
+  Combat HUD and transient combat/result overlays never receive the large shell.
+- Shop, Attribute Shop, Event and elite/boss reward variants remain owned by
+  their more specific child-task contracts and are not broadened by SCRUM-981.
+
+UI Director source, exact inventory and PixelLab provenance:
+`docs/design/mockups/scrum981_gold_menu_shell/`; accepted PixelLab references:
+`docs/design/references/scrum981_gold_menu_shell/`; runtime QA:
+`tests/scrum981_gold_menu_shell_test.gd`,
+`tests/scrum981_route_map_gold_shell_test.gd`,
+`tests/ui_no_overlap_matrix_test.gd` and `build/qa/scrum981/`.
+
 ## SCRUM-692 Runtime Readability Pass
 
 SCRUM-692 increases runtime UI readability without changing gameplay, economy,
@@ -289,9 +329,8 @@ explicit OpenAI Images override because the user directly requested OpenAI image
 generation. SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in
-`docs/design/references/main_menu_logo_release_fix/`) and positions the action
-column below the title with a computed `80px` minimum source-space gap for
-1920x1080, 2560x1440 and 1080x1920.
+`docs/design/references/main_menu_logo_release_fix/`). Its former single action
+column is superseded by the SCRUM-981 in-frame 2×3 grid described above.
 
 ## Route Map 2K Source
 
@@ -303,7 +342,9 @@ defined in `docs/design/mockups/scrum563_route_map_2k/ui_plan.json` and
 safe-zone evidence is under `docs/design/previews/scrum563_route_map_2k_*`.
 The visual direction is a full-screen scroll field with a thin framed header,
 compact run HUD, clamped tooltip panel, centered vertical node lane and small
-bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
+bottom-right FAB. SCRUM-981 supersedes the old 28 px viewport-edge runtime
+offsets: all of those controls now live inside the shared gold-shell zones while
+the SCRUM-563 source package remains historical design evidence.
 
 ## Hero / Weapon / Level-Up Layout Rules
 

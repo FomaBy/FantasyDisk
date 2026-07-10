@@ -14,8 +14,12 @@ var _route_focus_target: Button = null
 
 const START_BATTLE_ONLY_ROWS := 2
 
-# SCRUM-489: координатная спека @2560×1440 — экран «Карта маршрута» (полноэкранный, скролл).
-# Все опорные значения абсолютные (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
+# SCRUM-489: историческая координатная спека @2560×1440 — экран «Карта маршрута».
+# SCRUM-981 сохраняет вертикальную карту/скролл, но переносит весь интерактивный
+# слой внутрь пустой зоны общей meta40-рамы. Старые 28px edge offsets ниже больше
+# не являются runtime layout contract; актуальная матрица вычисляется в
+# _route_map_shell_layout() из frame safe margins + внутреннего резерва.
+# Старые опорные значения (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
 # MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=8 (SCRUM-786). Из viewport
 # масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
 # → @2K (28,18,2504,110) — band ровно под content-min хедера (title 36px + stage 18px). Scroll:
@@ -34,6 +38,13 @@ const RM_CANVAS_2K := Rect2(28, 140, 2488, 1882)           # height @ row_count=
 const RM_NODE_2K := Rect2(0, 0, 88, 88)                    # шаблон узла маршрута
 const RM_ROW_GAP_2K := 165.0
 const RM_PADDING_2K := Vector2(170.0, 72.0)
+
+# SCRUM-981: production frame 1536×1024, 160px 9-slice rail on every edge.
+# Reserve is additional empty-zone breathing room, never part of the ornament.
+const ROUTE_SHELL_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+const ROUTE_SHELL_FRAME_SOURCE_MARGIN := 160.0
+const ROUTE_SHELL_RESERVE_COMPACT := 24.0
+const ROUTE_SHELL_RESERVE_LARGE := 32.0
 
 
 func _init(game_ref) -> void:
@@ -121,38 +132,30 @@ func _show_battle_map() -> void:
 	grid_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(grid_shade)
 
+	var shell_layout := _route_map_shell_layout(root.size)
+
 	var header := PanelContainer.new()
 	header.name = "RouteMapHeader"
-	header.anchor_left = 0.0
-	header.anchor_top = 0.0
-	header.anchor_right = 1.0
-	header.anchor_bottom = 0.0
-	header.offset_left = game.ROUTE_MAP_SCREEN_MARGIN
-	header.offset_top = 18.0
-	header.offset_right = -game.ROUTE_MAP_SCREEN_MARGIN
-	header.offset_bottom = game.ROUTE_MAP_HEADER_HEIGHT - 12.0
+	header.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# SCRUM-876: бывший _hud_panel_style — тонкая обёртка над этой @2K-рамкой;
 	# обёртка удалена вместе со старым карточным меню-худом, вид заголовка прежний.
 	header.add_theme_stylebox_override("panel", game.ui._overhaul_2k_frame_style("chud_resource_panel", Vector2(820.0, 84.0)))
 	root.add_child(header)
 
-	var header_row := HBoxContainer.new()
-	header_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	header_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header_row.add_theme_constant_override("separation", 24)
-	header.add_child(header_row)
-
 	var title_box := VBoxContainer.new()
+	title_box.name = "RouteMapTitleProgress"
 	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header_row.add_child(title_box)
+	title_box.add_theme_constant_override("separation", 0)
+	root.add_child(title_box)
 
 	var title_label := Label.new()
 	title_label.text = "%s — карта маршрута" % game.act_progress_label()
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	# SCRUM-883: 36 фикс → readable (26×1.32…1.45 = 34…38), пол 30; ellipsis на узкий вьюпорт.
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(26, 30))
+	# SCRUM-981: шапка живёт в authored 68/70/80px zone; readable 29..32px
+	# оставляет гарантированную отдельную строку прогресса без выхода на орнамент.
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(22, 26))
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -166,8 +169,8 @@ func _show_battle_map() -> void:
 		int(game.combat._current_round_duration()),
 	]
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	# SCRUM-883: 18 фикс → readable (13×1.32…1.45 = 17…19), пол 16.
-	stage_label.add_theme_font_size_override("font_size", _readable_font_size(13, 16))
+	# SCRUM-981: compact supporting line inside the same authored title zone.
+	stage_label.add_theme_font_size_override("font_size", _readable_font_size(11, 14))
 	stage_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	stage_label.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -186,14 +189,7 @@ func _show_battle_map() -> void:
 
 	var scroll := ScrollContainer.new()
 	scroll.name = "RouteMapScroll"
-	scroll.anchor_left = 0.0
-	scroll.anchor_top = 0.0
-	scroll.anchor_right = 1.0
-	scroll.anchor_bottom = 1.0
-	scroll.offset_left = game.ROUTE_MAP_SCREEN_MARGIN
-	scroll.offset_top = game.ROUTE_MAP_HEADER_HEIGHT
-	scroll.offset_right = -game.ROUTE_MAP_SCREEN_MARGIN
-	scroll.offset_bottom = -game.ROUTE_MAP_SCREEN_MARGIN
+	scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -201,7 +197,7 @@ func _show_battle_map() -> void:
 
 	var map_area := Control.new()
 	map_area.name = "VerticalRouteMap"
-	var canvas_size := _route_map_canvas_size()
+	var canvas_size := _route_map_canvas_size(float(shell_layout["map_width"]))
 	map_area.custom_minimum_size = canvas_size
 	map_area.size = canvas_size
 	map_area.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -213,15 +209,13 @@ func _show_battle_map() -> void:
 	var node_positions := _map_node_positions(map_area.custom_minimum_size)
 	_draw_map_connections(map_area, node_positions)
 	_draw_route_nodes(map_area, node_positions)
-	game.ui._create_resource_hud_panel(root, Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0))
-	# SCRUM-876: единый боевой ресурс-кластер и на карте — скейл и раскладка
-	# внутренних баров те же, что в бою; точка привязки — под заголовком карты.
-	var hud_origin := Vector2(game.ROUTE_MAP_SCREEN_MARGIN, game.ROUTE_MAP_HEADER_HEIGHT + 8.0)
-	game.ui._layout_menu_resource_hud(root, hud_origin)
-	root.resized.connect(func() -> void:
-		game.ui._layout_menu_resource_hud(root, hud_origin)
-	)
+	game.ui._create_resource_hud_panel(root, Vector2.ZERO)
 	game.ui._create_upgrade_fab(root, _show_battle_map)
+	_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
+	root.resized.connect(func() -> void:
+		_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
+		_apply_route_map_shell_layout.call_deferred(root, header, title_box, scroll, map_area)
+	)
 	game.ui._update_hud()
 	game.route_map_pan_active = false
 	game.route_map_drag_distance = 0.0
@@ -232,6 +226,176 @@ func _show_battle_map() -> void:
 	if _route_focus_target != null and is_instance_valid(_route_focus_target):
 		_route_focus_target.call_deferred("grab_focus")
 	_center_route_map_on_current_row.call_deferred(scroll, map_area.custom_minimum_size)
+
+	# Hard contract: the hollow production frame is the final child, above every
+	# content layer, and never participates in hit testing.
+	game.ui._unified_add_frame(root, "RouteMap")
+
+
+func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
+	# Exact SCRUM-981 matrix is derived from the live 1536×1024/160px frame.
+	# The same ratios interpolate safely for legacy verification sizes.
+	var margin_x := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.x / ROUTE_SHELL_FRAME_SOURCE_SIZE.x)
+	var margin_y := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.y / ROUTE_SHELL_FRAME_SOURCE_SIZE.y)
+	var safe_rect := Rect2(
+		Vector2(margin_x, margin_y),
+		viewport_size - Vector2(margin_x * 2.0, margin_y * 2.0)
+	)
+	var reserve := ROUTE_SHELL_RESERVE_LARGE if viewport_size.y >= 1200.0 else ROUTE_SHELL_RESERVE_COMPACT
+	var inner_rect := safe_rect.grow(-reserve)
+
+	var header_height := 92.0
+	var header_inset := Vector2(16.0, 12.0)
+	var title_width_ratio := 520.0 / 966.0
+	var title_height := 68.0
+	var resource_width_ratio := 376.0 / 966.0
+	var resource_height := 68.0
+	var resource_right_inset := 16.0
+	var body_gap := 16.0
+	var scrollbar_lane := 14.0
+	var fab_right_inset := 16.0
+	var fab_bottom_inset := 16.0
+	if viewport_size.y > 800.0 and viewport_size.y < 1200.0:
+		header_height = 104.0
+		header_inset = Vector2(24.0, 16.0)
+		title_width_ratio = 700.0 / 1472.0
+		title_height = 70.0
+		resource_width_ratio = 544.0 / 1472.0
+		resource_height = 70.0
+		resource_right_inset = 24.0
+		body_gap = 20.0
+		scrollbar_lane = 18.0
+		fab_right_inset = 40.0
+	elif viewport_size.y >= 1200.0:
+		header_height = 112.0
+		header_inset = Vector2(24.0, 16.0)
+		title_width_ratio = 960.0 / 1962.0
+		title_height = 80.0
+		resource_width_ratio = 664.0 / 1962.0
+		resource_height = 80.0
+		resource_right_inset = 24.0
+		body_gap = 24.0
+		scrollbar_lane = 18.0
+		fab_right_inset = 24.0
+		fab_bottom_inset = 24.0
+
+	var header_rect := Rect2(inner_rect.position, Vector2(inner_rect.size.x, header_height))
+	var title_rect := Rect2(
+		inner_rect.position + header_inset,
+		Vector2(roundf(inner_rect.size.x * title_width_ratio), title_height)
+	)
+	var resource_size := Vector2(roundf(inner_rect.size.x * resource_width_ratio), resource_height)
+	var resource_rect := Rect2(
+		Vector2(inner_rect.end.x - resource_right_inset - resource_size.x, inner_rect.position.y + header_inset.y),
+		resource_size
+	)
+	var scroll_rect := Rect2(
+		Vector2(inner_rect.position.x, header_rect.end.y + body_gap),
+		Vector2(inner_rect.size.x, maxf(1.0, inner_rect.end.y - body_gap - (header_rect.end.y + body_gap)))
+	)
+	var fab_size := Vector2(72.0, 72.0)
+	var fab_rect := Rect2(
+		Vector2(scroll_rect.end.x - fab_right_inset - fab_size.x, scroll_rect.end.y - fab_bottom_inset - fab_size.y),
+		fab_size
+	)
+	return {
+		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
+		"header_rect": header_rect,
+		"title_rect": title_rect,
+		"resource_rect": resource_rect,
+		"scroll_rect": scroll_rect,
+		"scrollbar_lane": scrollbar_lane,
+		"map_width": maxf(1.0, scroll_rect.size.x - scrollbar_lane),
+		"fab_rect": fab_rect,
+	}
+
+
+func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Control, scroll: ScrollContainer, map_area: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var layout := _route_map_shell_layout(root.size)
+	root.set_meta("scrum981_safe_rect", layout["safe_rect"])
+	root.set_meta("scrum981_inner_rect", layout["inner_rect"])
+	_apply_route_map_control_rect(header, layout["header_rect"])
+	_apply_route_map_control_rect(title_box, layout["title_rect"])
+	_apply_route_map_control_rect(scroll, layout["scroll_rect"])
+	header.set_meta("scrum981_zone_rect", layout["header_rect"])
+	title_box.set_meta("scrum981_zone_rect", layout["title_rect"])
+	scroll.set_meta("scrum981_zone_rect", layout["scroll_rect"])
+	scroll.set_meta("scrum981_scrollbar_lane", layout["scrollbar_lane"])
+
+	var expected_canvas_size := _route_map_canvas_size(float(layout["map_width"]))
+	if absf(map_area.custom_minimum_size.x - expected_canvas_size.x) > 1.0:
+		_rebuild_route_map_canvas(map_area, expected_canvas_size)
+	else:
+		map_area.custom_minimum_size = expected_canvas_size
+		map_area.size = expected_canvas_size
+	_layout_route_map_resource_hud(root, layout["resource_rect"])
+
+	var fab := root.find_child("UpgradeFabButton", true, false) as Button
+	if fab != null:
+		_apply_route_map_fab_rect(fab, layout["fab_rect"])
+		fab.set_meta("scrum981_zone_rect", layout["fab_rect"])
+
+
+func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void:
+	game.ui._layout_menu_resource_hud(root, Vector2.ZERO)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	resource.pivot_offset = Vector2.ZERO
+	resource.scale = Vector2.ONE
+	var unscaled_size := resource.size
+	if unscaled_size.x <= 0.0 or unscaled_size.y <= 0.0:
+		unscaled_size = resource.custom_minimum_size
+	var fit_scale := minf(1.0, minf(resource_zone.size.x / unscaled_size.x, resource_zone.size.y / unscaled_size.y))
+	resource.scale = Vector2(fit_scale, fit_scale)
+	var visible_size := unscaled_size * fit_scale
+	resource.position = Vector2(
+		resource_zone.end.x - visible_size.x,
+		resource_zone.position.y + roundf((resource_zone.size.y - visible_size.y) * 0.5)
+	)
+	resource.set_meta("scrum981_zone_rect", resource_zone)
+
+
+func _apply_route_map_control_rect(control: Control, rect: Rect2) -> void:
+	if control == null:
+		return
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.custom_minimum_size = rect.size
+	control.size = rect.size
+
+
+func _apply_route_map_fab_rect(fab: Button, rect: Rect2) -> void:
+	# The global compact-button kit has an 87px combined minimum because of its
+	# authored 9-slice margins. Preserve its aspect and shrink uniformly into the
+	# exact 72×72 route socket; never squash only one axis.
+	fab.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	fab.scale = Vector2.ONE
+	fab.custom_minimum_size = rect.size
+	var combined_min := fab.get_combined_minimum_size()
+	var source_side := maxf(rect.size.x, maxf(combined_min.x, combined_min.y))
+	fab.custom_minimum_size = Vector2(source_side, source_side)
+	fab.size = Vector2(source_side, source_side)
+	var fit_scale := minf(rect.size.x / source_side, rect.size.y / source_side)
+	fab.scale = Vector2(fit_scale, fit_scale)
+	fab.position = rect.position
+
+
+func _rebuild_route_map_canvas(map_area: Control, canvas_size: Vector2) -> void:
+	for child in map_area.get_children():
+		map_area.remove_child(child)
+		child.queue_free()
+	map_area.custom_minimum_size = canvas_size
+	map_area.size = canvas_size
+	_route_focus_target = null
+	var node_positions := _map_node_positions(canvas_size)
+	_draw_map_connections(map_area, node_positions)
+	_draw_route_nodes(map_area, node_positions)
+	if _route_focus_target != null and is_instance_valid(_route_focus_target):
+		_route_focus_target.call_deferred("grab_focus")
 
 
 func _random_battle_node_name(index: int) -> String:
@@ -246,11 +410,14 @@ func _random_battle_node_name(index: int) -> String:
 	return "Battle %d: %s" % [index + 1, names[game.rng.randi_range(0, names.size() - 1)]]
 
 
-func _route_map_canvas_size() -> Vector2:
+func _route_map_canvas_size(available_width := -1.0) -> Vector2:
 	# Ширина подгоняется под экран, чтобы горизонтальный скролл не появлялся;
 	# высота растет с количеством рядов маршрута.
 	var viewport_width: float = game.get_viewport().get_visible_rect().size.x
-	var width: float = maxf(viewport_width - game.ROUTE_MAP_SCREEN_MARGIN * 2.0 - 16.0, 1000.0)
+	var legacy_width: float = viewport_width - game.ROUTE_MAP_SCREEN_MARGIN * 2.0 - 16.0
+	var minimum_route_width: float = game.ROUTE_MAP_PADDING.x * 2.0 + game.MAP_NODE_SIZE.x * 3.0 + 48.0
+	var requested_width: float = available_width if available_width > 0.0 else legacy_width
+	var width: float = maxf(requested_width, minimum_route_width)
 	var row_count: int = maxi(game.route_nodes.size(), game.ROUTE_STEPS_TO_BOSS + 1)
 	var row_gap := 165.0
 	var height: float = game.ROUTE_MAP_PADDING.y * 2.0 + game.MAP_NODE_SIZE.y + row_gap * float(row_count - 1)
