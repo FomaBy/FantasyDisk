@@ -96,9 +96,9 @@ func _initialize() -> void:
 	if main_menu_background == null or main_menu_background.texture == null or main_menu_background.texture.resource_path != "res://assets/backgrounds/main_menu_epic_battle_v3.png":
 		_fail("Expected main menu to render the v3 epic battle background image.")
 		return
-	var main_menu_actions := main.find_child("MainMenuActions", true, false) as VBoxContainer
-	if main_menu_actions == null or main_menu_actions.get_child_count() != 6:
-		_fail("Expected main menu to expose six action buttons (start, settings, skill tree, what's new, codex, exit).")
+	var main_menu_actions := main.find_child("MainMenuActions", true, false) as GridContainer
+	if main_menu_actions == null or main_menu_actions.get_child_count() != 6 or main_menu_actions.columns != 2:
+		_fail("Expected main menu to expose an exact 2x3 grid of six action buttons (start, settings, skill tree, what's new, codex, exit).")
 		return
 	for required_button in ["MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton", "MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton"]:
 		if main.find_child(required_button, true, false) == null:
@@ -113,8 +113,15 @@ func _initialize() -> void:
 	await _test_back_button_frame_safety(main_scene)
 	await _test_main_menu_quit_confirmation(main_scene)
 	await _test_feedback_overlay_and_local_fallback(main_scene)
-	if main_menu_actions.global_position.x > 140.0:
-		_fail("Expected main menu buttons to stay on the left side of the start screen.")
+	var main_menu_screen := main.find_child("MainMenuScreen", true, false) as Control
+	var main_menu_safe_rect := Rect2()
+	if main_menu_screen != null:
+		main_menu_safe_rect = main_menu_screen.get_meta("gold_shell_content_rect", Rect2()) as Rect2
+	if main_menu_screen == null or main_menu_safe_rect.size.x <= 0.0 or main_menu_safe_rect.size.y <= 0.0:
+		_fail("Expected main menu to publish a non-empty gold-shell content rect.")
+		return
+	if not main_menu_safe_rect.grow(1.0).encloses(main_menu_actions.get_global_rect()):
+		_fail("Expected the 2x3 main menu action grid to stay inside the gold-shell content rect.")
 		return
 	# Тексты кнопок не ассертим списком: «Что нового» несёт бейдж-маркер; проверка по именам выше.
 
@@ -195,14 +202,17 @@ func _initialize() -> void:
 	await process_frame
 	await process_frame
 	var route_scroll := main.find_child("RouteMapScroll", true, false) as ScrollContainer
-	if route_scroll == null:
-		_fail("Expected route map to render inside a ScrollContainer.")
+	var route_screen := main.find_child("RouteMapScreen", true, false) as Control
+	var route_frame := main.find_child("RouteMapFrame", true, false) as Panel
+	if route_scroll == null or route_screen == null or route_frame == null:
+		_fail("Expected route map to render inside the shared gold frame and a ScrollContainer.")
 		return
-	if route_scroll.anchor_left != 0.0 or route_scroll.anchor_right != 1.0 or route_scroll.anchor_bottom != 1.0:
-		_fail("Expected route map scroll area to be full-screen width instead of a small panel widget.")
+	var route_inner_rect := route_screen.get_meta("scrum981_inner_rect", Rect2()) as Rect2
+	if route_inner_rect.size.x <= 0.0 or route_inner_rect.size.y <= 0.0:
+		_fail("Expected route map to publish a non-empty inner gold-shell content rect.")
 		return
-	if route_scroll.offset_top > 140.0 or route_scroll.offset_left > 40.0 or route_scroll.offset_right < -40.0:
-		_fail("Expected route map scroll area to use almost the entire screen.")
+	if not route_inner_rect.grow(1.0).encloses(route_scroll.get_global_rect()):
+		_fail("Expected route map scroll area to stay inside the frame ornament reserve.")
 		return
 	var route_map := route_scroll.find_child("VerticalRouteMap", true, false) as Control
 	if route_map == null:
@@ -2017,10 +2027,10 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	if route_scroll == null or route_map == null:
 		_fail("Expected start route selection to use a scrollable map.")
 		return
-	var route_header := route_main.find_child("RouteMapHeader", true, false)
-	var header_text := _collect_label_text(route_header) if route_header != null else ""
-	if not header_text.contains("Акт 1/3"):
-		_fail("Expected route map header to show Act 1/3 progress.")
+	var route_title_progress := route_main.find_child("RouteMapTitleProgress", true, false)
+	var title_progress_text := _collect_label_text(route_title_progress) if route_title_progress != null else ""
+	if not title_progress_text.contains("Акт 1/3"):
+		_fail("Expected the authored route title/progress zone to show Act 1/3 progress.")
 		return
 
 	route_scroll.scroll_vertical = 0
