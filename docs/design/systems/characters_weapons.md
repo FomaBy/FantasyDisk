@@ -8,7 +8,7 @@
 
 | Character ID | Role |
 | --- | --- |
-| `berserk` | melee sector/circle fighter, высокий риск рядом с толпой |
+| `berserk` | melee sector/circle fighter, высокий риск рядом с толпой; trait «Ярость» (SCRUM-1004) — урон непрерывно растёт от недостающего HP, кап +40% |
 | `soldier` | double-action physical fighter: explosive arquebus bullet, slow fuse grenade nuke, bayonet melee cone; каждое действие с шансом 50% происходит дважды |
 | `thief` | economy/evasion trickster (SCRUM-897): trait-магнит подбора, монетный рикошет с мгновенным золотом, паралич-кинжал, позиционное дым-облако уклонения |
 | `elementalist` | pure-mage зонер (SCRUM-947..950): trait «Проводник стихий» — все magic-tagged бонусы ×1.30; квадрат четырёх стихий, полнокартный X-разлом, самый медленный тяжёлый метеор |
@@ -187,6 +187,50 @@ Socket/display status: the original 27 weapon scenes point to matching canonical
 Source-specific summon/deploy visuals (SCRUM-157): `scripts/summoner_weapon.gd` reads `ally_visual_id` / `ally_visual_ids` and passes the selected ID into `AllyMinion.set_visual_id()`. `summon_amulet` randomly uses `ally_druid_beast` or `ally_druid_pack_spirit`; `homunculus_vial` uses the SCRUM-945 PixelLab pair art (`homunculus_tank_*`/`homunculus_caster_*`, 4-directional static frames chosen by movement axis in `AllyMinion`/`SummonerWeapon`); `leadership_echo` is reserved for future echo-style summons. `scripts/class_weapon.gd` reads optional `deploy_texture_path`: `sound_amp` deploys `deploy_sound_amp_field.png`, while `raven_totem` deploys `deploy_raven_totem_field.png`.
 
 Summon role runtime (SCRUM-254/SCRUM-854/SCRUM-859): summon/deploy configs may define `summon_role`, `deploy_role` and role coefficients. `SummonerWeapon` builds an `AllyMinion.set_combat_profile()` payload from owner `derived_parameters` and Leadership: damage, move speed, attack interval, lifetime, max HP, control knockback, support healing and small splash. Current mobile summon roles are `pack_damage` (Druid beasts), `tank_control` (Chemist homunculus), `support_totem`, `engineer_sentry` and `orbit_drone`; deploy identity roles are `stage_pulse` (Guitarist amp), `support_totem` (Druid raven totem), `turret_dps` (Engineer sentry), `orbit_drone` (Engineer drone), and `mine_grid` (Engineer mines). Mobile summon weapons tag minions by owner+weapon, prefill about half of the current cap at battle start, and then replenish normally. ClassWeapon deploy count uses `max_summons_cap` where configured, so Leadership still improves the loop but cannot create AFK runaway device carpets. `ProgressionData.weapon_archetype()` treats `summon_role` weapons as summon archetype, and the balance harness models pure summon DPS through minion output rather than an invisible direct hit.
+
+## Berserk Class Trait — «Ярость» (SCRUM-1004)
+
+Signature trait Берсерка (канон: `docs/design/class_traits_registry.md`, данные:
+`ProgressionData.CLASS_TRAITS.berserk`, `rage_damage_bonus_cap: 0.40`): исходящий
+урон растёт НЕПРЕРЫВНО от недостающего здоровья — риск/награда identity «живёт в
+гуще боя».
+
+Формула (единая точка — `ProgressionData.class_rage_damage_bonus`):
+
+```
+missing_ratio = clamp(1 − health / max_health, 0, 1)
+бонус         = 0.40 × missing_ratio          # линейно, без ступенек
+множитель     = 1 + бонус                     # ×1.0 полное HP, ×1.2 половина,
+                                              # ровно ×1.4 (кап) на пустом
+```
+
+Клампы невалидного HP: отрицательное health → ровно кап (+40%), health выше
+max_health или max_health ≤ 0 → без бонуса (×1.0); NaN/бесконечный урон
+невозможен. Кап жёсткий — выше +40% бонус не растёт и не стакается.
+
+Слой применения — Berserk-only, ПОСЛЕ обычных модификаторов урона/типа:
+`Player.rage_damage_multiplier` читается в `BerserkWeapon._rolled_damage`
+(после ролла крита), т.е. покрывает все ТРИ оружия кита (меч/топор/молот) в
+одной точке; вторичные melee-эффекты (close bonus, execute, followup-дуга)
+наследуют уже усиленный `dealt` и повторно НЕ множат — рекурсивного стака нет.
+Вторая ось кита — эхо-волна ульты «Неистовство»
+(`Player._trigger_berserk_ultimate_echo`) — усилена тем же множителем один раз.
+Артефактные low-HP эффекты (SCRUM-500: «Кровавый Рубеж», «Второе Дыхание»,
+«Рубеж Стража») — ОТДЕЛЬНЫЙ стакующийся слой от порога 30% и не меняются;
+generic-урон вне кита (универсальные DoT-артефакты и т.п.) trait не трогает.
+Другим классам не течёт: у классов без `rage_damage_bonus_cap` множитель
+ровно 1.0 (data-driven).
+
+Бюджет-зеркало: `class_rage_expected_damage_factor` = 1 + 0.40 ×
+`RAGE_BUDGET_EXPECTED_MISSING_HP` — матожидание недостающего HP принято 30%
+(огромный запас крови + сустейн держат Берсерка в средне-высоком HP большую
+часть забега) ⇒ фактор ×1.12 на канальные выходы
+кита в `estimate_weapon_budget_for_stats` (до ульты, паттерн `action_echo`).
+`budget_tuning_for` компенсирует кит: на полном HP Берсерк ≈ −11% ниже
+коридора, на почти пустом — до ≈ +25% выше (осознанный risk/reward коридор).
+Контракты: `tests/berserk_rage_trait_test.gd` (формула, кап, непрерывность,
+все три оружия, ульта-эхо, изоляция, бюджет-фактор) +
+`tests/berserk_dps_runaway_gate.gd` (live анти-runaway пик).
 
 ## Chemist Class Trait — «Катализатор» (SCRUM-942)
 
