@@ -34,7 +34,9 @@
 
 - Принятый старт боя владеет ровно одним `Player`, одной включённой камерой и
   одним поколением HUD/сигнальных hooks. Повторный `_start_combat` в том же или
-  соседнем кадре — идемпотентный no-op, пока старт строится или бой уже активен.
+  соседнем кадре — идемпотентный no-op, пока старт строится или активный флаг
+  подтверждён живыми owned Player/generation/HUD. Если карта уже очистила мир и
+  HUD, stale `combat_active` нормализуется и не блокирует RouteNode A/pressed.
 - Полный `Player.tscn`, временно используемый досье/магазином/событием как модель
   run snapshot, явно имеет роль `menu_snapshot`: он не входит в combat-группу
   `player`, не обрабатывает input/physics, не имеет активной камеры и принадлежит
@@ -268,7 +270,7 @@
 - Player lifecycle stress (SCRUM-1071):
   `tests/duplicate_player_spawn_regression_test.gd` — 50 циклов new/continue,
   battle/elite/boss, leaked-menu-snapshot simulation, rapid/double triggers и
-  проверки после process+physics frames.
+  stale-combat route-map A activation, проверки после process+physics frames.
 - Dev console smoke: `tests/dev_console_smoke_test.gd` проверяет, что открытая консоль не ставит бой на паузу и не останавливает таймер/движение.
 - Фокус-сьюты (SCRUM-202, split зонтика): `tests/runtime_smoke_combat_test.gd`, `runtime_smoke_boss_elite_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_ui_test.gd`.
 - Targeting-specific smoke: `tests/melee_weapon_targeting_test.gd`.

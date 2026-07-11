@@ -159,10 +159,19 @@ static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_s
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	# SCRUM-1071: route/event/dev-console signals may converge in the same frame.
-	# A live or currently-building combat already owns its Player/HUD/hooks; a
-	# repeated trigger is an idempotent no-op, never a teardown/rebuild.
-	if _combat_start_in_progress or game.combat_active:
+	# A currently-building combat always owns the transition. `combat_active`
+	# alone is not authoritative: route-map boundary helpers clear Player/HUD/UI
+	# directly and legacy/test paths can leave the boolean stale. Only a complete,
+	# owned live generation (Player + matching generation + HUD) makes a repeated
+	# trigger an idempotent no-op. Otherwise normalize stale flags and start the
+	# route-selected combat normally.
+	if _combat_start_in_progress:
 		return
+	if game.combat_active:
+		if _has_live_owned_combat_generation():
+			return
+		game.combat_active = false
+		game.boss_combat_active = false
 	_combat_start_in_progress = true
 	# SCRUM-1000: бой не должен рождаться под чужой паузой (консольные fight/act
 	# в обход экранов). Штатные входы (клик узла карты, событие) приходят без
@@ -232,6 +241,26 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 		push_error("SCRUM-926: mandatory battle prayer UI could not be opened")
 		return
 	_finalize_combat_start()
+
+
+func _has_live_owned_combat_generation() -> bool:
+	if not game.combat_active:
+		return false
+	var player := game.current_player as Node
+	if player == null or not is_instance_valid(player) or player.is_queued_for_deletion() or not player.is_inside_tree():
+		return false
+	if not player.is_in_group("player"):
+		return false
+	if int(player.get_meta(game.PLAYER_LIFECYCLE_OWNER_META, 0)) != game.get_instance_id():
+		return false
+	if StringName(player.get_meta(game.PLAYER_LIFECYCLE_ROLE_META, &"")) != game.PLAYER_LIFECYCLE_COMBAT:
+		return false
+	if int(player.get_meta("combat_start_generation", -1)) != _combat_start_generation:
+		return false
+	var hud := game.hud_layer as CanvasLayer
+	if hud == null or not is_instance_valid(hud) or hud.is_queued_for_deletion() or not hud.is_inside_tree():
+		return false
+	return hud.find_child("CombatHudRoot", true, false) != null
 
 
 func _finalize_combat_start() -> void:

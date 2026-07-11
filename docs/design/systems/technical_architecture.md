@@ -59,9 +59,11 @@ Use groups for temporary runtime nodes:
 ### Player lifecycle ownership (SCRUM-1071)
 
 - A live combat has exactly one lifecycle generation: `CombatDirector._start_combat()`
-  is idempotent while a start is in progress or `combat_active` is true. A
-  repeated route/mouse/key/gamepad/dev-console trigger cannot rebuild Player,
-  HUD, signal hooks, enemies or `on_battle_start` in the same combat.
+  is always idempotent while a start is in progress. Once built, a repeated
+  route/mouse/key/gamepad/dev-console trigger is ignored only when
+  `combat_active` is backed by the owned current Player, matching generation
+  metadata and a live combat HUD. A stale boolean after direct route teardown is
+  normalized and cannot block the next RouteNode activation.
 - Every full `Player.tscn` instance created by Main receives
   `player_lifecycle_owner` and `player_lifecycle_role`. Combat instances remain
   in `player`; stat-only menu snapshots use role `menu_snapshot`, group
@@ -74,8 +76,8 @@ Use groups for temporary runtime nodes:
 - The focused invariant/stress gate is
   `tests/duplicate_player_spawn_regression_test.gd`: 50 new/continue transitions
   across battle/elite/boss starts, unresolved dossier snapshots, repeated start
-  triggers, process+physics frames, one Player/Camera/HUD/weapon and one handler
-  per combat signal.
+  triggers, the stale-`combat_active` RouteMap gamepad-A boundary, process+physics
+  frames, one Player/Camera/HUD/weapon and one handler per combat signal.
 
 ## Resource Loading
 

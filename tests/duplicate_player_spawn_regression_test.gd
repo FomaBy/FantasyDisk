@@ -17,6 +17,7 @@ func _initialize() -> void:
 	await _test_route_pause_settings_repro(main)
 	await _test_menu_snapshot_lifecycle(main)
 	var continue_snapshot: Dictionary = await _test_double_start_idempotency(main)
+	await _test_stale_combat_active_route_activation(main)
 	await _stress_new_continue_transitions(main, continue_snapshot)
 
 	main.combat_active = false
@@ -142,6 +143,36 @@ func _test_double_start_idempotency(main: Node) -> Dictionary:
 		return {}
 	main.combat._store_player_snapshot(first_player)
 	return main.run_player_snapshot.duplicate(true)
+
+
+func _test_stale_combat_active_route_activation(main: Node) -> void:
+	# Exact independent-QA regression: a live battle is torn down by the real
+	# route-map boundary, whose historical contract leaves combat_active stale.
+	# Gamepad A and mouse share RouteNode.pressed, so emitting pressed exercises
+	# the production route activation without depending on a physical controller.
+	var generation_before := int(main.combat.get("_combat_start_generation"))
+	main.route_stage = 0
+	main.route_selected_indices = []
+	main.route._show_battle_map()
+	if not main.combat_active:
+		_errors.append("stale-boundary fixture unexpectedly normalized combat_active before route activation")
+	if main.current_player != null or main.hud_layer != null:
+		_errors.append("route-map boundary did not clear the previous Player/HUD fixture")
+	await process_frame
+	await physics_frame
+	var focus := main.get_viewport().gui_get_focus_owner() as Button
+	if focus == null or not str(focus.name).begins_with("RouteNode_") or focus.disabled:
+		_errors.append("route-map stale-boundary fixture lacks an available focused RouteNode")
+		return
+	var map_screen := main.ui_layer.get_node_or_null("RouteMapScreen") as Node
+	focus.pressed.emit()
+	await process_frame
+	await physics_frame
+	if map_screen != null and is_instance_valid(map_screen) and map_screen.get_parent() != null:
+		_errors.append("stale combat_active blocked RouteNode gamepad-A/pressed activation")
+	if int(main.combat.get("_combat_start_generation")) != generation_before + 1:
+		_errors.append("stale route boundary did not create exactly one replacement combat generation")
+	_assert_combat_uniqueness(main, "stale route-map A activation")
 
 
 func _stress_new_continue_transitions(main: Node, continue_snapshot: Dictionary) -> void:
