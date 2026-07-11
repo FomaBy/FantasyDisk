@@ -373,7 +373,7 @@ func _initialize() -> void:
 		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected SCRUM-851 line bar + concise tooltip for stat %s." % stat_id)
 			return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "" or not guidance.text.contains(":"):
 			_fail("Expected SCRUM-798 build guidance section %s." % relevance)
@@ -8694,7 +8694,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	if first_thumb_rect.size.x < hero_slot_floor or first_thumb_rect.size.y < hero_slot_floor:
 		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guidance := hero_main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven Hero Select build guidance %s at %s." % [relevance, context])

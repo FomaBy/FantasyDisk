@@ -9,6 +9,7 @@ extends SceneTree
 # class_affinity фильтруется (эффект спит у чужих классов).
 
 const Meta := preload("res://scripts/meta_progression.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
@@ -17,6 +18,7 @@ const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 func _initialize() -> void:
 	_test_constellation_anatomy()
 	_test_minor_stars_follow_relevance_matrix()
+	_test_doctor_constellation_respects_plague_oath()
 	_test_keystones_have_downside_and_unique_signatures()
 	_test_keystone_mutual_exclusion()
 	_test_hidden_stars_unlock_by_condition()
@@ -145,6 +147,17 @@ func _test_minor_stars_follow_relevance_matrix() -> void:
 			var eff_key := str((TreeData.STAR_ATTRS[a] as Dictionary)["key"])
 			if not keys_present.has(eff_key):
 				_fail("Класс '%s': primary-атрибут '%s' (%s) не представлен в созвездии." % [cid, a, eff_key])
+				return
+
+
+# SCRUM-1064: Doctor's trait rejects generic sustain meta modifiers at apply
+# time. A constellation must never sell a star that the owning class discards.
+func _test_doctor_constellation_respects_plague_oath() -> void:
+	for node in Meta.constellation_nodes("doctor"):
+		var node_data: Dictionary = node
+		for key in (node_data.get("effects", {}) as Dictionary).keys():
+			if ProgressionData.is_blocked_sustain_mod_key(str(key)):
+				_fail("Doctor constellation node '%s' contains blocked Plague Oath modifier '%s'." % [str(node_data.get("id", "")), str(key)])
 				return
 
 

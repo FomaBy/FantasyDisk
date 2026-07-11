@@ -321,7 +321,18 @@ SCRUM-281 добавил отдельный Hero Select frame kit из `docs/des
 
 SCRUM-356 подключил unified Hero Select frame в runtime: `assets/sprites/ui/frames/hero_select/ui_frame_hero_select_unified_panel.png` (`1536x1024` RGBA) теперь рисуется цельным proportional `TextureRect` как `HeroSelectUnifiedFrame` и объединяет portrait + description + bottom controls без 9-slice/one-axis stretch. `HeroSelectPortraitPanel`, `HeroSelectDossierPanel`, `AscensionSelectorRow` и `HeroSelectChooseButton` размещаются только в source-space safe zones из `docs/design/references/hero_select_unified_panel/scrum356_unified_panel_metadata.json`: portrait `Rect2(130,145,420,560)`, description `Rect2(610,145,786,500)`, bottom controls `Rect2(570,705,660,178)`. `AscensionMinusButton`/`AscensionPlusButton` используют compact `ui_frame_hero_select_asc_button_small.png`; на 720p delta-строка Возвышения скрывается, чтобы controls не заходили на орнамент, а на больших окнах остается внутри bottom safe-zone. Radar остается отдельным floating top-right `HeroSelectRadarPanel`, carousel — отдельным bottom strip.
 
-SCRUM-798 (2026-07-01) supersedes the first black-minimal Hero Select sizing while keeping the same no-frame/no-radar direction. The current `HeroSelectScreen` is built by `_build_character_select_v4()` over `HS4BlackBackground`: a large selected `HS4Portrait` dominates the left column (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `620x620` on tall screens), `HS4AscensionFrame` sits directly below the preview with `-`/`+`, modifier text/tooltip and `HS4ChooseButton`, and the right `HS4DossierFrame` is a scroll-safe class dossier. The dossier now shows description, strengths/weaknesses, weapons, class identity, eight base characteristics as hoverable Line Bars (`HS4Stat_*` with `HS4StatBarFill_*`) and data-driven build guidance sections for `primary`/`secondary`/`optional` attribute relevance from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive slots (`~187px` at 720p, `~281px` at 1080p, capped near `304px`) with larger arrows and selected/hover/focus states. The old Hero Select frame assets remain historical/reference assets only for this screen. QA evidence: `build/qa/scrum-798/`.
+SCRUM-798 (2026-07-01) established the current no-radar Hero Select sizing. The
+live `HeroSelectScreen` remains `_build_character_select_v4()`: large rotating
+portrait left, fixed eight colored stat bars right, Ascension and cyclic
+carousel below. SCRUM-1064 supersedes only the dossier content: optional exact
+trait first, then name, all three canonical weapons, deterministic top-3
+`BASE_STATS` with values, and complete primary/secondary/weak relevance lists
+from `ProgressionData.hero_select_dossier`. Free description and prose
+strengths/weaknesses are no longer live. All text stays in the frame-safe
+`HS4DossierScroll`; 1152×648/720p use the compact 2×4 stat lane and required
+scroll, 1080p/2K retain one column, and live resize rebuilds this screen without
+run/route reset. Accepted PixelLab shell is reused; plan/evidence:
+`docs/design/mockups/scrum1064_hero_dossier/`.
 
 SCRUM-951 gives those eight Hero Select characteristics stable, shared stat-ID
 colors from `HeroSelectConstants.HERO_STAT_COLORS`; class changes update values
@@ -371,13 +382,13 @@ three complete slots by uniformly scaling cards to 116/132 px. UI Director
 spec/provenance/previews: `docs/design/mockups/scrum1063_hero_carousel_wide_buttons/`
 and `docs/design/references/scrum1063_hero_carousel_wide_buttons/`.
 
-SCRUM-952 adds an explicit Hero Select reading hierarchy for every playable
-class: `Особенность`, `Плюсы`, `Минусы`. All 17 unique traits are implemented
+Historical SCRUM-952 added the first Hero Select reading hierarchy:
+`Особенность`, `Плюсы`, `Минусы`. All 17 unique traits remain implemented
 data entries with a concise `short_description` for selection/tooltips and a
 detailed `description` for Codex. Hero Select reads the trait through
 `ProgressionData.class_trait`, while CodexData projects the same record; class
-copy is not duplicated per screen. The dossier uses its existing frame-safe
-scroll lane at 720p and preserves native wrapped labels at 1080p/2K. SCRUM-1046
+copy is not duplicated per screen. SCRUM-1064 removes visible prose plus/minus
+and consumes the same traits in its structured dossier. SCRUM-1046
 adds a local scroll-first input contract: keyboard/D-pad/left-stick vertical
 actions and PageUp/PageDown move real compact overflow while focus stays in the
 dossier, then transfer to Back/Choose only at the respective boundary; changing
@@ -1750,7 +1761,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | --- | --- |
 | Главное меню | SCRUM-981: эпичный battle-art фон внутри полой `meta40/frame_border.png` рамы; логотип и шесть действий размещены в safe-zone как responsive сетка 2×3 (380×72 на 720p, 380×104 на 1080p/1440p), с явной 2D focus-навигацией |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
-| Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe dossier; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота; strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance сохраняются |
+| Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe structured dossier SCRUM-1064 (trait → имя → 3 оружия → top-3 BASE_STATS → primary/secondary/weak без прозы/тримминга) + фиксированные 8 stat Line Bars; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | SCRUM-981: вертикальная карта внутри общей полой gold shell; header/title, боевой resource HUD, scroll/canvas, отдельная scrollbar lane и FAB находятся в точных safe-зонах, горизонтальный scroll отключён |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |

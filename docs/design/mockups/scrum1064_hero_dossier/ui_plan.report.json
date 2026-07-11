@@ -1,0 +1,140 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_safe",
+      "kind": "panel",
+      "rect": [
+        160,
+        120,
+        1600,
+        830
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        200,
+        168,
+        268,
+        62
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "back",
+      "kind": "button",
+      "rect": [
+        1460,
+        176,
+        260,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "portrait",
+      "kind": "portrait",
+      "rect": [
+        200,
+        280,
+        490,
+        488
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "choose",
+      "kind": "button",
+      "rect": [
+        210,
+        790,
+        480,
+        116
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "panel",
+      "rect": [
+        706,
+        280,
+        1012,
+        286
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_scroll",
+      "kind": "scroll",
+      "rect": [
+        742,
+        309,
+        590,
+        231
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 640,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1316,
+        309,
+        16,
+        231
+      ]
+    },
+    {
+      "id": "stats",
+      "kind": "stat_grid",
+      "rect": [
+        1362,
+        309,
+        320,
+        231
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ascension",
+      "kind": "panel",
+      "rect": [
+        706,
+        570,
+        878,
+        132
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "carousel",
+      "kind": "panel",
+      "rect": [
+        706,
+        714,
+        1012,
+        226
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

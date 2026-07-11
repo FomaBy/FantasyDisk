@@ -1145,34 +1145,55 @@ const ATTRIBUTE_REGISTRY := [
 # полезности атрибута для класса (заменяет косвенный расчёт через 8 базовых
 # характеристик в level-up-наградах). ЖЁСТКИЙ ИНВАРИАНТ по каждому атрибуту:
 # ровно 2 primary + 8 secondary + 7 optional = 17 классов (проверяется
-# tests/attribute_relevance_test.gd). optional выводится как «все остальные».
+# tests/attribute_relevance_test.gd). optional выводится в Hero Select как
+# «Слабые атрибуты».
 # primary = сигнатурный геймплей класса; secondary = ощутимо полезно; optional =
 # профильно мимо. Раскладка осмысленна (берсерк — урон/отталкивание/вампиризм,
 # снайпер — крит/дальность, жрец — защита/аура/поддержка, друид — аура/призыв/реген).
 const ATTRIBUTE_RELEVANCE := {
+	# `damage` is also consumed by the active per-hero generic damage star, so the
+	# Dark Mage remains secondary despite its three direct weapon channels being
+	# magic/DoT. Doctor's physical Bone Saw branch alone does not displace that
+	# full-build progression contract.
 	"damage": {"primary": ["berserk", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "chemist", "knight"]},
 	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "doctor", "chemist"]},
 	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "thief", "sniper", "priest", "engineer", "assassin", "ranger", "doctor"]},
 	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "elementalist", "sniper", "biologist", "dark_mage", "assassin", "chemist", "knight"]},
 	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "thief", "sniper", "priest", "robot", "engineer", "dark_mage", "ranger"]},
-	# SCRUM-897: pickup_radius — первичная сила Вора (trait «Воровская хватка»).
-	"pickup_radius": {"primary": ["thief", "robot", "engineer"], "secondary": ["berserk", "elementalist", "sniper", "assassin", "ranger", "chemist", "knight"]},
-	"defense": {"primary": ["knight", "priest"], "secondary": ["thief", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
-	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["sniper", "priest", "robot", "engineer", "assassin", "ranger", "doctor", "chemist"]},
+	# Thief owns the pickup trait. Engineer's remote device field is the second
+	# strongest fit; Robot returns to secondary so 2/8/7 remains exact.
+	"pickup_radius": {"primary": ["thief", "engineer"], "secondary": ["berserk", "elementalist", "sniper", "robot", "assassin", "ranger", "chemist", "knight"]},
+	# Armored Hull is an always-on mitigation mechanic; dodge specialists do not
+	# treat the separate armor/defense axis as kit-defining.
+	"defense": {"primary": ["knight", "priest"], "secondary": ["robot", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
+	# Secondary magic relevance follows actual magic channels and accepted
+	# cross-class enchantment hooks, not the obsolete physical-only roster.
+	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["thief", "priest", "biologist", "guitarist", "doctor", "chemist", "druid", "engineer"]},
 	"knockback": {"primary": ["berserk", "guitarist"], "secondary": ["soldier", "elementalist", "sniper", "priest", "biologist", "chemist", "knight", "druid"]},
-	"crit_chance": {"primary": ["thief", "sniper"], "secondary": ["berserk", "soldier", "biologist", "robot", "dark_mage", "assassin", "ranger", "druid"]},
+	# Assassin owns the unique 100% crit cap/overflow trait and must be primary.
+	"crit_chance": {"primary": ["assassin", "sniper"], "secondary": ["berserk", "soldier", "thief", "biologist", "robot", "dark_mage", "ranger", "druid"]},
 	"crit_damage": {"primary": ["sniper", "assassin"], "secondary": ["berserk", "soldier", "thief", "robot", "dark_mage", "guitarist", "ranger", "druid"]},
 	"dodge": {"primary": ["thief", "assassin"], "secondary": ["berserk", "soldier", "sniper", "biologist", "guitarist", "ranger", "doctor", "druid"]},
 	"range": {"primary": ["sniper", "ranger"], "secondary": ["soldier", "elementalist", "priest", "biologist", "engineer", "dark_mage", "chemist", "druid"]},
-	"dot_damage": {"primary": ["biologist", "dark_mage"], "secondary": ["elementalist", "priest", "engineer", "guitarist", "assassin", "doctor", "chemist", "druid"]},
+	# Catalyst multiplies every periodic branch by 1.5. Plague Oath makes the
+	# Doctor's long plague DoT the sole scalable source of weapon-only sustain,
+	# so it is kit-defining; Biologist remains primary on tick speed and
+	# secondary here. Dark Mage keeps meaningful curse-DoT relevance.
+	"dot_damage": {"primary": ["doctor", "chemist"], "secondary": ["elementalist", "priest", "engineer", "guitarist", "assassin", "biologist", "dark_mage", "druid"]},
 	"dot_speed": {"primary": ["biologist", "chemist"], "secondary": ["elementalist", "priest", "engineer", "dark_mage", "guitarist", "assassin", "doctor", "druid"]},
 	"projectile_speed": {"primary": ["soldier", "ranger"], "secondary": ["thief", "elementalist", "sniper", "robot", "engineer", "dark_mage", "guitarist", "chemist"]},
 	"aura_radius": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "engineer", "guitarist", "doctor", "knight"]},
-	"buff_power": {"primary": ["priest", "engineer"], "secondary": ["berserk", "soldier", "biologist", "robot", "guitarist", "doctor", "knight", "druid"]},
+	# Wild Force Aura scales directly from buff_power; Engineer's network instead
+	# scales from devices and Leadership, so it is secondary.
+	"buff_power": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "guitarist", "doctor", "knight", "engineer"]},
 	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["elementalist", "priest", "biologist", "robot", "dark_mage", "guitarist", "doctor", "knight"]},
 	"absorb": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "priest", "biologist", "engineer", "guitarist", "doctor", "druid"]},
-	"regeneration": {"primary": ["doctor", "druid"], "secondary": ["berserk", "soldier", "priest", "biologist", "robot", "engineer", "guitarist", "knight"]},
-	"vampiric_amount": {"primary": ["berserk", "doctor"], "secondary": ["soldier", "thief", "biologist", "robot", "guitarist", "assassin", "knight", "druid"]},
-	"vampiric_chance": {"primary": ["assassin", "doctor"], "secondary": ["berserk", "soldier", "thief", "biologist", "robot", "guitarist", "knight", "druid"]},
+	# Plague Oath explicitly blocks generic regen/vampirism. Priest's selectable
+	# Mending prayer and Druid sustain remain the true regeneration primaries.
+	"regeneration": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "engineer", "guitarist", "knight", "chemist"]},
+	# Biologist's existing constellation and infection loop own the second
+	# amount-primary slot; Assassin remains secondary here and primary on chance.
+	"vampiric_amount": {"primary": ["berserk", "biologist"], "secondary": ["soldier", "thief", "assassin", "robot", "guitarist", "priest", "knight", "druid"]},
+	"vampiric_chance": {"primary": ["assassin", "berserk"], "secondary": ["soldier", "thief", "biologist", "robot", "guitarist", "priest", "knight", "druid"]},
 	"ultimate_power": {"primary": ["elementalist", "guitarist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "doctor", "druid"]},
 }
