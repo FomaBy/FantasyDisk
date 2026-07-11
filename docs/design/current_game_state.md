@@ -1345,7 +1345,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркированная kill-zone у ближайшей цели вызывает несколько точных sky-beam попаданий |
 | Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
-| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
+| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько тяжёлых ward-пульсов вокруг героя наносят урон; финал поглощает 18% одного удара за cast и отвечает retaliation без скрытого лечения |
 | Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal |
 | Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
 | Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
@@ -2458,3 +2458,15 @@ cap/expiry; summon death, block/absorb, return и deploy callbacks имеют т
 owner/weapon attribution. Regression gates: schema migration, 51 positive + 102
 foreign negatives, 11 special-consumer behaviors, 51 weapon scenes и full
 runtime smoke.
+
+Независимый post-review 2026-07-11 отклонил ранний resolver-only green и привёл
+к runtime hardening: grenade/prism/meteor/shatter создают реальные delayed
+волны; backstab/deadeye/anchor/crossbow используют setup→consume marks; smoke и
+censer получают фактические dodge/absorb callbacks; skull/reliquary/symbiote —
+authoritative death/expiry lifecycle; plague/wire/wound синхронизируют локальные
+таймеры и stacks. Repair/pack/chime/overheal shields теперь идут через единый
+Player-owned timed-absorb API с немедленным derived recompute и безопасным
+refresh/expiry. `constellation_schema6_live_runtime_test.gd` проверяет живой
+урон, тайминги, overlapping-volley/per-cast caps, Censer ward, Reactor
+knockback и Acid reset/rearm, а `constellation_schema6_lifecycle_runtime_test.gd` —
+death/expiry и stack timeout/reset, а не только строки registry/resolver.

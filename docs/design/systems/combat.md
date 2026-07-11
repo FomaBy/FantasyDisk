@@ -314,7 +314,24 @@ Production implementation использует `ConstellationFinalRuntime` с т
 lifecycle-state; неизвестный ID fail-closed. Реальные consumers вызывают только
 свои события (`hit`, `cast`, `return`, `dodge`, `block`, `damage_absorbed`,
 `overheal`, `summon_death` и специализированные impact/deploy events).
-`tools/validate_scrum1068_runtime_manifest.py` требует все 51 route и реальный
-consumer hook; behavioral matrix проверяет 51 positive + 102 same-class foreign
+`tools/validate_scrum1068_runtime_manifest.py` требует все 51 route и для 40
+ClassWeapon-финалов проверяет точный bound method, а mutation gate удаляет
+rifle-hit route и доказывает, что одноимённые события других оружий не дают
+false-green. Behavioral matrix проверяет 51 positive + 102 same-class foreign
 negatives. Secondary/share/aftershock damage идёт низкоуровневым путём без
 повторного proc, а consumer-owned state очищается вместе с weapon/minion.
+
+Post-review gate 2026-07-11 запрещает считать registry-строку или общий damage
+gateway реализацией финала. Explicit-hit consumers имеют отдельный marker и не
+считают generic/DoT hits повторно. Setup finals сначала ставят timed target mark
+и выплачиваются только следующим квалифицированным hit; delayed waves, unique
+targets, chain depth и same-target caps проверяются живыми ClassWeapon fixtures.
+Временные absorb/dodge источники принадлежат Player, пересчитывают derived stats,
+имеют monotonic expiry token и не переживают configure/cleanup. Authoritative
+kill callback покрывает curse/mark death lifecycle без двойной выплаты.
+Shatter хранит hit-cap отдельно для каждого перекрывающегося залпа; Dark Book
+связывает endpoints по pair и допускает ровно один midpoint collapse на cast.
+Censer создаёт один cast-scoped absorb на 18% одного удара: unrelated flat
+absorb не может запустить retaliation. Reactor на четвёртом cast применяет
+настоящий pulse knockback 110, а Acid rearm-ится только после падения живых
+стаков ниже пяти.

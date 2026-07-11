@@ -205,10 +205,15 @@ func _test_drone_repair_shield() -> void:
 	root.add_child(drone)
 	drone.set_physics_process(false)
 	player.health = player.max_health
+	var baseline_flat := float(player.run_modifiers.get("absorb_flat", 0.0))
+	var baseline_derived := float(player.derived_parameters.get("absorb", 0.0))
 	var result: Dictionary = drone.constellation_repair_tick(weapon, player, 0.25)
 	_check(is_equal_approx(float(result.get("excess", 0.0)), 0.5), "repair tether exceeded/undershot 2 HP/s rail")
 	_check(is_equal_approx(float(result.get("shield_added", 0.0)), 0.25), "drone excess repair did not convert at 50%")
-	_check(is_equal_approx(float(player.run_modifiers.get("constellation_absorb_flat", 0.0)), 0.25), "drone normalized shield bucket ignored excess conversion")
+	var shield_source := "repair_drone_%d" % drone.get_instance_id()
+	_check(is_equal_approx(float(player.constellation_timed_absorb(shield_source)), 0.25), "drone did not register its owned timed shield source")
+	_check(is_equal_approx(float(player.run_modifiers.get("absorb_flat", 0.0)), baseline_flat + 0.25), "drone timed shield did not update the canonical absorb modifier")
+	_check(float(player.derived_parameters.get("absorb", 0.0)) > baseline_derived, "drone timed shield left derived absorb stale")
 	_cleanup_nodes([drone, player])
 
 

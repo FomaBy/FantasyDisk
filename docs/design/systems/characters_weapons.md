@@ -104,7 +104,7 @@ Knight `holy_flail` и любого другого circle-оружия оста�
 | `sniper` | `sniper_spotter_scope` | Прицел Наводчика | `SniperSpotterScope.tscn` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий |
 | `sniper` | `sniper_shatter_rounds` | Осколочные Патроны | `SniperShatterRounds.tscn` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | `priest` | `priest_reliquary` | Светлый Реликварий | `PriestReliquary.tscn` | `priest_sanctify` | Отмечает ближайшую цель и взрывает священную область с sustain-heal от урона |
-| `priest` | `priest_censer` | Кадило Обета | `PriestCenser.tscn` | `priest_ward` | Несколько защитных волн вокруг героя, ближний контроль и малое лечение |
+| `priest` | `priest_censer` | Кадило Обета | `PriestCenser.tscn` | `priest_ward` | Несколько тяжёлых волн вокруг героя; финал поглощает 18% одного удара за cast и отвечает retaliation без скрытого лечения |
 | `priest` | `priest_chime` | Колокол Молитвы | `PriestChime.tscn` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal |
 
 | `biologist` | `biologist_spore_lens` | Споровая Линза | `BiologistSporeLens.tscn` | `bio_spore_bloom` | ЛОКАЛЬНЫЙ AoE у персонажа (range 235): три расширяющихся кольца с falloff; задетые замедлены 5→20% по прогрессии и заражены bio_infection (SCRUM-896) |
@@ -413,7 +413,7 @@ sustain, summon/deploy ownership, zone или projectile behavior — и не м
 уникальном `mechanic_id`, weapon-specific параметрах и отдельном positive
 fixture. Два других оружия класса являются обязательными negative-controls.
 
-Runtime handoff SCRUM-1068 должен дать API уровня
+Runtime SCRUM-1068 предоставляет API
 `skill_modifiers_for_weapon(state,class_id,weapon_id)`: class-wide aggregation
 schema 5 недостаточна для `damage_flat ≥10` и mechanic finals без утечки на всё
 трио.

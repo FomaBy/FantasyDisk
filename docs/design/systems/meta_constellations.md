@@ -1,10 +1,10 @@
 # Мета 4.0 «Созвездия героев» — дерево умений и метапрогрессия (редизайн с нуля)
 
-> **Целевой контракт SCRUM-1067 (schema 6, реализация — SCRUM-1068).**
-> Исторические разделы Меты 4.0/4.1 ниже продолжают описывать schema-5 runtime
-> до внедрения. Новый источник истины для следующей схемы:
+> **Production contract SCRUM-1067 / runtime SCRUM-1068 (schema 6).**
+> Исторические разделы Меты 4.0/4.1 ниже сохранены как история schema 5.
+> Текущий источник истины:
 > `docs/design/reports/scrum1067_constellation_3x6_balance_spec.md` и
-> `docs/design/data/scrum1067_weapon_finals_manifest.json`.
+> `data/meta/constellation_schema6.json`.
 >
 > На класс: одно бесплатное ядро, три canonical weapon-owned ветви по шесть
 > cost-1 узлов и две revealed-then-purchased hidden side stars cost 1. Итого
@@ -16,9 +16,9 @@
 > Старые class-wide mutually-exclusive keystone и auto-active hidden в schema 6
 > не переносятся.
 
-Обновлено: 2026-07-03. Автор: PM/game-design (Fable 5), по прямому мандату
+Обновлено: 2026-07-11. Автор: PM/game-design (Fable 5), по прямому мандату
 продукта. Заменяет как целевую архитектуру: `skill_tree.md` (v3, SCRUM-807 —
-остаётся описанием ТЕКУЩЕГО кода до внедрения), части `progression_balance.md`
+остаётся историческим описанием v3), части `progression_balance.md`
 (мета-слой) и распределённые описания CLASS_PROGRESSION / CLASS_CHALLENGES.
 
 Мандат продукта: игрок должен играть дольше, постоянно открывать новые

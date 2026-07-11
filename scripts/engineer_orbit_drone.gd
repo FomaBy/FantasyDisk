@@ -197,8 +197,6 @@ func constellation_repair_tick(weapon: Node, owner_node: Node2D, delta: float) -
 	var shield_add := minf(excess * conversion, maxf(cap - _constellation_owned_shield, 0.0))
 	if shield_add <= 0.0:
 		return outcome
-	var previous_bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
-	var previous_absorb := _owner_modifier(owner_node, "absorb_flat")
 	var result := {"valid": true, "triggered": true}
 	if owner_node.has_method("constellation_weapon_event"):
 		var raw = owner_node.call("constellation_weapon_event", weapon_id, "repair", {"repair": requested, "healed": healed, "excess": excess}, null)
@@ -206,18 +204,12 @@ func constellation_repair_tick(weapon: Node, owner_node: Node2D, delta: float) -
 			result = raw
 	if not bool(result.get("triggered", false)):
 		return outcome
-	# Player's generic side-effect grants the manifest cap. Normalize that generic
-	# bucket back to the exact excess*conversion amount owned by this drone.
-	var event_bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
-	var desired_bucket := minf(previous_bucket + shield_add, cap)
-	_set_owner_modifier(owner_node, "constellation_absorb_flat", desired_bucket)
-	_set_owner_modifier(owner_node, "absorb_flat", maxf(previous_absorb + desired_bucket - previous_bucket, 0.0))
 	_constellation_owned_shield = minf(_constellation_owned_shield + shield_add, cap)
 	_constellation_shield_left = maxf(float(params.get("shield_seconds", 3.0)), 0.0)
+	if owner_node.has_method("constellation_set_timed_absorb"):
+		owner_node.call("constellation_set_timed_absorb", "repair_drone_%d" % get_instance_id(), _constellation_owned_shield, _constellation_shield_left)
 	outcome["shield_added"] = shield_add
 	outcome["triggered"] = true
-	# Keep a visible audit fact for tests/debug even when the owner is a minimal mock.
-	outcome["generic_event_bucket"] = event_bucket
 	return outcome
 
 
@@ -227,23 +219,9 @@ func _tick_constellation_shield_expiry(owner_node: Node2D, delta: float) -> void
 	_constellation_shield_left = maxf(_constellation_shield_left - delta, 0.0)
 	if _constellation_shield_left > 0.0:
 		return
-	var bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
-	var absorb := _owner_modifier(owner_node, "absorb_flat")
-	var removed := minf(_constellation_owned_shield, bucket)
-	_set_owner_modifier(owner_node, "constellation_absorb_flat", maxf(bucket - removed, 0.0))
-	_set_owner_modifier(owner_node, "absorb_flat", maxf(absorb - removed, 0.0))
+	if owner_node.has_method("constellation_remove_timed_absorb"):
+		owner_node.call("constellation_remove_timed_absorb", "repair_drone_%d" % get_instance_id())
 	_constellation_owned_shield = 0.0
-
-
-func _owner_modifier(owner_node: Node, key: String) -> float:
-	var raw = owner_node.get("run_modifiers")
-	return float((raw as Dictionary).get(key, 0.0)) if raw is Dictionary else 0.0
-
-
-func _set_owner_modifier(owner_node: Node, key: String, value: float) -> void:
-	var raw = owner_node.get("run_modifiers")
-	if raw is Dictionary:
-		(raw as Dictionary)[key] = value
 
 
 func constellation_repair_state() -> Dictionary:

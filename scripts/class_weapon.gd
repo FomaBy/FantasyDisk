@@ -19,7 +19,7 @@ const BOOMERANG_ARC_SAMPLES := 12
 const DEFAULT_ATTACK_MODE := "sound_wave"
 const CONSTELLATION_FINAL_EVENT_HOOKS := {
 	"rifle_suppression_mark": "hit", "grenade_shrapnel_second_wave": "explosion",
-	"bayonet_brace_countershot": "block", "coin_unique_target_return": "return",
+	"bayonet_brace_countershot": "brace_hit", "coin_unique_target_return": "return",
 	"dagger_backstab_execute_mark": "hit", "smoke_dodge_triggered_burst": "dodge",
 	"orb_four_element_resonance": "hit", "prism_intersection_rift": "intersection",
 	"meteor_shard_recall": "return", "deadeye_weakpoint_cycle": "hit",
@@ -306,8 +306,13 @@ var _rhythm_echo_scale := 1.0
 # доворачивается на REACTOR_ROTATION_STEP_DEG по часовой (см.
 # _fire_robot_reactor_vent); скорость атаки ускоряет только частоту шагов.
 var _reactor_vent_phase := 0.0
-var _constellation_mirror_blast_count := 0
-var _constellation_mirror_previous_position := Vector2.ZERO
+var _constellation_mirror_pair_token := 0
+var _constellation_mirror_pairs: Dictionary = {}
+var _constellation_mirror_cast_token := 0
+var _constellation_mirror_casts: Dictionary = {}
+var _constellation_local_state: Dictionary = {}
+var _constellation_shatter_volley_token := 0
+var _constellation_shatter_volleys: Dictionary = {}
 
 # SCRUM-915/916/918: константы редизайна кита Робота.
 # Импульс knockback гасится врагом с постоянным замедлением 2400 px/s^2
@@ -385,8 +390,10 @@ func _exit_tree() -> void:
 
 func cleanup_effects() -> void:
 	_effects_shutdown = true
-	_constellation_mirror_blast_count = 0
-	_constellation_mirror_previous_position = Vector2.ZERO
+	_constellation_mirror_pairs.clear()
+	_constellation_mirror_casts.clear()
+	_constellation_local_state.clear()
+	_constellation_shatter_volleys.clear()
 	# SCRUM-900: гасим живые заразы чумы (tween'ы) вместе с эффектами.
 	for enemy_id in _plague_tweens.keys():
 		var plague_tween: Tween = _plague_tweens[enemy_id]
@@ -927,7 +934,14 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	# проход-скан, возврат — один дедуп-скан дуги ⇒ максимум 1+1 хита на цель
 	# за каст, бесконечных повторных хитов нет.
 	var origin := owner_node.global_position
-	_damage_enemies_in_corridor(origin, direction, _rolled_damage(owner_node))
+	var outbound_damage := _rolled_damage(owner_node)
+	var chakram_profile := _constellation_profile("chakram_return_execute_mark")
+	for hit in _enemies_in_corridor(origin, direction, beam_width, attack_range):
+		var outbound_target := hit["node"] as Node2D
+		_damage_enemy(outbound_target, outbound_damage)
+		if not chakram_profile.is_empty() and is_instance_valid(outbound_target):
+			var params: Dictionary = chakram_profile.get("params", {})
+			_arm_constellation_target_mark(outbound_target, "chakram", float(params.get("mark_seconds", 1.8)), float(params.get("return_bonus_cap", 0.30)), float(params.get("execute_threshold", 0.28)))
 	var orb := AttackVfx.orb_projectile(_projectile_parent(), origin + direction * 24.0, visual_color)
 	_register_effect(orb)
 	var far_point := origin + direction * attack_range
@@ -961,8 +975,9 @@ func _damage_boomerang_return(origin: Vector2, direction: Vector2, amount: float
 	var return_damage := amount * (1.0 + _owner_mod("boomerang_return_damage_mult"))
 	for hit in _enemies_in_corridor(origin, direction, return_width, attack_range):
 		var enemy_node := hit["node"] as Node2D
-		_damage_enemy(enemy_node, return_damage)
-		_constellation_event("return", enemy_node, return_damage)
+		var return_event := _constellation_event("return", enemy_node, 0.0, {"constellation_consumer_event": true})
+		var marked_damage := return_damage * _consume_constellation_target_mark(enemy_node, "chakram") if bool(return_event.get("triggered", false)) else return_damage
+		_damage_enemy(enemy_node, marked_damage)
 
 
 # SCRUM-894: разворот чакрамов — считаем дугу от точки разворота к текущей позиции
@@ -1016,8 +1031,9 @@ func _damage_boomerang_return_arc(from_point: Vector2, control: Vector2, home: V
 			if hit_ids.has(enemy_id):
 				continue
 			hit_ids[enemy_id] = true
-			_damage_enemy(enemy_node, return_damage)
-			_constellation_event("return", enemy_node, return_damage)
+			var return_event := _constellation_event("return", enemy_node, 0.0, {"constellation_consumer_event": true})
+			var marked_damage := return_damage * _consume_constellation_target_mark(enemy_node, "chakram") if bool(return_event.get("triggered", false)) else return_damage
+			_damage_enemy(enemy_node, marked_damage)
 		previous = point
 
 
@@ -1193,13 +1209,19 @@ func _find_combo_cloud(pool_position: Vector2) -> Node2D:
 
 
 func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
+	if bool(new_cloud.get_meta("constellation_powder_reacted", false)) or bool(old_cloud.get_meta("constellation_powder_reacted", false)):
+		return
+	new_cloud.set_meta("constellation_powder_reacted", true)
+	old_cloud.set_meta("constellation_powder_reacted", true)
 	var combo_position := (new_cloud.global_position + old_cloud.global_position) * 0.5
 	var combo_radius := aoe_radius * 1.05
 	var combo_damage := maxf(damage, tick_damage * 5.5) * pool_direct_damage_multiplier
 	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
 	_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
-	for enemy_node in TARGET_QUERY.in_radius(self, combo_position, combo_radius):
-		_constellation_event("cross_reagent", enemy_node as Node2D, combo_damage)
+	var combo_target := TARGET_QUERY.nearest(self, combo_position, combo_radius)
+	var reaction := _constellation_event("cross_reagent", combo_target, 0.0)
+	if bool(reaction.get("triggered", false)):
+		_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage * _constellation_result_param(reaction, "combo_damage_ratio", 0.48), POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 
 
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
@@ -1354,6 +1376,7 @@ func _resolve_dark_chain_hit(orb: Node, chain: Array, hop_index: int, damage_val
 		impact_known = true
 		var hit_damage := damage_value * pow(falloff, float(hop_index))
 		_damage_enemy(enemy_node, hit_damage)
+		_constellation_event("pierce", enemy_node, hit_damage)
 		_fire_dark_chain_hit_burst(enemy_node, impact_position, hit_damage * chain_burst_ratio * (1.0 + _owner_mod("wand_burst_bonus")))
 	if not impact_known:
 		return
@@ -1429,6 +1452,18 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 			# SCRUM-1007: тики проклятия — урон игрока (атрибуция он-килл trait).
 			"tick_feedback": {"damage_type": "dot", "player_owned": true, "curse": true},
 		})
+		enemy_node.set_meta(_constellation_mark_key("skull_curse"), {
+			"status": {
+				"duration": duration,
+				"dot_damage": tick_damage,
+				"dot_interval": tick_interval,
+				"max_stacks": 1,
+				"stack_mode": "refresh",
+				"marker_color": Color(0.78, 0.16, 1.0, 1.0),
+				"tick_feedback": {"damage_type": "dot", "player_owned": true, "curse": true},
+			},
+			"depth": 0,
+		})
 		if enemy_node is Node2D:
 			HazardVfx.dot_tick(enemy_node, Color(visual_color.r, visual_color.g, visual_color.b, 1.0))
 		cursed_count += 1
@@ -1450,30 +1485,49 @@ func _fire_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vect
 	var primary_targets: Array = []
 	if target != null:
 		primary_targets = _find_closest_enemies(owner_node, maxi(1 + _extra_projectiles(), 1))
+	var target_positions: Array[Vector2] = []
 	if primary_targets.is_empty():
 		var aim_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 360.0)
 		if _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
 			aim_position = owner_node.call("attack_aim_position", attack_range)
-		_launch_dark_mirror_pair(owner_node, aim_position)
+		target_positions.append(aim_position)
+	else:
+		for target_node in primary_targets:
+			var enemy_node := target_node as Node2D
+			if enemy_node != null and is_instance_valid(enemy_node):
+				target_positions.append(enemy_node.global_position)
+	if target_positions.is_empty():
 		return
-	for target_node in primary_targets:
-		var enemy_node := target_node as Node2D
-		if enemy_node == null or not is_instance_valid(enemy_node):
-			continue
-		_launch_dark_mirror_pair(owner_node, enemy_node.global_position)
+	_constellation_mirror_cast_token += 1
+	var cast_token := _constellation_mirror_cast_token
+	_constellation_mirror_casts[cast_token] = {"pending_pairs": target_positions.size(), "collapsed": false}
+	for target_position in target_positions:
+		_launch_dark_mirror_pair(owner_node, target_position, cast_token)
 
 
-func _launch_dark_mirror_pair(owner_node: Node2D, target_position: Vector2) -> void:
+func _launch_dark_mirror_pair(owner_node: Node2D, target_position: Vector2, cast_token := 0) -> void:
+	if cast_token <= 0:
+		_constellation_mirror_cast_token += 1
+		cast_token = _constellation_mirror_cast_token
+		_constellation_mirror_casts[cast_token] = {"pending_pairs": 1, "collapsed": false}
 	var mirror_position: Vector2 = owner_node.global_position * 2.0 - target_position
 	var damage_value := _rolled_damage(owner_node)
+	_constellation_mirror_pair_token += 1
+	var pair_token := _constellation_mirror_pair_token
+	_constellation_mirror_pairs[pair_token] = {
+		"resolved": 0,
+		"positions": [],
+		"base_damage": damage_value,
+		"cast_token": cast_token,
+	}
 	var to_target := (target_position - owner_node.global_position).normalized()
 	if to_target.length_squared() <= 0.001:
 		to_target = Vector2.RIGHT
-	_launch_dark_mirror_orb(owner_node.global_position + to_target * 28.0, target_position, damage_value)
-	_launch_dark_mirror_orb(owner_node.global_position - to_target * 28.0, mirror_position, damage_value * maxf(mirror_damage_ratio, 0.0))
+	_launch_dark_mirror_orb(owner_node.global_position + to_target * 28.0, target_position, damage_value, pair_token)
+	_launch_dark_mirror_orb(owner_node.global_position - to_target * 28.0, mirror_position, damage_value * maxf(mirror_damage_ratio, 0.0), pair_token)
 
 
-func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_damage: float) -> void:
+func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_damage: float, pair_token: int) -> void:
 	if blast_damage <= 0.0:
 		return
 	var orb := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
@@ -1481,22 +1535,46 @@ func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_dama
 	var travel_time := clampf(start.distance_to(blast_position) / maxf(projectile_speed, 1.0), 0.08, 0.45)
 	var orb_tween := create_tween()
 	orb_tween.tween_property(orb, "global_position", blast_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	orb_tween.tween_callback(Callable(self, "_resolve_dark_mirror_blast").bind(orb, blast_position, blast_damage))
+	orb_tween.tween_callback(Callable(self, "_resolve_dark_mirror_blast").bind(orb, blast_position, blast_damage, pair_token))
 
 
-func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage: float) -> void:
+func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage: float, pair_token := 0) -> void:
 	if orb != null and is_instance_valid(orb):
 		_release_effect(orb)
 	if _effects_shutdown:
 		return
 	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius, visual_color)
-	_damage_aoe_projectile_explosion(blast_position, aoe_radius, blast_damage)
-	_constellation_mirror_blast_count += 1
-	if _constellation_mirror_blast_count % 2 == 0:
-		var midpoint := (_constellation_mirror_previous_position + blast_position) * 0.5
-		var midpoint_target := TARGET_QUERY.nearest(self, midpoint, aoe_radius)
-		_constellation_event("mirror_midpoint", midpoint_target, blast_damage)
-	_constellation_mirror_previous_position = blast_position
+	var pair_probe = _constellation_mirror_pairs.get(pair_token, {})
+	var cast_probe := int((pair_probe as Dictionary).get("cast_token", 0)) if pair_probe is Dictionary else 0
+	_damage_dark_mirror_explosion(blast_position, aoe_radius, blast_damage, cast_probe, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
+	var pair_raw = _constellation_mirror_pairs.get(pair_token, {})
+	if pair_raw is Dictionary and not (pair_raw as Dictionary).is_empty():
+		var pair: Dictionary = pair_raw
+		var positions_raw = pair.get("positions", [])
+		var positions: Array = positions_raw if positions_raw is Array else []
+		positions.append(blast_position)
+		pair["positions"] = positions
+		pair["resolved"] = int(pair.get("resolved", 0)) + 1
+		if int(pair["resolved"]) >= 2 and positions.size() >= 2:
+			var cast_token := int(pair.get("cast_token", 0))
+			var cast_raw = _constellation_mirror_casts.get(cast_token, {})
+			var cast_state: Dictionary = cast_raw if cast_raw is Dictionary else {}
+			if not bool(cast_state.get("collapsed", false)):
+				var midpoint := (Vector2(positions[0]) + Vector2(positions[1])) * 0.5
+				var midpoint_target := TARGET_QUERY.nearest(self, midpoint, aoe_radius)
+				var collapse := _constellation_event("mirror_midpoint", midpoint_target, 0.0)
+				if bool(collapse.get("triggered", false)):
+					var collapse_damage := float(pair.get("base_damage", blast_damage)) * _constellation_result_param(collapse, "collapse_damage_ratio", 0.42)
+					_damage_dark_mirror_explosion(midpoint, aoe_radius, collapse_damage, cast_token, 1, 1.0)
+					cast_state["collapsed"] = true
+			cast_state["pending_pairs"] = maxi(int(cast_state.get("pending_pairs", 1)) - 1, 0)
+			if int(cast_state["pending_pairs"]) <= 0:
+				_constellation_mirror_casts.erase(cast_token)
+			else:
+				_constellation_mirror_casts[cast_token] = cast_state
+			_constellation_mirror_pairs.erase(pair_token)
+		else:
+			_constellation_mirror_pairs[pair_token] = pair
 	# SCRUM-961 «Зеркальная страница» (репозиционирована под новый кит): взрыв
 	# отдаётся эхом на долю урона; эхо НЕ зеркалится и НЕ эхоится повторно.
 	var echo_ratio := _owner_mod("book_mirror_echo")
@@ -1504,6 +1582,31 @@ func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage
 		var echo_tween := create_tween()
 		echo_tween.tween_interval(0.22)
 		echo_tween.tween_callback(Callable(self, "_resolve_dark_mirror_echo").bind(blast_position, blast_damage * clampf(echo_ratio, 0.0, 1.0)))
+
+
+func _damage_dark_mirror_explosion(origin: Vector2, radius: float, amount: float, cast_token: int, full_targets: int, diminish: float) -> void:
+	var cast_raw = _constellation_mirror_casts.get(cast_token, {})
+	if not cast_raw is Dictionary or (cast_raw as Dictionary).is_empty():
+		return
+	var cast_state: Dictionary = cast_raw
+	var hit_counts_raw = cast_state.get("hit_counts", {})
+	var hit_counts: Dictionary = hit_counts_raw if hit_counts_raw is Dictionary else {}
+	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		var enemy := enemies[index] as Node2D
+		var enemy_id := enemy.get_instance_id()
+		if int(hit_counts.get(enemy_id, 0)) >= 3:
+			continue
+		var factor := 1.0
+		if index >= full_targets:
+			factor = 1.0 / (1.0 + float(index - full_targets + 1) * diminish)
+		_damage_enemy(enemy, amount * factor, index < full_targets)
+		hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
+	cast_state["hit_counts"] = hit_counts
+	_constellation_mirror_casts[cast_token] = cast_state
 
 
 func _resolve_dark_mirror_echo(blast_position: Vector2, echo_damage: float) -> void:
@@ -1587,7 +1690,9 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 	var damage_value := _rolled_damage(owner_node)
 	_damage_enemy(primary, damage_value)
 	if charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0):
-		_constellation_event("full_charge", primary, damage_value)
+		var moon_mark := _constellation_event("full_charge", primary, 0.0, {"constellation_consumer_event": true})
+		if bool(moon_mark.get("triggered", false)) and is_instance_valid(primary):
+			_arm_constellation_target_mark(primary, "moon", _constellation_result_param(moon_mark, "mark_seconds", 4.0), _constellation_result_param(moon_mark, "bonus_damage_cap", 0.28))
 	var split_targets := maxi(split_count + int(_owner_mod("moon_split_targets")), 0)
 	if split_targets <= 0 or not is_instance_valid(primary):
 		return
@@ -1636,6 +1741,7 @@ func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 			return float(a["forward"]) < float(b["forward"])
 		)
 		var pierced := 0
+		var outer_primary: Node2D = null
 		for hit in hits:
 			if pierced >= hit_limit:
 				break
@@ -1647,9 +1753,18 @@ func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 				continue
 			hit_ids[enemy_node.get_instance_id()] = true
 			_damage_enemy(enemy_node, damage_value * pow(falloff, float(pierced)))
-			if arrow_index == 0 or arrow_index == arrow_count - 1:
-				_constellation_event("outer_hit", enemy_node, damage_value)
+			if outer_primary == null and (arrow_index == 0 or arrow_index == arrow_count - 1):
+				outer_primary = enemy_node
 			pierced += 1
+		if outer_primary != null:
+			var branch_result := _constellation_event("outer_hit", outer_primary, 0.0)
+			if bool(branch_result.get("triggered", false)):
+				var branch_target := TARGET_QUERY.nearest(self, outer_primary.global_position, maxf(aoe_radius, 160.0), hit_ids)
+				if branch_target != null:
+					hit_ids[branch_target.get_instance_id()] = true
+					var branch_ratio := maxf(float(branch_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+					_register_effect(AttackVfx.beam(_projectile_parent(), outer_primary.global_position, branch_target.global_position, maxf(beam_width * 0.55, 10.0), visual_color))
+					_call_take_damage(branch_target, damage_value * branch_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "longbow_outer_storm_branch"})
 
 
 # SCRUM-1037: Animator-owned release is an additive one-shot cue. It is
@@ -1764,6 +1879,10 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 	var heal_amount := dealt_damage * heal_ratio * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER
 	if heal_amount <= 0.0:
 		return
+	# Overheal is the portion that could not fit under max HP. A per-second heal
+	# budget denial is not overheal and must never mint absorb while still hurt.
+	var missing_health_before := maxf(float(owner_node.get("max_health")) - float(owner_node.get("health")), 0.0)
+	var overflow := 0.0
 	# SCRUM-517: drain-heal обязан уважать per-second бюджет (как вампиризм), иначе
 	# Доктор бессмертен (DoT-стак чумы × число целей лил сотни HP/с прямо в health).
 	# Маршрутизируем через capped-метод игрока; для owner-ов без него (саммоны и т.п.)
@@ -1777,9 +1896,20 @@ func _heal_owner_from_damage(owner_node: Node2D, dealt_damage: float) -> void:
 		healed = float(owner_node.get("health")) - before
 	if healed > 0.01 and owner_node.has_method("show_combat_feedback_number"):
 		owner_node.show_combat_feedback_number(healed, "heal")
-	var overflow := maxf(heal_amount - healed, 0.0)
+	# Convert only a real max-HP overflow. If the drain budget denied healing and
+	# the owner is still hurt, no shield can be minted from the rejected amount.
+	if float(owner_node.get("health")) >= float(owner_node.get("max_health")) - 0.001:
+		overflow = maxf(heal_amount - missing_health_before, 0.0)
 	if overflow > 0.0:
-		_constellation_event("overheal", null, overflow, {"overheal": overflow})
+		var overheal_result := _constellation_event("overheal", null, 0.0, {"overheal": overflow})
+		if bool(overheal_result.get("triggered", false)) and owner_node.has_method("constellation_set_timed_absorb"):
+			var mechanic = owner_node.call("constellation_weapon_mechanic", weapon_id, "potion_overheal_absorb_pool") if owner_node.has_method("constellation_weapon_mechanic") else {}
+			var params: Dictionary = (mechanic as Dictionary).get("params", {}) if mechanic is Dictionary else {}
+			var cap := clampf(float(params.get("absorb_cap", 22.0)), 0.0, 30.0)
+			var source_id := "overheal_%d" % get_instance_id()
+			var previous := float(owner_node.call("constellation_timed_absorb", source_id)) if owner_node.has_method("constellation_timed_absorb") else 0.0
+			var absorb_gain := overflow * clampf(float(params.get("conversion_ratio", 0.45)), 0.0, 1.0)
+			owner_node.call("constellation_set_timed_absorb", source_id, minf(previous + absorb_gain, cap), maxf(float(params.get("duration_seconds", 4.0)), 0.0))
 
 
 # ============================ SCRUM-900: кит Доктора ============================
@@ -1867,7 +1997,7 @@ func _plague_active_count() -> int:
 # попадание РЕФРЕШИТ заразу (полная длительность, ramp заново — без стакинга).
 # Кап одновременных зараз plague_max_infected — «бессмертие от полного
 # заражения карты» отрезано и здесь, и per-second drain-бюджетом лечения.
-func _apply_plague_infection(enemy: Node2D, owner_node: Node2D) -> void:
+func _apply_plague_infection(enemy: Node2D, owner_node: Node2D, constellation_depth := 0, duration_scale := 1.0) -> void:
 	if enemy == null or not is_instance_valid(enemy) or owner_node == null or not is_instance_valid(owner_node):
 		return
 	if _effects_shutdown:
@@ -1883,7 +2013,7 @@ func _apply_plague_infection(enemy: Node2D, owner_node: Node2D) -> void:
 		_plague_tweens.erase(enemy_id)
 	var profile := _plague_runtime_profile(owner_node)
 	var tick_interval := maxf(float(profile.get("tick_interval", 1.0)), 0.2)
-	var ticks := maxi(int(profile.get("ticks", 1)), 1)
+	var ticks := maxi(int(ceil(float(profile.get("ticks", 1)) * clampf(duration_scale, 0.05, 1.0))), 1)
 	AttackVfx.ring_pulse(_projectile_parent(), enemy.global_position, 44.0, visual_color, false)
 	var tween := create_tween()
 	_plague_tweens[enemy_id] = tween
@@ -1892,6 +2022,30 @@ func _apply_plague_infection(enemy: Node2D, owner_node: Node2D) -> void:
 		tween.tween_interval(tick_interval)
 		tween.tween_callback(Callable(self, "_plague_tick").bind(enemy_id, owner_id, tick_index))
 	tween.tween_callback(Callable(self, "_end_plague_infection").bind(enemy_id))
+	if constellation_depth == 0 and not _constellation_profile("syringe_infection_threshold_spread").is_empty():
+		var stack_key := _constellation_mark_key("syringe_infection")
+		var stack_raw = enemy.get_meta(stack_key, {})
+		var stack_state: Dictionary = stack_raw if stack_raw is Dictionary else {}
+		var now_msec := Time.get_ticks_msec()
+		if now_msec > int(stack_state.get("until_msec", 0)):
+			stack_state = {"count": 0, "spread": false}
+		stack_state["count"] = mini(int(stack_state.get("count", 0)) + 1, 4)
+		stack_state["until_msec"] = now_msec + int(tick_interval * float(ticks) * 1000.0)
+		var infection_event := {"valid": true, "triggered": false}
+		if not bool(stack_state.get("spread", false)):
+			infection_event = _constellation_event("hit", enemy, 0.0, {"infection_stacks": int(stack_state["count"]), "constellation_consumer_event": true})
+		if int(stack_state["count"]) >= 4 and not bool(stack_state.get("spread", false)) and bool(infection_event.get("triggered", false)):
+			stack_state["spread"] = true
+			var excluded := {enemy.get_instance_id(): true}
+			for infected_id in _plague_tweens.keys():
+				excluded[int(infected_id)] = true
+			var spread_cap := maxi(int(_constellation_result_param(infection_event, "spread_targets", 3.0)), 0)
+			var duration_ratio := _constellation_result_param(infection_event, "spread_duration_ratio", 0.50)
+			for spread_raw in TARGET_QUERY.nearest_many(self, enemy.global_position, plague_spread_radius, spread_cap, excluded):
+				var spread_target := spread_raw as Node2D
+				if spread_target != null and is_instance_valid(spread_target):
+					_apply_plague_infection(spread_target, owner_node, 1, duration_ratio)
+		enemy.set_meta(stack_key, stack_state)
 
 
 func _plague_tick(enemy_id: int, owner_id: int, tick_index: int) -> void:
@@ -1930,7 +2084,7 @@ func _spread_plague_from(enemy: Node2D, owner_node: Node2D) -> void:
 	if next_target == null:
 		return
 	AttackVfx.beam(_projectile_parent(), enemy.global_position, next_target.global_position, 10.0, Color(visual_color.r, visual_color.g, visual_color.b, 0.30))
-	_apply_plague_infection(next_target, owner_node)
+	_apply_plague_infection(next_target, owner_node, 1, 1.0)
 
 
 func _end_plague_infection(enemy_id: int) -> void:
@@ -1968,10 +2122,21 @@ func _fire_saw_sector(owner_node: Node2D, direction: Vector2) -> void:
 	var damage_value := _rolled_damage(owner_node)
 	var hit_index := 0
 	for candidate in candidates:
+		var saw_target := candidate["node"] as Node2D
 		var hit_damage := damage_value
 		if hit_index >= maxi(sector_full_targets, 1) and sector_target_diminish > 0.0:
 			hit_damage *= pow(sector_target_diminish, float(hit_index - maxi(sector_full_targets, 1) + 1))
-		_damage_enemy(candidate["node"], hit_damage)
+		_damage_enemy(saw_target, hit_damage)
+		if not _constellation_profile("saw_wound_execute_heal").is_empty() and is_instance_valid(saw_target):
+			var wound_count := _advance_constellation_target_stack(saw_target, "saw_wound", 5, 6.0)
+			var wound_event := _constellation_event("hit", saw_target, 0.0, {"wounds": wound_count, "constellation_consumer_event": true})
+			var hp_value = saw_target.get("health")
+			var max_hp_value = saw_target.get("max_health")
+			var low_enough := hp_value != null and max_hp_value != null and float(max_hp_value) > 0.0 and float(hp_value) / float(max_hp_value) <= _constellation_result_param(wound_event, "execute_threshold", 0.25)
+			if wound_count >= 5 and low_enough and bool(wound_event.get("triggered", false)):
+				saw_target.remove_meta(_constellation_mark_key("saw_wound"))
+				if owner_node.has_method("apply_drain_heal"):
+					owner_node.call("apply_drain_heal", hit_damage * _constellation_result_param(wound_event, "heal_ratio", 0.06))
 		hit_index += 1
 # ========================== конец кита Доктора (SCRUM-900) ==========================
 
@@ -2026,10 +2191,20 @@ func _fire_riff_strip(owner_node: Node2D, direction: Vector2) -> void:
 	var strip_visual := AttackVfx.beam(_projectile_parent(), origin + direction * 18.0, origin + direction * attack_range, maxf(wave_width, 24.0), visual_color)
 	_register_effect(strip_visual)
 	var damage_value := _rolled_damage(owner_node)
+	var harmony_triggered := false
 	for hit in _enemies_in_corridor(origin, direction, wave_width, attack_range):
 		var enemy_node: Node2D = hit["node"]
 		_damage_enemy(enemy_node, damage_value)
 		_push_enemy(enemy_node, direction)
+		var harmony := _constellation_event("hit", enemy_node, 0.0, {"now_msec": Time.get_ticks_msec(), "constellation_consumer_event": true})
+		harmony_triggered = harmony_triggered or bool(harmony.get("triggered", false))
+	if harmony_triggered:
+		var perpendicular := Vector2(-direction.y, direction.x).normalized()
+		var lane_origin := origin + perpendicular * maxf(wave_width * 0.65, 36.0)
+		var lane_damage := damage_value * 0.38
+		_register_effect(AttackVfx.beam(_projectile_parent(), lane_origin + direction * 18.0, lane_origin + direction * attack_range, maxf(wave_width * 0.72, 24.0), visual_color))
+		for lane_hit in _enemies_in_corridor(lane_origin, direction, wave_width * 0.72, attack_range):
+			_call_take_damage(lane_hit["node"], lane_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "guitar_riff_harmony_lane"})
 
 
 # SCRUM-903: маршрутизация «пульса» деплой-устройства: вороний тотем
@@ -2037,20 +2212,45 @@ func _fire_riff_strip(owner_node: Node2D, direction: Vector2) -> void:
 # остальные ампы (sound_amp и т.п.) пульсируют как прежде.
 func _fire_deployable_pulse(owner_node: Node2D, origin: Vector2) -> void:
 	if raven_homing:
-		_constellation_event("totem_pulse", TARGET_QUERY.nearest(self, origin, attack_range), damage)
 		_launch_totem_raven(owner_node, origin)
+		var strike_result := _constellation_event("totem_pulse", null, 0.0)
+		if bool(strike_result.get("triggered", false)):
+			var strike_ratio := maxf(float(strike_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+			_launch_totem_raven(owner_node, origin, strike_ratio, 1.5)
 		return
 	if weapon_id == "sound_amp":
-		_constellation_event("amp_pulse", TARGET_QUERY.nearest(self, origin, aoe_radius), damage)
+		var echo_result := _constellation_event("amp_pulse", null, 0.0)
+		if bool(echo_result.get("triggered", false)):
+			_constellation_instrument_echo(owner_node, origin, echo_result)
 	_fire_pulse(owner_node, origin)
+
+
+func _constellation_instrument_echo(owner_node: Node2D, origin: Vector2, result: Dictionary) -> void:
+	var echo_damage := _rolled_damage(owner_node) * _constellation_result_param(result, "echo_damage_ratio", 0.30)
+	var current_instrument := str(owner_node.get("weapon_id"))
+	match current_instrument:
+		"electric_guitar":
+			var direction := _last_direction.normalized() if _last_direction.length_squared() > 0.001 else Vector2.RIGHT
+			_register_effect(AttackVfx.beam(_projectile_parent(), origin + direction * 18.0, origin + direction * attack_range, maxf(wave_width, 24.0), visual_color))
+			for hit in _enemies_in_corridor(origin, direction, wave_width, attack_range):
+				_call_take_damage(hit["node"], echo_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "amp_instrument_echo", "instrument": current_instrument})
+		"bass_guitar", "sound_amp", "":
+			_register_effect(AttackVfx.ring_pulse(_projectile_parent(), origin, aoe_radius, visual_color, false))
+			for target in TARGET_QUERY.in_radius(self, origin, aoe_radius):
+				_call_take_damage(target, echo_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "amp_instrument_echo", "instrument": current_instrument if current_instrument != "" else "sound_amp"})
+		_:
+			return
 
 
 func _fire_pulse(owner_node: Node2D, origin: Vector2) -> void:
 	if owner_node == null or not is_instance_valid(owner_node):
 		return
 	var pulse_damage := _rolled_damage(owner_node)
+	var bass_result := {"triggered": false}
 	if weapon_id == "bass_guitar":
-		_constellation_event("pulse", TARGET_QUERY.nearest(self, origin, aoe_radius), pulse_damage)
+		bass_result = _constellation_event("pulse", TARGET_QUERY.nearest(self, origin, aoe_radius), 0.0, {"constellation_consumer_event": true})
+		if bool(bass_result.get("triggered", false)):
+			pulse_damage *= _constellation_result_param(bass_result, "damage_ratio", 1.25)
 	_damage_enemies_in_circle(origin, aoe_radius, pulse_damage)
 	var pulse_visual := AttackVfx.ring_pulse(_projectile_parent(), origin, aoe_radius, visual_color, attack_mode in ["pulse", "amp"])
 	_register_effect(pulse_visual)
@@ -2061,6 +2261,11 @@ func _fire_pulse(owner_node: Node2D, origin: Vector2) -> void:
 		var away := enemy_node.global_position - origin
 		if away.length_squared() > 0.001 and away.length() <= aoe_radius:
 			_push_enemy(enemy_node, away.normalized())
+			if bool(bass_result.get("triggered", false)):
+				var stagger := _constellation_result_param(bass_result, "stagger_seconds", 0.7)
+				if TARGET_QUERY.is_epic_displacement_immune(enemy_node):
+					stagger *= _constellation_result_param(bass_result, "boss_factor", 0.25)
+				StatusEffects.apply_status(enemy_node, "constellation_bass_stagger", {"duration": stagger, "speed_multiplier": 0.35})
 
 
 func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
@@ -2160,7 +2365,7 @@ const RAVEN_CURVE_BEND := 0.38
 var _raven_side_toggle := 1.0
 
 
-func _launch_totem_raven(owner_node: Node2D, origin: Vector2) -> void:
+func _launch_totem_raven(owner_node: Node2D, origin: Vector2, damage_scale := 1.0, support_seconds := 0.0) -> void:
 	if _effects_shutdown or not is_inside_tree():
 		return
 	var target := TARGET_QUERY.nearest(self, origin, attack_range) as Node2D
@@ -2169,6 +2374,8 @@ func _launch_totem_raven(owner_node: Node2D, origin: Vector2) -> void:
 	var raven := AttackVfx.orb_projectile(_projectile_parent(), origin + Vector2(0.0, -34.0), Color(0.30, 0.24, 0.44, 0.95))
 	_register_effect(raven)
 	raven.set_meta("raven_last_target_position", target.global_position)
+	raven.set_meta("constellation_damage_scale", clampf(damage_scale, 0.0, 1.0))
+	raven.set_meta("constellation_support_seconds", maxf(support_seconds, 0.0))
 	_raven_side_toggle = -_raven_side_toggle
 	var travel_time := clampf(origin.distance_to(target.global_position) / maxf(projectile_speed, 120.0), 0.28, 0.75)
 	var owner_id := owner_node.get_instance_id() if owner_node != null and is_instance_valid(owner_node) else 0
@@ -2208,6 +2415,7 @@ func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
 	var explosion_damage := damage * raven_damage_multiplier
 	if current_owner != null and is_instance_valid(current_owner):
 		explosion_damage = _rolled_damage(current_owner) * raven_damage_multiplier
+	explosion_damage *= float(raven.get_meta("constellation_damage_scale", 1.0))
 	# SCRUM-961 «Голубой тотем» поверх SCRUM-903: вороны бьют злее (+25%).
 	explosion_damage *= 1.0 + _owner_mod("raven_pulse_bonus")
 	AttackVfx.orb_burst(_projectile_parent(), impact_position, raven_explosion_radius, visual_color)
@@ -2219,6 +2427,9 @@ func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
 		var away := enemy_node.global_position - impact_position
 		if away.length_squared() > 0.001:
 			_push_enemy(enemy_node, away.normalized())
+	var support_seconds := float(raven.get_meta("constellation_support_seconds", 0.0))
+	if support_seconds > 0.0 and current_owner != null and current_owner.has_method("constellation_set_timed_absorb"):
+		current_owner.call("constellation_set_timed_absorb", "raven_support_%d" % get_instance_id(), 2.0, support_seconds)
 	_release_effect(raven)
 
 
@@ -2314,7 +2525,14 @@ func _trigger_hunter_trap(trap: Node2D, owner_node: Node2D) -> void:
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		_damage_enemy(enemy_node, trap_damage)
-		_constellation_event("trap_trigger", enemy_node, trap_damage)
+		var prey_result := _constellation_event("trap_trigger", enemy_node, 0.0)
+		if bool(prey_result.get("triggered", false)):
+			var mechanic = owner_node.call("constellation_weapon_mechanic", weapon_id, "trap_prey_mark_distribution") if owner_node != null and owner_node.has_method("constellation_weapon_mechanic") else {}
+			var params: Dictionary = (mechanic as Dictionary).get("params", {}) if mechanic is Dictionary else {}
+			enemy_node.set_meta("constellation_prey_owner", owner_node.get_instance_id() if owner_node != null else 0)
+			enemy_node.set_meta("constellation_prey_until", Time.get_ticks_msec() + int(maxf(float(params.get("prey_seconds", 4.0)), 0.0) * 1000.0))
+			enemy_node.set_meta("constellation_prey_share", clampf(float(params.get("shared_damage_ratio", 0.22)), 0.0, 0.5))
+			enemy_node.set_meta("constellation_prey_neighbors", maxi(int(params.get("neighbor_targets", 3)), 0))
 		if is_instance_valid(enemy_node):
 			_apply_hunter_trap_control(enemy_node, owner_node)
 	_release_effect(trap)
@@ -2494,13 +2712,36 @@ func _explode_grenade_fuse(grenade_id: int, telegraph_id: int, owner_id: int, ce
 		_emit_weapon_animation_event(current_owner, "release", 0.0, direction, {"delayed": true})
 	explosion_damage *= blast_damage_mult
 	_damage_enemies_in_circle_falloff(center, blast_radius, explosion_damage, damage_falloff)
-	for enemy_node in TARGET_QUERY.in_radius(self, center, blast_radius):
-		_constellation_event("explosion", enemy_node as Node2D, explosion_damage)
+	var shrapnel_result := _constellation_event("explosion", null, explosion_damage)
+	if bool(shrapnel_result.get("triggered", false)):
+		var shrapnel_ratio := maxf(float(shrapnel_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+		var shrapnel_tween := create_tween()
+		shrapnel_tween.tween_interval(0.18)
+		shrapnel_tween.tween_callback(Callable(self, "_constellation_grenade_second_wave").bind(center, explosion_damage * shrapnel_ratio, blast_radius))
 	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, visual_color)
 	if current_grenade != null and is_instance_valid(current_grenade):
 		_release_effect(current_grenade)
 	if current_telegraph != null and is_instance_valid(current_telegraph):
 		_release_effect(current_telegraph)
+
+
+func _constellation_grenade_second_wave(center: Vector2, shard_damage: float, blast_radius: float) -> void:
+	if _effects_shutdown or shard_damage <= 0.0:
+		return
+	var hit_counts := {}
+	for shard_index in range(8):
+		var shard_direction := Vector2.RIGHT.rotated(TAU * float(shard_index) / 8.0)
+		var finish := center + shard_direction * blast_radius * 1.25
+		_register_effect(AttackVfx.beam(_projectile_parent(), center, finish, maxf(beam_width * 0.35, 10.0), visual_color))
+		for enemy_raw in TARGET_QUERY.in_segment(self, center, finish, maxf(beam_width, 28.0)):
+			var enemy := enemy_raw as Node2D
+			if enemy == null or not is_instance_valid(enemy):
+				continue
+			var enemy_id := enemy.get_instance_id()
+			if int(hit_counts.get(enemy_id, 0)) >= 2:
+				continue
+			hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
+			_call_take_damage(enemy, shard_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "grenade_shrapnel_second_wave"})
 
 
 # SCRUM-938 «Штык-конус»: активный ближний сектор (cone_degrees) в направлении
@@ -2516,6 +2757,10 @@ func _fire_bayonet_cone(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(cone_visual)
 	var damage_value := _rolled_damage(owner_node)
 	var origin := owner_node.global_position
+	var brace_profile := _constellation_profile("bayonet_brace_countershot")
+	var brace_params: Dictionary = brace_profile.get("params", {}) if not brace_profile.is_empty() else {}
+	var brace_seconds := maxf(float(brace_params.get("brace_window_seconds", 0.5)), 0.0)
+	var brace_candidate_id := 0
 	for enemy_node in TARGET_QUERY.enemies(self):
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
@@ -2524,10 +2769,60 @@ func _fire_bayonet_cone(owner_node: Node2D, direction: Vector2) -> void:
 		_damage_enemy(enemy_node, damage_value)
 		var push_direction := (enemy_node.global_position - origin)
 		_push_enemy(enemy_node, push_direction.normalized() if push_direction.length_squared() > 0.001 else direction)
+		if brace_candidate_id == 0:
+			brace_candidate_id = enemy_node.get_instance_id()
+	if brace_candidate_id != 0 and brace_seconds > 0.0:
+		var brace_token := int(_constellation_local_state.get("bayonet_brace_token", 0)) + 1
+		var brace_until_msec := Time.get_ticks_msec() + int(brace_seconds * 1000.0)
+		_constellation_local_state["bayonet_brace_token"] = brace_token
+		_constellation_local_state["bayonet_brace_until_msec"] = brace_until_msec
+		_constellation_local_state["bayonet_brace_used"] = false
+		var brace_tween := create_tween()
+		brace_tween.tween_interval(0.10)
+		brace_tween.tween_callback(Callable(self, "_resolve_bayonet_brace_countershot").bind(brace_token, origin, brace_candidate_id, damage_value))
 	# Редкий выстрел: встроенный шанс оружия + артефакт SCRUM-961 «Спуск штыка».
 	var shot_chance := clampf(bayonet_auto_shot_chance + _owner_mod("bayonet_shot_chance"), 0.0, 1.0)
 	if randf() < shot_chance:
 		_fire_bayonet_auto_shot(owner_node, direction)
+
+
+func _resolve_bayonet_brace_countershot(brace_token: int, origin: Vector2, target_id: int, base_damage: float) -> void:
+	if _effects_shutdown or int(_constellation_local_state.get("bayonet_brace_token", 0)) != brace_token:
+		return
+	if bool(_constellation_local_state.get("bayonet_brace_used", false)):
+		return
+	var brace_until_msec := int(_constellation_local_state.get("bayonet_brace_until_msec", 0))
+	if Time.get_ticks_msec() >= brace_until_msec:
+		return
+	var target := instance_from_id(target_id) as Node2D
+	if target == null or not is_instance_valid(target):
+		return
+	var counter_result := _constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})
+	if not bool(counter_result.get("triggered", false)):
+		return
+	_constellation_local_state["bayonet_brace_used"] = true
+	var ratio := _constellation_result_param(counter_result, "countershot_damage_ratio", 0.55)
+	_fire_bayonet_countershot_line(origin, target.global_position, base_damage * ratio)
+
+
+func _fire_bayonet_countershot_line(origin: Vector2, through_position: Vector2, counter_damage: float) -> void:
+	var line_direction := (through_position - origin).normalized()
+	if line_direction.length_squared() <= 0.001 or counter_damage <= 0.0:
+		return
+	var line_end := origin + line_direction * maxf(bayonet_shot_range, attack_range)
+	_register_effect(AttackVfx.beam(_projectile_parent(), origin, line_end, maxf(beam_width * 0.55, 10.0), visual_color))
+	var half_width := maxf(beam_width * 0.75, 14.0)
+	for target in TARGET_QUERY.enemies(self):
+		var enemy := target as Node2D
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var relative := enemy.global_position - origin
+		var forward := relative.dot(line_direction)
+		if forward < 0.0 or forward > maxf(bayonet_shot_range, attack_range):
+			continue
+		if absf(relative.cross(line_direction)) > half_width:
+			continue
+		_call_take_damage(enemy, counter_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "bayonet_brace_countershot"})
 
 
 func _is_enemy_inside_bayonet_cone(origin: Vector2, enemy_position: Vector2, direction: Vector2) -> bool:
@@ -2650,7 +2945,7 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 		_try_steal_money(owner_node, hit_index)
 		origin = enemy_node.global_position
 	if chain_targets.size() >= 4:
-		_constellation_event("return", chain_targets[0] as Node2D, damage_value)
+		_constellation_event("return", chain_targets[0] as Node2D, damage_value, {"unique_targets": chain_targets.size()})
 
 
 # SCRUM-897 «Отравленный Кинжал»: фантомный удар из тени ЗА ближайшей целью.
@@ -2683,9 +2978,14 @@ func _fire_shadow_backstab(owner_node: Node2D, target: Node2D, direction: Vector
 	var strike_damage := damage_value * BACKSTAB_STRIKE_MULTIPLIER
 	# Позиционный backstab: цель отдаёт спину фантому (смотрит/движется прочь) —
 	# чейзеры, идущие на героя, наказываются; враг, глядящий на фантом, видит удар.
-	if _is_backstab_hit(backstab_target, back_position, owner_node.global_position):
+	var positional_backstab := _is_backstab_hit(backstab_target, back_position, owner_node.global_position)
+	if positional_backstab:
 		strike_damage *= BACKSTAB_POSITIONAL_MULTIPLIER
 	_damage_enemy(backstab_target, strike_damage)
+	if positional_backstab and is_instance_valid(backstab_target):
+		var mark_result := _constellation_event("hit", backstab_target, 0.0, {"constellation_consumer_event": true})
+		if bool(mark_result.get("triggered", false)):
+			_arm_constellation_target_mark(backstab_target, "backstab", _constellation_result_param(mark_result, "mark_duration_seconds", 2.5), _constellation_result_param(mark_result, "followup_damage_cap", 0.28), _constellation_result_param(mark_result, "execute_threshold", 0.30))
 	# Встроенный контроль SCRUM-897: короткое окно паралича-яда (кап, босс-резист);
 	# SCRUM-961 «Парализующее лезвие» (backstab_root_duration) продлевает окно.
 	var paralysis_window := clampf(poison_paralysis_duration + _owner_mod("backstab_root_duration"), 0.0, POISON_PARALYSIS_CAP)
@@ -2896,7 +3196,7 @@ func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
 	_register_effect(field_root)
 	field_root.global_position = center
 	_draw_square_field(field_root, half_size)
-	_elemental_square_tick(owner_node, center, half_size, ticks)
+	_elemental_square_tick(owner_node, center, half_size, ticks, 0)
 	var tick_interval := maxf(orbit_duration / float(ticks), 0.08)
 	var owner_id := owner_node.get_instance_id()
 	var field_id := field_root.get_instance_id()
@@ -2936,13 +3236,13 @@ func _elemental_square_scheduled_tick(owner_id: int, center: Vector2, half_size:
 	if current_owner == null or not is_instance_valid(current_owner):
 		return
 	_emit_weapon_animation_event(current_owner, "pulse", 0.0, direction, {"index": tick_index, "count": ticks})
-	_elemental_square_tick(current_owner, center, half_size, ticks)
+	_elemental_square_tick(current_owner, center, half_size, ticks, tick_index)
 
 
 # Один тик квадрата: три канала + отброс от ЦЕНТРА КВАДРАТА (не от героя — зона
 # автономна после каста). Элиты/боссы получают тот же apply_knockback-импульс,
 # что и у прочих отбросов оружий (их устойчивость решает enemy-сторона).
-func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: float, ticks: int) -> void:
+func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: float, ticks: int, phase_index := 0) -> void:
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
 	var tick_divisor := float(maxi(ticks, 1))
@@ -2955,8 +3255,11 @@ func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: floa
 	var dot_tick_damage := maxf(float(parameters.get("dot_damage", 2.0)) * SQUARE_DOT_TICK_SHARE, 0.5)
 	var dot_interval := 1.0 / maxf(float(parameters.get("dot_speed", 1.0)), 0.2)
 	var burn_ticks := maxi(dot_ticks, 1)
+	var phase_target: Node2D = null
 	for enemy in _enemies_in_square(center, half_size):
 		var enemy_node := enemy as Node2D
+		if phase_target == null:
+			phase_target = enemy_node
 		_damage_enemy(enemy_node, magic_tick)
 		if physical_tick > 0.0:
 			_damage_enemy(enemy_node, physical_tick, false, "physical", false)
@@ -2969,6 +3272,11 @@ func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: floa
 		var away := enemy_node.global_position - center
 		if away.length_squared() > 0.001:
 			_push_enemy(enemy_node, away.normalized())
+	if phase_target != null:
+		var phase_name: String = ["fire", "water", "air", "earth"][phase_index % 4]
+		var resonance := _constellation_event("hit", phase_target, 0.0, {"phase": phase_name, "constellation_consumer_event": true})
+		if bool(resonance.get("triggered", false)):
+			_damage_enemies_in_circle(center, half_size * 1.4143, _rolled_damage(owner_node) * _constellation_result_param(resonance, "resonance_damage_ratio", 0.48))
 	# SCRUM-961 «Стихийный отдачник»: дополнительный радиальный пуш от кастера.
 	_apply_elemental_repulse(owner_node, center, half_size * 1.4143)
 
@@ -3067,11 +3375,32 @@ func _resolve_prism_rift(owner_id: int, center: Vector2, axis_a: Vector2, axis_b
 			_damage_enemy(enemy_node, damage_value * axis_share)
 	for enemy in TARGET_QUERY.in_radius(self, center, aoe_radius):
 		_damage_enemy(enemy as Node2D, damage_value * PRISM_CENTER_BONUS_SHARE)
-		_constellation_event("intersection", enemy as Node2D, damage_value)
+	var rift_result := _constellation_event("intersection", null, damage_value)
+	if bool(rift_result.get("triggered", false)):
+		var tick_ratio := _constellation_result_param(rift_result, "tick_damage_ratio", 0.18)
+		var rift_seconds := _constellation_result_param(rift_result, "rift_seconds", 1.2)
+		var boss_pin_factor := _constellation_result_param(rift_result, "boss_pin_factor", 0.0)
+		for rift_target_raw in TARGET_QUERY.in_radius(self, center, aoe_radius * 0.72):
+			var rift_target := rift_target_raw as Node2D
+			var pin_duration := rift_seconds * (boss_pin_factor if TARGET_QUERY.is_epic_displacement_immune(rift_target) else 1.0)
+			if pin_duration > 0.0:
+				StatusEffects.apply_status(rift_target, "constellation_prism_pin", {"duration": pin_duration, "movement_locked": true})
+		var rift_tween := create_tween()
+		for tick_index in range(3):
+			rift_tween.tween_interval(0.4)
+			rift_tween.tween_callback(Callable(self, "_constellation_prism_rift_tick").bind(center, damage_value * tick_ratio))
 	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
 	# SCRUM-961 «Стихийный отдачник»: центр разлома толкает монстров от кастера.
 	if current_owner != null and is_instance_valid(current_owner):
 		_apply_elemental_repulse(current_owner, center, aoe_radius)
+
+
+func _constellation_prism_rift_tick(center: Vector2, tick_damage: float) -> void:
+	if _effects_shutdown or tick_damage <= 0.0:
+		return
+	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius * 0.72, visual_color, false)
+	for enemy_raw in TARGET_QUERY.in_radius(self, center, aoe_radius * 0.72):
+		_call_take_damage(enemy_raw as Node2D, tick_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "prism_intersection_rift"})
 
 
 # SCRUM-950 «Ядро Метеора»: самое медленное оружие игрока. grenade_delay — полная
@@ -3118,8 +3447,12 @@ func _resolve_meteor_impact(owner_id: int, center: Vector2, direction: Vector2, 
 	# но центральный удар жирнее и зона догорает дольше.
 	var center_multiplier := 1.0 + (METEOR_HEART_CENTER_BONUS if heart_mode else 0.0)
 	_damage_enemies_in_circle_falloff(center, aoe_radius, damage_value * center_multiplier, 0.55)
-	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
-		_constellation_event("return", enemy_node as Node2D, damage_value)
+	var recall_result := _constellation_event("return", null, damage_value)
+	if bool(recall_result.get("triggered", false)):
+		var recall_ratio := maxf(float(recall_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+		var recall_tween := create_tween()
+		recall_tween.tween_interval(0.20)
+		recall_tween.tween_callback(Callable(self, "_constellation_meteor_recall").bind(center, damage_value * recall_ratio))
 	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
 	if owner_alive:
 		# SCRUM-961 «Стихийный отдачник»: удар метеора толкает монстров от кастера.
@@ -3156,6 +3489,24 @@ func _meteor_zone_tick(owner_id: int, center: Vector2, zone_radius: float) -> vo
 		_damage_enemy(enemies[index] as Node2D, tick_damage * factor, false, "dot", false)
 
 
+func _constellation_meteor_recall(center: Vector2, shard_damage: float) -> void:
+	if _effects_shutdown or shard_damage <= 0.0:
+		return
+	var hit_counts := {}
+	for shard_index in range(6):
+		var outer := center + Vector2.RIGHT.rotated(TAU * float(shard_index) / 6.0) * aoe_radius
+		_register_effect(AttackVfx.beam(_projectile_parent(), outer, center, maxf(beam_width * 0.4, 12.0), visual_color))
+		for enemy_raw in TARGET_QUERY.in_segment(self, outer, center, maxf(beam_width, 30.0)):
+			var enemy := enemy_raw as Node2D
+			if enemy == null or not is_instance_valid(enemy):
+				continue
+			var enemy_id := enemy.get_instance_id()
+			if int(hit_counts.get(enemy_id, 0)) >= 2:
+				continue
+			hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
+			_call_take_damage(enemy, shard_damage, {"damage_type": _weapon_damage_type(), "constellation_final": "meteor_shard_recall"})
+
+
 # SCRUM-931 «Винтовка Мертвого Глаза» (PREFERRED-вариант, зафиксирован): всегда
 # выцеливает САМУЮ ДАЛЬНЮЮ валидную цель в радиусе (fantasy дальней дуэли +
 # синергия с trait'ом «Дальний расчёт» — дальше цель, больнее хит), тяжёлый
@@ -3189,7 +3540,8 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 	var target_id := locked_target.get_instance_id() if (locked_target != null and is_instance_valid(locked_target)) else 0
 	var lock_tween := create_tween()
 	lock_tween.tween_interval(maxf(grenade_delay, 0.08))
-	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id()))
+	var fully_charged := charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0)
+	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id(), fully_charged))
 
 
 # SCRUM-931: разрешение выстрела винтовки — тяжёлый хит по дальней цели +
@@ -3197,7 +3549,7 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 # совпадал с budget-моделью 1.34 + endpoint) + терминальный взрыв на конце линии
 # + ближний самоподрыв. Trait «Дальний расчёт» скейлит каждый _damage_enemy по
 # дистанции владелец→жертва в этот момент (AC: отложенная атака честна).
-func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int) -> void:
+func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int, fully_charged := false) -> void:
 	var current_owner := instance_from_id(owner_id) as Node2D
 	if _effects_shutdown or current_owner == null or not is_instance_valid(current_owner):
 		_release_effect_by_id(telegraph_id)
@@ -3219,7 +3571,12 @@ func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, teleg
 	var pierced := {}
 	if locked != null and is_instance_valid(locked):
 		pierced[locked.get_instance_id()] = true
+		rifle_hit *= _consume_constellation_target_mark(locked, "weakpoint", 1.0)
 		_damage_enemy(locked, rifle_hit)
+		if fully_charged and is_instance_valid(locked):
+			var weakpoint := _constellation_event("hit", locked, 0.0, {"constellation_consumer_event": true})
+			if bool(weakpoint.get("triggered", false)):
+				_arm_constellation_target_mark(locked, "weakpoint", _constellation_result_param(weakpoint, "weakpoint_seconds", 4.0), _constellation_result_param(weakpoint, "bonus_damage_cap", 0.30))
 	# Overpenetration: попутчики на линии (не первичная цель) ловят falloff-долю.
 	for hit in _enemies_in_corridor(start, shot_aim, beam_width * 0.72, start.distance_to(endpoint)):
 		var pierce_node := hit["node"] as Node2D
@@ -3296,10 +3653,38 @@ func _land_spotter_shell(owner_id: int, center: Vector2, zone_radius: float, tel
 		damage_value *= 1.15
 	AttackVfx.orb_burst(_projectile_parent(), center, zone_radius, visual_color)
 	_damage_enemies_in_circle_falloff(center, zone_radius, damage_value, damage_falloff)
-	var priority_target := TARGET_QUERY.nearest(self, center, zone_radius)
+	var priority_target: Node2D = null
+	var priority_health := -1.0
+	for candidate_raw in TARGET_QUERY.in_radius(self, center, zone_radius):
+		var candidate := candidate_raw as Node2D
+		var candidate_health = candidate.get("health")
+		var score := float(candidate_health) if candidate_health != null else 0.0
+		if score > priority_health:
+			priority_health = score
+			priority_target = candidate
 	if priority_target != null:
-		_constellation_event("target_acquired", priority_target, damage_value)
+		var priority := _constellation_event("target_acquired", priority_target, 0.0)
+		if bool(priority.get("triggered", false)):
+			var mark_until := Time.get_ticks_msec() + int(_constellation_result_param(priority, "mark_seconds", 3.0) * 1000.0)
+			priority_target.set_meta(_constellation_mark_key("spotter"), {"until_msec": mark_until})
+			var reserved := create_tween()
+			reserved.tween_interval(0.08)
+			reserved.tween_callback(Callable(self, "_constellation_spotter_reserved_beam").bind(priority_target.get_instance_id(), center, damage_value, mark_until, _constellation_result_param(priority, "priority_bonus_cap", 0.26)))
 	_release_effect_by_id(telegraph_id)
+
+
+func _constellation_spotter_reserved_beam(target_id: int, origin: Vector2, base_damage: float, mark_until: int, bonus_cap: float) -> void:
+	if _effects_shutdown or Time.get_ticks_msec() > mark_until:
+		return
+	var target := instance_from_id(target_id) as Node2D
+	if target == null or not is_instance_valid(target):
+		return
+	var mark_raw = target.get_meta(_constellation_mark_key("spotter"), {})
+	if not mark_raw is Dictionary or int((mark_raw as Dictionary).get("until_msec", 0)) != mark_until:
+		return
+	target.remove_meta(_constellation_mark_key("spotter"))
+	_register_effect(AttackVfx.beam(_projectile_parent(), origin, target.global_position, maxf(beam_width * 0.55, 12.0), visual_color))
+	_call_take_damage(target, base_damage * clampf(bonus_cap, 0.0, 0.30), {"damage_type": _weapon_damage_type(), "constellation_final": "spotter_highest_hp_priority"})
 
 
 # SCRUM-933 «Осколочные Патроны»: скорострельный круговой веер пуль по ближним
@@ -3312,6 +3697,12 @@ func _land_spotter_shell(owner_id: int, center: Vector2, zone_radius: float, tel
 # fire_interval + скорость атаки (кулдаун движка). Импакт — через
 # Callable(self, "_impact_shatter_bullet").bind (примитивы, без лямбд).
 func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	_constellation_shatter_volley_token += 1
+	var volley_token := _constellation_shatter_volley_token
+	_constellation_shatter_volleys[volley_token] = {}
+	while _constellation_shatter_volleys.size() > 8:
+		var oldest_token: int = int(_constellation_shatter_volleys.keys().min())
+		_constellation_shatter_volleys.erase(oldest_token)
 	var origin := owner_node.global_position
 	var bullet_count := maxi(projectile_count + _extra_projectiles() + int(_owner_mod("shatter_extra_splits")), 1)
 	var spray_radius := maxf(aoe_radius, 160.0)
@@ -3351,14 +3742,14 @@ func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vec
 		var aimed_id := aimed_target.get_instance_id() if (aimed_target != null and is_instance_valid(aimed_target)) else 0
 		var bullet_tween := create_tween()
 		bullet_tween.tween_property(bullet, "global_position", bullet_finish, travel_time).set_trans(Tween.TRANS_LINEAR)
-		bullet_tween.tween_callback(Callable(self, "_impact_shatter_bullet").bind(bullet.get_instance_id(), aimed_id, damage_value))
+		bullet_tween.tween_callback(Callable(self, "_impact_shatter_bullet").bind(bullet.get_instance_id(), aimed_id, damage_value, volley_token))
 	_emit_weapon_animation_event(owner_node, "release", 0.0, direction, {})
 
 
 # SCRUM-933: импакт одиночной пули веера — одиночный физический хит по своей
 # цели (trait «Дальний расчёт» скейлит по дистанции), пули без цели просто
 # гаснут. Разрешение через Callable + примитивы (SCRUM-551, без захвата узлов).
-func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float) -> void:
+func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float, volley_token := 0) -> void:
 	var bullet := instance_from_id(bullet_id) as Node
 	if _effects_shutdown:
 		if bullet != null and is_instance_valid(bullet):
@@ -3366,9 +3757,31 @@ func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float)
 		return
 	var enemy := instance_from_id(target_id) as Node2D
 	if enemy != null and is_instance_valid(enemy):
-		AttackVfx.orb_burst(_projectile_parent(), enemy.global_position, maxf(beam_width, 18.0), visual_color)
-		_damage_enemy(enemy, damage_value)
-		_constellation_event("pierce", enemy, damage_value)
+		var enemy_id := enemy.get_instance_id()
+		var state_key := volley_token
+		if state_key <= 0:
+			_constellation_shatter_volley_token += 1
+			state_key = _constellation_shatter_volley_token
+		var hit_counts_raw = _constellation_shatter_volleys.get(state_key, {})
+		var hit_counts: Dictionary = hit_counts_raw if hit_counts_raw is Dictionary else {}
+		if int(hit_counts.get(enemy_id, 0)) < 2:
+			hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
+			_constellation_shatter_volleys[state_key] = hit_counts
+			AttackVfx.orb_burst(_projectile_parent(), enemy.global_position, maxf(beam_width, 18.0), visual_color)
+			_damage_enemy(enemy, damage_value)
+			var pierce_result := _constellation_event("pierce", enemy, 0.0)
+			if bool(pierce_result.get("triggered", false)):
+				var excluded := {enemy_id: true}
+				for counted_id in hit_counts.keys():
+					if int(hit_counts.get(counted_id, 0)) >= 2:
+						excluded[int(counted_id)] = true
+				var next_target := TARGET_QUERY.nearest(self, enemy.global_position, maxf(aoe_radius, 160.0), excluded)
+				if next_target != null:
+					var repeat_ratio := maxf(float(pierce_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+					_register_effect(AttackVfx.beam(_projectile_parent(), enemy.global_position, next_target.global_position, maxf(beam_width * 0.45, 10.0), visual_color))
+					_call_take_damage(next_target, damage_value * repeat_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "shatter_extra_pierce_falloff"})
+					hit_counts[next_target.get_instance_id()] = int(hit_counts.get(next_target.get_instance_id(), 0)) + 1
+					_constellation_shatter_volleys[state_key] = hit_counts
 	if bullet != null and is_instance_valid(bullet):
 		_release_effect(bullet)
 
@@ -3394,6 +3807,9 @@ func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector
 	var barrage_blast_mult := 1.2 if _owner_mod("reliquary_barrage_mode") > 0.0 else 1.0
 	var tick_damage: float = _rolled_damage(owner_node) * clampf(sanctify_tick_ratio, 0.05, 1.0) * barrage_blast_mult
 	var pulse_count: int = maxi(storm_ticks, 1)
+	if target != null and is_instance_valid(target):
+		target.set_meta(_constellation_mark_key("reliquary"), true)
+		target.set_meta(_constellation_mark_key("reliquary_base"), tick_damage * float(pulse_count))
 	for tick_index in range(pulse_count):
 		var burst_tween := create_tween()
 		burst_tween.tween_interval(maxf(grenade_delay, 0.08) + float(tick_index) * maxf(burst_interval, 0.06))
@@ -3401,7 +3817,9 @@ func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector
 		burst_tween.tween_callback(Callable(self, "_sanctify_burst_tick").bind(owner_node.get_instance_id(), target_id, center, direction, tick_index, pulse_count, tick_damage))
 	# Снятие знака после последнего тика (mark по id — анти use-after-free).
 	var release_tween := create_tween()
-	release_tween.tween_interval(maxf(grenade_delay, 0.08) + float(pulse_count) * maxf(burst_interval, 0.06) + 0.18)
+	var expiry_delay := maxf(grenade_delay, 0.08) + float(pulse_count) * maxf(burst_interval, 0.06) + 0.18
+	release_tween.tween_interval(expiry_delay)
+	release_tween.tween_callback(Callable(self, "_constellation_reliquary_expire_by_id").bind(owner_node.get_instance_id(), target_id, center, tick_damage * float(pulse_count)))
 	release_tween.tween_callback(Callable(self, "_release_effect_by_id").bind(mark.get_instance_id()))
 
 
@@ -3441,8 +3859,13 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 	var vow_radius_mult := 1.45 if vow_mode else 1.0
 	var vow_damage_mult := 1.35 if vow_mode else 1.0
 	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.06) * float(maxi(pulse_count - 1, 1)), Vector2.RIGHT, {"count": pulse_count})
+	var ward_duration := maxf(burst_interval, 0.06) * float(pulse_count) + 0.35
 	if owner_node.has_method("meta_apply_priest_ward"):
-		owner_node.call("meta_apply_priest_ward", maxf(burst_interval, 0.06) * float(pulse_count) + 0.35)
+		owner_node.call("meta_apply_priest_ward", ward_duration)
+	var censer_profile := _constellation_profile("censer_absorb_retaliation")
+	if not censer_profile.is_empty() and owner_node.has_method("constellation_set_single_hit_ward"):
+		var censer_params: Dictionary = censer_profile.get("params", {})
+		owner_node.call("constellation_set_single_hit_ward", "censer_%d" % get_instance_id(), clampf(float(censer_params.get("absorb_ratio", 0.18)), 0.0, 0.80), ward_duration)
 	var damage_value: float = _rolled_damage(owner_node) * vow_damage_mult
 	for pulse_index in range(pulse_count):
 		var ward_tween := create_tween()
@@ -3484,6 +3907,13 @@ func _fire_priest_dual_toll(owner_node: Node2D, target: Node2D, direction: Vecto
 	var toll_hit := {}
 	_fire_bell_toll_blast(target_center, damage_value, toll_hit)
 	_fire_bell_toll_blast(owner_node.global_position, damage_value, toll_hit)
+	if toll_hit.size() >= 3:
+		var return_result := _constellation_event("return", null, 0.0, {"unique_targets": toll_hit.size()})
+		if bool(return_result.get("triggered", false)) and owner_node.has_method("constellation_set_timed_absorb"):
+			var mechanic = owner_node.call("constellation_weapon_mechanic", weapon_id, "chime_owner_return_shield") if owner_node.has_method("constellation_weapon_mechanic") else {}
+			var params: Dictionary = (mechanic as Dictionary).get("params", {}) if mechanic is Dictionary else {}
+			var shield := minf(float(owner_node.get("max_health")) * clampf(float(params.get("return_shield_ratio", 0.12)), 0.0, 1.0), maxf(float(params.get("shield_cap", 18.0)), 0.0))
+			owner_node.call("constellation_set_timed_absorb", "chime_%d" % get_instance_id(), shield, 4.0)
 	# SCRUM-961 «Двойной колокол» (rework под dual-toll базу SCRUM-929): эхо-звон —
 	# оба взрыва повторяются через 0.45с на 45% урона (свой дедуп на эхо-волну).
 	if _owner_mod("chime_twin_toll") > 0.0:
@@ -3562,10 +3992,18 @@ func _bio_spore_pulse(owner_id: int, target_id: int, stored_center: Vector2, dir
 	AttackVfx.ring_pulse(_projectile_parent(), impact_center, radius, visual_color, pulse_index == 0)
 	_damage_enemies_in_circle_falloff(impact_center, radius, damage_value * factor, damage_falloff)
 	_apply_bio_spore_slow(current_owner, impact_center, radius)
-	for enemy_node in TARGET_QUERY.in_radius(self, impact_center, radius):
+	var ring_targets := TARGET_QUERY.in_radius(self, impact_center, radius)
+	for enemy_node in ring_targets:
 		_apply_bio_infection(enemy_node, current_owner)
-		if pulse_index == pulse_count - 1:
-			_constellation_event("final_ring", enemy_node as Node2D, damage_value * factor)
+	if pulse_index == pulse_count - 1 and not ring_targets.is_empty():
+		var bloom_result := _constellation_event("final_ring", ring_targets[0] as Node2D, 0.0)
+		if bool(bloom_result.get("triggered", false)):
+			var bloom_cap := maxi(int(_constellation_result_param(bloom_result, "secondary_blooms", 4.0)), 0)
+			var bloom_ratio := _constellation_result_param(bloom_result, "bloom_damage_ratio", 0.30)
+			for bloom_index in range(mini(ring_targets.size(), bloom_cap)):
+				var bloom_target := ring_targets[bloom_index] as Node2D
+				AttackVfx.orb_burst(_projectile_parent(), bloom_target.global_position, maxf(aoe_radius * 0.18, 24.0), visual_color)
+				_call_take_damage(bloom_target, damage_value * factor * bloom_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "spore_final_ring_blooms"})
 
 
 # SCRUM-896: Инъектор Образцов — длинный пирсинг-луч Биолога. Урон получают ВСЕ
@@ -3605,7 +4043,15 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 		var line_enemy := hit["node"] as Node2D
 		if line_enemy == null or not is_instance_valid(line_enemy):
 			continue
-		_damage_enemy(line_enemy, damage_value * line_multiplier)
+		var sample_multiplier := 1.0
+		if not _constellation_profile("injector_sample_analysis_ramp").is_empty():
+			var sample_event := _constellation_event("hit", line_enemy, 0.0, {"constellation_consumer_event": true})
+			var sample_stacks := _advance_constellation_target_stack(line_enemy, "sample", 4, _constellation_result_param(sample_event, "duration_seconds", 5.0))
+			var sample_bonus := 0.08 * float(sample_stacks)
+			if TARGET_QUERY.is_epic_displacement_immune(line_enemy):
+				sample_bonus = minf(sample_bonus, 0.28)
+			sample_multiplier += sample_bonus
+		_damage_enemy(line_enemy, damage_value * line_multiplier * sample_multiplier)
 		if physical_bonus > 0.0:
 			_damage_enemy(line_enemy, physical_bonus, false, "physical", false)
 		var forward := float(hit.get("forward", INF))
@@ -3657,9 +4103,24 @@ func _germinate_symbiote_seed(owner_id: int, center: Vector2, damage_value: floa
 	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
 	var impact_damage := damage_value * maxf(seed_impact_ratio, 0.0) * (1.0 + _owner_mod("symbiote_impact_bonus"))
 	_damage_enemies_in_circle_falloff(center, aoe_radius, impact_damage, damage_falloff)
+	var linked_targets: Array = []
 	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
 		_apply_bio_infection(enemy_node, current_owner)
-		_constellation_event("link", enemy_node as Node2D, impact_damage)
+		if linked_targets.size() < 5:
+			linked_targets.append(enemy_node)
+	if not linked_targets.is_empty():
+		var host := linked_targets[0] as Node2D
+		var link_result := _constellation_event("link", host, 0.0, {"linked_targets": linked_targets.size()})
+		if bool(link_result.get("triggered", false)):
+			var profile: Dictionary = current_owner.call("constellation_weapon_mechanic", weapon_id, "symbiote_link_transfer") as Dictionary if current_owner.has_method("constellation_weapon_mechanic") else {}
+			var params: Dictionary = (profile as Dictionary).get("params", {}) if profile is Dictionary else {}
+			var linked_ids := linked_targets.map(func(target): return (target as Node).get_instance_id())
+			for linked_raw in linked_targets:
+				var linked := linked_raw as Node2D
+				linked.set_meta("constellation_symbiote_owner", current_owner.get_instance_id())
+				linked.set_meta("constellation_symbiote_ids", linked_ids.duplicate())
+				linked.set_meta("constellation_symbiote_share", clampf(float(params.get("shared_damage_ratio", 0.22)), 0.0, 0.5))
+				linked.set_meta("constellation_symbiote_transfers", maxi(int(params.get("transfers_per_cast", 2)), 0))
 	# SCRUM-961 «Расщепленный анализ»: ближайший к центру делится с соседями.
 	_apply_bio_split_analysis(TARGET_QUERY.nearest(self, center, aoe_radius), impact_damage)
 
@@ -3852,6 +4313,13 @@ func _resolve_robot_anchor(owner_id: int, center: Vector2, telegraph_id: int, te
 	# Контракт SCRUM-915 не меняется: полный ролл с falloff от ЦЕНТРА якоря + пулл.
 	_damage_enemies_in_circle_falloff(center, aoe_radius, damage_value, damage_falloff)
 	_pull_enemies_toward(center, aoe_radius, knockback)
+	for enemy_raw in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		var enemy := enemy_raw as Node2D
+		if enemy == null or TARGET_QUERY.is_epic_displacement_immune(enemy):
+			continue
+		var setup := _constellation_event("hit", enemy, 0.0, {"constellation_consumer_event": true})
+		if bool(setup.get("triggered", false)):
+			_arm_constellation_target_mark(enemy, "anchor", _constellation_result_param(setup, "mark_seconds", 2.0), _constellation_result_param(setup, "bonus_damage_cap", 0.25))
 	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius * 0.62, visual_color)
 	_release_effect_by_id(telegraph_id)
 	_release_effect_by_id(tether_id)
@@ -3934,8 +4402,15 @@ func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
 	var damage_value := _rolled_damage(owner_node) * REACTOR_VENT_DAMAGE_RATIO
 	var cycle_resolution := _constellation_event("cast", null, damage_value)
 	if bool(cycle_resolution.get("triggered", false)):
-		var pulse_ratio := maxf(float(cycle_resolution.get("damage_multiplier", 1.0)) - 1.0, 0.0)
-		_damage_enemies_in_circle(owner_node.global_position, aoe_radius, damage_value * pulse_ratio)
+		var pulse_ratio := _constellation_result_param(cycle_resolution, "pulse_damage_ratio", 0.40)
+		var pulse_knockback := _constellation_result_param(cycle_resolution, "pulse_knockback", 110.0)
+		for pulse_target in TARGET_QUERY.in_radius(self, owner_node.global_position, aoe_radius):
+			var pulse_enemy := pulse_target as Node2D
+			if pulse_enemy == null or not is_instance_valid(pulse_enemy):
+				continue
+			_call_take_damage(pulse_enemy, damage_value * pulse_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "reactor_vent_cycle_pulse"})
+			var away := pulse_enemy.global_position - owner_node.global_position
+			_push_enemy_scaled(pulse_enemy, away.normalized() if away.length_squared() > 0.001 else Vector2.RIGHT, pulse_knockback / maxf(knockback, 1.0))
 	var vent_width := beam_width * (1.0 + REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS * float(maxi(_extra_projectiles(), 0)))
 	var base_phase := _reactor_vent_phase
 	_reactor_vent_phase = fmod(_reactor_vent_phase + deg_to_rad(REACTOR_ROTATION_STEP_DEG), TAU)
@@ -4169,7 +4644,7 @@ func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, m
 # SCRUM-907: подрыв персистентной мины (зовёт scripts/engineer_mine.gd по
 # триггеру врага/игрока). Урон по области с damage_falloff от эпицентра;
 # «Ядро утилизации» возвращает долю перезарядки.
-func _detonate_engineer_mine(mine_instance_id: int, owner_instance_id: int, mine_index: int) -> void:
+func _detonate_engineer_mine(mine_instance_id: int, owner_instance_id: int, mine_index: int, chain_depth := 0, chain_scale := 1.0, chain_hit_counts := {}) -> void:
 	var mine := instance_from_id(mine_instance_id) as Node2D
 	if mine == null or not is_instance_valid(mine):
 		return
@@ -4177,10 +4652,29 @@ func _detonate_engineer_mine(mine_instance_id: int, owner_instance_id: int, mine
 	var owner_alive := current_owner != null and is_instance_valid(current_owner)
 	if owner_alive:
 		_emit_weapon_animation_event(current_owner, "release", 0.0, Vector2.RIGHT, {"mine_index": mine_index})
-	var mine_damage := _rolled_damage(current_owner) if owner_alive else damage
-	_damage_enemies_in_circle_falloff(mine.global_position, aoe_radius, mine_damage, damage_falloff)
-	for enemy_node in TARGET_QUERY.in_radius(self, mine.global_position, aoe_radius):
-		_constellation_event("mine_explosion", enemy_node as Node2D, mine_damage)
+	var mine_damage := (_rolled_damage(current_owner) if owner_alive else damage) * clampf(chain_scale, 0.0, 1.0)
+	var hit_counts: Dictionary = chain_hit_counts if chain_hit_counts is Dictionary else {}
+	for enemy_raw in TARGET_QUERY.in_radius(self, mine.global_position, aoe_radius):
+		var enemy := enemy_raw as Node2D
+		var enemy_id := enemy.get_instance_id()
+		if int(hit_counts.get(enemy_id, 0)) >= 2:
+			continue
+		hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
+		var distance := mine.global_position.distance_to(enemy.global_position)
+		var factor := lerpf(1.0, clampf(damage_falloff, 0.0, 1.0), distance / maxf(aoe_radius, 1.0))
+		_damage_enemy(enemy, mine_damage * factor)
+	var chain_result := _constellation_event("mine_explosion", null, 0.0, {"chain_depth": chain_depth})
+	if bool(chain_result.get("triggered", false)) and chain_depth < 2:
+		var adjacent_mines := _alive_persistent_mines(mine)
+		adjacent_mines.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+			return mine.global_position.distance_squared_to(a.global_position) < mine.global_position.distance_squared_to(b.global_position)
+		)
+		if not adjacent_mines.is_empty():
+			var adjacent := adjacent_mines[0]
+			var ratio := maxf(float(chain_result.get("damage_multiplier", 1.0)) - 1.0, 0.0)
+			var chain_tween := create_tween()
+			chain_tween.tween_interval(0.12)
+			chain_tween.tween_callback(Callable(self, "_detonate_engineer_mine").bind(adjacent.get_instance_id(), owner_instance_id, mine_index, chain_depth + 1, ratio, hit_counts))
 	AttackVfx.orb_burst(_projectile_parent(), mine.global_position, aoe_radius * 0.72, visual_color)
 	_release_effect(mine)
 	_salvage_device_refund()  # SCRUM-961 «Ядро утилизации»
@@ -4397,9 +4891,117 @@ func _constellation_event(event: String, enemy: Node2D = null, base_damage := 0.
 	return resolution
 
 
+func _constellation_result_param(result: Dictionary, key: String, fallback: float) -> float:
+	var params = result.get("params", {})
+	return float((params as Dictionary).get(key, fallback)) if params is Dictionary else fallback
+
+
+func _constellation_profile(mechanic_id: String) -> Dictionary:
+	var owner_node := _owner_node()
+	if owner_node == null or not owner_node.has_method("constellation_weapon_mechanic"):
+		return {}
+	var raw = owner_node.call("constellation_weapon_mechanic", weapon_id, mechanic_id)
+	return (raw as Dictionary).duplicate(true) if raw is Dictionary else {}
+
+
+func _constellation_mark_key(label: String) -> String:
+	var owner_node := _owner_node()
+	var owner_id := owner_node.get_instance_id() if owner_node != null else 0
+	return "constellation_%s_%d" % [label, owner_id]
+
+
+func _arm_constellation_target_mark(enemy: Node, label: String, duration: float, bonus: float, threshold := 1.0) -> void:
+	if enemy == null or not is_instance_valid(enemy):
+		return
+	enemy.set_meta(_constellation_mark_key(label), {
+		"until_msec": Time.get_ticks_msec() + int(maxf(duration, 0.0) * 1000.0),
+		"bonus": clampf(bonus, 0.0, 0.55),
+		"threshold": clampf(threshold, 0.0, 1.0),
+	})
+
+
+func _consume_constellation_target_mark(enemy: Node, label: String, fallback_multiplier := 1.0) -> float:
+	if enemy == null or not is_instance_valid(enemy):
+		return fallback_multiplier
+	var key := _constellation_mark_key(label)
+	var raw = enemy.get_meta(key, {})
+	if not raw is Dictionary or (raw as Dictionary).is_empty():
+		return fallback_multiplier
+	var mark: Dictionary = raw
+	if Time.get_ticks_msec() > int(mark.get("until_msec", 0)):
+		enemy.remove_meta(key)
+		return fallback_multiplier
+	var max_hp_value = enemy.get("max_health")
+	var hp_value = enemy.get("health")
+	var threshold := float(mark.get("threshold", 1.0))
+	if max_hp_value != null and hp_value != null and float(max_hp_value) > 0.0 and float(hp_value) / float(max_hp_value) > threshold:
+		return fallback_multiplier
+	enemy.remove_meta(key)
+	return fallback_multiplier + clampf(float(mark.get("bonus", 0.0)), 0.0, 0.55)
+
+
+func _advance_constellation_target_stack(enemy: Node, label: String, cap: int, duration: float) -> int:
+	if enemy == null or not is_instance_valid(enemy):
+		return 0
+	var key := _constellation_mark_key(label)
+	var raw = enemy.get_meta(key, {})
+	var entry: Dictionary = raw if raw is Dictionary else {}
+	var now_msec := Time.get_ticks_msec()
+	var count := int(entry.get("count", 0)) if now_msec <= int(entry.get("until_msec", 0)) else 0
+	count = mini(count + 1, maxi(cap, 1))
+	enemy.set_meta(key, {"count": count, "until_msec": now_msec + int(maxf(duration, 0.0) * 1000.0)})
+	return count
+
+
 func constellation_owner_event(event: String, context := {}, enemy: Node2D = null) -> Dictionary:
 	var payload: Dictionary = context if context is Dictionary else {}
 	var base_damage := float(payload.get("dealt_damage", damage))
+	var owner_node := _owner_node()
+	if event == "dodge" and weapon_id == "thief_smoke_bomb" and bool(payload.get("smoke_zone", false)) and owner_node != null:
+		var cloud_id := int(payload.get("smoke_cloud_id", 0))
+		if cloud_id <= 0 or not owner_node.has_method("consume_smoke_cloud_constellation_burst") or not bool(owner_node.call("consume_smoke_cloud_constellation_burst", cloud_id)):
+			return {"valid": true, "triggered": false}
+		var center: Vector2 = payload.get("smoke_center", owner_node.global_position)
+		var target := TARGET_QUERY.nearest(self, center, aoe_radius)
+		var smoke_result := _constellation_event("dodge", target, 0.0, payload)
+		if bool(smoke_result.get("triggered", false)):
+			var burst_damage := _rolled_damage(owner_node) * _constellation_result_param(smoke_result, "burst_damage_ratio", 0.40)
+			_damage_enemies_in_circle(center, aoe_radius, burst_damage)
+			for affected in TARGET_QUERY.in_radius(self, center, aoe_radius):
+				StatusEffects.apply_status(affected, "constellation_smoke_slow", {"duration": _constellation_result_param(smoke_result, "slow_seconds", 1.4), "speed_multiplier": 0.60})
+		return smoke_result
+	if event == "damage_absorbed" and weapon_id == "priest_censer" and owner_node != null:
+		if str(payload.get("constellation_ward_source", "")) != ("censer_%d" % get_instance_id()):
+			return {"valid": true, "triggered": false}
+		var now_msec := Time.get_ticks_msec()
+		if now_msec < int(_constellation_local_state.get("censer_ready_msec", 0)):
+			return {"valid": true, "triggered": false}
+		var target := TARGET_QUERY.nearest(self, owner_node.global_position, aoe_radius)
+		if target == null:
+			return {"valid": true, "triggered": false}
+		var retaliation := _constellation_event("damage_absorbed", target, 0.0, payload)
+		if bool(retaliation.get("triggered", false)):
+			_constellation_local_state["censer_ready_msec"] = now_msec + int(_constellation_result_param(retaliation, "cooldown_seconds", 1.5) * 1000.0)
+			_damage_enemies_in_circle(target.global_position, aoe_radius, _rolled_damage(owner_node) * _constellation_result_param(retaliation, "retaliation_damage_ratio", 0.45))
+		return retaliation
+	if event == "execute" and weapon_id == "shadow_daggers" and owner_node != null and enemy != null and not TARGET_QUERY.is_epic_displacement_immune(enemy):
+		var now_msec := Time.get_ticks_msec()
+		if now_msec < int(_constellation_local_state.get("shadow_window_ready_msec", 0)):
+			return {"valid": true, "triggered": false}
+		var window := _constellation_event("execute", enemy, 0.0, payload)
+		if bool(window.get("triggered", false)) and owner_node.has_method("constellation_set_timed_dodge"):
+			owner_node.call("constellation_set_timed_dodge", "shadow_window_%d" % get_instance_id(), _constellation_result_param(window, "dodge_bonus", 0.18), _constellation_result_param(window, "window_seconds", 0.75))
+			_constellation_local_state["shadow_window_ready_msec"] = now_msec + int(_constellation_result_param(window, "cooldown_seconds", 3.0) * 1000.0)
+		return window
+	if event == "kill" and weapon_id == "cursed_skull" and enemy != null:
+		return _constellation_transfer_skull_curse(enemy, payload)
+	if event == "kill" and weapon_id == "biologist_symbiote_seed" and enemy != null and owner_node != null:
+		var transferred := _constellation_transfer_symbiote_host(enemy, owner_node)
+		return {"valid": true, "triggered": transferred}
+	if event == "expiry" and weapon_id == "priest_reliquary":
+		if enemy != null and bool(enemy.get_meta(_constellation_mark_key("reliquary"), false)):
+			return _constellation_reliquary_expire(owner_node, enemy, enemy.global_position, base_damage)
+		return {"valid": true, "triggered": false}
 	match event:
 		"block": return _constellation_event("block", enemy, base_damage, payload)
 		"dodge": return _constellation_event("dodge", enemy, base_damage, payload)
@@ -4408,6 +5010,73 @@ func constellation_owner_event(event: String, context := {}, enemy: Node2D = nul
 		"execute": return _constellation_event("execute", enemy, base_damage, payload)
 		"expiry": return _constellation_event("expiry", enemy, base_damage, payload)
 	return {"valid": true, "triggered": false}
+
+
+func _constellation_transfer_skull_curse(dead_host: Node2D, payload: Dictionary) -> Dictionary:
+	var key := _constellation_mark_key("skull_curse")
+	var raw = dead_host.get_meta(key, {})
+	if not raw is Dictionary or int((raw as Dictionary).get("depth", 1)) >= 1:
+		return {"valid": true, "triggered": false}
+	dead_host.remove_meta(key)
+	var transfer := _constellation_event("kill", dead_host, 0.0, payload)
+	if not bool(transfer.get("triggered", false)):
+		return transfer
+	var status_raw = (raw as Dictionary).get("status", {})
+	if not status_raw is Dictionary:
+		return transfer
+	var status: Dictionary = (status_raw as Dictionary).duplicate(true)
+	status["duration"] = maxf(float(status.get("duration", 0.0)) * _constellation_result_param(transfer, "transfer_duration_ratio", 0.55), 0.0)
+	var excluded := {dead_host.get_instance_id(): true}
+	var target_cap := maxi(int(_constellation_result_param(transfer, "transfer_targets", 3.0)), 0)
+	for target_raw in TARGET_QUERY.nearest_many(self, dead_host.global_position, aoe_radius * 1.5, target_cap, excluded):
+		var target := target_raw as Node2D
+		if target == null or not is_instance_valid(target):
+			continue
+		StatusEffects.apply_status(target, "skull_curse", status)
+		target.set_meta(key, {"status": status.duplicate(true), "depth": 1})
+	return transfer
+
+
+func _constellation_reliquary_expire_by_id(owner_id: int, target_id: int, fallback_center: Vector2, burst_base: float) -> void:
+	if _effects_shutdown:
+		return
+	var owner_node := instance_from_id(owner_id) as Node2D
+	var target := instance_from_id(target_id) as Node2D
+	if target == null or not is_instance_valid(target):
+		return
+	_constellation_reliquary_expire(owner_node, target, target.global_position if is_instance_valid(target) else fallback_center, burst_base)
+
+
+func _constellation_reliquary_expire(owner_node: Node2D, target: Node2D, center: Vector2, burst_base: float) -> Dictionary:
+	if owner_node == null or target == null or not is_instance_valid(target):
+		return {"valid": true, "triggered": false}
+	var mark_key := _constellation_mark_key("reliquary")
+	if not bool(target.get_meta(mark_key, false)):
+		return {"valid": true, "triggered": false}
+	target.remove_meta(mark_key)
+	var stored_base := float(target.get_meta(_constellation_mark_key("reliquary_base"), burst_base))
+	target.remove_meta(_constellation_mark_key("reliquary_base"))
+	var expiry := _constellation_event("expiry", target, 0.0, {"constellation_consumer_event": true})
+	if not bool(expiry.get("triggered", false)):
+		return expiry
+	var wave_damage := maxf(stored_base, 0.0) * _constellation_result_param(expiry, "damage_ratio", 0.40)
+	_damage_enemies_in_circle(center, aoe_radius, wave_damage)
+	var now_msec := Time.get_ticks_msec()
+	var window_start := int(_constellation_local_state.get("reliquary_heal_window_msec", 0))
+	if now_msec - window_start >= 1000:
+		window_start = now_msec
+		_constellation_local_state["reliquary_healed"] = 0.0
+	_constellation_local_state["reliquary_heal_window_msec"] = window_start
+	var cap := _constellation_result_param(expiry, "heal_per_second_cap", 1.6)
+	var already := float(_constellation_local_state.get("reliquary_healed", 0.0))
+	var heal_amount := minf(wave_damage * _constellation_result_param(expiry, "heal_ratio", 0.08), maxf(cap - already, 0.0))
+	if heal_amount > 0.0:
+		var previous_health := float(owner_node.get("health"))
+		var maximum := float(owner_node.get("max_health"))
+		var actual := minf(heal_amount, maxf(maximum - previous_health, 0.0))
+		owner_node.set("health", previous_health + actual)
+		_constellation_local_state["reliquary_healed"] = already + actual
+	return expiry
 
 
 func _find_closest_enemy(owner_node: Node2D, range_limit := -1.0) -> Node2D:
@@ -4483,6 +5152,11 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		var final_amount := amount
 		if owner_node != null and owner_node.has_method("meta_damage_multiplier"):
 			final_amount *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy))
+		if hit_type != "dot":
+			match weapon_id:
+				"thief_shadow_cloak": final_amount *= _consume_constellation_target_mark(enemy, "backstab")
+				"robot_magnetic_anchor": final_amount *= _consume_constellation_target_mark(enemy, "anchor")
+				"moon_crossbow": final_amount *= _consume_constellation_target_mark(enemy, "moon")
 		# SCRUM-1005 «Разбор образцов»: ПРЯМЫЕ хиты владельца по цели под ЕГО
 		# периодическим эффектом усилены data-driven множителем CLASS_TRAITS
 		# (infected_direct_hit_multiplier; есть только у Биолога — остальным
@@ -4501,6 +5175,8 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 			# скейлятся — гейт hit_type общий с trait'ом Биолога выше.
 			final_amount *= _class_distance_trait_multiplier(owner_node, enemy as Node2D)
 		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
+		_apply_constellation_symbiote_share(enemy, owner_node, final_amount, hit_type)
+		_apply_constellation_prey_distribution(enemy, owner_node, final_amount, hit_type)
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
 		if apply_unique_melee_effects:
 			_apply_class_on_hit_statuses(enemy)
@@ -4513,6 +5189,86 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 			owner_node.trigger_assassin_crit_shadow(enemy, crit_shadow_burst_radius)
 		if apply_unique_melee_effects and owner_node != null:
 			_apply_unique_melee_hit_effects(owner_node, enemy, final_amount)
+
+
+func _apply_constellation_symbiote_share(enemy: Node, owner_node: Node, amount: float, hit_type: String) -> void:
+	if enemy == null or owner_node == null or not enemy.has_meta("constellation_symbiote_owner"):
+		return
+	if int(enemy.get_meta("constellation_symbiote_owner", 0)) != owner_node.get_instance_id():
+		return
+	var ratio := clampf(float(enemy.get_meta("constellation_symbiote_share", 0.0)), 0.0, 0.5)
+	var linked_ids = enemy.get_meta("constellation_symbiote_ids", [])
+	if ratio > 0.0 and linked_ids is Array:
+		for linked_id in linked_ids:
+			var linked := instance_from_id(int(linked_id)) as Node
+			if linked == null or not is_instance_valid(linked) or linked == enemy or not linked.has_method("take_damage"):
+				continue
+			_call_take_damage(linked, amount * ratio, {"damage_type": hit_type, "constellation_final": "symbiote_link_transfer"})
+	var health_value = enemy.get("health")
+	if health_value == null or float(health_value) > 0.0:
+		return
+	_constellation_transfer_symbiote_host(enemy, owner_node)
+
+
+func _constellation_transfer_symbiote_host(enemy: Node, owner_node: Node) -> bool:
+	if enemy == null or owner_node == null or not enemy.has_meta("constellation_symbiote_owner"):
+		return false
+	if int(enemy.get_meta("constellation_symbiote_owner", 0)) != owner_node.get_instance_id():
+		return false
+	var ratio := clampf(float(enemy.get_meta("constellation_symbiote_share", 0.0)), 0.0, 0.5)
+	var linked_ids = enemy.get_meta("constellation_symbiote_ids", [])
+	var transfers := maxi(int(enemy.get_meta("constellation_symbiote_transfers", 0)), 0)
+	if transfers <= 0 or not linked_ids is Array:
+		return false
+	var excluded := {}
+	for linked_id in linked_ids:
+		excluded[int(linked_id)] = true
+	var enemy_position := (enemy as Node2D).global_position if enemy is Node2D else Vector2.ZERO
+	var replacement := TARGET_QUERY.nearest(self, enemy_position, aoe_radius, excluded)
+	if replacement == null:
+		return false
+	var next_ids: Array = (linked_ids as Array).duplicate()
+	next_ids.erase(enemy.get_instance_id())
+	next_ids.append(replacement.get_instance_id())
+	enemy.remove_meta("constellation_symbiote_owner")
+	enemy.remove_meta("constellation_symbiote_ids")
+	enemy.remove_meta("constellation_symbiote_share")
+	enemy.remove_meta("constellation_symbiote_transfers")
+	for linked_id in next_ids:
+		var linked := instance_from_id(int(linked_id)) as Node
+		if linked == null or not is_instance_valid(linked):
+			continue
+		linked.set_meta("constellation_symbiote_owner", owner_node.get_instance_id())
+		linked.set_meta("constellation_symbiote_ids", next_ids.duplicate())
+		linked.set_meta("constellation_symbiote_share", ratio)
+		linked.set_meta("constellation_symbiote_transfers", transfers - 1)
+	return true
+
+
+func _apply_constellation_prey_distribution(enemy: Node, owner_node: Node, amount: float, hit_type: String) -> void:
+	if enemy == null or owner_node == null or not enemy.has_meta("constellation_prey_owner"):
+		return
+	if int(enemy.get_meta("constellation_prey_owner", 0)) != owner_node.get_instance_id() or Time.get_ticks_msec() > int(enemy.get_meta("constellation_prey_until", 0)):
+		return
+	if str(owner_node.get("character_id")) != "ranger":
+		return
+	var ratio := clampf(float(enemy.get_meta("constellation_prey_share", 0.0)), 0.0, 0.5)
+	var count := maxi(int(enemy.get_meta("constellation_prey_neighbors", 0)), 0)
+	if ratio <= 0.0 or count <= 0 or not enemy is Node2D:
+		return
+	var candidates := []
+	for neighbor_raw in TARGET_QUERY.in_radius(self, (enemy as Node2D).global_position, aoe_radius):
+		var neighbor := neighbor_raw as Node2D
+		if neighbor == null or neighbor == enemy:
+			continue
+		if int(neighbor.get_meta("constellation_prey_owner", 0)) != owner_node.get_instance_id() or Time.get_ticks_msec() > int(neighbor.get_meta("constellation_prey_until", 0)):
+			continue
+		candidates.append(neighbor)
+	candidates.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return (enemy as Node2D).global_position.distance_squared_to(a.global_position) < (enemy as Node2D).global_position.distance_squared_to(b.global_position)
+	)
+	for neighbor_index in range(mini(candidates.size(), count)):
+		_call_take_damage(candidates[neighbor_index] as Node, amount * ratio, {"damage_type": hit_type, "constellation_final": "trap_prey_mark_distribution"})
 
 
 # SCRUM-930 «Дальний расчёт»: множитель дистанции для прямого хита владельца.
@@ -4565,7 +5321,14 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy: Node, amount: fl
 
 
 func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2D) -> void:
-	_damage_enemy(enemy, direct_damage)
+	var wire_damage := direct_damage
+	if not _constellation_profile("wire_poison_ramp_snap").is_empty():
+		var wire_stacks := _advance_constellation_target_stack(enemy, "wire_poison", 5, 3.0)
+		var wire_event := _constellation_event("hit", enemy as Node2D, 0.0, {"wire_stacks": wire_stacks, "constellation_consumer_event": true})
+		wire_damage *= 1.0 + 0.06 * float(wire_stacks)
+		if bool(wire_event.get("triggered", false)):
+			_call_take_damage(enemy, direct_damage * _constellation_result_param(wire_event, "snap_damage_ratio", 0.55), {"damage_type": _weapon_damage_type(), "constellation_final": "wire_poison_ramp_snap"})
+	_damage_enemy(enemy, wire_damage)
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
 	var tick_damage := float(parameters.get("dot_damage", max(1.0, direct_damage * 0.22)))
@@ -4726,8 +5489,12 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
+		var owner_id := owner_node.get_instance_id() if owner_node != null else 0
+		var previous_stack_count := StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX)
+		if previous_stack_count < 5 and int(enemy_node.get_meta("constellation_acid_detonated_owner", 0)) == owner_id:
+			enemy_node.remove_meta("constellation_acid_detonated_owner")
 		if not StatusEffects.has_status(enemy_node, charge_status_id) \
-				and StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX) < charge_cap:
+				and previous_stack_count < charge_cap:
 			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
 				"duration": ACID_CHARGE_PERSIST_SECONDS,
 				"dot_damage": charge_tick,
@@ -4735,8 +5502,15 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 				"max_stacks": 1,
 				"marker_color": Color(0.62, 0.95, 0.25, 1.0),
 			})
-		if StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX) >= 5:
-			_constellation_event("pool_stack", enemy_node, charge_tick * 5.0)
+		var acid_stack_count := StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX)
+		if acid_stack_count >= 5 \
+				and int(enemy_node.get_meta("constellation_acid_detonated_owner", 0)) != owner_id:
+			var detonation := _constellation_event("pool_stack", enemy_node, 0.0, {"stacks": acid_stack_count})
+			if bool(detonation.get("triggered", false)):
+				enemy_node.set_meta("constellation_acid_detonated_owner", owner_id)
+				var detonation_radius := maxf(aoe_radius * 0.60, 48.0)
+				AttackVfx.orb_burst(_projectile_parent(), enemy_node.global_position, detonation_radius, visual_color)
+				_damage_enemies_in_circle_capped(enemy_node.global_position, detonation_radius, charge_tick * 5.0 * _constellation_result_param(detonation, "detonation_damage_ratio", 0.46), 2, 0.65)
 
 
 # SCRUM-903: тик терновой зоны — контракт повторных ФИЗИЧЕСКИХ хитов:
@@ -4754,6 +5528,11 @@ func _briar_zone_tick(pool: Node2D) -> void:
 	var origin := pool.global_position
 	var zone_radius := aoe_radius * 0.7
 	var hit_counts: Dictionary = pool.get_meta("briar_hit_counts", {})
+	var dwell: Dictionary = pool.get_meta("constellation_briar_dwell", {})
+	var matured: Dictionary = pool.get_meta("constellation_briar_matured", {})
+	var previous_inside: Dictionary = pool.get_meta("constellation_briar_inside", {})
+	var last_positions: Dictionary = pool.get_meta("constellation_briar_positions", {})
+	var current_inside := {}
 	var slow_multiplier := briar_slow_multiplier
 	var seal_power := _owner_mod("briar_slow_power")
 	if seal_power > 0.0:
@@ -4769,14 +5548,35 @@ func _briar_zone_tick(pool: Node2D) -> void:
 			"marker_color": Color(0.35, 0.70, 0.25, 1.0),
 		})
 		var enemy_id := enemy_node.get_instance_id()
+		current_inside[enemy_id] = true
+		last_positions[enemy_id] = enemy_node.global_position
+		dwell[enemy_id] = float(dwell.get(enemy_id, 0.0)) + pool_tick_interval
+		if float(dwell[enemy_id]) >= 1.2 and not bool(matured.get(enemy_id, false)):
+			var root_result := _constellation_event("root_matured", enemy_node, 0.0)
+			if bool(root_result.get("triggered", false)):
+				matured[enemy_id] = true
+				StatusEffects.apply_status(enemy_node, "constellation_briar_root", {"duration": 0.75, "speed_multiplier": 0.0, "movement_locked": true})
 		var hits := int(hit_counts.get(enemy_id, 0))
 		if hits >= briar_hit_cap:
 			continue
 		hit_counts[enemy_id] = hits + 1
 		_damage_enemy(enemy_node, hit_damage, false, "physical", false)
-		if float(hits + 1) * pool_tick_interval >= 1.2:
-			_constellation_event("root_matured", enemy_node, hit_damage)
+	for previous_id in previous_inside.keys():
+		if current_inside.has(previous_id):
+			continue
+		if bool(matured.get(previous_id, false)):
+			var burst_center: Vector2 = last_positions.get(previous_id, origin)
+			AttackVfx.orb_burst(_projectile_parent(), burst_center, zone_radius * 0.55, visual_color)
+			for burst_target in TARGET_QUERY.in_radius(self, burst_center, zone_radius * 0.55):
+				_call_take_damage(burst_target as Node, hit_damage * 0.38, {"damage_type": "physical", "constellation_final": "briar_sustained_root_burst"})
+		matured.erase(previous_id)
+		dwell.erase(previous_id)
+		last_positions.erase(previous_id)
 	pool.set_meta("briar_hit_counts", hit_counts)
+	pool.set_meta("constellation_briar_dwell", dwell)
+	pool.set_meta("constellation_briar_matured", matured)
+	pool.set_meta("constellation_briar_inside", current_inside)
+	pool.set_meta("constellation_briar_positions", last_positions)
 
 
 func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: float, full_targets: int, diminish: float) -> void:

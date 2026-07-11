@@ -144,6 +144,7 @@ var debug_godmode := false
 # выбрасывая истёкшие). Бонус действует ТОЛЬКО пока герой стоит внутри облака;
 # суммарный шанс уворота в дыму капится ProgressionData.SMOKE_CLOUD_DODGE_CAP.
 var _smoke_clouds: Array[Dictionary] = []
+var _smoke_cloud_token := 0
 # Паутинное замедление (Матерь Роя): фактор скорости до отметки времени.
 var _web_slow_until := 0.0
 var _web_slow_factor := 1.0
@@ -218,6 +219,11 @@ var _triage_primed := false              # «Протокол триажа»: з
 var _triage_cooldown_left := 0.0         # перезаряд триажа
 var _prayer_opening_tween: Tween = null  # «Четки молитвы»: твин снятия открывающего баффа
 var _constellation_final_state: Dictionary = {}
+var _constellation_absorb_sources: Dictionary = {}
+var _constellation_absorb_token := 0
+var _constellation_dodge_sources: Dictionary = {}
+var _constellation_dodge_token := 0
+var _constellation_single_hit_ward: Dictionary = {}
 var _vampiric_heal_budget := 0.0
 # SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
 # drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
@@ -423,6 +429,9 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		_prayer_opening_tween.kill()
 	_prayer_opening_tween = null
 	_constellation_final_state.clear()
+	_constellation_absorb_sources.clear()
+	_constellation_dodge_sources.clear()
+	_constellation_single_hit_ward.clear()
 	# SCRUM-834: сброс гейтов условных keystone.
 	_hurt_active = false
 	_stance_active = false
@@ -788,12 +797,43 @@ func apply_web_slow(duration: float, factor: float) -> void:
 func register_smoke_cloud(center: Vector2, radius: float, duration: float, cloud_dodge_bonus: float) -> void:
 	if duration <= 0.0 or radius <= 0.0 or cloud_dodge_bonus <= 0.0:
 		return
+	_smoke_cloud_token += 1
 	_smoke_clouds.append({
+		"id": _smoke_cloud_token,
 		"center": center,
 		"radius_squared": radius * radius,
 		"until_msec": Time.get_ticks_msec() + int(duration * 1000.0),
 		"dodge_bonus": cloud_dodge_bonus,
+		"constellation_burst_used": false,
 	})
+
+
+func active_smoke_cloud_context() -> Dictionary:
+	var now_msec := Time.get_ticks_msec()
+	for cloud_index in range(_smoke_clouds.size() - 1, -1, -1):
+		var cloud: Dictionary = _smoke_clouds[cloud_index]
+		if int(cloud.get("until_msec", 0)) <= now_msec:
+			continue
+		var center: Vector2 = cloud.get("center", global_position)
+		if global_position.distance_squared_to(center) > float(cloud.get("radius_squared", 0.0)):
+			continue
+		return {
+			"cloud_id": int(cloud.get("id", 0)),
+			"center": center,
+			"burst_used": bool(cloud.get("constellation_burst_used", false)),
+		}
+	return {}
+
+
+func consume_smoke_cloud_constellation_burst(cloud_id: int) -> bool:
+	for cloud_index in range(_smoke_clouds.size()):
+		if int(_smoke_clouds[cloud_index].get("id", 0)) != cloud_id:
+			continue
+		if bool(_smoke_clouds[cloud_index].get("constellation_burst_used", false)):
+			return false
+		_smoke_clouds[cloud_index]["constellation_burst_used"] = true
+		return true
+	return false
 
 
 # Бонус уворота от дым-облаков: 0.0 вне дыма; внутри — максимальный бонус из
@@ -861,7 +901,13 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 			AttackVfx.ring_pulse(_vfx_parent(), global_position, minf(assassin_veil_radius(), 220.0), Color(0.55, 0.20, 0.90, 0.26), false)
 		_trigger_dodge_rush()
 		_trigger_rush_window()
-		_dispatch_constellation_owner_event("dodge", {"incoming_amount": amount, "smoke_zone": smoke_cloud_dodge_bonus() > 0.0})
+		var smoke_context := active_smoke_cloud_context()
+		_dispatch_constellation_owner_event("dodge", {
+			"incoming_amount": amount,
+			"smoke_zone": not smoke_context.is_empty(),
+			"smoke_cloud_id": int(smoke_context.get("cloud_id", 0)),
+			"smoke_center": smoke_context.get("center", global_position),
+		})
 		return false
 
 	# SCRUM-1006 «Разогрев»: КВАЛИФИЦИРОВАННЫЙ удар = прошёл все гейты
@@ -874,6 +920,20 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	var defended_amount := _try_knight_counter(amount)
 	if _reactor_heat_active and float(run_modifiers.get("reactor_heat_incoming_damage", 0.0)) > 0.0:
 		defended_amount *= 1.0 + float(run_modifiers.get("reactor_heat_incoming_damage", 0.0))
+	# SCRUM-1068 Censer final: a ward cast owns exactly one proportional absorb.
+	# It is consumed before generic flat absorb and carries its source through the
+	# owner-event bridge, so unrelated shields cannot trigger retaliation.
+	var constellation_ward := constellation_consume_single_hit_ward()
+	var constellation_ward_absorbed := 0.0
+	if not constellation_ward.is_empty():
+		constellation_ward_absorbed = defended_amount * clampf(float(constellation_ward.get("ratio", 0.0)), 0.0, 0.80)
+		defended_amount = maxf(defended_amount - constellation_ward_absorbed, 0.0)
+		if constellation_ward_absorbed > 0.0:
+			_dispatch_constellation_owner_event("damage_absorbed", {
+				"absorbed_amount": constellation_ward_absorbed,
+				"incoming_amount": amount,
+				"constellation_ward_source": str(constellation_ward.get("source_id", "")),
+			})
 	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
 	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
 		defense = clampf(defense + float(run_modifiers.get("bastion_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
@@ -888,7 +948,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	if actually_absorbed > 0.0:
 		_dispatch_constellation_owner_event("damage_absorbed", {"absorbed_amount": actually_absorbed, "incoming_amount": amount})
 	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
-	_charge_repair_subroutine(defended_amount - absorbed_amount)
+	_charge_repair_subroutine(constellation_ward_absorbed + defended_amount - absorbed_amount)
 	var final_damage := absorbed_amount * (1.0 - defense)
 	# SCRUM-914 «Бронекорпус»: классовый финальный игнор входящего урона —
 	# ПОСЛЕДНИЙ множитель пайплайна (после блока/absorb/defense; dodge отроллен
@@ -1982,7 +2042,7 @@ func constellation_weapon_event(weapon_id_value: String, event: String, context 
 	var mechanic: Dictionary = ((mechanics as Dictionary)[mechanic_id] as Dictionary).duplicate(true)
 	mechanic["mechanic_id"] = mechanic_id
 	var runtime_context: Dictionary = context.duplicate(true) if context is Dictionary else {}
-	runtime_context["target_id"] = str(enemy.get_instance_id()) if enemy != null and is_instance_valid(enemy) else str(context.get("target_id", "target"))
+	runtime_context["target_id"] = str(enemy.get_instance_id()) if enemy != null and is_instance_valid(enemy) else str(runtime_context.get("target_id", "target"))
 	var resolution := ConstellationFinalRuntime.resolve_event(mechanic, _constellation_final_state, event, runtime_context)
 	if not bool(resolution.get("valid", false)):
 		push_error("SCRUM-1068 final runtime rejected %s." % mechanic_id)
@@ -2006,18 +2066,10 @@ func _apply_constellation_final_side_effect(raw_effect, enemy: Node2D = null, re
 	if not raw_effect is Dictionary:
 		return
 	var effect: Dictionary = raw_effect
-	var shield := clampf(float(effect.get("shield", 0.0)), 0.0, 30.0)
-	if shield > 0.0:
-		var previous := clampf(float(run_modifiers.get("constellation_absorb_flat", 0.0)), 0.0, 30.0)
-		var next := minf(maxf(previous, shield), 30.0)
-		run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + next - previous
-		run_modifiers["constellation_absorb_flat"] = next
-		_apply_stat_scaling(false, max_health)
-	var heal_ratio := clampf(float(effect.get("heal_ratio", 0.0)), 0.0, 0.12)
-	if heal_ratio > 0.0 and health > 0.0:
-		health = minf(max_health, health + max_health * heal_ratio)
 	if enemy != null and is_instance_valid(enemy):
 		var reduction := clampf(float(effect.get("enemy_damage_reduction", 0.0)), 0.0, 0.35)
+		if reduction > 0.0 and TARGET_QUERY.is_epic_displacement_immune(enemy):
+			reduction *= clampf(float(effect.get("boss_factor", 1.0)), 0.0, 1.0)
 		if reduction > 0.0:
 			StatusEffects.apply_status(enemy, "constellation_suppression", {
 				"duration": maxf(float(effect.get("duration_seconds", 0.0)), 0.1),
@@ -2026,9 +2078,108 @@ func _apply_constellation_final_side_effect(raw_effect, enemy: Node2D = null, re
 		var control_seconds := maxf(float(effect.get("control_seconds", 0.0)), 0.0)
 		if control_seconds > 0.0:
 			StatusEffects.apply_status(enemy, "constellation_control", {
-				"duration": control_seconds, "move_speed_multiplier": 0.6,
+				"duration": control_seconds, "speed_multiplier": 0.6,
 			})
 		enemy.set_meta("constellation_%s_owner" % str((resolution as Dictionary).get("mechanic_id", effect.get("kind", "final"))), get_instance_id())
+
+
+func constellation_set_timed_absorb(source_id: String, amount: float, duration: float) -> float:
+	if source_id == "":
+		return 0.0
+	var normalized := clampf(amount, 0.0, 30.0)
+	var previous_entry = _constellation_absorb_sources.get(source_id, {})
+	var previous := float((previous_entry as Dictionary).get("amount", 0.0)) if previous_entry is Dictionary else 0.0
+	_constellation_absorb_token += 1
+	var token := _constellation_absorb_token
+	_constellation_absorb_sources[source_id] = {"amount": normalized, "token": token}
+	run_modifiers["absorb_flat"] = maxf(float(run_modifiers.get("absorb_flat", 0.0)) + normalized - previous, 0.0)
+	_apply_stat_scaling(false, max_health)
+	if duration > 0.0 and is_inside_tree():
+		var expiry := create_tween()
+		expiry.tween_interval(duration)
+		expiry.tween_callback(Callable(self, "_expire_constellation_absorb").bind(source_id, token))
+	return normalized
+
+
+func constellation_remove_timed_absorb(source_id: String) -> void:
+	var entry = _constellation_absorb_sources.get(source_id, {})
+	if not entry is Dictionary or (entry as Dictionary).is_empty():
+		return
+	var amount := float((entry as Dictionary).get("amount", 0.0))
+	_constellation_absorb_sources.erase(source_id)
+	run_modifiers["absorb_flat"] = maxf(float(run_modifiers.get("absorb_flat", 0.0)) - amount, 0.0)
+	_apply_stat_scaling(false, max_health)
+
+
+func _expire_constellation_absorb(source_id: String, token: int) -> void:
+	var entry = _constellation_absorb_sources.get(source_id, {})
+	if entry is Dictionary and int((entry as Dictionary).get("token", -1)) == token:
+		constellation_remove_timed_absorb(source_id)
+
+
+func constellation_timed_absorb(source_id: String) -> float:
+	var entry = _constellation_absorb_sources.get(source_id, {})
+	return float((entry as Dictionary).get("amount", 0.0)) if entry is Dictionary else 0.0
+
+
+func constellation_set_timed_dodge(source_id: String, amount: float, duration: float) -> float:
+	if source_id == "":
+		return 0.0
+	var normalized := clampf(amount, 0.0, 0.30)
+	var previous_entry = _constellation_dodge_sources.get(source_id, {})
+	var previous := float((previous_entry as Dictionary).get("amount", 0.0)) if previous_entry is Dictionary else 0.0
+	_constellation_dodge_token += 1
+	var token := _constellation_dodge_token
+	_constellation_dodge_sources[source_id] = {"amount": normalized, "token": token}
+	run_modifiers["dodge_flat"] = maxf(float(run_modifiers.get("dodge_flat", 0.0)) + normalized - previous, 0.0)
+	_apply_stat_scaling(false, max_health)
+	if duration > 0.0 and is_inside_tree():
+		var expiry := create_tween()
+		expiry.tween_interval(duration)
+		expiry.tween_callback(Callable(self, "_expire_constellation_dodge").bind(source_id, token))
+	return normalized
+
+
+func constellation_set_single_hit_ward(source_id: String, ratio: float, duration: float) -> float:
+	if source_id == "" or duration <= 0.0:
+		_constellation_single_hit_ward.clear()
+		return 0.0
+	var normalized := clampf(ratio, 0.0, 0.80)
+	if normalized <= 0.0:
+		_constellation_single_hit_ward.clear()
+		return 0.0
+	_constellation_single_hit_ward = {
+		"source_id": source_id,
+		"ratio": normalized,
+		"until_msec": Time.get_ticks_msec() + int(duration * 1000.0),
+	}
+	return normalized
+
+
+func constellation_consume_single_hit_ward() -> Dictionary:
+	if _constellation_single_hit_ward.is_empty():
+		return {}
+	var ward := _constellation_single_hit_ward.duplicate(true)
+	_constellation_single_hit_ward.clear()
+	if Time.get_ticks_msec() > int(ward.get("until_msec", 0)):
+		return {}
+	return ward
+
+
+func constellation_remove_timed_dodge(source_id: String) -> void:
+	var entry = _constellation_dodge_sources.get(source_id, {})
+	if not entry is Dictionary or (entry as Dictionary).is_empty():
+		return
+	var amount := float((entry as Dictionary).get("amount", 0.0))
+	_constellation_dodge_sources.erase(source_id)
+	run_modifiers["dodge_flat"] = maxf(float(run_modifiers.get("dodge_flat", 0.0)) - amount, 0.0)
+	_apply_stat_scaling(false, max_health)
+
+
+func _expire_constellation_dodge(source_id: String, token: int) -> void:
+	var entry = _constellation_dodge_sources.get(source_id, {})
+	if entry is Dictionary and int((entry as Dictionary).get("token", -1)) == token:
+		constellation_remove_timed_dodge(source_id)
 
 
 func constellation_weapon_geometry_multiplier(weapon_id_value: String) -> float:
@@ -2111,6 +2262,7 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 		if enemy_health != null and float(enemy_health) <= 0.0:
 			var lifecycle_context := context.duplicate(true)
 			lifecycle_context["dealt_damage"] = dealt_damage
+			enemy.set_meta("constellation_lifecycle_owner", get_instance_id())
 			_dispatch_constellation_owner_event("kill", lifecycle_context, enemy)
 			_dispatch_constellation_owner_event("execute", lifecycle_context, enemy)
 			_dispatch_constellation_owner_event("expiry", lifecycle_context, enemy)
@@ -2892,6 +3044,12 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 # _on_enemy_died. Взрыв «Цепная Искра» (шанс) + лечение-стак «Сбор Душ» (каждое N-е).
 # Шанс/счётчик — анти-runaway: взрыв не рекурсивно усиливается, урон одноразовый.
 func on_enemy_killed(enemy: Node2D) -> void:
+	if enemy != null and is_instance_valid(enemy) and int(enemy.get_meta("constellation_lifecycle_owner", 0)) != get_instance_id():
+		var kill_context_raw = enemy.get_meta("killing_hit_feedback", {})
+		var kill_context: Dictionary = kill_context_raw if kill_context_raw is Dictionary else {}
+		_dispatch_constellation_owner_event("kill", kill_context, enemy)
+		_dispatch_constellation_owner_event("expiry", kill_context, enemy)
+		enemy.set_meta("constellation_lifecycle_owner", get_instance_id())
 	_trigger_class_on_kill_trait(enemy)
 	_apply_dot_death_spread(enemy)
 	# «Цепная Искра»: шанс взрыва по области у трупа.

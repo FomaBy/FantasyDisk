@@ -60,7 +60,7 @@ const MODE_BY_MECHANIC := {
 
 const EVENT_BY_MECHANIC := {
 	"sword_repeat_execute": "hit", "axe_outer_followthrough": "attack_resolved", "hammer_stagger_aftershock": "attack_resolved",
-	"rifle_suppression_mark": "hit", "grenade_shrapnel_second_wave": "explosion", "bayonet_brace_countershot": "block",
+	"rifle_suppression_mark": "hit", "grenade_shrapnel_second_wave": "explosion", "bayonet_brace_countershot": "brace_hit",
 	"coin_unique_target_return": "return", "dagger_backstab_execute_mark": "hit", "smoke_dodge_triggered_burst": "dodge",
 	"orb_four_element_resonance": "hit", "prism_intersection_rift": "intersection", "meteor_shard_recall": "return",
 	"deadeye_weakpoint_cycle": "hit", "spotter_highest_hp_priority": "target_acquired", "shatter_extra_pierce_falloff": "pierce",
@@ -100,6 +100,18 @@ const CONSUMER_OWNED_PAYOFF_MODES := [
 	"repeat_execute", "outer_followthrough", "stagger_aftershock", "second_jaw",
 	"marked_overclock", "repair_shield", "intercept_death_burst",
 	"block_counter_line", "stored_damage_bash", "return_control_pulse", "pounce_guard",
+	"brace_counter", "execute_mark", "dodge_burst", "phase_resonance",
+	"weakpoint_cycle", "expiry_burst", "absorb_retaliation", "analysis_ramp",
+	"heavy_hit_setup", "curse_transfer", "harmony_lane", "return_execute_mark",
+	"execute_shadow_window", "poison_ramp_snap", "full_charge_mark",
+	"infection_spread", "wound_execute_heal",
+	"nth_stagger", "priority_mark",
+]
+
+const EXPLICIT_HIT_EVENT_MODES := [
+	"execute_mark", "phase_resonance", "weakpoint_cycle",
+	"analysis_ramp", "heavy_hit_setup", "harmony_lane", "poison_ramp_snap",
+	"infection_spread", "wound_execute_heal",
 ]
 
 
@@ -118,11 +130,32 @@ static func resolve_event(mechanic: Dictionary, state: Dictionary, event: String
 			"valid": true, "triggered": false, "mechanic_id": mechanic_id,
 			"mode": mode, "expected_event": expected_event, "damage_multiplier": 1.0, "axis_gain": 1.0,
 		}
+	if event == "hit" and mode in EXPLICIT_HIT_EVENT_MODES \
+			and (not context is Dictionary or not bool((context as Dictionary).get("constellation_consumer_event", false))):
+		return {
+			"valid": true, "triggered": false, "mechanic_id": mechanic_id,
+			"mode": mode, "expected_event": expected_event, "damage_multiplier": 1.0, "axis_gain": 1.0,
+		}
 	var params: Dictionary = mechanic.get("params", {})
 	var mechanic_state: Dictionary = state.get(mechanic_id, {})
+	var now_msec := int((context as Dictionary).get("now_msec", Time.get_ticks_msec())) if context is Dictionary else Time.get_ticks_msec()
+	if mode == "harmony_lane":
+		var previous_msec := int(mechanic_state.get("last_event_msec", 0))
+		var streak_msec := int(maxf(float(params.get("streak_seconds", 3.0)), 0.0) * 1000.0)
+		if previous_msec > 0 and now_msec - previous_msec > streak_msec:
+			mechanic_state["hits"] = 0
+		mechanic_state["last_event_msec"] = now_msec
 	var target_key := str((context as Dictionary).get("target_id", "target")) if context is Dictionary else "target"
 	var targets: Dictionary = mechanic_state.get("targets", {})
 	var target_hits := int(targets.get(target_key, 0)) + 1
+	if mode == "pierce_echo":
+		var target_times: Dictionary = mechanic_state.get("target_times", {})
+		var previous_target_msec := int(target_times.get(target_key, 0))
+		var target_window_msec := int(maxf(float(params.get("mark_seconds", 3.0)), 0.0) * 1000.0)
+		if previous_target_msec > 0 and now_msec - previous_target_msec > target_window_msec:
+			target_hits = 1
+		target_times[target_key] = now_msec
+		mechanic_state["target_times"] = target_times
 	targets[target_key] = target_hits
 	mechanic_state["targets"] = targets
 	mechanic_state["hits"] = int(mechanic_state.get("hits", 0)) + 1
@@ -133,8 +166,22 @@ static func resolve_event(mechanic: Dictionary, state: Dictionary, event: String
 	var required := _trigger_count(params)
 	var progress := target_hits
 	if mode in ["unique_target_return", "return_shield", "priority_mark", "prey_distribution"]:
-		progress = unique_targets.size()
-	elif mode in ["phase_resonance", "cycle_pulse", "nth_stagger", "nth_raven_strike", "harmony_lane", "marked_overclock"]:
+		progress = maxi(unique_targets.size(), int((context as Dictionary).get("unique_targets", 0)) if context is Dictionary else 0)
+	elif mode == "wound_execute_heal":
+		progress = int((context as Dictionary).get("wounds", target_hits)) if context is Dictionary else target_hits
+	elif mode == "infection_spread":
+		progress = int((context as Dictionary).get("infection_stacks", target_hits)) if context is Dictionary else target_hits
+	elif mode == "poison_ramp_snap":
+		progress = int((context as Dictionary).get("wire_stacks", target_hits)) if context is Dictionary else target_hits
+	elif mode == "stack_detonation":
+		progress = int((context as Dictionary).get("stacks", target_hits)) if context is Dictionary else target_hits
+	elif mode == "phase_resonance":
+		var phases: Dictionary = mechanic_state.get("phases", {})
+		phases[str((context as Dictionary).get("phase", ""))] = true
+		phases.erase("")
+		mechanic_state["phases"] = phases
+		progress = phases.size()
+	elif mode in ["cycle_pulse", "nth_stagger", "nth_raven_strike", "harmony_lane", "marked_overclock"]:
 		progress = int(mechanic_state.get("hits", 0))
 	var triggered := progress >= required
 	if triggered:
@@ -142,7 +189,9 @@ static func resolve_event(mechanic: Dictionary, state: Dictionary, event: String
 		# counters; global cycles restart without accumulating runaway power.
 		if mode in ["unique_target_return", "return_shield", "priority_mark", "prey_distribution"]:
 			mechanic_state["unique_targets"] = {}
-		elif mode in ["phase_resonance", "cycle_pulse", "nth_stagger", "nth_raven_strike", "harmony_lane", "marked_overclock"]:
+		elif mode == "phase_resonance":
+			mechanic_state["phases"] = {}
+		elif mode in ["cycle_pulse", "nth_stagger", "nth_raven_strike", "harmony_lane", "marked_overclock"]:
 			mechanic_state["hits"] = 0
 		else:
 			targets[target_key] = 0
@@ -159,6 +208,7 @@ static func resolve_event(mechanic: Dictionary, state: Dictionary, event: String
 		"triggered": triggered,
 		"progress": progress,
 		"required": required,
+		"params": params.duplicate(true),
 		"damage_multiplier": 1.0,
 		"axis_gain": 1.0,
 		"side_effect": {},
@@ -171,7 +221,7 @@ static func resolve_event(mechanic: Dictionary, state: Dictionary, event: String
 	if damage_ratio > 0.0:
 		result["damage_multiplier"] = 1.0 + damage_ratio
 	result["axis_gain"] = 1.0 + maxf(damage_ratio, utility_ratio)
-	result["side_effect"] = _side_effect(mode, params)
+	result["side_effect"] = {"kind": mode} if mode in CONSUMER_OWNED_PAYOFF_MODES else _side_effect(mode, params)
 	return result
 
 
@@ -216,6 +266,7 @@ static func _side_effect(mode: String, params: Dictionary) -> Dictionary:
 		"suppression_mark":
 			effect["enemy_damage_reduction"] = clampf(float(params.get("enemy_damage_reduction_cap", 0.0)), 0.0, 0.35)
 			effect["duration_seconds"] = maxf(float(params.get("duration_seconds", 0.0)), 0.0)
+			effect["boss_factor"] = clampf(float(params.get("boss_factor", 1.0)), 0.0, 1.0)
 		"stagger_aftershock", "nth_stagger", "return_control_pulse":
 			effect["control_seconds"] = maxf(float(params.get("stagger_seconds", 0.0)), 0.0)
 		"dodge_burst":

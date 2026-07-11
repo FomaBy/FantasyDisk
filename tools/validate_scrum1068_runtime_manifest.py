@@ -58,6 +58,54 @@ HIDDEN_EFFECT_KEYS = {
     "hidden_aoe_mastery_mult",
 }
 
+# Mechanic-bound consumer entry points for the 40 ClassWeapon finals.  A whole-
+# file string search is not proof: another weapon can emit the same generic
+# event and hide deletion of this weapon's live route.  Each entry therefore
+# names the exact function whose body must retain either the required event or
+# an explicitly tagged payoff for the mechanic.
+FINAL_ROUTE_METHODS: dict[str, tuple[str, str]] = {
+    "rifle_suppression_mark": ("scripts/player.gd", "meta_damage_multiplier"),
+    "grenade_shrapnel_second_wave": ("scripts/class_weapon.gd", "_explode_grenade_fuse"),
+    "bayonet_brace_countershot": ("scripts/class_weapon.gd", "_fire_bayonet_cone"),
+    "coin_unique_target_return": ("scripts/class_weapon.gd", "_fire_coin_ricochet"),
+    "dagger_backstab_execute_mark": ("scripts/class_weapon.gd", "_fire_shadow_backstab"),
+    "smoke_dodge_triggered_burst": ("scripts/class_weapon.gd", "constellation_owner_event"),
+    "orb_four_element_resonance": ("scripts/class_weapon.gd", "_elemental_square_tick"),
+    "prism_intersection_rift": ("scripts/class_weapon.gd", "_resolve_prism_rift"),
+    "meteor_shard_recall": ("scripts/class_weapon.gd", "_resolve_meteor_impact"),
+    "deadeye_weakpoint_cycle": ("scripts/class_weapon.gd", "_resolve_sniper_lockshot"),
+    "spotter_highest_hp_priority": ("scripts/class_weapon.gd", "_land_spotter_shell"),
+    "shatter_extra_pierce_falloff": ("scripts/class_weapon.gd", "_impact_shatter_bullet"),
+    "reliquary_mark_expiry_burst": ("scripts/class_weapon.gd", "_constellation_reliquary_expire"),
+    "censer_absorb_retaliation": ("scripts/class_weapon.gd", "constellation_owner_event"),
+    "chime_owner_return_shield": ("scripts/class_weapon.gd", "_fire_priest_dual_toll"),
+    "spore_final_ring_blooms": ("scripts/class_weapon.gd", "_bio_spore_pulse"),
+    "injector_sample_analysis_ramp": ("scripts/class_weapon.gd", "_fire_bio_sample_dart"),
+    "symbiote_link_transfer": ("scripts/class_weapon.gd", "_germinate_symbiote_seed"),
+    "anchor_next_heavy_hit_setup": ("scripts/class_weapon.gd", "_resolve_robot_anchor"),
+    "reactor_vent_cycle_pulse": ("scripts/class_weapon.gd", "_fire_robot_reactor_vent"),
+    "mine_adjacency_chain": ("scripts/class_weapon.gd", "_detonate_engineer_mine"),
+    "book_mirror_midpoint_collapse": ("scripts/class_weapon.gd", "_resolve_dark_mirror_blast"),
+    "skull_death_curse_transfer": ("scripts/class_weapon.gd", "_constellation_transfer_skull_curse"),
+    "wand_pierce_decay_echo": ("scripts/class_weapon.gd", "_resolve_dark_chain_hit"),
+    "guitar_riff_harmony_lane": ("scripts/class_weapon.gd", "_fire_riff_strip"),
+    "bass_every_nth_stagger": ("scripts/class_weapon.gd", "_fire_pulse"),
+    "amp_instrument_echo": ("scripts/class_weapon.gd", "_constellation_instrument_echo"),
+    "chakram_return_execute_mark": ("scripts/class_weapon.gd", "_damage_boomerang_return"),
+    "dagger_execute_shadow_window": ("scripts/class_weapon.gd", "constellation_owner_event"),
+    "wire_poison_ramp_snap": ("scripts/class_weapon.gd", "_damage_enemy_with_dot"),
+    "crossbow_full_charge_mark": ("scripts/class_weapon.gd", "_fire_moon_split_shot"),
+    "longbow_outer_storm_branch": ("scripts/class_weapon.gd", "_fire_storm_pierce_cone"),
+    "trap_prey_mark_distribution": ("scripts/class_weapon.gd", "_trigger_hunter_trap"),
+    "potion_overheal_absorb_pool": ("scripts/class_weapon.gd", "_heal_owner_from_damage"),
+    "syringe_infection_threshold_spread": ("scripts/class_weapon.gd", "_apply_plague_infection"),
+    "saw_wound_execute_heal": ("scripts/class_weapon.gd", "_fire_saw_sector"),
+    "powder_cross_reagent_combo": ("scripts/class_weapon.gd", "_trigger_chemist_combo"),
+    "acid_stack_detonation": ("scripts/class_weapon.gd", "_apply_pool_contact_statuses"),
+    "briar_sustained_root_burst": ("scripts/class_weapon.gd", "_briar_zone_tick"),
+    "totem_every_nth_raven_strike": ("scripts/class_weapon.gd", "_fire_deployable_pulse"),
+}
+
 
 def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
@@ -292,27 +340,45 @@ def _validate_final_route(node: dict[str, Any], routes: dict[str, str], errors: 
         errors.append(f"{mechanic_id}: missing explicit final event route")
         return
     consumer = str(node.get("runtime_consumer", ""))
-    consumer_path = ROOT / consumer
+    route = FINAL_ROUTE_METHODS.get(mechanic_id)
+    route_consumer, route_method = route if route is not None else (consumer, "")
+    consumer_path = ROOT / route_consumer
     try:
         source = consumer_path.read_text(encoding="utf-8")
     except OSError:
         return
-    if mechanic_id not in source:
+    if route is None and mechanic_id not in source:
         errors.append(f"{mechanic_id}: declared consumer has no mechanic hook registration")
-    bridge_sources = [source]
-    for bridge_path in (ROOT / "scripts").glob("*.gd"):
-        if bridge_path == consumer_path:
-            continue
-        bridge_text = bridge_path.read_text(encoding="utf-8")
-        if mechanic_id in bridge_text:
-            bridge_sources.append(bridge_text)
-    explicit_call = any(
-        re.search(rf'_constellation_event\([^\n]*"{re.escape(event)}"', candidate)
-        or re.search(rf'constellation_weapon_event[^\n]*"{re.escape(event)}"', candidate)
-        for candidate in bridge_sources
+    route_source = source
+    if route_method:
+        match = re.search(
+            rf"^func\s+{re.escape(route_method)}\s*\([^\n]*\).*?(?=^func\s+|\Z)",
+            source,
+            flags=re.MULTILINE | re.DOTALL,
+        )
+        if match is None:
+            errors.append(f"{mechanic_id}: bound live method {route_method} is missing")
+            return
+        route_source = match.group(0)
+    # A registry mention or a generic damage gateway is not implementation
+    # evidence. The declared consumer must dispatch its exact event, or a
+    # concrete bridge must emit damage explicitly tagged with this mechanic.
+    explicit_call = bool(
+        re.search(rf'_constellation_event\([^\n]*"{re.escape(event)}"', route_source)
+        or re.search(rf'constellation_weapon_event[^\n]*"{re.escape(event)}"', route_source)
     )
-    hit_gateway = event == "hit" and ("_damage_enemy(" in source or "meta_damage_multiplier" in source)
-    if not explicit_call and not hit_gateway:
+    payoff_marker = re.compile(
+        rf'["\']constellation_final["\']\s*:\s*["\']{re.escape(mechanic_id)}["\']'
+    )
+    direct_payoff = bool(payoff_marker.search(route_source))
+    if not direct_payoff and route is None:
+        for bridge_path in (ROOT / "scripts").glob("*.gd"):
+            if bridge_path == consumer_path:
+                continue
+            if payoff_marker.search(bridge_path.read_text(encoding="utf-8")):
+                direct_payoff = True
+                break
+    if not explicit_call and not direct_payoff:
         errors.append(f"{mechanic_id}: consumer never invokes required event {event}")
 
 

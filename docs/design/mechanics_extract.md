@@ -2,11 +2,12 @@
 
 ## Актуальный Слой Реализации
 
-### Target schema 6 — SCRUM-1067 (pending SCRUM-1068 runtime)
+### Production schema 6 — SCRUM-1067 / SCRUM-1068 runtime
 
 Новая design-спецификация созвездий хранится в
 `docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`, машинный
-manifest — `docs/design/data/scrum1067_weapon_finals_manifest.json`.
+design manifest — `docs/design/data/scrum1067_weapon_finals_manifest.json`, а
+runtime projection — `data/meta/constellation_schema6.json`.
 
 Формула класса остаётся trio-first:
 
@@ -33,7 +34,7 @@ Manifest инстанцирует 306 branch nodes и 34 hidden profiles; каж
 scope/effect/cap/consumer/fixture. Free core явно и всегда даёт ровно +1 primary
 attribute вне 20-point spend.
 
-Обновлено: 2026-07-04
+Обновлено: 2026-07-11
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -226,7 +227,7 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий по врагам внутри |
 | Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
-| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько защитных ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
+| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько тяжёлых ward-пульсов вокруг героя наносят урон; финал поглощает 18% одного удара за cast и отвечает retaliation без скрытого лечения |
 | Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal от нанесенного урона |
 | Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
 | Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |

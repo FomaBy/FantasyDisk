@@ -5,17 +5,18 @@ from __future__ import annotations
 
 import copy
 import json
+import shutil
 import tempfile
 from pathlib import Path
 
 from generate_scrum1068_runtime_manifest import DEFAULT_OUTPUT, DEFAULT_SOURCE
-from validate_scrum1068_runtime_manifest import validate
+import validate_scrum1068_runtime_manifest as validator
 
 
 def main() -> int:
     baseline = json.loads(DEFAULT_OUTPUT.read_text(encoding="utf-8"))
     failures: list[str] = []
-    if validate(DEFAULT_SOURCE, DEFAULT_OUTPUT):
+    if validator.validate(DEFAULT_SOURCE, DEFAULT_OUTPUT):
         failures.append("canonical runtime manifest did not validate")
 
     mutations = {
@@ -53,14 +54,35 @@ def main() -> int:
             candidate = copy.deepcopy(baseline)
             mutate(candidate)
             temp_path.write_text(json.dumps(candidate, ensure_ascii=False), encoding="utf-8")
-            if not validate(DEFAULT_SOURCE, temp_path):
+            if not validator.validate(DEFAULT_SOURCE, temp_path):
                 failures.append(f"mutation unexpectedly passed: {name}")
+
+    # Live-route mutation: removing the rifle hit dispatch from its exact bound
+    # method must fail even though many other ClassWeapon finals still emit
+    # generic "hit" events elsewhere in the repository.
+    with tempfile.TemporaryDirectory(prefix="scrum1068-route-validator-") as temp_dir:
+        temp_root = Path(temp_dir)
+        shutil.copytree(validator.ROOT / "scripts", temp_root / "scripts")
+        player_path = temp_root / "scripts/player.gd"
+        player_source = player_path.read_text(encoding="utf-8")
+        route_line = 'var final_resolution := constellation_weapon_event(str(ctx.get("weapon_id", "")), "hit", ctx, enemy)'
+        if route_line not in player_source:
+            failures.append("route mutation fixture could not find rifle hit dispatch")
+        else:
+            player_path.write_text(player_source.replace(route_line, "var final_resolution := {}", 1), encoding="utf-8")
+            original_root = validator.ROOT
+            try:
+                validator.ROOT = temp_root
+                if not validator.validate(DEFAULT_SOURCE, DEFAULT_OUTPUT):
+                    failures.append("mutation unexpectedly passed: deleted_bound_rifle_route")
+            finally:
+                validator.ROOT = original_root
 
     if failures:
         for failure in failures:
             print(f"ERROR: {failure}")
         return 1
-    print(f"SCRUM-1068 validator mutation gate passed ({len(mutations)} corruptions rejected).")
+    print(f"SCRUM-1068 validator mutation gate passed ({len(mutations) + 1} corruptions rejected).")
     return 0
 
 

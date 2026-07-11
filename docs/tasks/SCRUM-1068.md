@@ -1,6 +1,6 @@
 # SCRUM-1068 — Schema-6 weapon constellations runtime
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1068
 Контур: Codex
@@ -58,7 +58,9 @@ and must remain sequential with the later Atlas UI phase.
 Partial commits use `FSD_NO_AUTOLAND=1` and are not pushed until a green
 integration boundary. Jira heartbeats and final cleanup record the live phase.
 
-Disk cleanup: pending active implementation.
+Disk cleanup: all isolated `/tmp/fsd-s1068-*` Godot homes were removed after
+their gates; the registered task worktree is removed after push/QA routing and
+that final hygiene is recorded in Jira.
 
 ## Backend/runtime result — 2026-07-11
 
@@ -76,20 +78,36 @@ Phases 1–6 are implemented and green in the isolated Codex worktree:
 - all 51 finals have an explicit required event and consumer registration;
   the 11 non-ClassWeapon/special consumers implement their own capped state and
   lifecycle, including bounded repair tether/shield and summon-death bridges;
+- independent post-review rejected the first resolver-only proof; the correction
+  pass now routes ordinary finals through live hit/dodge/absorb/death/expiry
+  consumers, setup marks, delayed waves, target/chain caps and Player-owned
+  timed shields with derived-stat refresh;
 - balance harness covers `no_meta`, `5/6`, `6/6`, all three finals, `20/20` and
   A5; roster max/min is `1.018636` and hard rails pass.
 
 Verification:
 
-- manifest parity + 11 mutation corruptions: PASS;
+- manifest parity + 12 mutation corruptions, including deletion of a bound
+  rifle runtime route: PASS;
 - migration/economy/Guild preservation/corrupt-save normalization: PASS;
 - typed profiles and live Berserk/HolyFlail/Summoner consumers: PASS;
 - 51 positive final fixtures + 102 same-class foreign negatives: PASS;
 - 11 special-final behavior/cap/lifecycle fixtures: PASS;
+- black-box live runtime mitigation, suppression, setup/consume, delayed
+  grenade/prism/meteor and overlapping-shatter fixtures: PASS; the same gate
+  covers Bayonet line geometry, one-hit Censer ward, Reactor knockback, one
+  Dark Book collapse per cast and Acid reset/rearm;
+- skull/reliquary death-expiry and plague/wire/saw stack-reset lifecycle
+  fixtures: PASS twice independently;
 - schema-6 per-hero and Meta/Guild regression suites: PASS;
 - all 51 weapon scenes / 39 live attack modes: PASS;
-- full `tests/runtime_smoke_test.gd`: PASS (15,220-file duplicate guard; existing
+- full `tests/runtime_smoke_test.gd`: PASS (15,206-file duplicate guard; existing
   headless dummy-renderer null-texture diagnostic remains non-fatal).
+
+Independent post-fix review: PASSED after two rejection/correction cycles. The
+final pass independently confirmed the delayed Bayonet brace token/deadline,
+the shared Dark Book three-hit per-cast ledger and one-collapse cap, then reran
+the live runtime and full smoke gates without compile/runtime regressions.
 
 Phase 7 Atlas visual/runtime layout remains excluded: SCRUM-1075 has a valid
 PixelLab-ready plan but the external PixelLab account has `$0` balance and only
@@ -97,4 +115,5 @@ PixelLab-ready plan but the external PixelLab account has `$0` balance and only
 `scripts/ui_screens.gd` was made. SCRUM-1073 remains sequential behind that UI
 phase.
 
-Disk cleanup: pending final commit/push and independent QA.
+Disk cleanup: transient Godot HOME/user-data directories removed; registered
+worktree cleanup follows the mandatory push and Jira QA transition.

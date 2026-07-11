@@ -29,7 +29,12 @@ func _initialize() -> void:
 		var mode := str(FinalRuntime.MODE_BY_MECHANIC.get(mechanic_id, ""))
 		for event_index in range(8):
 			var target_id := "target_%d" % event_index if mode in ["unique_target_return", "return_shield", "priority_mark", "prey_distribution"] else "target"
-			result = FinalRuntime.resolve_event(mechanic, state, event, {"target_id": target_id, "health_fraction": 0.2})
+			var event_context := {"target_id": target_id, "health_fraction": 0.2}
+			if event == "hit":
+				event_context["constellation_consumer_event"] = true
+			if mode == "phase_resonance":
+				event_context["phase"] = ["fire", "water", "air", "earth"][event_index % 4]
+			result = FinalRuntime.resolve_event(mechanic, state, event, event_context)
 			if bool(result.get("triggered", false)):
 				break
 		_check(bool(result.get("triggered", false)), "%s positive fixture never triggered from %s" % [mechanic_id, event])

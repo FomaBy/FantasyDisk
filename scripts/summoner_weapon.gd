@@ -682,14 +682,8 @@ func _dispatch_constellation_pack_command(owner_node: Node2D, owned_allies: Arra
 
 
 func _apply_pack_guard(owner_node: Node, duration: float) -> void:
-	var raw = owner_node.get("run_modifiers")
-	if not raw is Dictionary:
-		return
-	var mods: Dictionary = raw
-	var room := maxf(PACK_GUARD_ABSORB_CAP - _pack_guard_absorb, 0.0)
-	if room > 0.0:
-		mods["absorb_flat"] = float(mods.get("absorb_flat", 0.0)) + room
-		_pack_guard_absorb += room
+	if owner_node.has_method("constellation_set_timed_absorb"):
+		_pack_guard_absorb = float(owner_node.call("constellation_set_timed_absorb", "pack_guard_%d" % get_instance_id(), PACK_GUARD_ABSORB_CAP, duration))
 	_pack_guard_left = maxf(duration, 0.0)
 
 
@@ -700,10 +694,8 @@ func _tick_pack_guard(delta: float) -> void:
 	if _pack_guard_left > 0.0:
 		return
 	var owner_node := _owner_node()
-	if owner_node != null:
-		var raw = owner_node.get("run_modifiers")
-		if raw is Dictionary:
-			(raw as Dictionary)["absorb_flat"] = maxf(float((raw as Dictionary).get("absorb_flat", 0.0)) - _pack_guard_absorb, 0.0)
+	if owner_node != null and owner_node.has_method("constellation_remove_timed_absorb"):
+		owner_node.call("constellation_remove_timed_absorb", "pack_guard_%d" % get_instance_id())
 	_pack_guard_absorb = 0.0
 
 
