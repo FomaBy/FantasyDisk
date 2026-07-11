@@ -86,4 +86,36 @@ controls stay inside the empty Settings content zone and remain disjoint from
 the footer/frame ornament; compact Reset is revealed by focus-scroll. The known
 dummy-renderer null-texture diagnostic remains non-fatal.
 
-Commit/push and independent production QA: pending.
+Implementation commit `618bb755c` and Jira routing commit `11de8e1bc` are in
+`origin/dev`.
+
+## QA-Вердикт — independent production QA (2026-07-11)
+
+Статус: PASSED
+
+Reviewer: Codex QA `/root/qa_scrum974`. Baseline: fresh `origin/dev`
+`11de8e1bc`, including implementation `618bb755c`. Production code, assets and
+tests were audited read-only.
+
+- PixelLab/UI Director evidence passed: accepted source
+  `11178250-472a-4f22-84bf-85f1e45d8ea7` has the recorded SHA-256;
+  `ui_plan.report.json` is `ready_for_image` with zero errors/warnings; every
+  compositor fit zone is `ok`; rejected v1/v3 and the unavailable v4/no-fallback
+  decision are truthfully recorded.
+- Defaults, persistence, clamping, eight-key Reset, `UI -> SFX -> Master`, exact
+  UI-only routing, focus mute/restore and requested/effective low-HP loop state
+  passed independent focused verification.
+- Sound UI passed headless and real Metal at 1280×720, 1920×1080 and
+  2560×1440. At 720 the styled scrollbar is visible and focus reveals Reset;
+  at 1080/1440 all controls fit without a scrollbar. Manual screenshot review
+  found no clipping or contact with footer, frame or decorative ornament.
+- Regression gates passed: game settings; audio manager/integration/QA969;
+  runtime UI; no-overlap matrix; dark-fantasy theme; gamepad menu,
+  settings/rebind and full-flow; full runtime smoke. The known dummy-renderer
+  null-texture capture diagnostic remained non-fatal.
+
+Jira: `Готово` after QA PASS. Production locks: released.
+
+Disk cleanup: disposable QA worktree, `.godot`, transient Metal captures,
+isolated `/tmp/fsd-scrum974-qa-*` roots and local QA branch removed after the
+evidence commit was pushed.
