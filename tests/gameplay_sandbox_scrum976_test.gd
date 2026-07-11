@@ -9,6 +9,9 @@ const META := preload("res://scripts/meta_progression.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const PLAYER := preload("res://scripts/player.gd")
 const SUMMONER_WEAPON := preload("res://scripts/summoner_weapon.gd")
+const ORDINARY_ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
+const ELITE_ENEMY_SCENE := preload("res://scenes/EliteArmored.tscn")
+const BOSS_ENEMY_SCENE := preload("res://scenes/BossWarden.tscn")
 
 
 class SandboxOwner:
@@ -80,6 +83,9 @@ func _check_settings_and_run_snapshot(errors: Array[String]) -> void:
 	game.sandbox_settings = SANDBOX.snapshot_from_settings(loaded)
 	game.begin_new_run_session()
 	var active_before: Dictionary = game.run_sandbox_snapshot.duplicate(true)
+	var active_metadata: Dictionary = game.run_metrics.get("sandbox", {})
+	if bool(active_metadata.get("release_balance_evidence_eligible", true)):
+		errors.append("custom run metrics remained release-balance eligible")
 	game.reset_sandbox_settings(false)
 	if not game.sandbox_settings_are_neutral():
 		errors.append("atomic reset did not restore configured neutral values")
@@ -100,6 +106,12 @@ func _check_settings_and_run_snapshot(errors: Array[String]) -> void:
 	game.begin_new_run_session()
 	if game.run_sandbox_is_custom():
 		errors.append("next run did not adopt reset neutral configured values")
+	# Legacy autosaves have no sandbox field. Their normalized active snapshot must
+	# remain neutral and keep pre-SCRUM-976 progression behaviour.
+	game.run_sandbox_snapshot = SANDBOX.snapshot_from_settings({})
+	game.run_sandbox_captured = true
+	if not game.run_progression_eligible():
+		errors.append("legacy autosave without sandbox field was not neutral")
 	game.free()
 
 
@@ -172,8 +184,30 @@ func _check_enemy_runtime(errors: Array[String]) -> void:
 	enemy.set("_contact_windup_left", 0.22)
 	enemy.call("_update_contact_damage", 0.10, target, 0.0)
 	_assert_approx(errors, float(enemy.get("_contact_windup_left")), 0.12, "contact windup unchanged")
+
+	# Production scene coverage: every runtime lane inherits the same one-shot
+	# layer, including summons created outside CombatDirector and the boss script.
+	_check_enemy_scene_runtime(errors, owner, ORDINARY_ENEMY_SCENE, "ordinary")
+	_check_enemy_scene_runtime(errors, owner, ORDINARY_ENEMY_SCENE, "summoned")
+	_check_enemy_scene_runtime(errors, owner, ELITE_ENEMY_SCENE, "elite")
+	_check_enemy_scene_runtime(errors, owner, BOSS_ENEMY_SCENE, "boss")
 	owner.queue_free()
 	await process_frame
+
+
+func _check_enemy_scene_runtime(errors: Array[String], owner: Node, scene: PackedScene, label: String) -> void:
+	var enemy = scene.instantiate()
+	var base_hp := float(enemy.get("max_health"))
+	var base_contact := float(enemy.get("contact_damage"))
+	var base_projectile := float(enemy.get("projectile_damage"))
+	owner.add_child(enemy)
+	if label == "summoned":
+		enemy.add_to_group("summoned_enemies")
+	_assert_approx(errors, float(enemy.get("max_health")), base_hp * 3.0, "%s scene HP" % label)
+	_assert_approx(errors, float(enemy.get("contact_damage")), base_contact * 0.8, "%s scene contact damage" % label)
+	_assert_approx(errors, float(enemy.get("projectile_damage")), base_projectile * 0.8, "%s scene projectile damage" % label)
+	_assert_approx(errors, float(enemy.call("_sandbox_attack_delta", 0.25)), 0.4, "%s scene attack cadence" % label)
+	enemy.free()
 
 
 func _check_progression_guards(errors: Array[String]) -> void:
@@ -196,6 +230,9 @@ func _check_progression_guards(errors: Array[String]) -> void:
 	game.record_codex_discovery("monsters", "rift_cutter")
 	if not META.is_codex_discovered(game.meta_state, "monsters", "rift_cutter"):
 		errors.append("neutral run codex progression was blocked")
+	game.record_boss_victory()
+	if META.class_boss_wins(game.meta_state, "berserk") <= 0:
+		errors.append("neutral run boss/meta/Ascension progression was blocked")
 	game.free()
 
 
@@ -205,5 +242,5 @@ func _assert_approx(errors: Array[String], actual: float, expected: float, label
 
 
 func _cleanup_scratch_files() -> void:
-	for path in [GAME_SETTINGS.SAVE_PATH, RUN_AUTOSAVE.DEFAULT_SAVE_PATH]:
+	for path in [GAME_SETTINGS.SAVE_PATH, RUN_AUTOSAVE.DEFAULT_SAVE_PATH, META.DEFAULT_SAVE_PATH]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
