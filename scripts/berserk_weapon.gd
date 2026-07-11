@@ -4,6 +4,11 @@ extends Node2D
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const EXACT_ZONE_OVERLAY_ALPHA := 0.60
 const CONTACT_STUCK_HIT_RADIUS := 40.0
+# SCRUM-1043: Berserk's full-frame body extends farther below its origin than
+# above it. Keep the former 150 px upper reach while moving the hammer ground
+# impact toward the footline and giving the same contract to hit queries/VFX.
+const HAMMER_CIRCLE_CENTER_OFFSET := Vector2(0.0, 16.0)
+const HAMMER_CIRCLE_VISUAL_SCALE := Vector2(1.0, 1.12)
 
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"
@@ -305,8 +310,9 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		if enemy_node.has_method("take_damage"):
 			candidates.append(enemy_node)
 	if attack_shape == "circle" and circle_target_diminish > 0.0 and candidates.size() > 1:
+		var circle_center := _circle_attack_center(owner_node)
 		candidates.sort_custom(func(a: Node2D, b: Node2D) -> bool:
-			return owner_node.global_position.distance_squared_to(a.global_position) < owner_node.global_position.distance_squared_to(b.global_position)
+			return circle_center.distance_squared_to(a.global_position) < circle_center.distance_squared_to(b.global_position)
 		)
 	for index in range(candidates.size()):
 		_damage_target(owner_node, candidates[index] as Node2D, attack_direction, _circle_damage_factor(index))
@@ -549,7 +555,14 @@ func _is_enemy_inside_attack(owner_node: Node2D, enemy_node: Node2D, attack_dire
 		return true
 	if attack_shape == "circle":
 		var radius := _effective_circle_radius()
-		return owner_node.global_position.distance_squared_to(enemy_node.global_position) <= radius * radius
+		var center := _circle_attack_center(owner_node)
+		var scale := _circle_attack_visual_scale()
+		var center_to_enemy := enemy_node.global_position - center
+		var normalized_delta := Vector2(
+			center_to_enemy.x / maxf(absf(scale.x), 0.001),
+			center_to_enemy.y / maxf(absf(scale.y), 0.001)
+		)
+		return normalized_delta.length_squared() <= radius * radius
 	if attack_shape == "sweep":
 		return _is_enemy_inside_sweep(owner_node, enemy_node, attack_direction)
 	# "strip" — прямоугольная полоса: frustum с равными inner/outer width.
@@ -648,7 +661,7 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 	var center := owner_node.global_position + direction * minf(maxf(attack_range * 0.45, 72.0), 260.0)
 	var radius := maxf(aoe_radius, inner_width * 1.45)
 	if attack_shape == "circle":
-		center = owner_node.global_position
+		center = _circle_attack_center(owner_node)
 		radius = maxf(_effective_circle_radius(), 96.0)
 	elif attack_shape == "strip":
 		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
@@ -676,6 +689,8 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 		weapon_offset
 	)
 	if signature != null:
+		if attack_shape == "circle":
+			signature.scale *= _circle_attack_visual_scale()
 		signature.add_to_group("player_weapon_effects")
 
 
@@ -757,7 +772,27 @@ func _show_circle_area(owner_node: Node2D) -> void:
 	var scene := get_tree().current_scene
 	if scene == null:
 		scene = get_tree().root
-	AttackVfx.hammer_slam(scene, owner_node.global_position, _effective_circle_radius(), visual_color)
+	var slam := AttackVfx.hammer_slam(scene, _circle_attack_center(owner_node), _effective_circle_radius(), visual_color)
+	if slam != null:
+		slam.scale *= _circle_attack_visual_scale()
+
+
+# SCRUM-1043 Animator handoff API. Both helpers deliberately default to the
+# legacy centered circle for Holy Flail and every future non-hammer circle.
+# Scene-specific hammer VFX bridges may consume these protected hooks instead
+# of duplicating gameplay geometry constants.
+func _circle_attack_center(owner_node: Node2D) -> Vector2:
+	if owner_node == null:
+		return Vector2.ZERO
+	if weapon_id == "hammer":
+		return owner_node.global_position + HAMMER_CIRCLE_CENTER_OFFSET
+	return owner_node.global_position
+
+
+func _circle_attack_visual_scale() -> Vector2:
+	if weapon_id == "hammer":
+		return HAMMER_CIRCLE_VISUAL_SCALE
+	return Vector2.ONE
 
 
 func _effective_circle_radius() -> float:

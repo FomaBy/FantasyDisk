@@ -48,6 +48,16 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `sweep` | Узкий дальний сектор 100 градусов радиуса 350; секторные бонусы расширяют угол, Radius расширяет дальность |
 | `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкий сектор 180 градусов радиуса 250 по ближайшему монстру |
 | `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Круговой slam радиуса 150; Radius увеличивает круг, секторные бонусы не влияют, плотные паки получают target diminishing |
+
+SCRUM-1043 выравнивает hammer slam относительно ног full-frame Берсерка без
+числового ребаланса оружия. Hammer-only hit/VFX center смещён на `16px` вниз,
+а вертикальная ось умножена на `1.12`: прежний верхний reach остаётся около
+`150px`, нижний становится около `184px`, горизонталь практически не меняется.
+`_circle_attack_center(owner_node)` и `_circle_attack_visual_scale()` служат
+единым protected-контрактом для damage membership и Animator VFX bridge. Для
+Knight `holy_flail` и любого другого circle-оружия остаются прежние центр и
+`Vector2.ONE`; sword/axe, урон, cooldown, Radius growth и diminishing не менялись.
+
 | `soldier` | `soldier_rifle` | Аркебуза строя | `SoldierRifle.tscn` | `arquebus_shot` | Частая одиночная взрывная пуля: видимый снаряд летит далеко и взрывается малым AoE с falloff |
 | `soldier` | `soldier_grenade` | Граната с фитилем | `SoldierGrenade.tscn` | `grenade_fuse` | Медленный полёт (кап скорости ~460) + видимый фитиль после посадки; тяжёлый редкий взрыв с falloff, урон только на взрыве |
 | `soldier` | `soldier_bayonet` | Штык-стойка | `SoldierBayonet.tscn` | `bayonet_cone` | Ближний сектор 105 градусов без мёртвой зоны у ног: укол+knockback каждому в конусе; редкий авто-выстрел по цели за конусом |

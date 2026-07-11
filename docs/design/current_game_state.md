@@ -2081,6 +2081,14 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - SCRUM-521: при HP игрока ниже 30% боевой HUD показывает мягкую красную виньетку по краям (`LowHpVignetteOverlay`) с прозрачным центром, чтобы не закрывать бой и HUD. Виньетка гаснет после восстановления до 34%+ HP, уважает persisted toggle `combat_feedback`, не перехватывает ввод и рисуется за HUD-карточками.
 - SCRUM-852 (2026-07-03): стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.62`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены; live-гейт `tests/berserk_dps_runaway_gate.gd` держит `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`.
+- SCRUM-1043 (2026-07-11): hammer-only ground membership следует footline
+  full-frame Берсерка: `_circle_attack_center(owner_node)` смещает центр на
+  `16px` вниз, а `_circle_attack_visual_scale()` возвращает
+  `Vector2(1.0, 1.12)` и одинаково применяется damage-query и slam VFX. При
+  базовом `150px` верхний reach остаётся около `150px`, нижний становится около
+  `184px`, горизонталь практически не меняется. Damage, cooldown, Radius growth,
+  dense-pack diminishing, sword/axe и Knight `holy_flail` не изменены;
+  dedicated-регрессия — `tests/scrum1043_hammer_lower_hit_zone_test.gd`.
 - SCRUM-858 (2026-07-04): Knight counter pass перенес часть tank identity в incoming-based retaliation. `tower_shield` снижает контактный удар и отвечает по фронтальной стае с radius/arc/target caps (5 incoming damage дает около 25 retaliation до cap), `long_spear` оставлен reach/pierce с легкой узкой ответкой, `holy_flail` держит широкий circular holy-control counter. Cooldown сбрасывается при `configure_character`, чтобы смена оружия/старт забега не наследовали старое окно.
 - SCRUM-860 (2026-07-04): Assassin kill-growth closes the growth/sustain slice of the full rebalance. `shadow_momentum` stacks only from normal non-boss/non-elite kills, caps at 6 refreshed 6s stacks, clears on expiry/weapon swap, and is validated by `tests/kill_scaling_identity_test.gd`.
 
