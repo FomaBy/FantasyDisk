@@ -30,6 +30,21 @@
    новую route map следующего акта. После boss Act 3 показывается финальная победа
    и начисляется мета-прогрессия.
 
+### Combat Player lifecycle (SCRUM-1071)
+
+- Принятый старт боя владеет ровно одним `Player`, одной включённой камерой и
+  одним поколением HUD/сигнальных hooks. Повторный `_start_combat` в том же или
+  соседнем кадре — идемпотентный no-op, пока старт строится или бой уже активен.
+- Полный `Player.tscn`, временно используемый досье/магазином/событием как модель
+  run snapshot, явно имеет роль `menu_snapshot`: он не входит в combat-группу
+  `player`, не обрабатывает input/physics, не имеет активной камеры и принадлежит
+  конкретному `Main` до централизованной очистки.
+- Переходы Settings/Resume/Main Menu/новый бой и autosave Continue не полагаются
+  только на `current_player`. UI teardown удаляет все временные Player этого
+  Main, а world teardown синхронно выводит из дерева все принадлежащие ему
+  combat/temp Player до создания следующего экземпляра. Поэтому enemy targeting,
+  камера, HUD и battle-start hooks никогда не могут выбрать «замершую» копию.
+
 ## Player Control And Attacks
 
 - Движение: WASD / переназначаемые hotkeys.
@@ -250,6 +265,10 @@
 ## Tests
 
 - Зонтичный smoke: `tests/runtime_smoke_test.gd` (полный прогон).
+- Player lifecycle stress (SCRUM-1071):
+  `tests/duplicate_player_spawn_regression_test.gd` — 50 циклов new/continue,
+  battle/elite/boss, leaked-menu-snapshot simulation, rapid/double triggers и
+  проверки после process+physics frames.
 - Dev console smoke: `tests/dev_console_smoke_test.gd` проверяет, что открытая консоль не ставит бой на паузу и не останавливает таймер/движение.
 - Фокус-сьюты (SCRUM-202, split зонтика): `tests/runtime_smoke_combat_test.gd`, `runtime_smoke_boss_elite_test.gd`, `runtime_smoke_weapon_mechanics_test.gd`, `runtime_smoke_progression_economy_test.gd`, `runtime_smoke_ui_test.gd`.
 - Targeting-specific smoke: `tests/melee_weapon_targeting_test.gd`.

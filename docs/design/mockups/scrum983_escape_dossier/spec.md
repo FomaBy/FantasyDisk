@@ -89,6 +89,12 @@ Every target asserts `content minimum height <= viewport height`; disabled
 scrollbars may never hide overflow. Compact tiers use two-column base stats,
 tight Russian aliases and a visible build-summary row. The detailed portrait
 returns at 2K; hero/weapon identity remains visible in the header at every tier.
+The header identity lane reserves its measured rendered width explicitly and
+uses no clipping, wrapping, abbreviation or ellipsis. If a future localized
+identity exceeds all width left by the title chip, only its font scales down
+within the documented readable tier; the complete class and weapon names remain.
+The label also retains a 24px local reserve before the header's right safe edge,
+keeping its final glyph outside the irregular top-right ornament intrusion.
 
 ## Numeric Stat Contract
 

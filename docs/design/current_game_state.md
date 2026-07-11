@@ -83,6 +83,13 @@ Domain docs для подробностей по областям:
     новом забеге.
 
 Бой длится по таймеру (SCRUM-785): обычный бой `60 + 3 * route_stage` секунд (максимум 90, ×множитель Возвышения) — выжил до конца = победа. Элитка и Босс — фиксированный 5-минутный (`300с`, `ELITE_BOSS_ROUND_DURATION`, без множителя Возвышения) таймер «убей или проиграл»: победа = убить цель до истечения; таймаут с живой целью = поражение. Таймер тикает и в боссовом бою. После смерти босса SCRUM-865 даёт `2.0s` задержку перед victory/act transition и не-boss pressure cleanup, чтобы full-frame death animation не срезалась мгновенным `_clear_world()`.
+SCRUM-1071 закрепляет single-owner lifecycle игрового Player: повторный старт
+активного/строящегося боя идемпотентен, в группе `player` и у viewport остаются
+ровно один `current_player` и одна включённая Camera2D. Полные Player-снапшоты
+для меню имеют отдельную роль/группу `temporary_players`, отключённые gameplay
+process/physics/collision/camera и удаляются централизованно до потери UI-ссылок;
+`_clear_world()` синхронно выводит из дерева все принадлежащие Main Player, а не
+только объект из ссылки `current_player`.
 В 3-актном забеге `route_stage` остаётся локальным для карты акта, а длительность,
 спавн, награды, цены и boss/elite scaling читают `route_scaling_stage() =
 route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контролируемо.
@@ -1747,7 +1754,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
 | Отдых | SCRUM-981 outer gold shell поверх canonical system/campfire backdrop; общий resource HUD и FAB занимают отдельную верхнюю safe-полосу, лечение/защитный бонус/Back остаются внутри scroll-safe локальной панели с compact tier |
-| Pause menu / stats | В активном бою Escape сразу открывает SCRUM-983/1056 hero dossier внутри общей полой `meta40/frame_border.png` shell. Экран использует всю frame-safe область без scrollbars: две колонки перестраиваются в плотную 2-column сетку, оружие/ульта/артефакты сохраняются в видимой build-summary строке с полным tooltip, а четыре действия закреплены отдельным footer и используют точную `main_menu_380x104` family. Контент, hitboxes и focus outlines остаются внутри inner rect на 1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440; B/Escape и Continue сохраняют прежний pause-stack/run state. |
+| Pause menu / stats | В активном бою Escape сразу открывает SCRUM-983/1056 hero dossier внутри общей полой `meta40/frame_border.png` shell. Экран использует всю frame-safe область без scrollbars: две колонки перестраиваются в плотную 2-column сетку, оружие/ульта/артефакты сохраняются в видимой build-summary строке с полным tooltip, а четыре действия закреплены отдельным footer и используют точную `main_menu_380x104` family. Полная identity-строка класса + оружия имеет измеряемую text-lane без ellipsis и 24px запаса до нерегулярного правого орнамента. Контент, hitboxes и focus outlines остаются внутри inner rect на 1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440; B/Escape и Continue сохраняют прежний pause-stack/run state. |
 | Смерть | SCRUM-981 outer gold shell вокруг локального Defeat result modal; summary и responsive action plate остаются внутри frame safe-zone |
 | Победа | SCRUM-981 outer gold shell вокруг локального Victory result modal; русский итог, crest, summary и responsive action plate остаются внутри frame safe-zone. SCRUM-986 центрирует и короткий transient `VictoryBannerFrame` на любом viewport без 720p clipping |
 

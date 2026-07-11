@@ -52,6 +52,11 @@ const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
 const COLLISION_LAYER_FLYING_ENEMY := 4
 const COLLISION_LAYER_SOLID := 32
+const PLAYER_LIFECYCLE_ROLE_META := &"player_lifecycle_role"
+const PLAYER_LIFECYCLE_OWNER_META := &"player_lifecycle_owner"
+const PLAYER_LIFECYCLE_COMBAT := &"combat"
+const PLAYER_LIFECYCLE_MENU_SNAPSHOT := &"menu_snapshot"
+const TEMPORARY_PLAYER_GROUP := &"temporary_players"
 const ARENA_BACKGROUND_OPTIONS := {
 	"default": [
 		"res://assets/backgrounds/field_marsh.png",
@@ -1520,16 +1525,24 @@ func _clear_world() -> void:
 			if is_instance_valid(node):
 				node.queue_free()
 
-	for child in get_children():
-		if child == ui_layer or child == hud_layer:
-			continue
-		if child == current_player:
-			child.queue_free()
+	# SCRUM-1071: current_player is a convenience reference, not ownership. Menu
+	# snapshots and a re-entered combat start used to leave other full Player
+	# children alive because this method only queued the referenced instance.
+	# Detach every Player owned by this Main synchronously so it immediately exits
+	# groups/physics/camera arbitration; queue_free remains deferred and safe even
+	# when cleanup is reached from the player's own died signal.
+	var owned_players := _owned_player_lifecycle_nodes(true)
+	for player_node in owned_players:
+		_retire_owned_player_node(player_node)
 
 	current_player = null
 
 
 func _clear_ui() -> void:
+	# Pause dossier may own a non-combat Player snapshot. Settings tears down the
+	# dossier before its Resume handler can release that snapshot, so lifecycle
+	# cleanup must happen centrally before pause_stats_menu loses its reference.
+	_clear_temporary_player_nodes()
 	ui_escape_action = Callable()
 	if pause_overlay_layer != null and is_instance_valid(pause_overlay_layer):
 		pause_overlay_layer.queue_free()
@@ -1538,6 +1551,87 @@ func _clear_ui() -> void:
 	if ui_layer != null and is_instance_valid(ui_layer):
 		ui_layer.queue_free()
 	ui_layer = null
+
+
+func _register_player_lifecycle_node(player_node: Node, role: StringName) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
+	player_node.set_meta(PLAYER_LIFECYCLE_ROLE_META, role)
+	player_node.set_meta(PLAYER_LIFECYCLE_OWNER_META, get_instance_id())
+	if role == PLAYER_LIFECYCLE_MENU_SNAPSHOT:
+		player_node.remove_from_group("player")
+		player_node.add_to_group(TEMPORARY_PLAYER_GROUP)
+		player_node.process_mode = Node.PROCESS_MODE_DISABLED
+		player_node.set_process(false)
+		player_node.set_physics_process(false)
+		player_node.set_process_input(false)
+		player_node.set_process_unhandled_input(false)
+		if player_node is CollisionObject2D:
+			(player_node as CollisionObject2D).collision_layer = 0
+			(player_node as CollisionObject2D).collision_mask = 0
+	else:
+		player_node.remove_from_group(TEMPORARY_PLAYER_GROUP)
+		if not player_node.is_in_group("player"):
+			player_node.add_to_group("player")
+	for descendant in player_node.find_children("*", "Camera2D", true, false):
+		var camera := descendant as Camera2D
+		if camera != null:
+			camera.enabled = role == PLAYER_LIFECYCLE_COMBAT
+
+
+func _clear_temporary_player_nodes() -> void:
+	for player_node in _owned_player_lifecycle_nodes(false):
+		_retire_owned_player_node(player_node)
+
+
+func _owned_player_lifecycle_nodes(include_combat_players: bool) -> Array[Node]:
+	var candidates: Array[Node] = []
+	if get_tree() != null:
+		for group_name in ["player", String(TEMPORARY_PLAYER_GROUP)]:
+			for candidate in get_tree().get_nodes_in_group(group_name):
+				if candidate is Node and candidate not in candidates:
+					candidates.append(candidate as Node)
+	if current_player != null and is_instance_valid(current_player) and current_player not in candidates:
+		candidates.append(current_player)
+	var result: Array[Node] = []
+	for candidate in candidates:
+		if candidate == null or not is_instance_valid(candidate):
+			continue
+		var owned_by_meta := int(candidate.get_meta(PLAYER_LIFECYCLE_OWNER_META, 0)) == get_instance_id()
+		var owned_by_tree := candidate == current_player or is_ancestor_of(candidate)
+		if not owned_by_meta and not owned_by_tree:
+			continue
+		var role := StringName(candidate.get_meta(PLAYER_LIFECYCLE_ROLE_META, &""))
+		# Direct event/menu helpers from older call sites may not carry lifecycle
+		# metadata yet. Any Player owned by this Main but not referenced as the live
+		# current_player is temporary/orphaned by definition and is safe to retire.
+		var is_temporary := role == PLAYER_LIFECYCLE_MENU_SNAPSHOT \
+			or candidate.is_in_group(TEMPORARY_PLAYER_GROUP) \
+			or candidate != current_player
+		if include_combat_players or is_temporary:
+			result.append(candidate)
+	return result
+
+
+func _retire_owned_player_node(player_node: Node) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
+	player_node.remove_from_group("player")
+	player_node.remove_from_group(TEMPORARY_PLAYER_GROUP)
+	player_node.process_mode = Node.PROCESS_MODE_DISABLED
+	player_node.set_process(false)
+	player_node.set_physics_process(false)
+	player_node.set_process_input(false)
+	player_node.set_process_unhandled_input(false)
+	for descendant in player_node.find_children("*", "Camera2D", true, false):
+		var camera := descendant as Camera2D
+		if camera != null:
+			camera.enabled = false
+	var parent := player_node.get_parent()
+	if parent != null:
+		parent.remove_child(player_node)
+	if not player_node.is_queued_for_deletion():
+		player_node.queue_free()
 
 
 func _clear_hud() -> void:

@@ -1221,7 +1221,10 @@ uses geometric D-pad neighbors, and exposes the same complete
 description/formula/source/influences through one shared hover/focus tooltip.
 The former long Arsenal/Equipment blocks are condensed into the always-visible
 `RunBuildSummaryPanel`; full weapon, ultimate and artifact details remain in its
-tooltip. Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
+tooltip. The header preserves the complete class + weapon identity with an
+explicit rendered-text lane and a 24px local reserve before the irregular
+top-right ornament; clipping, wrapping and ellipsis are forbidden across the
+1152×648/720p/900p/1080p/2K matrix and live resize. Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
 clipped vertical viewport that never exceeds 430×288 and scrolls by wheel,
 Page Up/Down or gamepad shoulders. Wheel is captured only during an actual stat
 hover; after the pointer leaves stat rows it does not move the no-scroll dossier
