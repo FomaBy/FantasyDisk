@@ -398,6 +398,26 @@ frames, pivot `(128,128)`, `>=16px` gutters и contact sheet находятся 
 конуса, скейл отброса, кап эпиков; кистень: прогрессия радиуса, полный оборот,
 max-hit, cleanup).
 
+## SCRUM-1067 weapon-final identity contract
+
+Следующая схема созвездий не добавляет четвёртое оружие и не меняет canonical
+trios. Каждая запись `ProgressionData.WEAPONS_BY_CLASS` получает ровно одну
+ветвь из шести cost-1 узлов и один уникальный final. Manifest явно хранит все
+306 узлов с пятью разными boon effect profiles на ветвь. Полные 51 hook/caps и
+negative-control записаны в
+`docs/design/data/scrum1067_weapon_finals_manifest.json`.
+
+Финал обязан усиливать существующую нишу — target pattern, cadence, control,
+sustain, summon/deploy ownership, zone или projectile behavior — и не может
+быть generic multiplier-only. Переиспользование subsystem разрешено только при
+уникальном `mechanic_id`, weapon-specific параметрах и отдельном positive
+fixture. Два других оружия класса являются обязательными negative-controls.
+
+Runtime handoff SCRUM-1068 должен дать API уровня
+`skill_modifiers_for_weapon(state,class_id,weapon_id)`: class-wide aggregation
+schema 5 недостаточна для `damage_flat ≥10` и mechanic finals без утечки на всё
+трио.
+
 ## Targeting Rule
 
 Все атакующие оружия игрока целятся в ближайшего живого врага, а не в направление движения. Без врагов сохраняется последнее направление атаки.

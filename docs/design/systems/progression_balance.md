@@ -495,6 +495,31 @@ mix custom runs into canonical balance evidence.
 
 ## Meta Progression
 
+### SCRUM-1067 target: 3×6 weapon constellations
+
+Design/data contract для SCRUM-1068 зафиксирован в
+`docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`; все 306
+branch nodes, 34 hidden profiles, 51 финал и caps — в
+`docs/design/data/scrum1067_weapon_finals_manifest.json`.
+
+- Spendable sigils за first clear A0..A5: `[2,2,3,4,4,5]`, сумма 20;
+  challenges раскрывают hidden, но больше не дают spendable currency.
+- Полный класс: три пути `6/6` + две hidden cost1 = `20/20`, все три финала
+  активны одновременно и weapon-scoped.
+- Обычный boon даёт измеримый gain `≥1.08×` заявленной оси; weapon-scoped
+  direct flat damage `≥10`; final даёт `≥1.20×` против того же `5/6`.
+- Hidden reveal и cost-1 purchase разделены; эффект также weapon-scoped и
+  проходит собственный `≥1.08×` fixture.
+- Полный путь: `1.60–2.00×` своей оси; средний gain трио `1.60–1.90`.
+- Class axes: идеал `±10%`; total ideal `±8%`, hard fail `±15%`; roster
+  `max/min ≤1.15`.
+- A5 с `20/20` не быстрее A0 baseline более чем на 15% и не создаёт
+  immortality/control loop.
+
+Обязательные harness scenarios: `no_meta`, `path_5_of_6`, `path_6_of_6`,
+`three_paths_6_of_6`, `full_20_of_20`, `a5_live`. Текущие schema-5 числа ниже
+остаются историческим baseline до SCRUM-1068.
+
 - Ascension levels: 5 уровней на персонажа (SCRUM-516: лестница сжата 10→5, монстерский пресс заметно усилен — кумулятив enemy_hp_mult на L5 = 1.80, было 1.32 на L10).
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.

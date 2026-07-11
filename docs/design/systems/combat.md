@@ -289,3 +289,22 @@ their large sprite would place the bar above the top screen edge. The clamp uses
 the current canvas transform so camera/zoom are respected, preserves the
 existing `scripts/enemy_health_bar.gd` drawing node, and keeps boss phase marker
 metadata on the same bar.
+
+# SCRUM-1067 target: weapon-scoped meta finals
+
+SCRUM-1067 определяет design contract; runtime внедряет SCRUM-1068. Каждый из
+306 branch nodes и 34 hidden profiles имеют explicit weapon-scoped consumer;
+51 финал дополнительно имеет уникальный `mechanic_id`, hard caps, positive
+fixture и два negative-controls. Финалы не должны попадать в общий class-wide
+modifier bag.
+
+Consumer contract:
+
+- применить boon/final только при совпадении текущего `weapon_id`;
+- сохранить действующие target/deploy/summon/sustain caps и cleanup;
+- не считать один control/sustain эффект полностью и как damage, и как defense;
+- неизвестный/no-op `mechanic_id` является hard failure;
+- generic subsystem reuse не отменяет weapon-specific behavior и fixture.
+
+Полная матрица и A5 anti-runaway gates:
+`docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`.
