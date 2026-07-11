@@ -1,0 +1,151 @@
+{
+  "canvas": {
+    "width": 2560,
+    "height": 1440
+  },
+  "policy": {
+    "min_gap": 1,
+    "allow_overlap": false
+  },
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "x": 0,
+      "y": 0,
+      "w": 2560,
+      "h": 1440,
+      "collision": false
+    },
+    {
+      "id": "authored_inner",
+      "kind": "panel",
+      "x": 299,
+      "y": 257,
+      "w": 1962,
+      "h": 926,
+      "content_zone": true,
+      "collision": false
+    },
+    {
+      "id": "logo",
+      "kind": "icon",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 257,
+      "w": 480,
+      "h": 180,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "gratitude",
+      "kind": "icon",
+      "parent": "authored_inner",
+      "x": 2173,
+      "y": 257,
+      "w": 88,
+      "h": 88,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "version",
+      "kind": "text",
+      "parent": "authored_inner",
+      "x": 795,
+      "y": 335,
+      "w": 124,
+      "h": 24,
+      "text": "v0.2.1",
+      "max_font": 14,
+      "min_font": 11,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_1",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 457,
+      "w": 380,
+      "h": 96,
+      "text": "Начать новую игру",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_2",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 567,
+      "w": 380,
+      "h": 96,
+      "text": "Настройки",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_3",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 677,
+      "w": 380,
+      "h": 96,
+      "text": "Атлас героев",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_4",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 787,
+      "w": 380,
+      "h": 96,
+      "text": "Что нового  ●",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_5",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 897,
+      "w": 380,
+      "h": 96,
+      "text": "Кодекс",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    },
+    {
+      "id": "action_6",
+      "kind": "button",
+      "parent": "authored_inner",
+      "x": 299,
+      "y": 1007,
+      "w": 380,
+      "h": 96,
+      "text": "Выйти из игры",
+      "max_font": 24,
+      "min_font": 16,
+      "content_zone": true,
+      "collision": true
+    }
+  ]
+}

@@ -95,8 +95,14 @@ and local panel must remain inside those rectangles.
 
 Live application inventory:
 
-- Main Menu uses one logo well plus six buttons in an exact 2×3 grid; the
-  compact 720p tier uses 380×72 buttons and larger tiers use 380×104.
+- SCRUM-1059 Main Menu preserves the accepted logo/background/shell and places
+  six semantic `main_menu_380x104` actions in one responsive left column:
+  320×54 @1152×648, 340×56 @1280×720, 360×64 @1600×900, 380×76 @1080p and
+  380×96 @2K. The version sits beside the aspect-correct logo; the gratitude PixelLab icon
+  remains a separate 64/72/88px upper-right action. All controls use the stricter
+  shell interior (texture-safe rect minus another 24px, or 32px at 2K), never
+  scroll, and relayout on live resize. Up/Down wraps the six actions; Right
+  reaches gratitude, whose Left/Down returns to Start and Up returns to Exit.
 - Route Map insets header/title, shared resource HUD, vertical scroll/canvas,
   scrollbar lane and upgrade FAB into authored inner zones. Horizontal scroll
   remains disabled and map nodes are rebuilt safely when available width changes.
@@ -481,8 +487,9 @@ explicit OpenAI Images override because the user directly requested OpenAI image
 generation. SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in
-`docs/design/references/main_menu_logo_release_fix/`). Its former single action
-column is superseded by the SCRUM-981 in-frame 2×3 grid described above.
+`docs/design/references/main_menu_logo_release_fix/`). The historical
+SCRUM-484 single column and SCRUM-981 2×3 grid are superseded by the SCRUM-1059
+authored-inner single-column contract described above.
 
 ## Route Map 2K Source
 

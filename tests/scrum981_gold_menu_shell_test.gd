@@ -101,18 +101,18 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 		return
 	var inner_rect := _inner_rect(Vector2(viewport_size))
 	_assert_inside(title.get_global_rect(), inner_rect, "%s MainMenuTitleLabel" % str(viewport_size))
-	_assert_inside(actions.get_global_rect(), safe_rect, "%s MainMenuActions" % str(viewport_size))
-	_assert_inside(version.get_global_rect(), safe_rect, "%s MainMenuVersionLabel" % str(viewport_size))
+	_assert_inside(actions.get_global_rect(), inner_rect, "%s MainMenuActions authored inner" % str(viewport_size))
+	_assert_inside(version.get_global_rect(), inner_rect, "%s MainMenuVersionLabel authored inner" % str(viewport_size))
 	_assert_inside(credits.get_global_rect(), inner_rect, "%s MainMenuCreditsButton authored inner" % str(viewport_size))
-	if actions.columns != 2 or actions.get_child_count() != 6:
-		_errors.append("%s: MainMenuActions must be an exact 2x3 six-button grid." % str(viewport_size))
+	if actions.columns != 1 or actions.get_child_count() != 6:
+		_errors.append("%s: MainMenuActions must be one six-button left column." % str(viewport_size))
 	for child in actions.get_children():
 		if child is Button:
-			_assert_inside((child as Button).get_global_rect(), safe_rect, "%s %s" % [str(viewport_size), str(child.name)])
+			_assert_inside((child as Button).get_global_rect(), inner_rect, "%s %s authored inner" % [str(viewport_size), str(child.name)])
 
 	var expected := _main_expected(viewport_size)
 	_assert_rect_near(title.get_global_rect(), expected["logo"], "%s Main Menu logo" % str(viewport_size))
-	_assert_rect_near(actions.get_global_rect(), expected["grid"], "%s Main Menu grid" % str(viewport_size))
+	_assert_rect_near(actions.get_global_rect(), expected["actions"], "%s Main Menu action column" % str(viewport_size))
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
 	_assert_rect_near(credits.get_global_rect(), expected["credits"], "%s Main Menu credits" % str(viewport_size))
 	if credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
@@ -360,11 +360,11 @@ func _inner_rect(viewport_size: Vector2) -> Rect2:
 func _main_expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"logo": Rect2(157, 137, 460, 110), "grid": Rect2(157, 263, 776, 244), "version": Rect2(995, 543, 112, 24), "credits": Rect2(1059, 137, 64, 64), "button_height": 72.0}
+			return {"logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "version": Rect2(365, 164, 112, 18), "credits": Rect2(1059, 137, 64, 64), "button_height": 56.0}
 		Vector2i(1920, 1080):
-			return {"logo": Rect2(224, 193, 620, 170), "grid": Rect2(224, 387, 780, 348), "version": Rect2(1546, 839, 126, 24), "credits": Rect2(1624, 193, 72, 72), "button_height": 104.0}
+			return {"logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "version": Rect2(571, 245, 126, 20), "credits": Rect2(1624, 193, 72, 72), "button_height": 76.0}
 		_:
-			return {"logo": Rect2(299, 257, 720, 220), "grid": Rect2(299, 509, 780, 348), "version": Rect2(2105, 1127, 124, 24), "credits": Rect2(2173, 257, 88, 88), "button_height": 104.0}
+			return {"logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "version": Rect2(795, 335, 124, 24), "credits": Rect2(2173, 257, 88, 88), "button_height": 96.0}
 
 
 func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:

@@ -97,8 +97,8 @@ func _initialize() -> void:
 		_fail("Expected main menu to render the v3 epic battle background image.")
 		return
 	var main_menu_actions := main.find_child("MainMenuActions", true, false) as GridContainer
-	if main_menu_actions == null or main_menu_actions.get_child_count() != 6 or main_menu_actions.columns != 2:
-		_fail("Expected main menu to expose an exact 2x3 grid of six action buttons (start, settings, skill tree, what's new, codex, exit).")
+	if main_menu_actions == null or main_menu_actions.get_child_count() != 6 or main_menu_actions.columns != 1:
+		_fail("Expected main menu to expose one left column of six action buttons (start, settings, skill tree, what's new, codex, exit).")
 		return
 	for required_button in ["MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton", "MainMenuPatchNotesButton", "MainMenuCodexButton", "MainMenuExitButton"]:
 		if main.find_child(required_button, true, false) == null:
@@ -121,7 +121,7 @@ func _initialize() -> void:
 		_fail("Expected main menu to publish a non-empty gold-shell content rect.")
 		return
 	if not main_menu_safe_rect.grow(1.0).encloses(main_menu_actions.get_global_rect()):
-		_fail("Expected the 2x3 main menu action grid to stay inside the gold-shell content rect.")
+		_fail("Expected the single-column main menu actions to stay inside the gold-shell content rect.")
 		return
 	# Тексты кнопок не ассертим списком: «Что нового» несёт бейдж-маркер; проверка по именам выше.
 

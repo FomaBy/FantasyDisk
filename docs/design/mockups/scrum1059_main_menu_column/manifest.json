@@ -1,0 +1,14 @@
+{
+  "task": "SCRUM-1059",
+  "pipeline": "FantasyDisk UI Director -> content-zone planning gate -> accepted PixelLab/runtime source reuse compositor",
+  "new_art_generated": false,
+  "exception": "existing source reuse; PixelLab panel budget already recorded insufficient by SCRUM-1050",
+  "sources": [
+    {"path": "assets/backgrounds/main_menu_epic_battle_v3.png", "role": "accepted production background"},
+    {"path": "assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png", "role": "accepted production logo"},
+    {"path": "assets/sprites/ui/meta40/frame_border.png", "role": "accepted hollow gold shell", "pixellab_lineage": "SCRUM-981 / 7d9c5262-5448-40c0-beaf-2b7d4b6b1f58"},
+    {"path": "assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png", "role": "accepted main-menu action plate"},
+    {"path": "assets/sprites/ui/icons/credits/ui_icon_gratitude.png", "role": "accepted gratitude icon", "pixellab_object": "c1c1c353-e56e-405b-9adf-f1e6bd993152"}
+  ],
+  "targets": ["1152x648", "1280x720", "1600x900", "1920x1080", "2560x1440"]
+}

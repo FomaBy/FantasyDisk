@@ -489,42 +489,77 @@ func _init(game_ref) -> void:
 	game = game_ref
 
 
-# SCRUM-981 supersedes the historical SCRUM-484 single action column. Main
-# Menu now follows the UI Director gold-shell contract: logo and six actions
-# occupy the real frame interior as an exact responsive 2×3 grid.
+# SCRUM-1059 supersedes the SCRUM-981 2×3 action grid while preserving its
+# accepted PixelLab/runtime background, logo, button family and hollow shell.
+# Logo and six actions occupy one responsive left column inside the real
+# authored inner rect; the scenic character group remains readable to the right.
 
 
 func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
-	# SCRUM-981: exact UI Director content-zone contract for the three acceptance
-	# resolutions. Intermediate sizes select the nearest readable tier while the
-	# outer safe rect remains continuously derived from the 9-slice source.
+	# SCRUM-1059: exact UI Director content-zone contract for 1152×648 through
+	# 2560×1440. The outer safe rect remains continuously derived from the
+	# 9-slice source; controls use the stricter authored inner rect.
 	var margins := _unified_safe_margins_for_size(viewport_size)
 	var safe_rect := Rect2(
 		Vector2(margins.x, margins.y),
 		Vector2(maxf(1.0, viewport_size.x - margins.x - margins.z), maxf(1.0, viewport_size.y - margins.y - margins.w))
 	)
-	var is_720 := viewport_size.y < 900.0
-	var is_1440 := viewport_size.y >= 1200.0
-	var edge_pad := 32.0 if is_1440 else 24.0
-	var logo_size := Vector2(460.0, 110.0) if is_720 else (Vector2(720.0, 220.0) if is_1440 else Vector2(620.0, 170.0))
-	var button_height := 72.0 if is_720 else 104.0
-	var column_gap := 16.0 if is_720 else 20.0
-	var row_gap := 14.0 if is_720 else 18.0
-	var logo_rect := Rect2(safe_rect.position + Vector2(edge_pad, edge_pad), logo_size)
-	var grid_rect := Rect2(
-		Vector2(logo_rect.position.x, logo_rect.end.y + (16.0 if is_720 else (32.0 if is_1440 else 24.0))),
-		Vector2(MAIN_MENU_ACTION_BUTTON_WIDTH * 2.0 + column_gap, button_height * 3.0 + row_gap * 2.0)
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	var inner_rect := safe_rect.grow(-reserve)
+	var logo_size := Vector2(480.0, 180.0)
+	var button_width := MAIN_MENU_ACTION_BUTTON_WIDTH
+	var button_height := 96.0
+	var row_gap := 14.0
+	var logo_gap := 20.0
+	var version_size := Vector2(124.0, 24.0)
+	var version_side_gap := 16.0
+	if viewport_size.y < 700.0:
+		logo_size = Vector2(160.0, 60.0)
+		button_width = 320.0
+		button_height = 54.0
+		row_gap = 2.0
+		logo_gap = 4.0
+		version_size = Vector2(112.0, 18.0)
+	elif viewport_size.y < 800.0:
+		logo_size = Vector2(192.0, 72.0)
+		button_width = 340.0
+		button_height = 56.0
+		row_gap = 5.0
+		logo_gap = 6.0
+		version_size = Vector2(112.0, 18.0)
+	elif viewport_size.y < 1000.0:
+		logo_size = Vector2(267.0, 100.0)
+		button_width = 360.0
+		button_height = 64.0
+		row_gap = 8.0
+		logo_gap = 8.0
+		version_size = Vector2(126.0, 20.0)
+	elif viewport_size.y < 1200.0:
+		logo_size = Vector2(331.0, 124.0)
+		button_height = 76.0
+		row_gap = 10.0
+		logo_gap = 12.0
+		version_size = Vector2(126.0, 20.0)
+	var logo_rect := Rect2(inner_rect.position, logo_size)
+	var actions_rect := Rect2(
+		Vector2(inner_rect.position.x, logo_rect.end.y + logo_gap),
+		Vector2(button_width, button_height * MAIN_MENU_BUTTON_COUNT + row_gap * (MAIN_MENU_BUTTON_COUNT - 1.0))
 	)
-	var version_size := Vector2(112.0, 24.0) if is_720 else (Vector2(124.0, 24.0) if is_1440 else Vector2(126.0, 24.0))
-	var version_offset := Vector2(152.0, 64.0) if is_720 else (Vector2(188.0, 88.0) if is_1440 else Vector2(174.0, 72.0))
+	# Version belongs to the same empty top-left stage, immediately beside the
+	# aspect-correct logo. It no longer floats over the illustrated hero group.
+	var version_rect := Rect2(
+		Vector2(logo_rect.end.x + version_side_gap, logo_rect.position.y + (logo_rect.size.y - version_size.y) * 0.5),
+		version_size
+	)
 	return {
 		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
 		"logo_rect": logo_rect,
-		"grid_rect": grid_rect,
+		"actions_rect": actions_rect,
+		"button_width": button_width,
 		"button_height": button_height,
-		"column_gap": column_gap,
 		"row_gap": row_gap,
-		"version_rect": Rect2(safe_rect.end - version_offset, version_size),
+		"version_rect": version_rect,
 	}
 
 
@@ -536,20 +571,60 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 		viewport_size = game.get_viewport().get_visible_rect().size
 	var metrics := _main_menu_gold_shell_metrics(viewport_size)
 	var logo_rect: Rect2 = metrics["logo_rect"]
-	var grid_rect: Rect2 = metrics["grid_rect"]
+	var actions_rect: Rect2 = metrics["actions_rect"]
 	_apply_control_rect(title_logo, logo_rect)
-	_apply_control_rect(action_box, grid_rect)
-	action_box.custom_minimum_size = grid_rect.size
-	action_box.add_theme_constant_override("h_separation", int(metrics["column_gap"]))
+	_apply_control_rect(action_box, actions_rect)
+	action_box.custom_minimum_size = actions_rect.size
 	action_box.add_theme_constant_override("v_separation", int(metrics["row_gap"]))
 	for candidate in buttons:
 		var button := candidate as Button
 		if button != null:
-			_set_action_button_size(button, MAIN_MENU_ACTION_BUTTON_WIDTH, float(metrics["button_height"]))
+			# Keep one semantic/art family at every responsive tier. Without the
+			# explicit assignment the generic resolver would switch compact rows
+			# to the unrelated Continue plate solely because their height is <=76.
+			UIButtonFamily.assign(button, "text/main_menu_380x104", true)
+			# Main Menu labels are fixed one-line actions by contract. Smart-wrap
+			# makes the longest Russian label inflate only the first compact row.
+			button.autowrap_mode = TextServer.AUTOWRAP_OFF
+			_set_action_button_size(button, float(metrics["button_width"]), float(metrics["button_height"]))
+			_fit_main_menu_button_styles(button, float(metrics["button_width"]), float(metrics["button_height"]))
+	action_box.queue_sort()
 	var safe_rect: Rect2 = metrics["safe_rect"]
 	_apply_control_rect(version_label, metrics["version_rect"])
 	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
 	root.set_meta("gold_shell_screen_id", "main_menu")
+
+
+func _fit_main_menu_button_styles(button: Button, width: float, height: float) -> void:
+	# The accepted main-menu sources are 380×104 9-slice plates. Compact tiers
+	# keep their caps/rails and the same family, but scale the content margins to
+	# the rendered geometry so the StyleBox minimum does not force 60–92px rows.
+	var horizontal := maxf(40.0, roundf(54.0 * width / 380.0) + 2.0)
+	# The canonical source already defines vertical content=texture margin
+	# (21px at 104px); preserve that ratio exactly. Adding a second reserve here
+	# would inflate the compact control beyond its authored rect.
+	var vertical := maxf(4.0, roundf(21.0 * height / 104.0))
+	for state in UIButtonFamily.STATES:
+		var original := button.get_theme_stylebox(state)
+		if original == null:
+			continue
+		var fitted := original.duplicate(true) as StyleBox
+		if fitted is StyleBoxTexture:
+			var fitted_texture := fitted as StyleBoxTexture
+			fitted_texture.texture_margin_left = roundf(54.0 * width / 380.0)
+			fitted_texture.texture_margin_right = roundf(54.0 * width / 380.0)
+			fitted_texture.texture_margin_top = roundf(21.0 * height / 104.0)
+			fitted_texture.texture_margin_bottom = roundf(21.0 * height / 104.0)
+		fitted.content_margin_left = horizontal
+		fitted.content_margin_right = horizontal
+		fitted.content_margin_top = vertical
+		fitted.content_margin_bottom = vertical
+		button.add_theme_stylebox_override(state, fitted)
+	# Live downsize must discard the previous tier's cached combined minimum;
+	# otherwise GridContainer keeps two stale pixels per row after 2K→648.
+	button.update_minimum_size()
+	button.reset_size()
 
 
 func _gratitude_button_style(state: String) -> StyleBoxFlat:
@@ -631,7 +706,7 @@ func _show_main_menu() -> void:
 
 	var action_box := GridContainer.new()
 	action_box.name = "MainMenuActions"
-	action_box.columns = 2
+	action_box.columns = 1
 	root.add_child(action_box)
 
 	var start_button := _make_button("Начать новую игру")
@@ -696,7 +771,7 @@ func _show_main_menu() -> void:
 	]
 	# SCRUM-968: озвучка кнопок меню через общий хелпер (ui_click). Живёт рядом со
 	# штатными навигационными обработчиками; MainMenuActions остаётся ровно на 6
-	# кнопках × 2 колонки (контракт runtime_smoke / gold shell).
+	# кнопках в одной колонке (контракт SCRUM-1059).
 	for menu_button in action_buttons:
 		_connect_ui_sfx(menu_button, "click")
 
@@ -746,14 +821,7 @@ func _show_main_menu() -> void:
 	reposition_credits.call()
 	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
 	root.resized.connect(reposition_credits)
-	_wire_main_menu_grid_focus(action_buttons, start_button)
-	# The icon lives above the right column and remains reachable without
-	# changing the exact 2x3 MainMenuActions contract.
-	credits_button.focus_neighbor_bottom = settings_button.get_path()
-	credits_button.focus_neighbor_left = start_button.get_path()
-	credits_button.focus_neighbor_right = credits_button.get_path()
-	credits_button.focus_neighbor_top = credits_button.get_path()
-	settings_button.focus_neighbor_top = credits_button.get_path()
+	_wire_main_menu_column_focus(action_buttons, credits_button, start_button)
 	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
 	_unified_add_frame(root, "MainMenu")
 
@@ -8258,26 +8326,29 @@ func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], ini
 		target.call_deferred("grab_focus")
 
 
-func _wire_main_menu_grid_focus(buttons: Array, initial: Control = null) -> void:
-	# SCRUM-981: deterministic 2×3 navigation mirrors the visual grid. Horizontal
-	# movement swaps columns; vertical movement wraps within the same column.
+func _wire_main_menu_column_focus(buttons: Array, gratitude: Control, initial: Control = null) -> void:
+	# SCRUM-1059: Up/Down traverses and wraps the visual one-column order. Right
+	# reaches the separate gratitude action from every row; gratitude returns to
+	# Start via Left/Down and to Exit via Up, so it cannot become a focus trap.
 	_ensure_run_ui_gamepad_bindings()
-	var grid := _collect_focusable_controls(buttons)
-	if grid.size() != 6:
-		_wire_run_ui_focus(grid, false, [], initial)
+	var column := _collect_focusable_controls(buttons)
+	if column.is_empty():
 		return
-	for index in range(grid.size()):
-		var current := grid[index]
-		var row := index / 2
-		var column := index % 2
-		var other_column := row * 2 + (1 - column)
-		var row_above := (row - 1 + 3) % 3
-		var row_below := (row + 1) % 3
-		current.focus_neighbor_left = (grid[other_column] as Control).get_path()
-		current.focus_neighbor_right = (grid[other_column] as Control).get_path()
-		current.focus_neighbor_top = (grid[row_above * 2 + column] as Control).get_path()
-		current.focus_neighbor_bottom = (grid[row_below * 2 + column] as Control).get_path()
-	var target := initial if initial != null and is_instance_valid(initial) else grid[0]
+	for index in range(column.size()):
+		var current := column[index]
+		var previous := column[(index - 1 + column.size()) % column.size()]
+		var following := column[(index + 1) % column.size()]
+		current.focus_neighbor_left = current.get_path()
+		current.focus_neighbor_right = gratitude.get_path() if gratitude != null and is_instance_valid(gratitude) else current.get_path()
+		current.focus_neighbor_top = previous.get_path()
+		current.focus_neighbor_bottom = following.get_path()
+	if gratitude != null and is_instance_valid(gratitude):
+		gratitude.focus_mode = Control.FOCUS_ALL
+		gratitude.focus_neighbor_left = column[0].get_path()
+		gratitude.focus_neighbor_right = gratitude.get_path()
+		gratitude.focus_neighbor_top = column[column.size() - 1].get_path()
+		gratitude.focus_neighbor_bottom = column[0].get_path()
+	var target := initial if initial != null and is_instance_valid(initial) else column[0]
 	(target as Control).call_deferred("grab_focus")
 
 
