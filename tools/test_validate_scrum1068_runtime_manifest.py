@@ -57,24 +57,24 @@ def main() -> int:
             if not validator.validate(DEFAULT_SOURCE, temp_path):
                 failures.append(f"mutation unexpectedly passed: {name}")
 
-    # Live-route mutation: removing the rifle hit dispatch from its exact bound
-    # method must fail even though many other ClassWeapon finals still emit
-    # generic "hit" events elsewhere in the repository.
+    # Live-route mutation: removing the delayed Bayonet brace dispatch from its
+    # exact bound resolver must fail even though the firing method still arms
+    # the tween and other ClassWeapon finals emit events elsewhere.
     with tempfile.TemporaryDirectory(prefix="scrum1068-route-validator-") as temp_dir:
         temp_root = Path(temp_dir)
         shutil.copytree(validator.ROOT / "scripts", temp_root / "scripts")
-        player_path = temp_root / "scripts/player.gd"
-        player_source = player_path.read_text(encoding="utf-8")
-        route_line = 'var final_resolution := constellation_weapon_event(str(ctx.get("weapon_id", "")), "hit", ctx, enemy)'
-        if route_line not in player_source:
-            failures.append("route mutation fixture could not find rifle hit dispatch")
+        weapon_path = temp_root / "scripts/class_weapon.gd"
+        weapon_source = weapon_path.read_text(encoding="utf-8")
+        route_line = 'var counter_result := _constellation_event("brace_hit", target, 0.0, {"brace_until_msec": brace_until_msec})'
+        if route_line not in weapon_source:
+            failures.append("route mutation fixture could not find delayed Bayonet brace dispatch")
         else:
-            player_path.write_text(player_source.replace(route_line, "var final_resolution := {}", 1), encoding="utf-8")
+            weapon_path.write_text(weapon_source.replace(route_line, "var counter_result := {}", 1), encoding="utf-8")
             original_root = validator.ROOT
             try:
                 validator.ROOT = temp_root
                 if not validator.validate(DEFAULT_SOURCE, DEFAULT_OUTPUT):
-                    failures.append("mutation unexpectedly passed: deleted_bound_rifle_route")
+                    failures.append("mutation unexpectedly passed: deleted_bound_bayonet_delayed_route")
             finally:
                 validator.ROOT = original_root
 

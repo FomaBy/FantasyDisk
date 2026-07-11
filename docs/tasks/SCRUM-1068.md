@@ -130,13 +130,11 @@ Meta/Guild/per-hero regression; 51 weapon scenes; full runtime smoke. Эти
 per-cast three-hit Dark Book cap, source-scoped one-hit Censer ward, per-volley
 Shatter cap и Acid reset/rearm.
 
-Блокер: canonical `tools/validate_scrum1068_runtime_manifest.py`
-завершается с exit `1`: `bayonet_brace_countershot: consumer never invokes
-required event brace_hit`. В `FINAL_ROUTE_METHODS` mechanic привязан к
-`_fire_bayonet_cone`, но реальный delayed event находится в
-`_resolve_bayonet_brace_countershot`. Из-за этого mutation suite также
-красный на canonical baseline и не может доказать отклонение 12
-мутаций.
-
-Баг: Jira `SCRUM-1078`. SCRUM-1068 возвращён в `К выполнению` до
-исправления mechanic-bound route proof и повторного QA.
+Блокер закрыт в Jira `SCRUM-1078` (2026-07-12): canonical
+`FINAL_ROUTE_METHODS` теперь привязывает `bayonet_brace_countershot` к живому
+delayed consumer `_resolve_bayonet_brace_countershot`, где вызывается точный
+event `brace_hit`. Mutation fixture удаляет этот вызов из bound resolver и
+доказывает fail-closed поведение, даже если `_fire_bayonet_cone` продолжает
+создавать tween. Canonical validator PASS; mutation gate PASS (`12`
+corruptions rejected); schema-6 live runtime, 51×/102× event matrix и полный
+runtime smoke PASS. SCRUM-1068 снова готов к независимому QA.

@@ -66,7 +66,7 @@ HIDDEN_EFFECT_KEYS = {
 FINAL_ROUTE_METHODS: dict[str, tuple[str, str]] = {
     "rifle_suppression_mark": ("scripts/player.gd", "meta_damage_multiplier"),
     "grenade_shrapnel_second_wave": ("scripts/class_weapon.gd", "_explode_grenade_fuse"),
-    "bayonet_brace_countershot": ("scripts/class_weapon.gd", "_fire_bayonet_cone"),
+    "bayonet_brace_countershot": ("scripts/class_weapon.gd", "_resolve_bayonet_brace_countershot"),
     "coin_unique_target_return": ("scripts/class_weapon.gd", "_fire_coin_ricochet"),
     "dagger_backstab_execute_mark": ("scripts/class_weapon.gd", "_fire_shadow_backstab"),
     "smoke_dodge_triggered_burst": ("scripts/class_weapon.gd", "constellation_owner_event"),
