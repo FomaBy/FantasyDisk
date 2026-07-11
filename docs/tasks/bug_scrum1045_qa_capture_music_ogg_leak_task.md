@@ -84,3 +84,16 @@ Production `scripts/audio_manager.gd` and runtime UI code are unchanged.
 Disk cleanup: `.godot`, all task user-data dirs, regenerated capture scratch,
 task worktree and local branch are removed after origin/dev landing; final Jira
 comment records the completed cleanup.
+
+## Independent QA verdict (2026-07-11)
+
+**PASSED** on implementation `853527755` at current `origin/dev` `b19cb012f`.
+The original verbose Apple Metal lifecycle oracle passed for all three capture
+tools at 1280×720, 1920×1080 and 2560×1440: each emitted its success marker and
+none emitted `ObjectDB` leak, resource-still-in-use, Ogg playback/resource,
+script-error, or engine-error diagnostics. The focused Level Up, Attribute Shop
+and Gold Menu Shell headless gates passed, followed by the isolated-userdata
+full runtime smoke. Production audio and UI files remained read-only.
+
+SCRUM-1045 was therefore moved from `Контроль качества` to `Готово`; its parent
+SCRUM-989 may be unblocked and independently re-routed through QA.
