@@ -1,6 +1,6 @@
 # SCRUM-1064 — Hero Select: структурированное досье всех 17 героев
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Back-end/UI `/root/scrum1064_hero_dossier`
 Thread/Worker: `/root/scrum1064_hero_dossier`
