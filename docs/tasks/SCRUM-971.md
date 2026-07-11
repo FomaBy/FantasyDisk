@@ -105,3 +105,44 @@ directories, and all owned isolated HOME/XDG/user-data scratch roots. The clean
 task worktree is retained only until independent QA dispatch is recorded.
 
 Thread cleanup: not a disposable worker thread.
+
+## Independent QA Verdict — 2026-07-11
+
+**PASSED** on a disposable read-only production checkout at fresh
+`origin/dev` (`1c1d27e59` before QA evidence). Implementation under review:
+`260dd13f1`.
+
+- PixelLab MCP provenance is present and internally traceable: UI asset
+  `d17b4090-9c7c-4e98-91e8-b788be339530`, committed source SHA-256
+  `945f9aff7f7d4432fd7df3dfacb2d7578745b055f73b993bb8afa6b87fca0efa`,
+  `ui_plan.report.json` decision `ready_for_image`, and a passing compositor
+  fit report. The generated mockup is spec/reference evidence only; the runtime
+  does not reuse its art layer and reserves a real native-label row above the
+  canvas.
+- Focused `atlas_scrum971_selected_class_label_test.gd` PASS headless and
+  windowed Metal at 1280×720, 1920×1080, 2048×1152, and 2560×1440. It verifies
+  all 17 localized `ProgressionData` titles, same-dispatch medallion updates,
+  visibility in Constellation and Guild, lightweight native styling, and exact
+  non-intersection with header, class strip, canvas, dossier, footer, and the
+  frame-safe Atlas layout.
+- Independent visual inspection of Metal captures at 1280×720 and 2048×1152:
+  title remains readable in empty starfield space above every graph node and
+  line; it does not cover currency/Back/header controls, the dossier, footer,
+  or any outer-frame ornament. No heavy panel was introduced.
+- `atlas_scrum970_clickability_test.gd` PASS headless and windowed Metal with
+  unique scratch `user://`: real bounded pointer path, preview/buy, Guild tab,
+  reset/cancel, Back, and focus/navigation contract remain intact.
+- Regression PASS: `gamepad_menu_focus_test.gd`,
+  `gamepad_full_flow_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_ui_test.gd`, and isolated full `runtime_smoke_test.gd`.
+  Runtime UI/full emitted only the established dummy-renderer null-texture
+  screenshot diagnostic and exited 0 with PASS.
+
+Production code/assets were not modified by independent QA.
+
+Disk cleanup: removed QA `.godot` import cache (446 MiB), Metal captures
+(11 MiB), all per-run HOME/XDG/user-data scratch roots, and the disposable QA
+worktree/branch after evidence push.
+
+Thread cleanup: disposable QA subagent returned to the dispatcher after Jira,
+GitHub, and disk cleanup.
