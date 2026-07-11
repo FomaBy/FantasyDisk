@@ -153,6 +153,12 @@ func _initialize() -> void:
 		push_error("Expected hammer AoE to start at uncapped 150px radius.")
 		quit(1)
 		return
+	var hammer_center := hammer.call("_circle_attack_center", hammer_player) as Vector2
+	var hammer_scale := hammer.call("_circle_attack_visual_scale") as Vector2
+	if hammer_center.distance_to(hammer_player.global_position + Vector2(0.0, 16.0)) > 0.01 or hammer_scale.distance_to(Vector2(1.0, 1.12)) > 0.01:
+		push_error("Expected accepted SCRUM-1043 hammer center/ellipse contract (+16px, y-scale 1.12).")
+		quit(1)
+		return
 	hammer.set_process(false)
 
 	var hammer_enemy := enemy_scene.instantiate()
@@ -161,9 +167,19 @@ func _initialize() -> void:
 	hammer_enemy.add_to_group("enemies")
 	hammer_enemy.set("health", hammer_enemy.get("max_health"))
 
+	# SCRUM-1047: owner-space y=170 was the stale pre-SCRUM-1043 circular
+	# rejection probe. The accepted +16 center / 1.12 y-scale makes it a deliberate
+	# lower-side hit. Keep it as a regression anchor and add the real 185px
+	# just-outside probe instead of weakening/reverting the gameplay contract.
+	var hammer_lower_inside_enemy := enemy_scene.instantiate()
+	root.add_child(hammer_lower_inside_enemy)
+	hammer_lower_inside_enemy.global_position = hammer_player.global_position + Vector2(0.0, 170.0)
+	hammer_lower_inside_enemy.add_to_group("enemies")
+	hammer_lower_inside_enemy.set("health", hammer_lower_inside_enemy.get("max_health"))
+
 	var hammer_outside_enemy := enemy_scene.instantiate()
 	root.add_child(hammer_outside_enemy)
-	hammer_outside_enemy.global_position = Vector2(900, 470)
+	hammer_outside_enemy.global_position = hammer_player.global_position + Vector2(0.0, 185.0)
 	hammer_outside_enemy.add_to_group("enemies")
 	hammer_outside_enemy.set("health", hammer_outside_enemy.get("max_health"))
 
@@ -173,8 +189,12 @@ func _initialize() -> void:
 		push_error("Expected hammer AoE to damage enemies around Berserk.")
 		quit(1)
 		return
+	if float(hammer_lower_inside_enemy.get("health")) >= float(hammer_lower_inside_enemy.get("max_health")):
+		push_error("Expected SCRUM-1043 hammer ellipse to include the legacy lower y=170 probe.")
+		quit(1)
+		return
 	if float(hammer_outside_enemy.get("health")) < float(hammer_outside_enemy.get("max_health")):
-		push_error("Expected hammer AoE to avoid enemies outside the circular hit area.")
+		push_error("Expected hammer AoE to reject the 185px lower probe outside the accepted ellipse.")
 		quit(1)
 		return
 
@@ -191,16 +211,16 @@ func _initialize() -> void:
 		return
 	var cap_inside_probe := enemy_scene.instantiate()
 	root.add_child(cap_inside_probe)
-	cap_inside_probe.global_position = Vector2(900, 470)
+	cap_inside_probe.global_position = hammer_center + Vector2.DOWN * (expected_hammer_radius * hammer_scale.y - 1.0)
 	if not bool(hammer.call("_is_enemy_inside_attack", hammer_player, cap_inside_probe, Vector2.RIGHT)):
-		push_error("Expected scaled hammer AoE to hit inside the enlarged circle.")
+		push_error("Expected scaled hammer AoE to include the 1px-inside enlarged ellipse boundary.")
 		quit(1)
 		return
 	var cap_outside_probe := enemy_scene.instantiate()
 	root.add_child(cap_outside_probe)
-	cap_outside_probe.global_position = Vector2(900, 490)
+	cap_outside_probe.global_position = hammer_center + Vector2.DOWN * (expected_hammer_radius * hammer_scale.y + 1.0)
 	if bool(hammer.call("_is_enemy_inside_attack", hammer_player, cap_outside_probe, Vector2.RIGHT)):
-		push_error("Expected scaled hammer AoE to reject targets beyond its enlarged circle.")
+		push_error("Expected scaled hammer AoE to reject the 1px-outside enlarged ellipse boundary.")
 		quit(1)
 		return
 
