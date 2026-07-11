@@ -1,6 +1,6 @@
 # SCRUM-979 — Hero Select carousel window scrolling
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-979
 Контур: Codex
@@ -84,6 +84,7 @@ status and stale square-arrow wording. All were corrected: outward focus clamps
 to its edge arrow, physical keyboard coverage is explicit, and this mirror stays
 `in_progress` until commit/push.
 
-Commit/push, Jira QA routing and disk cleanup: pending.
+Implementation commit `2a9e329bf` is in `origin/dev`; Jira QA routing and disk
+cleanup are recorded by the follow-up routing result.
 
 Thread cleanup: not a disposable worker thread.
