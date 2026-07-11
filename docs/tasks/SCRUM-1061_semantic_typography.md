@@ -1,6 +1,6 @@
 # SCRUM-1061 — Semantic typography
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: /root/scrum1061_semantic_typography
 Thread: /root/scrum1061_semantic_typography
@@ -31,7 +31,7 @@ follow-up SCRUM-1073; new art/assets.
 - Accepted PixelLab source screens are reused; no new art generation and no
   frame/content-zone changes.
 
-## Result in progress
+## Result
 
 - canonical 12-role semantic typography API implemented;
 - route-map duplicate formula removed;
@@ -46,4 +46,17 @@ follow-up SCRUM-1073; new art/assets.
   unassigned current-sprint follow-up SCRUM-1073; SCRUM-1070 owns no inventory
   fingerprint.
 
-Final commit/tests/Jira routing are recorded after the full gate.
+Landed in `origin/dev` through implementation commit `72b7493f0` and integration
+commit `d05877228`. Two independent reviewers returned FINAL PASS with no
+remaining P1/P2. Jira SCRUM-1061 is in `Контроль качества`; it must not move to
+`Готово` before independent QA.
+
+Post-integration PASS: inventory freshness, semantic typography, Settings
+SCRUM-1060, Continue Run SCRUM-1062, Pause SCRUM-983, Codex SCRUM-954, Priest
+Prayer SCRUM-926, runtime UI, six-size no-overlap, gamepad focus/full-flow and
+full runtime smoke. macOS/Metal runs also passed Settings, Codex and Continue
+Run. The known dummy-renderer texture warning remains non-fatal and pre-existing.
+
+Disk cleanup: removed the task `.godot` cache (~445 MB), task Python cache and
+all `/tmp/fsd-scrum1061-*` user-data roots. The clean registered worktree and
+its tracked checkout are removed immediately after this mirror commit is pushed.

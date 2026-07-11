@@ -4603,7 +4603,7 @@
   "status": "Готово",
   "desc_hash": "f7afb394d7eb16e61669e9cb7b56d868"
  },
-"SCRUM-1067.md": {
+ "SCRUM-1067.md": {
   "key": "SCRUM-1067",
   "status": "Контроль качества",
   "desc_hash": "6a0ac6ff3325d18138230a616275baa7"
@@ -4611,6 +4611,11 @@
  "SCRUM-1073_legacy_cross_band_typography_geometry.md": {
   "key": "SCRUM-1073",
   "status": "К выполнению",
-  "desc_hash": "08bf2367ecab81775f46540d18ca56b2"
+  "desc_hash": "a8e045b532d7f633659f8e69f7a2372c"
+ },
+ "SCRUM-1061_semantic_typography.md": {
+  "key": "SCRUM-1061",
+  "status": "Контроль качества",
+  "desc_hash": "34f9ee51496683b566b4d07b48e101fd"
  }
 }
