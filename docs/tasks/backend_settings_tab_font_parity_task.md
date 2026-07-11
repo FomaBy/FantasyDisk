@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Settings tab font parity
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: Back-end / `/root/scrum1060_settings_font`
 Thread: `/root/scrum1060_settings_font`
@@ -41,7 +41,8 @@ Jira: SCRUM-1060
 
 ## Result
 
-Implementation and independent review are green, pending final Git/Jira routing.
+Implementation commit `dc56a743b` is green and pushed directly to `origin/dev`;
+Jira is routed to `Контроль качества` for an independent QA verdict.
 
 - all four runtime icons are absent; accepted PNG sources remain untouched;
 - the fixed tab contract is `21/22/23/23 px`, exactly matching Back on the four
