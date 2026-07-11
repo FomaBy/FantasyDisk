@@ -4452,5 +4452,15 @@
   "key": "SCRUM-926",
   "status": "Контроль качества",
   "desc_hash": "4e1b3de3fbb124138981b8b847cc3eb2"
+ },
+ "SCRUM-895_berserk_axe_hammer_readability.md": {
+  "key": "SCRUM-895",
+  "status": "Контроль качества",
+  "desc_hash": "5102e4b2de9b6fc3e8959525892c720f"
+ },
+ "backend_SCRUM-1043_hammer_lower_hit_zone_handoff_task.md": {
+  "key": "SCRUM-1043",
+  "status": "Контроль качества",
+  "desc_hash": "92af164a6c61185a0c26c90e692c4099"
  }
 }
