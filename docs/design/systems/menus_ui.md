@@ -401,6 +401,18 @@ entire wrapper, so SCRUM-1025's `892x242` scroll viewport, `878x520` canvas and
 exclusive 14px lane remain exact. Focused headless/Metal coverage also checks
 the `<=760px` breakpoint at 1280x760.
 
+SCRUM-1060 aligns the four Settings tab labels with the header Back action.
+`SettingsTabButton_0..3` remain exact `260x72` plates in the compact 2x2 grid,
+`260x88` at 1080p and `260x104` at 1440p, but are now consistently text-only.
+Their effective font uses the same `_readable_font_size(16)` contract as
+`SettingsBackButton`: `21/22/23/23 px` at 1152x648, 1280x720, 1920x1080 and
+2560x1440. `_settings_fit_kit_row()` receives this as a fixed typography
+contract and may calculate equal state margins but may not downscale it. Every
+complete Russian label stays centered inside the plate's flat `x=48..212`
+field; wrap, clipping, ellipsis and icon fallback are forbidden. The accepted
+SCRUM-975 PixelLab Settings art is reused unchanged; adaptive spec and source
+provenance live in `docs/design/mockups/scrum1060_settings_tab_font/`.
+
 SCRUM-471 is the historical 1152x648 short-height guard for the former Attribute
 Shop inner panel and Settings. Its Attribute Shop card/button metrics are
 superseded by SCRUM-987/988's gold-shell relayout at 720p/1080p/1440p; the
@@ -1303,6 +1315,11 @@ tab plates. The source compact mockup's `306px` viewport omitted the live Atlas
 border; runtime uses a frame-safe `242px` viewport at 720p (max scroll `278`)
 so the bottom state exposes rows 3–5 and Reset entirely above the ornament.
 All five rows remain inside the empty frame interior.
+
+The SCRUM-1060 live switcher is text-only even though the accepted SCRUM-975
+icon PNGs remain in the repository as source/history. Removing the icons from
+all four tabs frees the complete 164px flat label lane and lets `Управление`
+retain the same effective font as Back without touching the dragon end caps.
 
 The following safe-rect table is historical SCRUM-439/v2 evidence, not the live
 SCRUM-1025 switcher contract. In that former whole-strip asset, runtime labels,

@@ -6735,6 +6735,10 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	# компакт-высотах 88/72 кит штатно уходит в 9-slice-ветки (как табы Атласа).
 	# SCRUM-1025: 1080p/2K = one-row 4×260; compact <=760px = 2×2. Каждая
 	# плита самостоятельна — исторический 3-slot ornament не растягивается.
+	# SCRUM-1060: все четыре подписи — text-only и используют ровно тот же
+	# readability contract, что SettingsBackButton. Иконки убраны на всех tier:
+	# длинное «Управление» с иконкой не сохраняло Back-font внутри плоской
+	# x=48..212 content-zone, а уменьшать кегль для fit теперь запрещено.
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -6768,11 +6772,12 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 		button.offset_top = tab_top
 		button.offset_right = tab_left + tab_width
 		button.offset_bottom = tab_top + tab_height
-		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(32.0, 32.0), minf(1.0, tab_height / 104.0))
-		if icon != null:
-			button.icon = icon
-			button.expand_icon = false
-			button.add_theme_constant_override("icon_max_width", 32)
+		button.icon = null
+		button.expand_icon = false
+		button.clip_text = false
+		button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		button.set_meta("settings_tab_content_side_margin", 48.0)
+		button.set_meta("settings_fixed_font_contract", _readable_font_size(16))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -6781,10 +6786,10 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 		switcher.add_child(button)
 		buttons.append(button)
 	# Плоское поле плиты back_260x104 — x∈[48,212] (по бокам драконьи головы
-	# орнамента, промер арта): боковые поля контента 48; headless-мерку строки
-	# держим с запасом ×0.72 — оконный рантайм рисует строку до ~1.4 шире
-	# headless-мерки, а фидбек требует, чтобы текст и иконка помещались целиком.
-	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 0.72)
+	# орнамента, промер арта): text-only «Управление» помещается в 164px при
+	# Back-font 21/22/23/23. Fixed-font параметр разрешает хелперу вычислить
+	# одинаковые vertical margins для пяти state styles, но запрещает downscale.
+	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 1.0, _readable_font_size(16))
 
 	var update_buttons := func(active_tab: int) -> void:
 		# Актив/неактив — модуляцией, теми же тонами, что _atlas_apply_tab_state.
@@ -6799,7 +6804,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	return switcher
 
 
-func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0, fit_ratio := 1.0) -> void:
+func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0, fit_ratio := 1.0, fixed_font_size := 0) -> void:
 	# SCRUM-879: кит-кнопки в фиксированных слотах модалки (табы 84×s, нижний
 	# ряд 80×s). Пластины кита не искажаем (те же текстуры, 9-slice-раскрой),
 	# но контент доводим под слот: подпись одной строкой (autowrap раздувает
@@ -6811,13 +6816,15 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 	# у табов), 0 — родные поля пластины кита. fit_ratio < 1 — страховка
 	# оконного рендера (строка в окне до ~1.4-1.5 шире headless-мерки): кегль
 	# подбирается под долю доступной ширины, чтобы буквы не клипались в окне.
+	# fixed_font_size > 0 — typography contract для рядов, где layout/spec уже
+	# доказал fit: helper не имеет права повторно уменьшать кегль.
 	if row_buttons.is_empty():
 		return
 	var first := row_buttons[0] as Button
 	if first == null:
 		return
 	var font := first.get_theme_font("font")
-	var font_size := _readable_font_size(16)
+	var font_size := fixed_font_size if fixed_font_size > 0 else _readable_font_size(16)
 	var side_left := side_pad
 	var side_right := side_pad
 	if side_pad <= 0.0:
@@ -6836,7 +6843,7 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 		var widest := 0.0
 		for entry in row_buttons:
 			widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
-		while font_size > 11 and widest > avail:
+		while fixed_font_size <= 0 and font_size > 11 and widest > avail:
 			font_size -= 1
 			widest = 0.0
 			for entry in row_buttons:
@@ -6848,7 +6855,9 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 	for entry in row_buttons:
 		var button := entry as Button
 		button.autowrap_mode = TextServer.AUTOWRAP_OFF
-		button.clip_text = true
+		# Fixed-font rows have already proved full text fit against their declared
+		# content zone, so clipping would hide a future localization regression.
+		button.clip_text = fixed_font_size <= 0
 		button.add_theme_font_size_override("font_size", font_size)
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var state_style := button.get_theme_stylebox(state)

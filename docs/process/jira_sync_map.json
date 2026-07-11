@@ -4587,5 +4587,10 @@
   "key": "SCRUM-1064",
   "status": "Контроль качества",
   "desc_hash": "84ce9525239cbc81da9565483a336c17"
+ },
+ "backend_settings_tab_font_parity_task.md": {
+  "key": "SCRUM-1060",
+  "status": "Контроль качества",
+  "desc_hash": "73a1dca874fffa2957b1d245469412e0"
  }
 }
