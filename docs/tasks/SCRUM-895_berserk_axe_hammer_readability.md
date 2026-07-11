@@ -1,6 +1,6 @@
 # SCRUM-895 — Berserk Axe/Hammer attack readability
 
-Статус: in_progress
+Статус: done
 Приоритет: medium
 Роль: Animator / VFX
 Исполнитель: Codex
@@ -41,6 +41,12 @@ contract and otherwise uses the current owner center / unit scale.
   `docs/design/previews/scrum895_berserk_axe_hammer_runtime.png`.
 - PASS: focused SCRUM-895 smoke, animation smoke, attack-VFX smoke,
   runtime weapon mechanics, Berserk DPS runaway and full runtime smoke.
-- Parent remains `in_progress` until backend SCRUM-1043 lands the lower-side
-  Hammer membership fix and the combined gate is rerun.
-- Disk cleanup: pending final combined routing.
+- Animator implementation landed to `origin/dev` as `8e15f6a7f`. Backend
+  SCRUM-1043 landed as `c73b32877` with evidence `1a4b6bca9` and focused-test
+  UID `0290364e1`; Jira SCRUM-1043 is in `Контроль качества`.
+- Final combined gate on `0290364e1`: SCRUM-895 focused PASS, runtime weapon
+  mechanics PASS, Berserk runaway PASS (`20t=3184 <= 3600`,
+  `1t=382 <= 650`) and full runtime PASS (known dummy-renderer screenshot
+  diagnostic only). Sword remains unchanged.
+- Disk cleanup: pending final Jira routing, then remove disposable `.godot`
+  cache and worktree.
