@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        688,
+        384
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "safe_area",
+      "kind": "zone",
+      "rect": [
+        72,
+        52,
+        544,
+        283
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_controls",
+      "kind": "zone",
+      "rect": [
+        72,
+        52,
+        544,
+        37
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "body",
+      "kind": "zone",
+      "rect": [
+        72,
+        93,
+        544,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "class_strip",
+      "kind": "list",
+      "rect": [
+        72,
+        93,
+        49,
+        196
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 187,
+      "scrollbar_required": false
+    },
+    {
+      "id": "center_column",
+      "kind": "zone",
+      "rect": [
+        125,
+        93,
+        365,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "selected_class_label",
+      "kind": "text",
+      "rect": [
+        225,
+        93,
+        165,
+        20
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "constellation_canvas",
+      "kind": "zone",
+      "rect": [
+        125,
+        117,
+        365,
+        172
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_dossier",
+      "kind": "panel",
+      "rect": [
+        494,
+        93,
+        122,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "footer_controls",
+      "kind": "zone",
+      "rect": [
+        72,
+        293,
+        544,
+        42
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

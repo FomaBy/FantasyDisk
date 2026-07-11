@@ -3068,6 +3068,30 @@ func _show_atlas_screen() -> void:
 		badge_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.86, 1.0))
 		badge.add_child(badge_label)
 
+	# SCRUM-971: the header is already fully owned by tabs, currencies and Back.
+	# Give the localized selected-class title a lightweight native-text row over
+	# the graph instead. The shared VBox reserves the row without overlaying any
+	# socket, while the canvas keeps all remaining responsive height.
+	var center_column := VBoxContainer.new()
+	center_column.name = "AtlasCenterColumn"
+	center_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center_column.add_theme_constant_override("separation", maxi(4, int(roundf(6.0 * s))))
+	body.add_child(center_column)
+	_atlas["center_column"] = center_column
+	var selected_class_label := Label.new()
+	selected_class_label.name = "AtlasSelectedClassLabel"
+	selected_class_label.custom_minimum_size = Vector2(0.0, maxf(28.0, roundf(52.0 * s)))
+	selected_class_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	selected_class_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	selected_class_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	selected_class_label.add_theme_font_size_override("font_size", _readable_font_size(20, 16, 28))
+	selected_class_label.add_theme_color_override("font_color", Color(0.96, 0.87, 0.58, 1.0))
+	selected_class_label.add_theme_color_override("font_outline_color", Color(0.05, 0.035, 0.07, 0.96))
+	selected_class_label.add_theme_constant_override("outline_size", maxi(2, int(roundf(4.0 * s))))
+	center_column.add_child(selected_class_label)
+	_atlas["selected_class_label"] = selected_class_label
+
 	var canvas := Control.new()
 	canvas.name = "AtlasCanvas"
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -3076,7 +3100,7 @@ func _show_atlas_screen() -> void:
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	canvas.gui_input.connect(Callable(self, "_atlas_canvas_input"))
 	canvas.resized.connect(Callable(self, "_atlas_schedule_layout_passes"))
-	body.add_child(canvas)
+	center_column.add_child(canvas)
 	_atlas["canvas"] = canvas
 	var edge_layer := Control.new()
 	edge_layer.name = "AtlasEdges"
@@ -3996,6 +4020,11 @@ func _atlas_refresh() -> void:
 	var state: Dictionary = game.meta_state
 	var class_id := str(_atlas.get("class_id", "berserk"))
 	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var selected_class_label := _atlas.get("selected_class_label") as Label
+	if selected_class_label != null and is_instance_valid(selected_class_label):
+		var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
+		selected_class_label.text = str(class_config.get("title", class_id))
+		selected_class_label.tooltip_text = "Выбранный класс: %s" % selected_class_label.text
 
 	var emblems_label := _atlas.get("emblems_label") as Label
 	if emblems_label != null and is_instance_valid(emblems_label):

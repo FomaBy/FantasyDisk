@@ -1335,6 +1335,16 @@ synthetic off-viewport pointer coordinates and verifies every live hitbox,
 every socket/circle, class/Guild preview-only state and exact explicit spend on
 1280×720, 1920×1080, 2048×1152 and 2560×1440.
 
+SCRUM-971 adds `AtlasCenterColumn`, a responsive vertical owner for the native
+`AtlasSelectedClassLabel` row and the existing expanding `AtlasCanvas`. The
+localized label is refreshed from `ProgressionData.character_config(class_id)`
+on initial open, class-medallion selection and both tab paths. It remains
+pointer-pass-through and unframed; the reserved row keeps it disjoint from the
+header, class grid, socket canvas, dossier and footer at 1280×720, 1920×1080,
+2048×1152 and 2560×1440. PixelLab/content-zone evidence is stored under
+`docs/design/mockups/scrum971_atlas_class_label/`; runtime reuses the existing
+Atlas art rather than adding the mockup as a production texture.
+
 ## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
 
 Все окна выбора, открывающиеся ВНУТРИ забега, полностью управляются геймпадом

@@ -1,0 +1,32 @@
+{
+  "canvas": {
+    "width": 688,
+    "height": 384
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4DF9C",
+    "stroke_fill": "#130D16",
+    "stroke_width": 2,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "selected_class": "БЕРСЕРК"
+  },
+  "zones": [
+    {
+      "id": "selected_class_label",
+      "content_key": "selected_class",
+      "role": "selected class title",
+      "x": 225,
+      "y": 93,
+      "w": 165,
+      "h": 20,
+      "max_font": 15,
+      "min_font": 10,
+      "debug_color": "#53E3FF"
+    }
+  ]
+}

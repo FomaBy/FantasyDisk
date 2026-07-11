@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "selected_class_label",
+      "rect": [
+        225,
+        93,
+        165,
+        20
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "БЕРСЕРК"
+      ],
+      "text_bbox": [
+        270,
+        96,
+        74,
+        15
+      ]
+    }
+  ]
+}
