@@ -4,9 +4,9 @@
 Версия: 0.2.1
 Jira: SCRUM-1056
 Контур: Codex
-Owner: Back-end/root
-Thread: /root
-Locked paths: `scripts/pause_stats_menu.gd`, `tests/scrum983_escape_dossier_test.gd`, `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_test.gd`, pause UI docs/spec/evidence
+Owner: Back-end/root/fix_scrum1056_clipping
+Thread: /root/fix_scrum1056_clipping
+Locked paths: `scripts/pause_stats_menu.gd` DossierHeaderSummary hunk, `tests/scrum983_escape_dossier_test.gd`, pause UI docs/spec/evidence
 
 ## Focused scope from user
 
@@ -33,16 +33,22 @@ Locked paths: `scripts/pause_stats_menu.gd`, `tests/scrum983_escape_dossier_test
 
 ## Result
 
-Implementation, automated gates and visual evidence are complete; the Jira issue
-is ready for the `Контроль качества` handoff after its green commit lands in `dev`.
+Implementation, QA-blocker correction, automated gates and visual evidence are
+complete; the Jira issue is ready for the `Контроль качества` handoff after its
+green correction commit lands in `dev`.
 
 - Runtime: `scripts/pause_stats_menu.gd`.
 - Focused oracle: `tests/scrum983_escape_dossier_test.gd`.
 - Matrix/runtime regression: `tests/ui_no_overlap_matrix_test.gd`, `tests/runtime_smoke_test.gd`.
 - Capture helper: `tools/capture_scrum983_escape_dossier.gd`.
 - Visual evidence: `build/qa/scrum983/escape_dossier_{1280x720,1920x1080,2560x1440}.png` and `escape_dossier_visual_matrix.md`.
+- QA correction: `DossierHeaderSummary` reserves its exact rendered width, never
+  clips/ellipsizes, and leaves 24px before the irregular top-right ornament;
+  Metal inspection at 1152×648 shows the complete `Берсерк · Двуручный меч`.
 - Verification: `dark_fantasy_ui_theme_test`, `gamepad_inrun_ui_test`,
   `runtime_smoke_ui_test`, `ui_no_overlap_matrix_test`,
-  `scrum983_escape_dossier_test`, and full `runtime_smoke_test` — PASS.
+  `scrum1051_ui_button_family_test`, `gamepad_full_flow_smoke_test`,
+  `scrum983_escape_dossier_test`, Metal visual matrix, and full
+  `runtime_smoke_test` — PASS.
 - Disk cleanup: generated `.gd.uid` sidecars and the worktree `.godot/` cache removed after the final gates.
 - Thread cleanup: not a disposable worker thread.
