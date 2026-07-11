@@ -1,0 +1,55 @@
+{
+  "canvas": {
+    "width": 688,
+    "height": 384
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F2E4BE",
+    "stroke_fill": "#120D0A",
+    "stroke_width": 1,
+    "line_spacing": 1.06,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "trait": "ОСОБЕННОСТЬ — СЕТЬ МАСТЕРСКОЙ",
+    "strengths": "ПЛЮСЫ — УСТРОЙСТВА, КОНТРОЛЬ ТОЛПЫ",
+    "weaknesses": "МИНУСЫ — НУЖНА ПОДГОТОВКА"
+  },
+  "zones": [
+    {
+      "id": "trait",
+      "content_key": "trait",
+      "x": 267,
+      "y": 58,
+      "w": 164,
+      "h": 42,
+      "max_font": 10,
+      "min_font": 7,
+      "color": "#E8C76D"
+    },
+    {
+      "id": "strengths",
+      "content_key": "strengths",
+      "x": 267,
+      "y": 136,
+      "w": 164,
+      "h": 42,
+      "max_font": 9,
+      "min_font": 7,
+      "color": "#B8D5A5"
+    },
+    {
+      "id": "weaknesses",
+      "content_key": "weaknesses",
+      "x": 267,
+      "y": 218,
+      "w": 164,
+      "h": 42,
+      "max_font": 9,
+      "min_font": 7,
+      "color": "#E2A09A"
+    }
+  ]
+}

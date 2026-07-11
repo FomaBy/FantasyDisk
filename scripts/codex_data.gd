@@ -314,6 +314,7 @@ static func characters() -> Array:
 	var result := []
 	for character_id in PROGRESSION_DATA.character_ids():
 		var config: Dictionary = PROGRESSION_DATA.character_config(character_id)
+		var trait_config: Dictionary = PROGRESSION_DATA.class_trait(character_id)
 		var weapons := []
 		var class_weapons: Dictionary = PROGRESSION_DATA.WEAPONS_BY_CLASS.get(character_id, {})
 		for weapon_id in class_weapons.keys():
@@ -331,6 +332,12 @@ static func characters() -> Array:
 			"playstyle": str(CHARACTER_PLAYSTYLE.get(character_id, "")),
 			"strengths": str(config.get("strengths", "")),
 			"weaknesses": str(config.get("weaknesses", "")),
+			"trait": {
+				"id": str(trait_config.get("id", "")),
+				"title": str(trait_config.get("title", "")),
+				"description": str(trait_config.get("short_description", trait_config.get("description", ""))),
+				"details": str(trait_config.get("description", "")),
+			},
 			"ultimate": PROGRESSION_DATA.ultimate_config(character_id),
 			"weapons": weapons,
 		})

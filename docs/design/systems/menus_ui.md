@@ -465,6 +465,17 @@ the SCRUM-563 source package remains historical design evidence.
   No art, frame texture/content margin, carousel, counter, portrait or CTA
   geometry changes. Spec:
   `docs/design/mockups/hero_select_black_minimal/scrum1026_ascension_level3_responsive_spec.md`.
+
+SCRUM-952 makes the Hero Select dossier's class identity player-readable from
+the shared data registry. The text lane now starts with `Особенность — <title>`
+and its concise mechanics copy, followed by literal `Плюсы:` and `Минусы:`
+sections. None of these canonical sections uses ellipsis or a line cap; the
+existing `HS4DossierScroll` owns compact-height overflow, is keyboard/gamepad
+focusable, and resets to the first line whenever the selected hero changes.
+`ProgressionData.CLASS_TRAITS` remains the only trait source; Codex projects the
+same title, short copy and detailed copy. Frame, portrait, stats, ascension and
+carousel geometry are unchanged. PixelLab/content-zone evidence:
+`docs/design/mockups/scrum952_hero_trait_copy/spec.md`.
 - Historical SCRUM-798 baseline (its ascension placement is superseded by
   SCRUM-980 above) keeps the 2026-06-30 user-requested minimal Hero Select
   sizing/information hierarchy. The selected `HS4Portrait` is the dominant

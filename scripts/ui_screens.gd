@@ -1512,6 +1512,7 @@ func _build_character_select_v4() -> void:
 	dossier_scroll.name = "HS4DossierScroll"
 	dossier_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	dossier_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	dossier_scroll.focus_mode = Control.FOCUS_ALL
 	dossier_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dossier_columns.add_child(dossier_scroll)
@@ -1519,7 +1520,7 @@ func _build_character_select_v4() -> void:
 	var dossier_content := VBoxContainer.new()
 	dossier_content.name = "HS4DossierContent"
 	dossier_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	dossier_content.add_theme_constant_override("separation", maxi(5, int(round(8.0 * layout_scale))))
+	dossier_content.add_theme_constant_override("separation", 4)
 	dossier_scroll.add_child(dossier_content)
 
 	var name_label := Label.new()
@@ -1529,6 +1530,36 @@ func _build_character_select_v4() -> void:
 	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(name_label)
 
+	# SCRUM-952: the canonical class trait is the first scannable dossier block.
+	# The title/body stay as native labels inside the existing scroll-safe content
+	# zone; no generated ornament or frame is used as a live text surface.
+	var trait_heading := Label.new()
+	trait_heading.name = "HS4TraitHeading"
+	trait_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	trait_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	trait_heading.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 21))
+	trait_heading.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	trait_heading.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_content.add_child(trait_heading)
+
+	var strengths_label := Label.new()
+	strengths_label.name = "HS4Strengths"
+	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 19))
+	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
+	strengths_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_content.add_child(strengths_label)
+
+	var weaknesses_label := Label.new()
+	weaknesses_label.name = "HS4Weaknesses"
+	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 19))
+	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
+	weaknesses_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_content.add_child(weaknesses_label)
+
+	# Extended playstyle copy follows the three decision-critical sections so
+	# 1080p/2K never hide strengths or weaknesses below generic prose.
 	var desc_label := Label.new()
 	desc_label.name = "HS4Description"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1538,24 +1569,6 @@ func _build_character_select_v4() -> void:
 	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	dossier_content.add_child(desc_label)
-
-	var strengths_label := Label.new()
-	strengths_label.name = "HS4Strengths"
-	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	strengths_label.max_lines_visible = 2
-	strengths_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
-	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
-	dossier_content.add_child(strengths_label)
-
-	var weaknesses_label := Label.new()
-	weaknesses_label.name = "HS4Weaknesses"
-	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weaknesses_label.max_lines_visible = 2
-	weaknesses_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
-	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
-	dossier_content.add_child(weaknesses_label)
 
 	# SCRUM-887: главные атрибуты класса из данных (main_attribute + следующий
 	# по ATTRIBUTE_PRIORITIES) — сразу после слабых сторон, золотым.
@@ -1579,17 +1592,6 @@ func _build_character_select_v4() -> void:
 	weapon_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(weapon_label)
-
-	var identity_label := Label.new()
-	identity_label.name = "HS4Identity"
-	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	identity_label.max_lines_visible = 2
-	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	identity_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-	identity_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
-	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier_content.add_child(identity_label)
 
 	# SCRUM-887/951: характеристики не скроллятся. Full-size остаётся одной
 	# вертикальной колонной; 720p использует PixelLab-specified 2x4 reflow, чтобы
@@ -2013,13 +2015,17 @@ func _build_character_select_v4() -> void:
 			var below := (right_arrow as Control) if i == stat_chain.size() - 1 else (stat_chain[i + 1] as Control)
 			stat_ctrl.focus_neighbor_top = above.get_path()
 			stat_ctrl.focus_neighbor_bottom = below.get_path()
-			stat_ctrl.focus_neighbor_left = select_button.get_path()
+			stat_ctrl.focus_neighbor_left = dossier_scroll.get_path()
 			stat_ctrl.focus_neighbor_right = stat_ctrl.get_path()
 		right_arrow.focus_neighbor_top = (stat_chain.back() as Control).get_path()
 		back_button.focus_neighbor_left = back_button.get_path()
 		back_button.focus_neighbor_right = back_button.get_path()
 		back_button.focus_neighbor_top = back_button.get_path()
-		back_button.focus_neighbor_bottom = (stat_chain.front() as Control).get_path()
+		back_button.focus_neighbor_bottom = dossier_scroll.get_path()
+		dossier_scroll.focus_neighbor_left = dossier_scroll.get_path()
+		dossier_scroll.focus_neighbor_right = (stat_chain.front() as Control).get_path()
+		dossier_scroll.focus_neighbor_top = back_button.get_path()
+		dossier_scroll.focus_neighbor_bottom = select_button.get_path()
 		asc_minus.focus_neighbor_left = asc_plus.get_path()
 		asc_minus.focus_neighbor_right = asc_plus.get_path()
 		asc_minus.focus_neighbor_top = back_button.get_path()
@@ -2036,7 +2042,7 @@ func _build_character_select_v4() -> void:
 		# вправо — вход в ряд карусели.
 		select_button.focus_neighbor_left = asc_minus.get_path()
 		select_button.focus_neighbor_right = left_arrow.get_path()
-		select_button.focus_neighbor_top = asc_minus.get_path()
+		select_button.focus_neighbor_top = dossier_scroll.get_path()
 		select_button.focus_neighbor_bottom = default_focus.get_path()
 		if grab_default:
 			default_focus.grab_focus()
@@ -2062,16 +2068,23 @@ func _build_character_select_v4() -> void:
 		var cid: String = game.selected_character_id
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
+		var trait_config: Dictionary = game.PROGRESSION_DATA.class_trait(cid)
 		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
 		position_main_portrait.call(portrait.texture)
 		name_label.text = str(config.get("title", cid))
+		var trait_title := str(trait_config.get("title", "")).strip_edges()
+		var trait_copy := str(trait_config.get("short_description", trait_config.get("description", ""))).strip_edges()
+		trait_heading.text = "Особенность — %s: %s" % [trait_title, trait_copy]
+		trait_heading.tooltip_text = "%s: %s" % [trait_title, trait_copy]
 		desc_label.text = str(config.get("description", ""))
-		strengths_label.text = "Сильные стороны: %s" % str(config.get("strengths", ""))
-		weaknesses_label.text = "Слабые стороны: %s" % str(config.get("weaknesses", ""))
+		strengths_label.text = "Плюсы: %s" % str(config.get("strengths", ""))
+		weaknesses_label.text = "Минусы: %s" % str(config.get("weaknesses", ""))
+		strengths_label.tooltip_text = strengths_label.text
+		weaknesses_label.tooltip_text = weaknesses_label.text
 		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)
-		var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(cid)
 		var main_attr: String = str(game.PROGRESSION_DATA.class_main_attribute(cid))
-		identity_label.text = "%s: %s" % [str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)), str(identity.get("summary", ""))]
+		dossier_scroll.scroll_vertical = 0
+		dossier_scroll.set_deferred("scroll_vertical", 0)
 		# SCRUM-887: пара главных атрибутов из данных — main_attribute + следующий
 		# по приоритетам класса (русские имена статов, как в подписях полос).
 		var main_attr_names := PackedStringArray()

@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "portrait_frame",
+      "kind": "portrait",
+      "rect": [
+        24,
+        48,
+        250,
+        250
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "choose_button",
+      "kind": "button",
+      "rect": [
+        24,
+        306,
+        250,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "panel",
+      "rect": [
+        288,
+        48,
+        968,
+        414
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "copy_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        310,
+        70,
+        496,
+        370
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 460,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        790,
+        70,
+        16,
+        370
+      ]
+    },
+    {
+      "id": "trait_zone",
+      "kind": "text",
+      "rect": [
+        324,
+        142,
+        452,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "strengths_zone",
+      "kind": "text",
+      "rect": [
+        324,
+        242,
+        452,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "weaknesses_zone",
+      "kind": "text",
+      "rect": [
+        324,
+        322,
+        452,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "stats_zone",
+      "kind": "list",
+      "rect": [
+        824,
+        70,
+        408,
+        370
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 332,
+      "scrollbar_required": false
+    },
+    {
+      "id": "ascension_frame",
+      "kind": "panel",
+      "rect": [
+        288,
+        470,
+        968,
+        69
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "carousel_frame",
+      "kind": "list",
+      "rect": [
+        24,
+        547,
+        1232,
+        149
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 1091,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        1240,
+        547,
+        16,
+        149
+      ]
+    }
+  ]
+}
