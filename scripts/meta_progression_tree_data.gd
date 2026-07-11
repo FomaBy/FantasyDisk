@@ -106,6 +106,28 @@ const POWER_WEIGHTS := {
 	"xp_gain_mult": 0.0, "money_gain_mult": 0.0, "shop_price_mult": 0.0,
 	"attr_cost_mult": 0.0, "start_gold_flat": 0.0, "attr_extra_options": 0.0,
 	"guaranteed_rare_shop": 0.0, "first_levelup_rare": 0.0,
+	"death_save_health_fraction": 0.08,
+}
+
+# SCRUM-1069: source-aware weights for the account-wide Guild Atlas. The
+# generic POWER_WEIGHTS above remain the constellation budget source of truth;
+# these weights value large QoL floors without making pickup range look like a
+# damage stat. Full Atlas is a strict upper bound for every legal 50-dust build.
+const GUILD_ATLAS_POWER_WEIGHTS := {
+	"pickup_radius_flat": 0.0014,
+	"healing_mult": 0.15,
+	"death_save": 0.035,
+	# Recovery fraction is already included in the death_save mechanic weight.
+	"death_save_health_fraction": 0.0,
+	"ult_start_charge": 0.025,
+	"xp_gain_mult": 0.0,
+	"money_gain_mult": 0.0,
+	"shop_price_mult": 0.0,
+	"attr_cost_mult": 0.0,
+	"start_gold_flat": 0.0,
+	"attr_extra_options": 0.0,
+	"guaranteed_rare_shop": 0.0,
+	"first_levelup_rare": 0.0,
 }
 
 # --- RU-подписи для авто-описаний с числами (узлы обязаны читаться без токенов) ---
@@ -196,6 +218,8 @@ const EFFECT_LABELS := {
 	"vampiric_amount_flat": {"ru": "к лечению вампиризмом", "pct": false},
 	"lowhp_regen_bonus": {"ru": "к регенерации при низком здоровье", "pct": false},
 	"start_gold_flat": {"ru": "золота на старте забега", "pct": false},
+	"death_save_health_fraction": {"ru": "макс. здоровья восстанавливает «Вторая жизнь»", "pct": true},
+	"ult_start_charge": {"ru": "заряда ультимейта на старте забега", "pct": true},
 	"strength_flat": {"ru": "к Силе", "pct": false},
 	"agility_flat": {"ru": "к Ловкости", "pct": false},
 	"intelligence_flat": {"ru": "к Интеллекту", "pct": false},
@@ -212,7 +236,6 @@ const FLAG_DESC := {
 	# SCRUM-963: канон редкости — гарантия капстоуна фактически tier 3 = «эпический».
 	"guaranteed_rare_shop": "В каждой лавке гарантированно есть эпический товар.",
 	"first_levelup_rare": "Первое повышение в забеге гарантированно даёт основную характеристику.",
-	"ult_start_charge": "Ультимейт начинает забег заряженным наполовину.",
 	"lowhp_guard": "Падение ниже 30% HP раз за порог поднимает щит-волну и даёт миг неуязвимости.",
 	"attr_extra_options": "Докачка атрибутов предлагает на 1 вариант больше.",
 }
@@ -592,7 +615,7 @@ const CONSTELLATION_LAYOUT := {
 # 25 узлов: хаб 0-cost + 14 минорных (13×cost 2 + 1×cost 1 — ранний крючок §4) +
 # 4 notable (cost 3) + 4 наследных keystone v2 (cost 5: death_save/
 # guaranteed_rare_shop/first_levelup_rare/ult_start_charge — их боевой вклад
-# заперт тестом аккаунт-множителя <1.30) + 2 скрытых узла (кодекс-вехи и
+# заперт усиленным тестом аккаунт-множителя <1.35 и class-power ≤18%) + 2 скрытых узла (кодекс-вехи и
 # секретный босс «зажигают» их без покупки). Полная стоимость 59 пыли при
 # потолке заработка 50 — «всё не купить». SCRUM-828: узел atlas_m0 стоит 1 пыль,
 # чтобы ПЕРВАЯ победа (1 пыль, §4) сразу открывала первый QoL-узел Атласа.
@@ -600,33 +623,33 @@ const ATLAS_NODES := [
 	{"id": "atlas_hub", "role": "core", "cost": 0, "title": "Зал гильдии", "desc": "Сердце Атласа гильдии. Открыт всем героям.", "effects": {}, "npos": Vector2(0.5, 0.5), "adj": ["atlas_m0", "atlas_m2", "atlas_m4", "atlas_m6", "atlas_m8", "atlas_m10", "atlas_m11", "atlas_m13"]},
 	# Ветвь «Казна» (северо-запад): золото и стартовый капитал.
 	# atlas_m0 — «ранний крючок» §4: cost 1, покупается сразу после первой победы.
-	{"id": "atlas_m0", "role": "minor", "cost": 1, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
-	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
-	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
-	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},
-	{"id": "atlas_n0", "role": "notable", "cost": 3, "title": "Золотая жила", "effects": {"money_gain_mult": 0.03, "start_gold_flat": 5.0}, "npos": Vector2(0.26, 0.14), "adj": ["atlas_m1", "atlas_m3", "atlas_k0"]},
-	{"id": "atlas_k0", "role": "keystone", "cost": 5, "title": "Связи в гильдии", "effects": {"guaranteed_rare_shop": 1.0, "start_gold_flat": 15.0}, "npos": Vector2(0.12, 0.08), "adj": ["atlas_n0"]},
+	{"id": "atlas_m0", "role": "minor", "cost": 1, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.05}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
+	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.05}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
+	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
+	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},
+	{"id": "atlas_n0", "role": "notable", "cost": 3, "title": "Золотая жила", "effects": {"money_gain_mult": 0.10}, "npos": Vector2(0.26, 0.14), "adj": ["atlas_m1", "atlas_m3", "atlas_k0"]},
+	{"id": "atlas_k0", "role": "keystone", "cost": 5, "title": "Связи в гильдии", "effects": {"guaranteed_rare_shop": 1.0, "start_gold_flat": 50.0}, "npos": Vector2(0.12, 0.08), "adj": ["atlas_n0"]},
 	# Ветвь «Лавка» (северо-восток): скидки лавки и докачки.
-	{"id": "atlas_m4", "role": "minor", "cost": 2, "title": "Скидка по знакомству", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.62, 0.38), "adj": ["atlas_hub", "atlas_m5"]},
-	{"id": "atlas_m5", "role": "minor", "cost": 2, "title": "Оптовые цены", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.72, 0.28), "adj": ["atlas_m4", "atlas_n1"]},
-	{"id": "atlas_m6", "role": "minor", "cost": 2, "title": "Тренировочный зал", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.54, 0.30), "adj": ["atlas_hub", "atlas_m7"]},
-	{"id": "atlas_m7", "role": "minor", "cost": 2, "title": "Наставники гильдии", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.60, 0.19), "adj": ["atlas_m6", "atlas_n1"]},
-	{"id": "atlas_n1", "role": "notable", "cost": 3, "title": "Штатный интендант", "effects": {"shop_price_mult": -0.02, "attr_cost_mult": -0.02}, "npos": Vector2(0.74, 0.14), "adj": ["atlas_m5", "atlas_m7", "atlas_k1"]},
+	{"id": "atlas_m4", "role": "minor", "cost": 2, "title": "Скидка по знакомству", "effects": {"shop_price_mult": -0.05}, "npos": Vector2(0.62, 0.38), "adj": ["atlas_hub", "atlas_m5"]},
+	{"id": "atlas_m5", "role": "minor", "cost": 2, "title": "Оптовые цены", "effects": {"shop_price_mult": -0.05}, "npos": Vector2(0.72, 0.28), "adj": ["atlas_m4", "atlas_n1"]},
+	{"id": "atlas_m6", "role": "minor", "cost": 2, "title": "Тренировочный зал", "effects": {"attr_cost_mult": -0.05}, "npos": Vector2(0.54, 0.30), "adj": ["atlas_hub", "atlas_m7"]},
+	{"id": "atlas_m7", "role": "minor", "cost": 2, "title": "Наставники гильдии", "effects": {"attr_cost_mult": -0.05}, "npos": Vector2(0.60, 0.19), "adj": ["atlas_m6", "atlas_n1"]},
+	{"id": "atlas_n1", "role": "notable", "cost": 3, "title": "Штатный интендант", "effects": {"shop_price_mult": -0.10, "attr_cost_mult": -0.10}, "npos": Vector2(0.74, 0.14), "adj": ["atlas_m5", "atlas_m7", "atlas_k1"]},
 	{"id": "atlas_k1", "role": "keystone", "cost": 5, "title": "Озарение", "effects": {"first_levelup_rare": 1.0}, "npos": Vector2(0.88, 0.08), "adj": ["atlas_n1"]},
 	# Ветвь «Знание» (юго-запад): опыт, кругозор, ульта-раж.
-	{"id": "atlas_m8", "role": "minor", "cost": 2, "title": "Хроники походов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.38, 0.62), "adj": ["atlas_hub", "atlas_m9"]},
-	{"id": "atlas_m9", "role": "minor", "cost": 2, "title": "Разбор полётов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.28, 0.72), "adj": ["atlas_m8", "atlas_n2", "atlas_h0"]},
-	{"id": "atlas_m10", "role": "minor", "cost": 2, "title": "Полевые заметки", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.46, 0.70), "adj": ["atlas_hub", "atlas_n2"]},
+	{"id": "atlas_m8", "role": "minor", "cost": 2, "title": "Хроники походов", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.38, 0.62), "adj": ["atlas_hub", "atlas_m9"]},
+	{"id": "atlas_m9", "role": "minor", "cost": 2, "title": "Разбор полётов", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.28, 0.72), "adj": ["atlas_m8", "atlas_n2", "atlas_h0"]},
+	{"id": "atlas_m10", "role": "minor", "cost": 2, "title": "Полевые заметки", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.46, 0.70), "adj": ["atlas_hub", "atlas_n2"]},
 	{"id": "atlas_n2", "role": "notable", "cost": 3, "title": "Кругозор", "effects": {"attr_extra_options": 1.0}, "npos": Vector2(0.34, 0.84), "adj": ["atlas_m9", "atlas_m10", "atlas_k2"]},
-	{"id": "atlas_k2", "role": "keystone", "cost": 5, "title": "Боевой раж", "effects": {"ult_start_charge": 0.5}, "npos": Vector2(0.18, 0.92), "adj": ["atlas_n2"]},
-	{"id": "atlas_h0", "role": "hidden", "cost": 0, "title": "Архив гильдии", "effects": {"money_gain_mult": 0.03}, "npos": Vector2(0.16, 0.62), "adj": ["atlas_m9"], "metric": "codex_milestones", "threshold": 4, "lore": "Полки архива пополняются трофеями всех походов гильдии."},
+	{"id": "atlas_k2", "role": "keystone", "cost": 5, "title": "Боевой раж", "effects": {"ult_start_charge": 1.0}, "npos": Vector2(0.18, 0.92), "adj": ["atlas_n2"]},
+	{"id": "atlas_h0", "role": "hidden", "cost": 0, "title": "Архив гильдии", "effects": {"money_gain_mult": 0.10}, "npos": Vector2(0.16, 0.62), "adj": ["atlas_m9"], "metric": "codex_milestones", "threshold": 4, "lore": "Полки архива пополняются трофеями всех походов гильдии."},
 	# Ветвь «Дорога» (юго-восток): подбор, аптека, вторая жизнь.
-	{"id": "atlas_m11", "role": "minor", "cost": 2, "title": "Цепкие руки", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.62, 0.62), "adj": ["atlas_hub", "atlas_m12"]},
-	{"id": "atlas_m12", "role": "minor", "cost": 2, "title": "Длинный шаг", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.72, 0.72), "adj": ["atlas_m11", "atlas_n3", "atlas_h1"]},
-	{"id": "atlas_m13", "role": "minor", "cost": 2, "title": "Походная аптека", "effects": {"healing_mult": 0.04}, "npos": Vector2(0.54, 0.70), "adj": ["atlas_hub", "atlas_n3"]},
-	{"id": "atlas_n3", "role": "notable", "cost": 3, "title": "Страховой взнос", "effects": {"pickup_radius_flat": 8.0, "healing_mult": 0.03}, "npos": Vector2(0.66, 0.84), "adj": ["atlas_m12", "atlas_m13", "atlas_k3"]},
-	{"id": "atlas_k3", "role": "keystone", "cost": 5, "title": "Вторая жизнь", "effects": {"death_save": 1.0}, "npos": Vector2(0.82, 0.92), "adj": ["atlas_n3"]},
-	{"id": "atlas_h1", "role": "hidden", "cost": 0, "title": "Трофей разлома", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.84, 0.62), "adj": ["atlas_m12"], "metric": "secret_boss", "threshold": 1, "lore": "Осколок сущности секретного босса оплачивает любые долги гильдии."},
+	{"id": "atlas_m11", "role": "minor", "cost": 2, "title": "Цепкие руки", "effects": {"pickup_radius_flat": 30.0}, "npos": Vector2(0.62, 0.62), "adj": ["atlas_hub", "atlas_m12"]},
+	{"id": "atlas_m12", "role": "minor", "cost": 2, "title": "Длинный шаг", "effects": {"pickup_radius_flat": 30.0}, "npos": Vector2(0.72, 0.72), "adj": ["atlas_m11", "atlas_n3", "atlas_h1"]},
+	{"id": "atlas_m13", "role": "minor", "cost": 2, "title": "Походная аптека", "effects": {"healing_mult": 0.08}, "npos": Vector2(0.54, 0.70), "adj": ["atlas_hub", "atlas_n3"]},
+	{"id": "atlas_n3", "role": "notable", "cost": 3, "title": "Страховой взнос", "effects": {"healing_mult": 0.12}, "npos": Vector2(0.66, 0.84), "adj": ["atlas_m12", "atlas_m13", "atlas_k3"]},
+	{"id": "atlas_k3", "role": "keystone", "cost": 5, "title": "Вторая жизнь", "effects": {"death_save": 1.0, "death_save_health_fraction": 0.30}, "npos": Vector2(0.82, 0.92), "adj": ["atlas_n3"]},
+	{"id": "atlas_h1", "role": "hidden", "cost": 0, "title": "Трофей разлома", "effects": {"start_gold_flat": 50.0}, "npos": Vector2(0.84, 0.62), "adj": ["atlas_m12"], "metric": "secret_boss", "threshold": 1, "lore": "Осколок сущности секретного босса оплачивает любые долги гильдии."},
 ]
 
 # --- Геометрия старого экрана (SCRUM-698 canvas): созвездия на кольце, Атлас в центре ---

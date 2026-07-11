@@ -2427,3 +2427,14 @@ dossier не может открыться поверх молитвы, а фо�
 `assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png`; контент и
 фокус лежат только в пустых зонах из
 `docs/design/mockups/scrum926_priest_prayer/layout_688x384.json`.
+
+## SCRUM-1069 Guild Atlas Balance Runtime
+
+Атлас гильдии усилен без смены ID, topology, schema 5, цены `59` и cap пыли
+`50`. Ветки дают: Казна `+20% gold/+100 start`, Лавка `−20%` обеих цен,
+Знание `+15% XP/+1 option/100% ult`, Дорога `+60 pickup/+20% healing` и
+одно спасение с `30% max HP`. `Player.take_damage` сохраняет once-per-run флаг
+и clamp восстановления `25..30%`; UI-панель получает точные числа из тех же
+effect dictionaries, поэтому отдельного изменения `ui_screens.gd` не было.
+Полный 59-cost upper bound остаётся `1.174` account power и `+17.4%` одинаковой
+weighted class power, а A5 сохраняет повышенный monster/healing/reward pressure.

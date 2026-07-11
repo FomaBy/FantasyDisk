@@ -745,3 +745,23 @@ changing boss formulas or extending fight duration.
 L20 optimum class kits estimate `121.5s..231.8s` TTK by 1-target DPS range;
 L20 random-average kits estimate `347.3s..559.6s`, so the fight is intended as
 a brutal capstone for tuned builds rather than a global class rebalance.
+
+## SCRUM-1069 Guild Atlas Economy / Support Caps
+
+Account-wide Guild progression was raised from symbolic `2%/+10` fillers to
+measurable role floors without adding global damage. Purchased branch totals
+are Treasury `+20% gold/+100 start`, Shop `−20% shop/attribute`, Knowledge
+`+15% XP/+1 option/100% ultimate`, Road `+60 pickup/+20% healing/30% death-save`.
+Their normalized value-per-stardust scores stay in `0.643..0.667`. Exactly 384
+connectivity-valid 50-dust builds score `31..34` (spread `1.097`), so no branch
+is a mandatory universal choice.
+
+The full 59-cost Atlas is used as a conservative upper bound over every legal
+50-dust build: account power `1.174 < 1.35`, weighted class contribution
+`+17.4% ≤18%`, max Guild price reduction `20%`, XP `15%`, and gold `30%` only
+after the free Codex hidden node. At A5, enemy HP/damage remain above `1.5×`,
+healing stays `0.68×1.20=0.816` of A0, and reward pressure is bounded at
+`0.80×1.30=1.04`; the account layer does not erase Ascension difficulty.
+
+Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
+`docs/design/reports/scrum1069_guild_atlas_balance_audit.md`.

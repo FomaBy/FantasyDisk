@@ -45,6 +45,10 @@ const STARDUST_SECRET_BOSS := 3
 const STARDUST_CODEX_MILESTONES := 8
 const STARDUST_ACHIEVEMENT_MILESTONES := 5
 const STARDUST_CAP := 50
+# SCRUM-1069 strengthened Guild budget contracts. The full 59-cost Atlas is a
+# conservative upper bound for every legal 50-dust build.
+const GUILD_ATLAS_ACCOUNT_POWER_CAP := 1.35
+const GUILD_ATLAS_CLASS_POWER_DELTA_CAP := 0.18
 # Вехи кодекса: доли открытых записей по категориям (4 монстры / 2 боссы /
 # 2 артефакты = 8 вех). Доли, а не абсолюты — контент может расти.
 const CODEX_MILESTONE_FRACTIONS := {
@@ -1051,15 +1055,17 @@ static func _skill_modifiers_for_affinity(state: Dictionary, character_id: Strin
 	return mods
 
 
-# Грубая оценка аккаунтного прироста силы (v3-формула; Атлас почти нейтрален —
-# инвариант <1.30 заперт тестом).
+# Детерминированная оценка account-wide силы Guild Atlas. Экономические ключи
+# весят 0, но pickup/healing/charge/death-save учитываются source-aware весами.
+# Полный Atlas дороже cap, поэтому этот результат сильнее проверки любой
+# легальной 50-point комбинации.
 static func estimated_power_multiplier(state: Dictionary) -> float:
-	var m := skill_modifiers(state)
-	var dmg := 1.0 + float(m.get("damage_mult", 0.0)) + 0.5 * float(m.get("elite_boss_damage_mult", 0.0))
-	var atk := 1.0 + float(m.get("attack_speed_mult", 0.0))
-	var hp := 1.0 + float(m.get("max_health_mult", 0.0))
-	var mitigation := 1.0 + float(m.get("defense_flat", 0.0)) + float(m.get("dodge_flat", 0.0)) + 0.02 * float(m.get("regeneration_flat", 0.0))
-	return dmg * atk * hp * mitigation
+	var guild_mods := skill_modifiers(state)
+	var total := 0.0
+	for key in guild_mods.keys():
+		total += float(TREE_DATA.GUILD_ATLAS_POWER_WEIGHTS.get(str(key), 0.0)) \
+			* float(guild_mods[key])
+	return 1.0 + total
 
 
 # Бюджет силы Меты 4.0 (§6 дизайна): взвешенная сумма DPS/EHP/utility в
@@ -1067,9 +1073,13 @@ static func estimated_power_multiplier(state: Dictionary) -> float:
 # полный реалистичный билд класса обязан давать 1.18..1.25 (гейт в тестах).
 static func estimated_class_power_multiplier(state: Dictionary, character_id: String) -> float:
 	var mods := skill_modifiers_for_class(state, character_id)
+	var guild_mods := skill_modifiers(state)
 	var total := 0.0
 	for key in mods.keys():
-		total += float(TREE_DATA.POWER_WEIGHTS.get(str(key), 0.0)) * float(mods[key])
+		var guild_value := float(guild_mods.get(key, 0.0))
+		var class_value := float(mods[key]) - guild_value
+		total += float(TREE_DATA.POWER_WEIGHTS.get(str(key), 0.0)) * class_value
+		total += float(TREE_DATA.GUILD_ATLAS_POWER_WEIGHTS.get(str(key), 0.0)) * guild_value
 	return 1.0 + total
 
 

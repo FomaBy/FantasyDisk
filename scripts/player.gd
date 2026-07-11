@@ -913,12 +913,16 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# SCRUM-500 (on_low_hp): «Рубеж Стража» — одноразовый щит при падении ниже порога.
 	_trigger_lowhp_guard()
 
-	# Capstone «Вторая жизнь» (мета-древо, Стойкость): раз за забег смертельный удар
-	# оставляет 1 HP и даёт 2с неуязвимости. Использование — run-persistent через snapshot.
+	# Capstone «Вторая жизнь» (Guild Atlas): раз за забег смертельный удар
+	# восстанавливает 25–30% max HP и даёт 2с неуязвимости. Использование —
+	# run-persistent через snapshot; clamp защищает будущие данные от runaway.
 	if health <= 0.0 and float(run_modifiers.get("death_save", 0.0)) > 0.0 \
 			and float(run_modifiers.get("death_save_used", 0.0)) <= 0.0:
 		run_modifiers["death_save_used"] = 1.0
-		health = 1.0
+		var death_save_fraction := clampf(
+			float(run_modifiers.get("death_save_health_fraction", 0.25)), 0.25, 0.30
+		)
+		health = maxf(1.0, max_health * death_save_fraction)
 		_damage_invulnerability_left = maxf(_damage_invulnerability_left, 2.0)
 		_play_sfx("dodge")
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 200.0, Color(1.0, 0.95, 0.6, 0.55), false)
@@ -1782,6 +1786,8 @@ const META_SKILL_FLAT_MAP := {
 	"briar_radius_mult": "briar_radius_mult",
 	"bastion_defense_bonus": "bastion_defense_bonus",
 	"bastion_taunt": "bastion_taunt",
+	# SCRUM-1069 Guild Atlas: bounded once-per-run recovery share.
+	"death_save_health_fraction": "death_save_health_fraction",
 }
 const META_SKILL_ATTRIBUTE_FLAT_MAP := {
 	"strength_flat": "strength",
