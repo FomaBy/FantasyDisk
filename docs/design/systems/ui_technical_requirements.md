@@ -130,6 +130,13 @@ Fallback texture style, если PNG не найден: background `alpha=0.94`,
   The Game page is a vertical-only `SettingsGameScroll`; compact runtime geometry
   at 1280×720 is `892×242` with an exclusive 14px scrollbar lane and `878×520`
   content canvas. The visible height is capped by the live Atlas frame safe-zone.
+- Settings tab typography is text-only on every tier. All four labels use the
+  same effective font as `SettingsBackButton`: `21px` at 1152x648, `22px` at
+  1280x720 and `23px` at 1920x1080/2560x1440 (maximum difference `1px`). The
+  260px plate content margins are exactly `48px` left/right, leaving a flat
+  `164px` lane; label icons, wrap, clipping, ellipsis and fit downscaling are
+  forbidden. normal/hover/pressed/focus/disabled styles must keep identical
+  margins and rendered glyph geometry inside that lane.
 - Screen dropdowns stage pending values only. `SettingsApplyButton` commits
   monitor/resolution/window-mode changes through `_apply_video_settings()`;
   `SettingsRevertButton` discards staged values. Both buttons are `240 x 72` and

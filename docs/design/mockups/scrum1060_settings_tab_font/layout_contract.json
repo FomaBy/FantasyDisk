@@ -1,0 +1,29 @@
+{
+  "ticket": "SCRUM-1060",
+  "decision": "ready_for_integration",
+  "source_reuse": {
+    "pipeline": "PixelLab MCP upstream SCRUM-975, unchanged existing art",
+    "compact_ui_asset_id": "4c7ff5a3-1655-456b-ba16-2d724a0e7525",
+    "wide_ui_asset_id": "105dd091-3096-41c5-a1e5-bc3277cfaef0",
+    "new_art": false,
+    "icons": "removed consistently from all four tabs and all tiers"
+  },
+  "plate": {
+    "width": 260,
+    "heights": {"compact": 72, "1080p": 88, "1440p": 104},
+    "content_margins": {"left": 48, "right": 48},
+    "flat_content_width": 164,
+    "forbidden": ["left dragon head", "right dragon head", "top/bottom rails", "gems", "bevels"]
+  },
+  "tiers": [
+    {"viewport": [1152, 648], "font": 21, "columns": 2, "rows": 2, "gap": [24, 12]},
+    {"viewport": [1280, 720], "font": 22, "columns": 2, "rows": 2, "gap": [24, 12]},
+    {"viewport": [1920, 1080], "font": 23, "columns": 4, "rows": 1, "gap": [24, 0]},
+    {"viewport": [2560, 1440], "font": 23, "columns": 4, "rows": 1, "gap": [24, 0]}
+  ],
+  "labels": ["Экран", "Звук", "Управление", "Игра"],
+  "font_downscale_allowed": false,
+  "wrap_allowed": false,
+  "clip_allowed": false,
+  "ellipsis_allowed": false
+}
