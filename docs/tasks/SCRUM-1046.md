@@ -66,7 +66,40 @@ The runtime suites emit the known dummy-renderer screenshot diagnostic but exit
 0 and report PASS. No visual capture changed because production geometry/art is
 unchanged; the focused Metal lifecycle is clean.
 
-Independent QA: pending after direct push to `origin/dev`.
+## Independent QA Verdict — PASSED (2026-07-11)
+
+QA owner: QA/Codex `/root/qa_scrum1046_952` on fresh `origin/dev`
+`48af1122a`. Exact implementation/evidence/routing commits `9070a85a9`,
+`50c5c5277` and `48af1122a` were verified as ancestors of production `dev`.
+
+The blocker is independently fixed:
+
+- at 1280×720 the real Druid dossier overflow is exercised by physical
+  keyboard Down/Up/PageDown/PageUp and physical D-pad Down press/release;
+- the dossier scrolls before navigation and retains focus while content
+  remains, then hands focus only at the top/bottom boundary to Back/Choose;
+- changing the selected hero resets `scroll_vertical` to zero;
+- all 17 class copies preserve `Особенность → Плюсы → Минусы`, exact
+  shared/Codex projections and frame-safe layout at 720p/1080p/2K;
+- focused test passes headless and actual Metal. The Metal lifecycle log is
+  clean: no `SCRIPT ERROR`, `ObjectDB` leak, resources-still-in-use, Ogg or
+  `ERROR:` diagnostics;
+- visual review of all three renderer captures confirms that content stays in
+  the frame's empty inner zone. At 1080p/2K all three decision sections are
+  visible; at 720p the remaining copy is reachable through the verified lane;
+- `hero_select_pixellab_layout_test.gd`, SCRUM-1026 ascension layout/input,
+  `gamepad_menu_focus_test.gd`, two consecutive
+  `gamepad_full_flow_smoke_test.gd` runs, `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_ui_test.gd` and isolated `runtime_smoke_test.gd` all pass.
+
+Production audit: the change is confined to the dossier's local `gui_input`
+handler and focused assertions. It adds no global input hook, raw right-stick
+path, trait/data/art mutation or visual geometry change. The accepted SCRUM-952
+PixelLab source `c72b6dba-895e-4f6a-93a1-1a5a36934a54` and validated
+content-zone package are reused unchanged.
+
+Verdict: **PASSED**. SCRUM-1046 may move to `Готово`; its lock is released
+before sequential parent re-QA of SCRUM-952.
 
 Implementation commit: `9070a85a9`, rebased without conflict on accepted
 SCRUM-971 QA evidence `069d47a4f` and pushed directly to `origin/dev`.
