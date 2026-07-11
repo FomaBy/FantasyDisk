@@ -60,3 +60,34 @@ player-facing Credits screen. Независимая функциональна�
 SCRUM-968 функционально PASSED, но остаётся в `Контроль качества` только до
 исправления этого documentation child. Jira issue создан первым; локальный файл
 — spec/evidence mirror.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Проверено:
+
+- fresh `origin/dev` с `ae91d4731` + `c2846324d`; implementation/runtime paths
+  оставались read-only;
+- repo-wide deleted-tail reference grep и целевой deferred/pending grep для
+  `purchase`, `ui_error`, `ui_click`, `ui_back`, `artifact_reveal` и Credits —
+  zero matches;
+- все четыре исправленных документа: UTF-8, LF, final newline; runtime↔docs
+  oracle подтверждает live call sites и player-facing Credits flow;
+- шесть треков Kevin MacLeod, CC BY 4.0-блок, CC0-вклад и Godot attribution
+  совпадают с `SOURCES.md`, mastering manifest и runtime Credits text;
+- `audio_integration_test.gd` — PASS;
+- `ui_no_overlap_matrix_test.gd` — PASS;
+- `runtime_smoke_test.gd` — PASS на финальном серийном прогоне. Первый
+  параллельный прогон встретил известную общую `user://` autosave-гонку; она не
+  воспроизвелась серийно. Benign headless screenshot texture diagnostic не
+  изменил exit 0 / `Runtime smoke test passed`.
+
+Краевые случаи: повреждённый первым crash'ем импорт-кэш удалён и полностью
+пересобран в `--single-threaded` режиме; проверены отсутствие удалённой ссылки
+во всём репозитории, точные лицензии/названия треков и live UI/audio call sites.
+
+Баги: нет.
+
+Jira: `SCRUM-1041` → `Готово`; родитель `SCRUM-968` независимо перепринят и
+также переведён в `Готово`.
