@@ -4467,5 +4467,15 @@
   "key": "SCRUM-1044",
   "status": "Готово",
   "desc_hash": "ccbb6cb16bc1f9dd0ec880db43b7238d"
+ },
+ "bug_scrum1045_qa_capture_music_ogg_leak_task.md": {
+  "key": "SCRUM-1045",
+  "status": "К выполнению",
+  "desc_hash": "96e92f89de4d415152903b255c3e9809"
+ },
+ "SCRUM-989_ui_batch_qa.md": {
+  "key": "SCRUM-989",
+  "status": "К выполнению",
+  "desc_hash": "8efc323f52185f6fd67acbc046ca19cc"
  }
 }
