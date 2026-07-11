@@ -1522,6 +1522,35 @@ func _build_character_select_v4() -> void:
 	dossier_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_content.add_theme_constant_override("separation", 4)
 	dossier_scroll.add_child(dossier_content)
+	# SCRUM-1046: a focusable ScrollContainer does not automatically provide the
+	# menu's scroll-first contract. Consume discrete vertical/page actions while
+	# copy remains, then hand focus to the declared Back/Choose neighbour only at
+	# the boundary. Keep this local to the dossier so gameplay/global input and
+	# configurable controller bindings remain authoritative.
+	dossier_scroll.tooltip_text = "Досье героя. Прокрутка: ↑/↓, Page Up/Page Down или колесо мыши."
+	dossier_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down") or event.is_action_pressed("ui_page_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up") or event.is_action_pressed("ui_page_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := dossier_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(ceil(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(dossier_scroll.size.y * 0.65)))
+		var previous_scroll := dossier_scroll.scroll_vertical
+		var target_scroll := clampi(previous_scroll + scroll_direction * scroll_step, 0, scroll_max)
+		if target_scroll == previous_scroll:
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := dossier_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				dossier_scroll.accept_event()
+			return
+		dossier_scroll.scroll_vertical = target_scroll
+		dossier_scroll.accept_event()
+	)
 
 	var name_label := Label.new()
 	name_label.name = "HS4NameLabel"

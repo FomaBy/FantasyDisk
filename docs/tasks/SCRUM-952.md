@@ -116,3 +116,15 @@ Thread cleanup: not a disposable worker thread.
 
 Production code, art and shared data QA не изменял. SCRUM-952 возвращён в Jira
 `К выполнению` до исправления SCRUM-1046.
+
+## Blocking fix SCRUM-1046 (implementation)
+
+Backend diagnosis confirmed that focusability alone did not make
+`HS4DossierScroll` scroll-first. The local fix consumes vertical and Page
+actions while overflow remains, retains dossier focus, and transfers to
+Back/Choose only at the real boundaries. Physical keyboard and D-pad assertions
+now cover the 1280×720 Druid overflow plus carousel reset. Visual geometry,
+trait/Codex data and the accepted PixelLab content zones are unchanged.
+
+SCRUM-952 remains `К выполнению` until SCRUM-1046 independent QA and a parent
+re-QA verdict; implementation success alone does not erase the prior QA FAIL.

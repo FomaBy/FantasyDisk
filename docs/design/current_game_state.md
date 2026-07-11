@@ -324,7 +324,11 @@ data entries with a concise `short_description` for selection/tooltips and a
 detailed `description` for Codex. Hero Select reads the trait through
 `ProgressionData.class_trait`, while CodexData projects the same record; class
 copy is not duplicated per screen. The dossier uses its existing frame-safe
-scroll lane at 720p and preserves native wrapped labels at 1080p/2K.
+scroll lane at 720p and preserves native wrapped labels at 1080p/2K. SCRUM-1046
+adds a local scroll-first input contract: keyboard/D-pad/left-stick vertical
+actions and PageUp/PageDown move real compact overflow while focus stays in the
+dossier, then transfer to Back/Choose only at the respective boundary; changing
+the hero still resets the lane to its first line. No visual geometry changed.
 
 SCRUM-263/264 остаются правилом размеров: стандартные action-кнопки 104px высотой через `_make_button()` и `_set_action_button_size()`, main menu использует 380x104, wide action capped до 560px, pause menu 280x60, rebind/dropdown-style controls 420x62, compact utility 54x42 и FAB 50x50. Text-heavy choices используют паттерн «инфо-рамка над + короткая стандартная кнопка под». Route nodes, shop item hit areas, hero thumbnails, reward/weapon cards остаются карточками/hit areas без heavy action button frame. SCRUM-281 добавляет локальное исключение: `HeroSelectChooseButton` использует compact `hero_confirm` 260x72, чтобы screen-specific herouiframe layout оставался внутри 1280x720. Runtime smoke пишет фактический dump размеров в `build/qa/scrum450_minimal_metal_buttons/minimal_metal_button_sizes.md`.
 

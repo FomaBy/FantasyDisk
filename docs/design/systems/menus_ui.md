@@ -472,6 +472,11 @@ and its concise mechanics copy, followed by literal `Плюсы:` and `Мину�
 sections. None of these canonical sections uses ellipsis or a line cap; the
 existing `HS4DossierScroll` owns compact-height overflow, is keyboard/gamepad
 focusable, and resets to the first line whenever the selected hero changes.
+SCRUM-1046 makes that input contract explicit: keyboard/D-pad/left-stick
+`ui_up/down` and PageUp/PageDown scroll the text lane first, retaining dossier
+focus while content remains; at the actual top/bottom only, the same action
+hands focus to Back/Choose. The handler is local to `HS4DossierScroll`, so it
+does not steal global gameplay input or bypass configurable controller binds.
 `ProgressionData.CLASS_TRAITS` remains the only trait source; Codex projects the
 same title, short copy and detailed copy. Frame, portrait, stats, ascension and
 carousel geometry are unchanged. PixelLab/content-zone evidence:
