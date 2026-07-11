@@ -1,6 +1,6 @@
 # SCRUM-1068 — Schema-6 weapon constellations runtime
 
-Статус: new
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1068
 Контур: Codex
@@ -87,8 +87,8 @@ Phases 1–6 are implemented and green in the isolated Codex worktree:
 
 Verification:
 
-- manifest parity + 12 mutation corruptions, including deletion of a bound
-  rifle runtime route: PASS;
+- manifest parity + 12 mutation corruptions, including deletion of the bound
+  delayed Bayonet runtime route: PASS;
 - migration/economy/Guild preservation/corrupt-save normalization: PASS;
 - typed profiles and live Berserk/HolyFlail/Summoner consumers: PASS;
 - 51 positive final fixtures + 102 same-class foreign negatives: PASS;
@@ -118,7 +118,7 @@ phase.
 Disk cleanup: transient Godot HOME/user-data directories and the registered
 implementation worktree removed after the mandatory push and Jira QA transition.
 
-## QA-Вердикт (2026-07-12)
+## История QA: FAILED (2026-07-12, до SCRUM-1078)
 
 Статус: FAILED
 
@@ -138,3 +138,20 @@ event `brace_hit`. Mutation fixture удаляет этот вызов из boun
 создавать tween. Canonical validator PASS; mutation gate PASS (`12`
 corruptions rejected); schema-6 live runtime, 51×/102× event matrix и полный
 runtime smoke PASS. SCRUM-1068 снова готов к независимому QA.
+
+## QA-Вердикт (2026-07-12, повторная проверка)
+
+Статус: PASSED
+
+Проверено на чистом `origin/dev@9b5f71e77`: canonical validator
+`17 / 306 / 51 / 34 / 382`; 12 rejected mutations; независимая мутация
+удаляет только delayed `brace_hit` и получает точный mechanic-bound
+отказ, сохраняя firing/tween path; отдельный rifle route spot-check также
+остаётся fail-closed. `constellation_schema6_live_runtime_test.gd`,
+51 positive / 102 foreign-negative event matrix и полный
+`runtime_smoke_test.gd` (`15 208` files, exit `0`) зелёные.
+
+Исправление SCRUM-1078 меняет только validator и mutation proof;
+runtime/gameplay/UI не изменены. Предыдущие зелёные balance,
+migration/Guild, profiles, special/lifecycle/consumer, Meta/per-hero и 51 weapon
+scene gates остаются применимы. Багов в принятом scope нет.
