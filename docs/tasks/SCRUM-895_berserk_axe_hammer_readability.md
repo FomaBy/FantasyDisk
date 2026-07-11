@@ -50,3 +50,20 @@ contract and otherwise uses the current owner center / unit scale.
   diagnostic only). Sword remains unchanged.
 - Disk cleanup: pending final Jira routing, then remove disposable `.godot`
   cache and worktree.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Проверено независимо на свежем `origin/dev` `043242c3a`: PixelLab provenance
+и 16 прозрачных runtime-кадров; focused SCRUM-895/SCRUM-1043 geometry;
+`attack_vfx_smoke_test`, `animation_smoke_test`, asset-reference integrity,
+runtime weapon mechanics, Berserk runaway (`2844 <= 3600`, `268 <= 650`),
+global damage balance (51 pair) и clean-userdata full runtime. Финальные focused
+и full runtime gates повторно зелёные после rebase.
+
+Metal 4.0 capture на Apple M4 Pro подтвердил читаемость Axe ghost + точной
+`180° / 250px` дуги и Hammer impact + `150px * Vector2(1.0, 1.12)` зоны.
+Краевые проверки: Hammer top `150` / bottom `180` / horizontal `149` внутри,
+bottom `185` / horizontal `151` снаружи; Holy Flail остаётся центрированным,
+Sword не изменён. Баги: нет. Jira: `Готово`.
