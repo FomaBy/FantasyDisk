@@ -96,6 +96,7 @@ func _validate_resolution(viewport_size: Vector2i) -> void:
 	_assert_frame(pause, contract, context)
 	_assert_reserve_masks(pause, viewport_size, contract, context)
 	_assert_major_geometry(pause, contract, context)
+	_assert_header_identity(pause, contract, context)
 	_assert_semantic_stats(pause, viewport_size, contract, context)
 	await _assert_focus_contract(pause, contract, context)
 	_assert_action_styles(pause, context)
@@ -113,6 +114,7 @@ func _validate_live_resize() -> void:
 	_assert_frame(pause, contract, "live 2560x1440 -> 1280x720")
 	_assert_reserve_masks(pause, Vector2i(1280, 720), contract, "live 2560x1440 -> 1280x720")
 	_assert_major_geometry(pause, contract, "live 2560x1440 -> 1280x720")
+	_assert_header_identity(pause, contract, "live 2560x1440 -> 1280x720")
 	var base_grid := pause.find_child("BaseStatsGrid", true, false) as GridContainer
 	if base_grid == null or base_grid.columns != 2:
 		_errors.append("live resize: BaseStatsGrid must keep the no-scroll two-column layout.")
@@ -266,6 +268,27 @@ func _assert_major_geometry(pause: Control, contract: Dictionary, context: Strin
 		var content := scroll.get_child(0) as Control if scroll.get_child_count() > 0 else null
 		if content == null or content.get_combined_minimum_size().y > scroll.size.y + 1.0:
 			_errors.append("%s: %s hides overflow instead of fitting content (content %.1f, viewport %.1f)." % [context, scroll.name, content.get_combined_minimum_size().y if content != null else -1.0, scroll.size.y])
+
+
+func _assert_header_identity(pause: Control, contract: Dictionary, context: String) -> void:
+	var summary := pause.find_child("DossierHeaderSummary", true, false) as Label
+	if summary == null:
+		_errors.append("%s: missing DossierHeaderSummary." % context)
+		return
+	var expected := "Берсерк · Двуручный меч"
+	if summary.text != expected:
+		_errors.append("%s: header identity '%s' != full '%s'." % [context, summary.text, expected])
+	if summary.text.contains("…") or summary.text.ends_with("..."):
+		_errors.append("%s: header identity must never contain an ellipsis." % context)
+	if summary.clip_text or summary.text_overrun_behavior != TextServer.OVERRUN_NO_TRIMMING:
+		_errors.append("%s: header identity must disable clipping/overrun trimming." % context)
+	var rendered_width := _rendered_width(summary, summary.text)
+	if summary.size.x + 0.5 < rendered_width:
+		_errors.append("%s: full header identity needs %.1fpx but its content lane is %.1fpx." % [context, rendered_width, summary.size.x])
+	_assert_inside(summary.get_global_rect(), contract["header"], "%s full header identity lane" % context)
+	var right_reserve := (contract["header"] as Rect2).end.x - summary.get_global_rect().end.x
+	if right_reserve < 23.5:
+		_errors.append("%s: full header identity leaves only %.1fpx at the right safe edge, expected 24px." % [context, right_reserve])
 
 
 func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: Dictionary, context: String) -> void:

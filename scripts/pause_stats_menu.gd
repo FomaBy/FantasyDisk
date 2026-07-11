@@ -192,6 +192,9 @@ const READABILITY_MAX_SCALE := 1.18
 const READABLE_BASE_ROW_HEIGHT := 44.0
 const READABLE_CHIP_HEIGHT := 54.0
 const READABLE_CHIP_WIDTH := 236.0
+const HEADER_SUMMARY_BASE_FONT_SIZE := 15
+const HEADER_SUMMARY_MIN_FONT_SIZE := 12
+const HEADER_SUMMARY_RIGHT_INSET := 24.0
 
 
 func _readability_scale() -> float:
@@ -390,9 +393,17 @@ func _build_header(parent: Control, s: float) -> void:
 	_header_summary.text = "Герой · текущий билд"
 	_header_summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_header_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_header_summary.add_theme_font_size_override("font_size", _readable_px(15.0))
+	_header_summary.clip_text = false
+	_header_summary.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	_header_summary.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_header_summary.add_theme_font_size_override("font_size", _readable_px(HEADER_SUMMARY_BASE_FONT_SIZE))
 	_header_summary.add_theme_color_override("font_color", COLOR_KIND)
-	_dossier_header.add_child(_header_summary)
+	var summary_inset := MarginContainer.new()
+	summary_inset.name = "DossierHeaderSummaryInset"
+	summary_inset.size_flags_horizontal = Control.SIZE_SHRINK_END
+	summary_inset.add_theme_constant_override("margin_right", int(HEADER_SUMMARY_RIGHT_INSET))
+	summary_inset.add_child(_header_summary)
+	_dossier_header.add_child(summary_inset)
 
 
 func _build_action_footer(parent: Control) -> void:
@@ -783,8 +794,6 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	var very_compact := viewport_size.y <= 648.0
 	if _title_label != null:
 		_title_label.add_theme_font_size_override("font_size", _readable_px(22.0))
-	if _header_summary != null:
-		_header_summary.add_theme_font_size_override("font_size", _readable_px(15.0))
 	var title_chip := find_child("DossierTitleChip", true, false) as PanelContainer
 	if title_chip != null:
 		title_chip.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(5.0, roundf(10.0 * s))))
@@ -792,6 +801,8 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	if title_emblem != null:
 		var emblem_px := maxf(26.0, roundf(44.0 * s))
 		title_emblem.custom_minimum_size = Vector2(emblem_px, emblem_px)
+	if _header_summary != null:
+		_fit_header_summary(viewport_size)
 	var portrait_slot := find_child("PauseDossierPortraitSlot", true, false) as Control
 	if portrait_slot != null:
 		var portrait_px := clampf(188.0 * s, 128.0, 196.0)
@@ -900,6 +911,35 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 		(node as Control).custom_minimum_size = Vector2(35.0, 35.0)
 	for node in find_children("DerivedStatIcon_*", "Control", true, false):
 		(node as Control).custom_minimum_size = Vector2(24.0, 24.0) if very_compact else (Vector2(26.0, 26.0) if compact else Vector2(46.0, 46.0))
+
+
+# SCRUM-1056 QA correction: the old right-aligned identity ended on the header's
+# rectangular edge, where the irregular top-right ornament covered its final
+# glyph at 1152x648. Reserve the exact measured lane plus an ornament inset;
+# only reduce type if a future localized identity genuinely exceeds all space
+# left by the title chip. The text itself is never abbreviated or ellipsized.
+func _fit_header_summary(viewport_size: Vector2) -> void:
+	if _header_summary == null or _dossier_header == null:
+		return
+	var title_chip := find_child("DossierTitleChip", true, false) as Control
+	var header_width := float(_responsive_contract(viewport_size)["header_rect"].size.x)
+	var separation := float(_dossier_header.get_theme_constant("separation"))
+	var title_width := title_chip.get_combined_minimum_size().x if title_chip != null else 0.0
+	var available_width := maxf(1.0, header_width - title_width - separation * 2.0 - HEADER_SUMMARY_RIGHT_INSET)
+	var base_font_size := _readable_px(HEADER_SUMMARY_BASE_FONT_SIZE)
+	var min_font_size := _readable_px(HEADER_SUMMARY_MIN_FONT_SIZE)
+	var font := _header_summary.get_theme_font("font")
+	var chosen_font_size := base_font_size
+	var rendered_width := font.get_string_size(
+		_header_summary.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, chosen_font_size
+	).x
+	while chosen_font_size > min_font_size and rendered_width > available_width:
+		chosen_font_size -= 1
+		rendered_width = font.get_string_size(
+			_header_summary.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, chosen_font_size
+		).x
+	_header_summary.add_theme_font_size_override("font_size", chosen_font_size)
+	_header_summary.custom_minimum_size.x = minf(ceilf(rendered_width) + 2.0, available_width)
 
 
 func _finalize_responsive_rects(contract: Dictionary) -> void:
