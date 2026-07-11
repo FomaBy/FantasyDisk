@@ -1,6 +1,6 @@
 # SCRUM-952 — Hero Select trait, strengths and weaknesses copy
 
-Статус: blocked (QA FAILED; SCRUM-1046)
+Статус: done (independent re-QA PASSED)
 Версия: 0.2.1
 Jira: SCRUM-952
 Контур: Codex
@@ -128,3 +128,44 @@ trait/Codex data and the accepted PixelLab content zones are unchanged.
 
 SCRUM-952 remains `К выполнению` until SCRUM-1046 independent QA and a parent
 re-QA verdict; implementation success alone does not erase the prior QA FAIL.
+
+## Independent Re-QA Verdict — PASSED (2026-07-11)
+
+QA owner: QA/Codex `/root/qa_scrum1046_952`. Parent re-QA was claimed only
+after SCRUM-1046 received its independent PASS, moved to `Готово`, and released
+all locks. Production code/data/art remained read-only throughout re-QA.
+
+Acceptance was independently reconfirmed on fresh production `origin/dev`:
+
+- implementation `6812188f5`, handoff `c1720350a`, original routing
+  `50016c95e`, prior RED evidence `6246ecb80`, blocker fix `9070a85a9` and
+  SCRUM-1046 PASS `fe15cad63` are all ancestors of production `dev`;
+- PixelLab MCP provenance is exact: source
+  `c72b6dba-895e-4f6a-93a1-1a5a36934a54`, provider manifest, accepted source
+  PNG, `ready_for_image` plan, remeasured layout and `fit_report.json` with
+  `ok: true` for all three trait/strength/weakness content zones;
+- all 17 `CLASS_TRAITS`, isolated copies and Codex projections are complete and
+  exact. `codex_data_smoke_test.gd` reports 17 characters and
+  `progression_data_character_contract_test.gd` reports 17 valid configs;
+- focused SCRUM-952/1046 coverage passes all 17 heroes at 1280×720,
+  1920×1080 and 2560×1440 with the exact native hierarchy
+  `Особенность → Плюсы → Минусы` and no truncation;
+- 1080p/2K renderer captures show all three decision sections in the empty
+  dossier zone without touching the frame ornament. The 720p lane has real
+  Druid overflow and is now keyboard/gamepad reachable;
+- physical Down/Up/PageDown/PageUp and D-pad Down press/release scroll first,
+  retain dossier focus while content remains, hand to Back/Choose only at the
+  boundaries, and hero change resets scroll to zero;
+- focused coverage passes headless and actual Metal. Metal teardown is clean:
+  no `SCRIPT ERROR`, `ObjectDB` leak, resources-still-in-use, Ogg or `ERROR:`
+  lifecycle diagnostics;
+- regression PASS: Hero Select PixelLab layout, SCRUM-1026 ascension layout and
+  input, gamepad menu focus, gamepad full-flow twice, UI no-overlap, runtime UI
+  and isolated full runtime smoke.
+
+Audit: SCRUM-1046 adds only a local dossier `gui_input` contract and focused
+assertions. There is no global input hook, raw right-stick branch, visual
+geometry change or mutation of the accepted trait/Codex/PixelLab package.
+
+Verdict: **PASSED**. The previous blocker is closed and SCRUM-952 may move to
+`Готово`.
