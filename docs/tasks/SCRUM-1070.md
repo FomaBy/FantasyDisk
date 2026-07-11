@@ -114,3 +114,17 @@ Integration note: semantic typography inventory на текущем общем t
 
 Disk cleanup: disposable combined QA worktree/cache and isolated
 `/tmp/fsd-qa-1074-1070-*` roots are removed after evidence push.
+
+## Independent corrective re-QA: BLOCKED
+
+Fresh `origin/dev` `6819a2a8c` preserves the previously accepted SCRUM-1070
+product diff/provenance. The linked corrective oracle in SCRUM-1074 passes its
+pure contract, focused headless gate and five isolated Metal lifecycle runs.
+However, the focused test itself can write `user://fantasydisk_meta.cfg` because
+it executes both reset confirmations without a fail-closed scratch user-data
+guard; the task's reproduction command also omits the isolation it claims.
+
+This is a test-safety blocker, not a new product UI finding. SCRUM-1070 remains
+in Jira `Контроль качества` until SCRUM-1074 adds the guard, proves refusal on
+default `user://`, and receives a clean independent rerun. No SCRUM-1070
+product code, assets, schema, balance or runtime behavior changed during QA.

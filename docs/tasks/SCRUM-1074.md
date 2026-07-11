@@ -1,13 +1,13 @@
 # SCRUM-1074 — Atlas focused Metal test lifecycle leak
 
-Статус: done
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1074
 Контур: Codex
-Owner: Back-end QA / Codex
-Thread/Worker: `/root/audit_new_sprint_tail/review_scrum1067_spec/scrum1070_independent_review`
-Branch: `codex/scrum1074-atlas-oracle2`
-Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1074-atlas-oracle2`
+Owner: unassigned
+Thread/Worker: `—`
+Branch: `—`
+Worktree: `—`
 Parent: SCRUM-220
 Source QA: SCRUM-1070
 Related precedent: SCRUM-1031
@@ -170,3 +170,44 @@ Disk cleanup: disposable combined QA worktree/cache and isolated
 Corrective disk cleanup: isolated SCRUM-1074 HOME/XDG/user-data roots,
 generated Godot cache, unrelated generated `.gd.uid` sidecars and disposable
 worktree are removed after the final push; no remote task branch is created.
+
+## Independent corrective QA verdict: FAILED
+
+Independent QA on fresh `origin/dev` `6819a2a8c` confirms that corrective
+commit `693967eee` is test-only and that the lifecycle oracle itself is sound:
+the four pure cases pass, the seven-probe path rejects three consecutive
+positive count steps, all owned child/Main/SubViewport `WeakRef` barriers
+propagate errors to exit `1`, and the public `AudioManager.stop_music()` plus
+eight-frame drain matches the SCRUM-1031/QA-protocol contract.
+
+The full focused test is unsafe and cannot be accepted. It has no scratch
+`user://` guard before `_check_reset_scopes()` confirms two real resets.
+`UI._atlas_respec_confirm()` calls `Meta.save_state()` with the default
+`user://fantasydisk_meta.cfg`. The reproduction section claims isolated
+`HOME`/`XDG_DATA_HOME`/user-data, but its copyable command supplies none. The
+existing `atlas_scrum970_clickability_test.gd` provides the required precedent:
+it refuses to run unless a unique scratch root is explicitly supplied and
+verified.
+
+Dynamic evidence:
+
+- focused headless: exit `0`, both SCRUM-1070/SCRUM-1074 markers, `16`
+  deterministic teardowns and the pure oracle cases PASS;
+- isolated macOS/Metal lifecycle series: `5/5` exit `0`, both markers, zero
+  `ObjectDB instances were leaked`, resources-still-in-use, Ogg lifecycle,
+  `ERROR` or `SCRIPT ERROR` diagnostics;
+- every verbose Metal log contains `16` pre-existing RGB8-to-RGBA8 hardware
+  conversion warnings from repeated Main fixtures, so the task's literal
+  claimed zero-`WARNING` policy is not reproduced on a fresh headless-imported
+  cache even though the lifecycle leak is absent;
+- the initial documented non-isolated headless invocation changed the real
+  default save: `fantasydisk_meta.cfg` mtime became `2026-07-11 21:04:40`, size
+  `344` bytes. No backup was visible beside it; QA did not attempt an
+  unauthorized external restore. All later runs used isolated HOME/XDG roots.
+
+Required correction: add a fail-closed scratch user-data guard before any
+fixture is instantiated, make the reproduction command set and pass the same
+unique root, add a negative self-test proving default `user://` exits before
+`Main` construction, and clarify the RGB8 warning policy without hiding stderr.
+SCRUM-1074 returns to `К выполнению`; linked SCRUM-1070 remains in
+`Контроль качества`.
