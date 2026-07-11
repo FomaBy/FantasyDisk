@@ -57,13 +57,14 @@ Route map — full-screen экран выбора пути между боями
 
 ## Route Rules
 
-- Забег состоит из 3 актов (`Акт 1/3` → `Акт 2/3` → `Акт 3/3`).
-- Каждый акт генерирует отдельную route map с теми же 10 activity rows + boss
-  row. После победы над boss в Act 1/2 билд игрока сохраняется, создаётся новая
-  route map, `route_stage` сбрасывается в 0 как act-local прогресс, а
-  `current_act` увеличивается на 1. Победа над boss Act 3 завершает забег.
+- SCRUM-1058: забег состоит ровно из 2 актов (`Акт 1/2` → `Акт 2/2`).
+- Каждый акт генерирует отдельную route map с неизменными 8 activity rows + boss
+  row. После победы над boss Act 1 билд игрока сохраняется, один раз выдаются
+  межактовая награда и лечение, создаётся новая route map, `route_stage`
+  сбрасывается в 0, а `current_act` становится 2. Победа над boss Act 2 завершает
+  забег или запускает разрешённого secret boss; третья карта не создаётся.
 - UI route map показывает текущий акт и `Сила маршрута`: это глобальный scaling
-  stage для экономики/врагов, чтобы Act 2/3 не превращались в повтор tutorial.
+  stage для экономики/врагов, чтобы Act 2 не превращался в повтор tutorial.
 - Стартовые узлы первого ряда доступны сразу после выбора персонажа и оружия.
 - Первые два selectable ряда после старта маршрута всегда состоят только из
   обычных `battle` узлов. `shop`, `event`, `rest` и `elite_battle` могут
@@ -143,4 +144,6 @@ or corner metal.
 - `tests/runtime_smoke_test.gd` проверяет full-screen scroll area, стартовый выбор,
   первые два battle-only ряда, ровно два магазина с half-placement, event click,
   shop re-entry до следующего узла, drag suppression, thin route lines, tooltips,
-  route branching, Act 1 boss → Act 2 route transition и Act 3 boss → victory.
+  route branching, Act 1 boss → Act 2 route transition и Act 2 boss → victory/
+  secret-boss follow-up. `tests/two_act_run_progression_scrum1058_test.gd`
+  дополнительно гейтит отсутствие третьей карты и неизменную длину каждого акта.

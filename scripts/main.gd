@@ -30,11 +30,14 @@ const ROUTE_STEPS_TO_BOSS := 8
 # игрок не мог их пропустить (любой путь проходит через ряд). 1 линия в середине акта;
 # можно поднять до 2 (ранняя + поздняя).
 const CHEST_LINE_ROWS := 1
-const ACT_COUNT := 3
+const ACT_COUNT := 2
 # SCRUM-873: отхил при переходе в следующий акт — 70% max HP (запрошенный
 # диапазон 60–80%). Лечение (clamp по max), не установка HP в фикс. значение.
 const ACT_TRANSITION_HEAL_PERCENT := 0.7
-const ACT_SCALING_STAGE_OFFSET := 4
+# The final scaling stage remains continuous when Act 1 ends: Act 2 starts at
+# the same pressure budget as the Act 1 boss and reaches the former three-act
+# finale budget without adding route rows or combat time.
+const ACT_SCALING_STAGE_OFFSET := ROUTE_STEPS_TO_BOSS
 const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
 const MAP_NODE_SIZE := Vector2(88, 88)
@@ -431,8 +434,8 @@ var current_route_choice := ""
 var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
-# SCRUM-619: текущий бой — секретный апекс-босс конца Акта 3 (выставляется
-# SCRUM-541: set only while the post-Act-3 secret boss follow-up is active.
+# SCRUM-619/1058: текущий бой — секретный апекс-босс после финального Act 2;
+# set only while the post-final-act secret boss follow-up is active.
 var secret_boss_active := false
 var current_node_seed := 0
 var route_selected_indices := []
@@ -663,7 +666,12 @@ func load_run_autosave() -> bool:
 	var state: Dictionary = RUN_AUTOSAVE.load_run()
 	if state.is_empty():
 		return false
-	_apply_run_autosave_state(state)
+	var migrated_state := migrate_run_autosave_state(state)
+	if migrated_state != state:
+		# Persist the normalized checkpoint immediately so every later preview and
+		# resume observes the two-act contract as well.
+		RUN_AUTOSAVE.save_run(migrated_state)
+	_apply_run_autosave_state(migrated_state)
 	return true
 
 
@@ -834,6 +842,7 @@ func _run_autosave_state() -> Dictionary:
 		"selected_weapon_id": selected_weapon_id,
 		"selected_start_boon_id": selected_start_boon_id,
 		"selected_ascension_level": selected_ascension_level,
+		"run_act_count": ACT_COUNT,
 		"current_act": current_act,
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
@@ -863,7 +872,23 @@ func _run_autosave_state() -> Dictionary:
 	}
 
 
+func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
+	var migrated := state.duplicate(true)
+	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
+	if saved_act > ACT_COUNT:
+		# Legacy three-act saves resume at the equivalent final Act 2 checkpoint.
+		# Route position/build/history are preserved; only the removed act index is
+		# normalized, so no compatible player progress is discarded.
+		migrated["legacy_current_act"] = saved_act
+		migrated["current_act"] = ACT_COUNT
+	else:
+		migrated["current_act"] = clampi(saved_act, 1, ACT_COUNT)
+	migrated["run_act_count"] = ACT_COUNT
+	return migrated
+
+
 func _apply_run_autosave_state(state: Dictionary) -> void:
+	var normalized_state := migrate_run_autosave_state(state)
 	combat_active = false
 	boss_combat_active = false
 	_clear_all_game_pauses()
@@ -871,42 +896,42 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	_clear_hud()
 	_clear_ui()
 
-	selected_character_id = str(state.get("selected_character_id", selected_character_id))
-	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
-	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(state.get("selected_start_boon_id", "")))
-	selected_ascension_level = int(state.get("selected_ascension_level", 0))
-	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
-	route_stage = maxi(0, int(state.get("route_stage", 0)))
-	route_nodes = _autosave_array(state.get("route_nodes", []))
+	selected_character_id = str(normalized_state.get("selected_character_id", selected_character_id))
+	selected_weapon_id = str(normalized_state.get("selected_weapon_id", selected_weapon_id))
+	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(normalized_state.get("selected_start_boon_id", "")))
+	selected_ascension_level = int(normalized_state.get("selected_ascension_level", 0))
+	current_act = int(normalized_state.get("current_act", 1))
+	route_stage = maxi(0, int(normalized_state.get("route_stage", 0)))
+	route_nodes = _autosave_array(normalized_state.get("route_nodes", []))
 	if route_nodes.is_empty():
 		route_nodes = route._generate_route()
 	route_stage = clampi(route_stage, 0, maxi(route_nodes.size() - 1, 0))
-	route_selected_indices = _autosave_array(state.get("route_selected_indices", []))
-	current_route_choice = str(state.get("current_route_choice", ""))
-	current_node_type = str(state.get("current_node_type", ""))
-	current_combat_type = str(state.get("current_combat_type", "battle"))
-	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
-	secret_boss_active = bool(state.get("secret_boss_active", false))
-	current_node_seed = int(state.get("current_node_seed", 0))
-	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
-	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
-	level_up_offer = _autosave_array(state.get("level_up_offer", []))
-	attribute_offer = _autosave_array(state.get("attribute_offer", []))
-	attribute_rerolls_left = maxi(0, int(state.get("attribute_rerolls_left", 0)))
-	used_event_ids = _autosave_array(state.get("used_event_ids", []))
-	current_event_definition = _autosave_dictionary(state.get("current_event_definition", {}))
+	route_selected_indices = _autosave_array(normalized_state.get("route_selected_indices", []))
+	current_route_choice = str(normalized_state.get("current_route_choice", ""))
+	current_node_type = str(normalized_state.get("current_node_type", ""))
+	current_combat_type = str(normalized_state.get("current_combat_type", "battle"))
+	current_boss_id = str(normalized_state.get("current_boss_id", "rift_warden"))
+	secret_boss_active = bool(normalized_state.get("secret_boss_active", false))
+	current_node_seed = int(normalized_state.get("current_node_seed", 0))
+	run_player_snapshot = _autosave_dictionary(normalized_state.get("run_player_snapshot", {}))
+	pending_level_ups = maxi(0, int(normalized_state.get("pending_level_ups", 0)))
+	level_up_offer = _autosave_array(normalized_state.get("level_up_offer", []))
+	attribute_offer = _autosave_array(normalized_state.get("attribute_offer", []))
+	attribute_rerolls_left = maxi(0, int(normalized_state.get("attribute_rerolls_left", 0)))
+	used_event_ids = _autosave_array(normalized_state.get("used_event_ids", []))
+	current_event_definition = _autosave_dictionary(normalized_state.get("current_event_definition", {}))
 	pending_event_combat.clear()
 	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не переживает рестор
-	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
-	run_sandbox_snapshot = GAMEPLAY_SANDBOX.snapshot_from_settings(_autosave_dictionary(state.get("run_sandbox_snapshot", {})))
+	run_ascension_difficulty = _autosave_dictionary(normalized_state.get("run_ascension_difficulty", {}))
+	run_sandbox_snapshot = GAMEPLAY_SANDBOX.snapshot_from_settings(_autosave_dictionary(normalized_state.get("run_sandbox_snapshot", {})))
 	run_sandbox_captured = true
-	current_shop_items = _autosave_array(state.get("current_shop_items", []))
-	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
-	current_shop_node_key = str(state.get("current_shop_node_key", ""))
-	run_used_shop = bool(state.get("run_used_shop", false))
-	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
-	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
-	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
+	current_shop_items = _autosave_array(normalized_state.get("current_shop_items", []))
+	current_shop_purchased = _autosave_array(normalized_state.get("current_shop_purchased", []))
+	current_shop_node_key = str(normalized_state.get("current_shop_node_key", ""))
+	run_used_shop = bool(normalized_state.get("run_used_shop", false))
+	shop_reentry_pending = bool(normalized_state.get("shop_reentry_pending", false))
+	shop_reentry_route_stage = int(normalized_state.get("shop_reentry_route_stage", -1))
+	shop_reentry_branch_index = int(normalized_state.get("shop_reentry_branch_index", -1))
 
 
 func _autosave_array(value: Variant) -> Array:
@@ -1066,12 +1091,12 @@ func secret_encounter_pending() -> bool:
 	return META_PROGRESSION.secret_encounter_unlocked_for_level(selected_ascension_level)
 
 
-func resolve_act3_boss_id(base_boss_id: String) -> String:
+func resolve_final_act_boss_id(base_boss_id: String) -> String:
 	secret_boss_active = false
 	return base_boss_id
 
 
-func should_start_secret_boss_after_act3() -> bool:
+func should_start_secret_boss_after_final_act() -> bool:
 	if secret_boss_active:
 		return false
 	return current_act >= ACT_COUNT and secret_encounter_pending()
@@ -1100,7 +1125,7 @@ func record_boss_victory() -> void:
 		"used_shop": run_used_shop,
 	}
 	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level, run_context)
-	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).
+	# SCRUM-619: если это был секретный бой финального акта — разовая мета-награда (идемпотентно).
 	if secret_boss_active:
 		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
 		secret_boss_active = false

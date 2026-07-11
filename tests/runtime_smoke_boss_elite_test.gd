@@ -26,7 +26,7 @@ func _initialize() -> void:
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
 	await _test_bloodthorn_lion_boss(main_scene)
-	await _test_secret_boss_after_act3_flow(main_scene)
+	await _test_secret_boss_after_final_act_flow(main_scene)
 	await _test_secret_boss_uses_full_frame()
 	_test_hazard_telegraph_texture_param()
 	await _test_boss_death_victory_delay(main)

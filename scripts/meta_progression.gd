@@ -84,7 +84,7 @@ const CLASS_ENTRY_NODES := {
 # (branch = class_id). Сборка — в data-модуле.
 static var SKILL_TREE: Array = TREE_DATA.build_tree(CLASS_ENTRY_NODES)
 
-# Secret boss endcap (SCRUM-541): после босса Акта 3, только на максимальном
+# Secret boss endcap (SCRUM-541/1058): после босса финального Act 2, только на максимальном
 # доступном возвышении. Награда Меты 4.0 — звёздная пыль (константа сохранила
 # имя v3: тесты/UI читают её как «награду секретного босса»).
 const SECRET_ENCOUNTER_MIN_ASCENSION := MAX_ASCENSION_LEVEL
@@ -488,7 +488,7 @@ static func selectable_max(state: Dictionary, character_id: String) -> int:
 	return clampi(ascension_level(state, character_id) + 1, 0, MAX_ASCENSION_LEVEL)
 
 
-# --- Секретный бой конца Акта 3 (SCRUM-541/619) ---
+# --- Секретный бой после финального акта (SCRUM-541/619/1058) ---
 
 static func secret_boss_defeated(state: Dictionary) -> bool:
 	return bool(state.get("secret_boss_defeated", false))

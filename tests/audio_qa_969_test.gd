@@ -59,7 +59,7 @@ class StubGame extends Node:
 	var boss_combat_active := false
 	var secret_boss_active := false
 	var current_act := 1
-	var ACT_COUNT := 3
+	var ACT_COUNT := 2
 	var current_combat_type := "normal"
 	var round_time_left := 0.0
 
@@ -233,7 +233,7 @@ func _check_combat_audio_contracts(errors: Array) -> void:
 	game.boss_combat_active = true
 	game.current_act = 1
 	director._play_combat_start_music()
-	game.current_act = 3
+	game.current_act = game.ACT_COUNT
 	director._play_combat_start_music()
 	game.current_act = 1
 	game.secret_boss_active = true

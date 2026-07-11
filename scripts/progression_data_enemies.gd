@@ -133,6 +133,6 @@ const UNIQUE_ENCOUNTER_PATTERNS := {
 	"secret_ascension_boss": {
 		"title": "Secret Ascension Boss", "kind": "boss",
 		"mechanics": ["rift_wave", "hazard_pool", "summon_retinue", "split_spawn"],
-		"summary": "post-Act-3 max-Ascension apex: sector ring, delayed rift eruptions and phase-2 pressure/adds",
+		"summary": "post-final-Act-2 max-Ascension apex: sector ring, delayed rift eruptions and phase-2 pressure/adds",
 	},
 }

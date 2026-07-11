@@ -381,7 +381,7 @@ func _end_combat(victory: bool) -> void:
 				if game.advance_to_next_act():
 					game.current_combat_type = "battle"
 					game.route._show_battle_map()
-				elif game.should_start_secret_boss_after_act3():
+				elif game.should_start_secret_boss_after_final_act():
 					game.current_combat_type = "boss"
 					game.start_secret_boss_encounter()
 				else:
@@ -394,7 +394,7 @@ func _end_combat(victory: bool) -> void:
 			# SCRUM-873: выбор 1 из 3 суперредких артефактов за акт-босса — только
 			# пока забег продолжается (следующий акт или секретный босс). После
 			# финального босса выбор бессмыслен — сразу экран победы.
-			if game.current_act < game.ACT_COUNT or game.should_start_secret_boss_after_act3():
+			if game.current_act < game.ACT_COUNT or game.should_start_secret_boss_after_final_act():
 				game.ui._show_boss_artifact_reward(proceed_after_boss)
 			else:
 				proceed_after_boss.call()
@@ -435,7 +435,7 @@ func _end_combat(victory: bool) -> void:
 
 func _play_combat_start_music() -> void:
 	# SCRUM-968 (спека §3, «Точки вызова»): kind боевого трека по типу узла.
-	# Боссы актов 1-2 -> "boss"; босс акта 3 и секретный босс -> "final";
+	# Босс промежуточного акта -> "boss"; босс финального акта и секретный босс -> "final";
 	# элитка -> "elite"; всё остальное -> "battle" (shuffle-bag ротация §4).
 	# Длительность — реальный round_time_left (учитывает Возвышение и 300с элиток/боссов).
 	var audio: Node = game.get_node_or_null("/root/AudioManager")

@@ -334,9 +334,9 @@ const ARTIFACTS := [
 	{"id": "counterwave_sigil", "title": "Контр-волна", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_take_hit", "description": "⚡ Активный — получив удар: 22% шанс выпустить отталкивающую волну, бьющую врагов рядом (90% полученного урона). Перезаряд 3с.", "mods": {"take_hit_pulse_chance": 0.22}},
 	{"id": "soul_harvest", "title": "Сбор Душ", "tier": 3, "cost": 95, "class_affinity": [], "active": true, "trigger": "on_kill", "description": "⚡ Активный — при убийстве: каждое 6-е убийство лечит 3% максимального здоровья (стак сбрасывается между боями).", "mods": {"kill_streak_heal_every": 6.0}},
 	{"id": "second_wind", "title": "Второе Дыхание", "tier": 2, "cost": 55, "class_affinity": [], "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — при низком HP: пока здоровье ниже 30%, реген восстановления усилен (+5 к регенерации).", "mods": {"lowhp_regen_bonus": 5.0}},
-	# SCRUM-619/623: «ключ» к секретному бою конца Акта 3 (Meta.SECRET_ENCOUNTER_ARTIFACT_KEY).
-	# Редкий (tier 3), скромный стат-бонус — ценность в разблокировке скрытого контента, не в силе.
-	{"id": "rift_key", "title": "Ключ Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "+4 Восприятие, +4 Знание. Открывает тайную тропу в конце Акта 3.", "stats": {"perception": 4.0, "knowledge": 4.0}},
+	# Исторический SCRUM-619/623 key-artifact. Секретный бой теперь гейтится
+	# максимальным Возвышением; предмет остаётся самостоятельной stat-реликвией.
+	{"id": "rift_key", "title": "Ключ Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "+4 Восприятие, +4 Знание. Реликвия тайной тропы финального разлома.", "stats": {"perception": 4.0, "knowledge": 4.0}},
 	# --- SCRUM-961: классовые артефакты (85 = 17 × 5, artifact_system_matrix §4) ---
 	# Все: class_affinity=[class_id], requires_ascension: 5 (гейт §1.4 в сэмплерах),
 	# cost = COST_BY_TIER[tier], БЕЗ affinity_mods. Хуки NEW-ключей — player.gd /

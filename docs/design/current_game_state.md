@@ -63,15 +63,16 @@ Domain docs для подробностей по областям:
 8. Получение опыта, денег, наград и артефактов.
 9. Возврат на карту.
 10. Boss текущего акта.
-11. После boss Act 1/2 — после короткой задержки на проигрывание смерти босса
+11. После boss Act 1 — после короткой задержки на проигрывание смерти босса
     показывается **экран трофея босса (SCRUM-873)**: обязательный выбор 1 из 3
     СУПЕРРЕДКИХ артефактов (верхний тир, `boss_completion_artifact_choices`, без
     дублей, с учётом класса; Escape не закрывает), затем переход к новой карте
     следующего акта с сохранением билда. При переходе в следующий акт герой
     **отхиливается на 70% max HP** (`ACT_TRANSITION_HEAL_PERCENT`, лечение с
     clamp по максимуму, применяется к `run_player_snapshot` в
-    `advance_to_next_act`). После boss Act 3 — победа (экран выбора не
-    показывается: забег завершён; при активном секретном боссе выбор есть).
+    `advance_to_next_act`). После boss Act 2 — победа или разрешённый secret boss;
+    третья route map не создаётся. Перед secret boss экран выбора сохраняется,
+    после итоговой победы autosave очищается.
     Смерть завершает забег в любом акте.
     Финальная победа и смерть (включая ручное «Завершить забег») показывают **экран
     итогов забега (run summary, SCRUM-502)**: время забега (MM:SS), достигнутый этап,
@@ -92,9 +93,11 @@ RouteNode A/pressed. В группе `player` и у viewport остаются р
 process/physics/collision/camera и удаляются централизованно до потери UI-ссылок;
 `_clear_world()` синхронно выводит из дерева все принадлежащие Main Player, а не
 только объект из ссылки `current_player`.
-В 3-актном забеге `route_stage` остаётся локальным для карты акта, а длительность,
+В двухактном забеге `route_stage` остаётся локальным для карты акта, а длительность,
 спавн, награды, цены и boss/elite scaling читают `route_scaling_stage() =
-route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контролируемо.
+route_stage + (current_act - 1) * 8`. Offset равен неизменным 8 activity rows:
+Act 2 начинается с бюджета boss Act 1 и достигает прежнего финального stage 16,
+не добавляя узлы или время боёв.
 
 ## Разрешения И Окно
 
@@ -109,7 +112,7 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 - **Управление**: вкладка «Управление» показывает режим прицеливания (`Автонаводка на ближайшего` / `По курсору`), persisted toggles `Дебаг-режим` и `Боевой фидбек`, а также биндинги движения, паузы и `ultimate` внутри вертикального scroll-контейнера с авто-прокруткой к фокусу. Дефолты: aim mode `nearest`, debug mode `off`, combat feedback `on`, WASD + стрелки для движения, Escape для паузы, R для ультимейта. SCRUM-814 переводит боевое движение игрока на `Input.get_vector("move_left", "move_right", "move_up", "move_down", deadzone)`: клавиатура и D-pad дают полную скорость, левый стик геймпада дает пропорциональную скорость с deadzone `0.25` по умолчанию, диагонали ограничены текущей максимальной скоростью. `move_*` actions идемпотентно получают left-stick `JOY_AXIS_LEFT_X/Y` и D-pad events без удаления клавиатурных биндингов. Вибрация геймпада включена по умолчанию (`gamepad_vibration`), no-op без подключенного геймпада/headless; урон игроку дает weak `0.6` на `0.25с`, смерть strong `0.8` на `0.5с`, ultimate weak `0.4` на `0.15с`. Ребинд проверяет конфликт с другими действиями и не перезаписывает чужую клавишу молча; есть reset defaults. SCRUM-816 разбивает вкладку на секции «Устройство ввода» (OptionButton режима `input_mode` + live-статус подключения пада по hot-plug), «Клавиатура» (прежние ребинды) и «Геймпад» (ребинд joypad-кнопок/осей по каждому экшену через режим прослушивания с обработкой конфликтов, слайдер `gamepad_deadzone` `0.05..0.5`, чекбокс `gamepad_vibration`, «Сбросить геймпад»); заодно устранён баг, при котором клавиатурный ребинд/сброс стирали joypad-часть экшена (теперь трогаются только `InputEventKey`).
 - **Устройства ввода (SCRUM-811, SCRUM-846)**: autoload `InputDeviceManager` (`scripts/input_device_manager.gd`) доливает joypad-бинды во все игровые и `ui_*` экшены (канон: стик+крестовина — движение/фокус, A/B — подтвердить/назад, Start — пауза, Y — ультимейт, RB — level-up, Back — фидбек), детектит активное устройство по последнему вводу с hot-plug (отключение пада мгновенно возвращает клавиатуру) и отдает `device_changed`/`active_kind()`/`binding_text()` для подсказок UI. Клавиатура и геймпад работают одновременно всегда; `input_mode` (`auto`/`keyboard`/`gamepad`) влияет только на подсказки/глифы. SCRUM-846 закрепил Back/Select→feedback, закрытие feedback через B/Start и fallback от пустых/битых saved gamepad bindings, чтобы A/confirm и левый стик не могли быть стёрты старым `settings.cfg`. Полный контракт: `docs/design/systems/input_controls.md`.
 - **Dev console (SCRUM-831/SCRUM-845)**: внутриигровая консоль открывается клавишей слева от `1` (`/~`, `§`, `Ё`) как live overlay поверх игры. Она перехватывает командный ввод в `main._input`, но больше не добавляет `dev_console` в `pause_reasons` и не ставит `SceneTree.paused`, поэтому в Windows/player-сборке активный бой, враги, таймер и движение игрока продолжают тикать при открытой консоли.
-- **Персистенс**: дисплей, звук (включая `ui_volume`, `mute_when_unfocused`, `low_hp_warning_enabled`), `aim_mode`, `debug_mode`, `combat_feedback`, `input_bindings`, а также геймпад-ключи (`input_mode`, `gamepad_bindings`, `gamepad_deadzone`, `gamepad_vibration`) сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. SCRUM-816 добавил запись этих геймпад-ключей в `main.save_game_settings()` (раньше их писало только ядро при старте, и любое сохранение настроек перезаписывало их дефолтами) + зеркалит `gamepad_deadzone`/`gamepad_vibration` в root-мету для `player.gd`. SCRUM-976 добавил пять gameplay-sandbox множителей с нейтральным `1.0`; при подтверждении оружия они копируются в неизменяемый snapshot забега и отдельно входят в autosave. Изменение/сброс настроек влияет только на следующий забег. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints, включая `current_act` для Act 2/3; главное меню предлагает «Продолжить»/«Новая игра» через widened SCRUM-842 continue-run dialog (840×380 panel, 420×72 primary continue button), а смерть/финальная победа очищают autosave.
+- **Персистенс**: дисплей, звук (включая `ui_volume`, `mute_when_unfocused`, `low_hp_warning_enabled`), `aim_mode`, `debug_mode`, `combat_feedback`, `input_bindings`, а также геймпад-ключи (`input_mode`, `gamepad_bindings`, `gamepad_deadzone`, `gamepad_vibration`) сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. SCRUM-816 добавил запись этих геймпад-ключей в `main.save_game_settings()` (раньше их писало только ядро при старте, и любое сохранение настроек перезаписывало их дефолтами) + зеркалит `gamepad_deadzone`/`gamepad_vibration` в root-мету для `player.gd`. SCRUM-976 добавил пять gameplay-sandbox множителей с нейтральным `1.0`; при подтверждении оружия они копируются в неизменяемый snapshot забега и отдельно входят в autosave. Изменение/сброс настроек влияет только на следующий забег. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints с `current_act` 1..2; legacy `current_act=3` нормализуется в финальный Act 2 checkpoint с сохранением route/build state. Главное меню предлагает «Продолжить»/«Новая игра» через widened SCRUM-842 continue-run dialog (840×380 panel, 420×72 primary continue button), а смерть/финальная победа очищают autosave.
 
 - **Gameplay sandbox (SCRUM-976)**: диапазоны — HP монстров `0.5–3.0`, урон монстров `0.5–3.0`, урон игрока `0.5–2.0`, скорость атак игрока `0.5–2.0`, скорость атак монстров `0.5–3.0`, шаг `0.1`. `scripts/gameplay_sandbox.gd` — единый контракт normalize/snapshot/metadata. HP/урон применяются один раз в общем `Enemy` (поэтому покрыты обычные враги, призывы, элитки и боссы); скорость монстров ускоряет только attack cooldown countdown, не telegraph/windup/recover. Игрок получает финальный exact-множитель после release softcaps. Любой не-нейтральный snapshot помечает `progression_eligible=false`, блокирует достижения, Codex, boss/meta/Ascension progression и не принимается как release-balance evidence; run-local XP, золото, предметы и сводка сохраняются.
 - **Gameplay sandbox UI (SCRUM-1025)**: вкладка «Игра» читает ranges/step/values только из SCRUM-976 API, показывает `%.1f×`, нейтральный/пользовательский статус и предупреждение о progression/evidence gate. Изменения сохраняются немедленно, но не мутируют snapshot активного забега; Reset делает один атомарный save и disabled в neutral. `SettingsBottomActions` (экранные Apply/Revert) скрыт на Game, а `SettingsGameScroll` занимает расширенный прозрачный content owner `960/1158/1544` и сохраняет отдельный 14px scrollbar lane на 720p. PixelLab compact mockup задавал `306px` видимой высоты без live Atlas frame; runtime намеренно ограничивает её до `242px` на 720p (`878×520` canvas, max scroll `278`), чтобы ни строки, ни Reset не уходили под нижний орнамент. Focused Metal/headless matrix: `tests/settings_game_scrum1025_test.gd`.
@@ -448,7 +451,7 @@ SCRUM-277 добавил weapon integrity gate для всего ростера:
 
 ## Маршрутная Карта
 
-Маршрутная карта вертикальная. Акт состоит из 10 рядов активностей и финального ряда босса (`ROUTE_STEPS_TO_BOSS = 10`). Первые два selectable ряда после старта маршрута всегда состоят только из обычных `battle` узлов, чтобы забег начинался с базового боевого темпа, XP и золота. Начиная с третьего selectable ряда пулы типов узлов зависят от фазы акта: ранние ряды — бои с редкими событиями/магазином, середина — смешанный пул, последние ряды перед боссом — больше элиток, а предпоследний ряд дает подготовку (костер/магазин).
+Маршрутная карта вертикальная. Акт состоит из 8 рядов активностей и финального ряда босса (`ROUTE_STEPS_TO_BOSS = 8`). Первые два selectable ряда после старта маршрута всегда состоят только из обычных `battle` узлов, чтобы забег начинался с базового боевого темпа, XP и золота. Начиная с третьего selectable ряда пулы типов узлов зависят от фазы акта: ранние ряды — бои с редкими событиями/магазином, середина — смешанный пул, последние ряды перед боссом — больше элиток, а предпоследний ряд дает подготовку (костер/магазин).
 
 Карта открывается отдельным full-screen экраном, а не маленьким виджетом внутри menu panel. Основной canvas `VerticalRouteMap` находится в большом `ScrollContainer`, который занимает почти весь экран под верхней статусной полосой. Горизонтальный скролл отключен: ширина канвы подгоняется под экран (`_route_map_canvas_size`), скролл и pan работают только по вертикали. Высота канвы растет с количеством рядов (~165px на ряд). Карта доступна целиком на 1600x900 и 2560x1440.
 
@@ -1505,7 +1508,7 @@ Left/Right циклят три карточки, Escape не закрывает 
 
 Сток генерируется один раз на конкретный `shop`-узел маршрута и сохраняет purchased-состояние при повторном открытии того же экрана через меню/досье; новый `shop`-узел получает свежий набор. SCRUM-339 расширяет это на flow карты: выход из магазина возвращает на route map без продвижения `route_stage`, этот же shop-узел остается доступен для повторного входа, а узлы следующего ряда уже кликабельны. Выбор следующего route node считается точкой невозврата: только тогда старый shop stock/purchased state очищается и начинается следующий этап. Focused SCRUM-993 test детерминированно проверяет exact geometry, full tooltip fit, long caption, 9999g, foreign affinity, unaffordable/purchased states и live resize; общие runtime/UI/no-overlap/gamepad gates сохраняют re-entry и event-shop semantics. Renderer evidence: `docs/design/previews/scrum993_shop_gold_shell/runtime/`.
 
-Экономика 0.1.4 + SCRUM-853 pacing: магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner дают x1.3 XP / x1.6 золота, bruiser/shield около x1.75 XP и x2.2 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-853 не режет per-monster drops: прогресс героя замедлен через XP-кривую `ceil(req*1.09+0.8)`. Фокусная 20-fight проекция `tests/monster_xp_pressure_pacing_test.gd`: Berserk/hammer — 726.5 kills, Act 1 lvl 14, Act 2 lvl 24, run lvl 32; Dark Mage/dark_book — 773.9 kills, Act 1 lvl 15, Act 2 lvl 24, run lvl 32. Старая кривая SCRUM-527 давала ~42-43 lvl на том же сценарии.
+Экономика 0.1.4 + SCRUM-853 pacing: магазин, докачка атрибутов, reroll и платные event-исходы проходят через `ProgressionData.stage_scaled_cost()`, где поверх stage scale применяется глобальный `ECONOMY_PRICE_MULTIPLIER = 1.10`. Дроп назначается по классам целей (`DROP_CLASS_MULTIPLIERS`): обычные враги остаются базой, сложные ranged/summoner дают x1.3 XP / x1.6 золота, bruiser/shield около x1.75 XP и x2.2 золота, мини-элитки x3.6/x3.8, элитки x8/x8.5, босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-853 не режет per-monster drops: прогресс героя замедлен через XP-кривую `ceil(req*1.09+0.8)`. SCRUM-1058 обновляет `tests/monster_xp_pressure_pacing_test.gd` под 13-боевой двухактовый финал stage 16: Berserk/hammer — 473.1 kills, Act 1 lvl 15, финал Act 2 lvl 29; Dark Mage/dark_book — 504.1 kills, Act 1 lvl 15, финал Act 2 lvl 30. Старая кривая на том же сокращённом сценарии дала бы lvl 38-39.
 
 Design visual kit/spec для всех артефактов, shop-only предметов и курсора описан в `docs/design/artifact_shop_cursor_visual_kit.md`:
 - 71 unique artifact icons: `assets/sprites/ui/icons/artifacts/artifact_<artifact_id>.png` (`256x256`, transparent realistic epic D&D/tabletop fantasy raster magic items; SCRUM-340 regenerated the base set through `fantasydisk-asset-generator` / `gpt-image-2`; SCRUM-606/609 integrated 10 dedicated icons for `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, and SCRUM-619/623 tracks `rift_key`);
@@ -1603,7 +1606,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 Звуковая система реализована через autoload `AudioManager` (`scripts/audio_manager.gd`, регистрация в `project.godot`):
 
 - SFX (15 ogg-id, SCRUM-967/968): `hit`/`hit_magic`/`hit_dot` (типизированные попадания по `feedback.damage_type` в `enemy.take_damage`), `player_hit`, `dodge`, `pickup_xp`, `pickup_money`, `level_up`, `boss_phase` (смена фазы босса), `low_hp_pulse` (луп-канал `set_sfx_loop`, гистерезис HP ВКЛ<30%/ВЫКЛ≥34% — зеркалит виньетку). `purchase`/`ui_error` работают для покупок/отказов в магазине узла, докачке, Атласе и платных вариантах события; общий `_connect_ui_sfx` добавляет `ui_click`/`ui_back` к кнопкам перехода/возврата; `artifact_reveal` озвучивает баннер победы и elite/boss-экраны награды.
-- Музыка (SCRUM-966/968, бардовский пак, `MUSIC_META` + loop_offset): меню `music_menu_tavern_warm`, карта/атлас `music_route_map_bard_journey`, safe-узлы `music_shop_campfire_inn`; обычный бой — shuffle-bag ротация 4 тем (без повтора подряд, session-only, мягкий биомный приоритет акта); элитка `music_elite_duel_300`, боссы актов 1–2 `music_boss_battle_300`, босс акта 3/секретный `music_final_boss_crescendo_300`; 3 стингера результата.
+- Музыка (SCRUM-966/968, бардовский пак, `MUSIC_META` + loop_offset): меню `music_menu_tavern_warm`, карта/атлас `music_route_map_bard_journey`, safe-узлы `music_shop_campfire_inn`; обычный бой — shuffle-bag ротация 4 тем (без повтора подряд, session-only, мягкий динамический приоритет акта); элитка `music_elite_duel_300`, boss Act 1 `music_boss_battle_300`, финальный boss Act 2/secret boss `music_final_boss_crescendo_300`; прежний приоритет удалённого третьего акта не активируется; 3 стингера результата.
 - Round-timed playback (SCRUM-968): бой стартует `play_combat_music(kind, реальная длительность раунда)`; за 6 c (8 c элитка/боссы) до конца таймера — идемпотентный `begin_music_outro` (затухание к нулю таймера, по игровому тику — пауза не рассинхронизирует); ранний конец — fast-outro 1.2 c; поверх тишины стингер победы/эпик-победы/поражения.
 - Источники/лицензии: `docs/design/audio.md` + `docs/design/references/audio_sources/SOURCES.md`; CC BY-атрибуции (Kevin MacLeod ×6) — `docs/CREDITS.md`. Из главного меню `MainMenuCreditsButton` открывает player-facing `CreditsScreen` с CC BY/CC0-блоками; `CreditsBackButton` и Escape возвращают в меню.
 - Пул из 8 SFX-плееров и троттлинг 0.05с на звук (пер-id overrides: `hit_dot` 0.12, пикапы 0.06, `ui_error` 0.08) защищают от спама при уроне по толпе.
@@ -1970,7 +1973,7 @@ promotion remains a separate QA-gated follow-up. QA evidence:
 SCRUM-853 усиливает pressure curve поверх этих базовых чисел: обычные волны
 стартуют плотнее, затем получают multipliers от `route_scaling_stage`, номера
 волны и elapsed time в бою; HP, контактная опасность/урон и cooldown спавна тоже
-растут по этим осям. В Act 2/3 чаще выбираются ranged/summoner/heavy архетипы,
+растут по этим осям. В Act 2 чаще выбираются ranged/summoner/heavy архетипы,
 а обычные волны могут подмешивать mini-elites с шансом `0.015..0.12`.
 
 Спавн использует реальные границы 4096x2304: правый и нижний edge-spawn больше не ограничены старой областью 2560x1440. Снаряды игрока и врагов удаляются только за пределами новой арены с cleanup margin 180 пикселей.
@@ -2248,11 +2251,11 @@ Animation smoke test:
 
 ## SCRUM-541 Current Secret Boss State
 
-After SCRUM-541, Act 3 has two possible endings:
+After SCRUM-1058, final Act 2 has two possible endings:
 
-- below max Ascension: defeating the normal Act 3 boss ends the run with the
+- below max Ascension: defeating the normal Act 2 boss ends the run with the
   normal victory flow;
-- at max Ascension L5: defeating the normal Act 3 boss immediately starts the
+- at max Ascension L5: defeating the normal Act 2 boss immediately starts the
   secret follow-up boss `secret_ascension_boss`.
 
 The secret boss is backend-ready in `scenes/BossSecretAscension.tscn` and
@@ -2262,8 +2265,9 @@ Design source pack and static/VFX runtime candidates under
 `docs/design/references/bosses/secret_ascension_boss/`,
 `assets/sprites/bosses/secret_ascension_boss.png`, and
 `assets/sprites/effects/secret_ascension_boss_*_telegraph.png`; final animation
-and runtime wiring remain Animator/Back-end scope. Balance benchmark at Act 3 L5
-stage 18: about `47.6k` HP; L20 optimum estimated TTK `121.5s..231.8s`, L20
+and runtime wiring remain Animator/Back-end scope. Historical balance benchmark
+at final L5 stage 18: about `47.6k` HP; the two-act route finale reaches stage 16
+without changing boss formulas. L20 optimum estimated TTK `121.5s..231.8s`, L20
 random-average estimated TTK `347.3s..559.6s`.
 
 ## SCRUM-958 Codex Image State
