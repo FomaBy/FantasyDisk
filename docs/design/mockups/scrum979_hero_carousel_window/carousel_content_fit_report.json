@@ -1,0 +1,153 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "counter",
+      "rect": [
+        536,
+        220,
+        98,
+        16
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "1–4 из 17"
+      ],
+      "text_bbox": [
+        555,
+        222,
+        60,
+        13
+      ]
+    },
+    {
+      "id": "prev",
+      "rect": [
+        74,
+        283,
+        32,
+        46
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "‹"
+      ],
+      "text_bbox": [
+        82,
+        295,
+        17,
+        22
+      ]
+    },
+    {
+      "id": "next",
+      "rect": [
+        582,
+        283,
+        32,
+        46
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "13",
+        "›"
+      ],
+      "text_bbox": [
+        585,
+        283,
+        26,
+        46
+      ]
+    },
+    {
+      "id": "hero_1",
+      "rect": [
+        144,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Берсерк"
+      ],
+      "text_bbox": [
+        159,
+        331,
+        54,
+        16
+      ]
+    },
+    {
+      "id": "hero_2",
+      "rect": [
+        252,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Солдат"
+      ],
+      "text_bbox": [
+        270,
+        332,
+        48,
+        15
+      ]
+    },
+    {
+      "id": "hero_3",
+      "rect": [
+        360,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Вор"
+      ],
+      "text_bbox": [
+        388,
+        331,
+        27,
+        16
+      ]
+    },
+    {
+      "id": "hero_4",
+      "rect": [
+        468,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "Элементалист"
+      ],
+      "text_bbox": [
+        471,
+        333,
+        78,
+        12
+      ]
+    }
+  ]
+}

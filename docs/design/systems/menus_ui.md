@@ -501,7 +501,9 @@ carousel geometry are unchanged. PixelLab/content-zone evidence:
   contains class title, description, strengths, weaknesses, weapon names,
   class identity, eight base characteristics as hoverable Line Bars and
   data-driven build guidance. The bottom `HS4Carousel` uses enlarged responsive
-  slots, cyclic paging and default focus on the selected visible slot. Since
+  slots and default focus on the selected visible slot. SCRUM-979 supersedes
+  the historical cyclic paging: the visible window moves by one without wrap,
+  and the hero entering the selected slot becomes selected. Since
   SCRUM-421/SCRUM-822, large and carousel portraits use cached alpha bounds for
   consistent centering/bottom alignment and reserve a name strip. Historical
   evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`,
@@ -523,11 +525,15 @@ carousel geometry are unchanged. PixelLab/content-zone evidence:
   context. The start-boon screen continues to use the generic `weapon_select`
   menu box, and Route Map/SCRUM-563 geometry remains untouched. Mockup/spec:
   `docs/design/mockups/weapon_select_redraw_from_scratch/`.
-- Live HS4 Hero Select keeps the same runtime selection contract: carousel arrow
-  buttons select previous/next character cyclically in
-  `ProgressionData.character_ids()` order and use the same refresh path as
-  slot clicks for portrait, dossier, ascension label and selected carousel state.
-  The arrows remain inside the bottom carousel band.
+- SCRUM-979 makes the live HS4 carousel window the primary navigation state.
+  `HS4CarouselPrevButton` / `HS4CarouselNextButton` shift its clamped offset by
+  exactly one in `ProgressionData.character_ids()` order and preserve the
+  selected visible-slot anchor; the hero newly occupying that slot becomes the
+  selection. Edges are focusable no-ops and never wrap. Direct slot clicks keep
+  the current window and select the exact clicked hero through the same portrait,
+  dossier and ascension refresh path. The visibly larger arrows reuse the
+  accepted PixelLab vertical plates and their authored empty content margins.
+  Mockup/spec: `docs/design/mockups/scrum979_hero_carousel_window/`.
 - 2026-06-29: `HS4Portrait` can render an animated class preview when the
   selected character exposes directional SpriteFrames. PixelLab classes use
   one-frame `idle_<direction>` rotation rows and cycle `south -> south_west ->

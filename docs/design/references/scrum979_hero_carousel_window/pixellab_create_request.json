@@ -1,0 +1,26 @@
+{
+  "jsonrpc": "2.0",
+  "id": 979,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "SCRUM-979 Hero Select carousel window controls",
+      "width": 688,
+      "height": 384,
+      "no_background": true,
+      "seed": 979,
+      "color_palette": "blackened iron, charcoal, restrained worn gold, muted ruby accents",
+      "description": "Transparent component-only bottom carousel UI reference for FantasyDisk Hero Select in restrained D&D dark-fantasy dragon style. Exactly one quiet horizontal carousel band near the bottom, exactly four separate empty square hero slot frames, exactly one large square previous-arrow button on the left and exactly one large square next-arrow button on the right. The two arrow buttons must be visibly substantial and easy to click, approximately seventy percent of a hero-slot height, with calm empty interiors for runtime glyphs and hidden-count numbers. Leave every hero portrait interior and bottom name strip empty and dark. No characters, portraits, icons, text, letters, numbers, pseudo-text, logos, watermark, title, back button, full-screen outer frame, extra panels, extra arrows, scrollbars or ornaments inside any content interior. Decorations may surround the band, slots and buttons but must never intrude into their empty interiors. Orthographic, crisp pixel-art UI, not perspective, not cluttered.",
+      "pieces": [
+        {"id": "carousel_band", "kind": "rounded_rect", "x": 48, "y": 250, "w": 592, "h": 112, "radius": 3, "label": "quiet transparent carousel band"},
+        {"id": "prev_button", "kind": "rounded_rect", "x": 56, "y": 272, "w": 68, "h": 68, "radius": 4, "label": "large empty previous button"},
+        {"id": "slot_1", "kind": "rounded_rect", "x": 138, "y": 258, "w": 96, "h": 96, "radius": 3, "label": "empty hero slot"},
+        {"id": "slot_2", "kind": "rounded_rect", "x": 246, "y": 258, "w": 96, "h": 96, "radius": 3, "label": "empty hero slot"},
+        {"id": "slot_3", "kind": "rounded_rect", "x": 354, "y": 258, "w": 96, "h": 96, "radius": 3, "label": "empty hero slot"},
+        {"id": "slot_4", "kind": "rounded_rect", "x": 462, "y": 258, "w": 96, "h": 96, "radius": 3, "label": "empty hero slot"},
+        {"id": "next_button", "kind": "rounded_rect", "x": 564, "y": 272, "w": 68, "h": 68, "radius": 4, "label": "large empty next button"}
+      ]
+    }
+  }
+}

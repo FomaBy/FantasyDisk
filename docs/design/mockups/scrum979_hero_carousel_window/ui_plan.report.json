@@ -1,0 +1,207 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "counter_zone",
+      "kind": "text",
+      "rect": [
+        536,
+        220,
+        98,
+        16
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "carousel_band",
+      "kind": "panel",
+      "rect": [
+        48,
+        250,
+        592,
+        112
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "prev_button",
+      "kind": "button",
+      "rect": [
+        56,
+        262,
+        68,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "slot_1",
+      "kind": "slot",
+      "rect": [
+        138,
+        258,
+        96,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_1_portrait",
+      "kind": "portrait",
+      "rect": [
+        144,
+        264,
+        84,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_1_label",
+      "kind": "text",
+      "rect": [
+        144,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "slot_2",
+      "kind": "slot",
+      "rect": [
+        246,
+        258,
+        96,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_2_portrait",
+      "kind": "portrait",
+      "rect": [
+        252,
+        264,
+        84,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_2_label",
+      "kind": "text",
+      "rect": [
+        252,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "slot_3",
+      "kind": "slot",
+      "rect": [
+        354,
+        258,
+        96,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_3_portrait",
+      "kind": "portrait",
+      "rect": [
+        360,
+        264,
+        84,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_3_label",
+      "kind": "text",
+      "rect": [
+        360,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "slot_4",
+      "kind": "slot",
+      "rect": [
+        462,
+        258,
+        96,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_4_portrait",
+      "kind": "portrait",
+      "rect": [
+        468,
+        264,
+        84,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_4_label",
+      "kind": "text",
+      "rect": [
+        468,
+        330,
+        84,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "next_button",
+      "kind": "button",
+      "rect": [
+        564,
+        262,
+        68,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    }
+  ]
+}

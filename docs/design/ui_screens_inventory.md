@@ -464,8 +464,8 @@ clamp 820). С SCRUM-841 эти result-экраны не используют `P
 | Досье | `HS4DossierFrame`, center column with name, description, strengths, weaknesses, weapon list, class identity |
 | Характеристики | `HS4StatsGrid`, 8 `HS4Stat_<stat_id>` buttons; each has tooltip with dependent attributes |
 | Возвышение | `HS4AscensionFrame`, right column with description, `AscensionMinusButton`, `AscensionPlusButton`, `HS4ChooseButton` |
-| Карусель | `HS4CarouselFrame` / `HS4Carousel`, bottom band; slots are `150x150` `HS4CarouselSlot_*` buttons |
-| Прокрутка карусели | `HS4CarouselPrevButton` / `HS4CarouselNextButton`; visible slot count is computed from available width |
+| Карусель | `HS4CarouselFrame` / `HS4Carousel`, bottom band; responsive square `HS4CarouselSlot_*` buttons are clamped to `180..320px` |
+| Прокрутка карусели | SCRUM-979: `HS4CarouselPrevButton` / `HS4CarouselNextButton` use existing PixelLab `132x176` plates scaled to `52%` of slot height (`84..140px` high); each press shifts the clamped visible window by one, preserves selected slot position where possible, and never wraps |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
 SCRUM-870 is the active live contract and supersedes the SCRUM-868 full-screen

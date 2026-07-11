@@ -1596,7 +1596,10 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
   сторонами, оружием, class identity, восемью характеристиками как hoverable
   Line Bars и data-driven секциями `Основные атрибуты`,
   `Второстепенные атрибуты`, `Дополнительные атрибуты`; снизу `HS4Carousel` с
-  увеличенными responsive слотами и крупными cyclic-стрелками. Select,
+  увеличенными responsive слотами. SCRUM-979 заменяет cyclic-переходы на
+  non-wrapping сдвиг видимого окна по одному герою с сохранением выбранной
+  позиции; вошедший в ту же позицию герой становится выбранным. Увеличенные
+  стрелки используют существующие PixelLab-плиты с authored content margins. Select,
   Back/Escape, ascension stepper, default focus and carousel interaction behavior
   are preserved. Focused coverage: `tests/hero_select_pixellab_layout_test.gd`,
   `tests/hero_select_scrum798_capture_test.gd`,

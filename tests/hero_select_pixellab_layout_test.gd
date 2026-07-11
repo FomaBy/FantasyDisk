@@ -52,6 +52,7 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	var main := MAIN_SCENE.instantiate()
 	viewport.add_child(main)
 	await process_frame
+	main.set("selected_character_id", "berserk")
 	main.call("_show_character_select")
 	await process_frame
 	await process_frame
@@ -343,14 +344,19 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	if prev_arrow.text != expected_prev or next_arrow.text != expected_next:
 		_fail("Expected arrows to show hidden hero counts at %s: want '%s'/'%s', got '%s'/'%s'." % [str(viewport_size), expected_prev, expected_next, prev_arrow.text, next_arrow.text])
 		return
-	# Листание Next двигает окно — счётчик обновляется.
-	var counter_before := counter_label.text
-	for i in range(total_classes + 1):
-		next_arrow.pressed.emit()
-		if counter_label.text != counter_before:
-			break
-	if counter_label.text == counter_before:
-		_fail("Expected carousel counter to change after paging Next at %s, stuck at '%s'." % [str(viewport_size), counter_before])
+	# SCRUM-979: the first press must shift the window by exactly one. Retrying
+	# until any counter change would hide the former adjacent-selection behavior.
+	if window_first != 1:
+		_fail("Expected explicit Berserk baseline window to start at 1, got '%s'." % counter_label.text)
+		return
+	next_arrow.pressed.emit()
+	var expected_after_next := "2–%d из %d" % [mini(window_last + 1, total_classes), total_classes]
+	if counter_label.text != expected_after_next or int(carousel.get_meta("window_offset", -1)) != 1:
+		_fail("Expected first Next press to shift carousel exactly +1 at %s: want '%s', got '%s' offset %d." % [
+			str(viewport_size), expected_after_next, counter_label.text, int(carousel.get_meta("window_offset", -1))])
+		return
+	if str(main.get("selected_character_id")) != "soldier":
+		_fail("Expected Soldier to replace Berserk in the anchored first slot at %s, got %s." % [viewport_size, str(main.get("selected_character_id"))])
 		return
 
 	# SCRUM-879: весь контент — строго в safe-зоне рамы (маргины 160px от базы

@@ -1103,6 +1103,22 @@ func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHIT
 	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
 
 
+func _hs4_apply_carousel_arrow_style(button: Button, slot: String, display_size: Vector2) -> void:
+	# SCRUM-979 reuses the accepted PixelLab arrow plates and their real empty
+	# content rectangles. Every state keeps the same geometry, so focus/hover can
+	# never shift the hit target or push the hidden-count glyph onto ornament.
+	button.add_theme_stylebox_override("normal", _hs4_pixellab_style(slot, display_size, Color.WHITE))
+	button.add_theme_stylebox_override("hover", _hs4_pixellab_style(slot, display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("focus", _hs4_pixellab_style(slot, display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style(slot, display_size, Color(0.82, 0.76, 0.66, 1.0)))
+	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style(slot, display_size, Color(0.46, 0.46, 0.50, 0.72)))
+	button.add_theme_color_override("font_color", Color(0.98, 0.91, 0.66, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.98, 0.82, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.98, 0.82, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.90, 0.82, 0.62, 1.0))
+	button.add_theme_font_size_override("font_size", clampi(int(roundf(display_size.y * 0.15)), 14, 20))
+
+
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill
@@ -1291,7 +1307,11 @@ func _build_character_select_v4() -> void:
 	var header_band := maxf(title_chip.get_combined_minimum_size().y + 4.0, header_h)
 	var carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
 	var carousel_h := carousel_slot_size + clampf(content_rect.size.y * 0.012, 6.0, 14.0)
-	var carousel_min_w := 2.0 * 54.0 + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
+	# SCRUM-979: the accepted PixelLab arrow source is 132x176. Keep its 0.75
+	# aspect and scale from the live slot, instead of the old tiny 54x42 seal.
+	var carousel_arrow_h := clampf(roundf(carousel_slot_size * 0.52), 84.0, 140.0)
+	var carousel_arrow_size := Vector2(roundf(carousel_arrow_h * 0.75), carousel_arrow_h)
+	var carousel_min_w := 2.0 * carousel_arrow_size.x + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
 	# CTA «Выбрать» — плита кнопок главного меню 380×104 (Правило 1: только
 	# пропорциональный даунскейл под ширину колонны, аспект не ломаем).
 	var choose_aspect := 104.0 / 380.0
@@ -1925,7 +1945,7 @@ func _build_character_select_v4() -> void:
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
 	var carousel_area_h: float = carousel.size.y
-	var arrow_size := Vector2(54.0, 42.0)
+	var arrow_size := carousel_arrow_size
 	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
 	var slot_label_h := clampf(roundf(slot_size.y * 0.17), 26.0, 34.0)
 	var slot_label_gap := maxf(3.0, roundf(slot_size.y * 0.02))
@@ -1938,20 +1958,19 @@ func _build_character_select_v4() -> void:
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
 
-	# SCRUM-882: стрелки несут число скрытых героев («‹N» / «M›», 0 → просто
-	# стрелка); размер плиты 54×42 фиксирован (seal-контракт), поэтому шрифт
-	# компактный фиксированный + clip_text-страховка.
+	# SCRUM-882/979: arrows show hidden hero counts while the enlarged PixelLab
+	# plate keeps the glyph strictly inside its authored empty content zone.
 	var left_arrow := _make_button("‹")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
-	left_arrow.add_theme_font_size_override("font_size", 14)
+	_hs4_apply_carousel_arrow_style(left_arrow, "carousel_left", arrow_size)
 	left_arrow.clip_text = true
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("›")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
-	right_arrow.add_theme_font_size_override("font_size", 14)
+	_hs4_apply_carousel_arrow_style(right_arrow, "carousel_right", arrow_size)
 	right_arrow.clip_text = true
 	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
@@ -2027,8 +2046,10 @@ func _build_character_select_v4() -> void:
 			default_focus = visible_slots[visible_index] as Control
 		for i in range(row_controls.size()):
 			var ctrl := row_controls[i] as Control
-			var left := row_controls[posmod(i - 1, row_controls.size())] as Control
-			var right := row_controls[posmod(i + 1, row_controls.size())] as Control
+			# SCRUM-979: roster/window movement is non-wrapping, so the focus row
+			# must not secretly wrap Previous <-> Next at its outward edges.
+			var left := ctrl if i == 0 else (row_controls[i - 1] as Control)
+			var right := ctrl if i == row_controls.size() - 1 else (row_controls[i + 1] as Control)
 			ctrl.focus_neighbor_left = left.get_path()
 			ctrl.focus_neighbor_right = right.get_path()
 			ctrl.focus_neighbor_top = select_button.get_path()
@@ -2160,6 +2181,8 @@ func _build_character_select_v4() -> void:
 		asc_minus.disabled = game.selected_ascension_level <= 0
 		asc_plus.disabled = game.selected_ascension_level >= maxl
 		var off: int = int(state["offset"])
+		carousel.set_meta("window_offset", off)
+		carousel.set_meta("visible_slot_count", visible_slot_count)
 		for i in range(visible_slot_count):
 			var idx: int = off + i
 			var slot: Button = slot_buttons[i]
@@ -2167,6 +2190,7 @@ func _build_character_select_v4() -> void:
 			var slot_label := slot_labels[i] as Label
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
+				slot.set_meta("character_id", rid)
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
 				var slot_texture := game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", "")))) as Texture2D
 				slot_portrait.texture = slot_texture
@@ -2180,6 +2204,7 @@ func _build_character_select_v4() -> void:
 				slot_label.modulate = Color(1.0, 0.96, 0.80, 1.0) if rid == cid else Color(0.66, 0.68, 0.74, 0.84)
 			else:
 				slot.visible = false
+				slot.remove_meta("character_id")
 				slot_portrait.texture = null
 				slot_label.text = ""
 		# SCRUM-882: явный счётчик карусели — «N–M из K» + число скрытых на стрелках.
@@ -2202,12 +2227,21 @@ func _build_character_select_v4() -> void:
 		game.selected_ascension_level = game.ascension_selectable_max(cid)
 		refresh.call()
 
-	var select_relative_hero := func(direction: int) -> void:
+	var scroll_carousel_window := func(direction: int) -> void:
+		keep_selected_visible.call()
 		var selected_index: int = roster.find(game.selected_character_id)
 		if selected_index < 0:
 			selected_index = 0
-		var next_index: int = posmod(selected_index + direction, roster.size())
-		select_hero.call(str(roster[next_index]))
+		var old_offset: int = int(state["offset"])
+		var anchor: int = clampi(selected_index - old_offset, 0, visible_slot_count - 1)
+		var max_offset: int = maxi(0, roster.size() - visible_slot_count)
+		var new_offset: int = clampi(old_offset + direction, 0, max_offset)
+		if new_offset == old_offset:
+			return
+		state["offset"] = new_offset
+		var window_end: int = mini(new_offset + visible_slot_count - 1, roster.size() - 1)
+		var target_index: int = clampi(new_offset + anchor, new_offset, window_end)
+		select_hero.call(str(roster[target_index]))
 
 	for i in range(visible_slot_count):
 		var slot_index := i
@@ -2217,10 +2251,10 @@ func _build_character_select_v4() -> void:
 				select_hero.call(str(roster[idx]))
 		)
 	left_arrow.pressed.connect(func() -> void:
-		select_relative_hero.call(-1)
+		scroll_carousel_window.call(-1)
 	)
 	right_arrow.pressed.connect(func() -> void:
-		select_relative_hero.call(1)
+		scroll_carousel_window.call(1)
 	)
 	asc_minus.pressed.connect(func() -> void:
 		game.selected_ascension_level = maxi(game.selected_ascension_level - 1, 0)
