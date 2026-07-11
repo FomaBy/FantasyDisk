@@ -4507,5 +4507,10 @@
   "key": "SCRUM-1047",
   "status": "Готово",
   "desc_hash": "428359e10f64305c155e519ee1105921"
+ },
+ "SCRUM-972.md": {
+  "key": "SCRUM-972",
+  "status": "В работе",
+  "desc_hash": "e0325047e68a117c818e1f520a55a2ae"
  }
 }
