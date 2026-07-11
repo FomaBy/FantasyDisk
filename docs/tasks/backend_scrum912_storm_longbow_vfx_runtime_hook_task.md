@@ -91,3 +91,29 @@ was routed to independent QA.
 
 Disk cleanup: clean user-data directory and disposable `.godot/` removed;
 clean task worktree scheduled for immediate removal after the routing push.
+
+## Independent QA verdict — PASS (2026-07-11)
+
+QA owner: `/root/qa_storm_1037`. Verified from clean `origin/dev`
+`043242c3a`; production code remained read-only.
+
+- Static commit audit confirms the live hook only preloads the Animator scene,
+  creates exactly one release instance per `storm_pierce_cone` volley, passes
+  the live owner origin/direction/`attack_range`, and registers it through the
+  existing `player_weapon_effects` lifecycle.
+- The five live beam corridors and Ranger damage/crit/knockback, hit-query,
+  volley dedup, pierce budget/falloff, charge and cooldown code are unchanged.
+- `tests/scrum912_storm_longbow_vfx_runtime_hook_test.gd` — PASS: one release
+  per volley, live transform/range, 0.5s self-cleanup, `cleanup_effects()` and
+  weapon ownership.
+- `tests/ranger_kit_test.gd` — PASS.
+- `tests/scrum912_storm_longbow_vfx_test.gd` — PASS.
+- `tests/animation_smoke_test.gd` — PASS.
+- `tests/runtime_smoke_test.gd` — PASS with isolated `HOME`,
+  `XDG_DATA_HOME` and `--user-data-dir`. The dummy renderer emitted the known
+  non-fatal screenshot texture warning; the suite reached its success marker.
+
+QA verdict: **PASSED**. No bug issue required.
+
+Disk cleanup: QA scratch user-data, disposable `.godot/`, generated UID
+sidecars and QA worktree removed after the evidence/routing pushes.
