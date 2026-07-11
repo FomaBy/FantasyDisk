@@ -1,6 +1,6 @@
 # SCRUM-952 — Hero Select trait, strengths and weaknesses copy
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-952
 Контур: Codex
@@ -64,6 +64,11 @@ replaced. Canonical trait mechanics come from SCRUM-953 and
   `gamepad_menu_focus_test.gd`, `gamepad_full_flow_smoke_test.gd`,
   `runtime_smoke_ui_test.gd`, and full `runtime_smoke_test.gd` (known dummy
   renderer screenshot diagnostic only).
+
+Post-rebase green gate on fresh `origin/dev` `4b8b89f73`: focused SCRUM-952 and
+no-overlap PASS; the first parallel full-runtime attempt was invalidated by a
+shared `user://` autosave race, then the authoritative isolated HOME/XDG rerun
+passed completely. Implementation commit: `6812188f5`.
 
 Disk cleanup: pending post-land removal of the 446 MiB task `.godot/` cache,
 transient `build/qa/scrum952` captures and task worktree.
