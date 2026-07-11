@@ -4490,8 +4490,8 @@
  },
  "SCRUM-952.md": {
   "key": "SCRUM-952",
-  "status": "К выполнению",
-  "desc_hash": "d46390e3c357979aebc5e9bdad46daf0"
+  "status": "Готово",
+  "desc_hash": "d073628387a8a2e4c9a94c4cf7bb1152"
  },
  "SCRUM-971.md": {
   "key": "SCRUM-971",
@@ -4500,7 +4500,7 @@
  },
  "SCRUM-1046.md": {
   "key": "SCRUM-1046",
-  "status": "Контроль качества",
-  "desc_hash": "b483daf3f6c571812c21750ab9d7270a"
+  "status": "Готово",
+  "desc_hash": "62c47da97eda7855e789cd6626fbf869"
  }
 }

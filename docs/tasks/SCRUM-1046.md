@@ -66,7 +66,9 @@ The runtime suites emit the known dummy-renderer screenshot diagnostic but exit
 0 and report PASS. No visual capture changed because production geometry/art is
 unchanged; the focused Metal lifecycle is clean.
 
-## Independent QA Verdict — PASSED (2026-07-11)
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
 
 QA owner: QA/Codex `/root/qa_scrum1046_952` on fresh `origin/dev`
 `48af1122a`. Exact implementation/evidence/routing commits `9070a85a9`,

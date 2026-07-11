@@ -75,7 +75,7 @@ transient `build/qa/scrum952` captures and task worktree.
 
 Thread cleanup: not a disposable worker thread.
 
-## QA-Вердикт (2026-07-11)
+## Initial QA Verdict (2026-07-11)
 
 Статус: **FAILED**
 
@@ -129,7 +129,9 @@ trait/Codex data and the accepted PixelLab content zones are unchanged.
 SCRUM-952 remains `К выполнению` until SCRUM-1046 independent QA and a parent
 re-QA verdict; implementation success alone does not erase the prior QA FAIL.
 
-## Independent Re-QA Verdict — PASSED (2026-07-11)
+## QA-Вердикт (2026-07-11 Re-QA)
+
+Статус: PASSED
 
 QA owner: QA/Codex `/root/qa_scrum1046_952`. Parent re-QA was claimed only
 after SCRUM-1046 received its independent PASS, moved to `Готово`, and released
