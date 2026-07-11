@@ -89,13 +89,31 @@ func _check_priest_resolution(target: Vector2i) -> void:
 			if button.focus_neighbor_top != button.get_path() or button.focus_neighbor_bottom != button.get_path():
 				_errors.append("%s: vertical focus must remain on %s." % [context, button.name])
 
-	# Escape/B is intentionally consumed by a no-op while the mandatory choice is open.
-	var escape_action: Callable = main.get("ui_escape_action")
-	if escape_action.is_valid():
-		escape_action.call()
-	await process_frame
-	if main.find_child("BattlePrayerChoiceScreen", true, false) == null or not paused:
-		_errors.append("%s: cancel input closed the mandatory choice." % context)
+	# SCRUM-1044: exercise the physical Main._input path. No cancel variant may
+	# open the pause dossier, close the prayer, or steal its focused card.
+	var cancel_events: Array[InputEvent] = []
+	var physical_escape := InputEventKey.new()
+	physical_escape.keycode = KEY_ESCAPE
+	physical_escape.physical_keycode = KEY_ESCAPE
+	physical_escape.pressed = true
+	cancel_events.append(physical_escape)
+	var keyboard_cancel := InputEventAction.new()
+	keyboard_cancel.action = &"ui_cancel"
+	keyboard_cancel.pressed = true
+	cancel_events.append(keyboard_cancel)
+	var gamepad_cancel := InputEventJoypadButton.new()
+	gamepad_cancel.button_index = JOY_BUTTON_B
+	gamepad_cancel.pressed = true
+	cancel_events.append(gamepad_cancel)
+	for cancel_event in cancel_events:
+		main.call("_input", cancel_event)
+		await process_frame
+		if main.find_child("BattlePrayerChoiceScreen", true, false) == null or not paused:
+			_errors.append("%s: %s closed the mandatory choice." % [context, cancel_event.get_class()])
+		if main.find_child("PauseStatsMenuRoot", true, false) != null:
+			_errors.append("%s: %s opened pause dossier over prayer." % [context, cancel_event.get_class()])
+		if buttons.size() == 3 and buttons[0].get_viewport().gui_get_focus_owner() != buttons[0]:
+			_errors.append("%s: %s stole prayer-card focus." % [context, cancel_event.get_class()])
 
 	if buttons.size() == 3:
 		buttons[1].emit_signal("pressed")

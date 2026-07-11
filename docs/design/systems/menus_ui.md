@@ -10,9 +10,11 @@ Every Priest combat now begins behind a mandatory, non-cancellable three-card
 prayer choice. `CombatDirector` creates/configures the player and HUD first, but
 does not call `Player.on_battle_start()` or spawn an elite/boss until a valid
 `Player.select_battle_prayer()` succeeds. The modal owns pause reason
-`battle_prayer`; Escape/B is consumed, the first card receives initial focus,
-left/right navigation is circular and up/down stays on the same card. Other
-classes retain the synchronous, screen-free combat-start path.
+`battle_prayer`; the global `Main._input` guard consumes physical Escape,
+keyboard `ui_cancel` and gamepad B before pause/hotkey routing, so no second
+overlay can cover the mandatory decision. The first card receives initial
+focus, left/right navigation is circular and up/down stays on the same card.
+Other classes retain the synchronous, screen-free combat-start path.
 
 The runtime uses the unchanged PixelLab source
 `assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png` as one scaled

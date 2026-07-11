@@ -1109,6 +1109,15 @@ func _input(event: InputEvent) -> void:
 	if dev_console != null and dev_console.is_console_open():
 		return
 
+	# SCRUM-1044: the battle-prayer decision is mandatory and must remain the
+	# only active overlay. Main._input runs before focused GUI controls, so guard
+	# global Escape/B/hotkeys here; unhandled navigation/accept events continue
+	# to the prayer cards through the regular GUI path.
+	if ui.has_method("_is_battle_prayer_choice_open") and ui._is_battle_prayer_choice_open():
+		if _is_fresh_action_press(event, &"pause") or _is_fresh_action_press(event, &"ui_cancel"):
+			get_viewport().set_input_as_handled()
+		return
+
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
 		# SCRUM-846: закрытие фидбек-оверлея идет через actions, чтобы Esc/Start/B
 		# и возможный joypad-axis rebind работали одним путем.

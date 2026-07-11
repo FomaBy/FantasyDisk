@@ -2314,6 +2314,9 @@ damage/crit/knockback, charge и cooldown не менялись. One-shot осв
 `CombatDirector` создаёт игрока и HUD, затем до выбора приостанавливает дерево
 причиной `battle_prayer`. `Player.on_battle_start`, opening-эффекты артефактов и
 spawn элитки/босса выполняются только после валидного выбора и ровно один раз.
+Пока обязательный экран открыт, ранний guard в `Main._input` поглощает physical
+Escape, keyboard `ui_cancel` и gamepad B до общей ветки паузы/оверлеев: pause
+dossier не может открыться поверх молитвы, а фокус первой карточки сохраняется.
 Классы с пустым prayer-пулом идут по прежнему синхронному пути без экрана и
 паузы. Runtime UI использует цельный PixelLab-фрейм
 `assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png`; контент и
