@@ -1,13 +1,13 @@
 # Задача Для Back-end-Агента: Settings / Game — four-tab runtime integration
 
-Статус: blocked
+Статус: done
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: root-next10
+Thread: /root
 Locked paths: Settings-only hunks in `scripts/ui_screens.gd`; new focused Settings/Game UI tests; Settings paragraphs in `docs/design/systems/menus_ui.md` and `docs/design/current_game_state.md`; optional promoted `assets/sprites/ui/frames/settings_v6/ui_settings_v6_icon_game.png`
 Jira: SCRUM-1025
 Sprint / fixVersion: `Спринт 0.2.1` / `0.2.1`
-Blocked by: SCRUM-976 (sandbox persistence/run-modifier API) and SCRUM-975 (design QA-ready package)
+Dependencies satisfied: SCRUM-976 API is landed/in QA; SCRUM-975 design package is QA-ready/Done.
 Source design: `docs/design/references/scrum975_settings_game_tab/spec.md`
 
 ## Autonomy / Approval
@@ -80,7 +80,10 @@ and release-balance evidence are disabled, matching SCRUM-976 policy.
 - 2560×1440: four 260×104 plates, one row, 24px gaps; all five rows + reset.
 - 1920×1080: four 260×88 plates, one row, 24px gaps; all five rows + reset.
 - 1280×720: centered 2×2 grid of 260×72 plates, 24×12 gaps; internal Game
-  `ScrollContainer` with 14px lane and `follow_focus=true`.
+  `ScrollContainer` with 14px lane and `follow_focus=true`. Runtime deviation:
+  the accepted `306px` mockup viewport has no live Atlas border and would place
+  content under its bottom ornament, so implementation uses the frame-safe
+  `242px` visible viewport over the unchanged `878×520` logical canvas.
 
 Hitboxes equal plate rects. Runtime labels/icons/focus rings stay inside plate
 interiors. No content may touch frame borders, dragon heads, gems, bevels or
@@ -106,3 +109,30 @@ separators.
 Update the live runtime state in `docs/design/systems/menus_ui.md` and
 `docs/design/current_game_state.md`. Do not rewrite the PixelLab design package;
 record only implementation deviations and exact runtime paths/tests.
+
+## Result (2026-07-11)
+
+- Added the fourth live `Игра` tab, promoted the accepted SCRUM-975 PixelLab
+  icon byte-for-byte, and connected five controls exclusively through the
+  authoritative SCRUM-976 persistence/snapshot API.
+- Added neutral/custom status, progression/evidence warning, atomic Reset,
+  next-run-only semantics, LB/RB wrap and deterministic D-pad/keyboard focus
+  from the Game tab through all five sliders to Reset.
+- Wide tabs use the accepted `260×88` (1080p) / `260×104` (1440p) one-row
+  geometry; 720p uses four `260×72` plates in a centered 2×2 grid.
+- Recorded the required runtime deviation from the PixelLab-only compact
+  mockup: its `306px` viewport omitted the live Atlas border and placed content
+  under the bottom ornament. Runtime preserves the `892px` scroll width,
+  `878×520` logical canvas and exclusive `14px` lane, but caps the visible
+  720p height to frame-safe `242px` (max scroll `278`). Bottom state shows rows
+  3–5 and Reset fully above the ornament.
+- Focused headless and Metal matrix PASS at 1280×720, 1920×1080 and 2560×1440.
+  Independent review PASS; uncached Metal evidence SHA-256:
+  `915317fc20a621c62e17f0fb81a10bf9e74c8a29b74edb731818164050432bc9`
+  (720p bottom) and
+  `0a375f709f6aac9f22cd3e2f451e65531cb1048c166fc08657c64b4821868f02`
+  (1080p custom).
+- PASS: `settings_game_scrum1025_test.gd`, Settings seamless/Sound UI,
+  runtime UI, no-overlap matrix, gamepad menu/full-flow, settings persistence,
+  SCRUM-976 sandbox, monitor selector, asset integrity and full
+  `runtime_smoke_test.gd`.

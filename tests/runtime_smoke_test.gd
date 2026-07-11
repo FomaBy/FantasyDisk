@@ -6029,10 +6029,10 @@ func _packed_bytes_contains(haystack: PackedByteArray, needle: PackedByteArray) 
 
 func _test_settings_tabs_and_rebind(main: Node) -> void:
 	var tabs := main.find_child("SettingsTabs", true, false) as TabContainer
-	if tabs == null or tabs.get_child_count() != 3:
-		_fail("Expected settings screen to use three tabs.")
+	if tabs == null or tabs.get_child_count() != 4:
+		_fail("Expected settings screen to use four tabs.")
 		return
-	for tab_name in ["Экран", "Звук", "Управление"]:
+	for tab_name in ["Экран", "Звук", "Управление", "Игра"]:
 		if tabs.get_node_or_null(tab_name) == null:
 			_fail("Expected settings tab %s to exist." % tab_name)
 			return
@@ -6091,22 +6091,19 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		if tabs_panel_style.get_border_width(side) != 0:
 			_fail("SCRUM-972: hidden SettingsTabs must not paint an inherited border.")
 			return
-	# SCRUM-882: табы — кнопки глобального кита на плите «Назад»: фикс-сетка
-	# 3×(260+24)×_atlas_action_button_height() (72/88/104 по высоте вьюпорта);
-	# позиции ячеек меряем от глобального rect самого свитчера.
+	# SCRUM-1025: four independent kit plates; wide = 4×1, compact = 2×2.
 	var settings_vp_h := main.get_viewport().get_visible_rect().size.y
 	var tab_width := 260.0
-	var tab_height := 104.0
-	if settings_vp_h < 760.0:
-		tab_height = 72.0
-	elif settings_vp_h < 1000.0:
-		tab_height = 88.0
+	var tab_height := 72.0 if settings_vp_h <= 760.0 else (88.0 if settings_vp_h <= 1080.0 else 104.0)
 	var tab_gap := 24.0
-	if absf(switcher_rect.size.x - (tab_width * 3.0 + tab_gap * 2.0)) > 3.0 or absf(switcher_rect.size.y - tab_height) > 3.0:
-		_fail("Expected SettingsTabSwitcher to size from the fixed SCRUM-882 kit grid (3x260+2x24 x %s), got %s." % [str(tab_height), str(switcher_rect.size)])
-		return
-	if main.find_child("SettingsTabButton_3", true, false) != null:
-		_fail("Expected 3-slot settings switcher to avoid an obsolete fourth tab hit area.")
+	var tab_columns := 2 if settings_vp_h <= 760.0 else 4
+	var tab_rows := 2 if settings_vp_h <= 760.0 else 1
+	var tab_row_gap := 12.0 if tab_rows == 2 else 0.0
+	var expected_switcher_size := Vector2(
+		tab_width * float(tab_columns) + tab_gap * float(tab_columns - 1),
+		tab_height * float(tab_rows) + tab_row_gap * float(tab_rows - 1))
+	if switcher_rect.size.distance_to(expected_switcher_size) > 3.0:
+		_fail("Expected SettingsTabSwitcher SCRUM-1025 grid %s, got %s." % [str(expected_switcher_size), str(switcher_rect.size)])
 		return
 	var settings_back_for_tabs := main.find_child("SettingsBackButton", true, false) as Button
 	if settings_back_for_tabs == null:
@@ -6159,14 +6156,16 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 	settings_switcher_dump.append("")
 	settings_switcher_dump.append("| tab | actual | expected kit grid rect | stylebox |")
 	settings_switcher_dump.append("| --- | --- | --- | --- |")
-	for tab_index in range(3):
+	for tab_index in range(4):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
 		if tab_button == null:
 			_fail("Expected SettingsTabButton_%d to exist." % tab_index)
 			return
+		var tab_column := tab_index % tab_columns
+		var tab_row := tab_index / tab_columns
 		var expected := Rect2(
-			switcher_rect.position + Vector2(float(tab_index) * (tab_width + tab_gap), 0.0),
-			Vector2(tab_width, switcher_rect.size.y)
+			switcher_rect.position + Vector2(float(tab_column) * (tab_width + tab_gap), float(tab_row) * (tab_height + tab_row_gap)),
+			Vector2(tab_width, tab_height)
 		)
 		var actual := tab_button.get_global_rect()
 		var plate_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal"))
@@ -6209,7 +6208,11 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		var settings_switcher_image := main.get_viewport().get_texture().get_image()
 		if settings_switcher_image != null:
 			settings_switcher_image.save_png("%s/settings_v2_runtime.png" % settings_switcher_qa_dir)
-	# SCRUM-882: после клик-цикла активен таб «Управление» — его колонка тоже
+	# SCRUM-1025: после 4-tab цикла вернуть «Управление» для его assertions.
+	var controls_tab_button := main.find_child("SettingsTabButton_2", true, false) as Button
+	if controls_tab_button != null:
+		controls_tab_button.pressed.emit()
+	# SCRUM-882: активен таб «Управление» — его колонка тоже
 	# центрирована в панели, а bind-строки внутри скролла выровнены влево по
 	# единому label.x.
 	await process_frame
@@ -8464,6 +8467,13 @@ func _assert_visible_seal_buttons(node: Node, context: String, dump_lines: Packe
 		if context == "settings" and button.name == "SettingsBackButton":
 			if absf(button.custom_minimum_size.x - 280.0) > 0.5 or absf(button.custom_minimum_size.y - 64.0) > 0.5:
 				_fail("Expected SCRUM-439 SettingsBackButton to use 280x64 inside the v2 modal safe zone, got min=%s." % button.custom_minimum_size)
+				return
+			continue
+		if context == "settings" and button.name == "SettingsResetGameButton":
+			# SCRUM-1025 accepted Game-page action is 392×50 compact / 392×64
+			# at 1080; the kit may promote compact height to its 72px native.
+			if button.custom_minimum_size.x < 392.0 or button.custom_minimum_size.y < 50.0:
+				_fail("Expected SettingsResetGameButton to preserve its accepted safe action slot, got min=%s." % button.custom_minimum_size)
 				return
 			continue
 		if texture_path.contains("ui_btn_minimal_metal_rebind"):

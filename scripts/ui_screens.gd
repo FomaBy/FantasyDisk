@@ -157,6 +157,7 @@ const SETTINGS_V6_TAB_ICON_PATHS := [
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_screen.png",
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_sound.png",
 	SETTINGS_V6_DIR + "ui_settings_v6_icon_controls.png",
+	SETTINGS_V6_DIR + "ui_settings_v6_icon_game.png",
 ]
 # SCRUM-879: пластины табов и кнопок-действий v6 (ui_settings_v6_tab_*/btn_*)
 # выведены — табы и действия носят глобальный кит (_make_button, как Атлас).
@@ -6136,7 +6137,10 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	content_panel.name = "SettingsContentPanel"
 	var content_chip_pad := roundf(16.0 * s_ui)
 	content_panel.add_theme_stylebox_override("panel", _settings_seamless_content_style(content_chip_pad))
-	var settings_panel_w := settings_column_w + (content_chip_pad * 1.4 + 8.0 * s_ui) * 2.0 + 24.0
+	# SCRUM-1025 accepted transparent clip-owner: 960 @720, 1158 @1080,
+	# 1544 @1440. Existing pages retain their centered fixed-width columns.
+	var settings_panel_target := 960.0 if vp.y <= 760.0 else clampf(1544.0 * (vp.y / 1440.0), 1158.0, 1544.0)
+	var settings_panel_w := minf(settings_panel_target, content_w)
 	content_panel.custom_minimum_size = Vector2(settings_panel_w, 0.0)
 	content_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -6499,6 +6503,12 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	controls_box.add_child(gp_reset)
 
+	# SCRUM-1025: fourth Settings/Game page consumes the authoritative
+	# SCRUM-976 API. Values persist now but affect only the next run snapshot.
+	var game_settings_tab := _make_settings_game_tab(s, settings_column_w, vp)
+	tabs.add_child(game_settings_tab)
+	_wire_settings_game_focus(tabs, game_settings_tab, vp.y <= 760.0)
+
 	# --- Ряд 4: футер — «Вернуть»/«Применить» справа («Назад» теперь в шапке).
 	# Кнопки глобального кита, фикс 280×64: Apply/Revert носят НАТИВНУЮ пластину
 	# по size-маппингу кита (y<=66, 240<=x<360) — без даунскейла и растяжки.
@@ -6519,6 +6529,13 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
 	_settings_fit_kit_row([revert_button, apply_button], 280.0, 64.0)
+	# Apply/Revert belong only to pending Screen settings. The accepted Game-tab
+	# mockup has no irrelevant footer; hiding it also restores the exact compact
+	# scroll viewport while tabs/header remain fixed.
+	var update_settings_footer_visibility := func(tab_index: int) -> void:
+		action_row.visible = tab_index != 3
+	tabs.tab_changed.connect(update_settings_footer_visibility)
+	update_settings_footer_visibility.call(tabs.current_tab)
 
 	# Полая рама frame_border ПОВЕРХ всего контента — строго последним слоем.
 	_unified_add_frame(root, "Settings")
@@ -6575,29 +6592,41 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	# «Назад»: 260×_atlas_action_button_height(); на высоте 104 size-маппинг кита
 	# даёт ту же НАТИВНУЮ плиту back_260x104, что носит SettingsBackButton, на
 	# компакт-высотах 88/72 кит штатно уходит в 9-slice-ветки (как табы Атласа).
-	# Актив/неактив — модуляцией, иконки v6 остаются (32px — чтобы текст с
-	# иконкой помещались в плоское поле плиты); гэп фикс 24 — сетка 828px
-	# помещается даже в самой узкой safe-зоне рамы (912px на 1152×648).
+	# SCRUM-1025: 1080p/2K = one-row 4×260; compact <=760px = 2×2. Каждая
+	# плита самостоятельна — исторический 3-slot ornament не растягивается.
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tab_width := 260.0
-	var tab_height := _atlas_action_button_height()
+	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	var tab_height := 72.0 if viewport_height <= 760.0 else (88.0 if viewport_height <= 1080.0 else 104.0)
 	var tab_gap := 24.0
-	switcher.custom_minimum_size = Vector2(tab_width * 3.0 + tab_gap * 2.0, tab_height)
+	var compact_grid: bool = viewport_height <= 760.0
+	var column_count := 2 if compact_grid else 4
+	var row_count := 2 if compact_grid else 1
+	var row_gap := 12.0 if compact_grid else 0.0
+	switcher.custom_minimum_size = Vector2(
+		tab_width * float(column_count) + tab_gap * float(column_count - 1),
+		tab_height * float(row_count) + row_gap * float(row_count - 1))
+	switcher.set_meta("settings_tab_columns", column_count)
+	switcher.set_meta("settings_tab_rows", row_count)
+	switcher.set_meta("settings_tab_gap", Vector2(tab_gap, row_gap))
 
 	var buttons: Array[Button] = []
-	var labels := ["Экран", "Звук", "Управление"]
+	var labels := ["Экран", "Звук", "Управление", "Игра"]
 	for tab_index in range(labels.size()):
 		var button := _make_button(labels[tab_index])
 		button.name = "SettingsTabButton_%d" % tab_index
 		_set_action_button_size(button, tab_width, tab_height)
-		var tab_left := float(tab_index) * (tab_width + tab_gap)
+		var column := tab_index % column_count
+		var row := tab_index / column_count
+		var tab_left := float(column) * (tab_width + tab_gap)
+		var tab_top := float(row) * (tab_height + row_gap)
 		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		button.offset_left = tab_left
-		button.offset_top = 0.0
+		button.offset_top = tab_top
 		button.offset_right = tab_left + tab_width
-		button.offset_bottom = tab_height
+		button.offset_bottom = tab_top + tab_height
 		var icon := _settings_v6_icon(SETTINGS_V6_TAB_ICON_PATHS[tab_index], Vector2(32.0, 32.0), minf(1.0, tab_height / 104.0))
 		if icon != null:
 			button.icon = icon
@@ -6715,6 +6744,263 @@ func _make_settings_tab(tab_name: String, s := 1.0, column_w := 0.0) -> MarginCo
 	page.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	margin.add_child(page)
 	return margin
+
+
+func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) -> MarginContainer:
+	var game_tab := _make_settings_tab("Игра", s, column_w)
+	var page := game_tab.get_child(0) as VBoxContainer
+	var compact := viewport_size.y <= 760.0
+	var game_content_w := 878.0 if compact else clampf(1424.0 * (viewport_size.y / 1440.0), 1068.0, 1424.0)
+	var game_scroll_w := 892.0 if compact else game_content_w
+	# SCRUM-1030's 306px mockup viewport was authored without the live Atlas
+	# border. In the runtime shell it would end beneath the bottom ornament,
+	# violating the global frame-safe rule. Keep the exact 878×520 canvas and
+	# 14px lane, but cap the visible height to the actual empty frame interior.
+	var compact_scroll_h := maxf(160.0, roundf(viewport_size.y * 0.6875 - 253.0)) if compact else 0.0
+	page.custom_minimum_size.x = game_scroll_w
+	page.add_theme_constant_override("separation", 0)
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "SettingsGameScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if compact else Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(game_scroll_w, compact_scroll_h)
+	page.add_child(scroll)
+	_settings_v6_style_audio_scrollbar(scroll, s)
+	if compact:
+		scroll.get_v_scroll_bar().custom_minimum_size.x = 14.0
+
+	var content: Control
+	if compact:
+		content = Control.new()
+	else:
+		var wide_content := VBoxContainer.new()
+		wide_content.add_theme_constant_override("separation", maxi(2, int(roundf(3.0 * s))))
+		content = wide_content
+	content.name = "SettingsGameContent"
+	content.custom_minimum_size = Vector2(game_content_w, 520.0 if compact else 0.0)
+	content.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if compact else Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
+
+	var title := Label.new()
+	title.name = "SettingsGameTitle"
+	title.text = "Игровая песочница"
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", _settings_v6_font(28.0, s))
+	title.add_theme_color_override("font_color", SETTINGS_V6_GOLD)
+	var status := Label.new()
+	status.name = "SettingsGameStatus"
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	status.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+	if compact:
+		content.add_child(title)
+		_settings_game_place_control(title, Rect2(14.0, 8.0, 400.0, 34.0))
+		content.add_child(status)
+		_settings_game_place_control(status, Rect2(536.0, 8.0, 328.0, 34.0))
+	else:
+		var header := HBoxContainer.new()
+		header.name = "SettingsGameHeader"
+		header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_theme_constant_override("separation", int(roundf(16.0 * s)))
+		content.add_child(header)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_child(title)
+		status.custom_minimum_size = Vector2(roundf(360.0 * s), roundf(42.0 * s))
+		header.add_child(status)
+
+	var description := Label.new()
+	description.name = "SettingsGameDescription"
+	description.text = "Настрой сложность следующего забега. Текущий забег не изменится."
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.add_theme_font_size_override("font_size", _settings_v6_font(20.0, s))
+	description.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+	content.add_child(description)
+	if compact:
+		_settings_game_place_control(description, Rect2(14.0, 52.0, 850.0, 30.0))
+
+	var warning := Label.new()
+	warning.name = "SettingsSandboxWarning"
+	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	warning.custom_minimum_size = Vector2(0.0, 42.0 if compact else roundf(42.0 * s))
+	warning.add_theme_font_size_override("font_size", _settings_v6_font(19.0, s))
+	content.add_child(warning)
+	if compact:
+		_settings_game_place_control(warning, Rect2(14.0, 92.0, 850.0, 42.0))
+
+	var sliders := {}
+	var value_labels := {}
+	var slider_order: Array[HSlider] = []
+	var rows := [
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_HP, "suffix": "monster_hp", "label": "Здоровье монстров"},
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_DAMAGE, "suffix": "monster_damage", "label": "Урон монстров"},
+		{"key": game.GAMEPLAY_SANDBOX.PLAYER_DAMAGE, "suffix": "player_damage", "label": "Урон игрока"},
+		{"key": game.GAMEPLAY_SANDBOX.PLAYER_ATTACK_SPEED, "suffix": "player_attack_speed", "label": "Скорость атак игрока"},
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_ATTACK_SPEED, "suffix": "monster_attack_speed", "label": "Скорость атак монстров"},
+	]
+	var configured: Dictionary = game.sandbox_snapshot()
+	var layout_scale := viewport_size.y / 1440.0
+	var row_label_w := 310.0 if compact else 580.0 * layout_scale
+	var row_slider_w := 346.0 if compact else 420.0 * layout_scale
+	var row_value_w := 126.0 if compact else 170.0 * layout_scale
+	var row_height := 56.0 if compact else 76.0 * layout_scale
+	var reset_height := 50.0 if compact else 64.0
+	var reset := _settings_v6_make_action_button("Сбросить игровые настройки", "SettingsResetGameButton", 392.0, reset_height)
+	_settings_fit_kit_row([reset], 392.0, reset_height, 48.0, 0.72)
+	for row_index in range(rows.size()):
+		var row_config: Dictionary = rows[row_index]
+		var key := str(row_config["key"])
+		var suffix := str(row_config["suffix"])
+		var spec: Dictionary = game.GAMEPLAY_SANDBOX.SPECS[key]
+		var row: Control = Control.new() if compact else HBoxContainer.new()
+		row.name = "SettingsSandboxRow_%s" % suffix
+		row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		row.custom_minimum_size = Vector2(842.0 if compact else 0.0, row_height)
+		if not compact:
+			(row as HBoxContainer).add_theme_constant_override("separation", int(roundf(16.0 * s)))
+		content.add_child(row)
+		if compact:
+			var compact_row_y: float = float([142.0, 206.0, 278.0, 342.0, 406.0][row_index])
+			_settings_game_place_control(row, Rect2(10.0, compact_row_y, 842.0, 56.0))
+		else:
+			var row_inset := Control.new()
+			row_inset.name = "SettingsSandboxInset_%s" % suffix
+			row_inset.custom_minimum_size.x = 16.0
+			row_inset.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			row.add_child(row_inset)
+
+		var row_label := Label.new()
+		row_label.name = "SettingsSandboxLabel_%s" % suffix
+		row_label.text = str(row_config["label"])
+		row_label.custom_minimum_size = Vector2(roundf(row_label_w), roundf(row_height))
+		row_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row_label.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+		row_label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+		row.add_child(row_label)
+		if compact:
+			_settings_game_place_control(row_label, Rect2(16.0, 8.0, 310.0, 40.0))
+
+		var slider := HSlider.new()
+		slider.name = "SettingsSandboxSlider_%s" % suffix
+		slider.min_value = float(spec["min"])
+		slider.max_value = float(spec["max"])
+		slider.step = float(spec["step"])
+		slider.value = float(configured[key])
+		slider.custom_minimum_size = Vector2(roundf(row_slider_w), roundf(40.0 if compact else 56.0 * layout_scale))
+		slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		slider.focus_mode = Control.FOCUS_ALL
+		_settings_v6_style_slider(slider, s)
+		row.add_child(slider)
+		if compact:
+			_settings_game_place_control(slider, Rect2(342.0, 8.0, 346.0, 40.0))
+
+		var chip := PanelContainer.new()
+		chip.name = "SettingsSandboxValueChip_%s" % suffix
+		chip.custom_minimum_size = Vector2(roundf(row_value_w), roundf(40.0 if compact else 56.0 * layout_scale))
+		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		chip.add_theme_stylebox_override("panel", _settings_v6_texture_box(
+			SETTINGS_V6_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
+		row.add_child(chip)
+		if compact:
+			_settings_game_place_control(chip, Rect2(702.0, 8.0, 126.0, 40.0))
+		var value_label := Label.new()
+		value_label.name = "SettingsSandboxValue_%s" % suffix
+		value_label.text = "%.1f×" % slider.value
+		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		value_label.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+		value_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
+		chip.add_child(value_label)
+		sliders[key] = slider
+		value_labels[key] = value_label
+		slider_order.append(slider)
+
+		slider.value_changed.connect(func(value: float) -> void:
+			game.set_sandbox_multiplier(key, value, true)
+			_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+		)
+
+	reset.size_flags_horizontal = Control.SIZE_SHRINK_END
+	reset.pressed.connect(func() -> void:
+		game.reset_sandbox_settings(true)
+		_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+	)
+	content.add_child(reset)
+	if compact:
+		_settings_game_place_control(reset, Rect2(446.0, 470.0, 392.0, 50.0))
+	_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+	game_tab.set_meta("settings_game_sliders", slider_order)
+	game_tab.set_meta("settings_game_reset", reset)
+	return game_tab
+
+
+func _settings_game_place_control(control: Control, rect: Rect2) -> void:
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.size = rect.size
+	control.custom_minimum_size = rect.size
+
+
+func _wire_settings_game_focus(tabs: TabContainer, game_tab: Control, compact: bool) -> void:
+	var tab_buttons: Array[Button] = []
+	for tab_index in range(4):
+		var button := tabs.get_parent().get_parent().get_parent().find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
+		if button != null:
+			tab_buttons.append(button)
+	if tab_buttons.size() != 4:
+		return
+	for tab_index in range(tab_buttons.size()):
+		var current := tab_buttons[tab_index]
+		if compact:
+			var other_column := tab_index ^ 1
+			var other_row := (tab_index + 2) % 4
+			current.focus_neighbor_left = tab_buttons[other_column].get_path()
+			current.focus_neighbor_right = tab_buttons[other_column].get_path()
+			current.focus_neighbor_top = tab_buttons[other_row].get_path()
+			current.focus_neighbor_bottom = tab_buttons[other_row].get_path()
+		else:
+			current.focus_neighbor_left = tab_buttons[(tab_index - 1 + 4) % 4].get_path()
+			current.focus_neighbor_right = tab_buttons[(tab_index + 1) % 4].get_path()
+			current.focus_neighbor_top = current.get_path()
+
+	var sliders: Array = game_tab.get_meta("settings_game_sliders", [])
+	var reset := game_tab.get_meta("settings_game_reset", null) as Button
+	if sliders.size() != 5 or reset == null:
+		return
+	var first_slider := sliders[0] as HSlider
+	var last_slider := sliders[sliders.size() - 1] as HSlider
+	tab_buttons[3].focus_neighbor_bottom = first_slider.get_path()
+	for slider_index in range(sliders.size()):
+		var slider := sliders[slider_index] as HSlider
+		slider.focus_neighbor_top = tab_buttons[3].get_path() if slider_index == 0 else (sliders[slider_index - 1] as HSlider).get_path()
+		slider.focus_neighbor_bottom = reset.get_path() if slider_index == sliders.size() - 1 else (sliders[slider_index + 1] as HSlider).get_path()
+	reset.focus_neighbor_top = last_slider.get_path()
+	reset.focus_neighbor_bottom = tab_buttons[3].get_path()
+	reset.focus_neighbor_left = reset.get_path()
+	reset.focus_neighbor_right = reset.get_path()
+
+
+func _refresh_settings_game_page(status: Label, warning: Label, reset: Button, sliders: Dictionary, value_labels: Dictionary) -> void:
+	var snapshot: Dictionary = game.sandbox_snapshot()
+	var neutral: bool = bool(game.sandbox_settings_are_neutral())
+	status.text = "Обычный режим · 1.0×" if neutral else "Песочница активна"
+	status.add_theme_color_override("font_color", Color(0.64, 0.86, 0.58, 1.0) if neutral else SETTINGS_V6_AMBER)
+	warning.text = "Изменения применятся только к следующему забегу." if neutral else "Обычная прогрессия, достижения и release-balance evidence отключены."
+	warning.add_theme_color_override("font_color", SETTINGS_V6_MUTED if neutral else Color(1.0, 0.68, 0.36, 1.0))
+	if reset != null:
+		reset.disabled = neutral
+	for key in sliders:
+		var slider := sliders[key] as HSlider
+		var value_label := value_labels.get(key) as Label
+		var value := float(snapshot.get(key, 1.0))
+		if slider != null:
+			slider.set_value_no_signal(value)
+		if value_label != null:
+			value_label.text = "%.1f×" % value
 
 
 func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control, s := 1.0) -> HBoxContainer:

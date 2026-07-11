@@ -124,9 +124,12 @@ Fallback texture style, если PNG не найден: background `alpha=0.94`,
 
 ## Settings
 
-- Settings uses exactly three custom tabs: `Экран`, `Звук`, `Управление`.
-  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..2` must stay
-  inside the switcher safe rects and `SettingsTabButton_3` must not exist.
+- Settings uses four custom tabs: `Экран`, `Звук`, `Управление`, `Игра`.
+  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..3` use
+  independent safe plates (one 4-button row above 720p, centered 2×2 at 720p).
+  The Game page is a vertical-only `SettingsGameScroll`; compact runtime geometry
+  at 1280×720 is `892×242` with an exclusive 14px scrollbar lane and `878×520`
+  content canvas. The visible height is capped by the live Atlas frame safe-zone.
 - Screen dropdowns stage pending values only. `SettingsApplyButton` commits
   monitor/resolution/window-mode changes through `_apply_video_settings()`;
   `SettingsRevertButton` discards staged values. Both buttons are `240 x 72` and

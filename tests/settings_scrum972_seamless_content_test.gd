@@ -86,10 +86,10 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		_fail("Settings tabs/footer overlap the seamless content zone at %s." % str(viewport_size))
 		return
 
-	if tabs.get_child_count() != 3 or main.find_child("SettingsTabButton_3", true, false) != null:
-		_fail("Settings must preserve exactly three tabs at %s." % str(viewport_size))
+	if tabs.get_child_count() != 4 or main.find_child("SettingsTabButton_3", true, false) == null:
+		_fail("Settings must expose the SCRUM-1025 four-tab contract at %s." % str(viewport_size))
 		return
-	for tab_index in range(3):
+	for tab_index in range(4):
 		var tab_button := main.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
 		if tab_button == null or tab_button.focus_mode != Control.FOCUS_ALL:
 			_fail("Settings tab %d is missing or not focusable at %s." % [tab_index, str(viewport_size)])

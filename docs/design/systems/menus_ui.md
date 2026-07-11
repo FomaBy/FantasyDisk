@@ -291,10 +291,10 @@ SCRUM-997 turns the Event screen into an illustrated encounter (spec:
   the panel, hint lines inside their cards, back plate in the strip and clear
   of both, and a `ScreenBackground_event` (or fallback) node present.
 
-SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
-frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
-and `Управление`, with built-in `TabContainer` headers hidden and
-`SettingsTabButton_0..2` inside the switcher safe rects. Screen settings
+SCRUM-674 historically rebuilt the Settings apply flow inside the existing
+dark-fantasy frame contract. Its three pages `Экран`, `Звук`, `Управление` remain,
+but SCRUM-1025 adds live `Игра` and `SettingsTabButton_3`; built-in
+`TabContainer` headers remain hidden. Screen settings
 (`SettingsScreenOption`, `SettingsResolutionOption`, `SettingsWindowModeOption`)
 now stage values in a pending buffer and do not call `_apply_video_settings()`
 until `SettingsApplyButton` is pressed; `SettingsRevertButton` discards the
@@ -343,9 +343,13 @@ empty frame interior, clear of dragon heads, gems, bevels and the dedicated
 scroll lane. Exact rectangles, responsive rules, PixelLab provenance, generated
 sources and debug-overlay evidence live in
 `docs/design/references/scrum975_settings_game_tab/`; rendered previews live in
-`docs/design/previews/scrum975_settings_game_tab/`. This is a Design package,
-not a claim that the fourth runtime tab is already integrated; SCRUM-1025 owns
-that Back-end integration after SCRUM-975 and SCRUM-976 are accepted.
+`docs/design/previews/scrum975_settings_game_tab/`. SCRUM-1025 now integrates
+that accepted package:
+four independent plates (one row wide / 2×2 compact), PixelLab Game icon,
+five authoritative SCRUM-976 sliders, status/warning, atomic reset and
+next-run-only semantics. `SettingsBottomActions` is hidden only on Game because
+Apply/Revert belongs to staged Screen settings; Game content remains inside
+the transparent clip owner and scrolls vertically with a dedicated 14px lane.
 
 SCRUM-471 is the historical 1152x648 short-height guard for the former Attribute
 Shop inner panel and Settings. Its Attribute Shop card/button metrics are
@@ -665,26 +669,27 @@ carousel geometry are unchanged. PixelLab/content-zone evidence:
   from the `level_up_effects` group before spawning the replacement. The only
   visible `Level Up` text is `LevelUpToastLabel` inside `LevelUpToastFrame`.
 
-- SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
+- SCRUM-396 is the historical SCRUM-391 Settings tab-switcher integration:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
 with safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` and
 `Rect2(852,88,270,82)`. Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH` points to
 this 3-slot asset, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly those
-three rects, and `SettingsTabButton_3` must not exist.
-- SCRUM-439 integrates the Settings v2 rebuild runtime for Sprint 0.1.6:
+three rects. SCRUM-1025 supersedes that runtime geometry with four independent
+plates; the old 3-slot bitmap remains reference/backup only.
+- SCRUM-439 historically integrated the Settings v2 rebuild for Sprint 0.1.6:
 `docs/design/mockups/scrum439_settings_v2/spec.md`,
 `scrum439_settings_v2_mockup.png`, `docs/design/previews/scrum439_settings_v2_safe_zones.png`
 and transparent candidate frames in `assets/sprites/ui/frames/settings_v2/`.
-The mockup covers all three tabs (`Экран`, `Звук`, `Управление`) and records a
+That mockup covers the former three tabs (`Экран`, `Звук`, `Управление`) and records a
 new three-slot tab switcher, modal frame, section panel and control-row safe
-zones. Runtime now uses the v2 main modal and v2 proportional 3-slot switcher,
-preserves the existing settings/rebind semantics, keeps exactly three tab
+zones. That runtime used the v2 main modal and proportional 3-slot switcher,
+preserved the settings/rebind semantics, kept exactly three tab
 buttons, and places labels, icons, sliders, dropdowns, checkboxes, focus rings
-and scroll bars only inside modal safe areas. The dense live body uses a flat
+and scroll bars only inside modal safe areas. The dense v2 body used a flat
 inner safe panel rather than the optional section/control-row frames, because
 those candidates' source margins would clip controls or collide with the Back
-button at 720p.
+button at 720p. SCRUM-879/972/1025 supersede this shell and tab count.
 
 ## Combat HUD Redraw
 
@@ -1176,18 +1181,18 @@ multipart payloads, while missing/failed webhook delivery falls back to
 
 ## Settings Tabs
 
-SCRUM-439 supersedes the older SCRUM-396 switcher-only runtime with the full
-Settings v2 modal. The live settings screen now draws
+SCRUM-439 superseded the older SCRUM-396 switcher-only runtime with the full
+Settings v2 modal. That historical settings screen drew
 `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` and
 the design-ready 3-slot switcher
 `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png`
 (`1280x256`, RGBA transparent, no baked text). The switcher is displayed as a
 whole-image proportional 5:1 strip so it is never stretched on one axis. The
-built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the three
-settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
+built-in `TabContainer` headers remain hidden. Current `SettingsTabs` owns four
+pages, while `SettingsTabButton_0..3` switch `current_tab`.
 
 SCRUM-879 later promoted Settings into the shared fullscreen Atlas shell while
-preserving those three native pages and controls. SCRUM-972 defines the current
+preserving the native pages and controls. SCRUM-972 defines the current
 content-surface contract: `SettingsContentPanel` remains the centered responsive
 width/clip owner and retains positive content margins, but both its style and
 the hidden `SettingsTabs.panel` style are fully transparent with zero borders.
@@ -1196,7 +1201,13 @@ be no gray inset, inner outline, bevel, shadow or second frame between the tab
 plates and footer. The outer `SettingsFrame` stays hollow/on top, and every
 control remains inside `SettingsSafeArea`. PixelLab direction, exact zones and
 fit/debug evidence: `docs/design/mockups/scrum972_settings_seamless_content/`;
-runtime matrix: `build/qa/scrum972/`.
+runtime matrix: `build/qa/scrum972/`. SCRUM-1025 extends this same transparent
+surface to `Игра`: panel widths `960/1158/1544`, Game scroll widths
+`892/1068/1424`, compact logical content `878×520`, and four standalone
+tab plates. The source compact mockup's `306px` viewport omitted the live Atlas
+border; runtime uses a frame-safe `242px` viewport at 720p (max scroll `278`)
+so the bottom state exposes rows 3–5 and Reset entirely above the ornament.
+All five rows remain inside the empty frame interior.
 
 Runtime labels/click/focus zones must stay inside these base safe rects and
 scale proportionally with the whole image. Runtime smoke validates the actual
