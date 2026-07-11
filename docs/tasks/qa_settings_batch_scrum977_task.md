@@ -14,7 +14,7 @@ SCRUM-974, SCRUM-975, SCRUM-976 and SCRUM-1025: seamless frame surface,
 monitor/video behavior, expanded Sound controls, four-tab Game page, persisted
 sandbox modifiers, next-run snapshot semantics and neutral gameplay regression.
 
-## QA-Вердикт (2026-07-11)
+## Исторический вердикт до SCRUM-1053 (2026-07-11)
 
 Статус: FAILED
 
@@ -79,7 +79,7 @@ Disk cleanup: disposable Metal captures, `.godot`, isolated HOME/XDG/userdata
 roots, worktree and local branch are removed after the evidence commit is
 pushed and Jira is released from stale `В работе`.
 
-## Финальный QA-Вердикт после SCRUM-1053 (2026-07-11)
+## QA-Вердикт (финальный, после SCRUM-1053; 2026-07-11)
 
 Статус: PASSED
 
