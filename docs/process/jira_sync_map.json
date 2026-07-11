@@ -4395,8 +4395,8 @@
  },
  "bug_scrum1041_audio_ui_tail_docs_stale_task.md": {
   "key": "SCRUM-1041",
-  "status": "Контроль качества",
-  "desc_hash": "0e99b2f0f033cd73daa324bc220fb2af"
+  "status": "Готово",
+  "desc_hash": "08750be94e16ea85a02da3bed9e12e53"
  },
  "SCRUM-993_shop_gold_shell.md": {
   "key": "SCRUM-993",
@@ -4442,5 +4442,10 @@
   "key": "SCRUM-924",
   "status": "Контроль качества",
   "desc_hash": "1d2d56c83ac67a300daf0195debc8dee"
+ },
+ "SCRUM-968_audio_integration_qa.md": {
+  "key": "SCRUM-968",
+  "status": "Готово",
+  "desc_hash": "e4fdd1ee6fc15f92e4bad26f458fab37"
  }
 }
