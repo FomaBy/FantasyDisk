@@ -108,7 +108,7 @@ Disk cleanup: isolated SCRUM-1074 HOME/XDG/user-data roots, generated Godot
 cache, unrelated generated `.gd.uid` sidecars and disposable worktree are
 removed after the final push; no remote task branch is created.
 
-## QA-Вердикт: FAILED
+## Historical QA verdict: FAILED
 
 Independent QA on fresh `origin/dev` `d7548ba8d` found no static defect in the
 test-only diff or SCRUM-1031 teardown architecture. Focused headless passed with
@@ -256,7 +256,9 @@ Disk cleanup: isolated `/tmp/fsd-scrum1074-*` roots/logs and generated UID
 sidecars removed; disposable `.godot` cache and task worktree are removed after
 the final push. No remote task branch is created.
 
-## Final independent combined QA verdict: PASSED
+## QA-Вердикт
+
+Статус: PASSED
 
 Independent QA reviewed corrective commit `cb9671188` from fresh
 `origin/dev` `8bc3b4039`; before evidence, the branch was fast-forwarded to

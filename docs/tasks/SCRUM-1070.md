@@ -72,7 +72,7 @@ Post-integration base: `origin/dev` `e5c8d32a8`.
 Disk cleanup: `.godot`, isolated `/tmp/fsd-scrum1070-*` user-data roots and
 generated unrelated UID sidecars removed; task worktree removed after push.
 
-## QA-Вердикт: FAILED
+## Historical QA verdict: FAILED
 
 Independent QA на свежем `origin/dev` `0b17c754a` подтвердила всю продуктовую
 часть: focused exact `420×72/88/104` на семи размерах и same-instance live
@@ -129,7 +129,9 @@ in Jira `Контроль качества` until SCRUM-1074 adds the guard, pro
 default `user://`, and receives a clean independent rerun. No SCRUM-1070
 product code, assets, schema, balance or runtime behavior changed during QA.
 
-## Final independent re-QA verdict: PASSED
+## QA-Вердикт
+
+Статус: PASSED
 
 Final combined QA with SCRUM-1074 passed on product/test base
 `origin/dev@8bc3b4039`; the evidence branch was then fast-forwarded to current
