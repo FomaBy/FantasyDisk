@@ -3432,6 +3432,20 @@ func _atlas_chip_style(alpha: float, pad: float) -> StyleBoxFlat:
 	return style
 
 
+func _settings_seamless_content_style(pad: float) -> StyleBoxFlat:
+	# SCRUM-972: Settings is already inside the fullscreen sanctum shell. Keep a
+	# StyleBox owner solely for responsive content margins; drawing another fill
+	# or border here makes the center read as a separate gray inset panel.
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.content_margin_left = pad * 1.4
+	style.content_margin_right = pad * 1.4
+	style.content_margin_top = pad
+	style.content_margin_bottom = pad
+	return style
+
+
 func _atlas_translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.03, 0.03, 0.05, alpha)
@@ -6057,6 +6071,19 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
+	# Hidden TabContainer headers do not disable the engine theme's own panel
+	# fill. Preserve its layout margins while making that second surface fully
+	# transparent, otherwise it remains visible beneath the outer content owner.
+	var inherited_tabs_panel := tabs.get_theme_stylebox("panel")
+	var seamless_tabs_panel := StyleBoxFlat.new()
+	seamless_tabs_panel.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	seamless_tabs_panel.set_border_width_all(0)
+	if inherited_tabs_panel != null:
+		seamless_tabs_panel.content_margin_left = inherited_tabs_panel.get_content_margin(SIDE_LEFT)
+		seamless_tabs_panel.content_margin_top = inherited_tabs_panel.get_content_margin(SIDE_TOP)
+		seamless_tabs_panel.content_margin_right = inherited_tabs_panel.get_content_margin(SIDE_RIGHT)
+		seamless_tabs_panel.content_margin_bottom = inherited_tabs_panel.get_content_margin(SIDE_BOTTOM)
+	tabs.add_theme_stylebox_override("panel", seamless_tabs_panel)
 
 	# --- Ряд 2: свитчер табов — кнопки глобального кита на плите «Назад»,
 	# фикс-сетка 3×260×_atlas_action_button_height() (SCRUM-882) ---
@@ -6066,20 +6093,21 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	layout.add_child(switcher_row)
 	switcher_row.add_child(_make_settings_tab_switcher(tabs, s))
 
-	# --- Ряд 3: контент-панель — чип Атласа (как AtlasNodePanel), табы внутри.
+	# --- Ряд 3: бесшовный content-owner поверх общего sanctum background.
 	# Фидбек 2026-07-08: панель ОБЖИМАЕТ контент по ширине (колонка + поля чипа),
-	# а не тянется на всю safe-зону — пустых боков во фрейме нет.
+	# а не тянется на всю safe-зону. SCRUM-972 сохраняет её responsive rect,
+	# margins и clipping, но убирает отдельный серый fill/кант внутри outer frame.
 	var content_panel := PanelContainer.new()
 	content_panel.name = "SettingsContentPanel"
 	var content_chip_pad := roundf(16.0 * s_ui)
-	content_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, content_chip_pad))
+	content_panel.add_theme_stylebox_override("panel", _settings_seamless_content_style(content_chip_pad))
 	var settings_panel_w := settings_column_w + (content_chip_pad * 1.4 + 8.0 * s_ui) * 2.0 + 24.0
 	content_panel.custom_minimum_size = Vector2(settings_panel_w, 0.0)
 	content_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content_panel.clip_contents = true
 	layout.add_child(content_panel)
-	# Малые поля: content-margins самого чипа уже держат контент на тёмном поле.
+	# Малые поля: transparent StyleBox margins держат контент внутри safe-zone.
 	var content_margin := MarginContainer.new()
 	content_margin.name = "SettingsContentSafe"
 	content_margin.add_theme_constant_override("margin_left", int(8.0 * s_ui))

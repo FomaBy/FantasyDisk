@@ -251,6 +251,16 @@ modal, чтобы не накладываться на frame ornament и Back bu
 `build/qa/scrum439/settings_v2_runtime_rects.md` и
 `build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
 
+SCRUM-879 superseded the old v2 modal geometry with the fullscreen Atlas shell,
+and SCRUM-972 removed its remaining double-surface artifact. Live
+`SettingsContentPanel` and the hidden `SettingsTabs` panel now draw no fill or
+border; the content owner, clipping, positive margins, three tab pages and all
+Back/Apply/Revert behavior remain unchanged. Settings rows render over one
+continuous sanctum background inside the hollow `SettingsFrame`, with no gray
+inner rectangle at 1280x720, 1920x1080 or 2560x1440. Design evidence:
+`docs/design/mockups/scrum972_settings_seamless_content/`; focused coverage:
+`tests/settings_scrum972_seamless_content_test.gd`.
+
 SCRUM-667 ограничил live Settings двумя оконными разрешениями: 2560x1440 по
 умолчанию, если оно помещается на выбранном мониторе, и 1920x1080 как fallback.
 SCRUM-441 HiDPI logic remains: resolution options проверяются через

@@ -6070,9 +6070,27 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		_fail("Expected fullscreen settings to expose SettingsContentPanel.")
 		return
 	var content_panel_style := content_panel.get_theme_stylebox("panel") as StyleBoxFlat
-	if content_panel_style == null or content_panel_style.bg_color.a < 0.8:
-		_fail("Expected SettingsContentPanel to wear an opaque atlas chip StyleBoxFlat.")
+	if content_panel_style == null or content_panel_style.bg_color.a > 0.01:
+		_fail("SCRUM-972: SettingsContentPanel must keep a transparent margin-only StyleBoxFlat.")
 		return
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		if content_panel_style.get_border_width(side) != 0:
+			_fail("SCRUM-972: SettingsContentPanel must not draw an inner border.")
+			return
+	if minf(
+		minf(content_panel_style.content_margin_left, content_panel_style.content_margin_right),
+		minf(content_panel_style.content_margin_top, content_panel_style.content_margin_bottom)
+	) <= 0.0:
+		_fail("SCRUM-972: transparent SettingsContentPanel must retain protective content margins.")
+		return
+	var tabs_panel_style := tabs.get_theme_stylebox("panel") as StyleBoxFlat
+	if tabs_panel_style == null or tabs_panel_style.bg_color.a > 0.01:
+		_fail("SCRUM-972: hidden SettingsTabs must not paint an inherited inner panel.")
+		return
+	for side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+		if tabs_panel_style.get_border_width(side) != 0:
+			_fail("SCRUM-972: hidden SettingsTabs must not paint an inherited border.")
+			return
 	# SCRUM-882: табы — кнопки глобального кита на плите «Назад»: фикс-сетка
 	# 3×(260+24)×_atlas_action_button_height() (72/88/104 по высоте вьюпорта);
 	# позиции ячеек меряем от глобального rect самого свитчера.

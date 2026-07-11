@@ -1168,6 +1168,18 @@ whole-image proportional 5:1 strip so it is never stretched on one axis. The
 built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the three
 settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
 
+SCRUM-879 later promoted Settings into the shared fullscreen Atlas shell while
+preserving those three native pages and controls. SCRUM-972 defines the current
+content-surface contract: `SettingsContentPanel` remains the centered responsive
+width/clip owner and retains positive content margins, but both its style and
+the hidden `SettingsTabs.panel` style are fully transparent with zero borders.
+Rows therefore sit directly on the single dark sanctum background; there must
+be no gray inset, inner outline, bevel, shadow or second frame between the tab
+plates and footer. The outer `SettingsFrame` stays hollow/on top, and every
+control remains inside `SettingsSafeArea`. PixelLab direction, exact zones and
+fit/debug evidence: `docs/design/mockups/scrum972_settings_seamless_content/`;
+runtime matrix: `build/qa/scrum972/`.
+
 Runtime labels/click/focus zones must stay inside these base safe rects and
 scale proportionally with the whole image. Runtime smoke validates the actual
 button rects against the scaled safe rects:

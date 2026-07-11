@@ -1,0 +1,32 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F1E3BE",
+    "stroke_fill": "#120D0A",
+    "stroke_width": 1,
+    "line_spacing": 1.0,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "НАСТРОЙКИ",
+    "tab_screen": "ЭКРАН",
+    "tab_sound": "ЗВУК",
+    "tab_controls": "УПРАВЛЕНИЕ",
+    "monitor": "МОНИТОР",
+    "resolution": "РАЗРЕШЕНИЕ",
+    "window_mode": "РЕЖИМ ОКНА",
+    "shake": "ТРЯСКА КАМЕРЫ"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "x": 62, "y": 73, "w": 140, "h": 18, "max_font": 14, "min_font": 10, "align": "center"},
+    {"id": "tab_screen", "content_key": "tab_screen", "x": 202, "y": 121, "w": 86, "h": 16, "max_font": 11, "min_font": 8, "align": "center"},
+    {"id": "tab_sound", "content_key": "tab_sound", "x": 302, "y": 121, "w": 86, "h": 16, "max_font": 11, "min_font": 8, "align": "center"},
+    {"id": "tab_controls", "content_key": "tab_controls", "x": 398, "y": 121, "w": 96, "h": 16, "max_font": 10, "min_font": 7, "align": "center"},
+    {"id": "monitor", "content_key": "monitor", "x": 52, "y": 154, "w": 94, "h": 18, "max_font": 11, "min_font": 8},
+    {"id": "resolution", "content_key": "resolution", "x": 52, "y": 193, "w": 94, "h": 18, "max_font": 11, "min_font": 8},
+    {"id": "window_mode", "content_key": "window_mode", "x": 52, "y": 228, "w": 94, "h": 18, "max_font": 11, "min_font": 8},
+    {"id": "shake", "content_key": "shake", "x": 52, "y": 267, "w": 116, "h": 18, "max_font": 11, "min_font": 8}
+  ]
+}
