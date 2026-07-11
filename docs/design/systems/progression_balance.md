@@ -474,6 +474,22 @@ fallen_star (Инт/Сила). Гейты: `event_data_contract_check` (12 со�
 выбора, tags, гард post_combat), `event_data_smoke_test`,
 `event_risk_reward_ev_test`, `event_outcomes_runtime_test`, `runtime_smoke`.
 
+## Gameplay Sandbox Eligibility (SCRUM-976)
+
+Gameplay sandbox values are not new balance data. The configured values are
+copied into an immutable run snapshot, and player damage/attack speed are
+applied as final exact factors after the canonical release softcaps. A neutral
+snapshot (`1.0` on all five axes) remains fully eligible for achievements,
+Codex, boss/Ascension/class progression and release balance evidence.
+
+Any non-neutral snapshot is deliberately progression-ineligible. Runtime keeps
+run-local XP, money, artifacts and summary metrics, but `Main` blocks the three
+persistent write sinks: achievement evaluation, Codex discovery and boss/meta
+victory recording. `run_metrics.sandbox` publishes the normalized snapshot and
+the explicit `progression_eligible`, `achievements_eligible` and
+`release_balance_evidence_eligible` flags so debug/QA reports cannot silently
+mix custom runs into canonical balance evidence.
+
 ## Meta Progression
 
 - Ascension levels: 5 уровней на персонажа (SCRUM-516: лестница сжата 10→5, монстерский пресс заметно усилен — кумулятив enemy_hp_mult на L5 = 1.80, было 1.32 на L10).

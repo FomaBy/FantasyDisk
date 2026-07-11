@@ -235,6 +235,9 @@ static func _default_run_modifiers() -> Dictionary:
 		"damage_multiplier": 1.0,
 		"magic_damage_multiplier": 1.0,
 		"attack_speed_multiplier": 1.0,
+		# SCRUM-976: отдельный final-layer вне softcap release-баланса.
+		"sandbox_player_damage_multiplier": 1.0,
+		"sandbox_player_attack_speed_multiplier": 1.0,
 		"range_multiplier": 1.0,
 		"aoe_radius_multiplier": 1.0,
 		"sector_multiplier": 1.0,
@@ -3023,6 +3026,17 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
 		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
 
+	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
+	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
+	if weapon.get("summon_interval") != null:
+		var summon_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
+		var base_summon_interval := float(weapon.get_meta("base_summon_interval", weapon.get("summon_interval")))
+		weapon.set("summon_interval", maxf(0.18, base_summon_interval / maxf(summon_attack_speed, 0.1)))
+	if weapon.get("summon_attack_interval") != null:
+		var unit_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
+		var base_summon_attack_interval := float(weapon.get_meta("base_summon_attack_interval", weapon.get("summon_attack_interval")))
+		weapon.set("summon_attack_interval", maxf(0.18, base_summon_attack_interval / maxf(unit_attack_speed, 0.1)))
+
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
 		var scaled_attack_range := float(derived_parameters.get("attack_range", base_attack_range))
@@ -3115,6 +3129,10 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_damage", weapon.get("damage"))
 	if weapon.get("fire_interval") != null and not weapon.has_meta("base_fire_interval"):
 		weapon.set_meta("base_fire_interval", weapon.get("fire_interval"))
+	if weapon.get("summon_interval") != null and not weapon.has_meta("base_summon_interval"):
+		weapon.set_meta("base_summon_interval", weapon.get("summon_interval"))
+	if weapon.get("summon_attack_interval") != null and not weapon.has_meta("base_summon_attack_interval"):
+		weapon.set_meta("base_summon_attack_interval", weapon.get("summon_attack_interval"))
 	if weapon.get("attack_range") != null and not weapon.has_meta("base_attack_range"):
 		weapon.set_meta("base_attack_range", weapon.get("attack_range"))
 	if weapon.get("aoe_radius") != null and not weapon.has_meta("base_aoe_radius"):

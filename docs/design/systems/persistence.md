@@ -52,6 +52,14 @@ current `route_stage`, selected route branches, player snapshot
 pending level-up/attribute offers, used events, current shop stock and shop
 re-entry state.
 
+SCRUM-976 adds gameplay-sandbox persistence without changing the autosave schema
+version. Five validated multipliers live in `user://settings.cfg`, while
+`Main.begin_new_run_session()` copies them into a separate immutable
+`run_sandbox_snapshot` at the weapon-confirm boundary. Safe checkpoints persist
+that active snapshot; Continue restores it, and legacy autosaves with no field
+normalize to neutral `1.0`. Resetting Settings is atomic and changes only the
+configured values for the next run, never an active or restored run.
+
 SCRUM-996 (event reveal / event shop) deliberately adds **no** new autosave
 fields. The event outcome is applied to the in-memory run snapshot when the
 choice is pressed, but the autosave is still written only at the next map
@@ -79,6 +87,8 @@ Main menu start checks `RunAutosave.has_run()`:
 - `tests/runtime_smoke_test.gd` covers the user flow: save exists, main menu
   prompt appears, Continue restores route/snapshot state, New Game clears the
   save, and death/victory clear the save.
+- `tests/gameplay_sandbox_scrum976_test.gd` covers settings persistence,
+  immutable active snapshots, autosave round-trip and next-run reset semantics.
 
 ## Settings schema audit (SCRUM-720)
 

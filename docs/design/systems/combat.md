@@ -188,6 +188,24 @@
   дамажащее событие дыма — AoE-взрыв на детонации.
 - Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 
+## Gameplay Sandbox Runtime (SCRUM-976)
+
+- `scripts/gameplay_sandbox.gd` owns the five clamped, `0.1`-snapped
+  multipliers; neutral `1.0` is value-equivalent to release gameplay.
+- `Enemy._ready()` applies monster HP and outgoing damage exactly once before
+  health initialization. Because boss and every normal/elite/summoned enemy
+  share this base, direct summon paths cannot bypass the layer.
+- Monster attack speed scales only cooldown countdowns: contact, shooting,
+  summoning, elite offensive rotations and boss attack rotations. Movement,
+  shield duration, telegraphs, windups, strike and recovery windows keep their
+  authored timing.
+- Player damage and attack speed are final exact multipliers in
+  `ProgressionData.derived_parameters()`, outside normal run softcaps and upgrade
+  exponents. `Player` also bridges attack speed to `SummonerWeapon` deployment
+  and allied-unit intervals; existing minimum interval floors remain active.
+- Custom-run metadata is stored in `run_metrics.sandbox`; balance evidence must
+  require `release_balance_evidence_eligible=true`.
+
 ## Spawn And Waves
 
 - Спавн использует bounds новой арены, active cap и wave pacing.

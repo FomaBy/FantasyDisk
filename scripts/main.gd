@@ -478,6 +478,7 @@ const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
@@ -500,6 +501,9 @@ var attribute_rerolls_left := 0
 var selected_screen_index := 0
 var selected_ascension_level := 0
 var run_ascension_difficulty := {}
+var sandbox_settings := GAMEPLAY_SANDBOX.neutral_snapshot()
+var run_sandbox_snapshot := GAMEPLAY_SANDBOX.neutral_snapshot()
+var run_sandbox_captured := false
 var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
@@ -586,6 +590,7 @@ func _load_game_settings() -> void:
 	gamepad_bindings = (settings.get("gamepad_bindings", {}) as Dictionary).duplicate(true)
 	gamepad_deadzone = clampf(float(settings.get("gamepad_deadzone", 0.25)), 0.05, 0.5)
 	gamepad_vibration = bool(settings.get("gamepad_vibration", true))
+	sandbox_settings = GAMEPLAY_SANDBOX.snapshot_from_settings(settings)
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
@@ -628,6 +633,7 @@ func save_game_settings() -> void:
 	settings["gamepad_bindings"] = gamepad_bindings.duplicate(true)
 	settings["gamepad_deadzone"] = gamepad_deadzone
 	settings["gamepad_vibration"] = gamepad_vibration
+	GAMEPLAY_SANDBOX.write_snapshot_to_settings(settings, sandbox_settings)
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
@@ -660,6 +666,69 @@ func clear_run_autosave() -> void:
 	RUN_AUTOSAVE.clear_run()
 
 
+# SCRUM-976: публичный backend-контракт для Settings/Game (SCRUM-1025).
+func sandbox_snapshot() -> Dictionary:
+	return GAMEPLAY_SANDBOX.snapshot_from_settings(sandbox_settings)
+
+
+func sandbox_multiplier(key: String) -> float:
+	return float(sandbox_snapshot().get(key, 1.0))
+
+
+func set_sandbox_multiplier(key: String, value, persist := true) -> float:
+	var normalized := GAMEPLAY_SANDBOX.set_multiplier(sandbox_settings, key, value)
+	if persist:
+		save_game_settings()
+	return normalized
+
+
+func reset_sandbox_settings(persist := true) -> Dictionary:
+	GAMEPLAY_SANDBOX.reset_settings(sandbox_settings)
+	if persist:
+		save_game_settings()
+	return sandbox_snapshot()
+
+
+func sandbox_settings_are_neutral() -> bool:
+	return GAMEPLAY_SANDBOX.is_neutral(sandbox_settings)
+
+
+func capture_run_sandbox_snapshot() -> Dictionary:
+	run_sandbox_snapshot = sandbox_snapshot()
+	run_sandbox_captured = true
+	if not run_metrics.is_empty():
+		run_metrics["sandbox"] = run_sandbox_metadata()
+	return run_sandbox_snapshot.duplicate(true)
+
+
+func clear_run_sandbox_snapshot() -> void:
+	run_sandbox_snapshot = GAMEPLAY_SANDBOX.neutral_snapshot()
+	run_sandbox_captured = false
+
+
+func run_sandbox_metadata() -> Dictionary:
+	return GAMEPLAY_SANDBOX.run_metadata(run_sandbox_snapshot)
+
+
+func run_sandbox_is_custom() -> bool:
+	return not GAMEPLAY_SANDBOX.is_neutral(run_sandbox_snapshot)
+
+
+func run_progression_eligible() -> bool:
+	# До старта забега сохраняем legacy/neutral parity для прямых служебных и
+	# тестовых путей. Запрет существует только у реально captured custom run.
+	return not run_sandbox_captured or not run_sandbox_is_custom()
+
+
+func run_sandbox_multiplier(key: String) -> float:
+	return float(GAMEPLAY_SANDBOX.snapshot_from_settings(run_sandbox_snapshot).get(key, 1.0))
+
+
+func begin_new_run_session() -> void:
+	capture_run_sandbox_snapshot()
+	reset_run_metrics()
+
+
 # SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
 # на старте нового забега. НЕ входят в _run_autosave_state — не персистятся и не текут
 # из загруженного autosave (после «Продолжить» метрики считаются с нуля за новый прогон).
@@ -675,6 +744,7 @@ func reset_run_metrics() -> void:
 		"final_level": 0,
 		"artifacts": [],
 		"outcome_reason": "",
+		"sandbox": run_sandbox_metadata(),
 	}
 
 
@@ -745,6 +815,8 @@ func capture_run_metrics_finals(source: Dictionary) -> void:
 # начислить разовую награду meta_points. Идемпотентно (уже открытые не начисляются).
 # Сохраняет мету только если что-то реально открылось.
 func evaluate_run_achievements() -> void:
+	if not run_progression_eligible():
+		return
 	var result: Dictionary = ACHIEVEMENTS_DATA.evaluate_run(meta_state, run_metrics)
 	if int(result.get("awarded", 0)) > 0 or not (result.get("newly_unlocked", []) as Array).is_empty():
 		META_PROGRESSION.save_state(meta_state)
@@ -775,6 +847,7 @@ func _run_autosave_state() -> Dictionary:
 		"used_event_ids": used_event_ids.duplicate(true),
 		"current_event_definition": current_event_definition.duplicate(true),
 		"run_ascension_difficulty": run_ascension_difficulty.duplicate(true),
+		"run_sandbox_snapshot": run_sandbox_snapshot.duplicate(true),
 		"current_shop_items": current_shop_items.duplicate(true),
 		"current_shop_purchased": current_shop_purchased.duplicate(true),
 		"current_shop_node_key": current_shop_node_key,
@@ -820,6 +893,8 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	pending_event_combat.clear()
 	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не переживает рестор
 	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
+	run_sandbox_snapshot = GAMEPLAY_SANDBOX.snapshot_from_settings(_autosave_dictionary(state.get("run_sandbox_snapshot", {})))
+	run_sandbox_captured = true
 	current_shop_items = _autosave_array(state.get("current_shop_items", []))
 	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
 	current_shop_node_key = str(state.get("current_shop_node_key", ""))
@@ -939,6 +1014,8 @@ func _load_meta_progression() -> void:
 
 
 func record_codex_discovery(category: String, content_id: String) -> void:
+	if not run_progression_eligible():
+		return
 	var id := content_id.strip_edges()
 	if id == "":
 		return
@@ -1005,6 +1082,12 @@ func start_secret_boss_encounter() -> void:
 
 
 func record_boss_victory() -> void:
+	if not run_progression_eligible():
+		# Custom sandbox runs finish normally, but never write meta/ascension/class
+		# progression or secret-boss release rewards.
+		if secret_boss_active:
+			secret_boss_active = false
+		return
 	# SCRUM-620: контекст забега для челленджей класса — какое оружие и был ли магазин.
 	# used_shop=false только если за ВЕСЬ забег не куплено ни одного предмета.
 	var run_context := {
@@ -1083,6 +1166,13 @@ func apply_ascension_bonuses(player: Node) -> void:
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
 	if start_gold > 0 and player.get("money") != null:
 		player.set("money", int(player.get("money")) + start_gold)
+	# 4) Gameplay sandbox — отдельный последующий множительный слой. Он попадает
+	# в run_player_snapshot и поэтому не применяется повторно на следующих боях.
+	if run_sandbox_captured and run_mods is Dictionary:
+		run_mods["sandbox_player_damage_multiplier"] = run_sandbox_multiplier(GAMEPLAY_SANDBOX.PLAYER_DAMAGE)
+		run_mods["sandbox_player_attack_speed_multiplier"] = run_sandbox_multiplier(GAMEPLAY_SANDBOX.PLAYER_ATTACK_SPEED)
+		if player.has_method("_apply_stat_scaling"):
+			player._apply_stat_scaling(false)
 
 
 func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:

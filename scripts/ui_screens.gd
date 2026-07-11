@@ -2276,6 +2276,7 @@ func _build_character_select_v4() -> void:
 
 func _show_character_select() -> void:
 	game.clear_run_autosave()
+	game.clear_run_sandbox_snapshot()
 	game.run_player_snapshot.clear()
 	game.current_act = 1
 	game.route_stage = 0
@@ -7370,7 +7371,7 @@ func _show_weapon_select() -> void:
 			game.selected_weapon_id = str(config["id"])
 			# SCRUM-502: фактический старт нового забега (герой+оружие выбраны) — обнулить
 			# метрики сводки, чтобы они не текли из прошлого прогона/autosave.
-			game.reset_run_metrics()
+			game.begin_new_run_session()
 			# SCRUM-618: между выбором оружия и стартом — пикер стартового боона.
 			_show_start_boon_select()
 		)
@@ -10168,13 +10169,19 @@ func _show_victory_screen() -> void:
 	if character_title == "" or character_title == game.selected_character_id:
 		character_title = "Герой"
 	var run_level: int = game.selected_ascension_level
-	# Победа над боссом даёт очко умений (record_boss_victory) — показываем игроку.
+	# Нейтральная победа даёт прогресс; custom sandbox честно сообщает, что
+	# persistent-награды отключены (SCRUM-976), а не обещает невыданное очко.
 	var skill_points_total: int = game.META_PROGRESSION.skill_points(game.meta_state)
-	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\nПолучено очко умений — всего %d, потрать их в «Древе умений» в меню.\n%s" % [
+	var progression_line := "Получено очко умений — всего %d, потрать их в «Древе умений» в меню." % skill_points_total
+	var ascension_summary := _victory_ascension_summary(game.selected_character_id, run_level, ascension_level)
+	if not game.run_progression_eligible():
+		progression_line = "Пользовательский sandbox: метапрогрессия и достижения не начисляются."
+		ascension_summary = "Текущий предел Возвышения: %d из %d. Без изменений в пользовательском sandbox." % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]
+	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
 		character_title,
 		game.meta_points,
-		skill_points_total,
-		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
+		progression_line,
+		ascension_summary,
 	]
 	var result_layout := _create_result_menu_box("Победа", subtitle, "victory")
 	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "victory")

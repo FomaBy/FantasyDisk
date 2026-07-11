@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 	_update_shield(delta)
 	_update_boss_phase()
 	_update_enrage()
-	_update_boss_attacks(delta)
+	_update_boss_attacks(_sandbox_attack_delta(delta))
 
 
 func take_damage(amount: float, feedback := {}) -> void:

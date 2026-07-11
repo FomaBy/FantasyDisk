@@ -2,6 +2,8 @@ extends RefCounted
 
 # Персистентные настройки игры (дисплей + звук) в user://settings.cfg.
 
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
+
 const SAVE_PATH := "user://settings.cfg"
 const SECTION := "settings"
 const MASTER_ZERO_INTENT_KEY := "master_zero_intent"
@@ -32,6 +34,12 @@ const DEFAULTS := {
 	"gamepad_bindings": {},
 	"gamepad_deadzone": 0.25,
 	"gamepad_vibration": true,
+	# SCRUM-976: нейтральные значения сохраняют release-баланс и progression.
+	"sandbox_monster_hp_multiplier": 1.0,
+	"sandbox_monster_damage_multiplier": 1.0,
+	"sandbox_player_damage_multiplier": 1.0,
+	"sandbox_player_attack_speed_multiplier": 1.0,
+	"sandbox_monster_attack_speed_multiplier": 1.0,
 }
 
 
@@ -72,6 +80,7 @@ static func load_settings() -> Dictionary:
 		settings["gamepad_bindings"] = {}
 	settings["gamepad_deadzone"] = clampf(float(settings["gamepad_deadzone"]), 0.05, 0.5)
 	settings["gamepad_vibration"] = bool(settings["gamepad_vibration"])
+	GAMEPLAY_SANDBOX.write_snapshot_to_settings(settings, settings)
 	if float(settings["master_volume"]) <= 0.0 and not has_master_zero_intent:
 		settings["master_volume"] = float(DEFAULTS["master_volume"])
 		settings["master_zero_intent"] = false

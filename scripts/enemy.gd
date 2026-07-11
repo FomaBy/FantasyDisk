@@ -77,6 +77,7 @@ const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
@@ -142,6 +143,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("enemies")
 	_apply_collision_profile()
+	_apply_gameplay_sandbox_runtime()
 	health = max_health
 	_shoot_cooldown = fire_interval
 	_summon_cooldown = summon_interval
@@ -275,6 +277,39 @@ func _physics_process(delta: float) -> void:
 	_update_shooting(delta, target)
 	_update_summoning(delta)
 	_update_elite_patterns(delta, target, distance)
+
+
+func _sandbox_attack_delta(delta: float) -> float:
+	return delta * clampf(float(get_meta("sandbox_attack_speed_multiplier", 1.0)), 0.5, 3.0)
+
+
+# SCRUM-976: Enemy — общий предок ordinary/summon/elite/boss, поэтому этот
+# одноразовый слой покрывает и прямые summon-пути, которых нет в CombatDirector.
+func _apply_gameplay_sandbox_runtime() -> void:
+	if bool(get_meta("gameplay_sandbox_applied", false)):
+		return
+	var game := _gameplay_sandbox_owner()
+	if game == null:
+		return
+	var hp_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_HP))
+	var damage_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_DAMAGE))
+	var attack_speed_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_ATTACK_SPEED))
+	max_health *= hp_multiplier
+	contact_damage *= damage_multiplier
+	projectile_damage *= damage_multiplier
+	elite_hazard_damage *= damage_multiplier
+	set_meta("sandbox_attack_speed_multiplier", attack_speed_multiplier)
+	set_meta("sandbox_damage_multiplier", damage_multiplier)
+	set_meta("gameplay_sandbox_applied", true)
+
+
+func _gameplay_sandbox_owner() -> Node:
+	var candidate := get_parent()
+	while candidate != null:
+		if candidate.has_method("run_sandbox_multiplier"):
+			return candidate
+		candidate = candidate.get_parent()
+	return null
 
 
 func take_damage(amount: float, feedback := {}) -> void:
@@ -512,11 +547,16 @@ func _apply_elite_reflect_thorns(incoming_amount: float) -> void:
 		return
 	if player.global_position.distance_to(global_position) > 190.0:
 		return
-	var reflected_damage: float = minf(contact_damage * 0.55 + incoming_amount * 0.03, contact_damage * 1.15)
+	var reflected_damage := _elite_reflect_damage(incoming_amount)
 	if reflected_damage <= 0.0:
 		return
 	HazardVfx.aura_pulse(self, 150.0, Color(0.78, 0.92, 1.0, 0.9))
 	player.take_damage(reflected_damage, "elite_reflect_thorns")
+
+
+func _elite_reflect_damage(incoming_amount: float) -> float:
+	var sandbox_damage := clampf(float(get_meta("sandbox_damage_multiplier", 1.0)), 0.5, 3.0)
+	return minf(contact_damage * 0.55 + incoming_amount * 0.03 * sandbox_damage, contact_damage * 1.15)
 
 
 func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> void:
@@ -525,11 +565,11 @@ func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> vo
 	if elite_behavior.contains("armored") or elite_behavior.contains("bastion"):
 		_update_elite_shield(delta)
 	elif elite_behavior.contains("stalker"):
-		_prepare_elite_dash(delta, player, distance)
+		_prepare_elite_dash(_sandbox_attack_delta(delta), player, distance)
 	elif elite_behavior.contains("poison") or elite_behavior.contains("plague") or elite_behavior.contains("prophet"):
-		_update_elite_hazard(delta, player)
+		_update_elite_hazard(_sandbox_attack_delta(delta), player)
 	elif elite_behavior.contains("commander") or elite_behavior.contains("marshal"):
-		_update_elite_aura(delta)
+		_update_elite_aura(_sandbox_attack_delta(delta))
 
 
 func _update_elite_shield(delta: float) -> void:
@@ -658,7 +698,7 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 		if not _elite_instant_phase_applied and bool(get_meta("ascension_instant_phase", false)):
 			_elite_instant_phase_applied = true
 			_elite_attack_cooldown = 0.0
-		_elite_attack_cooldown -= delta
+		_elite_attack_cooldown -= _sandbox_attack_delta(delta)
 		if _elite_attack_cooldown > 0.0 or distance > float(config.get("trigger_range", 360.0)):
 			return false
 		_begin_elite_attack_windup(config, player)
@@ -1219,7 +1259,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 	if not can_shoot or projectile_scene == null:
 		return
 
-	_shoot_cooldown -= delta
+	_shoot_cooldown -= _sandbox_attack_delta(delta)
 	if _shoot_cooldown > 0.0:
 		return
 
@@ -1242,7 +1282,7 @@ func _update_summoning(delta: float) -> void:
 	if not can_summon or summoned_enemy_scene == null:
 		return
 
-	_summon_cooldown -= delta
+	_summon_cooldown -= _sandbox_attack_delta(delta)
 	if _summon_cooldown > 0.0:
 		return
 
@@ -1273,7 +1313,7 @@ func _clamp_to_arena(position: Vector2, margin: float = ARENA_ENTITY_MARGIN) -> 
 
 
 func _update_contact_damage(delta: float, player: Node2D, distance: float) -> void:
-	_contact_cooldown = max(_contact_cooldown - delta, 0.0)
+	_contact_cooldown = max(_contact_cooldown - _sandbox_attack_delta(delta), 0.0)
 	if distance > contact_range:
 		_contact_windup_left = -1.0
 		return

@@ -2019,6 +2019,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# SCRUM-961 «Медиатор овердрайва»: темп-бонус активной рифф-серии (riff_streak_active
 	# ставит player._update_meta_keystone_runtime; урон-бонус серии — в meta_damage_multiplier).
 	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) * float(run_modifiers.get("riff_streak_active", 0.0))
+	# SCRUM-976: sandbox — final exact layer, intentionally outside release
+	# softcaps/exponents so 0.5/2.0 remain exact and do not retune canonical data.
+	var sandbox_damage_multiplier := clampf(float(run_modifiers.get("sandbox_player_damage_multiplier", 1.0)), 0.5, 2.0)
+	attack_speed_multiplier *= clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
@@ -2117,8 +2121,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		attack_range_multiplier *= aoe_radius_multiplier
 
 	return {
-		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
-		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat,
+		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
+		"magic_damage": (magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
 		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
@@ -2131,7 +2135,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# SCRUM-897 «Воровская хватка»: стартовая часть радиуса подбора усилена
 		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
 		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
-		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
+		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
 		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
