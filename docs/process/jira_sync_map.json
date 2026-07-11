@@ -4597,5 +4597,10 @@
   "key": "SCRUM-1059",
   "status": "Контроль качества",
   "desc_hash": "bafc406e392f6a3ef153cb91f1cd9824"
+ },
+ "SCRUM-1062_continue_run_title_typography.md": {
+  "key": "SCRUM-1062",
+  "status": "Контроль качества",
+  "desc_hash": "4c8c4fa4f796a5398c5802c7be8a8e48"
  }
 }
