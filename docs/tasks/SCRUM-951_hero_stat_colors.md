@@ -54,3 +54,37 @@ jobs completed without exposing credentials.
 Disk cleanup: task-local `.godot`, isolated userdata, capture scratch,
 worktree and local branch are removed after the origin/dev landing; final Jira
 comment records the completed cleanup.
+
+## Independent QA verdict — PASS (2026-07-11)
+
+QA owner: `/root/qa_storm_1037`. Verified from clean `origin/dev`
+`b509671f4`; production code and runtime assets remained read-only.
+
+- PixelLab MCP live lookup returned `completed` for both recorded source IDs:
+  `395cbafb-358b-4f46-9b95-019b67bf5c48` (`448×600`) and
+  `c02b9d90-d4c0-431d-af5d-560cb4c3625b` (`688×384`). Names, dimensions,
+  source/preview SHA-256 values and manifests all agree; no credentials were
+  printed or stored.
+- The shared eight-stat map exactly preserves the documented accents. Strength
+  keeps canonical bar `#D84A3A` and accessible name/value `#E05B4C`; all text
+  colors pass the documented 4.5:1 contrast floor on `#171613`.
+- The real carousel refresh path changes values/fill lengths without changing
+  stat identity colors. Every row keeps localized name, numeric value, bar
+  length and concise hover/focus tooltip as redundant non-color meaning.
+- Committed Metal captures and an independent Compatibility/ANGLE Metal
+  windowed run on Apple M4 Pro were inspected. 1280×720 uses a readable 2×4
+  grid; 1920×1080 and 2560×1440 use 1×8. Stat content stays inside the dossier
+  and hollow global-frame safe zones with no ornament overlap. The windowed
+  capture lifecycle exited normally after all four hero fixtures.
+- PASS gates: `scrum951_hero_stat_colors_test.gd`,
+  `hero_select_pixellab_layout_test.gd`, `ui_no_overlap_matrix_test.gd`,
+  `runtime_smoke_ui_test.gd`, `gamepad_inrun_ui_test.gd`, and isolated
+  `HOME`/`XDG_DATA_HOME`/`--user-data-dir` full `runtime_smoke_test.gd`.
+  The known dummy-renderer screenshot warning was non-fatal and both UI/full
+  runtime suites reached their success markers.
+
+QA verdict: **PASSED**. No bug issue required.
+
+Disk cleanup: independent Metal capture output was restored to the tracked
+baseline; QA scratch userdata, disposable `.godot/`, generated UID sidecars,
+worktree and local branch are removed after evidence/routing pushes.
