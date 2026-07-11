@@ -91,7 +91,9 @@ worktree is clean; the checkout is retained only until QA dispatch is recorded.
 
 Thread cleanup: not a disposable worker thread.
 
-## Independent QA Verdict — PASSED
+## QA-Вердикт — Independent
+
+Статус: PASSED
 
 Fresh-worktree review confirms this is an oracle correction for the accepted
 SCRUM-1043 contract, not a weakened gate:
