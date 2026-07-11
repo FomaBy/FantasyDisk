@@ -1,13 +1,13 @@
 # SCRUM-1074 — Atlas focused Metal test lifecycle leak
 
-Статус: new
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1074
 Контур: Codex
-Owner: unassigned
-Thread/Worker: `—`
-Branch: `—`
-Worktree: `—`
+Owner: Back-end QA / Codex
+Thread/Worker: `/root`
+Branch: `codex/scrum1074-scratch-guard`
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1074-scratch-guard`
 Parent: SCRUM-220
 Source QA: SCRUM-1070
 Related precedent: SCRUM-1031
@@ -28,10 +28,16 @@ button assets are excluded.
 On fresh `origin/dev` `0b17c754a`, run the SCRUM-1070 focused test with an
 isolated `HOME`/`XDG_DATA_HOME`/test `--user-data-dir` under macOS Metal:
 
-```text
-tools/godot_gate.py --verbose --display-driver macos \
-  --rendering-method mobile --rendering-driver metal \
-  --script res://tests/atlas_scrum1070_respec_button_test.gd
+```bash
+scratch=$(mktemp -d /tmp/fsd-scrum1074.XXXXXX)
+trap 'rm -rf "$scratch"' EXIT
+HOME="$scratch" XDG_DATA_HOME="$scratch" \
+  GODOT_BIN=/path/to/Godot \
+  python3 tools/godot_gate.py --verbose --path . \
+  --display-driver macos --rendering-method mobile \
+  --rendering-driver metal \
+  --script res://tests/atlas_scrum1070_respec_button_test.gd -- \
+  --user-data-dir="$scratch"
 ```
 
 The functional success marker is printed, then process exit reports four
@@ -211,3 +217,41 @@ unique root, add a negative self-test proving default `user://` exits before
 `Main` construction, and clarify the RGB8 warning policy without hiding stderr.
 SCRUM-1074 returns to `К выполнению`; linked SCRUM-1070 remains in
 `Контроль качества`.
+
+## Scratch user-data corrective implementation
+
+- The focused test now validates an explicit `--user-data-dir=<scratch>` at
+  the first line of `_initialize()`, before constructing `Main`, a viewport or
+  any other fixture.
+- The platform-resolved `OS.get_user_data_dir()` must be a descendant of the
+  same scratch root. Missing, `/`, or mismatched roots fail closed with exit
+  `1`; the safe path prints the resolved scratch directory.
+- The reproduction command now creates one owned temporary root, applies it to
+  both `HOME` and `XDG_DATA_HOME`, passes it as a test user argument and removes
+  it on every shell exit.
+- Lifecycle acceptance continues to reject ObjectDB/resource/Ogg, `ERROR` and
+  `SCRIPT ERROR` diagnostics. The exact pre-existing RGB8-to-RGBA8 hardware
+  conversion warnings remain visible in verbose Metal output and are recorded
+  separately; no stderr suppression or broad warning filter is added.
+
+## Scratch user-data corrective verification
+
+- negative default-user run: exit `1` at the first `_initialize()` guard; no
+  `Main` fixture or functional marker was reached; the already changed external
+  save was not rewritten by this run as proven by stable
+  metadata `mtime=1783793080`, `size=344` before/after;
+- isolated focused headless: PASS, verified scratch path plus both
+  SCRUM-1070/SCRUM-1074 markers and `16` deterministic teardowns;
+- isolated ordinary macOS/Metal: PASS `5/5`, both markers on every run, zero
+  ObjectDB/resource-still-in-use/Ogg/`ERROR`/`SCRIPT ERROR` diagnostics; every
+  run retained the exact known `16` RGB8 conversion warnings in verbose output;
+- Meta40, SCRUM-970 pointer clickability, semantic typography, button family,
+  gamepad focus and UI no-overlap gates: PASS;
+- runtime UI and full runtime smoke: PASS; duplicate-artifact guard scanned
+  `15188` files, with only the existing dummy-renderer null-texture screenshot
+  diagnostic;
+- `git diff --check`: PASS; product UI/audio/assets/runtime remain unchanged.
+
+Disk cleanup: isolated `/tmp/fsd-scrum1074-*` roots/logs and generated UID
+sidecars removed; disposable `.godot` cache and task worktree are removed after
+the final push. No remote task branch is created.

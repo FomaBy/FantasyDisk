@@ -27,6 +27,13 @@ var _teardown_count := 0
 
 
 func _initialize() -> void:
+	# This focused fixture confirms real Atlas reset actions, which persist through
+	# Meta.save_state(). Refuse the default user:// before Main or any other
+	# fixture is instantiated so a copied QA command cannot overwrite a player's
+	# local meta progression.
+	if not _require_scratch_user_dir():
+		quit(1)
+		return
 	for viewport_size in VIEWPORTS:
 		await _check_layout(viewport_size)
 	await _check_live_resize()
@@ -46,6 +53,23 @@ func _initialize() -> void:
 	print("SCRUM-1070 Atlas reset footer passed exact 420px family/fit/frame/reset gates at seven responsive tiers, live resize and both scopes.")
 	print("SCRUM-1074 lifecycle regression passed %d deterministic viewport teardowns with no retained ObjectDB/resource growth." % _teardown_count)
 	quit(0)
+
+
+func _require_scratch_user_dir() -> bool:
+	var requested := ""
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--user-data-dir="):
+			requested = argument.trim_prefix("--user-data-dir=").simplify_path()
+			break
+	var actual := OS.get_user_data_dir().simplify_path()
+	if requested == "" or requested == "/":
+		push_error("SCRUM-1074 test refuses the default user://; set HOME/XDG_DATA_HOME to a unique scratch root and pass -- --user-data-dir=<the same scratch root>.")
+		return false
+	if not actual.begins_with(requested.rstrip("/") + "/"):
+		push_error("SCRUM-1074 scratch mismatch: user:// resolves to %s outside requested %s." % [actual, requested])
+		return false
+	print("SCRUM-1074 scratch user data verified: %s" % actual)
+	return true
 
 
 func _check_layout(viewport_size: Vector2i) -> void:
