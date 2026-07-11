@@ -7,7 +7,9 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const FRAME_PATH_SUFFIX := "meta40/frame_border.png"
 const TARGETS := [
+	Vector2i(1152, 648),
 	Vector2i(1280, 720),
+	Vector2i(1600, 900),
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
 ]
@@ -37,6 +39,22 @@ const DERIVED_COMPACT_LABELS := {
 	"dot_damage": "Период. ур.",
 	"dot_speed": "Частота",
 }
+const DERIVED_TIGHT_LABELS := {
+	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
+	"crit_damage_multiplier": "Крит ×", "knockback_power": "Отт.",
+	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
+	"attack_range": "Дал.", "range_multiplier": "Дал. ×", "aura_radius": "Аура",
+	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
+	"dot_speed": "Част.",
+}
+const DERIVED_ULTRA_TIGHT_LABELS := {
+	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
+	"crit_damage_multiplier": "К×", "knockback_power": "От.",
+	"magic_damage": "Маг", "aoe_radius": "Шир", "projectile_speed": "Сн.",
+	"attack_range": "Дал", "range_multiplier": "Д×", "aura_radius": "Аур",
+	"buff_power": "Баф", "knockback_distance": "От.", "dot_damage": "П.ур",
+	"dot_speed": "Част",
+}
 const SURVIVAL_IDS := ["health_point", "defense", "dodge", "regeneration"]
 const ACTION_NAMES := [
 	"PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton",
@@ -59,7 +77,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-983 Escape dossier passed 720p/1080p/2K geometry, content, tooltip, focus and live-resize gates.")
+	print("SCRUM-983 Escape dossier passed 1152x648/720p/900p/1080p/2K geometry, content, tooltip, focus and live-resize gates.")
 	quit(0)
 
 
@@ -96,8 +114,8 @@ func _validate_live_resize() -> void:
 	_assert_reserve_masks(pause, Vector2i(1280, 720), contract, "live 2560x1440 -> 1280x720")
 	_assert_major_geometry(pause, contract, "live 2560x1440 -> 1280x720")
 	var base_grid := pause.find_child("BaseStatsGrid", true, false) as GridContainer
-	if base_grid == null or base_grid.columns != 1:
-		_errors.append("live resize: BaseStatsGrid must relayout to one compact column.")
+	if base_grid == null or base_grid.columns != 2:
+		_errors.append("live resize: BaseStatsGrid must keep the no-scroll two-column layout.")
 	await _cleanup_fixture(viewport, main, "live 2560x1440 -> 1280x720")
 
 
@@ -241,8 +259,13 @@ func _assert_major_geometry(pause: Control, contract: Dictionary, context: Strin
 	var hero_scroll := pause.find_child("HeroCardScroll", true, false) as ScrollContainer
 	var derived_scroll := pause.find_child("DerivedStatsScroll", true, false) as ScrollContainer
 	for scroll in [hero_scroll, derived_scroll]:
-		if scroll == null or scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or not scroll.follow_focus:
-			_errors.append("%s: both dossier scrolls must be vertical-only and follow focus." % context)
+		if scroll == null or scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED \
+			or scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+			_errors.append("%s: dossier content containers must expose no scrollbars." % context)
+			continue
+		var content := scroll.get_child(0) as Control if scroll.get_child_count() > 0 else null
+		if content == null or content.get_combined_minimum_size().y > scroll.size.y + 1.0:
+			_errors.append("%s: %s hides overflow instead of fitting content (content %.1f, viewport %.1f)." % [context, scroll.name, content.get_combined_minimum_size().y if content != null else -1.0, scroll.size.y])
 
 
 func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: Dictionary, context: String) -> void:
@@ -255,7 +278,7 @@ func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: D
 		_errors.append("%s: BaseStatsGrid has %d rows, expected %d real rows." % [context, base_grid.get_child_count(), BASE_IDS.size()])
 	if base_list.find_children("BaseStatsCompatibilitySlot_*", "Control", true, false).size() != 0:
 		_errors.append("%s: compatibility/dummy stat nodes are forbidden." % context)
-	var expected_columns := 1 if viewport_size.y < 900 else 2
+	var expected_columns := 2
 	if base_grid.columns != expected_columns:
 		_errors.append("%s: BaseStatsGrid columns %d != %d." % [context, base_grid.columns, expected_columns])
 	var stat_targets: Array[Control] = []
@@ -277,7 +300,7 @@ func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: D
 		_validate_stat_target(pause, "DerivedStatChip_%s" % stat_id, "DerivedStatName_%s" % stat_id, "DerivedStatValue_%s" % stat_id, contract["inner"], context, stat_targets)
 		var compact_name := pause.find_child("DerivedStatName_%s" % stat_id, true, false) as Label
 		var compact_value := pause.find_child("DerivedStatValue_%s" % stat_id, true, false) as Label
-		var expected_alias := str(DERIVED_COMPACT_LABELS[stat_id])
+		var expected_alias := str(DERIVED_ULTRA_TIGHT_LABELS.get(stat_id, DERIVED_TIGHT_LABELS[stat_id])) if viewport_size.y <= 648 else (str(DERIVED_TIGHT_LABELS.get(stat_id, DERIVED_COMPACT_LABELS[stat_id])) if viewport_size.y <= 900 else str(DERIVED_COMPACT_LABELS[stat_id]))
 		if compact_name == null or compact_name.text != expected_alias:
 			_errors.append("%s: %s compact label must be deterministic alias '%s'." % [context, stat_id, expected_alias])
 		elif compact_name.size.x + 0.5 < _rendered_width(compact_name, expected_alias):
@@ -387,21 +410,21 @@ func _assert_focus_contract(pause: Control, contract: Dictionary, context: Strin
 	# so mouse and focus must resolve the same bounded internal panel.
 	var hover_target := required[ACTION_NAMES.size()] as Control
 	if hover_target != null:
-		# Focus may keep its tooltip open while the pointer is elsewhere. In that
-		# state wheel belongs to the underlying dossier ScrollContainer, not the
-		# tooltip; this guards ordinary mouse scrolling after keyboard navigation.
+		# Focus may keep its tooltip open while the pointer is elsewhere. The
+		# dossier itself is now no-scroll, so wheel input must leave both the
+		# dossier and the focus-only tooltip at zero.
 		hover_target.grab_focus()
 		for _frame in range(3):
 			await process_frame
 		var hero_scroll_for_wheel := pause.find_child("HeroCardScroll", true, false) as ScrollContainer
-		var portrait := pause.find_child("PauseDossierPortraitSlot", true, false) as Control
-		if hero_scroll_for_wheel != null and portrait != null:
+		var outside_target := pause.find_child("DossierTitleChip", true, false) as Control
+		if hero_scroll_for_wheel != null and outside_target != null:
 			hero_scroll_for_wheel.scroll_vertical = 0
 			tooltip_scroll.scroll_vertical = 0
 			for _frame in range(3):
 				await process_frame
 			var outside_motion := InputEventMouseMotion.new()
-			outside_motion.position = _clipped_visible_rect(portrait).get_center()
+			outside_motion.position = _clipped_visible_rect(outside_target).get_center()
 			outside_motion.global_position = outside_motion.position
 			pause.get_viewport().push_input(outside_motion, true)
 			for _frame in range(2):
@@ -415,9 +438,8 @@ func _assert_focus_contract(pause: Control, contract: Dictionary, context: Strin
 			pause.get_viewport().push_input(dossier_wheel, true)
 			for _frame in range(10):
 				await process_frame
-			if hero_scroll_for_wheel.scroll_vertical <= 0:
-				var hovered_outside := pause.get_viewport().gui_get_hovered_control()
-				_errors.append("%s: wheel outside stat rows does not scroll hero dossier (hovered=%s point=%s max=%.1f page=%.1f)." % [context, str(hovered_outside.name) if hovered_outside != null else "<none>", str(outside_motion.position), hero_scroll_for_wheel.get_v_scroll_bar().max_value, hero_scroll_for_wheel.get_v_scroll_bar().page])
+			if hero_scroll_for_wheel.scroll_vertical != 0:
+				_errors.append("%s: no-scroll hero dossier moved after wheel input." % context)
 			if tooltip_scroll.scroll_vertical != 0:
 				_errors.append("%s: focus-only tooltip hijacks wheel after pointer leaves stat rows." % context)
 
@@ -547,37 +569,44 @@ func _assert_action_styles(pause: Control, context: String) -> void:
 		var button := pause.find_child(ACTION_NAMES[index], true, false) as Button
 		if button == null:
 			continue
+		if str(button.get_meta("ui_button_family", "")) != "text/main_menu_380x104":
+			_errors.append("%s: %s is not tagged with the main-menu button family." % [context, button.name])
 		for state in ["normal", "hover", "focus", "pressed", "disabled"]:
 			var style := button.get_theme_stylebox(state) as StyleBoxTexture
 			if style == null:
 				_errors.append("%s: %s missing %s texture state." % [context, button.name, state])
 				continue
-			var tint := style.modulate_color
-			if index == 2:
-				if tint.r <= tint.g + 0.10:
-					_errors.append("%s: End Run %s state is not danger-red." % [context, state])
-			elif absf(tint.r - tint.g) > 0.08 or absf(tint.g - tint.b) > 0.08:
-				_errors.append("%s: neutral %s inherits a colored danger tint in %s." % [context, button.name, state])
+			var expected_suffix := "ui_btn_text_unique_main_menu_380x104_%s.png" % state
+			if style.texture == null or not style.texture.resource_path.ends_with(expected_suffix):
+				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_suffix])
+			if style.modulate_color != Color.WHITE:
+				_errors.append("%s: %s %s adds a non-main-menu tint." % [context, button.name, state])
 
 
 func _expected_contract(viewport_size: Vector2) -> Dictionary:
 	var margin_x := roundf(160.0 * viewport_size.x / 1536.0)
 	var margin_y := roundf(160.0 * viewport_size.y / 1024.0)
 	var safe := Rect2(Vector2(margin_x, margin_y), viewport_size - Vector2(margin_x * 2.0, margin_y * 2.0))
-	var compact := viewport_size.y < 900.0
+	var compact := viewport_size.y <= 900.0
 	var large := viewport_size.y >= 1200.0
 	var reserve := 32.0 if large else 24.0
 	var inner := safe.grow(-reserve)
-	var header_h := 60.0 if compact else (104.0 if large else 72.0)
-	var header_gap := 12.0 if compact else (24.0 if large else 16.0)
-	var footer_gap := 12.0 if compact else (40.0 if large else 28.0)
-	var footer_bottom := 16.0 if compact else 36.0
-	var hero_w := 320.0 if compact else (520.0 if large else 420.0)
+	var header_h := (48.0 if viewport_size.y >= 900.0 else 46.0) if compact else (104.0 if large else 72.0)
+	var header_gap := 4.0 if compact else (24.0 if large else 12.0)
+	var footer_gap := 2.0 if compact else (24.0 if large else 12.0)
+	var footer_bottom := 4.0 if compact else (16.0 if large else 12.0)
+	var hero_w := 348.0 if compact else (520.0 if large else 420.0)
 	var column_gap := 12.0 if compact else (24.0 if large else 20.0)
 	var widths := [220.0, 220.0, 260.0, 220.0] if compact else ([280.0, 280.0, 320.0, 300.0] if large else [260.0, 260.0, 280.0, 280.0])
 	var action_gap := 8.0 if compact else (20.0 if large else 16.0)
+	var raw_button_width := float(widths[0] + widths[1] + widths[2] + widths[3])
+	var available_button_width := maxf(1.0, inner.size.x - action_gap * 3.0 - (8.0 if compact else 0.0))
+	if raw_button_width > available_button_width:
+		var width_scale := available_button_width / raw_button_width
+		for index in range(widths.size()):
+			widths[index] = floorf(float(widths[index]) * width_scale)
 	var action_w := float(widths[0] + widths[1] + widths[2] + widths[3]) + action_gap * 3.0
-	var action_h := 60.0 if compact else 72.0
+	var action_h := 72.0 if compact else 104.0
 	var actions := Rect2(Vector2(inner.get_center().x - action_w * 0.5, inner.end.y - footer_bottom - action_h), Vector2(action_w, action_h))
 	var body_y := inner.position.y + header_h + header_gap
 	var body := Rect2(Vector2(inner.position.x, body_y), Vector2(inner.size.x, actions.position.y - footer_gap - body_y))

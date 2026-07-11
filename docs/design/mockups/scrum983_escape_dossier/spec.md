@@ -1,9 +1,9 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
-Status: Accepted and implemented; repository-wide smoke passed after Priest test-lock release
-Role owner: combined Design+Back-end `/root/scrum983_dossier`
-Task: `docs/tasks/SCRUM-983_escape_hero_dossier.md`
-Jira: SCRUM-983
+Status: Accepted and implemented; SCRUM-1056 no-scroll/main-menu-button corrective pass
+Role owner: Back-end `/root`
+Task: `docs/tasks/SCRUM-1056.md`
+Jira: SCRUM-983, superseded for runtime geometry by SCRUM-1056
 Base resolution: 1920×1080
 Responsive targets: 1280×720, 1920×1080, 2560×1440
 Production outer frame: `assets/sprites/ui/meta40/frame_border.png`
@@ -13,8 +13,8 @@ PixelLab source/preview: recorded in `docs/design/references/scrum983_escape_dos
 
 Make the Escape hero dossier dense and immediately readable: stat names and
 numeric values stay visible, while explanations live in hover/focus tooltips.
-`Продолжить`, `Настройки` and `Главное меню` are neutral actions. Only
-`Завершить забег` uses danger red. Keyboard/gamepad focus must reach every action
+`Продолжить`, `Настройки`, `Завершить забег` and `Главное меню` use the same
+main-menu button family. Keyboard/gamepad focus must reach every action
 and every stat tooltip target. The page must remain inside the shared gold shell
 at 720p, 1080p and 2K.
 
@@ -45,6 +45,7 @@ families.
 | Periodic-damage group | DoT damage, DoT tick rate; sustain values remain in the hero/survival area | numeric chip, tooltip hover/focus |
 | Actions | Continue, Settings, End Run, Main Menu | normal, hover, focus, pressed, disabled; End Run alone is danger |
 | Tooltip | stat name, exact value, plain-language explanation, formula/source, influences | viewport-clamped, max 430×288 |
+| Build summary | weapon, ultimate, artifact count; full descriptions/names in tooltip | static, localized, tooltip |
 
 Always-visible prose descriptions are forbidden in stat cards. Group titles and
 the short hint `Фокус или наведение — подробности` are the only explanatory copy
@@ -77,15 +78,17 @@ the inner gameplay backdrop dimly visible.
 
 | Viewport | Header | Hero dossier | Derived stats | Action row |
 | --- | --- | --- | --- | --- |
-| 1280×720 | `157,137,966,60` | scroll `157,209,320,286`, content height 390, 14px scrollbar lane | required scroll `489,209,634,286`, content height 546, 14px lane | y=507 h=60: `168,220`; `396,220`; `624,260`; `892,220`, gaps 8 |
-| 1920×1080 | `224,193,1472,72` | `224,281,420,470` | `664,281,1032,470`; four groups 2×2, no scroll for stats-only content | y=779 h=72: x=396/672/948/1244, widths 260/260/280/280, gaps 16 |
-| 2560×1440 | `299,257,1962,104` | `299,385,520,650` | `843,385,1418,650`; four groups 2×2 | y=1075 h=72: x=660/960/1260/1600, widths 280/280/320/300, gaps 20 |
+| 1152×648 | `144,125,864,46` | `144,175,348,270`, content min 268 | `504,175,504,270`, content min 178 | `149.5,447,853,72`; widths proportionally fit inner zone |
+| 1280×720 | `157,137,966,46` | `157,187,348,318`, content min 268 | `517,187,606,318`, content min 314 | `168,507,944,72`; gaps 8 |
+| 1600×900 | `191,165,1218,48` | `191,215,348,442`, content min 268 | `551,215,858,442`, content min 330 | `328,659,944,72` |
+| 1920×1080 | `224,193,1472,72` | `224,277,420,482`, content min 368 | `664,277,1032,482`, content min 462 | `396,771,1128,104` |
+| 2560×1440 | `299,257,1962,104` | `299,385,520,654`, content min 616 | `843,385,1418,654`, content min 480 | `660,1063,1240,104` |
 
-The 720p action row uses exactly 944px of the 966px inner width and therefore
-leaves 11px on each side. Nothing is compressed under the frame rail. At 720p
-the two content columns scroll independently and vertically; horizontal scroll
-is disabled. At 1080p/2K the numeric stat groups fit without scrolling, while
-equipment or arsenal overflow may remain below in the existing vertical scroll.
+Both dossier scroll owners have horizontal and vertical scrolling disabled.
+Every target asserts `content minimum height <= viewport height`; disabled
+scrollbars may never hide overflow. Compact tiers use two-column base stats,
+tight Russian aliases and a visible build-summary row. The detailed portrait
+returns at 2K; hero/weapon identity remains visible in the header at every tier.
 
 ## Numeric Stat Contract
 
@@ -124,11 +127,10 @@ chip, icon or pointer hitbox enters the scrollbar lane.
 
 ## Button And Focus Contract
 
-- `PauseResumeButton`, `PauseSettingsButton` and `PauseMainMenuButton` use the
-  neutral global text-button normal/hover/focus/pressed/disabled family. No red
-  tint, red glow, red font or danger overlay is allowed on Continue or Main Menu.
-- `PauseEndRunButton` alone uses the danger-red family in every state. Focus is
-  brighter but does not change geometry.
+- All four pause actions use `main_menu_380x104` normal/hover/focus/pressed/
+  disabled textures with `Color.WHITE` tint. Compact tiers scale the documented
+  texture/content margins proportionally to fit the horizontal footer; no action
+  receives a pause-specific or danger-red override.
 - Initial focus is Continue. Left/right forms a non-destructive action ring:
   Continue → Settings → End Run → Main Menu → Continue.
 - Up from an action moves to the nearest final visible stat chip; down from the
@@ -196,7 +198,7 @@ icons, text-button states and the shared 9-slice frame.
 - [x] PixelLab base accepted after exact-zone, alpha and visual QA.
 - [x] Preview shown in chat.
 - [x] Compositor report `ok:true`; debug overlay proves content remains inside zones.
-- [x] Continue/Main Menu neutral; End Run alone danger-red in the spec.
+- [x] All four actions use the exact main-menu button family in all five states.
 - [x] Mouse/keyboard/gamepad tooltip and focus order specified.
 - [x] Runtime screenshots and focused/no-overlap/gamepad/UI-smoke gates complete.
 - [x] Repository-wide runtime smoke complete after the Priest test-lock release.

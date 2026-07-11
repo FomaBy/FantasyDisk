@@ -1135,6 +1135,11 @@ func _initialize() -> void:
 	escape_event.keycode = KEY_ESCAPE
 	escape_event.pressed = true
 	main.call("_input", escape_event)
+	# The dossier applies its authored responsive rects deferred so Godot's
+	# containers can resolve their new minimum sizes first.  Let that layout
+	# settle before asserting that disabled scroll lanes contain all content.
+	await process_frame
+	await process_frame
 	if not paused:
 		_fail("Expected Esc to pause active combat.")
 		return
@@ -1175,7 +1180,7 @@ func _initialize() -> void:
 	# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс),
 	# Защита, Уворот, Регенерация; ряд «Призывы» ТОЛЬКО у призывного кита
 	# (berserk+sword — не призыватель, канон: ProgressionData.weapon_archetype).
-	var survival_list := pause_menu.find_child("SurvivalStatsList", true, false) as VBoxContainer
+	var survival_list := pause_menu.find_child("SurvivalStatsList", true, false) as GridContainer
 	var survival_title := pause_menu.find_child("SurvivalTitle", true, false) as Label
 	if survival_list == null or survival_title == null:
 		_fail("Expected the hero card Survival block (title + rows, SCRUM-890).")
@@ -1213,6 +1218,13 @@ func _initialize() -> void:
 	if scrum893_equipment_flow == null or scrum893_equipment_flow.get_child_count() < 1:
 		_fail("Expected the run equipment strip (artifact chips or placeholder, SCRUM-893).")
 		return
+	var build_summary := pause_menu.find_child("RunBuildSummaryPanel", true, false) as PanelContainer
+	var build_summary_label := pause_menu.find_child("RunBuildSummaryLabel", true, false) as Label
+	if build_summary == null or build_summary_label == null or not build_summary.visible \
+		or not build_summary_label.text.contains("Оружие:") or not build_summary_label.text.contains("Ульта:") \
+		or not build_summary_label.text.contains("Артефакты:") or build_summary.tooltip_text.strip_edges() == "":
+		_fail("Expected the no-scroll dossier to preserve weapon, ultimate and equipment information in the compact build summary.")
+		return
 	# SCRUM-890 вариант Б: ровно 4 секции боевых параметров в сетке 2×2 (1 колонка
 	# на компактных вьюпортах).
 	if derived_groups.columns < 1 or derived_groups.columns > 2 or derived_groups.get_child_count() != 4:
@@ -1241,30 +1253,40 @@ func _initialize() -> void:
 	if not dossier_panel_style.texture.resource_path.ends_with("meta40/frame_border.png"):
 		_fail("Expected the dossier frame to reuse the meta40 frame_border 9-slice.")
 		return
-	# Fixed footer uses exact 60px compact / 72px wide global-kit plates.
+	# SCRUM-1056: every pause action uses the exact main-menu family. Compact
+	# targets use 72px; 1080p/2K use the native 104px plate height.
 	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
 		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
 		if pd_button == null:
 			_fail("Expected pause dossier control button %s." % pd_btn_name)
 			return
-		if not [60.0, 72.0].has(pd_button.custom_minimum_size.y):
-			_fail("Expected %s to use an exact SCRUM-983 footer height (60/72), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
+		if not [72.0, 104.0].has(pd_button.custom_minimum_size.y):
+			_fail("Expected %s to use a main-menu footer height (72/104), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
+			return
+		if str(pd_button.get_meta("ui_button_family", "")) != "text/main_menu_380x104":
+			_fail("Expected %s to declare the shared text/main_menu_380x104 family." % pd_btn_name)
 			return
 		var pd_style := pd_button.get_theme_stylebox("normal") as StyleBoxTexture
 		if pd_style == null or pd_style.texture == null:
 			_fail("Expected %s to ride a global kit texture plate." % pd_btn_name)
 			return
 		var pd_plate_path := pd_style.texture.resource_path
-		if not (pd_plate_path.contains("text_buttons_unique") or pd_plate_path.contains("minimal_metal_buttons")):
-			_fail("Expected %s plate from the global button kit, got %s." % [pd_btn_name, pd_plate_path])
+		if not pd_plate_path.ends_with("ui_btn_text_unique_main_menu_380x104_normal.png"):
+			_fail("Expected %s to use the exact main-menu plate, got %s." % [pd_btn_name, pd_plate_path])
 			return
 		var pd_rect := pd_button.get_global_rect()
 		if absf(pd_rect.size.x - pd_button.custom_minimum_size.x) > 0.5 or absf(pd_rect.size.y - pd_button.custom_minimum_size.y) > 0.5:
 			_fail("Expected %s to keep its native kit size (no container stretch), got %s." % [pd_btn_name, str(pd_rect.size)])
 			return
-	if _button_uses_text_button_unique_id(resume_button, "back_260x104"):
-		_fail("Expected the 60/72px dossier footer not to use the obsolete 104px plate.")
-		return
+	for scroll_name in ["HeroCardScroll", "DerivedStatsScroll"]:
+		var dossier_scroll := pause_menu.find_child(scroll_name, true, false) as ScrollContainer
+		if dossier_scroll == null or dossier_scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+			_fail("Expected %s to have no visible/interactive vertical scrollbar." % scroll_name)
+			return
+		var dossier_content := dossier_scroll.get_child(0) as Control if dossier_scroll.get_child_count() > 0 else null
+		if dossier_content == null or dossier_content.get_combined_minimum_size().y > dossier_scroll.size.y + 1.0:
+			_fail("Expected %s content to fit instead of being hidden behind disabled scrolling." % scroll_name)
+			return
 	# Ряды/чипы/секции — StyleBoxFlat-чипы атлас-языка (0.62 ряды, 0.86 секции).
 	var strength_row_style := strength_row.get_theme_stylebox("panel") as StyleBoxFlat
 	var damage_chip_style := damage_chip.get_theme_stylebox("panel") as StyleBoxFlat
@@ -1308,10 +1330,10 @@ func _initialize() -> void:
 		return
 	var strength_name := pause_menu.find_child("BaseStatName_strength", true, false) as Label
 	var strength_value := pause_menu.find_child("BaseStatValue_strength", true, false) as Label
-	var strength_icon := pause_menu.find_child("UIIcon_strength", true, false) as Control
+	var strength_icon := pause_menu.find_child("BaseStatIcon_strength", true, false) as Control
 	var damage_name := pause_menu.find_child("DerivedStatName_damage", true, false) as Label
 	var damage_value := pause_menu.find_child("DerivedStatValue_damage", true, false) as Label
-	var damage_icon := pause_menu.find_child("UIIcon_damage", true, false) as Control
+	var damage_icon := pause_menu.find_child("DerivedStatIcon_damage", true, false) as Control
 	if strength_name == null or strength_value == null or strength_icon == null or damage_name == null or damage_value == null or damage_icon == null:
 		_fail("Expected pause stats readable label/icon nodes for base and derived values.")
 		return
@@ -1324,7 +1346,9 @@ func _initialize() -> void:
 	# SCRUM-890 вариант Б + доработка: 8 базовых + 15 производных в 4 секциях
 	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
 	# SCRUM-898: секция «Поддержка / Контроль» потеряла sound_wave_damage (16 → 15).
-	var stat_icons := pause_menu.find_children("UIIcon_*", "Control", true, false)
+	var stat_icons := pause_menu.find_children("BaseStatIcon_*", "Control", true, false)
+	stat_icons.append_array(pause_menu.find_children("SurvivalStatIcon_*", "Control", true, false))
+	stat_icons.append_array(pause_menu.find_children("DerivedStatIcon_*", "Control", true, false))
 	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 19:
 		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return

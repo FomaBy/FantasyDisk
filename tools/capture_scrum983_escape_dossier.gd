@@ -5,7 +5,9 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const TARGETS := [
+	Vector2i(1152, 648),
 	Vector2i(1280, 720),
+	Vector2i(1600, 900),
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
 ]
@@ -81,8 +83,12 @@ func _capture(viewport_size: Vector2i, qa_dir: String, lines: PackedStringArray)
 				mask_area += mask.get_global_rect().size.x * mask.get_global_rect().size.y
 		lines.append("- opaque reserve masks: `4`, combined area `%.1f`, frame is final layer `%s`" % [mask_area, str(frame.get_index() > actions.get_parent().get_index())])
 		lines.append("- BaseStatsGrid: `%d` real rows, `%d` columns" % [base_grid.get_child_count(), base_grid.columns])
-		lines.append("- Hero scroll: vertical max `%.1f`, horizontal mode `%d`, follow_focus `%s`" % [hero_scroll.get_v_scroll_bar().max_value, hero_scroll.horizontal_scroll_mode, str(hero_scroll.follow_focus)])
-		lines.append("- Derived scroll: vertical max `%.1f`, horizontal mode `%d`, follow_focus `%s`" % [derived_scroll.get_v_scroll_bar().max_value, derived_scroll.horizontal_scroll_mode, str(derived_scroll.follow_focus)])
+		var hero_content := hero_scroll.get_child(0) as Control
+		var derived_content := derived_scroll.get_child(0) as Control
+		lines.append("- Hero no-scroll: vertical mode `%d`, content min `%.1f`, viewport `%.1f`, fits `%s`" % [hero_scroll.vertical_scroll_mode, hero_content.get_combined_minimum_size().y, hero_scroll.size.y, str(hero_content.get_combined_minimum_size().y <= hero_scroll.size.y + 1.0)])
+		lines.append("- Derived no-scroll: vertical mode `%d`, content min `%.1f`, viewport `%.1f`, fits `%s`" % [derived_scroll.vertical_scroll_mode, derived_content.get_combined_minimum_size().y, derived_scroll.size.y, str(derived_content.get_combined_minimum_size().y <= derived_scroll.size.y + 1.0)])
+		var summary := main.find_child("RunBuildSummaryLabel", true, false) as Label
+		lines.append("- compact build summary: `%s`" % (summary.text if summary != null else "missing"))
 		var attack_speed := main.find_child("DerivedStatValue_attack_speed", true, false) as Label
 		var crit_chance := main.find_child("DerivedStatValue_crit_chance", true, false) as Label
 		var crit_power := main.find_child("DerivedStatValue_crit_damage_multiplier", true, false) as Label

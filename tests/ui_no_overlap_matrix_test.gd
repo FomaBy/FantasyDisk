@@ -706,11 +706,11 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var strength_row := main.find_child("BaseStatRow_strength", true, false) as Control
 			var strength_name := main.find_child("BaseStatName_strength", true, false) as Label
 			var strength_value := main.find_child("BaseStatValue_strength", true, false) as Label
-			var strength_icon := main.find_child("UIIcon_strength", true, false) as Control
+			var strength_icon := main.find_child("BaseStatIcon_strength", true, false) as Control
 			var damage_chip := main.find_child("DerivedStatChip_damage", true, false) as Control
 			var damage_name := main.find_child("DerivedStatName_damage", true, false) as Label
 			var damage_value := main.find_child("DerivedStatValue_damage", true, false) as Label
-			var damage_icon := main.find_child("UIIcon_damage", true, false) as Control
+			var damage_icon := main.find_child("DerivedStatIcon_damage", true, false) as Control
 			if strength_row == null or strength_name == null or strength_value == null or strength_icon == null:
 				return "%s: expected readable base stat controls for SCRUM-839." % context
 			if damage_chip == null or damage_name == null or damage_value == null or damage_icon == null:
@@ -721,12 +721,27 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected base stat label/value font sizes >= 17/18 for SCRUM-839 readability." % context
 			if strength_icon.custom_minimum_size.x < 44.0 or strength_icon.custom_minimum_size.y < 44.0:
 				return "%s: expected base stat icons >= 44px for SCRUM-839 readability." % context
-			if damage_chip.custom_minimum_size.x < 236.0 or damage_chip.custom_minimum_size.y < 54.0:
-				return "%s: expected derived stat chips >= 236x54px for SCRUM-839 readability." % context
-			if damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17:
-				return "%s: expected derived stat label/value font sizes >= 15/17 for SCRUM-839 readability." % context
-			if damage_icon.custom_minimum_size.x < 46.0 or damage_icon.custom_minimum_size.y < 46.0:
-				return "%s: expected derived stat icons >= 46px for SCRUM-839 readability." % context
+			var pause_viewport_h := main.get_viewport().get_visible_rect().size.y
+			var compact_pause := pause_viewport_h <= 900.0
+			var very_compact_pause := pause_viewport_h <= 648.0
+			if compact_pause:
+				var compact_chip_h := 28.0 if very_compact_pause else 32.0
+				var compact_icon := 24.0 if very_compact_pause else 26.0
+				if damage_chip.custom_minimum_size.y < compact_chip_h:
+					return "%s: expected compact derived stat chip height >= %.0fpx." % [context, compact_chip_h]
+				var compact_name_font := 11 if very_compact_pause else 13
+				var compact_value_font := 13 if very_compact_pause else 14
+				if damage_name.get_theme_font_size("font_size") < compact_name_font or damage_value.get_theme_font_size("font_size") < compact_value_font:
+					return "%s: expected compact derived stat label/value font sizes >= %d/%d." % [context, compact_name_font, compact_value_font]
+				if damage_icon.custom_minimum_size.x < compact_icon or damage_icon.custom_minimum_size.y < compact_icon:
+					return "%s: expected compact derived stat icons >= %.0fpx." % [context, compact_icon]
+			else:
+				if damage_chip.custom_minimum_size.x < 236.0 or damage_chip.custom_minimum_size.y < 54.0:
+					return "%s: expected derived stat chips >= 236x54px for SCRUM-839 readability." % context
+				if damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17:
+					return "%s: expected derived stat label/value font sizes >= 15/17 for SCRUM-839 readability." % context
+				if damage_icon.custom_minimum_size.x < 46.0 or damage_icon.custom_minimum_size.y < 46.0:
+					return "%s: expected derived stat icons >= 46px for SCRUM-839 readability." % context
 			# SCRUM-890 (доработка): блок «Выживание» в карточке героя — ОЗ (тек/макс)
 			# с тултипом; ряд призывов только у призывного кита (berserk+sword — нет).
 			var survival_hp := main.find_child("SurvivalStatRow_health_point", true, false) as Control

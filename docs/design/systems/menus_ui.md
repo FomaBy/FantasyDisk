@@ -1157,8 +1157,10 @@ decorative art, not text containers. QA dump:
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly.
 SCRUM-983 moves the four run actions from the old left/header placement into a
-fixed bottom footer, with Continue focused first and End Run as the only
-danger-red action. The old
+fixed bottom footer, with Continue focused first. SCRUM-1056 supersedes the
+old pause-only/danger styling: Continue, Settings, End Run and Main Menu all use
+the exact `main_menu_380x104` five-state family with geometry-stable 72px compact
+or 104px wide heights. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and
@@ -1176,12 +1178,14 @@ content remains inside the frame safe-zone. The update note lives in
 `docs/design/mockups/scrum839_pause_dossier_readability/spec.md`.
 
 SCRUM-983 supersedes the old pause-dossier placement while preserving those
-readability minima. The live screen reuses the SCRUM-981 hollow gold shell and
+readability minima. SCRUM-1056 removes the dossier scrollbars and replaces the
+old overflow layout with a no-scroll responsive contract. The live screen reuses the SCRUM-981 hollow gold shell and
 adds a real inner reserve beyond the scaled 160px rails: exact inner rects are
 `157,137,966,446` at 1280×720, `224,193,1472,694` at 1920×1080 and
-`299,257,1962,926` at 2560×1440. Header, hero/derived body, both vertical-only
-scrollbar lanes and the fixed footer remain inside those rects. Base stats are
-eight semantic rows in `BaseStatsGrid` (1 column compact, 2 columns wide);
+`299,257,1962,926` at 2560×1440. Header, hero/derived body and the fixed footer
+remain inside those rects; `HeroCardScroll` and `DerivedStatsScroll` have both
+scroll modes disabled and must report `content minimum <= viewport`. Base stats are
+eight semantic rows in `BaseStatsGrid` (2 columns at every tier);
 the 1080p two-column name lane must fit at least the rendered short localized
 label `Сила`. Four opaque reserve masks cover everything outside the inner rect
 below the content/final frame, preventing any combat HUD from showing through
@@ -1190,12 +1194,15 @@ compact aliases without clipping either aliases or localized numeric values;
 canonical names remain in tooltips. Every stat target is keyboard/gamepad focusable,
 uses geometric D-pad neighbors, and exposes the same complete
 description/formula/source/influences through one shared hover/focus tooltip.
-Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
+The former long Arsenal/Equipment blocks are condensed into the always-visible
+`RunBuildSummaryPanel`; full weapon, ultimate and artifact details remain in its
+tooltip. Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
 clipped vertical viewport that never exceeds 430×288 and scrolls by wheel,
 Page Up/Down or gamepad shoulders. Wheel is captured only during an actual stat
-hover; after the pointer leaves stat rows it scrolls the underlying dossier even
-if a focus tooltip remains open. Footer Up neighbors rebuild after scroll and
-select only currently clipped-visible stat rows. Runtime oracle:
+hover; after the pointer leaves stat rows it does not move the no-scroll dossier
+or the focus-only tooltip. Footer Up neighbors resolve from visible stat rows.
+The acceptance matrix covers 1152×648, 1280×720, 1600×900, 1920×1080 and
+2560×1440. Runtime oracle:
 `tests/scrum983_escape_dossier_test.gd`; visual evidence:
 `build/qa/scrum983/`.
 

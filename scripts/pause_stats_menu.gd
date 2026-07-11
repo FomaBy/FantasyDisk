@@ -32,10 +32,9 @@ const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
 const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
 
 # Shared resolver keeps Pause in the same semantic button inventory as every
-# runtime screen; this scene only retains its local font/tint application.
-const BUTTON_HOVER_EXTRA_TINT := Color(1.12, 1.12, 1.12, 1.0)
-const BUTTON_DANGER_TINT := Color(1.08, 0.72, 0.72, 1.0)
-const BUTTON_DANGER_PRESSED_TINT := Color(0.92, 0.55, 0.55, 1.0)
+# runtime screen. SCRUM-1056 explicitly pins all four actions to the exact
+# five-state main-menu plate while this scene only owns responsive margins.
+const PAUSE_ACTION_BUTTON_FAMILY := "text/main_menu_380x104"
 
 # Цвета единого атлас-стиля (= _show_atlas_screen и родня).
 const COLOR_TITLE := Color(0.96, 0.90, 0.68, 1.0)
@@ -93,6 +92,31 @@ const DERIVED_COMPACT_LABELS := {
 	"dot_damage": "Период. ур.",
 	"dot_speed": "Частота",
 }
+const BASE_TIGHT_LABELS := {
+	"strength": "Сила", "agility": "Ловк.", "intelligence": "Инт.",
+	"perception": "Воспр.", "energy": "Энерг.", "knowledge": "Знания",
+	"endurance": "Выносл.", "leadership": "Лидер.",
+}
+const SURVIVAL_TIGHT_LABELS := {
+	"health_point": "ОЗ", "defense": "Защ.", "dodge": "Увор.",
+	"regeneration": "Реген.", "summon_amount": "Приз.",
+}
+const DERIVED_TIGHT_LABELS := {
+	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
+	"crit_damage_multiplier": "Крит ×", "knockback_power": "Отт.",
+	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
+	"attack_range": "Дал.", "range_multiplier": "Дал. ×", "aura_radius": "Аура",
+	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
+	"dot_speed": "Част.",
+}
+const DERIVED_ULTRA_TIGHT_LABELS := {
+	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
+	"crit_damage_multiplier": "К×", "knockback_power": "От.",
+	"magic_damage": "Маг", "aoe_radius": "Шир", "projectile_speed": "Сн.",
+	"attack_range": "Дал", "range_multiplier": "Д×", "aura_radius": "Аур",
+	"buff_power": "Баф", "knockback_distance": "От.", "dot_damage": "П.ур",
+	"dot_speed": "Част",
+}
 const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 const TOOLTIP_SCROLL_STEP := 88
 
@@ -104,10 +128,12 @@ var end_run_confirm_handler := Callable()
 var _base_stats_container: VBoxContainer = null
 var _base_stats_grid: GridContainer = null
 var _derived_groups_container: GridContainer = null
-var _survival_stats_container: VBoxContainer = null
+var _survival_stats_container: GridContainer = null
 var _hero_card_container: VBoxContainer = null
 var _equipment_flow: HFlowContainer = null
 var _arsenal_box: VBoxContainer = null
+var _build_summary_panel: PanelContainer = null
+var _build_summary_label: Label = null
 var _player: Node = null
 var _dossier_root: Control = null
 var _dossier_header: HBoxContainer = null
@@ -264,7 +290,7 @@ func _action_button_height() -> float:
 	var vp_h := get_viewport_rect().size.y
 	if vp_h <= 0.0:
 		vp_h = 1080.0
-	return 60.0 if vp_h < 900.0 else 72.0
+	return 72.0 if vp_h < 900.0 else 104.0
 
 
 func _build_layout() -> void:
@@ -390,7 +416,7 @@ func _build_action_footer(parent: Control) -> void:
 	)
 	_button_box.add_child(settings_button)
 
-	var end_run_button := _kit_button("Завершить забег", 260.0, "danger")
+	var end_run_button := _kit_button("Завершить забег", 260.0)
 	end_run_button.name = "PauseEndRunButton"
 	end_run_button.pressed.connect(_show_end_run_confirm)
 	_button_box.add_child(end_run_button)
@@ -403,6 +429,7 @@ func _build_action_footer(parent: Control) -> void:
 	_button_box.add_child(menu_button)
 	_action_buttons = [resume_button, settings_button, end_run_button, menu_button]
 	for button in _action_buttons:
+		button.set_meta("ui_button_family", PAUSE_ACTION_BUTTON_FAMILY)
 		button.focus_entered.connect(_schedule_focus_navigation_rebuild)
 
 	# SCRUM-812: досье проходимо с геймпада/стрелок — горизонтальное кольцо фокуса,
@@ -437,6 +464,7 @@ func _build_body(parent: Control, s: float) -> void:
 	_hero_scroll = ScrollContainer.new()
 	_hero_scroll.name = "HeroCardScroll"
 	_hero_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_hero_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_hero_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hero_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_hero_scroll.follow_focus = true
@@ -487,6 +515,7 @@ func _build_body(parent: Control, s: float) -> void:
 	_derived_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_derived_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_derived_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_derived_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_derived_scroll.follow_focus = true
 	_derived_scroll.get_v_scroll_bar().value_changed.connect(_schedule_focus_navigation_rebuild.unbind(1))
 	_right_column.add_child(_derived_scroll)
@@ -508,10 +537,31 @@ func _build_body(parent: Control, s: float) -> void:
 	_derived_groups_container.add_theme_constant_override("v_separation", maxi(8, int(roundf(12.0 * s))))
 	right_content.add_child(_derived_groups_container)
 
+	# SCRUM-1056: preserve Arsenal/Equipment information without restoring the
+	# long prose blocks that forced a scrollbar. The compact row is always
+	# visible; its tooltip retains complete weapon, ultimate and artifact data.
+	_build_summary_panel = PanelContainer.new()
+	_build_summary_panel.name = "RunBuildSummaryPanel"
+	_build_summary_panel.custom_minimum_size = Vector2(0.0, 44.0)
+	_build_summary_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_build_summary_panel.add_theme_stylebox_override("panel", _stat_row_style(false))
+	right_content.add_child(_build_summary_panel)
+
+	_build_summary_label = Label.new()
+	_build_summary_label.name = "RunBuildSummaryLabel"
+	_build_summary_label.text = "Оружие · Ульта · Снаряжение"
+	_build_summary_label.clip_text = true
+	_build_summary_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_build_summary_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_build_summary_label.add_theme_font_size_override("font_size", _readable_px(14.0))
+	_build_summary_label.add_theme_color_override("font_color", COLOR_BODY)
+	_build_summary_panel.add_child(_build_summary_label)
+
 	# SCRUM-893: «Арсенал» — механика оружия и ульта словами (та же дата-база,
 	# что у кодекса: weapon.description + ultimate_config).
 	var arsenal_panel := PanelContainer.new()
 	arsenal_panel.name = "ArsenalPanel"
+	arsenal_panel.visible = false
 	arsenal_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	arsenal_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(10.0 * s))))
 	right_content.add_child(arsenal_panel)
@@ -549,6 +599,7 @@ func _build_body(parent: Control, s: float) -> void:
 	# с запасом под будущие находки, а не как дыра лейаута.
 	var equip_panel := PanelContainer.new()
 	equip_panel.name = "RunEquipmentPanel"
+	equip_panel.visible = false
 	equip_panel.custom_minimum_size = Vector2(0.0, 110.0)
 	equip_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	equip_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -627,21 +678,27 @@ func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
 
 func _responsive_contract(viewport_size: Vector2) -> Dictionary:
 	var safe_rect := _safe_rect_for_size(viewport_size)
-	var compact := viewport_size.y < 900.0
+	var compact := viewport_size.y <= 900.0
 	var large := viewport_size.y >= 1200.0
 	var reserve := INNER_RESERVE_LARGE if large else INNER_RESERVE_COMPACT
 	var inner_rect := safe_rect.grow(-reserve)
-	var header_height := 60.0 if compact else (104.0 if large else 72.0)
-	var header_gap := 12.0 if compact else (24.0 if large else 16.0)
-	var footer_gap := 12.0 if compact else (40.0 if large else 28.0)
-	var footer_bottom := 16.0 if compact else 36.0
-	var action_height := 60.0 if compact else 72.0
-	var hero_width := 320.0 if compact else (520.0 if large else 420.0)
+	var header_height := (48.0 if viewport_size.y >= 900.0 else 46.0) if compact else (104.0 if large else 72.0)
+	var header_gap := 4.0 if compact else (24.0 if large else 12.0)
+	var footer_gap := 2.0 if compact else (24.0 if large else 12.0)
+	var footer_bottom := 4.0 if compact else (16.0 if large else 12.0)
+	var action_height := 72.0 if compact else 104.0
+	var hero_width := 348.0 if compact else (520.0 if large else 420.0)
 	var column_gap := 12.0 if compact else (24.0 if large else 20.0)
 	var action_widths := [220.0, 220.0, 260.0, 220.0] if compact else (
 		[280.0, 280.0, 320.0, 300.0] if large else [260.0, 260.0, 280.0, 280.0]
 	)
 	var action_gap := 8.0 if compact else (20.0 if large else 16.0)
+	var raw_button_width := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3])
+	var available_button_width := maxf(1.0, inner_rect.size.x - action_gap * 3.0 - (8.0 if compact else 0.0))
+	if raw_button_width > available_button_width:
+		var width_scale := available_button_width / raw_button_width
+		for index in range(action_widths.size()):
+			action_widths[index] = floorf(float(action_widths[index]) * width_scale)
 	var action_total := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3]) + action_gap * 3.0
 	var action_rect := Rect2(
 		Vector2(inner_rect.get_center().x - action_total * 0.5, inner_rect.end.y - footer_bottom - action_height),
@@ -685,20 +742,20 @@ func _apply_responsive_layout() -> void:
 	_dossier_body.add_theme_constant_override("separation", int(contract["column_gap"]))
 	_hero_card.custom_minimum_size = Vector2(float(contract["hero_width"]), body_rect.size.y)
 	if _base_stats_grid != null and is_instance_valid(_base_stats_grid):
-		_base_stats_grid.columns = 1 if viewport_size.y < 900.0 else 2
+		_base_stats_grid.columns = 2
 	_button_box.add_theme_constant_override("separation", int(contract["action_gap"]))
 	var action_widths: Array = contract["action_widths"]
 	for index in range(_action_buttons.size()):
 		var button := _action_buttons[index]
 		button.custom_minimum_size = Vector2(float(action_widths[index]), action_rect.size.y)
-		_apply_kit_button_theme(button, "danger" if index == 2 else "default")
+		_apply_kit_button_theme(button)
 	_frame_panel.add_theme_stylebox_override("panel", _frame_style())
 	_frame_panel.set_meta("gold_shell_content_rect", safe_rect)
 	_frame_panel.set_meta("dossier_inner_content_rect", inner_rect)
 	if _hero_scroll != null:
-		_hero_scroll.set_meta("dossier_scrollbar_lane", 14.0)
+		_hero_scroll.set_meta("dossier_scrollbar_lane", 0.0)
 	if _derived_scroll != null:
-		_derived_scroll.set_meta("dossier_scrollbar_lane", 14.0)
+		_derived_scroll.set_meta("dossier_scrollbar_lane", 0.0)
 	_button_box.queue_sort()
 	_dossier_body.queue_sort()
 	call_deferred("_finalize_responsive_rects", contract)
@@ -722,6 +779,8 @@ func _apply_reserve_masks(viewport_size: Vector2, inner_rect: Rect2) -> void:
 
 func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	var s := _atlas_scale()
+	var compact := viewport_size.y <= 900.0
+	var very_compact := viewport_size.y <= 648.0
 	if _title_label != null:
 		_title_label.add_theme_font_size_override("font_size", _readable_px(22.0))
 	if _header_summary != null:
@@ -737,6 +796,14 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	if portrait_slot != null:
 		var portrait_px := clampf(188.0 * s, 128.0, 196.0)
 		portrait_slot.custom_minimum_size = Vector2(portrait_px, portrait_px)
+	var identity := find_child("HeroIdentityRow", true, false) as Control
+	if identity != null:
+		# The header already carries hero + weapon. The detailed portrait block
+		# returns on the 2K tier; smaller targets use its vertical budget to keep
+		# every numeric row visible without a dossier scrollbar.
+		identity.visible = viewport_size.y >= 1200.0
+	if _hero_card != null:
+		_hero_card.add_theme_stylebox_override("panel", _chip_style(0.90, 1.0 if compact else 12.0))
 	var crest := find_child("PauseDossierCrest", true, false) as TextureRect
 	if crest != null:
 		var crest_px := maxf(30.0, roundf(42.0 * s))
@@ -749,28 +816,90 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	var derived_hint := find_child("DerivedStatsHint", true, false) as Label
 	if derived_hint != null:
 		derived_hint.add_theme_font_size_override("font_size", _readable_px(14.0))
+	var derived_header := find_child("DerivedStatsHeader", true, false) as Control
+	if derived_header != null:
+		derived_header.visible = viewport_size.y >= 1200.0
+	if _build_summary_panel != null:
+		_build_summary_panel.custom_minimum_size.y = 20.0 if very_compact else (28.0 if compact else 44.0)
+		_build_summary_panel.add_theme_stylebox_override("panel", _stat_row_style(false))
+	if _build_summary_label != null:
+		_build_summary_label.add_theme_font_size_override("font_size", 13 if compact else _readable_px(14.0))
+	var right_content := find_child("DerivedStatsScrollContent", true, false) as VBoxContainer
+	if right_content != null:
+		right_content.add_theme_constant_override("separation", 2 if very_compact else (8 if compact else maxi(8, int(roundf(12.0 * s)))))
+	var base_title := find_child("BaseStatsTitle", true, false) as Label
+	if base_title != null:
+		base_title.visible = not compact
+	var survival_title := find_child("SurvivalTitle", true, false) as Label
+	if survival_title != null:
+		survival_title.visible = not compact
+	for node in find_children("DerivedGroupTitle_*", "Label", true, false):
+		(node as Label).add_theme_font_size_override("font_size", _readable_px(18.0))
+	for node in find_children("DerivedGroupHeader_*", "HBoxContainer", true, false):
+		(node as Control).visible = not very_compact
+	for node in find_children("DerivedGroupContent_*", "VBoxContainer", true, false):
+		(node as VBoxContainer).add_theme_constant_override("separation", 4 if very_compact else 8)
 	for node in find_children("DerivedStatChips_*", "GridContainer", true, false):
-		(node as GridContainer).columns = 2 if viewport_size.x >= 1500.0 else 1
+		var chips := node as GridContainer
+		chips.columns = 2
+		chips.add_theme_constant_override("v_separation", 2 if very_compact else 6)
 	for node in find_children("DerivedStatGroup_*", "PanelContainer", true, false):
-		(node as PanelContainer).add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(12.0 * s))))
+		(node as PanelContainer).add_theme_stylebox_override("panel", _chip_style(0.86, 2.0 if very_compact else maxf(6.0, roundf(12.0 * s))))
+	if _derived_groups_container != null:
+		_derived_groups_container.add_theme_constant_override("v_separation", 2 if very_compact else maxi(8, int(roundf(12.0 * s))))
 	for node in find_children("BaseStatName_*", "Label", true, false):
-		(node as Label).add_theme_font_size_override("font_size", _readable_px(17.0))
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("BaseStatName_")
+		label.text = str(BASE_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(label.get_meta("full_label", label.text))
+		label.add_theme_font_size_override("font_size", _readable_px(17.0))
 	for node in find_children("BaseStatValue_*", "Label", true, false):
 		var label := node as Label
 		label.custom_minimum_size = Vector2(_readable_px(32.0), 0.0)
 		label.add_theme_font_size_override("font_size", _readable_px(18.0))
 	for node in find_children("SurvivalStatName_*", "Label", true, false):
-		(node as Label).add_theme_font_size_override("font_size", _readable_px(15.0))
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("SurvivalStatName_")
+		label.text = str(SURVIVAL_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(label.get_meta("full_label", label.text))
+		label.add_theme_font_size_override("font_size", 14 if compact else _readable_px(15.0))
 	for node in find_children("SurvivalStatValue_*", "Label", true, false):
 		var label := node as Label
-		label.custom_minimum_size = Vector2(_readable_px(96.0), 0.0)
-		label.add_theme_font_size_override("font_size", _readable_px(16.0))
+		label.custom_minimum_size = Vector2(54.0 if compact else _readable_px(96.0), 0.0)
+		label.add_theme_font_size_override("font_size", 14 if compact else _readable_px(16.0))
 	for node in find_children("DerivedStatName_*", "Label", true, false):
-		(node as Label).add_theme_font_size_override("font_size", _readable_px(15.0))
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("DerivedStatName_")
+		label.text = str(DERIVED_ULTRA_TIGHT_LABELS.get(stat_id, label.text)) if very_compact else (str(DERIVED_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(DERIVED_COMPACT_LABELS.get(stat_id, label.text)))
+		label.add_theme_font_size_override("font_size", 11 if very_compact else (13 if compact else _readable_px(15.0)))
 	for node in find_children("DerivedStatValue_*", "Label", true, false):
 		var label := node as Label
-		label.custom_minimum_size = Vector2(_readable_px(54.0), 0.0)
-		label.add_theme_font_size_override("font_size", _readable_px(17.0))
+		label.custom_minimum_size = Vector2(46.0 if compact else _readable_px(54.0), 0.0)
+		label.add_theme_font_size_override("font_size", 13 if very_compact else (14 if compact else _readable_px(17.0)))
+	if _base_stats_grid != null:
+		_base_stats_grid.columns = 2
+	if _survival_stats_container != null:
+		_survival_stats_container.columns = 2
+	for node in find_children("BaseStatRow_*", "PanelContainer", true, false):
+		var row := node as PanelContainer
+		row.custom_minimum_size.y = READABLE_BASE_ROW_HEIGHT
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(false, row.find_children("PriorityBadge_*", "Label", true, false).size() > 0))
+	for node in find_children("SurvivalStatRow_*", "PanelContainer", true, false):
+		var row := node as PanelContainer
+		row.custom_minimum_size.y = 40.0
+		row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	for node in find_children("DerivedStatChip_*", "PanelContainer", true, false):
+		var chip := node as PanelContainer
+		chip.custom_minimum_size = Vector2(0.0 if compact else READABLE_CHIP_WIDTH, 28.0 if very_compact else (32.0 if compact else READABLE_CHIP_HEIGHT))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
+	for node in find_children("*Divider*", "TextureRect", true, false):
+		var divider := node as Control
+		divider.visible = viewport_size.y >= 1200.0
+		divider.custom_minimum_size.y = maxf(16.0, roundf(24.0 * s))
+	for node in find_children("BaseStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(44.0, 44.0)
+	for node in find_children("SurvivalStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(35.0, 35.0)
+	for node in find_children("DerivedStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(24.0, 24.0) if very_compact else (Vector2(26.0, 26.0) if compact else Vector2(46.0, 46.0))
 
 
 func _finalize_responsive_rects(contract: Dictionary) -> void:
@@ -1156,9 +1285,11 @@ func _refresh_hero_card() -> void:
 	survival_title.add_theme_color_override("font_color", COLOR_KIND)
 	_hero_card_container.add_child(survival_title)
 
-	_survival_stats_container = VBoxContainer.new()
+	_survival_stats_container = GridContainer.new()
 	_survival_stats_container.name = "SurvivalStatsList"
-	_survival_stats_container.add_theme_constant_override("separation", 2)
+	_survival_stats_container.columns = 2
+	_survival_stats_container.add_theme_constant_override("h_separation", 4)
+	_survival_stats_container.add_theme_constant_override("v_separation", 2)
 	_hero_card_container.add_child(_survival_stats_container)
 
 
@@ -1206,7 +1337,7 @@ func _refresh_stats() -> void:
 
 	_base_stats_grid = GridContainer.new()
 	_base_stats_grid.name = "BaseStatsGrid"
-	_base_stats_grid.columns = 1 if get_viewport_rect().size.y < 900.0 else 2
+	_base_stats_grid.columns = 2
 	_base_stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_base_stats_grid.add_theme_constant_override("h_separation", 6)
 	_base_stats_grid.add_theme_constant_override("v_separation", 2)
@@ -1235,7 +1366,32 @@ func _refresh_stats() -> void:
 	_refresh_survival_rows(derived_entries_by_id)
 	_refresh_arsenal()
 	_refresh_equipment()
+	_refresh_build_summary()
 	call_deferred("_rebuild_focus_navigation")
+
+
+func _refresh_build_summary() -> void:
+	if _build_summary_panel == null or _build_summary_label == null or _player == null or not is_instance_valid(_player):
+		return
+	var character_id := str(_player.get("character_id"))
+	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
+	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	var artifacts: Array = _player.get("artifacts") if _player.get("artifacts") != null else []
+	var weapon_title := str(weapon.get("title", "—"))
+	var ultimate_title := str(ultimate.get("title", "—"))
+	_build_summary_label.text = "Оружие: %s · Ульта: %s · Артефакты: %d" % [weapon_title, ultimate_title, artifacts.size()]
+	var tooltip_lines := PackedStringArray([
+		"Оружие — %s\n%s" % [weapon_title, str(weapon.get("description", ""))],
+		"Ульта — %s\n%s" % [ultimate_title, str(ultimate.get("description", ""))],
+	])
+	if artifacts.is_empty():
+		tooltip_lines.append("Снаряжение: артефакты ещё не найдены.")
+	else:
+		var artifact_titles := PackedStringArray()
+		for artifact_entry in artifacts:
+			artifact_titles.append(str(artifact_entry.get("title", "Артефакт")) if artifact_entry is Dictionary else str(artifact_entry))
+		tooltip_lines.append("Снаряжение: %s" % ", ".join(artifact_titles))
+	_build_summary_panel.tooltip_text = "\n\n".join(tooltip_lines)
 
 
 # SCRUM-893: словесная часть досье — как играет оружие и что делает ульта.
@@ -1449,13 +1605,16 @@ func _make_survival_stat_row(entry: Dictionary, display_name := "", value_overri
 	line.add_theme_constant_override("separation", 6)
 	row.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(stat_id, Vector2(24, 24))
+	var icon_request := Vector2(18, 18) if get_viewport_rect().size.y < 900.0 else Vector2(24, 24)
+	var icon := UIIconRegistry.make_icon(stat_id, icon_request)
+	icon.name = "SurvivalStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
 
 	var name_label := Label.new()
 	name_label.name = "SurvivalStatName_%s" % stat_id
 	name_label.text = display_name if display_name != "" else str(entry.get("name_ru", ""))
+	name_label.set_meta("full_label", name_label.text)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
@@ -1497,7 +1656,8 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	var is_priority := ProgressionData.attribute_priorities(character_id).has(stat_id)
 	var row := PanelContainer.new()
 	row.name = "BaseStatRow_%s" % stat_id
-	row.custom_minimum_size = Vector2(0, READABLE_BASE_ROW_HEIGHT)
+	var compact := get_viewport_rect().size.y < 900.0
+	row.custom_minimum_size = Vector2(0, 36.0 if compact else READABLE_BASE_ROW_HEIGHT)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	var dossier_tooltip := _tooltip_for_entry(entry)
@@ -1524,13 +1684,15 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	line.add_theme_constant_override("separation", 4)
 	row.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(stat_id, Vector2(30, 30))
+	var icon := UIIconRegistry.make_icon(stat_id, Vector2(22, 22) if compact else Vector2(30, 30))
+	icon.name = "BaseStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
 
 	var name_label := Label.new()
 	name_label.name = "BaseStatName_%s" % stat_id
 	name_label.text = str(entry.get("name_ru", ""))
+	name_label.set_meta("full_label", name_label.text)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
@@ -1576,10 +1738,12 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	var accent: Color = group.get("accent", Color(0.95, 0.78, 0.32, 1.0))
 
 	var box := VBoxContainer.new()
+	box.name = "DerivedGroupContent_%s" % str(group.get("id", ""))
 	box.add_theme_constant_override("separation", 8)
 	group_panel.add_child(box)
 
 	var header := HBoxContainer.new()
+	header.name = "DerivedGroupHeader_%s" % str(group.get("id", ""))
 	header.add_theme_constant_override("separation", 8)
 	box.add_child(header)
 
@@ -1591,6 +1755,7 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	header.add_child(marker)
 
 	var title := Label.new()
+	title.name = "DerivedGroupTitle_%s" % str(group.get("id", ""))
 	title.text = str(group.get("title", "Группа"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -1604,7 +1769,7 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	chips.name = "DerivedStatChips_%s" % str(group.get("id", ""))
 	# SCRUM-893: 2 колонки чипов только на широких вьюпортах — на 1920 и уже
 	# имя+значение не делят чип без эллипсиса, читаемость дороже плотности.
-	chips.columns = 2 if get_viewport_rect().size.x >= 1500.0 else 1
+	chips.columns = 2
 	chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chips.add_theme_constant_override("h_separation", 8)
 	chips.add_theme_constant_override("v_separation", 6)
@@ -1623,7 +1788,8 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	var stat_id := str(entry.get("id", ""))
 	var chip := PanelContainer.new()
 	chip.name = "DerivedStatChip_%s" % stat_id
-	chip.custom_minimum_size = Vector2(READABLE_CHIP_WIDTH, READABLE_CHIP_HEIGHT)
+	var compact := get_viewport_rect().size.y < 900.0
+	chip.custom_minimum_size = Vector2(0.0 if compact else READABLE_CHIP_WIDTH, 32.0 if compact else 48.0)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_STOP
 	chip.set_meta(DOSSIER_TOOLTIP_META, _tooltip_for_entry(entry))
@@ -1647,7 +1813,8 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	line.add_theme_constant_override("separation", 4)
 	chip.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(stat_id, Vector2(32, 32))
+	var icon := UIIconRegistry.make_icon(stat_id, Vector2(18, 18) if compact else Vector2(28, 28))
+	icon.name = "DerivedStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
 
@@ -1705,6 +1872,9 @@ func _base_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFla
 	# font sizes or the accepted grid topology.
 	style.content_margin_left = 6.0
 	style.content_margin_right = 6.0
+	if get_viewport_rect().size.y <= 900.0:
+		style.content_margin_top = 0.0
+		style.content_margin_bottom = 0.0
 	return style
 
 
@@ -1807,45 +1977,26 @@ func _value_color(entry: Dictionary) -> Color:
 	return VALUE_NEUTRAL
 
 
-# --- Локальный дубль глобального кнопочного кита -----------------------------
-# Правило 2: кнопки — только глобальный кит. size-маппинг и margins/content
-# скопированы из ui_screens (_text_button_unique_id/_button_asset_type):
-# высота 72 → нативные 220/240/260-плиты, 104 → back_260x104,
-# промежуточная 88 → minimal_metal back_m (generic 9-slice).
-func _kit_button(text: String, width: float, variant := "default") -> Button:
+# --- Pause actions use the exact main-menu plate family ----------------------
+func _kit_button(text: String, width: float) -> Button:
 	var button := Button.new()
 	button.text = text
 	var height := _action_button_height()
 	button.custom_minimum_size = Vector2(width, height)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.autowrap_mode = TextServer.AUTOWRAP_OFF
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", _readable_px(16.0))
-	_apply_kit_button_theme(button, variant)
+	UIButtonFamily.assign(button, PAUSE_ACTION_BUTTON_FAMILY, true)
+	_apply_kit_button_theme(button)
 	return button
 
 
-func _apply_kit_button_theme(button: Button, variant := "default") -> void:
-	var family := UIButtonFamily.resolve(button, variant)
-	var normal_tint := Color.WHITE
-	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
-	if variant == "danger":
-		# danger-роль кита: красный tint плит (паритет с локальным китом досье до SCRUM-890).
-		normal_tint = BUTTON_DANGER_TINT
-		pressed_tint = BUTTON_DANGER_PRESSED_TINT
+func _apply_kit_button_theme(button: Button) -> void:
+	var family := UIButtonFamily.resolve(button, "default", PAUSE_ACTION_BUTTON_FAMILY)
 	for state in UIButtonFamily.STATES:
-		var tint := normal_tint
-		match state:
-			"hover":
-				tint = BUTTON_HOVER_EXTRA_TINT if variant != "danger" else BUTTON_DANGER_TINT
-			"focus":
-				tint = Color(1.20, 1.20, 1.20, 1.0) if variant != "danger" else BUTTON_DANGER_TINT
-			"pressed":
-				tint = pressed_tint
-			"disabled":
-				tint = Color(0.72, 0.42, 0.42, 1.0) if variant == "danger" else Color(0.72, 0.72, 0.72, 1.0)
-		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state, tint))
+		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
 	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
@@ -1853,12 +2004,17 @@ func _apply_kit_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-func _kit_button_state_style(button: Button, family: String, state: String, tint: Color) -> StyleBox:
+func _kit_button_state_style(button: Button, family: String, state: String) -> StyleBox:
 	var descriptor := UIButtonFamily.descriptor(family, state)
 	var texture := load(str(descriptor.get("path", ""))) as Texture2D
 	var margins: Vector4 = descriptor.get("margins", Vector4(42, 28, 42, 28))
 	var content: Vector4 = descriptor.get("content", Vector4(56, 32, 56, 32))
 	var size := button.custom_minimum_size
+	var horizontal_scale := clampf(size.x / 380.0, 0.55, 1.0)
+	margins.x = roundf(margins.x * horizontal_scale)
+	margins.z = roundf(margins.z * horizontal_scale)
+	content.x = roundf(content.x * horizontal_scale)
+	content.z = roundf(content.z * horizontal_scale)
 	if size.y <= 76.0:
 		var vertical_margin := 12.0 if size.y <= 64.0 else 14.0
 		var vertical_content := 10.0 if size.y <= 64.0 else 14.0
@@ -1875,7 +2031,7 @@ func _kit_button_state_style(button: Button, family: String, state: String, tint
 	style.set_texture_margin(SIDE_TOP, margins.y)
 	style.set_texture_margin(SIDE_RIGHT, margins.z)
 	style.set_texture_margin(SIDE_BOTTOM, margins.w)
-	style.modulate_color = tint
+	style.modulate_color = Color.WHITE
 	style.content_margin_left = content.x
 	style.content_margin_top = content.y
 	style.content_margin_right = content.z
