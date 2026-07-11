@@ -4577,5 +4577,10 @@
   "key": "SCRUM-1063",
   "status": "Контроль качества",
   "desc_hash": "303ca72c337c26ee64f219895d05fc59"
+ },
+ "backend_two_act_run_progression_scrum1058_task.md": {
+  "key": "SCRUM-1058",
+  "status": "Контроль качества",
+  "desc_hash": "a74a9b418d43e9199baaa8b33ffdb321"
  }
 }
