@@ -68,6 +68,12 @@ unchanged; the focused Metal lifecycle is clean.
 
 Independent QA: pending after direct push to `origin/dev`.
 
-Disk cleanup: active task worktree; cleanup pending final gates and push.
+Implementation commit: `9070a85a9`, rebased without conflict on accepted
+SCRUM-971 QA evidence `069d47a4f` and pushed directly to `origin/dev`.
+Post-rebase focused, gamepad full-flow and isolated full runtime gates PASS.
+
+Disk cleanup: removed the 446 MiB task `.godot` cache, 7.7 MiB SCRUM-952 Metal
+captures and all owned isolated HOME/XDG scratch roots. The clean task worktree
+is retained only until independent QA dispatch is recorded.
 
 Thread cleanup: not a disposable worker thread.
