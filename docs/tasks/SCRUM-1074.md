@@ -255,3 +255,35 @@ SCRUM-1074 returns to `К выполнению`; linked SCRUM-1070 remains in
 Disk cleanup: isolated `/tmp/fsd-scrum1074-*` roots/logs and generated UID
 sidecars removed; disposable `.godot` cache and task worktree are removed after
 the final push. No remote task branch is created.
+
+## Final independent combined QA verdict: PASSED
+
+Independent QA reviewed corrective commit `cb9671188` from fresh
+`origin/dev` `8bc3b4039`; before evidence, the branch was fast-forwarded to
+`38f114126`, whose only intervening change is the disjoint SCRUM-1075 design
+package. The correction remains test/docs-only and the SCRUM-1070 product
+surface has no drift.
+
+- Static order: `_require_scratch_user_dir()` is the first operation in
+  `_initialize()`, before any `SubViewport`, `Main` or reset fixture.
+- Negative default-user run: `exit 1`, no functional/lifecycle marker, and the
+  external save remained byte-identical immediately before/after:
+  `mtime=1783793080`, `size=344`,
+  `SHA-256=e72e9018bb5efe3ab8160f74f0822bc7dae9c7da17b314e3a9703af157d8f2a9`.
+- Isolated focused headless: PASS with verified scratch path, both markers and
+  `16` deterministic owned viewport teardowns.
+- Independent isolated macOS/Metal series: PASS `5/5`; every run exited `0`,
+  printed both markers and had zero ObjectDB/resource-still-in-use/Ogg,
+  `ERROR` or `SCRIPT ERROR` diagnostics. The exact known `16` RGB8-to-RGBA8
+  conversion warnings per run stayed visible and were not suppressed.
+- Linked product gates PASS: Meta40, isolated SCRUM-970 pointer clickability,
+  SCRUM-1061 semantic typography, SCRUM-1051 button family, dark-fantasy theme,
+  gamepad focus, UI no-overlap, runtime UI and full runtime smoke. The final
+  duplicate-artifact guard scanned `15208` files; only the accepted headless
+  dummy-renderer screenshot diagnostic appeared.
+- Existing-source provenance, exact `420x72/88/104` geometry, five-state family,
+  frame/content margins, labels, focus and both reset scopes remain accepted.
+
+Disk cleanup: removed the disposable `446 MB` `.godot` cache, all owned
+`/tmp/fsd-qa1074-*` and `/tmp/fsd-qa1070-*` roots/logs, and generated untracked
+UID sidecars; QA worktree/branch removal follows the final push and Jira sync.

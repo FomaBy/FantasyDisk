@@ -128,3 +128,27 @@ This is a test-safety blocker, not a new product UI finding. SCRUM-1070 remains
 in Jira `Контроль качества` until SCRUM-1074 adds the guard, proves refusal on
 default `user://`, and receives a clean independent rerun. No SCRUM-1070
 product code, assets, schema, balance or runtime behavior changed during QA.
+
+## Final independent re-QA verdict: PASSED
+
+Final combined QA with SCRUM-1074 passed on product/test base
+`origin/dev@8bc3b4039`; the evidence branch was then fast-forwarded to current
+`origin/dev@38f114126`, adding only disjoint SCRUM-1075 design documentation.
+
+- Scratch guard fails closed before fixtures and preserved the external save's
+  immediate before/after `mtime`, size and SHA-256 in the negative run.
+- Focused isolated headless and five consecutive isolated macOS/Metal runs
+  passed with both SCRUM-1070/SCRUM-1074 markers and clean lifecycle/Ogg/error
+  diagnostics.
+- Exact `420x72/88/104`, live resize, Russian label fit, semantic `21/23 px`,
+  explicit five-state `text/standard_420x104`, frame-safe footer/legend, focus,
+  confirmation and constellation/Guild refunds remain PASS.
+- Existing-source reuse provenance is unchanged and truthful; no UI art,
+  schema, balance, currency or product runtime drift was found.
+- Meta40, isolated pointer clickability, semantic typography, button family,
+  dark-fantasy theme, gamepad focus, no-overlap, runtime UI and full runtime
+  gates all passed. Full runtime scanned `15208` files and exited `0`.
+
+Disk cleanup: removed the disposable `446 MB` `.godot` cache, all owned QA
+scratch roots/logs and generated untracked UID sidecars; QA worktree/branch
+removal follows the final push and Jira sync.
