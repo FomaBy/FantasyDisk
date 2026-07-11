@@ -1,6 +1,6 @@
 # SCRUM-1074 — Atlas focused Metal test lifecycle leak
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1074
 Контур: Codex
