@@ -1,13 +1,13 @@
 # SCRUM-989 — QA Level Up, Victory, Attribute Upgrade и Atlas
 
-Статус: blocked
+Статус: done
 Jira: SCRUM-989
 Версия: 0.2.1
 Контур: Codex
 Owner: QA/Codex `/root/qa_berserk_895_1043`
 Роль: QA
 Production scope: read-only
-Блокер: SCRUM-1045
+Блокер: снят — SCRUM-1045 QA PASSED / Готово
 
 ## Acceptance Matrix
 
@@ -52,3 +52,24 @@ Production scope: read-only
 По обязательному Windowed lifecycle gate SCRUM-1031 задача возвращена в Jira
 `К выполнению` с label `blocked` до исправления SCRUM-1045 и чистого повтора
 трёх Metal captures. Production UI не изменялся.
+
+## Re-QA-вердикт (2026-07-11)
+
+Статус: **PASSED** на актуальном `origin/dev` `7085e0dcb`.
+
+- Исправление SCRUM-1045 принято независимым QA. Оригинальный verbose Apple
+  Metal oracle повторён для всех трёх capture tools: Level Up, Attribute Shop и
+  Gold Menu Shell/Victory прошли матрицы 1280×720, 1920×1080 и 2560×1440 с
+  success markers и без `ObjectDB`, resource-still-in-use, Ogg/AudioStream,
+  script-error или engine-error diagnostics.
+- Повторно прошли Level Up geometry, Victory centering/live resize,
+  Attribute/Atlas 2/3-offer semantics, UI no-overlap, dark-fantasy theme,
+  runtime UI, level-up advisor, meta tree и progression/economy gates.
+- Gamepad in-run/menu/core и два независимых full-flow прогона прошли; ранее
+  принятый physical mouse/keyboard/gamepad probe остаётся применимым, поскольку
+  после исходного QA production UI не менялся, а SCRUM-1045 затронул только
+  QA-capture teardown.
+- Полный isolated-userdata `runtime_smoke_test.gd` прошёл. Production UI/audio
+  оставались read-only, локальный production diff отсутствует.
+
+Label `blocked` снят; SCRUM-989 переведён из `Контроль качества` в `Готово`.
