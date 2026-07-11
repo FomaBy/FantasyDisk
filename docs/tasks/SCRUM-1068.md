@@ -1,6 +1,6 @@
 # SCRUM-1068 — Schema-6 weapon constellations runtime
 
-Статус: done
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1068
 Контур: Codex
@@ -117,3 +117,26 @@ phase.
 
 Disk cleanup: transient Godot HOME/user-data directories and the registered
 implementation worktree removed after the mandatory push and Jira QA transition.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: FAILED
+
+Проверено на чистом `origin/dev@ab189f75f` (`dc4882cb7` — runtime
+изменения): balance harness; Schema-6 manifest loader, migration,
+typed profiles, 51×3 event matrix, special/live/lifecycle/consumer suites;
+Meta/Guild/per-hero regression; 51 weapon scenes; full runtime smoke. Эти
+проверки зелёные, включая delayed Bayonet deadline, shared
+per-cast three-hit Dark Book cap, source-scoped one-hit Censer ward, per-volley
+Shatter cap и Acid reset/rearm.
+
+Блокер: canonical `tools/validate_scrum1068_runtime_manifest.py`
+завершается с exit `1`: `bayonet_brace_countershot: consumer never invokes
+required event brace_hit`. В `FINAL_ROUTE_METHODS` mechanic привязан к
+`_fire_bayonet_cone`, но реальный delayed event находится в
+`_resolve_bayonet_brace_countershot`. Из-за этого mutation suite также
+красный на canonical baseline и не может доказать отклонение 12
+мутаций.
+
+Баг: Jira `SCRUM-1078`. SCRUM-1068 возвращён в `К выполнению` до
+исправления mechanic-bound route proof и повторного QA.
