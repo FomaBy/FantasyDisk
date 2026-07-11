@@ -97,6 +97,17 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `druid` | `briar_staff` | Посох терний | `BriarStaff.tscn` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
 | `druid` | `raven_totem` | Вороний тотем | `RavenTotem.tscn` | `amp` | `support_totem` pulses, Leadership-scaled deploy limit with deploy cap |
 
+SCRUM-895 Animator pass отделяет читаемость оружия от backend-механики.
+`TwoHandedAxe` теперь добавляет isolated PixelLab 8-frame cleave: реальный
+двуручный топор проходит всю фактическую `180° / 250px` дугу поверх спокойной
+sector-подсветки; cooldown/damage/range/follow-up не менялись. `TwoHandedHammer`
+на live impact показывает PixelLab overhead-weapon frame 5, ground crack и
+shock ring фактического `150px` радиуса. Sword scene/script/геометрия не
+затронуты. Lower-side Hammer membership вынесен в backend handoff SCRUM-1043;
+visual bridge уже принимает его `_circle_attack_center` /
+`_circle_attack_visual_scale` contract и до land использует текущие defaults.
+Source/runtime/report: `docs/design/references/scrum895_berserk_axe_hammer_vfx/`.
+
 ## Class Trait: Элементалист «Проводник стихий» (SCRUM-947)
 
 Все magic-tagged источники бонусов магического урона для Элементалиста на 30%

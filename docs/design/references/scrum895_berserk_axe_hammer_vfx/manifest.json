@@ -1,0 +1,70 @@
+{
+  "issue": "SCRUM-895",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "pixel_lab_config_smoke_passed": true,
+  "packs": {
+    "axe": {
+      "object_id": "d5452069-7d6e-4646-8b9d-379f0c332f17",
+      "animation_group_id": "7e9c7287-d8f0-4461-844e-c1e0bfc5e817",
+      "animation_id": "b318ca47-840b-49d4-ab74-32be1d0c9c5a",
+      "display_name": "berserk_axe_heavy_cleave",
+      "frame_count": 8,
+      "runtime_animation": "cleave",
+      "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_00.png .. _07.png"
+    },
+    "hammer": {
+      "object_id": "b1fed1f3-71b6-47d5-a1eb-e3e4b8db65b5",
+      "animation_group_id": "4515832c-5217-444d-a1a4-b25f1090d435",
+      "animation_id": "11ced058-204f-48dc-bfcb-c0aee7665917",
+      "display_name": "berserk_hammer_overhead_slam",
+      "frame_count": 8,
+      "impact_frame": 5,
+      "runtime_animation": "slam",
+      "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_00.png .. _07.png"
+    }
+  },
+  "normalization": {
+    "source_canvas": [256, 256],
+    "runtime_canvas": [256, 256],
+    "pivot": [128, 128],
+    "safe_gutter_px": 16,
+    "process": "edge-connected flat preview background removal, alpha cap 205, full-canvas nearest-neighbour inset 16px; no repaint"
+  },
+  "mechanical_contract": {
+    "axe": {
+      "attack_shape": "sweep",
+      "attack_range": 250.0,
+      "sweep_degrees": 180.0,
+      "fire_interval": 1.06,
+      "damage_multiplier": 0.85,
+      "gameplay_changed": false
+    },
+    "hammer": {
+      "attack_shape": "circle",
+      "aoe_radius": 150.0,
+      "fire_interval": 1.25,
+      "damage_multiplier": 0.55,
+      "geometry_changed_by_animator": false,
+      "backend_handoff": "SCRUM-1043"
+    },
+    "sword_changed": false
+  },
+  "runtime": {
+    "axe_scene": "scenes/TwoHandedAxe.tscn",
+    "axe_bridge": "scripts/two_handed_axe_weapon.gd",
+    "axe_vfx": "scenes/vfx/BerserkAxeCleaveVfx.tscn",
+    "hammer_scene": "scenes/TwoHandedHammer.tscn",
+    "hammer_bridge": "scripts/two_handed_hammer_weapon.gd",
+    "hammer_vfx": "scenes/vfx/BerserkHammerSlamVfx.tscn",
+    "shared_berserk_weapon_changed": false,
+    "shared_attack_vfx_changed": false,
+    "shared_progression_data_changed": false
+  },
+  "evidence": {
+    "frame_report": "docs/design/references/scrum895_berserk_axe_hammer_vfx/frame_qa_report.json",
+    "contact_sheet": "docs/design/previews/scrum895_berserk_axe_hammer_pixellab_contact.png",
+    "runtime_capture": "docs/design/previews/scrum895_berserk_axe_hammer_runtime.png",
+    "focused_test": "tests/scrum895_berserk_axe_hammer_vfx_test.gd"
+  }
+}

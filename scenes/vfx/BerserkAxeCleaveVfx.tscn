@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/vfx/berserk_axe_cleave_vfx.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/axe_cleave_spriteframes.tres" id="2_frames"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[node name="BerserkAxeCleaveVfx" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="SectorFill" type="Polygon2D" parent="."]
+z_index = 9
+
+[node name="InnerTrail" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 10
+antialiased = true
+
+[node name="OuterArc" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 11
+antialiased = true
+
+[node name="WeaponPivot" type="Node2D" parent="."]
+z_index = 12
+
+[node name="AxeGhost" type="AnimatedSprite2D" parent="WeaponPivot"]
+material = SubResource("CanvasItemMaterial_add")
+texture_filter = 1
+sprite_frames = ExtResource("2_frames")
+animation = &"cleave"

@@ -41,6 +41,15 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
   Knight source/runtime frames and reports with 8 idle directions and 6-frame
   directional `move/walk` rows; no legacy/manual fallback was used.
+- SCRUM-895 adds scene-specific PixelLab weapon-motion bridges for Berserk Axe
+  and Hammer without modifying shared hit logic. Axe uses an 8-frame broad
+  cleave pack plus exact `180° / 250px` arc choreography; Hammer uses an
+  8-frame overhead pack with authored impact frame 5, exact-radius shock ring
+  and optional backend center/scale hooks from SCRUM-1043. Sword remains on its
+  existing scene/script and is the unchanged readability reference. Source,
+  alpha/gutter report, contact sheet and live Godot capture are under
+  `docs/design/references/scrum895_berserk_axe_hammer_vfx/` and
+  `docs/design/previews/scrum895_berserk_axe_hammer_*`.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse

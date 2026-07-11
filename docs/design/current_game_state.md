@@ -1329,6 +1329,19 @@ SCRUM-728 (2026-07-01) заменил только `assets/sprites/effects/vfx_w
 
 SCRUM-880 (2026-07-08) усилил runtime-readability атаки `axe` без новых исходных ассетов: `BerserkWeapon` передает текущую текстуру `WeaponVisual` в `AttackVfx.weapon_signature()` как actual weapon overlay, а `AttackVfx.slash()` для `axe` получает broad lateral scale и metadata `visual_sweep_degrees=180`. Фактическая outward wedge geometry, `attack_range=250`, `sweep_degrees=180`, cooldown, targeting, damage window и balance data не менялись.
 
+SCRUM-895 Animator pass заменяет зависимость от одной signature-пластины
+изолированными PixelLab motion VFX для Berserk Axe/Hammer. Axe получает
+8-frame actual weapon ghost, который проходит live `180° / 250px` cleave;
+Hammer на impact показывает authored overhead-slam frame 5, ground crack и
+shock ring текущего `150px` close-AoE. `TwoHandedSword.tscn`, shared
+`berserk_weapon.gd`, `attack_vfx.gd`, progression/balance data и damage windows
+в Animator-коммите не менялись. Backend-исправление lower-side Hammer zone
+ведётся отдельно в SCRUM-1043; Hammer visual bridge принимает его точный
+center/scale hook. Source/contact/runtime capture:
+`docs/design/references/scrum895_berserk_axe_hammer_vfx/`,
+`docs/design/previews/scrum895_berserk_axe_hammer_pixellab_contact.png`,
+`docs/design/previews/scrum895_berserk_axe_hammer_runtime.png`.
+
 SCRUM-756 (2026-07-01) заменил только `assets/sprites/effects/vfx_weapon_priest_reliquary.png`: weapon signature Светлого Реликвария теперь читается как золотой sanctify-seal с полупрозрачным ghost-силуэтом референсного реликвария внутри зоны. PixelLab MCP evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/manifest.json`; preview/readability sheet: `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`. Runtime API, damage, cooldowns, targeting, радиус sanctify-взрыва, лечение и shared gameplay hooks не менялись.
 
 ## Характеристики
