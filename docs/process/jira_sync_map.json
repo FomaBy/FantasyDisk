@@ -4527,5 +4527,15 @@
   "key": "SCRUM-976",
   "status": "Контроль качества",
   "desc_hash": "c7257959ec0dc501724d7c5aa4387008"
+ },
+ "qa_settings_batch_scrum977_task.md": {
+  "key": "SCRUM-977",
+  "status": "К выполнению",
+  "desc_hash": "9506076b71331d5cf8eb1bd49407f6f1"
+ },
+ "bug_settings_720_footer_frame_overlap_task.md": {
+  "key": "SCRUM-1053",
+  "status": "К выполнению",
+  "desc_hash": "17c88f2beec81a227136e43289708099"
  }
 }
