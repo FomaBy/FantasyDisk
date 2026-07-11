@@ -1,13 +1,13 @@
 # SCRUM-1074 — Atlas focused Metal test lifecycle leak
 
-Статус: done
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1074
 Контур: Codex
-Owner: Back-end QA / Codex
-Thread/Worker: `/root/audit_new_sprint_tail/review_scrum1067_spec/scrum1070_independent_review`
-Branch: `codex/scrum1074-atlas-metal-lifecycle`
-Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1074-atlas-metal-lifecycle`
+Owner: unassigned
+Thread/Worker: n/a
+Branch: n/a
+Worktree: n/a
 Parent: SCRUM-220
 Source QA: SCRUM-1070
 Related precedent: SCRUM-1031
@@ -102,3 +102,32 @@ The windowed focused gate must exit `0` without `WARNING`, `ERROR`,
 Disk cleanup: isolated SCRUM-1074 HOME/XDG/user-data roots, generated Godot
 cache, unrelated generated `.gd.uid` sidecars and disposable worktree are
 removed after the final push; no remote task branch is created.
+
+## QA-Вердикт: FAILED
+
+Independent QA on fresh `origin/dev` `d7548ba8d` found no static defect in the
+test-only diff or SCRUM-1031 teardown architecture. Focused headless passed with
+both functional markers and all `11` owned viewport teardowns.
+
+The mandatory isolated macOS/Metal series passed only `4/5`. One run exited `1`
+because the new whole-process sampling oracle observed
+`Performance.OBJECT_COUNT 1905 -> 1906` between its two warmed fixtures. That
+run still had zero external ObjectDB-leak, resources-still-in-use, Ogg type,
+`WARNING` or unrelated script-error diagnostics, and the owned `WeakRef`
+barriers were clean. Four other ordinary isolated runs exited `0` with both
+markers and the same zero-diagnostic policy.
+
+Corrective handoff: keep owned `WeakRef` release and process-exit leak
+diagnostics authoritative. The global count probe must detect monotonic
+per-cycle growth after warm-up instead of requiring the first and second sample
+of the entire process to be exactly equal. Jira is returned to `К выполнению`;
+SCRUM-1070 remains in `Контроль качества` until this gate reaches `5/5`.
+
+Regression evidence on the same tip: Meta40, pointer clickability, button
+family/theme, gamepad focus, no-overlap, runtime UI and full runtime passed.
+The semantic inventory check is separately stale only because SCRUM-1069 moved
+two unchanged `scripts/player.gd` sites by six lines (`2385 -> 2391` and
+`3418 -> 3424`); fingerprints, counts and semantic content are unchanged.
+
+Disk cleanup: disposable combined QA worktree/cache and isolated
+`/tmp/fsd-qa-1074-1070-*` roots are removed after evidence push.

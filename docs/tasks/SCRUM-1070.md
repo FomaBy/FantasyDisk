@@ -91,3 +91,26 @@ playback-объекты. Новый fixture освобождает viewport од
 
 Bug/handoff: SCRUM-1074. До его исправления и чистой Metal-серии SCRUM-1070
 остаётся в Jira «Контроль качества», а не «Готово».
+
+## QA-Повторный вердикт: FAILED
+
+На свежем `origin/dev` `d7548ba8d` продуктовая часть повторно подтверждена:
+focused headless, exact `420x72/88/104`, live resize, обе области сброса,
+Meta40, pointer clickability, button family/theme, gamepad focus, no-overlap,
+runtime UI и full runtime — PASS. Static diff/provenance audit также PASS:
+единственный production-файл коммита `c0c0a6d82` — `scripts/ui_screens.gd`,
+existing-source reuse правдив, art/schema/balance drift отсутствует.
+
+Связанный обязательный SCRUM-1074 Metal-gate остаётся красным: независимая
+серия дала `4/5`, один запуск завершился `exit 1` на нестабильном сравнении
+глобального `Performance.OBJECT_COUNT 1905 -> 1906`, хотя owned `WeakRef` и
+внешние exit-leak/resources/Ogg diagnostics были чистыми. Поэтому SCRUM-1070
+остаётся в Jira `Контроль качества`, а SCRUM-1074 возвращён в `К выполнению`.
+
+Integration note: semantic typography inventory на текущем общем tip устарел
+только по двум line-number полям после шестистрочной вставки SCRUM-1069 в
+`scripts/player.gd`; fingerprint/counts/content не изменились и это не drift
+продуктового diff SCRUM-1070.
+
+Disk cleanup: disposable combined QA worktree/cache and isolated
+`/tmp/fsd-qa-1074-1070-*` roots are removed after evidence push.
