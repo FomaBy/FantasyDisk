@@ -1113,6 +1113,14 @@ back to compact/back/icon families: their text must remain inside the
 `quit_220x72` content band. Runtime smoke records the actual rects and textures
 in `build/qa/scrum319/quit_confirmation_dialog.md`.
 
+The in-run `EndRunConfirmationDialog` deliberately has a separate width
+contract. SCRUM-1055 gives both `Завершить` and `Отмена` equal 240x72 slots on
+the native `text/continue_240x72` five-state family. This leaves at least a 4px
+text-fit reserve after the style content margins at supported font scales, so
+the final soft sign in `Завершить` cannot be clipped. The 600px atlas-chip panel,
+18px inter-button gap, safe default focus on Cancel, and Escape/B behavior stay
+unchanged.
+
 ## Pause And Result Screens
 
 SCRUM-330 prepared the Design package for pause, pause dossier/stats, victory

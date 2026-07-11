@@ -131,6 +131,8 @@ const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
+const END_RUN_CONFIRM_BUTTON_SIZE := Vector2(240.0, 72.0)
+const END_RUN_CONFIRM_BUTTON_FAMILY := "text/continue_240x72"
 const MAIN_MENU_BUTTON_COUNT := 6.0
 const GOLD_SHELL_SCREEN_IDS := ["campfire", "upgrade", "artifact_reward", "victory", "death"]
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
@@ -7397,8 +7399,8 @@ func _show_pause_menu(force := false) -> void:
 
 
 # SCRUM-883: модалка подтверждения «Завершить забег» из паузы — тот же стиль, что у
-# quit-диалога главного меню: плотный atlas-чип, золотой титул, кит-кнопки 220×72
-# (нативы quit_220x72 по size-маппингу), стартовый фокус на безопасной «Отмене»,
+# quit-диалога главного меню: плотный atlas-чип, золотой титул, парные кнопки 240×72
+# на нативной continue_240x72 family, стартовый фокус на безопасной «Отмене»,
 # Esc/B и клик мимо панели отменяют только модалку (пауза остаётся).
 func _show_end_run_confirmation_dialog() -> void:
 	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
@@ -7463,14 +7465,16 @@ func _show_end_run_confirmation_dialog() -> void:
 	var button_row := HBoxContainer.new()
 	button_row.name = "EndRunConfirmationButtons"
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	button_row.custom_minimum_size = Vector2(0.0, 72.0)
+	button_row.custom_minimum_size = Vector2(0.0, END_RUN_CONFIRM_BUTTON_SIZE.y)
 	button_row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button_row.add_theme_constant_override("separation", 18)
 	box.add_child(button_row)
 
 	var confirm_button := _make_button("Завершить")
 	confirm_button.name = "EndRunConfirmAcceptButton"
-	_set_action_button_size(confirm_button, 220.0, 72.0)
+	_set_action_button_size(confirm_button, END_RUN_CONFIRM_BUTTON_SIZE.x, END_RUN_CONFIRM_BUTTON_SIZE.y)
+	_apply_fantasy_button_theme(confirm_button, "default", END_RUN_CONFIRM_BUTTON_FAMILY)
+	confirm_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 	confirm_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	# Диалог живёт в pause_overlay_layer и умрёт вместе с ним при _clear_ui завершения.
 	confirm_button.pressed.connect(_end_current_run_by_player)
@@ -7478,7 +7482,9 @@ func _show_end_run_confirmation_dialog() -> void:
 
 	var cancel_button := _make_button("Отмена")
 	cancel_button.name = "EndRunConfirmCancelButton"
-	_set_action_button_size(cancel_button, 220.0, 72.0)
+	_set_action_button_size(cancel_button, END_RUN_CONFIRM_BUTTON_SIZE.x, END_RUN_CONFIRM_BUTTON_SIZE.y)
+	_apply_fantasy_button_theme(cancel_button, "default", END_RUN_CONFIRM_BUTTON_FAMILY)
+	cancel_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 	cancel_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cancel_button.pressed.connect(_cancel_end_run_confirmation_dialog)
 	button_row.add_child(cancel_button)

@@ -2226,7 +2226,7 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		return
 
 	# SCRUM-883/SCRUM-890: «Завершить забег» из шапки досье открывает модалку
-	# подтверждения в стиле quit-диалога (atlas-чип, кит-кнопки 220×72, фокус на
+	# подтверждения в стиле quit-диалога (atlas-чип, парные кнопки 240×72, фокус на
 	# «Отмене»); Esc отменяет только модалку — пауза и забег остаются живы.
 	route_main.ui._show_pause_menu()
 	await process_frame
@@ -2266,11 +2266,19 @@ func _test_event_route_node_click(main_scene: PackedScene) -> void:
 		_fail("Expected end-run confirmation to focus safe Cancel by default.")
 		return
 	for end_run_confirm_button in [end_run_accept, end_run_cancel]:
-		if absf(end_run_confirm_button.custom_minimum_size.x - 220.0) > 0.5 or absf(end_run_confirm_button.custom_minimum_size.y - 72.0) > 0.5:
-			_fail("Expected end-run confirmation buttons to stay 220x72, got %s." % str(end_run_confirm_button.custom_minimum_size))
+		if absf(end_run_confirm_button.custom_minimum_size.x - 240.0) > 0.5 or absf(end_run_confirm_button.custom_minimum_size.y - 72.0) > 0.5:
+			_fail("Expected end-run confirmation buttons to stay 240x72, got %s." % str(end_run_confirm_button.custom_minimum_size))
 			return
-		if not _button_uses_text_button_unique_id(end_run_confirm_button, "quit_220x72"):
-			_fail("Expected end-run confirmation buttons to ride the quit_220x72 kit plate.")
+		if not _button_uses_text_button_unique_id(end_run_confirm_button, "continue_240x72"):
+			_fail("Expected end-run confirmation buttons to ride the wider continue_240x72 kit plate.")
+			return
+		var end_run_style: StyleBox = end_run_confirm_button.get_theme_stylebox("normal")
+		var end_run_font: Font = end_run_confirm_button.get_theme_font("font")
+		var end_run_font_size: int = end_run_confirm_button.get_theme_font_size("font_size")
+		var end_run_content_width: float = end_run_confirm_button.size.x - end_run_style.get_content_margin(SIDE_LEFT) - end_run_style.get_content_margin(SIDE_RIGHT)
+		var end_run_text_width: float = end_run_font.get_string_size(end_run_confirm_button.text, HORIZONTAL_ALIGNMENT_CENTER, -1.0, end_run_font_size).x
+		if end_run_text_width + 4.0 > end_run_content_width:
+			_fail("Expected end-run label '%s' to fit its content lane: text %.1f > content %.1f." % [end_run_confirm_button.text, end_run_text_width, end_run_content_width])
 			return
 	var end_run_escape := InputEventKey.new()
 	end_run_escape.keycode = KEY_ESCAPE
