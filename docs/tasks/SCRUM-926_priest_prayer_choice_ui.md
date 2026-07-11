@@ -1,6 +1,6 @@
 # SCRUM-926 — Priest battle-start prayer choice UI
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: `/root/scrum926_prayer`
 Jira: SCRUM-926
@@ -46,4 +46,4 @@ double-submit, focus ring, non-cancellable input and non-Priest isolation.
 OpenGL/Metal captures for all three target sizes are committed in the runtime
 preview directory.
 
-Disk cleanup: `.godot/` will be removed with the task worktree after independent QA handoff.
+Disk cleanup: disposable `.godot/` removed; clean task worktree scheduled for immediate removal after the routing push.
