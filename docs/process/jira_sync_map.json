@@ -4482,5 +4482,10 @@
   "key": "SCRUM-951",
   "status": "Контроль качества",
   "desc_hash": "fe8c34d7110ddfd0d7873aa6fa341563"
+ },
+ "SCRUM-984_gold_frame_rollout_qa.md": {
+  "key": "SCRUM-984",
+  "status": "Готово",
+  "desc_hash": "dcaba32fa71ef82cb63e43ad6fa67b0d"
  }
 }
