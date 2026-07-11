@@ -66,3 +66,28 @@ Luminari, на доступный живой Godot `Label` в общей runtime
   focused/no-overlap/gamepad/runtime/full gates.
 - Jira routing: после green push задача переводится в `Контроль качества`;
   `Готово` только после отдельного QA PASSED.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Проверено: независимый QA на свежем `origin/dev` `625e97d82` подтвердил
+implementation `3fd29ae30`: live `ContinueRunTitle` Label с точным русским
+текстом и общей theme/default Font family; отсутствие runtime PNG/Luminari/
+Trattatello reference; безопасное удаление wordmark/generator после sole-consumer
+audit; frame-safe glyph/outline/shadow bounds, subtitle/actions и focus graph.
+PASS: `scrum1062_continue_run_title_test`, `ui_no_overlap_matrix_test`,
+`gamepad_menu_focus_test`, `gamepad_full_flow_smoke_test`,
+`runtime_smoke_ui_test`, `asset_reference_integrity_test`, полный
+`runtime_smoke_test`.
+
+Краевые случаи: 1152×648, 1280×720, 1920×1080, 2560×1440, live resize,
+Escape с сохранением autosave, Continue/New Game callbacks и стартовый focus.
+Metal Apple M4 Pro matrix PASS; все четыре capture проверены глазами: одна строка,
+без clip/wrap, декоративные rails/corners и пустая content-zone не перекрыты.
+
+Баги: нет. Единственный diagnostic — известный non-failing dummy-renderer null
+texture warning в headless weapon-select screenshot helper.
+
+Disk cleanup: QA captures, isolated HOME/XDG/user-data roots, `.godot/`,
+generated UID sidecars и fresh QA worktree удаляются после evidence push.
