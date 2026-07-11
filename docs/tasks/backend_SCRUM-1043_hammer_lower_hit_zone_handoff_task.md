@@ -85,3 +85,20 @@ Jira). Disk cleanup: `.godot` and generated untracked `.uid` sidecars removed;
 task worktree removed after push. Remaining risk: normal combat-scale QA should
 confirm that the 16px/1.12 ellipse reads naturally with enemy clutter; backend
 geometry and the VFX transform are deterministic and covered.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Независимый clean-cache QA на `origin/dev` `855b5e412`: focused SCRUM-1043,
+SCRUM-895 visual-bridge integration, runtime weapon mechanics, Berserk runaway
+(`3201 <= 3600`, `382 <= 650`), global damage balance (51 pair) и full runtime
+прошли через `tools/godot_gate.py`. После финального rebase focused и full
+runtime повторены успешно.
+
+Краевые границы подтверждены: top `150` / bottom `180` / horizontal `149`
+внутри; bottom `185` / horizontal `151` снаружи. Damage query, base slam,
+signature и PixelLab Hammer bridge используют один center/scale contract.
+Holy Flail сохраняет owner center / `Vector2.ONE`; Sword/Axe и числовые
+damage/cooldown/growth/diminishing параметры не изменены. Баги: нет.
+Jira: `Готово`.
