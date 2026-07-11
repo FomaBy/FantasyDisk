@@ -32,6 +32,11 @@ usage, а локальный daemon на Mac запускает установл
 - [AI coding tools matrix](https://multica.ai/docs/providers)
 - [CLI reference](https://multica.ai/docs/cli)
 - [GitHub repository](https://github.com/multica-ai/multica)
+- [Codex CLI documentation](https://developers.openai.com/codex/cli)
+- [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code/overview)
+- [GitHub documentation](https://docs.github.com/)
+- [FantasyDisk repository](https://github.com/FomaBy/FantasyDisk)
+- [эта инструкция в `dev`](https://github.com/FomaBy/FantasyDisk/blob/dev/docs/process/multica_migration_and_ai_operations.md)
 
 На дату проверки Multica нативно поддерживает Claude Code и Codex, назначение
 issues агентам, автоматический запуск, session resume, task runs, task messages,
@@ -64,7 +69,8 @@ Code. Не помещать API keys или access tokens в репозитор�
 ```bash
 brew install multica-ai/tap/multica
 multica version
-multica setup
+multica setup cloud
+multica auth status
 
 which codex
 which claude
@@ -73,7 +79,54 @@ claude --version
 
 multica daemon status
 multica runtime list
+multica workspace list --output json
+multica workspace switch <fantasydisk-workspace-id>
 ```
+
+В проверенном CLI `0.3.43` короткая команда `multica setup` эквивалентна
+`multica setup cloud`, но в инструкциях и automation лучше явно указывать
+`cloud` или `self-host`. Перед автоматизацией сверять фактический синтаксис
+установленной версии через `multica <command> --help`.
+
+### Провайдер-аутентификация и версии CLI
+
+Успешный вход в Claude Desktop или Codex Desktop ещё не доказывает, что
+headless-процесс Multica daemon сможет авторизоваться. После setup проверить
+именно CLI-контур:
+
+```bash
+claude auth status --text
+codex login status
+claude --version
+codex --version
+```
+
+Если Claude task завершается `401 Invalid authentication credentials`, типичная
+причина на Mac — Desktop использует host-managed OAuth refresh в памяти, а
+запущенный daemon процесс вызывает headless `claude -p` и не видит эту сессию.
+Создать долгоживущий токен CLI (нужна подходящая Claude subscription), не
+копировать его в issue, shell history или репозиторий, затем перезапустить
+daemon:
+
+```bash
+claude setup-token
+multica daemon restart
+```
+
+Если Codex task завершается `400` с сообщением, что выбранная модель требует
+более новую версию Codex, обновить CLI и перезапустить daemon:
+
+```bash
+codex update
+codex --version
+multica daemon restart
+```
+
+На проверочном Mac ошибка воспроизводилась с Codex CLI `0.139.0` и исчезла после
+обновления до `0.144.1`; это зафиксированный пример, а не вечный minimum version.
+Для нового пилота устанавливать последнюю доступную версию обоих provider CLI и
+запускать по одной безопасной read-only smoke issue для Codex и Claude до
+реальных задач.
 
 После установки или обновления provider CLI:
 
@@ -248,10 +301,24 @@ Todo → In Progress → QA → Done
 Не переносить всю историческую Jira автоматически. Jira оставить read-only
 архивом, а старый ключ сохранить в metadata.
 
+Для безопасного архивного импорта уже есть repo-owned dry-run-first инструменты:
+
+- [`tools/jira_to_multica.py`](../../tools/jira_to_multica.py) — идемпотентный
+  importer завершённых Jira issues, по умолчанию ничего не записывает;
+- [`multica_jira_completed_migration_runbook.md`](multica_jira_completed_migration_runbook.md)
+  — пилот, проверка, resume и rollback исторического импорта.
+
+Исторический импорт сам по себе **не является cutover** и не меняет
+authoritative source.
+
 ## Фаза 6. Метрики Codex против Claude
 
-Multica предоставляет task runs, messages, token/cost usage и runtime activity.
-Для объективного результата дополнительно записывать outcome/QA metrics.
+Multica предоставляет task runs, messages, token usage и runtime activity. В
+проверенном CLI `0.3.43` команда `issue usage` возвращает input/output/cache
+tokens, но не гарантирует денежную стоимость. Поэтому фактический cost брать из
+provider billing/export (или вычислять по зафиксированной model-price table с
+датой действия), а источник стоимости хранить рядом с benchmark result. Для
+объективного результата дополнительно записывать outcome/QA metrics.
 
 | Метрика | Формула |
 |---|---|
@@ -262,7 +329,7 @@ Multica предоставляет task runs, messages, token/cost usage и runt
 | Failure rate | failed or blocked runs / all runs |
 | Human intervention | ручные корректировки / issue |
 | Token efficiency | tokens / accepted complexity point |
-| Cost efficiency | cost / accepted complexity point |
+| Cost efficiency | verified provider cost / accepted complexity point |
 | Throughput | accepted complexity points / active day |
 | Regression rate | post-Done bugs / completed issues |
 | Scope accuracy | accepted criteria / all criteria |
@@ -278,6 +345,12 @@ accepted_throughput = sum(points with QA PASSED) / active_hours
 cost_per_accepted_point = total_cost / sum(points with QA PASSED)
 tokens_per_accepted_point = total_tokens / sum(points with QA PASSED)
 ```
+
+Для token efficiency отдельно хранить `input`, `output`, `cache_read` и
+`cache_write`; не складывать их вслепую в один показатель. Перед сравнением
+проверять аномальные значения usage по provider export. Денежные результаты без
+указания модели, валюты, периода тарифа и источника billing считать `N/A`, а не
+нулевой стоимостью.
 
 Не использовать строки кода, количество commits или просто число закрытых
 issues как показатель качества.
@@ -299,6 +372,10 @@ quality 35% + speed 25% + cost 20% + autonomy 10% + predictability 10%
 - чередовать назначение задач;
 - QA не должен видеть исполнителя до вердикта (`blind-qa`);
 - собрать не менее 15–20 задач на агента в каждой важной категории;
+- считать все попытки, включая provider/runtime failures и автоматические
+  rerun, а не только успешный финальный run;
+- фиксировать одинаковый стартовый commit, tool permissions, timeout и
+  acceptance criteria для парных A/B задач;
 - для A/B benchmark использовать отдельные worktrees от одного base commit;
 - не сливать проигравший benchmark-вариант;
 - учитывать регрессии, обнаруженные после Done.
@@ -310,8 +387,9 @@ multica issue runs MUL-123
 multica issue run-messages <task-id>
 multica issue usage MUL-123
 multica agent tasks <agent-slug>
-multica runtime usage
-multica runtime activity
+multica runtime list --output json
+multica runtime usage <runtime-id> --output json
+multica runtime activity <runtime-id> --output json
 ```
 
 ## Фаза 7. FantasyDisk automation helpers
@@ -335,6 +413,18 @@ Helpers должны выбирать одну eligible issue, проверят�
 
 ## Cutover gate
 
+До прохождения gate действует однозначное правило источника истины:
+
+| Этап | Authoritative source | Обязательная запись результата |
+|---|---|---|
+| До пилота | Jira | Jira status/comments |
+| Пилот | Jira; Multica только execution mirror и telemetry | итог Multica run возвращается в Jira |
+| После явно одобренного cutover | Multica | Multica issue/timeline |
+| Rollback | Jira после объявления rollback | незавершённые issues восстановлены по `jira_legacy_key` |
+
+Наличие импортированных issues, работающего daemon или успешных agent runs не
+переключает источник истины автоматически.
+
 Multica становится authoritative source только когда одновременно выполнено:
 
 - не менее 30 реальных issues прошли полный workflow;
@@ -347,6 +437,10 @@ Multica становится authoritative source только когда одн
 - создан backup/export Multica;
 - инструкция проверена на чистом Mac profile;
 - владелец проекта явно одобрил cutover.
+
+Решение фиксируется отдельной cutover issue: дата/время, approver, результаты
+всех пунктов gate, backup location и rollback owner. Без такой записи gate
+считается не пройденным, даже если техническая миграция завершилась.
 
 В день cutover:
 
