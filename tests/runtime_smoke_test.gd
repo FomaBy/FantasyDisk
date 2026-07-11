@@ -6390,7 +6390,7 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	tabs.current_tab = 1
 	await process_frame
-	for slider_id in ["master_volume", "music_volume", "sfx_volume"]:
+	for slider_id in ["master_volume", "music_volume", "sfx_volume", "ui_volume"]:
 		var slider := main.find_child("VolumeSlider_%s" % slider_id, true, false) as HSlider
 		if slider == null or not slider.visible or slider.max_value != 100.0:
 			_fail("Expected visible 0-100 settings slider for %s." % slider_id)
@@ -6452,6 +6452,11 @@ func _test_settings_tabs_and_rebind(main: Node) -> void:
 		return
 	if bool(loaded_audio.get("music_enabled", true)) or bool(loaded_audio.get("sfx_enabled", true)):
 		_fail("Expected audio reset button to keep default music and SFX muted.")
+		return
+	if absf(float(loaded_audio.get("ui_volume", 0.0)) - 1.0) > 0.001 \
+			or bool(loaded_audio.get("mute_when_unfocused", true)) \
+			or not bool(loaded_audio.get("low_hp_warning_enabled", false)):
+		_fail("SCRUM-974: audio reset must restore UI volume, focus mute and low-HP warning defaults.")
 		return
 	if not InputMap.has_action("ultimate"):
 		_fail("Expected InputMap action 'ultimate' to exist.")

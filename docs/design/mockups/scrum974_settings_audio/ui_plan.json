@@ -1,0 +1,42 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 3, "allow_overlap": false},
+  "content": {
+    "title": "НАСТРОЙКИ",
+    "tab_screen": "ЭКРАН",
+    "tab_sound": "ЗВУК",
+    "tab_controls": "УПРАВЛЕНИЕ",
+    "master": "ОБЩАЯ ГРОМКОСТЬ",
+    "music": "МУЗЫКА",
+    "effects": "ЭФФЕКТЫ",
+    "ui_sounds": "ЗВУКИ ИНТЕРФЕЙСА",
+    "mute_unfocused": "БЕЗ ЗВУКА ВНЕ ОКНА",
+    "low_hp": "ПРЕДУПРЕЖДЕНИЕ О ЗДОРОВЬЕ",
+    "reset": "СБРОСИТЬ ЗВУК"
+  },
+  "responsive": {
+    "wide": "At 1600x900 and above the two compact option rows remain stacked and AudioScroll has no visible scrollbar.",
+    "compact": "Below 1600x900 the same stack remains full-size inside a vertical follow-focus AudioScroll; all controls are reachable without shrinking."
+  },
+  "elements": [
+    {"id": "outer_frame", "kind": "panel", "x": 0, "y": 0, "w": 688, "h": 384, "min_w": 640, "min_h": 360},
+    {"id": "safe_area", "kind": "zone", "parent": "outer_frame", "content_zone": true, "x": 48, "y": 34, "w": 592, "h": 316},
+    {"id": "header", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 68, "y": 55, "w": 552, "h": 32},
+    {"id": "title", "kind": "text", "parent": "header", "content_zone": true, "x": 86, "y": 61, "w": 118, "h": 20, "text_key": "title", "max_font": 15, "min_font": 10},
+    {"id": "back_button", "kind": "button", "parent": "header", "content_zone": true, "x": 522, "y": 55, "w": 98, "h": 32, "min_w": 86, "min_h": 26},
+    {"id": "tab_row", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 196, "y": 96, "w": 296, "h": 34},
+    {"id": "tab_screen", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 196, "y": 96, "w": 94, "h": 34, "text_key": "tab_screen", "max_font": 12, "min_font": 8},
+    {"id": "tab_sound", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 296, "y": 96, "w": 94, "h": 34, "text_key": "tab_sound", "max_font": 12, "min_font": 8},
+    {"id": "tab_controls", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 396, "y": 96, "w": 96, "h": 34, "text_key": "tab_controls", "max_font": 11, "min_font": 7},
+    {"id": "audio_scroll_zone", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 154, "y": 138, "w": 380, "h": 183, "min_w": 340, "min_h": 160},
+    {"id": "master_row", "kind": "zone", "parent": "audio_scroll_zone", "content_zone": true, "x": 170, "y": 141, "w": 348, "h": 24},
+    {"id": "music_row", "kind": "zone", "parent": "audio_scroll_zone", "content_zone": true, "x": 170, "y": 169, "w": 348, "h": 24},
+    {"id": "effects_row", "kind": "zone", "parent": "audio_scroll_zone", "content_zone": true, "x": 170, "y": 197, "w": 348, "h": 24},
+    {"id": "ui_sounds_row", "kind": "zone", "parent": "audio_scroll_zone", "content_zone": true, "x": 170, "y": 225, "w": 348, "h": 24},
+    {"id": "audio_option_stack", "kind": "zone", "parent": "audio_scroll_zone", "content_zone": true, "x": 170, "y": 254, "w": 348, "h": 47},
+    {"id": "mute_unfocused_toggle", "kind": "button", "parent": "audio_option_stack", "content_zone": true, "x": 170, "y": 254, "w": 348, "h": 21, "text_key": "mute_unfocused", "max_font": 9, "min_font": 6},
+    {"id": "low_hp_toggle", "kind": "button", "parent": "audio_option_stack", "content_zone": true, "x": 170, "y": 280, "w": 348, "h": 21, "text_key": "low_hp", "max_font": 9, "min_font": 6},
+    {"id": "reset_audio", "kind": "button", "parent": "audio_scroll_zone", "content_zone": true, "x": 214, "y": 303, "w": 160, "h": 18, "text_key": "reset", "max_font": 10, "min_font": 7},
+    {"id": "footer_actions", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 389, "y": 332, "w": 126, "h": 18}
+  ]
+}

@@ -37,6 +37,11 @@ const SFX_THROTTLE_OVERRIDES := {
 	"ui_error": 0.08,
 }
 
+# SCRUM-974: UI is a child mix of SFX. The existing SFX volume/mute remains the
+# global parent, while unambiguous navigation sounds get an independent trim.
+# Economy, reward and gameplay cues deliberately remain on SFX.
+const UI_SFX_IDS := ["ui_click", "ui_back", "ui_error"]
+
 # --- Музыка ------------------------------------------------------------------
 
 # MUSIC_META — источник истины по трекам (замена плоских MUSIC_PATHS/MUSIC_GAIN_DB):
@@ -119,6 +124,11 @@ var _last_combat_track := ""
 # Лупящиеся SFX-каналы вне пула (low_hp_pulse): id -> AudioStreamPlayer / Tween.
 var _sfx_loop_players := {}
 var _sfx_loop_tweens := {}
+var _sfx_loop_requested := {}
+var _sfx_loop_effective := {}
+var _low_hp_warning_enabled := true
+var _mute_when_unfocused := false
+var _application_focused := true
 
 
 func _ready() -> void:
@@ -189,6 +199,10 @@ func _exit_tree() -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		set_application_focused(true)
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		set_application_focused(false)
 	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
 		_release_audio_refs()
 
@@ -211,6 +225,8 @@ func _release_audio_refs() -> void:
 			loop_player.stop()
 			loop_player.stream = null
 	_sfx_loop_tweens.clear()
+	_sfx_loop_requested.clear()
+	_sfx_loop_effective.clear()
 	if _music_player != null:
 		_music_player.stop()
 		_music_player.stream = null
@@ -225,13 +241,17 @@ func _release_audio_refs() -> void:
 
 
 func _ensure_audio_buses() -> void:
-	# Шины Music/SFX создаются программно (default bus layout содержит только Master).
-	for bus_name in ["Music", "SFX"]:
+	# Шины создаются программно (default bus layout содержит только Master).
+	# UI -> SFX сохраняет SFX как глобальный parent volume/mute.
+	var sends := {"Music": "Master", "SFX": "Master", "UI": "SFX"}
+	for bus_name in ["Music", "SFX", "UI"]:
 		if AudioServer.get_bus_index(bus_name) == -1:
 			var bus_index := AudioServer.bus_count
 			AudioServer.add_bus(bus_index)
 			AudioServer.set_bus_name(bus_index, bus_name)
-			AudioServer.set_bus_send(bus_index, "Master")
+		var resolved_index := AudioServer.get_bus_index(bus_name)
+		if resolved_index != -1:
+			AudioServer.set_bus_send(resolved_index, str(sends[bus_name]))
 
 
 func apply_volume_settings(settings: Dictionary) -> void:
@@ -239,6 +259,11 @@ func apply_volume_settings(settings: Dictionary) -> void:
 	_set_bus_volume("Master", float(settings.get("master_volume", 1.0)), true)
 	_set_bus_volume("Music", float(settings.get("music_volume", 1.0)), bool(settings.get("music_enabled", true)))
 	_set_bus_volume("SFX", float(settings.get("sfx_volume", 1.0)), bool(settings.get("sfx_enabled", true)))
+	_set_bus_volume("UI", float(settings.get("ui_volume", 1.0)), true)
+	_mute_when_unfocused = bool(settings.get("mute_when_unfocused", false))
+	_low_hp_warning_enabled = bool(settings.get("low_hp_warning_enabled", true))
+	_apply_application_focus_mute()
+	_refresh_requested_sfx_loop("low_hp_pulse")
 
 
 func _set_bus_volume(bus_name: String, linear_volume: float, enabled: bool) -> void:
@@ -248,6 +273,21 @@ func _set_bus_volume(bus_name: String, linear_volume: float, enabled: bool) -> v
 	var volume := clampf(linear_volume, 0.0, 1.0)
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(maxf(volume, 0.0001)))
 	AudioServer.set_bus_mute(bus_index, not enabled)
+
+
+func set_application_focused(focused: bool) -> void:
+	_application_focused = focused
+	_apply_application_focus_mute()
+
+
+func _apply_application_focus_mute() -> void:
+	var master_index := AudioServer.get_bus_index("Master")
+	if master_index != -1:
+		AudioServer.set_bus_mute(master_index, _mute_when_unfocused and not _application_focused)
+
+
+func sfx_bus_for_id(sfx_id: String) -> String:
+	return "UI" if UI_SFX_IDS.has(sfx_id) else "SFX"
 
 
 # --- SFX ---------------------------------------------------------------------
@@ -265,12 +305,25 @@ func play_sfx(sfx_id: String) -> void:
 	for player in _sfx_players:
 		if not player.playing:
 			_last_played_at[sfx_id] = now
+			player.bus = sfx_bus_for_id(sfx_id)
 			player.stream = stream
 			player.play()
 			return
 
 
 func set_sfx_loop(sfx_id: String, active: bool) -> void:
+	_sfx_loop_requested[sfx_id] = active
+	var effective := active and (sfx_id != "low_hp_pulse" or _low_hp_warning_enabled)
+	_sfx_loop_effective[sfx_id] = effective
+	_set_sfx_loop_effective(sfx_id, effective)
+
+
+func _refresh_requested_sfx_loop(sfx_id: String) -> void:
+	if _sfx_loop_requested.has(sfx_id):
+		set_sfx_loop(sfx_id, bool(_sfx_loop_requested[sfx_id]))
+
+
+func _set_sfx_loop_effective(sfx_id: String, active: bool) -> void:
 	# Лупящийся SFX-канал вне пула (low-HP пульс, спека §5): выделенный плеер на
 	# шине SFX, fade-in/out зеркалит виньетку. Повторные вызовы того же состояния —
 	# no-op (луп не стакается).

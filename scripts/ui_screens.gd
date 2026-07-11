@@ -6204,13 +6204,34 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	screen_box.add_child(pending_label)
 
 	var audio_tab := _make_settings_tab("Звук", s, settings_column_w)
-	var audio_box := audio_tab.get_child(0) as VBoxContainer
 	tabs.add_child(audio_tab)
+	var audio_page := audio_tab.get_child(0) as VBoxContainer
+	var audio_scroll := ScrollContainer.new()
+	audio_scroll.name = "AudioScroll"
+	audio_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	audio_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	audio_scroll.follow_focus = true
+	audio_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	audio_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	audio_page.add_child(audio_scroll)
+	_settings_v6_style_audio_scrollbar(audio_scroll, s)
+	var audio_box := VBoxContainer.new()
+	audio_box.name = "SettingsAudioContent"
+	audio_box.custom_minimum_size = Vector2(settings_column_w, 0.0)
+	audio_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Six real rows + Reset fit 1080p without a scrollbar; compact 720p keeps
+	# full-size controls and scrolls instead of shrinking labels.
+	audio_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	audio_scroll.add_child(audio_box)
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
 	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled", s)
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled", s)
+	_add_volume_row(audio_box, "Звуки интерфейса", "ui_volume", "", s)
+	_add_audio_option_row(audio_box, "Без звука вне окна", "mute_when_unfocused", s)
+	_add_audio_option_row(audio_box, "Предупреждение о здоровье", "low_hp_warning_enabled", s)
 	# SCRUM-879: кит-натив standard_420x104 (маппинг по имени кнопки).
-	var reset_audio_button := _settings_v6_make_action_button("Сбросить звук", "SettingsResetAudioButton", 420.0, 104.0)
+	var audio_reset_height := 72.0 if vp.y < 760.0 else (88.0 if vp.y < 1200.0 else 104.0)
+	var reset_audio_button := _settings_v6_make_action_button("Сбросить звук", "SettingsResetAudioButton", 420.0, audio_reset_height)
 	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
@@ -6782,6 +6803,43 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 		row.add_child(toggle)
 
 
+func _add_audio_option_row(box: VBoxContainer, title: String, setting_key: String, s := 1.0) -> HBoxContainer:
+	var toggle := CheckBox.new()
+	toggle.name = "AudioToggle_%s" % setting_key
+	toggle.button_pressed = bool(game.audio_settings.get(setting_key, game.GAME_SETTINGS.DEFAULTS.get(setting_key, false)))
+	toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
+	toggle.tooltip_text = title
+	_settings_v6_style_checkbox(toggle, s)
+	toggle.toggled.connect(func(pressed: bool) -> void:
+		game.audio_settings[setting_key] = pressed
+		toggle.text = "Вкл." if pressed else "Выкл."
+		game._apply_audio_settings()
+		game.save_game_settings()
+	)
+	var row := _add_settings_control_row(box, title, toggle, s)
+	row.name = "AudioOptionRow_%s" % setting_key
+	return row
+
+
+func _settings_v6_style_audio_scrollbar(scroll: ScrollContainer, s: float) -> void:
+	var scrollbar := scroll.get_v_scroll_bar()
+	if scrollbar == null:
+		return
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.05, 0.04, 0.03, 0.85)
+	track.set_corner_radius_all(int(roundf(4.0 * s)))
+	track.set_content_margin_all(roundf(2.0 * s))
+	var grabber := StyleBoxFlat.new()
+	grabber.bg_color = Color(0.52, 0.41, 0.24, 0.95)
+	grabber.set_corner_radius_all(int(roundf(4.0 * s)))
+	var grabber_highlight: StyleBoxFlat = grabber.duplicate()
+	grabber_highlight.bg_color = Color(0.78, 0.66, 0.44, 1.0)
+	scrollbar.add_theme_stylebox_override("scroll", track)
+	scrollbar.add_theme_stylebox_override("grabber", grabber)
+	scrollbar.add_theme_stylebox_override("grabber_highlight", grabber_highlight)
+	scrollbar.add_theme_stylebox_override("grabber_pressed", grabber_highlight)
+
+
 func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	# Врезное поле 560×56×s: дропдауны и кнопки биндингов. Арт — 9-slice
 	# источник 320×56 (углы 1:1, плоская середина тянется по ширине).
@@ -6900,7 +6958,10 @@ func _settings_v6_style_slider(slider: HSlider, s: float) -> void:
 
 
 func _reset_audio_to_defaults() -> void:
-	for key in ["master_volume", "music_volume", "sfx_volume", "music_enabled", "sfx_enabled"]:
+	for key in [
+		"master_volume", "music_volume", "sfx_volume", "ui_volume",
+		"music_enabled", "sfx_enabled", "mute_when_unfocused", "low_hp_warning_enabled",
+	]:
 		game.audio_settings[key] = game.GAME_SETTINGS.DEFAULTS[key]
 	game.audio_settings["master_zero_intent"] = false
 	game._apply_audio_settings()

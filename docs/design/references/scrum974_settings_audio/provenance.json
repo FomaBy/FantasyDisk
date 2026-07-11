@@ -1,0 +1,33 @@
+{
+  "jira": "SCRUM-974",
+  "provider": "PixelLab MCP",
+  "accepted": {
+    "ui_asset_id": "11178250-472a-4f22-84bf-85f1e45d8ea7",
+    "name": "SCRUM-974 Settings Sound compact options mockup v2",
+    "source": "pixellab_settings_audio_source.png",
+    "sha256": "967539a4677b4f8e24955b3bb43de85e96b1cc00ad252f1217786cf91c397bc4",
+    "dimensions": "688x384",
+    "decision": "accepted",
+    "reason": "Textless full-page direction with a continuous inner field, four slider rows and two compact separated option rows. Native layout and labels are governed by validated ui_plan/layout and frame-safe compositor debug evidence."
+  },
+  "rejected": [
+    {
+      "ui_asset_id": "1968590d-4f10-4d82-842e-7e1960cac685",
+      "source": "pixellab_settings_audio_rejected_v1.png",
+      "sha256": "342e57aa0bd5bcb62f1065f92013d8a34e575e3b025fbb17e7763684af3daed2",
+      "reason": "Baked English Save/Discard text in the footer."
+    },
+    {
+      "ui_asset_id": "5f461426-46c4-4d2c-af06-53ac87fd188f",
+      "source": "pixellab_settings_audio_rejected_v3.png",
+      "sha256": "fff1396f41c6af51c782630457c9d98b79e1db05a792b213fe3d1524e2bb76df",
+      "reason": "Inserted decorative castle scenery into the protected content zone."
+    }
+  ],
+  "unavailable_refinement": {
+    "requested_name": "SCRUM-974 safe transparent Sound controls overlay v4",
+    "result": "PixelLab reported no generations or credits remaining; no asset was created.",
+    "fallback": "Not used. FantasyDisk PixelLab-first policy forbids generic image-generation fallback."
+  },
+  "production_asset_policy": "Design evidence only. Runtime reuses the existing Settings shell and native control kit; no generated PNG is shipped."
+}

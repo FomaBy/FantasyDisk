@@ -1,0 +1,243 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "outer_frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        688,
+        384
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "safe_area",
+      "kind": "zone",
+      "rect": [
+        48,
+        34,
+        592,
+        316
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header",
+      "kind": "zone",
+      "rect": [
+        68,
+        55,
+        552,
+        32
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        86,
+        61,
+        118,
+        20
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "back_button",
+      "kind": "button",
+      "rect": [
+        522,
+        55,
+        98,
+        32
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_row",
+      "kind": "zone",
+      "rect": [
+        196,
+        96,
+        296,
+        34
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_screen",
+      "kind": "button",
+      "rect": [
+        196,
+        96,
+        94,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "tab_sound",
+      "kind": "button",
+      "rect": [
+        296,
+        96,
+        94,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "tab_controls",
+      "kind": "button",
+      "rect": [
+        396,
+        96,
+        96,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "audio_scroll_zone",
+      "kind": "zone",
+      "rect": [
+        154,
+        138,
+        380,
+        183
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "master_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        141,
+        348,
+        24
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "music_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        169,
+        348,
+        24
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "effects_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        197,
+        348,
+        24
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "ui_sounds_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        225,
+        348,
+        24
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "audio_option_stack",
+      "kind": "zone",
+      "rect": [
+        170,
+        254,
+        348,
+        47
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "mute_unfocused_toggle",
+      "kind": "button",
+      "rect": [
+        170,
+        254,
+        348,
+        21
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "low_hp_toggle",
+      "kind": "button",
+      "rect": [
+        170,
+        280,
+        348,
+        21
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "reset_audio",
+      "kind": "button",
+      "rect": [
+        214,
+        303,
+        160,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "footer_actions",
+      "kind": "zone",
+      "rect": [
+        389,
+        332,
+        126,
+        18
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

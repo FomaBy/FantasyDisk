@@ -27,13 +27,16 @@ func _initialize() -> void:
 		await process_frame
 
 	# --- Шины Music/SFX созданы и шлются в Master ---
-	for bus_name in ["Master", "Music", "SFX"]:
+	for bus_name in ["Master", "Music", "SFX", "UI"]:
 		if AudioServer.get_bus_index(bus_name) == -1:
 			errors.append("шина '%s' отсутствует" % bus_name)
 	for bus_name in ["Music", "SFX"]:
 		var idx := AudioServer.get_bus_index(bus_name)
 		if idx != -1 and AudioServer.get_bus_send(idx) != "Master":
 			errors.append("шина '%s' не шлёт в Master (send=%s)" % [bus_name, AudioServer.get_bus_send(idx)])
+	var ui_idx := AudioServer.get_bus_index("UI")
+	if ui_idx != -1 and AudioServer.get_bus_send(ui_idx) != "SFX":
+		errors.append("шина 'UI' не шлёт в SFX (send=%s)" % AudioServer.get_bus_send(ui_idx))
 
 	# --- Целостность констант/ресурсов (SCRUM-968: MUSIC_META вместо MUSIC_PATHS) ---
 	if AudioManagerScript.SFX_PATHS.is_empty():
@@ -115,7 +118,7 @@ func _initialize() -> void:
 		push_error("Audio manager smoke test: %d ошибок." % errors.size())
 		quit(1)
 		return
-	print("Audio manager smoke test passed (шины Music/SFX, %d sfx + %d музыка ресурсов, apply_volume_settings)." % [
+	print("Audio manager smoke test passed (шины Music/SFX/UI, %d sfx + %d музыка ресурсов, apply_volume_settings)." % [
 		AudioManagerScript.SFX_PATHS.size(), AudioManagerScript.MUSIC_META.size()])
 	quit(0)
 

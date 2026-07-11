@@ -391,9 +391,11 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
   отключается (`_disabled = true`): все API, включая новые (play_music_timed,
   play_combat_music, begin_music_outro, play_music_stinger, set_sfx_loop,
   reset_combat_rotation), — no-op.
-- Шины создаются программно поверх дефолтного layout (в нём только `Master`): `Music` и
-  `SFX` добавляются в `_ensure_audio_buses` и шлются в `Master`. Настройки громкости
-  (`apply_volume_settings`) без изменений.
+- Шины создаются программно поверх дефолтного layout (в нём только `Master`):
+  `Music -> Master`, `SFX -> Master`, `UI -> SFX`. SCRUM-974 направляет в `UI`
+  только `ui_click`/`ui_back`/`ui_error`; поэтому отдельный UI trim умножается
+  на существующую SFX-громкость, а `sfx_enabled=false` по-прежнему глушит все
+  эффекты вместе. Economy/reward/gameplay cues остаются непосредственно на SFX.
 - При выходе/закрытии (`_exit_tree`, `NOTIFICATION_WM_CLOSE_REQUEST`,
   `NOTIFICATION_PREDELETE`) стримы останавливаются и отвязываются (`_release_audio_refs`,
   включая стингер-плеер и loop-каналы), чтобы AudioServer не ругался
@@ -404,6 +406,8 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
 - Пул из `SFX_POOL_SIZE = 8` плееров `AudioStreamPlayer` на шине `SFX`, базовая громкость
   `SFX_VOLUME_DB = -4.0`.
 - `play_sfx(id)` берёт первый свободный плеер пула; если все заняты — звук пропускается.
+- Перед playback свободный pooled player получает bus из `sfx_bus_for_id`: `UI`
+  только для трёх navigation ids, иначе `SFX`.
 - Троттлинг: дефолт `SFX_MIN_REPEAT_INTERVAL = 0.05` c, пер-id `SFX_THROTTLE_OVERRIDES`
   (`hit_dot` 0.12, `pickup_*` 0.06, `ui_error` 0.08).
 - 15 ogg-id (`SFX_PATHS`, `assets/audio/sfx/sfx_*.ogg`): типизированные попадания
@@ -412,7 +416,10 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
   physical/magic/dot/true), `player_hit`, `dodge`, `pickup_xp`, `pickup_money`,
   `level_up`, `boss_phase` (boss.gd `_update_boss_phase`), `low_hp_pulse` (луп-канал
   вне пула: `set_sfx_loop`, гистерезис в player.gd ВКЛ<30%/ВЫКЛ≥34% зеркалит виньетку,
-  fade 0.42/0.50 c; гаснет на смерти/конце боя). `purchase`/`ui_error` озвучивают
+  fade 0.42/0.50 c; гаснет на смерти/конце боя). SCRUM-974 хранит requested и
+  effective loop-state раздельно: выключение предупреждения о здоровье гасит
+  effective loop, а повторное включение при всё ещё низком HP немедленно его
+  восстанавливает. `purchase`/`ui_error` озвучивают
   успешные покупки и отказы в магазине узла, докачке характеристик, Атласе и
   платных вариантах события; `_connect_ui_sfx` добавляет `ui_click`/`ui_back`
   к штатным обработчикам кнопок; `artifact_reveal` звучит на баннере победы и
@@ -447,12 +454,17 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
 ### Настройки громкости
 
 - `apply_volume_settings(settings)` применяется мгновенно к играющим шинам. Ключи
-  (`scripts/game_settings.gd`): `master_volume`, `music_volume`, `sfx_volume` (0..1),
-  флаги `music_enabled`, `sfx_enabled`.
+  (`scripts/game_settings.gd`): `master_volume`, `music_volume`, `sfx_volume`,
+  `ui_volume` (0..1), флаги `music_enabled`, `sfx_enabled`,
+  `mute_when_unfocused`, `low_hp_warning_enabled`.
 - Новые профили стартуют без звука: `music_enabled=false`, `sfx_enabled=false`; слайдеры
-  на 100%, чтобы включение тумблеров сразу вернуло звук.
+  на 100% (включая UI), чтобы включение тумблеров сразу вернуло звук. Focus mute
+  по умолчанию выключен, low-HP warning включён.
 - Выключенная категория мьютит шину (`set_bus_mute`); линейная громкость →
   `linear_to_db(max(volume, 0.0001))`.
+- `mute_when_unfocused=true` hard-mute'ит только Master на application focus-out
+  и снимает mute на focus-in. Это отдельный runtime-state: сфокусированный
+  `master_volume=0` сохраняет прежний near-silent, но не hard-muted контракт.
 
 ### Аудит (SCRUM-720)
 

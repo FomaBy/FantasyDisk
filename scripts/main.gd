@@ -504,8 +504,11 @@ var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
+	"ui_volume": 1.0,
 	"music_enabled": false,
 	"sfx_enabled": false,
+	"mute_when_unfocused": false,
+	"low_hp_warning_enabled": true,
 }
 var input_bindings := {}
 var aim_mode := "nearest"

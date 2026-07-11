@@ -14,9 +14,12 @@ const DEFAULTS := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
+	"ui_volume": 1.0,
 	"master_zero_intent": false,
 	"music_enabled": false,
 	"sfx_enabled": false,
+	"mute_when_unfocused": false,
+	"low_hp_warning_enabled": true,
 	"screen_shake": true,
 	"combat_feedback": true,
 	"debug_mode": false,
@@ -46,9 +49,12 @@ static func load_settings() -> Dictionary:
 	settings["master_volume"] = clampf(float(settings["master_volume"]), 0.0, 1.0)
 	settings["music_volume"] = clampf(float(settings["music_volume"]), 0.0, 1.0)
 	settings["sfx_volume"] = clampf(float(settings["sfx_volume"]), 0.0, 1.0)
+	settings["ui_volume"] = clampf(float(settings["ui_volume"]), 0.0, 1.0)
 	settings["master_zero_intent"] = bool(settings["master_zero_intent"])
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
+	settings["mute_when_unfocused"] = bool(settings["mute_when_unfocused"])
+	settings["low_hp_warning_enabled"] = bool(settings["low_hp_warning_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
 	settings["combat_feedback"] = bool(settings["combat_feedback"])
 	settings["debug_mode"] = bool(settings["debug_mode"])

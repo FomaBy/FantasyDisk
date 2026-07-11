@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        230,
+        52,
+        160,
+        20
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "НАСТРОЙКИ"
+      ],
+      "text_bbox": [
+        262,
+        54,
+        96,
+        16
+      ]
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        203,
+        130,
+        84,
+        12
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "ЭКРАН"
+      ],
+      "text_bbox": [
+        229,
+        132,
+        32,
+        9
+      ]
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        303,
+        130,
+        84,
+        12
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "ЗВУК"
+      ],
+      "text_bbox": [
+        332,
+        132,
+        25,
+        9
+      ]
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        399,
+        130,
+        94,
+        12
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 8,
+      "lines": [
+        "УПРАВЛЕНИЕ"
+      ],
+      "text_bbox": [
+        418,
+        132,
+        56,
+        8
+      ]
+    },
+    {
+      "id": "master",
+      "rect": [
+        54,
+        144,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "ОБЩАЯ ГРОМКОСТЬ"
+      ],
+      "text_bbox": [
+        54,
+        148,
+        106,
+        11
+      ]
+    },
+    {
+      "id": "music",
+      "rect": [
+        54,
+        172,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "МУЗЫКА"
+      ],
+      "text_bbox": [
+        54,
+        176,
+        44,
+        9
+      ]
+    },
+    {
+      "id": "effects",
+      "rect": [
+        54,
+        200,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "ЭФФЕКТЫ"
+      ],
+      "text_bbox": [
+        54,
+        204,
+        53,
+        9
+      ]
+    },
+    {
+      "id": "ui_sounds",
+      "rect": [
+        54,
+        228,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "ЗВУКИ ИНТЕРФЕЙСА"
+      ],
+      "text_bbox": [
+        54,
+        231,
+        100,
+        12
+      ]
+    },
+    {
+      "id": "mute_unfocused",
+      "rect": [
+        54,
+        260,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 7,
+      "lines": [
+        "БЕЗ ЗВУКА ВНЕ ОКНА"
+      ],
+      "text_bbox": [
+        54,
+        264,
+        78,
+        9
+      ]
+    },
+    {
+      "id": "low_hp",
+      "rect": [
+        54,
+        293,
+        108,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 6,
+      "lines": [
+        "ПРЕДУПРЕЖДЕНИЕ О ЗДОРОВЬЕ"
+      ],
+      "text_bbox": [
+        54,
+        298,
+        103,
+        8
+      ]
+    }
+  ]
+}

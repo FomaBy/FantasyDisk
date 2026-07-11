@@ -304,6 +304,18 @@ dark track/gold fill/focus behavior, so they no longer stretch across the whole
 content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
 OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
 
+SCRUM-974 expands the immediate-apply Sound page with three backed settings,
+without adding a placeholder control: `ui_volume` («Звуки интерфейса»),
+`mute_when_unfocused` («Без звука вне окна») and
+`low_hp_warning_enabled` («Предупреждение о здоровье»). Four compact volume
+rows are followed by two short toggle rows and the existing Reset action inside
+`AudioScroll`. At 1920×1080/2560×1440 all content fits with the scrollbar hidden;
+at 1280×720 the styled vertical scrollbar and `follow_focus` keep Reset and both
+toggles reachable without shrinking labels or touching the footer/frame.
+`SettingsResetAudioButton` restores all eight audio keys. PixelLab plan/source,
+rejected candidates, compositor fit/debug evidence and exact responsive contract:
+`docs/design/mockups/scrum974_settings_audio/`.
+
 SCRUM-694 delivers the Settings **v3** full redraw design package: a from-scratch
 premium dark-fantasy frame family (PixelLab) replacing the shared minimal-metal
 styleboxes for every Settings surface. Pipeline: live inventory →
