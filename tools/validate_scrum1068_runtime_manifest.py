@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -132,6 +133,8 @@ def validate(source_path: Path, runtime_path: Path) -> list[str]:
 
     node_ids: set[str] = set()
     mechanic_ids: set[str] = set()
+    event_routes, route_errors = _load_final_event_routes()
+    errors.extend(route_errors)
     branch_nodes = 0
     hidden_nodes = 0
     finals = 0
@@ -190,6 +193,7 @@ def validate(source_path: Path, runtime_path: Path) -> list[str]:
                         errors.append(f"{class_id}/{weapon_id}: final needs the exact two foreign controls")
                     if float(node.get("gain_over_order_5_min", 0.0)) < 1.2:
                         errors.append(f"{class_id}/{weapon_id}: final power floor below 1.2")
+                    _validate_final_route(node, event_routes, errors)
                 _validate_consumer(node, errors)
 
         hidden = class_entry.get("hidden", [])
@@ -223,6 +227,8 @@ def validate(source_path: Path, runtime_path: Path) -> list[str]:
         errors.append(f"expected 34 hidden nodes, got {hidden_nodes}")
     if finals != 51 or len(mechanic_ids) != 51:
         errors.append(f"expected 51 unique finals, got {finals}/{len(mechanic_ids)}")
+    if set(event_routes) != mechanic_ids:
+        errors.append("final event-route keys must exactly match the 51 manifest mechanics")
     if len(node_ids) != 357:
         errors.append(f"expected 357 unique class nodes, got {len(node_ids)}")
     if len(node_ids) + 25 != 382:
@@ -255,6 +261,59 @@ def _validate_consumer(node: dict[str, Any], errors: list[str]) -> None:
     consumer = str(node.get("runtime_consumer", ""))
     if not consumer.startswith("scripts/") or not (ROOT / consumer).is_file():
         errors.append(f"{node.get('node_id', node.get('id'))}: missing runtime consumer {consumer}")
+
+
+def _load_final_event_routes() -> tuple[dict[str, str], list[str]]:
+    runtime_path = ROOT / "scripts/constellation_final_runtime.gd"
+    try:
+        text = runtime_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        return {}, [f"cannot load final event runtime: {exc}"]
+    marker = "const EVENT_BY_MECHANIC :="
+    if marker not in text:
+        return {}, ["final runtime has no EVENT_BY_MECHANIC registry"]
+    section = text.split(marker, 1)[1].split("}", 1)[0]
+    pairs = re.findall(r'"([a-z0-9_]+)"\s*:\s*"([a-z0-9_]+)"', section)
+    routes: dict[str, str] = {}
+    errors: list[str] = []
+    for mechanic_id, event in pairs:
+        if mechanic_id in routes:
+            errors.append(f"duplicate final event route: {mechanic_id}")
+        routes[mechanic_id] = event
+    if len(routes) != 51:
+        errors.append(f"expected 51 explicit final event routes, got {len(routes)}")
+    return routes, errors
+
+
+def _validate_final_route(node: dict[str, Any], routes: dict[str, str], errors: list[str]) -> None:
+    mechanic_id = str(node.get("mechanic_id", ""))
+    event = routes.get(mechanic_id, "")
+    if event == "":
+        errors.append(f"{mechanic_id}: missing explicit final event route")
+        return
+    consumer = str(node.get("runtime_consumer", ""))
+    consumer_path = ROOT / consumer
+    try:
+        source = consumer_path.read_text(encoding="utf-8")
+    except OSError:
+        return
+    if mechanic_id not in source:
+        errors.append(f"{mechanic_id}: declared consumer has no mechanic hook registration")
+    bridge_sources = [source]
+    for bridge_path in (ROOT / "scripts").glob("*.gd"):
+        if bridge_path == consumer_path:
+            continue
+        bridge_text = bridge_path.read_text(encoding="utf-8")
+        if mechanic_id in bridge_text:
+            bridge_sources.append(bridge_text)
+    explicit_call = any(
+        re.search(rf'_constellation_event\([^\n]*"{re.escape(event)}"', candidate)
+        or re.search(rf'constellation_weapon_event[^\n]*"{re.escape(event)}"', candidate)
+        for candidate in bridge_sources
+    )
+    hit_gateway = event == "hit" and ("_damage_enemy(" in source or "meta_damage_multiplier" in source)
+    if not explicit_call and not hit_gateway:
+        errors.append(f"{mechanic_id}: consumer never invokes required event {event}")
 
 
 def main() -> int:

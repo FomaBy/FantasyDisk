@@ -1,5 +1,7 @@
 extends RefCounted
 
+const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
+
 # SCRUM-828 — Мета 4.0 «Созвездия героев» (дизайн: docs/design/systems/
 # meta_constellations.md). Этот модуль хранит ДАННЫЕ и сборщик графа меты:
 #   • 17 персональных созвездий классов (по 22 узла: ядро-эмблема 0-cost,
@@ -779,9 +781,112 @@ static func build_tree(entry_nodes: Dictionary) -> Array:
 	return nodes
 
 
-# Созвездие класса: 22 узла по силуэту приложения C (CONSTELLATION_LAYOUT:
-# [ядро, 4 луча × (m0,m1,m2,техника), 3 keystone, 2 скрытых]).
+# Schema 6: one free core, three six-node owning-weapon rays and two optional
+# revealed-then-purchased hidden side spurs. Normalized positions are the exact
+# SCRUM-1068 acceptance geometry inside the authored Atlas content zone.
 static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
+	var class_spec := SCHEMA6_DATA.class_entry(class_id)
+	if class_spec.is_empty():
+		return
+	var core_spec: Dictionary = class_spec.get("core", {})
+	var core_id := str(core_spec.get("id", entry_nodes.get(class_id, "%s_core" % class_id)))
+	var core_profile: Dictionary = core_spec.get("effect_profile", {})
+	var core_params: Dictionary = core_profile.get("params", {})
+	var core_attribute := str(core_params.get("attribute", "strength"))
+	var core_effects := {"%s_flat" % core_attribute: float(core_params.get("amount", 1.0))}
+	var core_npos := Vector2(0.50, 0.08)
+	_add(nodes, index, {
+		"id": core_id, "branch": class_id, "tier": 10, "cost": 0,
+		"kind": "entry", "role": "core", "schema_role": "free_core",
+		"title": str(core_spec.get("title_ru", "Сердце созвездия")),
+		"desc": "Свободное ядро класса: +1 к основной характеристике.",
+		"effects": core_effects, "effect_profile": core_profile.duplicate(true),
+		"npos": core_npos, "pos": _world_pos(class_index, core_npos),
+		"class_affinity": class_id,
+	})
+
+	var branch_x := [0.20, 0.50, 0.80]
+	var branch_y := [0.22, 0.34, 0.46, 0.58, 0.70, 0.82]
+	var order_three_by_weapon := {}
+	var branches: Array = class_spec.get("weapon_branches", [])
+	for branch_index in range(branches.size()):
+		var branch: Dictionary = branches[branch_index]
+		var weapon_id := str(branch.get("weapon_id", ""))
+		var weapon_title := str(branch.get("weapon_title", weapon_id))
+		var previous_id := core_id
+		var branch_nodes: Array = branch.get("nodes", [])
+		for node_index in range(branch_nodes.size()):
+			var node_spec: Dictionary = branch_nodes[node_index]
+			var node_id := str(node_spec.get("node_id", ""))
+			var branch_order := int(node_spec.get("branch_order", node_index + 1))
+			var is_final := str(node_spec.get("role", "")) == "weapon_final"
+			var node_npos := Vector2(float(branch_x[branch_index]), float(branch_y[node_index]))
+			var profile: Dictionary = (node_spec.get("effect_profile", {}) as Dictionary).duplicate(true)
+			var node := {
+				"id": node_id, "branch": class_id, "tier": 10 + branch_order,
+				"cost": int(node_spec.get("cost", 1)),
+				"kind": "keystone" if is_final else ("notable" if branch_order >= 4 else "minor"),
+				"role": "weapon_final" if is_final else "weapon_boon",
+				"schema_role": str(node_spec.get("role", "")),
+				"title": str(node_spec.get("title_ru", "Оружейная звезда")),
+				"desc": "%s Эффект действует только на «%s»." % ["Финал оружия." if is_final else "Усиление пути.", weapon_title],
+				"effects": {}, "effect_profile": profile,
+				"caps": (node_spec.get("caps", {}) as Dictionary).duplicate(true),
+				"weapon_id": weapon_id, "weapon_title": weapon_title,
+				"axis": str(branch.get("axis", "")), "branch_order": branch_order,
+				"runtime_consumer": str(node_spec.get("runtime_consumer", "")),
+				"positive_fixture": str(node_spec.get("positive_fixture", "")),
+				"negative_controls": (node_spec.get("negative_controls", []) as Array).duplicate(),
+				"npos": node_npos, "pos": _world_pos(class_index, node_npos),
+				"class_affinity": class_id,
+			}
+			if is_final:
+				node["final_id"] = str(node_spec.get("final_id", node_id))
+				node["mechanic_id"] = str(node_spec.get("mechanic_id", ""))
+				node["gain_over_order_5_min"] = float(node_spec.get("gain_over_order_5_min", 1.2))
+			_add(nodes, index, node)
+			_connect(index, previous_id, node_id)
+			previous_id = node_id
+			if branch_order == 3:
+				order_three_by_weapon[weapon_id] = node_id
+
+	for raw_hidden in class_spec.get("hidden", []):
+		var hidden: Dictionary = raw_hidden
+		var hidden_id := str(hidden.get("id", ""))
+		var owning_weapon := str(hidden.get("attach_weapon_id", ""))
+		var branch_index := 0
+		for candidate_index in range(branches.size()):
+			if str((branches[candidate_index] as Dictionary).get("weapon_id", "")) == owning_weapon:
+				branch_index = candidate_index
+				break
+		var side_offset := -0.10 if int(hidden.get("side_index", 0)) == 0 else 0.10
+		var hidden_npos := Vector2(clampf(float(branch_x[branch_index]) + side_offset, 0.08, 0.92), 0.46)
+		var reveal: Dictionary = hidden.get("reveal", {})
+		var metric := str(reveal.get("metric", ""))
+		var threshold := int(reveal.get("threshold", 1))
+		var cond_text := condition_text(metric, threshold)
+		_add(nodes, index, {
+			"id": hidden_id, "branch": class_id, "tier": 13, "cost": int(hidden.get("cost", 1)),
+			"kind": "hidden", "role": "hidden", "schema_role": "hidden_side_boon",
+			"title": str(hidden.get("title_ru", "Тайное мастерство")),
+			"desc": "Скрытая оружейная звезда. Открытие не активирует эффект: после подвига её нужно купить за 1 эмблему.",
+			"effects": {}, "effect_profile": (hidden.get("effect_profile", {}) as Dictionary).duplicate(true),
+			"caps": (hidden.get("caps", {}) as Dictionary).duplicate(true),
+			"weapon_id": owning_weapon, "axis": str(hidden.get("affected_axis", "")),
+			"side_index": int(hidden.get("side_index", 0)),
+			"purchase_required_for_effect": true,
+			"runtime_consumer": str(hidden.get("runtime_consumer", "")),
+			"positive_fixture": str(hidden.get("positive_fixture", "")),
+			"negative_controls": (hidden.get("negative_controls", []) as Array).duplicate(),
+			"condition": {"metric": metric, "threshold": threshold, "text": cond_text},
+			"npos": hidden_npos, "pos": _world_pos(class_index, hidden_npos),
+			"class_affinity": class_id,
+		})
+		_connect(index, str(order_three_by_weapon.get(owning_weapon, core_id)), hidden_id)
+
+
+# Retained as inert source documentation until all schema-5 fixtures are removed.
+static func _build_constellation_schema5_legacy(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
 	var spec: Dictionary = CONSTELLATION_SPECS.get(class_id, {})
 	var layout: Array = CONSTELLATION_LAYOUT.get(class_id, [])
 	if spec.is_empty() or layout.size() != 22:

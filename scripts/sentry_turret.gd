@@ -28,12 +28,17 @@ const FIRST_AUTO_SHOT_DELAY := 0.35
 const SENTRY_MAGAZINE_BASE := 15
 # SCRUM-908 «Сеть мастерской»: вес турели в стеках сети устройств.
 const NETWORK_WEIGHT := 1.0
+const CONSTELLATION_FINAL_MECHANICS := {"sentry_marked_target_overclock": "sentry_hit"}
 
 var _weapon_instance_id := 0
 var _owner_instance_id := 0
 var _fire_cooldown := FIRST_AUTO_SHOT_DELAY
 # SCRUM-905: осталось выстрелов; по расстрелу турель деспаунится сама (try_fire).
 var _shots_left := SENTRY_MAGAZINE_BASE
+var _constellation_marked_target_id := 0
+var _constellation_heat := 0
+var _constellation_overclock_cooldown := 0.0
+var _constellation_attack_speed_bonus := 0.0
 
 
 func _ready() -> void:
@@ -80,6 +85,7 @@ func _play_deploy_pop() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_constellation_overclock_cooldown = maxf(_constellation_overclock_cooldown - delta, 0.0)
 	_fire_cooldown -= delta
 	if _fire_cooldown > 0.0:
 		return
@@ -112,7 +118,7 @@ func effective_pulse_interval(weapon: Node) -> float:
 			summon_amount = float((params as Dictionary).get("summon_amount", 0.0))
 			attack_speed = maxf(float((params as Dictionary).get("attack_speed", 1.0)), 0.1)
 	var tempo_lift := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
-	return maxf(pulse / tempo_lift / attack_speed, 0.10)
+	return maxf(pulse / tempo_lift / attack_speed / (1.0 + constellation_overclock_bonus()), 0.10)
 
 
 func try_fire(weapon: Node) -> bool:
@@ -131,6 +137,7 @@ func try_fire(weapon: Node) -> bool:
 	var targets: Array = weapon.call("_nearest_enemies_from", global_position, targeting_range, volley)
 	if targets.is_empty():
 		return false
+	_select_constellation_durable_mark(weapon, owner_node, targets)
 	var falloff := clampf(float(weapon.get("damage_falloff")), 0.05, 1.0)
 	var fired := false
 	for index in range(targets.size()):
@@ -141,6 +148,7 @@ func try_fire(weapon: Node) -> bool:
 		if target == null or not is_instance_valid(target):
 			continue
 		var shot_damage := float(weapon.call("_rolled_damage", owner_node)) * pow(falloff, float(index))
+		_register_constellation_sentry_hit(weapon, owner_node, target)
 		_launch_projectile(weapon, target, shot_damage)
 		fired = true
 		if _shots_left > 0:
@@ -152,6 +160,66 @@ func try_fire(weapon: Node) -> bool:
 		weapon.call("_salvage_device_refund")
 		queue_free()
 	return fired
+
+
+func _constellation_mechanic(weapon: Node, owner_node: Node) -> Dictionary:
+	if weapon == null or owner_node == null or not owner_node.has_method("constellation_weapon_mechanic"):
+		return {}
+	var raw = owner_node.call("constellation_weapon_mechanic", str(weapon.get("weapon_id")), "sentry_marked_target_overclock")
+	return raw if raw is Dictionary else {}
+
+
+func _select_constellation_durable_mark(weapon: Node, owner_node: Node, targets: Array) -> void:
+	if _constellation_overclock_cooldown > 0.0 or _constellation_mechanic(weapon, owner_node).is_empty():
+		return
+	if _constellation_marked_target_id != 0:
+		var current := instance_from_id(_constellation_marked_target_id)
+		if current != null and is_instance_valid(current):
+			return
+	var durable: Node2D = null
+	var durable_hp := -1.0
+	for raw_target in targets:
+		var target := raw_target as Node2D
+		if target == null or not is_instance_valid(target):
+			continue
+		var hp := float(target.get("max_health")) if target.get("max_health") != null else 0.0
+		if hp > durable_hp:
+			durable = target
+			durable_hp = hp
+	if durable != null:
+		_constellation_marked_target_id = durable.get_instance_id()
+		_constellation_heat = 0
+
+
+func _register_constellation_sentry_hit(weapon: Node, owner_node: Node, target: Node2D) -> Dictionary:
+	var mechanic := _constellation_mechanic(weapon, owner_node)
+	if mechanic.is_empty() or target == null or target.get_instance_id() != _constellation_marked_target_id:
+		return {"triggered": false}
+	var params: Dictionary = mechanic.get("params", {})
+	var heat_cap := maxi(int(params.get("heat_shots", 5)), 1)
+	_constellation_attack_speed_bonus = clampf(float(params.get("attack_speed_bonus", 0.24)), 0.0, 0.30)
+	_constellation_heat = mini(_constellation_heat + 1, heat_cap)
+	var result := {"valid": true, "triggered": false}
+	if owner_node.has_method("constellation_weapon_event"):
+		var raw = owner_node.call("constellation_weapon_event", str(weapon.get("weapon_id")), "sentry_hit", {"heat": _constellation_heat, "heat_cap": heat_cap}, target)
+		if raw is Dictionary:
+			result = raw
+	if _constellation_heat >= heat_cap:
+		_constellation_overclock_cooldown = maxf(float(params.get("cooldown_seconds", 2.0)), 0.0)
+		_constellation_marked_target_id = 0
+		_constellation_heat = 0
+		_constellation_attack_speed_bonus = 0.0
+	return result
+
+
+func constellation_overclock_bonus() -> float:
+	if _constellation_overclock_cooldown > 0.0 or _constellation_marked_target_id == 0:
+		return 0.0
+	return _constellation_attack_speed_bonus
+
+
+func constellation_overclock_state() -> Dictionary:
+	return {"target_id": _constellation_marked_target_id, "heat": _constellation_heat, "cooldown": _constellation_overclock_cooldown, "attack_speed_bonus": constellation_overclock_bonus()}
 
 
 func _launch_projectile(weapon: Node, target: Node2D, shot_damage: float) -> void:

@@ -16,6 +16,8 @@ const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berser
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
+const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
 const KNIGHT_SKELETON_RIG_SCENE := preload("res://scenes/characters/KnightSkeletonRig.tscn")
 const DARK_MAGE_SPRITE := preload("res://assets/sprites/characters/dark_mage.png")
@@ -215,6 +217,7 @@ var _repair_charge := 0.0                # «Ремонтная подпрогр
 var _triage_primed := false              # «Протокол триажа»: заряжен следующий лечащий импульс
 var _triage_cooldown_left := 0.0         # перезаряд триажа
 var _prayer_opening_tween: Tween = null  # «Четки молитвы»: твин снятия открывающего баффа
+var _constellation_final_state: Dictionary = {}
 var _vampiric_heal_budget := 0.0
 # SCRUM-517: per-second бюджет для DRAIN-heal оружия (drain_link/lifesteal). Раньше
 # drain лился в health без потолка/с → Доктор был бессмертен. Теперь оружие зовёт
@@ -419,6 +422,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	if _prayer_opening_tween != null and _prayer_opening_tween.is_valid():
 		_prayer_opening_tween.kill()
 	_prayer_opening_tween = null
+	_constellation_final_state.clear()
 	# SCRUM-834: сброс гейтов условных keystone.
 	_hurt_active = false
 	_stance_active = false
@@ -857,6 +861,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 			AttackVfx.ring_pulse(_vfx_parent(), global_position, minf(assassin_veil_radius(), 220.0), Color(0.55, 0.20, 0.90, 0.26), false)
 		_trigger_dodge_rush()
 		_trigger_rush_window()
+		_dispatch_constellation_owner_event("dodge", {"incoming_amount": amount, "smoke_zone": smoke_cloud_dodge_bonus() > 0.0})
 		return false
 
 	# SCRUM-1006 «Разогрев»: КВАЛИФИЦИРОВАННЫЙ удар = прошёл все гейты
@@ -879,6 +884,9 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
 	var absorbed_amount: float = maxf(defended_amount - absorb, defended_amount * ProgressionData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
+	var actually_absorbed := maxf(defended_amount - absorbed_amount, 0.0)
+	if actually_absorbed > 0.0:
+		_dispatch_constellation_owner_event("damage_absorbed", {"absorbed_amount": actually_absorbed, "incoming_amount": amount})
 	# SCRUM-961 «Ремонтная подпрограмма»: реально съеденный absorb'ом урон копит заряд щита.
 	_charge_repair_subroutine(defended_amount - absorbed_amount)
 	var final_damage := absorbed_amount * (1.0 - defense)
@@ -1040,6 +1048,8 @@ func _try_knight_counter(incoming_amount: float) -> float:
 	AttackVfx.ring_pulse(parent, global_position, maxf(counter_radius, 150.0), Color(0.92, 0.96, 1.0, 0.45), true)
 	if counter_multiplier > 0.0 or incoming_counter_multiplier > 0.0:
 		_apply_knight_counter_damage(incoming_amount, passive_mods, counter_radius)
+	if block_reduction > 0.0:
+		_dispatch_constellation_owner_event("block", {"incoming_amount": incoming_amount, "blocked_amount": incoming_amount * block_reduction})
 	return incoming_amount * clampf(1.0 - block_reduction, 0.15, 1.0)
 
 
@@ -1267,6 +1277,8 @@ func meta_context_for_weapon(weapon: Node, extra := {}) -> Dictionary:
 	# SCRUM-899: узкая рифф-полоса электрогитары — тоже «звуковая» геометрия.
 	context["is_sound"] = mode in ["sound_wave", "riff_strip", "pulse", "amp"]
 	context["is_charged"] = weapon != null and weapon.get("charge_seconds") != null and float(weapon.get("charge_seconds")) > 0.0
+	var constellation_profile := constellation_weapon_profile(wid)
+	context["constellation_axis"] = str(constellation_profile.get("axis", ""))
 	return context
 
 
@@ -1311,6 +1323,11 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	var ctx: Dictionary = context if context is Dictionary else {}
 	var mode := str(ctx.get("attack_mode", ""))
 	var multiplier := 1.0
+	# SCRUM-1068: branch identity/axis power is keyed by the exact weapon id in
+	# the hit context. Empty/foreign ids resolve to the neutral multiplier.
+	multiplier *= constellation_weapon_axis_multiplier(str(ctx.get("weapon_id", "")))
+	var final_resolution := constellation_weapon_event(str(ctx.get("weapon_id", "")), "hit", ctx, enemy)
+	multiplier *= float(final_resolution.get("damage_multiplier", 1.0))
 	# SCRUM-942: периодический источник (тики луж / DoT-тики оружия) помечен
 	# damage_type="dot" — усиливаем классовым trait-множителем периодики.
 	if str(ctx.get("damage_type", "")) == "dot":
@@ -1838,6 +1855,215 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 		run_modifiers["lowhp_guard"] = 1.0
 
 
+func apply_constellation_weapon_profiles(raw_profiles: Dictionary) -> void:
+	var accepted := {}
+	for raw_weapon_id in raw_profiles.keys():
+		var weapon_id_value := str(raw_weapon_id)
+		var raw_profile = raw_profiles[raw_weapon_id]
+		if not raw_profile is Dictionary:
+			continue
+		var profile := _canonical_constellation_weapon_profile(raw_profile as Dictionary, weapon_id_value)
+		if profile.is_empty():
+			push_error("SCRUM-1068 rejected invalid constellation profile for %s/%s." % [character_id, weapon_id_value])
+			continue
+		accepted[weapon_id_value] = profile
+	run_modifiers["constellation_weapon_profiles"] = accepted
+	for weapon in _equipped_weapons():
+		_apply_weapon_scaling(weapon)
+
+
+func _canonical_constellation_weapon_profile(raw_profile: Dictionary, weapon_id_value: String) -> Dictionary:
+	if (
+		int(raw_profile.get("schema", 0)) != SCHEMA6_DATA.EXPECTED_SCHEMA
+		or str(raw_profile.get("class_id", "")) != character_id
+		or str(raw_profile.get("weapon_id", "")) != weapon_id_value
+		or not bool(raw_profile.get("valid", false))
+	):
+		return {}
+	var class_entry := SCHEMA6_DATA.class_entry(character_id)
+	var canonical_branch := {}
+	for raw_branch in class_entry.get("weapon_branches", []):
+		var branch: Dictionary = raw_branch
+		if str(branch.get("weapon_id", "")) == weapon_id_value:
+			canonical_branch = branch
+			break
+	if canonical_branch.is_empty():
+		return {}
+	var result := {
+		"schema": SCHEMA6_DATA.EXPECTED_SCHEMA,
+		"class_id": character_id,
+		"weapon_id": weapon_id_value,
+		"axis": str(canonical_branch.get("axis", "")),
+		"identity": str(canonical_branch.get("identity", "")),
+		"valid": true,
+		"node_ids": [],
+		"entries": [],
+		"amounts": {},
+		"multipliers": {},
+		"mechanics": {},
+		"errors": [],
+	}
+	var raw_node_ids = raw_profile.get("node_ids", [])
+	if not raw_node_ids is Array:
+		return {}
+	for raw_node_id in raw_node_ids:
+		var node_id := str(raw_node_id)
+		if (result["node_ids"] as Array).has(node_id):
+			return {}
+		var node := SCHEMA6_DATA.node(node_id)
+		var node_weapon_id := str(node.get("weapon_id", node.get("attach_weapon_id", "")))
+		if node.is_empty() or str(node.get("class_id", "")) != character_id or node_weapon_id != weapon_id_value:
+			return {}
+		var effect_profile: Dictionary = node.get("effect_profile", {})
+		if str(effect_profile.get("scope", "")) != "owning_weapon_only":
+			return {}
+		var effect_key := str(effect_profile.get("effect_key", ""))
+		var params: Dictionary = effect_profile.get("params", {})
+		(result["node_ids"] as Array).append(node_id)
+		(result["entries"] as Array).append({
+			"node_id": node_id,
+			"effect_key": effect_key,
+			"params": params.duplicate(true),
+			"caps": (node.get("caps", {}) as Dictionary).duplicate(true),
+		})
+		if str(node.get("role", "")) == "weapon_final":
+			if SCHEMA6_DATA.mechanic(effect_key).is_empty() or not (result["mechanics"] as Dictionary).is_empty():
+				return {}
+			(result["mechanics"] as Dictionary)[effect_key] = {
+				"node_id": node_id,
+				"params": params.duplicate(true),
+				"caps": (node.get("caps", {}) as Dictionary).duplicate(true),
+				"runtime_consumer": str(node.get("runtime_consumer", "")),
+			}
+		elif params.has("amount"):
+			var amounts: Dictionary = result["amounts"]
+			amounts[effect_key] = float(amounts.get(effect_key, 0.0)) + float(params["amount"])
+		elif params.has("multiplier"):
+			var multipliers: Dictionary = result["multipliers"]
+			multipliers[effect_key] = float(multipliers.get(effect_key, 1.0)) * float(params["multiplier"])
+	return result
+
+
+func constellation_weapon_profile(weapon_id_value: String) -> Dictionary:
+	var profiles = run_modifiers.get("constellation_weapon_profiles", {})
+	if not profiles is Dictionary:
+		return {}
+	var profile = (profiles as Dictionary).get(weapon_id_value, {})
+	return profile if profile is Dictionary else {}
+
+
+func constellation_weapon_amount(weapon_id_value: String, effect_key: String) -> float:
+	var amounts = constellation_weapon_profile(weapon_id_value).get("amounts", {})
+	return float((amounts as Dictionary).get(effect_key, 0.0)) if amounts is Dictionary else 0.0
+
+
+func constellation_weapon_multiplier(weapon_id_value: String, effect_key: String) -> float:
+	var multipliers = constellation_weapon_profile(weapon_id_value).get("multipliers", {})
+	return float((multipliers as Dictionary).get(effect_key, 1.0)) if multipliers is Dictionary else 1.0
+
+
+func constellation_weapon_mechanic(weapon_id_value: String, mechanic_id: String) -> Dictionary:
+	var mechanics = constellation_weapon_profile(weapon_id_value).get("mechanics", {})
+	var mechanic = (mechanics as Dictionary).get(mechanic_id, {}) if mechanics is Dictionary else {}
+	return mechanic if mechanic is Dictionary else {}
+
+
+func constellation_weapon_event(weapon_id_value: String, event: String, context := {}, enemy: Node2D = null) -> Dictionary:
+	var profile := constellation_weapon_profile(weapon_id_value)
+	var mechanics = profile.get("mechanics", {})
+	if not mechanics is Dictionary or (mechanics as Dictionary).is_empty():
+		return {"valid": true, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
+	# A path contains exactly one final. Fail closed if corrupted runtime data
+	# attempts to inject more than one mechanic into the same weapon profile.
+	if (mechanics as Dictionary).size() != 1:
+		push_error("SCRUM-1068 expected exactly one final for %s/%s." % [character_id, weapon_id_value])
+		return {"valid": false, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
+	var mechanic_id := str((mechanics as Dictionary).keys()[0])
+	var mechanic: Dictionary = ((mechanics as Dictionary)[mechanic_id] as Dictionary).duplicate(true)
+	mechanic["mechanic_id"] = mechanic_id
+	var runtime_context: Dictionary = context.duplicate(true) if context is Dictionary else {}
+	runtime_context["target_id"] = str(enemy.get_instance_id()) if enemy != null and is_instance_valid(enemy) else str(context.get("target_id", "target"))
+	var resolution := ConstellationFinalRuntime.resolve_event(mechanic, _constellation_final_state, event, runtime_context)
+	if not bool(resolution.get("valid", false)):
+		push_error("SCRUM-1068 final runtime rejected %s." % mechanic_id)
+		return {"valid": false, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
+	if bool(resolution.get("triggered", false)):
+		run_modifiers["constellation_last_final_action"] = resolution.duplicate(true)
+		if enemy != null and is_instance_valid(enemy):
+			enemy.set_meta("constellation_final_action", resolution.duplicate(true))
+		_apply_constellation_final_side_effect(resolution.get("side_effect", {}), enemy, resolution)
+	return resolution
+
+
+func _dispatch_constellation_owner_event(event: String, context := {}, enemy: Node2D = null) -> Dictionary:
+	var active_weapon := equipped_weapon
+	if active_weapon != null and is_instance_valid(active_weapon) and active_weapon.has_method("constellation_owner_event"):
+		return active_weapon.call("constellation_owner_event", event, context, enemy)
+	return constellation_weapon_event(weapon_id, event, context, enemy)
+
+
+func _apply_constellation_final_side_effect(raw_effect, enemy: Node2D = null, resolution := {}) -> void:
+	if not raw_effect is Dictionary:
+		return
+	var effect: Dictionary = raw_effect
+	var shield := clampf(float(effect.get("shield", 0.0)), 0.0, 30.0)
+	if shield > 0.0:
+		var previous := clampf(float(run_modifiers.get("constellation_absorb_flat", 0.0)), 0.0, 30.0)
+		var next := minf(maxf(previous, shield), 30.0)
+		run_modifiers["absorb_flat"] = float(run_modifiers.get("absorb_flat", 0.0)) + next - previous
+		run_modifiers["constellation_absorb_flat"] = next
+		_apply_stat_scaling(false, max_health)
+	var heal_ratio := clampf(float(effect.get("heal_ratio", 0.0)), 0.0, 0.12)
+	if heal_ratio > 0.0 and health > 0.0:
+		health = minf(max_health, health + max_health * heal_ratio)
+	if enemy != null and is_instance_valid(enemy):
+		var reduction := clampf(float(effect.get("enemy_damage_reduction", 0.0)), 0.0, 0.35)
+		if reduction > 0.0:
+			StatusEffects.apply_status(enemy, "constellation_suppression", {
+				"duration": maxf(float(effect.get("duration_seconds", 0.0)), 0.1),
+				"damage_multiplier": 1.0 - reduction,
+			})
+		var control_seconds := maxf(float(effect.get("control_seconds", 0.0)), 0.0)
+		if control_seconds > 0.0:
+			StatusEffects.apply_status(enemy, "constellation_control", {
+				"duration": control_seconds, "move_speed_multiplier": 0.6,
+			})
+		enemy.set_meta("constellation_%s_owner" % str((resolution as Dictionary).get("mechanic_id", effect.get("kind", "final"))), get_instance_id())
+
+
+func constellation_weapon_geometry_multiplier(weapon_id_value: String) -> float:
+	var result := 1.0
+	for effect_key in [
+		"range_or_precision_zone_mult",
+		"arc_chain_or_zone_geometry_mult",
+		"guard_control_zone_mult",
+		"radius_or_blast_geometry_mult",
+		"impact_area_mult",
+	]:
+		result *= constellation_weapon_multiplier(weapon_id_value, effect_key)
+	var axis := str(constellation_weapon_profile(weapon_id_value).get("axis", ""))
+	match axis:
+		"crowd":
+			result *= constellation_weapon_multiplier(weapon_id_value, "target_pattern_budget_mult")
+			result *= constellation_weapon_multiplier(weapon_id_value, "hidden_crowd_mastery_mult")
+		"aoe":
+			result *= constellation_weapon_multiplier(weapon_id_value, "hidden_aoe_mastery_mult")
+		"defense":
+			result *= constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult")
+			result *= constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
+	return result
+
+
+func constellation_weapon_axis_multiplier(weapon_id_value: String) -> float:
+	var profile := constellation_weapon_profile(weapon_id_value)
+	var axis := str(profile.get("axis", ""))
+	var result := constellation_weapon_multiplier(weapon_id_value, "weapon_prefinal_identity_mult")
+	if axis == "solo":
+		result *= constellation_weapon_multiplier(weapon_id_value, "precision_window_mult")
+		result *= constellation_weapon_multiplier(weapon_id_value, "hidden_solo_mastery_mult")
+	return result
+
+
 func _apply_regeneration(delta: float) -> void:
 	var vampiric_cap := ProgressionData.effective_vampiric_cap(float(run_modifiers.get("vampiric_heal_per_second_cap", ProgressionData.VAMPIRIC_HEAL_CAP_DEFAULT)))
 	_vampiric_heal_budget = minf(_vampiric_heal_budget + vampiric_cap * delta, vampiric_cap)
@@ -1880,6 +2106,14 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
 	_apply_meta_keystone_hit_effects(enemy, dealt_damage, context)
+	if enemy != null and is_instance_valid(enemy):
+		var enemy_health = enemy.get("health")
+		if enemy_health != null and float(enemy_health) <= 0.0:
+			var lifecycle_context := context.duplicate(true)
+			lifecycle_context["dealt_damage"] = dealt_damage
+			_dispatch_constellation_owner_event("kill", lifecycle_context, enemy)
+			_dispatch_constellation_owner_event("execute", lifecycle_context, enemy)
+			_dispatch_constellation_owner_event("expiry", lifecycle_context, enemy)
 
 
 func _apply_meta_keystone_hit_effects(enemy: Node2D, dealt_damage: float, context: Dictionary) -> void:
@@ -3022,32 +3256,37 @@ func _apply_stat_scaling(full_heal := false, old_max_health := 0.0) -> void:
 func _apply_weapon_scaling(weapon: Node) -> void:
 	_capture_weapon_base_values(weapon)
 	var meta_context := meta_context_for_weapon(weapon)
+	var weapon_id_value := str(meta_context.get("weapon_id", ""))
+	var constellation_attack_speed := constellation_weapon_multiplier(weapon_id_value, "weapon_attack_speed_mult")
+	var constellation_geometry := constellation_weapon_geometry_multiplier(weapon_id_value)
 
 	if weapon.get("damage") != null:
 		var damage_parameter := "damage"
 		if weapon.get("damage_parameter") != null:
 			damage_parameter = str(weapon.get("damage_parameter"))
-		weapon.set("damage", float(derived_parameters.get(damage_parameter, weapon.get_meta("base_damage"))))
+		var scaled_damage := float(derived_parameters.get(damage_parameter, weapon.get_meta("base_damage")))
+		scaled_damage += constellation_weapon_amount(weapon_id_value, "weapon_damage_flat")
+		weapon.set("damage", scaled_damage)
 
 	if weapon.get("fire_interval") != null:
 		var attack_speed := float(derived_parameters.get("attack_speed", 1.0))
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
-		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
+		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed * constellation_attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
 
 	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
 	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
 	if weapon.get("summon_interval") != null:
 		var summon_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
 		var base_summon_interval := float(weapon.get_meta("base_summon_interval", weapon.get("summon_interval")))
-		weapon.set("summon_interval", maxf(0.18, base_summon_interval / maxf(summon_attack_speed, 0.1)))
+		weapon.set("summon_interval", maxf(0.18, base_summon_interval / maxf(summon_attack_speed * constellation_attack_speed, 0.1)))
 	if weapon.get("summon_attack_interval") != null:
 		var unit_attack_speed := clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
 		var base_summon_attack_interval := float(weapon.get_meta("base_summon_attack_interval", weapon.get("summon_attack_interval")))
-		weapon.set("summon_attack_interval", maxf(0.18, base_summon_attack_interval / maxf(unit_attack_speed, 0.1)))
+		weapon.set("summon_attack_interval", maxf(0.18, base_summon_attack_interval / maxf(unit_attack_speed * constellation_attack_speed, 0.1)))
 
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
-		var scaled_attack_range := float(derived_parameters.get("attack_range", base_attack_range))
+		var scaled_attack_range := float(derived_parameters.get("attack_range", base_attack_range)) * constellation_geometry
 		weapon.set("attack_range", scaled_attack_range)
 		var width_scale: float = scaled_attack_range / max(base_attack_range, 1.0)
 		if weapon.get("inner_width") != null:
@@ -3056,18 +3295,19 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 			weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * width_scale)
 
 	if weapon.get("aoe_radius") != null:
-		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context))
+		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context) * constellation_geometry)
 
 	if weapon.get("sweep_degrees") != null and (weapon.get("attack_shape") == null or str(weapon.get("attack_shape")) != "circle"):
 		var base_sweep_degrees := float(weapon.get_meta("base_sweep_degrees", weapon.get("sweep_degrees")))
 		var sector_multiplier := float(derived_parameters.get("sector_multiplier", 1.0))
-		weapon.set("sweep_degrees", clampf(base_sweep_degrees * sector_multiplier, 1.0, 360.0))
+		weapon.set("sweep_degrees", clampf(base_sweep_degrees * sector_multiplier * constellation_geometry, 1.0, 360.0))
 
 	if weapon.get("projectile_speed") != null:
 		weapon.set("projectile_speed", float(derived_parameters.get("projectile_speed", weapon.get_meta("base_projectile_speed", 520.0))))
 
 	if weapon.get("knockback") != null:
-		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context))
+		var control_multiplier := constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult") * constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
+		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context) * control_multiplier)
 
 	if weapon.get("amp_pulse_interval") != null and weapon.has_meta("base_amp_pulse_interval"):
 		weapon.set("amp_pulse_interval", maxf(0.08, float(weapon.get_meta("base_amp_pulse_interval")) * meta_interval_multiplier(meta_context)))

@@ -495,9 +495,9 @@ mix custom runs into canonical balance evidence.
 
 ## Meta Progression
 
-### SCRUM-1067 target: 3×6 weapon constellations
+### SCRUM-1068 runtime: 3×6 weapon constellations (schema 6)
 
-Design/data contract для SCRUM-1068 зафиксирован в
+Production runtime следует contract SCRUM-1067, зафиксированному в
 `docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`; все 306
 branch nodes, 34 hidden profiles, 51 финал и caps — в
 `docs/design/data/scrum1067_weapon_finals_manifest.json`.
@@ -517,8 +517,18 @@ branch nodes, 34 hidden profiles, 51 финал и caps — в
   immortality/control loop.
 
 Обязательные harness scenarios: `no_meta`, `path_5_of_6`, `path_6_of_6`,
-`three_paths_6_of_6`, `full_20_of_20`, `a5_live`. Текущие schema-5 числа ниже
-остаются историческим baseline до SCRUM-1068.
+`three_paths_6_of_6`, `full_20_of_20`, `a5_live`. Их детерминированно проверяет
+`tools/scrum1068_balance_harness.py`; production parity —
+`tools/validate_scrum1068_runtime_manifest.py`. Измеренный schema-6 roster
+`max/min = 1.018636`, полный A5 остаётся внутри hard anti-runaway rail.
+
+Runtime source of truth — `data/meta/constellation_schema6.json` и typed loader
+`scripts/constellation_schema6_data.gd`. `MetaProgression` выдаёт отдельный
+профиль на точный `weapon_id`; `Player` заново строит его из canonical node IDs,
+не доверяя сериализованным amounts/mechanics. Save schema 5 мигрирует в schema 6
+один раз: Guild-покупки и progression/reveal facts сохраняются, классовые
+аллокации возвращаются, excess old currency записывается только в non-combat
+`legacy_mastery`, `active_keystones` удаляется.
 
 - Ascension levels: 5 уровней на персонажа (SCRUM-516: лестница сжата 10→5, монстерский пресс заметно усилен — кумулятив enemy_hp_mult на L5 = 1.80, было 1.32 на L10).
 - Победа над финальным боссом увеличивает ascension выбранного героя.

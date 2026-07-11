@@ -20,6 +20,9 @@ const CONTACT_TARGET_CAP := 4  # врагов за один скан конта�
 const SPIRAL_RADIUS_STEP := 0.14
 # SCRUM-908 «Сеть мастерской»: вес дрона в стеках сети устройств.
 const NETWORK_WEIGHT := 1.0
+const CONSTELLATION_FINAL_MECHANICS := {"drone_excess_repair_shield": "repair"}
+const REPAIR_TICK_INTERVAL := 0.25
+const REPAIR_PER_SECOND_CAP := 2.0
 
 var _weapon_instance_id := 0
 var _owner_instance_id := 0
@@ -29,6 +32,9 @@ var _angle := 0.0
 var _scan_cooldown := 0.0
 # per-enemy кулдаун: instance_id -> оставшееся время (сек).
 var _hit_cooldowns := {}
+var _repair_tick_left := 0.0
+var _constellation_owned_shield := 0.0
+var _constellation_shield_left := 0.0
 
 
 func _ready() -> void:
@@ -91,6 +97,11 @@ func _physics_process(delta: float) -> void:
 	_angle = fposmod(_angle + delta * orbit_angular_speed(weapon, owner_node), TAU)
 	global_position = owner_node.global_position \
 		+ Vector2.RIGHT.rotated(_angle + _phase_offset()) * _orbit_radius()
+	_tick_constellation_shield_expiry(owner_node, delta)
+	_repair_tick_left -= delta
+	if _repair_tick_left <= 0.0:
+		_repair_tick_left = REPAIR_TICK_INTERVAL
+		constellation_repair_tick(weapon, owner_node, REPAIR_TICK_INTERVAL)
 	_tick_hit_cooldowns(delta)
 	_scan_cooldown -= delta
 	if _scan_cooldown <= 0.0:
@@ -153,3 +164,87 @@ func _damage_contacts(weapon: Node, owner_node: Node2D) -> void:
 		var contact_damage := float(weapon.call("_rolled_damage", owner_node)) * contact_multiplier
 		weapon.call("_damage_enemy", target, contact_damage)
 		AttackVfx.ring_pulse(weapon.call("_projectile_parent"), target.global_position, contact_radius * 0.55, weapon.get("visual_color"), false)
+
+
+# The repair drone was previously combat-only despite its canonical identity.
+# This bounded tether restores at most 2 HP/s. The final converts only actual
+# excess repair, never raises the heal-per-second rail, and owns a short shield
+# bucket that is removed on expiry.
+func constellation_repair_tick(weapon: Node, owner_node: Node2D, delta: float) -> Dictionary:
+	var outcome := {"requested": 0.0, "healed": 0.0, "excess": 0.0, "shield_added": 0.0, "triggered": false}
+	if weapon == null or owner_node == null or not is_instance_valid(owner_node) or delta <= 0.0:
+		return outcome
+	if owner_node.get("health") == null or owner_node.get("max_health") == null:
+		return outcome
+	var requested := REPAIR_PER_SECOND_CAP * delta
+	var before := maxf(float(owner_node.get("health")), 0.0)
+	var maximum := maxf(float(owner_node.get("max_health")), 1.0)
+	var healed := minf(requested, maxf(maximum - before, 0.0))
+	owner_node.set("health", minf(before + healed, maximum))
+	var excess := maxf(requested - healed, 0.0)
+	outcome["requested"] = requested
+	outcome["healed"] = healed
+	outcome["excess"] = excess
+	if excess <= 0.0 or not owner_node.has_method("constellation_weapon_mechanic"):
+		return outcome
+	var weapon_id := str(weapon.get("weapon_id"))
+	var mechanic_raw = owner_node.call("constellation_weapon_mechanic", weapon_id, "drone_excess_repair_shield")
+	if not mechanic_raw is Dictionary or (mechanic_raw as Dictionary).is_empty():
+		return outcome
+	var params: Dictionary = (mechanic_raw as Dictionary).get("params", {})
+	var conversion := clampf(float(params.get("conversion_ratio", 0.5)), 0.0, 1.0)
+	var cap := clampf(float(params.get("shield_cap", 20.0)), 0.0, 30.0)
+	var shield_add := minf(excess * conversion, maxf(cap - _constellation_owned_shield, 0.0))
+	if shield_add <= 0.0:
+		return outcome
+	var previous_bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
+	var previous_absorb := _owner_modifier(owner_node, "absorb_flat")
+	var result := {"valid": true, "triggered": true}
+	if owner_node.has_method("constellation_weapon_event"):
+		var raw = owner_node.call("constellation_weapon_event", weapon_id, "repair", {"repair": requested, "healed": healed, "excess": excess}, null)
+		if raw is Dictionary:
+			result = raw
+	if not bool(result.get("triggered", false)):
+		return outcome
+	# Player's generic side-effect grants the manifest cap. Normalize that generic
+	# bucket back to the exact excess*conversion amount owned by this drone.
+	var event_bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
+	var desired_bucket := minf(previous_bucket + shield_add, cap)
+	_set_owner_modifier(owner_node, "constellation_absorb_flat", desired_bucket)
+	_set_owner_modifier(owner_node, "absorb_flat", maxf(previous_absorb + desired_bucket - previous_bucket, 0.0))
+	_constellation_owned_shield = minf(_constellation_owned_shield + shield_add, cap)
+	_constellation_shield_left = maxf(float(params.get("shield_seconds", 3.0)), 0.0)
+	outcome["shield_added"] = shield_add
+	outcome["triggered"] = true
+	# Keep a visible audit fact for tests/debug even when the owner is a minimal mock.
+	outcome["generic_event_bucket"] = event_bucket
+	return outcome
+
+
+func _tick_constellation_shield_expiry(owner_node: Node2D, delta: float) -> void:
+	if _constellation_owned_shield <= 0.0:
+		return
+	_constellation_shield_left = maxf(_constellation_shield_left - delta, 0.0)
+	if _constellation_shield_left > 0.0:
+		return
+	var bucket := _owner_modifier(owner_node, "constellation_absorb_flat")
+	var absorb := _owner_modifier(owner_node, "absorb_flat")
+	var removed := minf(_constellation_owned_shield, bucket)
+	_set_owner_modifier(owner_node, "constellation_absorb_flat", maxf(bucket - removed, 0.0))
+	_set_owner_modifier(owner_node, "absorb_flat", maxf(absorb - removed, 0.0))
+	_constellation_owned_shield = 0.0
+
+
+func _owner_modifier(owner_node: Node, key: String) -> float:
+	var raw = owner_node.get("run_modifiers")
+	return float((raw as Dictionary).get(key, 0.0)) if raw is Dictionary else 0.0
+
+
+func _set_owner_modifier(owner_node: Node, key: String, value: float) -> void:
+	var raw = owner_node.get("run_modifiers")
+	if raw is Dictionary:
+		(raw as Dictionary)[key] = value
+
+
+func constellation_repair_state() -> Dictionary:
+	return {"repair_per_second_cap": REPAIR_PER_SECOND_CAP, "owned_shield": _constellation_owned_shield, "shield_left": _constellation_shield_left}

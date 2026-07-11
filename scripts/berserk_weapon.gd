@@ -9,6 +9,14 @@ const CONTACT_STUCK_HIT_RADIUS := 40.0
 # impact toward the footline and giving the same contract to hit queries/VFX.
 const HAMMER_CIRCLE_CENTER_OFFSET := Vector2(0.0, 16.0)
 const HAMMER_CIRCLE_VISUAL_SCALE := Vector2(1.0, 1.12)
+const CONSTELLATION_FINAL_MECHANICS := {
+	"sword_repeat_execute": "hit",
+	"axe_outer_followthrough": "attack_resolved",
+	"hammer_stagger_aftershock": "attack_resolved",
+	"spear_block_counter_line": "block",
+	"shield_stored_damage_bash": "damage_absorbed",
+}
+const CONSTELLATION_AFTERSHOCK_DELAY := 0.12
 
 @export var weapon_id := "sword"
 @export var display_name := "Two-Handed Sword"
@@ -66,6 +74,12 @@ var _last_attack_crit := false
 # SCRUM-961 «Святая цепь»: раскрутка спирали кистеня (касты подряд, сброс паузой).
 var _flail_spiral_casts := 0
 var _flail_last_cast_ms := 0
+var _sword_repeat_target_id := 0
+var _sword_repeat_hits := 0
+var _counter_line_left := 0.0
+var _counter_line_ratio := 0.0
+var _stored_bash_damage := 0.0
+var _stored_bash_left := 0.0
 
 
 # SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
@@ -124,6 +138,10 @@ func configure_weapon(config: Dictionary) -> void:
 
 
 func _process(delta: float) -> void:
+	_counter_line_left = maxf(_counter_line_left - delta, 0.0)
+	_stored_bash_left = maxf(_stored_bash_left - delta, 0.0)
+	if _stored_bash_left <= 0.0:
+		_stored_bash_damage = 0.0
 	# Направление атаки задает только ближайший враг (см. _target_direction);
 	# направление движения влияет лишь на walk-анимацию персонажа.
 	_cooldown -= delta
@@ -316,6 +334,7 @@ func _damage_window(owner_node: Node2D, attack_direction: Vector2) -> void:
 		)
 	for index in range(candidates.size()):
 		_damage_target(owner_node, candidates[index] as Node2D, attack_direction, _circle_damage_factor(index))
+	_resolve_constellation_attack(owner_node, attack_direction, candidates)
 	# SCRUM-961 «Призрачный топор»: видимый спектральный повтор взмаха.
 	if melee_arc_followup_radius > 0.0 and _owner_mod("spectral_followup_bonus") > 0.0 and not candidates.is_empty():
 		_show_spectral_followup(owner_node, attack_direction)
@@ -465,10 +484,175 @@ func _update_flail_spiral() -> void:
 func _damage_target(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, amount_multiplier := 1.0) -> void:
 	_hit_targets.append(enemy_node)
 	var dealt := _rolled_damage(owner_node) * amount_multiplier
+	var hit_context := {"weapon_id": weapon_id, "attack_mode": "melee", "damage_type": "physical"}
+	if owner_node.has_method("meta_context_for_weapon"):
+		hit_context = owner_node.call("meta_context_for_weapon", self, hit_context)
+	if owner_node.has_method("meta_damage_multiplier"):
+		dealt *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy_node))
 	_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
 	if owner_node.has_method("on_weapon_hit"):
-		owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit)  # SCRUM-500: прокидываем крит-флаг
+		owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit, hit_context)
 	_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
+	_apply_constellation_primary_hit(owner_node, enemy_node, attack_direction, dealt)
+
+
+func _constellation_mechanic(owner_node: Node, mechanic_id: String) -> Dictionary:
+	if owner_node == null or not owner_node.has_method("constellation_weapon_mechanic"):
+		return {}
+	var raw = owner_node.call("constellation_weapon_mechanic", weapon_id, mechanic_id)
+	return raw if raw is Dictionary else {}
+
+
+func _constellation_event(owner_node: Node, event: String, context := {}, enemy: Node2D = null) -> Dictionary:
+	if owner_node == null or not owner_node.has_method("constellation_weapon_event"):
+		return {"valid": true, "triggered": false, "damage_multiplier": 1.0}
+	var raw = owner_node.call("constellation_weapon_event", weapon_id, event, context, enemy)
+	return raw if raw is Dictionary else {"valid": false, "triggered": false, "damage_multiplier": 1.0}
+
+
+# Sword's runtime event is consumed by Player.meta_damage_multiplier. This
+# consumer owns the stricter consecutive-target/execute gate and applies only
+# the execute payoff; switching targets resets the local sequence.
+func _apply_constellation_primary_hit(owner_node: Node2D, enemy_node: Node2D, attack_direction: Vector2, dealt: float) -> void:
+	if weapon_id == "sword":
+		var sword := _constellation_mechanic(owner_node, "sword_repeat_execute")
+		if not sword.is_empty():
+			var target_id := enemy_node.get_instance_id()
+			if target_id != _sword_repeat_target_id:
+				_sword_repeat_target_id = target_id
+				_sword_repeat_hits = 0
+			_sword_repeat_hits += 1
+			var params: Dictionary = sword.get("params", {})
+			var required := maxi(int(params.get("required_hits", 3)), 1)
+			var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
+			var hp := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
+			if _sword_repeat_hits >= required and max_hp > 0.0 and hp / max_hp <= clampf(float(params.get("execute_threshold", 0.35)), 0.0, 1.0):
+				var bonus := dealt * clampf(float(params.get("boss_bonus_cap", 0.24)), 0.0, 1.0)
+				_call_take_damage(enemy_node, bonus, {"damage_type": "physical", "constellation_final": "sword_repeat_execute"})
+				_sword_repeat_hits = 0
+	if weapon_id == "tower_shield" and _stored_bash_damage > 0.0 and _stored_bash_left > 0.0:
+		_call_take_damage(enemy_node, _stored_bash_damage, {"damage_type": "physical", "constellation_final": "shield_stored_damage_bash"})
+		_stored_bash_damage = 0.0
+		_stored_bash_left = 0.0
+	if weapon_id == "long_spear" and _counter_line_left > 0.0 and _counter_line_ratio > 0.0:
+		_call_take_damage(enemy_node, dealt * _counter_line_ratio, {"damage_type": "physical", "constellation_final": "spear_block_counter_line"})
+		_counter_line_left = 0.0
+		_counter_line_ratio = 0.0
+
+
+func _resolve_constellation_attack(owner_node: Node2D, attack_direction: Vector2, primary_targets: Array) -> void:
+	if weapon_id == "axe" and not _constellation_mechanic(owner_node, "axe_outer_followthrough").is_empty():
+		var result := _constellation_event(owner_node, "attack_resolved", {"primary_hits": primary_targets.size()})
+		if bool(result.get("triggered", false)):
+			_apply_axe_outer_followthrough(owner_node, attack_direction, primary_targets, result)
+	elif weapon_id == "hammer" and not _constellation_mechanic(owner_node, "hammer_stagger_aftershock").is_empty():
+		var result := _constellation_event(owner_node, "attack_resolved", {"primary_hits": primary_targets.size()})
+		if bool(result.get("triggered", false)):
+			_schedule_hammer_aftershock(owner_node, result)
+
+
+func _apply_axe_outer_followthrough(owner_node: Node2D, attack_direction: Vector2, primary_targets: Array, result: Dictionary) -> void:
+	var mechanic := _constellation_mechanic(owner_node, "axe_outer_followthrough")
+	var params: Dictionary = mechanic.get("params", {})
+	var target_cap := maxi(int(params.get("extra_arc_targets", 6)), 0)
+	var ratio := clampf(float(params.get("followthrough_damage_ratio", 0.42)), 0.0, 1.0)
+	if target_cap <= 0 or ratio <= 0.0:
+		return
+	var excluded := {}
+	for target in primary_targets:
+		if target != null and is_instance_valid(target):
+			excluded[(target as Node).get_instance_id()] = true
+	var candidates: Array = []
+	for enemy in TARGET_QUERY.enemies(self):
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var enemy_node := enemy as Node2D
+		if enemy_node == null or excluded.has(enemy_node.get_instance_id()):
+			continue
+		var offset := enemy_node.global_position - owner_node.global_position
+		var distance := offset.length()
+		if distance < attack_range * 0.45 or distance > attack_range * 1.12:
+			continue
+		if absf(wrapf(attack_direction.angle_to(offset.normalized()), -PI, PI)) > deg_to_rad(minf(sweep_degrees * 0.72, 88.0)):
+			continue
+		candidates.append(enemy_node)
+	candidates.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return owner_node.global_position.distance_squared_to(a.global_position) < owner_node.global_position.distance_squared_to(b.global_position)
+	)
+	var secondary_damage := _rolled_damage(owner_node) * ratio
+	for index in range(mini(candidates.size(), target_cap)):
+		var enemy_node := candidates[index] as Node2D
+		_call_take_damage(enemy_node, secondary_damage, {"damage_type": "physical", "constellation_final": "axe_outer_followthrough"})
+
+
+func _schedule_hammer_aftershock(owner_node: Node2D, result: Dictionary) -> void:
+	if not is_inside_tree():
+		return
+	var mechanic := _constellation_mechanic(owner_node, "hammer_stagger_aftershock")
+	var params: Dictionary = mechanic.get("params", {})
+	var ratio := clampf(float(params.get("aftershock_damage_ratio", 0.38)), 0.0, 1.0)
+	var stagger_seconds := maxf(float(params.get("stagger_seconds", 0.65)), 0.0)
+	var delayed := create_tween()
+	delayed.tween_interval(CONSTELLATION_AFTERSHOCK_DELAY)
+	delayed.tween_callback(Callable(self, "_resolve_hammer_aftershock").bind(owner_node.get_instance_id(), _circle_attack_center(owner_node), _rolled_damage(owner_node) * ratio, stagger_seconds))
+
+
+func _resolve_hammer_aftershock(owner_id: int, center: Vector2, aftershock_damage: float, stagger_seconds: float) -> void:
+	var owner_node := instance_from_id(owner_id) as Node2D
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	AttackVfx.ring_pulse(get_tree().current_scene if get_tree().current_scene != null else get_tree().root, center, _effective_circle_radius() * 0.72, visual_color, false)
+	for enemy in TARGET_QUERY.in_radius(self, center, _effective_circle_radius() * 0.72):
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var enemy_node := enemy as Node2D
+		if enemy_node == null:
+			continue
+		_call_take_damage(enemy_node, aftershock_damage, {"damage_type": "physical", "constellation_final": "hammer_stagger_aftershock"})
+		if stagger_seconds > 0.0:
+			var factor := 0.25 if TARGET_QUERY.is_epic_displacement_immune(enemy_node) else 1.0
+			StatusEffects.apply_status(enemy_node, "constellation_hammer_stagger", {"duration": stagger_seconds * factor, "speed_multiplier": 0.72, "marker_color": Color(0.85, 0.72, 0.35, 1.0)})
+
+
+# Player's generic constellation_owner_event dispatch reaches these bridges on
+# qualified knight block/absorb events; exact weapon-id gates prevent leakage.
+func constellation_owner_event(event: String, context := {}, enemy: Node2D = null) -> Dictionary:
+	var payload: Dictionary = context if context is Dictionary else {}
+	match event:
+		"block":
+			return constellation_on_block(float(payload.get("blocked_amount", payload.get("incoming_amount", 0.0))), enemy)
+		"damage_absorbed":
+			return constellation_on_damage_absorbed(float(payload.get("absorbed_amount", 0.0)), enemy)
+	return {"valid": true, "triggered": false}
+
+
+func constellation_on_block(incoming_damage: float, attacker: Node2D = null) -> Dictionary:
+	var owner_node := _owner_node()
+	if weapon_id != "long_spear" or _constellation_mechanic(owner_node, "spear_block_counter_line").is_empty():
+		return {"triggered": false}
+	var result := _constellation_event(owner_node, "block", {"incoming_damage": maxf(incoming_damage, 0.0)}, attacker)
+	if bool(result.get("triggered", false)):
+		var params: Dictionary = _constellation_mechanic(owner_node, "spear_block_counter_line").get("params", {})
+		_counter_line_ratio = clampf(float(params.get("counter_damage_ratio", 0.52)), 0.0, 1.0)
+		_counter_line_left = maxf(float(params.get("window_seconds", 1.0)), 0.0)
+	return result
+
+
+func constellation_on_damage_absorbed(absorbed_damage: float, attacker: Node2D = null) -> Dictionary:
+	var owner_node := _owner_node()
+	if weapon_id != "tower_shield" or _constellation_mechanic(owner_node, "shield_stored_damage_bash").is_empty():
+		return {"triggered": false}
+	var result := _constellation_event(owner_node, "damage_absorbed", {"absorbed_damage": maxf(absorbed_damage, 0.0)}, attacker)
+	if bool(result.get("triggered", false)):
+		var params: Dictionary = _constellation_mechanic(owner_node, "shield_stored_damage_bash").get("params", {})
+		var cap := maxf(float(params.get("stored_damage_cap", 30.0)), 0.0)
+		_stored_bash_damage = minf(_stored_bash_damage + maxf(absorbed_damage, 0.0) * clampf(float(params.get("storage_ratio", 0.25)), 0.0, 1.0), cap)
+		_stored_bash_left = maxf(float(params.get("expiry_seconds", 3.0)), 0.0)
+	return result
+
+
+func constellation_special_state() -> Dictionary:
+	return {"sword_repeat_hits": _sword_repeat_hits, "counter_line_left": _counter_line_left, "stored_bash_damage": _stored_bash_damage, "stored_bash_left": _stored_bash_left}
 
 
 func _circle_damage_factor(target_index: int) -> float:

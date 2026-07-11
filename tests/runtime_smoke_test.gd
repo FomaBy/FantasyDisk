@@ -8015,10 +8015,10 @@ func _assert_skill_tree_progression_kit_at_size(main_scene: PackedScene, viewpor
 	if medallions.size() != 17:
 		_fail("Expected 17 class medallions in the atlas strip, got %d at %s." % [medallions.size(), context])
 		return
-	# Созвездие выбранного класса целиком: 22 узла без пан/зума.
+	# Schema 6: free core + 3×6 weapon paths + 2 hidden side nodes = 21.
 	var node_buttons := skill_main.find_children("AtlasNode_*", "TextureButton", true, false)
-	if node_buttons.size() != 22:
-		_fail("Expected 22 constellation nodes on the atlas canvas, got %d at %s." % [node_buttons.size(), context])
+	if node_buttons.size() != 21:
+		_fail("Expected 21 schema-6 constellation nodes on the atlas canvas, got %d at %s." % [node_buttons.size(), context])
 		return
 	var node_circle_overlap := _first_atlas_node_circle_overlap(node_buttons, 2.0)
 	if not node_circle_overlap.is_empty():

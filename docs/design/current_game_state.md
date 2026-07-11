@@ -2438,3 +2438,23 @@ dossier не может открыться поверх молитвы, а фо�
 effect dictionaries, поэтому отдельного изменения `ui_screens.gd` не было.
 Полный 59-cost upper bound остаётся `1.174` account power и `+17.4%` одинаковой
 weighted class power, а A5 сохраняет повышенный monster/healing/reward pressure.
+
+## SCRUM-1068 Constellation Schema 6 Runtime
+
+Классовая часть Атласа теперь строится из production manifest schema 6: 17
+бесплатных ядер, 51 линейная оружейная ветвь по `5 boon + final` и 34 hidden
+side node. Это 357 классовых узлов; замороженные 25 Guild-узлов дают 382 total.
+На класс тратится ровно 20 sigils: три финала разрешены одновременно, hidden
+сначала раскрывается фактом челленджа, затем покупается за 1. Награды A0..A5 —
+`[2,2,3,4,4,5]`; челленджи больше не дают валюту или class-wide combat bonus.
+
+Все классовые эффекты передаются как canonical typed profiles точного оружия.
+Player повторно строит amounts/multipliers/mechanics по manifest node IDs, так
+что forged/foreign profile и неизвестный mechanic fail closed. Live consumers
+покрывают обычные boons/hidden для ClassWeapon, Berserk/Holy Flail и summons;
+51 финал привязан к явному боевому событию, caps и lifecycle. В частности,
+repair drone получил bounded tether `2 HP/s`, excess-only shield final сохраняет
+cap/expiry; summon death, block/absorb, return и deploy callbacks имеют точную
+owner/weapon attribution. Regression gates: schema migration, 51 positive + 102
+foreign negatives, 11 special-consumer behaviors, 51 weapon scenes и full
+runtime smoke.

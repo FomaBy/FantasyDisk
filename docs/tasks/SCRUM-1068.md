@@ -59,3 +59,42 @@ Partial commits use `FSD_NO_AUTOLAND=1` and are not pushed until a green
 integration boundary. Jira heartbeats and final cleanup record the live phase.
 
 Disk cleanup: pending active implementation.
+
+## Backend/runtime result — 2026-07-11
+
+Phases 1–6 are implemented and green in the isolated Codex worktree:
+
+- generated production manifest + typed loader: `17 / 306 / 51 / 34`,
+  `357 + frozen Guild 25 = 382`;
+- schema-5→6 migration preserves Guild/progression/reveal facts, refunds class
+  allocations, records non-combat legacy mastery and rejects disconnected or
+  over-budget native-schema corruption;
+- challenge weapon diversity accepts only the exact three canonical IDs of the
+  owning class;
+- Player reconstructs profiles from canonical node IDs and applies ordinary,
+  hidden and final effects only to the exact owning weapon;
+- all 51 finals have an explicit required event and consumer registration;
+  the 11 non-ClassWeapon/special consumers implement their own capped state and
+  lifecycle, including bounded repair tether/shield and summon-death bridges;
+- balance harness covers `no_meta`, `5/6`, `6/6`, all three finals, `20/20` and
+  A5; roster max/min is `1.018636` and hard rails pass.
+
+Verification:
+
+- manifest parity + 11 mutation corruptions: PASS;
+- migration/economy/Guild preservation/corrupt-save normalization: PASS;
+- typed profiles and live Berserk/HolyFlail/Summoner consumers: PASS;
+- 51 positive final fixtures + 102 same-class foreign negatives: PASS;
+- 11 special-final behavior/cap/lifecycle fixtures: PASS;
+- schema-6 per-hero and Meta/Guild regression suites: PASS;
+- all 51 weapon scenes / 39 live attack modes: PASS;
+- full `tests/runtime_smoke_test.gd`: PASS (15,220-file duplicate guard; existing
+  headless dummy-renderer null-texture diagnostic remains non-fatal).
+
+Phase 7 Atlas visual/runtime layout remains excluded: SCRUM-1075 has a valid
+PixelLab-ready plan but the external PixelLab account has `$0` balance and only
+3 generations, below the required 20–40. No fallback art and no edit to
+`scripts/ui_screens.gd` was made. SCRUM-1073 remains sequential behind that UI
+phase.
+
+Disk cleanup: pending final commit/push and independent QA.

@@ -21,23 +21,25 @@ extends RefCounted
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
 const TREE_DATA := preload("res://scripts/meta_progression_tree_data.gd")
+const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 # SCRUM-516: лестница возвышений сжата 10→5. Единый кап и для дорожки сложности,
 # и для наградной лестницы. Старые сейвы с ascension>5 клампятся в [0..5].
 const MAX_ASCENSION_LEVEL := 5
 const SECTION := "meta"
-# SCRUM-828: схема 5 (Мета 4.0 «Созвездия героев»). load_state мигрирует старые
-# сейвы (schema<5): полный респек купленных узлов, эмблемы пересчитываются из
-# meta_point_awards/ascension_levels по формуле 2/2/3/4/5/6, пыль — из
-# class_boss_wins/discovered_*/secret_boss_defeated/achievements. Прогресс
-# (возвышения, победы, челленджи, кодекс, ачивки) не теряется.
-const TREE_SCHEMA_VERSION := 5
+# SCRUM-1068: schema 6 is three owning-weapon paths, 20 spend and purchased
+# hidden side nodes. Schema-5 class allocations are refunded once; Guild Atlas
+# purchases and progression facts survive. Excess old sigils become non-combat
+# legacy_mastery before the old reward formula is retired.
+const TREE_SCHEMA_VERSION := 6
 # Наследный фасадный кап v3: остался только для подписи старого экрана
 # (points_label «x / 100»); экономику Меты 4.0 не ограничивает.
 const META_POINTS_CAP := 100
 # Эмблемы класса за ПЕРВЫЙ клир возвышения A0..A5 (индекс = уровень забега).
-const SIGIL_REWARDS_BY_ASCENSION := [2, 2, 3, 4, 5, 6]
-# Эмблемы за каждый выполненный челлендж класса (существующие CLASS_CHALLENGES).
-const SIGILS_PER_CLASS_CHALLENGE := 2
+const SIGIL_REWARDS_BY_ASCENSION := [2, 2, 3, 4, 4, 5]
+const SIGILS_PER_CLASS_CHALLENGE := 0
+const SCHEMA5_SIGIL_REWARDS_BY_ASCENSION := [2, 2, 3, 4, 5, 6]
+const SCHEMA5_SIGILS_PER_CLASS_CHALLENGE := 2
+const SCHEMA6_SPENDABLE_CAP := 20
 # Звёздная пыль: источники аккаунта (потолок = 17+17+3+8+5 = 50).
 const STARDUST_FIRST_WIN := 1
 const STARDUST_FIRST_A5 := 1
@@ -61,6 +63,23 @@ const ACHIEVEMENT_MILESTONE_THRESHOLDS := [1, 2, 4, 6, 8]
 
 # Флаговые ключи эффектов: мержатся через max(), не суммируются.
 const FLAG_EFFECT_KEYS := ["guaranteed_rare_shop", "first_levelup_rare", "death_save", "ult_start_charge", "lowhp_guard", "attr_extra_options"]
+const SCHEMA6_GENERIC_WEAPON_EFFECT_KEYS := [
+	"weapon_damage_flat",
+	"weapon_attack_speed_mult",
+	"range_or_precision_zone_mult",
+	"precision_window_mult",
+	"target_pattern_budget_mult",
+	"arc_chain_or_zone_geometry_mult",
+	"guard_control_zone_mult",
+	"control_sustain_value_mult",
+	"radius_or_blast_geometry_mult",
+	"impact_area_mult",
+	"weapon_prefinal_identity_mult",
+	"hidden_solo_mastery_mult",
+	"hidden_defense_mastery_mult",
+	"hidden_crowd_mastery_mult",
+	"hidden_aoe_mastery_mult",
+]
 
 # Ядра-эмблемы созвездий (id корневых узлов по классу). Имя константы и формат
 # сохранены с v3 (entry_map()/тесты/старый экран читают её как точки входа).
@@ -107,9 +126,9 @@ const CLASS_PROGRESSION := [
 	{"wins": 9, "title": "Мастерство класса", "desc": "Урон этого класса ещё +5%; +3% HP.", "effects": {"class_damage_mult": 0.05, "class_max_health_mult": 0.03}},
 ]
 
-# SCRUM-620: челленджи класса за РАЗНООБРАЗИЕ забега. В Мете 4.0 каждый
-# выполненный челлендж дополнительно даёт +2 эмблемы класса, а метрики
-# челленджей открывают скрытые звезды созвездия (§5 дизайна).
+# Class challenges preserve their progress/facts but schema 6 makes them a
+# discovery-only layer: they reveal hidden side nodes and grant no currency or
+# combat modifiers.
 const CLASS_CHALLENGE_MAX_BONUS := 0.05
 const CODEX_DISCOVERY_CATEGORIES := {
 	"monsters": "discovered_monsters",
@@ -117,9 +136,9 @@ const CODEX_DISCOVERY_CATEGORIES := {
 	"artifacts": "discovered_artifacts",
 }
 const CLASS_CHALLENGES := [
-	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса: +3% урона.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {"class_damage_mult": 0.03}},
-	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+: +3% максимума HP.", "condition_metric": "best_ascension", "threshold": 3, "effects": {"class_max_health_mult": 0.03}},
-	{"id": "lone_wolf", "title": "Без посредников", "desc": "Победа без покупок в магазине: +3% скорости атаки.", "condition_metric": "no_shop_wins", "threshold": 1, "effects": {"class_attack_speed_mult": 0.03}},
+	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса открывают тайные звёзды.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {}},
+	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+ открывает тайные звёзды.", "condition_metric": "best_ascension", "threshold": 3, "effects": {}},
+	{"id": "lone_wolf", "title": "Без посредников", "desc": "Победа без покупок в магазине открывает тайные звёзды.", "condition_metric": "no_shop_wins", "threshold": 1, "effects": {}},
 ]
 
 
@@ -131,8 +150,9 @@ static func default_state() -> Dictionary:
 		"ascension_levels": {},
 		"skill_points": 0,
 		"skill_nodes": [],
-		# SCRUM-828: активная ключевая звезда per class {class_id: node_id}.
-		"active_keystones": {},
+		"legacy_mastery": {},
+		"hidden_reveal_facts": {},
+		"constellation_schema6_migrated": true,
 		"class_boss_wins": {},
 		"secret_boss_defeated": false,
 		"achievements": [],
@@ -164,14 +184,17 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 		awards = _merge_awards(awards, _meta_point_awards_from_ascension_levels(levels))
 	state["meta_point_awards"] = awards
 	state["skill_tree_schema"] = TREE_SCHEMA_VERSION
-	# Купленные узлы: только родная схема 5 (иначе полный бесплатный респек —
-	# паттерн миграций 1→3→4→5; валюты деривативны и не теряются).
+	# Native schema 6 preserves validated purchases. Schema 5 refunds only class
+	# constellations and preserves the frozen Guild Atlas IDs one-for-one.
 	var raw_nodes = config.get_value(SECTION, "skill_nodes", [])
 	var nodes := []
-	if schema == TREE_SCHEMA_VERSION and raw_nodes is Array:
+	if raw_nodes is Array:
 		for node_id in raw_nodes:
 			var nid := str(node_id)
-			if _is_purchasable_id(nid) and not nodes.has(nid):
+			var node := node_by_id(nid)
+			var keep_native := schema == TREE_SCHEMA_VERSION and _is_purchasable_id(nid)
+			var keep_schema5_guild := schema == 5 and not node.is_empty() and str(node.get("class_affinity", "")) == "" and _is_purchasable_id(nid)
+			if (keep_native or keep_schema5_guild) and not nodes.has(nid):
 				nodes.append(nid)
 	state["skill_nodes"] = nodes
 	var raw_class_wins = config.get_value(SECTION, "class_boss_wins", {})
@@ -194,6 +217,9 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	var cc_progress := {}
 	if raw_cc_progress is Dictionary:
 		for char_id in raw_cc_progress.keys():
+			var normalized_class_id := str(char_id)
+			if SCHEMA6_DATA.class_entry(normalized_class_id).is_empty():
+				continue
 			var p = raw_cc_progress[char_id]
 			if not (p is Dictionary):
 				continue
@@ -202,9 +228,9 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 			if raw_weapons is Array:
 				for w in raw_weapons:
 					var ws := str(w)
-					if ws != "" and not weapons.has(ws):
+					if _canonical_weapons_for_class(normalized_class_id).has(ws) and not weapons.has(ws):
 						weapons.append(ws)
-			cc_progress[str(char_id)] = {
+			cc_progress[normalized_class_id] = {
 				"weapons": weapons,
 				"best_ascension": clampi(int(p.get("best_ascension", 0)), 0, MAX_ASCENSION_LEVEL),
 				"no_shop_wins": maxi(int(p.get("no_shop_wins", 0)), 0),
@@ -230,9 +256,16 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	for category in CODEX_DISCOVERY_CATEGORIES.keys():
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
 		state[save_key] = _normalized_id_list(config.get_value(SECTION, save_key, []), category)
-	# Активные ключевые звезды: только схема 5; чинит невалидные ссылки.
-	var raw_active = config.get_value(SECTION, "active_keystones", {})
-	state["active_keystones"] = _normalized_active_keystones(raw_active if schema == TREE_SCHEMA_VERSION else {}, nodes)
+	if schema == TREE_SCHEMA_VERSION:
+		state["legacy_mastery"] = _normalized_legacy_mastery(config.get_value(SECTION, "legacy_mastery", {}))
+		state["hidden_reveal_facts"] = _normalized_hidden_reveal_facts(config.get_value(SECTION, "hidden_reveal_facts", {}))
+		state["constellation_schema6_migrated"] = bool(config.get_value(SECTION, "constellation_schema6_migrated", true))
+	else:
+		state["legacy_mastery"] = _schema5_legacy_mastery(awards, cc_done)
+		state["hidden_reveal_facts"] = {}
+		state["constellation_schema6_migrated"] = true
+	_sync_hidden_reveal_facts(state)
+	state["skill_nodes"] = _normalized_schema6_purchases(state, nodes, schema)
 	_sync_meta_economy_fields(state)
 	return state
 
@@ -246,7 +279,9 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "ascension_levels", state.get("ascension_levels", {}))
 	config.set_value(SECTION, "skill_points", available_meta_points(state))
 	config.set_value(SECTION, "skill_nodes", _explicit_purchases(state))
-	config.set_value(SECTION, "active_keystones", _normalized_active_keystones(state.get("active_keystones", {}), _explicit_purchases(state)))
+	config.set_value(SECTION, "legacy_mastery", _normalized_legacy_mastery(state.get("legacy_mastery", {})))
+	config.set_value(SECTION, "hidden_reveal_facts", _normalized_hidden_reveal_facts(state.get("hidden_reveal_facts", {})))
+	config.set_value(SECTION, "constellation_schema6_migrated", true)
 	config.set_value(SECTION, "class_boss_wins", state.get("class_boss_wins", {}))
 	config.set_value(SECTION, "secret_boss_defeated", bool(state.get("secret_boss_defeated", false)))
 	config.set_value(SECTION, "achievements", state.get("achievements", []))
@@ -316,8 +351,169 @@ static func _sigil_reward_for_ascension(run_level: int) -> int:
 static func _sync_meta_economy_fields(state: Dictionary) -> void:
 	state["skill_tree_schema"] = TREE_SCHEMA_VERSION
 	state["meta_point_awards"] = _normalized_meta_point_awards(state.get("meta_point_awards", {}))
+	state["legacy_mastery"] = _normalized_legacy_mastery(state.get("legacy_mastery", {}))
+	state["constellation_schema6_migrated"] = true
+	_sync_hidden_reveal_facts(state)
 	state["meta_points"] = earned_meta_points(state)
 	state["skill_points"] = available_meta_points(state)
+
+
+static func _normalized_legacy_mastery(raw) -> Dictionary:
+	var result := {}
+	if not raw is Dictionary:
+		return result
+	for class_id in CLASS_ENTRY_NODES.keys():
+		var value := maxi(int((raw as Dictionary).get(class_id, 0)), 0)
+		if value > 0:
+			result[str(class_id)] = value
+	return result
+
+
+static func _schema5_legacy_mastery(awards: Dictionary, challenges_done: Dictionary) -> Dictionary:
+	var result := {}
+	for raw_class_id in CLASS_ENTRY_NODES.keys():
+		var class_id := str(raw_class_id)
+		var old_earned := 0
+		var class_awards = awards.get(class_id, [])
+		if class_awards is Array:
+			for raw_level in class_awards:
+				var level := clampi(int(raw_level), 0, MAX_ASCENSION_LEVEL)
+				old_earned += int(SCHEMA5_SIGIL_REWARDS_BY_ASCENSION[level])
+		var done = challenges_done.get(class_id, [])
+		if done is Array:
+			old_earned += (done as Array).size() * SCHEMA5_SIGILS_PER_CLASS_CHALLENGE
+		var legacy := maxi(old_earned - SCHEMA6_SPENDABLE_CAP, 0)
+		if legacy > 0:
+			result[class_id] = legacy
+	return result
+
+
+static func _normalized_hidden_reveal_facts(raw) -> Dictionary:
+	var result := {}
+	if not raw is Dictionary:
+		return result
+	for raw_class_id in CLASS_ENTRY_NODES.keys():
+		var class_id := str(raw_class_id)
+		var raw_ids = (raw as Dictionary).get(class_id, [])
+		if not raw_ids is Array:
+			continue
+		var ids := []
+		for raw_id in raw_ids:
+			var hidden_id := str(raw_id)
+			var node := node_by_id(hidden_id)
+			if (
+				not node.is_empty()
+				and str(node.get("class_affinity", "")) == class_id
+				and str(node.get("role", "")) == "hidden"
+				and not ids.has(hidden_id)
+			):
+				ids.append(hidden_id)
+		ids.sort()
+		if not ids.is_empty():
+			result[class_id] = ids
+	return result
+
+
+static func _sync_hidden_reveal_facts(state: Dictionary) -> void:
+	var facts := _normalized_hidden_reveal_facts(state.get("hidden_reveal_facts", {}))
+	for raw_class_id in CLASS_ENTRY_NODES.keys():
+		var class_id := str(raw_class_id)
+		var ids = facts.get(class_id, [])
+		if not ids is Array:
+			ids = []
+		for node in constellation_nodes(class_id):
+			var node_data: Dictionary = node
+			if str(node_data.get("role", "")) != "hidden":
+				continue
+			var hidden_id := str(node_data.get("id", ""))
+			if _hidden_condition_met(state, node_data) and not (ids as Array).has(hidden_id):
+				(ids as Array).append(hidden_id)
+		(ids as Array).sort()
+		if not (ids as Array).is_empty():
+			facts[class_id] = ids
+	state["hidden_reveal_facts"] = facts
+
+
+static func _hidden_condition_met(state: Dictionary, node: Dictionary) -> bool:
+	var condition: Dictionary = node.get("condition", {})
+	var metric := str(condition.get("metric", ""))
+	var threshold := int(condition.get("threshold", 1))
+	var class_id := str(node.get("class_affinity", ""))
+	match metric:
+		"weapon_diversity":
+			return (class_challenge_progress_for(state, class_id).get("weapons", []) as Array).size() >= threshold
+		"best_ascension":
+			return int(class_challenge_progress_for(state, class_id).get("best_ascension", 0)) >= threshold
+		"no_shop_wins":
+			return int(class_challenge_progress_for(state, class_id).get("no_shop_wins", 0)) >= threshold
+		"class_wins":
+			return class_boss_wins(state, class_id) >= threshold
+		"codex_milestones":
+			return codex_milestones_reached(state) >= threshold
+		"secret_boss":
+			return secret_boss_defeated(state)
+		"achievement_milestones":
+			return achievement_milestones_reached(state) >= threshold
+	return false
+
+
+static func _normalized_schema6_purchases(state: Dictionary, raw_nodes: Array, source_schema: int) -> Array:
+	# Schema-5 migration preserves every valid Guild purchase, even if an old
+	# malformed save omitted a prerequisite. Class allocations are fully refunded.
+	var accepted := []
+	if source_schema != TREE_SCHEMA_VERSION:
+		for raw_id in raw_nodes:
+			var legacy_id := str(raw_id)
+			var legacy_node := node_by_id(legacy_id)
+			if (
+				not legacy_node.is_empty()
+				and str(legacy_node.get("class_affinity", "")) == ""
+				and _is_purchasable_id(legacy_id)
+				and not accepted.has(legacy_id)
+			):
+				accepted.append(legacy_id)
+		return accepted
+
+	var connected := {}
+	for node in SKILL_TREE:
+		var node_data: Dictionary = node
+		if str(node_data.get("role", "")) == "core":
+			connected[str(node_data.get("id", ""))] = true
+
+	var pending := []
+	for raw_id in raw_nodes:
+		var node_id := str(raw_id)
+		var node := node_by_id(node_id)
+		if not node.is_empty() and _is_purchasable_id(node_id) and not pending.has(node_id):
+			pending.append(node_id)
+	var spent_by_scope := {}
+	var made_progress := true
+	while made_progress and not pending.is_empty():
+		made_progress = false
+		for pending_index in range(pending.size() - 1, -1, -1):
+			var node_id := str(pending[pending_index])
+			var node := node_by_id(node_id)
+			if str(node.get("role", "")) == "hidden" and not hidden_star_unlocked(state, node_id):
+				continue
+			var has_connected_neighbor := false
+			for neighbor_id in node.get("adj", []):
+				if connected.has(str(neighbor_id)):
+					has_connected_neighbor = true
+					break
+			if not has_connected_neighbor:
+				continue
+			var scope := str(node.get("class_affinity", ""))
+			var next_spent := int(spent_by_scope.get(scope, 0)) + int(node.get("cost", 0))
+			var spend_cap := stardust_earned(state) if scope == "" else class_sigils_earned(state, scope)
+			if next_spent > spend_cap:
+				pending.remove_at(pending_index)
+				continue
+			accepted.append(node_id)
+			connected[node_id] = true
+			spent_by_scope[scope] = next_spent
+			pending.remove_at(pending_index)
+			made_progress = true
+	return accepted
 
 
 static func _normalized_id_list(raw, category := "") -> Array:
@@ -443,7 +639,7 @@ static func _record_class_challenge_progress(state: Dictionary, character_id: St
 	if not (weapons is Array):
 		weapons = []
 	var weapon_id := str(run_context.get("weapon_id", ""))
-	if weapon_id != "" and not weapons.has(weapon_id):
+	if _canonical_weapons_for_class(character_id).has(weapon_id) and not weapons.has(weapon_id):
 		weapons.append(weapon_id)
 	prog["weapons"] = weapons
 	var best_ascension := int(prog.get("best_ascension", 0))
@@ -486,6 +682,15 @@ static func _class_challenge_met(challenge: Dictionary, prog: Dictionary) -> boo
 			return int(prog.get("no_shop_wins", 0)) >= threshold
 		_:
 			return false
+
+
+static func _canonical_weapons_for_class(character_id: String) -> Array:
+	var result := []
+	for raw_branch in SCHEMA6_DATA.class_entry(character_id).get("weapon_branches", []):
+		var weapon_id := str((raw_branch as Dictionary).get("weapon_id", ""))
+		if weapon_id != "" and not result.has(weapon_id):
+			result.append(weapon_id)
+	return result
 
 
 static func selectable_max(state: Dictionary, character_id: String) -> int:
@@ -557,7 +762,7 @@ static func class_sigils_earned(state: Dictionary, character_id: String) -> int:
 		for run_level in class_awards:
 			total += _sigil_reward_for_ascension(int(run_level))
 	total += class_challenges_done(state, character_id).size() * SIGILS_PER_CLASS_CHALLENGE
-	return total
+	return mini(total, SCHEMA6_SPENDABLE_CAP)
 
 
 # Потраченные эмблемы класса: сумма цен купленных узлов его созвездия.
@@ -725,13 +930,18 @@ static func atlas_total_cost() -> int:
 
 # --- Покупки, статусы, ключевые и скрытые звезды ---
 
-# Покупаемые узлы: не ядро (открыто сразу) и не скрытая звезда (открывается подвигом).
+# Schema-6 class hidden stars are explicit cost-1 purchases after reveal. The
+# two account-wide Guild hidden nodes retain their frozen auto-active contract.
 static func _is_purchasable_id(node_id: String) -> bool:
 	var node := node_by_id(node_id)
 	if node.is_empty():
 		return false
 	var role := str(node.get("role", node.get("kind", "")))
-	return role != "core" and role != "hidden"
+	if role == "core":
+		return false
+	if role == "hidden" and str(node.get("class_affinity", "")) == "":
+		return false
+	return true
 
 
 # Явные покупки игрока (без ядер и скрытых; то, что пишется в сейв).
@@ -767,26 +977,12 @@ static func hidden_star_unlocked(state: Dictionary, node_id: String) -> bool:
 	var node := node_by_id(node_id)
 	if node.is_empty() or str(node.get("role", "")) != "hidden":
 		return false
-	var condition: Dictionary = node.get("condition", {})
-	var metric := str(condition.get("metric", ""))
-	var threshold := int(condition.get("threshold", 1))
 	var class_id := str(node.get("class_affinity", ""))
-	match metric:
-		"weapon_diversity":
-			return (class_challenge_progress_for(state, class_id).get("weapons", []) as Array).size() >= threshold
-		"best_ascension":
-			return int(class_challenge_progress_for(state, class_id).get("best_ascension", 0)) >= threshold
-		"no_shop_wins":
-			return int(class_challenge_progress_for(state, class_id).get("no_shop_wins", 0)) >= threshold
-		"class_wins":
-			return class_boss_wins(state, class_id) >= threshold
-		"codex_milestones":
-			return codex_milestones_reached(state) >= threshold
-		"secret_boss":
-			return secret_boss_defeated(state)
-		"achievement_milestones":
-			return achievement_milestones_reached(state) >= threshold
-	return false
+	if class_id == "":
+		return _hidden_condition_met(state, node)
+	var facts = state.get("hidden_reveal_facts", {})
+	var revealed = facts.get(class_id, []) if facts is Dictionary else []
+	return revealed is Array and (revealed as Array).has(node_id)
 
 
 # Прогресс условия скрытой звезды (для панели узла экрана 827): {current,
@@ -821,6 +1017,17 @@ static func hidden_star_progress(state: Dictionary, node_id: String) -> Dictiona
 		"text": str(condition.get("text", "")),
 		"unlocked": hidden_star_unlocked(state, node_id),
 	}
+
+
+static func legacy_mastery_for_class(state: Dictionary, class_id: String) -> int:
+	var ledger = state.get("legacy_mastery", {})
+	return maxi(int(ledger.get(class_id, 0)), 0) if ledger is Dictionary else 0
+
+
+static func hidden_reveal_facts_for_class(state: Dictionary, class_id: String) -> Array:
+	var ledger = state.get("hidden_reveal_facts", {})
+	var facts = ledger.get(class_id, []) if ledger is Dictionary else []
+	return (facts as Array).duplicate() if facts is Array else []
 
 
 static func allocated_meta_points(state: Dictionary) -> int:
@@ -875,8 +1082,15 @@ static func node_status(state: Dictionary, node_id: String) -> String:
 		return "locked"
 	var role := str(node.get("role", ""))
 	if role == "hidden":
-		# Скрытая звезда: «purchased» после подвига (эффект активен), иначе туман.
-		return "purchased" if hidden_star_unlocked(state, node_id) else "hidden"
+		if not hidden_star_unlocked(state, node_id):
+			return "hidden"
+		if str(node.get("class_affinity", "")) == "":
+			return "purchased"
+		if is_node_purchased(state, node_id):
+			return "purchased"
+		if not _node_connectivity_available(state, node_id):
+			return "locked"
+		return "available" if currency_available_for_node(state, node_id) >= int(node["cost"]) else "locked"
 	if is_node_purchased(state, node_id):
 		return "purchased"
 	if not _node_connectivity_available(state, node_id):
@@ -907,12 +1121,6 @@ static func allocate_node(state: Dictionary, node_id: String) -> Dictionary:
 	var nodes := _explicit_purchases(state)
 	nodes.append(node_id)
 	state["skill_nodes"] = nodes
-	# Первая купленная ключевая звезда класса активируется автоматически.
-	var node := node_by_id(node_id)
-	if str(node.get("role", "")) == "keystone" and str(node.get("class_affinity", "")) != "":
-		var class_id := str(node["class_affinity"])
-		if active_keystone(state, class_id) == "":
-			state = set_active_keystone(state, class_id, node_id)
 	_sync_meta_economy_fields(state)
 	return state
 
@@ -985,7 +1193,6 @@ static func _normalized_active_keystones(raw, explicit_nodes: Array) -> Dictiona
 # Полный бесплатный респек: все купленные узлы всех валют + активные keystone.
 static func reset_skill_tree(state: Dictionary) -> Dictionary:
 	state["skill_nodes"] = []
-	state["active_keystones"] = {}
 	_sync_meta_economy_fields(state)
 	return state
 
@@ -998,10 +1205,6 @@ static func reset_constellation(state: Dictionary, class_id: String) -> Dictiona
 		if str(node.get("class_affinity", "")) != class_id:
 			kept.append(str(node_id))
 	state["skill_nodes"] = kept
-	var actives = state.get("active_keystones", {})
-	if actives is Dictionary:
-		actives.erase(class_id)
-		state["active_keystones"] = actives
 	_sync_meta_economy_fields(state)
 	return state
 
@@ -1017,6 +1220,98 @@ static func skill_modifiers_for_class(state: Dictionary, character_id: String) -
 	# Эффекты забега класса: Атлас + созвездие класса (ядро всегда, купленные
 	# звезды, АКТИВНЫЙ keystone, открытые скрытые звезды).
 	return _skill_modifiers_for_affinity(state, character_id)
+
+
+# Typed schema-6 profile for one canonical weapon. Core/class-safe modifiers
+# remain in skill_modifiers_for_class; this payload contains only purchased
+# nodes owned by the exact weapon ID, so no branch can leak to its two siblings.
+static func skill_modifiers_for_weapon(state: Dictionary, character_id: String, weapon_id: String) -> Dictionary:
+	var profile := {
+		"schema": TREE_SCHEMA_VERSION,
+		"class_id": character_id,
+		"weapon_id": weapon_id,
+		"valid": true,
+		"node_ids": [],
+		"entries": [],
+		"amounts": {},
+		"multipliers": {},
+		"mechanics": {},
+		"errors": [],
+	}
+	var class_entry := SCHEMA6_DATA.class_entry(character_id)
+	if class_entry.is_empty():
+		(profile["errors"] as Array).append("unknown class_id")
+		profile["valid"] = false
+		return profile
+	var known_weapon := false
+	for raw_branch in class_entry.get("weapon_branches", []):
+		var branch: Dictionary = raw_branch
+		if str(branch.get("weapon_id", "")) == weapon_id:
+			known_weapon = true
+			profile["axis"] = str(branch.get("axis", ""))
+			profile["identity"] = str(branch.get("identity", ""))
+			break
+	if not known_weapon:
+		(profile["errors"] as Array).append("weapon_id does not belong to class")
+		profile["valid"] = false
+		return profile
+
+	for raw_node in constellation_nodes(character_id):
+		var node: Dictionary = raw_node
+		if str(node.get("weapon_id", "")) != weapon_id or not is_node_purchased(state, str(node.get("id", ""))):
+			continue
+		var effect_profile: Dictionary = node.get("effect_profile", {})
+		var effect_key := str(effect_profile.get("effect_key", ""))
+		var params: Dictionary = effect_profile.get("params", {})
+		var node_id := str(node.get("id", ""))
+		if effect_key in SCHEMA6_GENERIC_WEAPON_EFFECT_KEYS:
+			_append_schema6_profile_entry(profile, node_id, effect_key, params, node)
+			continue
+		var mechanic := SCHEMA6_DATA.mechanic(effect_key)
+		if mechanic.is_empty() or str(node.get("role", "")) != "weapon_final":
+			(profile["errors"] as Array).append("unknown/no-op effect key %s at %s" % [effect_key, node_id])
+			profile["valid"] = false
+			continue
+		(profile["node_ids"] as Array).append(node_id)
+		(profile["entries"] as Array).append({
+			"node_id": node_id,
+			"effect_key": effect_key,
+			"params": params.duplicate(true),
+			"caps": (node.get("caps", {}) as Dictionary).duplicate(true),
+		})
+		(profile["mechanics"] as Dictionary)[effect_key] = {
+			"node_id": node_id,
+			"params": params.duplicate(true),
+			"caps": (node.get("caps", {}) as Dictionary).duplicate(true),
+			"runtime_consumer": str(node.get("runtime_consumer", "")),
+		}
+	return profile
+
+
+static func skill_profiles_for_class(state: Dictionary, character_id: String) -> Dictionary:
+	var result := {}
+	var class_entry := SCHEMA6_DATA.class_entry(character_id)
+	for raw_branch in class_entry.get("weapon_branches", []):
+		var weapon_id := str((raw_branch as Dictionary).get("weapon_id", ""))
+		if weapon_id != "":
+			result[weapon_id] = skill_modifiers_for_weapon(state, character_id, weapon_id)
+	return result
+
+
+static func _append_schema6_profile_entry(profile: Dictionary, node_id: String, effect_key: String, params: Dictionary, node: Dictionary) -> void:
+	(profile["node_ids"] as Array).append(node_id)
+	(profile["entries"] as Array).append({
+		"node_id": node_id,
+		"effect_key": effect_key,
+		"params": params.duplicate(true),
+		"caps": (node.get("caps", {}) as Dictionary).duplicate(true),
+	})
+	if params.has("amount"):
+		var amounts: Dictionary = profile["amounts"]
+		amounts[effect_key] = float(amounts.get(effect_key, 0.0)) + float(params["amount"])
+	if params.has("multiplier"):
+		var multipliers: Dictionary = profile["multipliers"]
+		multipliers[effect_key] = float(multipliers.get(effect_key, 1.0)) * float(params["multiplier"])
 
 
 static func _merge_effect(mods: Dictionary, key: String, value: float) -> void:
@@ -1039,7 +1334,7 @@ static func _skill_modifiers_for_affinity(state: Dictionary, character_id: Strin
 		var active := false
 		match role:
 			"hidden":
-				active = hidden_star_unlocked(state, node_id)
+				active = hidden_star_unlocked(state, node_id) and (affinity == "" or purchased.has(node_id))
 			"keystone":
 				# Взаимоисключение только в созвездиях; keystone Атласа — обычная покупка.
 				if affinity == "":
@@ -1147,14 +1442,6 @@ static func class_challenge_progress_for(state: Dictionary, character_id: String
 
 
 static func class_challenge_modifiers(state: Dictionary, character_id: String) -> Dictionary:
-	var done := class_challenges_done(state, character_id)
-	var mods := {}
-	for challenge in CLASS_CHALLENGES:
-		var cid := str(challenge.get("id", ""))
-		if not done.has(cid):
-			continue
-		for key in (challenge.get("effects", {}) as Dictionary).keys():
-			mods[key] = float(mods.get(key, 0.0)) + float(challenge["effects"][key])
-	for key in mods.keys():
-		mods[key] = minf(float(mods[key]), CLASS_CHALLENGE_MAX_BONUS)
-	return mods
+	# Schema 6 preserves challenge facts for discovery/reveal only. Combat and
+	# spendable rewards were deliberately removed from this progression layer.
+	return {}

@@ -1,6 +1,11 @@
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const CONSTELLATION_FINAL_MECHANICS := {
+	"homunculus_intercept_death_burst": "summon_death",
+	"pack_alpha_pounce_guard": "command",
+}
+const PACK_GUARD_ABSORB_CAP := 4.0
 
 @export var ally_scene: PackedScene
 @export var summon_interval := 4.0
@@ -62,6 +67,10 @@ var _pair_tank_deployed := false
 var _pair_tank_respawn_left := 0.0
 var _pair_wave_left := 0.0
 var _pair_caster_facing := "south"
+var _pack_command_target_id := 0
+var _pack_command_cooldown_left := 0.0
+var _pack_guard_left := 0.0
+var _pack_guard_absorb := 0.0
 
 # SCRUM-946: новые PixelLab-спрайты пары (SCRUM-945); старый ally_homunculus.png
 # больше не используется — реактор (SCRUM-961) тоже переведён на арт кастера.
@@ -143,6 +152,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_pack_command_cooldown_left = maxf(_pack_command_cooldown_left - delta, 0.0)
+	_tick_pack_guard(delta)
 	_cooldown -= delta
 	_command_refresh -= delta
 	# SCRUM-946: пара «танк + кастер» ведёт популяцию сама (без generic-лимита
@@ -282,6 +293,13 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 		"magic":
 			family_parameter = "magic_damage"
 	var base_damage := float(parameters.get(family_parameter, parameters.get("damage", damage)))
+	var constellation_flat := 0.0
+	var constellation_geometry := 1.0
+	if owner_node.has_method("constellation_weapon_amount"):
+		constellation_flat = float(owner_node.call("constellation_weapon_amount", weapon_id, "weapon_damage_flat"))
+	if owner_node.has_method("constellation_weapon_geometry_multiplier"):
+		constellation_geometry = float(owner_node.call("constellation_weapon_geometry_multiplier", weapon_id))
+	base_damage += constellation_flat
 	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
 	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
 	var leadership_damage := 1.0 + minf(leadership * 0.060, 1.15)
@@ -297,7 +315,7 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
 	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
 	var summon_crowd_scale := 1.0 + minf(level_progress * 0.275, 5.20)
-	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
+	var summon_radius := summon_aoe_radius * constellation_geometry * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
 	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	var run_modifiers_raw = owner_node.get("run_modifiers")
@@ -319,16 +337,16 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# оружия относительно базы 420) и бьют одиночным магическим снарядом — их
 	# splash-покрытие выключено (melee-звери остаются AoE-осью стаи).
 	var attack_kind := str(roster_entry.get("attack_kind", "melee"))
-	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0)
+	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * constellation_geometry * 0.18, 24.0)
 	# SCRUM-902: дальние духи бьют РЕЖЕ, но ТЯЖЕЛЕЕ (×RANGED_CADENCE_SCALE к
 	# интервалу И к урону хита) — per-body DPS семьи равен melee-темпу, поэтому
 	# budget-зеркало (_budget_summon_dps) остаётся композиционно-взвешенным по
 	# семьям без отдельной модели темпа.
 	var cadence_scale := 1.0
 	if attack_kind == "ranged":
-		profile_attack_range = maxf(summon_ranged_range * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		profile_attack_range = maxf(summon_ranged_range * constellation_geometry * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
 		cadence_scale = RANGED_CADENCE_SCALE
-	return {
+	var profile := {
 		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult * cadence_scale, 1.0),
 		"move_speed": 230.0 * summon_speed_multiplier * (1.0 + minf(leadership * 0.010, 0.28)),
 		"attack_range": profile_attack_range,
@@ -346,7 +364,17 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 		"damage_family": family if family != "" else ("magic" if damage_parameter == "magic_damage" else "physical"),
 		"attack_kind": attack_kind,
 		"ranged_projectile_speed": summon_ranged_projectile_speed,
+		"constellation_owner_instance_id": owner_node.get_instance_id(),
+		"constellation_weapon_id": weapon_id,
 	}
+	if weapon_id == "homunculus_vial" and owner_node.has_method("constellation_weapon_mechanic"):
+		var mechanic_raw = owner_node.call("constellation_weapon_mechanic", weapon_id, "homunculus_intercept_death_burst")
+		if mechanic_raw is Dictionary and not (mechanic_raw as Dictionary).is_empty():
+			var final_params: Dictionary = (mechanic_raw as Dictionary).get("params", {})
+			profile["constellation_intercepts_left"] = maxi(int(final_params.get("intercepts_per_summon", 1)), 0)
+			profile["constellation_intercept_ratio"] = clampf(float(final_params.get("intercept_ratio", 0.30)), 0.0, 0.80)
+			profile["constellation_death_burst_ratio"] = clampf(float(final_params.get("death_burst_damage_ratio", 0.42)), 0.0, 1.0)
+	return profile
 
 
 # SCRUM-961 «Гомункул-реактор»: второй особый гомункул — неуязвимый реактор.
@@ -604,6 +632,7 @@ func _command_existing_summons() -> void:
 		return
 	var owned_allies := _owned_allies(owner_node)
 	var targets := _target_candidates(owner_node, max(owned_allies.size() * 3, 6))
+	_dispatch_constellation_pack_command(owner_node, owned_allies, targets)
 	var assigned_damage := {}
 	var assigned_counts := {}
 	for ally in get_tree().get_nodes_in_group("allies"):
@@ -613,6 +642,73 @@ func _command_existing_summons() -> void:
 		if not _is_owned_weapon_summon(ally_node, owner_node):
 			continue
 		_command_ally(ally_node, owner_node, targets, assigned_damage, assigned_counts)
+
+
+func _constellation_mechanic(owner_node: Node, mechanic_id: String) -> Dictionary:
+	if owner_node == null or not owner_node.has_method("constellation_weapon_mechanic"):
+		return {}
+	var raw = owner_node.call("constellation_weapon_mechanic", weapon_id, mechanic_id)
+	return raw if raw is Dictionary else {}
+
+
+func _dispatch_constellation_pack_command(owner_node: Node2D, owned_allies: Array[Node2D], targets: Array) -> Dictionary:
+	if weapon_id != "summon_amulet" or owned_allies.is_empty() or targets.is_empty() or _pack_command_cooldown_left > 0.0:
+		return {"triggered": false}
+	var mechanic := _constellation_mechanic(owner_node, "pack_alpha_pounce_guard")
+	if mechanic.is_empty():
+		return {"triggered": false}
+	var target := targets[0] as Node2D
+	if target == null or not is_instance_valid(target):
+		return {"triggered": false}
+	var target_id := target.get_instance_id()
+	if target_id == _pack_command_target_id and _pack_command_cooldown_left > 0.0:
+		return {"triggered": false}
+	var result := {"valid": true, "triggered": false}
+	if owner_node.has_method("constellation_weapon_event"):
+		var raw = owner_node.call("constellation_weapon_event", weapon_id, "command", {"pack_size": owned_allies.size()}, target)
+		if raw is Dictionary:
+			result = raw
+	if not bool(result.get("triggered", false)):
+		return result
+	var params: Dictionary = mechanic.get("params", {})
+	var pounce_ratio := clampf(float(params.get("pounce_damage_ratio", 0.5)), 0.0, 1.0)
+	var alpha := owned_allies[0]
+	if alpha != null and is_instance_valid(alpha) and alpha.has_method("constellation_alpha_pounce"):
+		alpha.call("constellation_alpha_pounce", target, pounce_ratio)
+	_pack_command_target_id = target_id
+	_pack_command_cooldown_left = maxf(float(params.get("guard_seconds", 1.2)), 0.20)
+	_apply_pack_guard(owner_node, float(params.get("guard_seconds", 1.2)))
+	return result
+
+
+func _apply_pack_guard(owner_node: Node, duration: float) -> void:
+	var raw = owner_node.get("run_modifiers")
+	if not raw is Dictionary:
+		return
+	var mods: Dictionary = raw
+	var room := maxf(PACK_GUARD_ABSORB_CAP - _pack_guard_absorb, 0.0)
+	if room > 0.0:
+		mods["absorb_flat"] = float(mods.get("absorb_flat", 0.0)) + room
+		_pack_guard_absorb += room
+	_pack_guard_left = maxf(duration, 0.0)
+
+
+func _tick_pack_guard(delta: float) -> void:
+	if _pack_guard_absorb <= 0.0:
+		return
+	_pack_guard_left = maxf(_pack_guard_left - delta, 0.0)
+	if _pack_guard_left > 0.0:
+		return
+	var owner_node := _owner_node()
+	if owner_node != null:
+		var raw = owner_node.get("run_modifiers")
+		if raw is Dictionary:
+			(raw as Dictionary)["absorb_flat"] = maxf(float((raw as Dictionary).get("absorb_flat", 0.0)) - _pack_guard_absorb, 0.0)
+	_pack_guard_absorb = 0.0
+
+
+func constellation_pack_state() -> Dictionary:
+	return {"target_id": _pack_command_target_id, "command_cooldown": _pack_command_cooldown_left, "guard_absorb": _pack_guard_absorb, "guard_left": _pack_guard_left}
 
 
 func _command_ally(ally: Node2D, owner_node: Node2D, targets: Array = [], assigned_damage: Dictionary = {}, assigned_counts: Dictionary = {}) -> void:

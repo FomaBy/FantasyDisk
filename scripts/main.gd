@@ -1193,6 +1193,13 @@ func apply_ascension_bonuses(player: Node) -> void:
 		skill_mods[boon_key] = float(skill_mods.get(boon_key, 0.0)) + float(boon_mods[boon_key])
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
+	# SCRUM-1068: class-wide/Guild-safe modifiers stay above; every constellation
+	# branch is delivered separately by canonical weapon ID and survives run
+	# snapshots as a typed nested payload in Player.run_modifiers.
+	if player.has_method("apply_constellation_weapon_profiles"):
+		player.apply_constellation_weapon_profiles(
+			META_PROGRESSION.skill_profiles_for_class(meta_state, selected_character_id)
+		)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
 	if start_gold > 0 and player.get("money") != null:
 		player.set("money", int(player.get("money")) + start_gold)

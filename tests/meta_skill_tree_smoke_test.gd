@@ -1,10 +1,8 @@
 extends SceneTree
 
-# SCRUM-828: data-целостность Меты 4.0 «Созвездия героев» (17 per-class графов +
-# Атлас гильдии), экономика двух валют (эмблемы/пыль), keystone-взаимоисключение,
-# скрытые звезды, миграция сейва schema 4→5, бюджет силы §6 дизайн-дока
-# (docs/design/systems/meta_constellations.md), применение к игроку и старый
-# экран дерева (v3 UI живёт на совместимом API до T3/SCRUM-827).
+# SCRUM-1068: schema-6 constellation regression plus the frozen Guild Atlas
+# runtime coverage. Class paths are weapon-scoped; Guild effects remain account-
+# wide and keep their established ids/behavior.
 
 const Meta := preload("res://scripts/meta_progression.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
@@ -17,20 +15,14 @@ const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 
 func _initialize() -> void:
-	_test_tree_data_integrity()
-	_test_effect_keys_are_wired()
-	_test_semantic_keystone_behavioral_gate_contract()
+	_test_schema6_tree_data_integrity()
+	_test_schema6_effect_profiles()
 	_test_graph_connectivity()
-	_test_purchase_and_currencies()
-	_test_save_load_roundtrip()
-	_test_migration_schema4_to_5()
-	_test_budget_power_corridor()
+	_test_schema6_purchase_and_currencies()
+	_test_schema6_save_load_roundtrip()
+	_test_schema5_to_6_migration()
 	_test_atlas_stays_non_combat()
-	await _test_player_application()
 	await _test_guild_runtime_outcomes_1069()
-	await _test_conditional_keystones()
-	await _test_semantic_combat_keystones_835()
-	await _test_skill_tree_screen()
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
 	await _test_attribute_discount()
@@ -38,7 +30,6 @@ func _initialize() -> void:
 	await _test_first_levelup_rare_capstone()
 	await _test_guaranteed_rare_shop_capstone()
 	await _test_death_save_capstone()
-	await _test_run_start_application()
 	await _test_class_progression_run_start_application()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
@@ -47,6 +38,205 @@ func _initialize() -> void:
 func _fail(msg: String) -> void:
 	push_error(msg)
 	quit(1)
+
+
+func _test_schema6_tree_data_integrity() -> void:
+	if Meta.SKILL_TREE.size() != 17 * 21 + 25:
+		_fail("Expected schema-6 total 17*21+25=382 nodes, got %d." % Meta.SKILL_TREE.size())
+		return
+	if Meta.default_state().has("active_keystones"):
+		_fail("Schema-6 default state must not serialize active_keystones.")
+		return
+	var ids := {}
+	var atlas_count := 0
+	var atlas_keystones := 0
+	for raw_node in Meta.SKILL_TREE:
+		var node: Dictionary = raw_node
+		var node_id := str(node.get("id", ""))
+		if node_id == "" or ids.has(node_id):
+			_fail("Duplicate or empty node id '%s'." % node_id)
+			return
+		ids[node_id] = true
+		if not (node.get("pos") is Vector2) or not (node.get("npos") is Vector2):
+			_fail("Node '%s' is missing pos/npos." % node_id)
+			return
+		if not (node.get("adj", []) is Array) or (node.get("adj", []) as Array).is_empty():
+			_fail("Node '%s' is missing adjacency." % node_id)
+			return
+		if str(node.get("title", "")) == "" or str(node.get("desc", "")) == "":
+			_fail("Node '%s' is missing title/description." % node_id)
+			return
+		if str(node.get("class_affinity", "")) == "":
+			atlas_count += 1
+			if str(node.get("kind", "")) == "keystone":
+				atlas_keystones += 1
+		for neighbor_value in node.get("adj", []):
+			var neighbor_id := str(neighbor_value)
+			var neighbor := Meta.node_by_id(neighbor_id)
+			if neighbor.is_empty() or not (neighbor.get("adj", []) as Array).has(node_id):
+				_fail("Edge '%s' <-> '%s' is dangling or asymmetric." % [node_id, neighbor_id])
+				return
+	if atlas_count != 25 or atlas_keystones != 4:
+		_fail("Frozen Guild Atlas must remain 25 nodes with four keystones, got %d/%d." % [atlas_count, atlas_keystones])
+		return
+	for class_value in CharacterData.CHARACTER_CONFIGS.keys():
+		var class_id := str(class_value)
+		var nodes := Meta.constellation_nodes(class_id)
+		var roles := {}
+		for raw_node in nodes:
+			var role := str((raw_node as Dictionary).get("role", ""))
+			roles[role] = int(roles.get(role, 0)) + 1
+		if nodes.size() != 21 or roles != {"core": 1, "weapon_boon": 15, "weapon_final": 3, "hidden": 2}:
+			_fail("Class '%s' violates schema-6 21-node anatomy: %s." % [class_id, str(roles)])
+			return
+		if Meta.constellation_total_cost(class_id) != 20:
+			_fail("Class '%s' must have exact spend 20." % class_id)
+			return
+
+
+func _test_schema6_effect_profiles() -> void:
+	var atlas_wired := {}
+	for key in PlayerScript.META_SKILL_MULT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in PlayerScript.META_SKILL_FLAT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in ["ult_start_charge", "death_save", "lowhp_guard", "guaranteed_rare_shop", "first_levelup_rare", "shop_price_mult", "attr_cost_mult", "start_gold_flat", "attr_extra_options"]:
+		atlas_wired[str(key)] = true
+	for raw_node in Meta.atlas_nodes():
+		var node: Dictionary = raw_node
+		for key in (node.get("effects", {}) as Dictionary).keys():
+			if not atlas_wired.has(str(key)):
+				_fail("Guild node '%s' uses unwired effect '%s'." % [str(node.get("id", "")), str(key)])
+				return
+	for class_value in CharacterData.CHARACTER_CONFIGS.keys():
+		var class_id := str(class_value)
+		var purchased := []
+		for raw_node in Meta.constellation_nodes(class_id):
+			var node: Dictionary = raw_node
+			var role := str(node.get("role", ""))
+			if role == "core":
+				continue
+			var profile: Dictionary = node.get("effect_profile", {})
+			if str(profile.get("effect_key", "")) == "" or str(profile.get("scope", "")) != "owning_weapon_only":
+				_fail("Class node '%s' lacks an owning-weapon profile." % str(node.get("id", "")))
+				return
+			if role in ["weapon_boon", "weapon_final"]:
+				purchased.append(str(node.get("id", "")))
+		var state := Meta.default_state()
+		state["skill_nodes"] = purchased
+		var profiles := Meta.skill_profiles_for_class(state, class_id)
+		if profiles.size() != 3:
+			_fail("Class '%s' must expose exactly three typed weapon profiles." % class_id)
+			return
+		var finals := 0
+		for weapon_value in profiles.keys():
+			var weapon_id := str(weapon_value)
+			var typed: Dictionary = profiles[weapon_id]
+			if not bool(typed.get("valid", false)) or (typed.get("node_ids", []) as Array).size() != 6:
+				_fail("Profile '%s/%s' must contain exactly its six valid path nodes." % [class_id, weapon_id])
+				return
+			if (typed.get("mechanics", {}) as Dictionary).size() != 1:
+				_fail("Profile '%s/%s' must expose one final mechanic." % [class_id, weapon_id])
+				return
+			finals += 1
+		if finals != 3:
+			_fail("All three finals of '%s' must be co-active." % class_id)
+			return
+
+
+func _test_schema6_purchase_and_currencies() -> void:
+	var state := Meta.record_boss_victory(Meta.default_state(), "berserk", 0, {"weapon_id": "sword"})
+	if Meta.class_sigils_earned(state, "berserk") != 2:
+		_fail("First clear A0 must award two schema-6 sigils.")
+		return
+	if Meta.node_status(state, "berserk_sword_b1") != "available" \
+			or Meta.node_status(state, "berserk_sword_b2") != "locked":
+		_fail("Only the core-adjacent first weapon boon may be available initially.")
+		return
+	if Meta.node_status(state, "soldier_soldier_rifle_b1") != "locked":
+		_fail("Berserk sigils must not unlock Soldier weapon nodes.")
+		return
+	var dust_before := Meta.stardust_available(state)
+	state = Meta.allocate_node(state, "berserk_sword_b1")
+	state = Meta.allocate_node(state, "berserk_sword_b2")
+	if Meta.class_sigils_spent(state, "berserk") != 2 or Meta.class_sigils_available(state, "berserk") != 0:
+		_fail("Two schema-6 purchases must spend exactly two Berserk sigils.")
+		return
+	if Meta.stardust_available(state) != dust_before:
+		_fail("Class purchases must not spend Guild stardust.")
+		return
+	if Meta.node_status(state, "atlas_m0") != "available":
+		_fail("Frozen Guild early hook must remain available after the first win.")
+		return
+	state = Meta.allocate_node(state, "atlas_m0")
+	if not Meta.is_node_purchased(state, "atlas_m0") or Meta.stardust_available(state) != dust_before - 1:
+		_fail("Frozen Guild purchase must spend one stardust.")
+		return
+	state = Meta.reset_skill_tree(state)
+	if Meta.class_sigils_spent(state, "berserk") != 0 or Meta.stardust_available(state) != Meta.stardust_earned(state):
+		_fail("Full respec must refund both schema-6 sigils and Guild stardust.")
+		return
+
+
+func _test_schema6_save_load_roundtrip() -> void:
+	var path := "user://test_meta_constellations_schema6.cfg"
+	var state := Meta.default_state()
+	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3, 4, 5]}
+	state["skill_nodes"] = ["berserk_sword_b1", "berserk_sword_b2", "atlas_m0"]
+	state["legacy_mastery"] = {"berserk": 2}
+	state["hidden_reveal_facts"] = {"berserk": ["berserk_h0"]}
+	Meta.save_state(state, path)
+	var loaded := Meta.load_state(path)
+	if int(loaded.get("skill_tree_schema", 0)) != 6:
+		_fail("Roundtrip must retain schema version 6.")
+		return
+	if not Meta.is_node_purchased(loaded, "berserk_sword_b1") \
+			or not Meta.is_node_purchased(loaded, "berserk_sword_b2") \
+			or not Meta.is_node_purchased(loaded, "atlas_m0"):
+		_fail("Schema-6 class and frozen Guild purchases must survive roundtrip.")
+		return
+	if Meta.legacy_mastery_for_class(loaded, "berserk") != 2 \
+			or not Meta.hidden_reveal_facts_for_class(loaded, "berserk").has("berserk_h0"):
+		_fail("Legacy mastery and hidden reveal facts must survive roundtrip.")
+		return
+	if loaded.has("active_keystones"):
+		_fail("Roundtrip must not revive schema-5 active_keystones.")
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _test_schema5_to_6_migration() -> void:
+	var path := "user://test_meta_migration_schema5_to_6.cfg"
+	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "skill_tree_schema", 5)
+	cfg.set_value("meta", "meta_point_awards", {"berserk": [0, 1, 2, 3, 4, 5]})
+	cfg.set_value("meta", "ascension_levels", {"berserk": 5})
+	cfg.set_value("meta", "skill_nodes", ["berserk_m0", "berserk_k0", "atlas_m0"])
+	cfg.set_value("meta", "active_keystones", {"berserk": "berserk_k0"})
+	cfg.set_value("meta", "class_challenge_progress", {"berserk": {"weapons": ["sword", "axe"], "best_ascension": 2, "no_shop_wins": 0}})
+	cfg.save(path)
+	var loaded := Meta.load_state(path)
+	if not Meta.is_node_purchased(loaded, "atlas_m0"):
+		_fail("Schema-5 migration must preserve frozen Guild purchases.")
+		return
+	if Meta.is_node_purchased(loaded, "berserk_m0") or Meta.class_sigils_spent(loaded, "berserk") != 0:
+		_fail("Schema-5 class allocations must be fully respecced.")
+		return
+	if Meta.class_sigils_earned(loaded, "berserk") != 20 or Meta.legacy_mastery_for_class(loaded, "berserk") != 2:
+		_fail("Schema-5 22 earned sigils must migrate to 20 spendable +2 legacy mastery.")
+		return
+	if loaded.has("active_keystones"):
+		_fail("Migration must remove schema-5 active_keystones.")
+		return
+	if not Meta.hidden_star_unlocked(loaded, "berserk_h0") or not Meta.hidden_star_unlocked(loaded, "berserk_h1"):
+		_fail("Migration must reconstruct hidden reveal facts without auto-purchase.")
+		return
+	if Meta.is_node_purchased(loaded, "berserk_h0") or Meta.is_node_purchased(loaded, "berserk_h1"):
+		_fail("Revealed hidden nodes must still require purchase after migration.")
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 # --- Данные ---

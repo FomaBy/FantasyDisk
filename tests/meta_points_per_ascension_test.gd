@@ -1,8 +1,8 @@
 extends SceneTree
 
 # Гейт экономики Меты 4.0 (SCRUM-828, дизайн §4/§6.6): ЭМБЛЕМЫ КЛАССА даются
-# ТОЛЬКО за первый clear возвышения 0..5 каждым классом по формуле 2/2/3/4/5/6
-# (+2 за каждый выполненный челлендж класса), ЗВЁЗДНАЯ ПЫЛЬ — за аккаунт-вехи
+# ТОЛЬКО за первый clear возвышения 0..5 каждым классом по schema-6 формуле
+# 2/2/3/4/4/5 (=20). Челленджи сохраняют факты/открытия, но не дают валюту.
 # (первая победа классом ×17, первый A5 ×17, секретный босс 3, кодекс 8,
 # достижения 5; потолок 50). Анти-фарм повторных побед сохранён 1:1 с v3.
 # class_boss_wins копится за каждую победу — отдельная механика.
@@ -38,10 +38,8 @@ func _initialize() -> void:
 	if Meta.ascension_level(state, "berserk") != 1:
 		errors.append("повтор не должен поднимать возвышение")
 
-	# 3. Лестница эмблем 2/2/3/4/5/6 (накопительно 2/4/7/11/16/22) + челлендж
-	# peak_climber (победа на возвышении 3+) закрывается сам на клире A3 и даёт
-	# +2 — итого 13/18/24 с уровня A3 (эмблемная связка §4 дизайна).
-	var expected := {1: 4, 2: 7, 3: 13, 4: 18, 5: 24}
+	# 3. Лестница schema 6: 2/2/3/4/4/5, накопительно 2/4/7/11/15/20.
+	var expected := {1: 4, 2: 7, 3: 11, 4: 15, 5: 20}
 	for level in [1, 2, 3, 4, 5]:
 		state = Meta.record_boss_victory(state, "berserk", level)
 		if Meta.class_sigils_earned(state, "berserk") != int(expected[level]):
@@ -74,16 +72,16 @@ func _initialize() -> void:
 	if Meta.stardust_earned(state) != farm_dust + 1:
 		errors.append("первая победа вторым классом должна дать +1 пыль")
 
-	# 6. Челленджи класса → +2 эмблемы каждый (метрика weapon_diversity 3 оружия).
+	# 6. Челлендж фиксируется, но не даёт spendable sigils.
 	var ch_state := Meta.default_state()
-	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "dagger", "used_shop": true})
+	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "thief_coin_pouch", "used_shop": true})
 	var base_sigils := Meta.class_sigils_earned(ch_state, "thief")  # 2 (A0)
-	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "bow", "used_shop": true})
-	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "coin", "used_shop": true})
+	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "thief_shadow_cloak", "used_shop": true})
+	ch_state = Meta.record_boss_victory(ch_state, "thief", 0, {"weapon_id": "thief_smoke_bomb", "used_shop": true})
 	if not Meta.class_challenges_done(ch_state, "thief").has("weapon_master"):
 		errors.append("3 разных оружия должны выполнить челлендж weapon_master")
-	if Meta.class_sigils_earned(ch_state, "thief") != base_sigils + Meta.SIGILS_PER_CLASS_CHALLENGE:
-		errors.append("выполненный челлендж должен дать +2 эмблемы (got %d, base %d)" % [Meta.class_sigils_earned(ch_state, "thief"), base_sigils])
+	if Meta.class_sigils_earned(ch_state, "thief") != base_sigils or Meta.SIGILS_PER_CLASS_CHALLENGE != 0:
+		errors.append("челлендж не должен давать spendable sigils")
 
 	# 7. Секретный босс: +3 пыли, разово.
 	var secret_state := Meta.default_state()
@@ -125,27 +123,27 @@ func _initialize() -> void:
 	full["achievements"] = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"]
 	if Meta.stardust_earned(full) != Meta.STARDUST_CAP:
 		errors.append("полный аккаунт должен дать ровно %d пыли (got %d)" % [Meta.STARDUST_CAP, Meta.stardust_earned(full)])
-	# Эмблемы без капа общего пула: 17 классов × 22 (без челленджей).
+	# Эмблемы замкнуты: 17 классов × 20.
 	var sigil_total := 0
 	for class_id in Meta.CLASS_ENTRY_NODES.keys():
 		sigil_total += Meta.class_sigils_earned(full, str(class_id))
-	if sigil_total < 17 * 22:
-		errors.append("полные клиры всех классов должны дать ≥374 эмблем без v3-капа (got %d)" % sigil_total)
+	if sigil_total != 17 * 20:
+		errors.append("полные клиры всех классов должны дать ровно 340 эмблем (got %d)" % sigil_total)
 
 	# 11. class_boss_wins копится за КАЖДУЮ победу (не привязан к валютам).
 	if Meta.class_boss_wins(state, "berserk") < 7:
 		errors.append("class_boss_wins должен копиться за каждую победу (got %d)" % Meta.class_boss_wins(state, "berserk"))
 
-	# 12. Legacy-like state на максимуме: первый clear A5 даёт лестницу 22 +
-	# авто-челлендж peak_climber (+2) = 24; повтор — ничего.
+	# 12. Макс-класс с фактами A0..A4 получает последние 5 за A5 и замыкает 20.
 	var maxed := Meta.default_state()
 	maxed["ascension_levels"] = {"berserk": Meta.MAX_ASCENSION_LEVEL}
+	maxed["meta_point_awards"] = {"berserk": [0, 1, 2, 3, 4]}
 	maxed = Meta.record_boss_victory(maxed, "berserk", Meta.MAX_ASCENSION_LEVEL)
-	if Meta.class_sigils_earned(maxed, "berserk") != 24:
-		errors.append("legacy-макс класс после первого clear A5 должен иметь 24 эмблемы (got %d)" % Meta.class_sigils_earned(maxed, "berserk"))
+	if Meta.class_sigils_earned(maxed, "berserk") != 20:
+		errors.append("макс-класс после первого clear A5 должен иметь 20 эмблем (got %d)" % Meta.class_sigils_earned(maxed, "berserk"))
 	maxed = Meta.record_boss_victory(maxed, "berserk", Meta.MAX_ASCENSION_LEVEL)
-	if Meta.class_sigils_earned(maxed, "berserk") != 24:
-		errors.append("повтор A5 не должен фармить эмблемы legacy-класса")
+	if Meta.class_sigils_earned(maxed, "berserk") != 20:
+		errors.append("повтор A5 не должен фармить эмблемы")
 	if Meta.ascension_level(maxed, "berserk") != Meta.MAX_ASCENSION_LEVEL:
 		errors.append("возвышение не должно превышать максимум")
 
@@ -162,5 +160,5 @@ func _initialize() -> void:
 		push_error("Sigils per ascension: %d нарушений." % errors.size())
 		quit(1)
 		return
-	print("Sigils per ascension passed (SCRUM-828: формула 2/2/3/4/5/6, челленджи +2, пыль 50, анти-фарм, class_boss_wins independent).")
+	print("Sigils per ascension passed (SCRUM-1068: 2/2/3/4/4/5=20, challenges reveal-only, dust50, anti-farm).")
 	quit(0)

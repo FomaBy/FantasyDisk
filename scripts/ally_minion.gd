@@ -74,6 +74,16 @@ var _death_tween: Tween = null
 # SCRUM-961 «Гомункул-танк»: периодическая провокация (по образцу bastion_taunt).
 var taunt_pulse := false
 var _taunt_pulse_left := 0.0
+var constellation_owner_instance_id := 0
+var constellation_weapon_id := ""
+var constellation_intercepts_left := 0
+var constellation_intercept_ratio := 0.0
+var constellation_death_burst_ratio := 0.0
+var _constellation_death_burst_fired := false
+
+const CONSTELLATION_FINAL_MECHANICS := {"homunculus_intercept_death_burst": "summon_death"}
+const CONSTELLATION_HEAVY_HIT_RATIO := 0.20
+const CONSTELLATION_POUNCE_RANGE := 120.0
 
 const TAUNT_PULSE_INTERVAL := 1.4
 const TAUNT_PULSE_RADIUS := 210.0
@@ -110,6 +120,11 @@ func set_combat_profile(profile: Dictionary) -> void:
 	damage_family = str(profile.get("damage_family", damage_family))
 	attack_kind = str(profile.get("attack_kind", attack_kind))
 	ranged_projectile_speed = maxf(float(profile.get("ranged_projectile_speed", ranged_projectile_speed)), 120.0)
+	constellation_owner_instance_id = int(profile.get("constellation_owner_instance_id", 0))
+	constellation_weapon_id = str(profile.get("constellation_weapon_id", ""))
+	constellation_intercepts_left = maxi(int(profile.get("constellation_intercepts_left", 0)), 0)
+	constellation_intercept_ratio = clampf(float(profile.get("constellation_intercept_ratio", 0.0)), 0.0, 0.80)
+	constellation_death_burst_ratio = clampf(float(profile.get("constellation_death_burst_ratio", 0.0)), 0.0, 1.0)
 
 
 func take_damage(amount: float, _source := "", _attacker: Node2D = null) -> void:
@@ -117,9 +132,57 @@ func take_damage(amount: float, _source := "", _attacker: Node2D = null) -> void
 	# удар врага приходит сюда с source/attacker вместо игрока.
 	if _death_lifecycle_started:
 		return
-	health -= maxf(amount, 0.0)
+	var incoming := maxf(amount, 0.0)
+	if constellation_intercepts_left > 0 and constellation_intercept_ratio > 0.0 and incoming >= max_health * CONSTELLATION_HEAVY_HIT_RATIO:
+		incoming *= 1.0 - constellation_intercept_ratio
+		constellation_intercepts_left -= 1
+	health -= incoming
 	if health <= 0.0:
+		_constellation_emit_death_burst()
 		_begin_death_lifecycle()
+
+
+func constellation_alpha_pounce(target: Node2D, damage_ratio: float) -> bool:
+	if _death_lifecycle_started or target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
+		return false
+	var to_target := target.global_position - global_position
+	if to_target.length_squared() > 0.001:
+		global_position += to_target.normalized() * minf(to_target.length(), CONSTELLATION_POUNCE_RANGE)
+	var pounce_damage := damage * clampf(damage_ratio, 0.0, 1.0)
+	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
+	if constellation_owner != null and is_instance_valid(constellation_owner) and constellation_owner.has_method("meta_damage_multiplier"):
+		pounce_damage *= float(constellation_owner.call("meta_damage_multiplier", {"weapon_id": constellation_weapon_id, "attack_mode": "summon", "damage_type": "physical", "summon_role": summon_role, "constellation_secondary": true}, target))
+	_deal_typed_damage(target, pounce_damage, {"damage_type": "physical", "constellation_final": "pack_alpha_pounce_guard"})
+	_play_attack_animation(to_target)
+	return true
+
+
+func _constellation_emit_death_burst() -> void:
+	if _constellation_death_burst_fired or constellation_death_burst_ratio <= 0.0:
+		return
+	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
+	if constellation_owner == null or not is_instance_valid(constellation_owner) or not constellation_owner.has_method("constellation_weapon_event"):
+		return
+	var result_raw = constellation_owner.call("constellation_weapon_event", constellation_weapon_id, "summon_death", {"summon_id": get_instance_id(), "intercepts_left": constellation_intercepts_left}, self)
+	if not result_raw is Dictionary or not bool((result_raw as Dictionary).get("triggered", false)):
+		return
+	_constellation_death_burst_fired = true
+	var radius := maxf(aoe_radius, 96.0)
+	AttackVfx.ring_pulse(get_parent(), global_position, radius, Color(0.72, 1.0, 0.48, 0.42), false)
+	for enemy in TARGET_QUERY.in_radius(self, global_position, radius):
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var enemy_node := enemy as Node2D
+		if enemy_node == null:
+			continue
+		var burst_damage := damage * constellation_death_burst_ratio
+		if constellation_owner.has_method("meta_damage_multiplier"):
+			burst_damage *= float(constellation_owner.call("meta_damage_multiplier", {"weapon_id": constellation_weapon_id, "attack_mode": "summon", "damage_type": "physical", "summon_role": summon_role, "constellation_secondary": true}, enemy_node))
+		_deal_typed_damage(enemy_node, burst_damage, {"damage_type": "physical", "constellation_final": "homunculus_intercept_death_burst"})
+
+
+func constellation_special_state() -> Dictionary:
+	return {"intercepts_left": constellation_intercepts_left, "intercept_ratio": constellation_intercept_ratio, "death_burst_ratio": constellation_death_burst_ratio, "death_burst_fired": _constellation_death_burst_fired}
 
 
 # SCRUM-961 «Гомункул-танк»: периодический taunt-пульс — враги рядом грызут
@@ -244,6 +307,15 @@ func _try_attack(target: Node2D) -> void:
 		return
 
 	var final_damage := damage * StatusEffects.damage_multiplier(self)
+	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
+	if constellation_owner != null and is_instance_valid(constellation_owner) and constellation_owner.has_method("meta_damage_multiplier"):
+		var constellation_context := {
+			"weapon_id": constellation_weapon_id,
+			"attack_mode": "summon",
+			"damage_type": "magic" if damage_family == "magic" else "physical",
+			"summon_role": summon_role,
+		}
+		final_damage *= float(constellation_owner.call("meta_damage_multiplier", constellation_context, target))
 	# SCRUM-902: попадания призыва красятся семьёй урона записи ростера
 	# (physical-melee / magic-ranged) — единый feedback-контракт enemy.take_damage.
 	var hit_feedback := {"damage_type": "magic" if damage_family == "magic" else "physical"}

@@ -290,9 +290,9 @@ the current canvas transform so camera/zoom are respected, preserves the
 existing `scripts/enemy_health_bar.gd` drawing node, and keeps boss phase marker
 metadata on the same bar.
 
-# SCRUM-1067 target: weapon-scoped meta finals
+# SCRUM-1068 runtime: weapon-scoped meta finals
 
-SCRUM-1067 определяет design contract; runtime внедряет SCRUM-1068. Каждый из
+SCRUM-1067 определяет design contract; SCRUM-1068 подключает его в runtime. Каждый из
 306 branch nodes и 34 hidden profiles имеют explicit weapon-scoped consumer;
 51 финал дополнительно имеет уникальный `mechanic_id`, hard caps, positive
 fixture и два negative-controls. Финалы не должны попадать в общий class-wide
@@ -308,3 +308,13 @@ Consumer contract:
 
 Полная матрица и A5 anti-runaway gates:
 `docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`.
+
+Production implementation использует `ConstellationFinalRuntime` с точным
+`mechanic_id → required event` registry. Неверное событие нейтрально и не меняет
+lifecycle-state; неизвестный ID fail-closed. Реальные consumers вызывают только
+свои события (`hit`, `cast`, `return`, `dodge`, `block`, `damage_absorbed`,
+`overheal`, `summon_death` и специализированные impact/deploy events).
+`tools/validate_scrum1068_runtime_manifest.py` требует все 51 route и реальный
+consumer hook; behavioral matrix проверяет 51 positive + 102 same-class foreign
+negatives. Secondary/share/aftershock damage идёт низкоуровневым путём без
+повторного proc, а consumer-owned state очищается вместе с weapon/minion.
