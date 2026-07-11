@@ -1,6 +1,6 @@
 # Backend handoff: play SCRUM-912 Storm Longbow release VFX scene
 
-Статус: in_progress
+Статус: done
 Приоритет: p2
 Роль: Back-end
 Контур: Codex
@@ -59,14 +59,14 @@ origin/direction/attack_range и зарегистрировать существ
 
 ## Acceptance Criteria
 
-- [ ] Один release VFX scene на один `storm_pierce_cone` залп.
-- [ ] Aim rotation и range берутся из существующей атаки.
-- [ ] Gameplay geometry и пять live beam corridors не изменились.
-- [ ] Scene удаляется после 0.5s и при обычном weapon/world cleanup.
-- [ ] Новый focused hook test, `ranger_kit_test.gd`,
+- [x] Один release VFX scene на один `storm_pierce_cone` залп.
+- [x] Aim rotation и range берутся из существующей атаки.
+- [x] Gameplay geometry и пять live beam corridors не изменились.
+- [x] Scene удаляется после 0.5s и при обычном weapon/world cleanup.
+- [x] Новый focused hook test, `ranger_kit_test.gd`,
   `scrum912_storm_longbow_vfx_test.gd`, `animation_smoke_test.gd` и
   `runtime_smoke_test.gd` проходят через `tools/godot_gate.py`.
-- [ ] Jira/mirror/dev синхронизированы; cache/worktree очищены.
+- [x] Jira/mirror/dev синхронизированы; cache/worktree очищены.
 
 ## Implementation result
 
@@ -85,5 +85,9 @@ Green gates on the implementation tree:
 - `tests/scrum912_storm_longbow_vfx_test.gd`;
 - `tests/animation_smoke_test.gd`.
 
-Full `tests/runtime_smoke_test.gd`, final origin/dev routing and disk cleanup
-are the remaining completion steps.
+Full `tests/runtime_smoke_test.gd` passed with a clean task-local user-data
+directory. Implementation/docs landed as `b797c10d0` / `3c11b393b` and Jira
+was routed to independent QA.
+
+Disk cleanup: clean user-data directory and disposable `.godot/` removed;
+clean task worktree scheduled for immediate removal after the routing push.
