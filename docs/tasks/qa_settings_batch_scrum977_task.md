@@ -1,12 +1,11 @@
 # SCRUM-977 — Settings batch umbrella QA
 
-Статус: blocked
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-977
 Контур: Codex
 Owner: QA/Codex `/root/scrum977_umbrella`
-Locked paths: released after evidence commit; production Settings/runtime paths
-were read-only
+Locked paths: released; production Settings/runtime paths were read-only
 
 ## Scope
 
@@ -80,3 +79,38 @@ Disk cleanup: disposable Metal captures, `.godot`, isolated HOME/XDG/userdata
 roots, worktree and local branch are removed after the evidence commit is
 pushed and Jira is released from stale `В работе`.
 
+## Финальный QA-Вердикт после SCRUM-1053 (2026-07-11)
+
+Статус: PASSED
+
+Fresh current source: `origin/dev` `c19474b3a`. All dependencies are accepted
+in Jira: SCRUM-972, SCRUM-974, SCRUM-975, SCRUM-976, SCRUM-1025 and the footer
+blocker SCRUM-1053 are `Готово`. The tested HEAD contains SCRUM-1053 fix
+`c47ca182c`, its independent QA routing `239050313`, the SCRUM-1025
+implementation/documentation corrections and later current-dev UI changes.
+
+Proportional final re-verification passed without production edits:
+
+- `tests/settings_footer_scrum1053_test.gd`, headless and Godot 4.7 Metal;
+- `tests/settings_game_scrum1025_test.gd`, headless and Metal;
+- `tests/settings_scrum972_seamless_content_test.gd`;
+- `tests/settings_audio_scrum974_ui_test.gd`;
+- `tests/ui_no_overlap_matrix_test.gd`;
+- full `tests/runtime_smoke_test.gd` (the known non-fatal headless
+  dummy-renderer null-texture diagnostic only).
+
+Metal captures were inspected at the fixed compact boundary. At 1280x720,
+Screen, Sound and Controls now keep the complete Apply/Revert plates, text and
+hit regions above the Atlas bottom ornament with the authored reserve visible.
+The Game tab remains unchanged and safe: footer hidden, `892x242` visible
+scroll, `878x520` canvas and exclusive `14px` scrollbar lane. The focused
+SCRUM-1053 suite also covered 1280x760, 1920x1080 and 2560x1440; no overlap or
+clipping returned.
+
+The first FAILED verdict above remains as historical evidence of the defect
+that led to SCRUM-1053. The release gate is now green; bugs: none open for this
+acceptance scope.
+
+Disk cleanup: final `.godot`, Metal captures, isolated `/tmp/fsd-scrum977-*`
+HOME/XDG/userdata/log roots, generated UID sidecars, disposable worktree and
+local branch are removed after this evidence is pushed and Jira is closed.
