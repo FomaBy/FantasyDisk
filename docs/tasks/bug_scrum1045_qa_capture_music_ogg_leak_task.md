@@ -1,10 +1,10 @@
 # BUG: QA capture tools leak menu-music Ogg resources on Metal
 
-Статус: new
+Статус: done
 Jira: SCRUM-1045
 Версия: 0.2.1
 Контур: Codex
-Owner: unassigned
+Owner: `/root/scrum1045-capture-ogg-cleanup`
 Роль: Back-end / QA tooling
 Найдено QA при тестировании: SCRUM-989
 Locked paths: `tools/capture_scrum985_level_up.gd`,
@@ -55,3 +55,32 @@ Victory и Attribute Shop на `1280x720`, `1920x1080`, `2560x1440` визуал
 - Полный `tests/runtime_smoke_test.gd` проходит.
 
 SCRUM-1045 блокирует umbrella QA SCRUM-989 до чистого windowed lifecycle gate.
+
+## Implementation
+
+The three capture scripts now share `tools/qa_capture_teardown.gd`: each owned
+SubViewport disables new rendering, releases fixture children child-first,
+waits for deferred ObjectDB destruction, then releases the viewport and verifies
+both weak-reference barriers. Before `SceneTree.quit()`, windowed fixtures call
+the production `AudioManager.stop_music()` API and wait eight process frames for
+Metal's audio thread to release the Ogg packet/playback chain. The helper does
+not edit or replace production audio/UI behavior, and lifecycle failures become
+real capture failures instead of being hidden.
+
+## Evidence
+
+- Windowed Metal `capture_scrum985_level_up.gd` — PASS; verbose filtered output
+  contains the success line and no `ObjectDB`, `resources still in use`,
+  `OggPacket*`, `AudioStreamOgg*`, script error, or engine error diagnostic.
+- Windowed Metal `capture_scrum982_987_988_attribute_shop.gd` — PASS at
+  1280×720, 1920×1080 and 2560×1440 with clean lifecycle output.
+- Windowed Metal `capture_scrum981_gold_menu_shell.gd` — PASS for all seven
+  screens at all three resolutions with clean lifecycle output.
+- Headless `scrum981_gold_menu_shell_test`,
+  `scrum982_987_988_attribute_shop_test` and Level Up capture — PASS.
+- Isolated-userdata full `runtime_smoke_test.gd` — PASS.
+
+Production `scripts/audio_manager.gd` and runtime UI code are unchanged.
+Disk cleanup: `.godot`, all task user-data dirs, regenerated capture scratch,
+task worktree and local branch are removed after origin/dev landing; final Jira
+comment records the completed cleanup.

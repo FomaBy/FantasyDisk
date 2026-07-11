@@ -6,7 +6,11 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
+const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
 const TARGETS := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+
+var _errors := PackedStringArray()
+var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
 
 
 func _initialize() -> void:
@@ -15,12 +19,18 @@ func _initialize() -> void:
 	var report := PackedStringArray(["# SCRUM-982/987/988 Attribute Shop Runtime Matrix", ""])
 	for viewport_size in TARGETS:
 		await _capture(viewport_size, output_dir, report)
+	await _capture_teardown.release_windowed_audio(self)
 	var report_file := FileAccess.open("%s/runtime_matrix.md" % output_dir, FileAccess.WRITE)
 	if report_file != null:
 		report_file.store_string("\n".join(report))
 		report_file.close()
-	print("SCRUM-982/987/988 Attribute Shop runtime capture completed.")
-	quit()
+	if _errors.is_empty():
+		print("SCRUM-982/987/988 Attribute Shop runtime capture completed.")
+		quit(0)
+		return
+	for error in _errors:
+		push_error(error)
+	quit(1)
 
 
 func _capture(viewport_size: Vector2i, output_dir: String, report: PackedStringArray) -> void:
@@ -68,6 +78,7 @@ func _capture(viewport_size: Vector2i, output_dir: String, report: PackedStringA
 		var image := viewport.get_texture().get_image()
 		if image != null and not image.is_empty():
 			image.save_png("%s/atlas_three_offers_%dx%d.png" % [output_dir, viewport_size.x, viewport_size.y])
-	main.queue_free()
-	viewport.queue_free()
-	await process_frame
+	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
+	for error in teardown_errors:
+		_errors.append("%dx%d: %s" % [viewport_size.x, viewport_size.y, error])
+		report.append("- lifecycle error: `%s`" % error)

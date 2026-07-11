@@ -84,6 +84,14 @@ frame-barrier и проверкой `WeakRef`. Если fixture запускае
 `AudioServer` shutdown. Headless и production audio behavior этим test-only
 teardown не меняются.
 
+SCRUM-1045 добавляет общий helper `tools/qa_capture_teardown.gd` для windowed
+capture tools. Fixture отключает новые SubViewport updates, освобождает owned
+children, ждёт 3 process frames и проверяет их `WeakRef`, затем освобождает сам
+viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. После всей матрицы helper
+вызывает `AudioManager.stop_music()` и ждёт 8 frames до quit. Capture обязан
+сделать любую ошибку этих ownership-barriers реальным exit `1`; сам helper не
+глушит stderr и не меняет production `AudioManager`/UI.
+
 ## Мета 4.1 Keystone Behavioral Gate (SCRUM-837)
 
 Для задач Меты 4.1, которые меняют keystone-эффекты, QA обязан прогнать

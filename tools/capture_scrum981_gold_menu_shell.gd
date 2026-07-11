@@ -4,12 +4,16 @@ extends SceneTree
 ## headless run still writes geometry but cannot produce renderer screenshots.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
 const TARGETS := [
 	Vector2i(1280, 720),
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
 ]
 const SCREEN_IDS := ["main_menu", "route_map", "rest", "upgrade", "battle_reward", "victory", "defeat"]
+
+var _errors := PackedStringArray()
+var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
 
 
 func _initialize() -> void:
@@ -19,12 +23,18 @@ func _initialize() -> void:
 	for viewport_size in TARGETS:
 		for screen_id in SCREEN_IDS:
 			await _capture_screen(viewport_size, screen_id, qa_dir, report)
+	await _capture_teardown.release_windowed_audio(self)
 	var output := FileAccess.open("%s/runtime_visual_matrix.md" % qa_dir, FileAccess.WRITE)
 	if output != null:
 		output.store_string("\n".join(report))
 		output.close()
-	print("SCRUM-981 runtime visual capture completed.")
-	quit()
+	if _errors.is_empty():
+		print("SCRUM-981 runtime visual capture completed.")
+		quit(0)
+		return
+	for error in _errors:
+		push_error(error)
+	quit(1)
 
 
 func _capture_screen(viewport_size: Vector2i, screen_id: String, qa_dir: String, report: PackedStringArray) -> void:
@@ -91,9 +101,10 @@ func _capture_screen(viewport_size: Vector2i, screen_id: String, qa_dir: String,
 		if image != null and not image.is_empty():
 			image.save_png("%s/%s_%dx%d.png" % [qa_dir, screen_id, viewport_size.x, viewport_size.y])
 
-	main.queue_free()
-	viewport.queue_free()
-	await process_frame
+	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
+	for error in teardown_errors:
+		_errors.append("%s %dx%d: %s" % [screen_id, viewport_size.x, viewport_size.y, error])
+		report.append("- lifecycle error: `%s`" % error)
 
 
 func _screen_evidence_nodes(screen_id: String) -> Array:

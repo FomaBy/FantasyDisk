@@ -6,6 +6,7 @@ extends SceneTree
 ## the socket ornament/icon. Run windowed; headless still writes the rect report.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
 const VIEWPORT_SIZES := [
 	Vector2i(1280, 720),
 	Vector2i(1920, 1080),
@@ -18,6 +19,8 @@ const OFFER := [
 	{"id": "scrum985_move_speed", "title": "+Скорость движения", "description": "+10% к скорости движения.", "kind": "upgrade", "mods": {"move_speed_multiplier": 1.10}},
 ]
 
+var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
+
 
 func _initialize() -> void:
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum985")
@@ -26,6 +29,7 @@ func _initialize() -> void:
 	var passed := true
 	for viewport_size in VIEWPORT_SIZES:
 		passed = (await _capture(viewport_size, qa_dir, lines)) and passed
+	await _capture_teardown.release_windowed_audio(self)
 	var report := FileAccess.open("%s/level_up_visual_matrix.md" % qa_dir, FileAccess.WRITE)
 	if report != null:
 		report.store_string("\n".join(lines))
@@ -142,7 +146,8 @@ func _capture(viewport_size: Vector2i, qa_dir: String, lines: PackedStringArray)
 		if image != null:
 			image.save_png("%s/level_up_%dx%d.png" % [qa_dir, viewport_size.x, viewport_size.y])
 
-	main.queue_free()
-	viewport.queue_free()
-	await process_frame
+	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
+	for error in teardown_errors:
+		lines.append("- lifecycle error: `%s`" % error)
+	passed = passed and teardown_errors.is_empty()
 	return passed
