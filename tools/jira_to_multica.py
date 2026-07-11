@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 import json
 import os
@@ -239,6 +240,11 @@ def create_issue(issue: dict, project: str | None) -> str:
         command += ["--project", project]
     created = run_multica(command, expect_json=True)
     identity = issue_identity(created)
+    set_issue_metadata(issue, identity)
+    return identity
+
+
+def set_issue_metadata(issue: dict, identity: str) -> None:
     metadata = metadata_for(issue)
     # jira_key is the idempotency anchor used by find_existing(). Persist it
     # before any parallel work so an interruption can never duplicate the issue.
@@ -256,7 +262,6 @@ def create_issue(issue: dict, project: str | None) -> str:
     # 1,019-row migration wall time without turning the CLI into an API burst.
     with ThreadPoolExecutor(max_workers=METADATA_WORKERS) as executor:
         list(executor.map(set_metadata, metadata.items()))
-    return identity
 
 
 def copy_comments(issue: dict, multica_id: str) -> int:
@@ -287,6 +292,8 @@ def save_state(path: Path, state: dict) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Write to Multica; default is dry-run")
+    parser.add_argument("--verify", action="store_true", help="Compare the complete Jira Done key set with a paginated Multica project audit")
+    parser.add_argument("--repair", action="store_true", help="Recheck state rows and restore canonical metadata on existing issues (requires --apply)")
     parser.add_argument("--limit", type=int, help="Pilot/import at most N issues")
     parser.add_argument("--project", help="Target Multica project name or ID")
     parser.add_argument("--include-comments", action="store_true", help="Copy Jira comments as attributed archival comments")
@@ -295,13 +302,72 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def verify_migration(args: argparse.Namespace, issues: list[dict], type_counts: dict[str, int]) -> int:
+    if not args.project:
+        raise RuntimeError("--verify requires --project with the Multica project ID")
+    rows: list[dict] = []
+    offset = 0
+    page_size = 100  # Multica CLI/API caps issue list pages at 100 rows.
+    while True:
+        page = rows_from_json(
+            run_multica(
+                ["issue", "list", "--project", args.project, "--limit", str(page_size), "--offset", str(offset)],
+                expect_json=True,
+            )
+        )
+        rows.extend(page)
+        if len(page) < page_size:
+            break
+        offset += len(page)
+
+    source_keys = {issue["key"] for issue in issues}
+    destination_keys = [str((row.get("metadata") or {}).get("jira_key", "")) for row in rows]
+    key_counts = Counter(destination_keys)
+    checks = {
+        "missing_keys": sorted(source_keys - set(destination_keys)),
+        "extra_keys": sorted(set(destination_keys) - source_keys),
+        "duplicate_keys": sorted(key for key, count in key_counts.items() if key and count != 1),
+        "without_jira_key": [row.get("identifier") for row in rows if not (row.get("metadata") or {}).get("jira_key")],
+        "not_done": [row.get("identifier") for row in rows if row.get("status") != "done"],
+        "assigned": [row.get("identifier") for row in rows if row.get("assignee_id") is not None or row.get("assignee_type") is not None],
+        "not_archival": [
+            row.get("identifier")
+            for row in rows
+            if str((row.get("metadata") or {}).get("historical_import")).lower() != "true"
+        ],
+        "missing_jira_url": [row.get("identifier") for row in rows if not (row.get("metadata") or {}).get("jira_url")],
+    }
+    failures = {name: values for name, values in checks.items() if values}
+    destination_types = Counter((row.get("metadata") or {}).get("jira_issue_type") for row in rows)
+    report = {
+        "mode": "verify",
+        "source": len(source_keys),
+        "destination": len(rows),
+        "types": type_counts,
+        "destination_types": dict(destination_types),
+        "failures": failures,
+        "passed": not failures and len(rows) == len(source_keys) and dict(destination_types) == type_counts,
+    }
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["passed"] else 1
+
+
 def main() -> int:
     args = parse_args()
+    if args.repair and not args.apply:
+        raise RuntimeError("--repair requires --apply")
     issues = completed_issues(args.limit)
     type_counts: dict[str, int] = {}
     for issue in issues:
         name = issue["fields"]["issuetype"]["name"]
         type_counts[name] = type_counts.get(name, 0) + 1
+    if args.verify:
+        if not shutil_which("multica"):
+            raise RuntimeError("multica CLI is not installed or not on PATH")
+        run_multica(["auth", "status"])
+        return verify_migration(args, issues, type_counts)
     if not args.apply:
         print(json.dumps({"mode": "dry-run", "issues": len(issues), "types": type_counts}, ensure_ascii=False, indent=2))
         return 0
@@ -314,12 +380,13 @@ def main() -> int:
     for index, issue in enumerate(issues, 1):
         key = issue["key"]
         try:
-            if key in state["migrated"]:
+            if key in state["migrated"] and not args.repair:
                 counters["resumed"] += 1
                 continue
             existing = find_existing(key)
             if existing:
                 identity = existing
+                set_issue_metadata(issue, identity)
                 counters["existing"] += 1
             else:
                 identity = create_issue(issue, args.project)

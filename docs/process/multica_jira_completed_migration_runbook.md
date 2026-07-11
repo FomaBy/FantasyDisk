@@ -97,15 +97,33 @@ State и report сохраняются вне Git:
 ```
 
 После interruption повторить ту же команду: уже записанные `jira_key` будут
-пропущены по state или найдены в Multica metadata.
+пропущены по state или найдены в Multica metadata. Если процесс был остановлен
+между записью `jira_key` и остальных полей, выполнить scoped repair (например,
+для pilot-диапазона):
+
+```bash
+python3 tools/jira_to_multica.py \
+  --apply --repair --limit 10 \
+  --project '<jira-archive-project-id>'
+```
+
+Existing issue не дублируется: importer находит её по `jira_key` и восстанавливает
+canonical metadata.
 
 ## 5. Проверка результата
 
 ```bash
-multica issue list --status done --project 'Jira Archive' --limit 2000 --output json
+python3 tools/jira_to_multica.py \
+  --verify \
+  --project '<jira-archive-project-id>'
 multica issue list --metadata jira_key=SCRUM-1 --output json
 cat ~/.multica/fantasydisk-jira-migration-report.json
 ```
+
+`--verify` сам читает Multica страницами по 100 строк (CLI ограничивает размер
+одной страницы даже при большем `--limit`) и сравнивает полный набор Jira keys,
+дубли, status, assignee и archival metadata. Для `--project` использовать ID из
+`multica project list --output json`, а не отображаемое название проекта.
 
 Критерии завершения:
 
@@ -126,3 +144,21 @@ migration state и после ручной проверки workspace/project.
 
 После успешного импорта Jira не отключается автоматически. Переключение
 authoritative tracker оформляется отдельным cutover task после сверки данных.
+
+## Результат SCRUM-1077 — 2026-07-11
+
+- baseline из тикета: `1 019 / 1 019`, failures `0`;
+- live incremental pass после трёх новых QA-закрытий: Jira `1 022` = Multica
+  `1 022`;
+- типы live-набора: 824 задачи, 179 багов, 5 эпиков, 10 features, 1 story,
+  3 subtask;
+- `--verify`: PASSED — missing/extra/duplicates/without-key/not-done/assigned/
+  not-archival/missing-url пусты;
+- idempotent rerun: `created=0`, `resumed=1022`;
+- interrupt/resume fixture: частичная SCRUM-24 найдена по синхронному `jira_key`,
+  дубль не создан, canonical metadata восстановлена через `--repair`;
+- comments и attachments не переносились; Jira URLs сохранены во всех issues;
+- state, baseline report и live verification report остаются вне Git в
+  `~/.multica/`.
+
+Jira остаётся authoritative tracker до отдельного explicit cutover gate.
