@@ -71,6 +71,16 @@ Independent read-only review: PASS после исправления P1 по exp
 profiles, полным baseline axes, typed validator floors, exact migration/balance
 contracts, approved final/baseline hashes и canonical doc structure.
 
+Independent QA closeout на свежем `origin/dev` (`4e36e7825`, затем процессная
+финализация поверх `b83e98c57`): PASS. Канонический валидатор подтвердил
+`17` классов, `306` branch nodes, `51` finals, `34` hidden и арифметику
+`21 nodes / 20 spend`; mutation gate отклонил все `11` критических искажений.
+Отдельно сверены `51` weapon Before/TARGET строк, обе `17`-строчные class
+таблицы, экономика `[2,2,3,4,4,5]=20`, schema `5→6`, non-combat
+`legacy_mastery`, defense cap `1.50` (Robot `2.12→1.115`, Knight
+`2.21→1.109`). Semaphore Godot gates PASS: balance harness `51/51`, global
+damage `51/51`, global survivability `16/16`; runtime/UI/assets drift отсутствует.
+
 Disk cleanup: removed `.godot` (446–511 MB import caches across gates), isolated
 Godot HOME directories, generated build reports, 23 generated `.gd.uid`
 sidecars and Python caches. No disposable task artifact remains in the worktree.
