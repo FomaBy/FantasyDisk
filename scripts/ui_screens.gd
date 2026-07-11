@@ -3472,11 +3472,45 @@ func _show_atlas_screen() -> void:
 	footer.name = "AtlasFooter"
 	footer.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(footer)
-	# Фидбек 2026-07-08: «Сброс умений» на нативной плите 260 (без растяжки 330).
+	# SCRUM-1070: accepted Atlas mockup uses the wide reset action. Pin the exact
+	# 420×104 family explicitly so compact 72/88px tiers keep its 9-slice caps and
+	# do not fall through size inference to a narrow Later/Back plate.
 	var respec_button := _make_button("Сброс умений")
 	respec_button.name = "AtlasRespecButton"
 	respec_button.tooltip_text = "Сбросить все купленные узлы — бесплатно."
-	_set_action_button_size(respec_button, 260.0, atlas_action_h)
+	respec_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	respec_button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	respec_button.clip_text = false
+	UIButtonFamily.assign(respec_button, "text/standard_420x104")
+	_set_action_button_size(respec_button, STANDARD_ACTION_BUTTON_WIDTH, atlas_action_h)
+	var refresh_respec_geometry := func() -> void:
+		var responsive_viewport: Vector2 = game.get_viewport().get_visible_rect().size
+		var responsive_height := _atlas_action_button_height()
+		var responsive_frame_margins := _scaled_frame_margins_xy(
+			ATLAS_FRAME_SOURCE_SIZE, responsive_viewport,
+			Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN)
+		)
+		safe.add_theme_constant_override("margin_left", int(responsive_frame_margins.x))
+		safe.add_theme_constant_override("margin_top", int(responsive_frame_margins.y * 0.86))
+		safe.add_theme_constant_override("margin_right", int(responsive_frame_margins.z))
+		safe.add_theme_constant_override("margin_bottom", int(responsive_frame_margins.w * 0.86))
+		var responsive_frame := _atlas.get("frame") as Panel
+		if responsive_frame != null:
+			responsive_frame.add_theme_stylebox_override("panel", _atlas_frame_style(responsive_frame_margins))
+		respec_button.custom_minimum_size = Vector2(STANDARD_ACTION_BUTTON_WIDTH, responsive_height)
+		# The compact plate has a 30px text zone after its accepted 21px vertical
+		# content margins. Its semantic 21px action line keeps the exact 72px hit
+		# tier; medium/large tiers retain the accepted 23px compatibility token.
+		respec_button.add_theme_font_size_override(
+			"font_size",
+			maxi(SemanticTypography.role_min(SemanticTypography.ROLE_ACTION), 21)
+				if responsive_height <= 72.0
+				else _readable_font_size(SemanticTypography.ROLE_ACTION, 16)
+		)
+	refresh_respec_geometry.call()
+	# Keep the visual and hit rectangle at the exact responsive tier. VBox/HBox
+	# integer distribution can otherwise donate one spare pixel to this row.
+	respec_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
 	footer.add_child(respec_button)
 	_atlas["respec_button"] = respec_button
@@ -3493,11 +3527,15 @@ func _show_atlas_screen() -> void:
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["minor"]), "доступно", s)
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["keystone"]), "ключевая", s)
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["hidden"]), "скрытая", s)
+	# Footer-only live responsiveness: containers reflow automatically; refresh
+	# the exact tiered hit height/font when the same Atlas instance is resized.
+	root.resized.connect(refresh_respec_geometry)
 
 	# Полая орнаментная рама кита ПОВЕРХ контента (клики сквозь; nearest — чтобы
 	# key-цвет прозрачной середины не подмешивался фильтрацией).
 	var frame := Panel.new()
 	frame.name = "AtlasFrame"
+	_atlas["frame"] = frame
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
 	frame.add_theme_stylebox_override("panel", _atlas_frame_style(frame_margins))
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
