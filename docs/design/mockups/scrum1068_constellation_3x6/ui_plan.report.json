@@ -1,0 +1,595 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "atlas_safe_area",
+      "kind": "panel",
+      "rect": [
+        200,
+        145,
+        1520,
+        790
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header",
+      "kind": "panel",
+      "rect": [
+        220,
+        160,
+        1480,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "class_progress",
+      "kind": "text",
+      "rect": [
+        248,
+        169,
+        500,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "guild_tab",
+      "kind": "button",
+      "rect": [
+        1490,
+        164,
+        190,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "class_selector_rail",
+      "kind": "panel",
+      "rect": [
+        220,
+        232,
+        120,
+        570
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "class_crest_slot",
+      "kind": "slot",
+      "rect": [
+        246,
+        252,
+        68,
+        68
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "class_list_zone",
+      "kind": "list",
+      "rect": [
+        238,
+        338,
+        84,
+        440
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 980,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        314,
+        338,
+        8,
+        440
+      ]
+    },
+    {
+      "id": "graph",
+      "kind": "panel",
+      "rect": [
+        360,
+        232,
+        890,
+        570
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_label",
+      "kind": "text",
+      "rect": [
+        410,
+        245,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "axe_label",
+      "kind": "text",
+      "rect": [
+        725,
+        235,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "hammer_label",
+      "kind": "text",
+      "rect": [
+        1040,
+        245,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "core",
+      "kind": "slot",
+      "rect": [
+        765,
+        690,
+        80,
+        80
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_b1",
+      "kind": "slot",
+      "rect": [
+        722,
+        632,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_b2",
+      "kind": "slot",
+      "rect": [
+        662,
+        562,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_b3",
+      "kind": "slot",
+      "rect": [
+        607,
+        492,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_b4",
+      "kind": "slot",
+      "rect": [
+        552,
+        422,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_b5",
+      "kind": "slot",
+      "rect": [
+        502,
+        357,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "sword_final",
+      "kind": "slot",
+      "rect": [
+        458,
+        298,
+        64,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_b1",
+      "kind": "slot",
+      "rect": [
+        777,
+        622,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_b2",
+      "kind": "slot",
+      "rect": [
+        777,
+        552,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_b3",
+      "kind": "slot",
+      "rect": [
+        777,
+        482,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_b4",
+      "kind": "slot",
+      "rect": [
+        777,
+        412,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_b5",
+      "kind": "slot",
+      "rect": [
+        777,
+        342,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "axe_final",
+      "kind": "slot",
+      "rect": [
+        773,
+        278,
+        64,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_b1",
+      "kind": "slot",
+      "rect": [
+        832,
+        632,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_b2",
+      "kind": "slot",
+      "rect": [
+        892,
+        562,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_b3",
+      "kind": "slot",
+      "rect": [
+        947,
+        492,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_b4",
+      "kind": "slot",
+      "rect": [
+        1002,
+        422,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_b5",
+      "kind": "slot",
+      "rect": [
+        1052,
+        357,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hammer_final",
+      "kind": "slot",
+      "rect": [
+        1088,
+        298,
+        64,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hidden_sword",
+      "kind": "slot",
+      "rect": [
+        507,
+        512,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hidden_hammer",
+      "kind": "slot",
+      "rect": [
+        1147,
+        512,
+        56,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tooltip_overlay",
+      "kind": "panel",
+      "rect": [
+        570,
+        430,
+        360,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier",
+      "kind": "panel",
+      "rect": [
+        1280,
+        232,
+        400,
+        400
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_title",
+      "kind": "text",
+      "rect": [
+        1310,
+        252,
+        340,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "dossier_weapon",
+      "kind": "text",
+      "rect": [
+        1310,
+        310,
+        340,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "dossier_body",
+      "kind": "text",
+      "rect": [
+        1310,
+        382,
+        340,
+        110
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 23
+    },
+    {
+      "id": "cost",
+      "kind": "text",
+      "rect": [
+        1310,
+        510,
+        150,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "buy",
+      "kind": "button",
+      "rect": [
+        1310,
+        566,
+        340,
+        58
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 23
+    },
+    {
+      "id": "progress_card",
+      "kind": "panel",
+      "rect": [
+        1280,
+        642,
+        400,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "progress_value",
+      "kind": "text",
+      "rect": [
+        1310,
+        660,
+        210,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "legacy_badge",
+      "kind": "text",
+      "rect": [
+        1540,
+        660,
+        110,
+        46
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "hidden_state_note",
+      "kind": "text",
+      "rect": [
+        1310,
+        724,
+        340,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 19
+    },
+    {
+      "id": "footer",
+      "kind": "panel",
+      "rect": [
+        200,
+        831,
+        1520,
+        104
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reset",
+      "kind": "button",
+      "rect": [
+        200,
+        831,
+        420,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 23
+    },
+    {
+      "id": "legend",
+      "kind": "text",
+      "rect": [
+        960,
+        851,
+        720,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    }
+  ]
+}

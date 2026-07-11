@@ -1,0 +1,35 @@
+{
+  "schema": "fantasydisk.pixellab_provenance.v1",
+  "issue": "SCRUM-1075",
+  "parent_issue": "SCRUM-1068",
+  "status": "blocked_before_generation",
+  "generator": "PixelLab MCP",
+  "auth_smoke": {
+    "tool": "get_balance",
+    "result": "PASS",
+    "secrets_printed": false
+  },
+  "balance_at_attempt": {
+    "credits_usd": 0.0,
+    "generations_remaining": 3,
+    "generations_used": 4997,
+    "generations_total": 5000,
+    "subscription": "active Tier 2 Pixel Artisan"
+  },
+  "generation_attempt": {
+    "tool": "create_ui_asset",
+    "name": "scrum1075_constellation_3x6_atlas_mockup",
+    "seed": 1075,
+    "requested_size": [688, 384],
+    "documented_job_size": "20-40 generations",
+    "result": "rejected",
+    "error": "no generations or credits remaining for creating a UI panel. check get_balance() for details"
+  },
+  "source_asset_id": null,
+  "source_export": null,
+  "mockup_png": null,
+  "preview_png": null,
+  "fallback_used": false,
+  "resume_contract": "Re-run pixellab_request.json after at least one create_ui_asset-capable credit/generation allocation is available; do not change ui_plan/layout zones without revalidating."
+}
+
