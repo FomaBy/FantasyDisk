@@ -54,3 +54,31 @@ Jira is routed to `Контроль качества` for an independent QA verd
   video-settings, gamepad menu/full-flow/rebind, UI smoke and full runtime smoke;
 - PASS: Metal four-tier render and visual inspection;
 - independent read-only review: PASS, no actionable findings.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+Проверено на свежем `origin/dev` `7c9f07f35` (implementation
+`dc56a743b`, routing `6ab80d1aa`; последующий SCRUM-1059 затрагивает только
+MainMenu и не меняет Settings-block):
+
+- focused `settings_tab_font_scrum1060_test.gd` headless и real Metal;
+- четыре Metal viewport: 1152×648, 1280×720, 1920×1080, 2560×1440 — полный
+  текст, точный font parity 21/22/23/23, safe-zone `x=48..212`, без overlap с
+  dragon heads/rails/gems/frame; windowed lifecycle без leak diagnostics;
+- Settings Game/footer/seamless/audio data+UI, semantic button family и video
+  apply;
+- `ui_no_overlap_matrix_test.gd` и его rect-report;
+- gamepad menu/rebind/core/in-run + два последовательных full-flow прогона;
+- animation/meta/targeting regression, runtime UI и full runtime smoke.
+
+Краевые случаи: минимум 1152×648 с самым длинным `Управление`, breakpoints
+720/1080 и native 1440 plate, все pressed/selected states, LB/RB wrap
+first↔last, повторный full gamepad flow, интеграция последующего SCRUM-1059.
+
+Баги: нет. Runtime UI сохранил только известный non-fatal dummy-renderer
+null-texture diagnostic при попытке screenshot и завершился PASS.
+
+Disk cleanup: disposable QA worktree/cache/captures/tmp/branch удаляются после
+scoped Jira mirror sync и push этого вердикта.
