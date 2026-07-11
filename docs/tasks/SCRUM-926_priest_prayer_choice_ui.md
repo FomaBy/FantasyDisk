@@ -48,7 +48,7 @@ preview directory.
 
 Disk cleanup: disposable `.godot/` removed; clean task worktree scheduled for immediate removal after the routing push.
 
-## QA-Вердикт (2026-07-11)
+## Исторический QA-Вердикт (2026-07-11, до SCRUM-1044)
 
 Статус: FAILED
 
@@ -83,7 +83,7 @@ Production-код и art layer не изменялись.
 
 Баг: SCRUM-1044.
 
-## Повторный QA-Вердикт (2026-07-11)
+## QA-Вердикт повторной проверки (2026-07-11)
 
 Статус: PASSED
 

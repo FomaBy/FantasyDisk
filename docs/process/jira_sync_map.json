@@ -4450,8 +4450,8 @@
  },
  "SCRUM-926_priest_prayer_choice_ui.md": {
   "key": "SCRUM-926",
-  "status": "Контроль качества",
-  "desc_hash": "4e1b3de3fbb124138981b8b847cc3eb2"
+  "status": "Готово",
+  "desc_hash": "7b11e08d7f170d4da442d51dd97fb62b"
  },
  "SCRUM-895_berserk_axe_hammer_readability.md": {
   "key": "SCRUM-895",
@@ -4465,7 +4465,7 @@
  },
  "bug_scrum1044_prayer_escape_pause_overlay_task.md": {
   "key": "SCRUM-1044",
-  "status": "Контроль качества",
-  "desc_hash": "fbf3d6e8a316ca8bdb470b0deb93a887"
+  "status": "Готово",
+  "desc_hash": "ccbb6cb16bc1f9dd0ec880db43b7238d"
  }
 }
