@@ -42,3 +42,17 @@ the original focused test did not reproduce the keyboard defect.
 
 Disk cleanup: task-local `.godot` and isolated userdata are removed after the
 origin/dev landing; no generated asset or disposable clone is retained.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+На fresh `origin/dev` `855b5e412` independent physical-input probe
+подтвердил: KEY_ESCAPE через `Main._input`, keyboard `ui_cancel` и B
+сохраняют prayer screen, исходный card focus и `battle_prayer` pause;
+`PauseStatsMenuRoot` не создаётся. Mouse double-click, Right/Enter и
+D-pad/A выбирают exact prayer и финализируют start ровно один раз.
+Focused 720p/1080p/2K/live resize, Priest kit, no-overlap, gamepad
+in-run/full-flow, runtime UI и clean-cache full runtime — PASS.
+
+Баги: нет.

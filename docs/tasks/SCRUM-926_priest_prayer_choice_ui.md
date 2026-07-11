@@ -82,3 +82,22 @@ Production-код и art layer не изменялись.
 напрямую, а не physical `Main._input` path.
 
 Баг: SCRUM-1044.
+
+## Повторный QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+SCRUM-1044 исправлен в `737dd7c20` и независимо принят на fresh
+`origin/dev` `855b5e412`. KEY_ESCAPE, keyboard `ui_cancel` и B теперь
+сохраняют mandatory prayer modal, его focus и pause без постороннего
+Pause dossier. Physical mouse double-click, keyboard Right/Enter и gamepad
+D-pad/A применяют exact canonical prayer и продолжают combat ровно
+один раз.
+
+Повторно PASS: official SCRUM-926 focused 720p/1080p/2K/live resize,
+Priest kit, no-overlap, gamepad in-run/full-flow, runtime UI и clean-cache full
+runtime. PixelLab/runtime art остался byte-identical с SHA-256
+`8eb1406434e8c02ad291fcaf2f39b16ff6d9c87a0781cd4ef190dc750305046c`; visual,
+content-zone, prayer effect/order и non-Priest contracts не изменились.
+
+Баги: нет; SCRUM-1044 — PASSED / Готово.
