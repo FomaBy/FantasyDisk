@@ -75,7 +75,9 @@ PASS:
 - isolated full `runtime_smoke_test.gd` (known dummy-renderer screenshot
   diagnostic only, exit 0/PASS).
 
-Independent QA: pending after direct push to `origin/dev`.
+Independent QA: **PASSED** on fresh `origin/dev` (`c244e25e7`) by
+`/root/qa_scrum1047`; implementation/evidence commits `19eb5748d` and
+`6a77cdb75` are both ancestors of the verified ref.
 
 Implementation commit: `19eb5748d`, rebased without conflict on final
 SCRUM-1046/952 QA sync `21f838587` and pushed directly to `origin/dev`.
@@ -88,3 +90,42 @@ HOME/XDG scratch roots. Generated balance reports match tracked content, so the
 worktree is clean; the checkout is retained only until QA dispatch is recorded.
 
 Thread cleanup: not a disposable worker thread.
+
+## Independent QA Verdict — PASSED
+
+Fresh-worktree review confirms this is an oracle correction for the accepted
+SCRUM-1043 contract, not a weakened gate:
+
+- production code, weapon configs, scenes, VFX and assets have no diff in the
+  SCRUM-1047 commit range;
+- the test now protects the exact Hammer-only center `owner + (0, 16)` and
+  visual/hit scale `(1.0, 1.12)`;
+- the legacy owner-space `y=170` probe is explicitly required to hit because
+  `(170 - 16) / 1.12 = 137.5 < 150`;
+- owner-space `y=185` is explicitly required to miss because
+  `(185 - 16) / 1.12 ~= 150.89 > 150`;
+- after Radius growth, the lower boundary is still tested on both sides at
+  `expected_radius * 1.12 +/- 1px`; no permissive tolerance or skipped attack
+  assertion was introduced.
+
+Independent verification PASS:
+
+- `melee_weapon_targeting_test.gd` — 3/3 separate userdata roots;
+- `scrum1043_hammer_lower_hit_zone_test.gd` — asymmetric Hammer footprint,
+  VFX alignment and unchanged Holy Flail defaults;
+- `scrum895_berserk_axe_hammer_vfx_test.gd`;
+- `runtime_smoke_weapon_mechanics_test.gd`;
+- `tools/balance_harness.gd` — unchanged Berserk budget multipliers
+  (`sword 0.660`, `axe 1.646`, `hammer 2.800`) and targets (`48 / 150`);
+- `global_damage_balance_smoke_test.gd` — 51/51, worst CCT `+21%`;
+- `berserk_dps_runaway_gate.gd` — 20 targets `2778 <= 3600`, one target
+  `367 <= 650`;
+- isolated full `runtime_smoke_test.gd` — exit 0/PASS; only the known
+  dummy-renderer screenshot diagnostic appeared.
+
+Sword, Axe and Holy Flail behavior stays isolated: the reviewed commit changes
+only Hammer membership probes and evidence, while the focused SCRUM-1043 gate
+also asserts Holy Flail keeps the shared centered-circle defaults.
+
+Disk cleanup: QA `.godot`, generated reports, transient `.uid` sidecars, all
+owned HOME/XDG roots, worktree and branch removed after evidence push.
