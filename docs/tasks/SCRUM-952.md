@@ -1,6 +1,6 @@
 # SCRUM-952 — Hero Select trait, strengths and weaknesses copy
 
-Статус: done
+Статус: blocked (QA FAILED; SCRUM-1046)
 Версия: 0.2.1
 Jira: SCRUM-952
 Контур: Codex
@@ -74,3 +74,45 @@ Disk cleanup: pending post-land removal of the 446 MiB task `.godot/` cache,
 transient `build/qa/scrum952` captures and task worktree.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: **FAILED**
+
+Проверено на `origin/dev` `50016c95e` независимым QA/Codex
+`/root/qa_952_trait_copy`:
+
+- PixelLab MCP provenance (`c72b6dba-895e-4f6a-93a1-1a5a36934a54`),
+  `ready_for_image` plan, accepted source, remeasured zones and fit report;
+- все 17 `CLASS_TRAITS`, изолированные `class_trait()` copies и точные Codex
+  projections;
+- точная иерархия `Особенность` → `Плюсы` → `Минусы` для всех 17 героев at
+  1280×720 / 1920×1080 / 2560×1440;
+- 1080p/2K показывают все три decision sections без прокрутки; Metal screenshots
+  сохраняют текст внутри dossier/frame safe-zone и не перекрывают орнамент;
+- verbose Metal lifecycle clean: без `SCRIPT ERROR`, `ObjectDB` leaks,
+  `resources still in use`, Ogg или `ERROR` diagnostics;
+- PASS: Hero Select layout, UI no-overlap, Codex data, character contract,
+  gamepad core/in-run/menu, gamepad full-flow два раза подряд, runtime UI,
+  animation, meta progression и полный runtime smoke. Известный dummy-renderer
+  screenshot diagnostic полного runtime не является test failure.
+
+Краевые случаи:
+
+- при 1280×720 досье Друида имеет `max_scroll=104`, смена героя через настоящую
+  carousel signal корректно сбрасывает `scroll_vertical` в `0`;
+- physical PageDown, semantic `ui_page_down`, gamepad D-pad и right-stick input
+  не меняют `scroll_vertical`; D-pad Down сразу уводит focus на
+  `HS4ChooseButton`;
+- следовательно, нижний dossier copy недоступен с клавиатуры/геймпада без мыши.
+
+Баги:
+
+- `SCRUM-1046` — **blocking** для SCRUM-952: 720p dossier cannot be scrolled by
+  keyboard or gamepad;
+- `SCRUM-1047` — unrelated regression found by the broad gate: legacy hammer
+  targeting smoke still uses a circular boundary predating the accepted
+  SCRUM-1043 offset/scaled hit ellipse (reproduced 3/3).
+
+Production code, art and shared data QA не изменял. SCRUM-952 возвращён в Jira
+`К выполнению` до исправления SCRUM-1046.
