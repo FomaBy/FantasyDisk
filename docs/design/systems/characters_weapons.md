@@ -26,6 +26,39 @@
 | `knight` | tank-отражатель (SCRUM-920..923): trait «Возмездие» — контактный атакующий отлетает прочь (боссы/главные элиты не смещаются); тройной секвенс-укол копья, конус-баш щита к ближайшей цели с масштабируемым отбросом, расширяющаяся спираль кистеня |
 | `druid` | summon/nature control: beast pack, thorn zones, raven totem |
 
+## Structured Hero Select dossier (SCRUM-1064)
+
+Все 17 классов используют один data-driven контракт
+`ProgressionData.hero_select_dossier(character_id)`. Он возвращает только
+проверяемые данные: optional canonical trait, имя, три weapon ID/player-facing
+названия из `WEAPONS_BY_CLASS`, top-3 `BASE_STATS` и полное разбиение
+`ATTRIBUTE_REGISTRY` на `primary` / `secondary` / player-facing `weak`.
+Свободные `CHARACTER_CONFIGS.description`, `strengths`, `weaknesses` остаются
+legacy/другими consumer-данными и не участвуют в выборе героя.
+
+Алгоритм ведущих характеристик един для всего ростера: значения сортируются по
+убыванию, при равенстве сохраняется канонический порядок `STAT_NAMES`; берутся
+ровно первые три, число показывается рядом. Relevance-группы непересекаются и
+вместе покрывают все 24 записи `ATTRIBUTE_REGISTRY`; внутренний ключ `optional`
+сохранён для reward weighting, но в Hero Select называется «Слабые атрибуты».
+
+Предметная ревизия сверяла каждую классификацию с `CLASS_TRAITS` и фактическими
+механиками трёх оружий. В частности: Доктор не получает generic
+regen/vampirism; Ассасин владеет crit-cap; Химик — periodic multiplier; Друид —
+buff/aura/summon scale; Робот — mitigation. Generic damage Тёмного мага остаётся
+secondary из-за действующей per-hero damage-star прогрессии, хотя прямые
+оружейные каналы — magic/DoT. Глобальный reward-инвариант остаётся
+`2 primary / 8 secondary / 7 optional` на каждый атрибут; баланс-числа и weapon
+mechanics этой задачей не менялись. Контракт:
+`tests/hero_select_scrum1064_dossier_test.gd` +
+`tests/attribute_relevance_test.gd`.
+
+Аудит выявил связанный dead-progression дефект: личное созвездие Доктора
+содержало generic regeneration/vampirism, которые его же Plague Oath отбрасывает
+при применении. SCRUM-1064 заменяет эти minor/technique/hidden эффекты живыми
+DoT/tempo/health/support/ultimate осями и фиксирует запрет тестом
+`tests/skill_tree_per_hero_test.gd`; weapon-конфиги и run-баланс не меняются.
+
 ## Weapon Matrix
 
 У каждого класса ровно 3 выбираемых стартовых оружия. Все варианты выбираются через `ProgressionData.WEAPONS_BY_CLASS` и передаются в `Player.configure_character(character_id, weapon_id)`.

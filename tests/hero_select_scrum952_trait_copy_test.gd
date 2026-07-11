@@ -31,16 +31,11 @@ func _check_shared_data() -> void:
 		codex_by_id[str((entry as Dictionary).get("id", ""))] = entry
 	for raw_id in ids:
 		var cid := str(raw_id)
-		var config: Dictionary = PROGRESSION_DATA.character_config(cid)
 		var trait_config: Dictionary = PROGRESSION_DATA.class_trait(cid)
 		for key in ["id", "title", "description", "short_description"]:
 			var value := str(trait_config.get(key, "")).strip_edges()
 			if value.is_empty() or value.contains("TODO") or value.contains("res://"):
 				_fail("Trait %s has invalid player-facing %s: '%s'." % [cid, key, value])
-				return
-		for key in ["strengths", "weaknesses"]:
-			if str(config.get(key, "")).strip_edges().is_empty():
-				_fail("Character %s has empty %s." % [cid, key])
 				return
 		var mutated := PROGRESSION_DATA.class_trait(cid)
 		mutated["title"] = "mutated"
@@ -79,36 +74,39 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 		main.call("_show_character_select")
 		await process_frame
 		await process_frame
-		var trait_config: Dictionary = PROGRESSION_DATA.class_trait(cid)
-		var config: Dictionary = PROGRESSION_DATA.character_config(cid)
+		var dossier: Dictionary = PROGRESSION_DATA.hero_select_dossier(cid)
+		var trait_config: Dictionary = dossier.get("trait", {}) as Dictionary
 		var heading := main.find_child("HS4TraitHeading", true, false) as Label
-		var strengths := main.find_child("HS4Strengths", true, false) as Label
-		var weaknesses := main.find_child("HS4Weaknesses", true, false) as Label
-		var playstyle := main.find_child("HS4Description", true, false) as Label
+		var name_label := main.find_child("HS4NameLabel", true, false) as Label
+		var weapon_label := main.find_child("HS4Weapon", true, false) as Label
+		var leading_stats := main.find_child("HS4LeadingBaseStats", true, false) as Label
+		var primary := main.find_child("HS4BuildGuidance_primary", true, false) as Label
+		var secondary := main.find_child("HS4BuildGuidance_secondary", true, false) as Label
+		var weak := main.find_child("HS4BuildGuidance_weak", true, false) as Label
 		var scroll := main.find_child("HS4DossierScroll", true, false) as ScrollContainer
 		var content := main.find_child("HS4DossierContent", true, false) as Control
 		var frame := main.find_child("HS4DossierFrame", true, false) as Control
-		if heading == null or strengths == null or weaknesses == null or playstyle == null or scroll == null or content == null or frame == null:
+		if heading == null or name_label == null or weapon_label == null or leading_stats == null or primary == null or secondary == null or weak == null or scroll == null or content == null or frame == null:
 			_fail("Missing SCRUM-952 dossier nodes for %s at %s." % [cid, str(viewport_size)])
 			return
 		var expected_description := str(trait_config.get("short_description", trait_config.get("description", "")))
-		var expected_heading := "Особенность — %s: %s" % [str(trait_config.get("title", "")), expected_description]
+		var expected_heading := "Особенность: %s — %s" % [str(trait_config.get("title", "")), expected_description]
 		if heading.text != expected_heading:
 			_fail("Trait copy drift for %s at %s." % [cid, str(viewport_size)])
 			return
-		if strengths.text != "Плюсы: %s" % str(config.get("strengths", "")):
-			_fail("Plus copy drift for %s at %s." % [cid, str(viewport_size)])
+		if name_label.text != str(dossier.get("name", "")):
+			_fail("Hero name drift for %s at %s." % [cid, str(viewport_size)])
 			return
-		if weaknesses.text != "Минусы: %s" % str(config.get("weaknesses", "")):
-			_fail("Minus copy drift for %s at %s." % [cid, str(viewport_size)])
+		if main.find_child("HS4Strengths", true, false) != null or main.find_child("HS4Weaknesses", true, false) != null or main.find_child("HS4Description", true, false) != null:
+			_fail("Obsolete prose dossier nodes are still visible/present for %s." % cid)
 			return
-		if not heading.tooltip_text.contains(expected_description) or strengths.tooltip_text != strengths.text or weaknesses.tooltip_text != weaknesses.text:
-			_fail("Full tooltip copy missing for %s at %s." % [cid, str(viewport_size)])
+		if heading.tooltip_text != heading.text:
+			_fail("Exact trait tooltip copy missing for %s at %s." % [cid, str(viewport_size)])
 			return
-		if not (heading.get_index() < strengths.get_index() and strengths.get_index() < weaknesses.get_index() and weaknesses.get_index() < playstyle.get_index()):
-			_fail("Expected trait -> plus -> minus hierarchy for %s." % cid)
+		if not (heading.get_index() < name_label.get_index() and name_label.get_index() < weapon_label.get_index() and weapon_label.get_index() < leading_stats.get_index() and leading_stats.get_index() < primary.get_index() and primary.get_index() < secondary.get_index() and secondary.get_index() < weak.get_index()):
+			_fail("Expected trait -> name -> weapons -> stats -> relevance hierarchy for %s." % cid)
 			return
-		for label in [heading, strengths, weaknesses]:
+		for label in [heading, name_label, weapon_label, leading_stats, primary, secondary, weak]:
 			var copy_label := label as Label
 			if copy_label.max_lines_visible >= 0 or copy_label.text_overrun_behavior == TextServer.OVERRUN_TRIM_ELLIPSIS:
 				_fail("Canonical copy is truncatable in %s for %s." % [copy_label.name, cid])
@@ -121,9 +119,9 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 			if copy_rect.position.x < scroll_rect.position.x - 1.0 or copy_rect.end.x > scroll_rect.end.x + 1.0:
 				_fail("%s crosses the dossier text lane at %s for %s." % [copy_label.name, str(viewport_size), cid])
 				return
-			if viewport_size.y >= 1000 and not scroll_rect.grow(1.0).encloses(copy_rect):
-				_fail("%s is not fully visible without scrolling at %s for %s: copy=%s scroll=%s." % [copy_label.name, str(viewport_size), cid, str(copy_rect), str(scroll_rect)])
-				return
+			# SCRUM-1064 intentionally keeps complete relevance lists in the same
+			# scroll canvas at every tier; vertical overflow is accepted only when
+			# the final weak section remains reachable below.
 		if not frame.get_global_rect().grow(1.0).encloses(scroll.get_global_rect()):
 			_fail("Dossier scroll left the frame-safe content area at %s." % str(viewport_size))
 			return
@@ -132,7 +130,7 @@ func _check_ui_matrix(viewport_size: Vector2i) -> void:
 			return
 		var bar := scroll.get_v_scroll_bar()
 		var max_scroll := maxi(0, int(ceil(bar.max_value - bar.page)))
-		var required_scroll := maxi(0, int(ceil(weaknesses.get_global_rect().end.y - scroll.get_global_rect().end.y)))
+		var required_scroll := maxi(0, int(ceil(weak.get_global_rect().end.y - scroll.get_global_rect().end.y)))
 		if max_scroll < required_scroll:
 			_fail("Minus section is not scroll-reachable for %s at %s." % [cid, str(viewport_size)])
 			return

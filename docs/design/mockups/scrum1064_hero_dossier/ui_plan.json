@@ -1,0 +1,29 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 2, "allow_overlap": false},
+  "content": {
+    "title": "Выбор героя",
+    "back": "Назад",
+    "trait": "Особенность: Молитва боя — Перед боем выбирает +20% урона, +2 HP/с или −20% входящего урона.",
+    "hero_name": "Элементалист",
+    "weapons": "Оружие: Квадрат четырёх стихий, Фокус призмы, Сердце метеора",
+    "main_stats": "Основные характеристики: Восприятие — 10; Ловкость — 8; Выносливость — 7.",
+    "primary": "Основные атрибуты: Магический фокус, Ширина сектора, Периодический урон, Скорость тиков.",
+    "secondary": "Второстепенные атрибуты: Урон, Скорость атаки, Скорость движения, Радиус подбора, Шанс крита, Дальность атаки, Скорость снарядов, Сила ультимейта.",
+    "weak": "Слабые атрибуты: Макс. здоровье, Защита, Урон крита, Уклонение, Поглощение, Регенерация, Вампиризм (лечение), Вампиризм (шанс).",
+    "choose": "Выбрать",
+    "ascension": "Возвышение 5"
+  },
+  "elements": [
+    {"id": "screen_safe", "kind": "panel", "x": 160, "y": 120, "w": 1600, "h": 830, "min_w": 1500, "min_h": 780},
+    {"id": "title", "kind": "text", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 200, "y": 168, "w": 268, "h": 62, "text_key": "title", "max_font": 30, "min_font": 22},
+    {"id": "back", "kind": "button", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 1460, "y": 176, "w": 260, "h": 82, "text_key": "back", "max_font": 26, "min_font": 18},
+    {"id": "portrait", "kind": "portrait", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 200, "y": 280, "w": 490, "h": 488, "min_w": 440, "min_h": 440},
+    {"id": "choose", "kind": "button", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 210, "y": 790, "w": 480, "h": 116, "text_key": "choose", "max_font": 28, "min_font": 20},
+    {"id": "dossier_frame", "kind": "panel", "parent": "screen_safe", "collision": true, "x": 706, "y": 280, "w": 1012, "h": 286, "min_w": 900, "min_h": 240},
+    {"id": "dossier_scroll", "kind": "scroll", "parent": "dossier_frame", "collision": false, "content_zone": true, "x": 742, "y": 309, "w": 590, "h": 231, "min_w": 520, "min_h": 180, "scroll": "required", "content_h": 640, "scrollbar_w": 16, "min_content_w": 540},
+    {"id": "stats", "kind": "stat_grid", "parent": "dossier_frame", "collision": false, "content_zone": true, "x": 1362, "y": 309, "w": 320, "h": 231, "min_w": 300, "min_h": 220},
+    {"id": "ascension", "kind": "panel", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 706, "y": 570, "w": 878, "h": 132, "text_key": "ascension", "max_font": 24, "min_font": 18},
+    {"id": "carousel", "kind": "panel", "parent": "screen_safe", "collision": true, "content_zone": true, "x": 706, "y": 714, "w": 1012, "h": 226, "min_w": 940, "min_h": 200}
+  ]
+}

@@ -4,7 +4,8 @@ Canonical registry, resolves SCRUM-953; спорные решения приня
 
 Назначение: единый источник истины по уникальной особенности (class trait) каждого из
 17 играбельных классов для волны редизайна SCRUM-894..952. Player-facing описания
-(Hero Select «Особенность», SCRUM-952), кодекс и тултипы берут trait ОТСЮДА.
+(Hero Select `Особенность: <название> — <точный эффект>`, SCRUM-1064), кодекс и
+тултипы берут trait ОТСЮДА.
 Ни одно описание не финализируется по trait, которого нет в этой таблице.
 
 Рабочие названия traits — черновые: копирайт-пасс SCRUM-952 может переименовать,
@@ -40,6 +41,30 @@ Canonical registry, resolves SCRUM-953; спорные решения приня
 | 15 | `chemist` | Химик | «Катализатор»: весь периодический урон Химика усилен на +50% (DoT, тики луж, стаки кислоты, волны гомункула). | SCRUM-942 | implemented |
 | 16 | `knight` | Рыцарь | «Возмездие»: ударивший Рыцаря враг отбрасывается прочь (обычные монстры и мини-элиты; боссы и главные элиты не смещаются). | SCRUM-920 (реализован) | implemented |
 | 17 | `druid` | Друид | «Аура дикой силы»: постоянная аура урона с видимым радиусом, баффает Друида и его призывы; масштаб от aura_radius и buff_power. | SCRUM-902 | implemented |
+
+## Hero Select projection (SCRUM-1064)
+
+`ProgressionData.hero_select_dossier(class_id)` проецирует запись
+`CLASS_TRAITS[class_id]` без ручной копии. Если запись существует, trait — первый
+блок досье в формате `Особенность: <title> — <short_description>`, после него
+идёт имя героя. Если будущий класс не имеет trait, весь блок скрывается без
+пустой строки, и имя становится первым. Подробный `description` остаётся в
+Codex; свободные `CHARACTER_CONFIGS.description/strengths/weaknesses` больше не
+показываются в Hero Select.
+
+SCRUM-1064 также сверил `ATTRIBUTE_RELEVANCE` с этими 17 traits и реальными
+тремя оружиями каждого класса. Ключевые исправления: generic sustain Доктора
+(`regeneration`, оба vampiric) теперь weak из-за `generic_sustain_blocked`;
+crit chance Ассасина primary из-за 100%-капа/overflow; DoT Химика primary из-за
+`Catalyst ×1.5`; `buff_power` Друида primary из-за прямого скейла Wild Force
+Aura; defense Робота учитывает Armored Hull. Generic `damage` Тёмного мага
+остаётся secondary из-за действующей per-hero damage-star прогрессии, хотя его
+прямые оружейные каналы — magic/DoT. Личная мета Доктора также больше не
+предлагает отключённые Plague Oath generic regen/vamp бонусы: её minor/technique
+звёзды переведены на DoT, темп, health, support и ultimate, а hidden
+«Горный госпиталь» начинает забег с половиной ultimate вместо неработающего
+low-HP regen. Числа traits и оружия не менялись; все 51 weapon-пары прошли
+balance harness после коррекции мета-профиля.
 
 Статусы: `backlog` — trait определён в существующем Jira-тикете, ещё не реализован;
 `new-ticket-needed` — решение принято этим реестром, implementation-тикета ещё нет

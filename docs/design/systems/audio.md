@@ -77,8 +77,8 @@ player-facing атрибуции: `docs/CREDITS.md`.
 | 6 | `music_combat_ruined_courtyard` | Обычный бой — ротация №3; тематически — руины/двор/город | Темнее: hurdy-gurdy с дроном как основа, низкий war drum медленнее пульсом, лютня — рублеными аккордами. Ощущение осаждённого двора. Темп ~110–125 BPM | Интро 2–4 c + луп 55–70 c | Как у (a) | Как у (a) | **P1** |
 | 7 | `music_combat_fey_marsh` | Обычный бой — ротация №4; тематически — болото/лес/фейные поля | «Странный» бардовский мотив: вистл/флейта в необычном ладу (лидийский/целотон-мазки), капающая перкуссия, дроны с лёгким детюном. Тревожная сказочность, без синтетики. Темп ~115–130 BPM | Интро 2–4 c + луп 55–70 c | Как у (a) | Как у (a) | **P1** |
 | 8 | `music_elite_duel_300` | Элитный бой (`current_combat_type == "elite"`), таймер 300 c | Эпичнее обычного боя, нарастающее давление дуэли: war drum + hurdy-gurdy, струнные остинато, к середине лупа — добавление голосов. Не оркестр — «бард рассказывает о великой дуэли». Темп ~120–135 BPM | Интро 4–6 c + луп 90–120 c (файл ~100–130 c) | Луп с внутренней аркой (тише→плотнее→тише), сильные edit-точки на границах 16-тактовых секций; 300 c ≈ 2.5–3 прохода | Scripted outro (окно 8 c) + `music_sting_victory_epic`/`music_sting_defeat` | **P1** |
-| 9 | `music_boss_battle_300` | Босс актов 1–2 (`boss_combat_active`), таймер 300 c | Полновесная эпичная босс-битва в бардовском мире: боевые барабаны в два слоя, низкие дроны, лютня/лира широкими жестами, редкие «хоровые» гласные (без слов). Фазовость: луп разбит edit-точками под будущую синхронизацию с фазами босса (boss.gd `boss_phase` 1→2→3) | Интро 4–6 c + луп 100–140 c (файл ~110–150 c) | Луп секциями A/B/C по 16 тактов — phase-ready edit-точки на границах; 300 c ≈ 2–2.5 прохода | Scripted outro (окно 8 c) + эпичные стингеры | **P1** |
-| 10 | `music_final_boss_crescendo_300` | Финальный босс: босс акта 3 и секретный босс (`start_secret_boss_encounter`, main.gd:994), таймер 300 c | Интенсивнее `music_boss_battle_300`: плотнее перкуссия, выше темп, крещендо-арки внутри лупа. БЕЗ «дешёвой оркестровой стены» — остаёмся в бардовском тёмном фэнтези: живые струны/барабаны/лира на пределе | Интро 4–6 c + луп 110–150 c (файл ~120–160 c) | Как у №9, но арка круче; edit-точки под фазы | Как у №9 | P2 (fallback до готовности: `music_boss_battle_300`) |
+| 9 | `music_boss_battle_300` | Промежуточный boss Act 1 (`boss_combat_active`), таймер 300 c | Полновесная эпичная босс-битва в бардовском мире: боевые барабаны в два слоя, низкие дроны, лютня/лира широкими жестами, редкие «хоровые» гласные (без слов). Фазовость: луп разбит edit-точками под будущую синхронизацию с фазами босса (boss.gd `boss_phase` 1→2→3) | Интро 4–6 c + луп 100–140 c (файл ~110–150 c) | Луп секциями A/B/C по 16 тактов — phase-ready edit-точки на границах; 300 c ≈ 2–2.5 прохода | Scripted outro (окно 8 c) + эпичные стингеры | **P1** |
+| 10 | `music_final_boss_crescendo_300` | Финальный boss Act 2 и secret boss (`start_secret_boss_encounter`), таймер 300 c | Интенсивнее `music_boss_battle_300`: плотнее перкуссия, выше темп, крещендо-арки внутри лупа. БЕЗ «дешёвой оркестровой стены» — остаёмся в бардовском тёмном фэнтези: живые струны/барабаны/лира на пределе | Интро 4–6 c + луп 110–150 c (файл ~120–160 c) | Как у №9, но арка круче; edit-точки под фазы | Как у №9 | P2 (fallback до готовности: `music_boss_battle_300`) |
 
 ### Стингеры результата (расширение пака, SHOULD)
 
@@ -99,7 +99,7 @@ player-facing атрибуции: `docs/CREDITS.md`.
 ### Тайминг раундов (факт кода)
 
 - Обычный бой: `min(60 + 3 × route_scaling_stage, 90) × round_duration_mult`, где
-  `route_scaling_stage = route_stage + (act−1) × 4` (main.gd:23–25, 841;
+  `route_scaling_stage = route_stage + (act−1) × 8` (SCRUM-1058;
   combat_director.gd:1250–1258). `round_duration_mult` — Возвышение L4+ («Истончённая
   вахта») = ×1.25 (progression_data_ascension.gd:23). **Фактический диапазон: 60–112.5 c.**
 - Элитка и босс: жёсткие **300 c** (`ELITE_BOSS_ROUND_DURATION`, main.gd:27); множитель
@@ -166,7 +166,7 @@ func set_sfx_loop(sfx_id: String, active: bool) -> void
 
 | Момент | Место | Вызов |
 |--------|-------|-------|
-| Старт боя | combat_director.gd:161 (`_start_combat`) | `play_combat_music(kind, _current_round_duration())`; kind: боссы актов 1–2 → `"boss"`, босс акта 3 и секретный → `"final"`, элитка → `"elite"`, иначе `"battle"` |
+| Старт боя | combat_director.gd (`_start_combat`) | `play_combat_music(kind, _current_round_duration())`; kind: boss Act 1 → `"boss"`, финальный boss Act 2 и secret boss → `"final"`, элитка → `"elite"`, иначе `"battle"` |
 | Тик боя | main.gd:1238 (декремент `round_time_left`) | однократно при `round_time_left <= MUSIC_OUTRO_WINDOW` и активном бое → `begin_music_outro(round_time_left)` |
 | Победа/поражение | combat_director.gd `_end_combat` / victory banner / death screen | ранний конец → `begin_music_outro(1.2)`; затем `play_music_stinger(...)` по исходу |
 | Возврат на карту/в меню | route_map_screen.gd:69, ui_screens.gd:503 | `play_music("route_map")` / `play_music("menu")` — существующий кроссфейд 0.9 c |
@@ -193,8 +193,9 @@ func set_sfx_loop(sfx_id: String, active: bool) -> void
 3. Гарантия покрытия: на любом окне из 4 подряд обычных боёв каждый трек звучит ровно 1 раз.
 
 **Биомное упорядочивание (SHOULD):** при пересыпке мешок сортируется мягким приоритетом
-акта — act 1 предпочитает `skirmish_a/b` раньше, act 2 поднимает `ruined_courtyard`,
-act 3 — `fey_marsh`. Констрейнт неповтора (правило 2) всегда важнее сортировки.
+акта — Act 1 предпочитает `skirmish_a/b` раньше, финальный Act 2 поднимает
+`ruined_courtyard`. `fey_marsh` остаётся в общем shuffle-bag, но больше не имеет
+недостижимого приоритета удалённого третьего акта. Констрейнт неповтора (правило 2) всегда важнее сортировки.
 
 **Персистенс:** состояние мешка живёт в AudioManager на сессию и НЕ пишется в autosave —
 после continue ротация начинается заново (допустимая потеря; не трогаем схему сейва).
@@ -351,7 +352,7 @@ ogg, чистка тегов, **loop-seam QA** — программная про
 - `scripts/main.gd` — outro-триггер в тике боя (около :1238); роутер `_play_music`
   не ломать.
 - `scripts/combat_director.gd` — `_start_combat` (:161): `play_combat_music(kind, duration)`
-  c определением kind (боссы актов 1–2 / финальный: акт 3 или `secret_boss_active` /
+  c определением kind (boss Act 1 / финальный: Act 2 или `secret_boss_active` /
   элитка / battle); `_end_combat`: fast-outro + стингеры.
 - `scripts/route_map_screen.gd` (:69) — id `route_map`.
 - `scripts/ui_screens.gd` — меню (:503), shop/campfire/event музыка, замена `level_up` на
@@ -440,8 +441,8 @@ SCRUM-967 (SFX) → SCRUM-968 (интеграция; зависит от 966/967
   route_map_screen._show_battle_map при act 1/stage 0), мягкий биомный приоритет акта,
   session-only (не в autosave).
 - Round-timed playback §3 реализован: `combat_director._start_combat` →
-  `play_combat_music(kind, round_time_left)` (kind: боссы актов 1–2 → boss, акт 3 и
-  секретный → final, элитка → elite, иначе battle); `main._process` при
+  `play_combat_music(kind, round_time_left)` (kind: boss Act 1 → boss, финальный
+  Act 2 и secret boss → final, элитка → elite, иначе battle); `main._process` при
   `round_time_left <= music_outro_window()` (6 c бой / 8 c элитка+боссы) →
   идемпотентный `begin_music_outro(round_time_left)` — ease-out до −40 dB на
   PAUSABLE-якоре (замирает с паузой); ранний конец (`_end_combat`) → fast-outro 1.2 c +

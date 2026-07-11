@@ -213,19 +213,20 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 				if stat_rects[i].grow(-0.5).intersects(stat_rects[j].grow(-0.5)):
 					_fail("Expected compact stat cells not to overlap at %s: %s vs %s." % [str(viewport_size), stat_rects[i], stat_rects[j]])
 					return
-	# SCRUM-887: строка «Основные атрибуты: <A>, <B>» из данных — после слабых сторон.
-	var main_attrs := main.find_child("HS4MainAttributes", true, false) as Label
-	if main_attrs == null or not main_attrs.text.begins_with("Основные атрибуты:"):
-		_fail("Expected the 'Основные атрибуты:' data line in the dossier text column at %s." % str(viewport_size))
+	# SCRUM-1064: deterministic top-three BASE_STATS line replaces the obsolete
+	# hand-picked two-stat priority copy.
+	var leading_stats := main.find_child("HS4LeadingBaseStats", true, false) as Label
+	if leading_stats == null or not leading_stats.text.begins_with("Основные характеристики:"):
+		_fail("Expected the deterministic 'Основные характеристики:' line at %s." % str(viewport_size))
 		return
 	var listed_stat_names := 0
 	for stat_name in ProgressionData.STAT_NAMES.values():
-		if main_attrs.text.contains(str(stat_name)):
+		if leading_stats.text.contains(str(stat_name)):
 			listed_stat_names += 1
-	if listed_stat_names < 2:
-		_fail("Expected >=2 base stat names in the main attributes line at %s, got '%s'." % [str(viewport_size), main_attrs.text])
+	if listed_stat_names != 3:
+		_fail("Expected exactly 3 top BASE_STATS in the dossier line at %s, got '%s'." % [str(viewport_size), leading_stats.text])
 		return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven build guidance section %s at %s." % [relevance, str(viewport_size)])

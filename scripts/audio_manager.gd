@@ -567,10 +567,10 @@ func _act_preferred_track() -> String:
 	var act = scene.get("current_act")
 	if act == null:
 		return ""
-	match clampi(int(act), 1, 3):
+	var act_count_value = scene.get("ACT_COUNT")
+	var act_count := maxi(1, int(act_count_value) if act_count_value != null else 1)
+	match clampi(int(act), 1, act_count):
 		1:
 			return "music_combat_bardic_skirmish_a" if (randi() % 2 == 0) else "music_combat_bardic_skirmish_b"
-		2:
-			return "music_combat_ruined_courtyard"
 		_:
-			return "music_combat_fey_marsh"
+			return "music_combat_ruined_courtyard"

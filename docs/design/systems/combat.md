@@ -26,9 +26,10 @@
    целью = поражение (death screen, `outcome_reason` поясняет «не успел убить … за
    5 минут»). Таймер тикает и в боссовом бою (SCRUM-785).
 6. После обычного/elite боя игрок получает XP/деньги/route reward и возвращается на маршрут.
-7. После boss Act 1/2 игрок получает boss reward, сохраняет билд и переходит на
-   новую route map следующего акта. После boss Act 3 показывается финальная победа
-   и начисляется мета-прогрессия.
+7. После boss Act 1 игрок ровно один раз получает boss reward и 70% max-HP heal,
+   сохраняет билд и переходит на новую route map Act 2. После boss Act 2
+   показывается финальная победа либо запускается разрешённый secret boss; после
+   финального результата autosave очищается.
 
 ### Combat Player lifecycle (SCRUM-1071)
 
@@ -239,13 +240,13 @@
   time и capped at `1.55`. HP pressure стартует с `1.05` и растёт до ~`1.37`;
   contact/projectile damage pressure стартует с `1.03` и растёт до ~`1.23`.
   Spawn cooldown получает дополнительное elapsed-time давление.
-- Act 2/3 получают более опасный mob mix: shooter/mage/spitter/bone-shaman,
+- Act 2 получает более опасный mob mix: shooter/mage/spitter/bone-shaman,
   summoner and heavy/shield/bruiser weights grow from route scaling stage 4.
   Mini-elites can appear in ordinary waves from a base chance `0.015`, growing
   by stage/wave/time to cap `0.12` before Ascension modifiers.
-- Для 3-актного забега combat scaling использует `route_scaling_stage()`, а не
-  act-local `route_stage`: Act 2/3 стартуют с новым маршрутом, но без tutorial
-  ослабления волн/экономики.
+- Для двухактного забега combat scaling использует `route_scaling_stage()`, а не
+  act-local `route_stage`: Act 2 стартует с новым маршрутом на stage 8, ровно с
+  бюджета boss Act 1, и доходит до финального stage 16 без удлинения боёв.
 - Elite fights выбирают элитку из пула; boss node выбирает одного из доступных боссов.
 - Boss-ростер: `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`. У боссов уникальные паттерны и hazard-зоны: гравитационная воронка `rift_warden`, вампирский укус `disk_devourer`, костяные шипы/стены `bone_archon`, паутина-замедление `brood_mother`, ember/огненные лужи `ashen_colossus`; зоны привязаны к node-bound tweens.
 - Мини-элитки (`mini_elite`): в обычные волны с шансом `mini_elite_chance` подмешиваются усиленные «мини-боссы» из `mini_elite_kinds` — меньше карточных элиток, но опаснее рядовых; имя/тип берётся из реестра.

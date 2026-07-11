@@ -3,7 +3,7 @@ extends SceneTree
 const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
 const EXPECTED_ROUTE_STEPS_TO_BOSS := 8  # SCRUM-786: 8 нодов до босса (было 10)
-const EXPECTED_ACT_COUNT := 3
+const EXPECTED_ACT_COUNT := 2
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const MetaProgression := preload("res://scripts/meta_progression.gd")
@@ -373,7 +373,7 @@ func _initialize() -> void:
 		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected SCRUM-851 line bar + concise tooltip for stat %s." % stat_id)
 			return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "" or not guidance.text.contains(":"):
 			_fail("Expected SCRUM-798 build guidance section %s." % relevance)
@@ -1503,7 +1503,7 @@ func _initialize() -> void:
 	await _test_hud_no_overlap_layouts(main_scene)
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
-	await _test_secret_boss_after_act3_flow(main_scene)
+	await _test_secret_boss_after_final_act_flow(main_scene)
 
 	print("Runtime smoke test passed.")
 	quit()
@@ -1669,28 +1669,28 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	await process_frame
 
 
-func _test_secret_boss_after_act3_flow(main_scene: PackedScene) -> void:
+func _test_secret_boss_after_final_act_flow(main_scene: PackedScene) -> void:
 	var m := main_scene.instantiate()
 	root.add_child(m)
 	await process_frame
 	m.current_act = m.ACT_COUNT
 	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL - 1
 	m.secret_boss_active = false
-	if m.should_start_secret_boss_after_act3():
-		_fail("Expected below-max Ascension to end Act 3 normally.")
+	if m.should_start_secret_boss_after_final_act():
+		_fail("Expected below-max Ascension to end the final act normally.")
 		return
 	var base_boss := "ashen_colossus"
-	var resolved: String = m.resolve_act3_boss_id(base_boss)
+	var resolved: String = m.resolve_final_act_boss_id(base_boss)
 	if resolved != base_boss or bool(m.secret_boss_active):
-		_fail("Expected Act 3 route boss id to remain normal before the post-boss secret flow.")
+		_fail("Expected final-act route boss id to remain normal before the post-boss secret flow.")
 		return
 	m.selected_ascension_level = m.META_PROGRESSION.MAX_ASCENSION_LEVEL
-	if not m.should_start_secret_boss_after_act3():
-		_fail("Expected max Ascension Act 3 victory to arm the secret boss follow-up.")
+	if not m.should_start_secret_boss_after_final_act():
+		_fail("Expected max Ascension final-act victory to arm the secret boss follow-up.")
 		return
-	resolved = m.resolve_act3_boss_id(base_boss)
+	resolved = m.resolve_final_act_boss_id(base_boss)
 	if resolved != base_boss or bool(m.secret_boss_active):
-		_fail("Expected route entry to keep normal Act 3 boss even when secret follow-up is armed.")
+		_fail("Expected route entry to keep the normal final-act boss even when secret follow-up is armed.")
 		return
 	m.queue_free()
 	await process_frame
@@ -2052,8 +2052,9 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 		return
 	var route_title_progress := route_main.find_child("RouteMapTitleProgress", true, false)
 	var title_progress_text := _collect_label_text(route_title_progress) if route_title_progress != null else ""
-	if not title_progress_text.contains("Акт 1/3"):
-		_fail("Expected the authored route title/progress zone to show Act 1/3 progress.")
+	var expected_act_progress := "Акт 1/%d" % EXPECTED_ACT_COUNT
+	if not title_progress_text.contains(expected_act_progress):
+		_fail("Expected the authored route title/progress zone to show %s progress." % expected_act_progress)
 		return
 
 	route_scroll.scroll_vertical = 0
@@ -8693,7 +8694,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	if first_thumb_rect.size.x < hero_slot_floor or first_thumb_rect.size.y < hero_slot_floor:
 		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guidance := hero_main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven Hero Select build guidance %s at %s." % [relevance, context])

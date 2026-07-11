@@ -1242,10 +1242,9 @@ func _open_route_node(route_node: Dictionary) -> void:
 			# узел свалился бы в дефолтную ветку обычного боя.
 			game.combat._start_combat(false, "elite")
 		"boss":
-			# SCRUM-619: на финальном акте при выполненном гейте подменяется на
-			# SCRUM-541: route always starts the normal Act 3 boss; the optional
-			# secret boss is spawned only after Act 3 victory in combat_director.
-			game.current_boss_id = game.resolve_act3_boss_id(str(route_node.get("boss_id", "rift_warden")))
+			# Route always starts the normal final-act boss; the optional secret
+			# boss is spawned only after that victory in combat_director.
+			game.current_boss_id = game.resolve_final_act_boss_id(str(route_node.get("boss_id", "rift_warden")))
 			game.combat._start_combat(true, "boss")
 		_:
 			game.combat._start_combat(false, "battle")

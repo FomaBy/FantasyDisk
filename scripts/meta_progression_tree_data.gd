@@ -489,12 +489,15 @@ const CONSTELLATION_SPECS := {
 	},
 	"doctor": {
 		"core_title": "Клятва полевого врача",
-		"attrs": ["regeneration", "vampiric_amount", "vampiric_chance", "max_health", "buff_power", "attack_speed"],
+		# SCRUM-1064: Plague Oath blocks every generic regen/vampirism modifier.
+		# Keep the constellation on live weapon/utility axes so no purchased star
+		# is silently discarded by Player.apply_meta_skill_modifiers().
+		"attrs": ["dot_damage", "dot_speed", "max_health", "buff_power", "attack_speed", "ultimate_power"],
 		"techniques": [
-			{"title": "Срочная перевязка", "effects": {"regeneration_flat": 0.023, "max_health_mult": 0.008}},
-			{"title": "Переливание", "effects": {"vampiric_amount_flat": 0.1, "vampiric_chance_flat": 0.006}},
+			{"title": "Чумная смесь", "effects": {"dot_damage_flat": 0.21, "dot_speed_flat": 0.013}},
+			{"title": "Полевой резерв", "effects": {"max_health_mult": 0.008, "buff_power_flat": 0.006}},
 			{"title": "Стимулятор", "effects": {"attack_speed_mult": 0.008, "buff_power_flat": 0.006}},
-			{"title": "Реанимация", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
+			{"title": "Реанимация", "effects": {"ultimate_flat": 0.011, "max_health_mult": 0.008}},
 		],
 		"keystones": [
 			{"title": "Вампирический контур", "effects": {"drain_extra_targets": 1.0, "medkit_healing_mult": -0.40}},
@@ -503,7 +506,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"hidden": [
 			{"title": "Протокол спасения", "effects": {"lowhp_guard": 1.0}, "lore": "Врач, освоивший весь инструментарий, не даст умереть и себе.", "metric": "class_wins", "threshold": 8},
-			{"title": "Горный госпиталь", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Чем выше поднимаешься, тем ценнее каждый вдох.", "metric": "no_shop_wins", "threshold": 2},
+			{"title": "Горный госпиталь", "effects": {"ult_start_charge": 0.5}, "lore": "Чем выше поднимаешься, тем важнее заранее подготовить переливание.", "metric": "no_shop_wins", "threshold": 2},
 		],
 	},
 	"chemist": {

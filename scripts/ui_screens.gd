@@ -1330,41 +1330,14 @@ func _hs4_ascension_text(level: int) -> String:
 	return "\n".join(lines)
 
 
-func _hs4_attribute_display_name(attr_id: String) -> String:
-	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
-		var item := entry as Dictionary
-		if str(item.get("id", "")) == attr_id:
-			return str(item.get("name", attr_id))
-	return str(game.PROGRESSION_DATA.STAT_NAMES.get(attr_id, attr_id))
-
-
-func _hs4_attribute_guidance_groups(character_id: String) -> Dictionary:
-	var groups := {
-		"primary": [],
-		"secondary": [],
-		"optional": [],
-	}
-	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
-		var item := entry as Dictionary
-		var attr_id := str(item.get("id", ""))
-		if attr_id == "":
-			continue
-		var relevance := str(game.PROGRESSION_DATA.attribute_relevance(attr_id, character_id))
-		if not groups.has(relevance):
-			relevance = "optional"
-		(groups[relevance] as Array).append(_hs4_attribute_display_name(attr_id))
-	return groups
-
-
-func _hs4_join_guidance_names(names: Array, max_items := 8) -> String:
-	if names.is_empty():
+func _hs4_join_dossier_names(entries: Array) -> String:
+	if entries.is_empty():
 		return "Нет."
-	var shown := PackedStringArray()
-	for i in range(mini(names.size(), max_items)):
-		shown.append(str(names[i]))
-	if names.size() > max_items:
-		shown.append("+%d" % (names.size() - max_items))
-	return ", ".join(shown)
+	var names := PackedStringArray()
+	for entry_value in entries:
+		var entry := entry_value as Dictionary
+		names.append(str(entry.get("name", entry.get("id", ""))))
+	return ", ".join(names)
 
 
 func _hs4_stat_fill_color(stat_id: String) -> Color:
@@ -1705,14 +1678,8 @@ func _build_character_select_v4() -> void:
 		dossier_scroll.accept_event()
 	)
 
-	var name_label := Label.new()
-	name_label.name = "HS4NameLabel"
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
-	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	dossier_content.add_child(name_label)
-
-	# SCRUM-952: the canonical class trait is the first scannable dossier block.
+	# SCRUM-1064: the optional canonical trait is the first dossier block. Hidden
+	# traits collapse completely in the VBox, so name becomes first without a gap.
 	# The title/body stay as native labels inside the existing scroll-safe content
 	# zone; no generated ornament or frame is used as a live text surface.
 	var trait_heading := Label.new()
@@ -1724,56 +1691,33 @@ func _build_character_select_v4() -> void:
 	trait_heading.mouse_filter = Control.MOUSE_FILTER_PASS
 	dossier_content.add_child(trait_heading)
 
-	var strengths_label := Label.new()
-	strengths_label.name = "HS4Strengths"
-	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 19))
-	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
-	strengths_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	dossier_content.add_child(strengths_label)
-
-	var weaknesses_label := Label.new()
-	weaknesses_label.name = "HS4Weaknesses"
-	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 19))
-	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
-	weaknesses_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	dossier_content.add_child(weaknesses_label)
-
-	# Extended playstyle copy follows the three decision-critical sections so
-	# 1080p/2K never hide strengths or weaknesses below generic prose.
-	var desc_label := Label.new()
-	desc_label.name = "HS4Description"
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	desc_label.max_lines_visible = 3
-	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
-	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
-	dossier_content.add_child(desc_label)
-
-	# SCRUM-887: главные атрибуты класса из данных (main_attribute + следующий
-	# по ATTRIBUTE_PRIORITIES) — сразу после слабых сторон, золотым.
-	var main_attrs_label := Label.new()
-	main_attrs_label.name = "HS4MainAttributes"
-	main_attrs_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	main_attrs_label.max_lines_visible = 2
-	main_attrs_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	main_attrs_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	main_attrs_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
-	main_attrs_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
-	dossier_content.add_child(main_attrs_label)
+	var name_label := Label.new()
+	name_label.name = "HS4NameLabel"
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
+	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	dossier_content.add_child(name_label)
 
 	var weapon_label := Label.new()
 	weapon_label.name = "HS4Weapon"
 	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapon_label.max_lines_visible = 2
-	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	weapon_label.max_lines_visible = -1
+	weapon_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
 	weapon_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(weapon_label)
+
+	var leading_stats_label := Label.new()
+	leading_stats_label.name = "HS4LeadingBaseStats"
+	leading_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	leading_stats_label.max_lines_visible = -1
+	leading_stats_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	leading_stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	leading_stats_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	leading_stats_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	dossier_content.add_child(leading_stats_label)
 
 	# SCRUM-887/951: характеристики не скроллятся. Full-size остаётся одной
 	# вертикальной колонной; 720p использует PixelLab-specified 2x4 reflow, чтобы
@@ -1897,21 +1841,13 @@ func _build_character_select_v4() -> void:
 		stat_fill_nodes[sid] = bar_fill
 		stat_value_labels[sid] = stat_value
 
-	var guidance_title := Label.new()
-	guidance_title.name = "HS4BuildGuidanceTitle"
-	guidance_title.text = "Подсказки билда"
-	guidance_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	guidance_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	guidance_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	dossier_content.add_child(guidance_title)
-
 	var guidance_labels := {}
-	for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guide_label := Label.new()
 		guide_label.name = "HS4BuildGuidance_%s" % relevance
 		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		guide_label.max_lines_visible = 2 if relevance != "optional" else 1
-		guide_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		guide_label.max_lines_visible = -1
+		guide_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
 		guide_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		dossier_content.add_child(guide_label)
@@ -2255,32 +2191,27 @@ func _build_character_select_v4() -> void:
 		var cid: String = game.selected_character_id
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
-		var trait_config: Dictionary = game.PROGRESSION_DATA.class_trait(cid)
+		var dossier: Dictionary = game.PROGRESSION_DATA.hero_select_dossier(cid)
+		var trait_config: Dictionary = dossier.get("trait", {}) as Dictionary
 		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
 		position_main_portrait.call(portrait.texture)
-		name_label.text = str(config.get("title", cid))
+		name_label.text = str(dossier.get("name", config.get("title", cid)))
 		var trait_title := str(trait_config.get("title", "")).strip_edges()
 		var trait_copy := str(trait_config.get("short_description", trait_config.get("description", ""))).strip_edges()
-		trait_heading.text = "Особенность — %s: %s" % [trait_title, trait_copy]
-		trait_heading.tooltip_text = "%s: %s" % [trait_title, trait_copy]
-		desc_label.text = str(config.get("description", ""))
-		strengths_label.text = "Плюсы: %s" % str(config.get("strengths", ""))
-		weaknesses_label.text = "Минусы: %s" % str(config.get("weaknesses", ""))
-		strengths_label.tooltip_text = strengths_label.text
-		weaknesses_label.tooltip_text = weaknesses_label.text
-		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)
-		var main_attr: String = str(game.PROGRESSION_DATA.class_main_attribute(cid))
+		trait_heading.visible = not trait_title.is_empty() and not trait_copy.is_empty()
+		trait_heading.text = "Особенность: %s — %s" % [trait_title, trait_copy] if trait_heading.visible else ""
+		trait_heading.tooltip_text = trait_heading.text
+		weapon_label.text = "Оружие: %s" % _hs4_join_dossier_names(dossier.get("weapons", []) as Array)
 		dossier_scroll.scroll_vertical = 0
 		dossier_scroll.set_deferred("scroll_vertical", 0)
-		# SCRUM-887: пара главных атрибутов из данных — main_attribute + следующий
-		# по приоритетам класса (русские имена статов, как в подписях полос).
-		var main_attr_names := PackedStringArray()
-		main_attr_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)))
-		for attr in game.PROGRESSION_DATA.attribute_priorities(cid):
-			if str(attr) != main_attr:
-				main_attr_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(str(attr), str(attr))))
-				break
-		main_attrs_label.text = "Основные атрибуты: %s" % ", ".join(main_attr_names)
+		var leading_stats := PackedStringArray()
+		for stat_value in dossier.get("leading_base_stats", []) as Array:
+			var stat_entry := stat_value as Dictionary
+			leading_stats.append("%s — %d" % [
+				str(stat_entry.get("name", stat_entry.get("id", ""))),
+				int(round(float(stat_entry.get("value", 0.0)))),
+			])
+		leading_stats_label.text = "Основные характеристики: %s." % "; ".join(leading_stats)
 		for sid in HS4_MINIMAL_BASE_STATS:
 			var sval := float(stats.get(sid, 0.0))
 			var stat_button := stat_buttons[sid] as Button
@@ -2291,16 +2222,18 @@ func _build_character_select_v4() -> void:
 			stat_fill.color = _hs4_stat_fill_color(sid)
 			var stat_value := stat_value_labels[sid] as Label
 			stat_value.text = str(int(round(sval)))
-		var guidance_groups := _hs4_attribute_guidance_groups(cid)
-		for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+		var guidance_groups: Dictionary = dossier.get("attribute_relevance", {}) as Dictionary
+		var relevance_titles := {
+			"primary": "Основные атрибуты",
+			"secondary": "Второстепенные атрибуты",
+			"weak": "Слабые атрибуты",
+		}
+		for relevance in ["primary", "secondary", "weak"]:
 			var guide_label := guidance_labels[relevance] as Label
-			var title := str(HeroSelectConstants.HERO_BUILD_RELEVANCE_TITLES.get(relevance, relevance))
-			var names: Array = guidance_groups.get(relevance, [])
-			guide_label.text = "%s: %s" % [title, _hs4_join_guidance_names(names, 8 if relevance != "optional" else 6)]
-			var tooltip_names := PackedStringArray()
-			for name in names:
-				tooltip_names.append(str(name))
-			guide_label.tooltip_text = "%s\n%s" % [title, ", ".join(tooltip_names)]
+			var title := str(relevance_titles.get(relevance, relevance))
+			var entries: Array = guidance_groups.get(relevance, []) as Array
+			guide_label.text = "%s: %s" % [title, _hs4_join_dossier_names(entries)]
+			guide_label.tooltip_text = guide_label.text
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
@@ -2421,8 +2354,29 @@ func _build_character_select_v4() -> void:
 	game.ui_escape_action = _show_main_menu
 	refresh.call()
 	refresh_focus_graph.call(true)
+	# SCRUM-1064: Hero Select used one-shot viewport arithmetic while the unified
+	# frame itself already followed resize. Rebuild this screen only (without the
+	# route/run reset in _show_character_select) after a real live size change.
+	# The deferred guard coalesces resize bursts and the old root invalidates on
+	# _clear_ui, preventing duplicate rebuilds.
+	var built_viewport_size := root.size
+	root.resized.connect(func() -> void:
+		if not is_instance_valid(root) or root.get_meta("hero_resize_rebuild_pending", false):
+			return
+		if root.size.distance_to(built_viewport_size) <= 0.5:
+			return
+		root.set_meta("hero_resize_rebuild_pending", true)
+		_rebuild_character_select_after_resize.call_deferred(root)
+	)
 	# Полая рама 9-slice поверх всего контента — добавляется последней.
 	_unified_add_frame(root, "HeroSelect")
+
+
+func _rebuild_character_select_after_resize(previous_root: Control) -> void:
+	if previous_root == null or not is_instance_valid(previous_root) or previous_root.get_parent() == null:
+		return
+	game._clear_ui()
+	_build_character_select_v4()
 
 func _show_character_select() -> void:
 	game.clear_run_autosave()
@@ -2445,14 +2399,6 @@ func _show_character_select() -> void:
 
 	# Экран выбора героя строит v4-билдер (SCRUM-470). Мёртвая v3-вёрстка удалена (SCRUM-492).
 	_build_character_select_v4()
-
-
-func _hero_weapon_names(character_id: String) -> String:
-	var names := []
-	for weapon_id in game.PROGRESSION_DATA.weapon_ids(character_id):
-		var weapon: Dictionary = game.PROGRESSION_DATA.weapon(character_id, str(weapon_id))
-		names.append(str(weapon.get("title", weapon_id)))
-	return ", ".join(names)
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")

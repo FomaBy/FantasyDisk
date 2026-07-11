@@ -414,6 +414,79 @@ static func attribute_relevance_weight(attr_id: String, character_id: String) ->
 			return 0.4
 
 
+# SCRUM-1064: deterministic Hero Select projection. Values sort descending;
+# ties keep the canonical STAT_NAMES declaration order so every class follows
+# exactly the same rule and the UI never carries a hand-written priority list.
+static func leading_base_stats(character_id: String, count := 3) -> Array:
+	var stats: Dictionary = base_stats(character_id)
+	var canonical_order: Array = STAT_NAMES.keys()
+	var rows: Array = []
+	for stat_id_value in canonical_order:
+		var stat_id := str(stat_id_value)
+		rows.append({
+			"id": stat_id,
+			"name": str(STAT_NAMES.get(stat_id, stat_id)),
+			"value": float(stats.get(stat_id, 0.0)),
+		})
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var av := float(a.get("value", 0.0))
+		var bv := float(b.get("value", 0.0))
+		if not is_equal_approx(av, bv):
+			return av > bv
+		return canonical_order.find(str(a.get("id", ""))) < canonical_order.find(str(b.get("id", "")))
+	)
+	var limit := clampi(count, 0, rows.size())
+	return rows.slice(0, limit)
+
+
+# Internal matrix key `optional` remains stable for reward weighting. The Hero
+# Select projection exposes the requested player-facing category `weak` and
+# covers the registry in canonical order without caps, abbreviations or overlap.
+static func hero_attribute_relevance_groups(character_id: String) -> Dictionary:
+	var groups := {"primary": [], "secondary": [], "weak": []}
+	for entry_value in ATTRIBUTE_REGISTRY:
+		var entry := entry_value as Dictionary
+		var attr_id := str(entry.get("id", ""))
+		if attr_id.is_empty():
+			continue
+		var category := attribute_relevance(attr_id, character_id)
+		if category == "optional":
+			category = "weak"
+		if not groups.has(category):
+			category = "weak"
+		(groups[category] as Array).append({
+			"id": attr_id,
+			"name": str(entry.get("name", attr_id)),
+		})
+	return groups
+
+
+# Uniform data contract consumed by Hero Select and focused schema tests. Codex
+# keeps its existing richer prose projection because it does not consume these
+# Hero-only fields.
+static func hero_select_dossier(character_id: String) -> Dictionary:
+	var config := character_config(character_id)
+	var weapons: Array = []
+	for weapon_id_value in weapon_ids(character_id):
+		var weapon_id := str(weapon_id_value)
+		var weapon_config := weapon(character_id, weapon_id)
+		weapons.append({
+			"id": weapon_id,
+			"name": str(weapon_config.get("title", weapon_id)),
+		})
+	var trait_record := class_trait(character_id)
+	if str(trait_record.get("title", "")).strip_edges().is_empty():
+		trait_record = {}
+	return {
+		"id": character_id,
+		"name": str(config.get("title", character_id)),
+		"trait": trait_record,
+		"weapons": weapons,
+		"leading_base_stats": leading_base_stats(character_id, 3),
+		"attribute_relevance": hero_attribute_relevance_groups(character_id),
+	}
+
+
 static func reward_attribute_dependency(reward: Dictionary) -> String:
 	# SCRUM-695: каноничный attr-id из реестра (LEVEL_UP_REWARDS теперь его несут).
 	var attr := str(reward.get("attr", ""))

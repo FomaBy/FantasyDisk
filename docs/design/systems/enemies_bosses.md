@@ -157,8 +157,8 @@ mini/card elite/boss scale order, boss death victory delay и базовые com
 
 ## SCRUM-541 Secret Ascension Boss
 
-`secret_ascension_boss` is a post-Act-3 backend/balance boss, not part of the
-normal boss node rotation. The route map still starts the ordinary Act 3 boss;
+`secret_ascension_boss` is a post-final-Act-2 backend/balance boss, not part of the
+normal boss node rotation. The route map still starts the ordinary Act 2 boss;
 after that boss is defeated, `CombatDirector` starts the secret encounter only
 when the run was launched at the maximum available Ascension level.
 
@@ -190,7 +190,8 @@ lands. Mechanics are implemented in `scripts/boss.gd` under
 - phase 2 at 50% HP adds immediate sector pressure plus riftling adds; phase 3
   begins below 25% HP.
 
-Balance benchmark for Act 3 max Ascension L5, route scaling stage 18:
+Historical balance benchmark for the final max-Ascension L5 encounter at route
+scaling stage 18 (the two-act route finale itself now reaches stage 16):
 estimated HP is about `47.6k`. L20 optimum class-kit 1-target DPS range from
 `205.39` to `391.83`, producing estimated TTK `231.8s` to `121.5s`
 (`179.8s` at median `264.77` DPS). L20 random average DPS range

@@ -13,10 +13,8 @@ const OLD_XP_CURVE_MULTIPLIER := 1.038
 const OLD_XP_CURVE_FLAT := 0.8
 const TARGET_ACT1_MIN_LEVEL := 10
 const TARGET_ACT1_MAX_LEVEL := 15
-const TARGET_ACT2_MIN_LEVEL := 20
-const TARGET_ACT2_MAX_LEVEL := 25
-const TARGET_RUN_MIN_LEVEL := 30
-const TARGET_RUN_MAX_LEVEL := 35
+const TARGET_ACT2_MIN_LEVEL := 24
+const TARGET_ACT2_MAX_LEVEL := 30
 const CROWD_DPS_REFERENCE := 210.0
 
 const PROFILE_FIXTURES := [
@@ -30,21 +28,14 @@ const FIGHT_PLAN := [
 	{"act": 1, "type": "battle", "stage": 2},
 	{"act": 1, "type": "elite", "stage": 3},
 	{"act": 1, "type": "battle", "stage": 4},
-	{"act": 1, "type": "boss", "stage": 5},
-	{"act": 2, "type": "battle", "stage": 4},
-	{"act": 2, "type": "battle", "stage": 5},
-	{"act": 2, "type": "elite", "stage": 6},
-	{"act": 2, "type": "battle", "stage": 7},
+	{"act": 1, "type": "boss", "stage": 8},
 	{"act": 2, "type": "battle", "stage": 8},
 	{"act": 2, "type": "battle", "stage": 9},
-	{"act": 2, "type": "boss", "stage": 10},
-	{"act": 3, "type": "battle", "stage": 8},
-	{"act": 3, "type": "battle", "stage": 9},
-	{"act": 3, "type": "elite", "stage": 10},
-	{"act": 3, "type": "battle", "stage": 11},
-	{"act": 3, "type": "battle", "stage": 12},
-	{"act": 3, "type": "battle", "stage": 13},
-	{"act": 3, "type": "boss", "stage": 14},
+	{"act": 2, "type": "elite", "stage": 10},
+	{"act": 2, "type": "battle", "stage": 11},
+	{"act": 2, "type": "battle", "stage": 12},
+	{"act": 2, "type": "battle", "stage": 13},
+	{"act": 2, "type": "boss", "stage": 16},
 ]
 
 
@@ -67,17 +58,15 @@ func _check_xp_targets(errors: Array) -> void:
 		var result := _projection_for_profile(profile as Dictionary)
 		_expect_range(errors, "%s Act 1 final level" % result["label"], int(result["act1"]["level"]), TARGET_ACT1_MIN_LEVEL, TARGET_ACT1_MAX_LEVEL)
 		_expect_range(errors, "%s Act 2 final level" % result["label"], int(result["act2"]["level"]), TARGET_ACT2_MIN_LEVEL, TARGET_ACT2_MAX_LEVEL)
-		_expect_range(errors, "%s 20-fight final level" % result["label"], int(result["run"]["level"]), TARGET_RUN_MIN_LEVEL, TARGET_RUN_MAX_LEVEL)
+		_expect_range(errors, "%s two-act final level" % result["label"], int(result["run"]["level"]), TARGET_ACT2_MIN_LEVEL, TARGET_ACT2_MAX_LEVEL)
 		if int(result["old_run"]["level"]) <= int(result["run"]["level"]):
 			errors.append("%s old XP curve should produce a higher runaway level than SCRUM-853 curve." % result["label"])
-		print("SCRUM-853 XP %s: scalar %.2f, kills %.1f, XP act1 %.1f -> lvl %d, act2 %.1f -> lvl %d, run %.1f -> lvl %d (old curve lvl %d)" % [
+		print("SCRUM-1058 XP %s: scalar %.2f, kills %.1f, XP act1 %.1f -> lvl %d, final Act2 %.1f -> lvl %d (old curve lvl %d)" % [
 			result["label"],
 			float(result["kill_scalar"]),
 			float(result["kills"]),
 			float(result["act1"]["xp"]),
 			int(result["act1"]["level"]),
-			float(result["act2"]["xp"]),
-			int(result["act2"]["level"]),
 			float(result["run"]["xp"]),
 			int(result["run"]["level"]),
 			int(result["old_run"]["level"]),
@@ -89,7 +78,7 @@ func _projection_for_profile(profile: Dictionary) -> Dictionary:
 	var weapon_id := str(profile["weapon"])
 	var kill_scalar := _profile_kill_scalar(character_id, weapon_id)
 	var act1 := _level_for_fights(FIGHT_PLAN.slice(0, 6), kill_scalar, ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT)
-	var act2 := _level_for_fights(FIGHT_PLAN.slice(0, 13), kill_scalar, ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT)
+	var act2 := _level_for_fights(FIGHT_PLAN, kill_scalar, ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT)
 	var run := _level_for_fights(FIGHT_PLAN, kill_scalar, ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT)
 	var old_run := _level_for_fights(FIGHT_PLAN, kill_scalar, OLD_XP_CURVE_MULTIPLIER, OLD_XP_CURVE_FLAT)
 	return {
@@ -190,7 +179,7 @@ func _check_pressure_monotonicity(errors: Array) -> void:
 	if hp_start <= 1.0 or dmg_start <= 1.0:
 		errors.append("enemy HP/contact pressure must be above 1.0 from stage 0.")
 	if hp_late <= hp_start or dmg_late <= dmg_start:
-		errors.append("enemy HP/contact pressure must grow into Act 2/3.")
+		errors.append("enemy HP/contact pressure must grow into final Act 2.")
 
 	var shooter_early := CombatDirector.advanced_spawn_weight_multiplier("shooter", 0)
 	var shooter_late := CombatDirector.advanced_spawn_weight_multiplier("shooter", 12)
@@ -199,7 +188,7 @@ func _check_pressure_monotonicity(errors: Array) -> void:
 	if shooter_early != 1.0:
 		errors.append("advanced mob weighting should not boost stage 0 shooters before the early-game dampener.")
 	if shooter_late <= shooter_early or summoner_late <= shooter_early or heavy_late <= shooter_early:
-		errors.append("Act 2/3 advanced mob weights must grow above ordinary early weights.")
+		errors.append("Final Act 2 advanced mob weights must grow above ordinary early weights.")
 
 	var mini_start := CombatDirector.mini_elite_pressure_chance(0, 0, 0.0)
 	var mini_late := CombatDirector.mini_elite_pressure_chance(12, 8, 0.9)

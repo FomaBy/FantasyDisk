@@ -177,25 +177,28 @@ UI обязан показывать эти интерпретации текс�
 - SCRUM-853 растянул XP-кривую без урезания per-monster drops:
   `next_xp_requirement = ceil(current_requirement * 1.09 + 0.8)`. Старый почти
   линейный шаг SCRUM-527 (`1.038 + 0.8`) разгонял 20-fight projection до
-  ~42-43 уровня; новая кривая держит ориентиры пользователя: после 5-6 боев Act
-  1 около 14-15 уровня, после Act 2 около 24, после 20 боев полный забег около
-  32 уровня. Guard: `tests/monster_xp_pressure_pacing_test.gd`.
+  ~42-43 уровня. SCRUM-1058 переводит проекцию на 13 боёв двух актов с финальным
+  stage 16: после 6 боёв Act 1 оба контрастных профиля около level 15, в финале
+  Act 2 — level 29-30. Guard: `tests/monster_xp_pressure_pacing_test.gd`.
 
 ## Act Scaling
 
-- Runtime progression uses `current_act` (`1..3`) plus act-local `route_stage`.
-- Route navigation keeps `route_stage` local to the current map (`0..10`) so each
+- SCRUM-1058 runtime progression uses `current_act` (`1..2`) plus act-local `route_stage`.
+- Route navigation keeps `route_stage` local to the current map (`0..8`) so each
   act can generate a fresh route and preserve existing route reachability rules.
 - Economy, drops, round duration and enemy/boss scaling read
-  `route_scaling_stage() = route_stage + (current_act - 1) * 4`. This gives Act
-  2/3 controlled pressure and reward growth without the runaway curve of treating
-  all 33 route rows as one exponential stage chain.
+  `route_scaling_stage() = route_stage + (current_act - 1) * 8`. The offset equals
+  `ROUTE_STEPS_TO_BOSS`: Act 2 stage 0 continues from the Act 1 boss budget with
+  no drop/jump, while Act 2 stage 8 reaches the former final stage 16. Neither
+  route rows nor combat durations are extended to compensate for the removed act.
 - SCRUM-853 enemy pressure also reads `route_scaling_stage()` plus wave index and
-  elapsed combat time, so Act 2/3 receive denser waves, tougher enemies and more
+  elapsed combat time, so Act 2 receives denser waves, tougher enemies and more
   frequent advanced mobs without changing route reachability.
 - Autosave persists `current_act`, route nodes, selected route history, shop
-  state and player snapshot. Continue restores Act 2/3 map checkpoints with the
-  same build state.
+  state and player snapshot. Continue restores Act 1/2 checkpoints with the same
+  build state. Legacy `current_act=3` is migrated to the equivalent final Act 2
+  checkpoint, preserving route position/build/history and persisting the normalized
+  `run_act_count=2` state.
 
 ## Comfort/Pacing re-eval (SCRUM-781)
 
@@ -698,12 +701,12 @@ mix custom runs into canonical balance evidence.
 
 The secret boss no longer uses the old low-damage/key-artifact SCRUM-619 gate.
 `MetaProgression.secret_encounter_unlocked_for_level(run_level)` unlocks the
-post-Act-3 secret encounter only when the selected run Ascension is the current
+post-final-act secret encounter only when the selected run Ascension is the current
 maximum (`MAX_ASCENSION_LEVEL`, 5 after SCRUM-516).
 
 Flow:
 
-- Act 3 route boss remains the normal boss id from the route node.
+- Act 2 route boss remains the normal boss id from the route node.
 - If that boss is defeated below max Ascension, the run ends with the normal
   victory flow.
 - If defeated at max Ascension, `CombatDirector` immediately starts
@@ -711,7 +714,9 @@ Flow:
 - The one-time persistent secret reward still uses
   `record_secret_boss_victory`; repeat wins do not grant the bonus twice.
 
-Balance benchmark, Act 3 L5/stage 18: secret boss HP is about `47.6k`.
+Historical balance benchmark at final Ascension L5/stage 18: secret boss HP is
+about `47.6k`; SCRUM-1058 moves the reachable route finale to stage 16 without
+changing boss formulas or extending fight duration.
 L20 optimum class kits estimate `121.5s..231.8s` TTK by 1-target DPS range;
 L20 random-average kits estimate `347.3s..559.6s`, so the fight is intended as
 a brutal capstone for tuned builds rather than a global class rebalance.
