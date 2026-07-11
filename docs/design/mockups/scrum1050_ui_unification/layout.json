@@ -1,0 +1,19 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "content": {},
+  "zones": [
+    {"id": "button_normal_safe", "text": "", "x": 40, "y": 36, "w": 88, "h": 28},
+    {"id": "button_hover_safe", "text": "", "x": 170, "y": 36, "w": 88, "h": 28},
+    {"id": "button_pressed_safe", "text": "", "x": 300, "y": 36, "w": 88, "h": 28},
+    {"id": "button_focus_safe", "text": "", "x": 430, "y": 36, "w": 88, "h": 28},
+    {"id": "button_disabled_safe", "text": "", "x": 560, "y": 36, "w": 88, "h": 28},
+    {"id": "accent_main_menu_safe", "text": "", "x": 104, "y": 118, "w": 50, "h": 60},
+    {"id": "accent_selection_safe", "text": "", "x": 214, "y": 122, "w": 96, "h": 66},
+    {"id": "accent_settings_safe", "text": "", "x": 375, "y": 122, "w": 102, "h": 68},
+    {"id": "accent_codex_safe", "text": "", "x": 563, "y": 122, "w": 54, "h": 64},
+    {"id": "accent_combat_hud_safe", "text": "", "x": 38, "y": 276, "w": 120, "h": 36},
+    {"id": "accent_economy_safe", "text": "", "x": 210, "y": 280, "w": 104, "h": 28},
+    {"id": "accent_rewards_levelup_safe", "text": "", "x": 393, "y": 268, "w": 66, "h": 72},
+    {"id": "accent_pause_results_safe", "text": "", "x": 536, "y": 271, "w": 108, "h": 42}
+  ]
+}

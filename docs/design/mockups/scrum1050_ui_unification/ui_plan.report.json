@@ -1,0 +1,332 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "reference_board",
+      "kind": "decor",
+      "rect": [
+        8,
+        8,
+        672,
+        368
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_normal",
+      "kind": "button",
+      "rect": [
+        24,
+        24,
+        120,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_normal_safe",
+      "kind": "zone",
+      "rect": [
+        40,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_hover",
+      "kind": "button",
+      "rect": [
+        154,
+        24,
+        120,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_hover_safe",
+      "kind": "zone",
+      "rect": [
+        170,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_pressed",
+      "kind": "button",
+      "rect": [
+        284,
+        24,
+        120,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_pressed_safe",
+      "kind": "zone",
+      "rect": [
+        300,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_focus",
+      "kind": "button",
+      "rect": [
+        414,
+        24,
+        120,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_focus_safe",
+      "kind": "zone",
+      "rect": [
+        430,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_disabled",
+      "kind": "button",
+      "rect": [
+        544,
+        24,
+        120,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_disabled_safe",
+      "kind": "zone",
+      "rect": [
+        560,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_main_menu",
+      "kind": "panel",
+      "rect": [
+        24,
+        96,
+        148,
+        118
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_main_menu_safe",
+      "kind": "zone",
+      "rect": [
+        104,
+        118,
+        50,
+        60
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_selection",
+      "kind": "panel",
+      "rect": [
+        188,
+        96,
+        148,
+        118
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_selection_safe",
+      "kind": "zone",
+      "rect": [
+        214,
+        122,
+        96,
+        66
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_settings",
+      "kind": "panel",
+      "rect": [
+        352,
+        96,
+        148,
+        118
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_settings_safe",
+      "kind": "zone",
+      "rect": [
+        375,
+        122,
+        102,
+        68
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_codex",
+      "kind": "panel",
+      "rect": [
+        516,
+        96,
+        148,
+        118
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_codex_safe",
+      "kind": "zone",
+      "rect": [
+        563,
+        122,
+        54,
+        64
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_combat_hud",
+      "kind": "panel",
+      "rect": [
+        24,
+        230,
+        148,
+        130
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_combat_hud_safe",
+      "kind": "zone",
+      "rect": [
+        38,
+        276,
+        120,
+        36
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_economy",
+      "kind": "panel",
+      "rect": [
+        188,
+        230,
+        148,
+        130
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_economy_safe",
+      "kind": "zone",
+      "rect": [
+        210,
+        280,
+        104,
+        28
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_rewards_levelup",
+      "kind": "panel",
+      "rect": [
+        352,
+        230,
+        148,
+        130
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_rewards_levelup_safe",
+      "kind": "zone",
+      "rect": [
+        393,
+        268,
+        66,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_pause_results",
+      "kind": "panel",
+      "rect": [
+        516,
+        230,
+        148,
+        130
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "accent_pause_results_safe",
+      "kind": "zone",
+      "rect": [
+        536,
+        271,
+        108,
+        42
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

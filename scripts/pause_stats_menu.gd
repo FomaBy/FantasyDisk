@@ -9,6 +9,7 @@ const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 
 # SCRUM-890: досье героя (пауза) — вариант Б: атлас-шапка (чип-титул + кит-кнопки
 # в ряд) и плотное тело (карточка героя слева, «Боевые параметры» 2×2 справа).
@@ -30,20 +31,8 @@ const PORTRAIT_FRAME_PATH := "res://assets/sprites/ui/atlas_style/dossier_portra
 const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
 const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
 
-# Глобальный кнопочный кит: нативные плиты text_buttons_unique, size-маппинг
-# = ui_screens._text_button_unique_id (72-высоты → 220/240/260-плиты,
-# 104 → back_260x104, промежуточная 88 → minimal_metal back_m 9-slice).
-const KIT_UNIQUE_DIR := "res://assets/sprites/ui/frames/text_buttons_unique/"
-const KIT_MINIMAL_DIR := "res://assets/sprites/ui/frames/minimal_metal_buttons/"
-const KIT_STATES := ["normal", "hover", "pressed", "focus", "disabled"]
-# margins/content = UIThemePaths.TEXT_BUTTON_UNIQUE_MARGINS/CONTENT
-const KIT_UNIQUE_72_MARGINS := Vector4(37, 14, 37, 14)
-const KIT_UNIQUE_72_CONTENT := Vector4(47, 14, 47, 14)
-const KIT_UNIQUE_104_MARGINS := Vector4(54, 21, 54, 21)
-const KIT_UNIQUE_104_CONTENT := Vector4(64, 21, 64, 21)
-# margins/content = UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS/CONTENT["back_m"]
-const KIT_BACK_M_MARGINS := Vector4(42, 28, 42, 28)
-const KIT_BACK_M_CONTENT := Vector4(56, 32, 56, 32)
+# Shared resolver keeps Pause in the same semantic button inventory as every
+# runtime screen; this scene only retains its local font/tint application.
 const BUTTON_HOVER_EXTRA_TINT := Color(1.12, 1.12, 1.12, 1.0)
 const BUTTON_DANGER_TINT := Color(1.08, 0.72, 0.72, 1.0)
 const BUTTON_DANGER_PRESSED_TINT := Color(0.92, 0.55, 0.55, 1.0)
@@ -1838,13 +1827,14 @@ func _kit_button(text: String, width: float, variant := "default") -> Button:
 
 
 func _apply_kit_button_theme(button: Button, variant := "default") -> void:
+	var family := UIButtonFamily.resolve(button, variant)
 	var normal_tint := Color.WHITE
 	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
 	if variant == "danger":
 		# danger-роль кита: красный tint плит (паритет с локальным китом досье до SCRUM-890).
 		normal_tint = BUTTON_DANGER_TINT
 		pressed_tint = BUTTON_DANGER_PRESSED_TINT
-	for state in KIT_STATES:
+	for state in UIButtonFamily.STATES:
 		var tint := normal_tint
 		match state:
 			"hover":
@@ -1855,7 +1845,7 @@ func _apply_kit_button_theme(button: Button, variant := "default") -> void:
 				tint = pressed_tint
 			"disabled":
 				tint = Color(0.72, 0.42, 0.42, 1.0) if variant == "danger" else Color(0.72, 0.72, 0.72, 1.0)
-		button.add_theme_stylebox_override(state, _kit_button_state_style(button.custom_minimum_size, state, tint))
+		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state, tint))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
 	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
@@ -1863,29 +1853,12 @@ func _apply_kit_button_theme(button: Button, variant := "default") -> void:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-func _kit_button_state_style(size: Vector2, state: String, tint: Color) -> StyleBox:
-	var plate_id := ""
-	if size.y <= 76.0:
-		if size.x <= 230.0:
-			plate_id = "quit_220x72"
-		elif size.x <= 250.0:
-			plate_id = "continue_240x72"
-		elif size.x <= 300.0:
-			plate_id = "later_260x72"
-	elif size.y >= 96.0 and size.x >= 240.0:
-		plate_id = "back_260x104"
-
-	var texture: Texture2D = null
-	var margins := KIT_BACK_M_MARGINS
-	var content := KIT_BACK_M_CONTENT
-	if plate_id != "":
-		var suffix := "_%s" % state
-		texture = load("%sui_btn_text_unique_%s%s.png" % [KIT_UNIQUE_DIR, plate_id, suffix]) as Texture2D
-		margins = KIT_UNIQUE_104_MARGINS if plate_id == "back_260x104" else KIT_UNIQUE_72_MARGINS
-		content = KIT_UNIQUE_104_CONTENT if plate_id == "back_260x104" else KIT_UNIQUE_72_CONTENT
-	else:
-		var mm_suffix := "" if state == "normal" else "_%s" % state
-		texture = load("%sui_btn_minimal_metal_back_m%s.png" % [KIT_MINIMAL_DIR, mm_suffix]) as Texture2D
+func _kit_button_state_style(button: Button, family: String, state: String, tint: Color) -> StyleBox:
+	var descriptor := UIButtonFamily.descriptor(family, state)
+	var texture := load(str(descriptor.get("path", ""))) as Texture2D
+	var margins: Vector4 = descriptor.get("margins", Vector4(42, 28, 42, 28))
+	var content: Vector4 = descriptor.get("content", Vector4(56, 32, 56, 32))
+	var size := button.custom_minimum_size
 	if size.y <= 76.0:
 		var vertical_margin := 12.0 if size.y <= 64.0 else 14.0
 		var vertical_content := 10.0 if size.y <= 64.0 else 14.0

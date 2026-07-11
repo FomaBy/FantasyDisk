@@ -4537,5 +4537,25 @@
   "key": "SCRUM-1053",
   "status": "Контроль качества",
   "desc_hash": "4d30ce6eb8ab2bfffc5999ff67be02b6"
+ },
+ "SCRUM-1049.md": {
+  "key": "SCRUM-1049",
+  "status": "В работе",
+  "desc_hash": "c34e21eb46663faaec3775648a92dcb5"
+ },
+ "SCRUM-1050.md": {
+  "key": "SCRUM-1050",
+  "status": "В работе",
+  "desc_hash": "b020a1ac742f674fd10b9ee020d5c6a7"
+ },
+ "SCRUM-1051.md": {
+  "key": "SCRUM-1051",
+  "status": "В работе",
+  "desc_hash": "9b1c0164aee02e90625bdb35b3c61ec4"
+ },
+ "SCRUM-1052.md": {
+  "key": "SCRUM-1052",
+  "status": "К выполнению",
+  "desc_hash": "10a935bf05241ac95cf7761eddfffddc"
  }
 }

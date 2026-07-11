@@ -6,6 +6,7 @@ extends "res://tests/runtime_smoke_test.gd"
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const FRAME_PATH := "res://assets/sprites/ui/meta40/frame_border.png"
+const GRATITUDE_ICON_PATH := "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png"
 const TARGETS := [
 	Vector2i(1280, 720),
 	Vector2i(1920, 1080),
@@ -114,6 +115,10 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	_assert_rect_near(actions.get_global_rect(), expected["grid"], "%s Main Menu grid" % str(viewport_size))
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
 	_assert_rect_near(credits.get_global_rect(), expected["credits"], "%s Main Menu credits" % str(viewport_size))
+	if credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
+		_errors.append("%s: MainMenuCreditsButton must be icon-only with the accepted PixelLab gratitude icon." % str(viewport_size))
+	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
+		_errors.append("%s: MainMenuCreditsButton is missing tooltip/accessibility metadata." % str(viewport_size))
 	for peer in [title, actions, version]:
 		if credits.get_global_rect().intersects((peer as Control).get_global_rect()):
 			_errors.append("%s: MainMenuCreditsButton overlaps %s." % [str(viewport_size), str((peer as Control).name)])
@@ -355,11 +360,11 @@ func _inner_rect(viewport_size: Vector2) -> Rect2:
 func _main_expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"logo": Rect2(157, 137, 460, 110), "grid": Rect2(157, 263, 776, 244), "version": Rect2(995, 543, 112, 24), "credits": Rect2(871, 149, 240, 36), "button_height": 72.0}
+			return {"logo": Rect2(157, 137, 460, 110), "grid": Rect2(157, 263, 776, 244), "version": Rect2(995, 543, 112, 24), "credits": Rect2(1059, 137, 64, 64), "button_height": 72.0}
 		Vector2i(1920, 1080):
-			return {"logo": Rect2(224, 193, 620, 170), "grid": Rect2(224, 387, 780, 348), "version": Rect2(1546, 839, 126, 24), "credits": Rect2(1444, 205, 240, 36), "button_height": 104.0}
+			return {"logo": Rect2(224, 193, 620, 170), "grid": Rect2(224, 387, 780, 348), "version": Rect2(1546, 839, 126, 24), "credits": Rect2(1624, 193, 72, 72), "button_height": 104.0}
 		_:
-			return {"logo": Rect2(299, 257, 720, 220), "grid": Rect2(299, 509, 780, 348), "version": Rect2(2105, 1127, 124, 24), "credits": Rect2(2009, 269, 240, 36), "button_height": 104.0}
+			return {"logo": Rect2(299, 257, 720, 220), "grid": Rect2(299, 509, 780, 348), "version": Rect2(2105, 1127, 124, 24), "credits": Rect2(2173, 257, 88, 88), "button_height": 104.0}
 
 
 func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:

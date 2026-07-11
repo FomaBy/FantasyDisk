@@ -1,0 +1,54 @@
+{
+  "jira": "SCRUM-1050",
+  "status": "design_ready_for_backend_handoff",
+  "pixel_lab_mcp": {
+    "config_smoke": "PASS get_balance; subscription active; no secrets printed or stored",
+    "rejected_reference_board_job": {
+      "tool": "create_ui_asset",
+      "result": "rejected before generation: no generations or credits remaining for creating a UI panel",
+      "reason": "create_ui_asset requires 20-40 generations; balance had four",
+      "generations_consumed": 0,
+      "exception": "existing source reuse approved; no fallback model"
+    },
+    "gratitude_icon": {
+      "tool": "create_map_object",
+      "object_id": "c1c1c353-e56e-405b-9adf-f1e6bd993152",
+      "status": "completed and exported before 8-hour auto-delete",
+      "size": [256, 256],
+      "view": "side",
+      "raw_source": "docs/design/references/scrum1050_ui_unification/pixellab_gratitude_icon_raw_256.png",
+      "alpha_source": "docs/design/references/scrum1050_ui_unification/pixellab_gratitude_icon_alpha_256.png",
+      "runtime_candidate": "assets/sprites/ui/icons/credits/ui_icon_gratitude.png",
+      "sha256": "48313515ae42ec1cf76fb4c9650e87afeb7901e38a45041b7b6c3ec5e27e64a4",
+      "alpha_bbox_xyxy": [55, 48, 201, 208],
+      "alpha_pixels": {"transparent": 51142, "partial": 3195, "opaque": 11199},
+      "postprocess": "connected neutral backdrop removal; proportional fit into x48 y48 w160 h160; no painted additions"
+    }
+  },
+  "reference_board": {
+    "path": "docs/design/references/scrum1050_ui_unification/scrum1050_unified_ui_reference_sheet_688x384.png",
+    "preview": "docs/design/previews/scrum1050_ui_unification_reference_sheet_688x384.png",
+    "debug": "docs/design/previews/scrum1050_ui_unification_reference_sheet_688x384_debug.png",
+    "size": [688, 384],
+    "sha256": "f38be2d466027d94013318d0f96bbbce6b18fc05f61c396c60ad9f4bea2cda09",
+    "generation": "deterministic composition from accepted PixelLab sources only",
+    "state_derivation": "normal source plus deterministic brightness/contrast/desaturation transforms; geometry and alpha preserved"
+  },
+  "accepted_pixel_lab_sources": [
+    {"use": "common button/state anchor + Settings", "id": "cb186ec7-f7b5-48b3-b8ba-7c76eba3bc1b", "path": "docs/design/references/settings_v3_full_redraw/ui_frame_settings_v3_action_button.png"},
+    {"use": "Settings accent", "id": "c0d93196-0a51-41bf-884b-5108ef459344", "path": "docs/design/references/settings_v3_full_redraw/ui_frame_settings_v3_main_modal.png"},
+    {"use": "compact HUD accent", "id": "0f7fa782-7641-44b6-ae46-bc055430b811", "path": "docs/design/references/settings_v3_full_redraw/ui_frame_settings_v3_content_panel.png"},
+    {"use": "Main Menu accent", "id": "7d9c5262-5448-40c0-beaf-2b7d4b6b1f58", "path": "docs/design/references/scrum981_gold_menu_shell/pixellab_main_menu_gold_shell_reference_688x384.png"},
+    {"use": "Hero/Weapon Select accent", "id": "unavailable in retained SCRUM-686 mirror", "path": "assets/sprites/ui/frames/hero_select_pixellab/frame_dossier.png"},
+    {"use": "Codex accent", "id": "5c5bd5dc-a451-4bcd-b2f5-2428eda7257d", "path": "docs/design/references/codex_redesign_2026_06/pixellab_sources/scrum725_codex_detail_panel.png"},
+    {"use": "economy/reward accents", "id": "3929f7e7-8182-495e-a794-7565cb51afda", "path": "docs/design/references/scrum990_991_artifact_reward/pixellab_artifact_reward_gold_hall_688x384.png"},
+    {"use": "Pause/results accent", "id": "ccc0e262-f062-4eb3-90d5-71c68c7db203", "path": "docs/design/references/scrum983_escape_dossier/pixellab_escape_dossier_v1_688x384.png"}
+  ],
+  "qa": {
+    "ui_plan": "ready_for_image, ok=true, zero errors/warnings",
+    "gratitude_icon_ui_plan": "ready_for_image, ok=true, zero errors/warnings",
+    "layout_guides": "ok=true",
+    "visual_review": "PASS: safe-zone debug overlay stays off ornament; gratitude silhouette readable at 32/48/64/96 preview sizes",
+    "secrets": "none"
+  }
+}

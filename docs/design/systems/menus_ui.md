@@ -4,6 +4,38 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## SCRUM-1049/1051 Unified Semantic Button Families
+
+Runtime buttons now expose an explicit `ui_button_family` contract through
+`scripts/ui/ui_button_family.gd`. The registry resolves the accepted
+text-button/minimal-metal production assets only after final name and size are
+known, so semantic intent no longer depends on construction order. Main actions,
+Back/navigation, Codex tabs and Pause actions share the resolver; selectable
+content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
+Hero-carousel arrows, Battle Prayer cards and @2K conflict controls remain
+documented shape-specific siblings of the same FantasyDisk family.
+
+Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
+use the quiet `minimal/codex_tab` book-divider accent in all five states, while
+entry cards stay `content_row`; hover/focus/pressed/disabled do not alter content
+margins or geometry. Compact Shop/Attribute actions are now named
+`slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
+consume the same shared resolver instead of a copied path/threshold table.
+
+`MainMenuCreditsButton` is an icon-only gratitude action using the transparent
+PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
+text is empty, while tooltip/accessibility metadata remains «Благодарности».
+The responsive authored hitboxes are `Rect2(1059,137,64,64)` at 1280×720,
+`Rect2(1624,193,72,72)` at 1920×1080 and
+`Rect2(2173,257,88,88)` at 2560×1440. They stay in the top-right gold-shell
+inner zone on fresh layout and live resize, with visible keyboard focus and the
+existing Credits callback/UI SFX.
+
+Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
+`tests/codex_scrum954_layout_test.gd`,
+`tests/scrum981_gold_menu_shell_test.gd`,
+`tests/ui_no_overlap_matrix_test.gd` and the general runtime UI/full smokes.
+
 ## SCRUM-926 Priest Battle Prayer Choice
 
 Every Priest combat now begins behind a mandatory, non-cancellable three-card

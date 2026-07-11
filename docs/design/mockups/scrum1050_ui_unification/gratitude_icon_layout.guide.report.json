@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "icon_safe",
+      "rect": [
+        48,
+        48,
+        160,
+        160
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

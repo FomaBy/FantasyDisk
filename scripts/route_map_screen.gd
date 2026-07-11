@@ -1,5 +1,7 @@
 extends RefCounted
 
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+
 # Генерация маршрута и full-screen экран маршрутной карты:
 # узлы, связи, скролл/пан, активация encounter-ов.
 
@@ -760,6 +762,7 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			var is_clickable := state == "available" or state == "shop_revisit"
 			var button = game.ui._make_button("")
 			button.name = "RouteNode_%s_%d_%d" % [node_type, step_index, branch_index]
+			UIButtonFamily.assign(button, "route_node")
 			button.tooltip_text = _node_preview_tooltip(route_node, definition)
 			if state == "shop_revisit":
 				button.tooltip_text += "\nПосещено — можно вернуться"

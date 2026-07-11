@@ -7690,8 +7690,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("back_260x104"):
-		_fail("Expected SCRUM-954 Codex tabs to use centered Russian-only back/main-family buttons without category emblems.")
+	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
+		_fail("Expected SCRUM-1051 Codex tabs to use centered Russian-only quiet Codex-family buttons without category emblems.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):

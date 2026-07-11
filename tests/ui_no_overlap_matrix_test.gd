@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const CodexData := preload("res://scripts/codex_data.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [
 	Vector2i(1152, 648),
 	Vector2i(1280, 720),
@@ -278,6 +279,7 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 		errors.append("%s: %s" % [context, overlap])
 	_append_text_overflow_errors(main, context, errors, dump_lines)
 	_append_texture_stretch_errors(main, context, errors, dump_lines)
+	_append_button_family_errors(main, context, errors, dump_lines)
 	var screen_error := _screen_specific_assertions(main, screen_id, context)
 	if screen_error != "":
 		errors.append(screen_error)
@@ -285,6 +287,26 @@ func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Ca
 		await _append_codex_split_errors(main, context, errors, dump_lines)
 	viewport.queue_free()
 	await process_frame
+
+
+func _append_button_family_errors(main: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
+	var checked := 0
+	for node in main.find_children("*", "BaseButton", true, false):
+		var button := node as BaseButton
+		if button == null or not button.is_visible_in_tree():
+			continue
+		if not (button is Button or button is TextureButton):
+			continue
+		if not (button as Control).get_global_rect().has_area():
+			continue
+		checked += 1
+		var family := str(button.get_meta(UIButtonFamily.META_FAMILY, ""))
+		if family == "":
+			errors.append("%s: visible button %s has no ui_button_family." % [context, str(button.name)])
+			continue
+		if not UIButtonFamily.is_registered(family):
+			errors.append("%s: visible button %s uses unregistered ui_button_family '%s'." % [context, str(button.name), family])
+	dump_lines.append("- semantic button families checked: `%d`" % checked)
 
 
 func _append_codex_split_errors(main: Node, context: String, errors: Array, dump_lines: PackedStringArray) -> void:
@@ -583,11 +605,16 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var margins := Vector2(roundf(160.0 * viewport_size.x / 1536.0), roundf(160.0 * viewport_size.y / 1024.0))
 			var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
 			var inner_rect := Rect2(margins, viewport_size - margins * 2.0).grow(-reserve)
-			var expected := Rect2(Vector2(inner_rect.end.x - 252.0, inner_rect.position.y + 12.0), Vector2(240.0, 36.0))
+			var credits_side := 64.0 if viewport_size.y < 900.0 else (72.0 if viewport_size.y < 1200.0 else 88.0)
+			var expected := Rect2(Vector2(inner_rect.end.x - credits_side, inner_rect.position.y), Vector2.ONE * credits_side)
 			if not inner_rect.grow(1.0).encloses(credits.get_global_rect()):
 				return "%s: MainMenuCreditsButton %s escapes authored inner rect %s." % [context, str(credits.get_global_rect()), str(inner_rect)]
 			if not _rect_approximately_equal(credits.get_global_rect(), expected, 1.1):
 				return "%s: MainMenuCreditsButton %s != authored zone %s." % [context, str(credits.get_global_rect()), str(expected)]
+			if credits.text != "" or credits.icon == null or credits.icon.resource_path != "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png":
+				return "%s: MainMenuCreditsButton must be icon-only with the accepted gratitude asset." % context
+			if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
+				return "%s: MainMenuCreditsButton is missing gratitude tooltip/accessibility metadata." % context
 			for peer_name in ["MainMenuTitleLabel", "MainMenuActions", "MainMenuVersionLabel"]:
 				var peer := main.find_child(peer_name, true, false) as Control
 				if peer != null and credits.get_global_rect().intersects(peer.get_global_rect()):
@@ -898,8 +925,8 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
 			var tab_style_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) if tab_button != null else ""
-			if tab_button == null or not tab_style_path.contains("back_260x104") or tab_style_path.contains("codex_tab"):
-				return "%s: expected CodexTab_characters to use the main/back minimal-metal family without a category emblem." % context
+			if tab_button == null or not tab_style_path.contains("minimal_metal_codex_tab"):
+				return "%s: expected CodexTab_characters to use the explicit quiet Codex tab family." % context
 			if tab_button.icon != null:
 				return "%s: Codex navigation must not render generic category emblems." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control

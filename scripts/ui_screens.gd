@@ -21,6 +21,7 @@ var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 # SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
 const LevelUpAdvisor := preload("res://scripts/level_up_advisor.gd")
 const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presenter.gd")
@@ -116,6 +117,7 @@ const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
 const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
 const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
+const GRATITUDE_ICON_PATH := "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png"
 const SHOP_INLINE_SLOT_SIZE := ShopUIConstants.SHOP_INLINE_SLOT_SIZE
 const SHOP_INLINE_ICON_SIZE := ShopUIConstants.SHOP_INLINE_ICON_SIZE
 const SHOP_INLINE_CAPTION_SIZE := ShopUIConstants.SHOP_INLINE_CAPTION_SIZE
@@ -548,6 +550,32 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 	root.set_meta("gold_shell_screen_id", "main_menu")
 
 
+func _gratitude_button_style(state: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.04, 0.035, 0.045, 0.0)
+	style.border_color = Color(0.68, 0.51, 0.25, 0.0)
+	var border_width := 0
+	match state:
+		"hover":
+			style.bg_color = Color(0.10, 0.075, 0.065, 0.42)
+			style.border_color = Color(0.82, 0.66, 0.36, 0.78)
+			border_width = 1
+		"focus":
+			style.bg_color = Color(0.11, 0.12, 0.14, 0.58)
+			style.border_color = Color(0.84, 0.88, 0.94, 0.98)
+			border_width = 2
+		"pressed":
+			style.bg_color = Color(0.075, 0.045, 0.05, 0.58)
+			style.border_color = Color(0.78, 0.48, 0.30, 0.82)
+			border_width = 1
+		"disabled":
+			style.bg_color = Color(0.03, 0.03, 0.035, 0.16)
+	style.set_border_width_all(border_width)
+	style.set_corner_radius_all(10)
+	style.set_content_margin_all(4.0)
+	return style
+
+
 func _show_main_menu() -> void:
 	game._play_music("menu")
 	game._clear_all_game_pauses()
@@ -676,17 +704,19 @@ func _show_main_menu() -> void:
 	# дополнительного резерва SCRUM-1036 от орнамента золотой рамы.
 	var credits_button := Button.new()
 	credits_button.name = "MainMenuCreditsButton"
-	credits_button.text = "Благодарности"
+	credits_button.text = ""
+	credits_button.icon = game._cached_texture(GRATITUDE_ICON_PATH)
+	credits_button.expand_icon = true
+	credits_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	credits_button.flat = true
-	# The global button skin carries 39px of minimum height. Credits is a plain
-	# text link in an authored 36px zone, so remove inherited box padding while
-	# preserving the text/focus behaviour and exact hitbox.
-	for credits_state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		credits_button.add_theme_stylebox_override(credits_state, StyleBoxEmpty.new())
+	credits_button.focus_mode = Control.FOCUS_ALL
+	credits_button.tooltip_text = "Благодарности"
+	credits_button.set_meta("accessibility_name", "Благодарности")
+	credits_button.set_meta("accessibility_description", "Открыть экран благодарностей")
+	UIButtonFamily.assign(credits_button, "credits_icon")
+	for credits_state in UIButtonFamily.STATES:
+		credits_button.add_theme_stylebox_override(credits_state, _gratitude_button_style(credits_state))
 	credits_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	credits_button.add_theme_font_size_override("font_size", _readable_font_size(15))
-	credits_button.add_theme_color_override("font_color", Color(0.82, 0.78, 0.58, 0.92))
-	credits_button.add_theme_color_override("font_hover_color", Color(0.98, 0.90, 0.62, 1.0))
 	credits_button.pressed.connect(_show_credits_screen)
 	root.add_child(credits_button)
 	_connect_ui_sfx(credits_button, "click")
@@ -695,16 +725,19 @@ func _show_main_menu() -> void:
 	var reposition_credits := func() -> void:
 		if not is_instance_valid(credits_button):
 			return
-		var inner := _gold_shell_inner_rect_for_size(root.size)
+		var frame_safe := _unified_safe_rect_for_size(root.size)
+		var pad := 32.0 if root.size.y >= 1200.0 else 24.0
+		var inner := frame_safe.grow(-pad)
 		if inner.size.x <= 1.0 or inner.size.y <= 1.0:
 			return
 		# Верхний правый угол inner-зоны: напротив лого (верх-лево), ВЫШЕ сетки
 		# действий и метки версии — гарантированно вне их прямоугольников на 16:9
 		# (лого ≤ левой половины, сетка стартует ниже; см. _main_menu_gold_shell_metrics).
-		var cb_size := Vector2(minf(240.0, inner.size.x), 36.0)
-		var pad := 12.0
+		var viewport_height := root.size.y
+		var authored_side := 64.0 if viewport_height < 900.0 else (72.0 if viewport_height < 1200.0 else 88.0)
+		var cb_size := Vector2.ONE * minf(authored_side, minf(inner.size.x, inner.size.y))
 		credits_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		credits_button.position = Vector2(inner.end.x - cb_size.x - pad, inner.position.y + pad)
+		credits_button.position = Vector2(frame_safe.end.x - cb_size.x - pad, frame_safe.position.y + pad)
 		credits_button.size = cb_size
 		credits_button.set_meta("gold_shell_inner_rect", inner)
 		credits_button.set_meta("scrum1040_zone_rect", Rect2(credits_button.position, cb_size))
@@ -712,6 +745,13 @@ func _show_main_menu() -> void:
 	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
 	root.resized.connect(reposition_credits)
 	_wire_main_menu_grid_focus(action_buttons, start_button)
+	# The icon lives above the right column and remains reachable without
+	# changing the exact 2x3 MainMenuActions contract.
+	credits_button.focus_neighbor_bottom = settings_button.get_path()
+	credits_button.focus_neighbor_left = start_button.get_path()
+	credits_button.focus_neighbor_right = credits_button.get_path()
+	credits_button.focus_neighbor_top = credits_button.get_path()
+	settings_button.focus_neighbor_top = credits_button.get_path()
 	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
 	_unified_add_frame(root, "MainMenu")
 
@@ -1105,6 +1145,7 @@ func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHIT
 
 
 func _hs4_apply_carousel_arrow_style(button: Button, slot: String, display_size: Vector2) -> void:
+	UIButtonFamily.assign(button, "hero_carousel_arrow")
 	# SCRUM-979 reuses the accepted PixelLab arrow plates and their real empty
 	# content rectangles. Every state keeps the same geometry, so focus/hover can
 	# never shift the hit target or push the hidden-count glyph onto ornament.
@@ -2358,6 +2399,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 	var click_catcher := Button.new()
 	click_catcher.name = "VictoryBanner"
+	UIButtonFamily.assign(click_catcher, "invisible_catcher")
 	click_catcher.flat = true
 	click_catcher.set_anchors_preset(Control.PRESET_FULL_RECT)
 	click_catcher.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
@@ -2584,7 +2626,7 @@ func _layout_attribute_shop(root: Control) -> void:
 				action_button.add_theme_font_size_override("font_size", int(clampf(roundf((layout["action_size"] as Vector2).y * 0.27), 14.0, 24.0)))
 				# Compact authored action band: avoid the 104px global button plate
 				# expanding the HBox beyond the gold-shell inner rect at 720p.
-				_apply_shop_leave_button_theme(action_button)
+				_apply_slim_action_button_theme(action_button)
 	var frame := root.find_child("AttributeShopFrame", false, false) as Panel
 	if frame != null:
 		root.move_child(frame, root.get_child_count() - 1)
@@ -2644,12 +2686,12 @@ func _show_attribute_shop(on_done: Callable) -> void:
 
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
-	_apply_shop_leave_button_theme(reroll_button)
+	_apply_slim_action_button_theme(reroll_button)
 	actions.add_child(reroll_button)
 
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
-	_apply_shop_leave_button_theme(skip_button)
+	_apply_slim_action_button_theme(skip_button)
 	actions.add_child(skip_button)
 
 	# Набор и счетчик rerolls живут в game-state: повторный runtime вызов не дает
@@ -3090,6 +3132,7 @@ func _show_atlas_screen() -> void:
 		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var mb := TextureButton.new()
 		mb.name = "AtlasMedallion_%s" % cid
+		UIButtonFamily.assign(mb, "atlas_medallion")
 		mb.texture_normal = game._cached_texture(META40_UI_DIR + "crest_%s.png" % cid)
 		mb.ignore_texture_size = true
 		mb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -3686,6 +3729,7 @@ func _unified_header_chip(prefix: String, title: String, screen_id: String, s: f
 # слоты карусели, строки статов): это НЕ действие-кнопки глобального кита,
 # а контентные ряды в языке чипов Атласа.
 func _unified_apply_row_theme(button: Button, pad := 10.0, selected := false) -> void:
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_CONTENT_ROW)
 	var normal := _atlas_chip_style(0.72, pad)
 	var hover := _atlas_chip_style(0.82, pad)
 	hover.border_color = Color(0.72, 0.58, 0.34, 0.95)
@@ -3772,6 +3816,7 @@ func _atlas_build_canvas() -> void:
 		var affinity := str(node_data.get("class_affinity", ""))
 		var nb := TextureButton.new()
 		nb.name = "AtlasNode_%s" % node_id
+		UIButtonFamily.assign(nb, "atlas_socket")
 		var base_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
 		if role == "core" and affinity != "":
 			base_path = META40_UI_DIR + "crest_%s.png" % affinity
@@ -4893,10 +4938,12 @@ func _show_codex_screen() -> void:
 	back_button.text = "НАЗАД"
 	back_button.custom_minimum_size = Vector2(268, 96)
 	back_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_style_button_control(back_button)
+	_apply_fantasy_button_theme(back_button, "default", "text/back_260x104")
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(16))
 	_codex_bind_stage_font(back_button, 22, 15, 30)
 	_codex_set_design_rect(back_button, Rect2(1580, 46, 268, 96))
 	back_button.pressed.connect(_show_main_menu)
+	_connect_ui_sfx(back_button, "back")
 	stage.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
 
@@ -4953,12 +5000,12 @@ func _show_codex_screen() -> void:
 		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
 		var tab_button := Button.new()
-		tab_button.name = "CodexNavButton"
+		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.text = str(section["title"])
 		tab_button.custom_minimum_size = Vector2(260, 104)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_style_button_control(tab_button)
-		tab_button.name = "CodexTab_%s" % section_id
+		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
+		tab_button.add_theme_font_size_override("font_size", _readable_font_size(16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
@@ -4974,6 +5021,7 @@ func _show_codex_screen() -> void:
 				tab_button.add_theme_stylebox_override(tab_state, tab_style)
 		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 104))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
+		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
 
 	_show_codex_section(content, "characters")
@@ -7201,6 +7249,7 @@ func _settings_v6_style_audio_scrollbar(scroll: ScrollContainer, s: float) -> vo
 
 
 func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_SETTINGS_FIELD)
 	# Врезное поле 560×56×s: дропдауны и кнопки биндингов. Арт — 9-slice
 	# источник 320×56 (углы 1:1, плоская середина тянется по ширине).
 	button.custom_minimum_size = Vector2(roundf(SETTINGS_V6_CONTROL_SIZE.x * s), roundf(SETTINGS_V6_CONTROL_SIZE.y * s))
@@ -7269,6 +7318,7 @@ func _settings_v6_make_action_button(text: String, button_name: String, width: f
 
 
 func _settings_v6_style_checkbox(toggle: CheckBox, s: float) -> void:
+	UIButtonFamily.assign(toggle, "settings_toggle")
 	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	toggle.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
 	var unchecked := _settings_v6_icon(SETTINGS_V6_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
@@ -7857,6 +7907,7 @@ func _weapon_select_card_content_margins() -> Vector4:
 # смоук-контракта прозрачности (>=0.80), карточкам нужен фон плотнее.
 func _weapon_card_theme(button: Button, pad := 12.0) -> void:
 	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_WEAPON_CARD)
 	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
 
 
@@ -9592,7 +9643,7 @@ func _layout_shop_gold_shell(root: Control) -> void:
 	var back_rect: Rect2 = metrics["back_rect"]
 	if back != null:
 		_set_action_button_size(back, back_rect.size.x, back_rect.size.y)
-		_apply_shop_leave_button_theme(back)
+		_apply_slim_action_button_theme(back)
 		_apply_control_rect(back, back_rect)
 		back.add_theme_font_size_override("font_size", _readable_font_size(int(metrics["back_font"]), 16, int(metrics["back_font"])))
 
@@ -10235,15 +10286,10 @@ func _shop_tooltip_texture_style(display_size: Vector2) -> StyleBox:
 	return style
 
 
-func _apply_shop_leave_button_theme(button: Button) -> void:
-	# Shop Back occupies a compact authored band. Use the text-free slim metal
-	# plate with rails/content that fit 64/72/88px while preserving a safe inset.
-	var margins := Vector4(34.0, 14.0, 34.0, 14.0)
-	var content := Vector4(46.0, 18.0, 46.0, 18.0)
-	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
-		var suffix := "" if state == "normal" else "_%s" % state
-		var path := "%sui_btn_minimal_metal_rebind%s.png" % [MINIMAL_METAL_BUTTON_DIR, suffix]
-		button.add_theme_stylebox_override(state, _global_texture_style(path, margins, Color.WHITE, content))
+func _apply_slim_action_button_theme(button: Button) -> void:
+	# Compact economy actions are a semantic action family, not rebind fields.
+	# The registry owns their accepted slim-source alias and safe margins.
+	_apply_fantasy_button_theme(button, "default", UIButtonFamily.FAMILY_SLIM_ACTION)
 
 
 func _show_rest_screen() -> void:
@@ -13909,8 +13955,9 @@ func _style_button_control(button: Button) -> void:
 	button.add_theme_font_size_override("font_size", _readable_font_size(16))
 
 
-func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
+func _apply_fantasy_button_theme(button: Button, variant := "default", explicit_family := "") -> void:
 	var role := _button_role(button, variant)
+	UIButtonFamily.resolve(button, variant, explicit_family)
 	button.add_theme_stylebox_override("normal", _button_state_style(button, role, "normal"))
 	button.add_theme_stylebox_override("hover", _button_state_style(button, role, "hover"))
 	button.add_theme_stylebox_override("pressed", _button_state_style(button, role, "pressed"))
@@ -13950,171 +13997,34 @@ func _button_role(button: Button, variant := "default") -> String:
 
 
 func _button_asset_type(button: Button, variant := "default") -> String:
-	var button_name: String = button.name if button != null else ""
-	var button_text: String = button.text.to_lower() if button != null else ""
-	var size: Vector2 = button.custom_minimum_size if button != null else _action_button_size()
-	if button_name == "LevelUpPlusButton":
-		return "combat_level_up_plus"
-	if button_name.begins_with("MainMenu"):
-		return "main_menu"
-	if button_name == "HeroSelectChooseButton" or button_name == "HS4ChooseButton":
-		return "hero_confirm"
-	if button_name == "SettingsResetAudioButton":
-		return "reset_audio"
-	if button_name == "SettingsResetBindingsButton":
-		return "reset_bindings"
-	if button_name.begins_with("CodexTab_"):
-		return "codex_tab"
-	if button_name.begins_with("AttributeOffer_"):
-		return "attr_selector"
-	if button_name.begins_with("RunPause"):
-		return "pause"
-	if button_name.begins_with("QuitConfirm"):
-		return "pause"
-	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
-		return "rebind"
-	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 64.0:
-		return "utility"
-	if variant == "level_up" or button_name == "LevelUpButton":
-		return "back_l"
-	if button_text == "назад":
-		if size.x <= 180.0:
-			return "back_s"
-		if size.x <= 300.0:
-			return "back_m"
-		return "back_l"
-	if variant in ["reward", "primary"] and size.x >= 540.0:
-		return "attr_selector"
-	if size.y <= 66.0:
-		if size.x <= 70.0:
-			return "utility"
-		if size.x <= 300.0:
-			return "pause"
-		return "rebind"
-	if size.x >= 540.0:
-		return "max"
-	if size.x >= 430.0:
-		return "reset_bindings"
-	if size.x >= 400.0:
-		return "standard"
-	if size.x >= 360.0:
-		return "back_l"
-	if size.x >= 300.0:
-		return "hero_confirm"
-	if size.x >= 240.0:
-		return "back_m"
-	return "back_s"
+	return UIButtonFamily.minimal_family_type(button, variant)
 
 
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
 	# SCRUM-847: legacy-маршрут settings-узлов (v3/v4 tint-стили) удалён — экран
 	# настроек v6 стилизует свои контролы явно (_settings_v6_*), сюда не попадает.
-	var button_type := _button_asset_type(button)
-	if button_type == "combat_level_up_plus":
+	var family := str(button.get_meta(UIButtonFamily.META_FAMILY, ""))
+	if family == "":
+		family = UIButtonFamily.resolve(button)
+	if family == "combat_level_up_plus":
 		var plus_state := state
 		if plus_state == "focus":
 			plus_state = "hover"
 		var plus_path := str(COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES.get(plus_state, COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES["normal"]))
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
-	var texture_state := state
-	if not ["normal", "hover", "pressed", "focus", "disabled"].has(texture_state):
-		texture_state = "normal"
-	var text_button_id := _text_button_unique_id(button)
-	if text_button_id != "" and TEXT_BUTTON_UNIQUE_TEXTURES.has(text_button_id):
-		var text_textures: Dictionary = TEXT_BUTTON_UNIQUE_TEXTURES[text_button_id]
-		var text_path := str(text_textures.get(texture_state, text_textures["normal"]))
-		var text_margins: Vector4 = TEXT_BUTTON_UNIQUE_MARGINS.get(text_button_id, TEXT_BUTTON_UNIQUE_MARGINS["standard_420x104"])
-		var text_content: Vector4 = TEXT_BUTTON_UNIQUE_CONTENT.get(text_button_id, TEXT_BUTTON_UNIQUE_CONTENT["standard_420x104"])
-		var text_tint := tint
-		if texture_state == "hover" and tint == Color.WHITE:
-			text_tint = BUTTON_HOVER_EXTRA_TINT
-		return _global_texture_style(text_path, text_margins, text_tint, text_content)
-	var suffix := "" if texture_state == "normal" else "_%s" % texture_state
-	var path := "%sui_btn_minimal_metal_%s%s.png" % [MINIMAL_METAL_BUTTON_DIR, button_type, suffix]
+	var texture_state := state if UIButtonFamily.STATES.has(state) else "normal"
+	var descriptor := UIButtonFamily.descriptor(family, texture_state)
+	if descriptor.is_empty():
+		return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(50, 28, 50, 28), tint, Vector4(64, 32, 64, 32))
 	var final_tint := tint
 	if texture_state == "hover" and tint == Color.WHITE:
 		final_tint = BUTTON_HOVER_EXTRA_TINT
-	var margins: Vector4 = MINIMAL_METAL_BUTTON_MARGINS.get(button_type, MINIMAL_METAL_BUTTON_MARGINS["standard"])
-	var content: Vector4 = MINIMAL_METAL_BUTTON_CONTENT.get(button_type, MINIMAL_METAL_BUTTON_CONTENT["standard"])
-	return _global_texture_style(path, margins, final_tint, content)
+	return _global_texture_style(str(descriptor["path"]), descriptor["margins"], final_tint, descriptor["content"])
 
 
 func _text_button_unique_id(button: Button) -> String:
-	if button == null:
-		return ""
-	var button_name := button.name
-	var text := button.text.to_lower()
-	var size := button.custom_minimum_size
-	if button_name == "LevelUpPlusButton":
-		return ""
-	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
-		return ""
-	if button_name.begins_with("MainMenu"):
-		if size.y <= 76.0:
-			return "continue_run_long_420x72"
-		return "main_menu_380x104"
-	if button_name == "HS4ChooseButton":
-		# Фидбек 2026-07-08: CTA «Выбрать» — на плите кнопок главного меню.
-		return "main_menu_380x104"
-	if button_name.begins_with("RunPause"):
-		return "pause_280x60"
-	if button_name.begins_with("QuitConfirm"):
-		return "quit_220x72"
-	if button_name == "ContinueRunButton":
-		if size.x >= 360.0:
-			return "continue_run_long_420x72"
-		return "continue_240x72"
-	if button_name == "ContinueRunNewGameButton":
-		return "continue_240x72"
-	if button_name == "LevelUpLaterButton":
-		return "later_260x72"
-	if button_name == "SettingsBackButton":
-		# Фидбек 2026-07-08: единый возврат — та же плита, что у остальных back.
-		return "back_260x104"
-	if button_name == "SettingsResetBindingsButton":
-		if size.x >= 540.0:
-			return "reset_bindings_long_560x104"
-		return "wide_440x104"
-	if button_name == "SettingsResetAudioButton":
-		return "standard_420x104"
-	if button_name == "FeedbackSendButton":
-		return "feedback_260x64"
-	if button_name == "FeedbackCancelButton":
-		return "feedback_cancel_220x64"
-	if button_name == "EventBackButton":
-		# Фидбек 2026-07-08: единый возврат — та же плита back_260x104, что у остальных back.
-		return "back_260x104"
-	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
-		return "rebind_420x62"
-	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
-		return ""
-	if button_name in ["WeaponSelectBackButton", "StartBoonBackButton"]:
-		# SCRUM-883: единый возврат (фидбек 2026-07-08) — нативная плита back_260x104.
-		return "back_260x104"
-	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
-		return "back_260x104"
-	if button_name in ["AttributeRerollButton", "AttributeSkipButton", "VictoryNewRunButton", "DeathRetryButton"]:
-		return "standard_420x104"
-	if size.y <= 56.0 and size.x >= 340.0:
-		return "event_back_380x54"
-	if size.y <= 66.0 and size.x >= 360.0:
-		return "rebind_420x62"
-	if size.y <= 66.0 and size.x >= 240.0:
-		return "settings_back_280x64"
-	if size.y <= 76.0 and size.x <= 230.0:
-		return "quit_220x72"
-	if size.y <= 76.0 and size.x <= 250.0:
-		return "continue_240x72"
-	if size.y <= 76.0 and size.x <= 300.0:
-		return "later_260x72"
-	if size.y >= 96.0 and size.x >= 430.0:
-		return "wide_440x104"
-	if size.y >= 96.0 and size.x >= 400.0:
-		return "standard_420x104"
-	if size.y >= 96.0 and size.x >= 240.0:
-		return "back_260x104"
-	return ""
+	return UIButtonFamily.text_family_id(button)
 
 
 func _apply_compact_button_theme(button: Button) -> void:
@@ -14323,6 +14233,7 @@ func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size:
 	if slot == "cr_btn" and _text_button_unique_id(button) != "":
 		_apply_fantasy_button_theme(button)
 		return
+	UIButtonFamily.assign(button, "overhaul_2k/%s" % slot)
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
 	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
@@ -14520,6 +14431,7 @@ func _apply_level_up_card_atlas_theme(button: Button, display_size: Vector2, is_
 	# завязка на неё зациклила бы план стека).
 	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * display_size.x / LU_CARD_2K.size.x))
 	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_LEVEL_UP_CARD)
 	var normal := _atlas_chip_style(0.88, pad)
 	if is_rare:
 		normal.border_color = Color(0.80, 0.62, 0.30, 0.95)
@@ -14578,6 +14490,7 @@ func _atlas_chip_content_margins(pad: float) -> Vector4:
 # Никаких текстурных рамок и растяжек (Правило 1/2 SCRUM-879).
 func _apply_atlas_choice_card_theme(button: Button, pad: float) -> void:
 	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_CHOICE_CARD)
 	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
 	var hover := _atlas_chip_style(0.90, pad)
 	hover.border_color = Color(0.93, 0.77, 0.40, 0.95)
@@ -14800,6 +14713,7 @@ func _battle_reward_card_size_for_viewport(viewport_size: Vector2) -> Vector2:
 func _apply_reward_card_theme(button: Button, elite := false) -> void:
 	var display_size := button.custom_minimum_size if button != null else (REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
 	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_REWARD_CARD)
 
 
 func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
@@ -14941,6 +14855,7 @@ func _style_slider(slider: HSlider) -> void:
 
 
 func _style_checkbox(toggle: CheckBox) -> void:
+	UIButtonFamily.assign(toggle, "checkbox")
 	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	var unchecked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_UNCHECKED_PATH)
 	var checked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_CHECKED_PATH)
@@ -15069,6 +14984,7 @@ func _make_battle_prayer_card(modal: Control, choice: Dictionary, index: int) ->
 	var prayer_id := str(choice.get("id", ""))
 	var card_rect: Rect2 = BATTLE_PRAYER_CARD_RECTS[index]
 	var button := Button.new()
+	UIButtonFamily.assign(button, "battle_prayer_card")
 	button.name = "BattlePrayerCard_%s" % prayer_id
 	button.text = ""
 	button.focus_mode = Control.FOCUS_ALL

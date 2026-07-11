@@ -3,6 +3,7 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const CodexData := preload("res://scripts/codex_data.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const ASCENSION_ICON_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_ascension.png"
 const EXPECTED_TABS := [
@@ -84,6 +85,9 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		report.append("- `%s`: `%s`" % [node_name, str(actual)])
 		if not _rect_near(actual, expected, 1.5):
 			errors.append("%s: %s rect %s != %s." % [context, node_name, str(actual), str(expected)])
+	var codex_back := main.find_child("CodexBackButton", true, false) as Button
+	if codex_back != null:
+		_check_button_family(codex_back, "text/back_260x104", "%s back" % context)
 
 	var nav_y := [222.0, 340.0, 458.0, 576.0, 694.0, 812.0]
 	for tab_index in range(EXPECTED_TABS.size()):
@@ -94,6 +98,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 			continue
 		if tab.text != str(tab_spec[1]) or tab.icon != null or tab.alignment != HORIZONTAL_ALIGNMENT_CENTER:
 			errors.append("%s: tab %s must be centered Russian-only text without an emblem." % [context, tab_spec[0]])
+		_check_button_family(tab, UIButtonFamily.FAMILY_CODEX_TAB, "%s tab %s" % [context, tab_spec[0]])
 		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(104, nav_y[tab_index], 260, 104))
 		if not _rect_near(tab.get_global_rect(), expected_tab_rect, 1.5):
 			errors.append("%s: tab %s rect %s != %s." % [context, tab_spec[0], str(tab.get_global_rect()), str(expected_tab_rect)])
@@ -205,6 +210,8 @@ func _check_entry_card(card: Button, expected: Dictionary, stage_scale: float, c
 	if card == null:
 		errors.append("%s: missing entry card." % context)
 		return
+	if str(card.get_meta(UIButtonFamily.META_FAMILY, "")) != UIButtonFamily.FAMILY_CONTENT_ROW:
+		errors.append("%s: Codex entry must use the shared content_row family." % context)
 	var names := card.find_children("CodexEntryName", "Label", true, false)
 	var textures := card.find_children("*Texture", "TextureRect", true, false)
 	if names.size() != 1 or textures.size() != 1:
@@ -304,3 +311,24 @@ func _canonical_texture_path(texture: Texture2D) -> String:
 		var atlas := (texture as AtlasTexture).atlas
 		return atlas.resource_path if atlas != null else ""
 	return texture.resource_path
+
+
+func _check_button_family(button: Button, expected_family: String, context: String) -> void:
+	var actual_family := str(button.get_meta(UIButtonFamily.META_FAMILY, ""))
+	if actual_family != expected_family:
+		errors.append("%s: family '%s' != '%s'." % [context, actual_family, expected_family])
+		return
+	var baseline_content := Vector4.ZERO
+	for state in UIButtonFamily.STATES:
+		var style := button.get_theme_stylebox(state) as StyleBoxTexture
+		var descriptor := UIButtonFamily.descriptor(expected_family, state)
+		if style == null or style.texture == null:
+			errors.append("%s: %s state is not a textured shared-family style." % [context, state])
+			continue
+		if style.texture.resource_path != str(descriptor.get("path", "")):
+			errors.append("%s: %s texture '%s' != '%s'." % [context, state, style.texture.resource_path, str(descriptor.get("path", ""))])
+		var content := Vector4(style.content_margin_left, style.content_margin_top, style.content_margin_right, style.content_margin_bottom)
+		if state == "normal":
+			baseline_content = content
+		elif content != baseline_content:
+			errors.append("%s: %s content margins shift geometry (%s != %s)." % [context, state, str(content), str(baseline_content)])
