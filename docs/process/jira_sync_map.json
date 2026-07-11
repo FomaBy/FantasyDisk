@@ -4477,5 +4477,10 @@
   "key": "SCRUM-989",
   "status": "К выполнению",
   "desc_hash": "8efc323f52185f6fd67acbc046ca19cc"
+ },
+ "SCRUM-951_hero_stat_colors.md": {
+  "key": "SCRUM-951",
+  "status": "Контроль качества",
+  "desc_hash": "fe8c34d7110ddfd0d7873aa6fa341563"
  }
 }
