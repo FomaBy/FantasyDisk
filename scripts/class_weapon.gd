@@ -7,6 +7,7 @@ const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png
 const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const STORM_LONGBOW_VOLLEY_VFX_SCENE := preload("res://scenes/vfx/StormLongbowVolleyVfx.tscn")
 
 # SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
 # Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
@@ -1574,6 +1575,7 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 	var arrow_count := maxi(beam_count + _extra_projectiles(), 1)
 	_emit_weapon_animation_event(owner_node, "channel", 0.18, direction, {"beam_count": arrow_count, "cone_degrees": cone_degrees})
+	_spawn_storm_longbow_release_vfx(owner_node, direction)
 	var damage_value := _rolled_damage(owner_node)
 	var hit_limit := _effective_pierce_count()
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
@@ -1607,6 +1609,21 @@ func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 			hit_ids[enemy_node.get_instance_id()] = true
 			_damage_enemy(enemy_node, damage_value * pow(falloff, float(pierced)))
 			pierced += 1
+
+
+# SCRUM-1037: Animator-owned release is an additive one-shot cue. It is
+# registered through the same lifecycle path as the five gameplay corridors;
+# damage, hit queries, pierce budget and cooldown remain entirely above.
+func _spawn_storm_longbow_release_vfx(owner_node: Node2D, direction: Vector2) -> void:
+	if owner_node == null or not is_instance_valid(owner_node) or _effects_shutdown:
+		return
+	var release_vfx := STORM_LONGBOW_VOLLEY_VFX_SCENE.instantiate() as Node2D
+	if release_vfx == null:
+		return
+	_projectile_parent().add_child(release_vfx)
+	if release_vfx.has_method("configure"):
+		release_vfx.call("configure", owner_node.global_position, direction, attack_range)
+	_register_effect(release_vfx)
 
 
 func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:

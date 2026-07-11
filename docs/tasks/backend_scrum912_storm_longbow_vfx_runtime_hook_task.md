@@ -1,11 +1,11 @@
 # Backend handoff: play SCRUM-912 Storm Longbow release VFX scene
 
-Статус: new
+Статус: in_progress
 Приоритет: p2
 Роль: Back-end
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: `/root/scrum1037_storm_longbow`
+Thread: `/root`
 Версия: 0.2.1
 Jira: SCRUM-1037
 Источник: SCRUM-912
