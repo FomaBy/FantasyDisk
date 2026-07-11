@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -22,6 +23,7 @@ import urllib.request
 
 DEFAULT_JIRA_URL = "https://fantasydisk.atlassian.net"
 DEFAULT_JIRA_EMAIL = "fomamoney@gmail.com"
+METADATA_WORKERS = 4
 
 
 def jira_request(path: str) -> dict:
@@ -237,10 +239,23 @@ def create_issue(issue: dict, project: str | None) -> str:
         command += ["--project", project]
     created = run_multica(command, expect_json=True)
     identity = issue_identity(created)
-    for key, value in metadata_for(issue).items():
+    metadata = metadata_for(issue)
+    # jira_key is the idempotency anchor used by find_existing(). Persist it
+    # before any parallel work so an interruption can never duplicate the issue.
+    run_multica(
+        ["issue", "metadata", "set", identity, "--key", "jira_key", "--value", metadata.pop("jira_key"), "--type", "string"]
+    )
+
+    def set_metadata(item: tuple[str, str]) -> None:
+        key, value = item
         run_multica(
             ["issue", "metadata", "set", identity, "--key", key, "--value", value, "--type", "string"]
         )
+
+    # Remaining metadata fields are independent. A small bounded pool cuts the
+    # 1,019-row migration wall time without turning the CLI into an API burst.
+    with ThreadPoolExecutor(max_workers=METADATA_WORKERS) as executor:
+        list(executor.map(set_metadata, metadata.items()))
     return identity
 
 
