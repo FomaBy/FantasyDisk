@@ -1,0 +1,55 @@
+{
+  "jira": "SCRUM-1063",
+  "pipeline": "FantasyDisk UI Director -> content-zone planning gate -> PixelLab MCP attempt -> accepted existing PixelLab source 9-slice reuse",
+  "planning_gate": {
+    "decision": "ready_for_image",
+    "ok": true,
+    "errors": 0,
+    "warnings": 0,
+    "plan": "docs/design/mockups/scrum1063_hero_carousel_wide_buttons/ui_plan.json",
+    "report": "docs/design/mockups/scrum1063_hero_carousel_wide_buttons/ui_plan.report.json"
+  },
+  "pixellab_mcp": {
+    "auth_smoke": "PASS: get_balance returned a JSON-RPC result; no secrets printed",
+    "prepared_request": "pixellab_create_request.json",
+    "create_ui_asset_result": "no generations or credits remaining for creating a UI panel",
+    "new_asset_created": false,
+    "generic_fallback": "not used"
+  },
+  "accepted_existing_source": {
+    "path": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_minus.png",
+    "equivalent_path": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_plus.png",
+    "sha256": "de06e39e0af1ebe2ca32be37c3b670d91709e2230b774d2edfd58ecb46451d5d",
+    "dimensions": [132, 92],
+    "mode": "RGBA",
+    "alpha_bbox_xyxy": [0, 4, 132, 87],
+    "content_rect": [32, 22, 68, 48],
+    "source_id": "historical accepted Hero Select PixelLab pack; individual MCP ID was not recorded in the original manifest",
+    "reuse_reason": "The Jira requirement explicitly accepts a correct wide/9-slice variant. The accepted source is already textless, symmetric and 9-slice-safe; no new pixels or fallback art were created."
+  },
+  "runtime": {
+    "asset_path": "assets/sprites/ui/frames/hero_select_pixellab/button_asc_minus.png",
+    "controls": [
+      "HS4CarouselPrevButton",
+      "HS4CarouselNextButton",
+      "AscensionMinusButton",
+      "AscensionPlusButton"
+    ],
+    "states": ["normal", "hover", "pressed", "focus", "disabled"],
+    "width_formula": "2 * round(preserved_height * 0.75)",
+    "height_formula": "clamp(round(pre-change slot tier * 0.52), 84, 140)"
+  },
+  "content_zone_qa": {
+    "layout": "docs/design/mockups/scrum1063_hero_carousel_wide_buttons/layout.json",
+    "report": "docs/design/mockups/scrum1063_hero_carousel_wide_buttons/content_fit_report.json",
+    "preview": "docs/design/previews/scrum1063_hero_carousel_wide_buttons/pixellab_wide_button_content_preview.png",
+    "debug": "docs/design/previews/scrum1063_hero_carousel_wide_buttons/pixellab_wide_button_content_debug.png",
+    "ok": true
+  },
+  "pre_runtime_mockups": [
+    "docs/design/previews/scrum1063_hero_carousel_wide_buttons/hero_select_wide_buttons_mockup_1152x648.png",
+    "docs/design/previews/scrum1063_hero_carousel_wide_buttons/hero_select_wide_buttons_mockup_1280x720.png",
+    "docs/design/previews/scrum1063_hero_carousel_wide_buttons/hero_select_wide_buttons_mockup_1920x1080.png",
+    "docs/design/previews/scrum1063_hero_carousel_wide_buttons/hero_select_wide_buttons_mockup_2560x1440.png"
+  ]
+}

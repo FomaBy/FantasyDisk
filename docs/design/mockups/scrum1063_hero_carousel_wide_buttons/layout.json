@@ -1,0 +1,21 @@
+{
+  "canvas": {"width": 132, "height": 92},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#160B10",
+    "stroke_width": 2,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "prev": "‹",
+    "minus": "−",
+    "plus": "+",
+    "next": "›"
+  },
+  "zones": [
+    {"id": "prev", "content_key": "prev", "x": 32, "y": 22, "w": 68, "h": 48, "max_font": 34, "min_font": 22}
+  ]
+}

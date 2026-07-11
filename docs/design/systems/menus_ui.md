@@ -500,7 +500,7 @@ the SCRUM-563 source package remains historical design evidence.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- SCRUM-980 supersedes the old left-column ascension geometry while preserving
+- Historical SCRUM-980 (superseded by SCRUM-1063 below) replaced the old left-column ascension geometry while preserving
   the active HS4/Atlas art and selected-level semantics. `HS4AscensionFrame` is
   now a wide right-hand band between `HS4DossierFrame` and `HS4Carousel`;
   `HS4AscensionActionRow` occupies its left safe segment and the untrimmed
@@ -512,7 +512,7 @@ the SCRUM-563 source package remains historical design evidence.
   dossier and CTA must never overlap or cover frame ornament. Focused geometry
   coverage: `tests/hero_select_scrum980_ascension_layout_test.gd`; transient
   rect/screenshot evidence: `build/qa/scrum980/`.
-- SCRUM-1026 makes the full-size portion of that contract exhaustive instead of
+- Historical SCRUM-1026 (superseded by SCRUM-1063 below) made the full-size portion of that contract exhaustive instead of
   relying on the shorter level-2 sample. At viewport heights `>=1000`,
   `HS4AscensionFrame` has a 132 px minimum and stays bottom-anchored above the
   carousel, so it expands upward into the scroll-safe dossier budget only.
@@ -525,6 +525,21 @@ the SCRUM-563 source package remains historical design evidence.
   No art, frame texture/content margin, carousel, counter, portrait or CTA
   geometry changes. Spec:
   `docs/design/mockups/hero_select_black_minimal/scrum1026_ascension_level3_responsive_spec.md`.
+- SCRUM-1063 supersedes the visible SCRUM-980/1026 modifier-scroll lane and
+  SCRUM-979's clamped carousel edges. The live Ascension strip contains only
+  symmetric wide `−` / centered exact `Возвышение N` / wide `+`; complete
+  cumulative modifiers remain on the frame/value/button tooltips. All four
+  controls reuse accepted PixelLab `button_asc_minus.png` through the same
+  9-slice/content rect and the same normal/hover/pressed/focus/disabled states.
+  Width is exactly twice the former rounded carousel width while height is
+  preserved: `142×94`, `142×94`, `150×100`, `202×134` at 1152×648, 720p,
+  1080p and 2K. Label/button midpoint error is `0 px` at all targets. Carousel
+  Previous wraps first→last/final-window and Next wraps last→first/first-window;
+  pointer, physical Enter, gamepad A and cyclic D-pad focus share the same
+  selection/window/dossier/portrait/counter/Ascension refresh. Compact cards
+  scale uniformly to 116/132 px so every target retains three disjoint slots.
+  Spec/provenance: `docs/design/mockups/scrum1063_hero_carousel_wide_buttons/`
+  and `docs/design/references/scrum1063_hero_carousel_wide_buttons/`.
 
 SCRUM-952 makes the Hero Select dossier's class identity player-readable from
 the shared data registry. The text lane now starts with `Особенность — <title>`
@@ -549,9 +564,9 @@ carousel geometry are unchanged. PixelLab/content-zone evidence:
   contains class title, description, strengths, weaknesses, weapon names,
   class identity, eight base characteristics as hoverable Line Bars and
   data-driven build guidance. The bottom `HS4Carousel` uses enlarged responsive
-  slots and default focus on the selected visible slot. SCRUM-979 supersedes
-  the historical cyclic paging: the visible window moves by one without wrap,
-  and the hero entering the selected slot becomes selected. Since
+  slots and default focus on the selected visible slot. Historical SCRUM-979
+  introduced the moving window; SCRUM-1063 restores cyclic first↔last edges
+  while preserving the one-step window/selected-anchor behavior. Since
   SCRUM-421/SCRUM-822, large and carousel portraits use cached alpha bounds for
   consistent centering/bottom alignment and reserve a name strip. Historical
   evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`,
@@ -573,14 +588,16 @@ carousel geometry are unchanged. PixelLab/content-zone evidence:
   context. The start-boon screen continues to use the generic `weapon_select`
   menu box, and Route Map/SCRUM-563 geometry remains untouched. Mockup/spec:
   `docs/design/mockups/weapon_select_redraw_from_scratch/`.
-- SCRUM-979 makes the live HS4 carousel window the primary navigation state.
+- Historical SCRUM-979 made the live HS4 carousel window the primary navigation state.
   `HS4CarouselPrevButton` / `HS4CarouselNextButton` shift its clamped offset by
   exactly one in `ProgressionData.character_ids()` order and preserve the
   selected visible-slot anchor; the hero newly occupying that slot becomes the
-  selection. Edges are focusable no-ops and never wrap. Direct slot clicks keep
+  selection. Its clamped edge no-ops are superseded by SCRUM-1063 cyclic wrap.
+  Direct slot clicks keep
   the current window and select the exact clicked hero through the same portrait,
   dossier and ascension refresh path. The visibly larger arrows reuse the
-  accepted PixelLab vertical plates and their authored empty content margins.
+  accepted PixelLab vertical plates and their authored empty content margins;
+  SCRUM-1063 replaces them at runtime with the shared horizontal PixelLab plate.
   Mockup/spec: `docs/design/mockups/scrum979_hero_carousel_window/`.
 - 2026-06-29: `HS4Portrait` can render an animated class preview when the
   selected character exposes directional SpriteFrames. PixelLab classes use

@@ -1,0 +1,10 @@
+{
+  "tool": "create_ui_asset",
+  "name": "FantasyDisk SCRUM-1063 Hero Select universal wide button",
+  "width": 264,
+  "height": 192,
+  "no_background": true,
+  "seed": 1063,
+  "elements": ["button"],
+  "description": "One isolated textless wide horizontal game UI button plate, 3:2 target aspect after transparent crop, from the FantasyDisk Hero Select family. Dark fantasy D&D dragon-forged blackened iron, restrained worn gold bevel, tiny deep-ruby corner accents, calm dark empty center. Symmetric left/right and top/bottom, no directional arrow baked in. The center rectangle must remain empty for runtime glyphs. 9-slice friendly: no ornament in the stretchable middle, crisp corners and edge caps. Transparent background. No text, no letters, no numbers, no pseudo-text, no runes, no logo, no watermark, no extra panels, no scene, no characters, no weapons, no glow entering the empty center. Premium, strict, brutal but restrained, matching the current FantasyDisk Atlas/Hero Select red-gold metal family."
+}
