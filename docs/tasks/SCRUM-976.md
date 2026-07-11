@@ -1,6 +1,7 @@
 # SCRUM-976 — Gameplay sandbox runtime layer
 
 Статус: done
+Jira: SCRUM-976
 
 Owner: root-next9
 Thread/Worker: `/root`
