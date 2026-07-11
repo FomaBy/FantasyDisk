@@ -1,6 +1,6 @@
 # SCRUM-974 — Settings Audio: useful options without clutter
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-974
 Контур: Codex
