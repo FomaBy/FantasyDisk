@@ -1,6 +1,7 @@
 # SCRUM-1069 — Guild Atlas balance uplift
 
-Статус: in_progress
+Статус: done
+QA: pending independent SCRUM-1070 rerun
 Контур: Codex
 Owner: `/root/audit_new_sprint_tail`
 Thread: `/root/audit_new_sprint_tail`
@@ -45,8 +46,14 @@ Atlas footer geometry/art and SCRUM-1070 QA scope.
   full runtime smoke: PASS.
 - Independent post-implementation review: PASS, no P0–P2 findings.
 
-## Remaining gate
+## Result
 
-Integrate current `origin/dev`, rerun the final focused/runtime gate, push
-directly to `dev`, route Jira to `Контроль качества` and clean the disposable
-worktree/cache.
+- Landed to `origin/dev` in implementation commit `665a6f67a` and integration
+  commit `0fd4e679f`.
+- Post-integration focused Guild, Meta tree and full runtime smokes: PASS.
+- Representative windowed Atlas clickability on Apple Metal at all test
+  viewports: PASS.
+- Jira routing: `Контроль качества`; final QA verdict remains owned by QA.
+- Disk cleanup: removed the task `.godot` cache (`446 MB`) and isolated
+  `/tmp/fsd-scrum1069-metal`; disposable worktree is removed after board-sync
+  evidence is pushed.

@@ -4627,5 +4627,10 @@
   "key": "SCRUM-1074",
   "status": "К выполнению",
   "desc_hash": "e13b70512c6143ba5c38af89cd6ae0f2"
+ },
+ "SCRUM-1069_guild_atlas_balance.md": {
+  "key": "SCRUM-1069",
+  "status": "Контроль качества",
+  "desc_hash": "af925a84566790b3af91bc73b19563b2"
  }
 }
