@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "prev",
+      "rect": [
+        32,
+        22,
+        68,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "‹"
+      ],
+      "text_bbox": [
+        58,
+        36,
+        15,
+        20
+      ]
+    }
+  ]
+}

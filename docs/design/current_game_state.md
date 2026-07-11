@@ -320,7 +320,8 @@ uses accessible `#E05B4C` while its bar retains canonical `#D84A3A`; other
 labels use their canonical accent directly. PixelLab-first mockup/spec and
 Metal evidence live under `docs/design/{mockups,previews}/scrum951_hero_stat_colors/`.
 
-SCRUM-980 supersedes only that paragraph's ascension placement. The live
+Historical SCRUM-980 (superseded by SCRUM-1063 below) moved the ascension
+placement. Its then-live
 `HS4AscensionFrame` is now a wide right-hand band between dossier and carousel:
 the `-`/value/`+` stepper occupies its left content segment, while the exact
 selected-level delta is untrimmed inside vertical
@@ -331,7 +332,7 @@ ascension text/control overlaps the carousel, dossier, portrait, frame border or
 CTA. Coverage: `tests/hero_select_scrum980_ascension_layout_test.gd` and
 transient `build/qa/scrum980/`.
 
-SCRUM-1026 hardens that accepted layout against the longest valid selected-level
+Historical SCRUM-1026 (also superseded by SCRUM-1063 below) hardened that layout against the longest valid selected-level
 copy. At viewport heights from 1000 px, the right ascension band reserves 132 px
 and grows upward only into the already scroll-safe dossier; its bottom edge,
 carousel/counter, portrait, Choose button, art and content margins do not move.
@@ -343,6 +344,20 @@ transfer. The focused gate enumerates every selectable level with
 viewport-bounded pointer clicks, exact cumulative tooltips and hero-switch
 scroll reset; geometry spec:
 `docs/design/mockups/hero_select_black_minimal/scrum1026_ascension_level3_responsive_spec.md`.
+
+SCRUM-1063 supersedes SCRUM-979's clamped carousel edges and the visible
+SCRUM-980/1026 modifier lane. Carousel Previous/Next and Ascension `−`/`+` now
+share one accepted textless PixelLab horizontal plate, identical geometry and
+normal/hover/pressed/focus/disabled states. Each responsive control keeps the
+former arrow height and uses exactly `2 ×` its former rounded width. The only
+visible stepper copy is centered `Возвышение N`; cumulative modifiers remain in
+the panel/value/button tooltips. Previous at the first window selects the last
+hero in the final window, while Next at the final window selects the first hero;
+pointer, keyboard and gamepad use the same refresh path for selection, window,
+portrait, dossier, counter and Ascension. Compact 1152×648/1280×720 tiers keep
+three complete slots by uniformly scaling cards to 116/132 px. UI Director
+spec/provenance/previews: `docs/design/mockups/scrum1063_hero_carousel_wide_buttons/`
+and `docs/design/references/scrum1063_hero_carousel_wide_buttons/`.
 
 SCRUM-952 adds an explicit Hero Select reading hierarchy for every playable
 class: `Особенность`, `Плюсы`, `Минусы`. All 17 unique traits are implemented
@@ -1606,16 +1621,17 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
   `HS4BlackBackground`: слева крупный responsive `HS4Portrait` с направленной
   preview-rotation для PixelLab-классов и static `sprite_path` fallback для
   остальных; `HS4ChooseButton` расположен под превью, а широкий правый
-  `HS4AscensionFrame` между досье и каруселью содержит выбор уровня `-`/`+` и
-  scroll-safe строку модификатора/tooltip в отдельной content-zone; справа
+  `HS4AscensionFrame` между досье и каруселью содержит унифицированные широкие
+  `−`/`+` и строго центрированный текст `Возвышение N`, а полные модификаторы
+  доступны только в tooltip; справа
   находится scroll-safe `HS4DossierFrame` с описанием, сильными/слабыми
   сторонами, оружием, class identity, восемью характеристиками как hoverable
   Line Bars и data-driven секциями `Основные атрибуты`,
   `Второстепенные атрибуты`, `Дополнительные атрибуты`; снизу `HS4Carousel` с
-  увеличенными responsive слотами. SCRUM-979 заменяет cyclic-переходы на
-  non-wrapping сдвиг видимого окна по одному герою с сохранением выбранной
-  позиции; вошедший в ту же позицию герой становится выбранным. Увеличенные
-  стрелки используют существующие PixelLab-плиты с authored content margins. Select,
+  увеличенными responsive слотами. SCRUM-1063 возвращает бесконечный цикл
+  first↔last поверх сдвига окна по одному герою и синхронизирует окно/выбор/
+  досье/портрет/счётчик для pointer, keyboard и gamepad. Стрелки и Ascension
+  используют одну принятую PixelLab 9-slice плиту с authored content margins. Select,
   Back/Escape, ascension stepper, default focus and carousel interaction behavior
   are preserved. Focused coverage: `tests/hero_select_pixellab_layout_test.gd`,
   `tests/hero_select_scrum798_capture_test.gd`,
@@ -1722,7 +1738,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | --- | --- |
 | Главное меню | SCRUM-981: эпичный battle-art фон внутри полой `meta40/frame_border.png` рамы; логотип и шесть действий размещены в safe-zone как responsive сетка 2×3 (380×72 на 720p, 380×104 на 1080p/1440p), с явной 2D focus-навигацией |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
-| Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe dossier; между dossier и нижней carousel находится SCRUM-980 `HS4AscensionFrame` с focusable `-`/value/`+` и keyboard/gamepad/mouse-scroll описанием выбранного уровня в отдельной content-zone; strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance сохраняются |
+| Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe dossier; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота; strengths/weaknesses/weapons/stat Line Bars/rich tooltips/data-driven build guidance сохраняются |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | SCRUM-981: вертикальная карта внутри общей полой gold shell; header/title, боевой resource HUD, scroll/canvas, отдельная scrollbar lane и FAB находятся в точных safe-зонах, горизонтальный scroll отключён |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
@@ -2061,7 +2077,7 @@ SCRUM-853 усиливает pressure curve поверх этих базовых
 - Главное меню открывает «Атлас героев» (Мета 4.0): вкладка созвездия выбранного класса показывает 22 сокета целиком без пан/зума, вкладка гильдии использует звёздную пыль для QoL-узлов. SCRUM-971 показывает локализованное имя выбранного класса отдельной лёгкой строкой над центральным холстом в обеих вкладках; источник совпадает с title медальона, а обновление происходит сразу при выборе класса. Собственный ряд `AtlasCenterColumn` исключает наложение имени на сокеты, header, досье, footer и орнамент рамы без новой тяжёлой панели. SCRUM-838 фиксирует input-контракт: клик по любой ячейке Атласа — доступной, недоступной, скрытой или keystone — только показывает предпросмотр в правой панели с описанием, ценой, требованиями и состоянием action-кнопки; покупка/вложение и активация keystone выполняются только отдельными кнопками панели. SCRUM-970 устраняет focus race: сокет выбирается на pointer-down, deferred layout больше не захватывает initial focus повторно, action-кнопки не расширяют responsive досье фиксированной шириной, а смена вкладки условно переносит gamepad focus на живой узел нового графа. SCRUM-1024 закрывает найденный независимым QA физический overflow 1280×720: при safe-width <1420 currency chips показывают icon + точное число с полной фразой в tooltip, variable dossier progress/hint перенесены в `AtlasNodeScroll`, а нижняя строка 17-геройской сетки следует за фокусом. `AtlasSafeArea` остаётся ровно viewport, а Back/dossier/Buy/все hitbox-ы — внутри authored frame content rect. Реальные bounded viewport mouse motion/down/up проходят class/Guild preview и явную покупку на 1280×720, 1920×1080, 2048×1152 и 2560×1440; focused test отказывается работать с default `user://` и требует уникальный scratch user-data root. Runtime layout масштабирует сокеты компактнее на 720p/1080p, разводит плотные вертикальные лучи и финально проверяет ближайшие свободные позиции, чтобы круги улучшений не наслаивались. Legacy `SKILL_TREE` schema 3 остаётся compatibility/data layer для старых API и smoke-покрытия; канон нового UX: `docs/design/systems/meta_constellations.md`.
 - Сохранение через `scripts/meta_progression.gd` в `user://fantasydisk_meta.cfg` (ConfigFile).
 - Бонусы применяются к игроку при старте первого боя забега (`apply_ascension_bonuses` в `scripts/main.gd`).
-- Карточка выбора персонажа показывает «Возвышение: N/5», экран победы показывает прогресс возвышения выбранного героя.
+- Hero Select показывает только `Возвышение N` без `/ max`; экран победы отдельно показывает прогресс возвышения выбранного героя.
 - Smoke tests: `tests/meta_progression_smoke_test.gd`, `tests/meta_points_per_ascension_test.gd`, `tests/meta_skill_tree_smoke_test.gd`, `tests/skill_tree_per_hero_test.gd`.
 
 ## SCRUM-896/1005 Biologist Kit Redesign (2026-07-10)

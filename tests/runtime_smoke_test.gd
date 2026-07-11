@@ -6880,18 +6880,18 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 		_fail("Expected hero select to default ascension to the selected class selectable max.")
 		return
 	var asc_value_label := delta_main.find_child("HS4AscensionValue", true, false) as Label
-	if asc_value_label == null or (not asc_value_label.text.contains("3 / 3") and not asc_value_label.text.contains("3/3")):
-		_fail("Expected hero select ascension value to reflect selectable max 3/3, got: %s" % (asc_value_label.text if asc_value_label != null else "<missing>"))
+	if asc_value_label == null or asc_value_label.text != "Возвышение 3":
+		_fail("Expected exact centered Hero Select copy 'Возвышение 3', got: %s" % (asc_value_label.text if asc_value_label != null else "<missing>"))
 		return
 	var asc_mods_label := delta_main.find_child("AscensionModsLabel", true, false) as Label
 	if asc_mods_label == null:
 		_fail("Expected AscensionModsLabel on hero select.")
 		return
-	if not asc_mods_label.text.contains("Уровень 3") or not asc_mods_label.text.contains("Свирепые элитки"):
-		_fail("Expected hero select ascension label to show selected level delta, got: %s" % asc_mods_label.text)
+	if asc_mods_label.visible:
+		_fail("Expected SCRUM-1063 to remove the long visible Ascension modifier lane.")
 		return
-	if asc_mods_label.text.contains("Закалённые враги") or asc_mods_label.text.contains("Жадные торговцы"):
-		_fail("Expected hero select ascension label not to show cumulative lower-level changes, got: %s" % asc_mods_label.text)
+	if asc_value_label.tooltip_text.strip_edges() == "" or not asc_value_label.tooltip_text.contains("Свирепые элитки"):
+		_fail("Expected current Ascension modifiers in the value tooltip, got: %s" % asc_value_label.tooltip_text)
 		return
 	var asc_minus_button := delta_main.find_child("AscensionMinusButton", true, false) as Button
 	if asc_minus_button == null:
@@ -6906,8 +6906,11 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	asc_minus_button.pressed.emit()
 	await process_frame
 	asc_mods_label = delta_main.find_child("AscensionModsLabel", true, false) as Label
-	if asc_mods_label == null or not asc_mods_label.text.to_lower().contains("без усложнений"):
-		_fail("Expected hero select ascension level 0 label to say no complications.")
+	asc_value_label = delta_main.find_child("HS4AscensionValue", true, false) as Label
+	if asc_mods_label == null or asc_mods_label.visible or asc_value_label == null \
+			or asc_value_label.text != "Возвышение 0" \
+			or not asc_value_label.tooltip_text.to_lower().contains("без усложнений"):
+		_fail("Expected level 0 to use exact visible copy plus tooltip-only no-complications text.")
 		return
 	var hero_carousel := delta_main.find_child("HS4Carousel", true, false) as Control
 	if hero_carousel == null:
@@ -8581,7 +8584,7 @@ func _test_hero_select_radar_no_overlap_layouts(main_scene: PackedScene) -> void
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# Hero Select Minimal Black Rect Dump")
 	dump_lines.append("")
-	for viewport_size in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(2560, 1440)]:
+	for viewport_size in [Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(2560, 1440)]:
 		await _assert_hero_select_radar_layout_at_size(main_scene, viewport_size, dump_lines)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
@@ -8682,11 +8685,12 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 				return
 	# SCRUM-882: CTA «Выбрать» живёт в левой колонне — на 720p портрет делит
 	# вертикаль с плитой CTA и степпером возвышения (≥42px), пол ужат до 270.
-	var hero_preview_floor := HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE if viewport_size.y >= 864 else 270.0
+	var hero_preview_floor := HERO_SELECT_MINIMAL_PREVIEW_MIN_SIZE if viewport_size.y >= 864 else (240.0 if viewport_size.y <= 648 else 270.0)
 	if portrait_image_rect.size.x < hero_preview_floor or portrait_image_rect.size.y < hero_preview_floor:
 		_fail("Expected selected hero portrait to use enlarged SCRUM-798 footprint at %s, got %s." % [context, portrait_image_rect])
 		return
-	if first_thumb_rect.size.x < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE or first_thumb_rect.size.y < HERO_SELECT_MINIMAL_SLOT_MIN_SIZE:
+	var hero_slot_floor := HERO_SELECT_MINIMAL_SLOT_MIN_SIZE if viewport_size.y > 720 else (116.0 if viewport_size.y <= 648 else 132.0)
+	if first_thumb_rect.size.x < hero_slot_floor or first_thumb_rect.size.y < hero_slot_floor:
 		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
 	for relevance in ["primary", "secondary", "optional"]:
@@ -8700,7 +8704,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected Hero Select stat line bar with concise tooltip for %s at %s." % [stat_id, context])
 			return
-	var min_expected_thumb_width := HERO_SELECT_MINIMAL_SLOT_MIN_SIZE - 12.0
+	var min_expected_thumb_width := hero_slot_floor - 12.0
 	var first_thumb_visual := first_thumb.find_child("HS4CarouselPortrait_*", false, false) as Control
 	var first_thumb_visual_rect := first_thumb_visual.get_global_rect() if first_thumb_visual != null else first_thumb_rect
 	var thumb_square_tolerance := maxf(8.0, maxf(first_thumb_visual_rect.size.x, first_thumb_visual_rect.size.y) * 0.10)

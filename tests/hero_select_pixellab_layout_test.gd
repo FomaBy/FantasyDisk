@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORTS := [
+	Vector2i(1152, 648),
 	Vector2i(1280, 720),
 	Vector2i(1536, 864),
 	Vector2i(1920, 1080),
@@ -11,7 +12,10 @@ const PREVIEW_MIN_SIZE := 320.0
 # SCRUM-882: CTA «Выбрать» переехал в низ левой колонны — на 720p вертикальный
 # бюджет делится с плитой CTA и степпером возвышения (≥42px), портрет ужимается.
 const PREVIEW_MIN_SIZE_720 := 270.0
+const PREVIEW_MIN_SIZE_648 := 240.0
 const SLOT_MIN_SIZE := 180.0
+const SLOT_MIN_SIZE_720 := 132.0
+const SLOT_MIN_SIZE_648 := 116.0
 const CHOOSE_PLATE_RATIO := 380.0 / 104.0
 const SLOT_BASELINE_TOLERANCE := 3.0
 const PREVIEW_VISIBLE_MIN_RATIO := 0.68
@@ -98,7 +102,7 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		_fail("Expected HS4PortraitFrame at %s." % str(viewport_size))
 		return
 	var portrait_frame_rect := portrait_frame.get_global_rect()
-	var preview_min := PREVIEW_MIN_SIZE if viewport_size.y >= 864 else PREVIEW_MIN_SIZE_720
+	var preview_min := PREVIEW_MIN_SIZE if viewport_size.y >= 864 else (PREVIEW_MIN_SIZE_648 if viewport_size.y <= 648 else PREVIEW_MIN_SIZE_720)
 	if portrait_frame_rect.size.x < preview_min or portrait_frame_rect.size.y < preview_min:
 		_fail("Expected HS4PortraitFrame to use enlarged footprint at %s, got %s." % [str(viewport_size), str(portrait_frame_rect.size)])
 		return
@@ -131,8 +135,11 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	var ascension := main.find_child("HS4AscensionFrame", true, false) as Control
 	var choose := main.find_child("HS4ChooseButton", true, false) as Button
 	var asc_mods := main.find_child("AscensionModsLabel", true, false) as Label
-	if ascension == null or choose == null or asc_mods == null or asc_mods.text.strip_edges() == "":
-		_fail("Expected visible ascension chooser with description at %s." % str(viewport_size))
+	var asc_value := main.find_child("HS4AscensionValue", true, false) as Label
+	if ascension == null or choose == null or asc_mods == null or asc_value == null \
+			or not asc_value.text.begins_with("Возвышение ") or asc_value.text.contains("/") \
+			or asc_mods.visible:
+		_fail("Expected centered tooltip-only Ascension chooser at %s." % str(viewport_size))
 		return
 
 	# SCRUM-887/951: фиксированная зона характеристик у правого края досье,
@@ -233,7 +240,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		var slot := child as Button
 		if slot == null or not slot.visible or not slot.name.begins_with("HS4CarouselSlot_"):
 			continue
-		if slot.get_global_rect().size.x < SLOT_MIN_SIZE or slot.get_global_rect().size.y < SLOT_MIN_SIZE:
+		var slot_min := SLOT_MIN_SIZE_648 if viewport_size.y <= 648 else (SLOT_MIN_SIZE_720 if viewport_size.y <= 720 else SLOT_MIN_SIZE)
+		if slot.get_global_rect().size.x < slot_min or slot.get_global_rect().size.y < slot_min:
 			_fail("Expected enlarged carousel slot at %s, got %s." % [str(viewport_size), str(slot.get_global_rect().size)])
 			return
 		var slot_portrait := slot.find_child("HS4CarouselPortrait_*", false, false) as TextureRect
@@ -249,7 +257,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 			return
 		var slot_rect := slot.get_global_rect()
 		var label_rect := slot_label.get_global_rect()
-		if label_rect.size.y < LABEL_MIN_HEIGHT or not slot_rect.grow(2.0).encloses(label_rect):
+		var label_min_height := 18.0 if viewport_size.y <= 648 else (20.0 if viewport_size.y <= 720 else LABEL_MIN_HEIGHT)
+		if label_rect.size.y < label_min_height or not slot_rect.grow(2.0).encloses(label_rect):
 			_fail("Expected carousel label to stay inside slot at %s, got label %s slot %s." % [str(viewport_size), str(label_rect), str(slot_rect)])
 			return
 		var visible_rect := _visible_alpha_global_rect(slot_portrait)
@@ -303,7 +312,8 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	if choose_rect.size.x < portrait_rect.size.x * 0.9:
 		_fail("Expected HS4ChooseButton width >= 0.9x portrait column at %s, got %s vs portrait %s." % [str(viewport_size), str(choose_rect.size), str(portrait_rect.size)])
 		return
-	if choose_rect.size.y <= 0.0 or absf(choose_rect.size.x / choose_rect.size.y - CHOOSE_PLATE_RATIO) > CHOOSE_PLATE_RATIO * 0.04:
+	var choose_ratio_tolerance := 0.10 if viewport_size.y <= 648 else 0.04
+	if choose_rect.size.y <= 0.0 or absf(choose_rect.size.x / choose_rect.size.y - CHOOSE_PLATE_RATIO) > CHOOSE_PLATE_RATIO * choose_ratio_tolerance:
 		_fail("Expected HS4ChooseButton to keep the 380:104 main-menu plate aspect at %s, got %s." % [str(viewport_size), str(choose_rect.size)])
 		return
 	# SCRUM-882: досье вровень с портретом (одна верхняя линия), его низ поднят —

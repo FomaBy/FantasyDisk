@@ -1146,21 +1146,25 @@ func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHIT
 	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
 
 
-func _hs4_apply_carousel_arrow_style(button: Button, slot: String, display_size: Vector2) -> void:
+func _hs4_apply_wide_control_style(button: Button, display_size: Vector2) -> void:
 	UIButtonFamily.assign(button, "hero_carousel_arrow")
-	# SCRUM-979 reuses the accepted PixelLab arrow plates and their real empty
-	# content rectangles. Every state keeps the same geometry, so focus/hover can
-	# never shift the hit target or push the hidden-count glyph onto ornament.
-	button.add_theme_stylebox_override("normal", _hs4_pixellab_style(slot, display_size, Color.WHITE))
-	button.add_theme_stylebox_override("hover", _hs4_pixellab_style(slot, display_size, Color(1.08, 1.04, 0.92, 1.0)))
-	button.add_theme_stylebox_override("focus", _hs4_pixellab_style(slot, display_size, Color(1.08, 1.04, 0.92, 1.0)))
-	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style(slot, display_size, Color(0.82, 0.76, 0.66, 1.0)))
-	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style(slot, display_size, Color(0.46, 0.46, 0.50, 0.72)))
+	# SCRUM-1063: the accepted textless PixelLab Ascension plate is the universal
+	# horizontal source for carousel and Ascension controls. StyleBoxTexture keeps
+	# its corners intact while only the calm centre stretches; all runtime glyphs
+	# remain inside the authored Rect2(32,22,68,48) content zone.
+	button.add_theme_stylebox_override("normal", _hs4_pixellab_style("asc_minus", display_size, Color.WHITE))
+	button.add_theme_stylebox_override("hover", _hs4_pixellab_style("asc_minus", display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("focus", _hs4_pixellab_style("asc_minus", display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style("asc_minus", display_size, Color(0.82, 0.76, 0.66, 1.0)))
+	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style("asc_minus", display_size, Color(0.46, 0.46, 0.50, 0.72)))
 	button.add_theme_color_override("font_color", Color(0.98, 0.91, 0.66, 1.0))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.98, 0.82, 1.0))
 	button.add_theme_color_override("font_focus_color", Color(1.0, 0.98, 0.82, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.90, 0.82, 0.62, 1.0))
-	button.add_theme_font_size_override("font_size", clampi(int(roundf(display_size.y * 0.15)), 14, 20))
+	button.add_theme_font_size_override("font_size", clampi(int(roundf(display_size.y * 0.28)), 20, 38))
+	button.set_meta("hero_wide_control_source", HS4_PIXELLAB_PATHS["asc_minus"])
+	button.set_meta("hero_wide_control_source_size", HS4_PIXELLAB_SOURCE_SIZE["asc_minus"])
+	button.set_meta("hero_wide_control_content_rect", HS4_PIXELLAB_CONTENT_RECT["asc_minus"])
 
 
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
@@ -1349,13 +1353,24 @@ func _build_character_select_v4() -> void:
 	var column_gap := clampf(content_rect.size.x * 0.012, 8.0, 16.0)
 	var vgap := clampf(content_rect.size.y * 0.010, 4.0, 10.0)
 	var header_band := maxf(title_chip.get_combined_minimum_size().y + 4.0, header_h)
-	var carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	var baseline_carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	# The fixed outer shell is narrow at 1152×648/1280×720. Uniformly scale the
+	# complete square cards there so the doubled arrows never reduce the window
+	# below three visible heroes or overlap a portrait/label.
+	var carousel_slot_size := baseline_carousel_slot_size
+	if vp.y <= 648.0:
+		carousel_slot_size = minf(carousel_slot_size, 116.0)
+	elif vp.y <= 720.0:
+		carousel_slot_size = minf(carousel_slot_size, 132.0)
 	var carousel_h := carousel_slot_size + clampf(content_rect.size.y * 0.012, 6.0, 14.0)
-	# SCRUM-979: the accepted PixelLab arrow source is 132x176. Keep its 0.75
-	# aspect and scale from the live slot, instead of the old tiny 54x42 seal.
-	var carousel_arrow_h := clampf(roundf(carousel_slot_size * 0.52), 84.0, 140.0)
-	var carousel_arrow_size := Vector2(roundf(carousel_arrow_h * 0.75), carousel_arrow_h)
+	# SCRUM-1063 doubles the former responsive width exactly while preserving the
+	# pre-change height derived from the original slot tier: old aspect 0.75 -> 1.5.
+	var carousel_arrow_h := clampf(roundf(baseline_carousel_slot_size * 0.52), 84.0, 140.0)
+	var former_carousel_arrow_w := roundf(carousel_arrow_h * 0.75)
+	var carousel_arrow_size := Vector2(former_carousel_arrow_w * 2.0, carousel_arrow_h)
 	var carousel_min_w := 2.0 * carousel_arrow_size.x + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
+	if vp.y <= 720.0:
+		carousel_min_w = 2.0 * carousel_arrow_size.x + 3.0 * carousel_slot_size + 4.0 * 6.0
 	# CTA «Выбрать» — плита кнопок главного меню 380×104 (Правило 1: только
 	# пропорциональный даунскейл под ширину колонны, аспект не ломаем).
 	var choose_aspect := 104.0 / 380.0
@@ -1374,10 +1389,13 @@ func _build_character_select_v4() -> void:
 	# original band and its intentional keyboard/mouse/gamepad scroll path.
 	if vp.y >= 1000.0:
 		asc_target_h = maxf(asc_target_h, 132.0)
+	# All four wide controls share exact geometry. Grow the band upward when the
+	# preserved carousel height plus real frame padding exceeds the older band.
+	asc_target_h = maxf(asc_target_h, carousel_arrow_size.y + ascension_pad * 2.0)
 	# Вертикальный бюджет левой колонны: portrait + vgap + CTA. Возвышение после
 	# SCRUM-980 живёт в правой полосе и больше не отнимает высоту у preview.
 	var preview_floor := HS4_MINIMAL_PREVIEW_MIN_SIZE
-	if vp.y < 720.0:
+	if vp.y < 680.0:
 		preview_floor = 240.0
 	elif vp.y < 800.0:
 		preview_floor = 270.0
@@ -1396,7 +1414,10 @@ func _build_character_select_v4() -> void:
 	portrait_size = floorf(clampf(portrait_size, preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE))
 	var choose_w := minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH)
 	var choose_h := maxf(roundf(choose_w * choose_aspect), 68.0)
-	var choose_top := content_rect.end.y - choose_h
+	# The 1152×648 shell's source-space gold border rounds 4 px inward compared
+	# with the generic safe-margin helper. Keep the CTA fully off that ornament.
+	var choose_bottom_reserve := 4.0 if vp.y <= 648.0 else 0.0
+	var choose_top := content_rect.end.y - choose_h - choose_bottom_reserve
 	var dossier_x := left_x + portrait_size + column_gap
 	var dossier_w := content_rect.end.x - dossier_x
 	# Фидбек SCRUM-882: top досье == top портрет-фрейма (одна линия под шапкой).
@@ -1842,13 +1863,11 @@ func _build_character_select_v4() -> void:
 	ascension_panel.clip_contents = true
 	root.add_child(ascension_panel)
 	# Степпер слева, полное описание выбранного уровня в вертикальном scroll справа.
-	var asc_content_h := ascension_h - ascension_pad * 2.0
 	# `_atlas_chip_style` uses pad*1.4 for horizontal content margins. Keep the
 	# manually positioned row/scroll on that exact authored inset, not the
 	# smaller vertical pad (SCRUM-1026 frame-content oracle).
 	var ascension_pad_x := ascension_pad * 1.4
-	var asc_button_px := clampf(asc_content_h, 42.0, 56.0)
-	var asc_button_size := Vector2(asc_button_px, asc_button_px)
+	var asc_button_size := carousel_arrow_size
 
 	# Заголовок/интро остаются скрытыми compatibility nodes; доступное описание
 	# уровня и полный cumulative tooltip принадлежат правой полосе.
@@ -1879,32 +1898,38 @@ func _build_character_select_v4() -> void:
 	var asc_box := HBoxContainer.new()
 	asc_box.name = "HS4AscensionActionRow"
 	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+	var asc_control_gap := maxi(10, int(roundf(asc_button_size.x * 0.10)))
+	asc_box.add_theme_constant_override("separation", asc_control_gap)
 	ascension_panel.add_child(asc_box)
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
-	# Степпер ≥42px — seal-контракт runtime_smoke.
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
-	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
+	_hs4_apply_wide_control_style(asc_minus, asc_button_size)
+	asc_minus.set_meta("former_responsive_width", former_carousel_arrow_w)
 	asc_box.add_child(asc_minus)
 	var asc_stepper_label := Label.new()
 	asc_stepper_label.name = "HS4AscensionValue"
 	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_stepper_label.custom_minimum_size = Vector2(maxf(64.0, roundf(84.0 * layout_scale)), asc_button_size.y)
-	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	var asc_value_available := maxf(
+		120.0,
+		ascension_w - ascension_pad_x * 2.0 - asc_button_size.x * 2.0 - asc_control_gap * 2.0)
+	asc_stepper_label.custom_minimum_size = Vector2(minf(maxf(172.0, roundf(220.0 * layout_scale)), asc_value_available), asc_button_size.y)
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(17.0 * layout_scale))), 0, 26))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
+	asc_stepper_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
-	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
+	_hs4_apply_wide_control_style(asc_plus, asc_button_size)
+	asc_plus.set_meta("former_responsive_width", former_carousel_arrow_w)
 	asc_box.add_child(asc_plus)
-	# Ручное центрирование фактического combined minimum: utility art может быть
-	# выше requested size, особенно на 720p.
+	# Equal controls + equal gaps make the label centre identical to the midpoint
+	# between the two button centres. Centre the complete row in the frame.
 	asc_box.size = asc_box.get_combined_minimum_size()
 	asc_box.position = Vector2(
-		ascension_pad_x,
+		roundf((ascension_w - asc_box.size.x) * 0.5),
 		roundf((ascension_h - asc_box.size.y) * 0.5))
 
 	var asc_description_gap := maxf(8.0, roundf(10.0 * layout_scale))
@@ -1913,13 +1938,13 @@ func _build_character_select_v4() -> void:
 	asc_description_scroll.name = "HS4AscensionDescriptionScroll"
 	asc_description_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	asc_description_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	asc_description_scroll.focus_mode = Control.FOCUS_ALL
-	asc_description_scroll.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	asc_description_scroll.tooltip_text = "Описание Возвышения. Прокрутка: ↑/↓ или колесо мыши."
+	# Compatibility node for older test/tool lookup. SCRUM-1063 intentionally
+	# removes the visible modifier lane; the complete copy lives in tooltips.
+	asc_description_scroll.focus_mode = Control.FOCUS_NONE
+	asc_description_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	asc_description_scroll.visible = false
 	asc_description_scroll.position = Vector2(asc_description_x, ascension_pad)
-	asc_description_scroll.size = Vector2(
-		maxf(0.0, ascension_w - asc_description_x - ascension_pad_x),
-		maxf(0.0, ascension_h - ascension_pad * 2.0))
+	asc_description_scroll.size = Vector2.ZERO
 	ascension_panel.add_child(asc_description_scroll)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
@@ -1933,6 +1958,7 @@ func _build_character_select_v4() -> void:
 	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
 	asc_mods.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	asc_mods.visible = false
 	asc_description_scroll.add_child(asc_mods)
 	asc_description_scroll.gui_input.connect(func(event: InputEvent) -> void:
 		var scroll_direction := 0
@@ -2002,19 +2028,21 @@ func _build_character_select_v4() -> void:
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
 
-	# SCRUM-882/979: arrows show hidden hero counts while the enlarged PixelLab
-	# plate keeps the glyph strictly inside its authored empty content zone.
+	# SCRUM-1063: both arrows share the same horizontal PixelLab/9-slice source,
+	# geometry and states as Ascension −/+; hidden counts remain runtime text.
 	var left_arrow := _make_button("‹")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
-	_hs4_apply_carousel_arrow_style(left_arrow, "carousel_left", arrow_size)
+	_hs4_apply_wide_control_style(left_arrow, arrow_size)
+	left_arrow.set_meta("former_responsive_width", former_carousel_arrow_w)
 	left_arrow.clip_text = true
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
 	var right_arrow := _make_button("›")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
-	_hs4_apply_carousel_arrow_style(right_arrow, "carousel_right", arrow_size)
+	_hs4_apply_wide_control_style(right_arrow, arrow_size)
+	right_arrow.set_meta("former_responsive_width", former_carousel_arrow_w)
 	right_arrow.clip_text = true
 	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
@@ -2090,10 +2118,11 @@ func _build_character_select_v4() -> void:
 			default_focus = visible_slots[visible_index] as Control
 		for i in range(row_controls.size()):
 			var ctrl := row_controls[i] as Control
-			# SCRUM-979: roster/window movement is non-wrapping, so the focus row
-			# must not secretly wrap Previous <-> Next at its outward edges.
-			var left := ctrl if i == 0 else (row_controls[i - 1] as Control)
-			var right := ctrl if i == row_controls.size() - 1 else (row_controls[i + 1] as Control)
+			# SCRUM-1063 restores the cyclic row: outward focus moves to the
+			# opposite arrow, and activating either focused arrow uses the same wrap
+			# path as pointer input.
+			var left := (row_controls.back() as Control) if i == 0 else (row_controls[i - 1] as Control)
+			var right := (row_controls.front() as Control) if i == row_controls.size() - 1 else (row_controls[i + 1] as Control)
 			ctrl.focus_neighbor_left = left.get_path()
 			ctrl.focus_neighbor_right = right.get_path()
 			ctrl.focus_neighbor_top = select_button.get_path()
@@ -2120,18 +2149,14 @@ func _build_character_select_v4() -> void:
 		dossier_scroll.focus_neighbor_right = (stat_chain.front() as Control).get_path()
 		dossier_scroll.focus_neighbor_top = back_button.get_path()
 		dossier_scroll.focus_neighbor_bottom = select_button.get_path()
-		asc_minus.focus_neighbor_left = asc_plus.get_path()
+		asc_minus.focus_neighbor_left = asc_minus.get_path()
 		asc_minus.focus_neighbor_right = asc_plus.get_path()
 		asc_minus.focus_neighbor_top = back_button.get_path()
 		asc_minus.focus_neighbor_bottom = select_button.get_path()
 		asc_plus.focus_neighbor_left = asc_minus.get_path()
-		asc_plus.focus_neighbor_right = asc_description_scroll.get_path()
+		asc_plus.focus_neighbor_right = asc_plus.get_path()
 		asc_plus.focus_neighbor_top = back_button.get_path()
 		asc_plus.focus_neighbor_bottom = select_button.get_path()
-		asc_description_scroll.focus_neighbor_left = asc_plus.get_path()
-		asc_description_scroll.focus_neighbor_right = asc_description_scroll.get_path()
-		asc_description_scroll.focus_neighbor_top = back_button.get_path()
-		asc_description_scroll.focus_neighbor_bottom = select_button.get_path()
 		# CTA внизу левой колонны: вверх ведёт к степперу правой полосы,
 		# вправо — вход в ряд карусели.
 		select_button.focus_neighbor_left = asc_minus.get_path()
@@ -2211,22 +2236,23 @@ func _build_character_select_v4() -> void:
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
-		asc_stepper_label.text = "%d / %d" % [game.selected_ascension_level, maxl]
+		asc_stepper_label.text = "Возвышение %d" % game.selected_ascension_level
 		var ascension_tooltip := _hs4_ascension_text(game.selected_ascension_level)
 		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
 		asc_description_scroll.scroll_vertical = 0
 		asc_description_scroll.set_deferred("scroll_vertical", 0)
 		asc_mods.tooltip_text = ascension_tooltip
-		# The Label ignores mouse input, so the ScrollContainer is the real hover
-		# target. Keep cumulative mechanics on that live target as well as the
-		# parent panel, with the interaction hint appended after the exact copy.
-		asc_description_scroll.tooltip_text = "%s\nПрокрутка: ↑/↓, D-pad или колесо мыши." % ascension_tooltip
+		asc_stepper_label.tooltip_text = ascension_tooltip
+		asc_minus.tooltip_text = ascension_tooltip
+		asc_plus.tooltip_text = ascension_tooltip
+		asc_description_scroll.tooltip_text = ascension_tooltip
 		ascension_panel.tooltip_text = ascension_tooltip
 		asc_minus.disabled = game.selected_ascension_level <= 0
 		asc_plus.disabled = game.selected_ascension_level >= maxl
 		var off: int = int(state["offset"])
 		carousel.set_meta("window_offset", off)
 		carousel.set_meta("visible_slot_count", visible_slot_count)
+		carousel.set_meta("cyclic_wrap", true)
 		for i in range(visible_slot_count):
 			var idx: int = off + i
 			var slot: Button = slot_buttons[i]
@@ -2279,12 +2305,24 @@ func _build_character_select_v4() -> void:
 		var old_offset: int = int(state["offset"])
 		var anchor: int = clampi(selected_index - old_offset, 0, visible_slot_count - 1)
 		var max_offset: int = maxi(0, roster.size() - visible_slot_count)
-		var new_offset: int = clampi(old_offset + direction, 0, max_offset)
-		if new_offset == old_offset:
-			return
+		var wraps_to_end := direction < 0 and old_offset <= 0
+		var wraps_to_start := direction > 0 and old_offset >= max_offset
+		var new_offset: int = old_offset
+		if wraps_to_end:
+			new_offset = max_offset
+		elif wraps_to_start:
+			new_offset = 0
+		else:
+			new_offset = clampi(old_offset + direction, 0, max_offset)
 		state["offset"] = new_offset
 		var window_end: int = mini(new_offset + visible_slot_count - 1, roster.size() - 1)
-		var target_index: int = clampi(new_offset + anchor, new_offset, window_end)
+		var target_index: int
+		if wraps_to_end:
+			target_index = roster.size() - 1
+		elif wraps_to_start:
+			target_index = 0
+		else:
+			target_index = clampi(new_offset + anchor, new_offset, window_end)
 		select_hero.call(str(roster[target_index]))
 
 	for i in range(visible_slot_count):
