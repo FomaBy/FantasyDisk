@@ -1,6 +1,6 @@
 # SCRUM-1049 Bug: gratitude button focus is yellow instead of neutral
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1054
 Контур: Codex
@@ -45,3 +45,9 @@ Files changed: `scripts/ui_screens.gd`,
 
 No commit/push performed by subagent, per root instruction. Disk cleanup: none
 created.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Нейтральный focus и regression gate независимо перепроверены в ретесте `SCRUM-1052`.

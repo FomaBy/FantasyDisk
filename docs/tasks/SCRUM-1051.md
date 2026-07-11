@@ -1,6 +1,6 @@
 # SCRUM-1049 Back-end: унификация runtime UI и icon-only credits button
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1051
 Контур: Codex
@@ -197,3 +197,9 @@ Files changed by Back-end:
 No commit/push performed by subagent, per root instruction. Disk cleanup: none
 created. Next: root removes/routes the two unrelated duplicate UID artifacts,
 reruns full runtime smoke, then performs Jira/Git integration.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Полная responsive/state/overlap/gamepad/runtime приёмка записана в `SCRUM-1052`; commit `73fd7a492` запушен в `origin/dev`.

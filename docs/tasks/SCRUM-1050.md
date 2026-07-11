@@ -1,6 +1,6 @@
 # SCRUM-1049 Design: единый UI-kit, PixelLab reference sheet и credits icon
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1050
 Контур: Codex
@@ -29,6 +29,12 @@ Runtime code is out of scope for this subtask.
 - Provenance: `docs/design/references/scrum1050_ui_unification/manifest.json`. Config-based PixelLab `get_balance` smoke PASS; no secrets printed/stored. New `create_ui_asset` board job was rejected before generation because the 20-40 generation UI cost exceeded the four-generation balance; approved `existing source reuse` exception used only already accepted PixelLab families. Gratitude icon still originated from PixelLab MCP; no fallback image model.
 - Disk cleanup: none created beyond committed design/source/preview/runtime candidate files; no transient cache/worktree created.
 - Runtime files/tests: none changed/run in Design scope; Back-end owns resolver, Codex/runtime, credits surface/button wiring and screenshot/smoke verification.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+PixelLab provenance, content-zone gates, reference sheet и runtime icon независимо проверены в `SCRUM-1052`.
 
 ## Acceptance criteria
 

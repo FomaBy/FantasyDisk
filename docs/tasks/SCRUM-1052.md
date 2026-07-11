@@ -1,6 +1,6 @@
 # SCRUM-1049 QA: визуальная матрица и единообразие UI
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1052
 Контур: Codex
@@ -14,7 +14,7 @@ After SCRUM-1050 and SCRUM-1051 are QA-ready, independently verify the full scre
 
 QA must not fix implementation in this issue; defects become separate bug tickets.
 
-## QA-Вердикт (2026-07-11)
+## QA-проверка — первичный FAILED (2026-07-11)
 
 Статус: FAILED
 
@@ -68,6 +68,12 @@ Disk cleanup: none created (no disposable worktree/cache; standard ignored
 `build/qa` test evidence only).
 
 Thread cleanup: not a disposable worker thread (subagent of active root task).
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Финальный ретест SCRUM-1054 заменяет первичный FAILED; новых дефектов нет.
 
 ## QA-Ретест SCRUM-1054 (2026-07-11)
 

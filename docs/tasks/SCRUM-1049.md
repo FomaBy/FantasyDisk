@@ -1,6 +1,6 @@
 # UI: унифицировать весь интерфейс игры и добавить icon-only кнопку благодарностей
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1049
 Контур: Codex
@@ -26,3 +26,18 @@ Locked paths: `docs/tasks/SCRUM-1049.md`, Jira coordination; implementation spli
 - Main menu содержит icon-only кнопку благодарностей без face text; она открывает существующий Credits screen.
 - Контент не пересекает орнамент рамок на 1280x720, 1920x1080 и 2560x1440.
 - PixelLab provenance, mockup/spec, implementation evidence и QA verdict записаны в дочерних задачах.
+
+## Результат
+
+- Единый semantic button-family registry внедрён во весь runtime inventory; специализированные cards/slots/nodes сохраняют обоснованные варианты.
+- Кодекс использует явный quiet Codex family и сохраняет frameless three-column layout.
+- В правом верхнем углу Main Menu добавлена icon-only PixelLab-кнопка благодарностей с responsive 64/72/88 px geometry, tooltip, focus, gamepad navigation, SFX и существующим Credits callback.
+- QA SCRUM-1052: PASSED после исправления neutral-focus бага SCRUM-1054.
+- Commit/push: `73fd7a492` в `origin/dev`.
+- Disk cleanup: удалены созданные прогонами test `.uid` sidecars; disposable worktree/cache не создавались; четыре pre-existing unrelated untracked files сохранены и не закоммичены.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Независимая приёмка и ретест зафиксированы в `SCRUM-1052`; связанных открытых дефектов нет.
