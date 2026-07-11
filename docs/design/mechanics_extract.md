@@ -2,6 +2,37 @@
 
 ## Актуальный Слой Реализации
 
+### Target schema 6 — SCRUM-1067 (pending SCRUM-1068 runtime)
+
+Новая design-спецификация созвездий хранится в
+`docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`, машинный
+manifest — `docs/design/data/scrum1067_weapon_finals_manifest.json`.
+
+Формула класса остаётся trio-first:
+
+```text
+weapon solo = measured_solo / target_solo
+weapon aoe = measured_5T / target_5T
+weapon crowd = mean(target_CCT_N / measured_CCT_N), N=5,10,20
+weapon defense = implemented_defense / target_defense
+class axis = mean(axis трёх canonical weapons)
+defense_for_total = min(class defense, 1.50)
+class total = mean(solo, aoe, crowd, defense_for_total)
+```
+
+Raw defense публикуется отдельно и продолжает проходить survivability/TTD gates;
+cap 1.50 действует только в агрегированном roster-comparison total.
+
+Topology: free core + `3×6` weapon-owned cost-1 nodes + two revealed/purchased
+hidden cost1 = 21 nodes / 20 spend. Все три finals действуют одновременно, но
+строго на свои weapon IDs. Полный путь `1.60–2.00×`, трио `1.60–1.90×`, roster
+total spread `≤1.15`; A5 остаётся сложнее A0 и не ускоряется более чем на 15%
+относительно A0 baseline.
+
+Manifest инстанцирует 306 branch nodes и 34 hidden profiles; каждый содержит
+scope/effect/cap/consumer/fixture. Free core явно и всегда даёт ровно +1 primary
+attribute вне 20-point spend.
+
 Обновлено: 2026-07-04
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.

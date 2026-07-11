@@ -1,5 +1,21 @@
 # Мета 4.0 «Созвездия героев» — дерево умений и метапрогрессия (редизайн с нуля)
 
+> **Целевой контракт SCRUM-1067 (schema 6, реализация — SCRUM-1068).**
+> Исторические разделы Меты 4.0/4.1 ниже продолжают описывать schema-5 runtime
+> до внедрения. Новый источник истины для следующей схемы:
+> `docs/design/reports/scrum1067_constellation_3x6_balance_spec.md` и
+> `docs/design/data/scrum1067_weapon_finals_manifest.json`.
+>
+> На класс: одно бесплатное ядро, три canonical weapon-owned ветви по шесть
+> cost-1 узлов и две revealed-then-purchased hidden side stars cost 1. Итого
+> 21 узел, полный spend 20. Шестой узел каждой ветви — уникальный mechanic-first
+> weapon final; все три финала действуют одновременно только на своё оружие.
+> Machine manifest явно инстанцирует все 306 branch nodes и 34 hidden effect
+> profiles с axis/effect/cap/consumer/fixture; reveal не активирует hidden без
+> отдельной покупки.
+> Старые class-wide mutually-exclusive keystone и auto-active hidden в schema 6
+> не переносятся.
+
 Обновлено: 2026-07-03. Автор: PM/game-design (Fable 5), по прямому мандату
 продукта. Заменяет как целевую архитектуру: `skill_tree.md` (v3, SCRUM-807 —
 остаётся описанием ТЕКУЩЕГО кода до внедрения), части `progression_balance.md`
