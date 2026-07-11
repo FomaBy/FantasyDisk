@@ -42,8 +42,8 @@ Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
 Russian text `Продолжить забег?`; the former 760×170 Luminari bitmap wordmark
 and its platform-font generator were removed after confirming that the dialog
 was their only runtime consumer. The label inherits the same theme/default
-`Font` resource as standard game title labels. Until SCRUM-1061 lands the
-cross-screen semantic API, this task owns the documented fit-safe title tier
+`Font` resource as standard game title labels. SCRUM-1061 inventories it as the
+semantic `title` role while this screen keeps its documented fit-safe title tier
 `_readable_font_size(29)` (`38/40/42/42px` at 1152×648 / 1280×720 / 1080p /
 2K), with warm-gold text, 2px dark outline and 2px shadow offset.
 
@@ -175,6 +175,34 @@ Acceptance coverage: `tests/ui_no_overlap_matrix_test.gd` includes `1536x864`,
 `tests/design_review_screenshot_capture_test.gd` to
 `build/qa/design_review/` for Hero Select, Level Up, Shop, Codex, Settings, and
 Combat HUD at `1280x720`, `1920x1080`, and `2560x1440`.
+
+## SCRUM-1061 Semantic Typography
+
+Player-facing font sizing now has one canonical runtime source:
+`scripts/ui/semantic_typography.gd`. It defines the semantic roles `display`,
+`title`, `section`, `body`, `description`, `action`, `tab`, `field`, `value`,
+`tooltip`, `caption` and `HUD`; every role owns min/target/max effective px and
+an overflow policy. New UI uses the semantic resolver directly. Existing
+accepted layouts use centralized authored-compatibility, scale-compatibility or
+Codex transform-aware resolution so the SCRUM-692/883 effective values and
+frame geometry do not move during migration.
+
+The duplicated route-map readability formula is removed. `ui_screens` readable,
+Settings and Codex helpers plus the pause dossier helper now delegate to the
+same API. Global tooltips, level-up toast, threat indicators, player/enemy world
+feedback and raw combat HUD sizes are routed through it as well. Continue Run is
+inventoried as `title`, but its accepted SCRUM-1062 slot and effective tier are
+unchanged.
+
+The machine inventory
+`docs/design/mockups/scrum1061_semantic_typography/typography_inventory.json`
+uses stable source fingerprints. Every remaining authored exception records an
+owner, reason and next issue: two Atlas-canvas/topology fingerprints route to
+SCRUM-1068; the exact 139-site non-Atlas legacy-geometry manifest routes to the
+dedicated unassigned SCRUM-1073 follow-up. SCRUM-1070 remains scoped only to the
+Atlas reset-footer button and owns no current inventory fingerprint. Contract,
+accepted PixelLab anchor contact sheet and responsive rules:
+`docs/design/mockups/scrum1061_semantic_typography/`.
 
 ## Shop UI
 

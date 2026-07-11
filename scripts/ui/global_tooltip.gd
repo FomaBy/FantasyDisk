@@ -1,13 +1,15 @@
 class_name GlobalTooltip
 extends RefCounted
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 const DEFAULT_LABEL_NAME := "GlobalTooltipLabel"
 # Единственную рамку тултипа рисует движковый попап стилем "TooltipPanel" из make_theme();
 # кастомный контент — голый Label/столбец лейблов, иначе получается рамка в рамке.
 const DEFAULT_MAX_WIDTH := 460.0
 const WIDE_MAX_WIDTH := 620.0
 const WIDE_TEXT_THRESHOLD := 360
-const DEFAULT_FONT_SIZE := 20
+const DEFAULT_FONT_SIZE := SemanticTypography.TARGET_TOOLTIP
 # SCRUM-890: отступ тултипа от курсора 16px, кламп в вьюпорт с полем 16px.
 const DEFAULT_GAP := 16.0
 const DEFAULT_VIEWPORT_MARGIN := 16.0
@@ -23,7 +25,7 @@ static func make_theme() -> Theme:
 	theme.set_color("font_shadow_color", "TooltipLabel", Color(0.01, 0.01, 0.012, 0.92))
 	theme.set_constant("shadow_offset_x", "TooltipLabel", 1)
 	theme.set_constant("shadow_offset_y", "TooltipLabel", 1)
-	theme.set_font_size("font_size", "TooltipLabel", DEFAULT_FONT_SIZE)
+	theme.set_font_size("font_size", "TooltipLabel", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TOOLTIP, DEFAULT_FONT_SIZE))
 	return theme
 
 
@@ -53,7 +55,7 @@ static func make_tooltip_label(
 	label.name = label_name
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = for_text
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TOOLTIP, font_size))
 	label.add_theme_color_override("font_color", font_color)
 	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.92))
 	label.add_theme_constant_override("shadow_offset_x", 1)

@@ -26,6 +26,37 @@
 - Горизонтальный скролл запрещен для route map, pause stats и основных меню; длинный контент уходит в вертикальный `ScrollContainer`.
 - Длинный текст должен иметь `AUTOWRAP_WORD_SMART` или быть вынесен в отдельный info-frame над кнопкой.
 
+## Semantic Typography (SCRUM-1061)
+
+Канонический источник размеров player-facing текста —
+`scripts/ui/semantic_typography.gd`. Локальные формулы масштаба запрещены: новый
+Control выбирает роль и вызывает semantic resolver; существующая принятая сетка
+может использовать только документированный compatibility resolver.
+
+| Role | Min | Target | Max | Overflow |
+| --- | ---: | ---: | ---: | --- |
+| display | 32 | 44 | 72 | authored one-line fit / expand zone |
+| title | 24 | 34 | 54 | up to two lines, then specified ellipsis |
+| section | 20 | 24 | 34 | expand rail, then single-line ellipsis |
+| body | 16 | 18 | 24 | smart wrap + grow/scroll |
+| description | 14 | 17 | 22 | smart wrap + grow/scroll |
+| action | 16 | 23 | 34 | widen plate or two-line wrap |
+| tab | 16 | 23 | 28 | widen plate or specified two-line wrap |
+| field | 16 | 20 | 28 | reserve label column |
+| value | 16 | 20 | 28 | stable single-line value column |
+| tooltip | 18 | 20 | 24 | widen 460→620, then wrap/grow |
+| caption | 12 | 14 | 18 | single-line ellipsis; smaller only by allowlist |
+| HUD | 14 | 22 | 34 | fixed short feedback zone |
+
+Semantic-native scaling is monotonic at 648/720/900/1080/1440/2160p and never
+leaves the role band. Codex design-stage text uses transform-aware resolution so
+effective visual px (local font × stage scale) stays inside its selected bounds.
+Russian strings must be measured with the runtime font. Shrink-to-fit below the
+role minimum is forbidden; wrap/scroll/grow must happen inside the empty frame
+content zone. The authoritative overflow details, exceptions and fingerprinted
+inventory live in
+`docs/design/mockups/scrum1061_semantic_typography/`.
+
 ## Базовые Прозрачности Экранов
 
 | Элемент | Требование |

@@ -1,6 +1,7 @@
 extends RefCounted
 
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 
 # Генерация маршрута и full-screen экран маршрутной карты:
 # узлы, связи, скролл/пан, активация encounter-ов.
@@ -53,24 +54,11 @@ func _init(game_ref) -> void:
 	game = game_ref
 
 
-# SCRUM-883: дубль формулы ui_screens._readable_font_size — у RefCounted-экрана нет
-# доступа к хелперу ui_screens; константы обязаны совпадать (1.32/1.45, пороги 648/216).
-const READABILITY_FONT_SCALE_MIN := 1.32
-const READABILITY_FONT_SCALE_TARGET := 1.45
-
-
-func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
+func _semantic_font(role: StringName, authored_px: int, min_px := 0, max_px := 96) -> int:
 	var viewport_height := 864.0
 	if game != null and game.get_viewport() != null:
 		viewport_height = game.get_viewport().get_visible_rect().size.y
-	var t := clampf((viewport_height - 648.0) / 216.0, 0.0, 1.0)
-	var scale := lerpf(READABILITY_FONT_SCALE_MIN, READABILITY_FONT_SCALE_TARGET, t)
-	var scaled := int(roundf(float(base_size) * scale))
-	if min_size > 0:
-		scaled = maxi(scaled, min_size)
-	if max_size > 0:
-		scaled = mini(scaled, max_size)
-	return scaled
+	return SemanticTypography.resolve_authored_compat(role, authored_px, viewport_height, min_px, max_px)
 
 
 func _show_battle_map() -> void:
@@ -157,7 +145,7 @@ func _show_battle_map() -> void:
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: шапка живёт в authored 68/70/80px zone; readable 29..32px
 	# оставляет гарантированную отдельную строку прогресса без выхода на орнамент.
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(22, 26))
+	title_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_TITLE, 22, 26))
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -172,7 +160,7 @@ func _show_battle_map() -> void:
 	]
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: compact supporting line inside the same authored title zone.
-	stage_label.add_theme_font_size_override("font_size", _readable_font_size(11, 14))
+	stage_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 11, 14))
 	stage_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	stage_label.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -183,7 +171,7 @@ func _show_battle_map() -> void:
 		debug_label.name = "RouteDebugFreePickLabel"
 		debug_label.text = "DEBUG: свободный выбор любого узла включен (F12 — выключить)"
 		# SCRUM-883: 16 фикс → readable (11×1.32…1.45 = 15…16), пол 14.
-		debug_label.add_theme_font_size_override("font_size", _readable_font_size(11, 14))
+		debug_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 11, 14))
 		debug_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		debug_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.40, 1.0))
 		debug_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1048,7 +1036,7 @@ func _add_route_node_completed_mark(button: Button) -> void:
 	mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# SCRUM-883: 24 фикс → readable (17×1.32…1.45 = 22…25), пол 16.
-	mark.add_theme_font_size_override("font_size", _readable_font_size(17, 16))
+	mark.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_HUD, 17, 16))
 	mark.add_theme_color_override("font_color", Color(0.95, 0.78, 0.32, 1.0))
 	mark.set_anchors_preset(Control.PRESET_FULL_RECT)
 	mark.offset_left = 42.0
@@ -1089,7 +1077,7 @@ func _add_route_node_threat_badge(button: Button, route_node: Dictionary) -> voi
 	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE  # не перехватывает клик/hover узла
 	# SCRUM-883: 17 фикс → readable (12×1.32…1.45 = 16…17), пол 14.
-	badge.add_theme_font_size_override("font_size", _readable_font_size(12, 14))
+	badge.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_HUD, 12, 14))
 	badge.add_theme_color_override("font_color", badge_info["color"])
 	# Тёмная подложка-обводка для читаемости поверх иконки.
 	badge.add_theme_color_override("font_outline_color", Color(0.05, 0.06, 0.08, 0.92))
@@ -1300,7 +1288,7 @@ func _style_route_node_button(button: Button, node_type: String, state: String) 
 	button.add_theme_color_override("font_color", Color(0.96, 0.97, 1.0, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.72, 0.74, 0.76, 1.0) if state == "completed" else Color(0.46, 0.48, 0.52, 1.0))
 	# SCRUM-883: 34 фикс → readable (24×1.32…1.45 = 32…35), пол 24; фолбэк-буква узла 88×88.
-	button.add_theme_font_size_override("font_size", _readable_font_size(24, 24))
+	button.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_ACTION, 24, 24))
 
 
 func _map_node_button_style(background: Color, _border: Color) -> StyleBox:

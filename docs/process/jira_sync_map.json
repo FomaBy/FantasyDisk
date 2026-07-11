@@ -4602,5 +4602,10 @@
   "key": "SCRUM-1062",
   "status": "Контроль качества",
   "desc_hash": "4c8c4fa4f796a5398c5802c7be8a8e48"
+ },
+ "SCRUM-1073_legacy_cross_band_typography_geometry.md": {
+  "key": "SCRUM-1073",
+  "status": "К выполнению",
+  "desc_hash": "08bf2367ecab81775f46540d18ca56b2"
  }
 }

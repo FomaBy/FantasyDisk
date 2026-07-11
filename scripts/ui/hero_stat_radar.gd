@@ -1,6 +1,8 @@
 class_name HeroStatRadar
 extends Control
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 const HERO_RADAR_RADIUS_FACTOR := 0.36
 const HERO_RADAR_LABEL_OFFSET := 18.0
 const HERO_RADAR_LABEL_WIDTH := 44.0
@@ -48,7 +50,15 @@ func _draw() -> void:
 		value_points.append(center + direction * radius * clampf(value / max_value, 0.0, 1.0))
 		var label_position: Vector2 = center + direction * (radius + HERO_RADAR_LABEL_OFFSET)
 		var label := "%s %d" % [str(stat_names.get(stat_id, stat_id)).substr(0, 3), int(round(value))]
-		draw_string(get_theme_default_font(), label_position - Vector2(HERO_RADAR_LABEL_WIDTH * 0.5, -5.0), label, HORIZONTAL_ALIGNMENT_CENTER, HERO_RADAR_LABEL_WIDTH, 12, Color(0.96, 0.90, 0.70, 0.96))
+		draw_string(
+			get_theme_default_font(),
+			label_position - Vector2(HERO_RADAR_LABEL_WIDTH * 0.5, -5.0),
+			label,
+			HORIZONTAL_ALIGNMENT_CENTER,
+			HERO_RADAR_LABEL_WIDTH,
+			SemanticTypography.resolve_fixed(SemanticTypography.ROLE_CAPTION, 12),
+			Color(0.96, 0.90, 0.70, 0.96)
+		)
 	draw_colored_polygon(value_points, Color(fill_color.r, fill_color.g, fill_color.b, 0.30))
 	var closed_values := PackedVector2Array(value_points)
 	closed_values.append(value_points[0])

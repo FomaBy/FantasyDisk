@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 signal died
 signal leveled_up
 signal damaged(amount: float)
@@ -2380,7 +2382,7 @@ func show_combat_feedback_number(amount: float, kind := "heal") -> void:
 	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
 	label.text = "+%d" % int(round(amount))
 	label.modulate = Color(0.36, 1.0, 0.55, 1.0) if kind == "heal" else Color(1.0, 1.0, 1.0, 1.0)
-	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 22))
 	label.add_theme_color_override("font_outline_color", Color(0.02, 0.04, 0.02, 0.92))
 	label.add_theme_constant_override("outline_size", 5)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -3413,7 +3415,7 @@ func _show_dodge_popup() -> void:
 	var popup := Label.new()
 	popup.text = "Промах!"
 	popup.z_index = 40
-	popup.add_theme_font_size_override("font_size", 22)
+	popup.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 22))
 	popup.add_theme_color_override("font_color", Color(0.78, 0.92, 1.0, 1.0))
 	popup.add_theme_color_override("font_outline_color", Color(0.05, 0.08, 0.16, 1.0))
 	popup.add_theme_constant_override("outline_size", 5)

@@ -2,13 +2,15 @@ extends Control
 
 signal finished
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 const RING_TEXTURE := preload("res://assets/sprites/effects/impact_ring.png")
 const FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 const TOAST_FRAME_TEXTURE := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png")
 const TOAST_FRAME_SIZE := Vector2(480.0, 300.0)
 const TOAST_TEXTURE_MARGINS := Vector4(58.0, 48.0, 58.0, 48.0)
 const TOAST_CONTENT_MARGINS := Vector4(70.0, 112.0, 70.0, 112.0)
-const TOAST_LABEL_FONT_SIZE := 44
+const TOAST_LABEL_FONT_SIZE := SemanticTypography.TARGET_DISPLAY
 const TOAST_HEAD_OFFSET := Vector2(0.0, -190.0)
 const TOAST_VISIBLE_ALPHA := 0.70
 const RING_RADIUS := 104.0
@@ -102,7 +104,7 @@ func _add_label(frame: PanelContainer) -> void:
 	label.size = content_rect.size
 	label.custom_minimum_size = content_rect.size
 	label.z_index = 20
-	label.add_theme_font_size_override("font_size", TOAST_LABEL_FONT_SIZE)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_DISPLAY, TOAST_LABEL_FONT_SIZE))
 	label.add_theme_color_override("font_color", GOLD)
 	label.add_theme_color_override("font_shadow_color", LABEL_SHADOW)
 	label.add_theme_constant_override("shadow_offset_x", 2)

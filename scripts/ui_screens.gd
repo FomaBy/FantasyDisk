@@ -20,6 +20,7 @@ var _atlas := {}
 var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 # SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
@@ -137,8 +138,6 @@ const MAIN_MENU_BUTTON_COUNT := 6.0
 const GOLD_SHELL_SCREEN_IDS := ["campfire", "upgrade", "artifact_reward", "victory", "death"]
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
-const READABILITY_FONT_SCALE_MIN := 1.32
-const READABILITY_FONT_SCALE_TARGET := 1.45
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
 # Фидбек 2026-07-08: hover заметнее (но «не сильно») — мягкий множитель ПОВЕРХ
 # запечённого hover-арта пластин кита (unique + minimal_metal).
@@ -730,7 +729,7 @@ func _show_main_menu() -> void:
 	version_label.name = "MainMenuVersionLabel"
 	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", 12)
+	version_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_CAPTION, 12))
 	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
@@ -883,7 +882,7 @@ func _show_quit_confirmation_dialog() -> void:
 	title_label.name = "QuitConfirmationTitle"
 	title_label.text = "Выйти из игры?"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 34))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -892,7 +891,7 @@ func _show_quit_confirmation_dialog() -> void:
 	subtitle_label.text = "Несохраненный забег будет завершен. Продолжить выход?"
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -1057,8 +1056,8 @@ func _show_continue_run_dialog() -> void:
 		# Continue Run keeps the semantic title hierarchy but uses a narrower local
 		# fit tier than the wider Quit modal: 29 -> 38/40/42 effective px. This leaves
 		# authored reserve for Cyrillic ascenders, outline and shadow inside 70px.
-		var title_font_size := _readable_font_size(29)
-		title_label.add_theme_font_size_override("font_size", title_font_size)
+		var title_font_size := _readable_font_size(SemanticTypography.ROLE_TITLE, 29)
+		title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, title_font_size))
 		title_label.set_meta("effective_title_font_size", title_font_size)
 	refresh_continue_title_typography.call()
 	box.add_child(title_label)
@@ -1085,7 +1084,7 @@ func _show_continue_run_dialog() -> void:
 	subtitle_label.text = "%s · акт %d/%d · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, current_act, game.ACT_COUNT, route_stage, level, money]
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -1261,7 +1260,9 @@ func _hs4_apply_wide_control_style(button: Button, display_size: Vector2) -> voi
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.98, 0.82, 1.0))
 	button.add_theme_color_override("font_focus_color", Color(1.0, 0.98, 0.82, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.90, 0.82, 0.62, 1.0))
-	button.add_theme_font_size_override("font_size", clampi(int(roundf(display_size.y * 0.28)), 20, 38))
+	button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_ACTION, clampi(int(roundf(display_size.y * 0.28)), 20, 38)
+	))
 	button.set_meta("hero_wide_control_source", HS4_PIXELLAB_PATHS["asc_minus"])
 	button.set_meta("hero_wide_control_source_size", HS4_PIXELLAB_SOURCE_SIZE["asc_minus"])
 	button.set_meta("hero_wide_control_content_rect", HS4_PIXELLAB_CONTENT_RECT["asc_minus"])
@@ -1514,7 +1515,7 @@ func _build_character_select_v4() -> void:
 	carousel_counter_label.text = "88–88 из 88"
 	carousel_counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	carousel_counter_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	carousel_counter_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 18))
+	carousel_counter_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 12, 0, 18))
 	carousel_counter_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.72, 1.0))
 	carousel_counter.add_child(carousel_counter_label)
 	root.add_child(carousel_counter)
@@ -1718,7 +1719,7 @@ func _build_character_select_v4() -> void:
 	trait_heading.name = "HS4TraitHeading"
 	trait_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	trait_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	trait_heading.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 21))
+	trait_heading.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_SECTION, maxi(11, int(round(14.0 * layout_scale))), 0, 21))
 	trait_heading.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	trait_heading.mouse_filter = Control.MOUSE_FILTER_PASS
 	dossier_content.add_child(trait_heading)
@@ -1726,7 +1727,7 @@ func _build_character_select_v4() -> void:
 	var name_label := Label.new()
 	name_label.name = "HS4NameLabel"
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(20, int(round(30.0 * layout_scale))), 0, 44))
 	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(name_label)
 
@@ -1736,7 +1737,7 @@ func _build_character_select_v4() -> void:
 	weapon_label.max_lines_visible = -1
 	weapon_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, maxi(11, int(round(14.0 * layout_scale))), 0, 22))
 	weapon_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(weapon_label)
@@ -1747,7 +1748,7 @@ func _build_character_select_v4() -> void:
 	leading_stats_label.max_lines_visible = -1
 	leading_stats_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	leading_stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	leading_stats_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
+	leading_stats_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, maxi(11, int(round(14.0 * layout_scale))), 0, 22))
 	leading_stats_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	dossier_content.add_child(leading_stats_label)
 
@@ -1766,7 +1767,7 @@ func _build_character_select_v4() -> void:
 	stats_column.mouse_filter = Control.MOUSE_FILTER_PASS
 	dossier_columns.add_child(stats_column)
 
-	var stats_title_font := _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22)
+	var stats_title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(11, int(round(14.0 * layout_scale))), 0, 22)
 	var stats_title_band := roundf(float(stats_title_font) * 1.5) + 6.0
 	# Норма: ряд 34–52px; тесный бюджет использует compact paddings. 720p уже
 	# reflowed в четыре ряда, поэтому сохраняет текст вместо bar-only fallback.
@@ -1794,7 +1795,7 @@ func _build_character_select_v4() -> void:
 	stats_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	stats_title.position = Vector2.ZERO
 	stats_title.size = Vector2(stats_col_w, maxf(0.0, stats_title_band - 4.0))
-	stats_title.add_theme_font_size_override("font_size", stats_title_font)
+	stats_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, stats_title_font))
 	stats_title.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	stats_column.add_child(stats_title)
 
@@ -1813,7 +1814,7 @@ func _build_character_select_v4() -> void:
 	# SCRUM-951: the former 12px base produced a 26px Label line box inside
 	# 21px rows at 1080p. Use a stat-only compact step so visible text/bar tracks
 	# stay within the accepted dossier geometry; 2K still scales upward.
-	var stat_text_font_size := _readable_font_size(maxi(8, int(round(10.0 * layout_scale))), 0, 18)
+	var stat_text_font_size := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(8, int(round(10.0 * layout_scale))), 0, 18)
 	var stat_cell_w := floorf((stats_col_w - stat_column_sep * float(stat_grid_columns - 1)) / float(stat_grid_columns))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
@@ -1822,7 +1823,7 @@ func _build_character_select_v4() -> void:
 		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
 		stat_button.focus_mode = Control.FOCUS_ALL
 		stat_button.text = ""
-		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
+		stat_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, maxi(10, int(round(12.0 * layout_scale))), 0, 18))
 		_unified_apply_row_theme(stat_button, stat_row_style_pad)
 		var stat_row := HBoxContainer.new()
 		stat_row.name = "HS4StatLine_%s" % sid
@@ -1841,7 +1842,7 @@ func _build_character_select_v4() -> void:
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		stat_name.visible = stat_rows_show_text
-		stat_name.add_theme_font_size_override("font_size", stat_text_font_size)
+		stat_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_FIELD, stat_text_font_size))
 		stat_name.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_name)
 		var bar_bg := ColorRect.new()
@@ -1865,7 +1866,7 @@ func _build_character_select_v4() -> void:
 		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stat_value.visible = stat_rows_show_text
-		stat_value.add_theme_font_size_override("font_size", stat_text_font_size)
+		stat_value.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_VALUE, stat_text_font_size))
 		stat_value.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_value)
 		stats_grid.add_child(stat_button)
@@ -1880,7 +1881,7 @@ func _build_character_select_v4() -> void:
 		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		guide_label.max_lines_visible = -1
 		guide_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
+		guide_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(10, int(round(13.0 * layout_scale))), 0, 20))
 		guide_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		dossier_content.add_child(guide_label)
 		guidance_labels[relevance] = guide_label
@@ -1911,7 +1912,7 @@ func _build_character_select_v4() -> void:
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
+	asc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(round(17.0 * layout_scale))), 0, 26))
 	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	asc_label.visible = false
 	asc_label.position = Vector2(ascension_pad_x, ascension_pad)
@@ -1925,7 +1926,7 @@ func _build_character_select_v4() -> void:
 	asc_intro.max_lines_visible = 1
 	asc_intro.visible = false
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(9, int(round(11.0 * layout_scale))), 0, 16))
 	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	asc_intro.position = Vector2(ascension_pad_x, ascension_pad)
 	asc_intro.size = Vector2(maxf(0.0, ascension_w - ascension_pad_x * 2.0), 0.0)
@@ -1951,7 +1952,7 @@ func _build_character_select_v4() -> void:
 		120.0,
 		ascension_w - ascension_pad_x * 2.0 - asc_button_size.x * 2.0 - asc_control_gap * 2.0)
 	asc_stepper_label.custom_minimum_size = Vector2(minf(maxf(172.0, roundf(220.0 * layout_scale)), asc_value_available), asc_button_size.y)
-	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(13, int(round(17.0 * layout_scale))), 0, 26))
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, maxi(13, int(round(17.0 * layout_scale))), 0, 26))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
 	asc_stepper_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	asc_box.add_child(asc_stepper_label)
@@ -1991,7 +1992,7 @@ func _build_character_select_v4() -> void:
 	asc_mods.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	asc_mods.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
+	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(10, int(round(12.0 * layout_scale))), 0, 18))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
 	asc_mods.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	asc_mods.visible = false
@@ -2118,7 +2119,7 @@ func _build_character_select_v4() -> void:
 		slot_label.position = Vector2(slot_label_margin_x, slot_size.y - slot_label_h)
 		slot_label.size = Vector2(slot_size.x - slot_label_margin_x * 2.0, slot_label_h)
 		slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
+		slot_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
 		slot_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 0.94))
 		slot_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.88))
 		slot_label.add_theme_constant_override("outline_size", 3)
@@ -2530,7 +2531,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(90))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DISPLAY, 90))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
@@ -2689,9 +2690,13 @@ func _layout_attribute_shop(root: Control) -> void:
 	_apply_attribute_shop_rect(offers, layout["offers_rect"])
 	_apply_attribute_shop_rect(actions, layout["actions_rect"])
 	if title != null:
-		title.add_theme_font_size_override("font_size", int(clampf(roundf((layout["title_rect"] as Rect2).size.y * 0.58), 24.0, 42.0)))
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE, int(clampf(roundf((layout["title_rect"] as Rect2).size.y * 0.58), 24.0, 42.0))
+		))
 	if money != null:
-		money.add_theme_font_size_override("font_size", int(clampf(roundf((layout["money_rect"] as Rect2).size.y * 0.34), 12.0, 22.0)))
+		money.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE, int(clampf(roundf((layout["money_rect"] as Rect2).size.y * 0.34), 12.0, 22.0))
+		))
 	if offers != null:
 		offers.add_theme_constant_override("separation", int(roundf(float(layout["offer_gap"]))))
 		for child in offers.get_children():
@@ -2709,7 +2714,9 @@ func _layout_attribute_shop(root: Control) -> void:
 				var action_button := action_child as Button
 				action_button.custom_minimum_size = layout["action_size"]
 				action_button.size = layout["action_size"]
-				action_button.add_theme_font_size_override("font_size", int(clampf(roundf((layout["action_size"] as Vector2).y * 0.27), 14.0, 24.0)))
+				action_button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+					SemanticTypography.ROLE_ACTION, int(clampf(roundf((layout["action_size"] as Vector2).y * 0.27), 14.0, 24.0))
+				))
 				# Compact authored action band: avoid the 104px global button plate
 				# expanding the HBox beyond the gold-shell inner rect at 720p.
 				_apply_slim_action_button_theme(action_button)
@@ -2947,15 +2954,15 @@ func _layout_attribute_offer_card(button: Button) -> void:
 	var minimum_body_font := 11.0 if display_size.y >= 230.0 else 9.0
 	var base_font := int(clampf(roundf(display_size.y * 0.040), minimum_body_font, 20.0))
 	if title != null:
-		title.add_theme_font_size_override("font_size", base_font + 2)
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, base_font + 2))
 	if interpretation != null:
-		interpretation.add_theme_font_size_override("font_size", base_font)
+		interpretation.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_BODY, base_font))
 	if influence != null:
-		influence.add_theme_font_size_override("font_size", base_font)
+		influence.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_DESCRIPTION, base_font))
 	if preview != null:
-		preview.add_theme_font_size_override("font_size", base_font)
+		preview.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_BODY, base_font))
 	if price != null:
-		price.add_theme_font_size_override("font_size", base_font + 1)
+		price.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_VALUE, base_font + 1))
 
 
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
@@ -3241,7 +3248,7 @@ func _show_atlas_screen() -> void:
 		var prog := Label.new()
 		prog.name = "AtlasMedallionProgress_%s" % cid
 		prog.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		prog.add_theme_font_size_override("font_size", _readable_font_size(11))
+		prog.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 11))
 		prog.add_theme_color_override("font_color", Color(0.93, 0.89, 0.74, 0.96))
 		prog_chip.add_child(prog)
 		var badge := PanelContainer.new()
@@ -3258,7 +3265,7 @@ func _show_atlas_screen() -> void:
 		badge_label.name = "BadgeCount"
 		badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge_label.add_theme_font_size_override("font_size", _readable_font_size(11))
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 11))
 		badge_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.86, 1.0))
 		badge.add_child(badge_label)
 
@@ -3279,7 +3286,7 @@ func _show_atlas_screen() -> void:
 	selected_class_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	selected_class_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	selected_class_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	selected_class_label.add_theme_font_size_override("font_size", _readable_font_size(20, 16, 28))
+	selected_class_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 20, 16, 28))
 	selected_class_label.add_theme_color_override("font_color", Color(0.96, 0.87, 0.58, 1.0))
 	selected_class_label.add_theme_color_override("font_outline_color", Color(0.05, 0.035, 0.07, 0.96))
 	selected_class_label.add_theme_constant_override("outline_size", maxi(2, int(roundf(4.0 * s))))
@@ -3318,7 +3325,7 @@ func _show_atlas_screen() -> void:
 	var kind_label := Label.new()
 	kind_label.name = "AtlasNodeKind"
 	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	kind_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	kind_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 13))
 	kind_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	panel_box.add_child(kind_label)
 	_atlas["panel_kind"] = kind_label
@@ -3337,7 +3344,7 @@ func _show_atlas_screen() -> void:
 	title_label.name = "AtlasNodeTitle"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 22))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel_box.add_child(title_label)
 	_atlas["panel_title"] = title_label
@@ -3359,7 +3366,7 @@ func _show_atlas_screen() -> void:
 	desc_label.name = "AtlasNodeDesc"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 15))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.91, 0.95, 0.96))
 	info_box.add_child(desc_label)
 	_atlas["panel_desc"] = desc_label
@@ -3367,7 +3374,7 @@ func _show_atlas_screen() -> void:
 	condition_label.name = "AtlasNodeCondition"
 	condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	condition_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	condition_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	condition_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 13))
 	condition_label.add_theme_color_override("font_color", Color(0.72, 0.84, 1.0, 0.95))
 	condition_label.visible = false
 	info_box.add_child(condition_label)
@@ -3376,7 +3383,7 @@ func _show_atlas_screen() -> void:
 	lore_label.name = "AtlasNodeLore"
 	lore_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lore_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lore_label.add_theme_font_size_override("font_size", _readable_font_size(12))
+	lore_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 12))
 	lore_label.add_theme_color_override("font_color", Color(0.72, 0.74, 0.82, 0.85))
 	lore_label.visible = false
 	info_box.add_child(lore_label)
@@ -3389,7 +3396,7 @@ func _show_atlas_screen() -> void:
 	_atlas["panel_price_row"] = price_row
 	var price_label := Label.new()
 	price_label.name = "AtlasNodePriceLabel"
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(17))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 17))
 	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	price_row.add_child(price_label)
 	_atlas["panel_price_label"] = price_label
@@ -3420,7 +3427,7 @@ func _show_atlas_screen() -> void:
 	progress_label.name = "AtlasProgressLabel"
 	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_label.add_theme_font_size_override("font_size", _readable_font_size(14))
+	progress_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
 	progress_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.70, 0.95))
 	# Variable progress/hint copy belongs to the existing dossier scroll. Keeping
 	# it outside forced a 420px panel minimum and expanded 1280x720 beyond the
@@ -3431,7 +3438,7 @@ func _show_atlas_screen() -> void:
 	hidden_hint.name = "AtlasHiddenHint"
 	hidden_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hidden_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(12))
+	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 12))
 	hidden_hint.add_theme_color_override("font_color", Color(0.72, 0.82, 0.98, 0.88))
 	hidden_hint.visible = false
 	info_box.add_child(hidden_hint)
@@ -3513,7 +3520,7 @@ func _show_atlas_screen() -> void:
 	var respec_text := Label.new()
 	respec_text.name = "AtlasRespecPopupBody"
 	respec_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	respec_text.add_theme_font_size_override("font_size", _readable_font_size(16))
+	respec_text.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
 	respec_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.88, 0.96))
 	respec_box.add_child(respec_text)
 	_atlas["respec_text"] = respec_text
@@ -3651,7 +3658,7 @@ func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name:
 	label.name = label_name
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 16))
 	label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.74, 1.0))
 	row.add_child(label)
 	return chip
@@ -3673,7 +3680,7 @@ func _atlas_add_legend_item(legend: HBoxContainer, icon_path: String, text: Stri
 	var label := Label.new()
 	label.text = text
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13))
 	label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.94, 0.92))
 	item.add_child(label)
 
@@ -3805,7 +3812,7 @@ func _unified_header_chip(prefix: String, title: String, screen_id: String, s: f
 	label.name = "%sTitleLabel" % prefix
 	label.text = title
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 22))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	row.add_child(label)
 	return chip
@@ -3951,7 +3958,9 @@ func _atlas_build_canvas() -> void:
 			qmark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			qmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			qmark.text = "?"
-			qmark.add_theme_font_size_override("font_size", int(maxf(14.0, disp * 0.40)))
+			qmark.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_HUD, int(maxf(14.0, disp * 0.40))
+			))
 			qmark.add_theme_color_override("font_color", Color(0.82, 0.90, 1.0, 0.92))
 			nb.add_child(qmark)
 			var fog := _atlas_add_overlay(nb, "Fog", str(META40_SOCKET_TEXTURES["hidden"]), 1.0, Color.WHITE)
@@ -4847,14 +4856,14 @@ func _show_patch_notes_screen() -> void:
 		var version_label := Label.new()
 		version_label.name = "PatchNotesVersion_%s" % version.replace(".", "_")
 		version_label.text = "Версия %s  (%s)" % [version, str(entry_data.get("date", ""))]
-		version_label.add_theme_font_size_override("font_size", _readable_font_size(24))
+		version_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 24))
 		version_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 		content.add_child(version_label)
 		for line in (entry_data.get("highlights", []) as Array):
 			var bullet := Label.new()
 			bullet.text = "•  %s" % str(line)
 			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			bullet.add_theme_font_size_override("font_size", _readable_font_size(16))
+			bullet.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 16))
 			bullet.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
 			content.add_child(bullet)
 		if i < entries.size() - 1:
@@ -4908,7 +4917,7 @@ func _show_credits_screen() -> void:
 	title.name = "CreditsTitle"
 	title.text = "Благодарности"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(32))
+	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	outer.add_child(title)
 
@@ -4964,7 +4973,7 @@ func _add_credits_heading(parent: Control, text: String) -> void:
 	var label := Label.new()
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", _readable_font_size(20))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_SECTION, 20))
 	label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	parent.add_child(label)
 
@@ -4973,7 +4982,7 @@ func _add_credits_body(parent: Control, text: String) -> void:
 	var label := Label.new()
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 15))
 	label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
 	parent.add_child(label)
 
@@ -5015,7 +5024,7 @@ func _show_codex_screen() -> void:
 	title_label.text = "КОДЕКС"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_codex_bind_stage_font(title_label, 30, 20, 40)
+	_codex_bind_stage_font(title_label, SemanticTypography.ROLE_TITLE, 30, 20, 40)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_frame.add_child(title_label)
 
@@ -5025,8 +5034,8 @@ func _show_codex_screen() -> void:
 	back_button.custom_minimum_size = Vector2(268, 96)
 	back_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_apply_fantasy_button_theme(back_button, "default", "text/back_260x104")
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(16))
-	_codex_bind_stage_font(back_button, 22, 15, 30)
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
+	_codex_bind_stage_font(back_button, SemanticTypography.ROLE_ACTION, 22, 15, 30)
 	_codex_set_design_rect(back_button, Rect2(1580, 46, 268, 96))
 	back_button.pressed.connect(_show_main_menu)
 	_connect_ui_sfx(back_button, "back")
@@ -5056,7 +5065,7 @@ func _show_codex_screen() -> void:
 	center_title.text = "ПЕРСОНАЖИ"
 	center_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	center_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_codex_bind_stage_font(center_title, 24, 15, 30)
+	_codex_bind_stage_font(center_title, SemanticTypography.ROLE_SECTION, 24, 15, 30)
 	center_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	_codex_set_design_rect(center_title, Rect2(88, 14, 380, 44))
 	center_inner.add_child(center_title)
@@ -5091,11 +5100,11 @@ func _show_codex_screen() -> void:
 		tab_button.custom_minimum_size = Vector2(260, 104)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
-		tab_button.add_theme_font_size_override("font_size", _readable_font_size(16))
+		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
-		_codex_bind_stage_font(tab_button, 22, 15, 30)
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 22, 15, 30)
 		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var source_style := tab_button.get_theme_stylebox(tab_state)
 			var tab_style := source_style.duplicate() if source_style != null else null
@@ -5149,11 +5158,12 @@ func _codex_update_stage_transform(stage: Control) -> void:
 	_codex_refresh_stage_fonts(stage)
 
 
-func _codex_bind_stage_font(control: Control, design_size: int, min_visual_size: int, max_visual_size: int) -> void:
+func _codex_bind_stage_font(control: Control, role: StringName, design_size: int, min_visual_size: int, max_visual_size: int) -> void:
+	control.set_meta("codex_semantic_role", role)
 	control.set_meta("codex_design_font_size", design_size)
 	control.set_meta("codex_min_visual_font_size", min_visual_size)
 	control.set_meta("codex_max_visual_font_size", max_visual_size)
-	control.add_theme_font_size_override("font_size", _codex_stage_font_size(design_size, min_visual_size, max_visual_size))
+	control.add_theme_font_size_override("font_size", _codex_stage_font_size(role, design_size, min_visual_size, max_visual_size))
 
 
 func _codex_refresh_stage_fonts(stage: Control) -> void:
@@ -5164,6 +5174,7 @@ func _codex_refresh_stage_fonts(stage: Control) -> void:
 		if control == null or not control.has_meta("codex_design_font_size"):
 			continue
 		control.add_theme_font_size_override("font_size", _codex_stage_font_size(
+			StringName(control.get_meta("codex_semantic_role", SemanticTypography.ROLE_BODY)),
 			int(control.get_meta("codex_design_font_size")),
 			int(control.get_meta("codex_min_visual_font_size")),
 			int(control.get_meta("codex_max_visual_font_size"))
@@ -5340,7 +5351,7 @@ func _codex_add_entry_name(row: HBoxContainer, display_name: String) -> Label:
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	label.custom_minimum_size.y = 60.0
-	_codex_bind_stage_font(label, 24, 15, 30)
+	_codex_bind_stage_font(label, SemanticTypography.ROLE_FIELD, 24, 15, 30)
 	label.add_theme_color_override("font_color", CODEX_PL_CARD_BODY_COLOR)
 	row.add_child(label)
 	return label
@@ -5352,22 +5363,22 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color, m
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_codex_bind_stage_font(label, font_size, 17, 32)
+	_codex_bind_stage_font(label, SemanticTypography.ROLE_BODY, font_size, 17, 32)
 	label.add_theme_color_override("font_color", color)
 	if max_lines > 0:
 		label.clip_text = true
 		label.max_lines_visible = max_lines
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		label.custom_minimum_size.y = ceilf(float(_codex_font_size(font_size, 17, 32) * max_lines) * 1.18)
+		label.custom_minimum_size.y = ceilf(float(_codex_font_size(SemanticTypography.ROLE_BODY, font_size, 17, 32) * max_lines) * 1.18)
 	parent.add_child(label)
 	return label
 
 
-func _codex_font_size(base_size: int, min_size := 10, max_size := 44) -> int:
-	return _codex_stage_font_size(base_size, min_size, max_size)
+func _codex_font_size(role: StringName, base_size: int, min_size := 10, max_size := 44) -> int:
+	return _codex_stage_font_size(role, base_size, min_size, max_size)
 
 
-func _codex_stage_font_size(design_size: int, min_visual_size: int, max_visual_size: int) -> int:
+func _codex_stage_font_size(role: StringName, design_size: int, min_visual_size: int, max_visual_size: int) -> int:
 	# CodexStage scales Controls and fonts together. Keep design sizes inside the
 	# responsive band, but compensate locally when the visual result would fall
 	# below the accepted minimum or exceed the cap.
@@ -5375,12 +5386,13 @@ func _codex_stage_font_size(design_size: int, min_visual_size: int, max_visual_s
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
 	var stage_scale := maxf(0.01, minf(viewport_size.x / 1920.0, viewport_size.y / 1080.0))
-	var raw_visual_size := float(design_size) * stage_scale
-	if raw_visual_size < float(min_visual_size):
-		return maxi(1, int(ceilf(float(min_visual_size) / stage_scale)))
-	if raw_visual_size > float(max_visual_size):
-		return maxi(1, int(floorf(float(max_visual_size) / stage_scale)))
-	return design_size
+	return SemanticTypography.resolve_transform_aware(
+		role,
+		design_size,
+		stage_scale,
+		min_visual_size,
+		max_visual_size
+	)
 
 
 func _codex_update_tab_selection(tabs_row: Control, section_id: String) -> void:
@@ -5453,7 +5465,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	title.max_lines_visible = 2
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	_codex_bind_stage_font(title, 22, 15, 30)
+	_codex_bind_stage_font(title, SemanticTypography.ROLE_TITLE, 22, 15, 30)
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	_codex_set_design_rect(title, Rect2(104, 14, 508, 46))
 	detail_root.add_child(title)
@@ -5522,7 +5534,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			chip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			chip_label.max_lines_visible = 2
-			_codex_bind_stage_font(chip_label, 24, 15, 30)
+			_codex_bind_stage_font(chip_label, SemanticTypography.ROLE_BODY, 24, 15, 30)
 			chip_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 			chip.add_child(chip_label)
 
@@ -6043,10 +6055,12 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 	control.offset_bottom = rect.position.y + rect.size.y
 
 
-func _settings_v6_font(design_px: float, s: float) -> int:
+func _settings_v6_font(role: StringName, design_px: float, s: float) -> int:
 	# Кегль скейлится вместе с сеткой (s), пол 12px. На 1080p (s=0.75)
 	# label 26 → 19.5px, статус 22 → 16.5px — читаемо по дизайн-инварианту.
-	return maxi(12, int(roundf(design_px * s)))
+	return SemanticTypography.resolve_scaled_compat(
+		role, design_px, s, 12, 96
+	)
 
 
 func _settings_v6_icon(path: String, design_size: Vector2, s: float) -> Texture2D:
@@ -6393,7 +6407,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	pending_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pending_label.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+	pending_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s))
 	pending_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER if _settings_video_dirty() else SETTINGS_V6_MUTED)
 	screen_box.add_child(pending_label)
 
@@ -6496,13 +6510,13 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	device_hint.text = "И клавиатура, и геймпад работают одновременно в любом режиме — режим лишь задаёт, чьи подсказки показывать."
 	device_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	device_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
-	device_hint.add_theme_font_size_override("font_size", _settings_v6_font(20.0, s))
+	device_hint.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 20.0, s))
 	device_hint.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(device_hint)
 
 	var gamepad_status := Label.new()
 	gamepad_status.name = "SettingsGamepadStatus"
-	gamepad_status.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+	gamepad_status.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s))
 	gamepad_status.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	controls_box.add_child(gamepad_status)
 	_gamepad_status_label = gamepad_status
@@ -6567,7 +6581,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hint_label.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+	hint_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 22.0, s))
 	hint_label.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(hint_label)
 
@@ -6605,7 +6619,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	gp_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	gp_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	gp_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
-	gp_hint.add_theme_font_size_override("font_size", _settings_v6_font(20.0, s))
+	gp_hint.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 20.0, s))
 	gp_hint.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(gp_hint)
 
@@ -6624,7 +6638,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var deadzone_value := Label.new()
 	deadzone_value.name = "SettingsGamepadDeadzoneValue"
 	deadzone_value.text = "%.2f" % deadzone_slider.value
-	deadzone_value.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+	deadzone_value.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 24.0, s))
 	deadzone_value.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	deadzone_row.add_child(deadzone_value)
 	deadzone_slider.value_changed.connect(func(value: float) -> void:
@@ -6809,7 +6823,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 		button.clip_text = false
 		button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		button.set_meta("settings_tab_content_side_margin", 48.0)
-		button.set_meta("settings_fixed_font_contract", _readable_font_size(16))
+		button.set_meta("settings_fixed_font_contract", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -6821,7 +6835,7 @@ func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
 	# орнамента, промер арта): text-only «Управление» помещается в 164px при
 	# Back-font 21/22/23/23. Fixed-font параметр разрешает хелперу вычислить
 	# одинаковые vertical margins для пяти state styles, но запрещает downscale.
-	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 1.0, _readable_font_size(16))
+	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 1.0, _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 
 	var update_buttons := func(active_tab: int) -> void:
 		# Актив/неактив — модуляцией, теми же тонами, что _atlas_apply_tab_state.
@@ -6856,7 +6870,7 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 	if first == null:
 		return
 	var font := first.get_theme_font("font")
-	var font_size := fixed_font_size if fixed_font_size > 0 else _readable_font_size(16)
+	var font_size := fixed_font_size if fixed_font_size > 0 else _readable_font_size(SemanticTypography.ROLE_ACTION, 16)
 	var side_left := side_pad
 	var side_right := side_pad
 	if side_pad <= 0.0:
@@ -6890,7 +6904,7 @@ func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_heigh
 		# Fixed-font rows have already proved full text fit against their declared
 		# content zone, so clipping would hide a future localization regression.
 		button.clip_text = fixed_font_size <= 0
-		button.add_theme_font_size_override("font_size", font_size)
+		button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_ACTION, font_size))
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var state_style := button.get_theme_stylebox(state)
 			if state_style == null:
@@ -6971,13 +6985,13 @@ func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) 
 	title.name = "SettingsGameTitle"
 	title.text = "Игровая песочница"
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _settings_v6_font(28.0, s))
+	title.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_TITLE, 28.0, s))
 	title.add_theme_color_override("font_color", SETTINGS_V6_GOLD)
 	var status := Label.new()
 	status.name = "SettingsGameStatus"
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	status.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+	status.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s))
 	if compact:
 		content.add_child(title)
 		_settings_game_place_control(title, Rect2(14.0, 8.0, 400.0, 34.0))
@@ -6998,7 +7012,7 @@ func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) 
 	description.name = "SettingsGameDescription"
 	description.text = "Настрой сложность следующего забега. Текущий забег не изменится."
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.add_theme_font_size_override("font_size", _settings_v6_font(20.0, s))
+	description.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_DESCRIPTION, 20.0, s))
 	description.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 	content.add_child(description)
 	if compact:
@@ -7008,7 +7022,7 @@ func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) 
 	warning.name = "SettingsSandboxWarning"
 	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	warning.custom_minimum_size = Vector2(0.0, 42.0 if compact else roundf(42.0 * s))
-	warning.add_theme_font_size_override("font_size", _settings_v6_font(19.0, s))
+	warning.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_DESCRIPTION, 19.0, s))
 	content.add_child(warning)
 	if compact:
 		_settings_game_place_control(warning, Rect2(14.0, 92.0, 850.0, 42.0))
@@ -7059,7 +7073,7 @@ func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) 
 		row_label.text = str(row_config["label"])
 		row_label.custom_minimum_size = Vector2(roundf(row_label_w), roundf(row_height))
 		row_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		row_label.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+		row_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_FIELD, 24.0, s))
 		row_label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 		row.add_child(row_label)
 		if compact:
@@ -7094,7 +7108,7 @@ func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) 
 		value_label.text = "%.1f×" % slider.value
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		value_label.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+		value_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s))
 		value_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 		chip.add_child(value_label)
 		sliders[key] = slider
@@ -7199,7 +7213,7 @@ func _add_settings_control_row(parent: VBoxContainer, title: String, control: Co
 	label.text = title
 	label.custom_minimum_size = Vector2(roundf(SETTINGS_V6_LABEL_COL.x * s), roundf(SETTINGS_V6_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _settings_v6_font(26.0, s))
+	label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_FIELD, 26.0, s))
 	label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 	row.add_child(label)
 	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -7219,7 +7233,7 @@ func _add_controls_section_header(parent: VBoxContainer, title: String, s := 1.0
 	var header := Label.new()
 	header.name = "SettingsSectionHeader_%s" % title.replace(" ", "_")
 	header.text = title
-	header.add_theme_font_size_override("font_size", _settings_v6_font(28.0, s))
+	header.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_SECTION, 28.0, s))
 	header.add_theme_color_override("font_color", SETTINGS_V6_GOLD)
 	header.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.55))
 	header.add_theme_constant_override("shadow_offset_x", maxi(1, int(roundf(1.5 * s))))
@@ -7247,7 +7261,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	label.text = title
 	label.custom_minimum_size = Vector2(roundf(SETTINGS_V6_LABEL_COL.x * s), roundf(SETTINGS_V6_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _settings_v6_font(26.0, s))
+	label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_FIELD, 26.0, s))
 	label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 	row.add_child(label)
 
@@ -7281,7 +7295,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
-	value_label.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+	value_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_VALUE, 24.0, s))
 	value_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	slider.value_changed.connect(func(value: float) -> void:
 		value_label.text = "%d%%" % int(value)
@@ -7350,7 +7364,7 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 	button.custom_minimum_size = Vector2(roundf(SETTINGS_V6_CONTROL_SIZE.x * s), roundf(SETTINGS_V6_CONTROL_SIZE.y * s))
 	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+	button.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_ACTION, 24.0, s))
 	button.clip_text = true
 	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	# v6: у арта поля декоративные наконечники ~52px + золотое кольцо капсулы
@@ -7364,7 +7378,7 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 		# 76, чтобы стрелка осталась внутри капсулы; вместе с кеглем 22 у
 		# самой длинной опции зазор до кольца ≥25px на 1080p/1440p.
 		content = Vector4(96.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
-		button.add_theme_font_size_override("font_size", _settings_v6_font(22.0, s))
+		button.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_ACTION, 22.0, s))
 	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
 	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
 	button.add_theme_stylebox_override("normal", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["normal"], source_margins, content))
@@ -7383,7 +7397,7 @@ func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
 		if arrow != null:
 			button.add_theme_icon_override("arrow", arrow)
 		var popup := (button as OptionButton).get_popup()
-		popup.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+		popup.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_FIELD, 24.0, s))
 		# v6: поп-ап как чип Атласа — тёмный фон, латунная кромка, скругление.
 		var popup_style := StyleBoxFlat.new()
 		popup_style.bg_color = SETTINGS_V6_POPUP_BG
@@ -7415,7 +7429,7 @@ func _settings_v6_make_action_button(text: String, button_name: String, width: f
 func _settings_v6_style_checkbox(toggle: CheckBox, s: float) -> void:
 	UIButtonFamily.assign(toggle, "settings_toggle")
 	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	toggle.add_theme_font_size_override("font_size", _settings_v6_font(24.0, s))
+	toggle.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_ACTION, 24.0, s))
 	var unchecked := _settings_v6_icon(SETTINGS_V6_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
 	var checked := _settings_v6_icon(SETTINGS_V6_CHECKBOX_ON_PATH, Vector2(52.0, 52.0), s)
 	if unchecked != null:
@@ -7542,7 +7556,7 @@ func _show_end_run_confirmation_dialog() -> void:
 	title_label.name = "EndRunConfirmationTitle"
 	title_label.text = "Завершить забег?"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 34))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -7551,7 +7565,7 @@ func _show_end_run_confirmation_dialog() -> void:
 	subtitle_label.text = "Текущий забег закончится, и будет подведён итог. Продолжить?"
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 16))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -7735,17 +7749,6 @@ func _end_current_run_by_player() -> void:
 	_show_death_screen("Забег завершен игроком.")
 
 
-func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
-	label.add_theme_color_override("font_color", color)
-	label.clip_text = true
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return label
-
-
 func _update_hero_select_info(info_labels: Dictionary, title: String, description: String, strengths: String, weaknesses: String, stats_text: String) -> void:
 	var title_label := info_labels.get("title") as Label
 	var description_label := info_labels.get("description") as Label
@@ -7833,7 +7836,7 @@ func _show_weapon_select() -> void:
 	subtitle.text = "%s: выбери стартовое оружие." % str(character_config["title"])
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 12, 24))
 	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	box.add_child(subtitle)
 
@@ -7931,7 +7934,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	title_label.text = str(config.get("title", weapon_id))
 	title_label.max_lines_visible = 1
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(26, 12, 36))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 26, 12, 36))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -7942,7 +7945,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	identity_label.max_lines_visible = 2
 	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 23))
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 17, 12, 23))
 	identity_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(identity_label)
@@ -7953,7 +7956,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.max_lines_visible = 2
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 21))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 15, 12, 21))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -7963,7 +7966,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	role_label.text = _weapon_select_role_text(character_id, config)
 	role_label.max_lines_visible = 1
 	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	role_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 18))
+	role_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 14, 12, 18))
 	role_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(role_label)
@@ -7984,7 +7987,7 @@ func _make_weapon_select_card(config: Dictionary) -> Button:
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stats_label.text = _weapon_select_stats_text(config)
-	stats_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 17))
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 13, 12, 17))
 	stats_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stats_panel.add_child(stats_label)
@@ -8160,7 +8163,7 @@ func _show_start_boon_select() -> void:
 	subtitle.text = "Выбери одно благословение на этот забег."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 12, 24))
 	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	box.add_child(subtitle)
 
@@ -8226,7 +8229,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	title_label.text = str(boon.get("title", boon_id))
 	title_label.max_lines_visible = 1
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(21, 12, 30))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 21, 12, 30))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
@@ -8237,7 +8240,7 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.max_lines_visible = 3
 	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 20))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 14, 12, 20))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
@@ -8544,7 +8547,7 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			title_labels.append(reward_title)
 			min_title_font = mini(min_title_font, reward_title.get_theme_font_size("font_size"))
 	for reward_title in title_labels:
-		(reward_title as Label).add_theme_font_size_override("font_size", min_title_font)
+		(reward_title as Label).add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, min_title_font))
 
 	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space/A выбирают.
 	# Полная разводка (карточки + «Позже») ставится ниже, после создания later_button.
@@ -8784,11 +8787,11 @@ func _layout_artifact_reward_screen(root: Control, prefix: String) -> void:
 	if title != null:
 		title.position = title_rect.position - inner.position
 		title.size = title_rect.size
-		title.add_theme_font_size_override("font_size", _readable_font_size(30 if root.size.y < 900.0 else (42 if root.size.y < 1200.0 else 54), 20, 54))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 30 if root.size.y < 900.0 else (42 if root.size.y < 1200.0 else 54), 20, 54))
 	if subtitle != null:
 		subtitle.position = subtitle_rect.position - inner.position
 		subtitle.size = subtitle_rect.size
-		subtitle.add_theme_font_size_override("font_size", _readable_font_size(14 if root.size.y < 900.0 else (17 if root.size.y < 1200.0 else 20), 11, 24))
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 14 if root.size.y < 900.0 else (17 if root.size.y < 1200.0 else 20), 11, 24))
 	if row != null:
 		row.position = row_rect.position - inner.position
 		row.size = row_rect.size
@@ -8814,10 +8817,10 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 	var gap := maxf(6.0, roundf(LU_CARD_STACK_GAP_2K * scale))
 	var small_gap := maxf(4.0, roundf(8.0 * scale))
 	# Шрифты стека (пол кегля 12 — фидбек читаемости SCRUM-883).
-	var badge_font := _readable_font_size(maxi(12, int(roundf(13.0 * scale))), 0, 16)
-	var title_font := _readable_font_size(maxi(12, int(roundf(18.0 * scale))), 0, 26)
-	var desc_font := _readable_font_size(maxi(12, int(roundf(13.0 * scale))), 0, 18)
-	var effect_font := _readable_font_size(maxi(12, int(roundf(15.0 * scale))), 0, 20)
+	var badge_font := _readable_font_size(SemanticTypography.ROLE_HUD, maxi(12, int(roundf(13.0 * scale))), 0, 16)
+	var title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	var desc_font := _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(12, int(roundf(13.0 * scale))), 0, 18)
+	var effect_font := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(12, int(roundf(15.0 * scale))), 0, 20)
 	# Высоты строк меряем probe-Label'ом — та же метрика, какой Godot считает
 	# minimum size настоящих подписей (headless-гейты честные, без сюрпризов).
 	var badge_line_h := _level_up_probe_line_height(badge_font)
@@ -9066,7 +9069,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	title_label.custom_minimum_size = title_label.size
 	# Фидбек читаемости SCRUM-883: пол кегля 12 — длинные титулы уходят в
 	# ellipsis, но не в нечитаемый микрошрифт.
-	_shrink_label_font_to_width(title_label, int(plan.get("title_font", 12)), title_label.size.x - 4.0, 12)
+	_shrink_label_font_to_width(title_label, SemanticTypography.ROLE_TITLE, int(plan.get("title_font", 12)), title_label.size.x - 4.0, 12)
 	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 	stack_y += float(plan.get("title_h", 20.0)) + float(plan.get("small_gap", 4.0))
@@ -9084,7 +9087,9 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	description_label.position = Vector2(6.0, stack_y)
 	description_label.size = Vector2(content_width - 12.0, float(plan.get("desc_h", 36.0)))
 	description_label.custom_minimum_size = description_label.size
-	description_label.add_theme_font_size_override("font_size", int(plan.get("desc_font", 12)))
+	description_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION, int(plan.get("desc_font", 12))
+	))
 	description_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(description_label)
 	stack_y += float(plan.get("desc_h", 36.0)) + gap
@@ -9139,7 +9144,7 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		line_label.clip_text = true
 		line_label.max_lines_visible = 1
 		line_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		_shrink_label_font_to_width(line_label, effect_font, rows_size.x - 4.0)
+		_shrink_label_font_to_width(line_label, SemanticTypography.ROLE_BODY, effect_font, rows_size.x - 4.0)
 		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
 		var line_height := maxf(row_height, line_label.get_minimum_size().y)
 		if line_index > 0 and used_height + line_height > rows_size.y + 0.5:
@@ -9167,7 +9172,7 @@ func _level_up_offer_advice(rewards: Array) -> Dictionary:
 # SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
 # юзерский масштаб шрифта (readability) может раздуть текст шире слота, а
 # клип срезал бы края подписи. Вызывать после присвоения label.text.
-func _shrink_label_font_to_width(label: Label, base_font_size: int, max_width: float, min_font_size := 12, fit_ratio := 0.62) -> void:
+func _shrink_label_font_to_width(label: Label, role: StringName, base_font_size: int, max_width: float, min_font_size := 12, fit_ratio := 0.62) -> void:
 	# Внешняя мерка Font.get_string_size детерминирована, но фактический рендер
 	# строки в окне шире мерки до ~1.5x (font oversampling/DPI), а внутренняя
 	# мерка Label.get_minimum_size в этом же окружении флачит. Поэтому меряем
@@ -9181,7 +9186,9 @@ func _shrink_label_font_to_width(label: Label, base_font_size: int, max_width: f
 		var fit_width := maxf(max_width, 8.0) * fit_ratio
 		while font_size > min_font_size and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
 			font_size -= 1
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		role, font_size
+	))
 
 
 # Строки блока изменений карточки: топ-3 дельты прогноза; без измеримых дельт —
@@ -9256,7 +9263,7 @@ func _add_level_up_badge(content: Control, badge_kind: String, badge_rect: Rect2
 	badge_label.max_lines_visible = 1
 	badge_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	# Фидбек читаемости SCRUM-883: пол кегля 12 — подпись всегда читаемая.
-	_shrink_label_font_to_width(badge_label, base_font_size, badge_rect.size.x - 8.0, 12)
+	_shrink_label_font_to_width(badge_label, SemanticTypography.ROLE_HUD, base_font_size, badge_rect.size.x - 8.0, 12)
 	badge_label.add_theme_color_override("font_color", badge_meta["text_color"])
 	badge.add_child(badge_label)
 
@@ -9294,7 +9301,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 22))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 17, 12, 22))
 	# SCRUM-963: титул артефакта — цветом редкости (язык элитных карточек);
 	# стат/атрибут-награды остаются золотыми.
 	if str(reward.get("kind", "")) == "artifact":
@@ -9309,7 +9316,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 12, 16))
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 14, 12, 16))
 	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(preview_label)
 
@@ -9321,7 +9328,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.max_lines_visible = 2
 	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 12, 14))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 12, 12, 14))
 	description_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	content.add_child(description_label)
 
@@ -9335,7 +9342,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 		note_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		note_label.max_lines_visible = 1
 		note_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		note_label.add_theme_font_size_override("font_size", _readable_font_size(11, 12, 14))
+		note_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 11, 12, 14))
 		note_label.add_theme_color_override("font_color", reward_note["color"])
 		content.add_child(note_label)
 
@@ -9349,7 +9356,7 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 16))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 15, 12, 16))
 	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
@@ -9510,22 +9517,22 @@ func _resize_elite_artifact_card(button: Button, display_size: Vector2) -> void:
 	var title := content.find_child("EliteArtifactRewardCardTitle", false, false) as Label
 	if title != null:
 		title.custom_minimum_size.y = 42.0 if compact else (58.0 if medium else 72.0)
-		title.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else (16 if medium else 19), 11, 16 if compact else (20 if medium else 25)))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 12 if compact else (16 if medium else 19), 11, 16 if compact else (20 if medium else 25)))
 	var tier := content.find_child("EliteArtifactRewardTier", false, false) as Label
 	if tier != null:
 		tier.custom_minimum_size.y = 18.0 if compact else (24.0 if medium else 30.0)
-		tier.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else (12 if medium else 14), 10, 13 if compact else (16 if medium else 19)))
+		tier.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 10 if compact else (12 if medium else 14), 10, 13 if compact else (16 if medium else 19)))
 	var badge := content.find_child("EliteArtifactRewardBadge", false, false) as Label
 	if badge != null:
 		badge.custom_minimum_size.y = 28.0 if compact else (34.0 if medium else 42.0)
-		badge.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else (11 if medium else 13), 9, 11 if compact else (15 if medium else 18)))
+		badge.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 9 if compact else (11 if medium else 13), 9, 11 if compact else (15 if medium else 18)))
 	var resolved := content.find_child("EliteArtifactRewardResolvedEffect", false, false) as Label
 	if resolved != null:
-		resolved.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else (12 if medium else 14), 9, 11 if compact else (16 if medium else 19)))
+		resolved.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 9 if compact else (12 if medium else 14), 9, 11 if compact else (16 if medium else 19)))
 	var action := content.find_child("EliteArtifactRewardAction", false, false) as Label
 	if action != null:
 		action.custom_minimum_size.y = 22.0 if compact else (28.0 if medium else 34.0)
-		action.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else (13 if medium else 16), 10, 14 if compact else (18 if medium else 22)))
+		action.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 10 if compact else (13 if medium else 16), 10, 14 if compact else (18 if medium else 22)))
 
 
 func _current_shop_node_key() -> String:
@@ -9711,12 +9718,12 @@ func _layout_shop_gold_shell(root: Control) -> void:
 	var title_rect: Rect2 = metrics["title_rect"]
 	if title != null:
 		_apply_control_rect(title, Rect2(title_rect.position - header_rect.position, title_rect.size))
-		title.add_theme_font_size_override("font_size", _readable_font_size(int(metrics["title_font"]), 20, int(metrics["title_font"])))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, int(metrics["title_font"]), 20, int(metrics["title_font"])))
 	var subtitle := root.find_child("ShopSubtitleLabel", true, false) as Label
 	var subtitle_rect: Rect2 = metrics["subtitle_rect"]
 	if subtitle != null:
 		_apply_control_rect(subtitle, Rect2(subtitle_rect.position - header_rect.position, subtitle_rect.size))
-		subtitle.add_theme_font_size_override("font_size", _readable_font_size(int(metrics["subtitle_font"]), 11, int(metrics["subtitle_font"])))
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, int(metrics["subtitle_font"]), 11, int(metrics["subtitle_font"])))
 
 	var wall := root.find_child("ShopParchmentWall", true, false) as Control
 	if wall != null:
@@ -9739,7 +9746,7 @@ func _layout_shop_gold_shell(root: Control) -> void:
 	var tooltip_content_rect: Rect2 = metrics["tooltip_content_rect"]
 	if tooltip_text != null:
 		_apply_control_rect(tooltip_text, Rect2(tooltip_content_rect.position - tooltip_rect.position, tooltip_content_rect.size))
-		tooltip_text.add_theme_font_size_override("font_size", _readable_font_size(int(metrics["tooltip_font"]), 11, int(metrics["tooltip_font"])))
+		tooltip_text.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TOOLTIP, int(metrics["tooltip_font"]), 11, int(metrics["tooltip_font"])))
 
 	var back := root.find_child("ShopLeaveButton", true, false) as Button
 	var back_rect: Rect2 = metrics["back_rect"]
@@ -9747,7 +9754,7 @@ func _layout_shop_gold_shell(root: Control) -> void:
 		_set_action_button_size(back, back_rect.size.x, back_rect.size.y)
 		_apply_slim_action_button_theme(back)
 		_apply_control_rect(back, back_rect)
-		back.add_theme_font_size_override("font_size", _readable_font_size(int(metrics["back_font"]), 16, int(metrics["back_font"])))
+		back.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, int(metrics["back_font"]), 16, int(metrics["back_font"])))
 
 	var hud_root := game.hud_layer.find_child("MenuRunHudRoot", true, false) as Control if game.hud_layer != null and is_instance_valid(game.hud_layer) else null
 	if hud_root != null:
@@ -9833,7 +9840,7 @@ func _show_shop_screen() -> void:
 	title.text = "Магазин"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(42))
+	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 42))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_box.add_child(title)
 
@@ -9843,7 +9850,7 @@ func _show_shop_screen() -> void:
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	subtitle.clip_text = true
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16, 12))
+	subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 16, 12))
 	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	title_box.add_child(subtitle)
 
@@ -9960,7 +9967,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int, display_size
 				note_label.name = "ShopAffinityNote"
 				note_label.text = "!"
 				note_label.tooltip_text = str(affinity_note["text"])
-				note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+				note_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 22))
 				note_label.add_theme_color_override("font_color", affinity_note["color"])
 				note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 				note_label.offset_left = -26.0
@@ -10073,7 +10080,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int, display_size
 	caption.offset_top = SHOP_INLINE_CAPTION_TOP
 	caption.offset_right = (SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
 	caption.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
-	caption.add_theme_font_size_override("font_size", _readable_font_size(13))
+	caption.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13))
 	caption.add_theme_color_override("font_color", Color(0.96, 0.82, 0.48, 1.0) if affordable else Color(0.70, 0.66, 0.60, 0.90))
 	caption.add_theme_color_override("font_outline_color", Color(0.08, 0.045, 0.02, 0.96))
 	caption.add_theme_constant_override("outline_size", 2)
@@ -10120,7 +10127,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int, display_size
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(16, 12, 18))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 16, 12, 18))
 	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
@@ -10158,7 +10165,7 @@ func _add_shop_empty_hook(button: Button) -> void:
 	label.text = "снято"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 13))
 	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hook.add_child(label)
@@ -10179,7 +10186,7 @@ func _add_shop_state_overlay(button: Button, text: String) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.clip_text = true
-	label.add_theme_font_size_override("font_size", _readable_font_size(15, 12, 17))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 15, 12, 17))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	overlay.add_child(label)
 
@@ -10732,7 +10739,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (13 if compact else 17), 10 if ultra_compact else 12, 22))
+		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_SECTION, 10 if ultra_compact else (13 if compact else 17), 10 if ultra_compact else 12, 22))
 		outcome_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(outcome_label)
@@ -10762,7 +10769,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (12 if compact else 16), 10 if ultra_compact else 12, 20))
+		name_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 10 if ultra_compact else (12 if compact else 16), 10 if ultra_compact else 12, 20))
 		name_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
@@ -10770,7 +10777,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (13 if compact else 16), 10 if ultra_compact else 12, 20))
+		value_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 10 if ultra_compact else (13 if compact else 16), 10 if ultra_compact else 12, 20))
 		value_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
@@ -10787,7 +10794,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else (11 if compact else 14), 10 if ultra_compact else 12, 18))
+		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 10 if ultra_compact else (11 if compact else 14), 10 if ultra_compact else 12, 18))
 		artifacts_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		target.add_child(artifacts_label)
@@ -11048,7 +11055,7 @@ func _add_event_choice_hint_line(button: Button, event_choice: Dictionary, card_
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	hint_label.custom_minimum_size = Vector2(maxf(card_size.x - margins.x - margins.z, 60.0), 0.0)
-	hint_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 18))
+	hint_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13, 12, 18))
 	hint_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(hint_label)
@@ -11089,31 +11096,31 @@ func _fit_event_choice_card_content(button: Button) -> void:
 		if desc_font_obj == null:
 			desc_font_obj = ThemeDB.fallback_font
 	if title_label != null:
-		title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 12, 24))
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 17, 12, 24))
 	var desc_font := 0
 	if desc_label != null:
-		desc_font = _readable_font_size(13, 12, 20)
+		desc_font = _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 13, 12, 20)
 		desc_label.max_lines_visible = -1
-		desc_label.add_theme_font_size_override("font_size", desc_font)
+		desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_DESCRIPTION, desc_font))
 		if desc_font_obj != null:
 			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
 	if hint_label != null:
-		hint_label.add_theme_font_size_override("font_size", _readable_font_size(13, 12, 18))
+		hint_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13, 12, 18))
 	if desc_label != null and desc_font_obj != null:
 		while desc_font > 12 and content.get_combined_minimum_size().y > avail_h:
 			desc_font -= 1
-			desc_label.add_theme_font_size_override("font_size", desc_font)
+			desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_DESCRIPTION, desc_font))
 			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
 	if title_label != null:
 		var title_font := title_label.get_theme_font_size("font_size")
 		while title_font > 13 and content.get_combined_minimum_size().y > avail_h:
 			title_font -= 1
-			title_label.add_theme_font_size_override("font_size", title_font)
+			title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, title_font))
 	if hint_label != null:
 		var hint_font := hint_label.get_theme_font_size("font_size")
 		while hint_font > 11 and content.get_combined_minimum_size().y > avail_h:
 			hint_font -= 1
-			hint_label.add_theme_font_size_override("font_size", hint_font)
+			hint_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_CAPTION, hint_font))
 	if desc_label != null and desc_font_obj != null:
 		# Сколько строк описания реально помещается в остаток бюджета.
 		var line_h := ceilf(desc_font_obj.get_height(desc_font))
@@ -11600,7 +11607,7 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(54 if big else 34, 0, 54 if big else 36))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DISPLAY, 54 if big else 34, 0, 54 if big else 36))
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 6 if big else 4)
@@ -11638,7 +11645,7 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
-		game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(34))
+		game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 34))
 		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
@@ -11657,7 +11664,7 @@ func _update_level_up_button() -> void:
 		badge.name = "LevelUpPlusBadge"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge.add_theme_font_size_override("font_size", _readable_font_size(16))
+		badge.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 16))
 		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
 		badge_panel.add_child(badge)
 
@@ -11688,7 +11695,7 @@ func _configure_level_up_button_for_viewport(viewport_size: Vector2) -> Dictiona
 	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
 	game.level_up_button.set_meta("scrum666_content_zone", plus_rect)
 	game.level_up_button.clip_text = true
-	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(roundf(24.0 * scale))), 0, 34))
+	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, maxi(18, int(roundf(24.0 * scale))), 0, 34))
 	_apply_fantasy_button_theme(game.level_up_button)
 	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
 	if badge_panel != null:
@@ -11702,7 +11709,7 @@ func _configure_level_up_button_for_viewport(viewport_size: Vector2) -> Dictiona
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
-		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, maxi(9, int(roundf(14.0 * scale))), 0, 22))
 	return {
 		"plus_rect": plus_rect,
 		"base_size": COMBAT_BLOCK_DESIGN_BASE_2K * scale,
@@ -12374,7 +12381,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	title_label.text = "Клавиша занята"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(36, 0, 40))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 36, 0, 40))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel.add_child(title_label)
 	title_label.position = RC_TITLE_2K.position - RC_PANEL_2K.position
@@ -12387,7 +12394,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	message_label.clip_text = true
-	message_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 24))
+	message_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 18, 0, 24))
 	message_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	panel.add_child(message_label)
 	message_label.position = RC_MESSAGE_2K.position - RC_PANEL_2K.position
@@ -12398,7 +12405,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	_set_action_button_size(retry_button, RC_BTN_RETRY_2K.size.x, RC_BTN_RETRY_2K.size.y)
 	_apply_overhaul_2k_button_theme(retry_button, "rc_btn", RC_BTN_RETRY_2K.size)
 	retry_button.clip_text = true
-	retry_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
+	retry_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18, 0, 18))
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
 	)
@@ -12410,7 +12417,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	_set_action_button_size(back_button, RC_BTN_BACK_2K.size.x, RC_BTN_BACK_2K.size.y)
 	_apply_overhaul_2k_button_theme(back_button, "rc_btn", RC_BTN_BACK_2K.size)
 	back_button.clip_text = true
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18, 0, 18))
 	back_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
@@ -12839,7 +12846,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	var title := Label.new()
 	title.text = "Отправить фидбек"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(32))
+	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -12862,7 +12869,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", _readable_font_size(16))
+	hint.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 16))
 	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	scroll_body.add_child(hint)
 
@@ -12872,7 +12879,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
 	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", _readable_font_size(17))
+	text_edit.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 17))
 	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
 	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
 	scroll_body.add_child(text_edit)
@@ -12898,7 +12905,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	status.text = "Отправка происходит только после нажатия «Отправить»."
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", _readable_font_size(14))
+	status.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
 	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
 	box.add_child(status)
 
@@ -13122,7 +13129,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -13132,7 +13139,7 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
 	if result_panel:
@@ -13207,12 +13214,12 @@ func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxC
 	if title == null and screen_background_id == "campfire":
 		title = box.find_child("RestTitle", true, false) as Label
 	if title != null:
-		title.add_theme_font_size_override("font_size", _readable_font_size(42, 0, 60))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 42, 0, 60))
 	var subtitle := box.find_child("MenuSubtitle_%s" % screen_background_id, true, false) as Label
 	if subtitle == null and screen_background_id == "campfire":
 		subtitle = box.find_child("RestSubtitle", true, false) as Label
 	if subtitle != null:
-		subtitle.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 24))
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 0, 24))
 
 
 func _resize_economy_choice_card(button: Button, display_size: Vector2) -> void:
@@ -13256,23 +13263,23 @@ func _resize_reward_card(button: Button, display_size: Vector2) -> void:
 	var title := button.find_child("BattleRewardTitle", true, false) as Label
 	if title != null:
 		title.max_lines_visible = 1 if compact else 2
-		title.add_theme_font_size_override("font_size", _readable_font_size(12 if compact else 17, 10 if compact else 12, 15 if compact else 22))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 12 if compact else 17, 10 if compact else 12, 15 if compact else 22))
 	var preview := button.find_child("BattleRewardPreview", true, false) as Label
 	if preview != null:
 		preview.max_lines_visible = 2 if compact else -1
 		preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		preview.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else 14, 10, 13 if compact else 16))
+		preview.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 10 if compact else 14, 10, 13 if compact else 16))
 	var description := button.find_child("BattleRewardDescription", true, false) as Label
 	if description != null:
 		description.max_lines_visible = 1 if compact else 2
 		description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		description.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else 12, 9 if compact else 12, 12 if compact else 14))
+		description.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 9 if compact else 12, 9 if compact else 12, 12 if compact else 14))
 	var note := button.find_child("BattleRewardClassNote", true, false) as Label
 	if note != null:
-		note.add_theme_font_size_override("font_size", _readable_font_size(9 if compact else 11, 9 if compact else 12, 12 if compact else 14))
+		note.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 9 if compact else 11, 9 if compact else 12, 12 if compact else 14))
 	var action := button.find_child("BattleRewardActionLabel", true, false) as Label
 	if action != null:
-		action.add_theme_font_size_override("font_size", _readable_font_size(10 if compact else 15, 10, 13 if compact else 16))
+		action.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 10 if compact else 15, 10, 13 if compact else 16))
 
 
 func _create_result_menu_box(title: String, subtitle: String, screen_background_id: String) -> Dictionary:
@@ -13426,7 +13433,7 @@ func _relayout_result_summary_typography(content: Control, viewport_height: floa
 	var ultra_compact: bool = viewport_height < 800.0
 	var outcome := content.find_child("RunSummaryOutcome", true, false) as Label
 	if outcome != null:
-		outcome.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else 13, 10 if ultra_compact else 12, 22))
+		outcome.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_SECTION, 10 if ultra_compact else 13, 10 if ultra_compact else 12, 22))
 	var grid := content.find_child("RunSummaryStats", true, false) as GridContainer
 	if grid != null:
 		grid.add_theme_constant_override("h_separation", 8 if ultra_compact else 14)
@@ -13436,10 +13443,13 @@ func _relayout_result_summary_typography(content: Control, viewport_height: floa
 			if label == null:
 				continue
 			var base_size := 10 if ultra_compact else (12 if str(label.name).begins_with("RunSummaryStatName_") else 13)
-			label.add_theme_font_size_override("font_size", _readable_font_size(base_size, 10 if ultra_compact else 12, 20))
+			if str(label.name).begins_with("RunSummaryStatName_"):
+				label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, base_size, 10 if ultra_compact else 12, 20))
+			else:
+				label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, base_size, 10 if ultra_compact else 12, 20))
 	var artifacts := content.find_child("RunSummaryArtifacts", true, false) as Label
 	if artifacts != null:
-		artifacts.add_theme_font_size_override("font_size", _readable_font_size(10 if ultra_compact else 11, 10 if ultra_compact else 12, 18))
+		artifacts.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 10 if ultra_compact else 11, 10 if ultra_compact else 12, 18))
 
 
 func _layout_result_content(content: Control, screen_background_id: String) -> void:
@@ -13472,9 +13482,9 @@ func _layout_result_content(content: Control, screen_background_id: String) -> v
 	_apply_control_rect(button_slot, Rect2(0.0, maxf(0.0, size.y - button_height), size.x, button_height))
 
 	if title != null:
-		title.add_theme_font_size_override("font_size", _readable_font_size(26 if compact else 34, 0, 42))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 26 if compact else 34, 0, 42))
 	if subtitle != null:
-		subtitle.add_theme_font_size_override("font_size", _readable_font_size(11 if compact else 13, 0, 18))
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 11 if compact else 13, 0, 18))
 	if body == null:
 		return
 
@@ -13508,13 +13518,13 @@ func _configure_result_menu_layout(box: VBoxContainer, screen_background_id: Str
 	if title_label != null:
 		title_label.custom_minimum_size = Vector2(content_size.x, 30.0 if compact else 42.0)
 		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		title_label.add_theme_font_size_override("font_size", _readable_font_size(28 if compact else 36, 0, 48))
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 28 if compact else 36, 0, 48))
 
 	var subtitle_label := box.find_child("MenuSubtitle_%s" % screen_background_id, false, false) as Label
 	if subtitle_label != null:
 		subtitle_label.custom_minimum_size = Vector2(content_size.x, 112.0 if compact else 128.0)
 		subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(13 if compact else 16, 0, 21))
+		subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13 if compact else 16, 0, 21))
 
 	var body := HBoxContainer.new()
 	body.name = "ResultBody_%s" % screen_background_id
@@ -13845,7 +13855,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.size = layout.get("title_size", Vector2(440.0, 30.0))
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("title_font", 50)), 0, 72))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DISPLAY, int(layout.get("title_font", 50)), 0, 72))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -13871,7 +13881,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.position = layout.get("subtitle_position", Vector2.ZERO)
 	subtitle_label.size = layout.get("subtitle_size", Vector2(460.0, 22.0))
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("subtitle_font", 17)), 0, 26))
+	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, int(layout.get("subtitle_font", 17)), 0, 26))
 	subtitle_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	box.add_child(subtitle_label)
 
@@ -14014,21 +14024,13 @@ func _connect_ui_sfx(button: BaseButton, kind := "click") -> void:
 	)
 
 
-func _readability_font_scale() -> float:
+func _readable_font_size(role: StringName, base_size: int, min_size := 0, max_size := 96) -> int:
 	var viewport_height := 864.0
 	if game != null and game.get_viewport() != null:
 		viewport_height = game.get_viewport().get_visible_rect().size.y
-	var t := clampf((viewport_height - 648.0) / 216.0, 0.0, 1.0)
-	return lerpf(READABILITY_FONT_SCALE_MIN, READABILITY_FONT_SCALE_TARGET, t)
-
-
-func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
-	var scaled := int(roundf(float(base_size) * _readability_font_scale()))
-	if min_size > 0:
-		scaled = maxi(scaled, min_size)
-	if max_size > 0:
-		scaled = mini(scaled, max_size)
-	return scaled
+	return SemanticTypography.resolve_authored_compat(
+		role, base_size, viewport_height, min_size, max_size
+	)
 
 
 func _make_compact_button(text: String) -> Button:
@@ -14036,7 +14038,7 @@ func _make_compact_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _readable_font_size(18))
+	button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18))
 	_apply_compact_button_theme(button)
 	return button
 
@@ -14054,7 +14056,7 @@ func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WID
 
 func _style_button_control(button: Button) -> void:
 	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", _readable_font_size(16))
+	button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
 
 
 func _apply_fantasy_button_theme(button: Button, variant := "default", explicit_family := "") -> void:
@@ -14409,7 +14411,7 @@ func _shrink_event_title_font(title_label: Label, base_font_size: int, max_width
 		var fit_width := maxf(max_width, 8.0) * 0.62
 		while font_size > 18 and font.get_string_size(longest, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
 			font_size -= 1
-	title_label.add_theme_font_size_override("font_size", font_size)
+	title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, font_size))
 
 
 # SCRUM-997: корень экрана события (EventScreen) от контент-бокса: box → scroll →
@@ -14475,7 +14477,7 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		# Длинные слова («жертвоприношений») не должны рваться посреди строки:
 		# ужимаем шрифт под самое длинное слово (канон fit_ratio 0.62 — оконный
 		# рендер строк шире мерки, память проекта), autowrap доносит остальное.
-		_shrink_event_title_font(title_label, _readable_font_size(30 if compact else 34, 0, 44), content_size.x - 14.0)
+		_shrink_event_title_font(title_label, _readable_font_size(SemanticTypography.ROLE_TITLE, 30 if compact else 34, 0, 44), content_size.x - 14.0)
 		# Латунная отчёркивающая линия под титулом (спека §2).
 		if box.find_child("EventTitleRule", false, false) == null:
 			var rule := ColorRect.new()
@@ -14494,7 +14496,7 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 		story_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		story_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
 		story_label.size_flags_vertical = Control.SIZE_FILL
-		story_label.add_theme_font_size_override("font_size", _readable_font_size(16 if compact else 17, 13, 22))
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 16 if compact else 17, 13, 22))
 		story_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 
 
@@ -14718,7 +14720,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 12, 24))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 14 if compact_attribute else 17, 12, 24))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title_label)
@@ -14730,7 +14732,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 12, 20))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 11 if compact_attribute else 13, 12, 20))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(desc_label)
@@ -14739,7 +14741,7 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.name = "%sAction" % button.name
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 12, 22))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 12 if compact_attribute else 15, 12, 22))
 	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
@@ -14768,7 +14770,7 @@ func _fit_economy_choice_card_content(button: Button) -> void:
 	var font_size := desc_label.get_theme_font_size("font_size")
 	while font_size > 12 and content.get_combined_minimum_size().y > avail_h:
 		font_size -= 1
-		desc_label.add_theme_font_size_override("font_size", font_size)
+		desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_DESCRIPTION, font_size))
 	var guard := desc_label.get_line_count()
 	while guard > 1 and content.get_combined_minimum_size().y > avail_h:
 		guard -= 1
@@ -15023,8 +15025,8 @@ func show_battle_prayer_choice(player: Node, on_selected: Callable) -> bool:
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	modal.add_child(art)
 
-	_battle_prayer_label(modal, "BattlePrayerTitle", "МОЛИТВА ПЕРЕД БОЕМ", Rect2(103, 45, 482, 34), 24, Color(0.96, 0.90, 0.77))
-	_battle_prayer_label(modal, "BattlePrayerSubtitle", "Выбери одно благословение до конца этого боя", Rect2(124, 101, 440, 25), 15, Color(0.92, 0.86, 0.72))
+	_battle_prayer_label(modal, SemanticTypography.ROLE_TITLE, "BattlePrayerTitle", "МОЛИТВА ПЕРЕД БОЕМ", Rect2(103, 45, 482, 34), 24, Color(0.96, 0.90, 0.77))
+	_battle_prayer_label(modal, SemanticTypography.ROLE_CAPTION, "BattlePrayerSubtitle", "Выбери одно благословение до конца этого боя", Rect2(124, 101, 440, 25), 15, Color(0.92, 0.86, 0.72))
 
 	var buttons: Array[Button] = []
 	for index in range(mini(choices.size(), BATTLE_PRAYER_CARD_RECTS.size())):
@@ -15062,7 +15064,7 @@ func _layout_battle_prayer_modal(root: Control, modal: Control) -> void:
 	modal.set_meta("visual_rect", Rect2(modal.position, BATTLE_PRAYER_FRAME_SIZE * scale_factor))
 
 
-func _battle_prayer_label(parent: Control, node_name: String, text: String, rect: Rect2, font_size: int, color: Color) -> Label:
+func _battle_prayer_label(parent: Control, role: StringName, node_name: String, text: String, rect: Rect2, font_size: int, color: Color) -> Label:
 	var label := Label.new()
 	label.name = node_name
 	label.text = text
@@ -15070,7 +15072,9 @@ func _battle_prayer_label(parent: Control, node_name: String, text: String, rect
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.clip_text = true
-	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		role, font_size
+	))
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_shadow_color", Color(0.04, 0.02, 0.025, 0.95))
 	label.add_theme_constant_override("shadow_offset_x", 1)
@@ -15110,9 +15114,9 @@ func _make_battle_prayer_card(modal: Control, choice: Dictionary, index: int) ->
 		_apply_control_rect(icon, Rect2(60, 5, 40, 40))
 
 	var title := str(choice.get("title", "")).to_upper()
-	_battle_prayer_label(button, "%sTitle" % button.name, title, Rect2(4, 48, 152, 25), 14 if prayer_id != "prayer_mending" else 12, Color(0.96, 0.90, 0.77))
-	_battle_prayer_label(button, "%sDescription" % button.name, str(choice.get("description", "")), Rect2(6, 75, 148, 58), 12, Color(0.92, 0.91, 0.88))
-	_battle_prayer_label(button, "%sAction" % button.name, "ВОЗНЕСТИ", Rect2(10, 143, 140, 21), 11, Color(0.95, 0.82, 0.48))
+	_battle_prayer_label(button, SemanticTypography.ROLE_TITLE, "%sTitle" % button.name, title, Rect2(4, 48, 152, 25), 14 if prayer_id != "prayer_mending" else 12, Color(0.96, 0.90, 0.77))
+	_battle_prayer_label(button, SemanticTypography.ROLE_DESCRIPTION, "%sDescription" % button.name, str(choice.get("description", "")), Rect2(6, 75, 148, 58), 12, Color(0.92, 0.91, 0.88))
+	_battle_prayer_label(button, SemanticTypography.ROLE_ACTION, "%sAction" % button.name, "ВОЗНЕСТИ", Rect2(10, 143, 140, 21), 11, Color(0.95, 0.82, 0.48))
 	return button
 
 
@@ -15218,7 +15222,7 @@ func _create_combat_timer_panel(root: Control) -> void:
 	label.name = "CombatTimerLabel"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(26))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 26))
 	label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.74, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)
@@ -15246,7 +15250,7 @@ func _create_boss_health_panel(root: Control) -> void:
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	name_label.add_theme_font_size_override("font_size", _readable_font_size(24))
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 24))
 	name_label.add_theme_color_override("font_color", Color(1.0, 0.42, 0.34, 1.0))
 	name_label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	name_label.add_theme_constant_override("outline_size", 4)
@@ -15441,7 +15445,9 @@ func _layout_combat_hud(root: Control) -> void:
 		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_TIMER_ZONE_2K, scale))
 		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
 		if game.timer_label != null:
-			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
+			game.timer_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_scaled_compat(
+				SemanticTypography.ROLE_HUD, 34.0, scale, 16, 96
+			))
 		var timer_icon := root.find_child("CombatTimerIcon", true, false) as TextureRect
 		if timer_icon != null:
 			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
@@ -15459,7 +15465,9 @@ func _layout_combat_hud(root: Control) -> void:
 		var boss_name := root.find_child("BossHudNameLabel", true, false) as Label
 		if boss_name != null:
 			_apply_chud_rect(boss_name, _scrum666_scaled_rect(HUD_V2_BOSS_NAME_2K, scale))
-			boss_name.add_theme_font_size_override("font_size", maxi(16, int(roundf(32.0 * scale))))
+			boss_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_scaled_compat(
+				SemanticTypography.ROLE_HUD, 32.0, scale, 16, 96
+			))
 
 	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
 	if asc_row != null:
@@ -15513,7 +15521,9 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
-		money_label.add_theme_font_size_override("font_size", maxi(14, int(roundf(24.0 * scale))))
+		money_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_scaled_compat(
+			SemanticTypography.ROLE_HUD, 24.0, scale, 14, 96
+		))
 	var bar_labels := {
 		"HudHPLabel": [HUD_V2_HP_BAR_2K, 20.0],
 		"HudXPLabel": [HUD_V2_XP_BAR_2K, 17.0],
@@ -15523,7 +15533,9 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 		var label := resource.find_child(str(label_name), true, false) as Label
 		if label == null:
 			continue
-		label.add_theme_font_size_override("font_size", maxi(12, int(roundf(float(bar_labels[label_name][1]) * scale))))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_scaled_compat(
+			SemanticTypography.ROLE_HUD, float(bar_labels[label_name][1]), scale, 12, 96
+		))
 		label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
 		_hud_v2_place_in_panel(label, bar_labels[label_name][0], panel_rect, scale)
 		# Шрифт может требовать больше высоты, чем слим-бар: расширяем рект лейбла
@@ -15963,7 +15975,7 @@ func _build_hud_v2_cluster(content: Control) -> void:
 	game.money_label.name = "HudMoneyLabel"
 	game.money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 18))
 	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
 	game.money_label.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
 	game.money_label.add_theme_constant_override("outline_size", 3)
@@ -16013,7 +16025,7 @@ func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallbac
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.clip_text = true
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 13))
 	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 3)
@@ -16082,7 +16094,7 @@ func _make_character_stat_chip(entry: Dictionary) -> Control:
 	value.clip_text = true
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value.add_theme_font_size_override("font_size", _readable_font_size(15))
+	value.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 15))
 	value.add_theme_color_override("font_color", _hud_stat_value_color(entry))
 	line.add_child(value)
 	return chip

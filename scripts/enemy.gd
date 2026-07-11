@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 # SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
@@ -392,7 +394,9 @@ func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
 	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
 	# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
 	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
-	label.add_theme_font_size_override("font_size", 30 if critical else 22)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_HUD, 30 if critical else 22
+	))
 	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
 	label.add_theme_constant_override("outline_size", 6 if critical else 5)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -418,7 +422,7 @@ func _show_critical_marker() -> void:
 	marker.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
 	marker.text = "!"
 	marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
-	marker.add_theme_font_size_override("font_size", 34)
+	marker.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 34))
 	marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
 	marker.add_theme_constant_override("outline_size", 4)
 	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
