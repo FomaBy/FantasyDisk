@@ -1623,10 +1623,10 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 | `music_combat_bardic_skirmish_a` | `assets/audio/music/music_combat_bardic_skirmish_a.ogg` | Обычный бой, ротация №1 |
 | `music_combat_bardic_skirmish_b` | `assets/audio/music/music_combat_bardic_skirmish_b.ogg` | Обычный бой, ротация №2 |
 | `music_combat_ruined_courtyard` | `assets/audio/music/music_combat_ruined_courtyard.ogg` | Обычный бой, ротация №3 (акт 2 приоритет) |
-| `music_combat_fey_marsh` | `assets/audio/music/music_combat_fey_marsh.ogg` | Обычный бой, ротация №4 (акт 3 приоритет) |
+| `music_combat_fey_marsh` | `assets/audio/music/music_combat_fey_marsh.ogg` | Обычный бой, ротация №4 (без актового приоритета) |
 | `music_elite_duel_300` | `assets/audio/music/music_elite_duel_300.ogg` | Элитный бой (300 c) |
-| `music_boss_battle_300` | `assets/audio/music/music_boss_battle_300.ogg` | Боссы актов 1–2 (300 c) |
-| `music_final_boss_crescendo_300` | `assets/audio/music/music_final_boss_crescendo_300.ogg` | Босс акта 3 / секретный босс (300 c) |
+| `music_boss_battle_300` | `assets/audio/music/music_boss_battle_300.ogg` | Промежуточный босс акта 1 (300 c) |
+| `music_final_boss_crescendo_300` | `assets/audio/music/music_final_boss_crescendo_300.ogg` | Финальный босс акта 2 / секретный босс (300 c) |
 | `music_sting_victory` | `assets/audio/music/music_sting_victory.ogg` | Стингер победы обычного боя |
 | `music_sting_victory_epic` | `assets/audio/music/music_sting_victory_epic.ogg` | Стингер победы над элиткой/боссом |
 | `music_sting_defeat` | `assets/audio/music/music_sting_defeat.ogg` | Стингер поражения |
