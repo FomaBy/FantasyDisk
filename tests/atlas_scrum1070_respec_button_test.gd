@@ -3,6 +3,7 @@ extends SceneTree
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const Meta := preload("res://scripts/meta_progression.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
 
 const VIEWPORTS := [
 	Vector2i(1152, 648),
@@ -19,6 +20,8 @@ const EXPECTED_TEXTURE_MARGINS := Vector4(54, 21, 54, 21)
 const EXPECTED_CONTENT_MARGINS := Vector4(71, 21, 71, 21)
 
 var _errors := PackedStringArray()
+var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
+var _teardown_count := 0
 
 
 func _initialize() -> void:
@@ -26,12 +29,19 @@ func _initialize() -> void:
 		await _check_layout(viewport_size)
 	await _check_live_resize()
 	await _check_reset_scopes()
+	await _check_repeated_lifecycle_probe()
+	# SCRUM-1074: Main._ready() starts menu music in real windowed fixtures. Stop
+	# and detach that public AudioManager channel before SceneTree/AudioServer
+	# shutdown, then verify the player no longer owns an Ogg playback resource.
+	await _capture_teardown.release_windowed_audio(self)
+	_check_windowed_audio_release()
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error(error)
 		quit(1)
 		return
 	print("SCRUM-1070 Atlas reset footer passed exact 420px family/fit/frame/reset gates at seven responsive tiers, live resize and both scopes.")
+	print("SCRUM-1074 lifecycle regression passed %d deterministic viewport teardowns with no retained ObjectDB/resource growth." % _teardown_count)
 	quit(0)
 
 
@@ -276,5 +286,76 @@ func _settle() -> void:
 
 
 func _teardown(viewport: SubViewport) -> void:
-	viewport.queue_free()
-	await process_frame
+	# SCRUM-1074/SCRUM-1031: a single deferred parent free is insufficient under
+	# Windowed Metal. Disable render work, free Main/children first, cross the
+	# deferred ObjectDB barrier, then release the owned viewport. The shared
+	# helper reports any WeakRef which survives either ownership boundary.
+	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
+	for teardown_error in teardown_errors:
+		_errors.append("SCRUM-1074 viewport teardown: %s" % teardown_error)
+	_teardown_count += 1
+	_check_lifecycle_monitors()
+
+
+func _check_lifecycle_monitors() -> void:
+	var orphan_nodes := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	if orphan_nodes != 0:
+		_errors.append("SCRUM-1074 teardown left %d orphan nodes." % orphan_nodes)
+
+
+func _check_repeated_lifecycle_probe() -> void:
+	# The functional matrix intentionally warms different viewport/theme caches,
+	# so its first ObjectDB count is not a valid ceiling. After that warm-up, run
+	# two identical Atlas fixtures. The second release must return to the first
+	# release's object/resource counts; otherwise an owned fixture accumulated a
+	# hidden ObjectDB or Resource owner even though its visible nodes disappeared.
+	var warmed_counts := Vector2i(-1, -1)
+	for probe_index in range(2):
+		var viewport := SubViewport.new()
+		viewport.size = Vector2i(1280, 720)
+		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		root.add_child(viewport)
+		var main := await _spawn_main(viewport, ["berserk_m0"])
+		main.ui._show_atlas_screen()
+		await _settle()
+		await _teardown(viewport)
+		# Performance object/resource monitors may update with up to a one-second
+		# delay. Cross that documented sampling window before comparing the two
+		# otherwise identical warmed fixtures.
+		await create_timer(1.05).timeout
+		var current := Vector2i(
+			int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+			int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT))
+		)
+		if probe_index == 0:
+			warmed_counts = current
+			continue
+		if current.x > warmed_counts.x:
+			_errors.append(
+				"SCRUM-1074 repeated fixture leaked ObjectDB owners: first=%d second=%d."
+				% [warmed_counts.x, current.x]
+			)
+		if current.y > warmed_counts.y:
+			_errors.append(
+				"SCRUM-1074 repeated fixture leaked resources: first=%d second=%d."
+				% [warmed_counts.y, current.y]
+			)
+
+
+func _check_windowed_audio_release() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var audio := root.get_node_or_null("AudioManager")
+	if audio == null:
+		_errors.append("SCRUM-1074 windowed lifecycle gate cannot find AudioManager.")
+		return
+	for property_name in ["_music_player", "_music_player_fade"]:
+		var player := audio.get(property_name) as AudioStreamPlayer
+		if player == null:
+			_errors.append("SCRUM-1074 AudioManager is missing %s." % property_name)
+			continue
+		if player.playing or player.stream != null:
+			_errors.append(
+				"SCRUM-1074 %s retained playback state after the windowed release barrier."
+				% property_name
+			)
