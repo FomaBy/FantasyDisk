@@ -1,6 +1,6 @@
 # SCRUM-1044 — Priest prayer Escape opens Pause dossier above mandatory modal
 
-Статус: review
+Статус: done
 Приоритет: high
 Роль: Back-end
 Контур: Codex
