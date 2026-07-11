@@ -71,3 +71,23 @@ Post-integration base: `origin/dev` `e5c8d32a8`.
 
 Disk cleanup: `.godot`, isolated `/tmp/fsd-scrum1070-*` user-data roots and
 generated unrelated UID sidecars removed; task worktree removed after push.
+
+## QA-Вердикт: FAILED
+
+Independent QA на свежем `origin/dev` `0b17c754a` подтвердила всю продуктовую
+часть: focused exact `420×72/88/104` на семи размерах и same-instance live
+resize, обе reset scope, semantic inventory, Meta40, pointer clickability,
+button family/theme, gamepad focus, no-overlap, runtime UI и полный runtime —
+PASS. Existing-source provenance, five-state `standard_420x104`, margins,
+`21/23 px` typography и отсутствие schema/balance/currency drift также PASS.
+
+Блокирует только обязательный windowed QA lifecycle gate. Два запуска focused
+теста на macOS Metal функционально прошли, но оба оставили `4 ObjectDB`
+instances и `2` Ogg resources. `--verbose` указал
+`music_menu_tavern_warm.ogg`: `OggPacketSequence`, `AudioStreamOggVorbis` и
+playback-объекты. Новый fixture освобождает viewport одним `queue_free()` и
+одним кадром, не применяя child-first/WeakRef/`AudioManager.stop_music()`
+контракт из SCRUM-1031 и `docs/process/qa_protocol.md`.
+
+Bug/handoff: SCRUM-1074. До его исправления и чистой Metal-серии SCRUM-1070
+остаётся в Jira «Контроль качества», а не «Готово».
