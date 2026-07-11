@@ -60,3 +60,39 @@ Run. The known dummy-renderer texture warning remains non-fatal and pre-existing
 Disk cleanup: removed the task `.godot` cache (~445 MB), task Python cache and
 all `/tmp/fsd-scrum1061-*` user-data roots. The clean registered worktree and
 its tracked checkout are removed immediately after this mirror commit is pushed.
+
+## QA claim (2026-07-11)
+
+QA: complete — `/root/audit_new_sprint_tail`, disposable fresh-origin
+worktree `codex/qa-scrum1061`. Implementation paths remain unlocked/read-only;
+QA writes only verdict evidence and scoped Jira sync after the independent gate.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+- Reviewed implementation `72b7493f0` and the landed state through
+  `4e36e7825`: semantic intent, the 12-role API, transform-aware Codex refresh,
+  centralized compatibility helpers and documentation are coherent; no
+  unrelated SCRUM-1061 functional changes were found.
+- Inventory freshness passed at schema 2: 245 sites = 104 mapped + 141
+  allowlisted + 0 unreviewed, with 16 indirect semantic bindings. Routing is
+  exact: 2 Atlas fingerprints to SCRUM-1068, 139 non-Atlas fingerprints to the
+  unassigned current-sprint SCRUM-1073, and 0 fingerprints to SCRUM-1070.
+- Six independent guard mutations were rejected: new unreviewed site, runtime
+  role drift, missing allowlist owner, wrong Atlas route, cross-band site marked
+  mapped and a missing helper binding.
+- Semaphore/isolated-user-data PASS: semantic/Russian 648/720/900/1080/2K/4K,
+  Settings SCRUM-1060, Continue SCRUM-1062, Pause SCRUM-983, Codex SCRUM-954,
+  Prayer SCRUM-926, gamepad menu/in-run/core/full-flow, runtime UI, six-size
+  no-overlap matrix and full runtime smoke.
+- Representative macOS/Metal PASS on Apple M4 Pro: Settings, Codex and
+  Continue. The pre-existing dummy-renderer `texture_2d_get` screenshot warning
+  remained non-fatal; both runtime suites exited 0.
+
+Баги: нет.
+
+Disk cleanup: removed generated UID sidecars, the disposable `.godot` cache
+(~446 MB), isolated `/tmp/fsd-qa1061-*` user-data roots and Python caches;
+tracked baseline QA evidence was preserved. The clean worktree is removed after
+the verdict commit reaches `origin/dev`.
