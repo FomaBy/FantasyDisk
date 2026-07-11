@@ -77,6 +77,14 @@ PASS:
 
 Independent QA: pending after direct push to `origin/dev`.
 
-Disk cleanup: active task worktree; pending final gates and push.
+Implementation commit: `19eb5748d`, rebased without conflict on final
+SCRUM-1046/952 QA sync `21f838587` and pushed directly to `origin/dev`.
+Post-rebase focused SCRUM-1047 and SCRUM-1043 geometry gates PASS; the pre-rebase
+full runtime/global damage results remain authoritative because the intervening
+QA batch changed evidence/map only.
+
+Disk cleanup: removed the 446 MiB task `.godot` cache and all owned isolated
+HOME/XDG scratch roots. Generated balance reports match tracked content, so the
+worktree is clean; the checkout is retained only until QA dispatch is recorded.
 
 Thread cleanup: not a disposable worker thread.
