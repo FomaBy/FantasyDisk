@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-07-10
+Обновлено: 2026-07-11
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -35,6 +35,28 @@ Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
 `tests/codex_scrum954_layout_test.gd`,
 `tests/scrum981_gold_menu_shell_test.gd`,
 `tests/ui_no_overlap_matrix_test.gd` and the general runtime UI/full smokes.
+
+## SCRUM-1062 Continue Run Live Title Typography
+
+`ContinueRunTitle` is now an accessible live Godot `Label` with the exact
+Russian text `Продолжить забег?`; the former 760×170 Luminari bitmap wordmark
+and its platform-font generator were removed after confirming that the dialog
+was their only runtime consumer. The label inherits the same theme/default
+`Font` resource as standard game title labels. Until SCRUM-1061 lands the
+cross-screen semantic API, this task owns the documented fit-safe title tier
+`_readable_font_size(29)` (`38/40/42/42px` at 1152×648 / 1280×720 / 1080p /
+2K), with warm-gold text, 2px dark outline and 2px shadow offset.
+
+The accepted PixelLab SCRUM-842 composition and all frame/button art are
+unchanged. The centered fixed `840×380` panel publishes an authored content
+rect of exactly `696×242` after integer layout; the title occupies a `696×70`
+single-line slot at source-space `Rect2(932,602,696,70)` at 2K. Measured
+glyph/effect bounds stay inside that slot and the empty content zone without
+touching rails, subtitle or buttons at 1152×648, 1280×720, 1920×1080,
+2560×1440 and live resize. Continue/New Game callbacks, autosave, Escape and
+mouse/keyboard/gamepad focus behavior are unchanged. Contract and evidence:
+`docs/design/mockups/scrum582_continue_run/spec.md` and
+`tests/scrum1062_continue_run_title_test.gd`.
 
 ## SCRUM-926 Priest Battle Prayer Choice
 

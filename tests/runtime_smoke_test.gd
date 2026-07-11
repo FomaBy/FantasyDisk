@@ -2552,10 +2552,14 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 	start_button.pressed.emit()
 	await process_frame
 	var dialog := continue_main.find_child("ContinueRunDialog", true, false) as Control
+	var continue_title := continue_main.find_child("ContinueRunTitle", true, false) as Label
 	var continue_button := continue_main.find_child("ContinueRunButton", true, false) as Button
 	var new_game_button := continue_main.find_child("ContinueRunNewGameButton", true, false) as Button
-	if dialog == null or continue_button == null or new_game_button == null:
-		_fail("Expected autosave prompt with Continue/New Game buttons.")
+	if dialog == null or continue_title == null or continue_button == null or new_game_button == null:
+		_fail("Expected autosave prompt with live title and Continue/New Game buttons.")
+		return
+	if continue_title.text != "Продолжить забег?" or continue_title.has_theme_font_override("font") or str(continue_title.get_meta("font_family_contract", "")) != "theme_default":
+		_fail("Expected SCRUM-1062 live Continue title in the common theme/default font family.")
 		return
 	continue_button.pressed.emit()
 	await process_frame

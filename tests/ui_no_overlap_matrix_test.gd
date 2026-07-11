@@ -46,7 +46,8 @@ func _initialize() -> void:
 			"MainMenuCreditsButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "continue_run_dialog", Callable(self, "_open_continue_run_dialog"), [
-			"ContinueRunPanel", "ContinueRunButton", "ContinueRunNewGameButton",
+			"ContinueRunPanel", "ContinueRunTitle", "ContinueRunSubtitle",
+			"ContinueRunButton", "ContinueRunNewGameButton",
 		], dump_lines, errors)
 		await _check_screen(viewport_size, "settings", Callable(self, "_open_settings"), [
 			"SettingsTabSwitcher", "SettingsContentPanel",
@@ -839,6 +840,14 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			if not _rect2_approx(cr_safe, expected_cr_safe, 1.0):
 				return "%s: expected ContinueRunPanel safe rect to match widened SCRUM-842 content area, got %s." % [context, str(cr_safe)]
 			var cr_global_safe := Rect2(continue_panel.get_global_rect().position + cr_safe.position, cr_safe.size).grow(1.0)
+			var continue_title := main.find_child("ContinueRunTitle", true, false) as Label
+			var continue_subtitle := main.find_child("ContinueRunSubtitle", true, false) as Label
+			if continue_title == null or continue_title.text != "Продолжить забег?":
+				return "%s: SCRUM-1062 requires live Russian ContinueRunTitle Label text." % context
+			if continue_title.has_theme_font_override("font") or str(continue_title.get_meta("font_family_contract", "")) != "theme_default":
+				return "%s: ContinueRunTitle must inherit the standard theme/default Font family." % context
+			if not cr_global_safe.encloses(continue_title.get_global_rect()) or (continue_subtitle != null and continue_title.get_global_rect().intersects(continue_subtitle.get_global_rect())):
+				return "%s: ContinueRunTitle escapes the empty frame zone or overlaps its subtitle." % context
 			for button_name in ["ContinueRunButton", "ContinueRunNewGameButton"]:
 				var cr_button := main.find_child(button_name, true, false) as Button
 				if cr_button == null:

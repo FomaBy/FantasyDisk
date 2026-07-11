@@ -1027,16 +1027,48 @@ func _show_continue_run_dialog() -> void:
 	box.add_theme_constant_override("separation", 16)
 	panel.add_child(box)
 
-	# SCRUM-677: стилизованный лого-заголовок вместо плоского жёлтого текста.
-	var title_label := TextureRect.new()
+	# SCRUM-1062: живой title Label вместо отдельного системного Luminari wordmark.
+	# До появления общего semantic token API (SCRUM-1061) используем ровно тот же
+	# effective theme/default Font, что стандартная title-family (например
+	# QuitConfirmationTitle), с локальным fit-safe title tier. Runtime текст остаётся доступным и не
+	# растягивается как texture внутри authored content-zone панели.
+	var title_label := Label.new()
 	title_label.name = "ContinueRunTitle"
-	title_label.custom_minimum_size = Vector2(0.0, 72.0)
+	title_label.text = "Продолжить забег?"
+	title_label.custom_minimum_size = Vector2(0.0, 70.0)
 	title_label.size_flags_horizontal = Control.SIZE_FILL
-	title_label.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	title_label.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	title_label.clip_text = false
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title_label.texture = game._cached_texture("res://assets/sprites/ui/menu_title/continue_run_title.png")
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_label.add_theme_color_override("font_outline_color", Color(0.08, 0.035, 0.02, 0.98))
+	title_label.add_theme_color_override("font_shadow_color", Color(0.02, 0.01, 0.015, 0.86))
+	title_label.add_theme_constant_override("outline_size", 2)
+	title_label.add_theme_constant_override("shadow_offset_x", 2)
+	title_label.add_theme_constant_override("shadow_offset_y", 2)
+	title_label.set_meta("semantic_typography_role", "title")
+	title_label.set_meta("font_family_contract", "theme_default")
+	var refresh_continue_title_typography := func() -> void:
+		if not is_instance_valid(title_label):
+			return
+		# Continue Run keeps the semantic title hierarchy but uses a narrower local
+		# fit tier than the wider Quit modal: 29 -> 38/40/42 effective px. This leaves
+		# authored reserve for Cyrillic ascenders, outline and shadow inside 70px.
+		var title_font_size := _readable_font_size(29)
+		title_label.add_theme_font_size_override("font_size", title_font_size)
+		title_label.set_meta("effective_title_font_size", title_font_size)
+	refresh_continue_title_typography.call()
 	box.add_child(title_label)
+	var continue_title_viewport: Viewport = game.get_viewport()
+	if continue_title_viewport != null:
+		continue_title_viewport.size_changed.connect(refresh_continue_title_typography)
+		overlay.tree_exiting.connect(func() -> void:
+			if is_instance_valid(continue_title_viewport) and continue_title_viewport.size_changed.is_connected(refresh_continue_title_typography):
+				continue_title_viewport.size_changed.disconnect(refresh_continue_title_typography)
+		)
 
 	var character_id := str(autosave_state.get("selected_character_id", "berserk"))
 	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
