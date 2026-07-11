@@ -4470,8 +4470,8 @@
  },
  "bug_scrum1045_qa_capture_music_ogg_leak_task.md": {
   "key": "SCRUM-1045",
-  "status": "К выполнению",
-  "desc_hash": "96e92f89de4d415152903b255c3e9809"
+  "status": "Контроль качества",
+  "desc_hash": "ef3bc17b3c4877f83e3ef06bb76bbafb"
  },
  "SCRUM-989_ui_batch_qa.md": {
   "key": "SCRUM-989",
