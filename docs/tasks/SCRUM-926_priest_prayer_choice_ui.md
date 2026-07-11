@@ -47,3 +47,38 @@ OpenGL/Metal captures for all three target sizes are committed in the runtime
 preview directory.
 
 Disk cleanup: disposable `.godot/` removed; clean task worktree scheduled for immediate removal after the routing push.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: FAILED
+
+Независимый QA проверил clean-cache `origin/dev` `ec7c77aca`.
+Production-код и art layer не изменялись.
+
+Пройдено:
+
+- PixelLab asset `3c4556a9-e19f-42dd-972b-47d572264e66`, seed 926;
+  source/runtime SHA-256
+  `8eb1406434e8c02ad291fcaf2f39b16ff6d9c87a0781cd4ef190dc750305046c`;
+  files byte-identical;
+- `scrum926_priest_prayer_choice_test.gd`, `priest_kit_test.gd`,
+  `ui_no_overlap_matrix_test.gd`, `gamepad_inrun_ui_test.gd`,
+  `gamepad_full_flow_smoke_test.gd`, `runtime_smoke_ui_test.gd` и clean-cache
+  `runtime_smoke_test.gd` — PASS;
+- 1280×720, 1920×1080, 2560×1440 и live resize: content zones,
+  hitboxes/focus внутри пустых card interiors, ornament non-overlap;
+  свежие Metal captures проверены вручную;
+- canonical IDs/order/effects: `prayer_wrath` +20% all damage,
+  `prayer_mending` +2 HP/s, `prayer_aegis` -20% incoming damage; no hidden
+  auto-pick, exactly-once selection, elite spawn after selection, non-Priest
+  synchronous fast path — PASS;
+- physical mouse submit и gamepad B/D-pad/A paths — PASS.
+
+Блокирующий дефект: physical keyboard Escape идёт по ветке
+`pause` в `Main._input`; `_can_open_pause_dossier()` срабатывает раньше
+`ui_escape_action`, поэтому над mandatory `BattlePrayerChoiceScreen` открывается
+`PauseStatsMenuRoot`, а focus уходит на `PauseSettingsButton`.
+Штатный focused test ложно-зелёный, потому что вызывает callable
+напрямую, а не physical `Main._input` path.
+
+Баг: SCRUM-1044.
