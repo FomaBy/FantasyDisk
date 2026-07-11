@@ -1,6 +1,6 @@
 # SCRUM-972 — Settings seamless content surface
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-972
 Контур: Codex
@@ -66,7 +66,32 @@ outer-frame safe zone. No asset or content geometry changes.
 - `tests/runtime_smoke_test.gd`: PASS (known dummy-renderer screenshot
   diagnostic only).
 
-Disk cleanup: active task worktree; pending post-push removal of 446 MiB
-`.godot`, 35 MiB captures and scratch roots.
+Implementation disk cleanup: removed the task worktree, 446 MiB `.godot`
+cache, 35 MiB captures and scratch roots after the direct-to-dev push.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт (2026-07-11)
+
+Статус: PASSED
+
+- Independent QA verified `origin/dev` implementation commit `6f41ed648` with
+  production code, assets and implementation docs read-only.
+- PixelLab source `64eb22c0-35d0-41de-863c-e368c0e7da6f` matches the committed
+  provenance SHA-256; planning is `ready_for_image` and all eight compositor
+  zones fit.
+- Focused SCRUM-972 test passed headless and on windowed Metal without lifecycle
+  leak diagnostics. All three tabs were visually inspected at 1280×720,
+  1920×1080 and 2560×1440: the sanctum background is continuous, no gray
+  inset or inner border remains, and no content touches the outer ornament.
+- UI/no-overlap, Settings rebind, menu focus, video Apply/Revert, monitor
+  selector and two consecutive gamepad full-flow runs passed.
+- Isolated full runtime, animation, meta-progression and melee-targeting smoke
+  suites passed. The known headless dummy-renderer screenshot diagnostic is
+  unchanged and non-fatal.
+
+Баги: нет.
+
+QA disk cleanup: disposable captures, `.godot`, isolated HOME/XDG roots,
+worktree and local QA branch are removed after the evidence push; completion is
+recorded in the final Jira comment.
