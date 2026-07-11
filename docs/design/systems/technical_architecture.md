@@ -56,6 +56,27 @@ Use groups for temporary runtime nodes:
 
 `_clear_world()` and transition flows must remove class-specific leftovers.
 
+### Player lifecycle ownership (SCRUM-1071)
+
+- A live combat has exactly one lifecycle generation: `CombatDirector._start_combat()`
+  is idempotent while a start is in progress or `combat_active` is true. A
+  repeated route/mouse/key/gamepad/dev-console trigger cannot rebuild Player,
+  HUD, signal hooks, enemies or `on_battle_start` in the same combat.
+- Every full `Player.tscn` instance created by Main receives
+  `player_lifecycle_owner` and `player_lifecycle_role`. Combat instances remain
+  in `player`; stat-only menu snapshots use role `menu_snapshot`, group
+  `temporary_players`, disabled processing/collision and a disabled `Camera2D`.
+- `current_player` is a convenience reference, not the cleanup authority.
+  `_clear_world()` finds every Player owned by that Main, removes it from groups
+  and detaches it from the tree synchronously, then uses deferred `queue_free()`
+  for signal-safe destruction. `_clear_ui()` performs the same central cleanup
+  for temporary menu snapshots before pause/settings UI references are cleared.
+- The focused invariant/stress gate is
+  `tests/duplicate_player_spawn_regression_test.gd`: 50 new/continue transitions
+  across battle/elite/boss starts, unresolved dossier snapshots, repeated start
+  triggers, process+physics frames, one Player/Camera/HUD/weapon and one handler
+  per combat signal.
+
 ## Resource Loading
 
 - Avoid `load()` in hot paths.

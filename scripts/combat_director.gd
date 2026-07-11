@@ -61,6 +61,8 @@ const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectil
 var _elite_defeated := false
 var _boss_victory_pending := false
 var _combat_start_finalized := false
+var _combat_start_in_progress := false
+var _combat_start_generation := 0
 
 
 func _init(game_ref) -> void:
@@ -156,6 +158,12 @@ static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_s
 
 
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	# SCRUM-1071: route/event/dev-console signals may converge in the same frame.
+	# A live or currently-building combat already owns its Player/HUD/hooks; a
+	# repeated trigger is an idempotent no-op, never a teardown/rebuild.
+	if _combat_start_in_progress or game.combat_active:
+		return
+	_combat_start_in_progress = true
 	# SCRUM-1000: бой не должен рождаться под чужой паузой (консольные fight/act
 	# в обход экранов). Штатные входы (клик узла карты, событие) приходят без
 	# pause-причин — для них это no-op. Симметрично гарду в _end_combat.
@@ -183,7 +191,16 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.ui._create_hud()
 
 	game.current_player = game.player_scene.instantiate() as Node2D
+	if game.current_player == null:
+		game.combat_active = false
+		game.boss_combat_active = false
+		_combat_start_in_progress = false
+		push_error("SCRUM-1071: combat Player scene could not be instantiated")
+		return
 	game.add_child(game.current_player)
+	game._register_player_lifecycle_node(game.current_player, game.PLAYER_LIFECYCLE_COMBAT)
+	_combat_start_generation += 1
+	game.current_player.set_meta("combat_start_generation", _combat_start_generation)
 	game.current_player.global_position = game.ARENA_CENTER
 	_configure_player_camera(game.current_player)
 
@@ -211,6 +228,7 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	if not prayer_choices.is_empty() and str(game.current_player.call("active_battle_prayer_id")) == "":
 		if game.ui.has_method("show_battle_prayer_choice") and game.ui.show_battle_prayer_choice(game.current_player, Callable(self, "_finalize_combat_start")):
 			return
+		_combat_start_in_progress = false
 		push_error("SCRUM-926: mandatory battle prayer UI could not be opened")
 		return
 	_finalize_combat_start()
@@ -220,6 +238,7 @@ func _finalize_combat_start() -> void:
 	if _combat_start_finalized or not game.combat_active:
 		return
 	_combat_start_finalized = true
+	_combat_start_in_progress = false
 	# SCRUM-961: battle-start artifact hooks run only after the prayer choice.
 	if game.current_player != null and is_instance_valid(game.current_player) and game.current_player.has_method("on_battle_start"):
 		game.current_player.on_battle_start()
@@ -281,6 +300,7 @@ func _restore_time_scale() -> void:
 func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
+	_combat_start_in_progress = false
 
 	# SCRUM-1000: канонический конец боя снимает ВСЕ внутрибоевые pause-причины.
 	# Штатные пути (win/lose из main._process, died-сигнал игрока) недостижимы при
@@ -1257,7 +1277,12 @@ func _combat_victory_map_continuation(event_combat: Dictionary) -> Callable:
 
 func _snapshot_player_for_menu() -> Node:
 	var temp_player = game.player_scene.instantiate()
+	if temp_player == null:
+		return null
 	game.add_child(temp_player)
+	# Full Player is reused only as an in-memory stat model. It must not compete
+	# with combat targeting, input, physics or Camera2D while a menu owns it.
+	game._register_player_lifecycle_node(temp_player, game.PLAYER_LIFECYCLE_MENU_SNAPSHOT)
 	if game.run_player_snapshot.is_empty():
 		temp_player.configure_character(game.selected_character_id, game.selected_weapon_id)
 	else:
