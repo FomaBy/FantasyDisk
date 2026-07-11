@@ -134,8 +134,9 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		_fail("Expected visible ascension chooser with description at %s." % str(viewport_size))
 		return
 
-	# SCRUM-887: 8 полос характеристик — вертикальная фикс-колонна у правого края
-	# досье (без скролла), текстовая колонна со скроллом — слева от неё.
+	# SCRUM-887/951: фиксированная зона характеристик у правого края досье,
+	# без скролла. 720p reflows to 2x4 so names/values remain visible; larger
+	# targets retain the original single vertical column.
 	var dossier_frame := main.find_child("HS4DossierFrame", true, false) as Control
 	if dossier_frame == null:
 		_fail("Expected HS4DossierFrame at %s." % str(viewport_size))
@@ -161,6 +162,7 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 		return
 	var prev_stat_bottom := -INF
 	var stat_column_left := INF
+	var stat_rects: Array[Rect2] = []
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_bar := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
@@ -171,21 +173,38 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 			_fail("Expected all 8 stat bars visible without scrolling at %s, %s hidden." % [str(viewport_size), stat_id])
 			return
 		var stat_rect := stat_button.get_global_rect()
+		stat_rects.append(stat_rect)
 		if not dossier_frame_rect.grow(2.0).encloses(stat_rect):
 			_fail("Expected stat row %s inside the dossier at %s, got %s dossier %s." % [stat_id, str(viewport_size), str(stat_rect), str(dossier_frame_rect)])
 			return
 		if not stats_column_rect.grow(2.0).encloses(stat_rect):
 			_fail("Expected stat row %s inside the stats column at %s, got %s column %s." % [stat_id, str(viewport_size), str(stat_rect), str(stats_column_rect)])
 			return
-		if stat_rect.position.y < prev_stat_bottom - 1.0:
+		if viewport_size.y >= 800 and stat_rect.position.y < prev_stat_bottom - 1.0:
 			_fail("Expected stat rows stacked vertically (one column) at %s, %s overlaps previous row." % [str(viewport_size), stat_id])
 			return
 		prev_stat_bottom = stat_rect.end.y
+		if viewport_size.y < 800:
+			continue
 		if stat_column_left == INF:
 			stat_column_left = stat_rect.position.x
 		elif absf(stat_rect.position.x - stat_column_left) > 2.0:
 			_fail("Expected stat rows aligned in one vertical column at %s, %s misaligned." % [str(viewport_size), stat_id])
 			return
+	if viewport_size.y < 800:
+		var compact_x := {}
+		var compact_y := {}
+		for stat_rect in stat_rects:
+			compact_x[int(roundf(stat_rect.position.x))] = true
+			compact_y[int(roundf(stat_rect.position.y))] = true
+		if compact_x.size() != 2 or compact_y.size() != 4:
+			_fail("Expected SCRUM-951 compact stats to use 2 columns x 4 rows at %s, got %d x-values and %d y-values." % [str(viewport_size), compact_x.size(), compact_y.size()])
+			return
+		for i in range(stat_rects.size()):
+			for j in range(i + 1, stat_rects.size()):
+				if stat_rects[i].grow(-0.5).intersects(stat_rects[j].grow(-0.5)):
+					_fail("Expected compact stat cells not to overlap at %s: %s vs %s." % [str(viewport_size), stat_rects[i], stat_rects[j]])
+					return
 	# SCRUM-887: строка «Основные атрибуты: <A>, <B>» из данных — после слабых сторон.
 	var main_attrs := main.find_child("HS4MainAttributes", true, false) as Label
 	if main_attrs == null or not main_attrs.text.begins_with("Основные атрибуты:"):

@@ -30,6 +30,26 @@ Acceptance: `tests/scrum926_priest_prayer_choice_test.gd`,
 `tests/priest_kit_test.gd`, the content-compositor fit report and real runtime
 captures under `docs/design/previews/scrum926_priest_prayer/runtime/`.
 
+## SCRUM-951 Hero Select Stat Identity Palette
+
+The eight `HS4Stat_*` rows now use one shared semantic map in
+`scripts/ui/hero_select_constants.gd`, independent of the selected class:
+Strength `#D84A3A`, Agility `#4CC66A`, Intelligence `#4C8DFF`, Perception
+`#F4C542`, Energy `#38D6E8`, Knowledge `#A675FF`, Endurance `#D98236`, and
+Leadership `#D8B24A`. Bars keep the canonical accents. Name/value text uses the
+same color except Strength, whose accessible text companion is `#E05B4C`
+(4.97:1 on the reference `#171613` row; canonical red remains on the bar).
+
+Color is redundant information: localized name, numeric value, bar length and
+the existing concise tooltip remain. At 1280×720 the stat zone reflows to 2×4
+cells so all semantics stay visible; 1920×1080 and 2560×1440 keep the vertical
+1×8 column. Both layouts remain inside `HS4DossierFrame` and the hollow global
+frame rails. PixelLab styling references/spec:
+`docs/design/mockups/scrum951_hero_stat_colors/`; Metal captures:
+`docs/design/previews/scrum951_hero_stat_colors/runtime/`. Acceptance:
+`tests/scrum951_hero_stat_colors_test.gd`,
+`tests/hero_select_pixellab_layout_test.gd` and the general UI gates.
+
 ## SCRUM-981 Unified Gold Menu Shell
 
 SCRUM-981 promotes `assets/sprites/ui/meta40/frame_border.png` to the shared

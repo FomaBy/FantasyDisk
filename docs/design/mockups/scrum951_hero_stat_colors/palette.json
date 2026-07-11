@@ -1,0 +1,30 @@
+{
+  "jira": "SCRUM-951",
+  "screen": "HeroSelectScreen",
+  "source_palette": {
+    "strength": "#D84A3A",
+    "agility": "#4CC66A",
+    "intelligence": "#4C8DFF",
+    "perception": "#F4C542",
+    "energy": "#38D6E8",
+    "knowledge": "#A675FF",
+    "endurance": "#D98236",
+    "leadership": "#D8B24A"
+  },
+  "text_palette": {
+    "strength": "#E05B4C",
+    "agility": "#4CC66A",
+    "intelligence": "#4C8DFF",
+    "perception": "#F4C542",
+    "energy": "#38D6E8",
+    "knowledge": "#A675FF",
+    "endurance": "#D98236",
+    "leadership": "#D8B24A"
+  },
+  "reference_background": "#171613",
+  "minimum_text_contrast": 4.5,
+  "notes": {
+    "strength": "The canonical #D84A3A remains the bar accent. Text uses the documented accessible adjustment #E05B4C because canonical red measures 4.27:1 on the darkest live row surface; the adjusted red measures 4.97:1.",
+    "all_others": "Canonical colors measure at least 5.65:1 on the reference row surface and are used unchanged for accent and text."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "jira": "SCRUM-951",
+  "pipeline": "PixelLab MCP create_ui_asset via config-based JSON-RPC bridge",
+  "source_id": "395cbafb-358b-4f46-9b95-019b67bf5c48",
+  "name": "SCRUM-951 Hero Select stat color mockup",
+  "seed": 951,
+  "size": [448, 600],
+  "alpha": "opaque mockup art layer",
+  "status": "completed_and_inspected",
+  "source_file": "pixellab_stat_color_art_layer_448x600.png",
+  "sha256": "cece86b399e0b2026f988ed3d8d8e122c1c069878398f9484670851da176af02",
+  "runtime_promotion": "none; styling reference only",
+  "prompt_contract": [
+    "textless Hero Select attribute-column art layer",
+    "eight stacked rows in canonical palette order",
+    "calm charcoal interiors and restrained high contrast",
+    "outer ornament only; row content zones remain empty",
+    "no words, letters, numbers, icons, portraits, or baked labels"
+  ],
+  "safe_content_contract": {
+    "outer_art_layer": [0, 0, 448, 600],
+    "row_template_virtual_canvas": [26, 58, 329, 42],
+    "row_count": 8,
+    "row_stride_virtual": 54,
+    "forbidden": "outer metal/dragon ornament and row rails"
+  },
+  "visual_qa": {
+    "result": "accepted_as_textless_styling_reference",
+    "checks": [
+      "eight distinct rows in requested canonical order",
+      "empty label, bar, and value content zones",
+      "ornament remains on row perimeter",
+      "no baked text, numbers, icons, or portraits",
+      "runtime promotion intentionally not required"
+    ]
+  }
+}

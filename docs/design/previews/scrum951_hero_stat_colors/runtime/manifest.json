@@ -1,0 +1,23 @@
+{
+  "jira": "SCRUM-951",
+  "renderer": "Godot 4.7 Compatibility / Metal / Apple M4 Pro",
+  "hero": "berserk",
+  "captures": {
+    "1280x720": {
+      "file": "hero_select_stat_colors_1280x720.png",
+      "sha256": "fb2be62bc739d126b844b6c0f5ab6d990054f392de7864965f539e5efd1dd673",
+      "layout": "2 columns x 4 rows"
+    },
+    "1920x1080": {
+      "file": "hero_select_stat_colors_1920x1080.png",
+      "sha256": "c39756ea9c17a11710235cba6866b0dc05e69b3b9304c07f7705cf0c33ff6e09",
+      "layout": "1 column x 8 rows"
+    },
+    "2560x1440": {
+      "file": "hero_select_stat_colors_2560x1440.png",
+      "sha256": "fd2c7d9c265d434b8950e90327efb2fb16a868cf10791ef30e72d71e28f5b7dd",
+      "layout": "1 column x 8 rows"
+    }
+  },
+  "visual_qa": "passed: all localized names and values visible, bars distinct, content inside dossier/global-frame safe zones, no ornament overlap"
+}

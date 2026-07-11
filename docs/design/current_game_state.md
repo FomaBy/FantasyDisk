@@ -285,6 +285,15 @@ SCRUM-356 подключил unified Hero Select frame в runtime: `assets/sprit
 
 SCRUM-798 (2026-07-01) supersedes the first black-minimal Hero Select sizing while keeping the same no-frame/no-radar direction. The current `HeroSelectScreen` is built by `_build_character_select_v4()` over `HS4BlackBackground`: a large selected `HS4Portrait` dominates the left column (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `620x620` on tall screens), `HS4AscensionFrame` sits directly below the preview with `-`/`+`, modifier text/tooltip and `HS4ChooseButton`, and the right `HS4DossierFrame` is a scroll-safe class dossier. The dossier now shows description, strengths/weaknesses, weapons, class identity, eight base characteristics as hoverable Line Bars (`HS4Stat_*` with `HS4StatBarFill_*`) and data-driven build guidance sections for `primary`/`secondary`/`optional` attribute relevance from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive slots (`~187px` at 720p, `~281px` at 1080p, capped near `304px`) with larger arrows and selected/hover/focus states. The old Hero Select frame assets remain historical/reference assets only for this screen. QA evidence: `build/qa/scrum-798/`.
 
+SCRUM-951 gives those eight Hero Select characteristics stable, shared stat-ID
+colors from `HeroSelectConstants.HERO_STAT_COLORS`; class changes update values
+and fill lengths without tinting semantic identity. Name/value text, bar length
+and concise tooltip remain alongside color. The 720p stats zone is 2×4 so all
+localized names and numbers remain visible; 1080p/2K stay 1×8. Strength text
+uses accessible `#E05B4C` while its bar retains canonical `#D84A3A`; other
+labels use their canonical accent directly. PixelLab-first mockup/spec and
+Metal evidence live under `docs/design/{mockups,previews}/scrum951_hero_stat_colors/`.
+
 SCRUM-980 supersedes only that paragraph's ascension placement. The live
 `HS4AscensionFrame` is now a wide right-hand band between dossier and carousel:
 the `-`/value/`+` stepper occupies its left content segment, while the exact

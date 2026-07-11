@@ -1236,28 +1236,11 @@ func _hs4_join_guidance_names(names: Array, max_items := 8) -> String:
 
 
 func _hs4_stat_fill_color(stat_id: String) -> Color:
-	var base := Color(0.92, 0.70, 0.28, 0.95)
-	if HERO_CLASS_COLORS.has(game.selected_character_id):
-		base = HERO_CLASS_COLORS[game.selected_character_id]
-	match stat_id:
-		"strength":
-			return Color(1.0, 0.34, 0.22, 0.95).lerp(base, 0.25)
-		"agility":
-			return Color(0.96, 0.76, 0.28, 0.95).lerp(base, 0.25)
-		"intelligence":
-			return Color(0.62, 0.42, 1.0, 0.95).lerp(base, 0.25)
-		"perception":
-			return Color(0.44, 0.72, 1.0, 0.95).lerp(base, 0.25)
-		"energy":
-			return Color(0.24, 0.88, 1.0, 0.95).lerp(base, 0.25)
-		"knowledge":
-			return Color(0.52, 0.92, 0.54, 0.95).lerp(base, 0.25)
-		"endurance":
-			return Color(0.92, 0.52, 0.32, 0.95).lerp(base, 0.25)
-		"leadership":
-			return Color(1.0, 0.86, 0.42, 0.95).lerp(base, 0.25)
-		_:
-			return base
+	return HeroSelectConstants.stat_accent_color(stat_id)
+
+
+func _hs4_stat_text_color(stat_id: String) -> Color:
+	return HeroSelectConstants.stat_text_color(stat_id)
 
 
 func _build_character_select_v4() -> void:
@@ -1608,10 +1591,14 @@ func _build_character_select_v4() -> void:
 	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(identity_label)
 
-	# SCRUM-887: правая фикс-колонна характеристик — 8 полос ВЕРТИКАЛЬНО, без
-	# скролла. Высоты решает арифметика (не min-size детей): хост — обычный
-	# Control, PanelContainer не распирается (грабли SCRUM-876, см. memory).
-	var stats_col_w := clampf(300.0 * layout_scale, 220.0, 320.0)
+	# SCRUM-887/951: характеристики не скроллятся. Full-size остаётся одной
+	# вертикальной колонной; 720p использует PixelLab-specified 2x4 reflow, чтобы
+	# имя и число не исчезали и цвет не становился единственным носителем смысла.
+	# Высоты решает арифметика (не min-size детей): хост — обычный Control.
+	var compact_stat_grid := vp.y < 800.0
+	var stat_grid_columns := 2 if compact_stat_grid else 1
+	var stat_grid_rows := 4 if compact_stat_grid else 8
+	var stats_col_w := 320.0 if compact_stat_grid else clampf(300.0 * layout_scale, 220.0, 320.0)
 	var stats_inner_h := dossier_h - 2.0 * dossier_chip_pad - 2.0 * float(dossier_margin_v)
 	var stats_column := Control.new()
 	stats_column.name = "HS4StatsColumn"
@@ -1621,20 +1608,21 @@ func _build_character_select_v4() -> void:
 
 	var stats_title_font := _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22)
 	var stats_title_band := roundf(float(stats_title_font) * 1.5) + 6.0
-	# Норма: ряд 34–52px; не влезает (720p) — компакт-паддинги; совсем мало
-	# (648p) — ультра-компакт: только бары, имена/значения уходят в тултип.
+	# Норма: ряд 34–52px; тесный бюджет использует compact paddings. 720p уже
+	# reflowed в четыре ряда, поэтому сохраняет текст вместо bar-only fallback.
 	var stat_row_sep := clampf(roundf(4.0 * layout_scale), 3.0, 6.0)
-	var stat_row_h := clampf(floorf((stats_inner_h - stats_title_band - 7.0 * stat_row_sep) / 8.0), 34.0, 52.0)
+	var stat_separator_count := stat_grid_rows - 1
+	var stat_row_h := clampf(floorf((stats_inner_h - stats_title_band - float(stat_separator_count) * stat_row_sep) / float(stat_grid_rows)), 34.0, 52.0)
 	var stat_row_style_pad := 8.0
 	var stat_row_pad_v := 5.0
 	var stat_row_pad_h := 8.0
-	if stats_title_band + 8.0 * stat_row_h + 7.0 * stat_row_sep > stats_inner_h + 0.5:
-		stat_row_sep = 2.0
+	if stats_title_band + float(stat_grid_rows) * stat_row_h + float(stat_separator_count) * stat_row_sep > stats_inner_h + 0.5:
+		stat_row_sep = 3.0 if compact_stat_grid else 2.0
 		stat_row_style_pad = 4.0
 		stat_row_pad_v = 1.0
 		stat_row_pad_h = 6.0
-		stat_row_h = floorf((stats_inner_h - stats_title_band - 7.0 * stat_row_sep) / 8.0)
-	var stat_rows_show_text := stat_row_h >= 14.0
+		stat_row_h = floorf((stats_inner_h - stats_title_band - float(stat_separator_count) * stat_row_sep) / float(stat_grid_rows))
+	var stat_rows_show_text := compact_stat_grid or stat_row_h >= 14.0
 	if not stat_rows_show_text:
 		stat_row_style_pad = 2.0
 		stat_row_h = maxf(10.0, stat_row_h)
@@ -1652,18 +1640,25 @@ func _build_character_select_v4() -> void:
 
 	var stats_grid := GridContainer.new()
 	stats_grid.name = "HS4StatsGrid"
-	stats_grid.columns = 1
+	stats_grid.columns = stat_grid_columns
 	stats_grid.position = Vector2(0.0, stats_title_band)
 	stats_grid.size = Vector2(stats_col_w, maxf(0.0, stats_inner_h - stats_title_band))
 	stats_grid.add_theme_constant_override("v_separation", int(stat_row_sep))
+	var stat_column_sep := 6.0 if compact_stat_grid else 0.0
+	stats_grid.add_theme_constant_override("h_separation", int(stat_column_sep))
 	stats_column.add_child(stats_grid)
 	var stat_buttons := {}
 	var stat_fill_nodes := {}
 	var stat_value_labels := {}
+	# SCRUM-951: the former 12px base produced a 26px Label line box inside
+	# 21px rows at 1080p. Use a stat-only compact step so visible text/bar tracks
+	# stay within the accepted dossier geometry; 2K still scales upward.
+	var stat_text_font_size := _readable_font_size(maxi(8, int(round(10.0 * layout_scale))), 0, 18)
+	var stat_cell_w := floorf((stats_col_w - stat_column_sep * float(stat_grid_columns - 1)) / float(stat_grid_columns))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
 		stat_button.name = "HS4Stat_%s" % sid
-		stat_button.custom_minimum_size = Vector2(stats_col_w, stat_row_h)
+		stat_button.custom_minimum_size = Vector2(stat_cell_w, stat_row_h)
 		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
 		stat_button.focus_mode = Control.FOCUS_ALL
 		stat_button.text = ""
@@ -1676,23 +1671,24 @@ func _build_character_select_v4() -> void:
 		stat_row.offset_right = -stat_row_pad_h
 		stat_row.offset_top = stat_row_pad_v
 		stat_row.offset_bottom = -stat_row_pad_v
-		stat_row.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+		stat_row.add_theme_constant_override("separation", 3 if compact_stat_grid else maxi(5, int(round(7.0 * layout_scale))))
 		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stat_button.add_child(stat_row)
 		var stat_name := Label.new()
 		stat_name.name = "HS4StatName_%s" % sid
-		stat_name.custom_minimum_size = Vector2(maxf(72.0, 92.0 * layout_scale), 0.0)
+		stat_name.custom_minimum_size = Vector2(90.0 if compact_stat_grid else 126.0, 0.0)
 		stat_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		stat_name.visible = stat_rows_show_text
-		stat_name.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
-		stat_name.add_theme_color_override("font_color", Color(0.88, 0.84, 0.74, 1.0))
+		stat_name.add_theme_font_size_override("font_size", stat_text_font_size)
+		stat_name.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_name)
 		var bar_bg := ColorRect.new()
 		bar_bg.name = "HS4StatBar_%s" % sid
-		bar_bg.custom_minimum_size = Vector2(maxf(64.0, 96.0 * layout_scale), maxf(8.0, minf(12.0 * layout_scale, stat_row_h - 2.0 * stat_row_pad_v)))
+		bar_bg.custom_minimum_size = Vector2(28.0 if compact_stat_grid else maxf(64.0, 96.0 * layout_scale), maxf(8.0, minf(12.0 * layout_scale, stat_row_h - 2.0 * stat_row_pad_v)))
 		bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar_bg.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		bar_bg.color = Color(0.09, 0.085, 0.075, 0.92)
 		bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stat_row.add_child(bar_bg)
@@ -1705,12 +1701,12 @@ func _build_character_select_v4() -> void:
 		bar_bg.add_child(bar_fill)
 		var stat_value := Label.new()
 		stat_value.name = "HS4StatValue_%s" % sid
-		stat_value.custom_minimum_size = Vector2(maxf(22.0, 28.0 * layout_scale), 0.0)
+		stat_value.custom_minimum_size = Vector2(18.0 if compact_stat_grid else maxf(22.0, 28.0 * layout_scale), 0.0)
 		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stat_value.visible = stat_rows_show_text
-		stat_value.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
-		stat_value.add_theme_color_override("font_color", Color(0.96, 0.90, 0.70, 1.0))
+		stat_value.add_theme_font_size_override("font_size", stat_text_font_size)
+		stat_value.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_value)
 		stats_grid.add_child(stat_button)
 		stat_buttons[sid] = stat_button
