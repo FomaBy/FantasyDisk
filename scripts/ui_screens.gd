@@ -34,6 +34,18 @@ const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.g
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
 const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
+const BATTLE_PRAYER_FRAME_PATH := "res://assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png"
+const BATTLE_PRAYER_FRAME_SIZE := Vector2(688.0, 384.0)
+const BATTLE_PRAYER_CARD_RECTS := [
+	Rect2(65.0, 154.0, 160.0, 172.0),
+	Rect2(265.0, 154.0, 160.0, 172.0),
+	Rect2(465.0, 154.0, 160.0, 172.0),
+]
+const BATTLE_PRAYER_ICON_IDS := {
+	"prayer_wrath": "damage",
+	"prayer_mending": "regeneration",
+	"prayer_aegis": "defense",
+}
 
 # SCRUM-816: человекочитаемые подписи кнопок геймпада для вкладки «Управление».
 # Локальная копия имён (не зависим от автолоада InputDeviceManager в тестах).
@@ -14419,6 +14431,189 @@ func _style_checkbox(toggle: CheckBox) -> void:
 	toggle.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	toggle.add_theme_color_override("font_hover_color", Color(1.0, 0.94, 0.54, 1.0))
 	toggle.add_theme_color_override("font_pressed_color", Color(0.70, 1.0, 0.92, 1.0))
+
+
+# SCRUM-926: mandatory Priest battle-start choice. The PixelLab art is one
+# unchanged visual layer; every interactive/content node stays inside the real
+# empty interiors recorded in layout_688x384.json. The HUD remains on its own
+# CanvasLayer below this modal.
+func show_battle_prayer_choice(player: Node, on_selected: Callable) -> bool:
+	if player == null or not is_instance_valid(player) or not player.has_method("battle_prayer_choices"):
+		return false
+	var choices: Array = player.call("battle_prayer_choices")
+	if choices.is_empty() or str(player.call("active_battle_prayer_id")) != "":
+		return false
+	if game.ui_layer != null and is_instance_valid(game.ui_layer):
+		var existing: Node = game.ui_layer.find_child("BattlePrayerChoiceScreen", true, false)
+		if existing != null:
+			return true
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.name = "BattlePrayerChoiceLayer"
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "BattlePrayerChoiceScreen"
+	root.process_mode = Node.PROCESS_MODE_ALWAYS
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.set_meta("selection_locked", false)
+	root.set_meta("source_content_layout", "res://docs/design/mockups/scrum926_priest_prayer/layout_688x384.json")
+	game.ui_layer.add_child(root)
+
+	var dim := ColorRect.new()
+	dim.name = "BattlePrayerDim"
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.color = Color(0.015, 0.012, 0.025, 0.78)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(dim)
+
+	var modal := Control.new()
+	modal.name = "BattlePrayerModal"
+	modal.custom_minimum_size = BATTLE_PRAYER_FRAME_SIZE
+	modal.size = BATTLE_PRAYER_FRAME_SIZE
+	modal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(modal)
+
+	var art := TextureRect.new()
+	art.name = "BattlePrayerFrameArt"
+	art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_SCALE
+	art.texture = game._cached_texture(BATTLE_PRAYER_FRAME_PATH)
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	modal.add_child(art)
+
+	_battle_prayer_label(modal, "BattlePrayerTitle", "МОЛИТВА ПЕРЕД БОЕМ", Rect2(103, 45, 482, 34), 24, Color(0.96, 0.90, 0.77))
+	_battle_prayer_label(modal, "BattlePrayerSubtitle", "Выбери одно благословение до конца этого боя", Rect2(124, 101, 440, 25), 15, Color(0.92, 0.86, 0.72))
+
+	var buttons: Array[Button] = []
+	for index in range(mini(choices.size(), BATTLE_PRAYER_CARD_RECTS.size())):
+		var choice: Dictionary = choices[index]
+		var button := _make_battle_prayer_card(modal, choice, index)
+		button.pressed.connect(Callable(self, "_select_battle_prayer").bind(root, player, str(choice.get("id", "")), on_selected))
+		buttons.append(button)
+	for index in range(buttons.size()):
+		var current := buttons[index]
+		current.focus_neighbor_left = buttons[(index - 1 + buttons.size()) % buttons.size()].get_path()
+		current.focus_neighbor_right = buttons[(index + 1) % buttons.size()].get_path()
+		current.focus_neighbor_top = current.get_path()
+		current.focus_neighbor_bottom = current.get_path()
+
+	root.resized.connect(Callable(self, "_layout_battle_prayer_modal").bind(root, modal))
+	_layout_battle_prayer_modal(root, modal)
+	game.ui_escape_action = Callable(self, "_consume_battle_prayer_cancel")
+	game.push_pause("battle_prayer")
+	if not buttons.is_empty():
+		buttons[0].call_deferred("grab_focus")
+	return true
+
+
+func _layout_battle_prayer_modal(root: Control, modal: Control) -> void:
+	if root == null or modal == null or not is_instance_valid(root) or not is_instance_valid(modal):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var scale_factor := minf(viewport_size.x * 0.82 / BATTLE_PRAYER_FRAME_SIZE.x, viewport_size.y * 0.80 / BATTLE_PRAYER_FRAME_SIZE.y)
+	scale_factor = clampf(scale_factor, 0.82, 3.0)
+	modal.scale = Vector2.ONE * scale_factor
+	modal.position = (viewport_size - BATTLE_PRAYER_FRAME_SIZE * scale_factor) * 0.5
+	modal.set_meta("layout_scale", scale_factor)
+	modal.set_meta("visual_rect", Rect2(modal.position, BATTLE_PRAYER_FRAME_SIZE * scale_factor))
+
+
+func _battle_prayer_label(parent: Control, node_name: String, text: String, rect: Rect2, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.name = node_name
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.clip_text = true
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_shadow_color", Color(0.04, 0.02, 0.025, 0.95))
+	label.add_theme_constant_override("shadow_offset_x", 1)
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.set_meta("content_zone_rect", rect)
+	parent.add_child(label)
+	_apply_control_rect(label, rect)
+	return label
+
+
+func _make_battle_prayer_card(modal: Control, choice: Dictionary, index: int) -> Button:
+	var prayer_id := str(choice.get("id", ""))
+	var card_rect: Rect2 = BATTLE_PRAYER_CARD_RECTS[index]
+	var button := Button.new()
+	button.name = "BattlePrayerCard_%s" % prayer_id
+	button.text = ""
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.tooltip_text = "%s\n%s" % [str(choice.get("title", "")), str(choice.get("description", ""))]
+	button.set_meta("prayer_id", prayer_id)
+	button.set_meta("content_zone_rect", card_rect)
+	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("hover", _battle_prayer_focus_style(Color(0.95, 0.79, 0.38, 0.86), 0.055, 1))
+	button.add_theme_stylebox_override("focus", _battle_prayer_focus_style(Color(1.0, 0.86, 0.46, 1.0), 0.075, 2))
+	button.add_theme_stylebox_override("pressed", _battle_prayer_focus_style(Color(1.0, 0.91, 0.60, 1.0), 0.14, 2))
+	modal.add_child(button)
+	_apply_control_rect(button, card_rect)
+
+	var icon := game.UIIconRegistry.make_icon(str(BATTLE_PRAYER_ICON_IDS.get(prayer_id, "damage")), Vector2(40, 40), false) as Control
+	if icon != null:
+		icon.name = "%sIcon" % button.name
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		icon.set_meta("content_zone_rect", Rect2(60, 5, 40, 40))
+		button.add_child(icon)
+		_apply_control_rect(icon, Rect2(60, 5, 40, 40))
+
+	var title := str(choice.get("title", "")).to_upper()
+	_battle_prayer_label(button, "%sTitle" % button.name, title, Rect2(4, 48, 152, 25), 14 if prayer_id != "prayer_mending" else 12, Color(0.96, 0.90, 0.77))
+	_battle_prayer_label(button, "%sDescription" % button.name, str(choice.get("description", "")), Rect2(6, 75, 148, 58), 12, Color(0.92, 0.91, 0.88))
+	_battle_prayer_label(button, "%sAction" % button.name, "ВОЗНЕСТИ", Rect2(10, 143, 140, 21), 11, Color(0.95, 0.82, 0.48))
+	return button
+
+
+func _battle_prayer_focus_style(border_color: Color, fill_alpha: float, border_width: int) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(border_color.r, border_color.g, border_color.b, fill_alpha)
+	style.border_color = border_color
+	style.set_border_width_all(border_width)
+	style.set_corner_radius_all(9)
+	style.set_content_margin_all(0.0)
+	return style
+
+
+func _select_battle_prayer(root: Control, player: Node, prayer_id: String, on_selected: Callable) -> void:
+	if root == null or not is_instance_valid(root) or bool(root.get_meta("selection_locked", false)):
+		return
+	if player == null or not is_instance_valid(player) or not player.has_method("select_battle_prayer"):
+		return
+	if not bool(player.call("select_battle_prayer", prayer_id)):
+		return
+	root.set_meta("selection_locked", true)
+	_close_battle_prayer_choice()
+	if on_selected.is_valid():
+		on_selected.call()
+
+
+func _close_battle_prayer_choice() -> void:
+	game.ui_escape_action = Callable()
+	if game.ui_layer != null and is_instance_valid(game.ui_layer):
+		game.ui_layer.queue_free()
+	game.ui_layer = null
+	game.pop_pause("battle_prayer")
+
+
+func _consume_battle_prayer_cancel() -> void:
+	# The choice is mandatory: Escape/B intentionally has no closing action.
+	pass
+
+
+func _is_battle_prayer_choice_open() -> bool:
+	return game.ui_layer != null and is_instance_valid(game.ui_layer) and game.ui_layer.find_child("BattlePrayerChoiceScreen", true, false) != null
 
 
 func _create_hud() -> void:

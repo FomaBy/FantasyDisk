@@ -1,0 +1,20 @@
+{
+  "tool": "create_ui_asset",
+  "arguments": {
+    "name": "SCRUM-926 Priest Battle Prayer Choice",
+    "width": 688,
+    "height": 384,
+    "seed": 926,
+    "no_background": true,
+    "color_palette": "blackened iron, worn gold, aged ivory, restrained amber, moon-blue and crimson accents",
+    "description": "Create one compact premium D&D dark-fantasy priest prayer-choice modal frame. No text, no letters, no numbers, no runes, no logo, no watermark, no characters. Exactly one outer worn-gold and blackened-iron frame with restrained dragon-and-cathedral ornament. Inside it keep one empty calm title well, one empty subtitle well, and exactly three equal empty dark card wells in a single horizontal row. The left card may have subtle amber judgement accents outside its empty interior, the middle subtle moon-blue healing accents, the right subtle ivory shield accents. Keep every well interior flat, dark, calm and fully empty for runtime icons and Russian labels. Put decoration around the wells only; never cross any empty interior. No extra panels, buttons, tabs, portraits or pseudo-text. Transparent outside the single outer frame.",
+    "pieces": [
+      {"id": "outer_frame", "kind": "rounded_rect", "label": "single outer modal frame", "x": 16, "y": 10, "w": 480, "h": 266, "radius": 18},
+      {"id": "title_well", "kind": "rounded_rect", "label": "empty title well", "x": 70, "y": 28, "w": 372, "h": 38, "radius": 7},
+      {"id": "subtitle_well", "kind": "rounded_rect", "label": "empty subtitle well", "x": 88, "y": 72, "w": 336, "h": 24, "radius": 6},
+      {"id": "wrath_card_well", "kind": "rounded_rect", "label": "empty prayer card well", "x": 40, "y": 108, "w": 132, "h": 134, "radius": 12},
+      {"id": "mending_card_well", "kind": "rounded_rect", "label": "empty prayer card well", "x": 190, "y": 108, "w": 132, "h": 134, "radius": 12},
+      {"id": "aegis_card_well", "kind": "rounded_rect", "label": "empty prayer card well", "x": 340, "y": 108, "w": 132, "h": 134, "radius": 12}
+    ]
+  }
+}

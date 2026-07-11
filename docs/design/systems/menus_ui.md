@@ -4,6 +4,30 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## SCRUM-926 Priest Battle Prayer Choice
+
+Every Priest combat now begins behind a mandatory, non-cancellable three-card
+prayer choice. `CombatDirector` creates/configures the player and HUD first, but
+does not call `Player.on_battle_start()` or spawn an elite/boss until a valid
+`Player.select_battle_prayer()` succeeds. The modal owns pause reason
+`battle_prayer`; Escape/B is consumed, the first card receives initial focus,
+left/right navigation is circular and up/down stays on the same card. Other
+classes retain the synchronous, screen-free combat-start path.
+
+The runtime uses the unchanged PixelLab source
+`assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png` as one scaled
+688×384 art layer. Title, subtitle, icon, labels and hitboxes occupy only the
+empty interiors recorded in
+`docs/design/mockups/scrum926_priest_prayer/layout_688x384.json`; hover/focus
+draws a geometry-stable inner glow without covering the ornament. Responsive
+layout preserves the source aspect and centers it within 82% viewport width /
+80% height at 1280×720, 1920×1080 and 2560×1440, including live resize. The
+HUD stays visible on its separate layer beneath the dimmed modal.
+
+Acceptance: `tests/scrum926_priest_prayer_choice_test.gd`,
+`tests/priest_kit_test.gd`, the content-compositor fit report and real runtime
+captures under `docs/design/previews/scrum926_priest_prayer/runtime/`.
+
 ## SCRUM-981 Unified Gold Menu Shell
 
 SCRUM-981 promotes `assets/sprites/ui/meta40/frame_border.png` to the shared

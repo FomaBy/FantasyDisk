@@ -1,0 +1,235 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "modal_frame",
+      "kind": "panel",
+      "rect": [
+        140,
+        110,
+        1000,
+        500
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "rect": [
+        250,
+        154,
+        780,
+        44
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 36
+    },
+    {
+      "id": "subtitle_zone",
+      "kind": "text",
+      "rect": [
+        260,
+        202,
+        760,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "wrath_card",
+      "kind": "panel",
+      "rect": [
+        190,
+        258,
+        280,
+        300
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "wrath_icon",
+      "kind": "icon",
+      "rect": [
+        304,
+        278,
+        52,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "wrath_title_zone",
+      "kind": "text",
+      "rect": [
+        212,
+        334,
+        236,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "wrath_desc_zone",
+      "kind": "text",
+      "rect": [
+        212,
+        380,
+        236,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "wrath_action",
+      "kind": "button",
+      "rect": [
+        250,
+        494,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "mending_card",
+      "kind": "panel",
+      "rect": [
+        500,
+        258,
+        280,
+        300
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "mending_icon",
+      "kind": "icon",
+      "rect": [
+        614,
+        278,
+        52,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "mending_title_zone",
+      "kind": "text",
+      "rect": [
+        522,
+        334,
+        236,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "mending_desc_zone",
+      "kind": "text",
+      "rect": [
+        522,
+        380,
+        236,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "mending_action",
+      "kind": "button",
+      "rect": [
+        560,
+        494,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "aegis_card",
+      "kind": "panel",
+      "rect": [
+        810,
+        258,
+        280,
+        300
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "aegis_icon",
+      "kind": "icon",
+      "rect": [
+        924,
+        278,
+        52,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "aegis_title_zone",
+      "kind": "text",
+      "rect": [
+        832,
+        334,
+        236,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "aegis_desc_zone",
+      "kind": "text",
+      "rect": [
+        832,
+        380,
+        236,
+        92
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "aegis_action",
+      "kind": "button",
+      "rect": [
+        870,
+        494,
+        160,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    }
+  ]
+}

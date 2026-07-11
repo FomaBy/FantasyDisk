@@ -321,20 +321,6 @@ func select_battle_prayer(prayer_id: String) -> bool:
 	return true
 
 
-# SCRUM-925 — ВРЕМЕННЫЙ автовыбор (до SCRUM-926): пока экрана выбора молитвы
-# нет, на старте боя автоматически применяется ПЕРВАЯ молитва пула («Молитва
-# кары»). SCRUM-926 должен ЗАМЕНИТЬ этот вызов в on_battle_start открытием UI
-# выбора, который сам зовёт select_battle_prayer(id); автовыбор при этом
-# удаляется. Контракт «один выбор за бой» сохраняется в обоих режимах.
-func _auto_select_battle_prayer() -> void:
-	if _battle_prayer_id != "":
-		return
-	var choices := battle_prayer_choices()
-	if choices.is_empty():
-		return
-	select_battle_prayer(str((choices[0] as Dictionary).get("id", "")))
-
-
 # SCRUM-1006 «Разогрев»: аккумулятор no-hit времени. Детерминирован: бонус
 # растёт линейно ramp за секунду и капится cap (0→кап ровно за cap/ramp секунд).
 # У классов без trait-ключей ramp = 0 → счётчик обнулён, утечки другим классам
@@ -2843,8 +2829,8 @@ func _charge_repair_subroutine(absorbed: float) -> void:
 # Триггеры старта боя. Диспетчеризуется combat_director._start_combat по
 # образцу on_room_clear/on_kill; каждый под-хук сам проверяет свои ключи.
 func on_battle_start() -> void:
-	# SCRUM-925 «Молитва боя»: временный автовыбор молитвы (до UI SCRUM-926).
-	_auto_select_battle_prayer()
+	# SCRUM-926: prayer selection is completed by the mandatory UI before this
+	# hook runs. Keeping this hook selection-free prevents hidden default picks.
 	_apply_prayer_beads_opening()
 
 

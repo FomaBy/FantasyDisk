@@ -63,6 +63,7 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `priest` | `priest_reliquary` | Светлый Реликварий | `PriestReliquary.tscn` | `priest_sanctify` | Отмечает ближайшую цель и взрывает священную область с sustain-heal от урона |
 | `priest` | `priest_censer` | Кадило Обета | `PriestCenser.tscn` | `priest_ward` | Несколько защитных волн вокруг героя, ближний контроль и малое лечение |
 | `priest` | `priest_chime` | Колокол Молитвы | `PriestChime.tscn` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal |
+
 | `biologist` | `biologist_spore_lens` | Споровая Линза | `BiologistSporeLens.tscn` | `bio_spore_bloom` | ЛОКАЛЬНЫЙ AoE у персонажа (range 235): три расширяющихся кольца с falloff; задетые замедлены 5→20% по прогрессии и заражены bio_infection (SCRUM-896) |
 | `biologist` | `biologist_sample_injector` | Инъектор Образцов | `BiologistSampleInjector.tscn` | `bio_sample_dart` | Длинный пирсинг-луч (640): полный маг.ролл + физ.доля всем на линии, малый бурст анализа на конце (96); ближайший получает пробу-инфекцию (SCRUM-896) |
 | `biologist` | `biologist_symbiote_seed` | Семя Симбионта | `BiologistSymbioteSeed.tscn` | `bio_symbiote_web` | Дальнее темпоральное семя (700): прорастание 0.55с, стартовый маг.хит 0.85 с falloff (зона 150), главный пейофф — биоинфекция 6×1.6 тиков (SCRUM-896) |
@@ -72,6 +73,14 @@ delayed-AoE family: grenade не наносит урон до окончания
 | `engineer` | `engineer_sentry_wrench` | Часовая турель | `EngineerSentryWrench.tscn` | `engineer_sentry_link` | `turret_dps` (SCRUM-905): турели с боезапасом 15 выстрелов — расстреляла магазин → свернулась; таймера жизни/замены старейшей нет; предел парка 2+floor(sa/4), рельс 6; залп по разным ближайшим целям + capped splash |
 | `engineer` | `engineer_repair_drone` | Орбитальный Дрон | `EngineerRepairDrone.tscn` | `engineer_orbit_drone` | SCRUM-906: боевые дроны кружат вокруг инженера по спирали (радиус слота +14%), физический контактный урон с per-enemy CD 0.85с; число дронов 1+floor(max(sa−12,0)/4), рельс 6; attack_speed крутит RPM; ремонт удалён |
 | `engineer` | `engineer_pressure_mines` | Минная Сетка | `EngineerPressureMines.tscn` | `engineer_pressure_mines` | SCRUM-907: 2 персистентные мины за деплой в случайном кольце 110..260; таймера жизни нет; враг подрывает сразу, свой игрок — после 3с; кап живых 6 (skip, не retire) |
+
+SCRUM-925/926 gives Priest one mandatory per-combat prayer before any battle
+start hook or objective spawn: `prayer_wrath` (+20% all Priest damage),
+`prayer_mending` (+2 HP/s) or `prayer_aegis` (−20% incoming damage). The pool
+is data-driven by `ProgressionData.class_battle_prayers("priest")`, and
+`Player.select_battle_prayer()` enforces exactly one immutable selection for
+the current player instance. `Player.on_battle_start()` never makes a hidden
+default selection; non-Priest pools remain empty.
 | `dark_mage` | `dark_book` | Книга тьмы | `DarkBook.tscn` | `dark_mirror_blast` | Пара взрывов: по цели и в зеркальной точке относительно мага (SCRUM-941) |
 | `dark_mage` | `cursed_skull` | Проклятый череп | `CursedSkull.tscn` | `skull_curse_burn` | Curse-only зона: без прямого урона, частые dot-тики по проклятым; тик = dot_damage × mult × (1 + Int × curse_int_scale), magic-множители не участвуют (SCRUM-940) |
 | `dark_mage` | `dark_wand` | Темная палочка | `DarkWand.tscn` | `dark_chain_burst` | Цепной снаряд до 3 целей с малым AoE-бурстом на каждом попадании (SCRUM-939) |

@@ -60,6 +60,7 @@ const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectil
 # восстанавливается живой, поэтому флаг честно стартует с false.
 var _elite_defeated := false
 var _boss_victory_pending := false
+var _combat_start_finalized := false
 
 
 func _init(game_ref) -> void:
@@ -160,6 +161,7 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	# pause-причин — для них это no-op. Симметрично гарду в _end_combat.
 	game._clear_all_game_pauses()
 	_boss_victory_pending = false
+	_combat_start_finalized = false
 	game.reset_run_ascension()
 	game._clear_ui()
 	game._clear_world()
@@ -192,11 +194,6 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 		else:
 			_restore_player_snapshot(game.current_player)
 
-	# SCRUM-961 (on_battle_start): триггеры старта боя (prayer_beads) — диспетчеризация
-	# по образцу on_room_clear/_on_enemy_died; player сам проверяет свои ключи.
-	if game.current_player.has_method("on_battle_start"):
-		game.current_player.on_battle_start()
-
 	if game.current_player.has_signal("died"):
 		game.current_player.died.connect(func() -> void:
 			_end_combat(false)
@@ -206,8 +203,27 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	if game.current_player.has_signal("damaged"):
 		game.current_player.damaged.connect(game.ui._on_player_damaged)
 
-	game.ui._update_hud()
+	# SCRUM-926: a Priest must choose exactly one prayer before battle hooks and
+	# objective spawn. Non-Priest classes keep the synchronous path.
+	var prayer_choices: Array = []
+	if game.current_player.has_method("battle_prayer_choices"):
+		prayer_choices = game.current_player.call("battle_prayer_choices")
+	if not prayer_choices.is_empty() and str(game.current_player.call("active_battle_prayer_id")) == "":
+		if game.ui.has_method("show_battle_prayer_choice") and game.ui.show_battle_prayer_choice(game.current_player, Callable(self, "_finalize_combat_start")):
+			return
+		push_error("SCRUM-926: mandatory battle prayer UI could not be opened")
+		return
+	_finalize_combat_start()
 
+
+func _finalize_combat_start() -> void:
+	if _combat_start_finalized or not game.combat_active:
+		return
+	_combat_start_finalized = true
+	# SCRUM-961: battle-start artifact hooks run only after the prayer choice.
+	if game.current_player != null and is_instance_valid(game.current_player) and game.current_player.has_method("on_battle_start"):
+		game.current_player.on_battle_start()
+	game.ui._update_hud()
 	if game.boss_combat_active:
 		_spawn_boss()
 	elif game.current_combat_type == "elite":

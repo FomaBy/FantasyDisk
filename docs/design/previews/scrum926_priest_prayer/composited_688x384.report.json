@@ -1,0 +1,240 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        103,
+        45,
+        482,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "МОЛИТВА ПЕРЕД БОЕМ"
+      ],
+      "text_bbox": [
+        200,
+        50,
+        288,
+        23
+      ]
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        124,
+        101,
+        440,
+        25
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "Выбери одно благословение до конца этого боя"
+      ],
+      "text_bbox": [
+        176,
+        105,
+        336,
+        17
+      ]
+    },
+    {
+      "id": "wrath_title",
+      "rect": [
+        70,
+        202,
+        149,
+        25
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 14,
+      "lines": [
+        "МОЛИТВА КАРЫ"
+      ],
+      "text_bbox": [
+        88,
+        208,
+        114,
+        12
+      ]
+    },
+    {
+      "id": "wrath_desc",
+      "rect": [
+        72,
+        229,
+        145,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 12,
+      "lines": [
+        "+20% ко всему урону",
+        "Священника до конца",
+        "боя."
+      ],
+      "text_bbox": [
+        81,
+        234,
+        127,
+        45
+      ]
+    },
+    {
+      "id": "wrath_action",
+      "rect": [
+        78,
+        298,
+        133,
+        21
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ВОЗНЕСТИ"
+      ],
+      "text_bbox": [
+        113,
+        304,
+        63,
+        10
+      ]
+    },
+    {
+      "id": "mending_title",
+      "rect": [
+        270,
+        202,
+        149,
+        25
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 12,
+      "lines": [
+        "МОЛИТВА ИСЦЕЛЕНИЯ"
+      ],
+      "text_bbox": [
+        274,
+        208,
+        142,
+        13
+      ]
+    },
+    {
+      "id": "mending_desc",
+      "rect": [
+        272,
+        229,
+        145,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 12,
+      "lines": [
+        "+2 HP в секунду до конца",
+        "боя."
+      ],
+      "text_bbox": [
+        272,
+        243,
+        145,
+        28
+      ]
+    },
+    {
+      "id": "mending_action",
+      "rect": [
+        278,
+        298,
+        133,
+        21
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ВОЗНЕСТИ"
+      ],
+      "text_bbox": [
+        313,
+        304,
+        63,
+        10
+      ]
+    },
+    {
+      "id": "aegis_title",
+      "rect": [
+        470,
+        202,
+        149,
+        25
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 14,
+      "lines": [
+        "МОЛИТВА ЗАЩИТЫ"
+      ],
+      "text_bbox": [
+        476,
+        207,
+        137,
+        15
+      ]
+    },
+    {
+      "id": "aegis_desc",
+      "rect": [
+        472,
+        229,
+        145,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 12,
+      "lines": [
+        "−20% входящего урона",
+        "до конца боя."
+      ],
+      "text_bbox": [
+        476,
+        242,
+        136,
+        30
+      ]
+    },
+    {
+      "id": "aegis_action",
+      "rect": [
+        478,
+        298,
+        133,
+        21
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ВОЗНЕСТИ"
+      ],
+      "text_bbox": [
+        513,
+        304,
+        63,
+        10
+      ]
+    }
+  ]
+}

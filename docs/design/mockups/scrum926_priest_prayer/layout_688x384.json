@@ -1,0 +1,38 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4E6C5",
+    "stroke_fill": "#120B0C",
+    "stroke_width": 1,
+    "line_spacing": 1.02,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "МОЛИТВА ПЕРЕД БОЕМ",
+    "subtitle": "Выбери одно благословение до конца этого боя",
+    "wrath_title": "МОЛИТВА КАРЫ",
+    "wrath_desc": "+20% ко всему урону Священника до конца боя.",
+    "wrath_action": "ВОЗНЕСТИ",
+    "mending_title": "МОЛИТВА ИСЦЕЛЕНИЯ",
+    "mending_desc": "+2 HP в секунду до конца боя.",
+    "mending_action": "ВОЗНЕСТИ",
+    "aegis_title": "МОЛИТВА ЗАЩИТЫ",
+    "aegis_desc": "−20% входящего урона до конца боя.",
+    "aegis_action": "ВОЗНЕСТИ"
+  },
+  "zones": [
+    {"id":"title","content_key":"title","x":103,"y":45,"w":482,"h":34,"max_font":24,"min_font":18},
+    {"id":"subtitle","content_key":"subtitle","x":124,"y":101,"w":440,"h":25,"max_font":15,"min_font":11},
+    {"id":"wrath_title","content_key":"wrath_title","x":70,"y":202,"w":149,"h":25,"max_font":14,"min_font":10},
+    {"id":"wrath_desc","content_key":"wrath_desc","x":72,"y":229,"w":145,"h":56,"max_font":12,"min_font":9},
+    {"id":"wrath_action","content_key":"wrath_action","x":78,"y":298,"w":133,"h":21,"max_font":11,"min_font":9},
+    {"id":"mending_title","content_key":"mending_title","x":270,"y":202,"w":149,"h":25,"max_font":14,"min_font":9},
+    {"id":"mending_desc","content_key":"mending_desc","x":272,"y":229,"w":145,"h":56,"max_font":12,"min_font":9},
+    {"id":"mending_action","content_key":"mending_action","x":278,"y":298,"w":133,"h":21,"max_font":11,"min_font":9},
+    {"id":"aegis_title","content_key":"aegis_title","x":470,"y":202,"w":149,"h":25,"max_font":14,"min_font":10},
+    {"id":"aegis_desc","content_key":"aegis_desc","x":472,"y":229,"w":145,"h":56,"max_font":12,"min_font":9},
+    {"id":"aegis_action","content_key":"aegis_action","x":478,"y":298,"w":133,"h":21,"max_font":11,"min_font":9}
+  ]
+}

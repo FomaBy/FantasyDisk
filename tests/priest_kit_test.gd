@@ -134,7 +134,7 @@ func _check_trait_registry_pool() -> void:
 			_errors.append("trait: пул молитв протёк классу %s" % other_class)
 
 
-# --- SCRUM-925: контракт выбора (один за бой, автовыбор) ------------------------
+# --- SCRUM-925/926: контракт выбора (один за бой, без скрытого автовыбора) -------
 
 func _check_prayer_selection_contract() -> void:
 	var player := _make_player("priest", "priest_censer")
@@ -154,18 +154,19 @@ func _check_prayer_selection_contract() -> void:
 		_errors.append("select: второй выбор за бой принят (переключение запрещено AC)")
 	if str(player.call("active_battle_prayer_id")) != "prayer_mending":
 		_errors.append("select: повторный выбор подменил активную молитву")
-	# Автовыбор поверх сделанного выбора НЕ перетирает его.
+	# Battle-start hooks do not overwrite an explicit UI choice.
 	player.call("on_battle_start")
 	if str(player.call("active_battle_prayer_id")) != "prayer_mending":
 		_errors.append("select: on_battle_start перетёр сделанный выбор")
 	player.free()
 	await process_frame
-	# Временный автовыбор (до SCRUM-926): on_battle_start выбирает ПЕРВУЮ молитву пула.
+	# SCRUM-926: on_battle_start must not make a hidden default choice; the
+	# mandatory UI owns selection before CombatDirector calls this hook.
 	var auto_player := _make_player("priest", "priest_censer")
 	await process_frame
 	auto_player.call("on_battle_start")
-	if str(auto_player.call("active_battle_prayer_id")) != "prayer_wrath":
-		_errors.append("select: автовыбор on_battle_start не применил первую молитву пула")
+	if str(auto_player.call("active_battle_prayer_id")) != "":
+		_errors.append("select: on_battle_start сделал скрытый автовыбор без UI")
 	auto_player.free()
 	await process_frame
 
