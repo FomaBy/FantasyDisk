@@ -2282,3 +2282,21 @@ magazine/деплой)), `_budget_orbit_drone_dps` (контакт × min(обо
 Лидерства/без утечки), engineer_turret_test, persistent_hazard_contract_test,
 class_artifacts_test, summoner_strengthening_test, weapon_tuning_application,
 weapon_integrity, damage_type_isolation, animation_smoke, runtime_smoke.
+
+## SCRUM-925/926 Priest Battle Prayer Runtime State
+
+Священник начинает каждый бой с обязательного выбора ровно одной молитвы:
+`prayer_wrath` (+20% всего урона Священника), `prayer_mending` (+2 HP/с) или
+`prayer_aegis` (−20% входящего урона). Пул берётся из
+`ProgressionData.class_battle_prayers`; `Player.select_battle_prayer` остаётся
+единственной точкой применения и запрещает повторный выбор в текущем бою.
+Скрытый автовыбор удалён.
+
+`CombatDirector` создаёт игрока и HUD, затем до выбора приостанавливает дерево
+причиной `battle_prayer`. `Player.on_battle_start`, opening-эффекты артефактов и
+spawn элитки/босса выполняются только после валидного выбора и ровно один раз.
+Классы с пустым prayer-пулом идут по прежнему синхронному пути без экрана и
+паузы. Runtime UI использует цельный PixelLab-фрейм
+`assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png`; контент и
+фокус лежат только в пустых зонах из
+`docs/design/mockups/scrum926_priest_prayer/layout_688x384.json`.
