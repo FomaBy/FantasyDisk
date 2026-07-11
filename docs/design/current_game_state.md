@@ -2291,6 +2291,17 @@ magazine/деплой)), `_budget_orbit_drone_dps` (контакт × min(обо
 class_artifacts_test, summoner_strengthening_test, weapon_tuning_application,
 weapon_integrity, damage_type_isolation, animation_smoke, runtime_smoke.
 
+## SCRUM-1037 Storm Longbow Live Release VFX
+
+`ClassWeapon._fire_storm_pierce_cone` теперь создаёт ровно один
+`StormLongbowVolleyVfx` на каждый залп и конфигурирует его живыми origin,
+direction и `attack_range`. Сцена остаётся чисто визуальной: пять существующих
+`AttackVfx.beam` коридоров, hit queries, общий dedup залпа, pierce budget,
+damage/crit/knockback, charge и cooldown не менялись. One-shot освобождается
+после 8 кадров / 16 FPS (0.5с) и зарегистрирован в стандартном
+`player_weapon_effects` lifecycle для очистки вместе с оружием/миром. Контракт:
+`tests/scrum912_storm_longbow_vfx_runtime_hook_test.gd`.
+
 ## SCRUM-925/926 Priest Battle Prayer Runtime State
 
 Священник начинает каждый бой с обязательного выбора ровно одной молитвы:

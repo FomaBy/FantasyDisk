@@ -67,3 +67,23 @@ origin/direction/attack_range и зарегистрировать существ
   `scrum912_storm_longbow_vfx_test.gd`, `animation_smoke_test.gd` и
   `runtime_smoke_test.gd` проходят через `tools/godot_gate.py`.
 - [ ] Jira/mirror/dev синхронизированы; cache/worktree очищены.
+
+## Implementation result
+
+`ClassWeapon._fire_storm_pierce_cone()` now calls one isolated helper before
+building the existing gameplay corridors. The helper instantiates
+`StormLongbowVolleyVfx.tscn`, configures it from the live owner origin, aim and
+range, and registers it through `_register_effect()`. No gameplay geometry,
+target query, damage, pierce/dedup, charge or cooldown code changed.
+
+Green gates on the implementation tree:
+
+- `tests/scrum912_storm_longbow_vfx_runtime_hook_test.gd` — one scene per
+  volley, live aim/range, unchanged geometry, 0.5s self-cleanup and weapon
+  cleanup;
+- `tests/ranger_kit_test.gd`;
+- `tests/scrum912_storm_longbow_vfx_test.gd`;
+- `tests/animation_smoke_test.gd`.
+
+Full `tests/runtime_smoke_test.gd`, final origin/dev routing and disk cleanup
+are the remaining completion steps.
