@@ -46,3 +46,31 @@ Thread/Worker: `/root`
 
 Implementation complete; commit/push `origin/dev`, Jira QA routing and cleanup
 are performed at the task boundary.
+
+## Independent production QA — PASSED (2026-07-11)
+
+- Fresh QA base: `origin/dev` with implementation `5f580c6fb` and Jira mirror
+  routing `788ffc234`; production diff reviewed read-only.
+- The focused regression now instantiates the real ordinary, summoned, elite,
+  and boss scene paths and verifies exact HP/damage/cadence factors, legacy
+  neutral restore, neutral boss/meta/Ascension writes, and custom-run balance
+  evidence ineligibility.
+- Focused `gameplay_sandbox_scrum976_test.gd`: PASS after rebase.
+- Persistence/progression: `game_settings_smoke_test`,
+  `run_autosave_persistence_test`, `achievements_smoke_test`,
+  `codex_discovery_contract_test`, `codex_unlock_tracking_test`,
+  `meta_progression_smoke_test`, `meta_points_per_ascension_test`,
+  `artifact_ascension_gate_test`, and `runtime_smoke_progression_economy_test`:
+  PASS.
+- Combat/summons: `boss_outgoing_damage_multiplier_test`,
+  `contact_damage_softcap_test`, `runtime_smoke_boss_elite_test`,
+  `boss_summon_cap_test`, `summon_weapon_crowd_floor_test`,
+  `summoner_strengthening_test`, `elite_attack_config_safety_test`,
+  `mini_elite_roster_spawn_test`, and `boss_directional_telegraph_test`: PASS.
+- Balance gates: `balance_harness.gd`, `global_damage_balance_smoke_test.gd`,
+  and `global_survivability_balance_smoke_test.gd`: PASS; neutral release
+  formulas remain unchanged.
+- Final full `runtime_smoke_test.gd`: PASS. The headless dummy renderer emitted
+  the known non-fatal null-texture screenshot diagnostic.
+- SCRUM-1025 Settings UI was not modified; its integration remains a separate
+  downstream ticket over this accepted backend contract.
