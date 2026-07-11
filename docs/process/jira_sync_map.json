@@ -4521,12 +4521,12 @@
  "SCRUM-979.md": {
   "key": "SCRUM-979",
   "status": "Контроль качества",
-  "desc_hash": "055079206af5f2547e4c57677454c80e"
+  "desc_hash": "7653107c74504506e80b79b81d391968"
  },
  "SCRUM-976.md": {
   "key": "SCRUM-976",
   "status": "Контроль качества",
-  "desc_hash": "c7257959ec0dc501724d7c5aa4387008"
+  "desc_hash": "fc86bf4c9c722fabea587c8d04d136cf"
  },
  "qa_settings_batch_scrum977_task.md": {
   "key": "SCRUM-977",
@@ -4640,7 +4640,7 @@
  },
  "SCRUM-1068.md": {
   "key": "SCRUM-1068",
-  "status": null,
-  "desc_hash": null
+  "status": "Контроль качества",
+  "desc_hash": "32c8aebdabfa3a8553d5f2ff8d27dd38"
  }
 }

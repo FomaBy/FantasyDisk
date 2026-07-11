@@ -1,6 +1,6 @@
 # SCRUM-1068 — Schema-6 weapon constellations runtime
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1068
 Контур: Codex
@@ -58,9 +58,9 @@ and must remain sequential with the later Atlas UI phase.
 Partial commits use `FSD_NO_AUTOLAND=1` and are not pushed until a green
 integration boundary. Jira heartbeats and final cleanup record the live phase.
 
-Disk cleanup: all isolated `/tmp/fsd-s1068-*` Godot homes were removed after
-their gates; the registered task worktree is removed after push/QA routing and
-that final hygiene is recorded in Jira.
+Disk cleanup: all isolated `/tmp/fsd-s1068-*` Godot homes and the registered
+implementation worktree were removed after push/QA routing; final mirror-sync
+worktree removal is recorded in Jira.
 
 ## Backend/runtime result — 2026-07-11
 
@@ -115,5 +115,5 @@ PixelLab-ready plan but the external PixelLab account has `$0` balance and only
 `scripts/ui_screens.gd` was made. SCRUM-1073 remains sequential behind that UI
 phase.
 
-Disk cleanup: transient Godot HOME/user-data directories removed; registered
-worktree cleanup follows the mandatory push and Jira QA transition.
+Disk cleanup: transient Godot HOME/user-data directories and the registered
+implementation worktree removed after the mandatory push and Jira QA transition.
