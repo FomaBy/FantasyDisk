@@ -1,13 +1,13 @@
 # SCRUM-1074 — Atlas focused Metal test lifecycle leak
 
-Статус: new
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1074
 Контур: Codex
-Owner: unassigned
-Thread/Worker: n/a
-Branch: n/a
-Worktree: n/a
+Owner: Back-end QA / Codex
+Thread/Worker: `/root/audit_new_sprint_tail/review_scrum1067_spec/scrum1070_independent_review`
+Branch: `codex/scrum1074-atlas-oracle2`
+Worktree: `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-1074-atlas-oracle2`
 Parent: SCRUM-220
 Source QA: SCRUM-1070
 Related precedent: SCRUM-1031
@@ -61,16 +61,15 @@ The windowed focused gate must exit `0` without `WARNING`, `ERROR`,
   `AudioStreamPlaybackOggVorbis`, `OggPacketSequencePlayback`;
 - linked Jira issues: SCRUM-1070 and SCRUM-1031.
 
-## Implementation result
+## Initial implementation result (superseded oracle)
 
 - Reuses the already accepted test-only `tools/qa_capture_teardown.gd` API; the
   shared helper itself needs no change.
 - Every owned fixture now stops SubViewport rendering, destroys `Main`/children
   first, verifies child and viewport release through `WeakRef`, and only then
   continues to the next case.
-- Every teardown fails on orphan nodes; after the functional matrix warms its
-  different viewport/theme caches, a dedicated pair of identical Atlas fixtures
-  must return to the same ObjectDB/resource ceiling on the second release.
+- Every teardown fails on orphan nodes. The initial two-fixture global-count
+  equality oracle was later superseded after independent QA proved it flaky.
 - Before final quit, the windowed path calls public `AudioManager.stop_music()`,
   waits for the existing eight-frame audio-thread barrier and asserts that both
   menu music players are stopped with `stream == null`.
@@ -78,7 +77,7 @@ The windowed focused gate must exit `0` without `WARNING`, `ERROR`,
   `ObjectDB instances were leaked`, `resources still in use`, Ogg lifecycle,
   `WARNING`, `ERROR` or `SCRIPT ERROR`; diagnostics are not suppressed.
 
-## Verification result
+## Initial verification result (before independent QA)
 
 - final headless focused matrix: PASS, both SCRUM-1070 functional and
   SCRUM-1074 lifecycle markers, `11` deterministic viewport teardowns;
@@ -123,11 +122,51 @@ per-cycle growth after warm-up instead of requiring the first and second sample
 of the entire process to be exactly equal. Jira is returned to `К выполнению`;
 SCRUM-1070 remains in `Контроль качества` until this gate reaches `5/5`.
 
-Regression evidence on the same tip: Meta40, pointer clickability, button
-family/theme, gamepad focus, no-overlap, runtime UI and full runtime passed.
-The semantic inventory check is separately stale only because SCRUM-1069 moved
-two unchanged `scripts/player.gd` sites by six lines (`2385 -> 2391` and
-`3418 -> 3424`); fingerprints, counts and semantic content are unchanged.
+## Corrective implementation
+
+- Replaces the flaky equality of two process-wide samples with seven identical
+  post-warmup fixtures. The first transition remains a warm-up; one isolated
+  lazy allocation and separated lazy allocations with intervening plateaus are
+  tolerated, while three consecutive later positive steps fail as sustained
+  per-cycle accumulation.
+- A pure four-case oracle contract covers single lazy allocation, separated
+  lazy allocations, three consecutive retained-owner increments and a resource
+  decrease that interrupts growth.
+- Child/Main/SubViewport `WeakRef` barriers, orphan-node checks, public audio
+  drain and strict process-exit ObjectDB/resource/Ogg diagnostics remain
+  authoritative and unchanged.
+- Scope remains test-only; production UI, audio, assets and shared teardown
+  helper are unchanged.
+
+## Corrective verification
+
+- focused headless: PASS with both SCRUM-1070/SCRUM-1074 markers, all four
+  synthetic oracle cases and `16` deterministic owned viewport teardowns;
+- isolated ordinary macOS/Metal series: PASS `10/10`, unique HOME/XDG/user-data
+  roots, exit `0`, both markers and zero `WARNING`, `ERROR`, `SCRIPT ERROR`,
+  ObjectDB, resources-still-in-use or Ogg lifecycle diagnostics;
+- after fast-forward integration onto `origin/dev` `ea4cf76cd`: focused
+  headless PASS, isolated macOS/Metal PASS `5/5` with the same strict
+  zero-diagnostic policy, and full runtime smoke PASS;
+- `tests/ui_no_overlap_matrix_test.gd`: PASS;
+- `tests/semantic_typography_scrum1061_test.gd`: PASS after the integrated
+  SCRUM-1069 inventory refresh;
+- `tests/runtime_smoke_test.gd`: PASS including duplicate-artifact guard over
+  `15187` files post-integration; only the known headless dummy-renderer
+  screenshot null-texture diagnostic remains unchanged;
+- root corrective review P2 (aggregate vs consecutive positive steps): fixed by
+  the plateau-reset streak oracle and covered by its pure self-test contract;
+- root final read-only review: PASS after the P2 correction;
+- `git diff --check`: PASS.
+
+Regression evidence on the integrated tip: semantic inventory, Meta40, pointer
+clickability, button family/theme, gamepad focus, no-overlap, runtime UI and
+full runtime passed. The previously stale semantic line metadata was refreshed
+by SCRUM-1069 before the final corrective gates.
 
 Disk cleanup: disposable combined QA worktree/cache and isolated
 `/tmp/fsd-qa-1074-1070-*` roots are removed after evidence push.
+
+Corrective disk cleanup: isolated SCRUM-1074 HOME/XDG/user-data roots,
+generated Godot cache, unrelated generated `.gd.uid` sidecars and disposable
+worktree are removed after the final push; no remote task branch is created.

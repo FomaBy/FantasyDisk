@@ -18,6 +18,8 @@ const FAMILY := "text/standard_420x104"
 const TEXTURE_PREFIX := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_"
 const EXPECTED_TEXTURE_MARGINS := Vector4(54, 21, 54, 21)
 const EXPECTED_CONTENT_MARGINS := Vector4(71, 21, 71, 21)
+const LIFECYCLE_PROBE_COUNT := 7
+const SUSTAINED_GROWTH_STEPS := 3
 
 var _errors := PackedStringArray()
 var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
@@ -29,6 +31,7 @@ func _initialize() -> void:
 		await _check_layout(viewport_size)
 	await _check_live_resize()
 	await _check_reset_scopes()
+	_check_global_count_oracle_contract()
 	await _check_repeated_lifecycle_probe()
 	# SCRUM-1074: Main._ready() starts menu music in real windowed fixtures. Stop
 	# and detach that public AudioManager channel before SceneTree/AudioServer
@@ -305,12 +308,13 @@ func _check_lifecycle_monitors() -> void:
 
 func _check_repeated_lifecycle_probe() -> void:
 	# The functional matrix intentionally warms different viewport/theme caches,
-	# so its first ObjectDB count is not a valid ceiling. After that warm-up, run
-	# two identical Atlas fixtures. The second release must return to the first
-	# release's object/resource counts; otherwise an owned fixture accumulated a
-	# hidden ObjectDB or Resource owner even though its visible nodes disappeared.
-	var warmed_counts := Vector2i(-1, -1)
-	for probe_index in range(2):
+	# and Performance counters are process-wide: an unrelated lazy singleton may
+	# legitimately add one object between any two samples. Run a longer identical
+	# post-warmup series and reject sustained per-cycle growth instead. Owned
+	# fixture release remains enforced independently by the WeakRef barriers.
+	var object_counts := PackedInt64Array()
+	var resource_counts := PackedInt64Array()
+	for _probe_index in range(LIFECYCLE_PROBE_COUNT):
 		var viewport := SubViewport.new()
 		viewport.size = Vector2i(1280, 720)
 		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -327,18 +331,74 @@ func _check_repeated_lifecycle_probe() -> void:
 			int(Performance.get_monitor(Performance.OBJECT_COUNT)),
 			int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT))
 		)
-		if probe_index == 0:
-			warmed_counts = current
-			continue
-		if current.x > warmed_counts.x:
+		object_counts.append(current.x)
+		resource_counts.append(current.y)
+	_check_global_count_trend("ObjectDB owners", object_counts)
+	_check_global_count_trend("resources", resource_counts)
+
+
+func _check_global_count_trend(metric_name: String, samples: PackedInt64Array) -> void:
+	if samples.size() < 4:
+		_errors.append("SCRUM-1074 %s lifecycle probe needs at least four samples." % metric_name)
+		return
+	# Ignore the first transition as an additional process-wide warm-up. A stable
+	# tail is the common case. Three consecutive positive steps prove recurring
+	# accumulation; any plateau or release resets that evidence, so separated
+	# process-wide lazy allocations cannot become a false leak verdict.
+	if _has_sustained_global_growth(samples):
+		_errors.append(
+			"SCRUM-1074 repeated fixture showed sustained %s growth: samples=%s."
+			% [metric_name, str(samples)]
+		)
+
+
+func _has_sustained_global_growth(samples: PackedInt64Array) -> bool:
+	var consecutive_positive_steps := 0
+	for sample_index in range(2, samples.size()):
+		var delta := samples[sample_index] - samples[sample_index - 1]
+		if delta > 0:
+			consecutive_positive_steps += 1
+			if consecutive_positive_steps >= SUSTAINED_GROWTH_STEPS:
+				return true
+		else:
+			consecutive_positive_steps = 0
+	return false
+
+
+func _check_global_count_oracle_contract() -> void:
+	var cases := [
+		{
+			"name": "single lazy allocation",
+			"samples": PackedInt64Array([100, 100, 101, 101, 101, 101, 101]),
+			"expected_growth": false,
+		},
+		{
+			"name": "separated lazy allocations with plateaus",
+			"samples": PackedInt64Array([100, 100, 101, 101, 102, 102, 103]),
+			"expected_growth": false,
+		},
+		{
+			"name": "three consecutive retained owners",
+			"samples": PackedInt64Array([100, 100, 101, 102, 103, 104, 105]),
+			"expected_growth": true,
+		},
+		{
+			"name": "resource release interrupts growth",
+			"samples": PackedInt64Array([100, 100, 101, 102, 101, 102, 103]),
+			"expected_growth": false,
+		},
+	]
+	for test_case in cases:
+		var actual := _has_sustained_global_growth(test_case["samples"])
+		if actual != test_case["expected_growth"]:
 			_errors.append(
-				"SCRUM-1074 repeated fixture leaked ObjectDB owners: first=%d second=%d."
-				% [warmed_counts.x, current.x]
-			)
-		if current.y > warmed_counts.y:
-			_errors.append(
-				"SCRUM-1074 repeated fixture leaked resources: first=%d second=%d."
-				% [warmed_counts.y, current.y]
+				"SCRUM-1074 lifecycle oracle contract failed %s: samples=%s expected=%s actual=%s."
+				% [
+					test_case["name"],
+					str(test_case["samples"]),
+					str(test_case["expected_growth"]),
+					str(actual),
+				]
 			)
 
 
