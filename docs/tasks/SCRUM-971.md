@@ -1,6 +1,6 @@
 # SCRUM-971 — Atlas/Guild selected-class name above the constellation tree
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-971
 Контур: Codex
