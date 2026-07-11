@@ -351,6 +351,18 @@ next-run-only semantics. `SettingsBottomActions` is hidden only on Game because
 Apply/Revert belongs to staged Screen settings; Game content remains inside
 the transparent clip owner and scrolls vertically with a dedicated 14px lane.
 
+SCRUM-1053 hardens the remaining compact footer against the live Atlas bottom
+ornament. Screen/Sound/Controls now budget an `88px`
+`SettingsBottomActionsSafe` slot: the unchanged native `280x64` Apply/Revert
+plates occupy its top and the last `24px` stay empty. At 1280x720 this produces
+a 12px gap after `SettingsContentPanel`, a footer bottom exactly at the authored
+inner boundary `y=583`, and 24px before the texture-safe edge `y=607`. Compact
+Screen is now vertically scrollable (`SettingsScreenScroll`, `follow_focus`)
+so its legacy rows cannot expand the VBox through that reserve. Game hides the
+entire wrapper, so SCRUM-1025's `892x242` scroll viewport, `878x520` canvas and
+exclusive 14px lane remain exact. Focused headless/Metal coverage also checks
+the `<=760px` breakpoint at 1280x760.
+
 SCRUM-471 is the historical 1152x648 short-height guard for the former Attribute
 Shop inner panel and Settings. Its Attribute Shop card/button metrics are
 superseded by SCRUM-987/988's gold-shell relayout at 720p/1080p/1440p; the

@@ -104,6 +104,17 @@ route_stage + (current_act - 1) * 4`, чтобы Act 2/3 росли контро
 
 - **Gameplay sandbox (SCRUM-976)**: диапазоны — HP монстров `0.5–3.0`, урон монстров `0.5–3.0`, урон игрока `0.5–2.0`, скорость атак игрока `0.5–2.0`, скорость атак монстров `0.5–3.0`, шаг `0.1`. `scripts/gameplay_sandbox.gd` — единый контракт normalize/snapshot/metadata. HP/урон применяются один раз в общем `Enemy` (поэтому покрыты обычные враги, призывы, элитки и боссы); скорость монстров ускоряет только attack cooldown countdown, не telegraph/windup/recover. Игрок получает финальный exact-множитель после release softcaps. Любой не-нейтральный snapshot помечает `progression_eligible=false`, блокирует достижения, Codex, boss/meta/Ascension progression и не принимается как release-balance evidence; run-local XP, золото, предметы и сводка сохраняются.
 - **Gameplay sandbox UI (SCRUM-1025)**: вкладка «Игра» читает ranges/step/values только из SCRUM-976 API, показывает `%.1f×`, нейтральный/пользовательский статус и предупреждение о progression/evidence gate. Изменения сохраняются немедленно, но не мутируют snapshot активного забега; Reset делает один атомарный save и disabled в neutral. `SettingsBottomActions` (экранные Apply/Revert) скрыт на Game, а `SettingsGameScroll` занимает расширенный прозрачный content owner `960/1158/1544` и сохраняет отдельный 14px scrollbar lane на 720p. PixelLab compact mockup задавал `306px` видимой высоты без live Atlas frame; runtime намеренно ограничивает её до `242px` на 720p (`878×520` canvas, max scroll `278`), чтобы ни строки, ни Reset не уходили под нижний орнамент. Focused Metal/headless matrix: `tests/settings_game_scrum1025_test.gd`.
+- **Settings footer frame safety (SCRUM-1053)**: on the compact tier
+  `SettingsBottomActionsSafe` structurally reserves `64px` for the native
+  Apply/Revert plates plus `24px` of empty bottom space. At 1280x720 the
+  seamless content ends at `y=507`, the footer is `160,519,960,64`, and the
+  authored Atlas inner boundary ends at `y=583`; content/footer keep a 12px gap
+  and the complete plates, labels, focus and hit rects keep 24px clear of the
+  bottom ornament. Compact Screen uses vertical `SettingsScreenScroll` so its
+  legacy native rows cannot force this structural reserve outside the frame.
+  The whole footer wrapper collapses on Game, preserving its exact `892x242`
+  viewport and `878x520` canvas. Headless/Metal coverage includes the 760px
+  compact threshold in `tests/settings_footer_scrum1053_test.gd`.
 - **Codex unlock tracking (SCRUM-621)**: `scripts/meta_progression.gd` persists
   discovered monsters, bosses and artifacts in `user://fantasydisk_meta.cfg`.
   Runtime records monsters/bosses when they are encountered in combat and

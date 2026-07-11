@@ -6157,7 +6157,28 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	content_margin.add_child(tabs)
 
 	var screen_tab := _make_settings_tab("Экран", s, settings_column_w)
-	var screen_box := screen_tab.get_child(0) as VBoxContainer
+	var screen_page := screen_tab.get_child(0) as VBoxContainer
+	var screen_box := screen_page
+	# SCRUM-1053: compact Settings needs a structural 24px footer reserve. Make
+	# the only non-scrollable legacy page scroll-capable on this tier so its
+	# native rows no longer force the VBox past the Atlas safe boundary.
+	if vp.y <= 760.0:
+		screen_page.add_theme_constant_override("separation", 0)
+		var screen_scroll := ScrollContainer.new()
+		screen_scroll.name = "SettingsScreenScroll"
+		screen_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		screen_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		screen_scroll.follow_focus = true
+		screen_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		screen_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		screen_page.add_child(screen_scroll)
+		_settings_v6_style_audio_scrollbar(screen_scroll, s)
+		screen_box = VBoxContainer.new()
+		screen_box.name = "SettingsScreenContent"
+		screen_box.custom_minimum_size = Vector2(settings_column_w, 0.0)
+		screen_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		screen_box.add_theme_constant_override("separation", int(roundf(20.0 * s)))
+		screen_scroll.add_child(screen_box)
 	tabs.add_child(screen_tab)
 
 	var monitor_model := _settings_monitor_model(_current_monitor_sizes())
@@ -6512,14 +6533,30 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	# --- Ряд 4: футер — «Вернуть»/«Применить» справа («Назад» теперь в шапке).
 	# Кнопки глобального кита, фикс 280×64: Apply/Revert носят НАТИВНУЮ пластину
 	# по size-маппингу кита (y<=66, 240<=x<360) — без даунскейла и растяжки.
+	# SCRUM-1053: on the compact tier the texture-safe SettingsSafeArea ends at
+	# the first bottom-frame pixel. Keep a 24px authored inner reserve beneath
+	# the footer so the plates, labels, focus and hit rects cannot enter the live
+	# Atlas ornament. The wrapper is hidden together with the footer on Game, so
+	# SCRUM-1025's exact 892x242 compact scroll viewport remains unchanged.
+	var action_safe := Control.new()
+	action_safe.name = "SettingsBottomActionsSafe"
+	action_safe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var footer_bottom_reserve := 24 if vp.y <= 760.0 else 0
+	action_safe.custom_minimum_size = Vector2(0.0, 64.0 + float(footer_bottom_reserve))
+	action_safe.set_meta("settings_footer_bottom_reserve", footer_bottom_reserve)
+	layout.add_child(action_safe)
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
 	action_row.alignment = BoxContainer.ALIGNMENT_END
 	action_row.add_theme_constant_override("separation", int(14.0 * s_ui))
 	# Футер той же ширины, что панель: кнопки прижаты к её правому краю.
-	action_row.custom_minimum_size = Vector2(settings_panel_w, 0.0)
-	action_row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	layout.add_child(action_row)
+	action_row.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	action_row.offset_left = -settings_panel_w * 0.5
+	action_row.offset_top = 0.0
+	action_row.offset_right = settings_panel_w * 0.5
+	action_row.offset_bottom = 64.0
+	action_row.custom_minimum_size = Vector2(settings_panel_w, 64.0)
+	action_safe.add_child(action_row)
 	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
@@ -6533,7 +6570,9 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	# mockup has no irrelevant footer; hiding it also restores the exact compact
 	# scroll viewport while tabs/header remain fixed.
 	var update_settings_footer_visibility := func(tab_index: int) -> void:
-		action_row.visible = tab_index != 3
+		var show_footer := tab_index != 3
+		action_safe.visible = show_footer
+		action_row.visible = show_footer
 	tabs.tab_changed.connect(update_settings_footer_visibility)
 	update_settings_footer_visibility.call(tabs.current_tab)
 
