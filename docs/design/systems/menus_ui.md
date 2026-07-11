@@ -1209,9 +1209,9 @@ border; runtime uses a frame-safe `242px` viewport at 720p (max scroll `278`)
 so the bottom state exposes rows 3–5 and Reset entirely above the ornament.
 All five rows remain inside the empty frame interior.
 
-Runtime labels/click/focus zones must stay inside these base safe rects and
-scale proportionally with the whole image. Runtime smoke validates the actual
-button rects against the scaled safe rects:
+The following safe-rect table is historical SCRUM-439/v2 evidence, not the live
+SCRUM-1025 switcher contract. In that former whole-strip asset, runtime labels,
+click and focus zones had to stay inside these three source rects:
 
 SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
 menu returns to the main menu on Back/Escape, while Settings opened from the
@@ -1224,12 +1224,12 @@ preserves the active run state instead of rebuilding the start screen.
 | `tab_1_audio_safe` | `Rect2(502, 78, 275, 92)` |
 | `tab_2_controls_safe` | `Rect2(854, 78, 275, 92)` |
 
-There is no fourth runtime slot and no fourth hit area. If the settings screen
-ever needs another page, Design must provide a new asset and safe-zone metadata
-instead of Back-end placing a tab on the existing ornament.
+That v2 asset had no fourth runtime slot or hit area. SCRUM-1025 supersedes this
+limitation with four independent global-kit plates, including live
+`SettingsTabButton_3`; it does not place a fourth hit area on the old ornament.
 
-Do not place text, icons, click zones or focus rings on the tab strip's metal
-bevels, dragon heads, red gems, dividers or lower rail. Preview:
+For the archived v2 strip, text, icons, click zones and focus rings must not be
+placed on its metal bevels, dragon heads, red gems, dividers or lower rail. Preview:
 `docs/design/previews/scrum439_settings_v2_safe_zones.png`; runtime QA dumps:
 `build/qa/scrum439/settings_v2_runtime_rects.md` and
 `build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
