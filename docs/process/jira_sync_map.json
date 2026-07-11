@@ -4437,5 +4437,10 @@
   "key": "SCRUM-992",
   "status": "Готово",
   "desc_hash": "2ef6cd60629348203fef7bf4b80d8a0b"
+ },
+ "SCRUM-924_holy_flail_spiral_vfx.md": {
+  "key": "SCRUM-924",
+  "status": "Контроль качества",
+  "desc_hash": "1d2d56c83ac67a300daf0195debc8dee"
  }
 }
