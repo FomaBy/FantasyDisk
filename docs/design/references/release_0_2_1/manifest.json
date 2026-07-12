@@ -1,0 +1,75 @@
+{
+  "task": "FAN-1027",
+  "canonical_id": "release_0_2_1_announcement",
+  "generator": {
+    "service": "PixelLab MCP",
+    "tool": "create_ui_asset",
+    "config_smoke": "PASS",
+    "secrets_recorded": false
+  },
+  "prompt_spec": "docs/design/mockups/release_0_2_1/spec.md",
+  "planning_gate": {
+    "decision": "ready_for_image",
+    "ok": true,
+    "report": "docs/design/mockups/release_0_2_1/ui_plan_report.json"
+  },
+  "accepted_source": {
+    "ui_asset_id": "faaec6cf-de1f-4ffb-9a15-2326923918e5",
+    "name": "release_0_2_1_announcement_variant_b",
+    "source_path": "docs/design/references/release_0_2_1/pixellab_variant_b_688x384.png",
+    "width": 688,
+    "height": 384,
+    "mode": "RGBA",
+    "sha256": "5e4a379c2303939cd64c7b51ccba151a32eaf821e5847778a1ba9d3b7f655101"
+  },
+  "rejected_sources": [
+    {
+      "ui_asset_id": "611645d9-3ba4-4c7d-8eec-4f5577a5e88f",
+      "source_path": "docs/design/references/release_0_2_1/pixellab_candidate_v1_rejected_688x384.png",
+      "reason": "baked pseudo-title and UI boxes blocked the content zones"
+    },
+    {
+      "ui_asset_id": "d7f5981a-84d8-4954-b077-c48429d87226",
+      "source_path": "docs/design/references/release_0_2_1/pixellab_candidate_v2_rejected_panels_688x384.png",
+      "reason": "strict backdrop prompt produced empty UI panels instead of key art"
+    },
+    {
+      "ui_asset_id": "60bc4c65-8a81-4daf-a065-7662c59b9147",
+      "source_path": "docs/design/references/release_0_2_1/pixellab_variant_a_688x384.png",
+      "reason": "strong scene, but baked cards and slots occupied the approved left-side zones"
+    },
+    {
+      "ui_asset_id": "e335c301-8f94-48fa-985a-0d5b8abbe706",
+      "source_path": "docs/design/references/release_0_2_1/pixellab_variant_c_exact_zones_688x384.png",
+      "reason": "content zones fit but remained separate boxes on a checkerboard field"
+    }
+  ],
+  "postprocess": {
+    "source_crop": [23, 18, 665, 368],
+    "crop_purpose": "remove PixelLab's baked checkerboard outer margin while preserving its generated frame",
+    "resize": {
+      "width": 1920,
+      "height": 1080,
+      "filter": "Lanczos"
+    },
+    "base_path": "docs/design/mockups/release_0_2_1/release_0_2_1_base.png",
+    "base_sha256": "0b7d37382db32066b1449cd8d740b95eadc0d006da6eb188c2a90ffa5cad16c4"
+  },
+  "outputs": {
+    "preview": "docs/design/previews/release_0_2_1/release_0_2_1_final.png",
+    "debug_overlay": "docs/design/previews/release_0_2_1/release_0_2_1_debug.png",
+    "render_report": "docs/design/previews/release_0_2_1/release_0_2_1_report.json",
+    "runtime": "assets/marketing/fantasydisk_021_announcement_telegram_discord.png",
+    "width": 1920,
+    "height": 1080,
+    "mode": "RGB",
+    "sha256": "861979145208ecbafb22413ad180c3c7843becdca38b71083313cc41bd019e72"
+  },
+  "qa": {
+    "content_zone_report_ok": true,
+    "final_visual_inspection": "PASS",
+    "debug_overlay_visual_inspection": "PASS",
+    "outer_checkerboard_removed": true,
+    "content_over_frame": false
+  }
+}

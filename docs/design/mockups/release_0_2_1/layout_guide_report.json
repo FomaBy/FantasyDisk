@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "release",
+      "rect": [
+        100,
+        64,
+        760,
+        82
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "brand",
+      "rect": [
+        100,
+        174,
+        840,
+        140
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        104,
+        352,
+        870,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "highlights",
+      "rect": [
+        100,
+        462,
+        880,
+        344
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        100,
+        952,
+        770,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

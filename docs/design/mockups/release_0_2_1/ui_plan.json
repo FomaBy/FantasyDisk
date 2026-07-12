@@ -1,0 +1,20 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 18, "allow_overlap": false},
+  "content": {
+    "release": "РЕЛИЗ 0.2.1",
+    "brand": "FantasyDisk",
+    "subtitle": "АРТЕФАКТЫ • БИЛДЫ • НОВАЯ КАРТА",
+    "highlights": "154 АРТЕФАКТА\n85 УНИКАЛЬНЫХ ДЛЯ КЛАССОВ\n17 ГЕРОЕВ • 51 ОРУЖИЕ\nНОВЫЕ МЕХАНИКИ И БИЛДЫ\nГОРИЗОНТАЛЬНАЯ КАРТА • 2 АКТА",
+    "footer": "macOS + Windows • 2026"
+  },
+  "elements": [
+    {"id": "poster", "kind": "panel", "x": 0, "y": 0, "w": 1920, "h": 1080, "min_w": 1920, "min_h": 1080},
+    {"id": "release", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 64, "w": 760, "h": 82, "text_key": "release", "max_font": 58, "min_font": 38},
+    {"id": "brand", "kind": "icon", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 174, "w": 840, "h": 140},
+    {"id": "subtitle", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 104, "y": 352, "w": 870, "h": 60, "text_key": "subtitle", "max_font": 38, "min_font": 24},
+    {"id": "highlights", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 462, "w": 880, "h": 344, "text_key": "highlights", "max_font": 40, "min_font": 25},
+    {"id": "footer", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 952, "w": 770, "h": 56, "text_key": "footer", "max_font": 30, "min_font": 20},
+    {"id": "cinematic_scene", "kind": "decor", "parent": "poster", "content_zone": false, "collision": false, "x": 1020, "y": 34, "w": 850, "h": 1000}
+  ]
+}
