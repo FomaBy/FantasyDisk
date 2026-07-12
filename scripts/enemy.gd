@@ -56,6 +56,19 @@ var _elite_aura_cooldown := 3.2
 var _elite_shield_active := false
 var _rig_source_scale := Vector2.ZERO
 var _knockback_velocity := Vector2.ZERO
+# Combat Feel Rework (этап B): состояние движения — гистерезис отхода из
+# глубокого оверлапа, знаки орбиты/строба (пер-инстанс из id, пачки расползаются
+# в обе стороны) и кэш steering-сепарации от соседей по группе enemies.
+var _melee_backoff_active := false
+var _orbit_sign := 1.0
+var _strafe_sign := 1.0
+var _strafe_flip_left := 3.0
+var _strafe_bound_flip_done := false
+var _separation_neighbors: Array = []
+var _separation_scratch_dist: Array = []
+var _separation_refresh_left := 0.0
+var _separation_weight := 1.0
+var _separation_radius := 32.0
 var _cached_player: Node2D = null
 var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
@@ -93,6 +106,37 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
+# Combat Feel Rework (этап B): анти-прилипание — полосы поведения melee вместо
+# «едем в точный центр игрока». engage-кольцо ВСЕГДА внутри contact_range
+# (уптайм контактного урона — жёсткий контракт TTK-гейтов и smoke-тестов).
+const MELEE_ENGAGE_RATIO := 0.8            # engage = 0.8×contact_range
+const MELEE_DECELERATION_BAND := 60.0      # полоса плавного торможения перед engage, px
+const MELEE_APPROACH_MIN_FACTOR := 0.35    # скорость у самой кромки engage
+const MELEE_ORBIT_SPEED_FACTOR := 0.25     # тангенциальный дрейф на кольце
+const MELEE_BACKOFF_SPEED_FACTOR := 0.45   # мягкий отход из глубокого оверлапа
+const MELEE_BACKOFF_ENTER_RATIO := 0.62    # d < 0.62×engage → начать отход
+const MELEE_BACKOFF_EXIT_RATIO := 0.75     # отход до 0.75×engage (= 0.6×contact_range, замах не рвётся)
+# Стрелки/саммонеры: вместо freeze в hold-полосе — медленный тангенциальный строб
+# с гистерезисом (убирает дребезг «стоп/шаг» на кромке полосы).
+const RANGED_RETREAT_RATIO := 0.78         # d < 0.78×desired → отходим
+const RANGED_APPROACH_RATIO := 0.92        # d > 0.92×desired → подходим
+const RANGED_STRAFE_SPEED_FACTOR := 0.4    # скорость строба в hold-полосе
+const STRAFE_FLIP_INTERVAL_MIN := 2.5      # пер-инстансный таймер смены направления строба
+const STRAFE_FLIP_INTERVAL_MAX := 4.0
+const STRAFE_BOUND_MARGIN := 120.0         # у кромки арены — разворот строба
+# Сепарация врагов: только steering (БЕЗ физики — контракт «игрок проходит сквозь»).
+const SEPARATION_REFRESH_INTERVAL := 0.2   # пересчёт кэша соседей, s (со stagger по id)
+const SEPARATION_MAX_NEIGHBORS := 4        # держим 3-4 ближайших
+const SEPARATION_MAX_RANGE := 90.0         # кап радиуса расталкивания, px
+const SEPARATION_SEARCH_SLACK := 50.0      # запас поиска: соседи двигаются между рефрешами
+const SEPARATION_MAX_SPEED := 90.0         # потолок push-скорости, px/s
+const SEPARATION_ELITE_WEIGHT := 0.4       # элитки толкаются слабее; боссы (0.0) — никогда
+# «Клюнул и ударил»: на время замаха контакт-удара steering падает до 20%.
+const CONTACT_WINDUP_STEERING_FACTOR := 0.2
+# Читаемый нокбек: вес chase-вклада = clamp(1 − |kb|/300, 0, 1).
+const KNOCKBACK_STEERING_SUPPRESS_SPEED := 300.0
+# Спавн-защита: миньоны саммонера/рифтлинги босса не появляются вплотную к игроку.
+const MINION_SPAWN_MIN_PLAYER_DISTANCE := 140.0
 # Combat Feel Rework (этап A): feet-origin визуал + тень-круг под ногами.
 # Origin узла не двигается — поднимается только фолбэк-визуал (cutout/статический
 # спрайт центрирован по арту, ноги ~на 0.38 высоты ниже центра). Живой full-frame
@@ -169,6 +213,16 @@ func _ready() -> void:
 	if not _configure_full_frame_animation():
 		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
+	# Combat Feel Rework (этап B): пер-инстансные знаки орбиты/строба из чётности
+	# instance id (детерминированный разъезд пачек в обе стороны) + видимый радиус
+	# для сепарации (после fit/epic scale) + stagger рефреша кэша соседей, чтобы
+	# 48 мобов не сканировали группу в один и тот же кадр.
+	_orbit_sign = 1.0 if get_instance_id() % 2 == 0 else -1.0
+	_strafe_sign = 1.0 if (get_instance_id() >> 1) % 2 == 0 else -1.0
+	_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
+	var visible_size := _visible_sprite_size()
+	_separation_radius = maxf(visible_size.x, visible_size.y) * 0.5
+	_separation_refresh_left = float(get_instance_id() % 199) * 0.001
 	_create_health_bar()
 	_ensure_ground_circle()
 	var config := _elite_attack_config()
@@ -269,21 +323,21 @@ func _physics_process(delta: float) -> void:
 		_update_movement_animation(delta)
 		return
 
+	# Combat Feel Rework (этап B): анти-прилипание. Вместо «едем в точный центр
+	# игрока» — полосы поведения (подход → торможение → тангенциальный дрейф у
+	# engage-кольца → мягкий отход из глубокого оверлапа), steering-сепарация от
+	# соседей (без физики) и строб дальнобоев вместо freeze. Во время замаха
+	# контакт-удара steering гасится («клюнул и ударил»), нокбек применяется
+	# полностью и подавляет chase-вклад весом — удары реально отбрасывают.
+	_tick_separation_cache(delta)
 	var status_speed := StatusEffects.speed_multiplier(self)
-	if can_summon and distance < desired_summoning_distance * 0.85:
-		velocity = -direction.normalized() * move_speed * status_speed
-	elif can_summon and distance <= desired_summoning_distance * 1.15:
-		velocity = Vector2.ZERO
-	elif can_shoot and distance < desired_shooting_distance * 0.85:
-		velocity = -direction.normalized() * move_speed * status_speed
-	elif can_shoot and distance <= desired_shooting_distance:
-		velocity = Vector2.ZERO
-	elif direction.length_squared() > 0.0:
-		velocity = direction.normalized() * move_speed * status_speed
-	else:
-		velocity = Vector2.ZERO
-
-	velocity += _consume_knockback(delta)
+	var steering := _band_steering(direction, distance, move_speed * status_speed, delta)
+	steering += _separation_velocity()
+	if _contact_windup_left >= 0.0:
+		steering *= CONTACT_WINDUP_STEERING_FACTOR
+	var knockback := _consume_knockback(delta)
+	var knockback_weight := clampf(1.0 - knockback.length() / KNOCKBACK_STEERING_SUPPRESS_SPEED, 0.0, 1.0)
+	velocity = steering * knockback_weight + knockback
 	move_and_slide()
 	global_position = _clamp_to_arena(global_position)
 	_update_movement_animation(delta)
@@ -291,6 +345,176 @@ func _physics_process(delta: float) -> void:
 	_update_shooting(delta, target)
 	_update_summoning(delta)
 	_update_elite_patterns(delta, target, distance)
+
+
+# --- Combat Feel Rework (этап B): steering-движение -------------------------
+
+
+# Пер-инстансное стабильное направление-фолбэк (для нулевых дистанций).
+func _fallback_direction() -> Vector2:
+	return Vector2.RIGHT.rotated(float(get_instance_id() % 628) * 0.01)
+
+
+# Кольцо остановки melee: всегда внутри contact_range (уптайм контакт-урона —
+# жёсткий контракт). Пересчитывается от текущего contact_range: fit по спрайту
+# и epic scale уже учтены внутри него.
+func _melee_engage_distance() -> float:
+	return contact_range * MELEE_ENGAGE_RATIO
+
+
+func _band_steering(direction: Vector2, distance: float, speed: float, delta: float) -> Vector2:
+	var toward := direction / distance if distance > 0.001 else _fallback_direction()
+	if can_summon:
+		return _ranged_band_steering(toward, distance, desired_summoning_distance, speed, delta)
+	if can_shoot:
+		return _ranged_band_steering(toward, distance, desired_shooting_distance, speed, delta)
+	return _melee_band_steering(toward, distance, speed)
+
+
+func _melee_band_steering(toward: Vector2, distance: float, speed: float) -> Vector2:
+	var engage := _melee_engage_distance()
+	# Гистерезис отхода: вход в глубоком оверлапе (<0.62×engage — игрок сам
+	# зашёл в моба или спавн-наложение), выход на 0.75×engage = 0.6×contact_range.
+	# Добровольно враг НИКОГДА не отходит за contact_range — замах не рвётся.
+	if _melee_backoff_active and distance >= engage * MELEE_BACKOFF_EXIT_RATIO:
+		_melee_backoff_active = false
+	elif not _melee_backoff_active and distance < engage * MELEE_BACKOFF_ENTER_RATIO:
+		_melee_backoff_active = true
+	if _melee_backoff_active:
+		return -toward * speed * MELEE_BACKOFF_SPEED_FACTOR
+	if distance <= engage:
+		# Кольцо: держим свою точку и бьём с неё; тангенциальный дрейф — знак
+		# фиксирован чётностью instance id, пачка расползается в обе стороны.
+		return toward.orthogonal() * _orbit_sign * speed * MELEE_ORBIT_SPEED_FACTOR
+	if distance <= engage + MELEE_DECELERATION_BAND:
+		var band_t := (distance - engage) / MELEE_DECELERATION_BAND
+		return toward * speed * lerpf(MELEE_APPROACH_MIN_FACTOR, 1.0, band_t)
+	return toward * speed
+
+
+func _ranged_band_steering(toward: Vector2, distance: float, desired: float, speed: float, delta: float) -> Vector2:
+	if distance < desired * RANGED_RETREAT_RATIO:
+		return -toward * speed
+	if distance > desired * RANGED_APPROACH_RATIO:
+		return toward * speed
+	_tick_strafe_direction(delta)
+	return toward.orthogonal() * _strafe_sign * speed * RANGED_STRAFE_SPEED_FACTOR
+
+
+func _tick_strafe_direction(delta: float) -> void:
+	_strafe_flip_left -= delta
+	if _strafe_flip_left <= 0.0:
+		_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
+		_strafe_sign = -_strafe_sign
+	# У кромки арены — ОДИН разворот на вход в приграничную зону (без дребезга
+	# каждый кадр); флаг сбрасывается при выходе из зоны.
+	var near_bound := global_position.x < STRAFE_BOUND_MARGIN \
+		or global_position.y < STRAFE_BOUND_MARGIN \
+		or global_position.x > ARENA_SIZE.x - STRAFE_BOUND_MARGIN \
+		or global_position.y > ARENA_SIZE.y - STRAFE_BOUND_MARGIN
+	if near_bound and not _strafe_bound_flip_done:
+		_strafe_bound_flip_done = true
+		_strafe_sign = -_strafe_sign
+	elif not near_bound:
+		_strafe_bound_flip_done = false
+
+
+func _tick_separation_cache(delta: float) -> void:
+	_separation_refresh_left -= delta
+	if _separation_refresh_left > 0.0:
+		return
+	_separation_refresh_left = SEPARATION_REFRESH_INTERVAL
+	_refresh_separation_neighbors()
+
+
+func _separation_rank_weight() -> float:
+	# Боссы не толкаются вовсе, элитки — слабее рядовых; summon = ordinary.
+	if is_in_group("bosses"):
+		return 0.0
+	if elite_behavior != "" or is_in_group("elite_enemies"):
+		return SEPARATION_ELITE_WEIGHT
+	return 1.0
+
+
+# Кэш 3-4 ближайших соседей: один проход по группе enemies раз в 0.2s (со
+# stagger по id), горячий кадр работает только по кэшу — O(48×4) на всё поле.
+func _refresh_separation_neighbors() -> void:
+	_separation_neighbors.clear()
+	_separation_scratch_dist.clear()
+	_separation_weight = _separation_rank_weight()
+	if _separation_weight <= 0.0 or not is_inside_tree():
+		return
+	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
+	var limit_sq := search_limit * search_limit
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var other := node as Node2D
+		if other == null or other == self or not is_instance_valid(other):
+			continue
+		var dist_sq := global_position.distance_squared_to(other.global_position)
+		if dist_sq >= limit_sq:
+			continue
+		var insert_at := _separation_scratch_dist.size()
+		for index in range(_separation_scratch_dist.size()):
+			if dist_sq < float(_separation_scratch_dist[index]):
+				insert_at = index
+				break
+		if insert_at >= SEPARATION_MAX_NEIGHBORS:
+			continue
+		_separation_scratch_dist.insert(insert_at, dist_sq)
+		_separation_neighbors.insert(insert_at, other)
+		if _separation_scratch_dist.size() > SEPARATION_MAX_NEIGHBORS:
+			_separation_scratch_dist.resize(SEPARATION_MAX_NEIGHBORS)
+			_separation_neighbors.resize(SEPARATION_MAX_NEIGHBORS)
+
+
+func _separation_velocity() -> Vector2:
+	if _separation_weight <= 0.0 or _separation_neighbors.is_empty():
+		return Vector2.ZERO
+	var push := Vector2.ZERO
+	for node in _separation_neighbors:
+		var other := node as Node2D
+		if other == null or not is_instance_valid(other) or not other.is_inside_tree():
+			continue
+		var offset := global_position - other.global_position
+		var dist := offset.length()
+		var other_radius := 32.0
+		var raw_radius = other.get("_separation_radius")
+		if raw_radius != null:
+			other_radius = float(raw_radius)
+		var reach := minf((_separation_radius + other_radius) * 0.9, SEPARATION_MAX_RANGE)
+		if reach <= 0.0 or dist >= reach:
+			continue
+		var away := Vector2.ZERO
+		if dist > 0.001:
+			away = offset / dist
+		else:
+			# Идеальная стопка (pack-спавн в одну точку): анти-симметричный
+			# детерминированный развод — XOR id даёт общий угол, знак по порядку
+			# id гарантирует противоположные стороны у обоих участников.
+			var stack_angle := float((get_instance_id() ^ other.get_instance_id()) % 628) * 0.01
+			away = Vector2.RIGHT.rotated(stack_angle) * (1.0 if get_instance_id() > other.get_instance_id() else -1.0)
+		# Вес по глубине перекрытия: вплотную — полный push, у кромки — ноль.
+		push += away * (1.0 - dist / reach)
+	if push == Vector2.ZERO:
+		return Vector2.ZERO
+	return push.limit_length(1.0) * SEPARATION_MAX_SPEED * _separation_weight
+
+
+# Спавн-защита минионов (саммонер/босс-рифтлинги): точка ближе min_distance к
+# игроку выталкивается наружу вдоль направления игрок→точка (в пределах арены).
+func _push_point_from_player(point: Vector2, min_distance: float) -> Vector2:
+	var player := _player()
+	if player == null:
+		return point
+	var offset := point - player.global_position
+	var dist := offset.length()
+	if dist >= min_distance:
+		return point
+	var away := offset / dist if dist > 0.001 else Vector2.RIGHT.rotated(randf() * TAU)
+	return _clamp_to_arena(player.global_position + away * min_distance)
+
+
+# --- /Combat Feel Rework (этап B) --------------------------------------------
 
 
 func _sandbox_attack_delta(delta: float) -> float:
@@ -1363,7 +1587,9 @@ func _update_summoning(delta: float) -> void:
 		parent = get_tree().root
 	parent.add_child(summoned)
 	summoned.add_to_group("summoned_enemies")
-	summoned.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(randf() * TAU) * 44.0)
+	# Этап B: кольцо призыва вокруг саммонера, но не вплотную к игроку (≥140px).
+	var minion_position := _clamp_to_arena(global_position + Vector2.RIGHT.rotated(randf() * TAU) * 44.0)
+	summoned.global_position = _push_point_from_player(minion_position, MINION_SPAWN_MIN_PLAYER_DISTANCE)
 	_play_rig_action("cast", Vector2.UP)
 	_summon_cooldown = summon_interval
 

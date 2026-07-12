@@ -49,6 +49,9 @@ const ADVANCED_SHOOTER_WEIGHT_MAX := 2.00
 const ADVANCED_SUMMONER_WEIGHT_MAX := 2.20
 const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
 const BOSS_DEATH_VICTORY_DELAY := 2.0
+# Этап B (спавн-защита): pack-члены/свита/given-position спавны — минимум до
+# живого игрока (edge-спавны фильтруются шире, SPAWN_PLAYER_SAFE_RADIUS=420).
+const GIVEN_SPAWN_MIN_PLAYER_DISTANCE := 320.0
 const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectiles", "enemy_projectiles", "enemy_hazards"]
 
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
@@ -531,7 +534,8 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 
 	var enemy := enemy_packed_scene.instantiate() as Node2D
 	game.add_child(enemy)
-	enemy.global_position = _clamp_spawn_position(spawn_position) if use_given_position else _random_spawn_position()
+	# Этап B: явные точки (пачки/свита) тоже держат дистанцию до живого игрока.
+	enemy.global_position = _push_spawn_from_player(_clamp_spawn_position(spawn_position), GIVEN_SPAWN_MIN_PLAYER_DISTANCE) if use_given_position else _random_spawn_position()
 	_scale_enemy_for_current_wave(enemy)
 	game.record_codex_enemy_discovery(enemy)
 	_connect_enemy_rewards(enemy)
@@ -1195,7 +1199,18 @@ func _random_spawn_position() -> Vector2:
 		var position := _random_edge_spawn_position()
 		if _is_spawn_position_clear(position):
 			return position
-	return _clamp_spawn_position(_random_edge_spawn_position())
+	# Этап B: все попытки провалились (игрок стоит у кромки) — фолбэк не голый
+	# clamp случайной точки, а точка кромки, МАКСИМАЛЬНО удалённая от игрока.
+	var player_position := _live_player_position()
+	var best := _clamp_spawn_position(_random_edge_spawn_position())
+	var best_distance := best.distance_to(player_position)
+	for attempt in range(8):
+		var candidate := _clamp_spawn_position(_random_edge_spawn_position())
+		var candidate_distance := candidate.distance_to(player_position)
+		if candidate_distance > best_distance:
+			best = candidate
+			best_distance = candidate_distance
+	return best
 
 
 func _random_edge_spawn_position() -> Vector2:
@@ -1218,8 +1233,33 @@ func _random_active_spawn_edge() -> int:
 	return int(game.active_spawn_edges[game.rng.randi_range(0, game.active_spawn_edges.size() - 1)])
 
 
+# Этап B: живая позиция игрока для спавн-защиты. Раньше фильтр мерил дистанцию
+# до ФИКСИРОВАННОГО ARENA_CENTER — у краёв арены мобы спавнились вплотную к
+# игроку. Фолбэк на центр остаётся только когда игрока нет (меж-боевые экраны).
+func _live_player_position() -> Vector2:
+	if game.current_player != null and is_instance_valid(game.current_player):
+		return game.current_player.global_position
+	var player := game.get_tree().get_first_node_in_group("player") as Node2D
+	if player != null and is_instance_valid(player):
+		return player.global_position
+	return game.ARENA_CENTER
+
+
+# Этап B: pack/retinue/given-position спавны не садятся на голову игроку —
+# точка ближе min_distance выталкивается вдоль направления игрок→точка
+# (затем клампится в арену; у самой кромки допускаем частичный возврат).
+func _push_spawn_from_player(position: Vector2, min_distance: float) -> Vector2:
+	var player_position := _live_player_position()
+	var offset := position - player_position
+	var distance := offset.length()
+	if distance >= min_distance:
+		return position
+	var away := offset / distance if distance > 0.001 else Vector2.RIGHT.rotated(game.rng.randf() * TAU)
+	return _clamp_spawn_position(player_position + away * min_distance)
+
+
 func _is_spawn_position_clear(position: Vector2) -> bool:
-	if position.distance_to(game.ARENA_CENTER) < game.SPAWN_PLAYER_SAFE_RADIUS:
+	if position.distance_to(_live_player_position()) < game.SPAWN_PLAYER_SAFE_RADIUS:
 		return false
 	for obstacle in game.get_tree().get_nodes_in_group("arena_obstacles"):
 		var obstacle_node := obstacle as Node2D

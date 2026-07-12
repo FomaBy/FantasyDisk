@@ -850,7 +850,9 @@ func _summon_riftlings() -> void:
 		var summon := scene.instantiate() as Node2D
 		parent.add_child(summon)
 		summon.add_to_group("summoned_enemies")
-		summon.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+		# Этап B: кольцо рифтлингов вокруг босса, но не вплотную к игроку (≥140px).
+		var riftling_position := _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+		summon.global_position = _push_point_from_player(riftling_position, MINION_SPAWN_MIN_PLAYER_DISTANCE)
 		HazardVfx.summon_portal(summon, 82.0, Color(0.58, 0.30, 1.0, 1.0))
 
 
