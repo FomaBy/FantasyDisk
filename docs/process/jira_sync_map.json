@@ -4747,5 +4747,10 @@
   "key": "SCRUM-1096",
   "status": "Готово",
   "desc_hash": "789444e64e26fee68cfbd1b8a39e6620"
+ },
+ "design_release_0_2_1_poster_task.md": {
+  "key": "SCRUM-1098",
+  "status": "Готово",
+  "desc_hash": "e8d0db6ab4c9457fd36c0b12edb6f4af"
  }
 }
