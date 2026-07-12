@@ -75,3 +75,46 @@ reset-footer button and no current inventory entry.
 - compact Event windowed exact-rect/containment gate and captures: PASS at
   1152×648 and 1280×720;
 - runtime UI smoke and full runtime smoke: PASS.
+
+## QA-Вердикт (2026-07-12, independent QA) — FAILED
+
+Статус: FAILED
+
+Independent QA on fresh `origin/dev@7a69a7712704efc33a0726aa606af63f23db7f8e`
+confirmed the delivered UI/source evidence but found a blocking weakness in the
+mandatory migration verifier.
+
+Passed before the blocker:
+
+- `tools/typography_inventory.py --check`: current; schema 3 records `246`
+  total / `244` mapped / `2` truthful SCRUM-1068 allowlist / `0` unreviewed /
+  `0` routed SCRUM-1073, with `139` unique original/replacement pairs;
+- clean-tree migrator idempotence and replacement liveness: PASS;
+- post-rebase main-menu version captions remain separate `semantic_native`
+  mappings; SCRUM-1070 owns no inventory site;
+- live PixelLab MCP provenance for approved `6e512c63-5c42-44ee-a6b3-09a3ed69189d`
+  and rejected `c60357ee-05ee-43bd-939c-a8ece7c82ef5` is accurate and
+  byte-identical to the committed files;
+- planning/compositor recheck: `ready_for_image`, `8/8` zones, deterministic
+  composite/debug output; visual 1152×648 and 1280×720 Event screenshots remain
+  readable and frame-safe;
+- the four locked runtime scripts match their pre-task `>220`-character line
+  counts and contain no nested `resolve_fixed` or deprecated `clamp_to_role`.
+
+Blocking negative control:
+
+`tools/migrate_scrum1073_typography.py::_reconcile_format_only_fingerprints()`
+accepted a same-group replacement that removed the semantic resolver and role
+literal entirely (`add_theme_font_size_override("font_size", 1)`). It returned
+`true`, copied the old `role: action` / `status: mapped`, and rewrote the
+migration replacement fingerprint. Therefore the claimed fingerprint-first
+gate can silently bless behavioral drift and print PASS; no negative regression
+test covers this path.
+
+Linked current-sprint bug: SCRUM-1087, which blocks this issue. SCRUM-1073 stays
+in `Контроль качества` until the verifier fails closed, receives negative drift
+tests, and independent re-QA passes. The remaining expensive runtime matrix was
+not repeated after this deterministic acceptance blocker was confirmed.
+
+Disk cleanup: pending removal of the disposable QA worktree and `/tmp` evidence
+after Jira/mirror sync is pushed.

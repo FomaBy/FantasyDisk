@@ -4611,7 +4611,7 @@
  "SCRUM-1073_legacy_cross_band_typography_geometry.md": {
   "key": "SCRUM-1073",
   "status": "Контроль качества",
-  "desc_hash": "b0bc392015007bdfaca60530567ba290"
+  "desc_hash": "76cb1a40070f5e4250ce15c8ae0cf17e"
  },
  "SCRUM-1061_semantic_typography.md": {
   "key": "SCRUM-1061",
@@ -4697,5 +4697,10 @@
   "key": "SCRUM-1083",
   "status": "Готово",
   "desc_hash": "9c86f97f06ee8fd314e5a2fe8938ff8e"
+ },
+ "bug_scrum1087_typography_migrator_reconciliation_drift.md": {
+  "key": "SCRUM-1087",
+  "status": "К выполнению",
+  "desc_hash": "d6c8f615a10dca37f72c2aba91d1ea52"
  }
 }
