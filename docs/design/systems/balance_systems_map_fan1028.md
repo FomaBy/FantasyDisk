@@ -1,0 +1,367 @@
+# FAN-1028: Карта балансовых систем FantasyDisk (аудит Claude, 2026-07-12)
+
+> Породено воркфлоу из 9 параллельных read-only аудитов + синтез (интерактивная Claude-сессия,
+> параллельная полоса FAN-1028). Синтез покрывает 6 отчётов; три отчёта, не дошедшие до
+> синтезатора (измерительный контур, история балансовых работ, непрямой урон), приложены ниже
+> в полном виде. Референс для ребаланса всех 17 классов под проходимость возвышений 1 и 5.
+
+Ниже сводная карта. Важная оговорка о входных данных: из заявленных 9 отчётов в мой промпт реально дошли **6** (char-data, derived-stats, weapons, weapon-exec, run-structure, economy-levelup — последний оборван на середине блока risks). Отчёты по врагам-как-подсистеме, prior-work и измерительному контуру отдельными блоками не пришли; секции 4-5 собраны из перекрёстных упоминаний в дошедших отчётах + известного QA-контура проекта, лакуны помечены. Три расхождения между отчётами я уже проверил по коду (см. §6, помечены ✅).
+
+---
+
+# КАРТА БАЛАНСОВЫХ СИСТЕМ FANTASYDISK (референс для ребаланса)
+
+## 1. Модель силы персонажа: цепочка base stats → DPS
+
+### Слой 0 — базовые статы
+8 статов (`STAT_NAMES`, progression_data_characters.gd:5-14): strength, agility, intelligence, perception, energy, knowledge, endurance, leadership. `BASE_STATS` 17 классов (:16-135), **суммы НЕ выровнены**: 40 (berserk, sniper, assassin, ranger, doctor, chemist, knight), 41 (dark_mage), 43 (soldier, thief, guitarist, druid), 44 (elementalist), 46 (biologist, robot), 47 (priest), 49 (engineer). Разница — не баг: компенсируется budget-моделью оружия (слой 3). Fallback на «berserk» при неизвестном id (progression_data.gd:642,773,878) — опечатка молча даст чужие статы.
+
+### Слой 1 — growth-скаляры (внутри рана)
+`_scaled_stat_growth` (progression_data.gd:2013-2018): `stat_eff = base + max(stat−base,0) × CLASS_LEVEL_STAT_GROWTH_SCALARS[class][stat]` — скалируется **только положительная дельта над базой**. Скаляры (progression_data_balance.gd:145-164): усиленные — assassin str/agi 1.668, chemist agi/int 1.70, doctor int 1.80 (agi 1.10), guitarist energy 1.68, druid energy 1.70 (per 0.55, lead 0.70), berserk str 1.18/agi 1.10; порезанные — engineer str/agi 0.72 (lead 0.80), knight str/agi 0.801, dark_mage agi/int 0.84, thief 0.86, robot 0.88, elementalist agi/int 0.92, soldier 0.95, priest 0.95. Отсутствует = 1.0. **Ловушка**: смена базы двигает и старт, и якорь роста разом; дебаффы ниже базы скаляры обходят; `geometry_stat_growth_from_delta` (progression_data.gd:2181-2189) — геометрия некоторых оружий растёт ТОЛЬКО от дельты.
+
+### Слой 2 — derived_parameters (единая точка деривации)
+`ProgressionData.derived_parameters(stats, run_modifiers, weapon_config)` (progression_data.gd:2021-2236), 25+ параметров. Ключевые формулы:
+
+| Параметр | Формула | Источник |
+|---|---|---|
+| Физ. урон | `15.0×str/10 × weapon_mult × damage_mult + flat` | :2155,2197 |
+| Маг. урон | `14.0×magic_int/10 × weapon_mult × damage_mult × magic_mult + flat`; magic_int = base_int + max(int−base,0)×1.30 у элементалиста | :2156-2170,2198 |
+| Скор. атаки | `max(0.1, 0.27×(agi + 0.18×ene + 0.10×per + 0.04×end) × AS_mult)` | :2171,2199 |
+| HP | `(50×end/4 + flat) × mult` = **12.5×endurance, плоской базы НЕТ** | :2205 |
+| Крит-шанс | `raw = 0.04 + 0.0075×agi + 0.75×(флэты)` (CRIT_FLAT_EFFECTIVENESS=0.75 ✅ проверено, :2129); `eff = clamp(raw/(1+raw×0.45), 0, 0.55)` | :2137-2141 |
+| Крит-урон | `clamp(1.30 + 0.055×agi + 0.75×flat, 1.0, 2.75)` | :760-764 |
+| Уворот | `raw = 0.02+0.010×agi+флэты; raw/(1+raw×1.15), cap 0.55` (дым Вора: сумма ≤0.90) | :645-648,2203 |
+| Защита | `raw = 0.04+0.018×end; raw/(1+raw×0.55), cap 0.62` | :710-711,2204 |
+| Absorb | `0.145×end + flat/(1+flat×0.11)`; в бою удар после absorb ≥42% исходного | :718-723; player.gd:945-946 |
+| Реген | `max(0, 0.16+flat×0.35+minus) × (0.45+kno/12)`; у Доктора база отрезана | :726-740,2228 |
+| DoT | `dot_damage = max(1, (4.0+0.65×kno+flat) × damage_multiplier)`; `dot_speed = max(0.45, 0.65+0.08×kno+0.015×ene+0.010×agi+flat)` | :2172,2211-2212 |
+| Move | `(282 + 6.2×agi) × mults` | :2202 |
+| Pickup | `(105 + 7×per) × trait(вор 1.85) + flat` | :2210 |
+| Attack range | `(cfg[240] + 2.5×per + w_int[0.35]×int + 0.25×end + 0.35×lea) × range_mult` | :2190-2194,2206 |
+| AoE radius | `(cfg[190] + 3.5×per + w_int[0.45]×int + 0.35×kno + 0.30×lea) × pow(run_aoe, exp) × passive` | :2111,2207 |
+| Ult mult | `1.0 + 0.02×ene + 0.002×Σ(все 8 статов) + flat` | :2235 |
+
+**Softcap-ы этого слоя** (все несущие для гейтов; инвариант softcap(1.0)==1.0 нельзя ломать):
+- run damage/magic: `1 + clamp(excess/(1+excess×0.03), 0, 11)` — **cap 12.0 / knee 0.03** (progression_data.gd:658-663; balance.gd:239-242); исторический прецедент: raw ×31 у берсерк/молот → 60451→26k DPS.
+- run attack_speed: **cap 1.70 / knee 0.50**.
+- run dot-флэты: **dot_damage_flat ≤ +12, dot_speed_flat ≤ +1.0** (:2122-2125) — карты «+3 DoT» мертвы после ~4 пиков.
+- условные бонусы: kill_momentum AS ≤0.12 / crit_dmg ≤0.09; rage_hit dmg ≤0.10 / AS ≤0.075; flurry speed ≤0.25 / dodge ≤0.20 (:2069-2074,2095-2108).
+- **passive_mods оружия НЕ капятся** (:2048-2051) — обход всех диминишей, главный runaway-риск.
+- sandbox-слой 0.5..2.0 — вне softcap, не для релизного ребаланса (SCRUM-976).
+- Изоляция типов урона (SCRUM-524, :2142-2153): сила→физ, инт→маг, знание→DoT; гейт tests/damage_type_isolation_test.gd. **Асимметрия**: dot_damage множится универсальным damage_multiplier (:2211) — «+15% урон» качает DoT, «+14% маг» — нет.
+
+### Слой 3 — конфиг оружия и budget-модель
+progression_data_weapons.gd (1235 строк), 17×3 оружия, тиров/анлоков нет. `ProgressionData.weapon()` (progression_data.gd:1992-2003) инжектит `budget_damage_multiplier` из авто-тюнера:
+- **Финальный оружейный множитель = config.damage_multiplier × budget_damage_multiplier** (:2041).
+- Тюнер: `budget_damage_multiplier = clamp(sqrt(solo_scale×aoe_scale), 0.28, 2.80)` (:1123-1146), таргеты = **BASE_SOLO_DPS 48 / BASE_AOE_DPS 150** × профиль класса (CLASS_BUDGET_PROFILES: dmg_budget/solo/aoe, напр. dark_mage 1.15/0.84/1.30, assassin и ranger 1.15/1.30/0.70, doctor 0.85/1.00/1.00, robot 0.88/1.07/1.05), считается **на BASE_STATS класса** → смена базовых статов молча перекраивает урон всего кита.
+- Сырой damage_multiplier (0.24 у acid_flask … 4.6 у bone_saw) — НЕ баланс, а позиционирование тюнера вне сатурации клампа (прецеденты: thief_smoke_bomb 1.02→1.34; blast_powder «вне сатурации 2.80»).
+- Экспоненты апгрейдов только на run-часть: hammer 1.05/1.08, druid summon_amulet 1.22, chemist homunculus_vial 1.40, **engineer_sentry 2.45** (:2044-2047,2063,2111).
+- Бюджетный интервал: `max(fire_interval/attack_speed, 0.18)` (:1163); рантайм-дубль в player.gd:3432.
+- Матожидания трейтов зеркалятся в бюджете (эхо солдата ×1.5, rage-фактор берсерка при missing_hp 0.30 → 1.12, дистанция снайпера, сеть инженера, аура друида); **НЕ зеркалятся**: молитва Священника (+20% авто до SCRUM-926) и «Разогрев» Гитариста — их фактическая сила выше формульной.
+
+### Слой 4 — применение к оружию
+`player._apply_weapon_scaling` (player.gd:3414-3468): `weapon.damage = derived[damage_parameter]` (дефолт «damage», если поле отсутствует — ✅ проверено: melee-семейство Берсерка/Рыцаря получает derived["damage"] через это же место); `fire_interval = max(0.18, base/(attack_speed×constellation))`. Каналы (CLASS_DAMAGE_PARAMETER, characters.gd:899-917): физ — berserk, soldier, thief, sniper, robot, engineer, assassin, ranger, knight; маг — elementalist, priest, biologist, dark_mage, guitarist, doctor, chemist, druid. **SummonerWeapon игнорирует derived attack_speed** (player.gd:3434-3443) — AS-баффы не ускоряют призыв-классы.
+
+### Слой 5 — исполнители (фактический хит)
+- ClassWeapon (15 классов, ~40 режимов, class_weapon.gd:72-116): `_rolled_damage` (:5684-5714) = `derived[dp] × крит × charge × [summon_role × (1+min(LDR×0.060+SA×0.016, 1.15))] × network × rhythm_echo`; далее `_damage_enemy` (:5153-5199): meta_damage_multiplier, constellation-метки (кламп ≤0.55), трейты Снайпера (дистанция в момент урона, DoT не скейлится) и Биолога (×1.20 прямые по заражённым), drain-хил ×0.35.
+- BerserkWeapon (берсерк+рыцарь, berserk_weapon.gd:803-823): читает **поле damage** (заполненное слоем 4) × крит × rage_multiplier (1.0→1.4); дедуп «1 хит/цель/замах».
+- Модели диминиша толпы зашиты **константами кода**, не данными: AoE-снаряды 5 полных/1.5×k, лужи 1/1.5 (тик ×0.55), пул-взрыв 1/3.0, вороны 3/0.60, метеор-зона 2/1.2, пила 4/×0.72^n; полный-урон-всем без капа: smoke_bomb, волны/рифф/пульс гитариста, кадило (storm_ticks волн БЕЗ дедупа), инъектор биолога, ветки moon_split (без спада!).
+- Скрытые доли в коде: BACKSTAB 1.22/1.35, DEADEYE 1.34/0.35, REACTOR 0.42, квадрат 0.45/0.70, PRISM 0.72/0.55, POOL 0.55, INJECTOR_PHYSICAL_SHARE 0.50, дрон 0.90 (захардкожен — читает несуществующее поле, engineer_orbit_drone.gd:153-155).
+- Сустейн тройной резки: конфиг heal_percent × **WEAPON_DRAIN_HEAL_MULTIPLIER 0.35** × per-second бюджет (drain 7.0/с hard 11.0; vampiric 1.1/с hard 2.0; balance.gd:198-214).
+- Fire-interval артефакты правятся на точке потребления (реликварий ×0.75, кадило ×1.35, порох ×0.78, метеор ×1.45; class_weapon.gd:602-612) — **невидимы для budget/CSV**.
+
+### Слой 6 — рост за ран и мета
+XP: старт 5, `next = ceil(cur×1.09+0.8)` (player.gd:121,3329; balance.gd:371-373) → ~14-15 lvl к боссу А1, ~23-24 к А2, ~32 за 20-боёвый ран. Level-up = 1 из 3 карт из **24** LEVEL_UP_REWARDS (✅ пересчитано: 24; content.gd:488-513), редкая «+1 главный стат» 5%/слот (MAIN_STAT_SLOT_CHANCE, ui_screens.gd:12044). Артефакты-семьи +2/+4/+7 за тир (цены 30/55/95, ролл ≈64/29/8%). Мета: созвездие класса = +18..25% силы (гейт, meta_progression.gd:1366-1378), Атлас ≤1.35 аккаунт / класс-дельта ≤0.18, CLASS_PROGRESSION к 9 победам +12% урона/+6% HP/+4% AS, трек возвышений ~×1.1235 урона к A5. Возвышенские награды кладутся в run_modifiers = **ПОД softcap** (main.gd:1154-1162).
+
+### Ульты (отдельный контур)
+Урон = `derived[канал] × ULTIMATE_CONFIGS.damage × ultimate_multiplier` (player.gd:2472-2700), берсерк доп. × rage; по боссам `≤ enemy.max_health × boss_cap` (0.07-0.11; player.gd:2750) — **boss_cap важнее damage-множителя против боссов**. Канал захардкожен per-class в player.gd, не читается из CLASS_DAMAGE_PARAMETER. Заряд: dealt×0.029-0.036 + taken×0.95-1.55 (танки knight/robot 1.55 — их выживаемость замедляет их же ульты). Полные конфиги 17 ульт с dur/radius/damage/targets/boss_cap — в отчёте char-data (numbers), например: sniper «Последний Выстрел» r760/×1.35/5 целей/boss_cap 0.10; knight «Бастион» 5.0с/r260/×0.70/boss_cap 0.07.
+
+---
+
+## 2. Модель угрозы: враги по раундам × возвышение
+
+### Кривая стадий
+`stage_scale(s) = 1.18^s + 0.075×s` (progression_data.gd:837-839); `s = route_stage + (act−1)×8` (main.gd:40,949-950). Некомбатные узлы **тоже** двигают stage (route_map_screen.gd:1468-1472).
+
+| stage | 0 | 4 | 8 (босс А1) | 12 | 16 (босс А2) |
+|---|---|---|---|---|---|
+| scale | 1.00 | 2.24 | 4.36 | 8.19 | 15.33 |
+
+### Волновые враги
+- HP = `base_scene × ENEMY_BALANCE.hp × stage_scale × (1 + wave×0.065 + elapsed×0.22) × hp_pressure(≤1.38) × [босс-бой 0.72 | элитка 0.82] × asc_enemy_hp` (combat_director.gd:733-760).
+- Урон = `base × ENEMY_BALANCE.dmg × (1 + (stage_scale−1)×0.46 + wave×0.024) × dmg_pressure(≤1.24) × [0.86|0.95] × asc_enemy_dmg` (:740-755).
+- ENEMY_BALANCE hp: default 3.1 / runner 2.6 / biter 2.7 / bruiser 4.6 / shield 4.3 / shooter 3.2 / summoner 3.6 / flying 2.75 / elite 4.6 / boss 1.9; dmg: 1.25/1.19/1.23/1.38/1.27/1.30/elite 2.10/boss 1.46. Базовые HP сцен: default 3.0, runner 1.0, biter 1.5, bruiser 8.0, shield 10.0, shooter 2.0, mage 3.0, spitter 2.0, shaman 4.5.
+- Спавн: `round((5 + stage + floor(wave/3) + floor(elapsed×3)) × density)`, density = asc_spawn_mult × spawn_pressure(≤1.55) × [first_wave 1.5]; кап живых `min(22×scale + stage×6 + floor(wave/2)×3, 48)`. С stage 4 растут веса shooter +10%/стадию (кап ×2.0), summoner +12% (×2.2), heavy +6% (×1.66).
+- Мини-элитки: шанс `clamp(asc + 0.015 + stage×0.006 + wave×0.001 + elapsed×0.025, 0, 0.18)`, 10 видов hp_mult 0.34-0.92; скейлятся ДВАЖДЫ (ENEMY_BALANCE.elite × профиль вида).
+
+### Элитки и боссы (ключевая асимметрия!)
+- Элитка узла: HP = `base(12-24) × 4.6 × (25 + scale×4) × 1.08 × подтип(1.35/0.92/1.12) × asc_elite_hp`; урон = `base × 2.10 × (1+(scale−1)×0.78) × 1.06` — **БЕЗ каких-либо asc-модов урона** (combat_director.gd:947-982). Пример: armored на st4 ≈ 5474 HP.
+- Босс: HP = `base(300-430) × 1.9 × (5.40 + scale×1.55) × asc_boss_hp`; урон = `base × 1.46 × (1+(scale−1)×0.70)` — множитель ≈**×16.1 на st16**, asc урон не трогает (:989-1014). Rift Warden (base 320): **≈7394 HP (босс А1) / ≈17734 (А2) / ≈23054 (А2, возвышение 5)** → требуемый DPS за 300с: **≈25 / 59 / 77**. Базы: rift_warden 320, disk_devourer 380, bone_archon 330, brood_mother 300, ashen_colossus 390, secret 430 (×1.18 HP/dmg сверху).
+- **asc enemy_hp/enemy_dmg действуют ТОЛЬКО на волновых**; элитки получают лишь elite_hp_mult (L3), боссы — boss_hp/extra_phase/telegraph (L5).
+
+### Лестница возвышений (кумулятив)
+L1: hp×1.25, dmg×1.18, цены ×1.25. L2: hp×1.15, dmg×1.10, spawn×1.30, cooldown×0.78. L3: hp×1.12, elite_hp×1.25, instant_phase, mini_elite +0.16, награды ×0.80. L4: hp×1.12, dmg×1.12, лечение ×0.68, таймер ×1.25, mini −0.05. L5: dmg×1.14, boss_hp×1.30, +фаза4 (≤15% HP), телеграфы ×0.72, игрок −20% max HP, first_wave ×1.5, mini −0.08. **Итог L5: волновые hp ×1.8025, dmg ×1.657** (progression_data_ascension.gd:15-26).
+
+### Что реально убивает
+1. **Контакт толпы** — 0.85с/враг (biter 0.45), windup 0.22с, **кап 20% max HP/тычок** (enemy.gd:1336-1347) → давит, но не ваншотит.
+2. **Снаряды shooter/mage/spitter** (базы 2.4/2.8/2.6) — **БЕЗ капа доли HP** (enemy_projectile.gd:62-63), полный dmg-скейл.
+3. **Элитные паттерны** (slam_wave df 2.0, shadow_strike 2.4 и т.д.) — кап 25% max HP.
+4. **Боссовые зоны/сламы/хазарды — БЕЗ капа**: slam = contact×(1.5+0.22/фаза), rift zone = proj×(1.25+0.18/фаза), phase hazard = proj×(1.35+0.25/фаза) (boss.gd:676,716,976); на st16 базовые 3.4-4.1 → **55-66 урона за зону** = ваншот для трио с 37.5 HP (elementalist/dark_mage/chemist). На L5 телеграфы ещё ×0.72.
+Защита игрока: i-frames 0.32с, dodge 0.55, defense 0.62, absorb-пол 42%.
+
+### Условия боёв
+Обычный узел = «выживи таймер» `min(60+3×stage, 90) × asc_round_mult` (на L4 75-112.5с); элитка/босс = **kill-or-lose 300с фикс** (asc-множитель НЕ применяется; main.gd:23-27; combat_director.gd:1378-1386). Фазы босса 66%/33% (секретный 50%/25%), +фаза4 при 15% (L5), энрейдж при 35%.
+
+---
+
+## 3. Условие победы (цитата из run-structure)
+
+> «Пройти игру» = убить босса Акта 2 (экран победы, record_boss_victory поднимает возвышение класса, если забег шёл на текущем максимуме). На возвышении 5 после финального босса дополнительно стартует secret_ascension_boss (430HP, ×1.18 HP/dmg сверху) — его убийство и есть финал такого забега.
+
+Факт-опора: «Условие победы забега: убить босса Акта 2 → capture_run_metrics_finals + record_boss_victory + _show_victory_screen; после босса Акта 1 — выбор 1 из 3 суперредких артефактов и advance_to_next_act» (combat_director.gd:378-400); секретный босс — только при `selected_ascension_level >= MAX_ASCENSION_LEVEL (=5)` (main.gd:1088-1111; meta_progression.gd:716-717). Разблокировка: selectable_max = пройденный+1, кап 5 (meta_progression.gd:591-611). Смерть игрока или таймаут элитки/босса = перманентный конец забега.
+
+---
+
+## 4. Таблица 17 классов
+
+Формат: Σ статов / HP базовое (12.5×end) / канал / трейт / оружия (сырой dmg-mult) / budget-профиль (dmg/solo/aoe) / известные SCRUM-правки и подозрения. ⚠️ Полного prior-work отчёта не было — колонка «проблемы» собрана из SCRUM-ссылок и risks дошедших отчётов.
+
+| Класс | Σ/HP | Канал | Механическая идентичность (трейт, characters.gd) | Оружия (raw dmg) | Budget | Проблемы / подозрения |
+|---|---|---|---|---|---|---|
+| **berserk** | 40/87.5 | физ | Ярость: +до 40% от missing HP (:334-353); ульта доп. ×rage | sword 1.15 / axe 0.85 / hammer 0.55 (exp 1.05/1.08) | 1.00/1.00/1.00 | Прецедент runaway молота (raw ×31 → softcap 12 введён); melee читает поле damage (berserk_weapon.gd:803) |
+| **soldier** | 43/75 | физ | Эхо 50% действия, delay 0.18с, деплой исключён (:346-348) | rifle 0.60 / grenade 2.35 (fi 3.10, полёт кап 460) / bayonet 0.92 | 1.00/1.00/1.00 | Эхо зеркалится ×1.5 в бюджете — нерф трейта без пересчёта зеркала перекосит |
+| **thief** | 43/50 | физ | Хватка ×1.85 pickup (только база 105+7×per) | coin 0.82 (цепь 6, кап 8, спад до 50%) / dagger 0.96 (backstab ×1.22/×1.35) / smoke 1.34 | 1.08/1.00/1.00 | smoke_bomb поднят 1.02→1.34 (сатурация тюнера 2.80); смоук без диминиша по толпе |
+| **elementalist** | 44/37.5 | маг | Проводник ×1.30 на magic-бонусы + дельту int (SCRUM-1019: отриц. дельта без усиления) | orb_ring 1.35 / prism 1.90 (плечо 4800px) / meteor 2.90 (fi 4.50 — МАКС) | 1.08/1.00/1.10 | Хрупкий (37.5 HP) vs некапнутые босс-хазарды; 4 точки применения ×1.30 — новые magic-источники ломки |
+| **sniper** | 40/87.5 | физ | Дальний расчёт: +0.10/100px сверх 120, кап +0.60; DoT не скейлится (:481-505) | deadeye 1.22 (хит ×1.34) / spotter 2.05 / shatter 0.42 (≤2 пули/врага) | 1.00/1.15/0.80 | Артефакт longshot_scaling стакуется поверх; burst-оси vs боссы без капа урона |
+| **priest** | 47/62.5 | маг | Молитва боя: +0.20 dmg / +2 HP/с / −0.20 incoming, одна на бой; **до SCRUM-926 авто = кара (+20% урона)**, НЕ зеркалится бюджетом | reliquary 0.96 / censer 0.58 / chime 0.76 | 0.92/1.03/1.05 | Все замеры DPS включают авто-баф +20% — UI выбора молитвы сдвинет баланс без правок чисел; кадило: волны без дедупа (скрытый ×storm_ticks) |
+| **biologist** | 46/50 | маг | Разбор образцов ×1.20 прямых хитов по bio_infection; DoT не усиливается | spore_lens 0.66 / injector 0.85 (+0.50 физ-доля/хит) / symbiote 0.60 | 1.08/0.92/1.18 | Инъектор бьёт всех в коридоре без пирс-капа; физ-доля 0.50 в коде |
+| **robot** | 46/125 | физ | Бронекорпус ×0.8 incoming (последний множитель, пол 0.5, player.gd:960); кап митигации ≈94% < гейта 98% | anchor 1.55 / press 1.05 / reactor 0.70 (вентиль ×0.42) | 0.88/1.07/1.05 | taken_charge 1.55: бафф выживаемости замедляет ульту; будущие стаки скидок упрутся в пол 0.5 |
+| **engineer** | 49/62.5 | физ | Сеть мастерской: +6%/стек, кап 3+floor(LDR/6), мина 0.5 веса | sentry 0.55 (**exp 2.45 — МАКС**; магазин 15) / drone 2.4 (контакт 0.90 захардкожен) / mines 3.60 (кап 6) | 0.96/0.98/1.12 | Лидерство — 4-кратный сток (урон до +115%, парк, магазин, стеки) → суперлинейный рост; при полном парке деплой сгорает с кулдауном; exp 2.45 → runaway-риск на A5 |
+| **dark_mage** | 41/37.5 | маг | Тёмный распад: он-килл взрыв magic×0.85 r120 (:376-391) | book 0.95 (зеркало, ≤3 хита/врага) / **skull 1.0 curse_only** (тик ×0.58, int_scale 0.08, SCRUM-469-коридор) / wand 0.95 (цепь 3) | 1.15/0.84/1.30 | SCRUM-783: end 2.0→3.0 (EHP ~34.6→50), «остаётся самым хрупким aoe-классом» — иерархию хрупкости не ломать; череп не скейлится маг-осями |
+| **guitarist** | 43/50 | маг | Разогрев +2%/с до +20%, сброс квалифицированным ударом; НЕ зеркалится бюджетом | electric 0.66 / **bass 0.26 (мин прямой в игре)** / amp 0.85 (fi 2.40, кап 3 ампа) | 1.00/1.00/1.30 | Слабейшие сырые множители кита — полная зависимость от тюнера; подозрение на слабость соло-DPS |
+| **assassin** | 40/62.5 | физ | Хладнокровие: крит-кап 100% (ост. 55%), diminish 0, overflow ×0.5 в крит-урон (кап 2.75); veil dodge 0.10/0.18 | chakrams 0.45 (1+1 хит) / daggers 0.54 (fi 0.38) / venom_wire 0.68 (dot_crit_snapshot 0.6) | 1.15/1.30/0.70 | Мин. AoE в игре (60/82/75); raw крит не достигает 1.0 без флэтов — упирается в оба капа разом; growth 1.668 — лейт-скачок |
+| **ranger** | 40/50 | физ | Сторожевой лук: отброс каждым хитом (kb power, боссы ×0.25); charge-стойка 1.15-1.45с ×1.35-1.70 — реальная каденция ниже номинала | moon_crossbow 1.05 (**split 4 БЕЗ спада** — дешёвая ось разгона) / storm_longbow 1.55 (pierce 4 без спада, но тела едят пирс-бюджет) / trap 1.02 (кап 6, кровотечение без резиста) | 1.15/1.30/0.70 | Сравнение по голому fire_interval завышает его; буст move-speed косвенно нерфит charge |
+| **doctor** | 40/62.5 | маг | Клятва чумного доктора: ВЕСЬ generic-сустейн отрезан в 4 точках (:445-465); выживает на heal_percent×0.35×drain-бюджет | restore 2.7 (heal 16%) / syringe 2.4 (чума 24с, кап 10) / **bone_saw 4.6 (МАКС raw; heal 34%)** | 0.85/1.00/1.00 | Высокие raw = плата за хил; сустейн-ось = только drain-капы 7.0/11.0; новые generic-хилы без doctor_friendly = no-op |
+| **chemist** | 40/37.5 | маг | Катализатор ×1.5 периодики (запекается в dot при применении статуса) | blast_powder 2.60 (без DoT — трейт НЕ усиливает) / acid_flask 0.24 (вечные заряды ×0.30/0.9с, кап 5) / homunculus 2.40 (fi 4.0, exp 1.40, танк 4×HP) | 1.15/0.84/1.30 | Хрупкий 37.5 HP; DoT-капы (flat 12/speed 1.0) бьют по его оси; growth 1.70 |
+| **knight** | 40/125 | физ | Возмездие: контакт-отброс 760 (≈120px), кд 0.4с; боссы/эпик-элиты не смещаются | spear 3.0 (3 укола, 1 хит/цикл) / shield 0.72 (block 0.62!) / flail 0.86 (спираль, 1 хит/каст) | 0.85/1.05/1.00 | Самый нагруженный пассивами (~14 block/counter ключей на КАЖДОМ оружии, counter_incoming до 5.0 у щита — пассивы вне softcap!); taken_charge 1.55 |
+| **druid** | 43/62.5 | маг | Аура дикой силы: 0.10×buff_power, кап 0.30, радиус ×0.85 | **summon_amulet 1.85 — ЕДИНСТВЕННОЕ оружие без пассива** (заглушка :656; exp 1.22; 5+floor(LDR/4)=7 юнитов) / briar 0.70 (физ-хиты ×0.34, НЕ dot-ось) / raven 0.66 (вороны ×0.85) | 1.00/1.00/1.00 | Саммонер: AS-баффы не работают (player.gd:3434); ступени floor(LDR/4) — малые правки статов = 0 или скачок |
+
+Общие для всех prior-work якоря: SCRUM-524 (изоляция урона), SCRUM-503 (диминиш до пассивов), SCRUM-507 (boss-money 92→43, доля <50%), SCRUM-517 (drain-бюджет), SCRUM-516 (лестница возвышений 10→5), SCRUM-551 (freed-lambda семья ally_minion/berserk/class_weapon), SCRUM-853 (растяжка XP), SCRUM-976 (sandbox-слой), балансные тикеты 504/505/506/544 — заблокированы (устаревшие AC + SIGABRT CSV-арбитра).
+
+---
+
+## 5. Измерительный контур
+
+### Что есть (из отчётов + QA-протокола проекта)
+- **Гейты-контракты структуры**: tests/progression_data_character_contract_test.gd, tests/character_ultimate_config_test.gd, tests/damage_type_isolation_test.gd (изоляция каналов), tests/attribute_relevance_test.gd (инвариант 2 primary+8 secondary+7 optional на каждый из 24 атрибутов), 17 пер-китовых tests/*_kit_test.gd — **фиксируют конкретные числа трейтов** (0.40, 0.5, 1.30, 1.85…): ребаланс = синхронная правка тестов.
+- **Формульные DPS-гейты**: `estimate_weapon_budget_for_stats` + `budget_tuning_for` (progression_data.gd:1123-1163) — таргеты 48 solo / 150 aoe × CLASS_BUDGET_PROFILES, кламп 0.28..2.80, интервал-пол 0.18с; работают на пустых run_modifiers → зависят от инварианта softcap(1.0)==1.0.
+- **comfort_band_cross_class_gate.gd** — межклассовая комфорт-полоса; веса COMFORT_WEIGHTS / COMFORT_BAND_SLICE_WEIGHTS (balance.gd:38-143) откалиброваны по raw-DPS lvl20-оптимума. Веса влияют только на измерение — крутить их вместо статов бессмысленно, но любой ребаланс формул требует перекалибровки, иначе ложные FAIL.
+- **ascension_curve_balance_test** — монотонность лестницы возвышений + mini_elite-«горб» (пик L3, спад к L5 ≤ половины пика).
+- **Мета-гейты**: полный класс-билд 1.18..1.25, Атлас ≤1.35, класс-дельта ≤0.18 (meta_progression.gd:50-53, 1366-1378); эмблемы: заработок 20 == спенд-кап 20.
+- **Runaway-гейты**: berserk_dps_runaway_gate.gd (ось Берсерка; заменяет флаки CSV), pool_dot_runaway_gate (~43k PASS; гонять ОДИН, без параллельных Godot — иначе ложный runaway).
+- **character_balance_csv.gd** — полный CSV-арбитр по классам; ⚠️ интермиттентный SIGABRT (freed-lambda) под нагрузкой — полный прогон нестабилен.
+- Прогон: Godot 4.6.3 headless (`~/Downloads/Godot.app`), через tools/godot_gate.py (flock, exit 144/247 = коллизии инстансов); свежий worktree требует `--import`; exit-код мерить pipestatus[1], не хвост пайпа; визуальное — только оконный капчер.
+
+### Чего не хватает (дыры контура)
+1. **Нет гейта «boss_hp/300 ≤ достижимый DPS класса»** — 300с kill-or-lose = скрытый минимальный DPS-гейт (~77 DPS на st16×A5); ни один тест не сверяет каждый класс с этим порогом. Это главный недостающий замер для «каждый класс проходит A5».
+2. **Бюджет/CSV не видят**: fire-interval артефакты (×0.75..×1.45 на точке потребления), захардкоженный контакт дрона 0.90, mode-rework механики — расхождение формульного гейта и живого боя.
+3. **Нет матрицы возвышений**: asc-бонусы классов идут под softcap (конкурируют с run-апгрейдами) — никем не меряется фактическая сила на A5 vs A0.
+4. **Нет замера входящего урона**: некапнутые босс-хазарды vs EHP хрупких классов (37.5 HP) — ни одного survival-гейта по ваншот-порогам.
+5. **DoT-ось без сводного замера**: один стат dot_damage кормит 8+ механик с долями 0.22-0.70 — глобальный бафф неравномерен, харнеса сравнения нет.
+6. Замеры Священника включают авто-молитву +20% (до SCRUM-926) — «чистого» DPS без баффа нет.
+7. Полный CSV нестабилен (SIGABRT) — нет надёжного полного межклассового прогона; отчёт по измерительной подсистеме в этот свод не дошёл — состав порогов перепроверить отдельно.
+
+---
+
+## 6. Конфликты/противоречия между отчётами
+
+**Разрешено проверкой кода (в этой сессии):**
+1. ✅ **LEVEL_UP_REWARDS: 23 (derived-stats) vs 24 (economy-levelup)** → в content.gd:488-513 ровно **24** записи. Economy прав.
+2. ✅ **Крит-флэты: char-data даёт `raw = 0.04+0.0075×agi+crit_chance_flat` без ×0.75; derived-stats/economy — с CRIT_FLAT_EFFECTIVENESS 0.75** → progression_data.gd:2129 умножает флэты на 0.75 (включая rush_crit и пассивы оружия). Char-data формула неполная.
+3. ✅ **Берсерк/Рыцарь: weapon-exec «читает поле damage, derived-оси не действуют» vs derived-stats «player пишет weapon.damage = derived[damage_parameter]»** → player.gd:3421-3427: при отсутствии damage_parameter дефолт «damage», т.е. melee-семейство ПОЛУЧАЕТ derived["damage"] через _apply_weapon_scaling; цепочка цела. Осторожность weapon-exec верна лишь в узком смысле (ролл в момент удара читает поле, а не словарь).
+
+**Требуют перепроверки:**
+4. **Строки knockback_power/aura_radius**: char-data цитирует knockback на progression_data.gd:2214, derived-stats — aura_radius на :2214 и knockback на :2216. Дрейф строк — перед правками сверить актуальные номера (файл живой).
+5. **«Урон врагов ×1.657 на A5»**: economy-levelup подаёт как общий кумулятив сложности, run-structure уточняет — **только волновые враги**; элитки не получают НИ ОДНОГО asc-мода урона, боссы — только HP/фазу/телеграф (combat_director.gd:971-982,1002-1014). При ребалансе лестницы использовать формулировку run-structure; проверить, что доки/тексты возвышений в UI не врут игроку.
+6. **Канал ульты**: char-data — «захардкожен per-class в player.gd:2472-2700, не читается из CLASS_DAMAGE_PARAMETER», но player.gd:2754 и :3017 местами ЧИТАЮТ `damage_parameter_for(character_id)`. Реальная картина смешанная — проверить каждую из 17 ульт на соответствие канала CLASS_DAMAGE_PARAMETER до любых правок каналов.
+7. **Дрон инженера**: weapons подаёт repair_drone dmg 2.4 как данные кита; weapon-exec — контакт «0.90×ролл захардкожен» (читается несуществующее поле weapon.summon_damage_multiplier, engineer_orbit_drone.gd:153-155). Выяснить, участвует ли конфиговый 2.4 в бюджет-зеркале _budget_orbit_drone_dps — иначе тюнер считает не тот DPS.
+8. **DoT × damage_multiplier**: derived-stats фиксирует, что dot_damage множится универсальным damage_multiplier (:2211) — формально трение с инвариантом изоляции SCRUM-524 (знание→периодика). Тест damage_type_isolation это допускает или не покрывает? Проверить до любых правок DoT-оси.
+9. **Молитва Священника**: char-data — «НЕ зеркалится бюджетом, автовыбор кара +20%»; weapons — «trait-компенсации зашиты в бюджет и конфиг разом» (в общем списке). Убедиться, что prayer действительно исключён из estimate_weapon_budget (иначе двойной учёт при внедрении SCRUM-926).
+10. **Кадило vs Колокол**: weapon-exec — кадило бьёт storm_ticks полных волн БЕЗ дедупа, колокол — жёсткий дедуп; weapons подаёт их через одинаковую строку «2 волны ×0.24с». Проверить фактический DPS-разрыв пары внутри кита Священника (риск ложного «равенства» оружий в CSV).
+11. **Урон элиток на возвышениях**: run-structure дважды подчёркивает «урон элиток возвышением вообще не усиливается» — если это дизайн-намерение, зафиксировать явным тестом; если баг — это крупный рычаг A3-A5 сложности.
+12. **Недошедшие отчёты**: enemies (детальные паттерны/ELITE_ATTACK_CONFIGS), prior-work (полный список известных проблем классов), measurement (полный состав харнесов и порогов) — колонка «проблемы» в §4 и §5 собраны по перекрёстным ссылкам; перед финализацией ребаланс-плана добрать эти три отчёта или перегенерировать их.
+
+---
+**Ключевые файлы**: scripts/progression_data_characters.gd (статы/трейты/ульты), scripts/progression_data.gd:2021-2236 (деривация) и :1123-1163 (бюджет), scripts/progression_data_balance.gd (капы/скаляры/веса), scripts/progression_data_weapons.gd (17×3 конфига), scripts/class_weapon.gd + scripts/berserk_weapon.gd (исполнители), scripts/combat_director.gd (скейл врагов), scripts/main.gd (структура рана/возвышения), scripts/meta_progression.gd (мета-бюджеты), scripts/player.gd (применение derived, ульты, входящий урон).
+
+---
+
+# ПРИЛОЖЕНИЯ: отчёты, не вошедшие в синтез
+
+
+## Приложение A. Измерительный контур (полный отчёт)
+
+Измерительный инструментарий баланса FantasyDisk состоит из двух слоёв. ФОРМУЛЬНЫЙ слой (быстрый, детерминированный, секунды): tools/balance_harness.gd и tests/global_damage_balance_smoke_test.gd гоняют ProgressionData.estimate_weapon_budget по всем 51 паре класс×оружие и сверяют solo/5-target DPS и crowd-clear-time (5/10/20 целей) с бюджет-целями класса (база: solo 48 DPS, AoE 150 DPS, коридоры ±20%/±25%/±30%); tools/survivability_harness.gd + tests/global_survivability_balance_smoke_test.gd считают TTD по 4 СИНТЕТИЧЕСКИМ профилям (fragile/steady/sturdy/tank) × 4 сценариям входящего урона (гейты: TTD≤600с, митигация<98%, бессмертие недостижимо, монотонность TTD); tests/ascension_curve_balance_test.gd проверяет только СТРУКТУРУ кривой возвышений (монотонный рост enemy_hp/damage, горб mini_elite с пиком не на максимуме и спадом ≤ половины пика). ЖИВОЙ слой (инстанцирует реального Player + Enemy-болванок с HP 1e9 и меряет фактический урон за 480 кадров ≈ 8с): tests/live_balance_simulation_test.gd (5 архетипов-представителей, только жёсткие ассерты «оружие не молчит»), tools/character_balance_csv.gd (полная матрица 51 пара × {lvl1, lvl20_ideal, lvl20_random} × {1,5,20 целей}; дефолтный режим fast — формульный, живой замер через --mode=live) и два численных регресс-гейта на runaway: berserk/hammer (потолки 3600 DPS на 20t / 650 на 1t) и chemist/acid_flask (потолок 70000 на 20t). ВАЖНО: character_balance_csv.gd лежит в tools/, а не в scripts/dev/.
+
+Ключевой ответ на вопрос про возвышения: per-character метрики на возвышениях 1 и 5 СЕЙЧАС ПОЛУЧИТЬ НЕЛЬЗЯ ни одним инструментом — возвышение полностью отсутствует во всех измерительных путях. Формульный путь жёстко зашивает пустые run_modifiers (progression_data.gd:1159 `derived_parameters(stats, {}, config)`), живые тесты зовут player.configure_character() напрямую, минуя main.apply_ascension_bonuses (main.gd:1154), а болванки — фиксированные манекены без ascension enemy_hp/damage-множителей. Survivability вообще меряется не по 17 классам, а по 4 синтетическим стат-блокам. При этом ВСЕ данные для возвышений уже есть в ProgressionData: ascension_difficulty_mods(level) даёт кумулятивные враг/игрок-множители (A1: enemy_hp ×1.25, enemy_damage ×1.18; A5: enemy_hp ×1.803, enemy_damage ×1.657, player_max_hp ×0.80, healing ×0.68), а ascension_mods(cid, level) — классовые наградные баффы игрока (типично к A5: damage ×1.12, attack_speed ×1.04, +7-8 HP).
+
+Что нужно для метрик A1/A5 (минимальная доработка): (1) формульно — параметризовать estimate_weapon_budget_for_stats аргументом run_modifiers и передавать ascension_mods(cid, A) + {max_health_multiplier: player_max_hp_mult, healing_multiplier: healing_mult}; TTK масштабировать как TTK×enemy_hp_mult(A); (2) для survivability — заменить синтетические PROFILES на base_stats(cid) всех 17 классов и домножить amount сценариев на enemy_damage_mult(A), HP на player_max_hp_mult, regen на healing_mult; (3) живьём — в _measure_dps после configure_character применить player.apply_reward({"mods": ascension_mods(cid, A)}) и домножить run_modifiers (healing/max_health), а practical-TTK считать как (90×enemy_hp_mult(A))/solo_dps. Вся seed-механика идеальных билдов, окна замера и геометрия болванок переиспользуются как есть. Отдельно учесть: формульные отчёты почти нечувствительны к правкам базовых цифр оружия, потому что budget_damage_multiplier авто-выводится под цель (budget_tuning_for, clamp 0.28..2.80) — реальные изменения ощущений видит только живой слой (fast-CSV berserk/hammer ideal_20t=840 против живого замера 16100 в июньском прогоне — расхождение на порядок по runaway-осям).
+
+### Числа
+
+- **БАЗА бюджета** — BALANCE_BASE_SOLO_DPS / BALANCE_BASE_AOE_DPS / BALANCE_WINDOW_SECONDS: 48.0 / 150.0 / 30.0 (progression_data_balance.gd:166-170)
+- **crowd-clear фикстура** — TARGET_COUNTS / ENEMY_HP / CCT-коридор / solo-коридор: [5,10,20] / 80.0 HP / ±30% / ±20% (progression_data_balance.gd:172-175)
+- **global_damage_balance_smoke** — combined-коридор CORRIDOR: 0.25 (±25%), анти-вакуум rows<9 (tests/global_damage_balance_smoke_test.gd:16,106)
+- **global_survivability_smoke** — MAX_TTD / MAX_MITIG / NET_DAMAGE_FLOOR: 600.0 с / 0.98 / 0.05 (tests/global_survivability_balance_smoke_test.gd:16-18)
+- **survivability caps** — DEFENSE_CAP / DEFENSE_DIMINISH / DODGE_CAP / DODGE_DIMINISH: 0.62 / 0.55 / 0.55 / 1.15 (progression_data_balance.gd:177-180)
+- **berserk_dps_runaway_gate** — MAX_IDEAL_20T / MAX_IDEAL_1T: 3600.0 / 650.0 (tests/berserk_dps_runaway_gate.gd:39-40); исторический замер до пере-нерфа: 20t=13792 при старом потолке 40000 (build/qa/scrum503)
+- **pool_dot_runaway_gate** — MAX_POOL_IDEAL_20T / пары: 70000.0 / только chemist/acid_flask; до фикса SCRUM-533 acid_flask≈112k (лог: 1039203 при коллизии), после ≈44k; одиночный прогон ≈43k PASS (tests/pool_dot_runaway_gate.gd:36,43-45)
+- **живой замер (все live-тесты)** — окно / кадры / HP болванки / уровень / сиды: 8.0 с / 480 / 1e9 / lvl20 (19 левелапов + 6 артефактов, RARE_SLOT 5%, OFFER 3) / BASE_SEED=20260620 (+2/пару), live-sim SEED=20260613 (character_balance_csv.gd:30-40; live_balance_simulation_test.gd:19-24)
+- **live_balance_simulation** — TTK_REFERENCE_HP / ZERO_EPS / MIN_ARCHETYPES / мягкий AoE-порог: 90.0 / 0.01 / 4 из 5 / aoe_dps+0.01 < solo*0.9 (tests/live_balance_simulation_test.gd:22-30,75)
+- **comfort-полоса (SCRUM-544)** — COMFORT_BAND_TOLERANCE / срезы / текущая медиана ideal_1: 0.20 (±20%) / ideal_1, ideal_5, ideal_20 / 267.5, полоса [214.0..321.0] PASS (progression_data_balance.gd:86; build/character_balance_band.md)
+- **ascension_curve_balance_test** — пороги структуры: L0: hp=dmg=1.0, elite=0; hp[1]>1 и dmg[1]>1; elite-пик не на max-уровне; elite[max] ≤ 0.5*пика; анти-вакуум ≥5 уровней (tests/ascension_curve_balance_test.gd:24-71)
+- **возвышение A1** — кумулятивные множители: enemy_hp ×1.25, enemy_damage ×1.18, price ×1.25 (progression_data_ascension.gd:17-18)
+- **возвышение A5** — кумулятивные множители: enemy_hp ×1.803, enemy_damage ×1.657, elite_hp ×1.25, boss_hp ×1.30, player_max_hp ×0.80, healing ×0.68, reward ×0.80, spawn_count ×1.30, spawn_cd ×0.78, round_duration ×1.25, boss_telegraph ×0.72, mini_elite 0.03 (progression_data_ascension.gd:15-27)
+- **классовые награды возвышения (игрок, типично к A5)** — ascension_mods кумулятив: damage ×1.05*1.07=1.1235, attack_speed ×1.04, +7-8 max_health_flat, defense/dodge +0.02 (progression_data_ascension.gd:44-67)
+- **текущее состояние гейтов** — worst-отклонения: damage smoke: 51 пар PASSED, худшее CCT +22% doctor/restore_potion/20t (запас 8 п.п. до ±30%); survivability: fragile TTD 1.4-1.6с, steady 4.2-5.4с, sturdy 8.6-13.0с, tank 21.5-33.4с
+- **расхождение fast vs live** — berserk/hammer lvl20_ideal_20t: fast (формула) 839.99 против live 16099.8 (июньский прогон) — порядок величины (build/character_balance_dps.csv; build/qa/scrum503/character_balance_csv_qa.log)
+- **тайминги** — ориентировочная длительность headless: формульные ~10-40с; live-sim ~1-3 мин; berserk-гейт ~1-2 мин; pool-гейт ~1 мин; полный live-CSV ~15-20 мин (QA-лог 22:44→23:03)
+
+### Риски для ребаланса
+- Авто-тюнинг съедает правки: budget_damage_multiplier пересчитывается под цель (clamp 0.28..2.80, progression_data.gd:1132) — формульные гейты останутся зелёными почти при любом изменении сырых цифр оружия; реальный эффект ребаланса виден ТОЛЬКО живым слоем (CSV --mode=live / runaway-гейты). Если clamp насытится (0.28 или 2.80) — пара внезапно вывалится из коридора.
+- Seed-связка гейтов с реестром: berserk_dps_runaway_gate и pool_dot_runaway_gate воспроизводят раздачу сидов CSV полным обходом реестра (+2 на пару). Добавление/удаление/переименование ЛЮБОГО класса или оружия, идущего в порядке обхода раньше berserk/hammer или chemist/acid_flask, сдвинет сид → другой «идеальный» билд → числа гейтов изменятся без изменения баланса (ложный red или ложный green).
+- Жёсткие потолки runaway-гейтов (3600/650 и 70000) зашиты под текущий баланс: намеренный бафф молота Берсерка или луж Химика потребует синхронного пересмотра порогов, иначе перманентный red; нерф — наоборот, обесценит гейт (потолок станет недостижим и перестанет ловить регресс).
+- Живой замер нормирует урон на константные 8с при 480 кадрах (допущение 60fps): под параллельной нагрузкой (второй Godot, флот) DPS искажается — известный ложный runaway pool-гейта. Гонять строго одним процессом: pkill чужих НЕЛЬЗЯ при живом флоте — использовать tools/godot_gate.py (flock) или GODOT_BIN=/private/tmp/fsd_godot_sem/bin/fdengine FSD_GODOT_SLOTS=1.
+- Эвристика _dps_score/_stat_dps_value скопирована в 3 файла (character_balance_csv.gd:354, berserk_dps_runaway_gate.gd:145, pool_dot_runaway_gate.gd:140, с расхождением: в pool-гейте нет sector_multiplier) — правка весов в одном месте рассинхронизирует «идеальные» билды между CSV и гейтами.
+- Comfort-полоса ±20% (band-валидация CSV) завязана на COMFORT_BAND_SLICE_WEIGHTS/OVERRIDES: любое изменение DPS класса без синхронного обновления весов даст FAIL полосы — при ребалансе веса надо пересматривать как часть задачи, а не «подгонять до зелёного» постфактум.
+- ascension_curve_balance_test ассертит ФОРМУ кривой (монотонный монстерский пресс, горб mini_elite, спад ≤ половины пика, ≥5 уровней): реворк лестницы возвышений под «проходимость на A1 и A5» обязан сохранить эти инварианты или явно обновить тест.
+- global_damage smoke сейчас проходит с запасом всего 8 п.п. (worst CCT +22% при ±30% у doctor/restore_potion/20t) — ребаланс легко продавит коридор; чинить надо и цель (профиль/веса), и оружие, а не только множитель.
+- Survivability-гейт требует строгой монотонности TTD по профилям в каждом сценарии и «бессмертие недостижимо» (mitigated-regen>0.05): бафф regen/absorb/dodge у танковых классов может уронить гейт; при этом гейт меряет синтетические профили — реальный per-class баланс выживаемости он НЕ видит, полагаться на него при ребалансе классов нельзя.
+- Возвышения НЕ измеряются нигде: ребаланс «под A1 и A5» текущими гейтами не верифицируется вообще — нужен новый инструмент/параметризация (run_modifiers в estimate_weapon_budget_for_stats + враг-множители в TTK/survivability), иначе приёмка будет на глаз.
+- Полный live-CSV исторически падает SIGABRT (freed-lambda, частично починено teardown'ом в SCRUM-551) и не собирается под нагрузкой — для пер-осевых проверок использовать --pair=/--class= сабсеты и специализированные гейты, полный прогон только на тихой машине.
+- Холодный worktree без .godot-кэша: живые тесты требуют предварительного `Godot --headless --path . --import`, иначе ложные 'class_name not declared' или тихий фолбэк live-sim на формулу (тест зелёный, но ничего живого не мерил); CSV в этом случае падает по '--allow-zero-output' guard'у.
+- Пайп-ловушка exit-кодов: `godot ... | tail` вернёт код tail (всегда 0) — красный quit(1) невидим; мерить pipestatus[1]/pipefail и сверять текст passed/FAIL.
+- Тесты читают реальный dev мета-сейв (--user-data-dir не изолирует): death_save/unlocks могут влиять на прогоны — при странных red'ах проверять с нейтрализованным мета-сейвом, не эскалировать сразу.
+
+
+## Приложение B. История балансовых работ
+
+История балансовых работ FantasyDisk — это ~6 волн. (1) 0.1.4: фундамент — нерф вампиризма (SCRUM-149: heal = amount + 8% урона с жёстким кап/сек, chance-cap 35%), дроп-экономика (SCRUM-153), формульный harness + live-DPS-симуляция (SCRUM-189/190/201). (2) 0.1.5 «Бой и баланс»: опорные глобальные smoke-гейты урона/выживаемости (SCRUM-249: solo ±20%, combined ±25%, CCT 5/10/20 ±30%; TTD≤600с, митигация<98%, «бессмертие недостижимо»), крит-формулы (SCRUM-247: кап 55%/2.75), усиление призывателей (SCRUM-357), ребаланс возвышений (SCRUM-358), подъём solo_target аутсайдеров (SCRUM-359), финальный AoE/crowd-clear аудит (SCRUM-262: PASS 51 пара, худший CCT +22% doctor). (3) 0.1.6: сводная таблица урона 1/5/20 целей × 3 билда (SCRUM-453) и нормализация lvl20-оптимума к relative_score≈1 через CLASS_LEVEL_STAT_GROWTH_SCALARS (SCRUM-469: было knight 1.510/assassin 0.590 → стало 0.938..1.097). (4) 0.1.7-волна SCRUM-503..508 + comfort-band SCRUM-544/546: кап берсерк-молота, подъём solo-дна (guitarist/robot/priest/druid), оживление summon-оружий, сжатие random-разброса, comfort-веса. Именно тут возник знаменитый блокер SCRUM-504/505/506/544. (5) 0.2.0 re-eval (SCRUM-780..783): evidence-first замер → единственная правка dark_mage endurance 2→3 (EHP 34.6→50.4), damage/comfort-пассы — осознанные no-op. (6) 0.2.1 full class rebalance (SCRUM-856..861): identity-аудит всех 17 классов/51 оружия и mechanic-first пассы (projectile/chain/pierce, melee/counter/tank, summon/deploy/turret, kill-scaling/sustain). После неё пошла волна пер-классовых kit-редизайнов (SCRUM-894 assassin, 896 biologist, 898 удаление звуковой оси урона, 899/1006 guitarist, 900 doctor, 905-913 engineer/ranger, 947-950 elementalist, 1035 robot) и мета-слой (SCRUM-960/961 артефакты, 1067/1068 констелляции, 1069 Guild Atlas).
+
+Принятые принципы: (а) движок баланса — budget-тюнинг: budget_tuning_for() авто-выводит budget_damage_multiplier = clamp(sqrt(solo_scale·aoe_scale), 0.28, 2.80) под per-class таргеты (solo 48·solo_target·damage_budget, aoe 150·aoe_target·damage_budget), поэтому «after-tuning ±0.1%» верен by construction, а диагностика — в raw-отклонениях и величине множителя; (б) AC формулируются полосами (band), не абсолютами: solo spread без berserk ≤2.0x, классы ≥0.75x медианного пола, CCT ≤ +30%, comfort ±20% медианы (COMFORT_BAND_TOLERANCE=0.20), EHP-цель [0.6x..1.9x] медианы; (в) no-silent-retune — каждое число с before/after в progression_balance.md; (г) mechanic-first — после SCRUM-856 клоны/мёртвые слоты чинятся формой механики (геометрия, setup/payoff, ownership, retarget-правила), а не множителями; (д) sustain разведён по контрактным «лентам»: Doctor только через свои drain-оружия (4 точки отсечки generic-сустейна), Priest — prayer/ward, Knight — block/counter, generic-вампиризм закапан; (е) berserk-ось исключена из spread-метрик и держится отдельным runaway-гейтом (20t≤3600, 1t≤650).
+
+Блокер SCRUM-504/505/506/544 (2026-06-28): три тикета + comfort-band стояли из-за (1) устаревших числовых AC (писались до comfort-band; в AC 505 druid класс-лучший briar_staff=30591, а живой CSV давал raven_totem=4270 — ×13 расхождение), (2) воспроизводимого SIGABRT арбитра tools/character_balance_csv.gd (freed-lambda под full-matrix teardown), (3) структурной невозможности одного скаляра comfort_weight свести срезо-зависимые выбросы (класс норм на 1t и ×37 на 20t). Разрулено: CSV переведён в детерминированный fast-mode, comfort-веса стали per-slice (SCRUM-544 закрыт коммитом 5dbd03e0d), 504/506 закрыты батчем cdb2909a7/ac7116c3e (spread 1.980x), 505 — через переформулировку «≥0.5x summon-профильной медианы». SCRUM-782/783 затем подтвердили: остаточная хрупкость (~16/51 пар на капе 2.800, summon/DoT задушены до 0.28-0.62) — идентичностная проблема, отложенная и частично закрытая волной 856-860.
+
+Слабые/сильные по прошлым аудитам: исторически слабые solo — guitarist/robot/priest/biologist/druid/knight (до SCRUM-504 все ниже 0.75x пола), недоборы оптимума — assassin 0.59/chemist 0.60/druid 0.63/guitarist 0.68/doctor 0.73 (до SCRUM-469); гипер-стекло dark_mage (EHP 34.6 = 0.39x медианы, при самом высоком 5T-таргете 224 DPS); переборы — knight 1.51/robot 1.29/dark_mage 1.22 (оптимум) и танк-потолок knight 203/robot 185 EHP (2.0-2.3x медианы, осознанно не срезан). Мёртвые слоты — summon-оружия (druid amulet ×350 хуже briar_staff по 20t, chemist vial ×417, engineer sentry ×87 до SCRUM-505). Comfort-лаггеры crowd-clear — doctor/restore_potion +22%, druid/summon_amulet +20.2%, druid/raven_totem +20.0%, chemist/homunculus_vial +20.1%. Пользовательский фидбек, породивший волны: «тёмный маг заметно хуже всех» (2026-06-10), «вампиризм имбовый — умереть нельзя» (SCRUM-149), «у многих классов проблема бить AoE по толпе» (SCRUM-262), «увеличить урон соло-скилов» (SCRUM-359), «summons играются отвратительно» (SCRUM-859), «каждый класс и каждое оружие должны играться уникально» (SCRUM-856).
+
+### Числа
+
+- **budget_damage_multiplier** — клэмп: [0.28, 2.80]; ~16/51 пар на капе 2.800, over-hitters на 0.280–0.624
+- **global_damage_balance_smoke** — коридоры: combined ±25%, solo ±20%, CCT 5/10/20 ±30%; эталон berserk/sword=1.0; худший CCT +22% (doctor/restore_potion, 20 целей)
+- **global_survivability_balance_smoke** — гейты: 16 строк; TTD ≤ 600с; митигация < 98%; бессмертие недостижимо
+- **solo spread (best-weapon lvl20_ideal_1t, без berserk)** — после SCRUM-504/506: 1.980x (min dark_mage/dark_wand 249.78, max assassin/chakrams 494.65), гейт ≤2.0x
+- **random-build spread** — после SCRUM-506: lvl20_random_1t 1.620x–1.96x, lvl20_random_20t 2.193x–2.17x (было ~4.5-4.7x и ~17x)
+- **EHP-разброс** — before/after SCRUM-783: 5.9x (dark_mage 34.6 .. knight 203.3) → 4.03x (dark_mage 50.4); медиана ≈88; целевой band из аудита [0.6x..1.9x] ≈ [53..167] так и не достигнут сверху
+- **dark_mage** — endurance / EHP: endurance 2.0→3.0; EHP 34.6→50.4 (0.39x→0.57x медианы); 5T-таргет 224 DPS — самый высокий
+- **knight / robot** — EHP (танк-потолок): knight 175.7–203.3, robot 177.0–185.5 (2.0–2.3x медианы) — осознанно не срезаны
+- **crit** — капы: chance cap 0.55 (assassin 1.0 c overflow 0.5), damage cap 2.75; средний крит-фактор пример: 3.10x→1.92x после SCRUM-247
+- **вампиризм** — параметры: компонент урона 0.5→0.08; heal-бюджет ≤4 HP/с; chance cap 0.6→0.35→0.20; weapon-drain 0.35
+- **level-up** — оффер: 3 варианта (было 5); MAIN_STAT_SLOT_CHANCE=0.05 (было 0.13); optional-вес ≥0.3, не более 1 optional в показе
+- **comfort band** — допуск/факт: COMFORT_BAND_TOLERANCE=0.20; фактический spread 1.13x на срезах 1/5/20t, 0 нарушений (153 замера)
+- **COMFORT_WEIGHTS (примеры)** — per-class: chemist 1.55, dark_mage 1.50, guitarist 1.36, biologist 1.33 vs sniper 0.78, assassin/doctor 0.79, ranger 0.81, knight 0.83
+- **berserk_dps_runaway_gate** — потолки: lvl20_ideal_20t ≤ 3600 (факт 2164–3456), lvl20_ideal_1t ≤ 650 (факт 484–564)
+- **berserk геометрия (SCRUM-852)** — формы: молот круг 150px, circle_full_targets=4, diminish 0.62; меч сектор 100°/350px; топор сектор 180°/250px; upgrade_aoe_exponent=1.08, upgrade_damage_exponent=1.05
+- **berserk оружия (SCRUM 2026-06-11, исходная идентичность)** — старые числа: меч strip 120×500, interval 0.93→0.70, dmg×1.15; топор дуга 140°/320, dmg×0.85; молот dmg×0.55, радиус 100
+- **summon floor (после SCRUM-505/506)** — lvl1/lvl20 ideal 20t: druid/summon_amulet 129.8/621.7; chemist/homunculus_vial 194.2/611.6; engineer/sentry_wrench 139.7/648.5; floor = 0.5×summon-медианы 724.61 = 362.30
+- **SCRUM-469 relative_score lvl20-optimum** — before → after: knight 1.510→0.938, robot 1.288→0.969, dark_mage 1.220→1.050, assassin 0.590→1.052, chemist 0.600→0.970, druid 0.631→0.959, guitarist 0.677→1.097, doctor 0.734→0.938; итоговый диапазон 0.938..1.097
+- **solo_target (SCRUM-359)** — before → after: dark_mage/guitarist/chemist 0.70→0.84; biologist 0.82→0.92; engineer 0.90→0.98; elementalist/priest/robot 0.95→1.00
+- **knight counter (SCRUM-858)** — ответка: 5 входящего урона → ~25 retaliation по 24 HP contact pack; counter_incoming_multiplier/radius/arc/target_cap + diminish + cooldown
+- **deploy caps (SCRUM-859)** — лимиты: sound_amp=3, raven_totem=3, engineer sentry=5; sentry splash 82px / ×0.24 / cap 2
+- **shadow_momentum (SCRUM-860, удалён SCRUM-894)** — капы: 6 стаков / 6 сек / +12% attack speed / +9% crit damage; без лечения, не считает boss/elite
+- **ascension (текущая кривая, MAX=5)** — модификаторы: L1 enemy_hp 1.20 / dmg 1.14; L3 spawn_count 1.26 / cooldown 0.80; hp к L5 ×1.80; mini_elite пик L3=0.16 → L5=0.03
+- **enemy_damage_spread_gate** — пороги: TTD-floor 0.48с; fragile TTD ≥ 1.5× окна реакции на стадиях 0/4/8/10; contact damage softcap 20% max HP за рядовой контакт
+- **survivability roster projection (SCRUM-190)** — вердикты: 6 ok / 62 low / 0 high (замер, баланс не менялся)
+- **дроп-классы** — множители: ordinary 1.0 / complex 1.3 / heavy 1.75 / mini_elite 3.6 / elite 8.0 / boss money ×92; цены ×1.10
+- **размеры врагов (SCRUM-260)** — ENEMY_SIZE_PROFILES: ordinary 1.00 / mini_elite 1.05 / elite 1.68 (HP×1.08, dmg×1.06) / boss 1.90
+- **секретный босс** — баланс-бенчмарк: HP ≈47.6k (A5/stage 18); TTK optimum-китов 121.5–231.8с, random 347.3–559.6с; открыт только на возвышении 5
+- **Guild Atlas (SCRUM-1069)** — границы мета-силы: account power 1.174 < 1.35; класс-вклад +17.4% ≤ 18%; на A5 enemy HP/dmg > 1.5×, healing 0.816 A0; value-per-dust 0.643..0.667; 384 легальных 50-dust билдов, spread 1.097
+- **XP-прогрессия (SCRUM-1058)** — проекция: lvl ~15 после 6 боёв Акта 1; lvl 29-30 в финале Акта 2 (13 боёв, финальный stage 16)
+- **crowd-clear аудит 0.1.5** — итог: 51/51 пар PASS; худший solo dev −0.1%; худший crowd dev +22.0% (внутри ±30%); fixture 80 HP/цель
+
+### Риски для ребаланса
+- Budget-тюнинг всё маскирует: любые правки сырых чисел оружия молча поглощаются авто-множителем budget_damage_multiplier (after-tuning всегда ±0.1%), ПОКА множитель не в клэмпе [0.28,2.80]. У ~16 пар на капе 2.800 запаса вниз нет — любой нерф сырья/статов уронит их РЕАЛЬНЫЙ output ниже band; у over-hitters (mult 0.28) любой бафф механики не даст видимого эффекта (клэмп сожрёт). Ребаланс обязан смотреть на raw-отклонения и множители, а не на зелёный after-tuning.
+- Срезо-зависимость метрик: survivability-статы сцеплены с damage-коридором — trim knight/robot endurance 10→9 уже ломал class_damage_table relative_score >1.10 (документировано в SCRUM-783). Танк-потолок нельзя срезать изолированно, нужен совместный damage+survivability пасс с ре-деривацией коридора.
+- CSV-арбитр tools/character_balance_csv.gd SIGABRT-флейк в live-режиме (freed-lambda под full-matrix teardown); канон: fast-mode/детерминированные budget-оценки, berserk-ось — berserk_dps_runaway_gate, ре-нормировка в Python. НЕ вешать AC на полный live-CSV — это и был блокер 504/505/506/544.
+- Comfort-веса — измерительный, не геймплейный слой: COMFORT_WEIGHTS/OVERRIDES/SLICE_WEIGHTS откалиброваны как raw/median ПО ТЕКУЩИМ числам. Любая правка урона/геометрии сдвинет raw и уронит comfort_band_cross_class_gate ложно-красным (или скроет реальный сдвиг) — веса придётся пересчитывать синхронно, и это легитимный канал (аутлаеры чинятся ТОЛЬКО весами, solo/aoe_target не трогаются).
+- Двойная бухгалтерия summon/kit: рантайм _summon_profile (summoner_weapon.gd) и budget-зеркала _budget_summon_dps/_budget_hit_model (progression_data.gd) обязаны совпадать строка-в-строку; kit-редизайны 0.2.2 добавили новые budget-зеркала (riff_strip, biologist/ranger mirrors). Правка одной стороны рассинхронизирует живой бой и все формульные гейты.
+- Числовые AC в старых тикетах устаревают относительно живого CSV (медиана плавала 1440→1480→274.63 при смене генератора; лучшие оружия классов менялись). AC формулировать полосами от СВЕЖЕЙ медианы перегенерённого артефакта, не абсолютами — иначе повтор блокера 504-544.
+- Гейты кодируют текущие числа: runtime_smoke содержит ascension-ladder проверки конкретных модификаторов, class_damage_table требует relative_score 0.90..1.10, berserk-гейт — потолки 3600/650, guild_atlas-гейт — границы мета-силы. Ребаланс должен ОСОЗНАННО перекалибровать гейты в той же задаче (правило no-silent-retune: каждое число с before/after в progression_balance.md).
+- Sustain-контракты хрупки: Doctor заблокирован от generic-сустейна в 4 точках (пул/применение/формула/рантайм, doctor_kit_test), Priest/Knight — свои ленты, kill_scaling_identity_test АССЕРТИТ отсутствие shadow_momentum (удалён SCRUM-894). Общие баффы регена/вампиризма или новые kill-heal механики легко валят doctor_drain_softcap/priest_sustain_softcap/kill_scaling гейты и «правило одного бессмертного класса» (SCRUM-603).
+- Идентичность держится механиками, не числами (мандат SCRUM-856): 6 семейств клонов (delayed AoE, AoE-projectile, chain/split/pierce, deploy/summon, sustain, tank-counter) разведены правилами таргетинга/payoff. Плоский числовой ребаланс без учёта этих правил вернёт «51 оружие = один hit-model с разными множителями»; weapon_identity_diversity_test ассертит 51 уникальную сигнатуру.
+- Berserk исключён из всех spread-метрик (наследие P0 SCRUM-503) — при пересчёте разбросов его нужно либо продолжать исключать, либо явно ре-включить с пересмотром гейтов; молот — исторически первый runaway-кейс (лечился капами и экспонентами, не только уроном.)
+- Мета-слой должен оставаться ограниченным: цель «каждый класс проходит на возвышении 1 и 5» нельзя решать раздуванием Guild Atlas/артефактов — гейты фиксируют account power <1.35, класс-вклад ≤18%, A5 enemy ≥1.5×; секретный босс A5 задуман как brutal capstone (TTK 2-4 мин у optimum) и не повод глобального баффа.
+- lvl1-baseline guard: стартовые run-множители = 1.0; усиление роста должно идти через level-up/Leadership-скейл (lvl20), не через стартовые числа — иначе ломается Base lvl1 коридор 0.982..1.010 и summon lvl1-капы (amulet ≤150, vial ≤215, sentry ≤155 по 20t).
+- Изоляция типов урона (SCRUM-524, damage_type_isolation_test): атрибут типа X влияет только на урон типа X; звуковая ось удалена SCRUM-898 (guitarist/druid = magic_damage) — не воскрешать sound_wave_damage из старых доков; QA-греп миграций обязан включать .tscn/.tres.
+- Крит-оверфлоу и dodge-капы связаны с гейтами бессмертия: assassin cap 1.0 работает только с overflow→crit_damage_flat (зажат 2.75); ситуативные dodge-бонусы (Теневая завеса) обязаны суммарно оставаться ≤ SURVIVABILITY_DODGE_CAP 0.55 — поднятие капов = прямой риск красного global_survivability.
+- Известные нерешённые хвосты для ребаланса: crowd-clear лаггеры +20-22% (doctor/restore_potion, druid amulet/raven, chemist vial) так и не подтянуты к цели ≤+15%; EHP-потолок танков (203/185) выше целевого band 1.9x; ~16 cap-pinned пар ждут output-нейтрального подъёма сырья; roster-проекция выживаемости 62/68 «low» никогда не была отработана.
+
+
+## Приложение C. Непрямые каналы урона (DoT/суммоны/эхо)
+
+Непрямой урон в FantasyDisk идёт четырьмя магистралями. (1) Статусный DoT через scripts/status_effects.gd: статусы лежат в meta цели ("status_effects"), tick() каждый physics-кадр списывает remaining и, пока tick_left<=0, бьёт цель на dot_damage×stacks напрямую через take_damage с feedback {"damage_type":"dot"} (интервал зажат снизу 0.1с). Критично: тики статусов НЕ проходят через _damage_enemy/meta_damage_multiplier игрока — все множители (трейт Химика ×1.5, созвездия) запекаются В МОМЕНТ применения через apply_status_from (source_periodic_multiplier). Ось скейлится только derived dot_damage = max(1,(4+Знание×0.65+флэты)×общий damage_multiplier) и dot_speed = max(0.45, 0.65+Знание×0.08+Энергия×0.015+Ловкость×0.010) — крит, магические/физические множители и скорость атаки на устоявшийся тик не влияют (refresh-семантика: перекаст не стакует). (2) Tween-DoT вне StatusEffects: чума Доктора (tick = magic×0.22 + dot×0.6, ramp 0.45→1.0 за 5 тиков, 24с, кап 10 заражённых, spread 22%/тик), яд струны Ассасина (dot_ticks×dot_damage с крит-снапшотом ×0.6), кровотечение капкана Рейнджера (10 тиков×0.5с), догорание метеора (5 тиков dot_damage, полные — 2 ближайшим, дальше 1/(1+ранг×1.2)) — эти тики идут через _damage_enemy(...,"dot") и ловят meta_damage_multiplier. (3) Лужи/зоны: тик лужи Химика = dot_damage×0.55(глобальный POOL_TICK_DAMAGE_MULTIPLIER)×0.90(acid_flask), полный урон ТОЛЬКО ближайшей цели (POOL_FULL_TARGETS=1), дальше 1/(1+ранг×1.5); кап 6 живых луж на оружие; кислотные заряды — вечные (999999с) статусы по одному с каждой лужи, тик dot×0.30/0.9с, кап 5 на цель (+3 артефакт), всё ×1.5 трейтом; терновая зона Друида — НЕ dot-ось: физ. хиты damage×0.34 раз в 0.55с, жёсткий кап 5 хитов на врага с зоны. Регресс-гейт tests/pool_dot_runaway_gate.gd держит потолок lvl20_ideal 20t ≤ 70000 (до фикса SCRUM-533 было ≈112k, после ≈44k). (4) Суммоны и эхо: урон миньона = стат семьи (damage/magic_damage) × summon_damage_multiplier (амулет 1.85, гомункул 2.40) × role_mult × (1+min(Лидерство×0.06,1.15)) × (1+min(SA×0.016+K×0.004+I×0.004+E×0.003,0.40)); лимит = база + floor(Лидерство/4) (кап per-weapon); устройства Инженера бьют через _rolled_damage с тем же лидерским фактором + сеть мастерской ×(1+0.06×стеки, кап 3+floor(L/6)); турель — боезапас 15, DPS = min(спрос, магазин/деплой); вороны тотема = rolled×0.85, полный урон 3 целям, дальше ×0.60-диминиш; цепь Тёмного мага — 3 цели ×0.82^прыжок + бурст 45% по соседям без каскада; «Двойное действие» Солдата — 50% полная копия действия без рекурсии, деплой-режимы исключены.
+
+Сильнее всего от непрямого урона зависят: dark_mage (cursed_skull — 100% урона оружия через curse-тики: max(dot,1)×0.58×(1+Инт×0.08), ~10 тик/с кап), chemist (лужи+заряды+волны гомункула, ВСЁ ×1.5 «Катализатором»), doctor (чума), biologist (bio_infection: dot×0.6..1.6 при каденции dot_speed×1.0..2.0 + трейт +20% прямого урона по заражённым), engineer (100% урона — устройства от Лидерства 10), druid (стая+тотем+аура, Лидерство 9), guitarist (амп-деплой). Вторично: elementalist (ожог 0.70×dot + зона метеора), assassin (venom_wire), ranger (кровотечение капкана).
+
+Для честного DPS-сравнения классов надо считать КАЖДЫЙ канал по его бюджет-зеркалу в progression_data.gd (_budget_dot_dps / _budget_pool_dps / _budget_pool_charge_dps / _budget_summon_wave_dps / _budget_summon_dps / _budget_sentry_ammo_model): dot-ось живёт на Знании+общем damage_multiplier и НЕ умножается критом/магией/скоростью атаки (у статусных DoT — refresh, устоявшийся DPS = тик×каденция, а не тики×каст-рейт), суммон-ось — на Лидерстве (кап лидерского фактора ×2.15 достигается при L≈19). Вечные заряды (кислота, волны кастера) недооцениваются коротким 8с-окном замера и переоцениваются на длинных боссах; чума с ramp 24с наоборот занижается коротким окном. На возвышении 5 (кумулятив enemy_hp ×1.80, healing ×0.68 c L4, +25% таймер) dot/summon-классы страдают сильнее прямых крит-осей: их флэт-капы (run dot_damage_flat ≤ 12, dot_speed_flat ≤ 1.0) и фиксированные капы целей/стека не растут с HP врагов.
+
+### Числа
+
+- **StatusEffects.tick** — минимальный интервал тика: 0.1 с (≈10 тик/с кап)
+- **chemist «Катализатор»** — periodic_damage_multiplier: 1.5
+- **лужа (глобально)** — POOL_TICK_DAMAGE_MULTIPLIER / POOL_FULL_TARGETS / POOL_TARGET_DIMINISH / MAX_ACTIVE_DAMAGE_POOLS: 0.55 / 1 / 1.5 / 6
+- **acid_flask** — pool_duration / pool_tick_interval / pool_tick_damage_multiplier / pool_direct_damage_multiplier: 7.0с / 0.75с / 0.90 / 0.38
+- **кислотные заряды** — тик-множитель / интервал / кап / артефакт-бонус / длительность: 0.30 / 0.9с / 5 / +3 / 999999с
+- **pool_dot_runaway_gate** — потолок lvl20_ideal 20t (окно 8с): 70000 (до фикса ≈112k, после ≈44k)
+- **plague_syringe** — duration / interval / tick_ratio / dot_coupling / ramp / spread / кап зараз: 24с / 2.0с (÷dot_speed, floor 0.45) / 0.22 / 0.6 / 5 тиков от 0.45 / 22% на 200px / 10
+- **cursed_skull** — dot_ticks / curse_tick_rate / curse_tick_multiplier / curse_int_scale / fire_interval: 5 / 7.0 / 0.58 / 0.08 / 0.9с
+- **biologist оружия** — dot_ticks / rate / multiplier: spore_lens 2/2.0/1.0; sample_injector 1/1.2/0.6; symbiote_seed 6/1.0/1.6
+- **биолог трейт** — infected_direct_hit_multiplier: 1.20
+- **venom_wire (assassin)** — dot_ticks / dot_crit_snapshot_ratio / fire_interval: 4 / 0.6 / 0.78с
+- **hunter_trap (ranger)** — bleed: dot_ticks / интервал; паралич: 10 / 0.5с (5.0с); 2.2с × 0.25 у боссов
+- **elementalist** — ожог SQUARE_DOT_TICK_SHARE / зона метеора ticks×interval / full targets / diminish: 0.70 / 5×0.62с / 2 / 1.2
+- **summon_amulet (druid)** — summon_damage_multiplier / role_mult / max_summons / attack_interval / health_mult: 1.85 / 1.45 / 5 (+floor(L/4), у Друида L9 → 7) / 0.34с / 0.30
+- **homunculus_vial (chemist)** — summon_damage_multiplier / танк HP / волна: interval, radius, dot_mult, tick_interval, stack_cap: 2.40 / 4×HP Химика / 1.7с, 150, 0.35, 1.0с, 4
+- **лидерский фактор саммонов** — 1+min(L×0.060, 1.15): кап ×2.15 при L≈19.2 (Инженер старт 10, Друид 9)
+- **engineer_sentry_wrench** — магазин / залп / пульс / deploy / role_mult / splash: 15 / 2 (falloff 0.55) / 0.55с (÷tempo÷AS, floor 0.10) / 2.70с / 1.45 / 0.24× кап 3
+- **engineer_repair_drone** — контакт-множитель / hit_cooldown / скан-кап / орбита: 0.90 / 0.85с / 4 цели за 0.08с / 3.6 рад/с × attack_speed
+- **engineer_pressure_mines** — кап мин / триггер / самоподрыв / хитов на врага за цепь: 6 / 84px / 3.0с / 2
+- **сеть мастерской** — per_stack / cap_base / leadership_step / вес мины: 0.06 / 3.0 / 6.0 / 0.5
+- **raven_totem** — raven_damage_multiplier / full targets / diminish / amp_lifetime / pulse / лимит: 0.85 / 3 / 0.60 / 8.0с / 1.10с / 2+floor(L/4)≤6
+- **briar_staff** — hit_multiplier / hit_cap / tick / slow / pool_duration: 0.34 / 5 / 0.55с / 0.62 / 3.6с
+- **dark_wand** — chain_targets / hop_range / burst_ratio / pierce_falloff: 3 / 300 / 0.45 / 0.82
+- **soldier «Двойное действие»** — action_echo_chance / delay: 0.5 / 0.18с
+- **dark_mage «Тёмный распад»** — on_kill blast radius / magic ratio: 120 / 0.85
+- **druid «Аура дикой силы»** — bonus / cap / radius_ratio: 0.10×buff_power / 0.30 / 0.85
+- **универсальный он-хит DoT (player)** — порог / доля тика / тиков: dot_damage>5 / 0.22 (doctor,chemist,dark_mage,assassin,druid) или 0.14 / 2
+- **возвышение 5 (кумулятив)** — enemy_hp / enemy_damage / healing(L4) / boss_hp(L5) / player_max_hp(L5): ×1.80 / ×1.66 / ×0.68 / ×1.30 / ×0.80
+- **run-капы dot-флэтов** — dot_damage_flat / dot_speed_flat: ≤12 / ≤1.0
+
+### Риски для ребаланса
+- Refresh-семантика статусных DoT (skull_curse, bio_infection, plague): перекаст НЕ стакует тики — устоявшийся DPS = тик×каденция, а НЕ тики×каст-рейт. Бафф скорости атаки dot-классам почти ничего не даёт; если при ребалансе сменить stack_mode на add — DPS взорвётся кратно (бюджет-формулы считают refresh).
+- Тики статусов идут МИМО meta_damage_multiplier (status_effects.gd:102-104): любые новые множители урона игрока (созвездия, ауры, разогрев) НЕ достанут статусные DoT, но достанут tween-DoT чумы/яда/лужи (те идут через _damage_enemy "dot"). Каналы легко разъехутся при общем «бафнуть урон на X%».
+- Двойное применение ×1.5 Химика: hit-контексты "dot" множатся в meta_damage_multiplier, статусы — запекаются в apply_status_from. Если новый канал пройдёт оба пути — получит ×2.25. И наоборот: apply_status (без _from) молча теряет трейт.
+- Вечные статусы (кислотные заряды 999999с, волны кастера, stack add): урон растёт с длиной боя — 8-секундное окно гейта и бюджет-ramp 0.5 занижают их вклад на боссах с длинным таймером (возвышение 4: +25% таймер). Ребаланс по короткому замеру перекормит эти оси на практике.
+- Каждый рантайм-канал имеет зеркало в progression_data (_budget_dot_dps/_budget_pool_dps/_budget_pool_charge_dps/_budget_summon_wave_dps/_budget_summon_dps/_budget_sentry_ammo_model) — правка констант только в class_weapon.gd/summoner_weapon.gd рассинхронизирует budget_tuning_for и авто-тюнинг уронов всех оружий класса. Менять ПАРАМИ.
+- POOL_TICK_DAMAGE_MULTIPLIER=0.55 — глобальная константа ВСЕХ pool-оружий; для точечного ребаланса использовать per-weapon pool_tick_damage_multiplier, иначе зацепишь чужие лужи.
+- pool_dot_runaway_gate: потолок 70000 захардкожен — подъём урона Химика/dot-оси уронит гейт (или наоборот, гейт замаскирует нерф). Гейт load-sensitive: параллельные Godot дают ложный runaway — гонять одиночным прогоном.
+- dot_speed у dark_mage уже на полу тиков: dot_speed≈1.37×rate7=9.6 тик/с при капе 10 — инвестиции в dot_speed почти мёртвые с 1-го уровня (число тиков за каст фиксировано, суммарный урон каста не меняется). При ребалансе наград «частота тиков» для черепа — ловушка.
+- Кап целей повсюду (лужа: полная цель 1; ворон: 3; зона метеора: 2; briar: 5 хитов; чума: 10 зараз; сплэш турели: 3) — непрямые классы почти не масштабируются толпой, в отличие от прямых AoE. На возвышении 2 (+30% спавна) это скрытый нерф dot-осей; поднятие капов — самый взрывоопасный рычаг (SCRUM-533 прецедент: 112k runaway).
+- Лидерский фактор саммонов капится на ×2.15 при L≈19: Инженер (старт 10) и Друид (9) упираются в кап к середине забега — дальше Лидерство даёт только слоты/хейст/булк. При ребалансе поздней кривой саммонеров крутить кап 1.15, а не коэффициент 0.060 (тот раздует lvl1).
+- summon_crowd_scale (сплэш стаи ×до 6.2 к lvl20) сознательно НЕ в бюджет-модели — живой 20t-замер амулета Друида будет систематически выше формульного; не «чинить» это выравниванием формулы без пересчёта гейтов.
+- DoT-ось не критует и изолирована от магических/физических множителей (SCRUM-524, damage_type_isolation_test) — общий damage_multiplier единственный общий рычаг. Слепое сравнение DPS по числу «урона» оружия недооценит dot-классы; сравнивать по бюджет-осям с учётом uptime.
+- Ammo-модель турели: скорость атаки ускоряет и стрельбу, и расход магазина — DPS упирается в min(спрос, 15/деплой). Баффать Инженеру attack_speed бесполезно, реальные рычаги: магазин, fire_interval, projectile_count. Легко «побаффать» класс впустую.
+- Скрытые каналы утечки dot_damage: player._trigger_universal_dot (любой класс с dot_damage>5 получает он-хит DoT) и toxic_debuff — подъём Знания/dot-флэтов «не-dot» классу всё равно добавит непрямого урона; учитывать в изоляции осей.
+- Чума: plague_max_infected=10 и refresh при спреде — на плотных волнах возвышения избыток спреда сгорает впустую; ramp 24с против 60-90с боёв нормален, но против замеров 8с чума выглядит на ~40% слабее фактической.
+- Хрупкие анти-краш паттерны SCRUM-551 (Callable.bind вместо лямбд в tween-тиках чумы/DoT/воронов): рефактор тиков через лямбды вернёт интермиттентные SIGABRT в balance-CSV прогонах.
+- Танк гомункула = ровно 4×max_health Химика: бафф HP Химика автоматически множит танк — связанные оси при правке выживаемости класса.
+- Возвышение 5 бьёт по dot/summon-классам асимметрично: enemy_hp ×1.80 требует роста DPS, а капы (стек 4-5, цели 1-3, флэты ≤12) фиксированы; healing ×0.68 (L4) дополнительно бьёт Доктора (сустейн только от оружия) и support_heal саммонов. Проверять проходимость именно на A5, а не только A1.
