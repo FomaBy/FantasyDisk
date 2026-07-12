@@ -4702,15 +4702,15 @@ func _test_universal_attribute_interpretations() -> void:
 		_fail("Expected leadership interpretation to trigger echo weapon damage.")
 		return
 
+	# FAN-1034: пул берсерка после ревизии атрибутов — мёртвые оси
+	# (projectile_speed/knockback/сектор) удалены, buff_power/magic_focus гейтнуты
+	# affinity, дот-темп и вампиризм-пара приезжают внутри объединённых карт.
 	var rewards := ProgressionData.level_up_rewards("berserk")
 	var derived_icons_seen := {}
 	var mod_display := {
-			"dot_damage_flat": "dot_damage",
-			"dot_speed_flat": "dot_speed",
-			"projectile_speed_flat": "projectile_speed",
-			"aoe_radius_multiplier": "aura_radius",
-			"aura_radius_flat": "aura_radius",
-		"buff_power_flat": "buff_power",
+		"dot_damage_flat": "dot_damage",
+		"dot_speed_flat": "dot_speed",
+		"aoe_radius_multiplier": "aura_radius",
 		"summon_bonus": "summon_amount",
 		"absorb_flat": "absorb",
 		"regeneration_flat": "regeneration",
@@ -4724,12 +4724,16 @@ func _test_universal_attribute_interpretations() -> void:
 			var icon_id := str(mod_display.get(str(modifier_id), ""))
 			if icon_id != "":
 				derived_icons_seen[icon_id] = true
-	for icon_id in ["dot_damage", "dot_speed", "projectile_speed", "aura_radius", "buff_power", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+	for icon_id in ["dot_damage", "dot_speed", "aura_radius", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
 		if not derived_icons_seen.has(icon_id):
 			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
 			return
 		if not UIIconRegistry.has_texture(icon_id):
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
+			return
+	for gated_reward in rewards:
+		if str(gated_reward.get("id", "")) in ["buff_power_up", "magic_focus_up"]:
+			_fail("Expected %s to be affinity-gated away from berserk (FAN-1034)." % str(gated_reward.get("id", "")))
 			return
 
 	holder.queue_free()
@@ -6695,17 +6699,22 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
-	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
-	# Skill Tree 3.0 keeps magic focus visible to Berserk, but routes it through
-	# an isolated magic channel so physical melee damage is unchanged.
-	var berserk_magic_focus_reward: Dictionary = {}
+	# 2. FAN-1034: magic focus гейтнут class_affinity на маг-классы — у Берсерка
+	# ось magic_damage мертва (ни одно его оружие не читает magic-канал), карта-
+	# пустышка исключена из его пула. Маг-классам карта остаётся, канал изолирован
+	# (проверяем изоляцию на статах берсерка как и раньше).
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
-			berserk_magic_focus_reward = reward
-	if berserk_magic_focus_reward.is_empty():
-		_fail("Expected magic focus upgrade to remain available to berserk as a low-value universal pool card.")
+			_fail("Expected magic focus upgrade to be affinity-gated away from berserk (dead axis, FAN-1034).")
+			return
+	var mage_magic_focus_reward: Dictionary = {}
+	for reward in ProgressionData.level_up_rewards("dark_mage"):
+		if str(reward.get("id")) == "magic_focus_up":
+			mage_magic_focus_reward = reward
+	if mage_magic_focus_reward.is_empty():
+		_fail("Expected magic focus upgrade to stay in the dark mage level-up pool.")
 		return
-	var magic_focus_mods: Dictionary = berserk_magic_focus_reward.get("mods", {}) as Dictionary
+	var magic_focus_mods: Dictionary = mage_magic_focus_reward.get("mods", {}) as Dictionary
 	if float(magic_focus_mods.get("magic_damage_multiplier", 1.0)) <= 1.0:
 		_fail("Expected magic focus to map to the isolated magic damage multiplier.")
 		return

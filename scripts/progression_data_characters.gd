@@ -1119,37 +1119,39 @@ const ATTRIBUTE_REGISTRY := [
 	{"id": "attack_speed", "name": "Скорость атаки", "icon": "attack_speed", "value_type": "percent"},
 	{"id": "max_health", "name": "Макс. здоровье", "icon": "health_point", "value_type": "flat"},
 	{"id": "move_speed", "name": "Скорость движения", "icon": "move_speed", "value_type": "percent"},
-	{"id": "aoe_radius", "name": "Ширина сектора", "icon": "aoe_radius", "value_type": "percent"},
+	# FAN-1034: единственная ось геометрии поражения — растит aoe_radius, aura_radius
+	# и melee-дальность (range_scales_with_aoe). Прежние отдельные оси «Ширина
+	# сектора» (sector_multiplier, no-op для 46/51 оружий) и «Радиус» слиты сюда.
+	{"id": "aoe_radius", "name": "Область поражения", "icon": "aoe_radius", "value_type": "percent"},
 	{"id": "pickup_radius", "name": "Радиус подбора", "icon": "pickup_radius", "value_type": "flat"},
 	{"id": "defense", "name": "Защита", "icon": "defense", "value_type": "percent"},
 	{"id": "magic_focus", "name": "Магический фокус", "icon": "magic_damage", "value_type": "percent"},
-	{"id": "knockback", "name": "Отталкивание", "icon": "knockback_power", "value_type": "percent"},
 	{"id": "crit_chance", "name": "Шанс крита", "icon": "crit_chance", "value_type": "percent"},
 	{"id": "crit_damage", "name": "Урон крита", "icon": "crit_damage_multiplier", "value_type": "percent"},
 	{"id": "dodge", "name": "Уклонение", "icon": "dodge", "value_type": "percent"},
 	{"id": "range", "name": "Дальность атаки", "icon": "attack_range", "value_type": "percent"},
+	# FAN-1034: поглотил ось «Скорость тиков» (dot_speed) — карта качает и магнитуду,
+	# и темп периодики одним пиком.
 	{"id": "dot_damage", "name": "Периодический урон", "icon": "dot_damage", "value_type": "flat"},
-	{"id": "dot_speed", "name": "Скорость тиков", "icon": "dot_speed", "value_type": "flat"},
-	{"id": "projectile_speed", "name": "Скорость снарядов", "icon": "projectile_speed", "value_type": "flat"},
-	{"id": "aura_radius", "name": "Радиус", "icon": "aura_radius", "value_type": "percent"},
 	{"id": "buff_power", "name": "Сила поддержки", "icon": "buff_power", "value_type": "percent"},
 	{"id": "summon_amount", "name": "Сила призыва", "icon": "summon_amount", "value_type": "flat"},
 	{"id": "absorb", "name": "Поглощение", "icon": "absorb", "value_type": "flat"},
 	{"id": "regeneration", "name": "Регенерация", "icon": "regeneration", "value_type": "flat"},
-	{"id": "vampiric_amount", "name": "Вампиризм (лечение)", "icon": "vampiric_amount", "value_type": "flat"},
-	{"id": "vampiric_chance", "name": "Вампиризм (шанс)", "icon": "vampiric_chance", "value_type": "percent"},
+	# FAN-1034: мерж «Вампиризм (шанс)» + «Вампиризм (лечение)»: обе оси лили в одно
+	# ведро heal-бюджета 1.1 HP/с, две отдельные карты были избыточны.
+	{"id": "vampiric", "name": "Вампиризм", "icon": "vampiric_amount", "value_type": "flat"},
 	{"id": "ultimate_power", "name": "Сила ультимейта", "icon": "ultimate_multiplier", "value_type": "percent"},
 ]
 
-# SCRUM-695: ПРЯМАЯ матрица релевантности (атрибут × 17 классов), первоисточник
-# полезности атрибута для класса (заменяет косвенный расчёт через 8 базовых
-# характеристик в level-up-наградах). ЖЁСТКИЙ ИНВАРИАНТ по каждому атрибуту:
-# ровно 2 primary + 8 secondary + 7 optional = 17 классов (проверяется
-# tests/attribute_relevance_test.gd). optional выводится в Hero Select как
-# «Слабые атрибуты».
+# SCRUM-695/FAN-1034: ПРЯМАЯ матрица релевантности (атрибут × 17 классов),
+# первоисточник полезности атрибута для класса. ИНВАРИАНТ по каждому атрибуту
+# (проверяется tests/attribute_relevance_test.gd): ровно 2 primary,
+# 5..8 secondary, минимум 1 optional, разбиение всех 17 классов полное;
+# на класс приходится 1..3 primary-атрибута. Жёсткое «ровно 8 secondary»
+# снято: у гейтнутых осей (magic_focus, buff_power) честных secondary меньше,
+# и матрица не должна врать про мёртвые для класса оси.
 # primary = сигнатурный геймплей класса; secondary = ощутимо полезно; optional =
-# профильно мимо. Раскладка осмысленна (берсерк — урон/отталкивание/вампиризм,
-# снайпер — крит/дальность, жрец — защита/аура/поддержка, друид — аура/призыв/реген).
+# профильно мимо (Hero Select показывает как «Слабые атрибуты»).
 const ATTRIBUTE_RELEVANCE := {
 	# `damage` is also consumed by the active per-hero generic damage star, so the
 	# Dark Mage remains secondary despite its three direct weapon channels being
@@ -1159,41 +1161,46 @@ const ATTRIBUTE_RELEVANCE := {
 	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["thief", "elementalist", "sniper", "dark_mage", "assassin", "ranger", "doctor", "chemist"]},
 	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "thief", "sniper", "priest", "engineer", "assassin", "ranger", "doctor"]},
 	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "elementalist", "sniper", "biologist", "dark_mage", "assassin", "chemist", "knight"]},
-	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "thief", "sniper", "priest", "robot", "engineer", "dark_mage", "ranger"]},
+	# FAN-1034: единая ось геометрии (бывшие «Ширина сектора»+«Радиус»). Secondary —
+	# классы, где радиус зон/аур/melee-охвата ощутим: свипы берсерка
+	# (range_scales_with_aoe), граната солдата, ауры жреца/друида, зоны робота,
+	# мины инженера, взрывы тёмного мага, волны гитариста.
+	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "guitarist", "druid"]},
 	# Thief owns the pickup trait. Engineer's remote device field is the second
-	# strongest fit; Robot returns to secondary so 2/8/7 remains exact.
+	# strongest fit.
 	"pickup_radius": {"primary": ["thief", "engineer"], "secondary": ["berserk", "elementalist", "sniper", "robot", "assassin", "ranger", "chemist", "knight"]},
 	# Armored Hull is an always-on mitigation mechanic; dodge specialists do not
 	# treat the separate armor/defense axis as kit-defining.
 	"defense": {"primary": ["knight", "priest"], "secondary": ["robot", "elementalist", "sniper", "engineer", "assassin", "ranger", "doctor", "chemist"]},
-	# Secondary magic relevance follows actual magic channels and accepted
-	# cross-class enchantment hooks, not the obsolete physical-only roster.
-	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["thief", "priest", "biologist", "guitarist", "doctor", "chemist", "druid", "engineer"]},
-	"knockback": {"primary": ["berserk", "guitarist"], "secondary": ["soldier", "elementalist", "sniper", "priest", "biologist", "chemist", "knight", "druid"]},
+	# FAN-1034: карта гейтнута class_affinity на 8 маг-классов — у физ-классов ось
+	# magic_damage мертва (ни одно их оружие не читает magic-канал), держать их
+	# в secondary было ложью матрицы.
+	"magic_focus": {"primary": ["dark_mage", "elementalist"], "secondary": ["priest", "biologist", "guitarist", "doctor", "chemist", "druid"]},
 	# Assassin owns the unique 100% crit cap/overflow trait and must be primary.
-	"crit_chance": {"primary": ["assassin", "sniper"], "secondary": ["berserk", "soldier", "thief", "biologist", "robot", "dark_mage", "ranger", "druid"]},
-	"crit_damage": {"primary": ["sniper", "assassin"], "secondary": ["berserk", "soldier", "thief", "robot", "dark_mage", "guitarist", "ranger", "druid"]},
+	# FAN-1034: биолог/друид выведены из secondary — тики DoT и тела призывов
+	# не критуют; инженер/рыцарь введены (устройства и melee критуют штатно).
+	"crit_chance": {"primary": ["assassin", "sniper"], "secondary": ["berserk", "soldier", "thief", "robot", "engineer", "dark_mage", "ranger", "knight"]},
+	"crit_damage": {"primary": ["sniper", "assassin"], "secondary": ["berserk", "soldier", "thief", "robot", "engineer", "dark_mage", "ranger", "knight"]},
 	"dodge": {"primary": ["thief", "assassin"], "secondary": ["berserk", "soldier", "sniper", "biologist", "guitarist", "ranger", "doctor", "druid"]},
 	"range": {"primary": ["sniper", "ranger"], "secondary": ["soldier", "elementalist", "priest", "biologist", "engineer", "dark_mage", "chemist", "druid"]},
 	# Catalyst multiplies every periodic branch by 1.5. Plague Oath makes the
 	# Doctor's long plague DoT the sole scalable source of weapon-only sustain,
-	# so it is kit-defining; Biologist remains primary on tick speed and
-	# secondary here. Dark Mage keeps meaningful curse-DoT relevance.
-	"dot_damage": {"primary": ["doctor", "chemist"], "secondary": ["elementalist", "priest", "engineer", "guitarist", "assassin", "biologist", "dark_mage", "druid"]},
-	"dot_speed": {"primary": ["biologist", "chemist"], "secondary": ["elementalist", "priest", "engineer", "dark_mage", "guitarist", "assassin", "doctor", "druid"]},
-	"projectile_speed": {"primary": ["soldier", "ranger"], "secondary": ["thief", "elementalist", "sniper", "robot", "engineer", "dark_mage", "guitarist", "chemist"]},
-	"aura_radius": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "engineer", "guitarist", "doctor", "knight"]},
-	# Wild Force Aura scales directly from buff_power; Engineer's network instead
-	# scales from devices and Leadership, so it is secondary.
-	"buff_power": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "guitarist", "doctor", "knight", "engineer"]},
-	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["elementalist", "priest", "biologist", "robot", "dark_mage", "guitarist", "doctor", "knight"]},
+	# so it is kit-defining. FAN-1034: ось поглотила dot_speed; гитарист (нет
+	# DoT-оружия) заменён рейнджером (кровотечение капкана).
+	"dot_damage": {"primary": ["doctor", "chemist"], "secondary": ["elementalist", "priest", "biologist", "engineer", "dark_mage", "assassin", "ranger", "druid"]},
+	# FAN-1034: карта гейтнута class_affinity на 7 классов с реальными
+	# потребителями buff_power (veil ассасина, ауры жреца/друида/гитариста/
+	# инженера, arcane_vulnerability тёмного мага/элементалиста).
+	"buff_power": {"primary": ["priest", "druid"], "secondary": ["guitarist", "engineer", "assassin", "dark_mage", "elementalist"]},
+	# FAN-1034: химик введён в secondary (гомункул — призыв), рыцарь выведен.
+	"summon_amount": {"primary": ["engineer", "druid"], "secondary": ["elementalist", "priest", "biologist", "robot", "dark_mage", "guitarist", "doctor", "chemist"]},
 	"absorb": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "priest", "biologist", "engineer", "guitarist", "doctor", "druid"]},
 	# Plague Oath explicitly blocks generic regen/vampirism. Priest's selectable
 	# Mending prayer and Druid sustain remain the true regeneration primaries.
 	"regeneration": {"primary": ["priest", "druid"], "secondary": ["berserk", "soldier", "biologist", "robot", "engineer", "guitarist", "knight", "chemist"]},
-	# Biologist's existing constellation and infection loop own the second
-	# amount-primary slot; Assassin remains secondary here and primary on chance.
-	"vampiric_amount": {"primary": ["berserk", "biologist"], "secondary": ["soldier", "thief", "assassin", "robot", "guitarist", "priest", "knight", "druid"]},
-	"vampiric_chance": {"primary": ["assassin", "berserk"], "secondary": ["soldier", "thief", "biologist", "robot", "guitarist", "priest", "knight", "druid"]},
+	# FAN-1034: мерж двух вампиризм-осей. Берсерк (rage-сустейн) и биолог
+	# (infection loop) — владельцы; друид выведен (удары призывов не проксят
+	# on_weapon_hit), рейнджер введён (высокая частота хитов).
+	"vampiric": {"primary": ["berserk", "biologist"], "secondary": ["soldier", "thief", "assassin", "robot", "guitarist", "priest", "knight", "ranger"]},
 	"ultimate_power": {"primary": ["elementalist", "guitarist"], "secondary": ["berserk", "soldier", "priest", "robot", "engineer", "dark_mage", "doctor", "druid"]},
 }

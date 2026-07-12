@@ -485,29 +485,32 @@ const START_BOONS := [
 # через 8 базовых характеристик. Описания — человекочитаемые единицы (никаких «+0.18
 # силы поддержки» / «flat absorption»); численное before→after показывает карточка через
 # _level_up_reward_preview в ui_screens.gd.
+# FAN-1034: 24 → 19 карт. Удалены мёртвые оси (скорость снарядов — только косметика
+# задержки импакта; отталкивание — боссы/элитки иммунны; ширина сектора — no-op для
+# 46/51 оружий), слиты пары вампиризма и dot damage+speed, а class_affinity гейтит
+# профильные карты (magic_focus/buff_power) от классов, где ось мертва. Механики
+# (projectile_speed, knockback, sector, dot_speed, vampiric_*) в derived-слое живут —
+# их продолжают кормить статы, артефакты и мета-древо.
 const LEVEL_UP_REWARDS := [
 	{"id": "damage_up", "attr": "damage", "title": "+Урон", "description": "+15% к урону.", "kind": "upgrade", "mods": {"damage_multiplier": 1.15}},
 	{"id": "attack_speed_up", "attr": "attack_speed", "title": "+Скорость атаки", "description": "+12% к скорости атаки.", "kind": "upgrade", "mods": {"attack_speed_multiplier": 1.12}},
 	{"id": "max_hp_up", "attr": "max_health", "title": "+Макс. здоровье", "description": "+18 к максимальному здоровью.", "kind": "upgrade", "mods": {"max_health_flat": 18.0}},
 	{"id": "move_speed_up", "attr": "move_speed", "title": "+Скорость движения", "description": "+10% к скорости движения.", "kind": "upgrade", "mods": {"move_speed_multiplier": 1.10}},
-	{"id": "aoe_radius_up", "attr": "aoe_radius", "title": "+Ширина сектора", "description": "+15% к ширине сектора.", "kind": "upgrade", "mods": {"sector_multiplier": 1.15}},
+	{"id": "aoe_radius_up", "attr": "aoe_radius", "title": "+Область поражения", "description": "+15% к радиусу атак, взрывов, аур и зон.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15}},
 	{"id": "pickup_radius_up", "attr": "pickup_radius", "title": "+Радиус подбора", "description": "+45 к радиусу подбора опыта и золота.", "kind": "upgrade", "mods": {"pickup_radius_flat": 45.0}},
 	{"id": "defense_up", "attr": "defense", "title": "+Защита", "description": "+10% к снижению входящего урона.", "kind": "upgrade", "mods": {"defense_flat": 0.10}},
-	{"id": "magic_focus_up", "attr": "magic_focus", "title": "+Маг. урон", "description": "+14% только к магическому урону.", "kind": "upgrade", "mods": {"magic_damage_multiplier": 1.14}},
-	{"id": "knockback_up", "attr": "knockback", "title": "+Отталкивание", "description": "+18% к силе отталкивания.", "kind": "upgrade", "mods": {"knockback_multiplier": 1.18}},
+	{"id": "magic_focus_up", "attr": "magic_focus", "title": "+Маг. урон", "description": "+14% только к магическому урону.", "kind": "upgrade", "mods": {"magic_damage_multiplier": 1.14},
+		"class_affinity": ["elementalist", "priest", "biologist", "dark_mage", "guitarist", "doctor", "chemist", "druid"]},
 	{"id": "crit_chance_up", "attr": "crit_chance", "title": "+Шанс крита", "description": "+7% к шансу критического удара.", "kind": "upgrade", "mods": {"crit_chance_flat": 0.07}},
 	{"id": "crit_damage_up", "attr": "crit_damage", "title": "+Урон крита", "description": "+35% к множителю критического урона.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
 	{"id": "dodge_up", "attr": "dodge", "title": "+Уклонение", "description": "+8% к шансу уклонения.", "kind": "upgrade", "mods": {"dodge_flat": 0.08}},
 	{"id": "range_up", "attr": "range", "title": "+Дальность атаки", "description": "+12% к дальности атаки.", "kind": "upgrade", "mods": {"range_multiplier": 1.12}},
-	{"id": "dot_damage_up", "attr": "dot_damage", "title": "+Периодический урон", "description": "+3 урона в каждом тике яда/горения/кровотечения. Классы без эффекта получают малое кровотечение.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0}},
-	{"id": "dot_speed_up", "attr": "dot_speed", "title": "+Скорость тиков", "description": "+0.25 тика периодического урона в секунду.", "kind": "upgrade", "mods": {"dot_speed_flat": 0.25}},
-	{"id": "projectile_speed_up", "attr": "projectile_speed", "title": "+Скорость снарядов", "description": "+90 к скорости полёта снарядов.", "kind": "upgrade", "mods": {"projectile_speed_flat": 90.0}},
-	{"id": "aura_radius_up", "attr": "aura_radius", "title": "+Радиус", "description": "+15% к радиусу атак и зон.", "kind": "upgrade", "mods": {"aoe_radius_multiplier": 1.15}},
-	{"id": "buff_power_up", "attr": "buff_power", "title": "+Сила поддержки", "description": "+18% к силе аур, кличей и усилений поддержки.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18}},
+	{"id": "dot_damage_up", "attr": "dot_damage", "title": "+Периодический урон", "description": "+3 урона тикам яда/горения/кровотечения и +0.2 к их темпу. Классы без эффекта получают малое кровотечение.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.2}},
+	{"id": "buff_power_up", "attr": "buff_power", "title": "+Сила поддержки", "description": "+18% к силе аур, кличей и усилений поддержки.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18},
+		"class_affinity": ["priest", "druid", "guitarist", "engineer", "assassin", "dark_mage", "elementalist"]},
 	{"id": "summon_amount_up", "attr": "summon_amount", "title": "+Сила призыва", "description": "+2 к силе призывов. Непризывные классы получают эхо-оружие или спутника.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
 	{"id": "absorb_up", "attr": "absorb", "title": "+Поглощение", "description": "+4 к поглощению урона: каждый входящий удар слабее на 4.", "kind": "upgrade", "mods": {"absorb_flat": 4.0}},
 	{"id": "regeneration_up", "attr": "regeneration", "title": "+Регенерация", "description": "+1.3 здоровья в секунду к восстановлению.", "kind": "upgrade", "mods": {"regeneration_flat": 1.3}},
-	{"id": "vampiric_amount_up", "attr": "vampiric_amount", "title": "+Вампиризм (лечение)", "description": "+1 к лечению от вампиризма и +1 к пределу лечения в секунду.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 1.0, "vampiric_heal_per_second_cap": 1.0}},
-	{"id": "vampiric_chance_up", "attr": "vampiric_chance", "title": "+Вампиризм (шанс)", "description": "+5% к шансу вылечиться при ударе.", "kind": "upgrade", "mods": {"vampiric_chance_flat": 0.05}},
+	{"id": "vampiric_up", "attr": "vampiric", "title": "+Вампиризм", "description": "+5% к шансу вылечиться при ударе, +0.8 к лечению и его пределу в секунду.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 0.8, "vampiric_chance_flat": 0.05, "vampiric_heal_per_second_cap": 0.8}},
 	{"id": "ultimate_power_up", "attr": "ultimate_power", "title": "+Сила ультимейта", "description": "+12% к силе эффектов классового ультимейта.", "kind": "upgrade", "mods": {"ultimate_flat": 0.12}},
 ]

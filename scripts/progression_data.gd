@@ -233,8 +233,7 @@ static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
 # блокируется — отсекается именно КОМБАТ/билд-сустейн (решение тикета).
 const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
 	"regeneration": true,
-	"vampiric_amount": true,
-	"vampiric_chance": true,
+	"vampiric": true,  # FAN-1034: единая ось (мерж vampiric_amount + vampiric_chance)
 }
 const DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS := {
 	"leech_heart": true,
@@ -508,18 +507,15 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "max_health"
 			"move_speed_multiplier":
 				return "move_speed"
-			"sector_multiplier":
+			# FAN-1034: aoe_radius — единая ось геометрии (сектор/радиус/аура).
+			"sector_multiplier", "aoe_radius_multiplier", "aura_radius_flat":
 				return "aoe_radius"
-			"aoe_radius_multiplier":
-				return "aura_radius"
 			"magic_damage_multiplier":
 				return "magic_focus"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
 				return "defense"
-			"knockback_multiplier":
-				return "knockback"
 			"crit_chance_flat":
 				return "crit_chance"
 			"crit_damage_flat":
@@ -528,14 +524,11 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "dodge"
 			"range_multiplier":
 				return "range"
-			"dot_damage_flat":
+			# FAN-1034: темп тиков слит в ось dot_damage. projectile_speed/knockback
+			# больше не level-up атрибуты: их источники (артефакты) взвешиваются
+			# нейтрально через пустую зависимость.
+			"dot_damage_flat", "dot_speed_flat":
 				return "dot_damage"
-			"dot_speed_flat":
-				return "dot_speed"
-			"projectile_speed_flat":
-				return "projectile_speed"
-			"aura_radius_flat":
-				return "aura_radius"
 			"buff_power_flat":
 				return "buff_power"
 			"summon_bonus":
@@ -544,10 +537,8 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "absorb"
 			"regeneration_flat":
 				return "regeneration"
-			"vampiric_amount_flat":
-				return "vampiric_amount"
-			"vampiric_chance_flat":
-				return "vampiric_chance"
+			"vampiric_amount_flat", "vampiric_chance_flat":
+				return "vampiric"
 			"ultimate_flat":
 				return "ultimate_power"
 	return ""

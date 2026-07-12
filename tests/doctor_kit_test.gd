@@ -158,7 +158,7 @@ func _test_reward_pools_filtered(errors: Array) -> void:
 	var doctor_attrs := {}
 	for reward in PD.level_up_rewards("doctor"):
 		doctor_attrs[str((reward as Dictionary).get("attr", ""))] = true
-	for forbidden_attr in ["regeneration", "vampiric_amount", "vampiric_chance"]:
+	for forbidden_attr in ["regeneration", "vampiric"]:
 		if doctor_attrs.has(forbidden_attr):
 			errors.append("level-up пул Доктора предлагает '%s'" % forbidden_attr)
 	var ranger_attrs := {}

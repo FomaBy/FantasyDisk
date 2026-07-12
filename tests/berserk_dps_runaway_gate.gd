@@ -36,7 +36,12 @@ const WEAPON_ID := "hammer"
 # Новый профиль молота стартует с кругом 150px и без fixed radius cap, но Radius
 # scaling и upgrade-экспоненты всё ещё должны оставлять идеальный lvl20 билд в
 # живом коридоре лидеров, без возврата мультипликативного runaway.
-const MAX_IDEAL_20T := 3600.0    # SCRUM-602 restart band; rollback to old radius/exponents (>=4200) fails.
+# FAN-1034: ревизия атрибутов убрала из level-up пула мёртвые карты (снаряды/
+# отталкивание/сектор) — «идеальные» офферы стали плотнее по урону, живой замер
+# ideal-билда поднялся 3600 → ~3950 без каких-либо правок множителей молота.
+# Потолок рекалиброван с прежним запасом: откат радиуса/экспонент (+~30% к базе,
+# т.е. ≥5100 от новой базы) по-прежнему ловится.
+const MAX_IDEAL_20T := 4400.0    # SCRUM-602 restart band + FAN-1034 pool recalibration.
 const MAX_IDEAL_1T := 650.0      # Solo peak stays in corridor; damage-growth runaway fails.
 const ZERO_EPS := 0.01
 

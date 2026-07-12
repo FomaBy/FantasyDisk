@@ -76,17 +76,19 @@ func _initialize() -> void:
 	if float(crit_forecast["dps_after"]) <= float(crit_forecast["dps_before"]):
 		_fail("«+Шанс крита» обязан увеличивать DPS-скор.")
 
-	# 5) Набор из трёх утилити-наград — без бейджей вовсе.
-	var knockback_up := _reward_by_id("knockback_up")
-	var projectile_up := _reward_by_id("projectile_speed_up")
-	var utility := LevelUpAdvisor.recommend([pickup_up, projectile_up, knockback_up], stats, mods, weapon_config)
+	# 5) Набор из трёх утилити-наград — без бейджей вовсе (FAN-1034: карты
+	# knockback/projectile_speed удалены; утилити-набор — подбор/область/призыв,
+	# ни одна не двигает dps_score/survivability_score).
+	var aoe_up := _reward_by_id("aoe_radius_up")
+	var summon_up := _reward_by_id("summon_amount_up")
+	var utility := LevelUpAdvisor.recommend([pickup_up, aoe_up, summon_up], stats, mods, weapon_config)
 	if int(utility["dps_index"]) != -1 or int(utility["surv_index"]) != -1:
 		_fail("Утилити-набор не должен получать бейджи, получено dps=%d surv=%d." % [int(utility["dps_index"]), int(utility["surv_index"])])
 
 	# 6) Совпадение осей на одной карточке -> единый бейдж «Лучший выбор».
 	var hybrid := {"id": "test_hybrid", "title": "+Гибрид", "kind": "upgrade",
 		"mods": {"damage_multiplier": 1.15, "max_health_flat": 30.0}}
-	var hybrid_advice := LevelUpAdvisor.recommend([hybrid, pickup_up, projectile_up], stats, mods, weapon_config)
+	var hybrid_advice := LevelUpAdvisor.recommend([hybrid, pickup_up, aoe_up], stats, mods, weapon_config)
 	if str((hybrid_advice["badges"] as Array)[0]) != LevelUpAdvisor.BADGE_BOTH:
 		_fail("Гибридная лучшая карточка должна получить бейдж both, получено %s." % str(hybrid_advice["badges"]))
 

@@ -104,12 +104,15 @@ func _check_all_character_data() -> void:
 				_errors.append("%s relevance misses registry attribute %s." % [cid, attr_id])
 
 	# Subject-matter regression anchors from the 17-kit audit. These are
-	# mechanics, not balance-number changes.
-	_expect_relevance("doctor", ["regeneration", "vampiric_amount", "vampiric_chance"], "optional")
+	# mechanics, not balance-number changes. FAN-1034: реестр 24→19 —
+	# вампиризм слит в `vampiric`, dot_speed поглощён dot_damage, «Радиус»
+	# переехал в aoe_radius; якоря переставлены на новые id.
+	_expect_relevance("doctor", ["regeneration", "vampiric"], "optional")
 	_expect_relevance("assassin", ["crit_chance", "crit_damage"], "primary")
-	_expect_relevance("chemist", ["dot_damage", "dot_speed"], "primary")
-	_expect_relevance("druid", ["buff_power", "aura_radius", "summon_amount"], "primary")
+	_expect_relevance("chemist", ["dot_damage", "aoe_radius"], "primary")
+	_expect_relevance("druid", ["buff_power", "summon_amount", "regeneration"], "primary")
 	_expect_relevance("robot", ["defense"], "secondary")
+	_expect_relevance("berserk", ["vampiric"], "primary")
 
 
 func _expect_relevance(cid: String, attr_ids: Array, expected: String) -> void:

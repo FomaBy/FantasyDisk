@@ -28,8 +28,7 @@ const Surv := preload("res://tools/survivability_harness.gd")
 const EPS := 0.01
 const DOCTOR_FORBIDDEN_SUSTAIN_IDS := {
 	"regeneration_up": true,
-	"vampiric_amount_up": true,
-	"vampiric_chance_up": true,
+	"vampiric_up": true,  # FAN-1034: мерж vampiric_amount_up + vampiric_chance_up
 	"leech_heart": true,
 	"leech_fang": true,
 	"field_kit": true,
@@ -42,8 +41,7 @@ const DOCTOR_FORBIDDEN_SUSTAIN_IDS := {
 }
 const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
 	"regeneration": true,
-	"vampiric_amount": true,
-	"vampiric_chance": true,
+	"vampiric": true,  # FAN-1034
 }
 const DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS := {
 	"regeneration_flat": true,
@@ -193,8 +191,8 @@ func _test_doctor_external_sustain_reward_filter(errors: Array) -> void:
 		errors.append("Non-doctor classes should keep swiftfoot start boon available.")
 
 	var berserk_level_rewards: Array = ProgressionData.level_up_rewards("berserk")
-	if not _contains_reward_id(berserk_level_rewards, "vampiric_amount_up"):
-		errors.append("Expected non-doctor level-up pool to keep vampiric_amount_up.")
+	if not _contains_reward_id(berserk_level_rewards, "vampiric_up"):
+		errors.append("Expected non-doctor level-up pool to keep vampiric_up.")
 	var berserk_pool: Array = ProgressionData.reward_pool("berserk")
 	if not _contains_reward_id(berserk_pool, "leech_fang"):
 		errors.append("Expected non-doctor artifact pool to keep leech_fang.")
