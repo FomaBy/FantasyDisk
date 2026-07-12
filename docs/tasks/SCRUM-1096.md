@@ -45,3 +45,12 @@ Thread/Worker: release-v0.2.1 controller
 - Disk cleanup: build temp worktree/cache и временный main merge worktree
   удалены; release controller worktree удаляется сразу после push этого mirror.
 - Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Независимый release artifact audit подтвердил целостность всех сборок,
+корректную версию приложения и тега, пользовательский характер release notes и
+готовность комплекта к публикации. Telegram и Discord подтвердили успешную
+публикацию.

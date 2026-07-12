@@ -4725,7 +4725,7 @@
  },
  "backend_scrum1089_route_map_full_fit_hud2x.md": {
   "key": "SCRUM-1089",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "c5da15445e64b5d0133a47ec5353bfbf"
  },
  "SCRUM-1094.md": {
@@ -4740,7 +4740,12 @@
  },
  "SCRUM-1095.md": {
   "key": "SCRUM-1095",
-  "status": null,
-  "desc_hash": null
+  "status": "Готово",
+  "desc_hash": "6b37daa822d359285b7d2ef30315830d"
+ },
+ "SCRUM-1096.md": {
+  "key": "SCRUM-1096",
+  "status": "Готово",
+  "desc_hash": "789444e64e26fee68cfbd1b8a39e6620"
  }
 }
