@@ -82,3 +82,20 @@ Commit/push: the commit containing this report is pushed directly to
 
 Disk cleanup: generated `.uid` sidecars and isolated HOME directories removed;
 disposable worktree and `.godot` cache are removed after push/Jira bookkeeping.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Дата: 2026-07-12
+QA: Codex `/root/scrum1068_runtime_review`
+
+Проверено на final `origin/dev`
+`a9d4ff61ac24196bd48e9cb5bdc77f26fdfd3691`. Пять refreshed Metal-
+кадров подтверждают horizontal-only Route Map, left-to-right columns,
+safe current-column viewport, bottom-only scrollbar lane, целые header/HUD
+и отсутствие content-on-frame на всех пяти tiers. Focused geometry,
+gold shell, no-overlap, gamepad UI, runtime UI и full runtime smoke прошли.
+Новых defects не найдено; implementation в QA не менялась.
+
+Disk cleanup: QA `.godot`, generated sidecars, temporary HOME/user-data and
+disposable worktree removed after verdict push/Jira sync.

@@ -47,3 +47,32 @@ Commit/push: exact origin/dev SHA recorded in Jira after push.
 
 Disk cleanup: generated `.uid`/`.import`, isolated HOME and disposable `.godot`
 cache/worktree removed after push and Jira sync.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Дата: 2026-07-12
+QA: Codex `/root/scrum1068_runtime_review`
+
+Независимая re-QA выполнена в чистом detached worktree на
+`origin/dev` `a9d4ff61ac24196bd48e9cb5bdc77f26fdfd3691`; functional fix:
+`383c4583f2cfeb8eeae60b287ee23ba320132992`.
+
+- все пять Metal-скриншотов 1152×648, 1280×720, 1600×900,
+  1920×1080 и 2560×1440 просмотрены в полном разрешении;
+  status copy полная, без ellipsis, clipping и overlap;
+- компактная строка 1152/1280 сохраняет progress, route
+  strength, next battle и необратимость выбора; большие tiers
+  сохраняют полную формулировку;
+- code/test review подтвердил переключение compact/full copy без
+  изменения SCRUM-1057 geometry и проверку live resize/реальной
+  ширины themed font;
+- PASS: `scrum1086_route_map_header_text_fit_test`,
+  `scrum1079_route_map_horizontal_test`, `scrum981_route_map_gold_shell_test`,
+  `ui_no_overlap_matrix_test`, `gamepad_inrun_ui_test`,
+  `runtime_smoke_ui_test`, `runtime_smoke_test`;
+- известный headless dummy-texture warning остался нефатальным;
+  новых defects не найдено.
+
+Disk cleanup: QA `.godot`, generated import/UID sidecars, `/tmp/qa1086_*` and
+disposable QA worktree removed after verdict push/Jira sync.

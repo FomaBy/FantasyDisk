@@ -36,3 +36,24 @@ Runtime scripts, gameplay route data, input and tests этим Design-owner не
 - PixelLab v2 `0a5d3c83-3592-430d-b733-82128c86aa5b`: accepted; solid calm horizontal viewport, exact header wells, bottom horizontal lane, no vertical lane.
 - Full preview/debug exported; all sample text, lines and canonical node icons remain inside declared zones.
 - Runtime untouched. Back-end Jira handoff created: SCRUM-1079; mirror: `docs/tasks/backend_scrum1079_route_map_horizontal_integration.md`.
+
+## QA-Вердикт: PASSED
+
+Статус: PASSED
+Дата: 2026-07-12
+QA: Codex `/root/scrum1068_runtime_review`
+
+Design contract повторно принят по фактической runtime-реализации
+SCRUM-1079 и text-fit исправлению SCRUM-1086 на `origin/dev`
+`a9d4ff61ac24196bd48e9cb5bdc77f26fdfd3691`.
+
+- все exact responsive zones верифицированы на 1152/1280/1600/1920/2560;
+- title/progress, resource HUD, nodes, lines и horizontal lane остаются
+  в пустых внутренних зонах; рамка, орнамент и local rails
+  не перекрыты;
+- PixelLab/source package не изменялся, implementation deviations от
+  accepted geometry не найдены;
+- visual review и весь focused/full Godot gate набор прошли.
+
+Disk cleanup: QA cache/sidecars/temp user-data and disposable worktree removed
+after verdict push/Jira sync.
