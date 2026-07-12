@@ -1,0 +1,26 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F8E8C4",
+    "stroke_fill": "#14080A",
+    "stroke_width": 5,
+    "line_spacing": 1.12,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "release": "РЕЛИЗ 0.2.1",
+    "brand": "FantasyDisk",
+    "subtitle": "АРТЕФАКТЫ • БИЛДЫ • НОВАЯ КАРТА",
+    "highlights": "154 АРТЕФАКТА\n85 УНИКАЛЬНЫХ ДЛЯ КЛАССОВ\n17 ГЕРОЕВ • 51 ОРУЖИЕ\nНОВЫЕ МЕХАНИКИ И БИЛДЫ\nГОРИЗОНТАЛЬНАЯ КАРТА • 2 АКТА",
+    "footer": "macOS + Windows • 2026"
+  },
+  "zones": [
+    {"id": "release", "content_key": "release", "role": "badge", "x": 100, "y": 64, "w": 760, "h": 82, "max_font": 58, "min_font": 38, "color": "#FFCE74", "stroke_width": 6, "uppercase": true, "debug_color": "#ffcc33"},
+    {"id": "brand", "image_path": "assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png", "role": "title", "x": 100, "y": 174, "w": 840, "h": 140, "required": true, "debug_color": "#66ccff"},
+    {"id": "subtitle", "content_key": "subtitle", "role": "subtitle", "x": 104, "y": 352, "w": 870, "h": 60, "max_font": 38, "min_font": 24, "color": "#DDAA59", "stroke_width": 5, "debug_color": "#cc88ff"},
+    {"id": "highlights", "content_key": "highlights", "role": "body", "x": 100, "y": 462, "w": 880, "h": 344, "max_font": 40, "min_font": 25, "color": "#F8E8C4", "stroke_width": 5, "valign": "top", "debug_color": "#66ff99"},
+    {"id": "footer", "content_key": "footer", "role": "footer", "x": 100, "y": 952, "w": 770, "h": 56, "max_font": 30, "min_font": 20, "color": "#CFA45E", "stroke_width": 4, "debug_color": "#ff6699"}
+  ]
+}
