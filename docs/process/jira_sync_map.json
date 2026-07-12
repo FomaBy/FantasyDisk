@@ -4680,22 +4680,22 @@
  },
  "SCRUM-1080.md": {
   "key": "SCRUM-1080",
-  "status": "В работе",
-  "desc_hash": "c07aa8b4878cf36e771d464174e70858"
+  "status": "Готово",
+  "desc_hash": "63dcf241150ec6bd084140256b1dab41"
  },
  "SCRUM-1081.md": {
   "key": "SCRUM-1081",
-  "status": "В работе",
-  "desc_hash": "71e9d195547af451e7c23c3630931634"
+  "status": "Готово",
+  "desc_hash": "00169d4b823af2cd971c67edefca38a3"
  },
  "SCRUM-1082.md": {
   "key": "SCRUM-1082",
-  "status": "В работе",
-  "desc_hash": "ceece6a882077957c812bd4e3423ea3d"
+  "status": "Готово",
+  "desc_hash": "e9fa5222adb359e17ff1d7d7fdf42250"
  },
  "SCRUM-1083.md": {
   "key": "SCRUM-1083",
-  "status": "К выполнению",
-  "desc_hash": "9b083076752a0dd66c4e43f16c80cf07"
+  "status": "Готово",
+  "desc_hash": "9c86f97f06ee8fd314e5a2fe8938ff8e"
  }
 }
