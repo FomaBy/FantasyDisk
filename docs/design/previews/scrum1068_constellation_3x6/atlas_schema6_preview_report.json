@@ -1,0 +1,323 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "class_progress",
+      "rect": [
+        270,
+        86,
+        820,
+        58
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 34,
+      "lines": [
+        "Созвездие берсерка: 20/20"
+      ],
+      "text_bbox": [
+        270,
+        96,
+        433,
+        37
+      ]
+    },
+    {
+      "id": "guild_tab",
+      "rect": [
+        1390,
+        86,
+        230,
+        58
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 30,
+      "lines": [
+        "Гильдия"
+      ],
+      "text_bbox": [
+        1444,
+        100,
+        121,
+        30
+      ]
+    },
+    {
+      "id": "sword_label",
+      "rect": [
+        398,
+        244,
+        180,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "МЕЧ"
+      ],
+      "text_bbox": [
+        460,
+        252,
+        56,
+        21
+      ]
+    },
+    {
+      "id": "axe_label",
+      "rect": [
+        722,
+        248,
+        172,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "СЕКИРА"
+      ],
+      "text_bbox": [
+        761,
+        253,
+        94,
+        20
+      ]
+    },
+    {
+      "id": "hammer_label",
+      "rect": [
+        1045,
+        244,
+        155,
+        38
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "МОЛОТ"
+      ],
+      "text_bbox": [
+        1080,
+        253,
+        85,
+        20
+      ]
+    },
+    {
+      "id": "dossier_title",
+      "rect": [
+        1320,
+        258,
+        330,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 24,
+      "lines": [
+        "ФИНАЛ ОРУЖИЯ"
+      ],
+      "text_bbox": [
+        1384,
+        264,
+        202,
+        21
+      ]
+    },
+    {
+      "id": "dossier_weapon",
+      "rect": [
+        1320,
+        310,
+        330,
+        44
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 27,
+      "lines": [
+        "Повторный приговор"
+      ],
+      "text_bbox": [
+        1352,
+        318,
+        266,
+        28
+      ]
+    },
+    {
+      "id": "dossier_body",
+      "rect": [
+        1320,
+        372,
+        330,
+        92
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Повторный удар казнит",
+        "раненую цель. Эффект",
+        "действует только для меча."
+      ],
+      "text_bbox": [
+        1346,
+        376,
+        279,
+        84
+      ]
+    },
+    {
+      "id": "cost",
+      "rect": [
+        1320,
+        480,
+        150,
+        32
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "Цена: 1"
+      ],
+      "text_bbox": [
+        1320,
+        485,
+        75,
+        22
+      ]
+    },
+    {
+      "id": "buy",
+      "rect": [
+        1320,
+        526,
+        330,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Вложить эмблему"
+      ],
+      "text_bbox": [
+        1394,
+        540,
+        181,
+        24
+      ]
+    },
+    {
+      "id": "progress",
+      "rect": [
+        1320,
+        682,
+        190,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "20/20"
+      ],
+      "text_bbox": [
+        1377,
+        691,
+        76,
+        24
+      ]
+    },
+    {
+      "id": "legacy",
+      "rect": [
+        1525,
+        682,
+        125,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "Наследие: 8"
+      ],
+      "text_bbox": [
+        1534,
+        693,
+        107,
+        20
+      ]
+    },
+    {
+      "id": "hidden",
+      "rect": [
+        1320,
+        738,
+        330,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "Скрытые звёзды: открыты, покупаются",
+        "отдельно"
+      ],
+      "text_bbox": [
+        1346,
+        738,
+        277,
+        41
+      ]
+    },
+    {
+      "id": "reset",
+      "rect": [
+        270,
+        870,
+        285,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 23,
+      "lines": [
+        "Сброс умений"
+      ],
+      "text_bbox": [
+        334,
+        880,
+        158,
+        27
+      ]
+    },
+    {
+      "id": "legend",
+      "rect": [
+        1010,
+        866,
+        630,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "● куплено ○ доступно ✦ финал ? скрытая"
+      ],
+      "text_bbox": [
+        1130,
+        881,
+        391,
+        22
+      ]
+    }
+  ]
+}

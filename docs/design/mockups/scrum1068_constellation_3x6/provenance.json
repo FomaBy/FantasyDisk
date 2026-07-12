@@ -2,19 +2,19 @@
   "schema": "fantasydisk.pixellab_provenance.v1",
   "issue": "SCRUM-1075",
   "parent_issue": "SCRUM-1068",
-  "status": "blocked_before_generation",
+  "status": "ready_for_design_qa",
   "generator": "PixelLab MCP",
   "auth_smoke": {
     "tool": "get_balance",
     "result": "PASS",
     "secrets_printed": false
   },
-  "balance_at_attempt": {
+  "balance_before_generation": {
     "credits_usd": 0.0,
-    "generations_remaining": 3,
+    "generations_remaining": 2836,
     "generations_used": 4997,
-    "generations_total": 5000,
-    "subscription": "active Tier 2 Pixel Artisan"
+    "generations_total": 7833,
+    "subscription": "active Tier 3 Pixel Architect"
   },
   "generation_attempt": {
     "tool": "create_ui_asset",
@@ -22,14 +22,31 @@
     "seed": 1075,
     "requested_size": [688, 384],
     "documented_job_size": "20-40 generations",
-    "result": "rejected",
-    "error": "no generations or credits remaining for creating a UI panel. check get_balance() for details"
+    "charged_generations": 40,
+    "result": "completed"
   },
-  "source_asset_id": null,
-  "source_export": null,
-  "mockup_png": null,
-  "preview_png": null,
+  "source_asset_id": "fde7794d-9f82-404c-8006-213e281a931a",
+  "source_asset_name": "scrum1075_constellation_3x6_atlas_mockup",
+  "source_export": "docs/design/references/scrum1068_constellation_3x6/atlas_schema6_source_688x384.png",
+  "transparent_source": "docs/design/references/scrum1068_constellation_3x6/atlas_schema6_source_transparent_688x384.png",
+  "mockup_png": "docs/design/mockups/scrum1068_constellation_3x6/atlas_schema6_base_1920x1080.png",
+  "preview_png": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png",
+  "debug_overlay": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_debug_1920x1080.png",
+  "preview_report": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_report.json",
+  "responsive_report": "docs/design/previews/scrum1068_constellation_3x6/responsive_fit_report.json",
+  "postprocess": {
+    "script": "docs/design/mockups/scrum1068_constellation_3x6/postprocess_pixellab_source.py",
+    "checker_rule": "remove only light neutral checker pixels connected to the canvas edge",
+    "underlay": "assets/sprites/ui/meta40/bg_sky.png",
+    "new_frames_drawn": false
+  },
+  "mcp_help_note": "create_ui_asset is an individual-element generator; full-screen source assembly is an editor/postprocess responsibility",
   "fallback_used": false,
-  "resume_contract": "Re-run pixellab_request.json after at least one create_ui_asset-capable credit/generation allocation is available; do not change ui_plan/layout zones without revalidating."
+  "qa": {
+    "planning_gate": "ready_for_image; 47 elements; 0 errors; 0 warnings",
+    "preview_fit": "15/15 zones; ok=true",
+    "responsive_fit": "7/7 PASS",
+    "frame_overlap": "PASS",
+    "runtime_smoke": "PASS via tools/godot_gate.py on Godot 4.7"
+  }
 }
-

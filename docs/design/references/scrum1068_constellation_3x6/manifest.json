@@ -1,0 +1,30 @@
+{
+  "schema": "fantasydisk.pixellab_asset_manifest.v1",
+  "issue": "SCRUM-1075",
+  "generator": "PixelLab MCP",
+  "tool": "create_ui_asset",
+  "source_id": "fde7794d-9f82-404c-8006-213e281a931a",
+  "name": "scrum1075_constellation_3x6_atlas_mockup",
+  "seed": 1075,
+  "prompt_spec": "docs/design/mockups/scrum1068_constellation_3x6/pixellab_request.json",
+  "export": {
+    "width": 688,
+    "height": 384,
+    "mode": "RGBA",
+    "raw_file": "atlas_schema6_source_688x384.png",
+    "transparent_file": "atlas_schema6_source_transparent_688x384.png"
+  },
+  "postprocess": {
+    "script": "docs/design/mockups/scrum1068_constellation_3x6/postprocess_pixellab_source.py",
+    "reason": "PixelLab baked a light neutral checker matte into the source export",
+    "padding": "full 688x384 source canvas retained",
+    "runtime_promotion": false
+  },
+  "preview": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png",
+  "qa": {
+    "topology": "one core; three rays x six sockets including finals; two hidden side spurs",
+    "content_zones": "15/15 PASS",
+    "responsive_matrix": "7/7 PASS",
+    "frame_overlap": "PASS"
+  }
+}

@@ -1,13 +1,17 @@
 # SCRUM-1075 — Atlas schema-6 3×6 UI Director spec
 
-Status: `blocked_before_generation`  
-Role owner: Design  
-Jira: SCRUM-1075; implementation parent: SCRUM-1068  
-Base geometry: 1920×1080  
-PixelLab source request: 688×384, seed 1075  
+Status: `ready_for_integration`
+Role owner: Design
+Jira: SCRUM-1075; implementation parent: SCRUM-1068
+Base geometry: 1920×1080
+PixelLab source request: 688×384, seed 1075
 Responsive targets: 1152×648, 1280×720, 1366×768, 1600×900,
-1920×1080, 2560×1440, 3840×2160 and same-instance live resize  
-Mockup/preview: unavailable until PixelLab credits/generations are replenished.
+1920×1080, 2560×1440, 3840×2160 and same-instance live resize
+PixelLab source: `fde7794d-9f82-404c-8006-213e281a931a`,
+`scrum1075_constellation_3x6_atlas_mockup`, seed `1075`, 688×384.
+Mockup base: `atlas_schema6_base_1920x1080.png`.
+Preview/debug: `../../previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png`
+and adjacent debug overlay.
 
 ## Source decision
 
@@ -16,9 +20,10 @@ Design task requests a new PixelLab source-only page mockup because the accepted
 SCRUM-832/SCRUM-971 images do not define the schema-6 topology. No production
 redraw or runtime asset promotion is required.
 
-Planning is complete before art generation. `ui_plan.report.json` says
+Planning was complete before art generation. `ui_plan.report.json` says
 `ready_for_image`, with 47 elements and no errors or warnings. The exact MCP
-request is frozen in `pixellab_request.json`.
+request remains frozen in `pixellab_request.json`; the accepted PixelLab job
+used it without geometry changes.
 
 ## Content inventory and base rectangles
 
@@ -84,15 +89,30 @@ activation control.
 - Reset keeps pointer/gamepad focus, tooltip, confirmation Cancel/Confirm and
   class-vs-Guild full-refund scopes from SCRUM-1070.
 
-## PixelLab blocker
+## PixelLab source and assembly
 
-PixelLab MCP is reachable and authenticated. At generation attempt the account
-reported `$0.00` credits and 3 subscription generations remaining. The MCP
-describes `create_ui_asset` as a 20–40-generation job and rejected this request
-for insufficient generations or credits. Per UI Director policy no OpenAI,
-built-in, manual or legacy fallback was used.
+The replenished account reported 2836 generations before the run. PixelLab MCP
+completed source ID `fde7794d-9f82-404c-8006-213e281a931a` for 40 generations.
+The raw 688×384 export is retained unchanged for provenance. PixelLab baked its
+checker matte into the export, so `postprocess_pixellab_source.py` removes only
+the light neutral matte connected to the canvas edge, preserves the generated
+panels, and assembles them over the accepted Meta40 `bg_sky.png` underlay.
 
-Resume only after PixelLab capacity is replenished. A successful continuation
-must add source asset ID/name/seed/export, source PNG, composited preview, debug
-overlay and seven-size fit report before this spec may become
-`ready_for_integration`.
+MCP `agent_help` confirms that `create_ui_asset` produces individual UI
+elements rather than a true full-screen compositor and recommends assembling
+those generated elements in an editor. The deterministic postprocess follows
+that contract: it adds no new frame, card, border or ornament. All visible UI
+surfaces remain PixelLab-generated; runtime copy is added only through
+`preview_layout.json` inside measured calm interiors.
+
+## QA result
+
+- planning gate: 47 elements, 0 errors, 0 warnings;
+- preview renderer: 15/15 zones fit, report `ok: true`;
+- responsive fit: 7/7 PASS at 1152×648 through 3840×2160;
+- full repository runtime smoke through `tools/godot_gate.py`: PASS on Godot
+  4.7;
+- no content/frame intersection in the debug overlay;
+- exact topology visible: one core, three equal six-socket rays, two side
+  spurs, no keystone toggle;
+- no runtime or production asset changes.
