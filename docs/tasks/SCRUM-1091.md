@@ -1,6 +1,6 @@
 # SCRUM-1091 — Atlas exact upgrade descriptions and strong unique finals
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1091
 Контур: Codex
@@ -123,3 +123,8 @@ only, every per-weapon row is identical before/after.
 Remaining risk: localized phrases are deterministic and exact, but final
 wording may still receive editorial polish; schema and numbers are protected by
 fail-closed tests.
+
+Implementation commit in `origin/dev`: `b36a650e2`.
+Jira routed to `Контроль качества`; implementation locks released.
+Disk cleanup: `.godot`, generated `.uid`/`.import` sidecars and temporary
+SCRUM-1091 scratch/log roots removed.
