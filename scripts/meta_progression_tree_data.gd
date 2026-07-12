@@ -1,6 +1,7 @@
 extends RefCounted
 
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
+const DESCRIPTION_FORMATTER := preload("res://scripts/constellation_description_formatter.gd")
 
 # SCRUM-828 — Мета 4.0 «Созвездия героев» (дизайн: docs/design/systems/
 # meta_constellations.md). Этот модуль хранит ДАННЫЕ и сборщик графа меты:
@@ -795,7 +796,7 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 	var core_attribute := str(core_params.get("attribute", "strength"))
 	var core_effects := {"%s_flat" % core_attribute: float(core_params.get("amount", 1.0))}
 	var core_npos := Vector2(0.50, 0.08)
-	_add(nodes, index, {
+	var core_node := {
 		"id": core_id, "branch": class_id, "tier": 10, "cost": 0,
 		"kind": "entry", "role": "core", "schema_role": "free_core",
 		"title": str(core_spec.get("title_ru", "Сердце созвездия")),
@@ -803,16 +804,20 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 		"effects": core_effects, "effect_profile": core_profile.duplicate(true),
 		"npos": core_npos, "pos": _world_pos(class_index, core_npos),
 		"class_affinity": class_id,
-	})
+	}
+	core_node = DESCRIPTION_FORMATTER.apply_to_node(core_node)
+	_add(nodes, index, core_node)
 
 	var branch_x := [0.20, 0.50, 0.80]
 	var branch_y := [0.22, 0.34, 0.46, 0.58, 0.70, 0.82]
 	var order_three_by_weapon := {}
+	var weapon_titles := {}
 	var branches: Array = class_spec.get("weapon_branches", [])
 	for branch_index in range(branches.size()):
 		var branch: Dictionary = branches[branch_index]
 		var weapon_id := str(branch.get("weapon_id", ""))
 		var weapon_title := str(branch.get("weapon_title", weapon_id))
+		weapon_titles[weapon_id] = weapon_title
 		var previous_id := core_id
 		var branch_nodes: Array = branch.get("nodes", [])
 		for node_index in range(branch_nodes.size()):
@@ -844,6 +849,7 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 				node["final_id"] = str(node_spec.get("final_id", node_id))
 				node["mechanic_id"] = str(node_spec.get("mechanic_id", ""))
 				node["gain_over_order_5_min"] = float(node_spec.get("gain_over_order_5_min", 1.2))
+			node = DESCRIPTION_FORMATTER.apply_to_node(node)
 			_add(nodes, index, node)
 			_connect(index, previous_id, node_id)
 			previous_id = node_id
@@ -865,14 +871,15 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 		var metric := str(reveal.get("metric", ""))
 		var threshold := int(reveal.get("threshold", 1))
 		var cond_text := condition_text(metric, threshold)
-		_add(nodes, index, {
+		var hidden_node := {
 			"id": hidden_id, "branch": class_id, "tier": 13, "cost": int(hidden.get("cost", 1)),
 			"kind": "hidden", "role": "hidden", "schema_role": "hidden_side_boon",
 			"title": str(hidden.get("title_ru", "Тайное мастерство")),
 			"desc": "Скрытая оружейная звезда. Открытие не активирует эффект: после подвига её нужно купить за 1 эмблему.",
 			"effects": {}, "effect_profile": (hidden.get("effect_profile", {}) as Dictionary).duplicate(true),
 			"caps": (hidden.get("caps", {}) as Dictionary).duplicate(true),
-			"weapon_id": owning_weapon, "axis": str(hidden.get("affected_axis", "")),
+			"weapon_id": owning_weapon, "weapon_title": str(weapon_titles.get(owning_weapon, owning_weapon)),
+			"axis": str(hidden.get("affected_axis", "")),
 			"side_index": int(hidden.get("side_index", 0)),
 			"purchase_required_for_effect": true,
 			"runtime_consumer": str(hidden.get("runtime_consumer", "")),
@@ -881,7 +888,9 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 			"condition": {"metric": metric, "threshold": threshold, "text": cond_text},
 			"npos": hidden_npos, "pos": _world_pos(class_index, hidden_npos),
 			"class_affinity": class_id,
-		})
+		}
+		hidden_node = DESCRIPTION_FORMATTER.apply_to_node(hidden_node)
+		_add(nodes, index, hidden_node)
 		_connect(index, str(order_three_by_weapon.get(owning_weapon, core_id)), hidden_id)
 
 

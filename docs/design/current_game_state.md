@@ -2502,6 +2502,18 @@ owner/weapon attribution. Regression gates: schema migration, 51 positive + 102
 foreign negatives, 11 special-consumer behaviors, 51 weapon scenes и full
 runtime smoke.
 
+SCRUM-1091 заменил generic class-node copy на data-driven русские dossiers без
+изменения manifest/runtime balance. `ConstellationDescriptionFormatter`
+fail-closed строит 357/357 описаний: exact owning scope, axis/value,
+`before → after` и path progress. Все 51 финал имеют уникальную локализованную
+trigger/mechanic строку, manifest-driven caps, boss behavior и видимый
+`>=+20%` floor. В Atlas long copy и `УНИКАЛЬНЫЙ ФИНАЛ` остаются внутри scroll;
+price/Buy pinned, activation toggle финалам не выдаётся, 30px dossier reserve
+проверен на 1280×720, 1920×1080, 2560×1440 и live resize.
+Пятый узел каждого пути также раскрывает один из 51 точных русских боевых
+приёмов; ключом локализации служит authoritative `params.identity`, поэтому
+изменение source identity без новой локализации блокирует dossier и покупку.
+
 Независимый post-review 2026-07-11 отклонил ранний resolver-only green и привёл
 к runtime hardening: grenade/prism/meteor/shatter создают реальные delayed
 волны; backstab/deadeye/anchor/crossbow используют setup→consume marks; smoke и

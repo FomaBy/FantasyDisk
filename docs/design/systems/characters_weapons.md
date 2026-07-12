@@ -418,6 +418,12 @@ Runtime SCRUM-1068 предоставляет API
 schema 5 недостаточна для `damage_flat ≥10` и mechanic finals без утечки на всё
 трио.
 
+SCRUM-1091 делает этот ownership видимым игроку: каждый оружейный узел называет
+точный `weapon_title`, пишет «только это оружие», ось и изменение; финал
+показывает собственный локализованный триггер, все manifest caps и поведение
+против босса. Текст не меняет trio identity/числа и не создаёт class-wide
+эффектов.
+
 ## SCRUM-1065 Player Projectile Visual Inventory
 
 Design inventory теперь различает настоящий flying projectile,

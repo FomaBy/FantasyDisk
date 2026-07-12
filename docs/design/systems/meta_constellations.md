@@ -16,12 +16,16 @@
 > Старые class-wide mutually-exclusive keystone и auto-active hidden в schema 6
 > не переносятся.
 >
-> **SCRUM-1090 Design contract.** Правая карточка обязана показывать не общий
+> **SCRUM-1090 Design contract / SCRUM-1091 runtime.** Правая карточка показывает не общий
 > текст «усиление пути», а owning weapon/scope, затронутую ось, точное числовое
 > изменение и результат покупки. `weapon_final` получает отдельную
 > `УНИКАЛЬНЫЙ ФИНАЛ` иерархию: триггер, mechanic-first эффект, caps/особое
 > поведение против босса и существующий floor `gain_over_order_5_min >= 1.20`.
-> Runtime/data реализация вынесена в SCRUM-1091; источник макета и safe-зон —
+> Runtime contract собирается `scripts/constellation_description_formatter.gd`
+> непосредственно из schema-6 profile/caps. Все 357 узлов получают
+> `dossier.contract_version=1`, exact `before → after`, owning scope и прогресс;
+> 51 финал — отдельный trigger/mechanic/caps/boss block без activation toggle.
+> Источник макета и safe-зон —
 > `docs/design/mockups/scrum1090_atlas_upgrade_descriptions/`.
 
 Обновлено: 2026-07-11. Автор: PM/game-design (Fable 5), по прямому мандату

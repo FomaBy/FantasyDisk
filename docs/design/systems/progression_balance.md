@@ -530,6 +530,13 @@ Runtime source of truth — `data/meta/constellation_schema6.json` и typed load
 аллокации возвращаются, excess old currency записывается только в non-combat
 `legacy_mastery`, `active_keystones` удаляется.
 
+SCRUM-1091 добавляет только presentation contract, не новую силу. Formatter
+читает authoritative `effect_profile.params`, `caps`, `mechanic_id` и
+`gain_over_order_5_min`; баланс/боевые потребители не копируются в UI и не
+перенастраиваются. Baseline и after-gates идентичны: 51/51 пар PASS, худший
+20-target CCT `+20.6%`, все 51 финал сохраняют floor `>=1.20` относительно
+узла 5/6. Поэтому numeric tuning намеренно отсутствует.
+
 - Ascension levels: 5 уровней на персонажа (SCRUM-516: лестница сжата 10→5, монстерский пресс заметно усилен — кумулятив enemy_hp_mult на L5 = 1.80, было 1.32 на L10).
 - Победа над финальным боссом увеличивает ascension выбранного героя.
 - Сохранение: `scripts/meta_progression.gd`, `user://fantasydisk_meta.cfg`.

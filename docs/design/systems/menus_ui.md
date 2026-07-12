@@ -1595,6 +1595,19 @@ synthetic off-viewport pointer coordinates and verifies every live hitbox,
 every socket/circle, class/Guild preview-only state and exact explicit spend on
 1280×720, 1920×1080, 2048×1152 and 2560×1440.
 
+SCRUM-1091 реализует accepted SCRUM-1090 hierarchy внутри того же
+`AtlasNodeScroll`. Schema-6 dossier показывает scope/weapon, axis, exact
+`before → after`, результат и путь; финал предваряется native-label
+`УНИКАЛЬНЫЙ ФИНАЛ` и раскрывает trigger/caps/boss/floor. Цена и Buy остаются
+соседями scroll в `AtlasNodePanelBox`, то есть всегда pinned; weapon final не
+показывает legacy `AtlasKeystoneToggle`. `AtlasNodePanel` держит 30px content
+reserve от орнамента, а длинный текст прокручивается на 720p без уменьшения
+семантического шрифта. Focused matrix:
+`tests/scrum1091_atlas_dossier_ui_test.gd`.
+The class-hidden state follows schema 6 end to end: a recorded reveal fact and
+the attached order-3 path expose a cost-1 Buy action; only that explicit
+purchase lights the star and applies its weapon-scoped effect.
+
 SCRUM-971 adds `AtlasCenterColumn`, a responsive vertical owner for the native
 `AtlasSelectedClassLabel` row and the existing expanding `AtlasCanvas`. The
 localized label is refreshed from `ProgressionData.character_config(class_id)`

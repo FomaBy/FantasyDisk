@@ -3,9 +3,9 @@ extends SceneTree
 # SCRUM-827: смок экрана «Атлас героев» (Мета 4.0, дизайн §7 + мокап
 # meta40_atlas_mockup). Headless-прогон по образцу meta_skill_tree_smoke_test:
 # открытие экрана, лента 17 классов и переключение класса, click=preview-only
-# для class/guild/locked/hidden/keystone ячеек, покупка узла только через
-# панель («Вложить эмблему»), keystone-переключение только явной кнопкой
-# (бесплатно, ≤1 активна), вкладка «Гильдия» (Атлас на звёздной пыли),
+# для class/guild/locked/hidden/final ячеек, покупка узла только через
+# панель («Вложить эмблему»), три weapon final работают одновременно без
+# legacy activation toggle, вкладка «Гильдия» (Атлас на звёздной пыли),
 # церемония рассеивания тумана скрытой звезды (0.6с, скип кликом).
 
 const Meta := preload("res://scripts/meta_progression.gd")
@@ -18,8 +18,8 @@ func _initialize() -> void:
 	await _test_available_class_cell_click_is_preview_only()
 	await _test_locked_and_hidden_cell_clicks_are_preview_only()
 	await _test_purchase_flow()
-	await _test_available_keystone_click_is_preview_only()
-	await _test_keystone_toggle()
+	await _test_available_final_click_is_preview_only()
+	await _test_simultaneous_finals_have_no_toggle()
 	await _test_guild_locked_click_is_preview_only()
 	await _test_guild_tab()
 	await _test_hidden_star_fog_ceremony()
@@ -85,8 +85,8 @@ func _test_open_atlas_default() -> void:
 		_fail("Атлас: в ленте должно быть 17 медальонов, найдено %d." % medallions.size())
 		return
 	var nodes := main.find_children("AtlasNode_*", "TextureButton", true, false)
-	if nodes.size() != 22:
-		_fail("Атлас: созвездие класса должно рендериться целиком (22 узла), найдено %d." % nodes.size())
+	if nodes.size() != 21:
+		_fail("Атлас: schema-6 созвездие класса должно рендериться целиком (21 узел), найдено %d." % nodes.size())
 		return
 	var node_overlap := _first_node_circle_overlap(nodes, 2.0)
 	if node_overlap != "":
@@ -130,7 +130,7 @@ func _test_class_strip_switch() -> void:
 	if main.find_child("AtlasNode_knight_core", true, false) == null:
 		_fail("Лента: клик по медальону должен показать созвездие рыцаря.")
 		return
-	if main.find_children("AtlasNode_*", "TextureButton", true, false).size() != 22:
+	if main.find_children("AtlasNode_*", "TextureButton", true, false).size() != 21:
 		_fail("Лента: созвездие рыцаря должно рендериться целиком.")
 		return
 	var node_overlap := _first_node_circle_overlap(main.find_children("AtlasNode_*", "TextureButton", true, false), 2.0)
@@ -155,17 +155,17 @@ func _test_available_class_cell_click_is_preview_only() -> void:
 	main.ui._show_atlas_screen()
 	await process_frame
 
-	var star := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	var star := main.find_child("AtlasNode_berserk_sword_b1", true, false) as TextureButton
 	if star == null:
-		_fail("Preview-only: нет доступного узла berserk_m0.")
+		_fail("Preview-only: нет доступного узла berserk_sword_b1.")
 		return
 	var before := _meta_snapshot(main, "berserk")
 	star.pressed.emit()
 	await process_frame
 	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: первый клик по доступной классовой звезде"):
 		return
-	if Meta.is_node_purchased(main.get("meta_state"), "berserk_m0"):
-		_fail("Preview-only: клик по доступной звезде не должен покупать berserk_m0.")
+	if Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_b1"):
+		_fail("Preview-only: клик по доступной звезде не должен покупать berserk_sword_b1.")
 		return
 	var title := main.find_child("AtlasNodeTitle", true, false) as Label
 	var price := main.find_child("AtlasNodePriceLabel", true, false) as Label
@@ -191,9 +191,9 @@ func _test_locked_and_hidden_cell_clicks_are_preview_only() -> void:
 	main.ui._show_atlas_screen()
 	await process_frame
 
-	var locked := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	var locked := main.find_child("AtlasNode_berserk_sword_b1", true, false) as TextureButton
 	if locked == null:
-		_fail("Preview-only locked: нет узла berserk_m0.")
+		_fail("Preview-only locked: нет узла berserk_sword_b1.")
 		return
 	var locked_before := _meta_snapshot(main, "berserk")
 	locked.pressed.emit()
@@ -242,9 +242,9 @@ func _test_purchase_flow() -> void:
 		_fail("Покупка: медальон должен показывать бейдж непотраченных эмблем.")
 		return
 
-	var star := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	var star := main.find_child("AtlasNode_berserk_sword_b1", true, false) as TextureButton
 	if star == null:
-		_fail("Покупка: нет узла berserk_m0.")
+		_fail("Покупка: нет узла berserk_sword_b1.")
 		return
 	star.pressed.emit()
 	await process_frame
@@ -267,7 +267,7 @@ func _test_purchase_flow() -> void:
 	var before: int = Meta.class_sigils_available(main.get("meta_state"), "berserk")
 	buy.pressed.emit()
 	await process_frame
-	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_m0"):
+	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_b1"):
 		_fail("Покупка: узел должен купиться.")
 		return
 	if Meta.class_sigils_available(main.get("meta_state"), "berserk") != before - 1:
@@ -280,86 +280,77 @@ func _test_purchase_flow() -> void:
 	await _teardown(main)
 
 
-# --- 5. Keystone: клик preview-only; action-кнопки покупают/переключают ---
+# --- 5. Schema 6 finals: preview-only, permanent and simultaneous ---
 
-func _test_available_keystone_click_is_preview_only() -> void:
-	var path_to_k0 := ["berserk_m0", "berserk_m1", "berserk_m2", "berserk_t0"]
+func _test_available_final_click_is_preview_only() -> void:
+	var path_to_final := [
+		"berserk_sword_b1", "berserk_sword_b2", "berserk_sword_b3",
+		"berserk_sword_b4", "berserk_sword_b5",
+	]
 	var main := await _spawn_main({
 		"meta_point_awards": {"berserk": [0, 1, 2, 3, 4, 5]},
-		"skill_nodes": path_to_k0,
+		"skill_nodes": path_to_final,
 	})
 	main.ui._show_atlas_screen()
 	await process_frame
 
-	var k0 := main.find_child("AtlasNode_berserk_k0", true, false) as TextureButton
-	if k0 == null:
-		_fail("Keystone preview-only: нет узла berserk_k0.")
+	var final_button := main.find_child("AtlasNode_berserk_sword_final", true, false) as TextureButton
+	if final_button == null:
+		_fail("Final preview-only: нет узла berserk_sword_final.")
 		return
 	var before := _meta_snapshot(main, "berserk")
-	k0.pressed.emit()
+	final_button.pressed.emit()
 	await process_frame
-	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: клик по доступной ключевой звезде"):
+	if not _expect_meta_snapshot(main, before, "berserk", "Preview-only: клик по доступному weapon final"):
 		return
-	if Meta.is_node_purchased(main.get("meta_state"), "berserk_k0") or Meta.active_keystone(main.get("meta_state"), "berserk") != "":
-		_fail("Keystone preview-only: клик не должен покупать или активировать ключевую звезду.")
+	if Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_final"):
+		_fail("Final preview-only: клик не должен покупать финал.")
 		return
+	var callout := main.find_child("AtlasNodeFinalCallout", true, false) as Label
+	var toggle := main.find_child("AtlasKeystoneToggle", true, false) as Button
 	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	if callout == null or not callout.is_visible_in_tree() or callout.text != "УНИКАЛЬНЫЙ ФИНАЛ":
+		_fail("Final preview-only: нет точного callout.")
+		return
+	if toggle == null or toggle.visible:
+		_fail("Final preview-only: weapon final не должен показывать activation toggle.")
+		return
 	if buy == null or not buy.visible or buy.disabled or buy.text != "Вложить эмблему":
-		_fail("Keystone preview-only: доступная ключевая должна покупаться только action-кнопкой.")
+		_fail("Final preview-only: доступный финал должен покупаться только action-кнопкой.")
 		return
 	buy.pressed.emit()
 	await process_frame
-	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_k0"):
-		_fail("Keystone action: кнопка должна купить ключевую звезду.")
+	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_final"):
+		_fail("Final action: кнопка должна купить финал.")
 		return
-	if Meta.active_keystone(main.get("meta_state"), "berserk") != "berserk_k0":
-		_fail("Keystone action: первая купленная ключевая должна стать активной только после action-кнопки.")
+	if toggle.visible or Meta.active_keystone(main.get("meta_state"), "berserk") != "":
+		_fail("Final action: покупка не должна создавать legacy active_keystone.")
 		return
 	await _teardown(main)
 
 
-func _test_keystone_toggle() -> void:
-	var path_to_k0 := ["berserk_m0", "berserk_m1", "berserk_m2", "berserk_t0", "berserk_k0"]
-	var path_to_k1 := ["berserk_m3", "berserk_m4", "berserk_m5", "berserk_t1", "berserk_k1"]
-	var main := await _spawn_main({
-		"skill_nodes": path_to_k0 + path_to_k1,
-		"active_keystones": {"berserk": "berserk_k0"},
-	})
+func _test_simultaneous_finals_have_no_toggle() -> void:
+	var all_paths := [
+		"berserk_sword_b1", "berserk_sword_b2", "berserk_sword_b3", "berserk_sword_b4", "berserk_sword_b5", "berserk_sword_final",
+		"berserk_axe_b1", "berserk_axe_b2", "berserk_axe_b3", "berserk_axe_b4", "berserk_axe_b5", "berserk_axe_final",
+		"berserk_hammer_b1", "berserk_hammer_b2", "berserk_hammer_b3", "berserk_hammer_b4", "berserk_hammer_b5", "berserk_hammer_final",
+	]
+	var main := await _spawn_main({"skill_nodes": all_paths})
 	main.ui._show_atlas_screen()
 	await process_frame
-
-	var k1 := main.find_child("AtlasNode_berserk_k1", true, false) as TextureButton
-	if k1 == null:
-		_fail("Keystone: нет узла berserk_k1.")
-		return
-	k1.pressed.emit()
-	await process_frame
-	var after_click := _meta_snapshot(main, "berserk")
-	if str(after_click.get("active_keystone", "")) != "berserk_k0":
-		_fail("Keystone: клик по купленной ключевой не должен переключать активную звезду.")
-		return
 	var toggle := main.find_child("AtlasKeystoneToggle", true, false) as Button
-	if toggle == null or not toggle.visible or toggle.text != "Сделать активной":
-		_fail("Keystone: у купленной неактивной ключевой должен быть переключатель «Сделать активной».")
-		return
-	var sigils_before: int = Meta.class_sigils_available(main.get("meta_state"), "berserk")
-	toggle.pressed.emit()
-	await process_frame
-	if Meta.active_keystone(main.get("meta_state"), "berserk") != "berserk_k1":
-		_fail("Keystone: переключение должно активировать k1.")
-		return
-	if Meta.is_keystone_active(main.get("meta_state"), "berserk_k0"):
-		_fail("Keystone: активна может быть лишь одна ключевая звезда.")
-		return
-	if Meta.class_sigils_available(main.get("meta_state"), "berserk") != sigils_before:
-		_fail("Keystone: переключение купленных обязано быть бесплатным.")
-		return
-	var ring := k1.get_node_or_null("Ring") as TextureRect
-	if ring == null or not ring.visible:
-		_fail("Keystone: активная ключевая должна сиять сапфировым кольцом.")
-		return
-	if toggle.text != "Активна — погасить":
-		_fail("Keystone: переключатель должен показать активное состояние.")
+	for final_id in ["berserk_sword_final", "berserk_axe_final", "berserk_hammer_final"]:
+		var final_button := main.find_child("AtlasNode_%s" % final_id, true, false) as TextureButton
+		if final_button == null or not Meta.is_node_purchased(main.get("meta_state"), final_id):
+			_fail("Simultaneous finals: отсутствует купленный %s." % final_id)
+			return
+		final_button.pressed.emit()
+		await process_frame
+		if toggle == null or toggle.visible:
+			_fail("Simultaneous finals: %s показывает legacy toggle." % final_id)
+			return
+	if Meta.active_keystone(main.get("meta_state"), "berserk") != "":
+		_fail("Simultaneous finals: schema 6 не должна иметь active_keystone.")
 		return
 	await _teardown(main)
 
@@ -477,8 +468,12 @@ func _test_hidden_star_fog_ceremony() -> void:
 		return
 	await _teardown(locked_main)
 
-	# Подвиг совершён (2 оружия) — при открытии экрана туман рассеивается 0.6с.
+	# Подвиг совершён (2 оружия) — reveal ещё не активирует эффект. Сначала
+	# explicit cost-1 purchase, затем запускается церемония тумана 0.6с.
 	var main := await _spawn_main({
+		"meta_point_awards": {"berserk": [0, 1, 2, 3, 4, 5]},
+		"skill_nodes": ["berserk_sword_b1", "berserk_sword_b2", "berserk_sword_b3"],
+		"hidden_reveal_facts": {"berserk": ["berserk_h0"]},
 		"class_challenge_progress": {"berserk": {"weapons": ["sword", "axe"], "best_ascension": 0, "no_shop_wins": 0}},
 	})
 	main.ui._show_atlas_screen()
@@ -488,8 +483,20 @@ func _test_hidden_star_fog_ceremony() -> void:
 		_fail("Скрытая: нет узла berserk_h0 после подвига.")
 		return
 	var fog := node.get_node_or_null("Fog") as TextureRect
-	if fog == null or not fog.visible:
-		_fail("Скрытая: при первом показе открытой звезды должна идти церемония тумана.")
+	if fog == null or fog.visible:
+		_fail("Скрытая: reveal без покупки не должен запускать церемонию или эффект.")
+		return
+	node.pressed.emit()
+	await process_frame
+	var buy := main.find_child("AtlasBuyButton", true, false) as Button
+	var revealed_condition := main.find_child("AtlasNodeCondition", true, false) as Label
+	if buy == null or not buy.visible or buy.disabled or revealed_condition == null or not revealed_condition.text.contains("можно купить"):
+		_fail("Скрытая: после подвига должна быть explicit cost-1 purchase с объяснением reveal-state.")
+		return
+	buy.pressed.emit()
+	await process_frame
+	if not Meta.is_node_purchased(main.get("meta_state"), "berserk_h0") or not fog.visible:
+		_fail("Скрытая: покупка должна активировать звезду и запустить церемонию тумана.")
 		return
 	# Скип кликом: туман гаснет сразу.
 	main.ui._atlas_skip_fog_ceremonies()
@@ -507,8 +514,8 @@ func _test_hidden_star_fog_ceremony() -> void:
 	if not _expect_meta_snapshot(main, unlocked_before, "berserk", "Скрытая: клик по открытой скрытой звезде"):
 		return
 	var done_condition := main.find_child("AtlasNodeCondition", true, false) as Label
-	if done_condition == null or not done_condition.text.contains("Подвиг совершён"):
-		_fail("Скрытая: панель должна отметить совершённый подвиг.")
+	if done_condition == null or not done_condition.text.contains("Звезда зажжена"):
+		_fail("Скрытая: панель должна отметить купленную активную звезду.")
 		return
 	await _teardown(main)
 

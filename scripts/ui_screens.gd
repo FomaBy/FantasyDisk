@@ -23,6 +23,7 @@ const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const ConstellationDescriptionFormatter := preload("res://scripts/constellation_description_formatter.gd")
 # SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
 const LevelUpAdvisor := preload("res://scripts/level_up_advisor.gd")
 const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presenter.gd")
@@ -445,6 +446,7 @@ const ATLAS_FOG_DISSOLVE_SEC := 0.6
 const ATLAS_ROLE_LABELS := {
 	"core": "ЯДРО СОЗВЕЗДИЯ", "minor": "ЗВЕЗДА-АТРИБУТ", "technique": "ЗВЕЗДА-ТЕХНИКА",
 	"notable": "ПРИМЕЧАТЕЛЬНАЯ ЗВЕЗДА", "keystone": "КЛЮЧЕВАЯ ЗВЕЗДА", "hidden": "СКРЫТАЯ ЗВЕЗДА",
+	"weapon_boon": "УСИЛЕНИЕ ОРУЖИЯ", "weapon_final": "ФИНАЛ ОРУЖИЯ",
 }
 # Родительный падеж названий классов для шапки «Эмблемы …: N» (мокап).
 const ATLAS_CLASS_GENITIVE := {
@@ -3539,7 +3541,10 @@ func _show_atlas_screen() -> void:
 	panel.name = "AtlasNodePanel"
 	panel.custom_minimum_size = Vector2(roundf(clampf(452.0 * s, 272.0, 452.0)), 0.0)
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(16.0 * s)))
+	# SCRUM-1090/1091 dossier contract: the calm runtime interior begins at
+	# least 30 px inside the panel on every target tier. Long copy scrolls inside
+	# that zone; shrinking the inset to gain space would put text on ornament.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, 30.0))
 	body.add_child(panel)
 	var panel_box := VBoxContainer.new()
 	panel_box.name = "AtlasNodePanelBox"
@@ -3585,6 +3590,18 @@ func _show_atlas_screen() -> void:
 	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
 	info_scroll.add_child(info_box)
+	var final_callout := Label.new()
+	final_callout.name = "AtlasNodeFinalCallout"
+	final_callout.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	final_callout.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	final_callout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	final_callout.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 14))
+	final_callout.add_theme_color_override("font_color", Color(0.54, 0.78, 1.0, 1.0))
+	final_callout.add_theme_color_override("font_outline_color", Color(0.10, 0.07, 0.03, 0.98))
+	final_callout.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * s))))
+	final_callout.visible = false
+	info_box.add_child(final_callout)
+	_atlas["panel_final_callout"] = final_callout
 	var desc_label := Label.new()
 	desc_label.name = "AtlasNodeDesc"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -4626,6 +4643,7 @@ func _atlas_refresh_node_panel() -> void:
 	var icon := _atlas.get("panel_icon") as TextureRect
 	var title_label := _atlas.get("panel_title") as Label
 	var desc_label := _atlas.get("panel_desc") as Label
+	var final_callout := _atlas.get("panel_final_callout") as Label
 	var condition_label := _atlas.get("panel_condition") as Label
 	var lore_label := _atlas.get("panel_lore") as Label
 	var price_row := _atlas.get("panel_price_row") as HBoxContainer
@@ -4635,7 +4653,7 @@ func _atlas_refresh_node_panel() -> void:
 	var keystone_toggle := _atlas.get("keystone_toggle") as Button
 	var progress_label := _atlas.get("panel_progress") as Label
 	var hidden_hint := _atlas.get("panel_hidden_hint") as Label
-	for control in [kind_label, icon, title_label, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
+	for control in [kind_label, icon, title_label, final_callout, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
 		if control == null or not is_instance_valid(control):
 			return
 	var currency_icon_path := META40_CURRENCY_STARDUST_PATH if on_guild else META40_CURRENCY_EMBLEM_PATH
@@ -4645,6 +4663,7 @@ func _atlas_refresh_node_panel() -> void:
 		icon.texture = game._cached_texture(str(META40_SOCKET_TEXTURES["minor"]))
 		title_label.text = "Выберите звезду"
 		desc_label.text = "Кликните по звезде созвездия, чтобы увидеть её силу и цену."
+		final_callout.visible = false
 		condition_label.visible = false
 		lore_label.visible = false
 		price_row.visible = false
@@ -4660,7 +4679,12 @@ func _atlas_refresh_node_panel() -> void:
 			icon_path = META40_UI_DIR + "crest_%s.png" % affinity
 		icon.texture = game._cached_texture(icon_path)
 		title_label.text = str(node.get("title", ""))
-		desc_label.text = str(node.get("desc", ""))
+		var dossier: Dictionary = node.get("dossier", {})
+		var dossier_valid := affinity == "" or (bool(node.get("dossier_valid", false)) and not dossier.is_empty())
+		var is_weapon_final := role == "weapon_final" and dossier_valid
+		final_callout.text = str(dossier.get("final_callout", "УНИКАЛЬНЫЙ ФИНАЛ"))
+		final_callout.visible = is_weapon_final
+		desc_label.text = str(node.get("desc", "")) if affinity == "" else (str(dossier.get("full_text", "")) if dossier_valid else ConstellationDescriptionFormatter.FAILURE_TEXT)
 		lore_label.text = str(node.get("lore", ""))
 		lore_label.visible = role == "hidden" and lore_label.text != ""
 		condition_label.visible = false
@@ -4669,10 +4693,12 @@ func _atlas_refresh_node_panel() -> void:
 			if not progress.is_empty():
 				condition_label.visible = true
 				if bool(progress.get("unlocked", false)):
-					condition_label.text = "Подвиг совершён — звезда зажжена!"
+					condition_label.text = "Подвиг совершён — тайную звезду можно купить."
 				else:
 					condition_label.text = "Условие: %s\nПрогресс: %d/%d" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
-		var purchasable := role != "core" and role != "hidden"
+		# Schema 6 hidden stars are reveal-then-purchase: the challenge only
+		# exposes the node; its exact weapon-scoped effect still costs one sigil.
+		var purchasable := role != "core" and (role != "hidden" or node_status != "hidden")
 		var cost := int(node.get("cost", 0))
 		price_row.visible = purchasable and node_status != "purchased"
 		price_label.text = "Цена: %d" % cost
@@ -4680,6 +4706,10 @@ func _atlas_refresh_node_panel() -> void:
 		buy_button.visible = purchasable and node_status != "purchased"
 		buy_button.text = "Вложить %s" % currency_word
 		buy_button.disabled = node_status != "available"
+		if affinity != "" and not dossier_valid:
+			buy_button.disabled = true
+			condition_label.visible = true
+			condition_label.text = "Покупка отключена: требуется корректный schema-6 dossier."
 		if node_status == "locked":
 			var have: int = game.META_PROGRESSION.currency_available_for_node(state, selected_id)
 			condition_label.visible = true
@@ -4690,6 +4720,8 @@ func _atlas_refresh_node_panel() -> void:
 		elif purchasable and node_status == "purchased":
 			condition_label.visible = true
 			condition_label.text = "Звезда зажжена."
+		# Schema-6 weapon finals are independent permanent path capstones. They
+		# never reuse the legacy mutually-exclusive keystone activation control.
 		keystone_toggle.visible = role == "keystone" and affinity != "" and node_status == "purchased"
 		if keystone_toggle.visible:
 			var active: bool = game.META_PROGRESSION.is_keystone_active(state, selected_id)
