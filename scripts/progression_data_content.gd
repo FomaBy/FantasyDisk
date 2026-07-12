@@ -505,7 +505,7 @@ const LEVEL_UP_REWARDS := [
 	{"id": "crit_damage_up", "attr": "crit_damage", "title": "+Урон крита", "description": "+35% к множителю критического урона.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
 	{"id": "dodge_up", "attr": "dodge", "title": "+Уклонение", "description": "+8% к шансу уклонения.", "kind": "upgrade", "mods": {"dodge_flat": 0.08}},
 	{"id": "range_up", "attr": "range", "title": "+Дальность атаки", "description": "+12% к дальности атаки.", "kind": "upgrade", "mods": {"range_multiplier": 1.12}},
-	{"id": "dot_damage_up", "attr": "dot_damage", "title": "+Периодический урон", "description": "+3 урона тикам яда/горения/кровотечения и +0.2 к их темпу. Классы без эффекта получают малое кровотечение.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.2}},
+	{"id": "dot_damage_up", "attr": "dot_damage", "title": "+Периодический урон", "description": "+3 урона тикам яда/горения/кровотечения и +0.15 к их темпу. Классы без эффекта получают малое кровотечение.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.15}},
 	{"id": "buff_power_up", "attr": "buff_power", "title": "+Сила поддержки", "description": "+18% к силе аур, кличей и усилений поддержки.", "kind": "upgrade", "mods": {"buff_power_flat": 0.18},
 		"class_affinity": ["priest", "druid", "guitarist", "engineer", "assassin", "dark_mage", "elementalist"]},
 	{"id": "summon_amount_up", "attr": "summon_amount", "title": "+Сила призыва", "description": "+2 к силе призывов. Непризывные классы получают эхо-оружие или спутника.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
