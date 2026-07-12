@@ -512,8 +512,9 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 	var logo_gap := 20.0
 	var glow_side := 116.0
 	var gratitude_side := 96.0
-	var utility_cluster_gap := 20.0
-	var version_size := Vector2(184.0, 32.0)
+	var utility_cluster_gap := 4.0
+	var utility_frame_reserve := 8.0
+	var version_height := 32.0
 	var version_font_size := 18
 	if viewport_size.y < 700.0:
 		logo_size = Vector2(160.0, 60.0)
@@ -523,8 +524,7 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		logo_gap = 4.0
 		glow_side = 84.0
 		gratitude_side = 72.0
-		utility_cluster_gap = 12.0
-		version_size = Vector2(128.0, 22.0)
+		version_height = 22.0
 		version_font_size = 14
 	elif viewport_size.y < 800.0:
 		logo_size = Vector2(192.0, 72.0)
@@ -534,8 +534,7 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		logo_gap = 6.0
 		glow_side = 84.0
 		gratitude_side = 72.0
-		utility_cluster_gap = 12.0
-		version_size = Vector2(136.0, 24.0)
+		version_height = 24.0
 		version_font_size = 14
 	elif viewport_size.y < 1000.0:
 		logo_size = Vector2(267.0, 100.0)
@@ -545,8 +544,7 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		logo_gap = 8.0
 		glow_side = 96.0
 		gratitude_side = 80.0
-		utility_cluster_gap = 16.0
-		version_size = Vector2(144.0, 26.0)
+		version_height = 26.0
 		version_font_size = 15
 	elif viewport_size.y < 1200.0:
 		logo_size = Vector2(331.0, 124.0)
@@ -555,27 +553,18 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		logo_gap = 12.0
 		glow_side = 96.0
 		gratitude_side = 80.0
-		utility_cluster_gap = 16.0
-		version_size = Vector2(160.0, 28.0)
+		version_height = 28.0
 		version_font_size = 16
 	var logo_rect := Rect2(inner_rect.position, logo_size)
 	var actions_rect := Rect2(
 		Vector2(inner_rect.position.x, logo_rect.end.y + logo_gap),
 		Vector2(button_width, button_height * MAIN_MENU_BUTTON_COUNT + row_gap * (MAIN_MENU_BUTTON_COUNT - 1.0))
 	)
-	var version_rect := Rect2(
-		inner_rect.end - version_size,
-		version_size
-	)
-	var glow_rect := Rect2(
-		Vector2(version_rect.position.x - utility_cluster_gap - glow_side, inner_rect.end.y - glow_side),
-		Vector2.ONE * glow_side
-	)
-	var gratitude_inset := (glow_side - gratitude_side) * 0.5
-	var gratitude_rect := Rect2(
-		glow_rect.position + Vector2.ONE * gratitude_inset,
-		Vector2.ONE * gratitude_side
-	)
+	# SCRUM-1093: the compact utility cluster has its own measured reserve from
+	# the frame-safe opening. The page-wide inner rect remains intentionally more
+	# conservative for large panels/buttons, but made the tiny version cluster
+	# look detached from the actual lower-right rail.
+	var utility_anchor := safe_rect.end - Vector2.ONE * utility_frame_reserve
 	return {
 		"safe_rect": safe_rect,
 		"inner_rect": inner_rect,
@@ -584,9 +573,12 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		"button_width": button_width,
 		"button_height": button_height,
 		"row_gap": row_gap,
-		"gratitude_glow_rect": glow_rect,
-		"gratitude_rect": gratitude_rect,
-		"version_rect": version_rect,
+		"gratitude_glow_side": glow_side,
+		"gratitude_side": gratitude_side,
+		"utility_anchor": utility_anchor,
+		"utility_cluster_gap": utility_cluster_gap,
+		"utility_frame_reserve": utility_frame_reserve,
+		"version_height": version_height,
 		"version_font_size": version_font_size,
 	}
 
@@ -618,20 +610,57 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 			_fit_main_menu_button_styles(button, float(metrics["button_width"]), float(metrics["button_height"]))
 	action_box.queue_sort()
 	var safe_rect: Rect2 = metrics["safe_rect"]
-	_apply_control_rect(gratitude_glow, metrics["gratitude_glow_rect"])
-	_apply_control_rect(gratitude_button, metrics["gratitude_rect"])
-	_apply_control_rect(version_label, metrics["version_rect"])
+	var version_font_size := SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		int(metrics["version_font_size"]),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	)
 	version_label.add_theme_font_size_override(
 		"font_size",
-		SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_CAPTION,
-			int(metrics["version_font_size"]),
-			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
-			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
-		)
+		version_font_size
 	)
+	var version_font: Font = version_label.get_theme_font("font")
+	if version_font == null:
+		version_font = ThemeDB.fallback_font
+	var measured_version_width := 1.0
+	if version_font != null:
+		measured_version_width = ceilf(version_font.get_string_size(
+			version_label.text,
+			HORIZONTAL_ALIGNMENT_LEFT,
+			-1.0,
+			version_font_size
+		).x)
+	# Never silently clamp a future semantic version (for example a beta tag):
+	# the rect follows the actual rendered string plus the outline/effect reserve.
+	var version_width := measured_version_width + 6.0
+	var utility_anchor: Vector2 = metrics["utility_anchor"]
+	var version_size := Vector2(version_width, float(metrics["version_height"]))
+	var version_rect := Rect2(utility_anchor - version_size, version_size)
+	var glow_side := float(metrics["gratitude_glow_side"])
+	var gratitude_side := float(metrics["gratitude_side"])
+	var glow_rect := Rect2(
+		Vector2(
+			version_rect.position.x - float(metrics["utility_cluster_gap"]) - glow_side,
+			utility_anchor.y - glow_side
+		),
+		Vector2.ONE * glow_side
+	)
+	var gratitude_inset := (glow_side - gratitude_side) * 0.5
+	var gratitude_rect := Rect2(
+		glow_rect.position + Vector2.ONE * gratitude_inset,
+		Vector2.ONE * gratitude_side
+	)
+	_apply_control_rect(gratitude_glow, glow_rect)
+	_apply_control_rect(gratitude_button, gratitude_rect)
+	_apply_control_rect(version_label, version_rect)
+	version_label.set_meta("scrum1093_measured_text_width", measured_version_width)
+	version_label.set_meta("scrum1093_utility_anchor", utility_anchor)
+	version_label.set_meta("scrum1093_cluster_gap", metrics["utility_cluster_gap"])
 	root.set_meta("gold_shell_content_rect", safe_rect)
 	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
+	root.set_meta("main_menu_utility_anchor", utility_anchor)
+	root.set_meta("main_menu_utility_frame_reserve", metrics["utility_frame_reserve"])
 	root.set_meta("gold_shell_screen_id", "main_menu")
 
 
@@ -4706,11 +4735,15 @@ func _atlas_refresh_node_panel() -> void:
 		buy_button.visible = purchasable and node_status != "purchased"
 		buy_button.text = "Вложить %s" % currency_word
 		buy_button.disabled = node_status != "available"
-		if affinity != "" and not dossier_valid:
+		var dossier_blocked := affinity != "" and not dossier_valid
+		if dossier_blocked:
 			buy_button.disabled = true
 			condition_label.visible = true
 			condition_label.text = "Покупка отключена: требуется корректный schema-6 dossier."
-		if node_status == "locked":
+		# SCRUM-1094: an explicit fail-closed schema error has higher precedence
+		# than ordinary adjacency/currency/purchased status hints.  Never replace
+		# the actionable failure with a plausible generic condition.
+		elif node_status == "locked":
 			var have: int = game.META_PROGRESSION.currency_available_for_node(state, selected_id)
 			condition_label.visible = true
 			if have < cost:

@@ -1803,7 +1803,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 
 | Экран | Описание |
 | --- | --- |
-| Главное меню | SCRUM-1059: принятые battle-art фон, логотип и полая `meta40/frame_border.png` рама сохранены; шесть действий размещены одной адаптивной вертикальной колонкой слева внутри authored inner-zone (320×54 @1152×648 → 380×96 @2K), без scrollbar; версия находится рядом с aspect-correct логотипом, отдельная icon-only кнопка благодарностей остаётся справа сверху; Up/Down образует кольцо колонки, Right ведёт к благодарностям |
+| Главное меню | SCRUM-1059: принятые battle-art фон, логотип и полая `meta40/frame_border.png` рама сохранены; шесть действий размещены одной адаптивной вертикальной колонкой слева внутри authored inner-zone (320×54 @1152×648 → 380×96 @2K), без scrollbar; SCRUM-1080/1093 держит компактный utility-блок справа снизу: icon-only благодарности стоят сразу слева от динамической версии, чей прямоугольник равен ширине live-строки + 6px и заканчивается за 8px до frame-safe границы; glow-to-label gap = 4px, hitbox-to-glyph gap ≤20px, длинный будущий semver не клампится; Up/Down образует кольцо колонки, Right ведёт к благодарностям |
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe structured dossier SCRUM-1064 (trait → имя → 3 оружия → top-3 BASE_STATS → primary/secondary/weak без прозы/тримминга) + фиксированные 8 stat Line Bars; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
@@ -2513,6 +2513,10 @@ price/Buy pinned, activation toggle финалам не выдаётся, 30px d
 Пятый узел каждого пути также раскрывает один из 51 точных русских боевых
 приёмов; ключом локализации служит authoritative `params.identity`, поэтому
 изменение source identity без новой локализации блокирует dossier и покупку.
+SCRUM-1094 закрепляет precedence этого fail-closed состояния: для available и
+locked malformed schema-6 узлов `AtlasNodeCondition` сохраняет точное сообщение
+об ошибке, Buy остаётся visible+disabled, а currency/adjacency/purchased hints
+не могут заменить ошибку правдоподобным generic fallback.
 
 Независимый post-review 2026-07-11 отклонил ранний resolver-only green и привёл
 к runtime hardening: grenade/prism/meteor/shatter создают реальные delayed

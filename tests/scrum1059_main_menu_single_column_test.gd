@@ -8,7 +8,7 @@ const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const GRATITUDE_ICON_PATH := "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png"
 const TARGETS := [
 	Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900),
-	Vector2i(1920, 1080), Vector2i(2560, 1440),
+	Vector2i(1920, 1080), Vector2i(2048, 1152), Vector2i(2560, 1440),
 ]
 const BUTTON_NAMES := [
 	"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
@@ -30,7 +30,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-1059 Main Menu single-column test passed at five viewports and live resize.")
+	print("SCRUM-1059/1093 Main Menu test passed at six viewports and live resize.")
 	quit(0)
 
 
@@ -84,20 +84,25 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		_errors.append("%s: incomplete Main Menu nodes." % context)
 		return
 	var expected := _expected(viewport_size)
+	var expected_utility := _expected_utility(viewport_size, version)
 	var inner: Rect2 = expected["inner"]
 	_assert_rect(logo.get_global_rect(), expected["logo"], "%s logo" % context)
 	_assert_rect(actions.get_global_rect(), expected["actions"], "%s actions" % context)
-	_assert_rect(glow.get_global_rect(), expected["glow"], "%s gratitude glow" % context)
-	_assert_rect(credits.get_global_rect(), expected["credits"], "%s gratitude" % context)
-	_assert_rect(version.get_global_rect(), expected["version"], "%s version" % context)
+	_assert_rect(glow.get_global_rect(), expected_utility["glow"], "%s gratitude glow" % context)
+	_assert_rect(credits.get_global_rect(), expected_utility["credits"], "%s gratitude" % context)
+	_assert_rect(version.get_global_rect(), expected_utility["version"], "%s version" % context)
 	if actions.columns != 1 or actions.get_child_count() != 6:
 		_errors.append("%s: MainMenuActions must be columns=1 with six children." % context)
 		return
 	if not _near_rect(screen.get_meta("gold_shell_inner_rect", Rect2()) as Rect2, inner):
 		_errors.append("%s: published authored inner rect drifted." % context)
-	for control in [logo, actions, glow, credits, version]:
+	for control in [logo, actions]:
 		if not inner.grow(1.0).encloses((control as Control).get_global_rect()):
 			_errors.append("%s: %s escapes authored inner %s." % [context, str((control as Control).name), str(inner)])
+	var utility_safe: Rect2 = expected_utility["safe"]
+	for control in [glow, credits, version]:
+		if not utility_safe.grow(1.0).encloses((control as Control).get_global_rect()):
+			_errors.append("%s: %s escapes compact frame-safe utility zone %s." % [context, str((control as Control).name), str(utility_safe)])
 	for first_index in range(4):
 		var first := [logo, actions, glow, version][first_index] as Control
 		for second_index in range(first_index + 1, 4):
@@ -138,6 +143,16 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		_errors.append("%s: version must remain bottom-right aligned." % context)
 	if version.get_theme_font_size("font_size") != int(expected["version_font_size"]):
 		_errors.append("%s: version font tier drifted." % context)
+	if absf(float(version.get_meta("scrum1093_measured_text_width", -1.0)) + 6.0 - version.size.x) > 1.1:
+		_errors.append("%s: version rect is not compact to the measured glyph width." % context)
+	if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 4.0) > 1.1:
+		_errors.append("%s: gratitude glow is not immediately left of the compact version rect." % context)
+	var glyph_start := version.get_global_rect().end.x - float(version.get_meta("scrum1093_measured_text_width", -1.0))
+	var visible_icon_to_text_gap := glyph_start - credits.get_global_rect().end.x
+	if visible_icon_to_text_gap < 0.0 or visible_icon_to_text_gap > 20.0:
+		_errors.append("%s: visible icon-to-version gap %.1f is outside the compact 0..20 px contract." % [context, visible_icon_to_text_gap])
+	if version.get_global_rect().end.distance_to((expected_utility["safe"] as Rect2).end) > 1.1:
+		_errors.append("%s: version must end exactly 8 px inside the authored frame-safe boundary." % context)
 	if screen.find_children("*", "ScrollContainer", true, false).size() > 0:
 		_errors.append("%s: Main Menu must not introduce a scrollbar." % context)
 
@@ -181,9 +196,58 @@ func _expected(viewport_size: Vector2i) -> Dictionary:
 		Vector2i(1600, 900):
 			return {"inner": Rect2(191, 165, 1218, 570), "logo": Rect2(191, 165, 267, 100), "actions": Rect2(191, 273, 360, 424), "glow": Rect2(1153, 639, 96, 96), "credits": Rect2(1161, 647, 80, 80), "version": Rect2(1265, 709, 144, 26), "version_font_size": 15, "button_width": 360.0, "button_height": 64.0}
 		Vector2i(1920, 1080):
-			return {"inner": Rect2(224, 193, 1472, 694), "logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "glow": Rect2(1424, 791, 96, 96), "credits": Rect2(1432, 799, 80, 80), "version": Rect2(1536, 859, 160, 28), "version_font_size": 16, "button_width": 380.0, "button_height": 76.0}
+			return {"inner": Rect2(224, 193, 1472, 694), "logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "version_font_size": 16, "button_width": 380.0, "button_height": 76.0}
+		Vector2i(2048, 1152):
+			return {"inner": Rect2(237, 204, 1574, 744), "logo": Rect2(237, 204, 331, 124), "actions": Rect2(237, 340, 380, 506), "version_font_size": 16, "button_width": 380.0, "button_height": 76.0}
 		_:
-			return {"inner": Rect2(299, 257, 1962, 926), "logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "glow": Rect2(1941, 1067, 116, 116), "credits": Rect2(1951, 1077, 96, 96), "version": Rect2(2077, 1151, 184, 32), "version_font_size": 18, "button_width": 380.0, "button_height": 96.0}
+			return {"inner": Rect2(299, 257, 1962, 926), "logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "version_font_size": 18, "button_width": 380.0, "button_height": 96.0}
+
+
+func _expected_utility(viewport_size: Vector2i, version: Label) -> Dictionary:
+	var margins := Vector2(
+		roundf(160.0 * float(viewport_size.x) / 1536.0),
+		roundf(160.0 * float(viewport_size.y) / 1024.0)
+	)
+	var safe := Rect2(margins + Vector2.ONE * 8.0, Vector2(viewport_size) - margins * 2.0 - Vector2.ONE * 16.0)
+	var anchor := safe.end
+	var glow_side := 116.0
+	var credits_side := 96.0
+	var version_height := 32.0
+	if viewport_size.y < 700:
+		glow_side = 84.0
+		credits_side = 72.0
+		version_height = 22.0
+	elif viewport_size.y < 800:
+		glow_side = 84.0
+		credits_side = 72.0
+		version_height = 24.0
+	elif viewport_size.y < 1000:
+		glow_side = 96.0
+		credits_side = 80.0
+		version_height = 26.0
+	elif viewport_size.y < 1200:
+		glow_side = 96.0
+		credits_side = 80.0
+		version_height = 28.0
+	var font: Font = version.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var measured_width := ceilf(font.get_string_size(
+		version.text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1.0,
+		version.get_theme_font_size("font_size")
+	).x)
+	var version_size := Vector2(measured_width + 6.0, version_height)
+	var version_rect := Rect2(anchor - version_size, version_size)
+	var glow_rect := Rect2(Vector2(version_rect.position.x - 4.0 - glow_side, anchor.y - glow_side), Vector2.ONE * glow_side)
+	var inset := (glow_side - credits_side) * 0.5
+	return {
+		"safe": safe,
+		"version": version_rect,
+		"glow": glow_rect,
+		"credits": Rect2(glow_rect.position + Vector2.ONE * inset, Vector2.ONE * credits_side),
+	}
 
 
 func _assert_rect(actual: Rect2, expected: Rect2, context: String) -> void:

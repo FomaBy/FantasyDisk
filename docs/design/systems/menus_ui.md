@@ -26,20 +26,24 @@ consume the same shared resolver instead of a copied path/threshold table.
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
 text is empty, while tooltip/accessibility metadata remains «Благодарности».
 SCRUM-1081/1082 moves it into the lower-right utility cluster immediately left
-of the version: the responsive hitboxes are `Rect2(897,505,72,72)` at 1280×720,
-`Rect2(1432,799,80,80)` at 1920×1080 and
-`Rect2(1951,1077,96,96)` at 2560×1440. A mouse-ignoring procedural radial aura
-stays bounded to 84/96/116 px and changes alpha without resizing or translating
-the control. The existing neutral keyboard focus, Credits callback and UI SFX
-remain intact.
+of the version. SCRUM-1093 corrects the large-resolution visual spacing: the
+72/80/96 px hitbox remains centered in its bounded 84/96/116 px procedural
+aura, but the aura now ends 4 px before the compact live version rect instead
+of being positioned from a wide invisible placeholder label. The hitbox-to-live
+glyph gap stays in the documented 0..20 px compact band at every tier. The existing
+neutral keyboard focus, Credits callback and UI SFX remain intact.
 
 `MainMenuVersionLabel` is the single runtime version control; it reads
 `application/config/version`, never a hardcoded release number. SCRUM-1082
-anchors it to the authored inner rect's lower-right at 14/16/18 px caption tiers
-for 720p/1080p/2K, with right/bottom alignment and a restrained dark outline.
+introduced the lower-right placement; SCRUM-1093 sizes the rect from the actual
+rendered string plus 6 px effect reserve and anchors its right/bottom edge to
+`frame_safe.end - Vector2(8,8)`. The 14/16/18 px caption tiers, right/bottom
+alignment and restrained dark outline remain unchanged. Logo/actions still use
+the more conservative page-wide authored inner rect.
 
 Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
 `tests/codex_scrum954_layout_test.gd`,
+`tests/scrum1093_main_menu_version_corner_test.gd`,
 `tests/scrum981_gold_menu_shell_test.gd`,
 `tests/ui_no_overlap_matrix_test.gd` and the general runtime UI/full smokes.
 
@@ -139,10 +143,13 @@ Live application inventory:
   380×96 @2K. SCRUM-1081/1082 keeps the accepted action column X at the authored
   inner left edge. The 72/80/96px gratitude icon and bounded 84/96/116px
   procedural glow form a lower-right cluster immediately left of the dynamic
-  version, separated by exactly 12/16/20px by tier. All controls use the stricter shell
-  interior (texture-safe rect minus another 24px, or 32px at 2K), never scroll,
-  and relayout on live resize. Up/Down wraps the six actions; Right reaches
-  gratitude, whose Left/Up returns to Exit and Down returns to Start.
+  version. SCRUM-1093 removes the oversized hidden label gap: the glow-to-label
+  separation is 4px, the label width is live glyph width + 6px, and the compact
+  cluster uses an 8px reserve from the frame-safe opening. Logo/actions keep the
+  stricter shell interior (texture-safe rect minus another 24px, or 32px at 2K).
+  The screen never scrolls and relayouts on live resize. Up/Down wraps the six
+  actions; Right reaches gratitude, whose Left/Up returns to Exit and Down
+  returns to Start.
 - Route Map insets header/title, shared resource HUD, vertical scroll/canvas,
   scrollbar lane and upgrade FAB into authored inner zones. Horizontal scroll
   remains disabled and map nodes are rebuilt safely when available width changes.
@@ -1607,6 +1614,12 @@ reserve от орнамента, а длинный текст прокручив
 The class-hidden state follows schema 6 end to end: a recorded reveal fact and
 the attached order-3 path expose a cost-1 Buy action; only that explicit
 purchase lights the star and applies its weapon-scoped effect.
+
+SCRUM-1094 hardens the same fail-closed panel path: an invalid class dossier has
+higher precedence than ordinary locked/currency/purchased hints. Available and
+locked malformed nodes both retain the exact explicit schema failure, keep Buy
+visible but disabled and never show a plausible generic fallback. Regression:
+`tests/scrum1094_atlas_failure_precedence_test.gd`.
 
 SCRUM-971 adds `AtlasCenterColumn`, a responsive vertical owner for the native
 `AtlasSelectedClassLabel` row and the existing expanding `AtlasCanvas`. The

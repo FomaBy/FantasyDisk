@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "runtime_version",
+      "rect": [
+        2225,
+        1175,
+        60,
+        32
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

@@ -101,18 +101,19 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 		_errors.append("%s: Main Menu gold-shell nodes are incomplete." % str(viewport_size))
 		return
 	var inner_rect := _inner_rect(Vector2(viewport_size))
+	var utility_safe := safe_rect.grow(-8.0)
 	_assert_inside(title.get_global_rect(), inner_rect, "%s MainMenuTitleLabel" % str(viewport_size))
 	_assert_inside(actions.get_global_rect(), inner_rect, "%s MainMenuActions authored inner" % str(viewport_size))
-	_assert_inside(version.get_global_rect(), inner_rect, "%s MainMenuVersionLabel authored inner" % str(viewport_size))
-	_assert_inside(glow.get_global_rect(), inner_rect, "%s MainMenuGratitudeGlow authored inner" % str(viewport_size))
-	_assert_inside(credits.get_global_rect(), inner_rect, "%s MainMenuCreditsButton authored inner" % str(viewport_size))
+	_assert_inside(version.get_global_rect(), utility_safe, "%s MainMenuVersionLabel compact utility safe" % str(viewport_size))
+	_assert_inside(glow.get_global_rect(), utility_safe, "%s MainMenuGratitudeGlow compact utility safe" % str(viewport_size))
+	_assert_inside(credits.get_global_rect(), utility_safe, "%s MainMenuCreditsButton compact utility safe" % str(viewport_size))
 	if actions.columns != 1 or actions.get_child_count() != 6:
 		_errors.append("%s: MainMenuActions must be one six-button left column." % str(viewport_size))
 	for child in actions.get_children():
 		if child is Button:
 			_assert_inside((child as Button).get_global_rect(), inner_rect, "%s %s authored inner" % [str(viewport_size), str(child.name)])
 
-	var expected := _main_expected(viewport_size)
+	var expected := _main_expected(viewport_size, version as Label)
 	_assert_rect_near(title.get_global_rect(), expected["logo"], "%s Main Menu logo" % str(viewport_size))
 	_assert_rect_near(actions.get_global_rect(), expected["actions"], "%s Main Menu action column" % str(viewport_size))
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
@@ -362,14 +363,31 @@ func _inner_rect(viewport_size: Vector2) -> Rect2:
 	return _safe_rect(viewport_size).grow(-reserve)
 
 
-func _main_expected(viewport_size: Vector2i) -> Dictionary:
+func _main_expected(viewport_size: Vector2i, version: Label) -> Dictionary:
+	var expected := {}
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "version": Rect2(987, 559, 136, 24), "glow": Rect2(891, 499, 84, 84), "credits": Rect2(897, 505, 72, 72), "button_height": 56.0}
+			expected = {"logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "button_height": 56.0}
 		Vector2i(1920, 1080):
-			return {"logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "version": Rect2(1536, 859, 160, 28), "glow": Rect2(1424, 791, 96, 96), "credits": Rect2(1432, 799, 80, 80), "button_height": 76.0}
+			expected = {"logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "button_height": 76.0}
 		_:
-			return {"logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "version": Rect2(2077, 1151, 184, 32), "glow": Rect2(1941, 1067, 116, 116), "credits": Rect2(1951, 1077, 96, 96), "button_height": 96.0}
+			expected = {"logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "button_height": 96.0}
+	var safe := _safe_rect(Vector2(viewport_size)).grow(-8.0)
+	var glow_side := 84.0 if viewport_size.y < 800 else (96.0 if viewport_size.y < 1200 else 116.0)
+	var credits_side := 72.0 if viewport_size.y < 800 else (80.0 if viewport_size.y < 1200 else 96.0)
+	var version_height := 24.0 if viewport_size.y < 800 else (28.0 if viewport_size.y < 1200 else 32.0)
+	var font: Font = version.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var measured_width := ceilf(font.get_string_size(version.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, version.get_theme_font_size("font_size")).x)
+	var version_size := Vector2(measured_width + 6.0, version_height)
+	var version_rect := Rect2(safe.end - version_size, version_size)
+	var glow_rect := Rect2(Vector2(version_rect.position.x - 4.0 - glow_side, safe.end.y - glow_side), Vector2.ONE * glow_side)
+	var inset := (glow_side - credits_side) * 0.5
+	expected["version"] = version_rect
+	expected["glow"] = glow_rect
+	expected["credits"] = Rect2(glow_rect.position + Vector2.ONE * inset, Vector2.ONE * credits_side)
+	return expected
 
 
 func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:

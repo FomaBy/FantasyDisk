@@ -1,13 +1,13 @@
 extends SceneTree
 
-# Windowed Metal evidence for SCRUM-1059. Captures only Main Menu at the five
-# required responsive targets and records exact authored geometry.
+# Windowed Metal evidence for SCRUM-1059/1093. Captures only Main Menu at the
+# six required responsive targets and records exact authored geometry.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
 const TARGETS := [
 	Vector2i(1152, 648), Vector2i(1280, 720), Vector2i(1600, 900),
-	Vector2i(1920, 1080), Vector2i(2560, 1440),
+	Vector2i(1920, 1080), Vector2i(2048, 1152), Vector2i(2560, 1440),
 ]
 
 var _errors := PackedStringArray()
@@ -15,12 +15,12 @@ var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
 
 
 func _initialize() -> void:
-	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum1059")
+	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum1093")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	var report := PackedStringArray([
-		"# SCRUM-1059 Main Menu Metal Matrix", "",
+		"# SCRUM-1093 Main Menu Metal Matrix", "",
 		"- renderer: `%s`" % DisplayServer.get_name(),
-		"- expected: one six-action left column, no scrollbar, gratitude icon-only in upper-right authored inner zone", "",
+		"- expected: one six-action left column, no scrollbar, compact gratitude + dynamic version cluster in the lower-right rail-safe zone", "",
 	])
 	for viewport_size in TARGETS:
 		await _capture(viewport_size, qa_dir, report)
@@ -30,7 +30,7 @@ func _initialize() -> void:
 		output.store_string("\n".join(report))
 		output.close()
 	if _errors.is_empty():
-		print("SCRUM-1059 Main Menu Metal capture completed at five viewports.")
+		print("SCRUM-1059/1093 Main Menu Metal capture completed at six viewports.")
 		quit(0)
 		return
 	for error in _errors:
