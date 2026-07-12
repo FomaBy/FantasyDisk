@@ -71,3 +71,19 @@ Evidence:
 
 Disk cleanup: disposable worktree and `/tmp/scrum1075_*` are removed after
 commit, direct push to `origin/dev`, Jira QA routing and scoped sync.
+
+## QA-Вердикт (2026-07-12, independent Design re-QA) — PASSED
+
+SCRUM-1084 resolves the former 23-socket PixelLab topology failure. Independent
+re-QA on fresh `origin/dev@a9d4ff61a` verified live PixelLab provenance and a
+byte-identical committed source, exact `21/21` native topology (`1` core +
+`3×6` ray sockets + exactly `2` single side spurs), `47/0/0` planning,
+`15/15` content-zone fit, `7/7` responsive fit, deterministic regeneration,
+and frame-safe visual placement. Full `tests/runtime_smoke_test.gd` passed via
+`tools/godot_gate.py` on Godot 4.7 with only the known non-fatal headless
+screenshot warning. No runtime or production asset was changed by QA.
+
+Jira may transition SCRUM-1075 to `Готово`.
+
+Disk cleanup: pending removal of disposable QA worktree, `.godot` cache and
+`/tmp/fsd_qa_scrum1084` after the verdict commit is pushed.

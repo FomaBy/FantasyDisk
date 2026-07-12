@@ -62,3 +62,30 @@ Evidence:
 
 Disk cleanup: task-generated `.godot`, import sidecars, UID sidecars, temporary
 QA outputs and isolated worktree removed after direct push to `origin/dev`.
+
+## QA-Вердикт (2026-07-12, independent Design re-QA) — PASSED
+
+- reviewed fresh `origin/dev` snapshot `a9d4ff61ac24196bd48e9cb5bdc77f26fdfd3691`,
+  containing source fix `989caccc35aa0d4c6aaa501c17790f271f7ea92b`;
+- live PixelLab MCP `get_ui_asset` returned completed source
+  `9bc178ba-1b69-43ce-82af-519e7abea66a`, 688×384; its authenticated live
+  download was byte-identical to the committed raw PNG, SHA-256
+  `88917fe4d9ebbdd16fbe4e7faf0582d1579439d661a7874e5ca8f05a307112ea`;
+- independent native pixel topology recheck detected exactly `21/21` sockets:
+  one core, three separate six-socket rays including finals, and exactly two
+  single lateral spur endpoints; no extra keystone or junction;
+- independently regenerated planning/compositor/responsive evidence passed:
+  `47` plan elements with `0` errors and `0` warnings, `15/15` content zones,
+  and `7/7` responsive targets; all generated PNGs were byte-identical to the
+  committed evidence;
+- visual review of the raw source, full preview, debug overlay and responsive
+  contact sheet confirmed frame-safe content: no runtime text, button or panel
+  content covers rails, gems, dragon ornament, sockets or footer borders;
+- `python3 tools/godot_gate.py --headless --path . --script
+  res://tests/runtime_smoke_test.gd`: PASS on Godot 4.7; only the known
+  non-fatal dummy-renderer screenshot warning was emitted;
+- implementation/source files were not edited by QA. Jira may transition this
+  bug and parent SCRUM-1075 to `Готово`.
+
+Disk cleanup: pending removal of disposable QA worktree, `.godot` cache and
+`/tmp/fsd_qa_scrum1084` after the verdict commit is pushed.
