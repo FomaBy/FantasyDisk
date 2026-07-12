@@ -1110,6 +1110,12 @@ func _collect_pickup(pickup: Node) -> void:
 
 
 func _setup_arena_world(is_boss_fight: bool) -> void:
+	# Combat Feel Rework (этап A): Y-сортировка актёров арены. game (корень Main)
+	# — плоский родитель игрока/врагов/пикапов: кто ниже по Y (origin = ноги),
+	# тот рисуется поверх. Продублировано в рантайме поверх Main.tscn защитно —
+	# на случай динамически созданного/подменённого корня. Фон/границы/снаряды
+	# не страдают: у них явный z_index. UI живёт в CanvasLayer и не сортируется.
+	game.y_sort_enabled = true
 	_spawn_arena_background(is_boss_fight)
 	_create_arena_boundaries()
 

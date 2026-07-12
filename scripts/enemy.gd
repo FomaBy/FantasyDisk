@@ -93,6 +93,17 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
+# Combat Feel Rework (этап A): feet-origin визуал + тень-круг под ногами.
+# Origin узла не двигается — поднимается только фолбэк-визуал (cutout/статический
+# спрайт центрирован по арту, ноги ~на 0.38 высоты ниже центра). Живой full-frame
+# путь уже feet-anchored ручными offsets в full_frame_animation_registry.
+const STATIC_VISUAL_FEET_LIFT_RATIO := 0.38
+const GROUND_CIRCLE_Z_INDEX := -8
+const GROUND_CIRCLE_SEGMENTS := 32
+const GROUND_CIRCLE_WIDTH_FACTOR := 0.34   # доля видимой ширины (полная ширина эллипса)
+const GROUND_CIRCLE_HEIGHT_RATIO := 0.32
+const GROUND_CIRCLE_ALPHA := 0.16
+const GROUND_CIRCLE_BOSS_ALPHA := 0.20
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
@@ -159,6 +170,7 @@ func _ready() -> void:
 		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
 	_create_health_bar()
+	_ensure_ground_circle()
 	var config := _elite_attack_config()
 	if not config.is_empty():
 		elite_attack_id = str(config.get("attack_id", ""))
@@ -1112,6 +1124,17 @@ func _set_body_alpha(alpha: float) -> void:
 
 
 func _visible_sprite_size() -> Vector2:
+	# Combat Feel Rework (этап A): если активен живой FullFrameBody — меряем ЕГО
+	# текущий кадр (раньше мерился скрытый статический Body, и health-bar/фидбек/
+	# contact-fit тюнились по невидимому арту). Фолбэк — статический спрайт.
+	var full_frame := _full_frame_body()
+	if full_frame != null and full_frame.visible and full_frame.sprite_frames != null:
+		var animation_name := str(full_frame.animation)
+		if full_frame.sprite_frames.has_animation(animation_name) and full_frame.sprite_frames.get_frame_count(animation_name) > 0:
+			var frame_index: int = clampi(full_frame.frame, 0, full_frame.sprite_frames.get_frame_count(animation_name) - 1)
+			var frame_texture := full_frame.sprite_frames.get_frame_texture(animation_name, frame_index)
+			if frame_texture != null:
+				return frame_texture.get_size() * full_frame.scale.abs() * scale.abs()
 	var body := get_node_or_null("Body") as Sprite2D
 	if body == null:
 		body = get_node_or_null("Sprite2D") as Sprite2D
@@ -1125,6 +1148,42 @@ func _fit_contact_range_to_sprite() -> void:
 	# радиус врага + радиус игрока, экспортное значение остается минимумом.
 	var visible_radius: float = maxf(_visible_sprite_size().x, _visible_sprite_size().y) * 0.5
 	contact_range = maxf(contact_range, visible_radius * 0.82 + PLAYER_CONTACT_PADDING)
+
+
+func _ensure_ground_circle() -> void:
+	# Combat Feel Rework (этап A): мягкая тень-эллипс под ногами (origin) —
+	# визуальная «точка отсчёта» врага. Ребёнок узла: двигается/паузится/умирает
+	# вместе с актёром, epic-масштаб элиток/боссов наследуется автоматически
+	# (поэтому размеры полигона считаются в ЛОКАЛЬНЫХ координатах, без node scale).
+	# Идемпотентна: boss.gd зовёт повторно после конфигурации full-frame визуала.
+	var node_scale := scale.abs()
+	var local_width: float = _visible_sprite_size().x / maxf(node_scale.x, 0.01)
+	var radius_x := local_width * GROUND_CIRCLE_WIDTH_FACTOR * 0.5
+	var radius_y := radius_x * GROUND_CIRCLE_HEIGHT_RATIO
+	var is_boss_actor := is_in_group("bosses") or _epic_scale_profile_id() == "boss"
+	var alpha := GROUND_CIRCLE_BOSS_ALPHA if is_boss_actor else GROUND_CIRCLE_ALPHA
+	var circle := get_node_or_null("GroundCircle") as Node2D
+	var fill: Polygon2D = null
+	if circle == null:
+		circle = Node2D.new()
+		circle.name = "GroundCircle"
+		circle.position = Vector2.ZERO
+		circle.z_as_relative = true
+		circle.z_index = GROUND_CIRCLE_Z_INDEX
+		fill = Polygon2D.new()
+		fill.name = "Fill"
+		circle.add_child(fill)
+		add_child(circle)
+	else:
+		fill = circle.get_node_or_null("Fill") as Polygon2D
+	if fill == null:
+		return
+	var points := PackedVector2Array()
+	for index in range(GROUND_CIRCLE_SEGMENTS):
+		var angle := TAU * float(index) / float(GROUND_CIRCLE_SEGMENTS)
+		points.append(Vector2(cos(angle) * radius_x, sin(angle) * radius_y))
+	fill.polygon = points
+	fill.color = Color(0.0, 0.0, 0.0, alpha)
 
 
 func _uses_hud_boss_bar() -> bool:
@@ -1465,6 +1524,14 @@ func _configure_enemy_rig() -> void:
 			"is_elite": is_in_group("elite_enemies") or elite_behavior != "",
 			"is_boss": is_in_group("bosses") or enemy_type_name.to_lower().contains("warden") or enemy_type_name.to_lower().contains("devourer"),
 		})
+	# Combat Feel Rework (этап A): fallback-путь (cutout/статический арт) тоже
+	# feet-origin — визуал поднимается так, чтобы низ спрайта сел ≈ на origin
+	# (единая простая доля высоты, как residual-оффсеты registry на живом пути).
+	# Origin/коллизии/contact_range НЕ двигаются. Full-frame путь не трогаем:
+	# у него ручные offsets в full_frame_animation_registry.
+	var static_lift := body.texture.get_size().y * body.scale.abs().y * STATIC_VISUAL_FEET_LIFT_RATIO
+	rig.position = Vector2(0.0, -static_lift)
+	body.position = Vector2(0.0, -static_lift)
 
 
 func _cutout_rig() -> Node2D:

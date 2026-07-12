@@ -31,6 +31,8 @@ const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
+# Combat Feel Rework (этап A): per-class foot_y для feet-origin визуала.
+const SLICED_RIG_MANIFEST := preload("res://scripts/sliced_rig_manifest.gd")
 const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
 const CHARACTER_SHEET_FRAME_SIZE := Vector2i(384, 384)
@@ -54,6 +56,22 @@ const CARTOON_TRIAL_TILT_DEG := 12.0
 const WEAPON_ORBIT_RADIUS := 104.0
 const WEAPON_ORBIT_VERTICAL_BIAS := -8.0
 const WEAPON_ORBIT_Z_INDEX := -8
+# Combat Feel Rework (этап A): «точка отсчёта» персонажа — круг под ногами.
+# Origin узла НЕ двигается (все дистанции origin-to-origin валидны), поднимается
+# только ВИЗУАЛ: ноги нарисованного спрайта сажаются на origin. Величина подъёма
+# считается per-class из sliced_rig_manifest.foot_y; для классов без записи в
+# манифесте берём типовую долю кадра (ноги ~на 94% высоты 512/384-арта).
+const FEET_FALLBACK_FOOT_RATIO := 0.94
+const FEET_FALLBACK_ART_SIZE := 512.0
+# Читаемый круг-«точка отсчёта» под ногами игрока: мягкая тёмная заливка +
+# тонкий тёплый ободок (класс-нейтральный), z ниже тела.
+const GROUND_CIRCLE_Z_INDEX := -8
+const GROUND_CIRCLE_SEGMENTS := 32
+const GROUND_CIRCLE_WIDTH_FACTOR := 0.42   # доля видимой ширины спрайта (полная ширина эллипса)
+const GROUND_CIRCLE_HEIGHT_RATIO := 0.32   # сплюснутость эллипса (высота/ширина)
+const GROUND_CIRCLE_FILL_ALPHA := 0.18
+const GROUND_CIRCLE_RIM_ALPHA := 0.42
+const GROUND_CIRCLE_RIM_COLOR := Color(1.0, 0.93, 0.78)
 # SCRUM-515: держимый (orbit) спрайт оружия не показываем в бою. Скрываем ТОЛЬКО
 # рендер корня оружия (visible=false) — узел/группа player_weapons/текстура
 # WeaponVisual остаются (нужны для снарядов/ловушек/орбов через
@@ -135,6 +153,12 @@ var _hit_flash_tween: Tween = null
 var _facing_direction := Vector2.RIGHT
 var _uses_full_frame_visual := false
 var _uses_skeletal_visual := false
+# Combat Feel Rework (этап A): визуальный подъём спрайта (px, положительное число),
+# сажающий нарисованные ноги на origin. Хранится в поле, потому что
+# _apply_sprite_transform каждый кадр пересобирает VisualRoot/WeaponSocket —
+# подъём живёт на Body/RigRoot.position (их эта функция не трогает) и в
+# вертикальном bias орбиты оружия.
+var _feet_visual_lift := 0.0
 var _damage_invulnerability_left := 0.0
 # SCRUM-831: неуязвимость из дев-консоли (godmode); take_damage игнорирует урон целиком.
 var debug_godmode := false
@@ -460,13 +484,22 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
 		body.animation = "idle"
 		body.play("idle")
-		body.position = Vector2.ZERO
+		# Combat Feel Rework (этап A): ноги спрайта сажаются на origin — вместо
+		# нулевой позиции тело поднимается на per-class подъём (см. _feet_visual_lift).
+		_feet_visual_lift = _compute_feet_visual_lift(body)
+		body.position = Vector2(0.0, -_feet_visual_lift)
 		body.rotation = 0.0
 		body.scale = BASE_SPRITE_SCALE
 		body.flip_h = false
 		body.visible = _uses_full_frame_visual
 		_configure_skeletal_player_rig(skeleton_scene)
 	_configure_player_rig(config, not _uses_full_frame_visual and not _uses_skeletal_visual)
+	# Камера: силуэт читается по центру экрана, ноги (origin) чуть ниже центра —
+	# классическая ARPG-рамка. Визуальный сдвиг, origin камеры-родителя не двигается.
+	var camera := get_node_or_null("Camera2D") as Camera2D
+	if camera != null:
+		camera.offset = Vector2(0.0, -_feet_visual_lift * 0.45)
+	_ensure_ground_circle()
 	var weapon_socket := _weapon_socket()
 	if weapon_socket != null:
 		weapon_socket.position = Vector2.ZERO
@@ -571,6 +604,86 @@ func _configure_weapon_socket_layer(socket: Node2D) -> void:
 	socket.z_as_relative = true
 	socket.z_index = WEAPON_ORBIT_Z_INDEX
 	socket.set_meta("weapon_orbit_radius", WEAPON_ORBIT_RADIUS)
+
+
+# --- Combat Feel Rework (этап A): feet-origin визуал + круг под ногами ---------
+
+
+func _compute_feet_visual_lift(body: AnimatedSprite2D) -> float:
+	# Подъём визуала: расстояние от центра арта до линии ног × визуальный масштаб.
+	# Источник правды — sliced_rig_manifest (foot_y замерен по полишенному арту);
+	# fallback для классов без записи — типовая доля кадра FEET_FALLBACK_FOOT_RATIO.
+	var manifest_entry: Dictionary = SLICED_RIG_MANIFEST.DATA.get(character_id, {})
+	if not manifest_entry.is_empty():
+		var art_size: Vector2 = manifest_entry.get("size", Vector2(FEET_FALLBACK_ART_SIZE, FEET_FALLBACK_ART_SIZE))
+		var foot_y := float(manifest_entry.get("foot_y", art_size.y * FEET_FALLBACK_FOOT_RATIO))
+		return maxf((foot_y - art_size.y * 0.5) * BASE_SPRITE_SCALE.y, 0.0)
+	var frame_height := FEET_FALLBACK_ART_SIZE
+	var frame_texture := _current_idle_frame_texture(body)
+	if frame_texture != null:
+		frame_height = float(frame_texture.get_height())
+	return maxf(frame_height * (FEET_FALLBACK_FOOT_RATIO - 0.5) * BASE_SPRITE_SCALE.y, 0.0)
+
+
+func _current_idle_frame_texture(body: AnimatedSprite2D) -> Texture2D:
+	if body == null or body.sprite_frames == null:
+		return null
+	var animation_name := "idle" if body.sprite_frames.has_animation("idle") else str(body.animation)
+	if not body.sprite_frames.has_animation(animation_name) or body.sprite_frames.get_frame_count(animation_name) <= 0:
+		return null
+	return body.sprite_frames.get_frame_texture(animation_name, 0)
+
+
+func _visible_sprite_width() -> float:
+	# Видимая ширина спрайта героя (для ширины круга под ногами).
+	var manifest_entry: Dictionary = SLICED_RIG_MANIFEST.DATA.get(character_id, {})
+	var art_width := FEET_FALLBACK_ART_SIZE
+	if not manifest_entry.is_empty():
+		art_width = float((manifest_entry.get("size", Vector2(FEET_FALLBACK_ART_SIZE, FEET_FALLBACK_ART_SIZE)) as Vector2).x)
+	else:
+		var frame_texture := _current_idle_frame_texture(_animated_sprite())
+		if frame_texture != null:
+			art_width = float(frame_texture.get_width())
+	return art_width * BASE_SPRITE_SCALE.x
+
+
+func _ensure_ground_circle() -> void:
+	# Круг-«точка отсчёта» под ногами: живёт ребёнком игрока на локальном (0,0)
+	# (двигается/паузится/освобождается вместе с ним), z ниже тела. Мягкая тёмная
+	# заливка + тонкий тёплый ободок — читается как опорная точка, класс-нейтрален.
+	var existing := get_node_or_null("GroundCircle")
+	if existing != null:
+		remove_child(existing)
+		existing.queue_free()
+	var circle := Node2D.new()
+	circle.name = "GroundCircle"
+	circle.position = Vector2.ZERO
+	circle.z_as_relative = true
+	circle.z_index = GROUND_CIRCLE_Z_INDEX
+	var radius_x := _visible_sprite_width() * GROUND_CIRCLE_WIDTH_FACTOR * 0.5
+	var radius_y := radius_x * GROUND_CIRCLE_HEIGHT_RATIO
+	var points := _ground_ellipse_points(radius_x, radius_y, GROUND_CIRCLE_SEGMENTS)
+	var fill := Polygon2D.new()
+	fill.name = "Fill"
+	fill.polygon = points
+	fill.color = Color(0.0, 0.0, 0.0, GROUND_CIRCLE_FILL_ALPHA)
+	circle.add_child(fill)
+	var rim := Line2D.new()
+	rim.name = "Rim"
+	rim.points = points
+	rim.closed = true
+	rim.width = 2.5
+	rim.default_color = Color(GROUND_CIRCLE_RIM_COLOR.r, GROUND_CIRCLE_RIM_COLOR.g, GROUND_CIRCLE_RIM_COLOR.b, GROUND_CIRCLE_RIM_ALPHA)
+	circle.add_child(rim)
+	add_child(circle)
+
+
+static func _ground_ellipse_points(radius_x: float, radius_y: float, segment_count: int) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for index in range(segment_count):
+		var angle := TAU * float(index) / float(segment_count)
+		points.append(Vector2(cos(angle) * radius_x, sin(angle) * radius_y))
+	return points
 
 
 func _configure_attached_weapon_layer(weapon: Node) -> void:
@@ -2767,7 +2880,8 @@ func show_combat_feedback_number(amount: float, kind := "heal") -> void:
 		return
 	var holder := Node2D.new()
 	holder.z_index = 3000
-	holder.global_position = global_position + Vector2(randf_range(-14.0, 14.0), -62.0 + randf_range(-4.0, 4.0))
+	# Этап A: origin у ног — цифры хила/фидбека держатся над головой (подъём визуала).
+	holder.global_position = global_position + Vector2(randf_range(-14.0, 14.0), -62.0 - _feet_visual_lift + randf_range(-4.0, 4.0))
 	parent.add_child(holder)
 	var label := Label.new()
 	label.name = "CombatHealNumber"
@@ -3761,6 +3875,9 @@ func _apply_sprite_transform() -> void:
 	if visual_root == null:
 		return
 
+	# ВАЖНО (этап A): здесь обнуляется ТОЛЬКО VisualRoot. Подъём ног
+	# (_feet_visual_lift) живёт на Body/RigRoot.position — их эта функция не
+	# трогает, иначе feet-origin визуал стирался бы каждый кадр.
 	visual_root.position = Vector2.ZERO
 	visual_root.rotation = 0.0
 	visual_root.scale = Vector2.ONE
@@ -3773,6 +3890,10 @@ func _apply_sprite_transform() -> void:
 		weapon_socket.scale = Vector2.ONE
 		_configure_weapon_socket_layer(weapon_socket)
 		weapon_socket.set_meta("weapon_orbit_direction", orbit_direction)
+		# Этап A: вертикальный bias орбиты публикуется для тестов направления —
+		# socket.position = direction * RADIUS + (0, bias), и проверка «сокет следует
+		# за направлением атаки» обязана вычитать bias перед нормализацией.
+		weapon_socket.set_meta("weapon_orbit_vertical_bias", _weapon_orbit_vertical_bias())
 
 
 func _weapon_orbit_direction() -> Vector2:
@@ -3790,7 +3911,14 @@ func _weapon_orbit_position(direction: Vector2) -> Vector2:
 	var normalized := direction.normalized()
 	if normalized.length_squared() <= 0.001:
 		normalized = Vector2.RIGHT
-	return normalized * WEAPON_ORBIT_RADIUS + Vector2(0.0, WEAPON_ORBIT_VERTICAL_BIAS)
+	return normalized * WEAPON_ORBIT_RADIUS + Vector2(0.0, _weapon_orbit_vertical_bias())
+
+
+func _weapon_orbit_vertical_bias() -> float:
+	# Combat Feel Rework (этап A): после подъёма визуала ноги стоят на origin, а
+	# торс — примерно на половине подъёма выше. Оружие орбитит вокруг торса,
+	# а не вокруг ног (иначе визуально «кружит по земле»).
+	return WEAPON_ORBIT_VERTICAL_BIAS - _feet_visual_lift * 0.5
 
 
 func _play_hit_feedback() -> void:
@@ -3824,7 +3952,9 @@ func _show_dodge_popup() -> void:
 	popup.add_theme_color_override("font_outline_color", Color(0.05, 0.08, 0.16, 1.0))
 	popup.add_theme_constant_override("outline_size", 5)
 	parent.add_child(popup)
-	popup.global_position = global_position + Vector2(-32.0, -64.0)
+	# Этап A: origin теперь у ног — попап поднимается на подъём визуала, чтобы
+	# по-прежнему появляться над головой, а не на уровне пояса.
+	popup.global_position = global_position + Vector2(-32.0, -64.0 - _feet_visual_lift)
 	var tween := popup.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(popup, "global_position", popup.global_position + Vector2(0.0, -34.0), 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -3926,6 +4056,9 @@ func _configure_player_rig(config: Dictionary, show_cutout := true) -> void:
 		var hero_full := rig.get_node_or_null("Pelvis/HeroFull") as Node2D
 		if hero_full != null:
 			hero_full.rotation = deg_to_rad(CARTOON_TRIAL_TILT_DEG)
+	# Combat Feel Rework (этап A): cutout-риг центрирован по арту, как и Body —
+	# тот же подъём сажает его ноги на origin (актуально для fallback-классов).
+	rig.position = Vector2(0.0, -_feet_visual_lift)
 	rig.visible = show_cutout
 
 
@@ -3947,6 +4080,8 @@ func _configure_skeletal_player_rig(skeleton_scene: PackedScene) -> void:
 	rig.name = "SkeletalRigRoot"
 	rig.z_index = 0
 	visual_root.add_child(rig)
+	# Combat Feel Rework (этап A): скелетный риг (аварийный путь) тоже feet-origin.
+	rig.position = Vector2(0.0, -_feet_visual_lift)
 	rig.visible = true
 	if rig.has_method("configure"):
 		var manifest := str(rig.get("manifest_path"))

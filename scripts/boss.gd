@@ -74,6 +74,10 @@ func _ready() -> void:
 	_apply_unique_encounter_pattern_meta(boss_behavior)
 	if _full_frame_body() == null:
 		_configure_full_frame_animation()
+	# Этап A: пересчёт круга под ногами — на момент super() босс ещё не был в
+	# группе "bosses" (другая alpha) и мог мерить статический Body вместо живого
+	# full-frame визуала, сконфигурированного строкой выше.
+	_ensure_ground_circle()
 	set_meta("boss_phase", boss_phase)
 	var phase_markers := _phase_markers_for_behavior()
 	set_meta("boss_phase_markers", phase_markers)
