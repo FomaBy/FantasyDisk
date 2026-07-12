@@ -4730,7 +4730,12 @@
  },
  "SCRUM-1094.md": {
   "key": "SCRUM-1094",
-  "status": "К выполнению",
-  "desc_hash": "d6fe15ac784ced64c35d8eb7330eafbb"
+  "status": "Контроль качества",
+  "desc_hash": "646fa8f2e12e6f232eabc1999e2f59bf"
+ },
+ "bug_scrum1093_main_menu_version_corner_spacing_task.md": {
+  "key": "SCRUM-1093",
+  "status": "Контроль качества",
+  "desc_hash": "972ef2cf0ddb57611823e8a3744f8e9b"
  }
 }
