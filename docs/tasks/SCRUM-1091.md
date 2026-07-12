@@ -1,6 +1,6 @@
 # SCRUM-1091 — Atlas exact upgrade descriptions and strong unique finals
 
-Статус: review
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1091
 Контур: Codex
@@ -128,3 +128,28 @@ Implementation commit in `origin/dev`: `b36a650e2`.
 Jira routed to `Контроль качества`; implementation locks released.
 Disk cleanup: `.godot`, generated `.uid`/`.import` sidecars and temporary
 SCRUM-1091 scratch/log roots removed.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: FAILED
+
+Проверено независимо на `origin/dev f7b9d7373` (implementation
+`b36a650e2`):
+
+- PASS: `17/306/51/34` design manifest и `357+25=382` runtime parity;
+- PASS: ровно 357 валидных русских dossier без ASCII/generic fallback;
+- PASS: 51 distinct final mechanics/texts с trigger/caps/boss contract и
+  `gain_over_order_5_min >= 1.20`;
+- PASS: 51 distinct order-5 localized identities, точно keyed исходным
+  authoritative `identity`;
+- PASS: malformed scope/params/core/final/caps/source identity fail closed;
+- PASS: malformed available node блокирует Buy и показывает явную ошибку;
+- FAIL: malformed locked node блокирует Buy и показывает безопасный desc, но
+  `AtlasNodeCondition` перезаписывает явную dossier-ошибку обычной причиной
+  locked-state (`Нужна соседняя купленная звезда`).
+
+Независимый regression oracle:
+`tests/scrum1091_independent_qa_test.gd`.
+
+Баг: `SCRUM-1094` (blocks this issue). Jira возвращён в `К выполнению`;
+`qa-failed` установлен. QA реализацию не менял.
