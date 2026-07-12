@@ -69,6 +69,7 @@ func _initialize() -> void:
 	_test_reward_pools_filtered(errors)
 	await _test_trait_runtime_on_player(errors)
 	await _test_restore_potion_aoe_heal(errors)
+	await _test_restore_potion_splash_cap(errors)
 	await _test_plague_infection_ramp_spread_cap(errors)
 	await _test_saw_sector_geometry_and_heal(errors)
 	await _test_drain_budget_caps_weapon_heal(errors)
@@ -372,6 +373,64 @@ func _test_restore_potion_aoe_heal(errors: Array) -> void:
 	await process_frame
 	if owner.drain_healed > healed_before + EPS:
 		errors.append("зелье: хил без нанесённого урона (промах должен лечить на 0)")
+	await _cleanup(holder)
+
+
+# FAN-1031 S3 (Stage 3a): хил-склянка возвращена в сустейн/solo-нишу. Baseline v2:
+# restore_potion 68.9k DPS@20t = #3 AoE-оружие ростера (для лечащего оружия — дефект).
+# Правка — data-driven кап прямого AoE (S1): aoe_full_targets=1, aoe_target_diminish=4.0
+# → осн. цель получает полный урон/хил, сплэш круто спадает. Тест A/B на живой
+# _damage_enemies_in_circle_capped: override vs default. 1t solo не тронут (rank0=full).
+func _test_restore_potion_splash_cap(errors: Array) -> void:
+	var holder := _new_scene("PotionSplashScene")
+	var owner := _new_owner(holder)
+
+	# Цели по лучу с растущим удалением от точки взрыва (все в aoe_radius=150),
+	# ранг = удалённость: rank0 полный, дальше диминиш.
+	var origin := owner.global_position + Vector2(300, 0)
+	var ranks: Array = []
+	for k in range(4):
+		ranks.append(_new_enemy(holder, origin + Vector2(float(k) * 25.0, 0.0)))
+	await process_frame
+
+	# A. restore_potion (override F=1, D=4): 2-я цель уже срезана, не полная.
+	var weapon := _new_weapon(owner, "restore_potion")
+	if weapon.aoe_full_targets != 1 or absf(weapon.aoe_target_diminish - 4.0) > EPS:
+		errors.append("зелье-сплэш: конфиг не загрузился (aoe_full_targets=%d, aoe_target_diminish=%.2f; ждали 1 / 4.0) — silent-retune?" % [weapon.aoe_full_targets, weapon.aoe_target_diminish])
+	weapon.call("_damage_aoe_projectile_explosion", origin, weapon.aoe_radius, 100.0)
+	await process_frame
+	var d0: float = ranks[0].total_damage
+	var d1: float = ranks[1].total_damage
+	var d2: float = ranks[2].total_damage
+	if absf(d0 - 100.0) > 0.5:
+		errors.append("зелье-сплэш: осн. цель %.1f != 100 (rank0 обязан быть полным — solo-хил не должен страдать)" % d0)
+	# rank1 = 100 / (1 + 1*4) = 20; rank2 = 100 / (1 + 2*4) = 11.11.
+	if absf(d1 - 20.0) > 0.5:
+		errors.append("зелье-сплэш: 2-я цель %.1f != 20 (кап F=1/D=4 не сработал — сплэш всё ещё бьёт как F=5)" % d1)
+	if d1 >= d0 * 0.5:
+		errors.append("зелье-сплэш: сплэш не круто спадает (2-я %.1f >= 50%% осн. %.1f)" % [d1, d0])
+	if absf(d2 - 100.0 / 9.0) > 0.5:
+		errors.append("зелье-сплэш: 3-я цель %.1f != 11.1 (диминиш формулы нарушен)" % d2)
+
+	# B. Контроль — тот же конфиг БЕЗ override: default F=5 → 2-я цель полная.
+	var control_owner := _new_owner(holder, owner.global_position + Vector2(0, 600))
+	var control_origin := control_owner.global_position + Vector2(300, 0)
+	var control_ranks: Array = []
+	for k in range(4):
+		control_ranks.append(_new_enemy(holder, control_origin + Vector2(float(k) * 25.0, 0.0)))
+	await process_frame
+	var default_cfg: Dictionary = PD.weapon("doctor", "restore_potion").duplicate(true)
+	default_cfg.erase("aoe_full_targets")
+	default_cfg.erase("aoe_target_diminish")
+	var control := ClassWeapon.new()
+	control_owner.add_child(control)
+	control.configure_weapon(default_cfg)
+	control.set_process(false)
+	control.call("_damage_aoe_projectile_explosion", control_origin, control.aoe_radius, 100.0)
+	await process_frame
+	if absf(float(control_ranks[1].total_damage) - 100.0) > 0.5:
+		errors.append("зелье-сплэш(контроль): без override 2-я цель %.1f != 100 — сентинел-механика data-driven капа не работает" % float(control_ranks[1].total_damage))
+
 	await _cleanup(holder)
 
 

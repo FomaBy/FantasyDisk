@@ -235,6 +235,15 @@ const ATTACK_MODE_EXECUTORS := {
 # sector_full_targets — сектор чистит толпу, но не масштабируется линейно.
 @export var sector_full_targets := 4
 @export var sector_target_diminish := 0.72
+# FAN-1031 S1 (Stage 3a): data-driven кап «полных» целей и диминиш дальних целей
+# прямого AoE-взрыва (attack_mode aoe_projectile). Сентинел <0 = использовать
+# общие AOE_PROJECTILE_FULL_TARGETS / AOE_PROJECTILE_TARGET_DIMINISH (нулевое
+# изменение поведения для оружий, которые их не задают). Позволяет резать
+# crowd-runaway периодики/сплэша ДАННЫМИ, а не константами кода: узкий full_targets
+# + крутой diminish душат хвост на 20 целях, не трогая 1t/5t identity (см. gate
+# tests/aoe_target_cap_gate.gd; S3 применяет к doctor/restore_potion).
+@export var aoe_full_targets := -1
+@export var aoe_target_diminish := -1.0
 # SCRUM-900 doctor/plague_syringe (plague_dart): параметры чумы. Профиль тика —
 # ProgressionData.plague_tick_profile (единый источник для боя и budget-модели).
 @export var plague_duration := 24.0
@@ -499,6 +508,9 @@ func configure_weapon(config: Dictionary) -> void:
 	# SCRUM-900: докторский кит — сектор пилы и профиль чумы.
 	sector_full_targets = int(config.get("sector_full_targets", sector_full_targets))
 	sector_target_diminish = float(config.get("sector_target_diminish", sector_target_diminish))
+	# FAN-1031 S1: data-driven кап прямого AoE-взрыва (см. _damage_aoe_projectile_explosion).
+	aoe_full_targets = int(config.get("aoe_full_targets", aoe_full_targets))
+	aoe_target_diminish = float(config.get("aoe_target_diminish", aoe_target_diminish))
 	plague_duration = float(config.get("plague_duration", plague_duration))
 	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
 	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
@@ -5383,14 +5395,17 @@ func _damage_enemies_in_circle(origin: Vector2, radius: float, amount: float) ->
 
 
 func _damage_aoe_projectile_explosion(origin: Vector2, radius: float, amount: float) -> void:
+	# FAN-1031 S1: per-weapon override прямого AoE-капа (сентинел <0 → общий default).
+	var full_targets := aoe_full_targets if aoe_full_targets >= 0 else AOE_PROJECTILE_FULL_TARGETS
+	var target_diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else AOE_PROJECTILE_TARGET_DIMINISH
 	# SCRUM-961 «Летучая пыль»: без облака взрыв прямой (+25%, каппинг обычного AoE).
 	if _volatile_powder_active():
-		_damage_enemies_in_circle_capped(origin, radius, amount * 1.25, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
+		_damage_enemies_in_circle_capped(origin, radius, amount * 1.25, full_targets, target_diminish)
 		return
 	if leaves_pool:
 		_damage_enemies_in_circle_capped(origin, radius, amount * POOL_PROJECTILE_DAMAGE_MULTIPLIER * pool_direct_damage_multiplier, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 		return
-	_damage_enemies_in_circle_capped(origin, radius, amount, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
+	_damage_enemies_in_circle_capped(origin, radius, amount, full_targets, target_diminish)
 
 
 # SCRUM-961 «Летучая пыль»: blast_powder переведён в режим быстрого AoE без облака.

@@ -401,13 +401,22 @@ const RANGER_WEAPONS := {
 const DOCTOR_WEAPONS := {
 	"restore_potion": {
 		"id": "restore_potion", "title": "Зелье восстановления",
-		"description": "Бросок зелья: магический взрыв по области; Доктор лечится на долю фактически нанесенного урона.",
+		"description": "Бросок зелья: магический взрыв по цели с быстро спадающим сплэшем; Доктор лечится на долю фактически нанесённого урона.",
 		"scene_path": "res://scenes/RestorePotion.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
 		"damage_multiplier": 2.7, "fire_interval": 1.15,
 		"attack_range": 520.0, "aoe_radius": 150.0,
 		"projectile_speed": 620.0,
 		"heal_percent_of_damage": 0.16,
+		# FAN-1031 S3 (Stage 3a): хил-склянка возвращена в сустейн/solo-нишу. До правки
+		# restore_potion был #3 AoE-оружием ростера (baseline v2: 68.9k DPS@20t, 15× медианы)
+		# — для лечащего оружия это дефект. Кап сплэша до основной цели (full=1) + крутой
+		# диминиш (4.0): осн. цель получает полный урон-и-хил, соседи — быстро спадающий
+		# бонус. 20t 68.9k → ~19.5k (−72%), 5t 1410 → ~408, 1t 243 без изменений (solo-хил
+		# сохранён точно). Остаточная per-hit инфляция — часть общего crowd-runaway
+		# (S1/3c numeric); структурная роль «безопасный ranged-сустейн, не чистка толпы»
+		# восстановлена. Сустейн не страдает: хил всё равно упирается в drain-budget 7/с.
+		"aoe_full_targets": 1, "aoe_target_diminish": 4.0,
 		"visual_color": Color(0.35, 0.95, 0.55, 0.42),
 		"passive_mods": {"max_health_multiplier": 1.10},
 	},
