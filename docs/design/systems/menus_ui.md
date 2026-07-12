@@ -553,19 +553,22 @@ transparent, PixelLab crest source in
 SCRUM-484 single column and SCRUM-981 2×3 grid are superseded by the SCRUM-1059
 authored-inner single-column contract described above.
 
-## Route Map 2K Source
+## Route Map Horizontal Gold Shell
 
-Route Map has a SCRUM-563 2K UI Director source package for the global UI
-overhaul. The package is design-source, not a broad runtime rewrite: geometry is
-defined in `docs/design/mockups/scrum563_route_map_2k/ui_plan.json` and
-`spec.md`, the OpenAI source mockup is
-`docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`, and the
-safe-zone evidence is under `docs/design/previews/scrum563_route_map_2k_*`.
-The visual direction is a full-screen scroll field with a thin framed header,
-compact run HUD, clamped tooltip panel, centered vertical node lane and small
-bottom-right FAB. SCRUM-981 supersedes the old 28 px viewport-edge runtime
-offsets: all of those controls now live inside the shared gold-shell zones while
-the SCRUM-563 source package remains historical design evidence.
+SCRUM-1057/1079 replaces the previous vertical geometry with an accepted
+PixelLab-authored horizontal contract: start at left, boss at right, route steps
+increase strictly on X and branches within a step separate on Y. Runtime uses
+horizontal auto-scroll only; the vertical scrollbar is disabled and
+`scroll_vertical=0`. The raised header/title/resource wells, node viewport,
+bottom scrollbar lane and pending-level FAB keep-out follow exact matrices for
+1152×648, 1280×720, 1600×900, 1920×1080 and 2560×1440. Spec/provenance:
+`docs/design/mockups/scrum1057_route_map_horizontal/spec.md`; runtime matrix:
+`docs/design/previews/scrum1079_route_map_horizontal_runtime/`.
+
+The production outer shell remains the hollow SCRUM-981
+`assets/sprites/ui/meta40/frame_border.png`; all controls stay inside its real
+empty content zone. The older SCRUM-563 vertical 2K source package remains
+historical design evidence only.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
@@ -1594,7 +1597,8 @@ Atlas art rather than adding the mockup as a production texture.
 - Карта маршрута (`route_map_screen.gd`): доступные ноды — `FOCUS_ALL`, недоступные
   `FOCUS_NONE` (пропускаются); крестовина/стик двигают выделение по доступным нодам,
   A подтверждает (`Button.pressed`), заметная золотая кайма (`focus`-стайлбокс),
-  скролл следует за фокусом (`follow_focus`). Мышь идёт своим путём
+  Left/Right ищут ближайшую доступную колонку, Up/Down двигаются по веткам
+  текущей колонки, а horizontal scroll следует за фокусом. Мышь идёт своим путём
   (`_handle_route_node_input`); двойную активацию гасит реэнтранси-латч
   `_route_node_activating` в `_activate_route_node`.
 

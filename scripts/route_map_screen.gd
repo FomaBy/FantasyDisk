@@ -18,10 +18,9 @@ var _route_focus_target: Button = null
 const START_BATTLE_ONLY_ROWS := 2
 
 # SCRUM-489: историческая координатная спека @2560×1440 — экран «Карта маршрута».
-# SCRUM-981 сохраняет вертикальную карту/скролл, но переносит весь интерактивный
-# слой внутрь пустой зоны общей meta40-рамы. Старые 28px edge offsets ниже больше
-# не являются runtime layout contract; актуальная матрица вычисляется в
-# _route_map_shell_layout() из frame safe margins + внутреннего резерва.
+# SCRUM-981 introduced the hollow meta40 shell. SCRUM-1057/1079 supersedes its
+# vertical runtime geometry with the accepted horizontal five-target matrix in
+# _route_map_shell_layout(); old 28px edge offsets below are historical only.
 # Старые опорные значения (main.gd): ROUTE_MAP_SCREEN_MARGIN=28, ROUTE_MAP_HEADER_HEIGHT=140,
 # MAP_NODE_SIZE=(88,88), ROUTE_MAP_PADDING=(170,72), ROUTE_STEPS_TO_BOSS=8 (SCRUM-786). Из viewport
 # масштабируется только ширина canvas. Header: anchor top, offset L/R=±28, top=18, bottom=140-12=128
@@ -48,6 +47,18 @@ const ROUTE_SHELL_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
 const ROUTE_SHELL_FRAME_SOURCE_MARGIN := 160.0
 const ROUTE_SHELL_RESERVE_COMPACT := 24.0
 const ROUTE_SHELL_RESERVE_LARGE := 32.0
+
+# SCRUM-1057: accepted PixelLab horizontal Route Map contract. Arrays keep the
+# machine-readable rectangles identical to responsive_matrix.json while making
+# the table legal as a GDScript constant.
+const ROUTE_HORIZONTAL_LAYOUTS := {
+	"1152x648": {"safe": [120,101,912,446], "inner": [140,121,872,406], "header": [140,121,872,76], "title": [154,125,416,54], "resources": [666,125,332,54], "route": [140,209,872,318], "nodes": [158,227,740,258], "lane": [158,497,740,14], "fab": [922,437,72,72], "node_size": 56.0, "boss_size": 64.0},
+	"1280x720": {"safe": [133,113,1014,494], "inner": [157,137,966,446], "header": [157,137,966,80], "title": [173,141,450,58], "resources": [731,141,376,58], "route": [157,229,966,354], "nodes": [175,249,834,286], "lane": [175,549,834,14], "fab": [1033,493,72,72], "node_size": 60.0, "boss_size": 68.0},
+	"1600x900": {"safe": [167,141,1266,618], "inner": [191,165,1218,570], "header": [191,165,1218,84], "title": [211,169,580,62], "resources": [965,169,424,62], "route": [191,265,1218,470], "nodes": [215,289,1074,392], "lane": [215,701,1074,16], "fab": [1313,639,72,72], "node_size": 68.0, "boss_size": 76.0},
+	"1920x1080": {"safe": [200,169,1520,742], "inner": [224,193,1472,694], "header": [224,193,1472,88], "title": [248,197,700,64], "resources": [1128,197,544,64], "route": [224,297,1472,590], "nodes": [248,321,1328,500], "lane": [248,845,1328,18], "fab": [1600,791,72,72], "node_size": 72.0, "boss_size": 88.0},
+	"2560x1440": {"safe": [267,225,2026,990], "inner": [299,257,1962,926], "header": [299,257,1962,104], "title": [331,263,940,80], "resources": [1557,263,672,80], "route": [299,385,1962,798], "nodes": [331,417,1786,694], "lane": [331,1139,1786,20], "fab": [2149,1071,80,80], "node_size": 88.0, "boss_size": 104.0},
+}
+const ROUTE_HORIZONTAL_VISIBLE_COLUMNS := 8
 
 
 func _init(game_ref) -> void:
@@ -145,7 +156,7 @@ func _show_battle_map() -> void:
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: шапка живёт в authored 68/70/80px zone; readable 29..32px
 	# оставляет гарантированную отдельную строку прогресса без выхода на орнамент.
-	title_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_TITLE, 22, 26))
+	title_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_TITLE, 18, 22, 30))
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -160,34 +171,35 @@ func _show_battle_map() -> void:
 	]
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: compact supporting line inside the same authored title zone.
-	stage_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 11, 14))
+	stage_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 9, 12, 16))
 	stage_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	stage_label.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_box.add_child(stage_label)
 
 	if game.route_debug_free_pick:
-		var debug_label := Label.new()
-		debug_label.name = "RouteDebugFreePickLabel"
-		debug_label.text = "DEBUG: свободный выбор любого узла включен (F12 — выключить)"
-		# SCRUM-883: 16 фикс → readable (11×1.32…1.45 = 15…16), пол 14.
-		debug_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 11, 14))
-		debug_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		debug_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.40, 1.0))
-		debug_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		title_box.add_child(debug_label)
+		# Keep the compact two-line header contract even in debug mode.
+		stage_label.name = "RouteDebugFreePickLabel"
+		stage_label.text += "   DEBUG: свободный выбор (F12)"
+		stage_label.add_theme_color_override("font_color", Color(1.0, 0.58, 0.46, 1.0))
 
 	var scroll := ScrollContainer.new()
 	scroll.name = "RouteMapScroll"
 	scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(scroll)
 
 	var map_area := Control.new()
+	# Legacy node name is retained for test/save tooling compatibility; metadata
+	# is the authoritative orientation contract from SCRUM-1057.
 	map_area.name = "VerticalRouteMap"
-	var canvas_size := _route_map_canvas_size(float(shell_layout["map_width"]))
+	map_area.set_meta("route_orientation", "horizontal")
+	var canvas_size := _route_map_canvas_size(
+		float(shell_layout["node_viewport_rect"].size.x),
+		float(shell_layout["node_viewport_rect"].size.y)
+	)
 	map_area.custom_minimum_size = canvas_size
 	map_area.size = canvas_size
 	map_area.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -206,11 +218,13 @@ func _show_battle_map() -> void:
 	game.ui._update_level_up_button()
 	game.ui._layout_level_up_button_in_gold_shell(root.size)
 	_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
+	_layout_route_map_fab(root, shell_layout["fab_rect"])
 	root.resized.connect(func() -> void:
 		_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
 		_apply_route_map_shell_layout.call_deferred(root, header, title_box, scroll, map_area)
-		game.ui._layout_level_up_button_in_gold_shell(root.size)
-		game.ui._layout_level_up_button_in_gold_shell.call_deferred(root.size)
+		var resized_layout := _route_map_shell_layout(root.size)
+		_layout_route_map_fab(root, resized_layout["fab_rect"])
+		_layout_route_map_fab.call_deferred(root, resized_layout["fab_rect"])
 	)
 	game.ui._update_hud()
 	game.route_map_pan_active = false
@@ -229,8 +243,12 @@ func _show_battle_map() -> void:
 
 
 func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
-	# Exact SCRUM-981 matrix is derived from the live 1536×1024/160px frame.
-	# The same ratios interpolate safely for legacy verification sizes.
+	var exact_key := "%dx%d" % [int(roundf(viewport_size.x)), int(roundf(viewport_size.y))]
+	if ROUTE_HORIZONTAL_LAYOUTS.has(exact_key):
+		return _route_map_layout_from_entry(ROUTE_HORIZONTAL_LAYOUTS[exact_key])
+
+	# Non-matrix window sizes interpolate from the accepted 1920×1080 contract,
+	# then clamp every zone back into the real hollow-frame interior.
 	var margin_x := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.x / ROUTE_SHELL_FRAME_SOURCE_SIZE.x)
 	var margin_y := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.y / ROUTE_SHELL_FRAME_SOURCE_SIZE.y)
 	var safe_rect := Rect2(
@@ -239,61 +257,57 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 	)
 	var reserve := ROUTE_SHELL_RESERVE_LARGE if viewport_size.y >= 1200.0 else ROUTE_SHELL_RESERVE_COMPACT
 	var inner_rect := safe_rect.grow(-reserve)
-
-	var header_height := 92.0
-	var header_inset := Vector2(16.0, 12.0)
-	var title_width_ratio := 520.0 / 966.0
-	var title_height := 68.0
-	var resource_width_ratio := 376.0 / 966.0
-	var resource_height := 68.0
-	var resource_right_inset := 16.0
-	var body_gap := 16.0
-	var scrollbar_lane := 14.0
-	if viewport_size.y > 800.0 and viewport_size.y < 1200.0:
-		header_height = 104.0
-		header_inset = Vector2(24.0, 16.0)
-		title_width_ratio = 700.0 / 1472.0
-		title_height = 70.0
-		resource_width_ratio = 544.0 / 1472.0
-		resource_height = 70.0
-		resource_right_inset = 24.0
-		body_gap = 20.0
-		scrollbar_lane = 18.0
-	elif viewport_size.y >= 1200.0:
-		header_height = 112.0
-		header_inset = Vector2(24.0, 16.0)
-		title_width_ratio = 960.0 / 1962.0
-		title_height = 80.0
-		resource_width_ratio = 664.0 / 1962.0
-		resource_height = 80.0
-		resource_right_inset = 24.0
-		body_gap = 24.0
-		scrollbar_lane = 18.0
-
-	var header_rect := Rect2(inner_rect.position, Vector2(inner_rect.size.x, header_height))
-	var title_rect := Rect2(
-		inner_rect.position + header_inset,
-		Vector2(roundf(inner_rect.size.x * title_width_ratio), title_height)
-	)
-	var resource_size := Vector2(roundf(inner_rect.size.x * resource_width_ratio), resource_height)
-	var resource_rect := Rect2(
-		Vector2(inner_rect.end.x - resource_right_inset - resource_size.x, inner_rect.position.y + header_inset.y),
-		resource_size
-	)
-	var scroll_rect := Rect2(
-		Vector2(inner_rect.position.x, header_rect.end.y + body_gap),
-		Vector2(inner_rect.size.x, maxf(1.0, inner_rect.end.y - body_gap - (header_rect.end.y + body_gap)))
-	)
+	var sx := viewport_size.x / 1920.0
+	var sy := viewport_size.y / 1080.0
+	var scale_rect := func(base: Rect2) -> Rect2:
+		return Rect2(Vector2(roundf(base.position.x * sx), roundf(base.position.y * sy)), Vector2(roundf(base.size.x * sx), roundf(base.size.y * sy)))
+	var header_rect: Rect2 = scale_rect.call(Rect2(224,193,1472,88)).intersection(inner_rect)
+	var title_rect: Rect2 = scale_rect.call(Rect2(248,197,700,64)).intersection(inner_rect)
+	var resource_rect: Rect2 = scale_rect.call(Rect2(1128,197,544,64)).intersection(inner_rect)
+	var route_rect: Rect2 = scale_rect.call(Rect2(224,297,1472,590)).intersection(inner_rect)
+	var node_rect: Rect2 = scale_rect.call(Rect2(248,321,1328,500)).intersection(route_rect)
+	var lane_rect: Rect2 = scale_rect.call(Rect2(248,845,1328,18)).intersection(route_rect)
+	var fab_rect: Rect2 = scale_rect.call(Rect2(1600,791,72,72)).intersection(inner_rect)
+	var node_size := clampf(roundf(72.0 * minf(sx, sy)), 56.0, 88.0)
 	return {
 		"safe_rect": safe_rect,
 		"inner_rect": inner_rect,
 		"header_rect": header_rect,
 		"title_rect": title_rect,
 		"resource_rect": resource_rect,
-		"scroll_rect": scroll_rect,
-		"scrollbar_lane": scrollbar_lane,
-		"map_width": maxf(1.0, scroll_rect.size.x - scrollbar_lane),
+		"route_rect": route_rect,
+		"node_viewport_rect": node_rect,
+		"horizontal_lane_rect": lane_rect,
+		"fab_rect": fab_rect,
+		"scroll_rect": Rect2(node_rect.position, Vector2(node_rect.size.x, maxf(node_rect.size.y, lane_rect.end.y - node_rect.position.y))),
+		"node_size": node_size,
+		"boss_size": node_size + maxf(8.0, node_size * 0.2),
 	}
+
+
+func _route_map_layout_from_entry(entry: Dictionary) -> Dictionary:
+	var safe_rect := _route_map_rect(entry["safe"])
+	var inner_rect := _route_map_rect(entry["inner"])
+	var node_rect := _route_map_rect(entry["nodes"])
+	var lane_rect := _route_map_rect(entry["lane"])
+	return {
+		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
+		"header_rect": _route_map_rect(entry["header"]),
+		"title_rect": _route_map_rect(entry["title"]),
+		"resource_rect": _route_map_rect(entry["resources"]),
+		"route_rect": _route_map_rect(entry["route"]),
+		"node_viewport_rect": node_rect,
+		"horizontal_lane_rect": lane_rect,
+		"fab_rect": _route_map_rect(entry["fab"]),
+		"scroll_rect": Rect2(node_rect.position, Vector2(node_rect.size.x, lane_rect.end.y - node_rect.position.y)),
+		"node_size": float(entry["node_size"]),
+		"boss_size": float(entry["boss_size"]),
+	}
+
+
+func _route_map_rect(values: Array) -> Rect2:
+	return Rect2(float(values[0]), float(values[1]), float(values[2]), float(values[3]))
 
 
 func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Control, scroll: ScrollContainer, map_area: Control) -> void:
@@ -302,21 +316,39 @@ func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Co
 	var layout := _route_map_shell_layout(root.size)
 	root.set_meta("scrum981_safe_rect", layout["safe_rect"])
 	root.set_meta("scrum981_inner_rect", layout["inner_rect"])
+	root.set_meta("scrum1057_route_rect", layout["route_rect"])
+	root.set_meta("scrum1057_node_viewport_rect", layout["node_viewport_rect"])
+	root.set_meta("scrum1057_horizontal_lane_rect", layout["horizontal_lane_rect"])
+	root.set_meta("scrum1057_fab_rect", layout["fab_rect"])
 	_apply_route_map_control_rect(header, layout["header_rect"])
 	_apply_route_map_control_rect(title_box, layout["title_rect"])
 	_apply_route_map_control_rect(scroll, layout["scroll_rect"])
 	header.set_meta("scrum981_zone_rect", layout["header_rect"])
 	title_box.set_meta("scrum981_zone_rect", layout["title_rect"])
-	scroll.set_meta("scrum981_zone_rect", layout["scroll_rect"])
-	scroll.set_meta("scrum981_scrollbar_lane", layout["scrollbar_lane"])
+	scroll.set_meta("scrum981_zone_rect", layout["route_rect"])
+	scroll.set_meta("scrum1057_node_viewport_rect", layout["node_viewport_rect"])
+	scroll.set_meta("scrum1057_horizontal_lane_rect", layout["horizontal_lane_rect"])
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.scroll_vertical = 0
+	var vertical_bar := scroll.get_v_scroll_bar()
+	if vertical_bar != null:
+		vertical_bar.visible = false
+		vertical_bar.focus_mode = Control.FOCUS_NONE
+	_style_route_map_horizontal_scrollbar(scroll, float(layout["horizontal_lane_rect"].size.y))
 
-	var expected_canvas_size := _route_map_canvas_size(float(layout["map_width"]))
-	if absf(map_area.custom_minimum_size.x - expected_canvas_size.x) > 1.0:
+	var expected_canvas_size := _route_map_canvas_size(
+		float(layout["node_viewport_rect"].size.x),
+		float(layout["node_viewport_rect"].size.y)
+	)
+	if map_area.custom_minimum_size.distance_to(expected_canvas_size) > 1.0:
 		_rebuild_route_map_canvas(map_area, expected_canvas_size)
 	else:
 		map_area.custom_minimum_size = expected_canvas_size
 		map_area.size = expected_canvas_size
 	_layout_route_map_resource_hud(root, layout["resource_rect"])
+	_layout_route_map_fab(root, layout["fab_rect"])
+	_center_route_map_on_current_row.call_deferred(scroll, expected_canvas_size)
 
 
 func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void:
@@ -337,6 +369,44 @@ func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void
 		resource_zone.position.y + roundf((resource_zone.size.y - visible_size.y) * 0.5)
 	)
 	resource.set_meta("scrum981_zone_rect", resource_zone)
+
+
+func _layout_route_map_fab(root: Control, fab_zone: Rect2) -> void:
+	if root == null or game.level_up_button == null or not is_instance_valid(game.level_up_button):
+		return
+	var button := game.level_up_button as Button
+	button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	button.scale = Vector2.ONE
+	button.pivot_offset = Vector2.ZERO
+	button.position = fab_zone.position
+	button.custom_minimum_size = fab_zone.size
+	button.size = fab_zone.size
+	button.set_meta("gold_shell_socket_rect", fab_zone)
+	button.set_meta("scrum1057_fab_rect", fab_zone)
+
+
+func _style_route_map_horizontal_scrollbar(scroll: ScrollContainer, lane_height: float) -> void:
+	var scrollbar := scroll.get_h_scroll_bar()
+	if scrollbar == null:
+		return
+	scrollbar.custom_minimum_size.y = lane_height
+	scrollbar.focus_mode = Control.FOCUS_NONE
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.055, 0.046, 0.038, 0.94)
+	track.border_color = Color(0.40, 0.30, 0.17, 0.90)
+	track.set_border_width_all(1)
+	track.set_corner_radius_all(maxi(2, int(roundf(lane_height * 0.25))))
+	var grabber := StyleBoxFlat.new()
+	grabber.bg_color = Color(0.62, 0.45, 0.22, 0.98)
+	grabber.border_color = Color(0.90, 0.72, 0.36, 1.0)
+	grabber.set_border_width_all(1)
+	grabber.set_corner_radius_all(maxi(2, int(roundf(lane_height * 0.25))))
+	var grabber_highlight: StyleBoxFlat = grabber.duplicate()
+	grabber_highlight.bg_color = Color(0.78, 0.61, 0.31, 1.0)
+	scrollbar.add_theme_stylebox_override("scroll", track)
+	scrollbar.add_theme_stylebox_override("grabber", grabber)
+	scrollbar.add_theme_stylebox_override("grabber_highlight", grabber_highlight)
+	scrollbar.add_theme_stylebox_override("grabber_pressed", grabber_highlight)
 
 
 func _apply_route_map_control_rect(control: Control, rect: Rect2) -> void:
@@ -372,18 +442,20 @@ func _random_battle_node_name(index: int) -> String:
 	return "Battle %d: %s" % [index + 1, names[game.rng.randi_range(0, names.size() - 1)]]
 
 
-func _route_map_canvas_size(available_width := -1.0) -> Vector2:
-	# Ширина подгоняется под экран, чтобы горизонтальный скролл не появлялся;
-	# высота растет с количеством рядов маршрута.
-	var viewport_width: float = game.get_viewport().get_visible_rect().size.x
-	var legacy_width: float = viewport_width - game.ROUTE_MAP_SCREEN_MARGIN * 2.0 - 16.0
-	var minimum_route_width: float = game.ROUTE_MAP_PADDING.x * 2.0 + game.MAP_NODE_SIZE.x * 3.0 + 48.0
-	var requested_width: float = available_width if available_width > 0.0 else legacy_width
-	var width: float = maxf(requested_width, minimum_route_width)
-	var row_count: int = maxi(game.route_nodes.size(), game.ROUTE_STEPS_TO_BOSS + 1)
-	var row_gap := 165.0
-	var height: float = game.ROUTE_MAP_PADDING.y * 2.0 + game.MAP_NODE_SIZE.y + row_gap * float(row_count - 1)
-	return Vector2(width, height)
+func _route_map_canvas_size(available_width := -1.0, available_height := -1.0) -> Vector2:
+	# SCRUM-1057: columns advance on X. Eight authored columns fit without
+	# scrolling; longer runtime routes grow the canvas and use only the bottom
+	# horizontal lane. Height always fits the declared node viewport.
+	var layout := _route_map_shell_layout(game.get_viewport().get_visible_rect().size)
+	var requested_width: float = available_width if available_width > 0.0 else float(layout["node_viewport_rect"].size.x)
+	var requested_height: float = available_height if available_height > 0.0 else float(layout["node_viewport_rect"].size.y)
+	var column_count: int = maxi(game.route_nodes.size(), game.ROUTE_STEPS_TO_BOSS + 1)
+	var node_size := float(layout["node_size"])
+	var padding_x := maxf(24.0, roundf(node_size * 0.7))
+	var authored_gaps := maxi(ROUTE_HORIZONTAL_VISIBLE_COLUMNS - 1, 1)
+	var column_gap := maxf(node_size + 24.0, (requested_width - padding_x * 2.0 - node_size) / float(authored_gaps))
+	var width := maxf(requested_width, padding_x * 2.0 + node_size + column_gap * float(maxi(column_count - 1, 0)))
+	return Vector2(ceilf(width), maxf(1.0, requested_height))
 
 
 func _node_pool_for_step(step_index: int) -> Array:
@@ -670,18 +742,30 @@ func _random_route_node_name(index: int, node_type: String) -> String:
 
 func _map_node_positions(map_size: Vector2) -> Array:
 	var positions := []
-	var row_count = game.route_nodes.size()
-	var usable_height: float = max(map_size.y - game.MAP_NODE_SIZE.y - game.ROUTE_MAP_PADDING.y * 2.0, game.MAP_NODE_SIZE.y)
-	var vertical_gap := usable_height / float(max(row_count - 1, 1))
-	for step_index in range(row_count):
+	var column_count: int = game.route_nodes.size()
+	var layout := _route_map_shell_layout(game.get_viewport().get_visible_rect().size)
+	var normal_size := float(layout["node_size"])
+	var boss_size := float(layout["boss_size"])
+	var padding_x := maxf(24.0, roundf(normal_size * 0.7))
+	var usable_width := maxf(1.0, map_size.x - padding_x * 2.0 - normal_size)
+	var horizontal_gap := usable_width / float(maxi(column_count - 1, 1))
+	for step_index in range(column_count):
 		var step_positions := []
 		var branch_count: int = game.route_nodes[step_index].size()
-		var horizontal_gap = (map_size.x - game.ROUTE_MAP_PADDING.x * 2.0) / float(branch_count + 1)
-		var y_position = map_size.y - game.ROUTE_MAP_PADDING.y - game.MAP_NODE_SIZE.y - vertical_gap * float(step_index)
+		var node_size := boss_size if step_index == column_count - 1 else normal_size
+		var x_position := padding_x + horizontal_gap * float(step_index)
+		if step_index == column_count - 1:
+			x_position -= (boss_size - normal_size) * 0.5
+		var minimum_gap := maxf(4.0, roundf(node_size * 0.08))
+		var required_height := node_size * float(branch_count) + minimum_gap * float(maxi(branch_count - 1, 0))
+		var padding_y := maxf(8.0, roundf((map_size.y - required_height) * 0.5))
+		var branch_gap := 0.0
+		if branch_count > 1:
+			branch_gap = maxf(minimum_gap, (map_size.y - padding_y * 2.0 - node_size * float(branch_count)) / float(branch_count - 1))
 		for branch_index in range(branch_count):
 			step_positions.append(Vector2(
-				game.ROUTE_MAP_PADDING.x + horizontal_gap * float(branch_index + 1) - game.MAP_NODE_SIZE.x * 0.5,
-				y_position
+				x_position,
+				padding_y + float(branch_index) * (node_size + branch_gap)
 			))
 		positions.append(step_positions)
 	return positions
@@ -697,11 +781,12 @@ func _center_route_map_on_current_row(scroll: ScrollContainer, map_size: Vector2
 	var active_step = clampi(game.route_stage, 0, node_positions.size() - 1)
 	if node_positions[active_step].is_empty():
 		return
-	var row_center_y = float(node_positions[active_step][0].y) + game.MAP_NODE_SIZE.y * 0.5
-	var focus_ratio := 0.78 if active_step == 0 else 0.64
-	var target_y := maxi(0, int(row_center_y - scroll.size.y * focus_ratio))
-	scroll.scroll_vertical = target_y
-	scroll.scroll_horizontal = 0
+	var node_size := _route_map_node_size_for_step(active_step)
+	var column_center_x := float(node_positions[active_step][0].x) + node_size.x * 0.5
+	var focus_ratio := 0.22 if active_step == 0 else 0.5
+	var target_x := maxi(0, int(column_center_x - scroll.size.x * focus_ratio))
+	scroll.scroll_horizontal = target_x
+	scroll.scroll_vertical = 0
 
 
 func _handle_route_map_pan_input(scroll: ScrollContainer, event: InputEvent) -> void:
@@ -709,6 +794,8 @@ func _handle_route_map_pan_input(scroll: ScrollContainer, event: InputEvent) -> 
 		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
+		if _handle_route_map_wheel(scroll, mouse_event):
+			return
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			game.route_map_pan_active = mouse_event.pressed
 			game.route_map_pan_last_position = mouse_event.position
@@ -723,7 +810,27 @@ func _pan_route_map_scroll(scroll: ScrollContainer, drag_delta: Vector2) -> void
 	game.route_map_drag_distance += drag_delta.length()
 	if game.route_map_drag_distance > game.ROUTE_MAP_DRAG_THRESHOLD:
 		game.route_map_drag_suppressed_click = true
-	scroll.scroll_vertical = maxi(0, scroll.scroll_vertical - int(drag_delta.y))
+	scroll.scroll_horizontal = maxi(0, scroll.scroll_horizontal - int(drag_delta.x))
+	scroll.scroll_vertical = 0
+
+
+func _handle_route_map_wheel(scroll: ScrollContainer, event: InputEventMouseButton) -> bool:
+	if not event.pressed or event.button_index not in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+		return false
+	var direction := -1
+	if event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_RIGHT]:
+		direction = 1
+	var amount := maxi(32, int(roundf(72.0 * maxf(event.factor, 1.0))))
+	scroll.scroll_horizontal = maxi(0, scroll.scroll_horizontal + direction * amount)
+	scroll.scroll_vertical = 0
+	return true
+
+
+func _route_map_node_size_for_step(step_index: int) -> Vector2:
+	var layout := _route_map_shell_layout(game.get_viewport().get_visible_rect().size)
+	var is_boss: bool = step_index == game.route_nodes.size() - 1
+	var side := float(layout["boss_size"] if is_boss else layout["node_size"])
+	return Vector2(side, side)
 
 
 func _draw_map_connections(map_area: Control, node_positions: Array) -> void:
@@ -733,13 +840,14 @@ func _draw_map_connections(map_area: Control, node_positions: Array) -> void:
 				var to_branch := int(to_index)
 				if to_branch < 0 or to_branch >= node_positions[step_index + 1].size():
 					continue
-				var from_position: Vector2 = node_positions[step_index][from_index] + game.MAP_NODE_SIZE * 0.5
-				var to_position: Vector2 = node_positions[step_index + 1][to_branch] + game.MAP_NODE_SIZE * 0.5
+				var from_position: Vector2 = node_positions[step_index][from_index] + _route_map_node_size_for_step(step_index) * 0.5
+				var to_position: Vector2 = node_positions[step_index + 1][to_branch] + _route_map_node_size_for_step(step_index + 1) * 0.5
 				var active := _is_route_connection_active(step_index, from_index, to_branch)
 				_add_map_line(map_area, from_position, to_position, active)
 
 
 func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
+	var focusable_buttons: Array[Button] = []
 	for step_index in range(game.route_nodes.size()):
 		for branch_index in range(game.route_nodes[step_index].size()):
 			var route_node: Dictionary = game.route_nodes[step_index][branch_index]
@@ -754,10 +862,13 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 			button.tooltip_text = _node_preview_tooltip(route_node, definition)
 			if state == "shop_revisit":
 				button.tooltip_text += "\nПосещено — можно вернуться"
-			button.custom_minimum_size = game.MAP_NODE_SIZE
-			button.size = game.MAP_NODE_SIZE
+			var authored_node_size := _route_map_node_size_for_step(step_index)
+			button.custom_minimum_size = authored_node_size
+			button.size = authored_node_size
 			button.position = node_positions[step_index][branch_index]
 			button.disabled = not is_clickable
+			button.set_meta("route_step", step_index)
+			button.set_meta("route_branch", branch_index)
 			# SCRUM-812: доступные ноды фокусируемы под геймпад/стрелки; недоступные
 			# (locked/completed) остаются FOCUS_NONE — фокус-навигация их пропускает.
 			button.focus_mode = Control.FOCUS_ALL if is_clickable else Control.FOCUS_NONE
@@ -786,12 +897,67 @@ func _draw_route_nodes(map_area: Control, node_positions: Array) -> void:
 					_on_route_node_activate(step_index, branch_index, route_node)
 				)
 				# Стартовый фокус — доступный нод текущего ряда (первый), иначе первый доступный.
-				button.set_meta("route_step", step_index)
+				focusable_buttons.append(button)
 				if _route_focus_target == null:
 					_route_focus_target = button
 				elif step_index == int(game.route_stage) and int(_route_focus_target.get_meta("route_step", -1)) != int(game.route_stage):
 					_route_focus_target = button
 			map_area.add_child(button)
+	_configure_horizontal_route_focus(focusable_buttons, map_area.get_parent() as ScrollContainer)
+
+
+func _configure_horizontal_route_focus(buttons: Array[Button], scroll: ScrollContainer) -> void:
+	for button in buttons:
+		button.focus_entered.connect(func() -> void:
+			_ensure_route_node_visible(scroll, button)
+		)
+		var step := int(button.get_meta("route_step", -1))
+		var branch := int(button.get_meta("route_branch", -1))
+		var same_column: Array[Button] = []
+		for candidate in buttons:
+			if int(candidate.get_meta("route_step", -1)) == step:
+				same_column.append(candidate)
+		same_column.sort_custom(func(a: Button, b: Button) -> bool:
+			return int(a.get_meta("route_branch", -1)) < int(b.get_meta("route_branch", -1))
+		)
+		var local_index := same_column.find(button)
+		if local_index > 0:
+			button.focus_neighbor_top = button.get_path_to(same_column[local_index - 1])
+		if local_index >= 0 and local_index + 1 < same_column.size():
+			button.focus_neighbor_bottom = button.get_path_to(same_column[local_index + 1])
+		var left := _nearest_route_focus_button(buttons, step, branch, -1)
+		var right := _nearest_route_focus_button(buttons, step, branch, 1)
+		if left != null:
+			button.focus_neighbor_left = button.get_path_to(left)
+		if right != null:
+			button.focus_neighbor_right = button.get_path_to(right)
+
+
+func _nearest_route_focus_button(buttons: Array[Button], step: int, branch: int, direction: int) -> Button:
+	var target_step := step + direction
+	while target_step >= 0 and target_step < game.route_nodes.size():
+		var candidates: Array[Button] = []
+		for candidate in buttons:
+			if int(candidate.get_meta("route_step", -1)) == target_step:
+				candidates.append(candidate)
+		if not candidates.is_empty():
+			var best := candidates[0]
+			var best_distance := absi(int(best.get_meta("route_branch", 0)) - branch)
+			for candidate in candidates:
+				var distance := absi(int(candidate.get_meta("route_branch", 0)) - branch)
+				if distance < best_distance:
+					best = candidate
+					best_distance = distance
+			return best
+		target_step += direction
+	return null
+
+
+func _ensure_route_node_visible(scroll: ScrollContainer, button: Control) -> void:
+	if scroll == null or not is_instance_valid(scroll) or button == null or not is_instance_valid(button):
+		return
+	scroll.ensure_control_visible(button)
+	scroll.scroll_vertical = 0
 
 
 # --- SCRUM-499: детерминированное превью узла в тултипе ---
@@ -934,6 +1100,9 @@ func _handle_route_node_input(button: Button, event: InputEvent, scroll: ScrollC
 		return
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
+		if _handle_route_map_wheel(scroll, mouse_event):
+			button.accept_event()
+			return
 		if mouse_event.button_index != MOUSE_BUTTON_LEFT:
 			return
 		if mouse_event.pressed:

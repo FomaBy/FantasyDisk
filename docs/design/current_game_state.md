@@ -57,7 +57,7 @@ Domain docs для подробностей по областям:
 2. Настройки видео и управления, если игрок их открывает.
 3. Выбор персонажа.
 4. Выбор оружия выбранного персонажа.
-5. Генерация вертикальной маршрутной карты текущего акта.
+5. Генерация горизонтальной маршрутной карты текущего акта.
 6. Выбор узла маршрута.
 7. Бой или небоевой экран узла.
 8. Получение опыта, денег, наград и артефактов.
@@ -476,11 +476,22 @@ SCRUM-277 добавил weapon integrity gate для всего ростера:
 
 ## Маршрутная Карта
 
-Маршрутная карта вертикальная. Акт состоит из 8 рядов активностей и финального ряда босса (`ROUTE_STEPS_TO_BOSS = 8`). Первые два selectable ряда после старта маршрута всегда состоят только из обычных `battle` узлов, чтобы забег начинался с базового боевого темпа, XP и золота. Начиная с третьего selectable ряда пулы типов узлов зависят от фазы акта: ранние ряды — бои с редкими событиями/магазином, середина — смешанный пул, последние ряды перед боссом — больше элиток, а предпоследний ряд дает подготовку (костер/магазин).
+Маршрутная карта горизонтальная: SCRUM-1057/1079 разворачивает step-колонки
+слева направо, со start слева и boss справа; ветки одного step разнесены по Y
+без пересечения hitbox-ов. Акт состоит из 8 рядов активностей и финального ряда
+босса (`ROUTE_STEPS_TO_BOSS = 8`). Первые два selectable ряда всегда состоят только из `battle`
+узлов; дальнейшие пулы типов по-прежнему зависят от фазы акта.
 
-Карта открывается отдельным full-screen экраном, а не маленьким виджетом внутри menu panel. Основной canvas `VerticalRouteMap` находится в большом `ScrollContainer`, который занимает почти весь экран под верхней статусной полосой. Горизонтальный скролл отключен: ширина канвы подгоняется под экран (`_route_map_canvas_size`), скролл и pan работают только по вертикали. Высота канвы растет с количеством рядов (~165px на ряд). Карта доступна целиком на 1600x900 и 2560x1440.
+Карта открывается отдельным full-screen экраном. Legacy-имя canvas
+`VerticalRouteMap` сохранено для tooling compatibility, но metadata публикует
+`route_orientation=horizontal`. Canvas по высоте равен authored node viewport, а по
+ширине растёт с числом колонок. `RouteMapScroll` использует horizontal auto-scroll;
+vertical scrollbar скрыт/отключён, `scroll_vertical=0`.
 
-При открытии карты UI автоматически прокручивается к текущему доступному ряду: на старте забега нижний стартовый ряд виден сразу, а выше видно следующие развилки для планирования маршрута. Пустую область карты и сами узлы можно перетаскивать зажатой левой кнопкой мыши для панорамирования. Если движение мыши превышает drag threshold, клик по узлу подавляется и encounter не стартует случайно.
+При open/return/live resize UI возвращает текущую доступную колонку в видимую
+область. Drag и wheel/trackpad над картой двигают только horizontal offset. Если
+движение мыши превышает drag threshold, клик по узлу подавляется и encounter не
+стартует случайно.
 
 Линии маршрута тонкие и декоративные. Они игнорируют мышь, как и иконки внутри узлов, поэтому hover tooltip и клики по узлам работают после скролла/pan. На route screen компактный HP/XP/money HUD находится в том же UI-слое, чтобы отдельный fullscreen HUD CanvasLayer не перекрывал карту и не перехватывал клики.
 
@@ -1777,7 +1788,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
 | Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe structured dossier SCRUM-1064 (trait → имя → 3 оружия → top-3 BASE_STATS → primary/secondary/weak без прозы/тримминга) + фиксированные 8 stat Line Bars; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
-| Карта маршрута | SCRUM-981: вертикальная карта внутри общей полой gold shell; header/title, боевой resource HUD, scroll/canvas, отдельная scrollbar lane и FAB находятся в точных safe-зонах, горизонтальный scroll отключён |
+| Карта маршрута | SCRUM-1057/1079: horizontal left-to-right карта внутри общей полой gold shell; header/title, боевой resource HUD, node viewport, bottom horizontal lane и pending-level FAB находятся в точных five-target safe-зонах; vertical scroll отключён |
 | Боевой HUD | SCRUM-390 ресурсная панель: HP, XP, деньги, ULT, таймер/бейдж Возвышения и ряд артефактов с no-overlap layout |
 | Level-up | Экран выбора 1 из 3 наград с частицами, advisor-акцентом и отложенным выбором через нижнюю кнопку; SCRUM-985 убирает крупную внешнюю раму, оставляет яркий arcane-lab фон и локальные карточки/сокеты, а reward icon строго удерживает внутри socket safe-zone; visible formula-driven effect-preview и полноразмерная кликабельная карточка сохранены |
 | Награда за бой / элитку | Обычная Battle Reward страница получила SCRUM-981 outer gold shell и compact 720–900p card tier; три локальные карточки остаются полностью кликабельными внутри body safe-zone. Elite/boss reward variants сохраняют собственные child-task contracts |

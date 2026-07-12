@@ -1,8 +1,8 @@
 extends SceneTree
 
-# SCRUM-981 focused gate for the Route Map half of the unified gold menu shell.
-# It verifies the authored 1280/1920/2560 matrix, the hollow meta40 frame, and
-# the hard rule that every route interaction remains inside the empty frame zone.
+# SCRUM-981 gold-shell regression + SCRUM-1057 horizontal Route Map matrix.
+# It verifies all accepted responsive targets, the hollow meta40 frame, and the
+# hard rule that every route interaction remains inside the empty frame zone.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const FRAME_PATH_SUFFIX := "meta40/frame_border.png"
@@ -12,37 +12,36 @@ const MATRIX := {
 		"viewport": Vector2i(1280, 720),
 		"safe": Rect2(133, 113, 1014, 494),
 		"inner": Rect2(157, 137, 966, 446),
-		"header": Rect2(157, 137, 966, 92),
-		"title": Rect2(173, 149, 520, 68),
-		"resources": Rect2(731, 149, 376, 68),
-		"scroll": Rect2(157, 245, 966, 322),
-		"scrollbar_lane": 14.0,
+		"header": Rect2(157,137,966,80), "title": Rect2(173,141,450,58),
+		"resources": Rect2(731,141,376,58), "route": Rect2(157,229,966,354),
+		"nodes": Rect2(175,249,834,286), "lane": Rect2(175,549,834,14),
+		"scroll": Rect2(175,249,834,314), "node_size": 60.0,
 	},
 	"1920x1080": {
 		"viewport": Vector2i(1920, 1080),
 		"safe": Rect2(200, 169, 1520, 742),
 		"inner": Rect2(224, 193, 1472, 694),
-		"header": Rect2(224, 193, 1472, 104),
-		"title": Rect2(248, 209, 700, 70),
-		"resources": Rect2(1128, 209, 544, 70),
-		"scroll": Rect2(224, 317, 1472, 550),
-		"scrollbar_lane": 18.0,
+		"header": Rect2(224,193,1472,88), "title": Rect2(248,197,700,64),
+		"resources": Rect2(1128,197,544,64), "route": Rect2(224,297,1472,590),
+		"nodes": Rect2(248,321,1328,500), "lane": Rect2(248,845,1328,18),
+		"scroll": Rect2(248,321,1328,542), "node_size": 72.0,
 	},
 	"2560x1440": {
 		"viewport": Vector2i(2560, 1440),
 		"safe": Rect2(267, 225, 2026, 990),
 		"inner": Rect2(299, 257, 1962, 926),
-		"header": Rect2(299, 257, 1962, 112),
-		"title": Rect2(323, 273, 960, 80),
-		"resources": Rect2(1573, 273, 664, 80),
-		"scroll": Rect2(299, 393, 1962, 766),
-		"scrollbar_lane": 18.0,
+		"header": Rect2(299,257,1962,104), "title": Rect2(331,263,940,80),
+		"resources": Rect2(1557,263,672,80), "route": Rect2(299,385,1962,798),
+		"nodes": Rect2(331,417,1786,694), "lane": Rect2(331,1139,1786,20),
+		"scroll": Rect2(331,417,1786,742), "node_size": 88.0,
 	},
+	"1152x648": {"viewport": Vector2i(1152,648), "safe": Rect2(120,101,912,446), "inner": Rect2(140,121,872,406), "header": Rect2(140,121,872,76), "title": Rect2(154,125,416,54), "resources": Rect2(666,125,332,54), "route": Rect2(140,209,872,318), "nodes": Rect2(158,227,740,258), "lane": Rect2(158,497,740,14), "scroll": Rect2(158,227,740,284), "node_size": 56.0},
+	"1600x900": {"viewport": Vector2i(1600,900), "safe": Rect2(167,141,1266,618), "inner": Rect2(191,165,1218,570), "header": Rect2(191,165,1218,84), "title": Rect2(211,169,580,62), "resources": Rect2(965,169,424,62), "route": Rect2(191,265,1218,470), "nodes": Rect2(215,289,1074,392), "lane": Rect2(215,701,1074,16), "scroll": Rect2(215,289,1074,428), "node_size": 68.0},
 }
 
 
 func _initialize() -> void:
-	for key in ["1280x720", "1920x1080", "2560x1440"]:
+	for key in ["1152x648", "1280x720", "1600x900", "1920x1080", "2560x1440"]:
 		if not await _check_matrix_entry(key, MATRIX[key]):
 			return
 	print("[SCRUM-981 Route Map gold shell] PASSED")
@@ -102,6 +101,12 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		return _fail("%s: title/progress rect drifted: %s vs %s." % [context, title.get_global_rect(), expected["title"]])
 	if not _rect_near(scroll.get_global_rect(), expected["scroll"]):
 		return _fail("%s: scroll rect drifted: %s vs %s." % [context, scroll.get_global_rect(), expected["scroll"]])
+	if not _rect_near(screen.get_meta("scrum1057_route_rect", Rect2()), expected["route"]):
+		return _fail("%s: authored route body drifted." % context)
+	if not _rect_near(screen.get_meta("scrum1057_node_viewport_rect", Rect2()), expected["nodes"]):
+		return _fail("%s: authored node viewport drifted." % context)
+	if not _rect_near(screen.get_meta("scrum1057_horizontal_lane_rect", Rect2()), expected["lane"]):
+		return _fail("%s: authored horizontal lane drifted." % context)
 
 	var inner_rect: Rect2 = expected["inner"]
 	var resource_zone: Rect2 = expected["resources"]
@@ -125,14 +130,14 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		if typed_label != null and not _encloses_with_epsilon(expected["title"], typed_label.get_global_rect()):
 			return _fail("%s: label %s overflows title/progress zone: %s." % [context, typed_label.name, typed_label.get_global_rect()])
 
-	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
-		return _fail("%s: horizontal route scrolling must stay disabled." % context)
-	var expected_scroll: Rect2 = expected["scroll"]
-	var max_canvas_width: float = expected_scroll.size.x - float(expected["scrollbar_lane"])
-	if map_area.custom_minimum_size.x > max_canvas_width + EPSILON:
-		return _fail("%s: map canvas enters the reserved scrollbar lane: %.1f > %.1f." % [context, map_area.custom_minimum_size.x, max_canvas_width])
-	if scroll.scroll_horizontal != 0:
-		return _fail("%s: horizontal route offset must remain zero." % context)
+	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_AUTO:
+		return _fail("%s: horizontal route scrolling must be automatic." % context)
+	if scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or scroll.scroll_vertical != 0:
+		return _fail("%s: vertical scrolling must be disabled and pinned to zero." % context)
+	if map_area.custom_minimum_size.x <= expected["nodes"].size.x + EPSILON:
+		return _fail("%s: long route canvas must overflow horizontally." % context)
+	if absf(map_area.custom_minimum_size.y - expected["nodes"].size.y) > EPSILON:
+		return _fail("%s: route canvas height must match the node viewport." % context)
 
 	var route_button_count := 0
 	for child in map_area.get_children():
@@ -144,6 +149,8 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		var canvas_rect := Rect2(Vector2.ZERO, map_area.custom_minimum_size)
 		if not _encloses_with_epsilon(canvas_rect, local_rect):
 			return _fail("%s: route node %s leaves the clipped map canvas: %s." % [context, button.name, local_rect])
+		if not str(button.name).contains("_boss_") and absf(button.size.x - float(expected["node_size"])) > EPSILON:
+			return _fail("%s: normal route node size drifted: %s." % [context, str(button.size)])
 		var visible_part := button.get_global_rect().intersection(scroll.get_global_rect())
 		if visible_part.size.x > 0.0 and visible_part.size.y > 0.0 and not _encloses_with_epsilon(expected["scroll"], visible_part):
 			return _fail("%s: visible hitbox %s leaves the route scroll safe zone." % [context, button.name])

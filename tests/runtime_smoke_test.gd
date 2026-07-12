@@ -218,18 +218,19 @@ func _initialize() -> void:
 	if route_map == null:
 		_fail("Expected route map scroll area to contain the map canvas.")
 		return
-	# Высота canvas (route_map_screen.gd): ROUTE_MAP_PADDING.y*2(144) + MAP_NODE_SIZE.y(88)
-	# + row_gap(165)*(row_count-1), row_count = ROUTE_STEPS_TO_BOSS+1. SCRUM-786: завязано на
-	# число нодов, иначе при 8 рядах порог 1700 даёт ложный fail (фактическая высота ~1552).
-	var expected_min_canvas_height := 144.0 + 88.0 + 165.0 * float(EXPECTED_ROUTE_STEPS_TO_BOSS)
-	if route_map.custom_minimum_size.y < expected_min_canvas_height - 1.0:
-		_fail("Expected route map canvas to be tall enough for %d activity rows plus the boss row." % EXPECTED_ROUTE_STEPS_TO_BOSS)
+	# SCRUM-1079: route columns advance left-to-right; the canvas height fits the
+	# declared node viewport and width exceeds it for the full runtime route.
+	if route_map.custom_minimum_size.y <= 0.0 or route_map.custom_minimum_size.y > route_scroll.size.y + 1.0:
+		_fail("Expected horizontal route canvas height to fit the node viewport.")
 		return
-	if route_map.custom_minimum_size.x < 900.0 or route_map.custom_minimum_size.x > route_scroll.size.x + 1.0:
-		_fail("Expected route map canvas width to fit the screen without horizontal scrolling.")
+	if route_map.custom_minimum_size.x <= route_scroll.size.x + 1.0:
+		_fail("Expected full route canvas to overflow into horizontal scrolling.")
 		return
-	if route_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
-		_fail("Expected route map horizontal scrolling to be disabled.")
+	if route_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_AUTO:
+		_fail("Expected route map horizontal scrolling to be automatic.")
+		return
+	if route_scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or route_scroll.scroll_vertical != 0:
+		_fail("Expected route map vertical scrolling to stay disabled at zero.")
 		return
 	if main.find_child("RouteNodeIcon", true, false) == null:
 		_fail("Expected rendered route map nodes to include TextureRect icons.")
@@ -2085,7 +2086,7 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 	var start_route_node: Dictionary = route_nodes[0][battle_index]
 	var start_scroll_position := Vector2(route_scroll.scroll_horizontal, route_scroll.scroll_vertical)
 	_send_route_node_mouse_press(route_main, start_button, route_scroll, battle_index, start_route_node)
-	_send_route_node_mouse_drag(route_main, start_button, route_scroll, battle_index, start_route_node, Vector2(0.0, -96.0))
+	_send_route_node_mouse_drag(route_main, start_button, route_scroll, battle_index, start_route_node, Vector2(-96.0, 0.0))
 	_send_route_node_mouse_release(route_main, start_button, route_scroll, battle_index, start_route_node)
 	await process_frame
 	var selected_indices: Array = route_main.get("route_selected_indices")

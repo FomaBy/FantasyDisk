@@ -1,9 +1,9 @@
 # Задача Для Back-end-Агента: Горизонтальная Route Map По SCRUM-1057 Spec
 
-Статус: new
+Статус: review
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Back-end/Codex
+Thread: /root/scrum1079_route_backend
 Locked paths при claim: `scripts/route_map_screen.gd`; focused Route Map geometry/gold-shell/no-overlap/gamepad/runtime test hunks; Route Map sections of `docs/design/systems/menus_ui.md` and `docs/design/current_game_state.md`; this mirror
 Jira: SCRUM-1079
 Parent Jira: SCRUM-1057
@@ -47,3 +47,38 @@ Design/UI Director phase SCRUM-1057 подготовил PixelLab-generated го
 ## Документация
 
 Back-end обновляет `docs/design/systems/menus_ui.md`, `docs/design/current_game_state.md` и при необходимости focused task evidence. Design source package меняется только если implementation докажет необходимость deviation; тогда сначала обновить spec и причину.
+
+## Результат Back-end (2026-07-12)
+
+- `scripts/route_map_screen.gd` переведён на left-to-right step columns,
+  горизонтальные canvas/pan/wheel/focus-follow и жёсткий
+  `vertical_scroll_mode=DISABLED`, `scroll_vertical=0`.
+- Пять exact responsive matrices из SCRUM-1057 управляют header,
+  title/progress, resource HUD, route body, node viewport, horizontal lane и FAB.
+- Node sizes: `56/60/68/72/88`; boss: `64/68/76/88/104`. Y-packing
+  гарантирует node+gap без пересечения даже для 4 веток @1152×648.
+- Exact-center lines остаются под нодами и `MOUSE_FILTER_IGNORE`;
+  Left/Right ищут ближайшую focusable column, Up/Down ходят по веткам.
+- Legacy node name `VerticalRouteMap` сохранён только для обратной
+  совместимости tests/tooling; runtime metadata публикует
+  `route_orientation=horizontal`.
+- Metal screenshot matrix visually inspected after correcting compact-column
+  packing: `docs/design/previews/scrum1079_route_map_horizontal_runtime/`.
+
+### Verification
+
+- `tests/scrum1079_route_map_horizontal_test.gd`: PASS, all five targets.
+- `tests/scrum981_route_map_gold_shell_test.gd`: PASS, updated five-target shell gate.
+- `tests/ui_no_overlap_matrix_test.gd`: PASS.
+- `tests/gamepad_inrun_ui_test.gd`: PASS.
+- `tests/route_node_threat_badge_test.gd`: PASS.
+- `tests/runtime_smoke_ui_test.gd`: PASS (known headless dummy-texture capture
+  warning remains non-fatal and outside Route Map).
+- `tests/runtime_smoke_test.gd`: PASS after fresh `origin/dev` rebase.
+- `git diff --check`: PASS.
+
+Commit/push: the commit containing this report is pushed directly to
+`origin/dev`; exact SHA is recorded in the Jira result comment.
+
+Disk cleanup: generated `.uid` sidecars and isolated HOME directories removed;
+disposable worktree and `.godot` cache are removed after push/Jira bookkeeping.

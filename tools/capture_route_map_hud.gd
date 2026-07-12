@@ -1,37 +1,47 @@
 extends SceneTree
 
-## SCRUM-876: скрин карты маршрута с единым боевым ресурс-кластером.
-## Run (windowed): Godot --path . --script res://tools/capture_route_map_hud.gd
-## Output: build/qa/scrum876/route_map_hud_1920x1080.png
+## SCRUM-1079: five-target screenshot matrix for the horizontal Route Map.
+## Run (windowed): python3 tools/godot_gate.py --path . --script res://tools/capture_route_map_hud.gd
+## Output: docs/design/previews/scrum1079_route_map_horizontal_runtime/
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const TARGETS := [
+	Vector2i(1152,648), Vector2i(1280,720), Vector2i(1600,900),
+	Vector2i(1920,1080), Vector2i(2560,1440),
+]
 
 
 func _initialize() -> void:
-	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum876")
+	var qa_dir := ProjectSettings.globalize_path("res://docs/design/previews/scrum1079_route_map_horizontal_runtime")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
-	var viewport := SubViewport.new()
-	viewport.size = Vector2i(1920, 1080)
-	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	root.add_child(viewport)
-	await process_frame
-
-	var main := MAIN_SCENE.instantiate()
-	viewport.add_child(main)
-	await process_frame
-	main.set("selected_character_id", "berserk")
-	main.set("selected_weapon_id", "sword")
-	main.set("route_stage", 0)
-	main.set("route_nodes", main.route._generate_route())
-	main.route._show_battle_map()
-	for _i in range(20):
+	for target in TARGETS:
+		var viewport := SubViewport.new()
+		viewport.size = target
+		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		root.add_child(viewport)
 		await process_frame
-
-	if DisplayServer.get_name() != "headless":
+		var main := MAIN_SCENE.instantiate()
+		viewport.add_child(main)
+		await process_frame
+		main.set("selected_character_id", "berserk")
+		main.set("selected_weapon_id", "sword")
+		main.set("route_stage", 0)
+		main.set("route_nodes", main.route._generate_route())
+		main.route._show_battle_map()
+		for _i in range(12):
+			await process_frame
 		var image := viewport.get_texture().get_image()
-		if image != null:
-			image.save_png("%s/route_map_hud_1920x1080.png" % qa_dir)
-	var hud := main.find_child("RunResourceHud", true, false) as PanelContainer
-	print("RunResourceHud rect: ", hud.get_global_rect() if hud != null else "MISSING")
-	print("Route map HUD capture done.")
+		if image == null or image.is_empty():
+			push_error("SCRUM-1079 capture failed for %s" % str(target))
+			quit(1)
+			return
+		var output := "%s/route_map_horizontal_%dx%d.png" % [qa_dir, target.x, target.y]
+		if image.save_png(output) != OK:
+			push_error("SCRUM-1079 could not write %s" % output)
+			quit(1)
+			return
+		print("Saved ", output)
+		viewport.queue_free()
+		await process_frame
+	print("SCRUM-1079 Route Map screenshot matrix complete.")
 	quit(0)

@@ -1,16 +1,20 @@
 # Route Map
 
-Обновлено: 2026-06-28
+Обновлено: 2026-07-12
 
 Route map — full-screen экран выбора пути между боями. Реализация: `scripts/route_map_screen.gd`, делегирующие методы в `scripts/main.gd`.
 
 ## Layout
 
 - Карта открывается во весь экран, не в маленькой panel.
-- `RouteMapScroll` занимает почти весь viewport.
-- Карта вертикальная: игрок движется снизу вверх к boss node.
-- Текущий доступный ряд автоматически фокусируется при открытии.
-- Игрок сразу видит несколько будущих рядов для планирования.
+- SCRUM-1057/1079: карта горизонтальная — start-колонка слева, boss справа,
+  X строго растёт с каждым step, а ветки step разнесены по Y.
+- `RouteMapScroll` использует только horizontal auto-scroll в нижней authored
+  lane; vertical scrollbar отключён и `scroll_vertical` всегда равен 0.
+- Текущая доступная колонка автофокусируется и возвращается в видимую
+  область при open/return/live resize.
+- Точные header/HUD/map/node/scrollbar/FAB zones заданы для
+  1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440 в SCRUM-1057 spec.
 
 ## Interaction
 
@@ -18,7 +22,11 @@ Route map — full-screen экран выбора пути между боями
 - Hover показывает tooltip.
 - Узлы кликабельны после scroll/pan.
 - Линии и иконки внутри узлов игнорируют mouse input, чтобы не перехватывать клик.
-- Зажатая левая кнопка мыши перетаскивает карту; если drag превышает threshold, click по узлу подавляется.
+- Зажатая левая кнопка мыши панорамирует по X; wheel/trackpad над картой
+  также двигает horizontal offset. После drag threshold click по узлу
+  подавляется.
+- Left/Right ищут ближайшую focusable колонку, Up/Down — соседнюю ветку
+  в текущей колонке; A/Enter подтверждает выбор.
 
 ## Node Types
 
@@ -115,7 +123,16 @@ Route map — full-screen экран выбора пути между боями
     depth-weighting из `ProgressionData.elite_artifact_choices`;
   - boss-узел: имя финального босса (`Босс:`), один из 5.
 
-## SCRUM-563 Route Map 2K Source Package
+## SCRUM-1057 Horizontal PixelLab Source Package
+
+Accepted visual contract: `docs/design/mockups/scrum1057_route_map_horizontal/spec.md`
+and `responsive_matrix.json`; PixelLab source ID
+`0a5d3c83-3592-430d-b733-82128c86aa5b`. Runtime screenshots for all five
+targets are under `docs/design/previews/scrum1079_route_map_horizontal_runtime/`.
+The production shell remains `assets/sprites/ui/meta40/frame_border.png`; the
+PixelLab image is a textless layout reference, not a runtime texture replacement.
+
+## SCRUM-563 Route Map 2K Source Package (historical)
 
 SCRUM-563 adds the Route Map 2K UI Director source package. The approved
 geometry and safe-zone plan lives in `docs/design/mockups/scrum563_route_map_2k/`,
@@ -124,9 +141,9 @@ the OpenAI Images API mockup is
 previews are `docs/design/previews/scrum563_route_map_2k_plan_guide.png` plus
 `docs/design/previews/scrum563_route_map_2k_mockup_safe_zones.png`.
 
-The package keeps the existing SCRUM-489 runtime geometry: full-screen header,
-full-width vertical scroll viewport, dynamic route canvas height, 88x88 route
-nodes, and no horizontal scrolling. Future runtime wiring must keep header
+The package documented the previous SCRUM-489 vertical runtime geometry and is
+superseded for active geometry by SCRUM-1057/1079. Its frame-safety rule remains:
+header
 labels, HUD text, tooltip text, node icons, route lines and the upgrade FAB
 inside the declared interiors, never on frame rails, dragon ornaments, ruby pins
 or corner metal.
@@ -147,3 +164,6 @@ or corner metal.
   route branching, Act 1 boss → Act 2 route transition и Act 2 boss → victory/
   secret-boss follow-up. `tests/two_act_run_progression_scrum1058_test.gd`
   дополнительно гейтит отсутствие третьей карты и неизменную длину каждого акта.
+- `tests/scrum1079_route_map_horizontal_test.gd` гейтит five-target
+  left-to-right geometry, non-overlapping Y branches, horizontal-only pan,
+  line input transparency and initial gamepad focus.
