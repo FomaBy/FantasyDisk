@@ -715,14 +715,38 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   control. Фокус-тест `tests/melee_unique_mechanics_test.gd` валидирует, что
   5 incoming damage через щит убивает часть 24 HP contact pack, но не бьет
   цель за спиной или вне радиуса.
+- **FAN-1031 Stage 3a (2026-07-13) — системные капы (no-silent-retune).** По плану
+  FAN-1030 (`docs/design/systems/balance_plan_fan1030.md`) реализованы три системных
+  правки, искажавших crowd/выживание ДО пер-классовых чисел. Полный before/after —
+  `build/stage3a_after_metrics_fan1031.md`.
+  - **S2 boss-hazard cap.** Зоны/сламы/укусы босса были ЕДИНСТВЕННЫМ каналом урона без
+    фракционного капа (контакт 20%, элитка 25%): baseline v2 `hazard фазы 4 на A5 ≈164`
+    ваншотил ВСЕ 17 классов (typ HP 50–157). Введён `BOSS_HAZARD_MAX_HP_FRACTION := 0.80`
+    (`progression_data_balance.gd`) + общий чокпоинт `enemy._hazard_hit(base, player)`;
+    все 11 хазард-сайтов `boss.gd` переведены на него. Это НЕ ослабление гейта, а новый
+    защитный кап — главный DoD-разблокиратор «каждый герой проходит A5». Гейт:
+    `tests/boss_hazard_cap_gate.gd` (CAP=80%, PASSTHROUGH, E2E full-HP выживает, CONST).
+  - **S1 data-driven AoE-кап (механизм).** Диминиш «полных» целей прямого AoE-взрыва
+    вынесен в per-weapon данные (`ClassWeapon.aoe_full_targets/aoe_target_diminish`,
+    сентинел <0 = общий `AOE_PROJECTILE_FULL_TARGETS/DIMINISH`). Нулевое изменение
+    поведения для оружий без override — рычаг для среза crowd-runaway периодики ДАННЫМИ
+    (не константами кода). Пер-классовая калибровка offender'ов (blast_powder 107×,
+    orb_ring 44×, spore_lens 25× медианы и т.д.) — пакет 3c против v3-пересъёма.
+  - **S3 restore_potion → сустейн.** Хил-склянка Доктора была #3 AoE-оружием ростера
+    (68.9k DPS@20t, 15× медианы) — дефект для лечащего оружия. `aoe_full_targets=1,
+    aoe_target_diminish=4.0`: осн. цель полный урон/хил, сплэш круто спадает. Проект:
+    20t 68.9k→~19.5k (−72%), 5t 1410→~408, 1t 243 без изменений (solo-хил сохранён;
+    сустейн упирается в drain-budget 7/с). Гейт: `doctor_kit_test._test_restore_potion_splash_cap`
+    (A/B override vs default). `global_damage_balance_smoke` без изменений (кап рантаймовый,
+    ортогонален формульной бюджет-модели).
 
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.
 - SCRUM-856 зафиксировал identity/playfeel риск поверх зелёных numeric gates:
   delayed AoE, AoE projectile, chain/split/pierce, deploy/summon и sustain
-  семейства должны быть разведены механиками. Особенно важны `doctor/restore_potion`
-  (текущий худший 20-target CCT +22%, но PASS), hard-clamped summons/DoT
+  семейства должны быть разведены механиками. `doctor/restore_potion` возвращён в
+  сустейн-нишу капом сплэша (FAN-1031 S3, см. Balance Validation), hard-clamped summons/DoT
   (`druid/summon_amulet`, `chemist/homunculus_vial`, `assassin/venom_wire`) и
   cap-pinned weapons (`hammer`, `elementalist_prism_focus`,
   `elementalist_meteor_core`, `dark_book`, `tower_shield`, `holy_flail` и др.).
