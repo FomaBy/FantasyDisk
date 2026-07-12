@@ -621,7 +621,15 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 	_apply_control_rect(gratitude_glow, metrics["gratitude_glow_rect"])
 	_apply_control_rect(gratitude_button, metrics["gratitude_rect"])
 	_apply_control_rect(version_label, metrics["version_rect"])
-	version_label.add_theme_font_size_override("font_size", int(metrics["version_font_size"]))
+	version_label.add_theme_font_size_override(
+		"font_size",
+		SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			int(metrics["version_font_size"]),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		)
+	)
 	root.set_meta("gold_shell_content_rect", safe_rect)
 	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
 	root.set_meta("gold_shell_screen_id", "main_menu")
@@ -785,7 +793,15 @@ func _show_main_menu() -> void:
 	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	version_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	version_label.add_theme_font_size_override("font_size", 14)
+	version_label.add_theme_font_size_override(
+		"font_size",
+		SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			14,
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		)
+	)
 	version_label.add_theme_color_override("font_color", Color(0.847, 0.816, 0.741, 0.93))
 	version_label.add_theme_color_override("font_outline_color", Color(0.07, 0.05, 0.07, 0.92))
 	version_label.add_theme_constant_override("outline_size", 2)

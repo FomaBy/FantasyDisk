@@ -64,7 +64,7 @@ reset-footer button and no current inventory entry.
 
 ## Verification
 
-- inventory generator/check: PASS (`245` total, `243` mapped, `2` SCRUM-1068
+- inventory generator/check: PASS (`246` total, `244` mapped, `2` SCRUM-1068
   allowlist, `0` unreviewed, `0` SCRUM-1073);
 - deterministic migration idempotence: PASS (`139/139`);
 - semantic typography tier test: PASS at 648/720/900/1080/1152/2K/4K;
