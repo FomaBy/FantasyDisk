@@ -81,3 +81,29 @@ Final post-rebase gates on `1c9cf28f1`:
 Disk cleanup: removed `.godot` cache (446M) and 55 transient `.import`/`.uid` sidecars; isolated worktree and task branch are removed after this review-status sync lands.
 
 Locks: released for independent QA after `origin/dev` landing.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: PASSED
+
+Проверено на `origin/dev` (`1c9cf28f1` implementation, `5104421ff` QA handoff):
+
+- code review irregular frame safe-zones, точного набора колонок `0..8`,
+  `canvas == viewport`, отключённых scroll axes/lanes, containment всех node
+  hitbox и line endpoints, 2.00× HUD относительно SCRUM-1079, разделения
+  title/HUD/FAB/frame, идемпотентного ULT clamp и усиленных runtime assertions;
+- committed Metal captures 1152×648, 1280×720, 1600×900, 1920×1080 и
+  2560×1440: полная карта видима, clipping/overlap/content-on-frame отсутствуют;
+- через `tools/godot_gate.py`: `scrum1089_route_map_full_fit_hud_test.gd`,
+  `scrum1079_route_map_horizontal_test.gd`,
+  `scrum981_route_map_gold_shell_test.gd`,
+  `scrum1086_route_map_header_text_fit_test.gd`,
+  `ui_no_overlap_matrix_test.gd`, `runtime_smoke_ui_test.gd`,
+  `dark_fantasy_ui_theme_test.gd`, `runtime_smoke_test.gd` — PASS;
+- дополнительный QA-only adversarial gate: live resize
+  2560→1280→1469×908→1152→1920 с pending FAB, exact steps, pairwise hitbox,
+  line containment, fixed-zero scroll/wheel, drag suppression, focus и repeated
+  ULT clamp — PASS.
+
+Краевые случаи: прямой и обратный live resize, non-matrix 1469×908, pending
+level-up FAB, повторные layout passes, wheel/drag input. Баги: нет.
