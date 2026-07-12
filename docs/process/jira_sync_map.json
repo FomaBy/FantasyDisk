@@ -4672,5 +4672,10 @@
   "key": "SCRUM-1084",
   "status": "Контроль качества",
   "desc_hash": "2f1ff802509113be8ef5e533fc7935b3"
+ },
+ "bug_scrum1086_route_map_header_text_fit.md": {
+  "key": "SCRUM-1086",
+  "status": "Контроль качества",
+  "desc_hash": "37ea6ec9a733f9a56f4842a025dc18bf"
  }
 }
