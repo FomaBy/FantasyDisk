@@ -4636,7 +4636,7 @@
  "SCRUM-1075.md": {
   "key": "SCRUM-1075",
   "status": "Контроль качества",
-  "desc_hash": "8ba45e9c0e857f4d7f5d4cb63a465c88"
+  "desc_hash": "37c488b0a6cc878fb9ae55bf081a6cf6"
  },
  "SCRUM-1068.md": {
   "key": "SCRUM-1068",
@@ -4667,5 +4667,10 @@
   "key": "SCRUM-1085",
   "status": "Готово",
   "desc_hash": "857b2a7ac56ccb2aa14027371104e675"
+ },
+ "SCRUM-1084.md": {
+  "key": "SCRUM-1084",
+  "status": "Контроль качества",
+  "desc_hash": "2f1ff802509113be8ef5e533fc7935b3"
  }
 }
