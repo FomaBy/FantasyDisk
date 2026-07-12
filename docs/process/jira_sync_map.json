@@ -4702,5 +4702,15 @@
   "key": "SCRUM-1087",
   "status": "Готово",
   "desc_hash": "f6263f5828e6bad28f98fc7f66b14929"
+ },
+ "SCRUM-1090.md": {
+  "key": "SCRUM-1090",
+  "status": "Контроль качества",
+  "desc_hash": "3e2b4f16d67e739a05e8c5935ae25e82"
+ },
+ "SCRUM-1091.md": {
+  "key": "SCRUM-1091",
+  "status": "К выполнению",
+  "desc_hash": "39f26c9c685cf40bc620ab33e277085a"
  }
 }
