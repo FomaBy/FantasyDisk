@@ -124,6 +124,10 @@ Additional checks:
   SceneTree test.
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
+- `tests/projectile_visual_registry_test.gd` — SCRUM-1066 manifest/registry
+  integrity for all 17 classes and 51 weapons, 20 canonical projectile profiles,
+  valid asset selection, 31 intentional non-projectile entries and fail-safe
+  behavior for missing IDs.
 - `tests/run_autosave_persistence_test.gd`.
 - In-game feedback smoke is embedded in `tests/runtime_smoke_test.gd` and
   verifies the `P` action, overlay lifecycle, screenshot preview, local fallback

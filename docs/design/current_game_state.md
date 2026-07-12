@@ -1847,7 +1847,7 @@ Escape stats visual kit assets:
 
 Sprite quality audit 2026-06-11: повторный полный аудит (`tools/sprite_quality_audit.py` — отчет/фикс грязных пикселей, островков, halo) + автопостобработка нарезки `fix_detached_fragments` в `tools/slice_rig_cutouts.py`, которая убирает обрезки соседних частей тела из подвижных конечностей (главная причина «лишних кусочков» на краях спрайтов в движении). UI-иконки с легитимными отдельными искрами island-фиксом не трогаются.
 
-Sprite quality audit 2026-06-10: активные UI/gameplay элементы не должны использовать видимый Polygon2D-placeholder. Pickups отображаются Sprite2D через HUD PNG (`hud_xp.png` / `hud_money.png`), player projectile использует `assets/sprites/projectiles/player_projectile_spark_64.png`, а у `enemy_suicide_runner.png` удален лишний правый фрагмент текстуры.
+Sprite quality audit 2026-06-10: активные UI/gameplay элементы не должны использовать видимый Polygon2D-placeholder. Pickups отображаются Sprite2D через HUD PNG (`hud_xp.png` / `hud_money.png`), canonical player projectiles используют weapon-specific SCRUM-1066 profiles, а у `enemy_suicide_runner.png` удален лишний правый фрагмент текстуры.
 
 ## Враги
 
@@ -1899,7 +1899,10 @@ Sprite quality audit 2026-06-10: активные UI/gameplay элементы �
 
 Базовый снаряд игрока: `scenes/Projectile.tscn`, `scripts/projectile.gd`.
 
-Активный спрайт: `assets/sprites/projectiles/player_projectile_spark_64.png`.
+Активный визуал: data-driven SCRUM-1066 profile из
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json`; legacy
+scene defaults to `soldier_arquebus_round` and no longer embeds the generic
+player spark.
 
 Pickups: `scenes/Pickup.tscn`, `scripts/pickup.gd`.
 
@@ -2482,3 +2485,17 @@ trap/summon path явно отмечен как non-projectile. Все 40 source
 real-game-scale dark/light contact sheets сохранены в
 `docs/design/previews/SCRUM-1065_player_projectiles/`. Gameplay/runtime код и
 боевые параметры этой Design-задачей не менялись.
+
+## SCRUM-1066 Player Projectile Runtime
+
+Accepted projectile art is live through a single data-driven registry rather
+than weapon-ID switch statements. `ProjectileVisualRegistry` consumes the
+export-safe normalized SCRUM-1065 contract in
+`assets/data/projectile_visual_profiles.json` and exposes 20 canonical profiles across the 17/51 weapon
+inventory. `ClassWeapon`, sentry projectiles and the legacy `Projectile.tscn`
+path use profile texture, intended size, direction/rotation, trail and impact
+palette; projectile-like Ranger/Biologist traces retain their immediate damage
+contract and add only the short travelling sprite. The other 31 weapons stay
+explicitly non-projectile. Generic void-orb/player-spark art is no longer a
+canonical player-weapon fallback. Mechanics, balance, damage, targeting, speed,
+count, timing, collision, hitbox and cleanup ownership are unchanged.

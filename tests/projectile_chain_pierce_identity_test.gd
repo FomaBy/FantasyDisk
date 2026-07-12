@@ -192,13 +192,17 @@ func _test_thief_coin_ricochet_vs_sniper_shatter(errors: Array) -> void:
 	await process_frame
 
 	split_weapon.call("_fire_sniper_split_round", split_owner, split_first, Vector2.RIGHT)
-	await process_frame
+	# SCRUM-933 superseded the old instant fan-shard contract: bullets now fly to
+	# round-robin nearest targets inside spray_radius and resolve on arrival.
+	# Wait for the real configured travel time; SCRUM-1066 must not make damage
+	# instant merely to satisfy a stale one-frame assertion.
+	await create_timer(0.65).timeout
 	if split_first.total_damage <= EPS:
 		errors.append("sniper_shatter_rounds should hit primary target")
-	if forward_shard.total_damage <= EPS:
-		errors.append("sniper_shatter_rounds should damage along fan shard trajectory")
-	if lateral_nearest.total_damage > EPS:
-		errors.append("sniper_shatter_rounds should not behave like nearest-target chain; lateral nearest took %.3f" % lateral_nearest.total_damage)
+	if lateral_nearest.total_damage <= EPS:
+		errors.append("sniper_shatter_rounds should hit the next nearest target inside spray radius")
+	if forward_shard.total_damage > EPS:
+		errors.append("sniper_shatter_rounds should not hit a target outside spray radius; forward target took %.3f" % forward_shard.total_damage)
 	await _cleanup(split_holder)
 
 

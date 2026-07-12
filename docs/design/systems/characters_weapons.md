@@ -435,6 +435,18 @@ SCRUM-934 `sniper_shatter_round` без бессмысленной перери�
 trail/impact palette и reuse rationale. Runtime integration и запрет generic
 `void_orb.png`/`player_projectile_spark_64.png` принадлежат SCRUM-1066.
 
+## SCRUM-1066 projectile runtime routing
+
+Weapon configs remain the authority for mechanics, while the accepted
+SCRUM-1065 manifest is now the authority for travelling-player-projectile art.
+`ProjectileVisualRegistry.profile_for_weapon()` maps the 20 approved projectile
+or tracer weapons to their sprite/orientation/scale/palettes. `ClassWeapon`
+uses one helper for AoE throws, chained bolts, boomerang, grenades, smoke,
+meteor, shatter rounds, plague darts and raven strikes; Ranger/Biologist
+instant-damage tracers add a short profile-driven sprite without changing their
+hit resolution. Engineer sentry rounds use the same mapping. The remaining 31
+weapons receive no false flying sprite.
+
 ## Targeting Rule
 
 Все атакующие оружия игрока целятся в ближайшего живого врага, а не в направление движения. Без врагов сохраняется последнее направление атаки.

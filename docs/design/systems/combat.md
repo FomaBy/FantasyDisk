@@ -279,6 +279,13 @@
 - Status/aura smoke: `tests/status_effects_aura_test.gd`.
 - VFX smoke: `tests/attack_vfx_smoke_test.gd`, `tests/hazard_vfx_smoke_test.gd`.
 - Снаряды: `tests/projectile_smoke_test.gd`, `tests/enemy_projectile_smoke_test.gd`.
+- SCRUM-1066: player projectile art resolves through
+  `ProjectileVisualRegistry` from the accepted SCRUM-1065 manifest. All 20
+  flying/projectile-like weapon profiles use their canonical texture, display
+  size, orientation and trail/impact palette; the other 31 weapons deliberately
+  remain non-projectile. Runtime routing is visual-only and preserves damage,
+  targeting, count, speed, timing, collision and hit geometry. Focused gate:
+  `tests/projectile_visual_registry_test.gd`.
 - Балансовые харнессы (отчёты в `build/`): `tools/balance_harness.gd` (формульный), `tools/live_combat_harness.gd` (живой DPS/TTK), `tools/survivability_harness.gd` (выживаемость профилей). Прогон всех standalone-тестов: `tools/run_focused_tests.sh`.
 
 ## Enemy HP Bars

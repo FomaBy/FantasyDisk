@@ -19,6 +19,7 @@ extends Node2D
 # Callable(obj, "method").bind(значения) и instance_from_id-гарды.
 
 const AttackVfx := preload("res://scripts/attack_vfx.gd")
+const ProjectileVisuals := preload("res://scripts/projectile_visual_registry.gd")
 
 const PROJECTILE_SPEED := 950.0
 const MUZZLE_OFFSET := Vector2(0.0, -14.0)
@@ -225,7 +226,8 @@ func constellation_overclock_state() -> Dictionary:
 func _launch_projectile(weapon: Node, target: Node2D, shot_damage: float) -> void:
 	var start := global_position + MUZZLE_OFFSET
 	var target_position := target.global_position
-	var projectile := AttackVfx.orb_projectile(weapon.call("_projectile_parent"), start, weapon.get("visual_color"))
+	var profile := ProjectileVisuals.profile_for_weapon(str(weapon.get("weapon_id")))
+	var projectile := AttackVfx.orb_projectile(weapon.call("_projectile_parent"), start, weapon.get("visual_color"), profile, target_position - start)
 	if projectile == null:
 		return
 	weapon.call("_register_effect", projectile)

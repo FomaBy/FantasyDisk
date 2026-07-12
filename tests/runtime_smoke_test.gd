@@ -785,8 +785,10 @@ func _initialize() -> void:
 	var cleanup_player_projectile := player_projectile_scene.instantiate()
 	root.add_child(cleanup_player_projectile)
 	var player_projectile_visual := cleanup_player_projectile.get_node("Shape") as Sprite2D
-	if player_projectile_visual == null or player_projectile_visual.texture == null or player_projectile_visual.texture.resource_path != "res://assets/sprites/projectiles/player_projectile_spark_64.png":
-		_fail("Expected player projectile to use the stylized spark PNG.")
+	if player_projectile_visual == null or player_projectile_visual.texture == null or player_projectile_visual.texture.resource_path != "res://assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png":
+		_fail("Expected legacy player projectile scene to resolve its canonical profile instead of the generic spark fallback.")
+	if str(cleanup_player_projectile.get_meta("projectile_visual_id", "")) != "soldier_arquebus_round":
+		_fail("Expected legacy player projectile scene to expose canonical visual metadata.")
 		return
 	cleanup_player_projectile.global_position = Vector2(3600, 2000)  # SCRUM-518: внутри расширенной арены 4096×2304
 	if bool(cleanup_player_projectile.call("_is_outside_arena")):

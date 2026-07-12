@@ -1180,6 +1180,16 @@ SCRUM-335 runtime VFX coverage: `enemy_magic_projectile` дополнитель�
 
 SCRUM-337 обновил сами projectile/VFX PNG как часть full attack VFX art pass: `enemy_projectile_magic_64.png` и `player_projectile_spark_64.png` остаются теми же canonical ID/path, но получили новый painterly D&D/dark-fantasy raster treatment с прозрачным фоном.
 
+SCRUM-1066 supersedes the single player-spark runtime contract for canonical
+weapons. `scripts/projectile_visual_registry.gd` consumes the accepted
+SCRUM-1065 manifest through its export-safe normalized copy
+`assets/data/projectile_visual_profiles.json`, keyed by canonical `weapon_id`, and validates all
+20 mapped profiles before use. They resolve existing
+`res://assets/sprites/projectiles/player/**` textures; the other 31 inventory
+rows are intentionally non-projectile. `void_orb.png` and
+`player_projectile_spark_64.png` are forbidden fallbacks for registered player
+projectile weapons; the old scene remains only as a profile-driven legacy API.
+
 SCRUM-1065 добавляет канонический PixelLab-first player-projectile pack вместо
 универсального фиолетового orb. Полный machine-readable inventory находится в
 `docs/design/references/SCRUM-1065_player_projectiles/manifest.json`: 17/17

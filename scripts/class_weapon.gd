@@ -7,6 +7,7 @@ const SPARK_POOL_TEXTURE := preload("res://assets/sprites/effects/spark_pool.png
 const BRIAR_POOL_TEXTURE := preload("res://assets/sprites/effects/briar_pool.png")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const PROJECTILE_VISUALS := preload("res://scripts/projectile_visual_registry.gd")
 const STORM_LONGBOW_VOLLEY_VFX_SCENE := preload("res://scenes/vfx/StormLongbowVolleyVfx.tscn")
 
 # SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
@@ -942,7 +943,7 @@ func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 		if not chakram_profile.is_empty() and is_instance_valid(outbound_target):
 			var params: Dictionary = chakram_profile.get("params", {})
 			_arm_constellation_target_mark(outbound_target, "chakram", float(params.get("mark_seconds", 1.8)), float(params.get("return_bonus_cap", 0.30)), float(params.get("execute_threshold", 0.28)))
-	var orb := AttackVfx.orb_projectile(_projectile_parent(), origin + direction * 24.0, visual_color)
+	var orb := _spawn_projectile_visual(origin + direction * 24.0, direction)
 	_register_effect(orb)
 	var far_point := origin + direction * attack_range
 	var orb_tween := create_tween()
@@ -1235,7 +1236,7 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 	elif _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
 		target_position = owner_node.call("attack_aim_position", attack_range)
 
-	var projectile := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 28.0, visual_color)
+	var projectile := _spawn_projectile_visual(owner_node.global_position + direction * 28.0, target_position - owner_node.global_position)
 	_register_effect(projectile)
 
 	var travel_time: float = clamp(projectile.global_position.distance_to(target_position) / max(projectile_speed, 1.0), 0.08, 0.45)
@@ -1250,7 +1251,7 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 			var current_owner := instance_from_id(owner_id) as Node2D
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, visual_color)
+			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, current_weapon.call("_projectile_impact_color"))
 			# SCRUM-941: старый хук «Зеркальной страницы» удалён — dark_book ушёл
 			# с aoe_projectile на dark_mirror_blast (зеркало теперь база оружия,
 			# артефакт репозиционирован в book_mirror_echo).
@@ -1274,7 +1275,7 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	if target == null:
 		var miss_target: Vector2 = owner_node.global_position + direction * min(attack_range, 260.0)
-		var miss_skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, miss_target, visual_color, 0.22, Callable())
+		var miss_skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, miss_target, visual_color, 0.22, Callable(), _projectile_visual_profile())
 		_register_effect(miss_skull)
 		return
 
@@ -1293,8 +1294,8 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 			current_weapon.call("_damage_enemy_with_dot", current_target, rolled, current_owner)
 		if aoe_radius > 0.0:
 			current_weapon.call("_damage_enemies_in_circle_falloff", target_position, aoe_radius * 0.72, rolled * 0.42, current_weapon.get("damage_falloff"))
-			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius * 0.72, visual_color)
-	)
+			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius * 0.72, current_weapon.call("_projectile_impact_color"))
+	, _projectile_visual_profile())
 	_register_effect(skull)
 
 
@@ -1322,7 +1323,7 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 		first_target = _find_closest_enemy(owner_node, INF)
 	if first_target == null:
 		# Пустая арена: видимый снаряд «в никуда», урона нет.
-		var miss := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 24.0, visual_color)
+		var miss := _spawn_projectile_visual(owner_node.global_position + direction * 24.0, direction)
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * minf(attack_range, 300.0), 0.2)
@@ -1353,9 +1354,9 @@ func _launch_dark_chain_hop(from_position: Vector2, chain: Array, hop_index: int
 		# Цель умерла в полёте — цепь продолжает к следующей из той же точки.
 		_launch_dark_chain_hop(from_position, chain, hop_index + 1, damage_value)
 		return
-	var orb := AttackVfx.orb_projectile(_projectile_parent(), from_position, visual_color)
-	_register_effect(orb)
 	var target_position := enemy_node.global_position
+	var orb := _spawn_projectile_visual(from_position, target_position - from_position)
+	_register_effect(orb)
 	var travel_time := clampf(from_position.distance_to(target_position) / maxf(projectile_speed, 1.0), 0.05, 0.30)
 	var hop_tween := create_tween()
 	hop_tween.tween_property(orb, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -1389,7 +1390,7 @@ func _resolve_dark_chain_hit(orb: Node, chain: Array, hop_index: int, damage_val
 func _fire_dark_chain_hit_burst(victim: Node2D, center: Vector2, amount: float) -> void:
 	if amount <= 0.0 or aoe_radius <= 0.0:
 		return
-	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, _projectile_impact_color())
 	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
 		if enemy_node == victim:
 			continue
@@ -1409,7 +1410,7 @@ func _fire_skull_curse_burn(owner_node: Node2D, target: Node2D, direction: Vecto
 		target_position = target.global_position
 	elif _owner_uses_cursor_aim(owner_node) and owner_node.has_method("attack_aim_position"):
 		target_position = owner_node.call("attack_aim_position", attack_range)
-	var skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, target_position, visual_color, 0.20, Callable(self, "_apply_skull_curse_zone").bind(target_position))
+	var skull := AttackVfx.curse_skull(_projectile_parent(), owner_node.global_position + direction * 24.0, target_position, visual_color, 0.20, Callable(self, "_apply_skull_curse_zone").bind(target_position), _projectile_visual_profile())
 	_register_effect(skull)
 
 
@@ -1530,7 +1531,7 @@ func _launch_dark_mirror_pair(owner_node: Node2D, target_position: Vector2, cast
 func _launch_dark_mirror_orb(start: Vector2, blast_position: Vector2, blast_damage: float, pair_token: int) -> void:
 	if blast_damage <= 0.0:
 		return
-	var orb := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
+	var orb := _spawn_projectile_visual(start, blast_position - start)
 	_register_effect(orb)
 	var travel_time := clampf(start.distance_to(blast_position) / maxf(projectile_speed, 1.0), 0.08, 0.45)
 	var orb_tween := create_tween()
@@ -1543,7 +1544,7 @@ func _resolve_dark_mirror_blast(orb: Node, blast_position: Vector2, blast_damage
 		_release_effect(orb)
 	if _effects_shutdown:
 		return
-	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), blast_position, aoe_radius, _projectile_impact_color())
 	var pair_probe = _constellation_mirror_pairs.get(pair_token, {})
 	var cast_probe := int((pair_probe as Dictionary).get("cast_token", 0)) if pair_probe is Dictionary else 0
 	_damage_dark_mirror_explosion(blast_position, aoe_radius, blast_damage, cast_probe, AOE_PROJECTILE_FULL_TARGETS, AOE_PROJECTILE_TARGET_DIMINISH)
@@ -1682,11 +1683,13 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 	var start := owner_node.global_position + direction * 26.0
 	if primary == null:
 		# Холостой болт: цели нет — рисуем трассер по направлению, урона нет.
-		var miss_visual := AttackVfx.beam(_projectile_parent(), start, owner_node.global_position + direction * attack_range, beam_width, visual_color)
+		var miss_finish := owner_node.global_position + direction * attack_range
+		var miss_visual := AttackVfx.projectile_trace(_projectile_parent(), start, miss_finish, visual_color, _projectile_visual_profile(), 0.14)
 		_register_effect(miss_visual)
 		return
 	var bolt_visual := AttackVfx.beam(_projectile_parent(), start, primary.global_position, beam_width, visual_color)
 	_register_effect(bolt_visual)
+	_register_effect(AttackVfx.projectile_trace(_projectile_parent(), start, primary.global_position, visual_color, _projectile_visual_profile(), 0.12))
 	var damage_value := _rolled_damage(owner_node)
 	_damage_enemy(primary, damage_value)
 	if charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0):
@@ -1703,6 +1706,7 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 			continue
 		var branch := AttackVfx.beam(_projectile_parent(), primary.global_position, branch_target.global_position, beam_width * 0.55, Color(visual_color.r, visual_color.g, visual_color.b, 0.36))
 		_register_effect(branch)
+		_register_effect(AttackVfx.projectile_trace(_projectile_parent(), primary.global_position, branch_target.global_position, visual_color, _projectile_visual_profile(), 0.10))
 		_damage_enemy(branch_target, damage_value)
 
 
@@ -1733,6 +1737,7 @@ func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 		var finish := owner_node.global_position + arrow_direction * attack_range
 		var arrow_visual := AttackVfx.beam(_projectile_parent(), start, finish, beam_width, visual_color)
 		_register_effect(arrow_visual)
+		_register_effect(AttackVfx.projectile_trace(_projectile_parent(), start, finish, visual_color, _projectile_visual_profile(), 0.16))
 
 		var hits := []
 		for hit in _enemies_in_corridor(start, arrow_direction, beam_width, attack_range):
@@ -1944,7 +1949,7 @@ func _fire_plague_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -
 
 
 func _launch_plague_dart_at(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
-	var dart := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 26.0, visual_color)
+	var dart := _spawn_projectile_visual(owner_node.global_position + direction * 26.0, target.global_position - owner_node.global_position)
 	_register_effect(dart)
 	var travel_time: float = clampf(dart.global_position.distance_to(target.global_position) / maxf(projectile_speed, 1.0), 0.06, 0.42)
 	var tween := create_tween()
@@ -2371,7 +2376,7 @@ func _launch_totem_raven(owner_node: Node2D, origin: Vector2, damage_scale := 1.
 	var target := TARGET_QUERY.nearest(self, origin, attack_range) as Node2D
 	if target == null or not is_instance_valid(target):
 		return
-	var raven := AttackVfx.orb_projectile(_projectile_parent(), origin + Vector2(0.0, -34.0), Color(0.30, 0.24, 0.44, 0.95))
+	var raven := _spawn_projectile_visual(origin + Vector2(0.0, -34.0), target.global_position - origin)
 	_register_effect(raven)
 	raven.set_meta("raven_last_target_position", target.global_position)
 	raven.set_meta("constellation_damage_scale", clampf(damage_scale, 0.0, 1.0))
@@ -2418,7 +2423,7 @@ func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
 	explosion_damage *= float(raven.get_meta("constellation_damage_scale", 1.0))
 	# SCRUM-961 «Голубой тотем» поверх SCRUM-903: вороны бьют злее (+25%).
 	explosion_damage *= 1.0 + _owner_mod("raven_pulse_bonus")
-	AttackVfx.orb_burst(_projectile_parent(), impact_position, raven_explosion_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), impact_position, raven_explosion_radius, _projectile_impact_color())
 	_damage_enemies_in_circle_capped(impact_position, raven_explosion_radius, explosion_damage, RAVEN_EXPLOSION_FULL_TARGETS, RAVEN_EXPLOSION_TARGET_DIMINISH)
 	for enemy in TARGET_QUERY.in_radius(self, impact_position, raven_explosion_radius):
 		var enemy_node := enemy as Node2D
@@ -2618,7 +2623,7 @@ func _launch_arquebus_bullet(owner_node: Node2D, target: Node2D, direction: Vect
 	# Короткая вспышка у дула — читаемое начало выстрела (важно для эха: два дула).
 	var muzzle := AttackVfx.beam(_projectile_parent(), start, start + direction * 46.0, beam_width, Color(visual_color.r, visual_color.g, visual_color.b, 0.55))
 	_register_effect(muzzle)
-	var bullet := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
+	var bullet := _spawn_projectile_visual(start, target_position - start)
 	_register_effect(bullet)
 	var travel_time: float = clampf(start.distance_to(target_position) / maxf(projectile_speed, 1.0), 0.05, 0.60)
 	var tween := create_tween()
@@ -2645,7 +2650,7 @@ func _explode_arquebus_bullet(bullet_id: int, owner_id: int, center: Vector2, di
 	_damage_enemies_in_circle_falloff(center, blast_radius, explosion_damage, edge_falloff)
 	for enemy_node in TARGET_QUERY.in_radius(self, center, blast_radius):
 		_push_enemy(enemy_node, direction)
-	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, _projectile_impact_color())
 	if bullet != null and is_instance_valid(bullet):
 		_release_effect(bullet)
 
@@ -2675,7 +2680,7 @@ func _fire_grenade_fuse(owner_node: Node2D, target: Node2D, direction: Vector2) 
 	_emit_weapon_animation_event(owner_node, "windup", travel_time + fuse_delay, direction, {"delayed": true})
 	var telegraph := AttackVfx.ring_pulse(_projectile_parent(), target_position, blast_radius, visual_color, true)
 	_register_effect(telegraph)
-	var grenade := AttackVfx.orb_projectile(_projectile_parent(), start, visual_color)
+	var grenade := _spawn_projectile_visual(start, target_position - start)
 	_register_effect(grenade)
 	var tween := create_tween()
 	tween.tween_property(grenade, "global_position", target_position, travel_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -2718,7 +2723,7 @@ func _explode_grenade_fuse(grenade_id: int, telegraph_id: int, owner_id: int, ce
 		var shrapnel_tween := create_tween()
 		shrapnel_tween.tween_interval(0.18)
 		shrapnel_tween.tween_callback(Callable(self, "_constellation_grenade_second_wave").bind(center, explosion_damage * shrapnel_ratio, blast_radius))
-	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), center, blast_radius, _projectile_impact_color())
 	if current_grenade != null and is_instance_valid(current_grenade):
 		_release_effect(current_grenade)
 	if current_telegraph != null and is_instance_valid(current_telegraph):
@@ -2898,7 +2903,7 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 	if current_target == null:
 		current_target = _find_closest_enemy(owner_node, INF)
 	if current_target == null:
-		var miss := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 24.0, visual_color)
+		var miss := _spawn_projectile_visual(owner_node.global_position + direction * 24.0, direction)
 		_register_effect(miss)
 		var miss_tween := create_tween()
 		miss_tween.tween_property(miss, "global_position", owner_node.global_position + direction * min(attack_range, 280.0), 0.18)
@@ -2940,6 +2945,7 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 			continue
 		var segment := AttackVfx.beam(_projectile_parent(), origin, enemy_node.global_position, beam_width, visual_color)
 		_register_effect(segment)
+		_register_effect(AttackVfx.projectile_trace(_projectile_parent(), origin, enemy_node.global_position, visual_color, _projectile_visual_profile(), 0.10))
 		var hit_damage := damage_value * pow(chain_tail, float(hit_index) / chain_span)
 		_damage_enemy(enemy_node, hit_damage)
 		_try_steal_money(owner_node, hit_index)
@@ -3081,7 +3087,7 @@ func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) ->
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 240.0)
 	if target != null:
 		target_position = target.global_position
-	var bomb := AttackVfx.orb_projectile(_projectile_parent(), owner_node.global_position + direction * 20.0, visual_color)
+	var bomb := _spawn_projectile_visual(owner_node.global_position + direction * 20.0, target_position - owner_node.global_position)
 	_register_effect(bomb)
 	var fuse := maxf(grenade_delay, 0.10)
 	var travel_tween := create_tween()
@@ -3105,7 +3111,7 @@ func _detonate_smoke_bomb(owner_instance_id: int, bomb_instance_id: int, target_
 	var damage_value := damage if current_owner == null else _rolled_damage(current_owner)
 	# Единственное дамажащее событие дыма — сам взрыв.
 	_damage_enemies_in_circle(target_position, aoe_radius, damage_value)
-	AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), target_position, aoe_radius, _projectile_impact_color())
 	# Облако после взрыва урона НЕ наносит — только позиционное уклонение.
 	var cloud := AttackVfx.ring_pulse(_projectile_parent(), target_position, aoe_radius, visual_color, true)
 	_register_effect(cloud)
@@ -3421,7 +3427,8 @@ func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2)
 	telegraph_holder.global_position = center
 	_register_effect(telegraph_holder)
 	HazardVfx.telegraph(telegraph_holder, aoe_radius, Color(1.0, 0.45, 0.15, 1.0), total_delay)
-	var meteor := AttackVfx.orb_projectile(_projectile_parent(), center + Vector2(200.0, -METEOR_FALL_HEIGHT), visual_color)
+	var meteor_start := center + Vector2(200.0, -METEOR_FALL_HEIGHT)
+	var meteor := _spawn_projectile_visual(meteor_start, center - meteor_start)
 	_register_effect(meteor)
 	var fall_time := maxf(total_delay * (1.0 - METEOR_TELEGRAPH_RATIO), 0.15)
 	var meteor_tween := create_tween()
@@ -3453,7 +3460,7 @@ func _resolve_meteor_impact(owner_id: int, center: Vector2, direction: Vector2, 
 		var recall_tween := create_tween()
 		recall_tween.tween_interval(0.20)
 		recall_tween.tween_callback(Callable(self, "_constellation_meteor_recall").bind(center, damage_value * recall_ratio))
-	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius, _projectile_impact_color())
 	if owner_alive:
 		# SCRUM-961 «Стихийный отдачник»: удар метеора толкает монстров от кастера.
 		_apply_elemental_repulse(current_owner, center, aoe_radius)
@@ -3736,7 +3743,7 @@ func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vec
 			bullet_aim = Vector2.RIGHT.rotated(fan_angle)
 			bullet_finish = origin + bullet_aim * spray_radius
 		var bullet_start := origin + bullet_aim * 24.0
-		var bullet := AttackVfx.orb_projectile(_projectile_parent(), bullet_start, visual_color)
+		var bullet := _spawn_projectile_visual(bullet_start, bullet_aim)
 		_register_effect(bullet)
 		var travel_time := clampf(bullet_start.distance_to(bullet_finish) / maxf(projectile_speed, 1.0), 0.04, 0.6)
 		var aimed_id := aimed_target.get_instance_id() if (aimed_target != null and is_instance_valid(aimed_target)) else 0
@@ -3767,7 +3774,7 @@ func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float,
 		if int(hit_counts.get(enemy_id, 0)) < 2:
 			hit_counts[enemy_id] = int(hit_counts.get(enemy_id, 0)) + 1
 			_constellation_shatter_volleys[state_key] = hit_counts
-			AttackVfx.orb_burst(_projectile_parent(), enemy.global_position, maxf(beam_width, 18.0), visual_color)
+			AttackVfx.orb_burst(_projectile_parent(), enemy.global_position, maxf(beam_width, 18.0), _projectile_impact_color())
 			_damage_enemy(enemy, damage_value)
 			var pierce_result := _constellation_event("pierce", enemy, 0.0)
 			if bool(pierce_result.get("triggered", false)):
@@ -4030,6 +4037,7 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 		tip_center = target.global_position
 	var tracer := AttackVfx.beam(_projectile_parent(), start, start + beam_direction * beam_length, beam_width, visual_color)
 	_register_effect(tracer)
+	_register_effect(AttackVfx.projectile_trace(_projectile_parent(), start, tip_center, visual_color, _projectile_visual_profile(), 0.14))
 	_emit_weapon_animation_event(owner_node, "burst", maxf(burst_interval, 0.08), direction, {"count": 1})
 	var damage_value: float = _rolled_damage(owner_node)
 	var chain_artifact := _owner_mod("sample_beam_full_damage") > 0.0
@@ -4059,7 +4067,7 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 			injected_forward = forward
 			injected = line_enemy
 	var tip_radius := aoe_radius * (1.25 if chain_artifact else 1.0)
-	AttackVfx.orb_burst(_projectile_parent(), tip_center, tip_radius * 0.42, visual_color)
+	AttackVfx.orb_burst(_projectile_parent(), tip_center, tip_radius * 0.42, _projectile_impact_color())
 	_damage_enemies_in_circle_falloff(tip_center, tip_radius, damage_value * tip_burst_ratio, damage_falloff)
 	if injected != null:
 		_apply_bio_infection(injected, owner_node)
@@ -5864,6 +5872,20 @@ func _projectile_parent() -> Node:
 	if parent == null:
 		parent = get_tree().root
 	return parent
+
+
+func _projectile_visual_profile() -> Dictionary:
+	return PROJECTILE_VISUALS.profile_for_weapon(weapon_id)
+
+
+func _spawn_projectile_visual(start: Vector2, travel_direction := Vector2.RIGHT) -> Node2D:
+	return AttackVfx.orb_projectile(_projectile_parent(), start, visual_color, _projectile_visual_profile(), travel_direction)
+
+
+func _projectile_impact_color() -> Color:
+	var profile := _projectile_visual_profile()
+	var palette = profile.get("impact_palette", [])
+	return palette[0] if palette is Array and not palette.is_empty() else visual_color
 
 
 func _weapon_visual_texture() -> Texture2D:
